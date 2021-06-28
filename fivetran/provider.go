@@ -25,10 +25,12 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"fivetran_user": resourceUser(),
+			"fivetran_user":  resourceUser(),
+			"fivetran_group": resourceGroup(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
-			"fivetran_user": dataSourceUser(),
+			"fivetran_user":  dataSourceUser(),
+			"fivetran_group": dataSourceGroup(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}
@@ -39,7 +41,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	apiKey := d.Get("api_key").(string)
 	apiSecret := d.Get("api_secret").(string)
 
-	c := fivetran.New(apiKey, apiSecret)
+	client := fivetran.New(apiKey, apiSecret)
 
-	return c, diags
+	return client, diags
 }
