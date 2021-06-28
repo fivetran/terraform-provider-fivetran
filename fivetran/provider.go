@@ -39,7 +39,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	apiKey := d.Get("api_key").(string)
 	apiSecret := d.Get("api_secret").(string)
 
-	c := fivetran.NewClient(apiKey, apiSecret)
+	c := fivetran.New(apiKey, apiSecret)
 
 	return c, diags
 }
