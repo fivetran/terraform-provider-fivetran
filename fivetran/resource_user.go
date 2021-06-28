@@ -75,40 +75,42 @@ func resourceUser() *schema.Resource {
 
 func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*fivetran.Client)
-	s := c.NewUserInvite()
+	client := m.(*fivetran.Client)
+	svc := client.NewUserInvite()
 
 	email := d.Get("email").(string)
+	svc.Email(email)
+
 	givenName := d.Get("given_name").(string)
+	svc.GivenName(givenName)
+
 	familyName := d.Get("family_name").(string)
+	svc.FamilyName(familyName)
+
 	picture := d.Get("picture").(string)
-	phone := d.Get("phone").(string)
-	role := "ReadOnly" // hardcoded until https://fivetran.height.app/T-109040 is fixed.
-
-	s.Email(email)
-	s.GivenName(givenName)
-	s.FamilyName(familyName)
-	s.Role(role)
-
 	if picture != "" {
-		s.Picture(picture)
+		svc.Picture(picture)
 	}
 
+	phone := d.Get("phone").(string)
 	if phone != "" {
-		s.Phone(phone)
+		svc.Phone(phone)
 	}
 
-	user, err := s.Do(ctx)
+	role := "ReadOnly" // hardcoded until https://fivetran.height.app/T-109040 is fixed.
+	svc.Role(role)
+
+	resp, err := svc.Do(ctx)
 	if err != nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
 			Summary:  "create error",
-			Detail:   fmt.Sprintf("%v; code: %v; message: %v", err, user.Code, user.Message),
+			Detail:   fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message),
 		})
 		return diags
 	}
 
-	d.SetId(user.Data.ID)
+	d.SetId(resp.Data.ID)
 
 	resourceUserRead(ctx, d, m)
 
@@ -117,34 +119,33 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 
 func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*fivetran.Client)
-	s := c.NewUserDetails()
+	client := m.(*fivetran.Client)
+	svc := client.NewUserDetails()
 
 	id := d.Get("id").(string)
+	svc.UserID(id)
 
-	s.UserID(id)
-
-	user, err := s.Do(ctx)
+	resp, err := svc.Do(ctx)
 	if err != nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
 			Summary:  "read error",
-			Detail:   fmt.Sprintf("%v; code: %v; message: %v", err, user.Code, user.Message),
+			Detail:   fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message),
 		})
 		return diags
 	}
 
 	kvmap := make(map[string]interface{})
-	kvmap["id"] = user.Data.ID
-	kvmap["email"] = user.Data.Email
-	kvmap["given_name"] = user.Data.GivenName
-	kvmap["family_name"] = user.Data.FamilyName
-	kvmap["verified"] = user.Data.Verified
-	kvmap["invited"] = user.Data.Invited
-	kvmap["picture"] = user.Data.Picture
-	kvmap["phone"] = user.Data.Phone
-	kvmap["logged_in_at"] = user.Data.LoggedInAt.String()
-	kvmap["created_at"] = user.Data.CreatedAt.String()
+	kvmap["id"] = resp.Data.ID
+	kvmap["email"] = resp.Data.Email
+	kvmap["given_name"] = resp.Data.GivenName
+	kvmap["family_name"] = resp.Data.FamilyName
+	kvmap["verified"] = resp.Data.Verified
+	kvmap["invited"] = resp.Data.Invited
+	kvmap["picture"] = resp.Data.Picture
+	kvmap["phone"] = resp.Data.Phone
+	kvmap["logged_in_at"] = resp.Data.LoggedInAt.String()
+	kvmap["created_at"] = resp.Data.CreatedAt.String()
 
 	if err := set(d, kvmap); err != nil {
 		diags = append(diags, diag.Diagnostic{
@@ -160,15 +161,15 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var change bool
-	c := m.(*fivetran.Client)
-	s := c.NewUserModify()
+	client := m.(*fivetran.Client)
+	svc := client.NewUserModify()
 
 	id := d.Get("id").(string)
 
-	s.UserID(id)
+	svc.UserID(id)
 
 	if d.HasChange("email") {
-		diags = append(diags, diag.Diagnostic{
+		diags = append(diags, diag.Diagnostic{ // should verify this or this is REST API role? IMO it's REST API...
 			Severity: diag.Error,
 			Summary:  "update error",
 			Detail:   "field email can't be updated",
@@ -178,37 +179,37 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface
 
 	if d.HasChange("given_name") {
 		givenName := d.Get("given_name").(string)
-		s.GivenName(givenName)
+		svc.GivenName(givenName)
 		change = true
 	}
 
 	if d.HasChange("family_name") {
 		familyName := d.Get("family_name").(string)
-		s.FamilyName(familyName)
+		svc.FamilyName(familyName)
 		change = true
 	}
 
 	if d.HasChange("picture") {
 		picture := d.Get("picture").(string)
-		s.Picture(picture)
+		svc.Picture(picture)
 		change = true
 	}
 
 	if d.HasChange("phone") {
 		phone, ok := d.GetOk("phone")
 		if ok {
-			s.Phone(phone.(string))
+			svc.Phone(phone.(string))
 			change = true
 		}
 	}
 
 	if change {
-		user, err := s.Do(ctx)
+		resp, err := svc.Do(ctx)
 		if err != nil {
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
 				Summary:  "update error",
-				Detail:   fmt.Sprintf("%v; code: %v; message: %v", err, user.Code, user.Message),
+				Detail:   fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message),
 			})
 			return diags
 		}
@@ -221,14 +222,13 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface
 
 func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*fivetran.Client)
-	s := c.NewUserDelete()
+	client := m.(*fivetran.Client)
+	svc := client.NewUserDelete()
 
 	id := d.Get("id").(string)
+	svc.UserID(id)
 
-	s.UserID(id)
-
-	user, err := s.Do(ctx)
+	user, err := svc.Do(ctx)
 	if err != nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,

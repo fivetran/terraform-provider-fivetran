@@ -63,32 +63,33 @@ func dataSourceUser() *schema.Resource {
 
 func dataSourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	c := m.(*fivetran.Client)
-	s := c.NewUserDetails()
+	client := m.(*fivetran.Client)
+	svc := client.NewUserDetails()
 
 	id := d.Get("id").(string)
-	user, err := s.UserID(id).Do(ctx)
+
+	resp, err := svc.UserID(id).Do(ctx)
 	if err != nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
 			Summary:  "service error",
-			Detail:   fmt.Sprintf("%v; code: %v; message: %v", err, user.Code, user.Message),
+			Detail:   fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message),
 		})
 		return diags
 	}
 
 	kvmap := make(map[string]interface{})
-	kvmap["id"] = user.Data.ID
-	kvmap["email"] = user.Data.Email
-	kvmap["given_name"] = user.Data.GivenName
-	kvmap["family_name"] = user.Data.FamilyName
-	kvmap["verified"] = user.Data.Verified
-	kvmap["invited"] = user.Data.Invited
-	kvmap["picture"] = user.Data.Picture
-	kvmap["phone"] = user.Data.Phone
-	// kvmap["role"] = user.Data.Role // commented until https://fivetran.height.app/T-109040 is fixed.
-	kvmap["logged_in_at"] = user.Data.LoggedInAt.String()
-	kvmap["created_at"] = user.Data.CreatedAt.String()
+	kvmap["id"] = resp.Data.ID
+	kvmap["email"] = resp.Data.Email
+	kvmap["given_name"] = resp.Data.GivenName
+	kvmap["family_name"] = resp.Data.FamilyName
+	kvmap["verified"] = resp.Data.Verified
+	kvmap["invited"] = resp.Data.Invited
+	kvmap["picture"] = resp.Data.Picture
+	kvmap["phone"] = resp.Data.Phone
+	// kvmap["role"] = resp.Data.Role // commented until https://fivetran.height.app/T-109040 is fixed.
+	kvmap["logged_in_at"] = resp.Data.LoggedInAt.String()
+	kvmap["created_at"] = resp.Data.CreatedAt.String()
 
 	if err := set(d, kvmap); err != nil {
 		diags = append(diags, diag.Diagnostic{
@@ -98,7 +99,7 @@ func dataSourceUserRead(ctx context.Context, d *schema.ResourceData, m interface
 		})
 	}
 
-	d.SetId(user.Data.ID)
+	d.SetId(resp.Data.ID)
 
 	return diags
 }
