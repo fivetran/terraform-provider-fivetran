@@ -49,7 +49,7 @@ func resourceUser() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			// "role": &schema.Schema{ // commented until the fix https://fivetran.height.app/T-95317 / https://fivetran.height.app/T-39355 is implemented
+			// "role": &schema.Schema{ // commented until https://fivetran.height.app/T-109040 is fixed.
 			// 	Type:     schema.TypeString,
 			// 	Required: true,
 			// },
@@ -76,14 +76,14 @@ func resourceUser() *schema.Resource {
 func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*fivetran.Client)
-	s := c.NewUserInviteService()
+	s := c.NewUserInvite()
 
 	email := d.Get("email").(string)
 	givenName := d.Get("given_name").(string)
 	familyName := d.Get("family_name").(string)
 	picture := d.Get("picture").(string)
 	phone := d.Get("phone").(string)
-	role := "ReadOnly" // hardcoded until the fix https://fivetran.height.app/T-95317 / https://fivetran.height.app/T-39355 is implemented
+	role := "ReadOnly" // hardcoded until https://fivetran.height.app/T-109040 is fixed.
 
 	s.Email(email)
 	s.GivenName(givenName)
@@ -118,11 +118,11 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*fivetran.Client)
-	s := c.NewUserDetailsService()
+	s := c.NewUserDetails()
 
 	id := d.Get("id").(string)
 
-	s.UserId(id)
+	s.UserID(id)
 
 	user, err := s.Do(ctx)
 	if err != nil {
@@ -161,11 +161,11 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface
 	var diags diag.Diagnostics
 	var change bool
 	c := m.(*fivetran.Client)
-	s := c.NewUserModifyService()
+	s := c.NewUserModify()
 
 	id := d.Get("id").(string)
 
-	s.UserId(id)
+	s.UserID(id)
 
 	if d.HasChange("email") {
 		diags = append(diags, diag.Diagnostic{
@@ -222,11 +222,11 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface
 func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*fivetran.Client)
-	s := c.NewUserDeleteService()
+	s := c.NewUserDelete()
 
 	id := d.Get("id").(string)
 
-	s.UserId(id)
+	s.UserID(id)
 
 	user, err := s.Do(ctx)
 	if err != nil {

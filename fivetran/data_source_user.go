@@ -45,7 +45,7 @@ func dataSourceUser() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			// "role": &schema.Schema{ // commented until the fix https://fivetran.height.app/T-95317 / https://fivetran.height.app/T-39355 is implemented
+			// "role": &schema.Schema{ // commented until https://fivetran.height.app/T-109040 is fixed.
 			// 	Type:     schema.TypeString,
 			// 	Computed: true,
 			// },
@@ -64,10 +64,10 @@ func dataSourceUser() *schema.Resource {
 func dataSourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*fivetran.Client)
-	s := c.NewUserDetailsService()
+	s := c.NewUserDetails()
 
 	id := d.Get("id").(string)
-	user, err := s.UserId(id).Do(ctx)
+	user, err := s.UserID(id).Do(ctx)
 	if err != nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
@@ -86,7 +86,7 @@ func dataSourceUserRead(ctx context.Context, d *schema.ResourceData, m interface
 	kvmap["invited"] = user.Data.Invited
 	kvmap["picture"] = user.Data.Picture
 	kvmap["phone"] = user.Data.Phone
-	// kvmap["role"] = user.Data.Role // commented until the fix https://fivetran.height.app/T-95317 / https://fivetran.height.app/T-39355 is implemented
+	// kvmap["role"] = user.Data.Role // commented until https://fivetran.height.app/T-109040 is fixed.
 	kvmap["logged_in_at"] = user.Data.LoggedInAt.String()
 	kvmap["created_at"] = user.Data.CreatedAt.String()
 
