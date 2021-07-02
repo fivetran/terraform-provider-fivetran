@@ -1,5 +1,7 @@
 package fivetran
 
+// WIP, not reviewed after 02/07/2021 yet.
+
 import (
 	"context"
 	"fmt"
@@ -13,50 +15,17 @@ func dataSourceUser() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceUserRead,
 		Schema: map[string]*schema.Schema{
-			"id": &schema.Schema{
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"email": &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"given_name": &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"family_name": &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"verified": &schema.Schema{
-				Type:     schema.TypeBool,
-				Computed: true,
-			},
-			"invited": &schema.Schema{
-				Type:     schema.TypeBool,
-				Computed: true,
-			},
-			"picture": &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"phone": &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			// "role": &schema.Schema{ // commented until https://fivetran.height.app/T-109040 is fixed.
-			// 	Type:     schema.TypeString,
-			// 	Computed: true,
-			// },
-			"logged_in_at": &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"created_at": &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true,
-			},
+			"id":          {Type: schema.TypeString, Required: true},
+			"email":       {Type: schema.TypeString, Computed: true},
+			"given_name":  {Type: schema.TypeString, Computed: true},
+			"family_name": {Type: schema.TypeString, Computed: true},
+			"verified":    {Type: schema.TypeBool, Computed: true},
+			"invited":     {Type: schema.TypeBool, Computed: true},
+			"picture":     {Type: schema.TypeString, Computed: true},
+			"phone":       {Type: schema.TypeString, Computed: true},
+			// "role":         {Type: schema.TypeString, Computed: true}, // commented until https://fivetran.height.app/T-109040 is fixed.
+			"logged_in_at": {Type: schema.TypeString, Computed: true},
+			"created_at":   {Type: schema.TypeString, Computed: true},
 		},
 	}
 }
