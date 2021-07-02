@@ -1,5 +1,7 @@
 package fivetran
 
+// WIP, not reviewed after 02/07/2021 yet.
+
 import (
 	"context"
 	"fmt"
@@ -13,18 +15,9 @@ func dataSourceGroup() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceGroupRead,
 		Schema: map[string]*schema.Schema{
-			"id": &schema.Schema{
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"name": &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"created_at": &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true,
-			},
+			"id":         {Type: schema.TypeString, Required: true},
+			"name":       {Type: schema.TypeString, Computed: true},
+			"created_at": {Type: schema.TypeString, Computed: true},
 		},
 	}
 }
