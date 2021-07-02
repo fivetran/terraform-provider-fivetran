@@ -8,8 +8,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-var limit = 1000 // REST API response objects limit per HTTP request
-
 // newDiag receives a diag.Severity, a summary, a detail, and returns a diag.Diagnostic
 func newDiag(severity diag.Severity, summary, detail string) diag.Diagnostic {
 	return diag.Diagnostic{
