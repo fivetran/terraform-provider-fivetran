@@ -1,7 +1,5 @@
 package fivetran
 
-// WIP, not reviewed after 02/07/2021 yet.
-
 import (
 	"context"
 	"fmt"
@@ -45,31 +43,26 @@ func dataSourceGroupUsersRead(ctx context.Context, d *schema.ResourceData, m int
 
 	resp, err := dataSourceGroupUsersGetUsers(svc, id, ctx)
 	if err != nil {
-		diags = append(diags, diag.Diagnostic{
-			Severity: diag.Error,
-			Summary:  "service error",
-			Detail:   fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message),
-		})
-		return diags
+		return newDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
-	d.Set("users", flattenGroupUsers(&resp))
+	d.Set("users", dataSourceGroupUsersFlattenUsers(&resp))
 
 	d.SetId(id)
 
 	return diags
 }
 
-func flattenGroupUsers(resp *fivetran.GroupListUsersResponse) []interface{} {
+// dataSourceGroupUsersFlattenUsers receives a *fivetran.GroupListUsersResponse and returns a []interface{}
+// containing the data type accepted by the "users" set.
+func dataSourceGroupUsersFlattenUsers(resp *fivetran.GroupListUsersResponse) []interface{} {
 	if resp.Data.Items == nil {
 		return make([]interface{}, 0)
 	}
 
 	users := make([]interface{}, len(resp.Data.Items), len(resp.Data.Items))
-
 	for i, v := range resp.Data.Items {
 		user := make(map[string]interface{})
-
 		user["id"] = v.ID
 		user["email"] = v.Email
 		user["given_name"] = v.GivenName
@@ -87,7 +80,7 @@ func flattenGroupUsers(resp *fivetran.GroupListUsersResponse) []interface{} {
 	return users
 }
 
-// dataSourceGroupUsersGetUsers gets the list of users of a group. It handles limits and cursors.
+// dataSourceGroupUsersGetUsers gets the users list of a group. It handles limits and cursors.
 func dataSourceGroupUsersGetUsers(svc *fivetran.GroupListUsersService, id string, ctx context.Context) (fivetran.GroupListUsersResponse, error) {
 	var resp fivetran.GroupListUsersResponse
 	var respNextCursor string
