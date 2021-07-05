@@ -37,9 +37,8 @@ func dataSourceUsers() *schema.Resource {
 func dataSourceUsersRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
-	svc := client.NewUsersList()
 
-	resp, err := dataSourceUsersGetUsers(svc, ctx)
+	resp, err := dataSourceUsersGetUsers(client, ctx)
 	if err != nil {
 		return newDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
@@ -80,13 +79,14 @@ func dataSourceUsersFlattenUsers(resp *fivetran.UsersListResponse) []interface{}
 }
 
 // dataSourceGroupUsersGetUsers gets the users list of a group. It handles limits and cursors.
-func dataSourceUsersGetUsers(svc *fivetran.UsersListService, ctx context.Context) (fivetran.UsersListResponse, error) {
+func dataSourceUsersGetUsers(client *fivetran.Client, ctx context.Context) (fivetran.UsersListResponse, error) {
 	var resp fivetran.UsersListResponse
 	var respNextCursor string
 
 	for {
 		var err error
 		var respInner fivetran.UsersListResponse
+		svc := client.NewUsersList()
 		if respNextCursor == "" {
 			respInner, err = svc.Limit(limit).Do(ctx)
 		}
