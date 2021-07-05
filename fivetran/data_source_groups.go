@@ -29,9 +29,8 @@ func dataSourceGroups() *schema.Resource {
 func dataSourceGroupsRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
-	svc := client.NewGroupsList()
 
-	resp, err := dataSourceGroupsGetGroups(svc, ctx)
+	resp, err := dataSourceGroupsGetGroups(client, ctx)
 	if err != nil {
 		return newDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
@@ -65,13 +64,14 @@ func dataSourceGroupsFlattenGroups(resp *fivetran.GroupsListResponse) []interfac
 }
 
 // dataSourceGroupsGetGroups gets the groups list. It handles limits and cursors.
-func dataSourceGroupsGetGroups(svc *fivetran.GroupsListService, ctx context.Context) (fivetran.GroupsListResponse, error) {
+func dataSourceGroupsGetGroups(client *fivetran.Client, ctx context.Context) (fivetran.GroupsListResponse, error) {
 	var resp fivetran.GroupsListResponse
 	var respNextCursor string
 
 	for {
 		var err error
 		var respInner fivetran.GroupsListResponse
+		svc := client.NewGroupsList()
 		if respNextCursor == "" {
 			respInner, err = svc.Limit(limit).Do(ctx)
 		}
