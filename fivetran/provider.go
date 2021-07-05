@@ -21,11 +21,12 @@ func Provider() *schema.Provider {
 			"fivetran_group": resourceGroup(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
-			"fivetran_user":        dataSourceUser(),
-			"fivetran_users":       dataSourceUsers(),
-			"fivetran_group":       dataSourceGroup(),
-			"fivetran_groups":      dataSourceGroups(),
-			"fivetran_group_users": dataSourceGroupUsers(),
+			"fivetran_user":             dataSourceUser(),
+			"fivetran_users":            dataSourceUsers(),
+			"fivetran_group":            dataSourceGroup(),
+			"fivetran_groups":           dataSourceGroups(),
+			"fivetran_group_connectors": dataSourceGroupConnectors(),
+			"fivetran_group_users":      dataSourceGroupUsers(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}
