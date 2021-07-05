@@ -96,7 +96,7 @@ func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{
 		return newDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
-	respUsers, err := dataSourceGroupUsersGetUsers(client.NewGroupListUsers(), groupID, ctx)
+	respUsers, err := dataSourceGroupUsersGetUsers(client, groupID, ctx)
 	if err != nil {
 		return newDiagAppend(diags, diag.Error, "read error: dataSourceGroupUsersGetUsers", fmt.Sprintf("%v; code: %v; message: %v", err, respUsers.Code, respUsers.Message))
 	}
@@ -142,7 +142,7 @@ func resourceGroupUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 	}
 
 	if d.HasChange("user") {
-		respUsers, err := dataSourceGroupUsersGetUsers(client.NewGroupListUsers(), groupID, ctx)
+		respUsers, err := dataSourceGroupUsersGetUsers(client, groupID, ctx)
 		if err != nil {
 			return newDiagAppend(diags, diag.Error, "read error: dataSourceGroupUsersGetUsers", fmt.Sprintf("%v; code: %v; message: %v", err, respUsers.Code, respUsers.Message))
 		}
