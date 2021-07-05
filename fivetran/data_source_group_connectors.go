@@ -107,6 +107,7 @@ func dataSourceGroupConnectorsFlattenConnectors(resp *fivetran.GroupListConnecto
 		connector["schedule_type"] = v.ScheduleType
 		connector["daily_sync_time"] = v.DailySyncTime
 
+		// Status
 		var statusTasks []interface{}
 		for _, v := range v.Status.Tasks {
 			t := make(map[string]interface{})
