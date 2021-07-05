@@ -24,6 +24,7 @@ func Provider() *schema.Provider {
 			"fivetran_user":        dataSourceUser(),
 			"fivetran_users":       dataSourceUsers(),
 			"fivetran_group":       dataSourceGroup(),
+			"fivetran_groups":      dataSourceGroups(),
 			"fivetran_group_users": dataSourceGroupUsers(),
 		},
 		ConfigureContextFunc: providerConfigure,
