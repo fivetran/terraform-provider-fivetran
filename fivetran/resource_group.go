@@ -150,6 +150,10 @@ func resourceGroupUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 		if err := resourceGroupSyncUsers(client, &respUsers, d.Get("user").(*schema.Set).List(), d.Get("creator").(string), groupID, ctx); err != nil {
 			return newDiagAppend(diags, diag.Error, "read error: resourceGroupSyncUsers", fmt.Sprint(err))
 		}
+
+		// TODO: Have to set last_updated here as well, but only if changes happened.
+		// A change could have happened even if resourceGroupSyncUsers returned an error
+		// d.Set("last_updated", time.Now().Format(time.RFC850))
 	}
 
 	return resourceGroupRead(ctx, d, m)
@@ -231,6 +235,10 @@ func resourceGroupFlattenGroupUsers(resp *fivetran.GroupListUsersResponse, local
 		// if Terraform returns the operation was completed successfully. For now, to change a user
 		// role within a group, It is necessary to remove it from the group and add it again with
 		// the new role parameter.
+		//
+		// TODO: Force the replacement of the user association when changing role. It is a better
+		// outcome instead of taking. It can't be done with ForceNew, otherwise the whole resource
+		// would be replaced.
 		u["role"] = resourceGroupGetLocalUserRole(localUsers, user.ID)
 
 		users = append(users, u)
@@ -252,7 +260,8 @@ func resourceGroupGetLocalUserRole(localUsers []interface{}, userID string) stri
 	return ""
 }
 
-// resourceGroupSyncUsers syncs users associated with a group between the Terraform state and the REST API
+// resourceGroupSyncUsers syncs users associated with a group between the Terraform state and the REST API.
+// TODO: Check if this can be simplified using d.GetChange().
 func resourceGroupSyncUsers(client *fivetran.Client, resp *fivetran.GroupListUsersResponse, localUsers []interface{}, creatorID string, groupID string, ctx context.Context) error {
 	type userType struct {
 		role string

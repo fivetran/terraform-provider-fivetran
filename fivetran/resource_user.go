@@ -19,7 +19,7 @@ func resourceUser() *schema.Resource {
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
 		Schema: map[string]*schema.Schema{
 			"id":          {Type: schema.TypeString, Computed: true},
-			"email":       {Type: schema.TypeString, Required: true},
+			"email":       {Type: schema.TypeString, Required: true, ForceNew: true},
 			"given_name":  {Type: schema.TypeString, Required: true},
 			"family_name": {Type: schema.TypeString, Required: true},
 			"verified":    {Type: schema.TypeBool, Computed: true},
@@ -42,11 +42,11 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 	svc.Email(d.Get("email").(string))
 	svc.GivenName(d.Get("given_name").(string))
 	svc.FamilyName(d.Get("family_name").(string))
-	if picture, ok := d.GetOk("picture"); ok {
-		svc.Picture(picture.(string)) // Optional field. Only pass a value if it has been defined
+	if v, ok := d.GetOk("picture"); ok {
+		svc.Picture(v.(string)) // Optional field. Only pass a value if it has been defined
 	}
-	if phone, ok := d.GetOk("phone"); ok {
-		svc.Phone(phone.(string)) // Optional field. Only pass a value if it has been defined
+	if v, ok := d.GetOk("phone"); ok {
+		svc.Phone(v.(string)) // Optional field. Only pass a value if it has been defined
 	}
 	// The REST API doesn't returns `role` when creating/inviting a new user. Because of that, `role`
 	// is being enforced. This should change when https://fivetran.height.app/T-109040 is fixed.
@@ -102,10 +102,12 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface
 	svc := client.NewUserModify()
 	var change bool
 
-	svc.UserID(d.Get("id").(string))
-	if d.HasChange("email") {
-		return newDiagAppend(diags, diag.Error, "update error", "field email can't be updated")
-	}
+	// // Now using ForceNew: true in the schema.
+	// // Check if ForceNew is the best approach or it is better to keep checking here.
+	// svc.UserID(d.Get("id").(string))
+	// if d.HasChange("email") {
+	// 	return newDiagAppend(diags, diag.Error, "update error", "field email can't be updated")
+	// }
 	if d.HasChange("given_name") {
 		svc.GivenName(d.Get("given_name").(string))
 		change = true
