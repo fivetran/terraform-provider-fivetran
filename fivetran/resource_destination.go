@@ -163,7 +163,9 @@ func resourceDestinationUpdate(ctx context.Context, d *schema.ResourceData, m in
 			return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 		}
 
-		d.Set("last_updated", time.Now().Format(time.RFC850))
+		if err := d.Set("last_updated", time.Now().Format(time.RFC850)); err != nil {
+			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+		}
 	}
 
 	return resourceDestinationRead(ctx, d, m)

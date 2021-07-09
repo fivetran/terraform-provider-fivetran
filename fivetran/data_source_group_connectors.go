@@ -75,9 +75,9 @@ func dataSourceGroupConnectorsRead(ctx context.Context, d *schema.ResourceData, 
 		return newDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
-	debug(resp)
-
-	d.Set("connectors", dataSourceGroupConnectorsFlattenConnectors(&resp))
+	if err := d.Set("connectors", dataSourceGroupConnectorsFlattenConnectors(&resp)); err != nil {
+		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+	}
 
 	d.SetId(id)
 

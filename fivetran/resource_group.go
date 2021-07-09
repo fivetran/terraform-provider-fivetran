@@ -62,10 +62,17 @@ func resourceGroupCreate(ctx context.Context, d *schema.ResourceData, m interfac
 
 		return newDiagAppend(diags, diag.Error, "create error: groupCreator", fmt.Sprint(err))
 	}
-	d.Set("creator", groupCreator)
+	if err := d.Set("creator", groupCreator); err != nil {
+		// If d.Set returns an error, the recently created group is deleted
+		respDelete, errDelete := client.NewGroupDelete().GroupID(groupID).Do(ctx)
+		if errDelete != nil {
+			diags = newDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, respDelete.Code, respDelete.Message))
+		}
 
-	err = resourceGroupAddUsersToGroup(client, users, groupID, ctx)
-	if err != nil {
+		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+	}
+
+	if err := resourceGroupAddUsersToGroup(client, users, groupID, ctx); err != nil {
 		// If resourceGroupAddUsersToGroup returns an error, the recently created group is deleted
 		respDelete, errDelete := client.NewGroupDelete().GroupID(groupID).Do(ctx)
 		if errDelete != nil {
@@ -138,7 +145,9 @@ func resourceGroupUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 			return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 		}
 
-		d.Set("last_updated", time.Now().Format(time.RFC850))
+		if err := d.Set("last_updated", time.Now().Format(time.RFC850)); err != nil {
+			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+		}
 	}
 
 	if d.HasChange("user") {

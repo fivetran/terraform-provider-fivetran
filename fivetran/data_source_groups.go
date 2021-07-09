@@ -35,7 +35,9 @@ func dataSourceGroupsRead(ctx context.Context, d *schema.ResourceData, m interfa
 		return newDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
-	d.Set("groups", dataSourceGroupsFlattenGroups(&resp))
+	if err := d.Set("groups", dataSourceGroupsFlattenGroups(&resp)); err != nil {
+		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+	}
 
 	// Enforces ID
 	d.SetId("0")

@@ -45,7 +45,9 @@ func dataSourceGroupUsersRead(ctx context.Context, d *schema.ResourceData, m int
 		return newDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
-	d.Set("users", dataSourceGroupUsersFlattenUsers(&resp))
+	if err := d.Set("users", dataSourceGroupUsersFlattenUsers(&resp)); err != nil {
+		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+	}
 
 	d.SetId(id)
 
