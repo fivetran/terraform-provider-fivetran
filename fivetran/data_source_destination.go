@@ -102,7 +102,8 @@ func dataSourceDestinationConfig(resp *fivetran.DestinationDetailsResponse) ([]i
 	c["auth"] = resp.Data.Config.Auth
 	c["user"] = resp.Data.Config.User
 	c["password"] = resp.Data.Config.Password
-	c["connection_type"] = dataSourceDestinationConfigNormalizeConnectionType(resp.Data.Config.ConnectionType)
+	// connection_type is returned as ConnectionMethod
+	c["connection_type"] = dataSourceDestinationConfigNormalizeConnectionType(resp.Data.Config.ConnectionMethod)
 	c["tunnel_host"] = resp.Data.Config.TunnelHost
 	c["tunnel_port"] = resp.Data.Config.TunnelPort
 	c["tunnel_user"] = resp.Data.Config.TunnelUser
