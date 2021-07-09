@@ -9,7 +9,7 @@ import (
 
 // strToBool receives a string and returns a boolean
 func strToBool(s string) bool {
-	if s == "true" || s == "TRUE" {
+	if s == "true" || s == "TRUE" || s == "True" {
 		return true
 	}
 	return false
