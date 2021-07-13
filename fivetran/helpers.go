@@ -3,6 +3,7 @@ package fivetran
 import (
 	"fmt"
 	"log"
+	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 )
@@ -21,6 +22,78 @@ func boolToStr(b bool) string {
 		return "true"
 	}
 	return "false"
+}
+
+func boolPointerToStr(b *bool) string {
+	if b == nil {
+		return ""
+	}
+	return boolToStr(*b)
+}
+
+// // NOT IN USE // TEMP
+// // strToInt receives a string and returns an int. A zero is returned
+// // if an error is found while converting the string to int.
+// func strToInt(s string) int {
+// 	i, err := strconv.Atoi(s)
+// 	if err != nil {
+// 		return 0
+// 	}
+// 	return i
+// }
+
+// // NOT IN USE // TEMP
+// // intToStr receives an int and returns a string
+// func intToStr(i int) string {
+// 	if i == 0 {
+// 		return ""
+// 	}
+// 	return strconv.Itoa(i)
+// }
+
+func intPointerToStr(i *int) string {
+	if i == nil {
+		return ""
+	}
+	return strconv.Itoa(*i)
+}
+
+// xStrXInt receives a []string and returns a []interface{}
+func xStrXInterface(xs []string) []interface{} {
+	xi := make([]interface{}, len(xs))
+	for i, v := range xs {
+		xi[i] = v
+	}
+	return xi
+}
+
+// mapAddStr adds a non-empty string to a map[string]interface{}
+func mapAddStr(msi map[string]interface{}, k, v string) {
+	if v != "" {
+		msi[k] = v
+	}
+}
+
+// mapAddInt adds a non-zero int to a map[string]interface{}
+func mapAddInt(msi map[string]interface{}, k string, v int) {
+	if v != 0 {
+		msi[k] = v
+	}
+}
+
+// // NOT IN USE // TEMP
+// // mapAddIntPointer adds a non-nil *int to a map[string]interface{}
+// func mapAddIntP(msi map[string]interface{}, k string, v *int) {
+// 	if v != nil {
+// 		msi[k] = v
+// 	}
+// }
+
+// mapAddXInterface adds a non-empty []interface{} to a map[string]interface{}
+func mapAddXInterface(msi map[string]interface{}, k string, v []interface{}) {
+	if len(v) > 0 {
+		msi[k] = v
+	}
 }
 
 // newDiag receives a diag.Severity, a summary, a detail, and returns a diag.Diagnostic
