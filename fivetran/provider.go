@@ -20,6 +20,7 @@ func Provider() *schema.Provider {
 			"fivetran_user":        resourceUser(),
 			"fivetran_group":       resourceGroup(),
 			"fivetran_destination": resourceDestination(),
+			"fivetran_connector":   resourceConnector(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"fivetran_user":                dataSourceUser(),
