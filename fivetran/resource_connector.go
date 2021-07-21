@@ -1455,7 +1455,6 @@ func resourceConnectorReadConfigFlattenProjectCredentials(resp *fivetran.Connect
 func resourceConnectorReadConfigFlattenProjectCredentialsGetStateValue(project, key string, currentConfig []interface{}) string {
 	projectCredentials := currentConfig[0].(map[string]interface{})["project_credentials"].([]interface{})
 	for _, v := range projectCredentials {
-		debug(v)
 		if v.(map[string]interface{})["project"].(string) == project {
 			return v.(map[string]interface{})[key].(string)
 		}
