@@ -130,19 +130,23 @@ func resourceGroupUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
 	svc := client.NewGroupModify()
+	var change bool
 
 	groupID := d.Get("id").(string)
 	svc.GroupID(groupID)
 
 	if d.HasChange("name") {
 		svc.Name(d.Get("name").(string))
+		change = true
 	}
 
-	resp, err := svc.Do(ctx)
-	if err != nil {
-		// resourceGroupRead here makes sure the state is updated after a NewGroupModify error.
-		diags = resourceGroupRead(ctx, d, m)
-		return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+	if change {
+		resp, err := svc.Do(ctx)
+		if err != nil {
+			// resourceGroupRead here makes sure the state is updated after a NewGroupModify error.
+			diags = resourceGroupRead(ctx, d, m)
+			return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		}
 	}
 
 	if d.HasChange("user") {
