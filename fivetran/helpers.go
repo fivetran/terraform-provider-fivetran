@@ -24,6 +24,8 @@ func boolToStr(b bool) string {
 	return "false"
 }
 
+// boolPointertoStr receives a bool pointer and returns a string.
+// An empty string is returned if the pointer is nil.
 func boolPointerToStr(b *bool) string {
 	if b == nil {
 		return ""
@@ -31,26 +33,27 @@ func boolPointerToStr(b *bool) string {
 	return boolToStr(*b)
 }
 
-// // NOT IN USE // TEMP
-// // strToInt receives a string and returns an int. A zero is returned
-// // if an error is found while converting the string to int.
-// func strToInt(s string) int {
-// 	i, err := strconv.Atoi(s)
-// 	if err != nil {
-// 		return 0
-// 	}
-// 	return i
-// }
+// strToInt receives a string and returns an int. A zero is returned
+// if an error is found while converting the string to int.
+func strToInt(s string) int {
+	i, err := strconv.Atoi(s)
+	if err != nil {
+		return 0
+	}
+	return i
+}
 
-// // NOT IN USE // TEMP
-// // intToStr receives an int and returns a string
-// func intToStr(i int) string {
-// 	if i == 0 {
-// 		return ""
-// 	}
-// 	return strconv.Itoa(i)
-// }
+// intToStr receives an int and returns a string.
+// This is currently not in use.
+func intToStr(i int) string {
+	if i == 0 {
+		return ""
+	}
+	return strconv.Itoa(i)
+}
 
+// intPointerToStr receives an int pointer and returns a string.
+// An empty string is returned if the pointer is nil.
 func intPointerToStr(i *int) string {
 	if i == nil {
 		return ""
@@ -58,13 +61,22 @@ func intPointerToStr(i *int) string {
 	return strconv.Itoa(*i)
 }
 
-// xStrXInt receives a []string and returns a []interface{}
+// xStrXInterface receives a []string and returns a []interface{}
 func xStrXInterface(xs []string) []interface{} {
 	xi := make([]interface{}, len(xs))
 	for i, v := range xs {
 		xi[i] = v
 	}
 	return xi
+}
+
+// xInterfaceStrXStr receives a []interface{} of type string and returns a []string
+func xInterfaceStrXStr(xi []interface{}) []string {
+	xs := make([]string, len(xi))
+	for i, v := range xi {
+		xs[i] = v.(string)
+	}
+	return xs
 }
 
 // mapAddStr adds a non-empty string to a map[string]interface{}
@@ -81,13 +93,13 @@ func mapAddInt(msi map[string]interface{}, k string, v int) {
 	}
 }
 
-// // NOT IN USE // TEMP
-// // mapAddIntPointer adds a non-nil *int to a map[string]interface{}
-// func mapAddIntP(msi map[string]interface{}, k string, v *int) {
-// 	if v != nil {
-// 		msi[k] = v
-// 	}
-// }
+// mapAddIntPointer adds a non-nil *int to a map[string]interface{}.
+// This is currently not in use.
+func mapAddIntP(msi map[string]interface{}, k string, v *int) {
+	if v != nil {
+		msi[k] = v
+	}
+}
 
 // mapAddXInterface adds a non-empty []interface{} to a map[string]interface{}
 func mapAddXInterface(msi map[string]interface{}, k string, v []interface{}) {
@@ -112,7 +124,7 @@ func newDiagAppend(diags diag.Diagnostics, severity diag.Severity, summary, deta
 	return diags
 }
 
-// debug is a temp function. It should be improved to accept a variadic parameter
+// debug is a temporary function. It should be improved to accept a variadic parameter
 // and its name should change to logDebug
 func debug(v interface{}) {
 	log.Println(fmt.Sprintf("[DEBUG] FIVETRAN: %s", v))
