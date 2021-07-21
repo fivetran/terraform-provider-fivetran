@@ -19,48 +19,52 @@ func resourceDestination() *schema.Resource {
 		DeleteContext: resourceDestinationDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
 		Schema: map[string]*schema.Schema{
-			"id":               {Type: schema.TypeString, Computed: true},
-			"group_id":         {Type: schema.TypeString, Required: true, ForceNew: true},
-			"service":          {Type: schema.TypeString, Required: true, ForceNew: true},
-			"region":           {Type: schema.TypeString, Required: true},
-			"time_zone_offset": {Type: schema.TypeString, Required: true},
-			"config": {Type: schema.TypeList, Required: true, MaxItems: 1,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"host":     {Type: schema.TypeString, Optional: true},
-						"port":     {Type: schema.TypeInt, Optional: true},
-						"database": {Type: schema.TypeString, Optional: true},
-						"auth":     {Type: schema.TypeString, Optional: true},
-						"user":     {Type: schema.TypeString, Optional: true},
-						"password": {Type: schema.TypeString, Optional: true, Sensitive: true},
-						// "connection_type" is mandatory for some destinations. Configurations settings should be
-						// explicitly declared. Doing that, we avoid not declaring "connection_type"
-						// (or any other configuration) and the REST API returning it.
-						"connection_type":        {Type: schema.TypeString, Optional: true},
-						"tunnel_host":            {Type: schema.TypeString, Optional: true},
-						"tunnel_port":            {Type: schema.TypeString, Optional: true},
-						"tunnel_user":            {Type: schema.TypeString, Optional: true},
-						"project_id":             {Type: schema.TypeString, Optional: true},
-						"data_set_location":      {Type: schema.TypeString, Optional: true},
-						"bucket":                 {Type: schema.TypeString, Optional: true},
-						"server_host_name":       {Type: schema.TypeString, Optional: true},
-						"http_path":              {Type: schema.TypeString, Optional: true},
-						"personal_access_token":  {Type: schema.TypeString, Optional: true, Sensitive: true},
-						"create_external_tables": {Type: schema.TypeString, Optional: true}, // REST API/go-fivetran bool
-						"external_location":      {Type: schema.TypeString, Optional: true},
-						"auth_type":              {Type: schema.TypeString, Optional: true},
-						"role_arn":               {Type: schema.TypeString, Optional: true},
-					},
-				},
-			},
-			"trust_certificates": {Type: schema.TypeBool, Optional: true, ForceNew: true}, // https://fivetran.height.app/T-112419
-			"trust_fingerprints": {Type: schema.TypeBool, Optional: true, ForceNew: true}, // https://fivetran.height.app/T-112419
+			"id":                 {Type: schema.TypeString, Computed: true},
+			"group_id":           {Type: schema.TypeString, Required: true, ForceNew: true},
+			"service":            {Type: schema.TypeString, Required: true, ForceNew: true},
+			"region":             {Type: schema.TypeString, Required: true},
+			"time_zone_offset":   {Type: schema.TypeString, Required: true},
+			"config":             resourceDestinationSchemaConfig(),
+			"trust_certificates": {Type: schema.TypeBool, Optional: true, ForceNew: true}, // T-112419, ForceNew can be removed and the field can be updated
+			"trust_fingerprints": {Type: schema.TypeBool, Optional: true, ForceNew: true}, // T-112419, ForceNew can be removed and the field can be updated
 			// "run_setup_tests" default value is true. It is set as required to avoid confusion, so the expected behaviour should
 			// be explicitly declared.
-			"run_setup_tests": {Type: schema.TypeBool, Required: true, ForceNew: true}, // https://fivetran.height.app/T-112419
+			"run_setup_tests": {Type: schema.TypeBool, Required: true, ForceNew: true}, // T-112419, ForceNew can be removed and the field can be updated
 			"setup_status":    {Type: schema.TypeString, Computed: true},
-			// "setup_tests": ... // missing // https://fivetran.height.app/T-112419
+			// "setup_tests": ... // missing /T-112419
 			"last_updated": {Type: schema.TypeString, Optional: true, Computed: true}, // internal
+		},
+	}
+}
+
+func resourceDestinationSchemaConfig() *schema.Schema {
+	return &schema.Schema{Type: schema.TypeList, Required: true, MaxItems: 1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"host":     {Type: schema.TypeString, Optional: true},
+				"port":     {Type: schema.TypeInt, Optional: true},
+				"database": {Type: schema.TypeString, Optional: true},
+				"auth":     {Type: schema.TypeString, Optional: true},
+				"user":     {Type: schema.TypeString, Optional: true},
+				"password": {Type: schema.TypeString, Optional: true, Sensitive: true},
+				// "connection_type", for example, is mandatory for some destinations. Configurations settings
+				// should be explicitly declared. Doing that, we avoid not declaring "connection_type"
+				// (or any other configuration) and the REST API returning it.
+				"connection_type":        {Type: schema.TypeString, Optional: true},
+				"tunnel_host":            {Type: schema.TypeString, Optional: true},
+				"tunnel_port":            {Type: schema.TypeString, Optional: true},
+				"tunnel_user":            {Type: schema.TypeString, Optional: true},
+				"project_id":             {Type: schema.TypeString, Optional: true},
+				"data_set_location":      {Type: schema.TypeString, Optional: true},
+				"bucket":                 {Type: schema.TypeString, Optional: true},
+				"server_host_name":       {Type: schema.TypeString, Optional: true},
+				"http_path":              {Type: schema.TypeString, Optional: true},
+				"personal_access_token":  {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"create_external_tables": {Type: schema.TypeString, Optional: true},
+				"external_location":      {Type: schema.TypeString, Optional: true},
+				"auth_type":              {Type: schema.TypeString, Optional: true},
+				"role_arn":               {Type: schema.TypeString, Optional: true},
+			},
 		},
 	}
 }
@@ -132,17 +136,14 @@ func resourceDestinationUpdate(ctx context.Context, d *schema.ResourceData, m in
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
 	svc := client.NewDestinationModify()
-	var change bool
 
 	svc.DestinationID(d.Get("id").(string))
 
 	if d.HasChange("region") {
 		svc.Region(d.Get("region").(string))
-		change = true
 	}
 	if d.HasChange("time_zone_offset") {
 		svc.TimeZoneOffset(d.Get("time_zone_offset").(string))
-		change = true
 	}
 	if d.HasChange("config") {
 		_, n := d.GetChange("config")
@@ -151,21 +152,18 @@ func resourceDestinationUpdate(ctx context.Context, d *schema.ResourceData, m in
 		if v, ok := resourceDestinationCreateConfig(n.([]interface{})); ok {
 			svc.Config(v)
 			// only sets change if func resourceDestinationCreateConfig returns ok
-			change = true
 		}
 	}
 
-	if change {
-		resp, err := svc.Do(ctx)
-		if err != nil {
-			// resourceDestinationRead here makes sure the state is updated after a NewDestinationModify error.
-			diags = resourceDestinationRead(ctx, d, m)
-			return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
-		}
+	resp, err := svc.Do(ctx)
+	if err != nil {
+		// resourceDestinationRead here makes sure the state is updated after a NewDestinationModify error.
+		diags = resourceDestinationRead(ctx, d, m)
+		return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+	}
 
-		if err := d.Set("last_updated", time.Now().Format(time.RFC850)); err != nil {
-			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
-		}
+	if err := d.Set("last_updated", time.Now().Format(time.RFC850)); err != nil {
+		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
 
 	return resourceDestinationRead(ctx, d, m)
@@ -217,7 +215,7 @@ func resourceDestinationReadConfig(resp *fivetran.DestinationDetailsResponse, cu
 	c["http_path"] = resp.Data.Config.HTTPPath
 	c["personal_access_token"] = resp.Data.Config.PersonalAccessToken
 	if resp.Data.Config.CreateExternalTables != nil {
-		c["create_external_tables"] = boolToStr(*resp.Data.Config.CreateExternalTables)
+		c["create_external_tables"] = boolPointerToStr(resp.Data.Config.CreateExternalTables)
 	}
 	c["external_location"] = resp.Data.Config.ExternalLocation
 	c["auth_type"] = resp.Data.Config.AuthType
