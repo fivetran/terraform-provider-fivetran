@@ -13,18 +13,22 @@ func dataSourceConnectorsMetadata() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceConnectorsMetadataRead,
 		Schema: map[string]*schema.Schema{
-			"sources": {Type: schema.TypeSet, Computed: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id":           {Type: schema.TypeString, Computed: true},
-						"name":         {Type: schema.TypeString, Computed: true},
-						"type":         {Type: schema.TypeString, Computed: true},
-						"description":  {Type: schema.TypeString, Computed: true},
-						"icon_url":     {Type: schema.TypeString, Computed: true},
-						"link_to_docs": {Type: schema.TypeString, Computed: true},
-						"link_to_erd":  {Type: schema.TypeString, Computed: true},
-					},
-				},
+			"sources": dataSourceConnectorsMetadataSchemaSources(),
+		},
+	}
+}
+
+func dataSourceConnectorsMetadataSchemaSources() *schema.Schema {
+	return &schema.Schema{Type: schema.TypeSet, Computed: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"id":           {Type: schema.TypeString, Computed: true},
+				"name":         {Type: schema.TypeString, Computed: true},
+				"type":         {Type: schema.TypeString, Computed: true},
+				"description":  {Type: schema.TypeString, Computed: true},
+				"icon_url":     {Type: schema.TypeString, Computed: true},
+				"link_to_docs": {Type: schema.TypeString, Computed: true},
+				"link_to_erd":  {Type: schema.TypeString, Computed: true},
 			},
 		},
 	}
@@ -38,8 +42,6 @@ func dataSourceConnectorsMetadataRead(ctx context.Context, d *schema.ResourceDat
 	if err != nil {
 		return newDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
-
-	debug(len(resp.Data.Items))
 
 	if err := d.Set("sources", dataSourceConnectorsMetadataFlattenMetadata(&resp)); err != nil {
 		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))

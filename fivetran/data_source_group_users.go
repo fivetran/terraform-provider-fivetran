@@ -13,22 +13,26 @@ func dataSourceGroupUsers() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceGroupUsersRead,
 		Schema: map[string]*schema.Schema{
-			"id": {Type: schema.TypeString, Required: true},
-			"users": {Type: schema.TypeSet, Computed: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id":           {Type: schema.TypeString, Computed: true},
-						"email":        {Type: schema.TypeString, Computed: true},
-						"given_name":   {Type: schema.TypeString, Computed: true},
-						"family_name":  {Type: schema.TypeString, Computed: true},
-						"verified":     {Type: schema.TypeBool, Computed: true},
-						"invited":      {Type: schema.TypeBool, Computed: true},
-						"picture":      {Type: schema.TypeString, Computed: true},
-						"phone":        {Type: schema.TypeString, Computed: true},
-						"logged_in_at": {Type: schema.TypeString, Computed: true},
-						"created_at":   {Type: schema.TypeString, Computed: true},
-					},
-				},
+			"id":    {Type: schema.TypeString, Required: true},
+			"users": dataSourceGroupUsersSchemaUsers(),
+		},
+	}
+}
+
+func dataSourceGroupUsersSchemaUsers() *schema.Schema {
+	return &schema.Schema{Type: schema.TypeSet, Computed: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"id":           {Type: schema.TypeString, Computed: true},
+				"email":        {Type: schema.TypeString, Computed: true},
+				"given_name":   {Type: schema.TypeString, Computed: true},
+				"family_name":  {Type: schema.TypeString, Computed: true},
+				"verified":     {Type: schema.TypeBool, Computed: true},
+				"invited":      {Type: schema.TypeBool, Computed: true},
+				"picture":      {Type: schema.TypeString, Computed: true},
+				"phone":        {Type: schema.TypeString, Computed: true},
+				"logged_in_at": {Type: schema.TypeString, Computed: true},
+				"created_at":   {Type: schema.TypeString, Computed: true},
 			},
 		},
 	}

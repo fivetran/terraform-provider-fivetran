@@ -24,7 +24,7 @@ func dataSourceUsers() *schema.Resource {
 						"invited":     {Type: schema.TypeBool, Computed: true},
 						"picture":     {Type: schema.TypeString, Computed: true},
 						"phone":       {Type: schema.TypeString, Computed: true},
-						// "role":        {Type: schema.TypeString, Computed: true}, // commented until https://fivetran.height.app/T-109040 is fixed.
+						// "role":        {Type: schema.TypeString, Computed: true}, // commented until T-109040 is fixed.
 						"logged_in_at": {Type: schema.TypeString, Computed: true},
 						"created_at":   {Type: schema.TypeString, Computed: true},
 					},

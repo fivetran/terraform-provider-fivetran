@@ -13,51 +13,55 @@ func dataSourceGroupConnectors() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceGroupConnectorsRead,
 		Schema: map[string]*schema.Schema{
-			"id":     {Type: schema.TypeString, Required: true},
-			"schema": {Type: schema.TypeString, Optional: true},
-			"connectors": {Type: schema.TypeSet, Computed: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id":              {Type: schema.TypeString, Computed: true},
-						"group_id":        {Type: schema.TypeString, Computed: true},
-						"service":         {Type: schema.TypeString, Computed: true},
-						"service_version": {Type: schema.TypeInt, Computed: true},
-						"schema":          {Type: schema.TypeString, Computed: true},
-						"connected_by":    {Type: schema.TypeString, Computed: true},
-						"created_at":      {Type: schema.TypeString, Computed: true},
-						"succeeded_at":    {Type: schema.TypeString, Computed: true},
-						"failed_at":       {Type: schema.TypeString, Computed: true},
-						"sync_frequency":  {Type: schema.TypeInt, Computed: true},
-						"schedule_type":   {Type: schema.TypeString, Computed: true},
-						"status": {Type: schema.TypeSet, Computed: true,
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									"setup_state":        {Type: schema.TypeString, Computed: true},
-									"sync_state":         {Type: schema.TypeString, Computed: true},
-									"update_state":       {Type: schema.TypeString, Computed: true},
-									"is_historical_sync": {Type: schema.TypeBool, Computed: true},
-									"tasks": {Type: schema.TypeSet, Computed: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-												"code":    {Type: schema.TypeString, Computed: true},
-												"message": {Type: schema.TypeString, Computed: true},
-											},
-										},
+			"id":         {Type: schema.TypeString, Required: true},
+			"schema":     {Type: schema.TypeString, Optional: true},
+			"connectors": dataSourceGroupConnectorsSchemaConnectors(),
+		},
+	}
+}
+
+func dataSourceGroupConnectorsSchemaConnectors() *schema.Schema {
+	return &schema.Schema{Type: schema.TypeSet, Computed: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"id":              {Type: schema.TypeString, Computed: true},
+				"group_id":        {Type: schema.TypeString, Computed: true},
+				"service":         {Type: schema.TypeString, Computed: true},
+				"service_version": {Type: schema.TypeInt, Computed: true},
+				"schema":          {Type: schema.TypeString, Computed: true},
+				"connected_by":    {Type: schema.TypeString, Computed: true},
+				"created_at":      {Type: schema.TypeString, Computed: true},
+				"succeeded_at":    {Type: schema.TypeString, Computed: true},
+				"failed_at":       {Type: schema.TypeString, Computed: true},
+				"sync_frequency":  {Type: schema.TypeInt, Computed: true},
+				"schedule_type":   {Type: schema.TypeString, Computed: true},
+				"status": {Type: schema.TypeSet, Computed: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"setup_state":        {Type: schema.TypeString, Computed: true},
+							"sync_state":         {Type: schema.TypeString, Computed: true},
+							"update_state":       {Type: schema.TypeString, Computed: true},
+							"is_historical_sync": {Type: schema.TypeBool, Computed: true},
+							"tasks": {Type: schema.TypeSet, Computed: true,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"code":    {Type: schema.TypeString, Computed: true},
+										"message": {Type: schema.TypeString, Computed: true},
 									},
-									"warnings": {Type: schema.TypeSet, Computed: true,
-										Elem: &schema.Resource{
-											Schema: map[string]*schema.Schema{
-												"code":    {Type: schema.TypeString, Computed: true},
-												"message": {Type: schema.TypeString, Computed: true},
-											},
-										},
+								},
+							},
+							"warnings": {Type: schema.TypeSet, Computed: true,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"code":    {Type: schema.TypeString, Computed: true},
+										"message": {Type: schema.TypeString, Computed: true},
 									},
 								},
 							},
 						},
-						"daily_sync_time": {Type: schema.TypeString, Computed: true},
 					},
 				},
+				"daily_sync_time": {Type: schema.TypeString, Computed: true},
 			},
 		},
 	}

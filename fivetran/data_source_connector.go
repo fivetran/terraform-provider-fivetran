@@ -13,19 +13,21 @@ func dataSourceConnector() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceConnectorRead,
 		Schema: map[string]*schema.Schema{
-			"id":              {Type: schema.TypeString, Required: true},
-			"group_id":        {Type: schema.TypeString, Computed: true},
-			"service":         {Type: schema.TypeString, Computed: true},
-			"service_version": {Type: schema.TypeInt, Computed: true},
-			"schema":          {Type: schema.TypeString, Computed: true},
-			"connected_by":    {Type: schema.TypeString, Computed: true},
-			"created_at":      {Type: schema.TypeString, Computed: true},
-			"succeeded_at":    {Type: schema.TypeString, Computed: true},
-			"failed_at":       {Type: schema.TypeString, Computed: true},
-			"sync_frequency":  {Type: schema.TypeInt, Computed: true},
-			"schedule_type":   {Type: schema.TypeString, Computed: true},
-			"status":          dataSourceConnectorSchemaStatus(),
-			"config":          dataSourceConnectorSchemaConfig(),
+			"id":                {Type: schema.TypeString, Required: true},
+			"group_id":          {Type: schema.TypeString, Computed: true},
+			"service":           {Type: schema.TypeString, Computed: true},
+			"service_version":   {Type: schema.TypeString, Computed: true},
+			"schema":            {Type: schema.TypeString, Computed: true},
+			"connected_by":      {Type: schema.TypeString, Computed: true},
+			"created_at":        {Type: schema.TypeString, Computed: true},
+			"succeeded_at":      {Type: schema.TypeString, Computed: true},
+			"failed_at":         {Type: schema.TypeString, Computed: true},
+			"sync_frequency":    {Type: schema.TypeString, Computed: true},
+			"schedule_type":     {Type: schema.TypeString, Computed: true},
+			"paused":            {Type: schema.TypeString, Computed: true},
+			"pause_after_trial": {Type: schema.TypeString, Computed: true},
+			"status":            dataSourceConnectorSchemaStatus(),
+			"config":            dataSourceConnectorSchemaConfig(),
 		},
 	}
 }
@@ -117,8 +119,8 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"project":    {Type: schema.TypeString, Computed: true},
-							"api_key":    {Type: schema.TypeString, Computed: true},
-							"secret_key": {Type: schema.TypeString, Computed: true},
+							"api_key":    {Type: schema.TypeString, Computed: true, Sensitive: true},
+							"secret_key": {Type: schema.TypeString, Computed: true, Sensitive: true},
 						},
 					},
 				},
@@ -286,6 +288,7 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"user_name":                            {Type: schema.TypeString, Computed: true},
 				"report_url":                           {Type: schema.TypeString, Computed: true},
 				"unique_id":                            {Type: schema.TypeString, Computed: true},
+				"auth_type":                            {Type: schema.TypeString, Computed: true},
 				"latest_version":                       {Type: schema.TypeString, Computed: true},
 				"authorization_method":                 {Type: schema.TypeString, Computed: true},
 				"service_version":                      {Type: schema.TypeString, Computed: true},
@@ -309,14 +312,16 @@ func dataSourceConnectorRead(ctx context.Context, d *schema.ResourceData, m inte
 	mapAddStr(msi, "id", resp.Data.ID)
 	mapAddStr(msi, "group_id", resp.Data.GroupID)
 	mapAddStr(msi, "service", resp.Data.Service)
-	mapAddInt(msi, "service_version", resp.Data.ServiceVersion)
+	mapAddStr(msi, "service_version", intPointerToStr(resp.Data.ServiceVersion))
 	mapAddStr(msi, "schema", resp.Data.Schema)
 	mapAddStr(msi, "connected_by", resp.Data.ConnectedBy)
 	mapAddStr(msi, "created_at", resp.Data.CreatedAt.String())
 	mapAddStr(msi, "succeeded_at", resp.Data.SucceededAt.String())
 	mapAddStr(msi, "failed_at", resp.Data.FailedAt.String())
-	mapAddInt(msi, "sync_frequency", resp.Data.SyncFrequency)
+	mapAddStr(msi, "sync_frequency", intPointerToStr(resp.Data.SyncFrequency))
 	mapAddStr(msi, "schedule_type", resp.Data.ScheduleType)
+	mapAddStr(msi, "paused", boolPointerToStr(resp.Data.Paused))
+	mapAddStr(msi, "pause_after_trial", boolPointerToStr(resp.Data.PauseAfterTrial))
 	mapAddXInterface(msi, "status", dataSourceConnectorReadStatus(&resp))
 	mapAddXInterface(msi, "config", dataSourceConnectorReadConfig(&resp))
 	for k, v := range msi {
@@ -573,6 +578,7 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddStr(c, "user_name", resp.Data.Config.UserName)
 	mapAddStr(c, "report_url", resp.Data.Config.ReportURL)
 	mapAddStr(c, "unique_id", resp.Data.Config.UniqueID)
+	mapAddStr(c, "auth_type", resp.Data.Config.AuthType)
 	mapAddStr(c, "latest_version", resp.Data.Config.LatestVersion)
 	mapAddStr(c, "authorization_method", resp.Data.Config.AuthorizationMethod)
 	mapAddStr(c, "service_version", resp.Data.Config.ServiceVersion)

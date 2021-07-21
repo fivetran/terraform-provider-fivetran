@@ -21,7 +21,7 @@ func dataSourceUser() *schema.Resource {
 			"invited":     {Type: schema.TypeBool, Computed: true},
 			"picture":     {Type: schema.TypeString, Computed: true},
 			"phone":       {Type: schema.TypeString, Computed: true},
-			// "role":         {Type: schema.TypeString, Computed: true}, // commented until https://fivetran.height.app/T-109040 is fixed.
+			// "role":         {Type: schema.TypeString, Computed: true}, // commented until T-109040 is fixed.
 			"logged_in_at": {Type: schema.TypeString, Computed: true},
 			"created_at":   {Type: schema.TypeString, Computed: true},
 		},
@@ -48,7 +48,7 @@ func dataSourceUserRead(ctx context.Context, d *schema.ResourceData, m interface
 	msi["invited"] = resp.Data.Invited
 	msi["picture"] = resp.Data.Picture
 	msi["phone"] = resp.Data.Phone
-	// msi["role"] = resp.Data.Role // commented until https://fivetran.height.app/T-109040 is fixed.
+	// msi["role"] = resp.Data.Role // T-109040 is fixed.
 	msi["logged_in_at"] = resp.Data.LoggedInAt.String()
 	msi["created_at"] = resp.Data.CreatedAt.String()
 	for k, v := range msi {

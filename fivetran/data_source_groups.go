@@ -13,14 +13,18 @@ func dataSourceGroups() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceGroupsRead,
 		Schema: map[string]*schema.Schema{
-			"groups": {Type: schema.TypeSet, Computed: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id":         {Type: schema.TypeString, Computed: true},
-						"name":       {Type: schema.TypeString, Computed: true},
-						"created_at": {Type: schema.TypeString, Computed: true},
-					},
-				},
+			"groups": dataSourceGroupSchemaGroups(),
+		},
+	}
+}
+
+func dataSourceGroupSchemaGroups() *schema.Schema {
+	return &schema.Schema{Type: schema.TypeSet, Computed: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"id":         {Type: schema.TypeString, Computed: true},
+				"name":       {Type: schema.TypeString, Computed: true},
+				"created_at": {Type: schema.TypeString, Computed: true},
 			},
 		},
 	}

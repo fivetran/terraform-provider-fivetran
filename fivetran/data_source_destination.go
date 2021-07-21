@@ -19,33 +19,37 @@ func dataSourceDestination() *schema.Resource {
 			"service":          {Type: schema.TypeString, Computed: true},
 			"region":           {Type: schema.TypeString, Computed: true},
 			"time_zone_offset": {Type: schema.TypeString, Computed: true},
-			"config": {Type: schema.TypeSet, Computed: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"host":                   {Type: schema.TypeString, Computed: true},
-						"port":                   {Type: schema.TypeInt, Computed: true},
-						"database":               {Type: schema.TypeString, Computed: true},
-						"auth":                   {Type: schema.TypeString, Computed: true},
-						"user":                   {Type: schema.TypeString, Computed: true},
-						"password":               {Type: schema.TypeString, Computed: true},
-						"connection_type":        {Type: schema.TypeString, Computed: true},
-						"tunnel_host":            {Type: schema.TypeString, Computed: true},
-						"tunnel_port":            {Type: schema.TypeString, Computed: true},
-						"tunnel_user":            {Type: schema.TypeString, Computed: true},
-						"project_id":             {Type: schema.TypeString, Computed: true},
-						"data_set_location":      {Type: schema.TypeString, Computed: true},
-						"bucket":                 {Type: schema.TypeString, Computed: true},
-						"server_host_name":       {Type: schema.TypeString, Computed: true},
-						"http_path":              {Type: schema.TypeString, Computed: true},
-						"personal_access_token":  {Type: schema.TypeString, Computed: true},
-						"create_external_tables": {Type: schema.TypeString, Computed: true}, // REST API/go-fivetran bool
-						"external_location":      {Type: schema.TypeString, Computed: true},
-						"auth_type":              {Type: schema.TypeString, Computed: true},
-						"role_arn":               {Type: schema.TypeString, Computed: true},
-					},
-				},
+			"config":           dataSourceDestinationSchemaConfig(),
+			"setup_status":     {Type: schema.TypeString, Computed: true},
+		},
+	}
+}
+
+func dataSourceDestinationSchemaConfig() *schema.Schema {
+	return &schema.Schema{Type: schema.TypeSet, Computed: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"host":                   {Type: schema.TypeString, Computed: true},
+				"port":                   {Type: schema.TypeInt, Computed: true},
+				"database":               {Type: schema.TypeString, Computed: true},
+				"auth":                   {Type: schema.TypeString, Computed: true},
+				"user":                   {Type: schema.TypeString, Computed: true},
+				"password":               {Type: schema.TypeString, Computed: true},
+				"connection_type":        {Type: schema.TypeString, Computed: true},
+				"tunnel_host":            {Type: schema.TypeString, Computed: true},
+				"tunnel_port":            {Type: schema.TypeString, Computed: true},
+				"tunnel_user":            {Type: schema.TypeString, Computed: true},
+				"project_id":             {Type: schema.TypeString, Computed: true},
+				"data_set_location":      {Type: schema.TypeString, Computed: true},
+				"bucket":                 {Type: schema.TypeString, Computed: true},
+				"server_host_name":       {Type: schema.TypeString, Computed: true},
+				"http_path":              {Type: schema.TypeString, Computed: true},
+				"personal_access_token":  {Type: schema.TypeString, Computed: true},
+				"create_external_tables": {Type: schema.TypeString, Computed: true},
+				"external_location":      {Type: schema.TypeString, Computed: true},
+				"auth_type":              {Type: schema.TypeString, Computed: true},
+				"role_arn":               {Type: schema.TypeString, Computed: true},
 			},
-			"setup_status": {Type: schema.TypeString, Computed: true},
 		},
 	}
 }
@@ -125,8 +129,7 @@ func dataSourceDestinationConfig(resp *fivetran.DestinationDetailsResponse) ([]i
 	return config, nil
 }
 
-// dataSourceDestinationConfigNormalizeConnectionType normalizes *fivetran.DestinationDetailsResponse.Data.Config.ConnectionType
-// https://fivetran.height.app/T-111758
+// dataSourceDestinationConfigNormalizeConnectionType normalizes *fivetran.DestinationDetailsResponse.Data.Config.ConnectionType. /T-111758.
 func dataSourceDestinationConfigNormalizeConnectionType(connectionType string) string {
 	if connectionType == "SshTunnel" {
 		return "SSHTunnel"
