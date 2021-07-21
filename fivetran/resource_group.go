@@ -22,19 +22,23 @@ func resourceGroup() *schema.Resource {
 			"id":         {Type: schema.TypeString, Computed: true},
 			"name":       {Type: schema.TypeString, Required: true},
 			"created_at": {Type: schema.TypeString, Computed: true},
-			"user": {Type: schema.TypeSet, Optional: true, Set: resourceGroupHashGroupUserID,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id":   {Type: schema.TypeString, Required: true},
-						"role": {Type: schema.TypeString, Required: true},
-					},
-				},
-			},
+			"user":       resourceGroupSchemaUser(),
 			// creator is used to store the id of the user who created the group.
 			// It is important to store it because NewGroupListUsers returns all users associated
 			// with the group, but the group creator is not explicit declared in the "user" set.
 			"creator":      {Type: schema.TypeString, Computed: true},
 			"last_updated": {Type: schema.TypeString, Optional: true, Computed: true}, // internal
+		},
+	}
+}
+
+func resourceGroupSchemaUser() *schema.Schema {
+	return &schema.Schema{Type: schema.TypeSet, Optional: true, Set: resourceGroupHashGroupUserID,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"id":   {Type: schema.TypeString, Required: true},
+				"role": {Type: schema.TypeString, Required: true},
+			},
 		},
 	}
 }
@@ -50,7 +54,6 @@ func resourceGroupCreate(ctx context.Context, d *schema.ResourceData, m interfac
 	}
 
 	groupID := resp.Data.ID
-	users := d.Get("user").(*schema.Set).List()
 
 	groupCreator, err := resourceGroupGetCreator(client, resp.Data.ID, ctx)
 	if err != nil {
@@ -72,7 +75,7 @@ func resourceGroupCreate(ctx context.Context, d *schema.ResourceData, m interfac
 		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
 
-	if err := resourceGroupAddUsersToGroup(client, users, groupID, ctx); err != nil {
+	if err := resourceGroupAddUsersToGroup(client, d.Get("user").(*schema.Set).List(), groupID, ctx); err != nil {
 		// If resourceGroupAddUsersToGroup returns an error, the recently created group is deleted
 		respDelete, errDelete := client.NewGroupDelete().GroupID(groupID).Do(ctx)
 		if errDelete != nil {
@@ -127,27 +130,19 @@ func resourceGroupUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
 	svc := client.NewGroupModify()
-	var change bool
 
 	groupID := d.Get("id").(string)
 	svc.GroupID(groupID)
 
 	if d.HasChange("name") {
 		svc.Name(d.Get("name").(string))
-		change = true
 	}
 
-	if change {
-		resp, err := svc.Do(ctx)
-		if err != nil {
-			// resourceGroupRead here makes sure the state is updated after a NewGroupModify error.
-			diags = resourceGroupRead(ctx, d, m)
-			return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
-		}
-
-		if err := d.Set("last_updated", time.Now().Format(time.RFC850)); err != nil {
-			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
-		}
+	resp, err := svc.Do(ctx)
+	if err != nil {
+		// resourceGroupRead here makes sure the state is updated after a NewGroupModify error.
+		diags = resourceGroupRead(ctx, d, m)
+		return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	if d.HasChange("user") {
@@ -159,10 +154,10 @@ func resourceGroupUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 		if err := resourceGroupSyncUsers(client, &respUsers, d.Get("user").(*schema.Set).List(), d.Get("creator").(string), groupID, ctx); err != nil {
 			return newDiagAppend(diags, diag.Error, "read error: resourceGroupSyncUsers", fmt.Sprint(err))
 		}
+	}
 
-		// TODO: Have to set last_updated here as well, but only if changes happened.
-		// A change could have happened even if resourceGroupSyncUsers returned an error
-		// d.Set("last_updated", time.Now().Format(time.RFC850))
+	if err := d.Set("last_updated", time.Now().Format(time.RFC850)); err != nil {
+		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
 
 	return resourceGroupRead(ctx, d, m)
@@ -238,7 +233,7 @@ func resourceGroupFlattenGroupUsers(resp *fivetran.GroupListUsersResponse, local
 
 		u := make(map[string]interface{})
 		u["id"] = user.ID
-		// role is not coming from the REST API until https://fivetran.height.app/T-110695 is fixed.
+		// role is not coming from the REST API until T-110695 is fixed.
 		// This is a workaround and should be fixed as soon as possible. The regular outcome would
 		// be to get the user role from the REST API. That means role update is not working, even
 		// if Terraform returns the operation was completed successfully. For now, to change a user
@@ -246,7 +241,7 @@ func resourceGroupFlattenGroupUsers(resp *fivetran.GroupListUsersResponse, local
 		// the new role parameter.
 		//
 		// TODO: Force the replacement of the user association when changing role. It is a better
-		// outcome instead of taking. It can't be done with ForceNew, otherwise the whole resource
+		// outcome than the current one. It can't be done with ForceNew, otherwise the whole resource
 		// would be replaced.
 		u["role"] = resourceGroupGetLocalUserRole(localUsers, user.ID)
 
@@ -257,7 +252,7 @@ func resourceGroupFlattenGroupUsers(resp *fivetran.GroupListUsersResponse, local
 }
 
 // resourceGroupGetLocalUserRole is a workaround while the REST API doesn't returns `role` correctly
-// (https://fivetran.height.app/T-110695). It receives a []interface{} containing users, and an user ID.
+// (T-110695). It receives a []interface{} containing users, and an user ID.
 // It ranges over the []interface{} and return the user's role stored in the state.
 func resourceGroupGetLocalUserRole(localUsers []interface{}, userID string) string {
 	for _, user := range localUsers {
