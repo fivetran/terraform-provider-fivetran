@@ -103,6 +103,8 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface
 	client := m.(*fivetran.Client)
 	svc := client.NewUserModify()
 
+	svc.UserID(d.Get("id").(string))
+
 	if d.HasChange("given_name") {
 		svc.GivenName(d.Get("given_name").(string))
 	}
