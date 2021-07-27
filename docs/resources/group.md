@@ -13,7 +13,7 @@ resource "fivetran_group" "group" {
     name = "MyGroup"
 
     user {
-        id = "anonymous_mistery"
+        id = "anonymous_mystery"
         role = "ReadOnly"
     }
 
