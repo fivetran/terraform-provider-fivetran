@@ -27,7 +27,7 @@ func resourceGroup() *schema.Resource {
 			// It is important to store it because NewGroupListUsers returns all users associated
 			// with the group, but the group creator is not explicit declared in the "user" set.
 			"creator":      {Type: schema.TypeString, Computed: true},
-			"last_updated": {Type: schema.TypeString, Optional: true, Computed: true}, // internal
+			"last_updated": {Type: schema.TypeString, Computed: true}, // internal
 		},
 	}
 }

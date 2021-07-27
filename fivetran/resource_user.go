@@ -31,7 +31,7 @@ func resourceUser() *schema.Resource {
 			// "role":         {Type: schema.TypeString, Required: true}, // commented until T-109040 is fixed.
 			"logged_in_at": {Type: schema.TypeString, Computed: true},
 			"created_at":   {Type: schema.TypeString, Computed: true},
-			"last_updated": {Type: schema.TypeString, Optional: true, Computed: true}, // internal
+			"last_updated": {Type: schema.TypeString, Computed: true}, // internal
 		},
 	}
 }

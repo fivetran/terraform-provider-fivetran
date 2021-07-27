@@ -500,7 +500,7 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddXInterface(c, "pages", xStrXInterface(resp.Data.Config.Pages))
 	mapAddStr(c, "subdomain", resp.Data.Config.Subdomain)
 	mapAddStr(c, "host", resp.Data.Config.Host)
-	mapAddStr(c, "port", resp.Data.Config.Port)
+	mapAddStr(c, "port", intPointerToStr(resp.Data.Config.Port))
 	mapAddStr(c, "user", resp.Data.Config.User)
 	mapAddStr(c, "is_secure", resp.Data.Config.IsSecure)
 	mapAddXInterface(c, "repositories", xStrXInterface(resp.Data.Config.Repositories))
