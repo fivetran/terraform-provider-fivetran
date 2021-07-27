@@ -32,7 +32,7 @@ func resourceDestination() *schema.Resource {
 			"run_setup_tests": {Type: schema.TypeBool, Required: true, ForceNew: true}, // T-112419, ForceNew can be removed and the field can be updated
 			"setup_status":    {Type: schema.TypeString, Computed: true},
 			// "setup_tests": ... // missing /T-112419
-			"last_updated": {Type: schema.TypeString, Optional: true, Computed: true}, // internal
+			"last_updated": {Type: schema.TypeString, Computed: true}, // internal
 		},
 	}
 }

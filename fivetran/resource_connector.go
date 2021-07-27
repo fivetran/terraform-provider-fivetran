@@ -37,7 +37,7 @@ func resourceConnector() *schema.Resource {
 			"status":             resourceConnectorSchemaStatus(),
 			"config":             resourceConnectorSchemaConfig(),
 			"auth":               resourceConnectorSchemaAuth(),
-			"last_updated":       {Type: schema.TypeString, Optional: true, Computed: true}, // internal
+			"last_updated":       {Type: schema.TypeString, Computed: true}, // internal
 		},
 	}
 }
@@ -1346,7 +1346,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddXInterface(c, "pages", xStrXInterface(resp.Data.Config.Pages))
 	mapAddStr(c, "subdomain", resp.Data.Config.Subdomain)
 	mapAddStr(c, "host", resp.Data.Config.Host)
-	mapAddStr(c, "port", resp.Data.Config.Port)
+	mapAddStr(c, "port", intPointerToStr(resp.Data.Config.Port))
 	mapAddStr(c, "user", resp.Data.Config.User)
 	mapAddStr(c, "is_secure", resp.Data.Config.IsSecure)
 	mapAddXInterface(c, "repositories", xStrXInterface(resp.Data.Config.Repositories))
