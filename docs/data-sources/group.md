@@ -6,7 +6,7 @@ page_title: "Data Source: fivetran_group"
 
 This data source returns a group object.
 
-## Example
+## Example Usage
 
 ```hcl
 data "fivetran_group" "my_group" {

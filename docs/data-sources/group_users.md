@@ -6,7 +6,7 @@ page_title: "Data Source: fivetran_group_users"
 
 This data source returns a list of information about all users within a group in your Fivetran account.
 
-## Example
+## Example Usage
 
 ```hcl
 data "fivetran_group_users" "group_users" {

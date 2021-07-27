@@ -6,7 +6,7 @@ page_title: "Resource: fivetran_group"
 
 This resource allows you to create, update, and delete groups.
 
-## Example
+## Example Usage
 
 ```hcl
 resource "fivetran_group" "group" {

@@ -12,7 +12,7 @@ Make sure you read the Fivetran REST API [documentation](https://fivetran.com/do
 
 **NOTE**: The Fivetran Provider is still in [ALPHA](https://en.wikipedia.org/wiki/Software_release_life_cycle#Alpha) development stage. Future versions may introduce breaking changes. 
 
-## Using the Provider
+## Example Usage
 
 ```hcl
 provider "fivetran" {

@@ -6,7 +6,7 @@ page_title: "Data Source: fivetran_connector"
 
 This data source returns a connector object.
 
-## Example
+## Example Usage
 
 ```hcl
 data "fivetran_connector" "connector" {

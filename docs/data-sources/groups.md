@@ -6,7 +6,7 @@ page_title: "Data Source: fivetran_groups"
 
 This data source returns a list of all groups within your Fivetran account.
 
-## Example
+## Example Usage
 
 ```hcl
 data "fivetran_groups" "all" {

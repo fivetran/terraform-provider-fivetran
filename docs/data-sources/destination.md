@@ -6,7 +6,7 @@ page_title: "Data Source: fivetran_destination"
 
 This data source returns a destination object.
 
-## Example
+## Example Usage
 
 ```hcl
 data "fivetran_destination" "dest" {

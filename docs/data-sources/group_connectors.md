@@ -6,7 +6,7 @@ page_title: "Data Source: fivetran_group_connectors"
 
 This data source returns a list of information about all connectors within a group in your Fivetran account.
 
-## Example
+## Example Usage
 
 ```hcl
 data "fivetran_group_connectors" "connectors" {

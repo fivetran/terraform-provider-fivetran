@@ -6,7 +6,7 @@ page_title: "Data Source: fivetran_user"
 
 This data source returns a user object.
 
-## Example
+## Example Usage
 
 ```hcl
 data "fivetran_user" "my_user" {

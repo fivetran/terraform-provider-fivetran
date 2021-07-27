@@ -6,7 +6,7 @@ page_title: "Resource: fivetran_user"
 
 This resource allows you to create, update, and delete users.
 
-## Example
+## Example Usage
 
 ```hcl
 resource "fivetran_user" "user" {

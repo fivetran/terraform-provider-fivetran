@@ -6,7 +6,7 @@ page_title: "Data Source: fivetran_connectors_metadata"
 
 This data source returns all available source types within your Fivetran account. This data source makes it easier to display Fivetran connectors within your application because it provides metadata including the proper source name (‘Facebook Ad Account’ instead of facebook_ad_account), the source icon, and links to Fivetran resources. As we update source names and icons, that metadata will automatically update within this endpoint.
 
-## Example
+## Example Usage
 
 ```hcl
 data "fivetran_connectors_metadata" "sources" {

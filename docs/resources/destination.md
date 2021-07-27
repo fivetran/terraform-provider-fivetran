@@ -6,7 +6,7 @@ page_title: "Resource: fivetran_destination"
 
 This resource allows you to create, update, and delete destinations.
 
-## Example
+## Example Usage
 
 ```hcl
 resource "fivetran_destination" "dest" {

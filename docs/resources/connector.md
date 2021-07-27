@@ -6,7 +6,7 @@ page_title: "Resource: fivetran_connector"
 
 This resource allows you to create, update, and delete connectors.
 
-## Example
+## Example Usage
 
 ```hcl
 resource "fivetran_connector" "amplitude" {
