@@ -25,3 +25,11 @@ resource "fivetran_connector" "amplitude" {
         }
     }
 }
+
+# ### fivetran_connectors_metadata
+# data "fivetran_connectors_metadata" "sources" {
+# }
+
+# output "sources_output" {
+#     value = data.fivetran_connectors_metadata.sources
+# }
