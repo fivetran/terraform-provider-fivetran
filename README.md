@@ -8,6 +8,14 @@ Make sure you read the Fivetran REST API [documentation](https://fivetran.com/do
 
 **NOTE**: `terraform-provider-fivetran` is still in [ALPHA](https://en.wikipedia.org/wiki/Software_release_life_cycle#Alpha) development stage. Future versions may introduce breaking changes. 
 
+
+## Examples
+
+- [Connector](./examples/fivetran-connector.tf)
+- [Destination](./examples/fivetran-destination.tf)
+- [User](./examples/fivetran-user.tf) 
+- [Group](./examples/fivetran-group.tf) 
+
 ## Known issues
 
 - Some lists may have to change to sets for better usability.
