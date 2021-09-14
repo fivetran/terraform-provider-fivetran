@@ -55,5 +55,5 @@ No inputs.
 | <a name="output_connector"></a> [connector](#output\_connector) | A new Fivetran connector id |
 | <a name="output_destination"></a> [destination](#output\_destination) | A new Fivetran destination id |
 | <a name="output_user"></a> [user](#output\_user) | A new Fivetran user id |
-| <a name="output_group"></a> [public\_group](#output\_group) | A new Fivetran group id |
+| <a name="group"></a> [public\_group](#output\_group) | A new Fivetran group id |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
