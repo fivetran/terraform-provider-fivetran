@@ -4,12 +4,16 @@ Configuration in this directory creates set of Fivetran resources.
 
 The examples cover the creation of Fivetran connectors, destinations, users, and groups 
 
-
-[Read more about AWS regions, availability zones and local zones](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-regions-availability-zones).
-
 ## Usage
 
-To run this example you need to execute:
+Authenticate with Fivetran by setting the following environment variables
+
+```bash
+$ export FIVETRAN_APIKEY=YOUR_API_KEY
+$ export FIVETRAN_APISECRET=YOUR_API_SECRET
+```
+
+To run these examples you need to execute:
 
 ```bash
 $ terraform init
