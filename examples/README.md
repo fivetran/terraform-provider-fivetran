@@ -9,8 +9,8 @@ The examples cover the creation of Fivetran connectors, destinations, users, and
 Authenticate with Fivetran by setting the following environment variables
 
 ```bash
-$ export FIVETRAN_APIKEY=YOUR_API_KEY
-$ export FIVETRAN_APISECRET=YOUR_API_SECRET
+$ export FIVETRAN_APIKEY="YOUR_API_KEY"
+$ export FIVETRAN_APISECRET="YOUR_API_SECRET"
 ```
 
 To run these examples you need to execute:
