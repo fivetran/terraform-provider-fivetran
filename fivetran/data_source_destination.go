@@ -49,6 +49,7 @@ func dataSourceDestinationSchemaConfig() *schema.Schema {
 				"external_location":      {Type: schema.TypeString, Computed: true},
 				"auth_type":              {Type: schema.TypeString, Computed: true},
 				"role_arn":               {Type: schema.TypeString, Computed: true},
+				"secret_key":             {Type: schema.TypeString, Computed: true},
 			},
 		},
 	}
@@ -123,6 +124,7 @@ func dataSourceDestinationConfig(resp *fivetran.DestinationDetailsResponse) ([]i
 	c["external_location"] = resp.Data.Config.ExternalLocation
 	c["auth_type"] = resp.Data.Config.AuthType
 	c["role_arn"] = resp.Data.Config.RoleArn
+	c["secret_key"] = resp.Data.Config.SecretKey
 
 	config = append(config, c)
 
