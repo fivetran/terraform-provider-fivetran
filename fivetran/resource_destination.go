@@ -64,6 +64,7 @@ func resourceDestinationSchemaConfig() *schema.Schema {
 				"external_location":      {Type: schema.TypeString, Optional: true},
 				"auth_type":              {Type: schema.TypeString, Optional: true},
 				"role_arn":               {Type: schema.TypeString, Optional: true},
+				"secret_key":             {Type: schema.TypeString, Optional: true},
 			},
 		},
 	}
@@ -220,6 +221,7 @@ func resourceDestinationReadConfig(resp *fivetran.DestinationDetailsResponse, cu
 	c["external_location"] = resp.Data.Config.ExternalLocation
 	c["auth_type"] = resp.Data.Config.AuthType
 	c["role_arn"] = resp.Data.Config.RoleArn
+	c["secret_key"] = resp.Data.Config.SecretKey
 
 	config = append(config, c)
 
@@ -311,6 +313,10 @@ func resourceDestinationCreateConfig(config []interface{}) (*fivetran.Destinatio
 	}
 	if v := config[0].(map[string]interface{})["role_arn"].(string); v != "" {
 		fivetranConfig.RoleArn(v)
+		hasConfig = true
+	}
+	if v := config[0].(map[string]interface{})["secret_key"].(string); v != "" {
+		fivetranConfig.SecretKey(v)
 		hasConfig = true
 	}
 
