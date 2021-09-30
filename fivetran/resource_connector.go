@@ -891,7 +891,7 @@ func resourceConnectorCreateConfig(config []interface{}, schema string) *fivetra
 	if v := c["api_secret"].(string); v != "" {
 		fivetranConfig.APISecret(v)
 	}
-	if v := c["host"].(string); len(v) > 0 {
+	if v := c["host"].(string); v != "" {
 		fivetranConfig.Host(v)
 	}
 	if v := c["hosts"].([]interface{}); len(v) > 0 {
