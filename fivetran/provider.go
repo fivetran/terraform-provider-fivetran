@@ -8,7 +8,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-var limit = 1000 // REST API response objects limit per HTTP request
+var limit = 1000        // REST API response objects limit per HTTP request
+const version = "0.2.0" // Current provider version
 
 func Provider() *schema.Provider {
 	return &schema.Provider{
@@ -39,6 +40,6 @@ func Provider() *schema.Provider {
 
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	fivetranClient := fivetran.New(d.Get("api_key").(string), d.Get("api_secret").(string))
-	fivetranClient.CustomUserAgent("terraform-provider-fivetran/0.2.0")
+	fivetranClient.CustomUserAgent("terraform-provider-fivetran/" + version)
 	return fivetranClient, diag.Diagnostics{}
 }
