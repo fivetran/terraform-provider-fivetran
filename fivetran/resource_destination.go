@@ -63,8 +63,10 @@ func resourceDestinationSchemaConfig() *schema.Schema {
 				"create_external_tables": {Type: schema.TypeString, Optional: true},
 				"external_location":      {Type: schema.TypeString, Optional: true},
 				"auth_type":              {Type: schema.TypeString, Optional: true},
-				"role_arn":               {Type: schema.TypeString, Optional: true},
-				"secret_key":             {Type: schema.TypeString, Optional: true},
+				"role_arn":               {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"secret_key":             {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"cluster_id":             {Type: schema.TypeString, Computed: true},
+				"cluster_region":         {Type: schema.TypeString, Computed: true},
 			},
 		},
 	}
@@ -222,6 +224,8 @@ func resourceDestinationReadConfig(resp *fivetran.DestinationDetailsResponse, cu
 	c["auth_type"] = resp.Data.Config.AuthType
 	c["role_arn"] = resp.Data.Config.RoleArn
 	c["secret_key"] = resp.Data.Config.SecretKey
+	c["cluster_id"] = resp.Data.Config.ClusterId
+	c["cluster_region"] = resp.Data.Config.ClusterRegion
 
 	config = append(config, c)
 
@@ -317,6 +321,14 @@ func resourceDestinationCreateConfig(config []interface{}) (*fivetran.Destinatio
 	}
 	if v := config[0].(map[string]interface{})["secret_key"].(string); v != "" {
 		fivetranConfig.SecretKey(v)
+		hasConfig = true
+	}
+	if v := config[0].(map[string]interface{})["cluster_id"].(string); v != "" {
+		fivetranConfig.ClusterId(v)
+		hasConfig = true
+	}
+	if v := config[0].(map[string]interface{})["cluster_region"].(string); v != "" {
+		fivetranConfig.ClusterRegion(v)
 		hasConfig = true
 	}
 
