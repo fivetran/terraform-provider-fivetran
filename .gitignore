@@ -16,3 +16,7 @@
 
 terraform-provider-fivetran
 temp/
+
+# Ignore IDE specific files
+.idea/
+.vscode/
