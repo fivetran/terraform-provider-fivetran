@@ -3,6 +3,7 @@ package fivetran
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/fivetran/go-fivetran"
@@ -22,7 +23,15 @@ func resourceConnector() *schema.Resource {
 			"group_id":           {Type: schema.TypeString, Required: true, ForceNew: true},
 			"service":            {Type: schema.TypeString, Required: true, ForceNew: true},
 			"service_version":    {Type: schema.TypeString, Computed: true},
-			"schema":             {Type: schema.TypeString, Required: true, ForceNew: true},
+			"schema":             {Type: schema.TypeString, Required: true, ForceNew: true,
+			//Justification: schema_table format mutate schema to `schema` +`.` + `config.table` we soudn't trigger update for it.
+			DiffSuppressFunc: func(k, old string, new string, d *schema.ResourceData) bool {
+				if old != "" && new != "" {
+					return strings.HasPrefix(old, new)
+				}
+				return false
+			  },
+			},
 			"connected_by":       {Type: schema.TypeString, Computed: true},
 			"created_at":         {Type: schema.TypeString, Computed: true},
 			"succeeded_at":       {Type: schema.TypeString, Computed: true},
