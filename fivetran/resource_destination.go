@@ -65,8 +65,8 @@ func resourceDestinationSchemaConfig() *schema.Schema {
 				"auth_type":              {Type: schema.TypeString, Optional: true},
 				"role_arn":               {Type: schema.TypeString, Optional: true, Sensitive: true},
 				"secret_key":             {Type: schema.TypeString, Optional: true, Sensitive: true},
-				"cluster_id":             {Type: schema.TypeString, Computed: true},
-				"cluster_region":         {Type: schema.TypeString, Computed: true},
+				"cluster_id":             {Type: schema.TypeString, Optional: true},
+				"cluster_region":         {Type: schema.TypeString, Optional: true},
 			},
 		},
 	}
