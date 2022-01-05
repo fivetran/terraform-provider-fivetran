@@ -204,8 +204,10 @@ func resourceDestinationReadConfig(resp *fivetran.DestinationDetailsResponse, cu
 	c["database"] = resp.Data.Config.Database
 	c["auth"] = resp.Data.Config.Auth
 	c["user"] = resp.Data.Config.User
-	// The REST API sends the password field masked. We use the state stored password here.
-	c["password"] = currentConfig[0].(map[string]interface{})["password"].(string)
+	// The REST API sends the password field masked. We use the state stored password here if possible.
+	if len(currentConfig) > 0 {
+		c["password"] = currentConfig[0].(map[string]interface{})["password"].(string)
+	}
 	// connection_type is returned as ConnectionMethod
 	c["connection_type"] = dataSourceDestinationConfigNormalizeConnectionType(resp.Data.Config.ConnectionMethod)
 	c["tunnel_host"] = resp.Data.Config.TunnelHost

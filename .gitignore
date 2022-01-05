@@ -5,6 +5,9 @@
 *.so
 *.dylib
 
+# VScode workspace files
+*.code-workspace
+
 # Test binary, built with `go test -c`
 *.test
 
