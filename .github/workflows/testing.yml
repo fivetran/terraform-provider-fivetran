@@ -24,4 +24,5 @@ jobs:
       env: 
         FIVETRAN_APIKEY : ${{ secrets.FIVETRAN_APIKEY }}
         FIVETRAN_APISECRET : ${{ secrets.FIVETRAN_APISECRET }}
+        TF_ACC: true
       run: go test -v ./...
