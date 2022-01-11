@@ -63,7 +63,7 @@ func testFivetranUserResourceCreate(t *testing.T, resourceName string) resource.
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
 
-		_, err := Client().NewUserDetails().UserID(rs.Primary.ID).Do(context.Background())
+		_, err := client.NewUserDetails().UserID(rs.Primary.ID).Do(context.Background())
 
 		if err != nil {
 			return err
@@ -76,7 +76,7 @@ func testFivetranUserResourceCreate(t *testing.T, resourceName string) resource.
 func testFivetranUserResourceUpdate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
-		_, err := Client().NewUserDetails().UserID(rs.Primary.ID).Do(context.Background())
+		_, err := client.NewUserDetails().UserID(rs.Primary.ID).Do(context.Background())
 
 		if err != nil {
 			return err
@@ -92,7 +92,7 @@ func testFivetranUserResourceDestroy(s *terraform.State) error {
 			continue
 		}
 
-		response, err := Client().NewUserDetails().UserID(rs.Primary.ID).Do(context.Background())
+		response, err := client.NewUserDetails().UserID(rs.Primary.ID).Do(context.Background())
 		if err.Error() != "status code: 404; expected: 200" {
 			return err
 		}

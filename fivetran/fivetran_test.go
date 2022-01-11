@@ -3,6 +3,7 @@ package fivetran_test
 import (
 	"context"
 	"log"
+	"os"
 	"testing"
 
 	gofivetran "github.com/fivetran/go-fivetran"
@@ -12,22 +13,18 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
+var client *gofivetran.Client
 var testProviders map[string]*schema.Provider
 var PredefinedGroupId string = "century_leveled"
 var PredefinedUserId string = "endeavor_lock"
 var providerFactory = make(map[string]func() (*schema.Provider, error))
 
-func Client() *gofivetran.Client {
-	return testProviders["fivetran-provider"].Meta().(*gofivetran.Client)
-}
-
 func init() {
+	client = gofivetran.New(os.Getenv("FIVETRAN_APIKEY"), os.Getenv("FIVETRAN_APISECRET"))
+	client.BaseURL("https://api.fivetran.com/v1")
 	provider := fivetran.Provider()
 	provider.ConfigureContextFunc = func(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-		fivetranClient := gofivetran.New(d.Get("api_key").(string), d.Get("api_secret").(string))
-		//Don't forget fo change version
-		fivetranClient.BaseURL("https://api.fivetran.com/v1")
-		return fivetranClient, diag.Diagnostics{}
+		return client, diag.Diagnostics{}
 	}
 
 	testProviders = map[string]*schema.Provider{
@@ -63,13 +60,13 @@ func cleanupAccount() {
 }
 
 func cleanupUsers() {
-	users, err := Client().NewUsersList().Do(context.Background())
+	users, err := client.NewUsersList().Do(context.Background())
 	if err != nil {
 		log.Fatal(err)
 	}
 	for _, user := range users.Data.Items {
 		if user.ID != PredefinedUserId {
-			_, err := Client().NewUserDelete().UserID(user.ID).Do(context.Background())
+			_, err := client.NewUserDelete().UserID(user.ID).Do(context.Background())
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -78,12 +75,12 @@ func cleanupUsers() {
 }
 
 func cleanupDestinations() {
-	groups, err := Client().NewGroupsList().Do(context.Background())
+	groups, err := client.NewGroupsList().Do(context.Background())
 	if err != nil {
 		log.Fatal(err)
 	}
 	for _, group := range groups.Data.Items {
-		_, err := Client().NewDestinationDelete().DestinationID(group.ID).Do(context.Background())
+		_, err := client.NewDestinationDelete().DestinationID(group.ID).Do(context.Background())
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -91,14 +88,14 @@ func cleanupDestinations() {
 }
 
 func cleanupGroups() {
-	groups, err := Client().NewGroupsList().Do(context.Background())
+	groups, err := client.NewGroupsList().Do(context.Background())
 	if err != nil {
 		log.Fatal(err)
 	}
 	for _, group := range groups.Data.Items {
 		cleanupConnectors(group.ID)
 		if group.ID != PredefinedGroupId {
-			_, err := Client().NewGroupDelete().GroupID(group.ID).Do(context.Background())
+			_, err := client.NewGroupDelete().GroupID(group.ID).Do(context.Background())
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -107,12 +104,12 @@ func cleanupGroups() {
 }
 
 func cleanupConnectors(groupId string) {
-	connectors, err := Client().NewGroupListConnectors().GroupID(groupId).Do(context.Background())
+	connectors, err := client.NewGroupListConnectors().GroupID(groupId).Do(context.Background())
 	if err != nil {
 		log.Fatal(err)
 	}
 	for _, connector := range connectors.Data.Items {
-		_, err := Client().NewConnectorDelete().ConnectorID(connector.ID).Do(context.Background())
+		_, err := client.NewConnectorDelete().ConnectorID(connector.ID).Do(context.Background())
 		if err != nil {
 			log.Fatal(err)
 		}

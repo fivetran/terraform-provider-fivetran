@@ -109,7 +109,7 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 func testFivetranGroupResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
-		_, err := Client().NewGroupDetails().GroupID(rs.Primary.ID).Do(context.Background())
+		_, err := client.NewGroupDetails().GroupID(rs.Primary.ID).Do(context.Background())
 
 		if err != nil {
 			return err
@@ -122,7 +122,7 @@ func testFivetranGroupResourceCreate(t *testing.T, resourceName string) resource
 func testFivetranGroupResourceUpdate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
-		_, err := Client().NewGroupDetails().GroupID(rs.Primary.ID).Do(context.Background())
+		_, err := client.NewGroupDetails().GroupID(rs.Primary.ID).Do(context.Background())
 
 		if err != nil {
 			return err
@@ -138,7 +138,7 @@ func testFivetranGroupResourceDestroy(s *terraform.State) error {
 			continue
 		}
 
-		response, err := Client().NewGroupDetails().GroupID(rs.Primary.ID).Do(context.Background())
+		response, err := client.NewGroupDetails().GroupID(rs.Primary.ID).Do(context.Background())
 		if err.Error() != "status code: 404; expected: 200" {
 			return err
 		}
@@ -154,7 +154,7 @@ func testFivetranGroupResourceDestroy(s *terraform.State) error {
 func testFivetranGroupUsersUpdate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
-		response , err := Client().NewGroupListUsers().GroupID(rs.Primary.ID).Do(context.Background())
+		response , err := client.NewGroupListUsers().GroupID(rs.Primary.ID).Do(context.Background())
 
 		if err != nil {
 			return err

@@ -109,7 +109,7 @@ func testFivetranDestinationResourceCreate(t *testing.T, resourceName string) re
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
 	
-		_, err := Client().NewDestinationDetails().DestinationID(rs.Primary.ID).Do(context.Background())
+		_, err := client.NewDestinationDetails().DestinationID(rs.Primary.ID).Do(context.Background())
 
 		if err != nil {
 			return err
@@ -123,7 +123,7 @@ func testFivetranDestinationResourceUpdate(t *testing.T, resourceName string) re
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
 	
-		_, err := Client().NewDestinationDetails().DestinationID(rs.Primary.ID).Do(context.Background())
+		_, err := client.NewDestinationDetails().DestinationID(rs.Primary.ID).Do(context.Background())
 
 		if err != nil {
 			return err
@@ -139,7 +139,7 @@ func testFivetranDestinationResourceDestroy(s *terraform.State) error {
 			continue
 		}
 
-		response, err := Client().NewDestinationDetails().DestinationID(rs.Primary.ID).Do(context.Background())
+		response, err := client.NewDestinationDetails().DestinationID(rs.Primary.ID).Do(context.Background())
 		if err.Error() != "status code: 404; expected: 200" {
 			return err
 		}
