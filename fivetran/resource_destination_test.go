@@ -1,4 +1,4 @@
-package tests
+package fivetran_test
 
 import (
 	"context"
@@ -9,12 +9,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
-
-func TestFivetranDestination_basic(t *testing.T) {
-
+func TestResourceDestinationE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck: func() {},
-		Providers:    testProviders,
+		ProviderFactories: providerFactory,
 		CheckDestroy: testFivetranDestinationResourceDestroy,
 		Steps: []resource.TestStep{
 			{
