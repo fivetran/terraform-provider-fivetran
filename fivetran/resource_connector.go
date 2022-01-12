@@ -24,7 +24,7 @@ func resourceConnector() *schema.Resource {
 			"service":            {Type: schema.TypeString, Required: true, ForceNew: true},
 			"service_version":    {Type: schema.TypeString, Computed: true},
 			"schema":             {Type: schema.TypeString, Required: true, ForceNew: true,
-			//Justification: schema_table format mutate schema to `schema` +`.` + `config.table` we soudn't trigger update for it.
+			//Justification: schema_table format mutate schema to `schema` +`.` + `config.table` we shouldn't trigger update for it.
 			DiffSuppressFunc: func(k, old string, new string, d *schema.ResourceData) bool {
 				if old != "" && new != "" {
 					return strings.HasPrefix(old, new)
