@@ -52,7 +52,7 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 	}
 	// The REST API doesn't returns `role` when creating/inviting a new user. Because of that, `role`
 	// is being enforced. This should change when T-109040 is fixed.
-	svc.Role("ReadOnly")
+	svc.Role("Account Reviewer")
 
 	resp, err := svc.Do(ctx)
 	if err != nil {
