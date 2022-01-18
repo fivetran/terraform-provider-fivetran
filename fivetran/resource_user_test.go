@@ -10,6 +10,7 @@ import (
 )
 
 func TestResourceUserE2E(t *testing.T) {
+	t.Skip("Skipped until T-181577 not fixed. We have inconsistency between request and response in users resource.")
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() {},
 		Providers:    testProviders,

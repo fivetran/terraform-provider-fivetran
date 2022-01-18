@@ -28,7 +28,7 @@ func resourceUser() *schema.Resource {
 			"invited":     {Type: schema.TypeBool, Computed: true},
 			"picture":     {Type: schema.TypeString, Optional: true},
 			"phone":       {Type: schema.TypeString, Optional: true},
-			// "role":         {Type: schema.TypeString, Required: true}, // commented until T-109040 is fixed.
+			// "role":         {Type: schema.TypeString, Required: true}, // commented until T-181577 is fixed.
 			"logged_in_at": {Type: schema.TypeString, Computed: true},
 			"created_at":   {Type: schema.TypeString, Computed: true},
 			"last_updated": {Type: schema.TypeString, Computed: true}, // internal
@@ -50,9 +50,6 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 	if v, ok := d.GetOk("phone"); ok {
 		svc.Phone(v.(string))
 	}
-	// The REST API doesn't returns `role` when creating/inviting a new user. Because of that, `role`
-	// is being enforced. This should change when T-109040 is fixed.
-	svc.Role("Account Reviewer")
 
 	resp, err := svc.Do(ctx)
 	if err != nil {
