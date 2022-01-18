@@ -293,6 +293,19 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"authorization_method":                 {Type: schema.TypeString, Computed: true},
 				"service_version":                      {Type: schema.TypeString, Computed: true},
 				"last_synced_changes__utc_":            {Type: schema.TypeString, Computed: true},
+				"adobe_analytics_configurations": {Type: schema.TypeList, Computed: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"sync_mode":          {Type: schema.TypeString, Computed: true},
+							"report_suites":      {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"elements":           {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"metrics":            {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"calculated_metrics": {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"segments":           {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
+						},
+					},
+				},
+				"is_new_package": {Type: schema.TypeBool, Computed: true},
 			},
 		},
 	}
@@ -583,6 +596,8 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddStr(c, "authorization_method", resp.Data.Config.AuthorizationMethod)
 	mapAddStr(c, "service_version", resp.Data.Config.ServiceVersion)
 	mapAddStr(c, "last_synced_changes__utc_", resp.Data.Config.LastSyncedChangesUtc)
+	mapAddStr(c, "is_new_package", boolPointerToStr(resp.Data.Config.IsNewPackage))
+	mapAddXInterface(c, "adobe_analytics_configurations", dataSourceConnectorReadConfigFlattenAdobeAnalyticsConfigurations(resp))
 	config[0] = c
 
 	return config
@@ -650,4 +665,24 @@ func dataSourceConnectorReadConfigFlattenCustomTables(resp *fivetran.ConnectorDe
 	}
 
 	return customTables
+}
+
+func dataSourceConnectorReadConfigFlattenAdobeAnalyticsConfigurations(resp *fivetran.ConnectorDetailsResponse) []interface{} {
+	if len(resp.Data.Config.AdobeAnalyticsConfigurations) < 1 {
+		return make([]interface{}, 0)
+	}
+
+	adobeAnalyticsConfigurations := make([]interface{}, len(resp.Data.Config.AdobeAnalyticsConfigurations))
+	for i, v := range resp.Data.Config.AdobeAnalyticsConfigurations {
+		aac := make(map[string]interface{})
+		mapAddStr(aac, "sync_mode", v.SyncMode)
+		mapAddXInterface(aac, "report_suites", xStrXInterface(v.ReportSuites))
+		mapAddXInterface(aac, "elements", xStrXInterface(v.Elements))
+		mapAddXInterface(aac, "metrics", xStrXInterface(v.Metrics))
+		mapAddXInterface(aac, "calculated_metrics", xStrXInterface(v.CalculatedMetrics))
+		mapAddXInterface(aac, "segments", xStrXInterface(v.Segments))
+		adobeAnalyticsConfigurations[i] = aac
+	}
+
+	return adobeAnalyticsConfigurations
 }

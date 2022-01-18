@@ -19,18 +19,18 @@ func resourceConnector() *schema.Resource {
 		DeleteContext: resourceConnectorDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
 		Schema: map[string]*schema.Schema{
-			"id":                 {Type: schema.TypeString, Computed: true},
-			"group_id":           {Type: schema.TypeString, Required: true, ForceNew: true},
-			"service":            {Type: schema.TypeString, Required: true, ForceNew: true},
-			"service_version":    {Type: schema.TypeString, Computed: true},
-			"schema":             {Type: schema.TypeString, Required: true, ForceNew: true,
-			//Justification: schema_table format mutate schema to `schema` +`.` + `config.table` we shouldn't trigger update for it.
-			DiffSuppressFunc: func(k, old string, new string, d *schema.ResourceData) bool {
-				if old != "" && new != "" {
-					return strings.HasPrefix(old, new)
-				}
-				return false
-			  },
+			"id":              {Type: schema.TypeString, Computed: true},
+			"group_id":        {Type: schema.TypeString, Required: true, ForceNew: true},
+			"service":         {Type: schema.TypeString, Required: true, ForceNew: true},
+			"service_version": {Type: schema.TypeString, Computed: true},
+			"schema": {Type: schema.TypeString, Required: true, ForceNew: true,
+				//Justification: schema_table format mutate schema to `schema` +`.` + `config.table` we shouldn't trigger update for it.
+				DiffSuppressFunc: func(k, old string, new string, d *schema.ResourceData) bool {
+					if old != "" && new != "" {
+						return strings.HasPrefix(old, new)
+					}
+					return false
+				},
 			},
 			"connected_by":       {Type: schema.TypeString, Computed: true},
 			"created_at":         {Type: schema.TypeString, Computed: true},
@@ -308,10 +308,24 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"report_url":                           {Type: schema.TypeString, Optional: true},
 				"unique_id":                            {Type: schema.TypeString, Optional: true},
 				"auth_type":                            {Type: schema.TypeString, Optional: true},
-				"latest_version":                       {Type: schema.TypeString, Computed: true},
-				"authorization_method":                 {Type: schema.TypeString, Computed: true},
-				"service_version":                      {Type: schema.TypeString, Computed: true},
-				"last_synced_changes__utc_":            {Type: schema.TypeString, Computed: true},
+				"adobe_analytics_configurations": {Type: schema.TypeList, Optional: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"sync_mode":          {Type: schema.TypeString, Optional: true},
+							"report_suites":      {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"elements":           {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"metrics":            {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"calculated_metrics": {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"segments":           {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+						},
+					},
+				},
+				"is_new_package": {Type: schema.TypeBool, Optional: true},
+
+				"latest_version":            {Type: schema.TypeString, Computed: true},
+				"authorization_method":      {Type: schema.TypeString, Computed: true},
+				"service_version":           {Type: schema.TypeString, Computed: true},
+				"last_synced_changes__utc_": {Type: schema.TypeString, Computed: true},
 			},
 		},
 	}
@@ -1038,6 +1052,12 @@ func resourceConnectorCreateConfig(config []interface{}, schema string) *fivetra
 	if v := c["auth_type"].(string); v != "" {
 		fivetranConfig.AuthType(v)
 	}
+	if v := c["is_new_package"].(string); v != "" {
+		fivetranConfig.IsNewPackage(strToBool(v))
+	}
+	if v := c["adobe_analytics_configurations"].([]interface{}); len(v) > 0 {
+		fivetranConfig.AdobeAnalyticsConfigurations(resourceConnectorCreateConfigAdobeAnalyticsConfigurations(v))
+	}
 
 	return fivetranConfig
 }
@@ -1099,6 +1119,36 @@ func resourceConnectorCreateConfigCustomTables(xi []interface{}) []*fivetran.Con
 	}
 
 	return customTables
+}
+
+func resourceConnectorCreateConfigAdobeAnalyticsConfigurations(xi []interface{}) []*fivetran.ConnectorConfigAdobeAnalyticsConfiguration {
+	configurations := make([]*fivetran.ConnectorConfigAdobeAnalyticsConfiguration, len(xi))
+	for i, v := range xi {
+		c := fivetran.NewConnectorConfigAdobeAnalyticsConfiguration()
+
+		if syncMode, ok := v.(map[string]interface{})["sync_mode"].(string); ok {
+			c.SyncMode(syncMode)
+		}
+		if metrics := v.(map[string]interface{})["metrics"].([]interface{}); len(metrics) > 0 {
+			c.Metrics(xInterfaceStrXStr(metrics))
+		}
+		if reportSuites := v.(map[string]interface{})["report_suites"].([]interface{}); len(reportSuites) > 0 {
+			c.ReportSuites(xInterfaceStrXStr(reportSuites))
+		}
+		if segments := v.(map[string]interface{})["segments"].([]interface{}); len(segments) > 0 {
+			c.Segments(xInterfaceStrXStr(segments))
+		}
+		if elements := v.(map[string]interface{})["elements"].([]interface{}); len(elements) > 0 {
+			c.Elements(xInterfaceStrXStr(elements))
+		}
+		if calculatedMetrics := v.(map[string]interface{})["calculated_metrics"].([]interface{}); len(calculatedMetrics) > 0 {
+			c.CalculatedMetrics(xInterfaceStrXStr(calculatedMetrics))
+		}
+
+		configurations[i] = c
+	}
+
+	return configurations
 }
 
 func resourceConnectorCreateConfigReports(xi []interface{}) []*fivetran.ConnectorConfigReports {
@@ -1441,6 +1491,8 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddStr(c, "authorization_method", resp.Data.Config.AuthorizationMethod)
 	mapAddStr(c, "service_version", resp.Data.Config.ServiceVersion)
 	mapAddStr(c, "last_synced_changes__utc_", resp.Data.Config.LastSyncedChangesUtc)
+	mapAddStr(c, "is_new_package", boolPointerToStr(resp.Data.Config.IsNewPackage))
+	mapAddXInterface(c, "adobe_analytics_configurations", resourceConnectorReadConfigFlattenAdobeAnalyticsConfigurations(resp))
 	config[0] = c
 
 	return config
@@ -1496,6 +1548,26 @@ func resourceConnectorReadConfigFlattenReports(resp *fivetran.ConnectorDetailsRe
 	}
 
 	return reports
+}
+
+func resourceConnectorReadConfigFlattenAdobeAnalyticsConfigurations(resp *fivetran.ConnectorDetailsResponse) []interface{} {
+	if len(resp.Data.Config.AdobeAnalyticsConfigurations) < 1 {
+		return make([]interface{}, 0)
+	}
+
+	configurations := make([]interface{}, len(resp.Data.Config.AdobeAnalyticsConfigurations))
+	for i, v := range resp.Data.Config.AdobeAnalyticsConfigurations {
+		c := make(map[string]interface{})
+		mapAddStr(c, "sync_mode", v.SyncMode)
+		mapAddXInterface(c, "metrics", xStrXInterface(v.Metrics))
+		mapAddXInterface(c, "calculated_metrics", xStrXInterface(v.CalculatedMetrics))
+		mapAddXInterface(c, "elements", xStrXInterface(v.Elements))
+		mapAddXInterface(c, "segments", xStrXInterface(v.Segments))
+		mapAddXInterface(c, "report_suites", xStrXInterface(v.ReportSuites))
+		configurations[i] = c
+	}
+
+	return configurations
 }
 
 func resourceConnectorReadConfigFlattenCustomTables(resp *fivetran.ConnectorDetailsResponse) []interface{} {
