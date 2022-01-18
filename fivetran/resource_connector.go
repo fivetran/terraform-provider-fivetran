@@ -320,7 +320,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 						},
 					},
 				},
-				"is_new_package": {Type: schema.TypeBool, Optional: true},
+				"is_new_package": {Type: schema.TypeString, Optional: true},
 
 				"latest_version":            {Type: schema.TypeString, Computed: true},
 				"authorization_method":      {Type: schema.TypeString, Computed: true},
