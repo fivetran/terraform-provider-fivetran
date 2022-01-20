@@ -36,7 +36,12 @@ func init() {
 			return element, nil
 		}
 	}
-	cleanupAccount()
+
+	if isPredefinedUserExist() {
+		cleanupAccount()
+	} else {
+		log.Fatalln("The predefined user doesn't belong to the Testing account. Make sure that credantials are using in the test belongs to the Testing account.")
+	}
 }
 
 func GetResource(t *testing.T, s *terraform.State, resourceName string) *terraform.ResourceState {
@@ -57,6 +62,14 @@ func cleanupAccount() {
 	cleanupUsers()
 	cleanupDestinations()
 	cleanupGroups()
+}
+
+func isPredefinedUserExist() bool {
+	user, err := client.NewUserDetails().UserID(PredefinedUserId).Do(context.Background())
+	if err != nil {
+		return false
+	}
+	return user.Data.ID == PredefinedUserId
 }
 
 func cleanupUsers() {
