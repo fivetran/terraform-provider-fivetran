@@ -40,7 +40,7 @@ func init() {
 	if isPredefinedUserExist() {
 		cleanupAccount()
 	} else {
-		log.Fatalln("The predefined user doesn't belong to the Testing account. Make sure that credantials are using in the test belongs to the Testing account.")
+		log.Fatalln("The predefined user doesn't belong to the Testing account. Make sure that credentials are using in the tests belong to the Testing account.")
 	}
 }
 
