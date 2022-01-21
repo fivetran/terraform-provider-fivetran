@@ -1066,13 +1066,13 @@ func resourceConnectorCreateConfigProjectCredentials(xi []interface{}) []*fivetr
 	projectCredentials := make([]*fivetran.ConnectorConfigProjectCredentials, len(xi))
 	for i, v := range xi {
 		pc := fivetran.NewConnectorConfigProjectCredentials()
-		if project, ok := v.(map[string]interface{})["project"].(string); ok {
+		if project, ok := v.(map[string]interface{})["project"].(string); ok && project != "" {
 			pc.Project(project)
 		}
-		if apiKey, ok := v.(map[string]interface{})["api_key"].(string); ok {
+		if apiKey, ok := v.(map[string]interface{})["api_key"].(string); ok && apiKey != "" {
 			pc.APIKey(apiKey)
 		}
-		if secretKey, ok := v.(map[string]interface{})["secret_key"].(string); ok {
+		if secretKey, ok := v.(map[string]interface{})["secret_key"].(string); ok && secretKey != "" {
 			pc.SecretKey(secretKey)
 		}
 		projectCredentials[i] = pc
@@ -1085,10 +1085,10 @@ func resourceConnectorCreateConfigCustomTables(xi []interface{}) []*fivetran.Con
 	customTables := make([]*fivetran.ConnectorConfigCustomTables, len(xi))
 	for i, v := range xi {
 		ct := fivetran.NewConnectorConfigCustomTables()
-		if tableName, ok := v.(map[string]interface{})["table_name"].(string); ok {
+		if tableName := v.(map[string]interface{})["table_name"].(string); tableName != "" {
 			ct.TableName(tableName)
 		}
-		if configType, ok := v.(map[string]interface{})["config_type"].(string); ok {
+		if configType := v.(map[string]interface{})["config_type"].(string); configType != "" {
 			ct.ConfigType(configType)
 		}
 		if fields := v.(map[string]interface{})["fields"].([]interface{}); len(fields) > 0 {
@@ -1100,19 +1100,19 @@ func resourceConnectorCreateConfigCustomTables(xi []interface{}) []*fivetran.Con
 		if actionBreakdowns := v.(map[string]interface{})["action_breakdowns"].([]interface{}); len(actionBreakdowns) > 0 {
 			ct.ActionBreakdowns(xInterfaceStrXStr(actionBreakdowns))
 		}
-		if aggregation, ok := v.(map[string]interface{})["aggregation"].(string); ok {
+		if aggregation := v.(map[string]interface{})["aggregation"].(string); aggregation != "" {
 			ct.Aggregation(aggregation)
 		}
-		if actionReportTime, ok := v.(map[string]interface{})["action_report_time"].(string); ok {
+		if actionReportTime := v.(map[string]interface{})["action_report_time"].(string); actionReportTime != "" {
 			ct.ActionReportTime(actionReportTime)
 		}
-		if clickAttributionWindow, ok := v.(map[string]interface{})["click_attribution_window"].(string); ok {
+		if clickAttributionWindow := v.(map[string]interface{})["click_attribution_window"].(string); clickAttributionWindow != "" {
 			ct.ClickAttributionWindow(clickAttributionWindow)
 		}
-		if viewAttributionWindow, ok := v.(map[string]interface{})["view_attribution_window"].(string); ok {
+		if viewAttributionWindow := v.(map[string]interface{})["view_attribution_window"].(string); viewAttributionWindow != "" {
 			ct.ViewAttributionWindow(viewAttributionWindow)
 		}
-		if prebuiltReportName, ok := v.(map[string]interface{})["prebuilt_report_name"].(string); ok {
+		if prebuiltReportName := v.(map[string]interface{})["prebuilt_report_name"].(string); prebuiltReportName != "" {
 			ct.PrebuiltReportName(prebuiltReportName)
 		}
 		customTables[i] = ct
@@ -1126,7 +1126,7 @@ func resourceConnectorCreateConfigAdobeAnalyticsConfigurations(xi []interface{})
 	for i, v := range xi {
 		c := fivetran.NewConnectorConfigAdobeAnalyticsConfiguration()
 
-		if syncMode, ok := v.(map[string]interface{})["sync_mode"].(string); ok {
+		if syncMode := v.(map[string]interface{})["sync_mode"].(string); syncMode != "" {
 			c.SyncMode(syncMode)
 		}
 		if metrics := v.(map[string]interface{})["metrics"].([]interface{}); len(metrics) > 0 {
@@ -1155,16 +1155,16 @@ func resourceConnectorCreateConfigReports(xi []interface{}) []*fivetran.Connecto
 	reports := make([]*fivetran.ConnectorConfigReports, len(xi))
 	for i, v := range xi {
 		r := fivetran.NewConnectorConfigReports()
-		if table, ok := v.(map[string]interface{})["table"].(string); ok {
+		if table := v.(map[string]interface{})["table"].(string); table != "" {
 			r.Table(table)
 		}
-		if configType, ok := v.(map[string]interface{})["config_type"].(string); ok {
+		if configType := v.(map[string]interface{})["config_type"].(string); configType != "" {
 			r.ConfigType(configType)
 		}
-		if prebuiltReport, ok := v.(map[string]interface{})["prebuilt_report"].(string); ok {
+		if prebuiltReport := v.(map[string]interface{})["prebuilt_report"].(string); prebuiltReport != "" {
 			r.PrebuiltReport(prebuiltReport)
 		}
-		if reportType, ok := v.(map[string]interface{})["report_type"].(string); ok {
+		if reportType := v.(map[string]interface{})["report_type"].(string); reportType != "" {
 			r.ReportType(reportType)
 		}
 		if fields := v.(map[string]interface{})["fields"].([]interface{}); len(fields) > 0 {
@@ -1179,7 +1179,7 @@ func resourceConnectorCreateConfigReports(xi []interface{}) []*fivetran.Connecto
 		if segments := v.(map[string]interface{})["segments"].([]interface{}); len(segments) > 0 {
 			r.Segments(xInterfaceStrXStr(segments))
 		}
-		if filter, ok := v.(map[string]interface{})["filter"].(string); ok {
+		if filter := v.(map[string]interface{})["filter"].(string); filter != "" {
 			r.Filter(filter)
 		}
 		reports[i] = r
