@@ -1085,34 +1085,34 @@ func resourceConnectorCreateConfigCustomTables(xi []interface{}) []*fivetran.Con
 	customTables := make([]*fivetran.ConnectorConfigCustomTables, len(xi))
 	for i, v := range xi {
 		ct := fivetran.NewConnectorConfigCustomTables()
-		if tableName := v.(map[string]interface{})["table_name"].(string); tableName != "" {
+		if tableName, ok := v.(map[string]interface{})["table_name"].(string); ok && tableName != "" {
 			ct.TableName(tableName)
 		}
-		if configType := v.(map[string]interface{})["config_type"].(string); configType != "" {
+		if configType, ok := v.(map[string]interface{})["config_type"].(string); ok && configType != "" {
 			ct.ConfigType(configType)
 		}
-		if fields := v.(map[string]interface{})["fields"].([]interface{}); len(fields) > 0 {
+		if fields, ok := v.(map[string]interface{})["fields"].([]interface{}); ok && len(fields) > 0 {
 			ct.Fields(xInterfaceStrXStr(fields))
 		}
-		if breakdowns := v.(map[string]interface{})["breakdowns"].([]interface{}); len(breakdowns) > 0 {
+		if breakdowns, ok := v.(map[string]interface{})["breakdowns"].([]interface{}); ok && len(breakdowns) > 0 {
 			ct.Breakdowns(xInterfaceStrXStr(breakdowns))
 		}
-		if actionBreakdowns := v.(map[string]interface{})["action_breakdowns"].([]interface{}); len(actionBreakdowns) > 0 {
+		if actionBreakdowns, ok := v.(map[string]interface{})["action_breakdowns"].([]interface{}); ok && len(actionBreakdowns) > 0 {
 			ct.ActionBreakdowns(xInterfaceStrXStr(actionBreakdowns))
 		}
-		if aggregation := v.(map[string]interface{})["aggregation"].(string); aggregation != "" {
+		if aggregation, ok := v.(map[string]interface{})["aggregation"].(string); ok && aggregation != "" {
 			ct.Aggregation(aggregation)
 		}
-		if actionReportTime := v.(map[string]interface{})["action_report_time"].(string); actionReportTime != "" {
+		if actionReportTime, ok := v.(map[string]interface{})["action_report_time"].(string); ok && actionReportTime != "" {
 			ct.ActionReportTime(actionReportTime)
 		}
-		if clickAttributionWindow := v.(map[string]interface{})["click_attribution_window"].(string); clickAttributionWindow != "" {
+		if clickAttributionWindow, ok := v.(map[string]interface{})["click_attribution_window"].(string); ok && clickAttributionWindow != "" {
 			ct.ClickAttributionWindow(clickAttributionWindow)
 		}
-		if viewAttributionWindow := v.(map[string]interface{})["view_attribution_window"].(string); viewAttributionWindow != "" {
+		if viewAttributionWindow, ok := v.(map[string]interface{})["view_attribution_window"].(string); ok && viewAttributionWindow != "" {
 			ct.ViewAttributionWindow(viewAttributionWindow)
 		}
-		if prebuiltReportName := v.(map[string]interface{})["prebuilt_report_name"].(string); prebuiltReportName != "" {
+		if prebuiltReportName, ok := v.(map[string]interface{})["prebuilt_report_name"].(string); ok && prebuiltReportName != "" {
 			ct.PrebuiltReportName(prebuiltReportName)
 		}
 		customTables[i] = ct
@@ -1126,22 +1126,22 @@ func resourceConnectorCreateConfigAdobeAnalyticsConfigurations(xi []interface{})
 	for i, v := range xi {
 		c := fivetran.NewConnectorConfigAdobeAnalyticsConfiguration()
 
-		if syncMode := v.(map[string]interface{})["sync_mode"].(string); syncMode != "" {
+		if syncMode, ok := v.(map[string]interface{})["sync_mode"].(string); ok && syncMode != "" {
 			c.SyncMode(syncMode)
 		}
-		if metrics := v.(map[string]interface{})["metrics"].([]interface{}); len(metrics) > 0 {
+		if metrics, ok := v.(map[string]interface{})["metrics"].([]interface{}); ok && len(metrics) > 0 {
 			c.Metrics(xInterfaceStrXStr(metrics))
 		}
-		if reportSuites := v.(map[string]interface{})["report_suites"].([]interface{}); len(reportSuites) > 0 {
+		if reportSuites, ok := v.(map[string]interface{})["report_suites"].([]interface{}); ok && len(reportSuites) > 0 {
 			c.ReportSuites(xInterfaceStrXStr(reportSuites))
 		}
-		if segments := v.(map[string]interface{})["segments"].([]interface{}); len(segments) > 0 {
+		if segments, ok := v.(map[string]interface{})["segments"].([]interface{}); ok && len(segments) > 0 {
 			c.Segments(xInterfaceStrXStr(segments))
 		}
-		if elements := v.(map[string]interface{})["elements"].([]interface{}); len(elements) > 0 {
+		if elements, ok := v.(map[string]interface{})["elements"].([]interface{}); ok && len(elements) > 0 {
 			c.Elements(xInterfaceStrXStr(elements))
 		}
-		if calculatedMetrics := v.(map[string]interface{})["calculated_metrics"].([]interface{}); len(calculatedMetrics) > 0 {
+		if calculatedMetrics, ok := v.(map[string]interface{})["calculated_metrics"].([]interface{}); ok && len(calculatedMetrics) > 0 {
 			c.CalculatedMetrics(xInterfaceStrXStr(calculatedMetrics))
 		}
 
@@ -1155,31 +1155,31 @@ func resourceConnectorCreateConfigReports(xi []interface{}) []*fivetran.Connecto
 	reports := make([]*fivetran.ConnectorConfigReports, len(xi))
 	for i, v := range xi {
 		r := fivetran.NewConnectorConfigReports()
-		if table := v.(map[string]interface{})["table"].(string); table != "" {
+		if table, ok := v.(map[string]interface{})["table"].(string); ok && table != "" {
 			r.Table(table)
 		}
-		if configType := v.(map[string]interface{})["config_type"].(string); configType != "" {
+		if configType, ok := v.(map[string]interface{})["config_type"].(string); ok && configType != "" {
 			r.ConfigType(configType)
 		}
-		if prebuiltReport := v.(map[string]interface{})["prebuilt_report"].(string); prebuiltReport != "" {
+		if prebuiltReport, ok := v.(map[string]interface{})["prebuilt_report"].(string); ok && prebuiltReport != "" {
 			r.PrebuiltReport(prebuiltReport)
 		}
-		if reportType := v.(map[string]interface{})["report_type"].(string); reportType != "" {
+		if reportType, ok := v.(map[string]interface{})["report_type"].(string); ok && reportType != "" {
 			r.ReportType(reportType)
 		}
-		if fields := v.(map[string]interface{})["fields"].([]interface{}); len(fields) > 0 {
+		if fields, ok := v.(map[string]interface{})["fields"].([]interface{}); ok && len(fields) > 0 {
 			r.Fields(xInterfaceStrXStr(fields))
 		}
-		if dimensions := v.(map[string]interface{})["dimensions"].([]interface{}); len(dimensions) > 0 {
+		if dimensions, ok := v.(map[string]interface{})["dimensions"].([]interface{}); ok && len(dimensions) > 0 {
 			r.Dimensions(xInterfaceStrXStr(dimensions))
 		}
-		if metrics := v.(map[string]interface{})["metrics"].([]interface{}); len(metrics) > 0 {
+		if metrics, ok := v.(map[string]interface{})["metrics"].([]interface{}); ok && len(metrics) > 0 {
 			r.Metrics(xInterfaceStrXStr(metrics))
 		}
-		if segments := v.(map[string]interface{})["segments"].([]interface{}); len(segments) > 0 {
+		if segments, ok := v.(map[string]interface{})["segments"].([]interface{}); ok && len(segments) > 0 {
 			r.Segments(xInterfaceStrXStr(segments))
 		}
-		if filter := v.(map[string]interface{})["filter"].(string); filter != "" {
+		if filter, ok := v.(map[string]interface{})["filter"].(string); ok && filter != "" {
 			r.Filter(filter)
 		}
 		reports[i] = r
