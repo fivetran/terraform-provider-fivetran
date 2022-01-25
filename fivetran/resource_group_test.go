@@ -79,10 +79,8 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 			}
 		  `,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_group.testgroup", "user.0.id", "cherry_spoilt"),
-					resource.TestCheckResourceAttr("fivetran_group.testgroup", "user.0.role", "Admin"),
-					resource.TestCheckResourceAttrSet("fivetran_group.testgroup", "user.1.id"),
-					resource.TestCheckResourceAttr("fivetran_group.testgroup", "user.1.role", "Account Reviewer"),
+					resource.TestCheckResourceAttrSet("fivetran_group.testgroup", "user.0.id"),
+					resource.TestCheckResourceAttr("fivetran_group.testgroup", "user.0.role", "Destination Reviewer"),
 				),
 			},
 			{
