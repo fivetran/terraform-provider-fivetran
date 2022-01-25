@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -154,8 +155,8 @@ func testFivetranGroupUsersUpdate(t *testing.T, resourceName string) resource.Te
 			return err
 		}
 
-		if len(response.Data.Items) != 0 {
-			return fmt.Errorf("Group has extra users")
+		if len(response.Data.Items) != 1 || response.Data.Items[0].ID != "endeavor_lock" {
+			return fmt.Errorf("Group has extra " + strconv.Itoa(len(response.Data.Items)) + " users (" + response.Data.Items[0].ID + ")")
 		}
 
 		return nil
