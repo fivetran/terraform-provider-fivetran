@@ -73,11 +73,6 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 			    name = "test_group_name"
 
 				user {
-					id = "cherry_spoilt"
-					role = "Destination Administrator"
-				}
-
-				user {
 					id = fivetran_user.userjohn.id
 					role = "Destination Reviewer"
 				}
