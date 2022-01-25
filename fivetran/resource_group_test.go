@@ -12,9 +12,9 @@ import (
 
 func TestResourceGroupE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() {},
+		PreCheck:          func() {},
 		ProviderFactories: providerFactory,
-		CheckDestroy: testFivetranGroupResourceDestroy,
+		CheckDestroy:      testFivetranGroupResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `
@@ -50,9 +50,9 @@ func TestResourceGroupE2E(t *testing.T) {
 }
 
 func TestResourceGroupWithUsersE2E(t *testing.T) {
-	t.Skip("Endpoint to add user to group doesn't support new RBAC role names. It will be fixed soon")
+	//t.Skip("Endpoint to add user to group doesn't support new RBAC role names. It will be fixed soon")
 	resource.Test(t, resource.TestCase{
-		PreCheck: func() {},
+		PreCheck:     func() {},
 		Providers:    testProviders,
 		CheckDestroy: testFivetranGroupResourceDestroy,
 		Steps: []resource.TestStep{
@@ -65,6 +65,7 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 				given_name = "John"
 				phone = "+19876543210"
 				picture = "https://myPicturecom"
+				role = "Account Reviewer"
 			}
 
 		   	resource "fivetran_group" "testgroup" {
@@ -154,7 +155,7 @@ func testFivetranGroupResourceDestroy(s *terraform.State) error {
 func testFivetranGroupUsersUpdate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
-		response , err := client.NewGroupListUsers().GroupID(rs.Primary.ID).Do(context.Background())
+		response, err := client.NewGroupListUsers().GroupID(rs.Primary.ID).Do(context.Background())
 
 		if err != nil {
 			return err
@@ -163,7 +164,7 @@ func testFivetranGroupUsersUpdate(t *testing.T, resourceName string) resource.Te
 		if len(response.Data.Items) != 1 || response.Data.Items[0].ID != "cherry_spoilt" {
 			return fmt.Errorf("Group has extra users")
 		}
-		
+
 		return nil
 	}
 }

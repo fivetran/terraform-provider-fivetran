@@ -10,7 +10,6 @@ import (
 )
 
 func TestResourceUserE2E(t *testing.T) {
-	t.Skip("Skipped until T-181577 fix isn't deployed to prod yet.")
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() {},
 		Providers:    testProviders,
