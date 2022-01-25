@@ -19,18 +19,18 @@ func resourceConnector() *schema.Resource {
 		DeleteContext: resourceConnectorDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
 		Schema: map[string]*schema.Schema{
-			"id":                 {Type: schema.TypeString, Computed: true},
-			"group_id":           {Type: schema.TypeString, Required: true, ForceNew: true},
-			"service":            {Type: schema.TypeString, Required: true, ForceNew: true},
-			"service_version":    {Type: schema.TypeString, Computed: true},
-			"schema":             {Type: schema.TypeString, Required: true, ForceNew: true,
-			//Justification: schema_table format mutate schema to `schema` +`.` + `config.table` we shouldn't trigger update for it.
-			DiffSuppressFunc: func(k, old string, new string, d *schema.ResourceData) bool {
-				if old != "" && new != "" {
-					return strings.HasPrefix(old, new)
-				}
-				return false
-			  },
+			"id":              {Type: schema.TypeString, Computed: true},
+			"group_id":        {Type: schema.TypeString, Required: true, ForceNew: true},
+			"service":         {Type: schema.TypeString, Required: true, ForceNew: true},
+			"service_version": {Type: schema.TypeString, Computed: true},
+			"schema": {Type: schema.TypeString, Required: true, ForceNew: true,
+				//Justification: schema_table format mutate schema to `schema` +`.` + `config.table` we shouldn't trigger update for it.
+				DiffSuppressFunc: func(k, old string, new string, d *schema.ResourceData) bool {
+					if old != "" && new != "" {
+						return strings.HasPrefix(old, new)
+					}
+					return false
+				},
 			},
 			"connected_by":       {Type: schema.TypeString, Computed: true},
 			"created_at":         {Type: schema.TypeString, Computed: true},
@@ -308,10 +308,24 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"report_url":                           {Type: schema.TypeString, Optional: true},
 				"unique_id":                            {Type: schema.TypeString, Optional: true},
 				"auth_type":                            {Type: schema.TypeString, Optional: true},
-				"latest_version":                       {Type: schema.TypeString, Computed: true},
-				"authorization_method":                 {Type: schema.TypeString, Computed: true},
-				"service_version":                      {Type: schema.TypeString, Computed: true},
-				"last_synced_changes__utc_":            {Type: schema.TypeString, Computed: true},
+				"adobe_analytics_configurations": {Type: schema.TypeList, Optional: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"sync_mode":          {Type: schema.TypeString, Optional: true},
+							"report_suites":      {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"elements":           {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"metrics":            {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"calculated_metrics": {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"segments":           {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+						},
+					},
+				},
+				"is_new_package": {Type: schema.TypeString, Optional: true},
+
+				"latest_version":            {Type: schema.TypeString, Computed: true},
+				"authorization_method":      {Type: schema.TypeString, Computed: true},
+				"service_version":           {Type: schema.TypeString, Computed: true},
+				"last_synced_changes__utc_": {Type: schema.TypeString, Computed: true},
 			},
 		},
 	}
@@ -1038,6 +1052,12 @@ func resourceConnectorCreateConfig(config []interface{}, schema string) *fivetra
 	if v := c["auth_type"].(string); v != "" {
 		fivetranConfig.AuthType(v)
 	}
+	if v := c["is_new_package"].(string); v != "" {
+		fivetranConfig.IsNewPackage(strToBool(v))
+	}
+	if v := c["adobe_analytics_configurations"].([]interface{}); len(v) > 0 {
+		fivetranConfig.AdobeAnalyticsConfigurations(resourceConnectorCreateConfigAdobeAnalyticsConfigurations(v))
+	}
 
 	return fivetranConfig
 }
@@ -1046,13 +1066,13 @@ func resourceConnectorCreateConfigProjectCredentials(xi []interface{}) []*fivetr
 	projectCredentials := make([]*fivetran.ConnectorConfigProjectCredentials, len(xi))
 	for i, v := range xi {
 		pc := fivetran.NewConnectorConfigProjectCredentials()
-		if project, ok := v.(map[string]interface{})["project"].(string); ok {
+		if project, ok := v.(map[string]interface{})["project"].(string); ok && project != "" {
 			pc.Project(project)
 		}
-		if apiKey, ok := v.(map[string]interface{})["api_key"].(string); ok {
+		if apiKey, ok := v.(map[string]interface{})["api_key"].(string); ok && apiKey != "" {
 			pc.APIKey(apiKey)
 		}
-		if secretKey, ok := v.(map[string]interface{})["secret_key"].(string); ok {
+		if secretKey, ok := v.(map[string]interface{})["secret_key"].(string); ok && secretKey != "" {
 			pc.SecretKey(secretKey)
 		}
 		projectCredentials[i] = pc
@@ -1065,34 +1085,34 @@ func resourceConnectorCreateConfigCustomTables(xi []interface{}) []*fivetran.Con
 	customTables := make([]*fivetran.ConnectorConfigCustomTables, len(xi))
 	for i, v := range xi {
 		ct := fivetran.NewConnectorConfigCustomTables()
-		if tableName, ok := v.(map[string]interface{})["table_name"].(string); ok {
+		if tableName, ok := v.(map[string]interface{})["table_name"].(string); ok && tableName != "" {
 			ct.TableName(tableName)
 		}
-		if configType, ok := v.(map[string]interface{})["config_type"].(string); ok {
+		if configType, ok := v.(map[string]interface{})["config_type"].(string); ok && configType != "" {
 			ct.ConfigType(configType)
 		}
-		if fields := v.(map[string]interface{})["fields"].([]interface{}); len(fields) > 0 {
+		if fields, ok := v.(map[string]interface{})["fields"].([]interface{}); ok && len(fields) > 0 {
 			ct.Fields(xInterfaceStrXStr(fields))
 		}
-		if breakdowns := v.(map[string]interface{})["breakdowns"].([]interface{}); len(breakdowns) > 0 {
+		if breakdowns, ok := v.(map[string]interface{})["breakdowns"].([]interface{}); ok && len(breakdowns) > 0 {
 			ct.Breakdowns(xInterfaceStrXStr(breakdowns))
 		}
-		if actionBreakdowns := v.(map[string]interface{})["action_breakdowns"].([]interface{}); len(actionBreakdowns) > 0 {
+		if actionBreakdowns, ok := v.(map[string]interface{})["action_breakdowns"].([]interface{}); ok && len(actionBreakdowns) > 0 {
 			ct.ActionBreakdowns(xInterfaceStrXStr(actionBreakdowns))
 		}
-		if aggregation, ok := v.(map[string]interface{})["aggregation"].(string); ok {
+		if aggregation, ok := v.(map[string]interface{})["aggregation"].(string); ok && aggregation != "" {
 			ct.Aggregation(aggregation)
 		}
-		if actionReportTime, ok := v.(map[string]interface{})["action_report_time"].(string); ok {
+		if actionReportTime, ok := v.(map[string]interface{})["action_report_time"].(string); ok && actionReportTime != "" {
 			ct.ActionReportTime(actionReportTime)
 		}
-		if clickAttributionWindow, ok := v.(map[string]interface{})["click_attribution_window"].(string); ok {
+		if clickAttributionWindow, ok := v.(map[string]interface{})["click_attribution_window"].(string); ok && clickAttributionWindow != "" {
 			ct.ClickAttributionWindow(clickAttributionWindow)
 		}
-		if viewAttributionWindow, ok := v.(map[string]interface{})["view_attribution_window"].(string); ok {
+		if viewAttributionWindow, ok := v.(map[string]interface{})["view_attribution_window"].(string); ok && viewAttributionWindow != "" {
 			ct.ViewAttributionWindow(viewAttributionWindow)
 		}
-		if prebuiltReportName, ok := v.(map[string]interface{})["prebuilt_report_name"].(string); ok {
+		if prebuiltReportName, ok := v.(map[string]interface{})["prebuilt_report_name"].(string); ok && prebuiltReportName != "" {
 			ct.PrebuiltReportName(prebuiltReportName)
 		}
 		customTables[i] = ct
@@ -1101,35 +1121,65 @@ func resourceConnectorCreateConfigCustomTables(xi []interface{}) []*fivetran.Con
 	return customTables
 }
 
+func resourceConnectorCreateConfigAdobeAnalyticsConfigurations(xi []interface{}) []*fivetran.ConnectorConfigAdobeAnalyticsConfiguration {
+	configurations := make([]*fivetran.ConnectorConfigAdobeAnalyticsConfiguration, len(xi))
+	for i, v := range xi {
+		c := fivetran.NewConnectorConfigAdobeAnalyticsConfiguration()
+
+		if syncMode, ok := v.(map[string]interface{})["sync_mode"].(string); ok && syncMode != "" {
+			c.SyncMode(syncMode)
+		}
+		if metrics, ok := v.(map[string]interface{})["metrics"].([]interface{}); ok && len(metrics) > 0 {
+			c.Metrics(xInterfaceStrXStr(metrics))
+		}
+		if reportSuites, ok := v.(map[string]interface{})["report_suites"].([]interface{}); ok && len(reportSuites) > 0 {
+			c.ReportSuites(xInterfaceStrXStr(reportSuites))
+		}
+		if segments, ok := v.(map[string]interface{})["segments"].([]interface{}); ok && len(segments) > 0 {
+			c.Segments(xInterfaceStrXStr(segments))
+		}
+		if elements, ok := v.(map[string]interface{})["elements"].([]interface{}); ok && len(elements) > 0 {
+			c.Elements(xInterfaceStrXStr(elements))
+		}
+		if calculatedMetrics, ok := v.(map[string]interface{})["calculated_metrics"].([]interface{}); ok && len(calculatedMetrics) > 0 {
+			c.CalculatedMetrics(xInterfaceStrXStr(calculatedMetrics))
+		}
+
+		configurations[i] = c
+	}
+
+	return configurations
+}
+
 func resourceConnectorCreateConfigReports(xi []interface{}) []*fivetran.ConnectorConfigReports {
 	reports := make([]*fivetran.ConnectorConfigReports, len(xi))
 	for i, v := range xi {
 		r := fivetran.NewConnectorConfigReports()
-		if table, ok := v.(map[string]interface{})["table"].(string); ok {
+		if table, ok := v.(map[string]interface{})["table"].(string); ok && table != "" {
 			r.Table(table)
 		}
-		if configType, ok := v.(map[string]interface{})["config_type"].(string); ok {
+		if configType, ok := v.(map[string]interface{})["config_type"].(string); ok && configType != "" {
 			r.ConfigType(configType)
 		}
-		if prebuiltReport, ok := v.(map[string]interface{})["prebuilt_report"].(string); ok {
+		if prebuiltReport, ok := v.(map[string]interface{})["prebuilt_report"].(string); ok && prebuiltReport != "" {
 			r.PrebuiltReport(prebuiltReport)
 		}
-		if reportType, ok := v.(map[string]interface{})["report_type"].(string); ok {
+		if reportType, ok := v.(map[string]interface{})["report_type"].(string); ok && reportType != "" {
 			r.ReportType(reportType)
 		}
-		if fields := v.(map[string]interface{})["fields"].([]interface{}); len(fields) > 0 {
+		if fields, ok := v.(map[string]interface{})["fields"].([]interface{}); ok && len(fields) > 0 {
 			r.Fields(xInterfaceStrXStr(fields))
 		}
-		if dimensions := v.(map[string]interface{})["dimensions"].([]interface{}); len(dimensions) > 0 {
+		if dimensions, ok := v.(map[string]interface{})["dimensions"].([]interface{}); ok && len(dimensions) > 0 {
 			r.Dimensions(xInterfaceStrXStr(dimensions))
 		}
-		if metrics := v.(map[string]interface{})["metrics"].([]interface{}); len(metrics) > 0 {
+		if metrics, ok := v.(map[string]interface{})["metrics"].([]interface{}); ok && len(metrics) > 0 {
 			r.Metrics(xInterfaceStrXStr(metrics))
 		}
-		if segments := v.(map[string]interface{})["segments"].([]interface{}); len(segments) > 0 {
+		if segments, ok := v.(map[string]interface{})["segments"].([]interface{}); ok && len(segments) > 0 {
 			r.Segments(xInterfaceStrXStr(segments))
 		}
-		if filter, ok := v.(map[string]interface{})["filter"].(string); ok {
+		if filter, ok := v.(map[string]interface{})["filter"].(string); ok && filter != "" {
 			r.Filter(filter)
 		}
 		reports[i] = r
@@ -1441,6 +1491,8 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddStr(c, "authorization_method", resp.Data.Config.AuthorizationMethod)
 	mapAddStr(c, "service_version", resp.Data.Config.ServiceVersion)
 	mapAddStr(c, "last_synced_changes__utc_", resp.Data.Config.LastSyncedChangesUtc)
+	mapAddStr(c, "is_new_package", boolPointerToStr(resp.Data.Config.IsNewPackage))
+	mapAddXInterface(c, "adobe_analytics_configurations", resourceConnectorReadConfigFlattenAdobeAnalyticsConfigurations(resp))
 	config[0] = c
 
 	return config
@@ -1496,6 +1548,26 @@ func resourceConnectorReadConfigFlattenReports(resp *fivetran.ConnectorDetailsRe
 	}
 
 	return reports
+}
+
+func resourceConnectorReadConfigFlattenAdobeAnalyticsConfigurations(resp *fivetran.ConnectorDetailsResponse) []interface{} {
+	if len(resp.Data.Config.AdobeAnalyticsConfigurations) < 1 {
+		return make([]interface{}, 0)
+	}
+
+	configurations := make([]interface{}, len(resp.Data.Config.AdobeAnalyticsConfigurations))
+	for i, v := range resp.Data.Config.AdobeAnalyticsConfigurations {
+		c := make(map[string]interface{})
+		mapAddStr(c, "sync_mode", v.SyncMode)
+		mapAddXInterface(c, "metrics", xStrXInterface(v.Metrics))
+		mapAddXInterface(c, "calculated_metrics", xStrXInterface(v.CalculatedMetrics))
+		mapAddXInterface(c, "elements", xStrXInterface(v.Elements))
+		mapAddXInterface(c, "segments", xStrXInterface(v.Segments))
+		mapAddXInterface(c, "report_suites", xStrXInterface(v.ReportSuites))
+		configurations[i] = c
+	}
+
+	return configurations
 }
 
 func resourceConnectorReadConfigFlattenCustomTables(resp *fivetran.ConnectorDetailsResponse) []interface{} {

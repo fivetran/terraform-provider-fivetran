@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -12,9 +13,9 @@ import (
 
 func TestResourceGroupE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() {},
+		PreCheck:          func() {},
 		ProviderFactories: providerFactory,
-		CheckDestroy: testFivetranGroupResourceDestroy,
+		CheckDestroy:      testFivetranGroupResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `
@@ -50,52 +51,46 @@ func TestResourceGroupE2E(t *testing.T) {
 }
 
 func TestResourceGroupWithUsersE2E(t *testing.T) {
-	t.Skip("Endpoint to add user to group doesn't support new RBAC role names. It will be fixed soon")
+	//t.Skip("Endpoint to add user to group doesn't support new RBAC role names. It will be fixed soon")
 	resource.Test(t, resource.TestCase{
-		PreCheck: func() {},
+		PreCheck:     func() {},
 		Providers:    testProviders,
 		CheckDestroy: testFivetranGroupResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `
-			resource "fivetran_user" "userjohn" {
-				provider = fivetran-provider
-				email = "john.black@testmail.com"
-				family_name = "Black"
-				given_name = "John"
-				phone = "+19876543210"
-				picture = "https://myPicturecom"
-			}
+					resource "fivetran_user" "userjohn" {
+						provider = fivetran-provider
+						email = "john.black@testmail.com"
+						family_name = "Black"
+						given_name = "John"
+						phone = "+19876543210"
+						picture = "https://myPicturecom"
+						role = "Account Reviewer"
+					}
 
-		   	resource "fivetran_group" "testgroup" {
-				provider = fivetran-provider
-			    name = "test_group_name"
+					resource "fivetran_group" "testgroup" {
+						provider = fivetran-provider
+						name = "test_group_name"
 
-				user {
-					id = "cherry_spoilt"
-					role = "Account Administrator"
-				}
-
-				user {
-					id = fivetran_user.userjohn.id
-					role = "Account Reviewer"
-				}
-			}
-		  `,
+						user {
+							id = fivetran_user.userjohn.id
+							role = "Destination Reviewer"
+						}
+					}
+				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_group.testgroup", "user.0.id", "cherry_spoilt"),
-					resource.TestCheckResourceAttr("fivetran_group.testgroup", "user.0.role", "Admin"),
-					resource.TestCheckResourceAttrSet("fivetran_group.testgroup", "user.1.id"),
-					resource.TestCheckResourceAttr("fivetran_group.testgroup", "user.1.role", "Account Reviewer"),
+					resource.TestCheckResourceAttrSet("fivetran_group.testgroup", "user.0.id"),
+					resource.TestCheckResourceAttr("fivetran_group.testgroup", "user.0.role", "Destination Reviewer"),
 				),
 			},
 			{
 				Config: `
-				resource "fivetran_group" "testgroup" {
-					provider = fivetran-provider
-					name = "test_group_name"
-				}
-		  `,
+					resource "fivetran_group" "testgroup" {
+						provider = fivetran-provider
+						name = "test_group_name"
+					}
+				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranGroupUsersUpdate(t, "fivetran_group.testgroup"),
 					resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "test_group_name"),
@@ -154,16 +149,16 @@ func testFivetranGroupResourceDestroy(s *terraform.State) error {
 func testFivetranGroupUsersUpdate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
-		response , err := client.NewGroupListUsers().GroupID(rs.Primary.ID).Do(context.Background())
+		response, err := client.NewGroupListUsers().GroupID(rs.Primary.ID).Do(context.Background())
 
 		if err != nil {
 			return err
 		}
 
-		if len(response.Data.Items) != 1 || response.Data.Items[0].ID != "cherry_spoilt" {
-			return fmt.Errorf("Group has extra users")
+		if len(response.Data.Items) != 1 || response.Data.Items[0].ID != "endeavor_lock" {
+			return fmt.Errorf("Group has extra " + strconv.Itoa(len(response.Data.Items)) + " users (" + response.Data.Items[0].ID + ")")
 		}
-		
+
 		return nil
 	}
 }

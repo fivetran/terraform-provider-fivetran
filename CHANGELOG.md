@@ -7,14 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.3.0...HEAD)
 
-## [0.3.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.2.3...v0.3.0) - 2022-01-11
+## [0.3.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.2.3...v0.3.0) - 2022-01-25
 
 ## Added
 - E2E tests.
 - GitHub actions workflow to run tests.
 
 ## Fixed
-- `role` for the new user. According to the new RBAC model we set `Account Reviewer` role as a default instead of `ReadOnly`.
+- `ConnectorConfigRequest.IsNewPackage` missing field added
+- `ConnectorConfigRequest.AdobeAnalyticsConfigurations` missing field added
+- Enabled Role management for users
 
 ## [0.2.3](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.2.2...v0.2.3) - 2022-01-10
 

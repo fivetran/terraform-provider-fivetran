@@ -13,15 +13,15 @@ func dataSourceUser() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceUserRead,
 		Schema: map[string]*schema.Schema{
-			"id":          {Type: schema.TypeString, Required: true},
-			"email":       {Type: schema.TypeString, Computed: true},
-			"given_name":  {Type: schema.TypeString, Computed: true},
-			"family_name": {Type: schema.TypeString, Computed: true},
-			"verified":    {Type: schema.TypeBool, Computed: true},
-			"invited":     {Type: schema.TypeBool, Computed: true},
-			"picture":     {Type: schema.TypeString, Computed: true},
-			"phone":       {Type: schema.TypeString, Computed: true},
-			// "role":         {Type: schema.TypeString, Computed: true}, // commented until T-109040 is fixed.
+			"id":           {Type: schema.TypeString, Required: true},
+			"email":        {Type: schema.TypeString, Computed: true},
+			"given_name":   {Type: schema.TypeString, Computed: true},
+			"family_name":  {Type: schema.TypeString, Computed: true},
+			"verified":     {Type: schema.TypeBool, Computed: true},
+			"invited":      {Type: schema.TypeBool, Computed: true},
+			"picture":      {Type: schema.TypeString, Computed: true},
+			"phone":        {Type: schema.TypeString, Computed: true},
+			"role":         {Type: schema.TypeString, Computed: true},
 			"logged_in_at": {Type: schema.TypeString, Computed: true},
 			"created_at":   {Type: schema.TypeString, Computed: true},
 		},
@@ -48,7 +48,7 @@ func dataSourceUserRead(ctx context.Context, d *schema.ResourceData, m interface
 	msi["invited"] = resp.Data.Invited
 	msi["picture"] = resp.Data.Picture
 	msi["phone"] = resp.Data.Phone
-	// msi["role"] = resp.Data.Role // T-109040 is fixed.
+	msi["role"] = resp.Data.Role
 	msi["logged_in_at"] = resp.Data.LoggedInAt.String()
 	msi["created_at"] = resp.Data.CreatedAt.String()
 	for k, v := range msi {

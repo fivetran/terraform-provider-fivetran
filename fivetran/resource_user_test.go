@@ -22,6 +22,7 @@ func TestResourceUserE2E(t *testing.T) {
 			     email = "john.fox@testmail.com"
 			     family_name = "Fox"
 			     given_name = "John"
+				 role = "Account Reviewer"
 			     phone = "+19876543210"
 			     picture = "https://myPicturecom"
 			}
@@ -29,6 +30,7 @@ func TestResourceUserE2E(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranUserResourceCreate(t, "fivetran_user.userjohn"),
 					resource.TestCheckResourceAttr("fivetran_user.userjohn", "email", "john.fox@testmail.com"),
+					resource.TestCheckResourceAttr("fivetran_user.userjohn", "role", "Account Reviewer"),
 					resource.TestCheckResourceAttr("fivetran_user.userjohn", "family_name", "Fox"),
 					resource.TestCheckResourceAttr("fivetran_user.userjohn", "given_name", "John"),
 					resource.TestCheckResourceAttr("fivetran_user.userjohn", "phone", "+19876543210"),
@@ -39,6 +41,7 @@ func TestResourceUserE2E(t *testing.T) {
 				Config: `
 		   	resource "fivetran_user" "userjohn" {
 				provider = fivetran-provider
+				role = "Account Administrator"
 				email = "john.fox@testmail.com"
 				family_name = "Connor"
 				given_name = "Jane"
@@ -49,6 +52,7 @@ func TestResourceUserE2E(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranUserResourceUpdate(t, "fivetran_user.userjohn"),
 					resource.TestCheckResourceAttr("fivetran_user.userjohn", "email", "john.fox@testmail.com"),
+					resource.TestCheckResourceAttr("fivetran_user.userjohn", "role", "Account Administrator"),
 					resource.TestCheckResourceAttr("fivetran_user.userjohn", "family_name", "Connor"),
 					resource.TestCheckResourceAttr("fivetran_user.userjohn", "given_name", "Jane"),
 					resource.TestCheckResourceAttr("fivetran_user.userjohn", "phone", "+19876543219"),

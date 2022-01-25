@@ -24,14 +24,16 @@ func resourceUser() *schema.Resource {
 			"email":       {Type: schema.TypeString, Required: true, ForceNew: true},
 			"given_name":  {Type: schema.TypeString, Required: true},
 			"family_name": {Type: schema.TypeString, Required: true},
-			"verified":    {Type: schema.TypeBool, Computed: true},
-			"invited":     {Type: schema.TypeBool, Computed: true},
-			"picture":     {Type: schema.TypeString, Optional: true},
-			"phone":       {Type: schema.TypeString, Optional: true},
-			// "role":         {Type: schema.TypeString, Required: true}, // commented until T-109040 is fixed.
+			"role":        {Type: schema.TypeString, Required: true},
+
+			"picture": {Type: schema.TypeString, Optional: true},
+			"phone":   {Type: schema.TypeString, Optional: true},
+
 			"logged_in_at": {Type: schema.TypeString, Computed: true},
 			"created_at":   {Type: schema.TypeString, Computed: true},
 			"last_updated": {Type: schema.TypeString, Computed: true}, // internal
+			"verified":     {Type: schema.TypeBool, Computed: true},
+			"invited":      {Type: schema.TypeBool, Computed: true},
 		},
 	}
 }
@@ -44,15 +46,14 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 	svc.Email(d.Get("email").(string))
 	svc.GivenName(d.Get("given_name").(string))
 	svc.FamilyName(d.Get("family_name").(string))
-	if v, ok := d.GetOk("picture"); ok {
+	svc.Role(d.Get("role").(string))
+
+	if v, ok := d.GetOk("picture"); ok && v != "" {
 		svc.Picture(v.(string))
 	}
-	if v, ok := d.GetOk("phone"); ok {
+	if v, ok := d.GetOk("phone"); ok && v != "" {
 		svc.Phone(v.(string))
 	}
-	// The REST API doesn't returns `role` when creating/inviting a new user. Because of that, `role`
-	// is being enforced. This should change when T-109040 is fixed.
-	svc.Role("Account Reviewer")
 
 	resp, err := svc.Do(ctx)
 	if err != nil {
@@ -89,6 +90,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	msi["phone"] = resp.Data.Phone
 	msi["logged_in_at"] = resp.Data.LoggedInAt.String()
 	msi["created_at"] = resp.Data.CreatedAt.String()
+	msi["role"] = resp.Data.Role
 	for k, v := range msi {
 		if err := d.Set(k, v); err != nil {
 			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
@@ -116,6 +118,9 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface
 	}
 	if d.HasChange("phone") {
 		svc.Phone(d.Get("phone").(string))
+	}
+	if d.HasChange("role") {
+		svc.Role(d.Get("role").(string))
 	}
 
 	resp, err := svc.Do(ctx)
