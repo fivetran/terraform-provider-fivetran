@@ -58,26 +58,26 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-			resource "fivetran_user" "userjohn" {
-				provider = fivetran-provider
-				email = "john.black@testmail.com"
-				family_name = "Black"
-				given_name = "John"
-				phone = "+19876543210"
-				picture = "https://myPicturecom"
-				role = "Account Reviewer"
-			}
+					resource "fivetran_user" "userjohn" {
+						provider = fivetran-provider
+						email = "john.black@testmail.com"
+						family_name = "Black"
+						given_name = "John"
+						phone = "+19876543210"
+						picture = "https://myPicturecom"
+						role = "Account Reviewer"
+					}
 
-		   	resource "fivetran_group" "testgroup" {
-				provider = fivetran-provider
-			    name = "test_group_name"
+					resource "fivetran_group" "testgroup" {
+						provider = fivetran-provider
+						name = "test_group_name"
 
-				user {
-					id = fivetran_user.userjohn.id
-					role = "Destination Reviewer"
-				}
-			}
-		  `,
+						user {
+							id = fivetran_user.userjohn.id
+							role = "Destination Reviewer"
+						}
+					}
+				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet("fivetran_group.testgroup", "user.0.id"),
 					resource.TestCheckResourceAttr("fivetran_group.testgroup", "user.0.role", "Destination Reviewer"),
@@ -85,11 +85,11 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 			},
 			{
 				Config: `
-				resource "fivetran_group" "testgroup" {
-					provider = fivetran-provider
-					name = "test_group_name"
-				}
-		  `,
+					resource "fivetran_group" "testgroup" {
+						provider = fivetran-provider
+						name = "test_group_name"
+					}
+				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranGroupUsersUpdate(t, "fivetran_group.testgroup"),
 					resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "test_group_name"),
@@ -154,7 +154,7 @@ func testFivetranGroupUsersUpdate(t *testing.T, resourceName string) resource.Te
 			return err
 		}
 
-		if len(response.Data.Items) != 1 || response.Data.Items[0].ID != "cherry_spoilt" {
+		if len(response.Data.Items) != 0 {
 			return fmt.Errorf("Group has extra users")
 		}
 
