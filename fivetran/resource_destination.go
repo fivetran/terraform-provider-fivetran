@@ -41,15 +41,12 @@ func resourceDestinationSchemaConfig() *schema.Schema {
 	return &schema.Schema{Type: schema.TypeList, Required: true, MaxItems: 1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"host":     {Type: schema.TypeString, Optional: true},
-				"port":     {Type: schema.TypeInt, Optional: true},
-				"database": {Type: schema.TypeString, Optional: true},
-				"auth":     {Type: schema.TypeString, Optional: true},
-				"user":     {Type: schema.TypeString, Optional: true},
-				"password": {Type: schema.TypeString, Optional: true, Sensitive: true},
-				// "connection_type", for example, is mandatory for some destinations. Configurations settings
-				// should be explicitly declared. Doing that, we avoid not declaring "connection_type"
-				// (or any other configuration) and the REST API returning it.
+				"host":                   {Type: schema.TypeString, Optional: true},
+				"port":                   {Type: schema.TypeInt, Optional: true},
+				"database":               {Type: schema.TypeString, Optional: true},
+				"auth":                   {Type: schema.TypeString, Optional: true},
+				"user":                   {Type: schema.TypeString, Optional: true},
+				"password":               {Type: schema.TypeString, Optional: true, Sensitive: true},
 				"connection_type":        {Type: schema.TypeString, Optional: true},
 				"tunnel_host":            {Type: schema.TypeString, Optional: true},
 				"tunnel_port":            {Type: schema.TypeString, Optional: true},
@@ -208,8 +205,7 @@ func resourceDestinationReadConfig(resp *fivetran.DestinationDetailsResponse, cu
 	if len(currentConfig) > 0 {
 		c["password"] = currentConfig[0].(map[string]interface{})["password"].(string)
 	}
-	// connection_type is returned as ConnectionMethod
-	c["connection_type"] = dataSourceDestinationConfigNormalizeConnectionType(resp.Data.Config.ConnectionMethod)
+	c["connection_type"] = dataSourceDestinationConfigNormalizeConnectionType(resp.Data.Config.ConnectionType)
 	c["tunnel_host"] = resp.Data.Config.TunnelHost
 	c["tunnel_port"] = resp.Data.Config.TunnelPort
 	c["tunnel_user"] = resp.Data.Config.TunnelUser

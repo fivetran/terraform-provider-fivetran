@@ -151,6 +151,7 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"secrets":                           {Type: schema.TypeString, Computed: true},
 				"container_name":                    {Type: schema.TypeString, Computed: true},
 				"connection_string":                 {Type: schema.TypeString, Computed: true},
+				"connection_type":                   {Type: schema.TypeString, Computed: true},
 				"function_app":                      {Type: schema.TypeString, Computed: true},
 				"function_name":                     {Type: schema.TypeString, Computed: true},
 				"function_key":                      {Type: schema.TypeString, Computed: true},
@@ -483,6 +484,7 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddStr(c, "secrets", resp.Data.Config.Secrets)
 	mapAddStr(c, "container_name", resp.Data.Config.ContainerName)
 	mapAddStr(c, "connection_string", resp.Data.Config.ConnectionString)
+	mapAddStr(c, "connection_type", resp.Data.Config.ConnectionType)
 	mapAddStr(c, "function_app", resp.Data.Config.FunctionApp)
 	mapAddStr(c, "function_name", resp.Data.Config.FunctionName)
 	mapAddStr(c, "function_key", resp.Data.Config.FunctionKey)
