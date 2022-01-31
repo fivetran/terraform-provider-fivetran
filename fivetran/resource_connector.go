@@ -170,6 +170,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"secrets":                           {Type: schema.TypeString, Optional: true},
 				"container_name":                    {Type: schema.TypeString, Optional: true},
 				"connection_string":                 {Type: schema.TypeString, Optional: true},
+				"connection_type":                   {Type: schema.TypeString, Optional: true},
 				"function_app":                      {Type: schema.TypeString, Optional: true},
 				"function_name":                     {Type: schema.TypeString, Optional: true},
 				"function_key":                      {Type: schema.TypeString, Optional: true},
@@ -724,6 +725,9 @@ func resourceConnectorCreateConfig(config []interface{}, schema string) *fivetra
 	}
 	if v := c["connection_string"].(string); v != "" {
 		fivetranConfig.ConnectionString(v)
+	}
+	if v := c["connection_type"].(string); v != "" {
+		fivetranConfig.ConnectionType(v)
 	}
 	if v := c["function_app"].(string); v != "" {
 		fivetranConfig.FunctionApp(v)
@@ -1378,6 +1382,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddStr(c, "secrets", resp.Data.Config.Secrets)
 	mapAddStr(c, "container_name", resp.Data.Config.ContainerName)
 	mapAddStr(c, "connection_string", resp.Data.Config.ConnectionString)
+	mapAddStr(c, "connection_type", resp.Data.Config.ConnectionType)
 	mapAddStr(c, "function_app", resp.Data.Config.FunctionApp)
 	mapAddStr(c, "function_name", resp.Data.Config.FunctionName)
 	mapAddStr(c, "function_key", resp.Data.Config.FunctionKey)
