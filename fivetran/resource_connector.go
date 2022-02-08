@@ -323,10 +323,11 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				},
 				"is_new_package": {Type: schema.TypeString, Optional: true},
 
-				"latest_version":            {Type: schema.TypeString, Computed: true},
-				"authorization_method":      {Type: schema.TypeString, Computed: true},
-				"service_version":           {Type: schema.TypeString, Computed: true},
-				"last_synced_changes__utc_": {Type: schema.TypeString, Computed: true},
+				"latest_version":                  {Type: schema.TypeString, Computed: true},
+				"authorization_method":            {Type: schema.TypeString, Computed: true},
+				"service_version":                 {Type: schema.TypeString, Computed: true},
+				"last_synced_changes__utc_":       {Type: schema.TypeString, Computed: true},
+				"is_multi_entity_feature_enabled": {Type: schema.TypeString, Optional: true},
 			},
 		},
 	}
@@ -1062,6 +1063,9 @@ func resourceConnectorCreateConfig(config []interface{}, schema string) *fivetra
 	if v := c["adobe_analytics_configurations"].([]interface{}); len(v) > 0 {
 		fivetranConfig.AdobeAnalyticsConfigurations(resourceConnectorCreateConfigAdobeAnalyticsConfigurations(v))
 	}
+	if v := c["is_multi_entity_feature_enabled"].(string); v != "" {
+		fivetranConfig.IsMultiEntityFeatureEnabled(strToBool(v))
+	}
 
 	return fivetranConfig
 }
@@ -1498,6 +1502,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddStr(c, "last_synced_changes__utc_", resp.Data.Config.LastSyncedChangesUtc)
 	mapAddStr(c, "is_new_package", boolPointerToStr(resp.Data.Config.IsNewPackage))
 	mapAddXInterface(c, "adobe_analytics_configurations", resourceConnectorReadConfigFlattenAdobeAnalyticsConfigurations(resp))
+	mapAddStr(c, "is_multi_entity_feature_enabled", boolPointerToStr(resp.Data.Config.IsMultiEntityFeatureEnabled))
 	config[0] = c
 
 	return config

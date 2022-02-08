@@ -306,7 +306,8 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 						},
 					},
 				},
-				"is_new_package": {Type: schema.TypeString, Computed: true},
+				"is_new_package":                  {Type: schema.TypeString, Computed: true},
+				"is_multi_entity_feature_enabled": {Type: schema.TypeString, Computed: true},
 			},
 		},
 	}
@@ -600,6 +601,7 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddStr(c, "last_synced_changes__utc_", resp.Data.Config.LastSyncedChangesUtc)
 	mapAddStr(c, "is_new_package", boolPointerToStr(resp.Data.Config.IsNewPackage))
 	mapAddXInterface(c, "adobe_analytics_configurations", dataSourceConnectorReadConfigFlattenAdobeAnalyticsConfigurations(resp))
+	mapAddStr(c, "is_multi_entity_feature_enabled", boolPointerToStr(resp.Data.Config.IsMultiEntityFeatureEnabled))
 	config[0] = c
 
 	return config
