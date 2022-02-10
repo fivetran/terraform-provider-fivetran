@@ -11,9 +11,9 @@ import (
 
 func TestResourceDestinationE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck: func() {},
+		PreCheck:          func() {},
 		ProviderFactories: providerFactory,
-		CheckDestroy: testFivetranDestinationResourceDestroy,
+		CheckDestroy:      testFivetranDestinationResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `
@@ -27,7 +27,7 @@ func TestResourceDestinationE2E(t *testing.T) {
 					group_id = fivetran_group.testgroup.id
 					service = "postgres_rds_warehouse"
 					time_zone_offset = "0"
-					region = "US"
+					region = "GCP_US_EAST4"
 					trust_certificates = "true"
 					trust_fingerprints = "true"
 					run_setup_tests = "false"
@@ -46,7 +46,7 @@ func TestResourceDestinationE2E(t *testing.T) {
 					testFivetranDestinationResourceCreate(t, "fivetran_destination.testdestination"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "service", "postgres_rds_warehouse"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "time_zone_offset", "0"),
-					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "region", "US"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "region", "GCP_US_EAST4"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "trust_certificates", "true"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "trust_fingerprints", "true"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "run_setup_tests", "false"),
@@ -70,7 +70,7 @@ func TestResourceDestinationE2E(t *testing.T) {
 					group_id = fivetran_group.testgroup.id
 					service = "postgres_rds_warehouse"
 					time_zone_offset = "+4"
-					region = "UK"
+					region = "GCP_EUROPE_WEST2"
 					trust_certificates = "false"
 					trust_fingerprints = "false"
 					run_setup_tests = "false"
@@ -89,7 +89,7 @@ func TestResourceDestinationE2E(t *testing.T) {
 					testFivetranDestinationResourceUpdate(t, "fivetran_destination.testdestination"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "service", "postgres_rds_warehouse"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "time_zone_offset", "+4"),
-					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "region", "UK"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "region", "GCP_EUROPE_WEST2"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "trust_certificates", "false"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "trust_fingerprints", "false"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "run_setup_tests", "false"),
@@ -108,7 +108,7 @@ func TestResourceDestinationE2E(t *testing.T) {
 func testFivetranDestinationResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
-	
+
 		_, err := client.NewDestinationDetails().DestinationID(rs.Primary.ID).Do(context.Background())
 
 		if err != nil {
@@ -122,7 +122,7 @@ func testFivetranDestinationResourceCreate(t *testing.T, resourceName string) re
 func testFivetranDestinationResourceUpdate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
-	
+
 		_, err := client.NewDestinationDetails().DestinationID(rs.Primary.ID).Do(context.Background())
 
 		if err != nil {
