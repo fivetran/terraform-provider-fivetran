@@ -328,6 +328,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"service_version":                 {Type: schema.TypeString, Computed: true},
 				"last_synced_changes__utc_":       {Type: schema.TypeString, Computed: true},
 				"is_multi_entity_feature_enabled": {Type: schema.TypeString, Optional: true},
+				"api_type":                        {Type: schema.TypeString, Optional: true},
 			},
 		},
 	}
@@ -1066,6 +1067,9 @@ func resourceConnectorCreateConfig(config []interface{}, schema string) *fivetra
 	if v := c["is_multi_entity_feature_enabled"].(string); v != "" {
 		fivetranConfig.IsMultiEntityFeatureEnabled(strToBool(v))
 	}
+	if v := c["api_type"].(string); v != "" {
+		fivetranConfig.ApiType(v)
+	}
 
 	return fivetranConfig
 }
@@ -1503,6 +1507,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddStr(c, "is_new_package", boolPointerToStr(resp.Data.Config.IsNewPackage))
 	mapAddXInterface(c, "adobe_analytics_configurations", resourceConnectorReadConfigFlattenAdobeAnalyticsConfigurations(resp))
 	mapAddStr(c, "is_multi_entity_feature_enabled", boolPointerToStr(resp.Data.Config.IsMultiEntityFeatureEnabled))
+	mapAddStr(c, "api_type", resp.Data.Config.ApiType)
 	config[0] = c
 
 	return config
