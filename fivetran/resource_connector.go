@@ -37,7 +37,7 @@ func resourceConnector() *schema.Resource {
 			"succeeded_at":       {Type: schema.TypeString, Computed: true},
 			"failed_at":          {Type: schema.TypeString, Computed: true},
 			"sync_frequency":     {Type: schema.TypeString, Required: true},
-			"daily_sync_time":    {Type: schema.TypeString, Required: true},
+			"daily_sync_time":    {Type: schema.TypeString, Optional: true},
 			"schedule_type":      {Type: schema.TypeString, Computed: true},
 			"trust_certificates": {Type: schema.TypeString, Optional: true},
 			"trust_fingerprints": {Type: schema.TypeString, Optional: true},
