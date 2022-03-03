@@ -5,7 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.3.3...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.3.4...HEAD)
+
+## [0.3.4](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.3.3...v0.3.4) - 2022-02-22
+
+## Fixed
+- `ConnectorConfigRequest.BaseUrl` missing field added
+- `ConnectorConfigRequest.EntityId` missing field added
+- `ConnectorConfigRequest.SoapUri` missing field added
+- `ConnectorConfigRequest.UserId` missing field added
+- `ConnectorConfigRequest.EncryptionKey` missing field added
+- `ConnectorCreateRequest.DailySyncTime` missing field added
 
 ## [0.3.3](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.3.2...v0.3.3) - 2022-02-22
 

@@ -23,6 +23,7 @@ func dataSourceConnector() *schema.Resource {
 			"succeeded_at":      {Type: schema.TypeString, Computed: true},
 			"failed_at":         {Type: schema.TypeString, Computed: true},
 			"sync_frequency":    {Type: schema.TypeString, Computed: true},
+			"daily_sync_time":   {Type: schema.TypeString, Computed: true},
 			"schedule_type":     {Type: schema.TypeString, Computed: true},
 			"paused":            {Type: schema.TypeString, Computed: true},
 			"pause_after_trial": {Type: schema.TypeString, Computed: true},
@@ -309,6 +310,11 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"is_new_package":                  {Type: schema.TypeString, Computed: true},
 				"is_multi_entity_feature_enabled": {Type: schema.TypeString, Computed: true},
 				"api_type":                        {Type: schema.TypeString, Computed: true},
+				"base_url":                        {Type: schema.TypeString, Computed: true},
+				"entity_id":                       {Type: schema.TypeString, Computed: true},
+				"soap_uri":                        {Type: schema.TypeString, Computed: true},
+				"user_id":                         {Type: schema.TypeString, Computed: true},
+				"encryption_key":                  {Type: schema.TypeString, Computed: true},
 			},
 		},
 	}
@@ -335,6 +341,7 @@ func dataSourceConnectorRead(ctx context.Context, d *schema.ResourceData, m inte
 	mapAddStr(msi, "succeeded_at", resp.Data.SucceededAt.String())
 	mapAddStr(msi, "failed_at", resp.Data.FailedAt.String())
 	mapAddStr(msi, "sync_frequency", intPointerToStr(resp.Data.SyncFrequency))
+	mapAddStr(msi, "daily_sync_time", resp.Data.DailySyncTime)
 	mapAddStr(msi, "schedule_type", resp.Data.ScheduleType)
 	mapAddStr(msi, "paused", boolPointerToStr(resp.Data.Paused))
 	mapAddStr(msi, "pause_after_trial", boolPointerToStr(resp.Data.PauseAfterTrial))
@@ -604,6 +611,11 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddXInterface(c, "adobe_analytics_configurations", dataSourceConnectorReadConfigFlattenAdobeAnalyticsConfigurations(resp))
 	mapAddStr(c, "is_multi_entity_feature_enabled", boolPointerToStr(resp.Data.Config.IsMultiEntityFeatureEnabled))
 	mapAddStr(c, "api_type", resp.Data.Config.ApiType)
+	mapAddStr(c, "base_url", resp.Data.Config.BaseUrl)
+	mapAddStr(c, "entity_id", resp.Data.Config.EntityId)
+	mapAddStr(c, "soap_uri", resp.Data.Config.SoapUri)
+	mapAddStr(c, "user_id", resp.Data.Config.UserId)
+	mapAddStr(c, "encryption_key", resp.Data.Config.EncryptionKey)
 	config[0] = c
 
 	return config
