@@ -37,6 +37,7 @@ func resourceConnector() *schema.Resource {
 			"succeeded_at":       {Type: schema.TypeString, Computed: true},
 			"failed_at":          {Type: schema.TypeString, Computed: true},
 			"sync_frequency":     {Type: schema.TypeString, Required: true},
+			"daily_sync_time":    {Type: schema.TypeString, Required: true},
 			"schedule_type":      {Type: schema.TypeString, Computed: true},
 			"trust_certificates": {Type: schema.TypeString, Optional: true},
 			"trust_fingerprints": {Type: schema.TypeString, Optional: true},
@@ -329,6 +330,11 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"last_synced_changes__utc_":       {Type: schema.TypeString, Computed: true},
 				"is_multi_entity_feature_enabled": {Type: schema.TypeString, Optional: true},
 				"api_type":                        {Type: schema.TypeString, Optional: true},
+				"base_url":                        {Type: schema.TypeString, Optional: true},
+				"entity_id":                       {Type: schema.TypeString, Optional: true},
+				"soap_uri":                        {Type: schema.TypeString, Optional: true},
+				"user_id":                         {Type: schema.TypeString, Optional: true},
+				"encryption_key":                  {Type: schema.TypeString, Optional: true},
 			},
 		},
 	}
@@ -369,6 +375,7 @@ func resourceConnectorCreate(ctx context.Context, d *schema.ResourceData, m inte
 	svc.Paused(strToBool(d.Get("paused").(string)))
 	svc.PauseAfterTrial(strToBool(d.Get("pause_after_trial").(string)))
 	svc.SyncFrequency(strToInt(d.Get("sync_frequency").(string)))
+	svc.DailySyncTime(d.Get("daily_sync_time").(string))
 	// When creating a connector, "schema" is sent on the "config" block. All other connector endpoints return
 	// "schema" outside of the "config" block. That's why "schema" is sent to the "config" block when creating
 	// a connector. T-114079.
@@ -407,6 +414,7 @@ func resourceConnectorRead(ctx context.Context, d *schema.ResourceData, m interf
 	mapAddStr(msi, "succeeded_at", resp.Data.SucceededAt.String())
 	mapAddStr(msi, "failed_at", resp.Data.FailedAt.String())
 	mapAddStr(msi, "sync_frequency", intPointerToStr(resp.Data.SyncFrequency))
+	mapAddStr(msi, "daily_sync_time", resp.Data.DailySyncTime)
 	mapAddStr(msi, "schedule_type", resp.Data.ScheduleType)
 	mapAddStr(msi, "paused", boolPointerToStr(resp.Data.Paused))
 	mapAddStr(msi, "pause_after_trial", boolPointerToStr(resp.Data.PauseAfterTrial))
@@ -1070,6 +1078,21 @@ func resourceConnectorCreateConfig(config []interface{}, schema string) *fivetra
 	if v := c["api_type"].(string); v != "" {
 		fivetranConfig.ApiType(v)
 	}
+	if v := c["base_url"].(string); v != "" {
+		fivetranConfig.BaseUrl(v)
+	}
+	if v := c["entity_id"].(string); v != "" {
+		fivetranConfig.EntityId(v)
+	}
+	if v := c["soap_uri"].(string); v != "" {
+		fivetranConfig.SoapUri(v)
+	}
+	if v := c["user_id"].(string); v != "" {
+		fivetranConfig.UserId(v)
+	}
+	if v := c["encryption_key"].(string); v != "" {
+		fivetranConfig.EncryptionKey(v)
+	}
 
 	return fivetranConfig
 }
@@ -1508,6 +1531,11 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddXInterface(c, "adobe_analytics_configurations", resourceConnectorReadConfigFlattenAdobeAnalyticsConfigurations(resp))
 	mapAddStr(c, "is_multi_entity_feature_enabled", boolPointerToStr(resp.Data.Config.IsMultiEntityFeatureEnabled))
 	mapAddStr(c, "api_type", resp.Data.Config.ApiType)
+	mapAddStr(c, "base_url", resp.Data.Config.BaseUrl)
+	mapAddStr(c, "entity_id", resp.Data.Config.EntityId)
+	mapAddStr(c, "soap_uri", resp.Data.Config.SoapUri)
+	mapAddStr(c, "user_id", resp.Data.Config.UserId)
+	mapAddStr(c, "encryption_key", resp.Data.Config.EncryptionKey)
 	config[0] = c
 
 	return config
