@@ -61,6 +61,8 @@ Optional:
 - `auth`
 - `auth_type` 
 - `bucket` 
+- `cluster_id`
+- `cluster_region`
 - `connection_type` 
 - `create_external_tables` 
 - `data_set_location` 
@@ -73,6 +75,7 @@ Optional:
 - `port`
 - `project_id`
 - `role_arn` 
+- `secret_key`
 - `server_host_name` 
 - `tunnel_host` 
 - `tunnel_port` 
