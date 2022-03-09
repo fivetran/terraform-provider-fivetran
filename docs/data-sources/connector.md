@@ -52,6 +52,7 @@ Read-Only:
 - `accounts` 
 - `action_breakdowns` 
 - `action_report_time` 
+- `adobe_analytics_configurations` - see [below for nested schema](#nestedblock--config--adobe_analytics_configurations)
 - `advertisables` 
 - `advertisers` 
 - `advertisers_id` 
@@ -62,6 +63,7 @@ Read-Only:
 - `api_quota` 
 - `api_secret` 
 - `api_token` 
+- `api_type`
 - `api_url` 
 - `api_version` 
 - `app_sync_mode` 
@@ -86,6 +88,7 @@ Read-Only:
 - `config_method` 
 - `config_type` 
 - `connection_string` 
+- `connection_type`
 - `consumer_group` 
 - `consumer_key` 
 - `consumer_secret` 
@@ -134,6 +137,8 @@ Read-Only:
 - `instance` 
 - `integration_key` 
 - `is_ftps` 
+- `is_multi_entity_feature_enabled`
+- `is_new_package`
 - `is_secure` 
 - `key` 
 - `last_synced_changes__utc_` 
@@ -233,6 +238,18 @@ Read-Only:
 - `username` 
 - `view_attribution_window` 
 - `view_through_attribution_window_size` 
+
+<a id="nestedblock--config--adobe_analytics_configurations"></a>
+### Nested Schema for `config.adobe_analytics_configurations`
+
+Read-Only:
+
+- `sync_mode` 
+- `report_suites` 
+- `elements` 
+- `metrics` 
+- `calculated_metrics` 
+- `segments` 
 
 <a id="nestedobjatt--config--custom_tables"></a>
 ### Nested Schema for `config.custom_tables`
