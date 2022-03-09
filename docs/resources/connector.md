@@ -101,7 +101,8 @@ Optional:
 - `archive_pattern` 
 - `auth_mode` 
 - `auth_type` 
-- `aws_region_code` 
+- `aws_region_code`
+- `base_url`
 - `breakdowns` 
 - `bucket` 
 - `bucket_name` 
@@ -138,9 +139,11 @@ Optional:
 - `domain_name` 
 - `elements` 
 - `email` 
-- `enable_all_dimension_combinations` 
+- `enable_all_dimension_combinations`
+- `encryption_key`
 - `endpoint` 
-- `engagement_attribution_window` 
+- `engagement_attribution_window`
+- `entity_id`  
 - `escape_char` 
 - `external_id` 
 - `fields` 
@@ -235,6 +238,7 @@ Optional:
 - `site_urls` 
 - `skip_after` 
 - `skip_before` 
+- `soap_uri` 
 - `source` 
 - `sub_domain` 
 - `subdomain` 
@@ -257,6 +261,7 @@ Optional:
 - `use_api_keys` 
 - `use_webhooks` 
 - `user` 
+- `user_id` 
 - `user_key` 
 - `user_name` 
 - `user_profiles` 
