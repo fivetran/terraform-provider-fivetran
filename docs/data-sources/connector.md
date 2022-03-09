@@ -25,6 +25,7 @@ data "fivetran_connector" "connector" {
 - `config` - see [below for nested schema](#nestedatt--config)
 - `connected_by` 
 - `created_at` 
+- `daily_sync_time` 
 - `failed_at` 
 - `group_id` 
 - `pause_after_trial` 
@@ -73,7 +74,8 @@ Read-Only:
 - `auth_mode` 
 - `auth_type` 
 - `authorization_method` 
-- `aws_region_code` 
+- `aws_region_code`
+- `base_url`
 - `breakdowns` 
 - `bucket` 
 - `bucket_name` 
@@ -110,9 +112,11 @@ Read-Only:
 - `domain_name` 
 - `elements` 
 - `email` 
-- `enable_all_dimension_combinations` 
+- `enable_all_dimension_combinations`
+- `encryption_key`
 - `endpoint` 
-- `engagement_attribution_window` 
+- `engagement_attribution_window`
+- `entity_id` 
 - `escape_char` 
 - `external_id` 
 - `fields` 
@@ -209,7 +213,8 @@ Read-Only:
 - `sid` 
 - `site_urls` 
 - `skip_after` 
-- `skip_before` 
+- `skip_before`
+- `soap_uri`
 - `source` 
 - `sub_domain` 
 - `subdomain` 
@@ -231,7 +236,8 @@ Read-Only:
 - `update_method` 
 - `use_api_keys` 
 - `use_webhooks` 
-- `user` 
+- `user`
+- `user_id`
 - `user_key` 
 - `user_name` 
 - `user_profiles` 
