@@ -375,7 +375,9 @@ func resourceConnectorCreate(ctx context.Context, d *schema.ResourceData, m inte
 	svc.Paused(strToBool(d.Get("paused").(string)))
 	svc.PauseAfterTrial(strToBool(d.Get("pause_after_trial").(string)))
 	svc.SyncFrequency(strToInt(d.Get("sync_frequency").(string)))
-	svc.DailySyncTime(d.Get("daily_sync_time").(string))
+	if d.Get("sync_frequency") == "1440" {
+		svc.DailySyncTime(d.Get("daily_sync_time").(string))
+	}
 	// When creating a connector, "schema" is sent on the "config" block. All other connector endpoints return
 	// "schema" outside of the "config" block. That's why "schema" is sent to the "config" block when creating
 	// a connector. T-114079.
@@ -414,7 +416,9 @@ func resourceConnectorRead(ctx context.Context, d *schema.ResourceData, m interf
 	mapAddStr(msi, "succeeded_at", resp.Data.SucceededAt.String())
 	mapAddStr(msi, "failed_at", resp.Data.FailedAt.String())
 	mapAddStr(msi, "sync_frequency", intPointerToStr(resp.Data.SyncFrequency))
-	mapAddStr(msi, "daily_sync_time", resp.Data.DailySyncTime)
+	if *resp.Data.SyncFrequency == 1440 {
+		mapAddStr(msi, "daily_sync_time", resp.Data.DailySyncTime)
+	}
 	mapAddStr(msi, "schedule_type", resp.Data.ScheduleType)
 	mapAddStr(msi, "paused", boolPointerToStr(resp.Data.Paused))
 	mapAddStr(msi, "pause_after_trial", boolPointerToStr(resp.Data.PauseAfterTrial))
