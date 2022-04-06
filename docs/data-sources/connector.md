@@ -58,6 +58,7 @@ Read-Only:
 - `advertisers` 
 - `advertisers_id` 
 - `aggregation` 
+- `always_encrypted` 
 - `api_access_token` 
 - `api_key` 
 - `api_keys` 

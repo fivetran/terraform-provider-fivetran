@@ -335,6 +335,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"soap_uri":                        {Type: schema.TypeString, Optional: true},
 				"user_id":                         {Type: schema.TypeString, Optional: true},
 				"encryption_key":                  {Type: schema.TypeString, Optional: true},
+				"always_encrypted":                {Type: schema.TypeString, Optional: true},
 			},
 		},
 	}
@@ -1097,6 +1098,9 @@ func resourceConnectorCreateConfig(config []interface{}, schema string) *fivetra
 	if v := c["encryption_key"].(string); v != "" {
 		fivetranConfig.EncryptionKey(v)
 	}
+	if v := c["always_encrypted"].(string); v != "" {
+		fivetranConfig.AlwaysEncrypted(strToBool(v))
+	}
 
 	return fivetranConfig
 }
@@ -1540,6 +1544,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddStr(c, "soap_uri", resp.Data.Config.SoapUri)
 	mapAddStr(c, "user_id", resp.Data.Config.UserId)
 	mapAddStr(c, "encryption_key", resp.Data.Config.EncryptionKey)
+	mapAddStr(c, "always_encrypted", boolPointerToStr(resp.Data.Config.AlwaysEncrypted))
 	config[0] = c
 
 	return config

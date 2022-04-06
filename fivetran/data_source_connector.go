@@ -315,6 +315,7 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"soap_uri":                        {Type: schema.TypeString, Computed: true},
 				"user_id":                         {Type: schema.TypeString, Computed: true},
 				"encryption_key":                  {Type: schema.TypeString, Computed: true},
+				"always_encrypted":                {Type: schema.TypeString, Computed: true},
 			},
 		},
 	}
@@ -616,6 +617,7 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddStr(c, "soap_uri", resp.Data.Config.SoapUri)
 	mapAddStr(c, "user_id", resp.Data.Config.UserId)
 	mapAddStr(c, "encryption_key", resp.Data.Config.EncryptionKey)
+	mapAddStr(c, "always_encrypted", boolPointerToStr(resp.Data.Config.AlwaysEncrypted))
 	config[0] = c
 
 	return config
