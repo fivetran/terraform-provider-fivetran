@@ -86,6 +86,7 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"s3role_arn":            {Type: schema.TypeString, Computed: true},
 				"abs_connection_string": {Type: schema.TypeString, Computed: true},
 				"abs_container_name":    {Type: schema.TypeString, Computed: true},
+				"folder_id":             {Type: schema.TypeString, Computed: true},
 				"ftp_host":              {Type: schema.TypeString, Computed: true},
 				"ftp_port":              {Type: schema.TypeString, Computed: true},
 				"ftp_user":              {Type: schema.TypeString, Computed: true},
@@ -436,6 +437,7 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddStr(c, "s3role_arn", resp.Data.Config.S3RoleArn)
 	mapAddStr(c, "abs_connection_string", resp.Data.Config.ABSConnectionString)
 	mapAddStr(c, "abs_container_name", resp.Data.Config.ABSContainerName)
+	mapAddStr(c, "folder_id", resp.Data.Config.FolderId)
 	mapAddStr(c, "ftp_host", resp.Data.Config.FTPHost)
 	mapAddStr(c, "ftp_port", intPointerToStr(resp.Data.Config.FTPPort))
 	mapAddStr(c, "ftp_user", resp.Data.Config.FTPUser)

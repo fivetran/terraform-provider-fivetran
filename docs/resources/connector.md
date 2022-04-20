@@ -151,6 +151,7 @@ Optional:
 - `file_type` 
 - `finance_account_sync_mode` 
 - `finance_accounts` 
+- `folder_id`
 - `ftp_host` 
 - `ftp_password` 
 - `ftp_port` 
