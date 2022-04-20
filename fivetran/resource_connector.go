@@ -105,6 +105,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"s3role_arn":            {Type: schema.TypeString, Optional: true},
 				"abs_connection_string": {Type: schema.TypeString, Optional: true},
 				"abs_container_name":    {Type: schema.TypeString, Optional: true},
+				"folder_id":             {Type: schema.TypeString, Optional: true},
 				"ftp_host":              {Type: schema.TypeString, Optional: true},
 				"ftp_port":              {Type: schema.TypeString, Optional: true},
 				"ftp_user":              {Type: schema.TypeString, Optional: true},
@@ -566,6 +567,9 @@ func resourceConnectorCreateConfig(config []interface{}, schema string) *fivetra
 	}
 	if v := c["abs_container_name"].(string); v != "" {
 		fivetranConfig.ABSContainerName(v)
+	}
+	if v := c["folder_id"].(string); v != "" {
+		fivetranConfig.FolderId(v)
 	}
 	if v := c["ftp_host"].(string); v != "" {
 		fivetranConfig.FTPHost(v)
@@ -1363,6 +1367,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddStr(c, "s3role_arn", resp.Data.Config.S3RoleArn)
 	mapAddStr(c, "abs_connection_string", resp.Data.Config.ABSConnectionString)
 	mapAddStr(c, "abs_container_name", resp.Data.Config.ABSContainerName)
+	mapAddStr(c, "folder_id", resp.Data.Config.FolderId)
 	mapAddStr(c, "ftp_host", resp.Data.Config.FTPHost)
 	mapAddStr(c, "ftp_port", intPointerToStr(resp.Data.Config.FTPPort))
 	mapAddStr(c, "ftp_user", resp.Data.Config.FTPUser)
