@@ -1278,13 +1278,13 @@ func resourceConnectorCreateAuthClientAccess(clientAccess []interface{}) *fivetr
 		fivetranAuthClientAccess.ClientID(v)
 	}
 	if v := ca["client_secret"].(string); v != "" {
-		fivetranAuthClientAccess.ClientID(v)
+		fivetranAuthClientAccess.ClientSecret(v)
 	}
 	if v := ca["user_agent"].(string); v != "" {
-		fivetranAuthClientAccess.ClientID(v)
+		fivetranAuthClientAccess.UserAgent(v)
 	}
 	if v := ca["developer_token"].(string); v != "" {
-		fivetranAuthClientAccess.ClientID(v)
+		fivetranAuthClientAccess.DeveloperToken(v)
 	}
 
 	return fivetranAuthClientAccess
