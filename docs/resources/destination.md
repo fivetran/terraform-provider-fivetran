@@ -13,7 +13,7 @@ resource "fivetran_destination" "dest" {
     group_id = fivetran_group.group.id
     service = "postgres_rds_warehouse"
     time_zone_offset = "0"
-    region = "EU"
+    region = "GCP_US_EAST4"
     trust_certificates = "true"
     trust_fingerprints = "true"
     run_setup_tests = "true"
@@ -35,7 +35,7 @@ resource "fivetran_destination" "dest" {
 
 - `config` - Destination setup configuration. The format is specific for each destination. (see [below for nested schema](#nestedblock--config))
 - `group_id` - The unique identifier for the group within the Fivetran system.
-- `region` - Data processing location. This is where Fivetran will operate and run computation on data.
+- `region` - Data processing location. This is where Fivetran will operate and run computation on data. See [Create destination](https://fivetran.com/docs/rest-api/destinations#payloadparameters) for details. Region also defines cloud service provider for your destination (GCP, AWS ar AZURE). 
 - `run_setup_tests` - Specifies whether setup tests should be run automatically.
 - `service` - The name for the destination type within the Fivetran system.
 - `time_zone_offset` - Determines the time zone for the Fivetran sync schedule.
