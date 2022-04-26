@@ -10,7 +10,7 @@ This is the official Terraform Provider for [Fivetran](https://fivetran.com).
 
 Make sure you read the Fivetran REST API [documentation](https://fivetran.com/docs/rest-api) before using the Provider.
 
-**NOTE**: The Fivetran Provider is still in [ALPHA](https://en.wikipedia.org/wiki/Software_release_life_cycle#Alpha) development stage. Future versions may introduce breaking changes. 
+**NOTE**: The Fivetran Provider is in [BETA](https://en.wikipedia.org/wiki/Software_release_life_cycle#Beta) development stage. Future versions may introduce minor changes and bug-fixes. 
 
 ## Example Usage
 
