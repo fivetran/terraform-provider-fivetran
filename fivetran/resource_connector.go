@@ -3,7 +3,6 @@ package fivetran
 import (
 	"context"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/fivetran/go-fivetran"
@@ -12,7 +11,7 @@ import (
 )
 
 func resourceConnector() *schema.Resource {
-	return &schema.Resource{
+	return &schema.Resource {
 		CreateContext: resourceConnectorCreate,
 		ReadContext:   resourceConnectorRead,
 		UpdateContext: resourceConnectorUpdate,
@@ -23,15 +22,8 @@ func resourceConnector() *schema.Resource {
 			"group_id":        {Type: schema.TypeString, Required: true, ForceNew: true},
 			"service":         {Type: schema.TypeString, Required: true, ForceNew: true},
 			"service_version": {Type: schema.TypeString, Computed: true},
-			"schema": {Type: schema.TypeString, Required: true, ForceNew: true,
-				//Justification: schema_table format mutate schema to `schema` +`.` + `config.table` we shouldn't trigger update for it.
-				DiffSuppressFunc: func(k, old string, new string, d *schema.ResourceData) bool {
-					if old != "" && new != "" {
-						return strings.HasPrefix(old, new)
-					}
-					return false
-				},
-			},
+			"destination_schema": resourceConnectorDestinationSchemaSchema(),
+			"name":               {Type: schema.TypeString, Computed: true},
 			"connected_by":       {Type: schema.TypeString, Computed: true},
 			"created_at":         {Type: schema.TypeString, Computed: true},
 			"succeeded_at":       {Type: schema.TypeString, Computed: true},
@@ -48,6 +40,19 @@ func resourceConnector() *schema.Resource {
 			"config":             resourceConnectorSchemaConfig(),
 			"auth":               resourceConnectorSchemaAuth(),
 			"last_updated":       {Type: schema.TypeString, Computed: true}, // internal
+		},
+	}
+}
+
+func resourceConnectorDestinationSchemaSchema() *schema.Schema {
+	return &schema.Schema{Type: schema.TypeList, Required: true,
+		MaxItems: 1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"name":                  {Type: schema.TypeString, Optional: true},
+				"table":                 {Type: schema.TypeString, Optional: true},
+				"prefix":                {Type: schema.TypeString, Optional: true},
+			},
 		},
 	}
 }
@@ -85,8 +90,6 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 	return &schema.Schema{Type: schema.TypeList, Required: true, MaxItems: 1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"schema":                {Type: schema.TypeString, Optional: true},
-				"table":                 {Type: schema.TypeString, Optional: true},
 				"sheet_id":              {Type: schema.TypeString, Optional: true},
 				"named_range":           {Type: schema.TypeString, Optional: true},
 				"client_id":             {Type: schema.TypeString, Optional: true},
@@ -119,7 +122,6 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"advertisables":         {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
 				"report_type":           {Type: schema.TypeString, Optional: true},
 				"dimensions":            {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"schema_prefix":         {Type: schema.TypeString, Optional: true},
 				"api_key":               {Type: schema.TypeString, Optional: true},
 				"external_id":           {Type: schema.TypeString, Optional: true},
 				"role_arn":              {Type: schema.TypeString, Optional: true},
@@ -147,7 +149,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				},
 				"auth_mode":                         {Type: schema.TypeString, Optional: true},
 				"username":                          {Type: schema.TypeString, Optional: true},
-				"password":                          {Type: schema.TypeString, Optional: true},
+				"password":                          {Type: schema.TypeString, Optional: true, Sensitive: true},
 				"certificate":                       {Type: schema.TypeString, Optional: true},
 				"selected_exports":                  {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
 				"consumer_group":                    {Type: schema.TypeString, Optional: true},
@@ -172,11 +174,11 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"secrets":                           {Type: schema.TypeString, Optional: true},
 				"container_name":                    {Type: schema.TypeString, Optional: true},
 				"connection_string":                 {Type: schema.TypeString, Optional: true},
-				"connection_type":                   {Type: schema.TypeString, Optional: true},
+				"connection_type":                   {Type: schema.TypeString, Computed: true},
 				"function_app":                      {Type: schema.TypeString, Optional: true},
 				"function_name":                     {Type: schema.TypeString, Optional: true},
 				"function_key":                      {Type: schema.TypeString, Optional: true},
-				"public_key":                        {Type: schema.TypeString, Optional: true},
+				"public_key":                        {Type: schema.TypeString, Computed: true},
 				"merchant_id":                       {Type: schema.TypeString, Optional: true},
 				"api_url":                           {Type: schema.TypeString, Optional: true},
 				"cloud_storage_type":                {Type: schema.TypeString, Optional: true},
@@ -336,7 +338,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"soap_uri":                        {Type: schema.TypeString, Optional: true},
 				"user_id":                         {Type: schema.TypeString, Optional: true},
 				"encryption_key":                  {Type: schema.TypeString, Optional: true},
-				"always_encrypted":                {Type: schema.TypeString, Optional: true},
+				"always_encrypted":                {Type: schema.TypeString, Optional: true, Computed: true},
 			},
 		},
 	}
@@ -380,10 +382,11 @@ func resourceConnectorCreate(ctx context.Context, d *schema.ResourceData, m inte
 	if d.Get("sync_frequency") == "1440" {
 		svc.DailySyncTime(d.Get("daily_sync_time").(string))
 	}
-	// When creating a connector, "schema" is sent on the "config" block. All other connector endpoints return
-	// "schema" outside of the "config" block. That's why "schema" is sent to the "config" block when creating
-	// a connector. T-114079.
-	svc.Config(resourceConnectorCreateConfig(d.Get("config").([]interface{}), d.Get("schema").(string)))
+
+	fivetranConfig := resourceConnectorUpdateConfig(d.Get("config").([]interface{}))
+
+	svc.Config(resourceConnectorCreateConfig(fivetranConfig, d.Get("destination_schema").([]interface{})))
+
 	svc.Auth(resourceConnectorCreateAuth(d.Get("auth").([]interface{})))
 
 	resp, err := svc.Do(ctx)
@@ -412,7 +415,8 @@ func resourceConnectorRead(ctx context.Context, d *schema.ResourceData, m interf
 	mapAddStr(msi, "group_id", resp.Data.GroupID)
 	mapAddStr(msi, "service", resp.Data.Service)
 	mapAddStr(msi, "service_version", intPointerToStr(resp.Data.ServiceVersion))
-	mapAddStr(msi, "schema", resp.Data.Schema)
+	mapAddStr(msi, "name", resp.Data.Schema)
+	mapAddXInterface(msi, "destination_schema", resourceConnectorReadDestinationSchema(resp.Data.Schema, resp.Data.Service))
 	mapAddStr(msi, "connected_by", resp.Data.ConnectedBy)
 	mapAddStr(msi, "created_at", resp.Data.CreatedAt.String())
 	mapAddStr(msi, "succeeded_at", resp.Data.SucceededAt.String())
@@ -463,7 +467,7 @@ func resourceConnectorUpdate(ctx context.Context, d *schema.ResourceData, m inte
 		svc.PauseAfterTrial(strToBool(d.Get("pause_after_trial").(string)))
 	}
 
-	svc.Config(resourceConnectorCreateConfig(d.Get("config").([]interface{}), ""))
+	svc.Config(resourceConnectorUpdateConfig(d.Get("config").([]interface{})))
 	svc.Auth(resourceConnectorCreateAuth(d.Get("auth").([]interface{})))
 
 	resp, err := svc.Do(ctx)
@@ -495,14 +499,9 @@ func resourceConnectorDelete(ctx context.Context, d *schema.ResourceData, m inte
 	return diags
 }
 
-func resourceConnectorCreateConfig(config []interface{}, schema string) *fivetran.ConnectorConfig {
+func resourceConnectorUpdateConfig(config []interface{}) *fivetran.ConnectorConfig {
 	fivetranConfig := fivetran.NewConnectorConfig()
-
-	// `schema` is checked because it shouldn't be set when func resourceConnectorUpdate is the caller
-	if schema != "" {
-		fivetranConfig.Schema(schema)
-	}
-
+	
 	if len(config) < 1 {
 		return fivetranConfig
 	}
@@ -511,9 +510,7 @@ func resourceConnectorCreateConfig(config []interface{}, schema string) *fivetra
 	}
 
 	c := config[0].(map[string]interface{})
-	if v := c["table"].(string); v != "" {
-		fivetranConfig.Table(v)
-	}
+
 	if v := c["sheet_id"].(string); v != "" {
 		fivetranConfig.SheetID(v)
 	}
@@ -609,9 +606,6 @@ func resourceConnectorCreateConfig(config []interface{}, schema string) *fivetra
 	}
 	if v := c["dimensions"].([]interface{}); len(v) > 0 {
 		fivetranConfig.Dimensions(xInterfaceStrXStr(v))
-	}
-	if v := c["schema_prefix"].(string); v != "" {
-		fivetranConfig.SchemaPrefix(v)
 	}
 	if v := c["api_key"].(string); v != "" {
 		fivetranConfig.APIKey(v)
@@ -745,9 +739,6 @@ func resourceConnectorCreateConfig(config []interface{}, schema string) *fivetra
 	if v := c["connection_string"].(string); v != "" {
 		fivetranConfig.ConnectionString(v)
 	}
-	if v := c["connection_type"].(string); v != "" {
-		fivetranConfig.ConnectionType(v)
-	}
 	if v := c["function_app"].(string); v != "" {
 		fivetranConfig.FunctionApp(v)
 	}
@@ -756,9 +747,6 @@ func resourceConnectorCreateConfig(config []interface{}, schema string) *fivetra
 	}
 	if v := c["function_key"].(string); v != "" {
 		fivetranConfig.FunctionKey(v)
-	}
-	if v := c["public_key"].(string); v != "" {
-		fivetranConfig.PublicKey(v)
 	}
 	if v := c["merchant_id"].(string); v != "" {
 		fivetranConfig.MerchantID(v)
@@ -1109,6 +1097,21 @@ func resourceConnectorCreateConfig(config []interface{}, schema string) *fivetra
 	return fivetranConfig
 }
 
+func resourceConnectorCreateConfig(fivetranConfig *fivetran.ConnectorConfig, destination_schema []interface{}) *fivetran.ConnectorConfig {
+	d := destination_schema[0].(map[string]interface{})
+	if v := d["name"].(string); v != "" {
+		fivetranConfig.Schema(v)
+	}
+	if v := d["table"].(string); v != "" {
+		fivetranConfig.Table(v)
+	}
+	if v := d["prefix"].(string); v != "" {
+		fivetranConfig.SchemaPrefix(v)
+	}
+
+	return fivetranConfig
+}
+
 func resourceConnectorCreateConfigProjectCredentials(xi []interface{}) []*fivetran.ConnectorConfigProjectCredentials {
 	projectCredentials := make([]*fivetran.ConnectorConfigProjectCredentials, len(xi))
 	for i, v := range xi {
@@ -1290,6 +1293,10 @@ func resourceConnectorCreateAuthClientAccess(clientAccess []interface{}) *fivetr
 	return fivetranAuthClientAccess
 }
 
+func resourceConnectorReadDestinationSchema(schema string, service string) []interface{} {
+	return readDestinationSchema(schema, service)
+}
+
 // resourceConnectorReadStatus receives a *fivetran.ConnectorDetailsResponse and returns a []interface{}
 // containing the data type accepted by the "status" list.
 func resourceConnectorReadStatus(resp *fivetran.ConnectorDetailsResponse) []interface{} {
@@ -1347,8 +1354,6 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	config := make([]interface{}, 1)
 
 	c := make(map[string]interface{})
-	mapAddStr(c, "schema", resp.Data.Config.Schema)
-	mapAddStr(c, "table", resp.Data.Config.Table)
 	mapAddStr(c, "sheet_id", resp.Data.Config.SheetID)
 	mapAddStr(c, "named_range", resp.Data.Config.NamedRange)
 	mapAddStr(c, "client_id", resp.Data.Config.ClientID)
@@ -1381,7 +1386,6 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddXInterface(c, "advertisables", xStrXInterface(resp.Data.Config.Advertisables))
 	mapAddStr(c, "report_type", resp.Data.Config.ReportType)
 	mapAddXInterface(c, "dimensions", xStrXInterface(resp.Data.Config.Dimensions))
-	mapAddStr(c, "schema_prefix", resp.Data.Config.SchemaPrefix)
 	mapAddStr(c, "api_key", resp.Data.Config.APIKey)
 	mapAddStr(c, "external_id", resp.Data.Config.ExternalID)
 	mapAddStr(c, "role_arn", resp.Data.Config.RoleArn)
@@ -1401,7 +1405,13 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddXInterface(c, "project_credentials", resourceConnectorReadConfigFlattenProjectCredentials(resp, currentConfig))
 	mapAddStr(c, "auth_mode", resp.Data.Config.AuthMode)
 	mapAddStr(c, "username", resp.Data.Config.UserName)
-	mapAddStr(c, "password", resp.Data.Config.Password)
+	
+	if len(currentConfig) > 0 {
+		mapAddStr(c, "password", currentConfig[0].(map[string]interface{})["password"].(string))
+	}
+	
+	
+	
 	mapAddStr(c, "certificate", resp.Data.Config.Certificate)
 	mapAddXInterface(c, "selected_exports", xStrXInterface(resp.Data.Config.SelectedExports))
 	mapAddStr(c, "consumer_group", resp.Data.Config.ConsumerGroup)
