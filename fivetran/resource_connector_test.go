@@ -60,7 +60,7 @@ func TestResourceConnectorE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.sync_state", "paused"),
 
 					//schema_table format mutate schema to `schema` +`.` + `config.table` 
-					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "schema", "google_sheets_schema.table"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "google_sheets_schema.table"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "sync_frequency", "5"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "paused", "true"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "pause_after_trial", "true"),
@@ -118,7 +118,7 @@ func TestResourceConnectorE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.sync_state", "scheduled"),
 
 					//schema_table format mutate schema to `schema` +`.` + `config.table` 
-					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "schema", "google_sheets_schema.table"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "google_sheets_schema.table"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "sync_frequency", "15"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "paused", "false"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "pause_after_trial", "false"),
