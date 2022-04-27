@@ -289,7 +289,7 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"organizations":                        {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
 				"swipe_attribution_window":             {Type: schema.TypeString, Computed: true},
 				"api_access_token":                     {Type: schema.TypeString, Computed: true},
-				"account_ids":                          {Type: schema.TypeString, Computed: true},
+				"account_ids":                          {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
 				"sid":                                  {Type: schema.TypeString, Computed: true},
 				"secret":                               {Type: schema.TypeString, Computed: true},
 				"oauth_token":                          {Type: schema.TypeString, Computed: true},
@@ -568,7 +568,7 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddStr(c, "view_through_attribution_window_size", resp.Data.Config.ViewThroughAttributionWindowSize)
 	mapAddStr(c, "post_click_attribution_window_size", resp.Data.Config.PostClickAttributionWindowSize)
 	mapAddStr(c, "use_api_keys", resp.Data.Config.UseAPIKeys)
-	mapAddStr(c, "api_keys", resp.Data.Config.APIKeys)
+	mapAddXInterface(c, "api_keys", xStrXInterface(resp.Data.Config.APIKeys))
 	mapAddStr(c, "endpoint", resp.Data.Config.Endpoint)
 	mapAddStr(c, "identity", resp.Data.Config.Identity)
 	mapAddStr(c, "api_quota", intPointerToStr(resp.Data.Config.APIQuota))
@@ -605,7 +605,7 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddXInterface(c, "organizations", xStrXInterface(resp.Data.Config.Organizations))
 	mapAddStr(c, "swipe_attribution_window", resp.Data.Config.SwipeAttributionWindow)
 	mapAddStr(c, "api_access_token", resp.Data.Config.APIAccessToken)
-	mapAddStr(c, "account_ids", resp.Data.Config.AccountIDs)
+	mapAddXInterface(c, "account_ids", xStrXInterface(resp.Data.Config.AccountIDs))
 	mapAddStr(c, "sid", resp.Data.Config.SID)
 	mapAddStr(c, "secret", resp.Data.Config.Secret)
 	mapAddStr(c, "oauth_token", resp.Data.Config.OauthToken)

@@ -284,9 +284,9 @@ Read-Only:
 
 Optional:
 
-- `name` - required for all connectors instead of db-like connectors, represents `config.schema`
-- `table` - required for some non db-like connectors, represents `config.table`
-- `prefix` - required only for db-like connectors, represents `config.schema_prefix`
+- `name` - required for all connectors instead of db-like connectors, represents `config.schema` field.
+- `table` - required for some non db-like connectors, represents `config.table` field.
+- `prefix` - required only for db-like connectors, represents `config.schema_prefix` field.
 
 See [Connector Config](https://fivetran.com/docs/rest-api/connectors/config) for details.
 
