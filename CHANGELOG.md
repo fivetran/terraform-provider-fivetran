@@ -16,9 +16,13 @@ Considering this version as BETA
 - Changes in `destination_schema` leads to resource replacement
 
 ## Fixed
-- Fixed auth fields mapping in `client_access` schema
 - All sensitive fields marked as sensitive in connector_resource
 - Minor connector resource fixes
+
+## [0.3.6](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.3.5...v0.3.6) - 2022-04-26
+
+## Fixed
+- Fixed auth fields mapping in `client_access` schema
 
 ## [0.3.5](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.3.4...v0.3.5) - 2022-04-20
 
