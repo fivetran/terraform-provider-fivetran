@@ -26,13 +26,15 @@ func TestResourceConnectorE2E(t *testing.T) {
 					provider = fivetran-provider
 					lifecycle {` +
 					//Ignoring `auth_type` cause it returned by default but is abcent in config
-					//Ignoring `table` cause it specified in config but doesn't exist in responce.
 					`		
-						ignore_changes = ["config[0].auth_type","config[0].table"]
+						ignore_changes = ["config[0].auth_type"]
 					}
 					group_id = fivetran_group.test_group.id
 					service = "google_sheets"
-					schema = "google_sheets_schema"
+					destination_schema {
+						name = "google_sheets_schema"
+						table = "table"
+					}
 					sync_frequency = 5
 					paused = true
 					pause_after_trial = true
@@ -41,7 +43,6 @@ func TestResourceConnectorE2E(t *testing.T) {
 					run_setup_tests = false
 			
 					config {
-						table = "table"
 						sheet_id = "1Rmq_FN2kTNwWiT4adZKBxHBRmvfeBTIfKWi5B8ii9qk"
 						named_range = "range"
 					}
@@ -59,7 +60,7 @@ func TestResourceConnectorE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.sync_state", "paused"),
 
 					//schema_table format mutate schema to `schema` +`.` + `config.table` 
-					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "schema", "google_sheets_schema.table"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "google_sheets_schema.table"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "sync_frequency", "5"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "paused", "true"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "pause_after_trial", "true"),
@@ -87,7 +88,12 @@ func TestResourceConnectorE2E(t *testing.T) {
 					}
 					group_id = fivetran_group.test_group.id
 					service = "google_sheets"
-					schema = "google_sheets_schema"
+
+					destination_schema {
+						name = "google_sheets_schema"
+						table = "table"
+					}
+					
 					sync_frequency = 15
 					paused = false
 					pause_after_trial = false
@@ -113,7 +119,7 @@ func TestResourceConnectorE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.sync_state", "scheduled"),
 
 					//schema_table format mutate schema to `schema` +`.` + `config.table` 
-					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "schema", "google_sheets_schema.table"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "google_sheets_schema.table"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "sync_frequency", "15"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "paused", "false"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "pause_after_trial", "false"),

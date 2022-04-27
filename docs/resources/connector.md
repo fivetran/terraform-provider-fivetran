@@ -15,7 +15,10 @@ resource "fivetran_connector" "amplitude" {
     sync_frequency = 60
     paused = false
     pause_after_trial = false
-    schema = "amplitude_connector"
+
+    destination_schema {
+        name = "amplitude_connector"
+    } 
 
     config {
         project_credentials {
@@ -41,7 +44,7 @@ resource "fivetran_connector" "amplitude" {
 - `group_id` - The unique identifier for the group within the Fivetran system.
 - `pause_after_trial` - Specifies whether the connector should be paused after the free trial period has ended.
 - `paused` - Specifies whether the connector is paused.
-- `schema` - The connector schema name has to be unique within the group.
+- `destination_schema` - The connector destination schema configuration. Defines connector schema identity in destination. (see [below for nested schema](#nestedblock--schema)) 
 - `service` - The name for the connector type within the Fivetran system.
 - `sync_frequency` - The connector sync frequency in minutes. The supported values are: `5`, `15`, `30`, `60`, `120`, `180`, `360`, `480`, `720`, `1440`.
 
@@ -59,6 +62,7 @@ resource "fivetran_connector" "amplitude" {
 - `failed_at` 
 - `id` 
 - `last_updated` 
+- `name`
 - `schedule_type` 
 - `service_version` 
 - `status` - (see [below for nested schema](#nestedatt--status))
@@ -220,8 +224,6 @@ Optional:
 - `s3role_arn` 
 - `sales_account_sync_mode` 
 - `sales_accounts` 
-- `schema` 
-- `schema_prefix` 
 - `secret` 
 - `secret_key` 
 - `secrets` 
@@ -249,7 +251,6 @@ Optional:
 - `sync_format` 
 - `sync_mode` 
 - `sync_type` 
-- `table` 
 - `technical_account_id` 
 - `test_table_name` 
 - `time_zone` 
@@ -277,6 +278,17 @@ Read-Only:
 - `last_synced_changes__utc_` 
 - `latest_version` 
 - `service_version` 
+
+<a id="nestedblock--schema"></a>
+### Nested Schema for `destination-schema`
+
+Optional:
+
+- `name` - required for all connectors instead of db-like connectors, represents `config.schema` field.
+- `table` - required for some non db-like connectors, represents `config.table` field.
+- `prefix` - required only for db-like connectors, represents `config.schema_prefix` field.
+
+See [Connector Config](https://fivetran.com/docs/rest-api/connectors/config) for details.
 
 <a id="nestedblock--config--adobe_analytics_configurations"></a>
 ### Nested Schema for `config.adobe_analytics_configurations`

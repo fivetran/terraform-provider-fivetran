@@ -9,10 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.4.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.3.6...v0.4.0) - 2022-05-04
 
-- Considering this version as BETA
+Considering this version as BETA
+
+## Features
+- New `destination_schema` field for determining `schema`, `table` and `schema_prefix` outside `config` to prevent drifting changes.
+- Changes in `destination_schema` leads to resource replacement
+
+## Fixed
+- All sensitive fields marked as sensitive in connector_resource
+- Minor connector resource fixes
 
 ## [0.3.6](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.3.5...v0.3.6) - 2022-04-26
 
+## Fixed
 - Fixed auth fields mapping in `client_access` schema
 
 ## [0.3.5](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.3.4...v0.3.5) - 2022-04-20

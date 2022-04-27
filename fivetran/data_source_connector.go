@@ -17,7 +17,8 @@ func dataSourceConnector() *schema.Resource {
 			"group_id":          {Type: schema.TypeString, Computed: true},
 			"service":           {Type: schema.TypeString, Computed: true},
 			"service_version":   {Type: schema.TypeString, Computed: true},
-			"schema":            {Type: schema.TypeString, Computed: true},
+			"name":              {Type: schema.TypeString, Computed: true},
+			"destination_schema":dataSourceConnectorDestinationSchemaSchema(),
 			"connected_by":      {Type: schema.TypeString, Computed: true},
 			"created_at":        {Type: schema.TypeString, Computed: true},
 			"succeeded_at":      {Type: schema.TypeString, Computed: true},
@@ -29,6 +30,19 @@ func dataSourceConnector() *schema.Resource {
 			"pause_after_trial": {Type: schema.TypeString, Computed: true},
 			"status":            dataSourceConnectorSchemaStatus(),
 			"config":            dataSourceConnectorSchemaConfig(),
+		},
+	}
+}
+
+
+func dataSourceConnectorDestinationSchemaSchema() *schema.Schema {
+	return &schema.Schema{Type: schema.TypeList, Computed: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"name":                  {Type: schema.TypeString, Computed: true},
+				"table":                 {Type: schema.TypeString, Computed: true},
+				"prefix":                {Type: schema.TypeString, Computed: true},
+			},
 		},
 	}
 }
@@ -66,7 +80,6 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 	return &schema.Schema{Type: schema.TypeList, Computed: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"schema":                {Type: schema.TypeString, Computed: true},
 				"table":                 {Type: schema.TypeString, Computed: true},
 				"sheet_id":              {Type: schema.TypeString, Computed: true},
 				"named_range":           {Type: schema.TypeString, Computed: true},
@@ -100,7 +113,6 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"advertisables":         {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
 				"report_type":           {Type: schema.TypeString, Computed: true},
 				"dimensions":            {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"schema_prefix":         {Type: schema.TypeString, Computed: true},
 				"api_key":               {Type: schema.TypeString, Computed: true},
 				"external_id":           {Type: schema.TypeString, Computed: true},
 				"role_arn":              {Type: schema.TypeString, Computed: true},
@@ -277,7 +289,7 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"organizations":                        {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
 				"swipe_attribution_window":             {Type: schema.TypeString, Computed: true},
 				"api_access_token":                     {Type: schema.TypeString, Computed: true},
-				"account_ids":                          {Type: schema.TypeString, Computed: true},
+				"account_ids":                          {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
 				"sid":                                  {Type: schema.TypeString, Computed: true},
 				"secret":                               {Type: schema.TypeString, Computed: true},
 				"oauth_token":                          {Type: schema.TypeString, Computed: true},
@@ -337,7 +349,8 @@ func dataSourceConnectorRead(ctx context.Context, d *schema.ResourceData, m inte
 	mapAddStr(msi, "group_id", resp.Data.GroupID)
 	mapAddStr(msi, "service", resp.Data.Service)
 	mapAddStr(msi, "service_version", intPointerToStr(resp.Data.ServiceVersion))
-	mapAddStr(msi, "schema", resp.Data.Schema)
+    mapAddStr(msi, "name", resp.Data.Schema)
+	mapAddXInterface(msi, "destination_schema", dataSourceConnectorReadDestinationSchema(resp.Data.Schema, resp.Data.Service))
 	mapAddStr(msi, "connected_by", resp.Data.ConnectedBy)
 	mapAddStr(msi, "created_at", resp.Data.CreatedAt.String())
 	mapAddStr(msi, "succeeded_at", resp.Data.SucceededAt.String())
@@ -358,6 +371,10 @@ func dataSourceConnectorRead(ctx context.Context, d *schema.ResourceData, m inte
 	d.SetId(resp.Data.ID)
 
 	return diags
+}
+
+func dataSourceConnectorReadDestinationSchema(schema string, service string) []interface{} {
+	return readDestinationSchema(schema, service)
 }
 
 // dataSourceConnectorReadStatus receives a *fivetran.ConnectorDetailsResponse and returns a []interface{}
@@ -417,8 +434,6 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	config := make([]interface{}, 1)
 
 	c := make(map[string]interface{})
-	mapAddStr(c, "schema", resp.Data.Config.Schema)
-	mapAddStr(c, "table", resp.Data.Config.Table)
 	mapAddStr(c, "sheet_id", resp.Data.Config.SheetID)
 	mapAddStr(c, "named_range", resp.Data.Config.NamedRange)
 	mapAddStr(c, "client_id", resp.Data.Config.ClientID)
@@ -451,7 +466,6 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddXInterface(c, "advertisables", xStrXInterface(resp.Data.Config.Advertisables))
 	mapAddStr(c, "report_type", resp.Data.Config.ReportType)
 	mapAddXInterface(c, "dimensions", xStrXInterface(resp.Data.Config.Dimensions))
-	mapAddStr(c, "schema_prefix", resp.Data.Config.SchemaPrefix)
 	mapAddStr(c, "api_key", resp.Data.Config.APIKey)
 	mapAddStr(c, "external_id", resp.Data.Config.ExternalID)
 	mapAddStr(c, "role_arn", resp.Data.Config.RoleArn)
@@ -554,7 +568,7 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddStr(c, "view_through_attribution_window_size", resp.Data.Config.ViewThroughAttributionWindowSize)
 	mapAddStr(c, "post_click_attribution_window_size", resp.Data.Config.PostClickAttributionWindowSize)
 	mapAddStr(c, "use_api_keys", resp.Data.Config.UseAPIKeys)
-	mapAddStr(c, "api_keys", resp.Data.Config.APIKeys)
+	mapAddXInterface(c, "api_keys", xStrXInterface(resp.Data.Config.APIKeys))
 	mapAddStr(c, "endpoint", resp.Data.Config.Endpoint)
 	mapAddStr(c, "identity", resp.Data.Config.Identity)
 	mapAddStr(c, "api_quota", intPointerToStr(resp.Data.Config.APIQuota))
@@ -591,7 +605,7 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddXInterface(c, "organizations", xStrXInterface(resp.Data.Config.Organizations))
 	mapAddStr(c, "swipe_attribution_window", resp.Data.Config.SwipeAttributionWindow)
 	mapAddStr(c, "api_access_token", resp.Data.Config.APIAccessToken)
-	mapAddStr(c, "account_ids", resp.Data.Config.AccountIDs)
+	mapAddXInterface(c, "account_ids", xStrXInterface(resp.Data.Config.AccountIDs))
 	mapAddStr(c, "sid", resp.Data.Config.SID)
 	mapAddStr(c, "secret", resp.Data.Config.Secret)
 	mapAddStr(c, "oauth_token", resp.Data.Config.OauthToken)

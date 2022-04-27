@@ -28,15 +28,25 @@ data "fivetran_connector" "connector" {
 - `daily_sync_time` 
 - `failed_at` 
 - `group_id` 
+- `name`
 - `pause_after_trial` 
 - `paused` 
 - `schedule_type` 
-- `schema` 
+- `destination_schema` - see [below for nested schema](#nestedatt--schema) 
 - `service` 
 - `service_version` 
 - `status` - see [below for nested schema](#nestedatt--status)
 - `succeeded_at` 
 - `sync_frequency` 
+
+<a id="nestedatt--schema"></a>
+### Nested Schema for `destination_schema`
+
+Read-Only:
+
+- `name`
+- `table`
+- `prefix`
 
 <a id="nestedatt--config"></a>
 ### Nested Schema for `config`
@@ -195,8 +205,6 @@ Read-Only:
 - `s3role_arn` 
 - `sales_account_sync_mode` 
 - `sales_accounts` 
-- `schema` 
-- `schema_prefix` 
 - `secret` 
 - `secret_key` 
 - `secrets` 
@@ -225,7 +233,6 @@ Read-Only:
 - `sync_format` 
 - `sync_mode` 
 - `sync_type` 
-- `table` 
 - `technical_account_id` 
 - `test_table_name` 
 - `time_zone` 
