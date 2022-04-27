@@ -91,6 +91,7 @@ func TestResourceConnectorE2E(t *testing.T) {
 
 					destination_schema {
 						name = "google_sheets_schema"
+						table = "table"
 					}
 					
 					sync_frequency = 15
