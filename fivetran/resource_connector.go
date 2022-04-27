@@ -49,9 +49,9 @@ func resourceConnectorDestinationSchemaSchema() *schema.Schema {
 		MaxItems: 1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"name":                  {Type: schema.TypeString, Optional: true},
-				"table":                 {Type: schema.TypeString, Optional: true},
-				"prefix":                {Type: schema.TypeString, Optional: true},
+				"name":                  {Type: schema.TypeString, Optional: true, ForceNew: true},
+				"table":                 {Type: schema.TypeString, Optional: true, ForceNew: true},
+				"prefix":                {Type: schema.TypeString, Optional: true, ForceNew: true},
 			},
 		},
 	}
@@ -436,6 +436,8 @@ func resourceConnectorRead(ctx context.Context, d *schema.ResourceData, m interf
 	mapAddStr(msi, "sync_frequency", intPointerToStr(resp.Data.SyncFrequency))
 	if *resp.Data.SyncFrequency == 1440 {
 		mapAddStr(msi, "daily_sync_time", resp.Data.DailySyncTime)
+	} else {
+		mapAddStr(msi, "daily_sync_time", d.Get("daily_sync_time").(string))
 	}
 	mapAddStr(msi, "schedule_type", resp.Data.ScheduleType)
 	mapAddStr(msi, "paused", boolPointerToStr(resp.Data.Paused))
