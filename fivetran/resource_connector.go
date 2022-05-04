@@ -11,17 +11,17 @@ import (
 )
 
 func resourceConnector() *schema.Resource {
-	return &schema.Resource {
+	return &schema.Resource{
 		CreateContext: resourceConnectorCreate,
 		ReadContext:   resourceConnectorRead,
 		UpdateContext: resourceConnectorUpdate,
 		DeleteContext: resourceConnectorDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
 		Schema: map[string]*schema.Schema{
-			"id":              {Type: schema.TypeString, Computed: true},
-			"group_id":        {Type: schema.TypeString, Required: true, ForceNew: true},
-			"service":         {Type: schema.TypeString, Required: true, ForceNew: true},
-			"service_version": {Type: schema.TypeString, Computed: true},
+			"id":                 {Type: schema.TypeString, Computed: true},
+			"group_id":           {Type: schema.TypeString, Required: true, ForceNew: true},
+			"service":            {Type: schema.TypeString, Required: true, ForceNew: true},
+			"service_version":    {Type: schema.TypeString, Computed: true},
 			"destination_schema": resourceConnectorDestinationSchemaSchema(),
 			"name":               {Type: schema.TypeString, Computed: true},
 			"connected_by":       {Type: schema.TypeString, Computed: true},
@@ -49,9 +49,9 @@ func resourceConnectorDestinationSchemaSchema() *schema.Schema {
 		MaxItems: 1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"name":                  {Type: schema.TypeString, Optional: true, ForceNew: true},
-				"table":                 {Type: schema.TypeString, Optional: true, ForceNew: true},
-				"prefix":                {Type: schema.TypeString, Optional: true, ForceNew: true},
+				"name":   {Type: schema.TypeString, Optional: true, ForceNew: true},
+				"table":  {Type: schema.TypeString, Optional: true, ForceNew: true},
+				"prefix": {Type: schema.TypeString, Optional: true, ForceNew: true},
 			},
 		},
 	}
@@ -91,213 +91,213 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				// Readonly config fields
-				"latest_version":                  		{Type: schema.TypeString, Computed: true},
-				"authorization_method":            		{Type: schema.TypeString, Computed: true},
-				"service_version":                 		{Type: schema.TypeString, Computed: true},
-				"last_synced_changes__utc_":       		{Type: schema.TypeString, Computed: true},
-				"connection_type":                   	{Type: schema.TypeString, Computed: true},
+				"latest_version":            {Type: schema.TypeString, Computed: true},
+				"authorization_method":      {Type: schema.TypeString, Computed: true},
+				"service_version":           {Type: schema.TypeString, Computed: true},
+				"last_synced_changes__utc_": {Type: schema.TypeString, Computed: true},
+				"connection_type":           {Type: schema.TypeString, Computed: true},
 
 				// Sensitive config fields, Fivetran returns this fields masked
-				"oauth_token":                          {Type: schema.TypeString, Optional: true, Sensitive: true},
-				"oauth_token_secret":                   {Type: schema.TypeString, Optional: true, Sensitive: true},
-				"consumer_key":                         {Type: schema.TypeString, Optional: true, Sensitive: true},
-				"client_secret":         				{Type: schema.TypeString, Optional: true, Sensitive: true},
-				"private_key":           				{Type: schema.TypeString, Optional: true, Sensitive: true},
-				"s3role_arn":            				{Type: schema.TypeString, Optional: true, Sensitive: true},
-				"ftp_password":          				{Type: schema.TypeString, Optional: true, Sensitive: true},
-				"sftp_password":         				{Type: schema.TypeString, Optional: true, Sensitive: true},
-				"api_key":               				{Type: schema.TypeString, Optional: true, Sensitive: true},
-				"role_arn":              				{Type: schema.TypeString, Optional: true, Sensitive: true},
-				"password":              				{Type: schema.TypeString, Optional: true, Sensitive: true},
-				"secret_key":            				{Type: schema.TypeString, Optional: true, Sensitive: true},
-				"pem_certificate":       				{Type: schema.TypeString, Optional: true, Sensitive: true},
-				"access_token":                         {Type: schema.TypeString, Optional: true, Sensitive: true},
-				"api_secret":                           {Type: schema.TypeString, Optional: true, Sensitive: true},
-				"api_access_token":                     {Type: schema.TypeString, Optional: true, Sensitive: true},
-				"secret":                               {Type: schema.TypeString, Optional: true, Sensitive: true},
-				"consumer_secret":                      {Type: schema.TypeString, Optional: true, Sensitive: true},
-				"secrets":                           	{Type: schema.TypeString, Optional: true, Sensitive: true},
-				"api_token":                            {Type: schema.TypeString, Optional: true, Sensitive: true},
-				"encryption_key":                  		{Type: schema.TypeString, Optional: true, Sensitive: true},
+				"oauth_token":        {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"oauth_token_secret": {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"consumer_key":       {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"client_secret":      {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"private_key":        {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"s3role_arn":         {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"ftp_password":       {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"sftp_password":      {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"api_key":            {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"role_arn":           {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"password":           {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"secret_key":         {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"pem_certificate":    {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"access_token":       {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"api_secret":         {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"api_access_token":   {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"secret":             {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"consumer_secret":    {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"secrets":            {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"api_token":          {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"encryption_key":     {Type: schema.TypeString, Optional: true, Sensitive: true},
 
 				// Fields that are always have default value (and should be marked as Computed to prevent drifting)
 				// Boolean values
-				"is_ftps":               				{Type: schema.TypeString, Optional: true, Computed: true},
-				"sftp_is_key_pair":      				{Type: schema.TypeString, Optional: true, Computed: true},
-				"sync_data_locker":                  	{Type: schema.TypeString, Optional: true, Computed: true},
-				"enable_all_dimension_combinations": 	{Type: schema.TypeString, Optional: true, Computed: true},
-				"update_config_on_each_sync":           {Type: schema.TypeString, Optional: true, Computed: true},
-				"on_premise":                           {Type: schema.TypeString, Optional: true, Computed: true},
-				"use_api_keys":                         {Type: schema.TypeString, Optional: true, Computed: true},
-				"is_new_package": 				   		{Type: schema.TypeString, Optional: true, Computed: true},
-				"is_multi_entity_feature_enabled": 		{Type: schema.TypeString, Optional: true, Computed: true},
-				"always_encrypted":                		{Type: schema.TypeString, Optional: true, Computed: true},
-				"is_secure":            				{Type: schema.TypeString, Optional: true, Computed: true},
-				"use_webhooks":         				{Type: schema.TypeString, Optional: true, Computed: true},
+				"is_ftps":                           {Type: schema.TypeString, Optional: true, Computed: true},
+				"sftp_is_key_pair":                  {Type: schema.TypeString, Optional: true, Computed: true},
+				"sync_data_locker":                  {Type: schema.TypeString, Optional: true, Computed: true},
+				"enable_all_dimension_combinations": {Type: schema.TypeString, Optional: true, Computed: true},
+				"update_config_on_each_sync":        {Type: schema.TypeString, Optional: true, Computed: true},
+				"on_premise":                        {Type: schema.TypeString, Optional: true, Computed: true},
+				"use_api_keys":                      {Type: schema.TypeString, Optional: true, Computed: true},
+				"is_new_package":                    {Type: schema.TypeString, Optional: true, Computed: true},
+				"is_multi_entity_feature_enabled":   {Type: schema.TypeString, Optional: true, Computed: true},
+				"always_encrypted":                  {Type: schema.TypeString, Optional: true, Computed: true},
+				"is_secure":                         {Type: schema.TypeString, Optional: true, Computed: true},
+				"use_webhooks":                      {Type: schema.TypeString, Optional: true, Computed: true},
 				// Enum values
-				"sync_mode":             				{Type: schema.TypeString, Optional: true, Computed: true},
-				"date_granularity":      				{Type: schema.TypeString, Optional: true, Computed: true},
-				"timeframe_months":      				{Type: schema.TypeString, Optional: true, Computed: true},
-				"report_type":          				{Type: schema.TypeString, Optional: true, Computed: true},
-				"aggregation":                       	{Type: schema.TypeString, Optional: true, Computed: true},
-				"config_type":                       	{Type: schema.TypeString, Optional: true, Computed: true},
-				"prebuilt_report":                   	{Type: schema.TypeString, Optional: true, Computed: true},
-				"action_report_time":                	{Type: schema.TypeString, Optional: true, Computed: true},
-				"click_attribution_window":          	{Type: schema.TypeString, Optional: true, Computed: true},
-				"view_attribution_window":           	{Type: schema.TypeString, Optional: true, Computed: true},
+				"sync_mode":                            {Type: schema.TypeString, Optional: true, Computed: true},
+				"date_granularity":                     {Type: schema.TypeString, Optional: true, Computed: true},
+				"timeframe_months":                     {Type: schema.TypeString, Optional: true, Computed: true},
+				"report_type":                          {Type: schema.TypeString, Optional: true, Computed: true},
+				"aggregation":                          {Type: schema.TypeString, Optional: true, Computed: true},
+				"config_type":                          {Type: schema.TypeString, Optional: true, Computed: true},
+				"prebuilt_report":                      {Type: schema.TypeString, Optional: true, Computed: true},
+				"action_report_time":                   {Type: schema.TypeString, Optional: true, Computed: true},
+				"click_attribution_window":             {Type: schema.TypeString, Optional: true, Computed: true},
+				"view_attribution_window":              {Type: schema.TypeString, Optional: true, Computed: true},
 				"conversion_window_size":               {Type: schema.TypeString, Optional: true, Computed: true},
 				"view_through_attribution_window_size": {Type: schema.TypeString, Optional: true, Computed: true},
 				"post_click_attribution_window_size":   {Type: schema.TypeString, Optional: true, Computed: true},
 				"update_method":                        {Type: schema.TypeString, Optional: true, Computed: true},
 				"swipe_attribution_window":             {Type: schema.TypeString, Optional: true, Computed: true},
-				"api_type":                        		{Type: schema.TypeString, Optional: true, Computed: true},
+				"api_type":                             {Type: schema.TypeString, Optional: true, Computed: true},
 				"auth_type":                            {Type: schema.TypeString, Optional: true, Computed: true},
 				"sync_format":                          {Type: schema.TypeString, Optional: true, Computed: true},
-				"app_sync_mode":                     	{Type: schema.TypeString, Optional: true, Computed: true},
-				"sales_account_sync_mode":           	{Type: schema.TypeString, Optional: true, Computed: true},
-				"finance_account_sync_mode":         	{Type: schema.TypeString, Optional: true, Computed: true},
-				"source":                				{Type: schema.TypeString, Optional: true, Computed: true},
-				"file_type":             				{Type: schema.TypeString, Optional: true, Computed: true},
-				"compression":           				{Type: schema.TypeString, Optional: true, Computed: true},
-				"on_error":              				{Type: schema.TypeString, Optional: true, Computed: true},
-				"append_file_option":    				{Type: schema.TypeString, Optional: true, Computed: true},
+				"app_sync_mode":                        {Type: schema.TypeString, Optional: true, Computed: true},
+				"sales_account_sync_mode":              {Type: schema.TypeString, Optional: true, Computed: true},
+				"finance_account_sync_mode":            {Type: schema.TypeString, Optional: true, Computed: true},
+				"source":                               {Type: schema.TypeString, Optional: true, Computed: true},
+				"file_type":                            {Type: schema.TypeString, Optional: true, Computed: true},
+				"compression":                          {Type: schema.TypeString, Optional: true, Computed: true},
+				"on_error":                             {Type: schema.TypeString, Optional: true, Computed: true},
+				"append_file_option":                   {Type: schema.TypeString, Optional: true, Computed: true},
 				"engagement_attribution_window":        {Type: schema.TypeString, Optional: true, Computed: true},
 				"conversion_report_time":               {Type: schema.TypeString, Optional: true, Computed: true},
 
 				// For db-like connectors it's a readonly field, but it also used in Braintree connector as public field
-				"public_key":            				{Type: schema.TypeString, Optional: true, Computed: true},
+				"public_key": {Type: schema.TypeString, Optional: true, Computed: true},
 
-				"sheet_id":              				{Type: schema.TypeString, Optional: true},
-				"named_range":           				{Type: schema.TypeString, Optional: true},
-				"client_id":             				{Type: schema.TypeString, Optional: true},
-				"technical_account_id":  				{Type: schema.TypeString, Optional: true},
-				"organization_id":       				{Type: schema.TypeString, Optional: true},
-				"s3bucket":              				{Type: schema.TypeString, Optional: true},
-				"abs_connection_string": 				{Type: schema.TypeString, Optional: true},
-				"abs_container_name":    				{Type: schema.TypeString, Optional: true},
-				"folder_id":             				{Type: schema.TypeString, Optional: true},
-				"ftp_host":              				{Type: schema.TypeString, Optional: true},
-				"ftp_port":              				{Type: schema.TypeString, Optional: true},
-				"ftp_user":              				{Type: schema.TypeString, Optional: true},
-				"sftp_host":             				{Type: schema.TypeString, Optional: true},
-				"sftp_port":             				{Type: schema.TypeString, Optional: true},
-				"sftp_user":             				{Type: schema.TypeString, Optional: true},
-				"external_id":           				{Type: schema.TypeString, Optional: true},
-				"bucket":                				{Type: schema.TypeString, Optional: true},
-				"prefix":                				{Type: schema.TypeString, Optional: true},
-				"pattern":               				{Type: schema.TypeString, Optional: true},
-				"archive_pattern":       				{Type: schema.TypeString, Optional: true},
-				"null_sequence":         				{Type: schema.TypeString, Optional: true},
-				"delimiter":             				{Type: schema.TypeString, Optional: true},
-				"escape_char":           				{Type: schema.TypeString, Optional: true},
-				"skip_before":           				{Type: schema.TypeString, Optional: true},
-				"skip_after":            				{Type: schema.TypeString, Optional: true},
-				"auth_mode":                         	{Type: schema.TypeString, Optional: true},
-				"username":                          	{Type: schema.TypeString, Optional: true},
-				"certificate":                       	{Type: schema.TypeString, Optional: true},
-				"consumer_group":                    	{Type: schema.TypeString, Optional: true},
-				"servers":                           	{Type: schema.TypeString, Optional: true},
-				"message_type":                      	{Type: schema.TypeString, Optional: true},
-				"sync_type":                         	{Type: schema.TypeString, Optional: true},
-				"security_protocol":                 	{Type: schema.TypeString, Optional: true},
-				"access_key_id":                     	{Type: schema.TypeString, Optional: true},
-				"home_folder":                       	{Type: schema.TypeString, Optional: true},
-				"function":                          	{Type: schema.TypeString, Optional: true},
-				"region":                            	{Type: schema.TypeString, Optional: true},
-				"container_name":                    	{Type: schema.TypeString, Optional: true},
-				"connection_string":                 	{Type: schema.TypeString, Optional: true},
-				"function_app":                      	{Type: schema.TypeString, Optional: true},
-				"function_name":                     	{Type: schema.TypeString, Optional: true},
-				"function_key":                      	{Type: schema.TypeString, Optional: true},
-				"merchant_id":                       	{Type: schema.TypeString, Optional: true},
-				"api_url":                           	{Type: schema.TypeString, Optional: true},
-				"cloud_storage_type":                	{Type: schema.TypeString, Optional: true},
-				"s3external_id":                     	{Type: schema.TypeString, Optional: true},
-				"s3folder":                          	{Type: schema.TypeString, Optional: true},
-				"gcs_bucket":                        	{Type: schema.TypeString, Optional: true},
-				"gcs_folder":                        	{Type: schema.TypeString, Optional: true},
-				"instance":                          	{Type: schema.TypeString, Optional: true},
-				"aws_region_code":                   	{Type: schema.TypeString, Optional: true},
-				"subdomain":            				{Type: schema.TypeString, Optional: true},
-				"host":                 				{Type: schema.TypeString, Optional: true},
-				"port":                 				{Type: schema.TypeString, Optional: true},
-				"user":                 				{Type: schema.TypeString, Optional: true},
-				"network_code":         				{Type: schema.TypeString, Optional: true},
-				"customer_id":          				{Type: schema.TypeString, Optional: true},
-				"project_id":                           {Type: schema.TypeString, Optional: true},
-				"dataset_id":                           {Type: schema.TypeString, Optional: true},
-				"bucket_name":                          {Type: schema.TypeString, Optional: true},
-				"function_trigger":                     {Type: schema.TypeString, Optional: true},
-				"config_method":                        {Type: schema.TypeString, Optional: true},
-				"query_id":                             {Type: schema.TypeString, Optional: true},
-				"path":                                 {Type: schema.TypeString, Optional: true},
-				"endpoint":                             {Type: schema.TypeString, Optional: true},
-				"identity":                             {Type: schema.TypeString, Optional: true},
-				"api_quota":                            {Type: schema.TypeString, Optional: true},
-				"domain_name":                          {Type: schema.TypeString, Optional: true},
-				"resource_url":                         {Type: schema.TypeString, Optional: true},
-				"tunnel_host":                          {Type: schema.TypeString, Optional: true},
-				"tunnel_port":                          {Type: schema.TypeString, Optional: true},
-				"tunnel_user":                          {Type: schema.TypeString, Optional: true},
-				"database":                             {Type: schema.TypeString, Optional: true},
-				"datasource":                           {Type: schema.TypeString, Optional: true},
-				"account":                              {Type: schema.TypeString, Optional: true},
-				"role":                                 {Type: schema.TypeString, Optional: true},
-				"email":                                {Type: schema.TypeString, Optional: true},
-				"account_id":                           {Type: schema.TypeString, Optional: true},
-				"server_url":                           {Type: schema.TypeString, Optional: true},
-				"user_key":                             {Type: schema.TypeString, Optional: true},
-				"api_version":                          {Type: schema.TypeString, Optional: true},
-				"daily_api_call_limit":                 {Type: schema.TypeString, Optional: true},
-				"time_zone":                            {Type: schema.TypeString, Optional: true},
-				"integration_key":                      {Type: schema.TypeString, Optional: true},
-				"domain":                               {Type: schema.TypeString, Optional: true},
-				"replication_slot":                     {Type: schema.TypeString, Optional: true},
-				"data_center":                          {Type: schema.TypeString, Optional: true},
-				"sub_domain":                           {Type: schema.TypeString, Optional: true},
-				"test_table_name":                      {Type: schema.TypeString, Optional: true},
-				"shop":                                 {Type: schema.TypeString, Optional: true},
-				"sid":                                  {Type: schema.TypeString, Optional: true},
-				"key":                                  {Type: schema.TypeString, Optional: true},
-				"bucket_service":                       {Type: schema.TypeString, Optional: true},
-				"user_name":                            {Type: schema.TypeString, Optional: true},
-				"report_url":                           {Type: schema.TypeString, Optional: true},
-				"unique_id":                            {Type: schema.TypeString, Optional: true},
-				"base_url":                        		{Type: schema.TypeString, Optional: true},
-				"entity_id":                       		{Type: schema.TypeString, Optional: true},
-				"soap_uri":                        		{Type: schema.TypeString, Optional: true},
-				"user_id":                         		{Type: schema.TypeString, Optional: true},
+				"sheet_id":              {Type: schema.TypeString, Optional: true},
+				"named_range":           {Type: schema.TypeString, Optional: true},
+				"client_id":             {Type: schema.TypeString, Optional: true},
+				"technical_account_id":  {Type: schema.TypeString, Optional: true},
+				"organization_id":       {Type: schema.TypeString, Optional: true},
+				"s3bucket":              {Type: schema.TypeString, Optional: true},
+				"abs_connection_string": {Type: schema.TypeString, Optional: true},
+				"abs_container_name":    {Type: schema.TypeString, Optional: true},
+				"folder_id":             {Type: schema.TypeString, Optional: true},
+				"ftp_host":              {Type: schema.TypeString, Optional: true},
+				"ftp_port":              {Type: schema.TypeString, Optional: true},
+				"ftp_user":              {Type: schema.TypeString, Optional: true},
+				"sftp_host":             {Type: schema.TypeString, Optional: true},
+				"sftp_port":             {Type: schema.TypeString, Optional: true},
+				"sftp_user":             {Type: schema.TypeString, Optional: true},
+				"external_id":           {Type: schema.TypeString, Optional: true},
+				"bucket":                {Type: schema.TypeString, Optional: true},
+				"prefix":                {Type: schema.TypeString, Optional: true},
+				"pattern":               {Type: schema.TypeString, Optional: true},
+				"archive_pattern":       {Type: schema.TypeString, Optional: true},
+				"null_sequence":         {Type: schema.TypeString, Optional: true},
+				"delimiter":             {Type: schema.TypeString, Optional: true},
+				"escape_char":           {Type: schema.TypeString, Optional: true},
+				"skip_before":           {Type: schema.TypeString, Optional: true},
+				"skip_after":            {Type: schema.TypeString, Optional: true},
+				"auth_mode":             {Type: schema.TypeString, Optional: true},
+				"username":              {Type: schema.TypeString, Optional: true},
+				"certificate":           {Type: schema.TypeString, Optional: true},
+				"consumer_group":        {Type: schema.TypeString, Optional: true},
+				"servers":               {Type: schema.TypeString, Optional: true},
+				"message_type":          {Type: schema.TypeString, Optional: true},
+				"sync_type":             {Type: schema.TypeString, Optional: true},
+				"security_protocol":     {Type: schema.TypeString, Optional: true},
+				"access_key_id":         {Type: schema.TypeString, Optional: true},
+				"home_folder":           {Type: schema.TypeString, Optional: true},
+				"function":              {Type: schema.TypeString, Optional: true},
+				"region":                {Type: schema.TypeString, Optional: true},
+				"container_name":        {Type: schema.TypeString, Optional: true},
+				"connection_string":     {Type: schema.TypeString, Optional: true},
+				"function_app":          {Type: schema.TypeString, Optional: true},
+				"function_name":         {Type: schema.TypeString, Optional: true},
+				"function_key":          {Type: schema.TypeString, Optional: true},
+				"merchant_id":           {Type: schema.TypeString, Optional: true},
+				"api_url":               {Type: schema.TypeString, Optional: true},
+				"cloud_storage_type":    {Type: schema.TypeString, Optional: true},
+				"s3external_id":         {Type: schema.TypeString, Optional: true},
+				"s3folder":              {Type: schema.TypeString, Optional: true},
+				"gcs_bucket":            {Type: schema.TypeString, Optional: true},
+				"gcs_folder":            {Type: schema.TypeString, Optional: true},
+				"instance":              {Type: schema.TypeString, Optional: true},
+				"aws_region_code":       {Type: schema.TypeString, Optional: true},
+				"subdomain":             {Type: schema.TypeString, Optional: true},
+				"host":                  {Type: schema.TypeString, Optional: true},
+				"port":                  {Type: schema.TypeString, Optional: true},
+				"user":                  {Type: schema.TypeString, Optional: true},
+				"network_code":          {Type: schema.TypeString, Optional: true},
+				"customer_id":           {Type: schema.TypeString, Optional: true},
+				"project_id":            {Type: schema.TypeString, Optional: true},
+				"dataset_id":            {Type: schema.TypeString, Optional: true},
+				"bucket_name":           {Type: schema.TypeString, Optional: true},
+				"function_trigger":      {Type: schema.TypeString, Optional: true},
+				"config_method":         {Type: schema.TypeString, Optional: true},
+				"query_id":              {Type: schema.TypeString, Optional: true},
+				"path":                  {Type: schema.TypeString, Optional: true},
+				"endpoint":              {Type: schema.TypeString, Optional: true},
+				"identity":              {Type: schema.TypeString, Optional: true},
+				"api_quota":             {Type: schema.TypeString, Optional: true},
+				"domain_name":           {Type: schema.TypeString, Optional: true},
+				"resource_url":          {Type: schema.TypeString, Optional: true},
+				"tunnel_host":           {Type: schema.TypeString, Optional: true},
+				"tunnel_port":           {Type: schema.TypeString, Optional: true},
+				"tunnel_user":           {Type: schema.TypeString, Optional: true},
+				"database":              {Type: schema.TypeString, Optional: true},
+				"datasource":            {Type: schema.TypeString, Optional: true},
+				"account":               {Type: schema.TypeString, Optional: true},
+				"role":                  {Type: schema.TypeString, Optional: true},
+				"email":                 {Type: schema.TypeString, Optional: true},
+				"account_id":            {Type: schema.TypeString, Optional: true},
+				"server_url":            {Type: schema.TypeString, Optional: true},
+				"user_key":              {Type: schema.TypeString, Optional: true},
+				"api_version":           {Type: schema.TypeString, Optional: true},
+				"daily_api_call_limit":  {Type: schema.TypeString, Optional: true},
+				"time_zone":             {Type: schema.TypeString, Optional: true},
+				"integration_key":       {Type: schema.TypeString, Optional: true},
+				"domain":                {Type: schema.TypeString, Optional: true},
+				"replication_slot":      {Type: schema.TypeString, Optional: true},
+				"data_center":           {Type: schema.TypeString, Optional: true},
+				"sub_domain":            {Type: schema.TypeString, Optional: true},
+				"test_table_name":       {Type: schema.TypeString, Optional: true},
+				"shop":                  {Type: schema.TypeString, Optional: true},
+				"sid":                   {Type: schema.TypeString, Optional: true},
+				"key":                   {Type: schema.TypeString, Optional: true},
+				"bucket_service":        {Type: schema.TypeString, Optional: true},
+				"user_name":             {Type: schema.TypeString, Optional: true},
+				"report_url":            {Type: schema.TypeString, Optional: true},
+				"unique_id":             {Type: schema.TypeString, Optional: true},
+				"base_url":              {Type: schema.TypeString, Optional: true},
+				"entity_id":             {Type: schema.TypeString, Optional: true},
+				"soap_uri":              {Type: schema.TypeString, Optional: true},
+				"user_id":               {Type: schema.TypeString, Optional: true},
 
 				// Collections
-				"report_suites":         				{Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"elements":              				{Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"metrics":               				{Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"advertisables":         				{Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"dimensions":            				{Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"selected_exports":                  	{Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"apps":                              	{Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"sales_accounts":                    	{Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"finance_accounts":                  	{Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"projects":                          	{Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"user_profiles":                     	{Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"report_configuration_ids":          	{Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"accounts":                          	{Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"fields":                            	{Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"breakdowns":                        	{Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"action_breakdowns":                 	{Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"pages":                				{Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"repositories":         				{Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"dimension_attributes": 				{Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"columns":              				{Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"manager_accounts":     				{Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"profiles":                             {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"site_urls":                            {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"api_keys":                             {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"advertisers_id":                       {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"hosts":                                {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"advertisers":                          {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"organizations":                        {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"account_ids":                          {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"report_suites":            {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"elements":                 {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"metrics":                  {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"advertisables":            {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"dimensions":               {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"selected_exports":         {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"apps":                     {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"sales_accounts":           {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"finance_accounts":         {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"projects":                 {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"user_profiles":            {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"report_configuration_ids": {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"accounts":                 {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"fields":                   {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"breakdowns":               {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"action_breakdowns":        {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"pages":                    {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"repositories":             {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"dimension_attributes":     {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"columns":                  {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"manager_accounts":         {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"profiles":                 {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"site_urls":                {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"api_keys":                 {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"advertisers_id":           {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"hosts":                    {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"advertisers":              {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"organizations":            {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"account_ids":              {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
 
 				"adobe_analytics_configurations": {Type: schema.TypeList, Optional: true,
 					Elem: &schema.Resource{
@@ -395,7 +395,7 @@ func resourceConnectorCreate(ctx context.Context, d *schema.ResourceData, m inte
 		svc.DailySyncTime(d.Get("daily_sync_time").(string))
 	}
 
-	fivetranConfig := resourceConnectorUpdateConfig(d.Get("config").([]interface{}))
+	fivetranConfig := resourceConnectorUpdateConfig(d, true)
 
 	svc.Config(resourceConnectorCreateConfig(fivetranConfig, d.Get("destination_schema").([]interface{})))
 
@@ -481,7 +481,7 @@ func resourceConnectorUpdate(ctx context.Context, d *schema.ResourceData, m inte
 		svc.PauseAfterTrial(strToBool(d.Get("pause_after_trial").(string)))
 	}
 
-	svc.Config(resourceConnectorUpdateConfig(d.Get("config").([]interface{})))
+	svc.Config(resourceConnectorUpdateConfig(d, false))
 	svc.Auth(resourceConnectorCreateAuth(d.Get("auth").([]interface{})))
 
 	resp, err := svc.Do(ctx)
@@ -513,9 +513,10 @@ func resourceConnectorDelete(ctx context.Context, d *schema.ResourceData, m inte
 	return diags
 }
 
-func resourceConnectorUpdateConfig(config []interface{}) *fivetran.ConnectorConfig {
+func resourceConnectorUpdateConfig(d *schema.ResourceData, creation bool) *fivetran.ConnectorConfig {
 	fivetranConfig := fivetran.NewConnectorConfig()
-	
+	var config = d.Get("config").([]interface{})
+
 	if len(config) < 1 {
 		return fivetranConfig
 	}
@@ -1002,7 +1003,9 @@ func resourceConnectorUpdateConfig(config []interface{}) *fivetran.ConnectorConf
 	if v := c["domain"].(string); v != "" {
 		fivetranConfig.Domain(v)
 	}
-	if v := c["update_method"].(string); v != "" {
+	// The `update_method` value can be set only while connector creation and all further changes will be ignored
+	// This is a temporary workaround, once the problem with MySql connectors will be fixes - this stub will be removed
+	if v := c["update_method"].(string); creation && v != "" {
 		fivetranConfig.UpdateMethod(v)
 	}
 	if v := c["replication_slot"].(string); v != "" {
@@ -1371,27 +1374,27 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 
 	// get sensitive fields from the currentConfig to prevent drifting (Fivetran returns this values masked)
 	if len(currentConfig) > 0 {
-		mapAddStr(c, "password",        	currentConfig[0].(map[string]interface{})["password"].(string))
-		mapAddStr(c, "client_secret",   	currentConfig[0].(map[string]interface{})["client_secret"].(string))
-		mapAddStr(c, "private_key",     	currentConfig[0].(map[string]interface{})["private_key"].(string))
-		mapAddStr(c, "s3role_arn", 			currentConfig[0].(map[string]interface{})["s3role_arn"].(string))
-		mapAddStr(c, "ftp_password", 		currentConfig[0].(map[string]interface{})["ftp_password"].(string))
-		mapAddStr(c, "sftp_password", 		currentConfig[0].(map[string]interface{})["sftp_password"].(string))
-		mapAddStr(c, "api_key", 			currentConfig[0].(map[string]interface{})["api_key"].(string))
-		mapAddStr(c, "role_arn", 			currentConfig[0].(map[string]interface{})["role_arn"].(string))
-		mapAddStr(c, "secret_key", 			currentConfig[0].(map[string]interface{})["secret_key"].(string))
-		mapAddStr(c, "pem_certificate", 	currentConfig[0].(map[string]interface{})["pem_certificate"].(string))
-		mapAddStr(c, "access_token", 		currentConfig[0].(map[string]interface{})["access_token"].(string))
-		mapAddStr(c, "api_secret", 			currentConfig[0].(map[string]interface{})["api_secret"].(string))
-		mapAddStr(c, "api_access_token",	currentConfig[0].(map[string]interface{})["api_access_token"].(string))
-		mapAddStr(c, "secret", 				currentConfig[0].(map[string]interface{})["secret"].(string))
-		mapAddStr(c, "consumer_secret", 	currentConfig[0].(map[string]interface{})["consumer_secret"].(string))
-		mapAddStr(c, "secrets", 			currentConfig[0].(map[string]interface{})["secrets"].(string))
-		mapAddStr(c, "api_token", 			currentConfig[0].(map[string]interface{})["api_token"].(string))
-		mapAddStr(c, "consumer_key", 		currentConfig[0].(map[string]interface{})["consumer_key"].(string))
-		mapAddStr(c, "encryption_key", 		currentConfig[0].(map[string]interface{})["encryption_key"].(string))
-		mapAddStr(c, "oauth_token", 		currentConfig[0].(map[string]interface{})["oauth_token"].(string))
-		mapAddStr(c, "oauth_token_secret", 	currentConfig[0].(map[string]interface{})["oauth_token_secret"].(string))
+		mapAddStr(c, "password", currentConfig[0].(map[string]interface{})["password"].(string))
+		mapAddStr(c, "client_secret", currentConfig[0].(map[string]interface{})["client_secret"].(string))
+		mapAddStr(c, "private_key", currentConfig[0].(map[string]interface{})["private_key"].(string))
+		mapAddStr(c, "s3role_arn", currentConfig[0].(map[string]interface{})["s3role_arn"].(string))
+		mapAddStr(c, "ftp_password", currentConfig[0].(map[string]interface{})["ftp_password"].(string))
+		mapAddStr(c, "sftp_password", currentConfig[0].(map[string]interface{})["sftp_password"].(string))
+		mapAddStr(c, "api_key", currentConfig[0].(map[string]interface{})["api_key"].(string))
+		mapAddStr(c, "role_arn", currentConfig[0].(map[string]interface{})["role_arn"].(string))
+		mapAddStr(c, "secret_key", currentConfig[0].(map[string]interface{})["secret_key"].(string))
+		mapAddStr(c, "pem_certificate", currentConfig[0].(map[string]interface{})["pem_certificate"].(string))
+		mapAddStr(c, "access_token", currentConfig[0].(map[string]interface{})["access_token"].(string))
+		mapAddStr(c, "api_secret", currentConfig[0].(map[string]interface{})["api_secret"].(string))
+		mapAddStr(c, "api_access_token", currentConfig[0].(map[string]interface{})["api_access_token"].(string))
+		mapAddStr(c, "secret", currentConfig[0].(map[string]interface{})["secret"].(string))
+		mapAddStr(c, "consumer_secret", currentConfig[0].(map[string]interface{})["consumer_secret"].(string))
+		mapAddStr(c, "secrets", currentConfig[0].(map[string]interface{})["secrets"].(string))
+		mapAddStr(c, "api_token", currentConfig[0].(map[string]interface{})["api_token"].(string))
+		mapAddStr(c, "consumer_key", currentConfig[0].(map[string]interface{})["consumer_key"].(string))
+		mapAddStr(c, "encryption_key", currentConfig[0].(map[string]interface{})["encryption_key"].(string))
+		mapAddStr(c, "oauth_token", currentConfig[0].(map[string]interface{})["oauth_token"].(string))
+		mapAddStr(c, "oauth_token_secret", currentConfig[0].(map[string]interface{})["oauth_token_secret"].(string))
 	}
 
 	// Collections
@@ -1580,7 +1583,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddStr(c, "entity_id", resp.Data.Config.EntityId)
 	mapAddStr(c, "soap_uri", resp.Data.Config.SoapUri)
 	mapAddStr(c, "user_id", resp.Data.Config.UserId)
-	
+
 	config[0] = c
 
 	return config
