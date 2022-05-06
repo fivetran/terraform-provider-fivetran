@@ -10,11 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.4.1](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.4.0...v0.4.1) - 2022-05-06
 
 ## Fixed
-- 'Insertion of Sensitive Information into Log File in Hashicorp go-getter' issue
+- [Insertion of Sensitive Information into Log File in Hashicorp go-getter](https://github.com/fivetran/terraform-provider-fivetran/security/dependabot/1) issue
 
 ## [0.4.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.3.6...v0.4.0) - 2022-05-04
 
-Considering this version as BETA
+Considering this version as BETA.
 
 ## Features
 - New `destination_schema` field for determining `schema`, `table` and `schema_prefix` outside `config` to prevent drifting changes.
