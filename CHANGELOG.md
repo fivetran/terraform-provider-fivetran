@@ -5,15 +5,108 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.3.6...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.4.1...HEAD)
+
+## [0.4.1](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.4.0...v0.4.1) - 2022-05-06
+
+## Fixed
+- Upgrading `go-getter` to 1.5.11 in order to address a [dependency security vulnerability](https://nvd.nist.gov/vuln/detail/CVE-2022-29810)
 
 ## [0.4.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.3.6...v0.4.0) - 2022-05-04
 
-Considering this version as BETA
+Considering this version as BETA.
 
-## Features
+## Breaking changes
 - New `destination_schema` field for determining `schema`, `table` and `schema_prefix` outside `config` to prevent drifting changes.
 - Changes in `destination_schema` leads to resource replacement
+
+### Migration from v0.3.6
+
+You should move the following fields in `connector_resource` configurations:
+- `connector_resource.config.schema` -> `connector_resource.destination_schema.name`
+- `connector_resource.config.table` -> `connector_resource.destination_schema.table`
+- `connector_resource.config.schema_prefix` -> `connector_resource.destination_schema.schema_prefix`
+
+The following field is now excluded from `connector_resource` schema:
+- `connector_resource.schema` - replaced with `name` field
+
+The following Computed field was added to `connector_resource` schema:
+- `connector_resource.name` - this field contains resulting Fivetran Connector Name you can see on Fivetran Dashboard UI
+
+Example:
+
+```
+v0.3.6 :
+resource "fivetran_connector" "postgres" {
+    group_id = fivetran_group.my_group.id
+    service = "postgres"
+    sync_frequency = 5
+    paused = false
+    pause_after_trial = false
+    schema = "production_pg"
+    config {
+        schema_prefix = "production_pg"
+        host = "123.456.789.012"
+        port = "5432"
+        user = "postgres"
+        password = "IDontKnowThePassword"
+        database = "prod"
+        update_method = "XMIN"
+    }
+}
+
+resource "fivetran_connector" "google_sheets" {
+    group_id = fivetran_group.my_group.id
+    service = "google_sheets"
+    sync_frequency = 5
+    paused = false
+    pause_after_trial = false
+    schema = "connector_schema_name.table_name"
+    config {
+        schema = "connector_schema_name"
+        table = "table_name"
+        sheet_id = "1Rmq_FN2kTNwWiT4adZKBxHBBlaHBLAHBLAH..."
+        named_range = "Some Range Name"
+    }
+}
+
+v0.4.0 :
+resource "fivetran_connector" "postgres" {
+    group_id = fivetran_group.my_group.id
+    service = "postgres"
+    sync_frequency = 5
+    paused = false
+    pause_after_trial = false
+    destination_schema {
+        prefix = "production_pg"
+    } 
+    config {
+        host = "123.456.789.012"
+        port = "5432"
+        user = "postgres"
+        password = "IDontKnowThePassword"
+        database = "prod"
+        update_method = "XMIN"
+    }
+}
+
+resource "fivetran_connector" "google_sheets" {
+    group_id = fivetran_group.my_group.id
+    service = "google_sheets"
+    sync_frequency = 5
+    paused = false
+    pause_after_trial = false
+    destination_schema {
+        name = "connector_schema_name"
+        table = "table_name"
+    }
+    config {
+        sheet_id = "1Rmq_FN2kTNwWiT4adZKBxHBBlaHBLAHBLAH..."
+        named_range = "Some Range Name"
+    }
+}
+```
+
 
 ## Fixed
 - All sensitive fields marked as sensitive in connector_resource
