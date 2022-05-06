@@ -27,10 +27,10 @@ You should move the following fields in `connector_resource` configurations:
 - `connector_resource.config.table` -> `connector_resource.destination_schema.table`
 - `connector_resource.config.schema_prefix` -> `connector_resource.destination_schema.schema_prefix`
 
-The following field now excluded from `connector_resource` schema:
+The following field is now excluded from `connector_resource` schema:
 - `connector_resource.schema` - replaced with `name` field
 
-The following Computed field added to `connector_resource` schema:
+The following Computed field was added to `connector_resource` schema:
 - `connector_resource.name` - this field contains resulting Fivetran Connector Name you can see on Fivetran Dashboard UI
 
 Example:
