@@ -134,7 +134,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"always_encrypted":                  {Type: schema.TypeString, Optional: true, Computed: true},
 				"is_secure":                         {Type: schema.TypeString, Optional: true, Computed: true},
 				"use_webhooks":                      {Type: schema.TypeString, Optional: true, Computed: true},
-				// Enum values
+				// Enum & int values
 				"sync_mode":                            {Type: schema.TypeString, Optional: true, Computed: true},
 				"date_granularity":                     {Type: schema.TypeString, Optional: true, Computed: true},
 				"timeframe_months":                     {Type: schema.TypeString, Optional: true, Computed: true},
@@ -163,6 +163,8 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"append_file_option":                   {Type: schema.TypeString, Optional: true, Computed: true},
 				"engagement_attribution_window":        {Type: schema.TypeString, Optional: true, Computed: true},
 				"conversion_report_time":               {Type: schema.TypeString, Optional: true, Computed: true},
+				"skip_before":                          {Type: schema.TypeString, Optional: true, Computed: true},
+				"skip_after":                           {Type: schema.TypeString, Optional: true, Computed: true},
 
 				// For db-like connectors it's a readonly field, but it also used in Braintree connector as public field
 				"public_key": {Type: schema.TypeString, Optional: true, Computed: true},
@@ -190,8 +192,6 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"null_sequence":         {Type: schema.TypeString, Optional: true},
 				"delimiter":             {Type: schema.TypeString, Optional: true},
 				"escape_char":           {Type: schema.TypeString, Optional: true},
-				"skip_before":           {Type: schema.TypeString, Optional: true},
-				"skip_after":            {Type: schema.TypeString, Optional: true},
 				"auth_mode":             {Type: schema.TypeString, Optional: true},
 				"username":              {Type: schema.TypeString, Optional: true},
 				"certificate":           {Type: schema.TypeString, Optional: true},
@@ -665,10 +665,10 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData, creation bool) *fivet
 		fivetranConfig.EscapeChar(v)
 	}
 	if v := c["skip_before"].(string); v != "" {
-		fivetranConfig.SkipBefore(v)
+		fivetranConfig.SkipBefore(strToInt(v))
 	}
 	if v := c["skip_after"].(string); v != "" {
-		fivetranConfig.SkipAfter(v)
+		fivetranConfig.SkipAfter(strToInt(v))
 	}
 	if v := c["project_credentials"].([]interface{}); len(v) > 0 {
 		fivetranConfig.ProjectCredentials(resourceConnectorCreateConfigProjectCredentials(v))
@@ -1452,6 +1452,8 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddStr(c, "api_quota", intPointerToStr(resp.Data.Config.APIQuota))
 	mapAddStr(c, "tunnel_port", intPointerToStr(resp.Data.Config.TunnelPort))
 	mapAddStr(c, "daily_api_call_limit", intPointerToStr(resp.Data.Config.DailyAPICallLimit))
+	mapAddStr(c, "skip_before", intPointerToStr(&resp.Data.Config.SkipBefore))
+	mapAddStr(c, "skip_after", intPointerToStr(&resp.Data.Config.SkipAfter))
 
 	// String fields
 	mapAddStr(c, "sheet_id", resp.Data.Config.SheetID)
@@ -1484,8 +1486,6 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddStr(c, "null_sequence", resp.Data.Config.NullSequence)
 	mapAddStr(c, "delimiter", resp.Data.Config.Delimiter)
 	mapAddStr(c, "escape_char", resp.Data.Config.EscapeChar)
-	mapAddStr(c, "skip_before", resp.Data.Config.SkipBefore)
-	mapAddStr(c, "skip_after", resp.Data.Config.SkipAfter)
 	mapAddStr(c, "auth_mode", resp.Data.Config.AuthMode)
 	mapAddStr(c, "username", resp.Data.Config.UserName)
 	mapAddStr(c, "certificate", resp.Data.Config.Certificate)

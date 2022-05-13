@@ -13,35 +13,34 @@ func dataSourceConnector() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceConnectorRead,
 		Schema: map[string]*schema.Schema{
-			"id":                {Type: schema.TypeString, Required: true},
-			"group_id":          {Type: schema.TypeString, Computed: true},
-			"service":           {Type: schema.TypeString, Computed: true},
-			"service_version":   {Type: schema.TypeString, Computed: true},
-			"name":              {Type: schema.TypeString, Computed: true},
-			"destination_schema":dataSourceConnectorDestinationSchemaSchema(),
-			"connected_by":      {Type: schema.TypeString, Computed: true},
-			"created_at":        {Type: schema.TypeString, Computed: true},
-			"succeeded_at":      {Type: schema.TypeString, Computed: true},
-			"failed_at":         {Type: schema.TypeString, Computed: true},
-			"sync_frequency":    {Type: schema.TypeString, Computed: true},
-			"daily_sync_time":   {Type: schema.TypeString, Computed: true},
-			"schedule_type":     {Type: schema.TypeString, Computed: true},
-			"paused":            {Type: schema.TypeString, Computed: true},
-			"pause_after_trial": {Type: schema.TypeString, Computed: true},
-			"status":            dataSourceConnectorSchemaStatus(),
-			"config":            dataSourceConnectorSchemaConfig(),
+			"id":                 {Type: schema.TypeString, Required: true},
+			"group_id":           {Type: schema.TypeString, Computed: true},
+			"service":            {Type: schema.TypeString, Computed: true},
+			"service_version":    {Type: schema.TypeString, Computed: true},
+			"name":               {Type: schema.TypeString, Computed: true},
+			"destination_schema": dataSourceConnectorDestinationSchemaSchema(),
+			"connected_by":       {Type: schema.TypeString, Computed: true},
+			"created_at":         {Type: schema.TypeString, Computed: true},
+			"succeeded_at":       {Type: schema.TypeString, Computed: true},
+			"failed_at":          {Type: schema.TypeString, Computed: true},
+			"sync_frequency":     {Type: schema.TypeString, Computed: true},
+			"daily_sync_time":    {Type: schema.TypeString, Computed: true},
+			"schedule_type":      {Type: schema.TypeString, Computed: true},
+			"paused":             {Type: schema.TypeString, Computed: true},
+			"pause_after_trial":  {Type: schema.TypeString, Computed: true},
+			"status":             dataSourceConnectorSchemaStatus(),
+			"config":             dataSourceConnectorSchemaConfig(),
 		},
 	}
 }
-
 
 func dataSourceConnectorDestinationSchemaSchema() *schema.Schema {
 	return &schema.Schema{Type: schema.TypeList, Computed: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"name":                  {Type: schema.TypeString, Computed: true},
-				"table":                 {Type: schema.TypeString, Computed: true},
-				"prefix":                {Type: schema.TypeString, Computed: true},
+				"name":   {Type: schema.TypeString, Computed: true},
+				"table":  {Type: schema.TypeString, Computed: true},
+				"prefix": {Type: schema.TypeString, Computed: true},
 			},
 		},
 	}
@@ -349,7 +348,7 @@ func dataSourceConnectorRead(ctx context.Context, d *schema.ResourceData, m inte
 	mapAddStr(msi, "group_id", resp.Data.GroupID)
 	mapAddStr(msi, "service", resp.Data.Service)
 	mapAddStr(msi, "service_version", intPointerToStr(resp.Data.ServiceVersion))
-    mapAddStr(msi, "name", resp.Data.Schema)
+	mapAddStr(msi, "name", resp.Data.Schema)
 	mapAddXInterface(msi, "destination_schema", dataSourceConnectorReadDestinationSchema(resp.Data.Schema, resp.Data.Service))
 	mapAddStr(msi, "connected_by", resp.Data.ConnectedBy)
 	mapAddStr(msi, "created_at", resp.Data.CreatedAt.String())
@@ -480,8 +479,8 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddStr(c, "null_sequence", resp.Data.Config.NullSequence)
 	mapAddStr(c, "delimiter", resp.Data.Config.Delimiter)
 	mapAddStr(c, "escape_char", resp.Data.Config.EscapeChar)
-	mapAddStr(c, "skip_before", resp.Data.Config.SkipBefore)
-	mapAddStr(c, "skip_after", resp.Data.Config.SkipAfter)
+	mapAddStr(c, "skip_before", intPointerToStr(&resp.Data.Config.SkipBefore))
+	mapAddStr(c, "skip_after", intPointerToStr(&resp.Data.Config.SkipAfter))
 	mapAddXInterface(c, "project_credentials", dataSourceConnectorReadConfigFlattenProjectCredentials(resp))
 	mapAddStr(c, "auth_mode", resp.Data.Config.AuthMode)
 	mapAddStr(c, "username", resp.Data.Config.UserName)
