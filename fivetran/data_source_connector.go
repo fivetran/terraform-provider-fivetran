@@ -483,7 +483,7 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddStr(c, "skip_after", intPointerToStr(&resp.Data.Config.SkipAfter))
 	mapAddXInterface(c, "project_credentials", dataSourceConnectorReadConfigFlattenProjectCredentials(resp))
 	mapAddStr(c, "auth_mode", resp.Data.Config.AuthMode)
-	mapAddStr(c, "username", resp.Data.Config.UserName)
+	mapAddStr(c, "username", resp.Data.Config.Username)
 	mapAddStr(c, "password", resp.Data.Config.Password)
 	mapAddStr(c, "certificate", resp.Data.Config.Certificate)
 	mapAddXInterface(c, "selected_exports", xStrXInterface(resp.Data.Config.SelectedExports))
