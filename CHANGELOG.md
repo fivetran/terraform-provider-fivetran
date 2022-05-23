@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Fixed
 - Issue with `update_method` connector config field (now it can be effectively updated)
-- Issue with `connection_type` field isn't marked as readonlu no more
+- Issue with `connection_type` field isn't marked as readonly any more
 
 ## [0.4.2](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.4.1...v0.4.2) - 2022-05-18
 
