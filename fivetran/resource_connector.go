@@ -95,7 +95,6 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"authorization_method":      {Type: schema.TypeString, Computed: true},
 				"service_version":           {Type: schema.TypeString, Computed: true},
 				"last_synced_changes__utc_": {Type: schema.TypeString, Computed: true},
-				"connection_type":           {Type: schema.TypeString, Computed: true},
 
 				// Sensitive config fields, Fivetran returns this fields masked
 				"oauth_token":        {Type: schema.TypeString, Optional: true, Sensitive: true},
@@ -135,6 +134,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"is_secure":                         {Type: schema.TypeString, Optional: true, Computed: true},
 				"use_webhooks":                      {Type: schema.TypeString, Optional: true, Computed: true},
 				// Enum & int values
+				"connection_type":                      {Type: schema.TypeString, Optional: true, Computed: true},
 				"sync_mode":                            {Type: schema.TypeString, Optional: true, Computed: true},
 				"date_granularity":                     {Type: schema.TypeString, Optional: true, Computed: true},
 				"timeframe_months":                     {Type: schema.TypeString, Optional: true, Computed: true},
@@ -1003,10 +1003,11 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData, creation bool) *fivet
 	if v := c["domain"].(string); v != "" {
 		fivetranConfig.Domain(v)
 	}
-	// The `update_method` value can be set only while connector creation and all further changes will be ignored
-	// This is a temporary workaround, once the problem with MySql connectors will be fixes - this stub will be removed
-	if v := c["update_method"].(string); creation && v != "" {
+	if v := c["update_method"].(string); v != "" {
 		fivetranConfig.UpdateMethod(v)
+	}
+	if v := c["connection_type"].(string); v != "" {
+		fivetranConfig.ConnectionType(v)
 	}
 	if v := c["replication_slot"].(string); v != "" {
 		fivetranConfig.ReplicationSlot(v)
