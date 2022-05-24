@@ -138,6 +138,7 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 					},
 				},
 				"auth_mode":                         {Type: schema.TypeString, Computed: true},
+				"user_name":                         {Type: schema.TypeString, Computed: true},
 				"username":                          {Type: schema.TypeString, Computed: true},
 				"password":                          {Type: schema.TypeString, Computed: true},
 				"certificate":                       {Type: schema.TypeString, Computed: true},
@@ -299,7 +300,6 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"advertisers_id":                       {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
 				"sync_format":                          {Type: schema.TypeString, Computed: true},
 				"bucket_service":                       {Type: schema.TypeString, Computed: true},
-				"user_name":                            {Type: schema.TypeString, Computed: true},
 				"report_url":                           {Type: schema.TypeString, Computed: true},
 				"unique_id":                            {Type: schema.TypeString, Computed: true},
 				"auth_type":                            {Type: schema.TypeString, Computed: true},
@@ -483,7 +483,8 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddStr(c, "skip_after", intPointerToStr(&resp.Data.Config.SkipAfter))
 	mapAddXInterface(c, "project_credentials", dataSourceConnectorReadConfigFlattenProjectCredentials(resp))
 	mapAddStr(c, "auth_mode", resp.Data.Config.AuthMode)
-	mapAddStr(c, "username", resp.Data.Config.UserName)
+	mapAddStr(c, "user_name", resp.Data.Config.UserName)
+	mapAddStr(c, "username", resp.Data.Config.Username)
 	mapAddStr(c, "password", resp.Data.Config.Password)
 	mapAddStr(c, "certificate", resp.Data.Config.Certificate)
 	mapAddXInterface(c, "selected_exports", xStrXInterface(resp.Data.Config.SelectedExports))
@@ -615,7 +616,6 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddXInterface(c, "advertisers_id", xStrXInterface(resp.Data.Config.AdvertisersID))
 	mapAddStr(c, "sync_format", resp.Data.Config.SyncFormat)
 	mapAddStr(c, "bucket_service", resp.Data.Config.BucketService)
-	mapAddStr(c, "user_name", resp.Data.Config.UserName)
 	mapAddStr(c, "report_url", resp.Data.Config.ReportURL)
 	mapAddStr(c, "unique_id", resp.Data.Config.UniqueID)
 	mapAddStr(c, "auth_type", resp.Data.Config.AuthType)
