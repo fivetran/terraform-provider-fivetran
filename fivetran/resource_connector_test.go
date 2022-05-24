@@ -126,7 +126,7 @@ func TestResourceConnectorE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "true"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "true"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
-					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.auth_type", "ServiceAccount"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.auth_type", "OAuth"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.sheet_id", "1Rmq_RmvfeBTIfKWi5B8ii9qkFN2kTNwWiT4adZKBxHB"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.named_range", "range_updated"),
 				),
