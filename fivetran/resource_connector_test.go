@@ -11,9 +11,9 @@ import (
 
 func TestResourceConnectorE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() {},
+		PreCheck:          func() {},
 		ProviderFactories: providerFactory,
-		CheckDestroy: testFivetranConnectorResourceDestroy,
+		CheckDestroy:      testFivetranConnectorResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `
@@ -59,7 +59,7 @@ func TestResourceConnectorE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.setup_state", "incomplete"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.sync_state", "paused"),
 
-					//schema_table format mutate schema to `schema` +`.` + `config.table` 
+					//schema_table format mutate schema to `schema` +`.` + `config.table`
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "google_sheets_schema.table"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "sync_frequency", "5"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "paused", "true"),
@@ -67,7 +67,7 @@ func TestResourceConnectorE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "false"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "false"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
-					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.auth_type", "ServiceAccount"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.auth_type", "OAuth"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.sheet_id", "1Rmq_FN2kTNwWiT4adZKBxHBRmvfeBTIfKWi5B8ii9qk"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.named_range", "range"),
 				),
@@ -118,7 +118,7 @@ func TestResourceConnectorE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.setup_state", "incomplete"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.sync_state", "scheduled"),
 
-					//schema_table format mutate schema to `schema` +`.` + `config.table` 
+					//schema_table format mutate schema to `schema` +`.` + `config.table`
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "google_sheets_schema.table"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "sync_frequency", "15"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "paused", "false"),
@@ -126,7 +126,7 @@ func TestResourceConnectorE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "true"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "true"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
-					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.auth_type", "ServiceAccount"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.auth_type", "OAuth"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.sheet_id", "1Rmq_RmvfeBTIfKWi5B8ii9qkFN2kTNwWiT4adZKBxHB"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.named_range", "range_updated"),
 				),
