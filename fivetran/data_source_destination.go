@@ -119,9 +119,7 @@ func dataSourceDestinationConfig(resp *fivetran.DestinationDetailsResponse) ([]i
 	c["server_host_name"] = resp.Data.Config.ServerHostName
 	c["http_path"] = resp.Data.Config.HTTPPath
 	c["personal_access_token"] = resp.Data.Config.PersonalAccessToken
-	if resp.Data.Config.CreateExternalTables != nil {
-		c["create_external_tables"] = boolToStr(*resp.Data.Config.CreateExternalTables)
-	}
+	c["create_external_tables"] = resp.Data.Config.CreateExternalTables
 	c["external_location"] = resp.Data.Config.ExternalLocation
 	c["auth_type"] = resp.Data.Config.AuthType
 	c["role_arn"] = resp.Data.Config.RoleArn
