@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.4.4](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.4.3...v0.4.4) - 2022-06-01
 
 ## Documentation
-- `connector_resource` documentation updated with indormation about how to solve indirect dependency between connector and destination
+- `connector_resource` documentation update with information about how to solve indirect dependency between connector and destination
 
 ## [0.4.3](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.4.2...v0.4.3) - 2022-05-24
 
