@@ -36,6 +36,28 @@ resource "fivetran_connector" "amplitude" {
 }
 ```
 
+### NOTE: resources indirect dependencies
+
+As you may notice the connector resource takes group_id parameter value from group resource, but the destination resource is also depend on group. And once you'll try to destroy destination resource infrastructure terraform plan will be created successfully, but it return an error on apply because Fivetran API doesn't allow you to delete destination that have linked connectors. To solve this problem you should define explicit depends_on between the connector and destination:
+
+```hcl
+resource "fivetran_connector" "amplitude" {
+    ...
+    depends_on = [
+        fivetran_destination.my_destination
+    ]
+}
+```
+
+or get the group id from destination:
+
+```hcl
+resource "fivetran_connector" "amplitude" {
+    group_id = fivetran_destination.my_destination.group_id
+    ...
+}
+```
+
 ## Schema
 
 ### Required
