@@ -49,7 +49,7 @@ resource "fivetran_connector" "amplitude" {
 }
 ```
 
-or get the group id from destination:
+or get the group ID from destination:
 
 ```hcl
 resource "fivetran_connector" "amplitude" {
