@@ -38,7 +38,7 @@ resource "fivetran_connector" "amplitude" {
 
 ### NOTE: resources indirect dependencies
 
-The connector resource receives the `group_id` parameter value from the group resource, but the destination resource depends on the group resource.  Once you try to destroy the destination resource infrastructure, the terraform plan is created successfully, but it returns an error on apply because the Fivetran API doesn't allow you to delete destinations that have linked connectors. To solve this problem, you should either explicitly define `depends_on` between the connector and destination:
+The connector resource receives the `group_id` parameter value from the group resource, but the destination resource depends on the group resource.  When you try to destroy the destination resource infrastructure, the terraform plan is created successfully, but once you run the `terraform apply` command, it returns an error because the Fivetran API doesn't let you delete destinations that have linked connectors. To solve this problem, you should either explicitly define `depends_on` between the connector and destination:
 
 ```hcl
 resource "fivetran_connector" "amplitude" {
@@ -49,7 +49,7 @@ resource "fivetran_connector" "amplitude" {
 }
 ```
 
-or get the group ID from destination:
+or get the group ID from the destination:
 
 ```hcl
 resource "fivetran_connector" "amplitude" {
