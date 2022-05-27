@@ -253,6 +253,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"integration_key":      {Type: schema.TypeString, Optional: true},
 				"domain":               {Type: schema.TypeString, Optional: true},
 				"replication_slot":     {Type: schema.TypeString, Optional: true},
+				"publication_name":     {Type: schema.TypeString, Optional: true},
 				"data_center":          {Type: schema.TypeString, Optional: true},
 				"sub_domain":           {Type: schema.TypeString, Optional: true},
 				"test_table_name":      {Type: schema.TypeString, Optional: true},
@@ -1016,6 +1017,9 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData, creation bool) *fivet
 	if v := c["replication_slot"].(string); v != "" {
 		fivetranConfig.ReplicationSlot(v)
 	}
+	if v := c["publication_name"].(string); v != "" {
+		fivetranConfig.PublicationName(v)
+	}
 	if v := c["data_center"].(string); v != "" {
 		fivetranConfig.DataCenter(v)
 	}
@@ -1565,6 +1569,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddStr(c, "domain", resp.Data.Config.Domain)
 	mapAddStr(c, "update_method", resp.Data.Config.UpdateMethod)
 	mapAddStr(c, "replication_slot", resp.Data.Config.ReplicationSlot)
+	mapAddStr(c, "publication_name", resp.Data.Config.PublicationName)
 	mapAddStr(c, "data_center", resp.Data.Config.DataCenter)
 	mapAddStr(c, "sub_domain", resp.Data.Config.SubDomain)
 	mapAddStr(c, "test_table_name", resp.Data.Config.TestTableName)
