@@ -169,6 +169,9 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				// For db-like connectors it's a readonly field, but it also used in Braintree connector as public field
 				"public_key": {Type: schema.TypeString, Optional: true, Computed: true},
 
+				// external_id is used among AWS connectors and correcponds to group_id. For some connectors it is computed, some expect it as a parameter.
+				"external_id": {Type: schema.TypeString, Optional: true, Computed: true},
+
 				"sheet_id":              {Type: schema.TypeString, Optional: true},
 				"named_range":           {Type: schema.TypeString, Optional: true},
 				"client_id":             {Type: schema.TypeString, Optional: true},
@@ -184,7 +187,6 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"sftp_host":             {Type: schema.TypeString, Optional: true},
 				"sftp_port":             {Type: schema.TypeString, Optional: true},
 				"sftp_user":             {Type: schema.TypeString, Optional: true},
-				"external_id":           {Type: schema.TypeString, Optional: true},
 				"bucket":                {Type: schema.TypeString, Optional: true},
 				"prefix":                {Type: schema.TypeString, Optional: true},
 				"pattern":               {Type: schema.TypeString, Optional: true},
