@@ -19,16 +19,15 @@ func TestResourceGroupE2E(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-		   	resource "fivetran_group" "testgroup" {
-				 provider = fivetran-provider
-			     name = "test_group_name"
-			}
-		  `,
+					resource "fivetran_group" "testgroup" {
+						provider = fivetran-provider
+						name = "test_group_name"
+					}
+				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranGroupResourceCreate(t, "fivetran_group.testgroup"),
 					resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "test_group_name"),
 					resource.TestCheckResourceAttrSet("fivetran_group.testgroup", "created_at"),
-					resource.TestCheckResourceAttr("fivetran_group.testgroup", "creator", PredefinedUserId),
 				),
 			},
 			{
@@ -79,7 +78,7 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 						group_id = fivetran_group.testgroup.id
 
 						user {
-							id = fivetran_user.userjohn.id
+							email = fivetran_user.userjohn.email
 							role = "Destination Reviewer"
 						}
 					}
@@ -111,7 +110,7 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 						group_id = fivetran_group.testgroup.id
 
 						user {
-							id = fivetran_user.userjohn.id
+							email = fivetran_user.userjohn.email
 							role = "Destination Administrator"
 						}
 					}

@@ -51,6 +51,7 @@ func resourceGroupCreate(ctx context.Context, d *schema.ResourceData, m interfac
 	}
 
 	deleteCreatorResponse, err := client.NewGroupRemoveUser().GroupID(groupID).UserID(groupCreator).Do(ctx)
+
 	if err != nil {
 		// If failed to delete creator we cleanup and delete the group
 		respDelete, errDelete := client.NewGroupDelete().GroupID(groupID).Do(ctx)
