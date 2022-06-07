@@ -62,6 +62,12 @@ func resourceGroupCreate(ctx context.Context, d *schema.ResourceData, m interfac
 		return newDiagAppend(diags, diag.Error, "create error: groupCreator", fmt.Sprintf("%v; code: %v; message: %v", err, deleteCreatorResponse.Code, deleteCreatorResponse.Message))
 	}
 
+	user, err := resourceGroupGetCreator(client, resp.Data.ID, ctx)
+
+	if err == nil && user != "" {
+		return newDiagAppend(diags, diag.Error, "create error: can't delete groupCreator", "")
+	}
+
 	d.SetId(resp.Data.ID)
 	resourceGroupRead(ctx, d, m)
 
@@ -145,6 +151,9 @@ func resourceGroupGetCreator(client *fivetran.Client, groupID string, ctx contex
 	resp, err := client.NewGroupListUsers().GroupID(groupID).Do(ctx)
 	if err != nil {
 		return "", err
+	}
+	if len(resp.Data.Items) == 0 {
+		return "", nil
 	}
 
 	return resp.Data.Items[0].ID, nil
