@@ -53,7 +53,15 @@ func dataSourceGroupUsersRead(ctx context.Context, d *schema.ResourceData, m int
 		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
 
-	d.SetId(id)
+	msi := make(map[string]interface{})
+	msi["id"] = id
+	msi["group_id"] = id
+
+	for k, v := range msi {
+		if err := d.Set(k, v); err != nil {
+			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+		}
+	}
 
 	return diags
 }
@@ -104,9 +112,11 @@ func dataSourceGroupUsersGetUsers(client *fivetran.Client, id string, ctx contex
 			return fivetran.GroupListUsersResponse{}, err
 		}
 
-		for _, item := range respInner.Data.Items {
-			resp.Data.Items = append(resp.Data.Items, item)
-		}
+		resp.Data.Items = append(resp.Data.Items, respInner.Data.Items...)
+
+		// for _, item := range respInner.Data.Items {
+		// 	resp.Data.Items = append(resp.Data.Items, item)
+		// }
 
 		if respInner.Data.NextCursor == "" {
 			break

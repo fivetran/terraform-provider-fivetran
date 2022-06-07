@@ -72,6 +72,11 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 					resource "fivetran_group" "testgroup" {
 						provider = fivetran-provider
 						name = "test_group_name"
+					}
+
+					resource "fivetran_group_users" "testgroup_users" {
+						provider = fivetran-provider
+						group_id = fivetran_group.testgroup.id
 
 						user {
 							id = fivetran_user.userjohn.id
@@ -80,8 +85,40 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 					}
 				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttrSet("fivetran_group.testgroup", "user.0.id"),
-					resource.TestCheckResourceAttr("fivetran_group.testgroup", "user.0.role", "Destination Reviewer"),
+					resource.TestCheckResourceAttrSet("fivetran_group_users.testgroup_users", "user.0.id"),
+					resource.TestCheckResourceAttr("fivetran_group.testgroup_users", "user.0.role", "Destination Reviewer"),
+				),
+			},
+			{
+				Config: `
+					resource "fivetran_user" "userjohn" {
+						provider = fivetran-provider
+						email = "john.black@testmail.com"
+						family_name = "Black"
+						given_name = "John"
+						phone = "+19876543210"
+						picture = "https://myPicturecom"
+						role = "Account Reviewer"
+					}
+
+					resource "fivetran_group" "testgroup" {
+						provider = fivetran-provider
+						name = "test_group_name"
+					}
+
+					resource "fivetran_group_users" "testgroup_users" {
+						provider = fivetran-provider
+						group_id = fivetran_group.testgroup.id
+
+						user {
+							id = fivetran_user.userjohn.id
+							role = "Destination Administrator"
+						}
+					}
+				`,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttrSet("fivetran_group_users.testgroup_users", "user.0.id"),
+					resource.TestCheckResourceAttr("fivetran_group.testgroup_users", "user.0.role", "Destination Administrator"),
 				),
 			},
 			{
@@ -90,11 +127,16 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 						provider = fivetran-provider
 						name = "test_group_name"
 					}
+
+					resource "fivetran_group_users" "testgroup_users" {
+						provider = fivetran-provider
+						group_id = fivetran_group.testgroup.id
+					}
 				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranGroupUsersUpdate(t, "fivetran_group.testgroup"),
 					resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "test_group_name"),
-					resource.TestCheckResourceAttr("fivetran_group.testgroup", "user.#", "0"),
+					resource.TestCheckResourceAttr("fivetran_group_users.testgroup_users", "user.#", "0"),
 				),
 			},
 		},
@@ -109,7 +151,17 @@ func testFivetranGroupResourceCreate(t *testing.T, resourceName string) resource
 		if err != nil {
 			return err
 		}
-		//todo: check response _  fields
+
+		response, err := client.NewGroupListUsers().GroupID(rs.Primary.ID).Do(context.Background())
+
+		if err != nil {
+			return err
+		}
+
+		if len(response.Data.Items) != 0 {
+			return fmt.Errorf("Group has extra " + strconv.Itoa(len(response.Data.Items)) + " users (" + response.Data.Items[0].ID + ")")
+		}
+
 		return nil
 	}
 }
@@ -155,7 +207,7 @@ func testFivetranGroupUsersUpdate(t *testing.T, resourceName string) resource.Te
 			return err
 		}
 
-		if len(response.Data.Items) != 1 || response.Data.Items[0].ID != "endeavor_lock" {
+		if len(response.Data.Items) != 0 {
 			return fmt.Errorf("Group has extra " + strconv.Itoa(len(response.Data.Items)) + " users (" + response.Data.Items[0].ID + ")")
 		}
 

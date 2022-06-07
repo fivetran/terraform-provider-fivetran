@@ -20,6 +20,7 @@ func resourceGroupUsers() *schema.Resource {
 		DeleteContext: resourceGroupUsersDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
 		Schema: map[string]*schema.Schema{
+			"id":           {Type: schema.TypeString, Computed: true},
 			"group_id":     {Type: schema.TypeString, Required: true},
 			"user":         resourceGroupUsersSchemaUser(),
 			"last_updated": {Type: schema.TypeString, Computed: true}, // internal
@@ -116,19 +117,14 @@ func resourceGroupUsersRead(ctx context.Context, d *schema.ResourceData, m inter
 	client := m.(*fivetran.Client)
 	svc := client.NewGroupDetails()
 
-	groupID := d.Get("group_id").(string)
+	groupID := d.Get("id").(string)
+
 	users := d.Get("user").(*schema.Set).List()
 	svc.GroupID(groupID)
 
 	resp, err := svc.Do(ctx)
 	if err != nil {
 		return newDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
-	}
-
-	creatorID, err := resourceGroupUsersGetCreator(client, resp.Data.ID, ctx)
-
-	if err != nil {
-		return newDiagAppend(diags, diag.Error, "create error: groupCreator", fmt.Sprint(err))
 	}
 
 	respUsers, err := dataSourceGroupUsersGetUsers(client, groupID, ctx)
@@ -138,7 +134,7 @@ func resourceGroupUsersRead(ctx context.Context, d *schema.ResourceData, m inter
 
 	// msi stands for Map String Interface
 	msi := make(map[string]interface{})
-	msi["user"] = resourceGroupUsersFlattenGroupUsers(&respUsers, users, creatorID)
+	msi["user"] = resourceGroupUsersFlattenGroupUsers(&respUsers, users)
 	for k, v := range msi {
 		if err := d.Set(k, v); err != nil {
 			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
@@ -153,18 +149,13 @@ func resourceGroupUsersUpdate(ctx context.Context, d *schema.ResourceData, m int
 	client := m.(*fivetran.Client)
 	groupID := d.Get("group_id").(string)
 
-	creatorID, err := resourceGroupUsersGetCreator(client, groupID, ctx)
-	if err != nil {
-		return newDiagAppend(diags, diag.Error, "read error: resourceGroupUsersGetCreator", fmt.Sprint(err))
-	}
-
 	if d.HasChange("user") {
 		respUsers, err := dataSourceGroupUsersGetUsers(client, groupID, ctx)
 		if err != nil {
 			return newDiagAppend(diags, diag.Error, "read error: dataSourceGroupUsersGetUsers", fmt.Sprintf("%v; code: %v; message: %v", err, respUsers.Code, respUsers.Message))
 		}
 
-		if err := resourceGroupUsersSyncUsers(client, &respUsers, d.Get("user").(*schema.Set).List(), creatorID, groupID, ctx); err != nil {
+		if err := resourceGroupUsersSyncUsers(client, &respUsers, d.Get("user").(*schema.Set).List(), groupID, ctx); err != nil {
 			return newDiagAppend(diags, diag.Error, "read error: resourceGroupSyncUsers", fmt.Sprint(err))
 		}
 	}
@@ -195,36 +186,15 @@ func resourceGroupUsersHashGroupUserEmail(v interface{}) int {
 	return int(h.Sum32())
 }
 
-// resourceGroupGetCreator returns the id of the first user of a newly created group
-func resourceGroupUsersGetCreator(client *fivetran.Client, groupID string, ctx context.Context) (string, error) {
-	resp, err := client.NewGroupListUsers().GroupID(groupID).Do(ctx)
-	if err != nil {
-		return "", err
-	}
-
-	// This logic is for RBAC accounts only
-	for _, user := range resp.Data.Items {
-		if user.Role == "destination_creator" {
-			return user.ID, nil
-		}
-	}
-
-	return resp.Data.Items[0].ID, nil
-}
-
 // resourceGroupFlattenGroupUsers receives a *fivetran.GroupListUsersResponse and returns a []interface{}
 // containing the data type accepted by the "user" set. The group creator is ommited from the return
-func resourceGroupUsersFlattenGroupUsers(resp *fivetran.GroupListUsersResponse, localUsers []interface{}, creatorID string) []interface{} {
+func resourceGroupUsersFlattenGroupUsers(resp *fivetran.GroupListUsersResponse, localUsers []interface{}) []interface{} {
 	if resp.Data.Items == nil {
 		return make([]interface{}, 0)
 	}
 
 	var users []interface{}
 	for _, user := range resp.Data.Items {
-		if user.ID == creatorID {
-			continue
-		}
-
 		u := make(map[string]interface{})
 		u["id"] = user.ID
 		u["email"] = user.Email
@@ -237,7 +207,7 @@ func resourceGroupUsersFlattenGroupUsers(resp *fivetran.GroupListUsersResponse, 
 
 // resourceGroupSyncUsers syncs users associated with a group between the Terraform state and the REST API.
 // TODO: Check if this can be simplified using d.GetChange().
-func resourceGroupUsersSyncUsers(client *fivetran.Client, resp *fivetran.GroupListUsersResponse, localUsers []interface{}, creatorID string, groupID string, ctx context.Context) error {
+func resourceGroupUsersSyncUsers(client *fivetran.Client, resp *fivetran.GroupListUsersResponse, localUsers []interface{}, groupID string, ctx context.Context) error {
 	type userType struct {
 		role string
 		id   string
@@ -246,10 +216,6 @@ func resourceGroupUsersSyncUsers(client *fivetran.Client, resp *fivetran.GroupLi
 	// Make a map of remoteUsers ommiting the group creator
 	remoteUsers := make(map[string]userType)
 	for _, v := range resp.Data.Items {
-		if v.ID == creatorID {
-			continue
-		}
-
 		remoteUsers[v.Email] = userType{
 			role: v.Role,
 			id:   v.ID,
