@@ -43,7 +43,6 @@ func TestResourceGroupE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "test_group_name_updated"),
 					resource.TestCheckResourceAttrSet("fivetran_group.testgroup", "created_at"),
 					resource.TestCheckResourceAttrSet("fivetran_group.testgroup", "last_updated"),
-					resource.TestCheckResourceAttr("fivetran_group.testgroup", "creator", PredefinedUserId),
 				),
 			},
 		},

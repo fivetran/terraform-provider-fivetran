@@ -219,6 +219,9 @@ func resourceGroupUsersSyncUsers(client *fivetran.Client, resp *fivetran.GroupLi
 	// Make a map of remoteUsers ommiting the group creator
 	remoteUsers := make(map[string]userType)
 	for _, v := range resp.Data.Items {
+		if v.Role == "" {
+			continue
+		}
 		remoteUsers[v.Email] = userType{
 			role: v.Role,
 			id:   v.ID,
