@@ -195,6 +195,9 @@ func resourceGroupUsersFlattenGroupUsers(resp *fivetran.GroupListUsersResponse, 
 
 	var users []interface{}
 	for _, user := range resp.Data.Items {
+		if user.Role == "" {
+			continue
+		}
 		u := make(map[string]interface{})
 		u["id"] = user.ID
 		u["email"] = user.Email

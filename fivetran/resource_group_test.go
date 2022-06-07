@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -157,8 +158,16 @@ func testFivetranGroupResourceCreate(t *testing.T, resourceName string) resource
 			return err
 		}
 
-		if len(response.Data.Items) != 0 {
-			return fmt.Errorf("Group has extra " + strconv.Itoa(len(response.Data.Items)) + " users (" + response.Data.Items[0].ID + ")")
+		var users []string
+		for _, user := range response.Data.Items {
+			if user.Role == "" {
+				continue
+			}
+			users = append(users, user.ID)
+		}
+
+		if len(users) != 0 {
+			return fmt.Errorf("Group has extra " + strconv.Itoa(len(users)) + " users (" + strings.Join(users, ",") + ")")
 		}
 
 		return nil
@@ -206,8 +215,16 @@ func testFivetranGroupUsersUpdate(t *testing.T, resourceName string) resource.Te
 			return err
 		}
 
-		if len(response.Data.Items) != 0 {
-			return fmt.Errorf("Group has extra " + strconv.Itoa(len(response.Data.Items)) + " users (" + response.Data.Items[0].ID + ")")
+		var users []string
+		for _, user := range response.Data.Items {
+			if user.Role == "" {
+				continue
+			}
+			users = append(users, user.ID)
+		}
+
+		if len(users) != 0 {
+			return fmt.Errorf("Group has extra " + strconv.Itoa(len(users)) + " users (" + strings.Join(users, ",") + ")")
 		}
 
 		return nil

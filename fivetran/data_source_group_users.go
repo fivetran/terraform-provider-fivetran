@@ -114,10 +114,6 @@ func dataSourceGroupUsersGetUsers(client *fivetran.Client, id string, ctx contex
 
 		resp.Data.Items = append(resp.Data.Items, respInner.Data.Items...)
 
-		// for _, item := range respInner.Data.Items {
-		// 	resp.Data.Items = append(resp.Data.Items, item)
-		// }
-
 		if respInner.Data.NextCursor == "" {
 			break
 		}

@@ -62,12 +62,6 @@ func resourceGroupCreate(ctx context.Context, d *schema.ResourceData, m interfac
 		return newDiagAppend(diags, diag.Error, "create error: groupCreator", fmt.Sprintf("%v; code: %v; message: %v", err, deleteCreatorResponse.Code, deleteCreatorResponse.Message))
 	}
 
-	user, err := resourceGroupGetCreator(client, resp.Data.ID, ctx)
-
-	if err == nil && user != "" {
-		return newDiagAppend(diags, diag.Error, "create error: can't delete groupCreator", "")
-	}
-
 	d.SetId(resp.Data.ID)
 	resourceGroupRead(ctx, d, m)
 
