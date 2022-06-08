@@ -84,7 +84,7 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 					}
 				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					testFivetranGroupUsersUpdateWithUsers(t, "fivetran_group_users", []string{"john.black@testmail.com"}),
+					testFivetranGroupUsersUpdateWithUsers(t, "fivetran_group_users.testgroup_users", []string{"john.black@testmail.com"}),
 					resource.TestCheckResourceAttrSet("fivetran_group_users.testgroup_users", "user.0.id"),
 					resource.TestCheckResourceAttr("fivetran_group_users.testgroup_users", "user.0.role", "Destination Reviewer"),
 				),
@@ -117,7 +117,7 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 					}
 				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					testFivetranGroupUsersUpdateWithUsers(t, "fivetran_group_users", []string{"john.black@testmail.com"}),
+					testFivetranGroupUsersUpdateWithUsers(t, "fivetran_group_users.testgroup_users", []string{"john.black@testmail.com"}),
 					resource.TestCheckResourceAttrSet("fivetran_group_users.testgroup_users", "user.0.id"),
 					resource.TestCheckResourceAttr("fivetran_group_users.testgroup_users", "user.0.role", "Destination Administrator"),
 				),
@@ -135,7 +135,7 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 					}
 				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					testFivetranGroupUsersUpdate(t, "fivetran_group_users.testgroup"),
+					testFivetranGroupUsersUpdate(t, "fivetran_group_users.testgroup_users"),
 					resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "test_group_name"),
 					resource.TestCheckResourceAttr("fivetran_group_users.testgroup_users", "user.#", "0"),
 				),
@@ -264,7 +264,7 @@ func testFivetranGroupResourceCreate(t *testing.T, resourceName string) resource
 			users = append(users, user.ID)
 		}
 
-		if len(users) != 1 {
+		if len(users) != 0 {
 			return fmt.Errorf("Group has extra " + strconv.Itoa(len(users)) + " users (" + strings.Join(users, ",") + ")")
 		}
 
