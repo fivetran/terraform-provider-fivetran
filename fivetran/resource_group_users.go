@@ -128,7 +128,7 @@ func resourceGroupUsersDelete(ctx context.Context, d *schema.ResourceData, m int
 // It is the user unique email on that group.
 func resourceGroupUsersHashGroupUser(v interface{}) int {
 	h := fnv.New32a()
-	var hashKey = v.(map[string]interface{})["email"].(string)
+	var hashKey = v.(map[string]interface{})["email"].(string) + v.(map[string]interface{})["role"].(string)
 	h.Write([]byte(hashKey))
 	return int(h.Sum32())
 }
