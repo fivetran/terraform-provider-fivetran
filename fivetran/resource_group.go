@@ -36,32 +36,6 @@ func resourceGroupCreate(ctx context.Context, d *schema.ResourceData, m interfac
 		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
-	groupID := resp.Data.ID
-
-	groupCreator, err := resourceGroupGetCreator(client, resp.Data.ID, ctx)
-
-	if err != nil {
-		// If resourceGroupGetCreator returns an error, the recently created group is deleted
-		respDelete, errDelete := client.NewGroupDelete().GroupID(groupID).Do(ctx)
-		if errDelete != nil {
-			diags = newDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, respDelete.Code, respDelete.Message))
-		}
-
-		return newDiagAppend(diags, diag.Error, "create error: groupCreator", fmt.Sprint(err))
-	}
-
-	deleteCreatorResponse, err := client.NewGroupRemoveUser().GroupID(groupID).UserID(groupCreator).Do(ctx)
-
-	if err != nil {
-		// If failed to delete creator we cleanup and delete the group
-		respDelete, errDelete := client.NewGroupDelete().GroupID(groupID).Do(ctx)
-		if errDelete != nil {
-			diags = newDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, respDelete.Code, respDelete.Message))
-		}
-
-		return newDiagAppend(diags, diag.Error, "create error: groupCreator", fmt.Sprintf("%v; code: %v; message: %v", err, deleteCreatorResponse.Code, deleteCreatorResponse.Message))
-	}
-
 	d.SetId(resp.Data.ID)
 	resourceGroupRead(ctx, d, m)
 
@@ -138,17 +112,4 @@ func resourceGroupDelete(ctx context.Context, d *schema.ResourceData, m interfac
 	d.SetId("")
 
 	return diags
-}
-
-// resourceGroupGetCreator returns the id of the first user of a newly created group
-func resourceGroupGetCreator(client *fivetran.Client, groupID string, ctx context.Context) (string, error) {
-	resp, err := client.NewGroupListUsers().GroupID(groupID).Do(ctx)
-	if err != nil {
-		return "", err
-	}
-	if len(resp.Data.Items) == 0 {
-		return "", nil
-	}
-
-	return resp.Data.Items[0].ID, nil
 }

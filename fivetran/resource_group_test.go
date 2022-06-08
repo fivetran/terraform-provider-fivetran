@@ -84,6 +84,7 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 					}
 				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranGroupUsersUpdateWithUsers(t, "fivetran_group_users", []string{"john.black@testmail.com"}),
 					resource.TestCheckResourceAttrSet("fivetran_group_users.testgroup_users", "user.0.id"),
 					resource.TestCheckResourceAttr("fivetran_group_users.testgroup_users", "user.0.role", "Destination Reviewer"),
 				),
@@ -116,6 +117,7 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 					}
 				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranGroupUsersUpdateWithUsers(t, "fivetran_group_users", []string{"john.black@testmail.com"}),
 					resource.TestCheckResourceAttrSet("fivetran_group_users.testgroup_users", "user.0.id"),
 					resource.TestCheckResourceAttr("fivetran_group_users.testgroup_users", "user.0.role", "Destination Administrator"),
 				),
@@ -133,7 +135,7 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 					}
 				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					testFivetranGroupUsersUpdate(t, "fivetran_group.testgroup"),
+					testFivetranGroupUsersUpdate(t, "fivetran_group_users.testgroup"),
 					resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "test_group_name"),
 					resource.TestCheckResourceAttr("fivetran_group_users.testgroup_users", "user.#", "0"),
 				),
@@ -142,46 +144,19 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 	})
 }
 
-func testFivetranGroupResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {
-	return func(s *terraform.State) error {
-		rs := GetResource(t, s, resourceName)
-		_, err := client.NewGroupDetails().GroupID(rs.Primary.ID).Do(context.Background())
-
-		if err != nil {
-			return err
-		}
-
-		response, err := client.NewGroupListUsers().GroupID(rs.Primary.ID).Do(context.Background())
-
-		if err != nil {
-			return err
-		}
-
-		var users []string
-		for _, user := range response.Data.Items {
-			if user.Role == "" {
-				continue
-			}
-			users = append(users, user.ID)
-		}
-
-		if len(users) != 0 {
-			return fmt.Errorf("Group has extra " + strconv.Itoa(len(users)) + " users (" + strings.Join(users, ",") + ")")
-		}
-
-		return nil
-	}
-}
-
 func testFivetranGroupResourceUpdate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
-		_, err := client.NewGroupDetails().GroupID(rs.Primary.ID).Do(context.Background())
+		response, err := client.NewGroupDetails().GroupID(rs.Primary.ID).Do(context.Background())
 
 		if err != nil {
 			return err
 		}
-		//todo: check response _  fields
+
+		if response.Data.Name != "test_group_name_updated" {
+			return fmt.Errorf("Group has name %v different from expected (%v)", response.Data.Name, "test_group_name_updated")
+		}
+
 		return nil
 	}
 }
@@ -205,6 +180,41 @@ func testFivetranGroupResourceDestroy(s *terraform.State) error {
 	return nil
 }
 
+func testFivetranGroupUsersUpdateWithUsers(t *testing.T, resourceName string, expectedUsers []string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		rs := GetResource(t, s, resourceName)
+		response, err := client.NewGroupListUsers().GroupID(rs.Primary.ID).Do(context.Background())
+
+		if err != nil {
+			return err
+		}
+
+		var actualUsers []string
+		difference := false
+		for _, user := range response.Data.Items {
+			if user.Role == "" {
+				continue
+			}
+			actualUsers = append(actualUsers, user.Email)
+			found := false
+			for _, expectedUser := range expectedUsers {
+				if expectedUser == user.Email {
+					found = true
+				}
+			}
+			if !found {
+				difference = true
+			}
+		}
+
+		if difference || len(actualUsers) != len(expectedUsers) {
+			return fmt.Errorf("Group users different from expected. Was: (" + strings.Join(actualUsers, ",") + "), expected: (" + strings.Join(expectedUsers, ",") + ")")
+		}
+
+		return nil
+	}
+}
+
 func testFivetranGroupUsersUpdate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
@@ -223,6 +233,38 @@ func testFivetranGroupUsersUpdate(t *testing.T, resourceName string) resource.Te
 		}
 
 		if len(users) != 0 {
+			return fmt.Errorf("Group has extra " + strconv.Itoa(len(users)) + " users (" + strings.Join(users, ",") + ")")
+		}
+
+		return nil
+	}
+}
+
+func testFivetranGroupResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		rs := GetResource(t, s, resourceName)
+		_, err := client.NewGroupDetails().GroupID(rs.Primary.ID).Do(context.Background())
+
+		if err != nil {
+			return err
+		}
+
+		response, err := client.NewGroupListUsers().GroupID(rs.Primary.ID).Do(context.Background())
+
+		if err != nil {
+			return err
+		}
+
+		var users []string
+		for _, user := range response.Data.Items {
+			// when group just created it contains one membership for group creator
+			if user.ID == PredefinedUserId {
+				continue
+			}
+			users = append(users, user.ID)
+		}
+
+		if len(users) != 1 {
 			return fmt.Errorf("Group has extra " + strconv.Itoa(len(users)) + " users (" + strings.Join(users, ",") + ")")
 		}
 
