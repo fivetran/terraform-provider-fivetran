@@ -187,6 +187,7 @@ Read-Only:
 - `project_id` 
 - `projects` 
 - `public_key` 
+- `publication_name` 
 - `query_id` 
 - `region` 
 - `replication_slot` 

@@ -281,6 +281,7 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"domain":                               {Type: schema.TypeString, Computed: true},
 				"update_method":                        {Type: schema.TypeString, Computed: true},
 				"replication_slot":                     {Type: schema.TypeString, Computed: true},
+				"publication_name":                     {Type: schema.TypeString, Computed: true},
 				"data_center":                          {Type: schema.TypeString, Computed: true},
 				"api_token":                            {Type: schema.TypeString, Computed: true},
 				"sub_domain":                           {Type: schema.TypeString, Computed: true},
@@ -597,6 +598,7 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddStr(c, "domain", resp.Data.Config.Domain)
 	mapAddStr(c, "update_method", resp.Data.Config.UpdateMethod)
 	mapAddStr(c, "replication_slot", resp.Data.Config.ReplicationSlot)
+	mapAddStr(c, "publication_name", resp.Data.Config.PublicationName)
 	mapAddStr(c, "data_center", resp.Data.Config.DataCenter)
 	mapAddStr(c, "api_token", resp.Data.Config.APIToken)
 	mapAddStr(c, "sub_domain", resp.Data.Config.SubDomain)
