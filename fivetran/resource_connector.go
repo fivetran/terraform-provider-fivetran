@@ -388,7 +388,14 @@ func resourceConnectorCreate(ctx context.Context, d *schema.ResourceData, m inte
 	svc := client.NewConnectorCreate()
 
 	svc.GroupID(d.Get("group_id").(string))
-	svc.Service(d.Get("service").(string))
+
+	currentService := d.Get("service").(string)
+
+	if currentService == "adwords" {
+		return newDiagAppend(diags, diag.Error, "create error", "service `adwords` deprecated, use `google_ads instead")
+	}
+
+	svc.Service(currentService)
 	svc.TrustCertificates(strToBool(d.Get("trust_certificates").(string)))
 	svc.TrustFingerprints(strToBool(d.Get("trust_fingerprints").(string)))
 	svc.RunSetupTests(strToBool(d.Get("run_setup_tests").(string)))
@@ -429,7 +436,15 @@ func resourceConnectorRead(ctx context.Context, d *schema.ResourceData, m interf
 	msi := make(map[string]interface{})
 	mapAddStr(msi, "id", resp.Data.ID)
 	mapAddStr(msi, "group_id", resp.Data.GroupID)
-	mapAddStr(msi, "service", resp.Data.Service)
+
+	currentService := d.Get("service").(string)
+	if currentService == "adwords" && resp.Data.Service == "google_ads" {
+		// ignore service change for migrated adwords connectors
+		mapAddStr(msi, "service", "adwords")
+		diags = newDiagAppend(diags, diag.Warning, "Google Ads service migration detected", "service update supressed to prevent resource re-creation.")
+	} else {
+		mapAddStr(msi, "service", resp.Data.Service)
+	}
 	mapAddStr(msi, "service_version", intPointerToStr(resp.Data.ServiceVersion))
 	mapAddStr(msi, "name", resp.Data.Schema)
 	mapAddXInterface(msi, "destination_schema", resourceConnectorReadDestinationSchema(resp.Data.Schema, resp.Data.Service))
