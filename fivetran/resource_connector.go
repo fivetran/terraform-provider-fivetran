@@ -392,7 +392,7 @@ func resourceConnectorCreate(ctx context.Context, d *schema.ResourceData, m inte
 	currentService := d.Get("service").(string)
 
 	if currentService == "adwords" {
-		return newDiagAppend(diags, diag.Error, "create error", "service `adwords` deprecated, use `google_ads instead")
+		return newDiagAppend(diags, diag.Error, "create error", "service `adwords` has been deprecated, use `google_ads` instead")
 	}
 
 	svc.Service(currentService)
