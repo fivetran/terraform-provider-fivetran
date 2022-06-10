@@ -438,13 +438,15 @@ func resourceConnectorRead(ctx context.Context, d *schema.ResourceData, m interf
 	mapAddStr(msi, "group_id", resp.Data.GroupID)
 
 	currentService := d.Get("service").(string)
+
+	// ignore service change for migrated `adwords connectors
 	if currentService == "adwords" && resp.Data.Service == "google_ads" {
-		// ignore service change for migrated adwords connectors
 		mapAddStr(msi, "service", "adwords")
 		diags = newDiagAppend(diags, diag.Warning, "Google Ads service migration detected", "service update supressed to prevent resource re-creation.")
 	} else {
 		mapAddStr(msi, "service", resp.Data.Service)
 	}
+
 	mapAddStr(msi, "service_version", intPointerToStr(resp.Data.ServiceVersion))
 	mapAddStr(msi, "name", resp.Data.Schema)
 	mapAddXInterface(msi, "destination_schema", resourceConnectorReadDestinationSchema(resp.Data.Schema, resp.Data.Service))
