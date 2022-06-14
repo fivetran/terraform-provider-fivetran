@@ -5,9 +5,76 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.4.6...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.5.0...HEAD)
 
-## [0.4.6](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.4.5...v0.4.6) - 2022-06-15
+## [0.5.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.4.5...v0.5.0) - 2022-06-15
+
+## Breaking changes
+
+- Resource `fivetran_group` separated to two resources `fivetran_group` and `fivetran_group_users` corresponding to dataSources
+- Schema field `fivetran_group.creator` removed. 
+
+### Migration from v0.4.5
+
+For each group in configuration the following should be done:
+
+```
+v0.4.5:
+
+# Example user
+resource "fivetran_user" "user1" {
+    email = "email1@domain.com"
+    family_name = "User 1"
+    given_name = "User Name 1"
+    phone = "+123 45 678 8990"
+    role = "Owner"
+}
+
+## fivetran_group
+resource "fivetran_group" "group1" {
+    name = "My Group 1"
+
+    user {
+        id = fivetran_user.user1.id
+        role = "<Some Role>"
+    }
+
+}
+
+v0.5.0:
+
+# Example user
+resource "fivetran_user" "user1" {
+    email = "email1@domain.com"
+    family_name = "User 1"
+    given_name = "User Name 1"
+    phone = "+123 45 678 8990"
+    role = "Owner"
+}
+
+## fivetran_group
+resource "fivetran_group" "group1" {
+    name = "My Group 1"
+}
+
+resource "fivetran_group_users" "group1_users"{
+    group_id = fivetran_group.group1.id
+
+    user {
+        id = fivetran_user.user1.id
+        role = "<Some Role>"
+    }
+}
+
+```
+
+NOTE: please remove old `fivetran_group` resource form state and re-import it after provider version update to avoid state inconsistency.
+To import group users just import `fivetran_group_users` resource with the same group id.
+
+## Fixed
+- Destination resource `trust_certificates`, `trust_fingerprints` and `run_setup_tests` properties don't have `ForceNew` attribute no more.
+
+## [0.4.6](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.4.5...v0.4.6) - 2022-06-14
 
 ## Compatibility changes
 - Handle `adwords` service migration to `google_ads` for existing connectors. 
@@ -15,7 +82,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 NOTE: All connector creation requests with the service `adwords` will now result in an error.
 
-## [0.4.5](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.4.4...v0.4.5) - 2022-06-15
+## [0.4.5](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.4.4...v0.4.5) - 2022-06-10
 
 ## Fixed
 - Issue with `external_id` resource_connector config field.

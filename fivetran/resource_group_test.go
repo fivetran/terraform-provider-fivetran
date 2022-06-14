@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -19,16 +20,15 @@ func TestResourceGroupE2E(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-		   	resource "fivetran_group" "testgroup" {
-				 provider = fivetran-provider
-			     name = "test_group_name"
-			}
-		  `,
+					resource "fivetran_group" "testgroup" {
+						provider = fivetran-provider
+						name = "test_group_name"
+					}
+				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranGroupResourceCreate(t, "fivetran_group.testgroup"),
 					resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "test_group_name"),
 					resource.TestCheckResourceAttrSet("fivetran_group.testgroup", "created_at"),
-					resource.TestCheckResourceAttr("fivetran_group.testgroup", "creator", PredefinedUserId),
 				),
 			},
 			{
@@ -43,7 +43,6 @@ func TestResourceGroupE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "test_group_name_updated"),
 					resource.TestCheckResourceAttrSet("fivetran_group.testgroup", "created_at"),
 					resource.TestCheckResourceAttrSet("fivetran_group.testgroup", "last_updated"),
-					resource.TestCheckResourceAttr("fivetran_group.testgroup", "creator", PredefinedUserId),
 				),
 			},
 		},
@@ -72,16 +71,55 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 					resource "fivetran_group" "testgroup" {
 						provider = fivetran-provider
 						name = "test_group_name"
+					}
+
+					resource "fivetran_group_users" "testgroup_users" {
+						provider = fivetran-provider
+						group_id = fivetran_group.testgroup.id
 
 						user {
-							id = fivetran_user.userjohn.id
+							email = fivetran_user.userjohn.email
 							role = "Destination Reviewer"
 						}
 					}
 				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttrSet("fivetran_group.testgroup", "user.0.id"),
-					resource.TestCheckResourceAttr("fivetran_group.testgroup", "user.0.role", "Destination Reviewer"),
+					testFivetranGroupUsersUpdateWithUsers(t, "fivetran_group_users.testgroup_users", []string{"john.black@testmail.com"}),
+					resource.TestCheckResourceAttrSet("fivetran_group_users.testgroup_users", "user.0.id"),
+					resource.TestCheckResourceAttr("fivetran_group_users.testgroup_users", "user.0.role", "Destination Reviewer"),
+				),
+			},
+			{
+				Config: `
+					resource "fivetran_user" "userjohn" {
+						provider = fivetran-provider
+						email = "john.black@testmail.com"
+						family_name = "Black"
+						given_name = "John"
+						phone = "+19876543210"
+						picture = "https://myPicturecom"
+						role = "Account Reviewer"
+					}
+
+					resource "fivetran_group" "testgroup" {
+						provider = fivetran-provider
+						name = "test_group_name"
+					}
+
+					resource "fivetran_group_users" "testgroup_users" {
+						provider = fivetran-provider
+						group_id = fivetran_group.testgroup.id
+
+						user {
+							email = fivetran_user.userjohn.email
+							role = "Destination Administrator"
+						}
+					}
+				`,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranGroupUsersUpdateWithUsers(t, "fivetran_group_users.testgroup_users", []string{"john.black@testmail.com"}),
+					resource.TestCheckResourceAttrSet("fivetran_group_users.testgroup_users", "user.0.id"),
+					resource.TestCheckResourceAttr("fivetran_group_users.testgroup_users", "user.0.role", "Destination Administrator"),
 				),
 			},
 			{
@@ -90,39 +128,35 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 						provider = fivetran-provider
 						name = "test_group_name"
 					}
+
+					resource "fivetran_group_users" "testgroup_users" {
+						provider = fivetran-provider
+						group_id = fivetran_group.testgroup.id
+					}
 				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					testFivetranGroupUsersUpdate(t, "fivetran_group.testgroup"),
+					testFivetranGroupUsersUpdate(t, "fivetran_group_users.testgroup_users"),
 					resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "test_group_name"),
-					resource.TestCheckResourceAttr("fivetran_group.testgroup", "user.#", "0"),
+					resource.TestCheckResourceAttr("fivetran_group_users.testgroup_users", "user.#", "0"),
 				),
 			},
 		},
 	})
 }
 
-func testFivetranGroupResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {
-	return func(s *terraform.State) error {
-		rs := GetResource(t, s, resourceName)
-		_, err := client.NewGroupDetails().GroupID(rs.Primary.ID).Do(context.Background())
-
-		if err != nil {
-			return err
-		}
-		//todo: check response _  fields
-		return nil
-	}
-}
-
 func testFivetranGroupResourceUpdate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
-		_, err := client.NewGroupDetails().GroupID(rs.Primary.ID).Do(context.Background())
+		response, err := client.NewGroupDetails().GroupID(rs.Primary.ID).Do(context.Background())
 
 		if err != nil {
 			return err
 		}
-		//todo: check response _  fields
+
+		if response.Data.Name != "test_group_name_updated" {
+			return fmt.Errorf("Group has name %v different from expected (%v)", response.Data.Name, "test_group_name_updated")
+		}
+
 		return nil
 	}
 }
@@ -146,6 +180,41 @@ func testFivetranGroupResourceDestroy(s *terraform.State) error {
 	return nil
 }
 
+func testFivetranGroupUsersUpdateWithUsers(t *testing.T, resourceName string, expectedUsers []string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		rs := GetResource(t, s, resourceName)
+		response, err := client.NewGroupListUsers().GroupID(rs.Primary.ID).Do(context.Background())
+
+		if err != nil {
+			return err
+		}
+
+		var actualUsers []string
+		difference := false
+		for _, user := range response.Data.Items {
+			if user.Role == "" {
+				continue
+			}
+			actualUsers = append(actualUsers, user.Email)
+			found := false
+			for _, expectedUser := range expectedUsers {
+				if expectedUser == user.Email {
+					found = true
+				}
+			}
+			if !found {
+				difference = true
+			}
+		}
+
+		if difference || len(actualUsers) != len(expectedUsers) {
+			return fmt.Errorf("Group users different from expected. Was: (" + strings.Join(actualUsers, ",") + "), expected: (" + strings.Join(expectedUsers, ",") + ")")
+		}
+
+		return nil
+	}
+}
+
 func testFivetranGroupUsersUpdate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
@@ -155,8 +224,48 @@ func testFivetranGroupUsersUpdate(t *testing.T, resourceName string) resource.Te
 			return err
 		}
 
-		if len(response.Data.Items) != 1 || response.Data.Items[0].ID != "endeavor_lock" {
-			return fmt.Errorf("Group has extra " + strconv.Itoa(len(response.Data.Items)) + " users (" + response.Data.Items[0].ID + ")")
+		var users []string
+		for _, user := range response.Data.Items {
+			if user.Role == "" {
+				continue
+			}
+			users = append(users, user.ID)
+		}
+
+		if len(users) != 0 {
+			return fmt.Errorf("Group has extra " + strconv.Itoa(len(users)) + " users (" + strings.Join(users, ",") + ")")
+		}
+
+		return nil
+	}
+}
+
+func testFivetranGroupResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		rs := GetResource(t, s, resourceName)
+		_, err := client.NewGroupDetails().GroupID(rs.Primary.ID).Do(context.Background())
+
+		if err != nil {
+			return err
+		}
+
+		response, err := client.NewGroupListUsers().GroupID(rs.Primary.ID).Do(context.Background())
+
+		if err != nil {
+			return err
+		}
+
+		var users []string
+		for _, user := range response.Data.Items {
+			// when group just created it contains one membership for group creator
+			if user.ID == PredefinedUserId {
+				continue
+			}
+			users = append(users, user.ID)
+		}
+
+		if len(users) != 0 {
+			return fmt.Errorf("Group has extra " + strconv.Itoa(len(users)) + " users (" + strings.Join(users, ",") + ")")
 		}
 
 		return nil
