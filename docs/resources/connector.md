@@ -417,12 +417,11 @@ Read-Only:
 
 ## Import
 
-To import an existing `fivetran_connector` resource into your terraform state you need to get `Fivetran Connector ID` on the connector `Setup` tab at the Fivetran Dashboard.
+To import an existing `fivetran_connector` resource into your Terraform state, you need to get **Fivetran Connector ID** on the **Setup** tab of the connector page in your Fivetran dashboard.
 
-You can retrieve all connectors in particular group via [Data Source: fivetran_group_connectors](/docs/data-sources/group_connectors). 
-To retrieve existing groups use [Data Source: fivetran_groups](/docs/data-sources/groups).
+1. Retrieve all connectors in a particular group using the [fivetran_group_connectors data source](/docs/data-sources/group_connectors). To retrieve existing groups, use the [fivetran_groups data source](/docs/data-sources/groups).
 
-Then define an empty resource in your .tf configuration:
+2. Define an empty resource in your `.tf` configuration:
 
 ```hcl
 resource "fivetran_connector" "my_imported_connector" {
@@ -430,18 +429,16 @@ resource "fivetran_connector" "my_imported_connector" {
 }
 ```
 
-And call `terraform import` command:
+3. Call the `terraform import` command:
 
 ```
 terraform import fivetran_connector.my_imported_connector <your Fivetran Connector ID>
 ```
 
-Then copy-paste connector properties from the state to your .tf config, use `terraform state show`:
+4. Copy and paste the connector properties from the state to your `.tf` configuration using the `terraform state show` command:
 
 ```
 terraform state show 'fivetran_connector.my_imported_connector'
 ```
 
--> You need to get rid of redundant `config` properties that doesn't related to particular connector - 
-`config` in state contains all properties defined in schema, but you actually don't need to keep them all. 
-Use [Fivetran public docs](https://fivetran.com/docs/rest-api/connectors/config) for reference to find the fields you need to keep in `config` section.
+-> The `config` object in the state contains all properties defined in the schema. You need to remove properties from the `config` that are not related to connectors. See [Fivetran REST API documentation](https://fivetran.com/docs/rest-api/connectors/config) for reference to find the properties you need to keep in the `config` section.
