@@ -441,4 +441,4 @@ terraform import fivetran_connector.my_imported_connector <your Fivetran Connect
 terraform state show 'fivetran_connector.my_imported_connector'
 ```
 
--> The `config` object in the state contains all properties defined in the schema. You need to remove properties from the `config` that are not related to connectors. See [Fivetran REST API documentation](https://fivetran.com/docs/rest-api/connectors/config) for reference to find the properties you need to keep in the `config` section.
+-> The `config` object in the state contains all properties defined in the schema. You need to remove properties from the `config` that are not related to connectors. See the [Fivetran REST API documentation](https://fivetran.com/docs/rest-api/connectors/config) for reference to find the properties you need to keep in the `config` section.
