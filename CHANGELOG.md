@@ -10,10 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.4.6](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.4.5...v0.4.6) - 2022-06-15
 
 ## Compatibility changes
-- Handle `adwords` service migration to `google_ads` for exisintg connectors. 
+- Handle `adwords` service migration to `google_ads` for existing connectors. 
 - Deprecate the `adwords` service in favor of the new `google_ads` service. 
 
-NOT: All connector creation requests with the service `adwords` will now result in an error.
+NOTE: All connector creation requests with the service `adwords` will now result in an error.
 
 ## [0.4.5](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.4.4...v0.4.5) - 2022-06-15
 
