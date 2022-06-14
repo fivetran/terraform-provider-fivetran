@@ -94,13 +94,13 @@ resource "fivetran_destination" "my_imported_destination" {
 }
 ```
 
-1. Call the `terraform import` command with the following parameters:
+2. Call the `terraform import` command with the following parameters:
 
 ```
 terraform import fivetran_destination.my_imported_destination <your Destination Group ID>
 ```
 
-1. Copy and paste destination properties from the state to your `.tf` configuration, use the `terraform state show` command:
+3. Copy and paste destination properties from the state to your `.tf` configuration, use the `terraform state show` command:
 
 ```
 terraform state show 'fivetran_destination.my_imported_destination'
