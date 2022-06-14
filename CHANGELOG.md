@@ -71,6 +71,9 @@ resource "fivetran_group_users" "group1_users"{
 NOTE: please remove old `fivetran_group` resource form state and re-import it after provider version update to avoid state inconsistency.
 To import group users just import `fivetran_group_users` resource with the same group id.
 
+## Fixed
+- Destination resource `trust_certificates`, `trust_fingerprints` and `run_setup_tests` properties don't have `ForceNew` attribute no more.
+
 ## [0.4.6](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.4.5...v0.4.6) - 2022-06-15
 
 ## Compatibility changes

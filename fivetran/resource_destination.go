@@ -25,11 +25,11 @@ func resourceDestination() *schema.Resource {
 			"region":             {Type: schema.TypeString, Required: true},
 			"time_zone_offset":   {Type: schema.TypeString, Required: true},
 			"config":             resourceDestinationSchemaConfig(),
-			"trust_certificates": {Type: schema.TypeBool, Optional: true, ForceNew: true}, // T-112419, ForceNew can be removed and the field can be updated
-			"trust_fingerprints": {Type: schema.TypeBool, Optional: true, ForceNew: true}, // T-112419, ForceNew can be removed and the field can be updated
+			"trust_certificates": {Type: schema.TypeBool, Optional: true}, // T-112419, ForceNew can be removed and the field can be updated
+			"trust_fingerprints": {Type: schema.TypeBool, Optional: true}, // T-112419, ForceNew can be removed and the field can be updated
 			// "run_setup_tests" default value is true. It is set as required to avoid confusion, so the expected behaviour should
 			// be explicitly declared.
-			"run_setup_tests": {Type: schema.TypeBool, Required: true, ForceNew: true}, // T-112419, ForceNew can be removed and the field can be updated
+			"run_setup_tests": {Type: schema.TypeBool, Required: true},
 			"setup_status":    {Type: schema.TypeString, Computed: true},
 			// "setup_tests": ... // missing /T-112419
 			"last_updated": {Type: schema.TypeString, Computed: true}, // internal
