@@ -64,3 +64,4 @@ terraform import fivetran_user.my_imported_fivetran_user <user_id>
 ```
 terraform state show 'fivetran_user.my_imported_fivetran_user'
 ```
+5. Paste the connector properties from the state to your `.tf` configuration.
