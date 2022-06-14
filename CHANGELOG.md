@@ -74,7 +74,7 @@ To import group users just import `fivetran_group_users` resource with the same 
 ## Fixed
 - Destination resource `trust_certificates`, `trust_fingerprints` and `run_setup_tests` properties don't have `ForceNew` attribute no more.
 
-## [0.4.6](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.4.5...v0.4.6) - 2022-06-15
+## [0.4.6](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.4.5...v0.4.6) - 2022-06-14
 
 ## Compatibility changes
 - Handle `adwords` service migration to `google_ads` for existing connectors. 
@@ -82,7 +82,7 @@ To import group users just import `fivetran_group_users` resource with the same 
 
 NOTE: All connector creation requests with the service `adwords` will now result in an error.
 
-## [0.4.5](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.4.4...v0.4.5) - 2022-06-15
+## [0.4.5](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.4.4...v0.4.5) - 2022-06-10
 
 ## Fixed
 - Issue with `external_id` resource_connector config field.
