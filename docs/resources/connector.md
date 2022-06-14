@@ -417,11 +417,11 @@ Read-Only:
 
 ## Import
 
-To import an existing `fivetran_connector` resource into your Terraform state, you need to get **Fivetran Connector ID** on the **Setup** tab of the connector page in your Fivetran dashboard.
+1. To import an existing `fivetran_connector` resource into your Terraform state, you need to get **Fivetran Connector ID** on the **Setup** tab of the connector page in your Fivetran dashboard.
 
-1. Retrieve all connectors in a particular group using the [fivetran_group_connectors data source](/docs/data-sources/group_connectors). To retrieve existing groups, use the [fivetran_groups data source](/docs/data-sources/groups).
+2. Retrieve all connectors in a particular group using the [fivetran_group_connectors data source](/docs/data-sources/group_connectors). To retrieve existing groups, use the [fivetran_groups data source](/docs/data-sources/groups).
 
-2. Define an empty resource in your `.tf` configuration:
+3. Define an empty resource in your `.tf` configuration:
 
 ```hcl
 resource "fivetran_connector" "my_imported_connector" {
@@ -429,7 +429,7 @@ resource "fivetran_connector" "my_imported_connector" {
 }
 ```
 
-3. Call the `terraform import` command:
+4. Call the `terraform import` command:
 
 ```
 terraform import fivetran_connector.my_imported_connector <your Fivetran Connector ID>

@@ -84,9 +84,9 @@ Optional:
 
 ## Import
 
-To import an existing `fivetran_destination` resource into your Terraform state, you need to get **Destination Group ID** on the destination page in your Fivetran dashboard.
+1. To import an existing `fivetran_destination` resource into your Terraform state, you need to get **Destination Group ID** on the destination page in your Fivetran dashboard.
 To retrieve existing groups, use the [fivetran_groups data source](/docs/data-sources/groups).
-1. Define an empty resource in your `.tf` configuration:
+2. Define an empty resource in your `.tf` configuration:
 
 ```hcl
 resource "fivetran_destination" "my_imported_destination" {
@@ -94,13 +94,13 @@ resource "fivetran_destination" "my_imported_destination" {
 }
 ```
 
-2. Call the `terraform import` command with the following parameters:
+3. Call the `terraform import` command with the following parameters:
 
 ```
 terraform import fivetran_destination.my_imported_destination <your Destination Group ID>
 ```
 
-3. Copy and paste destination properties from the state to your `.tf` configuration, use the `terraform state show` command:
+4. Copy and paste destination properties from the state to your `.tf` configuration, use the `terraform state show` command:
 
 ```
 terraform state show 'fivetran_destination.my_imported_destination'
