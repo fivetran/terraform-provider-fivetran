@@ -32,7 +32,7 @@ resource "fivetran_group_users" "group_users" {
 
 ### Optional
 
-- `user` - Manages user assignment to a group (see [below for nested schema](#nestedblock--user))
+- `user` - Manages user assignment to a group (see [below for nested schema](#nestedblock--user)).
 
 ### Read-Only
 
