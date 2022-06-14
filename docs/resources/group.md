@@ -49,3 +49,5 @@ terraform import fivetran_group.my_imported_fivetran_group <your Destination Gro
 ```
 terraform state show 'fivetran_group.my_imported_fivetran_group'
 ```
+
+5. Paste the values to your `.tf` configuration.
