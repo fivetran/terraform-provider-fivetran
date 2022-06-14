@@ -429,7 +429,7 @@ resource "fivetran_connector" "my_imported_connector" {
 }
 ```
 
-4. Call the `terraform import` command:
+4. Run the `terraform import` command:
 
 ```
 terraform import fivetran_connector.my_imported_connector <your Fivetran Connector ID>
@@ -441,4 +441,5 @@ terraform import fivetran_connector.my_imported_connector <your Fivetran Connect
 terraform state show 'fivetran_connector.my_imported_connector'
 ```
 6. Copy the values from the state and paste them to your `.tf` configuration.
+
 -> The `config` object in the state contains all properties defined in the schema. You need to remove properties from the `config` that are not related to connectors. See the [Fivetran REST API documentation](https://fivetran.com/docs/rest-api/connectors/config) for reference to find the properties you need to keep in the `config` section.
