@@ -69,3 +69,4 @@ terraform import fivetran_group_users.my_imported_fivetran_group_users <your Des
 ```
 terraform state show 'fivetran_group_users.my_imported_fivetran_group_users'
 ```
+5. Paste the values to your `.tf` configuration.
