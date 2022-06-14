@@ -435,7 +435,7 @@ resource "fivetran_connector" "my_imported_connector" {
 terraform import fivetran_connector.my_imported_connector <your Fivetran Connector ID>
 ```
 
-4. Copy and paste the connector properties from the state to your `.tf` configuration using the `terraform state show` command:
+5. Copy and paste the connector properties from the state to your `.tf` configuration using the `terraform state show` command:
 
 ```
 terraform state show 'fivetran_connector.my_imported_connector'

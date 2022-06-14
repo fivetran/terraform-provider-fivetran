@@ -42,10 +42,10 @@ resource "fivetran_user" "user" {
 
 ## Import
 
-To import an existing `fivetran_user` resource into your terraform state you need to get `user_id`. 
-You can retrieve all users via [Data Source: fivetran_users](/docs/data-sources/users)
+1. To import an existing `fivetran_user` resource into your Terraform state, you need to get `user_id`. 
+You can retrieve all users using the [fivetran_users data source](/docs/data-sources/users).
 
-Then define an empty resource in your .tf configuration:
+2. Define an empty resource in your `.tf` configuration:
 
 ```hcl
 resource "fivetran_user" "my_imported_fivetran_user" {
@@ -59,7 +59,7 @@ And call `terraform import` command:
 terraform import fivetran_user.my_imported_fivetran_user <user_id>
 ```
 
-Then copy-paste values from the state to your .tf config, use `terraform state show`:
+4. Copy and paste values from the state to your `.tf` configuration using the `terraform state show` command:
 
 ```
 terraform state show 'fivetran_user.my_imported_fivetran_user'

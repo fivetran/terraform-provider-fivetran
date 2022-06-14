@@ -100,7 +100,7 @@ resource "fivetran_destination" "my_imported_destination" {
 terraform import fivetran_destination.my_imported_destination <your Destination Group ID>
 ```
 
-4. Copy and paste destination properties from the state to your `.tf` configuration, use the `terraform state show` command:
+4. Copy and paste destination properties from the state to your `.tf` configuration using the `terraform state show` command:
 
 ```
 terraform state show 'fivetran_destination.my_imported_destination'
