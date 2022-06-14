@@ -11,16 +11,6 @@ This resource allows you to create, update, and delete groups.
 ```hcl
 resource "fivetran_group" "group" {
     name = "MyGroup"
-
-    user {
-        id = "anonymous_mystery"
-        role = "ReadOnly"
-    }
-
-    user {
-        id = fivetran_user.user.id
-        role = "ReadOnly"
-    }
 }
 ```
 
@@ -30,21 +20,32 @@ resource "fivetran_group" "group" {
 
 - `name` - The group name within the account. The name must start with a letter or underscore and can only contain letters, numbers, or underscores.
 
-### Optional
-
-- `user` - Manages user assignment to a group (see [below for nested schema](#nestedblock--user))
-
 ### Read-Only
 
 - `created_at`
-- `creator`
 - `id`
 - `last_updated`
 
-<a id="nestedblock--user"></a>
-### Nested Schema for `user`
+## Import
 
-Required:
+To import an existing `fivetran_group` resource into your terraform state you need to get `Destination Group ID` on the `Destination` page at the Fivetran Dashboard.
+To retrieve existing groups use [Data Source: fivetran_groups](/docs/data-sources/groups).
+Then define an empty resource in your .tf configuration:
 
-- `id` - The user id.
-- `role` - The group role that you would like to assign this user to. Supported group roles: `ReadOnly`, `Uploader`, `Analyst`, `Admin`.
+```hcl
+resource "fivetran_group" "my_imported_fivetran_group" {
+
+}
+```
+
+And call `terraform import` command:
+
+```
+terraform import fivetran_group.my_imported_fivetran_group <your Destination Group ID>
+```
+
+Then copy-paste values from the state to your .tf config, use `terraform state show`:
+
+```
+terraform state show 'fivetran_group.my_imported_fivetran_group'
+```

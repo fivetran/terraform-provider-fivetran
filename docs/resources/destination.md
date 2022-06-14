@@ -81,3 +81,31 @@ Optional:
 - `tunnel_port` 
 - `tunnel_user` 
 - `user` 
+
+## Import
+
+To import an existing `fivetran_destination` resource into your terraform state you need to get `Destination Group ID` on the `Destination` page at the Fivetran Dashboard.
+To retrieve existing groups use [Data Source: fivetran_groups](/docs/data-sources/groups).
+Then define an empty resource in your .tf configuration:
+
+```hcl
+resource "fivetran_destination" "my_imported_destination" {
+
+}
+```
+
+And call `terraform import` command with the following parameters:
+
+```
+terraform import fivetran_destination.my_imported_destination <your Destination Group ID>
+```
+
+Then copy-paste destination properties from the state to your .tf config, use `terraform state show`:
+
+```
+terraform state show 'fivetran_destination.my_imported_destination'
+```
+
+-> You need to get rid of redundant `config` properties that doesn't related to particular destination type - 
+`config` in state contains all properties defined in schema, but you actually don't need to keep them all. 
+Use [Fivetran public docs](https://fivetran.com/docs/rest-api/destinations/config) for reference to find the fields you need to keep in `config` section.
