@@ -133,6 +133,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"always_encrypted":                  {Type: schema.TypeString, Optional: true, Computed: true},
 				"is_secure":                         {Type: schema.TypeString, Optional: true, Computed: true},
 				"use_webhooks":                      {Type: schema.TypeString, Optional: true, Computed: true},
+				"eu_region":                      	 {Type: schema.TypeString, Optional: true, Computed: true},
 				// Enum & int values
 				"connection_type":                      {Type: schema.TypeString, Optional: true, Computed: true},
 				"sync_mode":                            {Type: schema.TypeString, Optional: true, Computed: true},
