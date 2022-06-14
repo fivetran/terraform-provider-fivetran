@@ -53,7 +53,7 @@ resource "fivetran_user" "my_imported_fivetran_user" {
 }
 ```
 
-And call `terraform import` command:
+3. Call the `terraform import` command:
 
 ```
 terraform import fivetran_user.my_imported_fivetran_user <user_id>

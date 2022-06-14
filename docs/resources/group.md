@@ -28,7 +28,7 @@ resource "fivetran_group" "group" {
 
 ## Import
 
-To import an existing `fivetran_group` resource into your terraform state you need to get `Destination Group ID` on the `Destination` page at the Fivetran Dashboard.
+1. To import an existing `fivetran_group` resource into your Terraform state, you need to get **Destination Group ID** on the destination page in your Fivetran dashboard.
 To retrieve existing groups, use the [fivetran_groups data source](/docs/data-sources/groups).
 2. Define an empty resource in your `.tf` configuration:
 
@@ -44,7 +44,7 @@ resource "fivetran_group" "my_imported_fivetran_group" {
 terraform import fivetran_group.my_imported_fivetran_group <your Destination Group ID>
 ```
 
-4. Copy and paste the values from the state to your `.tf` configuration using the `terraform state show` command:
+4. Use the `terraform state show` command to get the values from the state:
 
 ```
 terraform state show 'fivetran_group.my_imported_fivetran_group'

@@ -58,7 +58,7 @@ resource "fivetran_group_users" "my_imported_fivetran_group_users" {
 }
 ```
 
-And call `terraform import` command:
+3. Call the `terraform import` command:
 
 ```
 terraform import fivetran_group_users.my_imported_fivetran_group_users <your Destination Group ID>

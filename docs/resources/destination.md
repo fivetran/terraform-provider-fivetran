@@ -100,10 +100,10 @@ resource "fivetran_destination" "my_imported_destination" {
 terraform import fivetran_destination.my_imported_destination <your Destination Group ID>
 ```
 
-4. Copy and paste destination properties from the state to your `.tf` configuration using the `terraform state show` command:
+4. Use the `terraform state show` command to get the values from the state:
 
 ```
 terraform state show 'fivetran_destination.my_imported_destination'
 ```
-
+5. Copy the values and paste them to your `.tf` configuration.
 -> The `config` object in the state contains all properties defined in the schema. You need to remove properties from the `config` that are not related to destinations. See the [Fivetran REST API documentation](https://fivetran.com/docs/rest-api/destinations/config) for reference to find the properties you need to keep in the `config` section.
