@@ -59,7 +59,7 @@ resource "fivetran_user" "my_imported_fivetran_user" {
 terraform import fivetran_user.my_imported_fivetran_user <user_id>
 ```
 
-4. Copy and paste values from the state to your `.tf` configuration using the `terraform state show` command:
+4. Use the `terraform state show` command to get the values from the state:
 
 ```
 terraform state show 'fivetran_user.my_imported_fivetran_user'
