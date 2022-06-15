@@ -29,7 +29,7 @@ resource "fivetran_user" "user" {
 
 - `phone` - The phone number of the user.
 - `picture` - The url of the user's avatar.
-- `role` - The account role that you would like to assign this new user to. Possible values: Account Administrator, Account Billing, Account Analyst, Account Reviewer, Destination Creator, or a custom role with account-level permissions. You can find available roles on the [Roles tab](https://fivetran.com/account/roles) tab of the account management page in your Fivetran dashboard.
+- `role` - The account role that you would like to assign this new user to. Possible values: Account Administrator, Account Billing, Account Analyst, Account Reviewer, Destination Creator, or a custom role with account-level permissions. You can find available roles on the [**Roles** tab](https://fivetran.com/account/roles) of the account management page in your Fivetran dashboard.
 
 ### Read-Only
 
