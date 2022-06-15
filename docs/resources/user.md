@@ -29,7 +29,7 @@ resource "fivetran_user" "user" {
 
 - `phone` - The phone number of the user.
 - `picture` - The url of the user's avatar.
-- `role` - The account role that you would like to assign this new user to. Possible values: Account Administrator, Account Billing, Account Analyst, Account Reviewer, Destination Creator, or a custom role with account-level permissions..
+- `role` - The account role that you would like to assign this new user to. Possible values: Account Administrator, Account Billing, Account Analyst, Account Reviewer, Destination Creator, or a custom role with account-level permissions. You can find available roles on the [**Roles** tab](https://fivetran.com/account/roles) of the account management page in your Fivetran dashboard.
 
 ### Read-Only
 
@@ -39,3 +39,29 @@ resource "fivetran_user" "user" {
 - `last_updated` 
 - `logged_in_at` 
 - `verified` 
+
+## Import
+
+1. To import an existing `fivetran_user` resource into your Terraform state, you need to get `user_id`. 
+You can retrieve all users using the [fivetran_users data source](/docs/data-sources/users).
+
+2. Define an empty resource in your `.tf` configuration:
+
+```hcl
+resource "fivetran_user" "my_imported_fivetran_user" {
+
+}
+```
+
+3. Run the `terraform import` command:
+
+```
+terraform import fivetran_user.my_imported_fivetran_user <user_id>
+```
+
+4. Use the `terraform state show` command to get the values from the state:
+
+```
+terraform state show 'fivetran_user.my_imported_fivetran_user'
+```
+5. Copy the values and paste them to your `.tf` configuration.
