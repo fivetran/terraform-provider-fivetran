@@ -64,4 +64,4 @@ terraform import fivetran_user.my_imported_fivetran_user <user_id>
 ```
 terraform state show 'fivetran_user.my_imported_fivetran_user'
 ```
-5. copy the values and paste them to your `.tf` configuration.
+5. Copy the values and paste them to your `.tf` configuration.
