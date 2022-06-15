@@ -28,11 +28,11 @@ resource "fivetran_group_users" "group_users" {
 
 ### Required
 
-- `group_id` - The group id within the account.
+- `group_id` - The group ID within the account.
 
 ### Optional
 
-- `user` - Manages user assignment to a group (see [below for nested schema](#nestedblock--user)).
+- `user` - Manages the user assignment to a group. See [Nested Schema for `user`](#nestedblock--user) for parameters used with nested schemas.
 
 ### Read-Only
 
@@ -43,8 +43,8 @@ resource "fivetran_group_users" "group_users" {
 
 Required:
 
-- `id` - The user id.
-- `role` - The group role name that you would like to assign this user to. Available roles could be found at the [Roles](https://fivetran.com/account/roles) page on the Fivetran Dashboard.
+- `id` - The user ID.
+- `role` - The group role name that you would like to assign this user to. You can see the available roles on the [**Roles** tab](https://fivetran.com/account/roles) of the account management page in your Fivetran dashboard.
 
 ## Import
 
