@@ -133,6 +133,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"always_encrypted":                  {Type: schema.TypeString, Optional: true, Computed: true},
 				"is_secure":                         {Type: schema.TypeString, Optional: true, Computed: true},
 				"use_webhooks":                      {Type: schema.TypeString, Optional: true, Computed: true},
+				"eu_region":                         {Type: schema.TypeString, Optional: true, Computed: true},
 				// Enum & int values
 				"connection_type":                      {Type: schema.TypeString, Optional: true, Computed: true},
 				"sync_mode":                            {Type: schema.TypeString, Optional: true, Computed: true},
@@ -1136,6 +1137,9 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData, creation bool) *fivet
 	if v := c["always_encrypted"].(string); v != "" {
 		fivetranConfig.AlwaysEncrypted(strToBool(v))
 	}
+	if v := c["eu_region"].(string); v != "" {
+		fivetranConfig.EuRegion(strToBool(v))
+	}
 
 	return fivetranConfig
 }
@@ -1469,6 +1473,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddStr(c, "always_encrypted", boolPointerToStr(resp.Data.Config.AlwaysEncrypted))
 	mapAddStr(c, "is_new_package", boolPointerToStr(resp.Data.Config.IsNewPackage))
 	mapAddStr(c, "is_multi_entity_feature_enabled", boolPointerToStr(resp.Data.Config.IsMultiEntityFeatureEnabled))
+	mapAddStr(c, "eu_region", boolPointerToStr(resp.Data.Config.EuRegion))
 
 	// Integer fields
 	mapAddStr(c, "ftp_port", intPointerToStr(resp.Data.Config.FTPPort))

@@ -172,6 +172,7 @@ Optional:
 - `engagement_attribution_window`
 - `entity_id`  
 - `escape_char` 
+- `eu_region` 
 - `external_id` 
 - `fields` 
 - `file_type` 
