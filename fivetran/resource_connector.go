@@ -430,7 +430,13 @@ func resourceConnectorRead(ctx context.Context, d *schema.ResourceData, m interf
 
 	resp, err := client.NewConnectorDetails().ConnectorID(d.Get("id").(string)).Do(ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		// If the resource does not exist (404), inform Terraform. We want to immediately
+		// return here to prevent further processing.
+		if resp.Code == "404" {
+			d.SetId("")
+			return nil
+		}
+		return newDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	// msi stands for Map String Interface
