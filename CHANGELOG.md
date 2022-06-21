@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Fixed
 - Added missing `connector_resource.config.eu_region` field.
+- Fixed provider behavior in case of resource existing in state is missing in upstream infrastructure
 
 ## [0.5.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.4.5...v0.5.0) - 2022-06-15
 

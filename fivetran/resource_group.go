@@ -52,6 +52,12 @@ func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{
 
 	resp, err := svc.Do(ctx)
 	if err != nil {
+		// If the resource does not exist (404), inform Terraform. We want to immediately
+		// return here to prevent further processing.
+		if resp.Code == "404" {
+			d.SetId("")
+			return nil
+		}
 		return newDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
