@@ -665,9 +665,7 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData, creation bool) *fivet
 	if v := c["prefix"].(string); v != "" {
 		fivetranConfig.Prefix(v)
 	}
-	if v := c["pattern"].(string); v != "" {
-		fivetranConfig.Pattern(v)
-	}
+	fivetranConfig.Pattern(c["pattern"].(string))
 	if v := c["file_type"].(string); v != "" {
 		fivetranConfig.FileType(v)
 	}

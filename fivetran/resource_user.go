@@ -24,8 +24,8 @@ func resourceUser() *schema.Resource {
 			"email":       {Type: schema.TypeString, Required: true, ForceNew: true},
 			"given_name":  {Type: schema.TypeString, Required: true},
 			"family_name": {Type: schema.TypeString, Required: true},
-			"role":        {Type: schema.TypeString, Required: true},
 
+			"role":    {Type: schema.TypeString, Optional: true},
 			"picture": {Type: schema.TypeString, Optional: true},
 			"phone":   {Type: schema.TypeString, Optional: true},
 
@@ -46,7 +46,10 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 	svc.Email(d.Get("email").(string))
 	svc.GivenName(d.Get("given_name").(string))
 	svc.FamilyName(d.Get("family_name").(string))
-	svc.Role(d.Get("role").(string))
+
+	if v, ok := d.GetOk("role"); ok && v != "" {
+		svc.Role(v.(string))
+	}
 
 	if v, ok := d.GetOk("picture"); ok && v != "" {
 		svc.Picture(v.(string))
