@@ -77,6 +77,8 @@ resource "fivetran_connector" "amplitude" {
 - `trust_certificates` - Specifies whether we should trust the certificate automatically. Applicable only for database connectors.
 - `trust_fingerprints` - Specifies whether we should trust the SSH fingerprint automatically. Applicable only for database connectors.
 
+-> To complete connector configuration you should specify `run_setup_tests` to `true`. Default value is `false`.
+
 ### Read-Only
 
 - `connected_by` 
@@ -444,3 +446,32 @@ terraform state show 'fivetran_connector.my_imported_connector'
 6. Copy the values and paste them to your `.tf` configuration.
 
 -> The `config` object in the state contains all properties defined in the schema. You need to remove properties from the `config` that are not related to connectors. See the [Fivetran REST API documentation](https://fivetran.com/docs/rest-api/connectors/config) for reference to find the properties you need to keep in the `config` section.
+
+### How to authorize connector
+
+## GitHub connector example
+
+To authorize a GutHub connector via terraform using personal access token you should specify `auth_mode`, `username` and `pat` inside `config` block instead of `auth` and set `run_setup_tests` to `true`:
+
+```hcl
+resource "fivetran_connector" "my_github_connector" {
+    group_id = "group_id"
+    service = "github"
+    sync_frequency = 60
+    paused = false
+    pause_after_trial = false
+    run_setup_tests = true
+
+    destination_schema {
+        name = "github_connector"
+    } 
+
+    config {
+        sync_mode = "AllRepositories"
+        use_webhooks = false
+        auth_mode = "PersonalAccessToken"
+        username = "git-hub-user-name"
+        pat = "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    }
+}
+```
