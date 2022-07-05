@@ -118,6 +118,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"secrets":            {Type: schema.TypeString, Optional: true, Sensitive: true},
 				"api_token":          {Type: schema.TypeString, Optional: true, Sensitive: true},
 				"encryption_key":     {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"pat":                {Type: schema.TypeString, Optional: true, Sensitive: true},
 
 				// Fields that are always have default value (and should be marked as Computed to prevent drifting)
 				// Boolean values
@@ -1138,6 +1139,9 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData, creation bool) *fivet
 	if v := c["encryption_key"].(string); v != "" {
 		fivetranConfig.EncryptionKey(v)
 	}
+	if v := c["pat"].(string); v != "" {
+		fivetranConfig.PAT(v)
+	}
 	if v := c["always_encrypted"].(string); v != "" {
 		fivetranConfig.AlwaysEncrypted(strToBool(v))
 	}
@@ -1408,27 +1412,29 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 
 	// get sensitive fields from the currentConfig to prevent drifting (Fivetran returns this values masked)
 	if len(currentConfig) > 0 {
-		mapAddStr(c, "password", currentConfig[0].(map[string]interface{})["password"].(string))
-		mapAddStr(c, "client_secret", currentConfig[0].(map[string]interface{})["client_secret"].(string))
-		mapAddStr(c, "private_key", currentConfig[0].(map[string]interface{})["private_key"].(string))
-		mapAddStr(c, "s3role_arn", currentConfig[0].(map[string]interface{})["s3role_arn"].(string))
-		mapAddStr(c, "ftp_password", currentConfig[0].(map[string]interface{})["ftp_password"].(string))
-		mapAddStr(c, "sftp_password", currentConfig[0].(map[string]interface{})["sftp_password"].(string))
-		mapAddStr(c, "api_key", currentConfig[0].(map[string]interface{})["api_key"].(string))
-		mapAddStr(c, "role_arn", currentConfig[0].(map[string]interface{})["role_arn"].(string))
-		mapAddStr(c, "secret_key", currentConfig[0].(map[string]interface{})["secret_key"].(string))
-		mapAddStr(c, "pem_certificate", currentConfig[0].(map[string]interface{})["pem_certificate"].(string))
-		mapAddStr(c, "access_token", currentConfig[0].(map[string]interface{})["access_token"].(string))
-		mapAddStr(c, "api_secret", currentConfig[0].(map[string]interface{})["api_secret"].(string))
-		mapAddStr(c, "api_access_token", currentConfig[0].(map[string]interface{})["api_access_token"].(string))
-		mapAddStr(c, "secret", currentConfig[0].(map[string]interface{})["secret"].(string))
-		mapAddStr(c, "consumer_secret", currentConfig[0].(map[string]interface{})["consumer_secret"].(string))
-		mapAddStr(c, "secrets", currentConfig[0].(map[string]interface{})["secrets"].(string))
-		mapAddStr(c, "api_token", currentConfig[0].(map[string]interface{})["api_token"].(string))
-		mapAddStr(c, "consumer_key", currentConfig[0].(map[string]interface{})["consumer_key"].(string))
-		mapAddStr(c, "encryption_key", currentConfig[0].(map[string]interface{})["encryption_key"].(string))
-		mapAddStr(c, "oauth_token", currentConfig[0].(map[string]interface{})["oauth_token"].(string))
-		mapAddStr(c, "oauth_token_secret", currentConfig[0].(map[string]interface{})["oauth_token_secret"].(string))
+		resourceConfig := currentConfig[0].(map[string]interface{})
+		mapAddStr(c, "password", resourceConfig["password"].(string))
+		mapAddStr(c, "client_secret", resourceConfig["client_secret"].(string))
+		mapAddStr(c, "private_key", resourceConfig["private_key"].(string))
+		mapAddStr(c, "s3role_arn", resourceConfig["s3role_arn"].(string))
+		mapAddStr(c, "ftp_password", resourceConfig["ftp_password"].(string))
+		mapAddStr(c, "sftp_password", resourceConfig["sftp_password"].(string))
+		mapAddStr(c, "api_key", resourceConfig["api_key"].(string))
+		mapAddStr(c, "role_arn", resourceConfig["role_arn"].(string))
+		mapAddStr(c, "secret_key", resourceConfig["secret_key"].(string))
+		mapAddStr(c, "pem_certificate", resourceConfig["pem_certificate"].(string))
+		mapAddStr(c, "access_token", resourceConfig["access_token"].(string))
+		mapAddStr(c, "api_secret", resourceConfig["api_secret"].(string))
+		mapAddStr(c, "api_access_token", resourceConfig["api_access_token"].(string))
+		mapAddStr(c, "secret", resourceConfig["secret"].(string))
+		mapAddStr(c, "consumer_secret", resourceConfig["consumer_secret"].(string))
+		mapAddStr(c, "secrets", resourceConfig["secrets"].(string))
+		mapAddStr(c, "api_token", resourceConfig["api_token"].(string))
+		mapAddStr(c, "consumer_key", resourceConfig["consumer_key"].(string))
+		mapAddStr(c, "encryption_key", resourceConfig["encryption_key"].(string))
+		mapAddStr(c, "oauth_token", resourceConfig["oauth_token"].(string))
+		mapAddStr(c, "oauth_token_secret", resourceConfig["oauth_token_secret"].(string))
+		mapAddStr(c, "pat", resourceConfig["pat"].(string))
 	}
 
 	// Collections
