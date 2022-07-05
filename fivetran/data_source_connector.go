@@ -330,7 +330,7 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"encryption_key":                  {Type: schema.TypeString, Computed: true},
 				"always_encrypted":                {Type: schema.TypeString, Computed: true},
 				"eu_region":                       {Type: schema.TypeString, Computed: true},
-				"pat"                              {Type: schema.TypeString, Computed: true},
+				"pat":                             {Type: schema.TypeString, Computed: true},
 			},
 		},
 	}
