@@ -119,6 +119,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"api_token":          {Type: schema.TypeString, Optional: true, Sensitive: true},
 				"encryption_key":     {Type: schema.TypeString, Optional: true, Sensitive: true},
 				"pat":                {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"function_trigger":   {Type: schema.TypeString, Optional: true, Sensitive: true},
 
 				// Fields that are always have default value (and should be marked as Computed to prevent drifting)
 				// Boolean values
@@ -231,7 +232,6 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"project_id":           {Type: schema.TypeString, Optional: true},
 				"dataset_id":           {Type: schema.TypeString, Optional: true},
 				"bucket_name":          {Type: schema.TypeString, Optional: true},
-				"function_trigger":     {Type: schema.TypeString, Optional: true},
 				"config_method":        {Type: schema.TypeString, Optional: true},
 				"query_id":             {Type: schema.TypeString, Optional: true},
 				"path":                 {Type: schema.TypeString, Optional: true},
@@ -1435,6 +1435,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 		mapAddStr(c, "oauth_token", resourceConfig["oauth_token"].(string))
 		mapAddStr(c, "oauth_token_secret", resourceConfig["oauth_token_secret"].(string))
 		mapAddStr(c, "pat", resourceConfig["pat"].(string))
+		mapAddStr(c, "function_trigger", resourceConfig["function_trigger"].(string))
 	}
 
 	// Collections
@@ -1574,7 +1575,6 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddStr(c, "project_id", resp.Data.Config.ProjectID)
 	mapAddStr(c, "dataset_id", resp.Data.Config.DatasetID)
 	mapAddStr(c, "bucket_name", resp.Data.Config.BucketName)
-	mapAddStr(c, "function_trigger", resp.Data.Config.FunctionTrigger)
 	mapAddStr(c, "config_method", resp.Data.Config.ConfigMethod)
 	mapAddStr(c, "query_id", resp.Data.Config.QueryID)
 	mapAddStr(c, "path", resp.Data.Config.Path)
