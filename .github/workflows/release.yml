@@ -22,7 +22,8 @@ jobs:
       -
         name: Import GPG key
         id: import_gpg
-        uses: hashicorp/ghaction-import-gpg@v2.1.0
+        # This is temporaru fix https://github.com/hashicorp/ghaction-import-gpg/issues/11#issuecomment-1183105935
+        uses: crazy-max/ghaction-import-gpg@v5 #hashicorp/ghaction-import-gpg@v2.1.0
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           PASSPHRASE: ${{ secrets.PASSPHRASE }}
