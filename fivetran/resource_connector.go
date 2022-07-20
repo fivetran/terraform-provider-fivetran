@@ -120,6 +120,8 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"encryption_key":     {Type: schema.TypeString, Optional: true, Sensitive: true},
 				"pat":                {Type: schema.TypeString, Optional: true, Sensitive: true},
 				"function_trigger":   {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"token_key":          {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"token_secret":       {Type: schema.TypeString, Optional: true, Sensitive: true},
 
 				// Fields that are always have default value (and should be marked as Computed to prevent drifting)
 				// Boolean values
@@ -1148,6 +1150,12 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData, creation bool) *fivet
 	if v := c["eu_region"].(string); v != "" {
 		fivetranConfig.EuRegion(strToBool(v))
 	}
+	if v := c["token_key"].(string); v != "" {
+		fivetranConfig.TokenKey(v)
+	}
+	if v := c["token_secret"].(string); v != "" {
+		fivetranConfig.TokenSecret(v)
+	}
 
 	return fivetranConfig
 }
@@ -1436,6 +1444,8 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 		mapAddStr(c, "oauth_token_secret", resourceConfig["oauth_token_secret"].(string))
 		mapAddStr(c, "pat", resourceConfig["pat"].(string))
 		mapAddStr(c, "function_trigger", resourceConfig["function_trigger"].(string))
+		mapAddStr(c, "token_key", resourceConfig["token_key"].(string))
+		mapAddStr(c, "token_secret", resourceConfig["token_secret"].(string))
 	}
 
 	// Collections

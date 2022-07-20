@@ -281,6 +281,8 @@ Optional:
 - `test_table_name` 
 - `time_zone` 
 - `timeframe_months` 
+- `token_key` 
+- `token_secret`
 - `tunnel_host` 
 - `tunnel_port` 
 - `tunnel_user` 
