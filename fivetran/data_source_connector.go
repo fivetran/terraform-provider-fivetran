@@ -331,6 +331,8 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"always_encrypted":                {Type: schema.TypeString, Computed: true},
 				"eu_region":                       {Type: schema.TypeString, Computed: true},
 				"pat":                             {Type: schema.TypeString, Computed: true},
+				"token_key":                       {Type: schema.TypeString, Computed: true},
+				"token_secret":                    {Type: schema.TypeString, Computed: true},
 			},
 		},
 	}
@@ -639,6 +641,8 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddStr(c, "always_encrypted", boolPointerToStr(resp.Data.Config.AlwaysEncrypted))
 	mapAddStr(c, "eu_region", boolPointerToStr(resp.Data.Config.EuRegion))
 	mapAddStr(c, "pat", resp.Data.Config.PAT)
+	mapAddStr(c, "token_key", resp.Data.Config.TokenKey)
+	mapAddStr(c, "token_secret", resp.Data.Config.TokenSecret)
 	config[0] = c
 
 	return config
