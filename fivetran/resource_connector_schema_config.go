@@ -656,7 +656,7 @@ func readUpstreamConfig(response *fivetran.ConnectorSchemaDetailsResponse) map[s
 	return result
 }
 
-func readUpstreamSchema(schemaResponse fivetran.ConnectorSchemaConfigSchemaResponse) map[string]interface{} {
+func readUpstreamSchema(schemaResponse *fivetran.ConnectorSchemaConfigSchemaResponse) map[string]interface{} {
 	result := make(map[string]interface{})
 	result["enabled"] = boolPointerToStr(schemaResponse.Enabled)
 	tables := make(map[string]interface{})
