@@ -18,11 +18,12 @@ func Provider() *schema.Provider {
 			"api_secret": {Type: schema.TypeString, Required: true, Sensitive: true, DefaultFunc: schema.EnvDefaultFunc("FIVETRAN_APISECRET", nil)},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"fivetran_user":        resourceUser(),
-			"fivetran_group":       resourceGroup(),
-			"fivetran_group_users": resourceGroupUsers(),
-			"fivetran_destination": resourceDestination(),
-			"fivetran_connector":   resourceConnector(),
+			"fivetran_user":                    resourceUser(),
+			"fivetran_group":                   resourceGroup(),
+			"fivetran_group_users":             resourceGroupUsers(),
+			"fivetran_destination":             resourceDestination(),
+			"fivetran_connector":               resourceConnector(),
+			"fivetran_connector_schema_config": resourceSchemaConfig(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"fivetran_user":                dataSourceUser(),
