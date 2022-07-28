@@ -50,6 +50,7 @@ Read-Only:
 - `personal_access_token` 
 - `port`
 - `project_id` 
+- `public_key` 
 - `role_arn` 
 - `secret_key`
 - `server_host_name` 
@@ -57,5 +58,3 @@ Read-Only:
 - `tunnel_port` 
 - `tunnel_user` 
 - `user` 
-
-
