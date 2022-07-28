@@ -31,11 +31,14 @@ func resourceSchemaConfig() *schema.Resource {
 }
 
 func resourceSchemaConfigSchema() *schema.Schema {
-	return &schema.Schema{Type: schema.TypeSet, Optional: true, Set: resourceSchemaConfigHash,
+	return &schema.Schema{
+		Type:     schema.TypeSet,
+		Optional: true,
+		Set:      resourceSchemaConfigHash,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"name":    {Type: schema.TypeString, Required: true},
-				"enabled": {Type: schema.TypeString, Required: true},
+				"enabled": {Type: schema.TypeString, Optional: true, Default: "true"},
 				"table":   resourceSchemaConfigTable(),
 			},
 		},
@@ -47,7 +50,7 @@ func resourceSchemaConfigTable() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"name":          {Type: schema.TypeString, Required: true},
-				"enabled":       {Type: schema.TypeString, Optional: true, Computed: true},
+				"enabled":       {Type: schema.TypeString, Optional: true, Default: "true"},
 				"patch_allowed": {Type: schema.TypeString, Computed: true},
 				"column":        resourceSchemaConfigColumn(),
 			},
@@ -60,9 +63,9 @@ func resourceSchemaConfigColumn() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"name":          {Type: schema.TypeString, Required: true},
-				"enabled":       {Type: schema.TypeString, Required: true},
-				"hashed":        {Type: schema.TypeString, Optional: true, Computed: true},
+				"enabled":       {Type: schema.TypeString, Optional: true, Default: "true"},
 				"patch_allowed": {Type: schema.TypeString, Computed: true},
+				"hashed":        {Type: schema.TypeString, Optional: true, Default: "false"},
 			},
 		},
 	}
@@ -113,7 +116,7 @@ func resourceSchemaConfigCreate(ctx context.Context, d *schema.ResourceData, m i
 	}
 
 	d.SetId(connectorID)
-	return append(diags, resourceSchemaConfigRead(ctx, d, m)...)
+	return resourceSchemaConfigRead(ctx, d, m)
 }
 
 // READ
@@ -134,6 +137,11 @@ func resourceSchemaConfigRead(ctx context.Context, d *schema.ResourceData, m int
 
 	alignedConfig := excludeConfigBySCH(fullConfig, sch)
 
+	if ls, ok := d.GetOk("schema"); ok {
+		s, _ := includeLocalConfiguredSchemas(alignedConfig["schema"].(map[string]interface{}), mapSchemas(ls.(*schema.Set).List()))
+		alignedConfig["schema"] = s
+	}
+
 	cleanConfig := removeExcludedSchemas(alignedConfig)
 
 	flatConfig := flatternConfig(cleanConfig)
@@ -145,6 +153,67 @@ func resourceSchemaConfigRead(ctx context.Context, d *schema.ResourceData, m int
 	}
 
 	return diags
+}
+
+func includeLocalConfiguredSchemas(upstream, local map[string]interface{}) (map[string]interface{}, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	result := copyMapDeep(upstream)
+	diags = newDiagAppend(diags, diag.Warning, "Handling schemas", "")
+	for k, ls := range local {
+		if us, ok := upstream[k]; ok {
+			lsmap := ls.(map[string]interface{})
+			usmap := us.(map[string]interface{})
+			if ltables, ok := lsmap["table"].(map[string]interface{}); ok {
+				if utables, ok := usmap["table"].(map[string]interface{}); ok {
+					t, d := includeLocalConfiguredTables(utables, ltables)
+					diags = append(diags, d...)
+					usmap["table"] = t
+				}
+			}
+			result[k] = include(usmap)
+			diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("Handling schema %v: %+v", k, result[k]), "")
+		}
+	}
+	diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("Updated schemas %+v", result), "")
+	return result, diags
+}
+
+func includeLocalConfiguredTables(upstream, local map[string]interface{}) (map[string]interface{}, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	result := copyMapDeep(upstream)
+	diags = newDiagAppend(diags, diag.Warning, "Handling tables", "")
+	for k, ls := range local {
+		if us, ok := upstream[k]; ok {
+			lsmap := ls.(map[string]interface{})
+			usmap := us.(map[string]interface{})
+			if ltables, ok := lsmap["column"].(map[string]interface{}); ok {
+				if utables, ok := usmap["column"].(map[string]interface{}); ok {
+					c, d := includeLocalConfiguredColumns(utables, ltables)
+					diags = append(diags, d...)
+					usmap["column"] = c
+				}
+			}
+			result[k] = include(usmap)
+			diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("Handling table %v: %+v", k, result[k]), "")
+		}
+	}
+	diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("Updated tables %+v", result), "")
+	return result, diags
+}
+
+func includeLocalConfiguredColumns(upstream, local map[string]interface{}) (map[string]interface{}, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	result := copyMapDeep(upstream)
+	diags = newDiagAppend(diags, diag.Warning, "Handling columns", "")
+	for k := range local {
+		if us, ok := upstream[k]; ok {
+			usmap := us.(map[string]interface{})
+			result[k] = include(usmap)
+			diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("Handling column %v: %+v", k, result[k]), "")
+		}
+	}
+	diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("Updated columns %+v", result), "")
+	return result, diags
 }
 
 // UPDATE
@@ -192,7 +261,7 @@ func resourceSchemaConfigUpdate(ctx context.Context, d *schema.ResourceData, m i
 		}
 	}
 
-	return append(diags, resourceSchemaConfigRead(ctx, d, m)...)
+	return resourceSchemaConfigRead(ctx, d, m)
 }
 
 // DELETE
