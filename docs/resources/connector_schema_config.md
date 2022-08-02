@@ -192,10 +192,6 @@ resource "fivetran_connector_schema_config" "schema" {
 - `enabled` - is enabled in settings (default: "true")
 - `column` - set of table settings (see [below for nested schema](#nestedblock--column))
 
-### Read Only 
-
-- `patch_allowed` - is `enabled` patching allowed for the table
-
 <a id="nestedblock--column"></a>
 ## Nested Schema for `column`
 
@@ -207,7 +203,3 @@ resource "fivetran_connector_schema_config" "schema" {
 
 - `enabled` - is enabled in settings (default: "true")
 - `hashed` - is column set as hashed in settings (default: "false")
-
-### Read Only 
-
-- `patch_allowed` - is `enabled` patching allowed for the column

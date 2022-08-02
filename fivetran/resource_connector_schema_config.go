@@ -49,10 +49,9 @@ func resourceSchemaConfigTable() *schema.Schema {
 	return &schema.Schema{Type: schema.TypeSet, Optional: true, Set: resourceTableConfigHash,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"name":          {Type: schema.TypeString, Required: true},
-				"enabled":       {Type: schema.TypeString, Optional: true, Default: "true"},
-				"patch_allowed": {Type: schema.TypeString, Computed: true},
-				"column":        resourceSchemaConfigColumn(),
+				"name":    {Type: schema.TypeString, Required: true},
+				"enabled": {Type: schema.TypeString, Optional: true, Default: "true"},
+				"column":  resourceSchemaConfigColumn(),
 			},
 		},
 	}
@@ -62,10 +61,9 @@ func resourceSchemaConfigColumn() *schema.Schema {
 	return &schema.Schema{Type: schema.TypeSet, Optional: true, Set: resourceColumnConfigHash,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"name":          {Type: schema.TypeString, Required: true},
-				"enabled":       {Type: schema.TypeString, Optional: true, Default: "true"},
-				"patch_allowed": {Type: schema.TypeString, Computed: true},
-				"hashed":        {Type: schema.TypeString, Optional: true, Default: "false"},
+				"name":    {Type: schema.TypeString, Required: true},
+				"enabled": {Type: schema.TypeString, Optional: true, Default: "true"},
+				"hashed":  {Type: schema.TypeString, Optional: true, Default: "false"},
 			},
 		},
 	}
@@ -541,9 +539,6 @@ func flatternTables(tables map[string]interface{}) []interface{} {
 		if enabled, ok := vmap["enabled"].(string); ok && enabled != "" {
 			t["enabled"] = enabled
 		}
-		if patch_allowed, ok := vmap["patch_allowed"].(string); ok && patch_allowed != "" {
-			t["patch_allowed"] = patch_allowed
-		}
 		if tables, ok := vmap["column"].(map[string]interface{}); ok {
 			t["column"] = flatternColumns(tables)
 		}
@@ -560,9 +555,6 @@ func flatternColumns(columns map[string]interface{}) []interface{} {
 		c["name"] = k
 		if enabled, ok := vmap["enabled"].(string); ok && enabled != "" {
 			c["enabled"] = enabled
-		}
-		if patch_allowed, ok := vmap["patch_allowed"].(string); ok && patch_allowed != "" {
-			c["patch_allowed"] = patch_allowed
 		}
 		if hashed, ok := vmap["hashed"].(string); ok && hashed != "" {
 			c["hashed"] = hashed
