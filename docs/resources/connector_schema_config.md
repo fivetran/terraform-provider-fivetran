@@ -4,25 +4,28 @@ page_title: "Resource: fivetran_connector_schema_config"
 
 # Resource: fivetran_connector_schema_config
 
-This resource allows you to manage connector Standard Config settings. Choose schema change handling policy and enable/disable schemas, table and columns.
+This resource allows you to manage the Standard Configuration settings of a connector:
+ - Define the schema change handling settings
+ - Enable and disable schemas, tables, and columns
 
-The resource is in ALPHA state. Resource schema and behavior may be changed further.
+The resource is in ALPHA state. The resource schema and behavior are subject to change without prior notice.
 
 ## Usage guide
 
-Once you have defined `schema_change_handling` you should keep in ming that all schema settings will be aligned to chosen policy if not defined in config.
-In `schema` you define only **exclusions** that differs from chosen policy. Default value for `enabled` attribute is `true` so it can be omited in most cases.
+Note that all configuration settings are aligned to the `schema_change_handling` settings,  except the settings explicitly specified in `schema`.
+In `schema`, you only override the default settings defined by the chosen `schema_change_handling` option. The default value for the `enabled` attribute is `true` so it can be omitted when you want to enable schemas, tables, or columns.
+The allowed `schema_change_handling` options are as follows:
+- `ALLOW_ALL`- all schemas, tables and columns are ENABLED by default. You only need  to explicitly specify DISABLED items or hashed tables
+- `BLOCK_ALL` - all schemas, tables and columns are DISABLED by default, the configuration only specifies ENABLED items
+- `ALLOW_COLUMNS` - all schemas and tables are DISABLED by default, but all columns are ENABLED by default, the configuration specifies ENABLED schemas and tables, and DISABLED columns
 
-Allowed `schema_change_handling` policies:
-- ALLOW_ALL - all schemas, tables and columns are ENABLED by default, config contains only DISABLED items
-- BLOCK_ALL - all schemas, tables and columns are DISABLED by default, config contains only ENABLED items
-- ALLOW_COLUMNS - all schemas and tables are DISABLED by default, but all columns are ENABLED, config contains ENABLED schemas and tables, and disabled columns
-
-Policy settings and config can't affect core tables and columns, there is no ability manage these elements. There will be no errors, provider will just ignore them.
+Note that system-enabled tables and columns (such as primary and foreign key columns, and [system tables and columns](https://fivetran.com/docs/getting-started/system-columns-and-tables)) are synced regardless of the `schema_change_handling` settings and configuration. You can only [disable non-locked columns in the system-enabled tables](#nonlockedtablecolumnmanagementinsystemenabledtables). If the configuration specifies any system tables or locked system table columns as disabled ( `enabled = "false"`), the provider just ignores these statements.
 
 ## Usage examples
 
-### ALLOW_ALL example
+### Example for the ALLOW_ALL option
+
+In `schema`,  you only need to specify schemas and columns you want to disable (`enabled = "false"`) and tables you want to disable or hash (`hashed = "true"`).
 
 ```hcl
 resource "fivetran_connector_schema_config" "schema" {
@@ -48,21 +51,21 @@ resource "fivetran_connector_schema_config" "schema" {
   }
   schema{
     name = "blocked_schema"
-    enabld = "false"
+    enabled = "false"
   }
 }
 ```
 
-Settings we get here:
-- All new and existing schemas except `blocked_schema` would be enabled
-- All new and existing tables in schema `schema_name` except `blocked_table_name` would be enabled
-- All new and existing columns in table `table_name` of schema `schema_name` except `blocked_column_name` would be enabled
-- Column with name `hashed_column_name` would be hashed in table `table_name` in schema `schema_name`
-- All new columns/tables/schemas would be enabled once captured by connector on sync if not disabled by system
+The configuration resulting from the example request is as follows:
+- All new and existing schemas except `blocked_schema` are enabled
+- All new and existing tables in the `schema_name` schema except the `blocked_table_name` table are enabled
+- All new and existing columns in the`table_name` of the `schema_name` schema except the `blocked_column_name` column are enabled
+- The `hashed_column_name` column is hashed in the `table_name` table in the `schema_name` schema
+- All new schemas, tables, and columns are enabled once captured by the connector during the sync except those disabled by the system
 
-### BLOCK_ALL example
+### Example for the BLOCK_ALL option
 
-All included into config schemas, tables and columns would be enabled by default (`enabled` default value is `true`)
+All schemas, tables, and columns specified in `schema` are enabled by default (the default value for the `"enabled"` parameter is `true`).
 
 ```hcl
 resource "fivetran_connector_schema_config" "schema" {
@@ -82,21 +85,23 @@ resource "fivetran_connector_schema_config" "schema" {
     }
   }
   schema{
-    name = "enabled_schema"
+    name = "enabled_schema_name"
   }
 }
 ```
 
-Settings we get here:
+The configuration resulting from the example request is as follows:
 
-- All new and existing schemas except `enabled_schema` and `schema_name` would be disabled
-- Only system-enabled tables and columns would be enabled in `enabled_schema`
-- All new and existing tables in schema `schema_name` except `enabled_table_name`, `table_name` and system-enabled tables would be disabled
-- All new and existing columns in table `table_name` of schema `schema_name` except `hashed_column_name` and system-enabled columns would be disabled
-- Column `hashed_column_name` would be hashed in table `table_name` in schema `schema_name`
-- All new non system-enabled columns/tables/schemas would be disables once captured by connector on sync
+- All new and existing schemas except  the `enabled_schema` and `schema_name` are disabled
+- Only system-enabled tables and columns are enabled in the `enabled_schema_name` schema
+- All new and existing tables in the `schema_name` schema except  the `enabled_table_name`, `table_name` tables and system tables are disabled
+- All new and existing columns in the `table_name` table of the `schema_name` schema are disabled except the `hashed_column_name` column and system columns 
+- The `hashed_column_name` column in the `table_name`  table the `schema_name` schema is hashed
+- All new columns except the system-enabled columns, all schemas and tables are disabled once captured by the connector during the sync
 
-### ALLOW_COLUMNS example
+### Example for the ALLOW_COLUMNS option
+
+In `schema`,  you only need to specify schemas and tables you want to enable `enabled = "true"`) and columns you want to disable (`enabled = "false"`) or hash (`hashed = "true"`).
 
 ```hcl
 resource "fivetran_connector_schema_config" "schema" {
@@ -120,26 +125,26 @@ resource "fivetran_connector_schema_config" "schema" {
     }
   }
   schema{
-    name = "enabled_schema"
+    name = "enabled_schema_name"
   }
 }
 ```
 
-Settings we get here:
+The configuration resulting from the example request is as follows:
 
-- All included into config schemas, tables and columns would be enabled by default if no `enabled` attribute defined (`enabled` default value is `true`).
-- All new and existing schemas except `enabled_schema` and `schema_name` would be disabled
-- Only system-enabled tables and columns would be enabled in `enabled_schema`
-- All new and existing tables in schema `schema_name` except `enabled_table_name`, `table_name` and system-enabled tables would be disabled
-- All new and existing columns in table `table_name` of schema `schema_name` except `disabled_columns_name` and system-enabled columns would be enabled
-- Column `hashed_column_name` would be hashed in table `table_name` in schema `schema_name`
+- All specified existing schemas and tables are enabled and all columns inside them are enabled by default, unless `enabled = "false"` is specified for the column
+- All new and existing schemas except the `enabled_schema_name` and `schema_name` are disabled
+- Only system-enabled tables and columns would be enabled in  the`enabled_schema_name` schema
+- All new and existing tables in the `schema_name` schema except the `enabled_table_name`, `table_name` and system-enabled tables are disabled
+- All new and existing columns in the`table_name` table of the `schema_name` schema except the `disabled_columns_name` and system-enabled columns are enabled
+- The `hashed_column_name` would be hashed in table `table_name` in schema `schema_name`
 - All new non system-enabled tables/schemas would be disabled once captured by connector on sync
 - All new non system-enabled columns inside enabled tables (including system enabled-tables) would be enabled once captured by connector on sync
 
 
-### Locked table columns management
+### Non-locked table column management in system-enabled tables
 
-You can't manage Core-table enablement, but you can manage its non-locked columns. For example your schema `schema_name` has Core-table `system_locked_table` that can't be disabled and you want to disable one of its columns named `columns_name`:
+You cannot manage system-enabled tables, but you can manage its non-locked columns. For example, your schema `schema_name` has a system-enabled table `system_enabled_table` that can't be disabled, and you want to disable one of its columns named `columns_name`:
 
 ```hcl
 resource "fivetran_connector_schema_config" "schema" {
@@ -148,7 +153,7 @@ resource "fivetran_connector_schema_config" "schema" {
   schema {
     name = "schema_name"
     table {
-      name = "system_locked_table"
+      name = "system_enabled_table"
       column {
         name = "columns_name"
         enabled = "false"
@@ -162,44 +167,45 @@ resource "fivetran_connector_schema_config" "schema" {
 
 ### Required
 
-- `connector_id` - the Fivetran Connector ID of connector which standard config is managed by the resource
-- `schema_change_handling` - the policy value (ALLOW_ALL | ALLOW_COLUMNS | BLOCK_ALL)
+- `connector_id` - the ID of the connector whose standard config is managed by the resource
+- `schema_change_handling` - the schema change handling settings (ALLOW_ALL | ALLOW_COLUMNS | BLOCK_ALL)
 
 ### Optional
 
-- `schema` - set of schema settings (see [below for nested schema](#nestedblock--schema))
+- `schema` - the set of schema settings (see [the next section for details on nested schema for schema](#nestedblock--schema))
 
 <a id="nestedblock--schema"></a>
 ## Nested Schema for `schema`
 
 ### Required
 
-- `name` - the name of schema in source
+- `name` - the name of the schema in the source
 
 ### Optional
 
-- `enabled` - is enabled in settings (default: "true")
-- `table` - set of table settings (see [below for nested schema](#nestedblock--table))
+- `enabled` - specifies if the schema is enabled (default: "true")
+- `table` - set of table settings (see [the next section for details on nested schema for table](#nestedblock--table))
 
 <a id="nestedblock--table"></a>
 ## Nested Schema for `table`
 
 ### Required
-- `name` - table name in source
+- `name` - the name of the table in the source
 
 ### Optional
 
-- `enabled` - is enabled in settings (default: "true")
-- `column` - set of table settings (see [below for nested schema](#nestedblock--column))
+- `enabled` - specifies if the table is enabled (default: "true")
+- `column` - the set of column settings (see [the next section for details on nested schema for columns](#nestedblock--column))
+
 
 <a id="nestedblock--column"></a>
 ## Nested Schema for `column`
 
 ### Required
 
-- `name` - column name in source
+- `name` - the name of the column in the source
 
 ### Optional
 
-- `enabled` - is enabled in settings (default: "true")
-- `hashed` - is column set as hashed in settings (default: "false")
+- `enabled` - specifies if the column is enabled (default: "true")
+- `hashed` - specifies if the column is hashed (default: "false")
