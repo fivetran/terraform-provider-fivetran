@@ -19,7 +19,7 @@ The allowed `schema_change_handling` options are as follows:
 - `BLOCK_ALL` - all schemas, tables and columns are DISABLED by default, the configuration only specifies ENABLED items
 - `ALLOW_COLUMNS` - all schemas and tables are DISABLED by default, but all columns are ENABLED by default, the configuration specifies ENABLED schemas and tables, and DISABLED columns
 
-Note that system-enabled tables and columns (such as primary and foreign key columns, and [system tables and columns](https://fivetran.com/docs/getting-started/system-columns-and-tables)) are synced regardless of the `schema_change_handling` settings and configuration. You can only [disable non-locked columns in the system-enabled tables](#nonlockedtablecolumnmanagementinsystemenabledtables). If the configuration specifies any system tables or locked system table columns as disabled ( `enabled = "false"`), the provider just ignores these statements.
+Note that system-enabled tables and columns (such as primary and foreign key columns, and [system tables and columns](https://fivetran.com/docs/getting-started/system-columns-and-tables)) are synced regardless of the `schema_change_handling` settings and configuration. You can only [disable non-locked columns in the system-enabled tables](#nestedblock--nonlocked). If the configuration specifies any system tables or locked system table columns as disabled ( `enabled = "false"`), the provider just ignores these statements.
 
 ## Usage examples
 
@@ -141,7 +141,7 @@ The configuration resulting from the example request is as follows:
 - All new non system-enabled tables/schemas would be disabled once captured by connector on sync
 - All new non system-enabled columns inside enabled tables (including system enabled-tables) would be enabled once captured by connector on sync
 
-
+<a id="nestedblock--nonlocked"></a>
 ### Non-locked table column management in system-enabled tables
 
 You cannot manage system-enabled tables, but you can manage its non-locked columns. For example, your schema `schema_name` has a system-enabled table `system_enabled_table` that can't be disabled, and you want to disable one of its columns named `columns_name`:
