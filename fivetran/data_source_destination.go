@@ -39,6 +39,7 @@ func dataSourceDestinationSchemaConfig() *schema.Schema {
 				"tunnel_host":            {Type: schema.TypeString, Computed: true},
 				"tunnel_port":            {Type: schema.TypeString, Computed: true},
 				"tunnel_user":            {Type: schema.TypeString, Computed: true},
+				"public_key":             {Type: schema.TypeString, Computed: true},
 				"project_id":             {Type: schema.TypeString, Computed: true},
 				"data_set_location":      {Type: schema.TypeString, Computed: true},
 				"bucket":                 {Type: schema.TypeString, Computed: true},
@@ -113,6 +114,7 @@ func dataSourceDestinationConfig(resp *fivetran.DestinationDetailsResponse) ([]i
 	c["tunnel_host"] = resp.Data.Config.TunnelHost
 	c["tunnel_port"] = resp.Data.Config.TunnelPort
 	c["tunnel_user"] = resp.Data.Config.TunnelUser
+	c["public_key"] = resp.Data.Config.PublicKey
 	c["project_id"] = resp.Data.Config.ProjectID
 	c["data_set_location"] = resp.Data.Config.DataSetLocation
 	c["bucket"] = resp.Data.Config.Bucket

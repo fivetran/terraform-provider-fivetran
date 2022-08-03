@@ -51,6 +51,7 @@ func resourceDestinationSchemaConfig() *schema.Schema {
 				"tunnel_host":            {Type: schema.TypeString, Optional: true},
 				"tunnel_port":            {Type: schema.TypeString, Optional: true},
 				"tunnel_user":            {Type: schema.TypeString, Optional: true},
+				"public_key":             {Type: schema.TypeString, Optional: true},
 				"project_id":             {Type: schema.TypeString, Optional: true},
 				"data_set_location":      {Type: schema.TypeString, Optional: true},
 				"bucket":                 {Type: schema.TypeString, Optional: true},
@@ -215,6 +216,7 @@ func resourceDestinationReadConfig(resp *fivetran.DestinationDetailsResponse, cu
 	c["tunnel_host"] = resp.Data.Config.TunnelHost
 	c["tunnel_port"] = resp.Data.Config.TunnelPort
 	c["tunnel_user"] = resp.Data.Config.TunnelUser
+	c["public_key"] = resp.Data.Config.PublicKey
 	c["project_id"] = resp.Data.Config.ProjectID
 	c["data_set_location"] = resp.Data.Config.DataSetLocation
 	c["bucket"] = resp.Data.Config.Bucket
@@ -283,6 +285,10 @@ func resourceDestinationCreateConfig(config []interface{}) (*fivetran.Destinatio
 	}
 	if v := config[0].(map[string]interface{})["tunnel_user"].(string); v != "" {
 		fivetranConfig.TunnelUser(v)
+		hasConfig = true
+	}
+	if v := config[0].(map[string]interface{})["public_key"].(string); v != "" {
+		fivetranConfig.PublicKey(v)
 		hasConfig = true
 	}
 	if v := config[0].(map[string]interface{})["project_id"].(string); v != "" {
