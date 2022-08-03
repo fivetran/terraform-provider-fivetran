@@ -10,9 +10,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// (s)tring to (i)nterface Map
-type siMap map[string]interface{}
-
 const ALLOW_ALL = "ALLOW_ALL"
 const ALLOW_COLUMNS = "ALLOW_COLUMNS"
 const BLOCK_ALL = "BLOCK_ALL"
@@ -75,6 +72,7 @@ func resourceSchemaConfigCreate(ctx context.Context, d *schema.ResourceData, m i
 	client := m.(*fivetran.Client)
 	var schemaChangeHandling = d.Get("schema_change_handling").(string)
 
+	// apply SCH policy from config
 	svc := client.NewConnectorSchemaUpdateService()
 	updateHandlingResp, err := svc.SchemaChangeHandling(schemaChangeHandling).ConnectorID(connectorID).Do(ctx)
 
@@ -86,36 +84,15 @@ func resourceSchemaConfigCreate(ctx context.Context, d *schema.ResourceData, m i
 			fmt.Sprintf("%v; code: %v; message: %v", err, updateHandlingResp.Code, updateHandlingResp.Message))
 	}
 
-	schemaResponse, getDiags := getUpstreamConfigResponse(client, ctx, connectorID)
-	if schemaResponse == nil {
-		return getDiags
-	}
-	var alignedConfig = excludeConfigBySCH(readUpstreamConfig(schemaResponse), schemaChangeHandling)
+	// apply schema config
+	applyDiags, ok := applyLocalSchemaConfig(
+		d.Get("schema").(*schema.Set).List(),
+		connectorID, schemaChangeHandling,
+		"create error",
+		ctx, client)
 
-	diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("Upstream config:\n %+v", alignedConfig), "")
-
-	config := make(siMap)
-	config["schema_change_handling"] = schemaChangeHandling
-	config["schema"] = applyConfigOnAlignedUpstreamConfig(
-		alignedConfig["schema"].(siMap),
-		mapSchemas(d.Get("schema").(*schema.Set).List()),
-		schemaChangeHandling)
-	diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("Full config:\n %+v", config), "")
-	configPatch := removeExcludedSchemas(config)
-	diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("Config patch:\n %+v", configPatch), "")
-
-	if schemas, ok := configPatch["schema"].(siMap); ok {
-		svc := client.NewConnectorSchemaUpdateService().ConnectorID(connectorID)
-		for sname, s := range schemas {
-			srequest, rd := createUpdateSchemaConfigRequest(s.(siMap))
-			diags = append(diags, rd...)
-			diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("Schema request for %v:\n %+v", sname, srequest), "")
-			svc.Schema(sname, srequest)
-		}
-		response, err := svc.Do(ctx)
-		if err != nil {
-			return newDiagAppend(diags, diag.Warning, fmt.Sprintf("Error code: %v, message %v", response.Code, response.Message), "")
-		}
+	if !ok {
+		return applyDiags
 	}
 
 	d.SetId(connectorID)
@@ -127,27 +104,26 @@ func resourceSchemaConfigRead(ctx context.Context, d *schema.ResourceData, m int
 	client := m.(*fivetran.Client)
 	connectorID := d.Get("id").(string)
 
-	schemaResponse, getDiags := getUpstreamConfigResponse(client, ctx, connectorID)
-
+	schemaResponse, getDiags := getUpstreamConfigResponse(client, ctx, connectorID, "read error")
 	if schemaResponse == nil {
 		return getDiags
 	}
 
-	sch := schemaResponse.Data.SchemaChangeHandling
+	// exclude all items that are consistent with SCH policy
+	alignedConfig := excludeConfigBySCH(
+		readUpstreamConfig(schemaResponse),
+		schemaResponse.Data.SchemaChangeHandling)
 
-	fullConfig := readUpstreamConfig(schemaResponse)
-
-	alignedConfig := excludeConfigBySCH(fullConfig, sch)
-
+	// if local schema config aligned to SCH policy we need to include it to state to avoid drifts
 	if ls, ok := d.GetOk("schema"); ok {
-		s, _ := includeLocalConfiguredSchemas(alignedConfig["schema"].(siMap), mapSchemas(ls.(*schema.Set).List()))
+		s, _ := includeLocalConfiguredSchemas(alignedConfig["schema"].(map[string]interface{}), mapSchemas(ls.(*schema.Set).List()))
 		alignedConfig["schema"] = s
 	}
 
-	cleanConfig := removeExcludedSchemas(alignedConfig)
+	// transform config to flat sets
+	flatConfig := flattenConfig(removeExcludedSchemas(alignedConfig))
 
-	flatConfig := flattenConfig(cleanConfig)
-
+	// set state
 	for k, v := range flatConfig {
 		if err := d.Set(k, v); err != nil {
 			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
@@ -163,9 +139,11 @@ func resourceSchemaConfigUpdate(ctx context.Context, d *schema.ResourceData, m i
 	client := m.(*fivetran.Client)
 	var schemaChangeHandling = d.Get("schema_change_handling").(string)
 
+	// update SCH policy if needed
 	if d.HasChange("schema_change_handling") {
 		svc := client.NewConnectorSchemaUpdateService()
 		updateHandlingResp, err := svc.SchemaChangeHandling(schemaChangeHandling).ConnectorID(connectorID).Do(ctx)
+		// check for IllegalState error will be removed further when Fivetran API will allow to  set the same policy as it already is
 		if err != nil && updateHandlingResp.Code != "IllegalState" {
 			return newDiagAppend(
 				diags,
@@ -175,39 +153,14 @@ func resourceSchemaConfigUpdate(ctx context.Context, d *schema.ResourceData, m i
 		}
 	}
 
-	schemaResponse, getDiags := getUpstreamConfigResponse(client, ctx, connectorID)
-	if schemaResponse == nil {
-		return getDiags
-	}
-	var alignedConfig = excludeConfigBySCH(readUpstreamConfig(schemaResponse), schemaChangeHandling)
-	diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("Upstream config:\n %+v", alignedConfig), "")
-	config := make(siMap)
-	config["schema_change_handling"] = schemaChangeHandling
-	config["schema"] = applyConfigOnAlignedUpstreamConfig(
-		alignedConfig["schema"].(siMap),
-		mapSchemas(d.Get("schema").(*schema.Set).List()),
-		schemaChangeHandling)
-	diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("Full config:\n %+v", config), "")
-	configPatch := removeExcludedSchemas(config)
-	diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("Config patch:\n %+v", configPatch), "")
-
-	if schemas, ok := configPatch["schema"].(siMap); ok {
-		svc := client.NewConnectorSchemaUpdateService().ConnectorID(connectorID)
-		for sname, s := range schemas {
-			diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("Schema config for %v:\n %+v", sname, s), "")
-			srequest, rd := createUpdateSchemaConfigRequest(s.(siMap))
-			diags = append(diags, rd...)
-			diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("Schema request for %v:\n %+v", sname, srequest), "")
-			svc.Schema(sname, srequest)
-		}
-		response, err := svc.Do(ctx)
-		if err != nil {
-			return newDiagAppend(
-				diags,
-				diag.Error,
-				"update error",
-				fmt.Sprintf("Error code: %v, message %v", response.Code, response.Message))
-		}
+	// apply schema config
+	applyDiags, ok := applyLocalSchemaConfig(
+		d.Get("schema").(*schema.Set).List(),
+		connectorID, schemaChangeHandling,
+		"update error",
+		ctx, client)
+	if !ok {
+		return applyDiags
 	}
 
 	return resourceSchemaConfigRead(ctx, d, m)
@@ -219,16 +172,57 @@ func resourceSchemaConfigDelete(ctx context.Context, d *schema.ResourceData, m i
 	return diags
 }
 
-func includeLocalConfiguredSchemas(upstream, local siMap) (siMap, diag.Diagnostics) {
+func applyLocalSchemaConfig(
+	localSchemas []interface{},
+	connectorID, sch, errorMessage string,
+	ctx context.Context,
+	client *fivetran.Client) (diag.Diagnostics, bool) {
+	// read upstream schema config
+	var diags diag.Diagnostics
+	schemaResponse, getDiags := getUpstreamConfigResponse(client, ctx, connectorID, errorMessage)
+	if schemaResponse == nil {
+		return getDiags, false
+	}
+
+	// prepare config patch
+	var alignedConfig = excludeConfigBySCH(readUpstreamConfig(schemaResponse), sch)
+	config := make(map[string]interface{})
+	config["schema"] = applyConfigOnAlignedUpstreamConfig(
+		alignedConfig["schema"].(map[string]interface{}),
+		mapSchemas(localSchemas),
+		sch)
+	configPatch := removeExcludedSchemas(config)
+
+	// convert patch into request
+	if schemas, ok := configPatch["schema"].(map[string]interface{}); ok {
+		svc := client.NewConnectorSchemaUpdateService().ConnectorID(connectorID)
+		for sname, s := range schemas {
+			srequest, _ := createUpdateSchemaConfigRequest(s.(map[string]interface{}))
+			svc.Schema(sname, srequest)
+		}
+		response, err := svc.Do(ctx)
+		if err != nil {
+			return newDiagAppend(
+				diags,
+				diag.Error,
+				errorMessage,
+				fmt.Sprintf("%v; code: %v, message %v", err, response.Code, response.Message)), false
+		}
+	}
+
+	return diags, true
+}
+
+func includeLocalConfiguredSchemas(upstream, local map[string]interface{}) (map[string]interface{}, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	result := copyMapDeep(upstream)
 	diags = newDiagAppend(diags, diag.Warning, "Handling schemas", "")
 	for k, ls := range local {
 		if us, ok := upstream[k]; ok {
-			lsmap := ls.(siMap)
-			usmap := us.(siMap)
-			if ltables, ok := lsmap["table"].(siMap); ok {
-				if utables, ok := usmap["table"].(siMap); ok {
+			lsmap := ls.(map[string]interface{})
+			usmap := us.(map[string]interface{})
+			if ltables, ok := lsmap["table"].(map[string]interface{}); ok {
+				if utables, ok := usmap["table"].(map[string]interface{}); ok {
 					t, d := includeLocalConfiguredTables(utables, ltables)
 					diags = append(diags, d...)
 					usmap["table"] = t
@@ -242,16 +236,16 @@ func includeLocalConfiguredSchemas(upstream, local siMap) (siMap, diag.Diagnosti
 	return result, diags
 }
 
-func includeLocalConfiguredTables(upstream, local siMap) (siMap, diag.Diagnostics) {
+func includeLocalConfiguredTables(upstream, local map[string]interface{}) (map[string]interface{}, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	result := copyMapDeep(upstream)
 	diags = newDiagAppend(diags, diag.Warning, "Handling tables", "")
 	for k, ls := range local {
 		if us, ok := upstream[k]; ok {
-			lsmap := ls.(siMap)
-			usmap := us.(siMap)
-			if ltables, ok := lsmap["column"].(siMap); ok {
-				if utables, ok := usmap["column"].(siMap); ok {
+			lsmap := ls.(map[string]interface{})
+			usmap := us.(map[string]interface{})
+			if ltables, ok := lsmap["column"].(map[string]interface{}); ok {
+				if utables, ok := usmap["column"].(map[string]interface{}); ok {
 					c, d := includeLocalConfiguredColumns(utables, ltables)
 					diags = append(diags, d...)
 					usmap["column"] = c
@@ -265,13 +259,13 @@ func includeLocalConfiguredTables(upstream, local siMap) (siMap, diag.Diagnostic
 	return result, diags
 }
 
-func includeLocalConfiguredColumns(upstream, local siMap) (siMap, diag.Diagnostics) {
+func includeLocalConfiguredColumns(upstream, local map[string]interface{}) (map[string]interface{}, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	result := copyMapDeep(upstream)
 	diags = newDiagAppend(diags, diag.Warning, "Handling columns", "")
 	for k := range local {
 		if us, ok := upstream[k]; ok {
-			usmap := us.(siMap)
+			usmap := us.(map[string]interface{})
 			result[k] = include(usmap)
 			diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("Handling column %v: %+v", k, result[k]), "")
 		}
@@ -280,16 +274,16 @@ func includeLocalConfiguredColumns(upstream, local siMap) (siMap, diag.Diagnosti
 	return result, diags
 }
 
-func createUpdateSchemaConfigRequest(schemaConfig siMap) (*fivetran.ConnectorSchemaConfigSchema, diag.Diagnostics) {
+func createUpdateSchemaConfigRequest(schemaConfig map[string]interface{}) (*fivetran.ConnectorSchemaConfigSchema, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	result := fivetran.NewConnectorSchemaConfigSchema()
 	if enabled, ok := schemaConfig["enabled"].(string); ok && enabled != "" {
 		result.Enabled(strToBool(enabled))
 	}
-	if tables, ok := schemaConfig["table"]; ok && len(tables.(siMap)) > 0 {
-		for tname, table := range tables.(siMap) {
+	if tables, ok := schemaConfig["table"]; ok && len(tables.(map[string]interface{})) > 0 {
+		for tname, table := range tables.(map[string]interface{}) {
 			diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("Table config for %v:\n %+v", tname, table), "")
-			treq, rd := createUpdateTableConfigRequest(table.(siMap))
+			treq, rd := createUpdateTableConfigRequest(table.(map[string]interface{}))
 			diags = append(diags, rd...)
 			diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("Table request for %v:\n %+v", tname, treq), "")
 			result.Table(tname, treq)
@@ -298,16 +292,16 @@ func createUpdateSchemaConfigRequest(schemaConfig siMap) (*fivetran.ConnectorSch
 	return result, diags
 }
 
-func createUpdateTableConfigRequest(tableConfig siMap) (*fivetran.ConnectorSchemaConfigTable, diag.Diagnostics) {
+func createUpdateTableConfigRequest(tableConfig map[string]interface{}) (*fivetran.ConnectorSchemaConfigTable, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	result := fivetran.NewConnectorSchemaConfigTable()
 	if enabled, ok := tableConfig["enabled"].(string); ok && enabled != "" && !isLocked(tableConfig) {
 		result.Enabled(strToBool(enabled))
 	}
-	if columns, ok := tableConfig["column"]; ok && len(columns.(siMap)) > 0 {
-		for cname, column := range columns.(siMap) {
+	if columns, ok := tableConfig["column"]; ok && len(columns.(map[string]interface{})) > 0 {
+		for cname, column := range columns.(map[string]interface{}) {
 			diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("Column config for %v:\n %+v", cname, column), "")
-			creq, rd := createUpdateColumnConfigRequest(column.(siMap))
+			creq, rd := createUpdateColumnConfigRequest(column.(map[string]interface{}))
 			diags = append(diags, rd...)
 			diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("column request for %v:\n %+v", cname, creq), "")
 			result.Column(cname, creq)
@@ -317,7 +311,7 @@ func createUpdateTableConfigRequest(tableConfig siMap) (*fivetran.ConnectorSchem
 	return result, diags
 }
 
-func createUpdateColumnConfigRequest(columnConfig siMap) (*fivetran.ConnectorSchemaConfigColumn, diag.Diagnostics) {
+func createUpdateColumnConfigRequest(columnConfig map[string]interface{}) (*fivetran.ConnectorSchemaConfigColumn, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	result := fivetran.NewConnectorSchemaConfigColumn()
 	if enabled, ok := columnConfig["enabled"].(string); ok && enabled != "" && !isLocked(columnConfig) {
@@ -329,54 +323,54 @@ func createUpdateColumnConfigRequest(columnConfig siMap) (*fivetran.ConnectorSch
 	return result, diags
 }
 
-func applyConfigOnAlignedUpstreamConfig(alignedConfigSchemas siMap, localConfigSchemas siMap, sch string) siMap {
+func applyConfigOnAlignedUpstreamConfig(alignedConfigSchemas map[string]interface{}, localConfigSchemas map[string]interface{}, sch string) map[string]interface{} {
 	result := copyMapDeep(alignedConfigSchemas)
 	for sname, s := range localConfigSchemas {
 		if rs, ok := result[sname]; ok {
-			result[sname] = applySchemaConfig(rs.(siMap), s.(siMap))
+			result[sname] = applySchemaConfig(rs.(map[string]interface{}), s.(map[string]interface{}))
 		} else {
-			result[sname] = include(s.(siMap))
+			result[sname] = include(s.(map[string]interface{}))
 		}
 	}
 	for rname := range result {
-		result[rname] = invertUnhandledSchema(result[rname].(siMap), sch)
+		result[rname] = invertUnhandledSchema(result[rname].(map[string]interface{}), sch)
 	}
 	return result
 }
 
-func shouldInvert(item siMap) bool {
+func shouldInvert(item map[string]interface{}) bool {
 	return !isHandled(item) && !isLocked(item) && !isExcluded(item)
 }
 
-func invertUnhandledSchema(schema siMap, sch string) siMap {
+func invertUnhandledSchema(schema map[string]interface{}, sch string) map[string]interface{} {
 	if shouldInvert(schema) {
 		schema["enabled"] = boolToStr(sch == ALLOW_ALL)
 	}
-	if stable, ok := schema["table"].(siMap); ok {
-		invertedTables := make(siMap)
+	if stable, ok := schema["table"].(map[string]interface{}); ok {
+		invertedTables := make(map[string]interface{})
 		for tname, t := range stable {
-			invertedTables[tname] = invertUnhandledTable(t.(siMap), sch)
+			invertedTables[tname] = invertUnhandledTable(t.(map[string]interface{}), sch)
 		}
 		schema["table"] = invertedTables
 	}
 	return schema
 }
 
-func invertUnhandledTable(table siMap, sch string) siMap {
+func invertUnhandledTable(table map[string]interface{}, sch string) map[string]interface{} {
 	if shouldInvert(table) {
 		table["enabled"] = boolToStr(sch == ALLOW_ALL)
 	}
-	if scolumn, ok := table["column"].(siMap); ok {
-		invertedColumns := make(siMap)
+	if scolumn, ok := table["column"].(map[string]interface{}); ok {
+		invertedColumns := make(map[string]interface{})
 		for cname, c := range scolumn {
-			invertedColumns[cname] = invertUnhandledColumn(c.(siMap), sch)
+			invertedColumns[cname] = invertUnhandledColumn(c.(map[string]interface{}), sch)
 		}
 		table["column"] = invertedColumns
 	}
 	return table
 }
 
-func invertUnhandledColumn(column siMap, sch string) siMap {
+func invertUnhandledColumn(column map[string]interface{}, sch string) map[string]interface{} {
 	if shouldInvert(column) {
 		column["enabled"] = boolToStr(sch == ALLOW_ALL || sch == ALLOW_COLUMNS)
 		column["hashed"] = "false"
@@ -384,21 +378,21 @@ func invertUnhandledColumn(column siMap, sch string) siMap {
 	return column
 }
 
-func applySchemaConfig(alignedSchema siMap, localSchema siMap) siMap {
+func applySchemaConfig(alignedSchema map[string]interface{}, localSchema map[string]interface{}) map[string]interface{} {
 	result := copyMapDeep(alignedSchema)
 	if lenabled, ok := localSchema["enabled"]; ok && lenabled.(string) != "" {
 		result["enabled"] = lenabled
 	}
-	rtables := make(siMap)
-	if rts, ok := result["table"].(siMap); ok {
+	rtables := make(map[string]interface{})
+	if rts, ok := result["table"].(map[string]interface{}); ok {
 		rtables = rts
 	}
-	if ltables, ok := localSchema["table"]; ok && len(ltables.(siMap)) > 0 {
-		for ltname, lt := range ltables.(siMap) {
+	if ltables, ok := localSchema["table"]; ok && len(ltables.(map[string]interface{})) > 0 {
+		for ltname, lt := range ltables.(map[string]interface{}) {
 			if rt, ok := rtables[ltname]; ok {
-				rtables[ltname] = applyTableConfig(rt.(siMap), lt.(siMap))
+				rtables[ltname] = applyTableConfig(rt.(map[string]interface{}), lt.(map[string]interface{}))
 			} else {
-				rtables[ltname] = include(lt.(siMap))
+				rtables[ltname] = include(lt.(map[string]interface{}))
 			}
 		}
 	}
@@ -406,21 +400,21 @@ func applySchemaConfig(alignedSchema siMap, localSchema siMap) siMap {
 	return include(result)
 }
 
-func applyTableConfig(alignedTable siMap, localTable siMap) siMap {
+func applyTableConfig(alignedTable map[string]interface{}, localTable map[string]interface{}) map[string]interface{} {
 	result := copyMapDeep(alignedTable)
 	if lenabled, ok := localTable["enabled"]; ok && lenabled.(string) != "" && !isLocked(alignedTable) {
 		result["enabled"] = localTable["enabled"]
 	}
-	rcolumns := make(siMap)
-	if rcs, ok := result["column"].(siMap); ok {
+	rcolumns := make(map[string]interface{})
+	if rcs, ok := result["column"].(map[string]interface{}); ok {
 		rcolumns = rcs
 	}
-	if lcolumns, ok := localTable["column"]; ok && len(lcolumns.(siMap)) > 0 {
-		for lcname, lc := range lcolumns.(siMap) {
+	if lcolumns, ok := localTable["column"]; ok && len(lcolumns.(map[string]interface{})) > 0 {
+		for lcname, lc := range lcolumns.(map[string]interface{}) {
 			if rc, ok := rcolumns[lcname]; ok {
-				rcolumns[lcname] = applyColumnConfig(rc.(siMap), lc.(siMap))
+				rcolumns[lcname] = applyColumnConfig(rc.(map[string]interface{}), lc.(map[string]interface{}))
 			} else {
-				rcolumns[lcname] = include(lc.(siMap))
+				rcolumns[lcname] = include(lc.(map[string]interface{}))
 			}
 		}
 	}
@@ -428,7 +422,7 @@ func applyTableConfig(alignedTable siMap, localTable siMap) siMap {
 	return include(result)
 }
 
-func applyColumnConfig(alignedColumn siMap, localColumn siMap) siMap {
+func applyColumnConfig(alignedColumn map[string]interface{}, localColumn map[string]interface{}) map[string]interface{} {
 	result := copyMapDeep(alignedColumn)
 	if lenabled, ok := localColumn["enabled"]; ok && lenabled.(string) != "" && !isLocked(localColumn) {
 		result["enabled"] = localColumn["enabled"]
@@ -440,13 +434,16 @@ func applyColumnConfig(alignedColumn siMap, localColumn siMap) siMap {
 	return include(result)
 }
 
-func include(item siMap) siMap {
+func include(item map[string]interface{}) map[string]interface{} {
 	item["excluded"] = false
 	item["handled"] = true
 	return item
 }
 
-func getUpstreamConfigResponse(client *fivetran.Client, ctx context.Context, connectorID string) (*fivetran.ConnectorSchemaDetailsResponse, diag.Diagnostics) {
+func getUpstreamConfigResponse(
+	client *fivetran.Client,
+	ctx context.Context,
+	connectorID, errorMessage string) (*fivetran.ConnectorSchemaDetailsResponse, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	schemaResponse, err := client.NewConnectorSchemaDetails().ConnectorID(connectorID).Do(ctx)
 	if err != nil {
@@ -454,22 +451,22 @@ func getUpstreamConfigResponse(client *fivetran.Client, ctx context.Context, con
 			schemaResponse, err := client.NewConnectorSchemaReload().ConnectorID(connectorID).Do(ctx)
 			if err != nil {
 				err := fmt.Sprintf("%v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message)
-				return nil, newDiagAppend(diags, diag.Error, err, "Creation error")
+				return nil, newDiagAppend(diags, diag.Error, errorMessage, err)
 			}
 		} else {
 			err := fmt.Sprintf("%v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message)
-			return nil, newDiagAppend(diags, diag.Error, err, "Creation error")
+			return nil, newDiagAppend(diags, diag.Error, errorMessage, err)
 		}
 	}
 	return &schemaResponse, diags
 }
 
-func mapSchemas(schemas []interface{}) siMap {
-	result := make(siMap)
+func mapSchemas(schemas []interface{}) map[string]interface{} {
+	result := make(map[string]interface{})
 	for _, s := range schemas {
-		smap := s.(siMap)
+		smap := s.(map[string]interface{})
 		sname := smap["name"].(string)
-		rschema := make(siMap)
+		rschema := make(map[string]interface{})
 		rschema["enabled"] = smap["enabled"]
 		if tables, ok := smap["table"].(*schema.Set); ok && len(tables.List()) > 0 {
 			rschema["table"] = mapTables(tables.List())
@@ -479,12 +476,12 @@ func mapSchemas(schemas []interface{}) siMap {
 	return result
 }
 
-func mapTables(tables []interface{}) siMap {
-	result := make(siMap)
+func mapTables(tables []interface{}) map[string]interface{} {
+	result := make(map[string]interface{})
 	for _, t := range tables {
-		tmap := t.(siMap)
+		tmap := t.(map[string]interface{})
 		tname := tmap["name"].(string)
-		rtable := make(siMap)
+		rtable := make(map[string]interface{})
 		if enabled, ok := tmap["enabled"].(string); ok && enabled != "" {
 			rtable["enabled"] = enabled
 		}
@@ -496,12 +493,12 @@ func mapTables(tables []interface{}) siMap {
 	return result
 }
 
-func mapColumns(columns []interface{}) siMap {
-	result := make(siMap)
+func mapColumns(columns []interface{}) map[string]interface{} {
+	result := make(map[string]interface{})
 	for _, c := range columns {
-		cmap := c.(siMap)
+		cmap := c.(map[string]interface{})
 		cname := cmap["name"].(string)
-		rcolumn := make(siMap)
+		rcolumn := make(map[string]interface{})
 
 		if enabled, ok := cmap["enabled"].(string); ok && enabled != "" {
 			rcolumn["enabled"] = enabled
@@ -515,25 +512,25 @@ func mapColumns(columns []interface{}) siMap {
 	return result
 }
 
-func flattenConfig(config siMap) siMap {
-	result := make(siMap)
+func flattenConfig(config map[string]interface{}) map[string]interface{} {
+	result := make(map[string]interface{})
 	result["schema_change_handling"] = config["schema_change_handling"]
 	if schemas, ok := config["schema"]; ok {
-		result["schema"] = flattenSchemas(schemas.(siMap))
+		result["schema"] = flattenSchemas(schemas.(map[string]interface{}))
 	}
 	return result
 }
 
-func flattenSchemas(schemas siMap) []interface{} {
+func flattenSchemas(schemas map[string]interface{}) []interface{} {
 	result := make([]interface{}, 0)
 	for k, v := range schemas {
-		vmap := v.(siMap)
-		s := make(siMap)
+		vmap := v.(map[string]interface{})
+		s := make(map[string]interface{})
 		s["name"] = k
 		if enabled, ok := vmap["enabled"].(string); ok && enabled != "" {
 			s["enabled"] = enabled
 		}
-		if tables, ok := vmap["table"].(siMap); ok {
+		if tables, ok := vmap["table"].(map[string]interface{}); ok {
 			s["table"] = flattenTables(tables)
 		}
 		result = append(result, s)
@@ -541,16 +538,16 @@ func flattenSchemas(schemas siMap) []interface{} {
 	return result
 }
 
-func flattenTables(tables siMap) []interface{} {
+func flattenTables(tables map[string]interface{}) []interface{} {
 	result := make([]interface{}, 0)
 	for k, v := range tables {
-		vmap := v.(siMap)
-		t := make(siMap)
+		vmap := v.(map[string]interface{})
+		t := make(map[string]interface{})
 		t["name"] = k
 		if enabled, ok := vmap["enabled"].(string); ok && enabled != "" {
 			t["enabled"] = enabled
 		}
-		if tables, ok := vmap["column"].(siMap); ok {
+		if tables, ok := vmap["column"].(map[string]interface{}); ok {
 			t["column"] = flattenColumns(tables)
 		}
 		result = append(result, t)
@@ -558,11 +555,11 @@ func flattenTables(tables siMap) []interface{} {
 	return result
 }
 
-func flattenColumns(columns siMap) []interface{} {
+func flattenColumns(columns map[string]interface{}) []interface{} {
 	result := make([]interface{}, 0)
 	for k, v := range columns {
-		vmap := v.(siMap)
-		c := make(siMap)
+		vmap := v.(map[string]interface{})
+		c := make(map[string]interface{})
 		c["name"] = k
 		if enabled, ok := vmap["enabled"].(string); ok && enabled != "" {
 			c["enabled"] = enabled
@@ -575,12 +572,12 @@ func flattenColumns(columns siMap) []interface{} {
 	return result
 }
 
-func excludeConfigBySCH(config siMap, sch string) siMap {
+func excludeConfigBySCH(config map[string]interface{}, sch string) map[string]interface{} {
 	result := copyMap(config)
-	allSchemas := make(siMap)
-	if schemas, ok := config["schema"].(siMap); ok {
+	allSchemas := make(map[string]interface{})
+	if schemas, ok := config["schema"].(map[string]interface{}); ok {
 		for sname, s := range schemas {
-			as := excluedSchemaBySCH(sname, s.(siMap), sch)
+			as := excluedSchemaBySCH(sname, s.(map[string]interface{}), sch)
 			allSchemas[sname] = as
 		}
 		result["schema"] = allSchemas
@@ -588,34 +585,34 @@ func excludeConfigBySCH(config siMap, sch string) siMap {
 	return result
 }
 
-func excluedSchemaBySCH(sname string, schema siMap, sch string) siMap {
+func excluedSchemaBySCH(sname string, schema map[string]interface{}, sch string) map[string]interface{} {
 	result := copyMap(schema)
 	includedTablesCount := 0
-	result["table"] = make(siMap)
-	if tables, ok := schema["table"].(siMap); ok {
+	result["table"] = make(map[string]interface{})
+	if tables, ok := schema["table"].(map[string]interface{}); ok {
 		for tname, t := range tables {
-			at, excluded := excludeTableBySCH(tname, t.(siMap), sch)
+			at, excluded := excludeTableBySCH(tname, t.(map[string]interface{}), sch)
 			if !excluded {
 				includedTablesCount++
 			}
-			result["table"].(siMap)[tname] = at
+			result["table"].(map[string]interface{})[tname] = at
 		}
 	}
 	result["excluded"] = includedTablesCount == 0 && schemaEnabledAlignToSCH(schema["enabled"].(string), sch)
 	return result
 }
 
-func excludeTableBySCH(tname string, table siMap, sch string) (siMap, bool) {
+func excludeTableBySCH(tname string, table map[string]interface{}, sch string) (map[string]interface{}, bool) {
 	includedColumnsCount := 0
 	result := copyMap(table)
-	result["column"] = make(siMap)
-	if columns, ok := table["column"].(siMap); ok {
+	result["column"] = make(map[string]interface{})
+	if columns, ok := table["column"].(map[string]interface{}); ok {
 		for cname, c := range columns {
-			ac, excluded := excludeColumnBySCH(cname, c.(siMap), sch)
+			ac, excluded := excludeColumnBySCH(cname, c.(map[string]interface{}), sch)
 			if !excluded {
 				includedColumnsCount++
 			}
-			result["column"].(siMap)[cname] = ac
+			result["column"].(map[string]interface{})[cname] = ac
 		}
 	}
 	excluded := includedColumnsCount == 0 && (tableEnabledAlignToSCH(table["enabled"].(string), sch) || isLocked(table))
@@ -623,7 +620,7 @@ func excludeTableBySCH(tname string, table siMap, sch string) (siMap, bool) {
 	return result, excluded
 }
 
-func excludeColumnBySCH(cname string, column siMap, sch string) (siMap, bool) {
+func excludeColumnBySCH(cname string, column map[string]interface{}, sch string) (map[string]interface{}, bool) {
 	result := copyMap(column)
 	excluded := isLocked(column) || columnEnabledAlignToSCH(column["enabled"].(string), sch)
 	if !isLocked(column) && isHashed(column) {
@@ -653,34 +650,34 @@ func schemaEnabledAlignToSCH(enabled string, sch string) bool {
 	return tableEnabledAlignToSCH(enabled, sch)
 }
 
-func isHashed(column siMap) bool {
+func isHashed(column map[string]interface{}) bool {
 	v, ok := column["hashed"]
 	return ok && strToBool(v.(string))
 }
 
-func isLocked(item siMap) bool {
+func isLocked(item map[string]interface{}) bool {
 	v, ok := item["patch_allowed"].(string)
 	return ok && !strToBool(v)
 }
 
-func isExcluded(item siMap) bool {
+func isExcluded(item map[string]interface{}) bool {
 	v, ok := item["excluded"].(bool)
 	return ok && v
 }
 
-func isHandled(item siMap) bool {
+func isHandled(item map[string]interface{}) bool {
 	v, ok := item["handled"].(bool)
 	return ok && v
 }
 
-func removeExcludedSchemas(config siMap) siMap {
+func removeExcludedSchemas(config map[string]interface{}) map[string]interface{} {
 	result := copyMap(config)
-	result["schema"] = make(siMap)
+	result["schema"] = make(map[string]interface{})
 	if schemas, ok := config["schema"]; ok {
-		for sname, s := range schemas.(siMap) {
-			schema := s.(siMap)
+		for sname, s := range schemas.(map[string]interface{}) {
+			schema := s.(map[string]interface{})
 			if excluded, ok := schema["excluded"].(bool); ok && !excluded {
-				result["schema"].(siMap)[sname] = removeExcludedTables(schema)
+				result["schema"].(map[string]interface{})[sname] = removeExcludedTables(schema)
 			}
 		}
 	}
@@ -688,35 +685,35 @@ func removeExcludedSchemas(config siMap) siMap {
 }
 
 func notExcludedFilter(value interface{}) bool {
-	valueMap := value.(siMap)
+	valueMap := value.(map[string]interface{})
 	excluded, ok := valueMap["excluded"].(bool)
 	return !(ok && excluded)
 }
 
-func removeExcludedTables(schema siMap) siMap {
+func removeExcludedTables(schema map[string]interface{}) map[string]interface{} {
 	result := copyMap(schema)
 	delete(result, "table")
 	if tables, ok := schema["table"]; ok {
-		result["table"] = filterMap(tables.(siMap), notExcludedFilter, removeExcludedColumns)
+		result["table"] = filterMap(tables.(map[string]interface{}), notExcludedFilter, removeExcludedColumns)
 	}
 	return result
 }
 
 func removeExcludedColumns(t interface{}) interface{} {
-	table := t.(siMap)
+	table := t.(map[string]interface{})
 	result := copyMap(table)
 	delete(result, "column")
 	if columns, ok := table["column"]; ok {
-		result["column"] = filterMap(columns.(siMap), notExcludedFilter, nil)
+		result["column"] = filterMap(columns.(map[string]interface{}), notExcludedFilter, nil)
 	}
 	return result
 }
 
 // Function maps response without filtering by SCH (Schema Change Handling) policy
-func readUpstreamConfig(response *fivetran.ConnectorSchemaDetailsResponse) siMap {
-	result := make(siMap)
+func readUpstreamConfig(response *fivetran.ConnectorSchemaDetailsResponse) map[string]interface{} {
+	result := make(map[string]interface{})
 	result["schema_change_handling"] = response.Data.SchemaChangeHandling
-	schemas := make(siMap)
+	schemas := make(map[string]interface{})
 	for sname, schema := range response.Data.Schemas {
 		schemaMap := readUpstreamSchema(schema)
 		schemas[sname] = schemaMap
@@ -725,10 +722,10 @@ func readUpstreamConfig(response *fivetran.ConnectorSchemaDetailsResponse) siMap
 	return result
 }
 
-func readUpstreamSchema(schemaResponse *fivetran.ConnectorSchemaConfigSchemaResponse) siMap {
-	result := make(siMap)
+func readUpstreamSchema(schemaResponse *fivetran.ConnectorSchemaConfigSchemaResponse) map[string]interface{} {
+	result := make(map[string]interface{})
 	result["enabled"] = boolPointerToStr(schemaResponse.Enabled)
-	tables := make(siMap)
+	tables := make(map[string]interface{})
 	for tname, table := range schemaResponse.Tables {
 		tableMap := readUpstreamTable(table)
 		tables[tname] = tableMap
@@ -737,9 +734,9 @@ func readUpstreamSchema(schemaResponse *fivetran.ConnectorSchemaConfigSchemaResp
 	return result
 }
 
-func readUpstreamTable(tableResponse *fivetran.ConnectorSchemaConfigTableResponse) siMap {
-	result := make(siMap)
-	columns := make(siMap)
+func readUpstreamTable(tableResponse *fivetran.ConnectorSchemaConfigTableResponse) map[string]interface{} {
+	result := make(map[string]interface{})
+	columns := make(map[string]interface{})
 	for cname, column := range tableResponse.Columns {
 		columnMap := readUpstreamColumn(column)
 		columns[cname] = columnMap
@@ -750,8 +747,8 @@ func readUpstreamTable(tableResponse *fivetran.ConnectorSchemaConfigTableRespons
 	return result
 }
 
-func readUpstreamColumn(columnResponse *fivetran.ConnectorSchemaConfigColumnResponse) siMap {
-	result := make(siMap)
+func readUpstreamColumn(columnResponse *fivetran.ConnectorSchemaConfigColumnResponse) map[string]interface{} {
+	result := make(map[string]interface{})
 	result["enabled"] = boolPointerToStr(columnResponse.Enabled)
 	if columnResponse.Hashed != nil {
 		result["hashed"] = boolPointerToStr(columnResponse.Hashed)
@@ -762,7 +759,7 @@ func readUpstreamColumn(columnResponse *fivetran.ConnectorSchemaConfigColumnResp
 
 func resourceSchemaConfigHash(v interface{}) int {
 	h := fnv.New32a()
-	vmap := v.(siMap)
+	vmap := v.(map[string]interface{})
 	var hashKey = vmap["name"].(string) + vmap["enabled"].(string)
 
 	if tables, ok := vmap["table"]; ok {
@@ -779,7 +776,7 @@ func resourceSchemaConfigHash(v interface{}) int {
 
 func resourceTableConfigHash(v interface{}) int {
 	h := fnv.New32a()
-	vmap := v.(siMap)
+	vmap := v.(map[string]interface{})
 	var hashKey = vmap["name"].(string) + vmap["enabled"].(string)
 
 	if columns, ok := vmap["column"]; ok {
@@ -796,7 +793,7 @@ func resourceTableConfigHash(v interface{}) int {
 
 func resourceColumnConfigHash(v interface{}) int {
 	h := fnv.New32a()
-	vmap := v.(siMap)
+	vmap := v.(map[string]interface{})
 
 	hashed := "false"
 	if h, ok := vmap["hashed"].(string); ok {
