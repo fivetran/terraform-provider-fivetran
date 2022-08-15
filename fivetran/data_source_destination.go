@@ -116,7 +116,14 @@ func dataSourceDestinationConfig(resp *fivetran.DestinationDetailsResponse) ([]i
 	c["tunnel_port"] = resp.Data.Config.TunnelPort
 	c["tunnel_user"] = resp.Data.Config.TunnelUser
 	c["project_id"] = resp.Data.Config.ProjectID
-	c["data_set_location"] = resp.Data.Config.DataSetLocation
+
+	// BQ returns its data_set_location as location in response
+	if resp.Data.Config.Location != "" && resourceDestinationIsBigQuery(resp.Data.Service) {
+		c["data_set_location"] = resp.Data.Config.Location
+	} else {
+		c["data_set_location"] = resp.Data.Config.DataSetLocation
+	}
+
 	c["bucket"] = resp.Data.Config.Bucket
 	c["server_host_name"] = resp.Data.Config.ServerHostName
 	c["http_path"] = resp.Data.Config.HTTPPath

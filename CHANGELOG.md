@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Fixed
 - Added missing `destination_resource.public_key` readonly field
 - Added missing `destination_resource.private_key` field
+- Issue with `data_set_location` field when configuring `big_query` destination
 
 ## [0.6.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.0...v0.5.4)
 

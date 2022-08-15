@@ -222,7 +222,14 @@ func resourceDestinationReadConfig(resp *fivetran.DestinationDetailsResponse, cu
 	c["tunnel_port"] = resp.Data.Config.TunnelPort
 	c["tunnel_user"] = resp.Data.Config.TunnelUser
 	c["project_id"] = resp.Data.Config.ProjectID
-	c["data_set_location"] = resp.Data.Config.DataSetLocation
+
+	// BQ returns its data_set_location as location in response
+	if resp.Data.Config.Location != "" && resourceDestinationIsBigQuery(resp.Data.Service) {
+		c["data_set_location"] = resp.Data.Config.Location
+	} else {
+		c["data_set_location"] = resp.Data.Config.DataSetLocation
+	}
+
 	c["bucket"] = resp.Data.Config.Bucket
 	c["server_host_name"] = resp.Data.Config.ServerHostName
 	c["http_path"] = resp.Data.Config.HTTPPath
@@ -236,6 +243,10 @@ func resourceDestinationReadConfig(resp *fivetran.DestinationDetailsResponse, cu
 	config = append(config, c)
 
 	return config, nil
+}
+
+func resourceDestinationIsBigQuery(service string) bool {
+	return service == "big_query" || service == "managed_big_query" || service == "big_query_dts"
 }
 
 // resourceDestinationCreateConfig receives a config type []interface{} and returns a
