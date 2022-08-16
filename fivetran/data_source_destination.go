@@ -50,6 +50,8 @@ func dataSourceDestinationSchemaConfig() *schema.Schema {
 				"auth_type":              {Type: schema.TypeString, Computed: true},
 				"role_arn":               {Type: schema.TypeString, Computed: true},
 				"secret_key":             {Type: schema.TypeString, Computed: true},
+				"private_key":            {Type: schema.TypeString, Computed: true},
+				"public_key":             {Type: schema.TypeString, Computed: true},
 				"cluster_id":             {Type: schema.TypeString, Computed: true},
 				"cluster_region":         {Type: schema.TypeString, Computed: true},
 			},
@@ -114,7 +116,14 @@ func dataSourceDestinationConfig(resp *fivetran.DestinationDetailsResponse) ([]i
 	c["tunnel_port"] = resp.Data.Config.TunnelPort
 	c["tunnel_user"] = resp.Data.Config.TunnelUser
 	c["project_id"] = resp.Data.Config.ProjectID
-	c["data_set_location"] = resp.Data.Config.DataSetLocation
+
+	// BQ returns its data_set_location as location in response
+	if resp.Data.Config.Location != "" && resourceDestinationIsBigQuery(resp.Data.Service) {
+		c["data_set_location"] = resp.Data.Config.Location
+	} else {
+		c["data_set_location"] = resp.Data.Config.DataSetLocation
+	}
+
 	c["bucket"] = resp.Data.Config.Bucket
 	c["server_host_name"] = resp.Data.Config.ServerHostName
 	c["http_path"] = resp.Data.Config.HTTPPath
@@ -124,6 +133,8 @@ func dataSourceDestinationConfig(resp *fivetran.DestinationDetailsResponse) ([]i
 	c["auth_type"] = resp.Data.Config.AuthType
 	c["role_arn"] = resp.Data.Config.RoleArn
 	c["secret_key"] = resp.Data.Config.SecretKey
+	c["private_key"] = resp.Data.Config.PrivateKey
+	c["public_key"] = resp.Data.Config.PublicKey
 	c["cluster_id"] = resp.Data.Config.ClusterId
 	c["cluster_region"] = resp.Data.Config.ClusterRegion
 	config = append(config, c)

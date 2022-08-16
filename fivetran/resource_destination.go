@@ -62,6 +62,8 @@ func resourceDestinationSchemaConfig() *schema.Schema {
 				"auth_type":              {Type: schema.TypeString, Optional: true},
 				"role_arn":               {Type: schema.TypeString, Optional: true, Sensitive: true},
 				"secret_key":             {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"private_key":            {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"public_key":             {Type: schema.TypeString, Computed: true},
 				"cluster_id":             {Type: schema.TypeString, Optional: true},
 				"cluster_region":         {Type: schema.TypeString, Optional: true},
 			},
@@ -210,28 +212,41 @@ func resourceDestinationReadConfig(resp *fivetran.DestinationDetailsResponse, cu
 	// The REST API sends the password field masked. We use the state stored password here if possible.
 	if len(currentConfig) > 0 {
 		c["password"] = currentConfig[0].(map[string]interface{})["password"].(string)
+		c["private_key"] = currentConfig[0].(map[string]interface{})["private_key"].(string)
+		c["secret_key"] = currentConfig[0].(map[string]interface{})["secret_key"].(string)
+		c["personal_access_token"] = currentConfig[0].(map[string]interface{})["personal_access_token"].(string)
+		c["role_arn"] = currentConfig[0].(map[string]interface{})["role_arn"].(string)
 	}
 	c["connection_type"] = dataSourceDestinationConfigNormalizeConnectionType(resp.Data.Config.ConnectionType)
 	c["tunnel_host"] = resp.Data.Config.TunnelHost
 	c["tunnel_port"] = resp.Data.Config.TunnelPort
 	c["tunnel_user"] = resp.Data.Config.TunnelUser
 	c["project_id"] = resp.Data.Config.ProjectID
-	c["data_set_location"] = resp.Data.Config.DataSetLocation
+
+	// BQ returns its data_set_location as location in response
+	if resp.Data.Config.Location != "" && resourceDestinationIsBigQuery(resp.Data.Service) {
+		c["data_set_location"] = resp.Data.Config.Location
+	} else {
+		c["data_set_location"] = resp.Data.Config.DataSetLocation
+	}
+
 	c["bucket"] = resp.Data.Config.Bucket
 	c["server_host_name"] = resp.Data.Config.ServerHostName
 	c["http_path"] = resp.Data.Config.HTTPPath
-	c["personal_access_token"] = resp.Data.Config.PersonalAccessToken
 	c["create_external_tables"] = resp.Data.Config.CreateExternalTables
 	c["external_location"] = resp.Data.Config.ExternalLocation
 	c["auth_type"] = resp.Data.Config.AuthType
-	c["role_arn"] = resp.Data.Config.RoleArn
-	c["secret_key"] = resp.Data.Config.SecretKey
 	c["cluster_id"] = resp.Data.Config.ClusterId
 	c["cluster_region"] = resp.Data.Config.ClusterRegion
+	c["public_key"] = resp.Data.Config.PublicKey
 
 	config = append(config, c)
 
 	return config, nil
+}
+
+func resourceDestinationIsBigQuery(service string) bool {
+	return service == "big_query" || service == "managed_big_query" || service == "big_query_dts"
 }
 
 // resourceDestinationCreateConfig receives a config type []interface{} and returns a
@@ -323,6 +338,10 @@ func resourceDestinationCreateConfig(config []interface{}) (*fivetran.Destinatio
 	}
 	if v := config[0].(map[string]interface{})["secret_key"].(string); v != "" {
 		fivetranConfig.SecretKey(v)
+		hasConfig = true
+	}
+	if v := config[0].(map[string]interface{})["private_key"].(string); v != "" {
+		fivetranConfig.PrivateKey(v)
 		hasConfig = true
 	}
 	if v := config[0].(map[string]interface{})["cluster_id"].(string); v != "" {

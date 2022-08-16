@@ -56,7 +56,7 @@ resource "fivetran_destination" "dest" {
 
 See [Destination Config](https://fivetran.com/docs/rest-api/destinations/config) for details.
 
-Optional:
+### Optional
 
 - `auth`
 - `auth_type` 
@@ -73,6 +73,7 @@ Optional:
 - `password` 
 - `personal_access_token` 
 - `port`
+- `private_key`
 - `project_id`
 - `role_arn` 
 - `secret_key`
@@ -81,6 +82,10 @@ Optional:
 - `tunnel_port` 
 - `tunnel_user` 
 - `user` 
+
+### ReadOnly
+
+- `public_key`
 
 ## Import
 
