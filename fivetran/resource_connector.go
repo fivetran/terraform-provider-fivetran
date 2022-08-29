@@ -406,7 +406,7 @@ func resourceConnectorCreate(ctx context.Context, d *schema.ResourceData, m inte
 	svc.Paused(strToBool(d.Get("paused").(string)))
 	svc.PauseAfterTrial(strToBool(d.Get("pause_after_trial").(string)))
 	svc.SyncFrequency(strToInt(d.Get("sync_frequency").(string)))
-	if d.Get("sync_frequency") == "1440" {
+	if d.Get("sync_frequency") == "1440" && d.Get("daily_sync_time").(string) != "" {
 		svc.DailySyncTime(d.Get("daily_sync_time").(string))
 	}
 
