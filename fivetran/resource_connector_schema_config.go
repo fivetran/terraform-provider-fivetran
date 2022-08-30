@@ -10,9 +10,14 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-const ALLOW_ALL = "ALLOW_ALL"
-const ALLOW_COLUMNS = "ALLOW_COLUMNS"
-const BLOCK_ALL = "BLOCK_ALL"
+const (
+	ALLOW_ALL     = "ALLOW_ALL"
+	ALLOW_COLUMNS = "ALLOW_COLUMNS"
+	BLOCK_ALL     = "BLOCK_ALL"
+	SOFT_DELETE   = "SOFT_DELETE"
+	HISTORY       = "HISTORY"
+	LIVE          = "LIVE"
+)
 
 func resourceSchemaConfig() *schema.Resource {
 	return &schema.Resource{
@@ -24,10 +29,30 @@ func resourceSchemaConfig() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"id":                     {Type: schema.TypeString, Computed: true},
 			"connector_id":           {Type: schema.TypeString, Required: true, ForceNew: true},
-			"schema_change_handling": {Type: schema.TypeString, Required: true},
+			"schema_change_handling": resourceSchemaConfigSchemaShangeHandling(),
 			"schema":                 resourceSchemaConfigSchema(),
 		},
 	}
+}
+
+func resourceSchemaConfigSchemaShangeHandling() *schema.Schema {
+	return &schema.Schema{Type: schema.TypeString, Required: true,
+		ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+			v := val.(string)
+			if !(v == ALLOW_ALL || v == ALLOW_COLUMNS || v == BLOCK_ALL) {
+				errs = append(errs, fmt.Errorf("%q allowed values are: %v, %v or %v, got: %v", key, ALLOW_ALL, ALLOW_COLUMNS, BLOCK_ALL, v))
+			}
+			return
+		},
+	}
+}
+
+func resourceSchemaConfigBooleanValidateFunc(val interface{}, key string) (warns []string, errs []error) {
+	v := val.(string)
+	if !(v == "true" || v == "false") {
+		errs = append(errs, fmt.Errorf("%q allowed values are: %v or %v, got: %v", key, "true", "false", v))
+	}
+	return
 }
 
 func resourceSchemaConfigSchema() *schema.Schema {
@@ -35,7 +60,7 @@ func resourceSchemaConfigSchema() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"name":    {Type: schema.TypeString, Required: true},
-				"enabled": {Type: schema.TypeString, Optional: true, Default: "true"},
+				"enabled": {Type: schema.TypeString, Optional: true, Default: "true", ValidateFunc: resourceSchemaConfigBooleanValidateFunc},
 				"table":   resourceSchemaConfigTable(),
 			},
 		},
@@ -46,10 +71,23 @@ func resourceSchemaConfigTable() *schema.Schema {
 	return &schema.Schema{Type: schema.TypeSet, Optional: true, Set: resourceTableConfigHash,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"name":    {Type: schema.TypeString, Required: true},
-				"enabled": {Type: schema.TypeString, Optional: true, Default: "true"},
-				"column":  resourceSchemaConfigColumn(),
+				"name":      {Type: schema.TypeString, Required: true},
+				"enabled":   {Type: schema.TypeString, Optional: true, Default: "true", ValidateFunc: resourceSchemaConfigBooleanValidateFunc},
+				"sync_mode": resourceSchemaConfigSyncMode(),
+				"column":    resourceSchemaConfigColumn(),
 			},
+		},
+	}
+}
+
+func resourceSchemaConfigSyncMode() *schema.Schema {
+	return &schema.Schema{Type: schema.TypeString, Optional: true,
+		ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+			v := val.(string)
+			if !(v == HISTORY || v == SOFT_DELETE || v == LIVE) {
+				errs = append(errs, fmt.Errorf("%q allowed values are: %v, %v or %v, got: %v", key, SOFT_DELETE, HISTORY, LIVE, v))
+			}
+			return
 		},
 	}
 }
@@ -59,8 +97,8 @@ func resourceSchemaConfigColumn() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"name":    {Type: schema.TypeString, Required: true},
-				"enabled": {Type: schema.TypeString, Optional: true, Default: "true"},
-				"hashed":  {Type: schema.TypeString, Optional: true, Default: "false"},
+				"enabled": {Type: schema.TypeString, Optional: true, Default: "true", ValidateFunc: resourceSchemaConfigBooleanValidateFunc},
+				"hashed":  {Type: schema.TypeString, Optional: true, Default: "false", ValidateFunc: resourceSchemaConfigBooleanValidateFunc},
 			},
 		},
 	}
@@ -244,9 +282,9 @@ func includeLocalConfiguredTables(upstream, local map[string]interface{}) (map[s
 		if us, ok := upstream[k]; ok {
 			lsmap := ls.(map[string]interface{})
 			usmap := us.(map[string]interface{})
-			if ltables, ok := lsmap["column"].(map[string]interface{}); ok {
-				if utables, ok := usmap["column"].(map[string]interface{}); ok {
-					c, d := includeLocalConfiguredColumns(utables, ltables)
+			if lcolumns, ok := lsmap["column"].(map[string]interface{}); ok {
+				if ucolumns, ok := usmap["column"].(map[string]interface{}); ok {
+					c, d := includeLocalConfiguredColumns(ucolumns, lcolumns)
 					diags = append(diags, d...)
 					usmap["column"] = c
 				}
@@ -297,6 +335,9 @@ func createUpdateTableConfigRequest(tableConfig map[string]interface{}) (*fivetr
 	result := fivetran.NewConnectorSchemaConfigTable()
 	if enabled, ok := tableConfig["enabled"].(string); ok && enabled != "" && !isLocked(tableConfig) {
 		result.Enabled(strToBool(enabled))
+	}
+	if sync_mode, ok := tableConfig["sync_mode"].(string); ok && sync_mode != "" {
+		result.SyncMode(sync_mode)
 	}
 	if columns, ok := tableConfig["column"]; ok && len(columns.(map[string]interface{})) > 0 {
 		for cname, column := range columns.(map[string]interface{}) {
@@ -405,6 +446,9 @@ func applyTableConfig(alignedTable map[string]interface{}, localTable map[string
 	if lenabled, ok := localTable["enabled"]; ok && lenabled.(string) != "" && !isLocked(alignedTable) {
 		result["enabled"] = localTable["enabled"]
 	}
+	if lsync_mode, ok := localTable["sync_mode"]; ok && lsync_mode.(string) != "" {
+		result["sync_mode"] = localTable["sync_mode"]
+	}
 	rcolumns := make(map[string]interface{})
 	if rcs, ok := result["column"].(map[string]interface{}); ok {
 		rcolumns = rcs
@@ -485,6 +529,9 @@ func mapTables(tables []interface{}) map[string]interface{} {
 		if enabled, ok := tmap["enabled"].(string); ok && enabled != "" {
 			rtable["enabled"] = enabled
 		}
+		if sync_mode, ok := tmap["sync_mode"].(string); ok && sync_mode != "" {
+			rtable["sync_mode"] = sync_mode
+		}
 		if columns, ok := tmap["column"].(*schema.Set); ok && len(columns.List()) > 0 {
 			rtable["column"] = mapColumns(columns.List())
 		}
@@ -546,6 +593,9 @@ func flattenTables(tables map[string]interface{}) []interface{} {
 		t["name"] = k
 		if enabled, ok := vmap["enabled"].(string); ok && enabled != "" {
 			t["enabled"] = enabled
+		}
+		if sync_mode, ok := vmap["sync_mokde"].(string); ok && sync_mode != "" {
+			t["sync_mode"] = sync_mode
 		}
 		if tables, ok := vmap["column"].(map[string]interface{}); ok {
 			t["column"] = flattenColumns(tables)
@@ -615,7 +665,7 @@ func excludeTableBySCH(tname string, table map[string]interface{}, sch string) (
 			result["column"].(map[string]interface{})[cname] = ac
 		}
 	}
-	excluded := includedColumnsCount == 0 && (tableEnabledAlignToSCH(table["enabled"].(string), sch) || isLocked(table))
+	excluded := includedColumnsCount == 0 && !hasSyncMode(table) && (tableEnabledAlignToSCH(table["enabled"].(string), sch) || isLocked(table))
 	result["excluded"] = excluded
 	return result, excluded
 }
@@ -658,6 +708,11 @@ func isHashed(column map[string]interface{}) bool {
 func isLocked(item map[string]interface{}) bool {
 	v, ok := item["patch_allowed"].(string)
 	return ok && !strToBool(v)
+}
+
+func hasSyncMode(table map[string]interface{}) bool {
+	v, ok := table["sync_mode"].(string)
+	return ok && v != ""
 }
 
 func isExcluded(item map[string]interface{}) bool {
@@ -743,6 +798,7 @@ func readUpstreamTable(tableResponse *fivetran.ConnectorSchemaConfigTableRespons
 	}
 	result["column"] = columns
 	result["enabled"] = boolPointerToStr(tableResponse.Enabled)
+	result["sync_mode"] = tableResponse.SyncMode
 	result["patch_allowed"] = boolPointerToStr(tableResponse.EnabledPatchSettings.Allowed)
 	return result
 }
@@ -777,7 +833,7 @@ func resourceSchemaConfigHash(v interface{}) int {
 func resourceTableConfigHash(v interface{}) int {
 	h := fnv.New32a()
 	vmap := v.(map[string]interface{})
-	var hashKey = vmap["name"].(string) + vmap["enabled"].(string)
+	var hashKey = vmap["name"].(string) + vmap["enabled"].(string) + vmap["sync_mode"].(string)
 
 	if columns, ok := vmap["column"]; ok {
 		columnsHash := ""

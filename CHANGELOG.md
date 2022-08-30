@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Fixed
 - Issue with `daily_sync_time` when `sync_frequency` is set to 1440 
 
+## Added
+- Resource `fivetran_connector_schema_config` now supports `table.sync_mode`
+
 ## [0.6.1](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.1...v0.6.0)
 
 ## Fixed
