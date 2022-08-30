@@ -195,8 +195,8 @@ resource "fivetran_connector_schema_config" "schema" {
 ### Optional
 
 - `enabled` - specifies if the table is enabled (default: "true")
+- `sync_mode` - table sync mode. Not all connectors support table sync_mode switching, check [documentation](https://fivetran.com/docs/getting-started/feature/history-mode#supportedconnectors) before using this field. Allowed values: `SOFT_DELETE`, `HISTORY`, `LIVE`. Check [Fivetran Rest API public docs](https://fivetran.com/docs/rest-api/connectors#payloadparameters_5) for more information.
 - `column` - the set of column settings (see [the next section for details on nested schema for columns](#nestedblock--column))
-
 
 <a id="nestedblock--column"></a>
 ## Nested Schema for `column`
