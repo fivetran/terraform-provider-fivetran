@@ -594,7 +594,7 @@ func flattenTables(tables map[string]interface{}) []interface{} {
 		if enabled, ok := vmap["enabled"].(string); ok && enabled != "" {
 			t["enabled"] = enabled
 		}
-		if sync_mode, ok := vmap["sync_mokde"].(string); ok && sync_mode != "" {
+		if sync_mode, ok := vmap["sync_mode"].(string); ok && sync_mode != "" {
 			t["sync_mode"] = sync_mode
 		}
 		if tables, ok := vmap["column"].(map[string]interface{}); ok {
