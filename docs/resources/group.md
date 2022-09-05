@@ -41,7 +41,7 @@ resource "fivetran_group" "my_imported_fivetran_group" {
 3. Run the `terraform import` command:
 
 ```
-terraform import fivetran_group.my_imported_fivetran_group <your Destination Group ID>
+terraform import fivetran_group.my_imported_fivetran_group {your Destination Group ID}
 ```
 
 4. Use the `terraform state show` command to get the values from the state:
