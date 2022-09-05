@@ -437,7 +437,7 @@ resource "fivetran_connector" "my_imported_connector" {
 4. Run the `terraform import` command:
 
 ```
-terraform import fivetran_connector.my_imported_connector <your Fivetran Connector ID>
+terraform import fivetran_connector.my_imported_connector {your Fivetran Connector ID}
 ```
 
 5.  Use the `terraform state show` command to get the values from the state:

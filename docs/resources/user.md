@@ -56,7 +56,7 @@ resource "fivetran_user" "my_imported_fivetran_user" {
 3. Run the `terraform import` command:
 
 ```
-terraform import fivetran_user.my_imported_fivetran_user <user_id>
+terraform import fivetran_user.my_imported_fivetran_user {user_id}
 ```
 
 4. Use the `terraform state show` command to get the values from the state:

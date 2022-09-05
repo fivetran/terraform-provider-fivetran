@@ -175,6 +175,7 @@ func resourceSchemaConfigRead(ctx context.Context, d *schema.ResourceData, m int
 
 	// transform config to flat sets
 	flatConfig := flattenConfig(removeExcludedSchemas(alignedConfig))
+	flatConfig[CONNECTOR_ID] = connectorID
 
 	// set state
 	for k, v := range flatConfig {
@@ -182,6 +183,8 @@ func resourceSchemaConfigRead(ctx context.Context, d *schema.ResourceData, m int
 			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 		}
 	}
+
+	d.SetId(connectorID)
 
 	return diags
 }

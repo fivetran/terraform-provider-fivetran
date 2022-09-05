@@ -102,7 +102,7 @@ resource "fivetran_destination" "my_imported_destination" {
 3. Run the `terraform import` command with the following parameters:
 
 ```
-terraform import fivetran_destination.my_imported_destination <your Destination Group ID>
+terraform import fivetran_destination.my_imported_destination {your Destination Group ID}
 ```
 
 4. Use the `terraform state show` command to get the values from the state:
