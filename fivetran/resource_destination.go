@@ -67,7 +67,7 @@ func resourceDestinationSchemaConfig() *schema.Schema {
 				"cluster_id":               {Type: schema.TypeString, Optional: true},
 				"cluster_region":           {Type: schema.TypeString, Optional: true},
 				"role":                     {Type: schema.TypeString, Optional: true},
-				"is_private_key_encrypted": {Type: schema.TypeString, Optional: true},
+				"is_private_key_encrypted": {Type: schema.TypeString, Optional: true, Computed: true},
 				"passphrase":               {Type: schema.TypeString, Optional: true, Sensitive: true},
 			},
 		},
