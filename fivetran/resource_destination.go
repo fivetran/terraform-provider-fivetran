@@ -212,14 +212,16 @@ func resourceDestinationReadConfig(resp *fivetran.DestinationDetailsResponse, cu
 	c["database"] = resp.Data.Config.Database
 	c["auth"] = resp.Data.Config.Auth
 	c["user"] = resp.Data.Config.User
+
+	currentConfigMap := currentConfig[0].(map[string]interface{})
 	// The REST API sends the password field masked. We use the state stored password here if possible.
 	if len(currentConfig) > 0 {
-		c["password"] = currentConfig[0].(map[string]interface{})["password"].(string)
-		c["private_key"] = currentConfig[0].(map[string]interface{})["private_key"].(string)
-		c["secret_key"] = currentConfig[0].(map[string]interface{})["secret_key"].(string)
-		c["personal_access_token"] = currentConfig[0].(map[string]interface{})["personal_access_token"].(string)
-		c["role_arn"] = currentConfig[0].(map[string]interface{})["role_arn"].(string)
-		c["passphrase"] = currentConfig[0].(map[string]interface{})["passphrase"].(string)
+		c["password"] = currentConfigMap["password"].(string)
+		c["private_key"] = currentConfigMap["private_key"].(string)
+		c["secret_key"] = currentConfigMap["secret_key"].(string)
+		c["personal_access_token"] = currentConfigMap["personal_access_token"].(string)
+		c["role_arn"] = currentConfigMap["role_arn"].(string)
+		c["passphrase"] = currentConfigMap["passphrase"].(string)
 	}
 	c["connection_type"] = dataSourceDestinationConfigNormalizeConnectionType(resp.Data.Config.ConnectionType)
 	c["tunnel_host"] = resp.Data.Config.TunnelHost
@@ -244,7 +246,11 @@ func resourceDestinationReadConfig(resp *fivetran.DestinationDetailsResponse, cu
 	c["cluster_region"] = resp.Data.Config.ClusterRegion
 	c["public_key"] = resp.Data.Config.PublicKey
 	c["role"] = resp.Data.Config.Role
-	c["is_private_key_encrypted"] = boolToStr(resp.Data.Config.IsPrivateKeyEncrypted)
+
+	if _, ok := currentConfigMap["is_private_key_encrypted"]; ok || resp.Data.Config.IsPrivateKeyEncrypted {
+		// we should ignore default value if not configured to prevent data drifts
+		c["is_private_key_encrypted"] = boolToStr(resp.Data.Config.IsPrivateKeyEncrypted)
+	}
 
 	config = append(config, c)
 
