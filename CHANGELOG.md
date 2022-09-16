@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `destination_resource.config.role` missing field added (Snowflake)
 - `destination_resource.config.is_private_key_encrypted` missing field added (Snowflake)
 - `destination_resource.config.passphrase` missing field added (Snowflake)
+- Documentation for `daily_sync_time` field added 
 
 ## [0.6.3](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.3...v0.6.2)
 

@@ -73,6 +73,7 @@ resource "fivetran_connector" "amplitude" {
 ### Optional
 
 - `auth` - The connector authorization settings. Can be used to authorize a connector using your external client credentials. The format is specific for each connector. (see [below for nested schema](#nestedblock--auth))
+- `daily_sync_time` - Defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use the baseline sync start time. This parameter has no effect on the 0 to 60 minutes offset used to determine the actual sync start time.
 - `run_setup_tests` - Specifies whether the setup tests should be run automatically.
 - `trust_certificates` - Specifies whether we should trust the certificate automatically. Applicable only for database connectors.
 - `trust_fingerprints` - Specifies whether we should trust the SSH fingerprint automatically. Applicable only for database connectors.
