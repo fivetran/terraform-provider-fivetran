@@ -41,31 +41,34 @@ func resourceDestinationSchemaConfig() *schema.Schema {
 	return &schema.Schema{Type: schema.TypeList, Required: true, MaxItems: 1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"host":                   {Type: schema.TypeString, Optional: true},
-				"port":                   {Type: schema.TypeInt, Optional: true},
-				"database":               {Type: schema.TypeString, Optional: true},
-				"auth":                   {Type: schema.TypeString, Optional: true},
-				"user":                   {Type: schema.TypeString, Optional: true},
-				"password":               {Type: schema.TypeString, Optional: true, Sensitive: true},
-				"connection_type":        {Type: schema.TypeString, Optional: true},
-				"tunnel_host":            {Type: schema.TypeString, Optional: true},
-				"tunnel_port":            {Type: schema.TypeString, Optional: true},
-				"tunnel_user":            {Type: schema.TypeString, Optional: true},
-				"project_id":             {Type: schema.TypeString, Optional: true},
-				"data_set_location":      {Type: schema.TypeString, Optional: true},
-				"bucket":                 {Type: schema.TypeString, Optional: true},
-				"server_host_name":       {Type: schema.TypeString, Optional: true},
-				"http_path":              {Type: schema.TypeString, Optional: true},
-				"personal_access_token":  {Type: schema.TypeString, Optional: true, Sensitive: true},
-				"create_external_tables": {Type: schema.TypeString, Optional: true},
-				"external_location":      {Type: schema.TypeString, Optional: true},
-				"auth_type":              {Type: schema.TypeString, Optional: true},
-				"role_arn":               {Type: schema.TypeString, Optional: true, Sensitive: true},
-				"secret_key":             {Type: schema.TypeString, Optional: true, Sensitive: true},
-				"private_key":            {Type: schema.TypeString, Optional: true, Sensitive: true},
-				"public_key":             {Type: schema.TypeString, Computed: true},
-				"cluster_id":             {Type: schema.TypeString, Optional: true},
-				"cluster_region":         {Type: schema.TypeString, Optional: true},
+				"host":                     {Type: schema.TypeString, Optional: true},
+				"port":                     {Type: schema.TypeInt, Optional: true},
+				"database":                 {Type: schema.TypeString, Optional: true},
+				"auth":                     {Type: schema.TypeString, Optional: true},
+				"user":                     {Type: schema.TypeString, Optional: true},
+				"password":                 {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"connection_type":          {Type: schema.TypeString, Optional: true},
+				"tunnel_host":              {Type: schema.TypeString, Optional: true},
+				"tunnel_port":              {Type: schema.TypeString, Optional: true},
+				"tunnel_user":              {Type: schema.TypeString, Optional: true},
+				"project_id":               {Type: schema.TypeString, Optional: true},
+				"data_set_location":        {Type: schema.TypeString, Optional: true},
+				"bucket":                   {Type: schema.TypeString, Optional: true},
+				"server_host_name":         {Type: schema.TypeString, Optional: true},
+				"http_path":                {Type: schema.TypeString, Optional: true},
+				"personal_access_token":    {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"create_external_tables":   {Type: schema.TypeString, Optional: true},
+				"external_location":        {Type: schema.TypeString, Optional: true},
+				"auth_type":                {Type: schema.TypeString, Optional: true},
+				"role_arn":                 {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"secret_key":               {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"private_key":              {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"public_key":               {Type: schema.TypeString, Computed: true},
+				"cluster_id":               {Type: schema.TypeString, Optional: true},
+				"cluster_region":           {Type: schema.TypeString, Optional: true},
+				"role":                     {Type: schema.TypeString, Optional: true},
+				"is_private_key_encrypted": {Type: schema.TypeString, Optional: true, Computed: true},
+				"passphrase":               {Type: schema.TypeString, Optional: true, Sensitive: true},
 			},
 		},
 	}
@@ -209,13 +212,16 @@ func resourceDestinationReadConfig(resp *fivetran.DestinationDetailsResponse, cu
 	c["database"] = resp.Data.Config.Database
 	c["auth"] = resp.Data.Config.Auth
 	c["user"] = resp.Data.Config.User
+
+	currentConfigMap := currentConfig[0].(map[string]interface{})
 	// The REST API sends the password field masked. We use the state stored password here if possible.
 	if len(currentConfig) > 0 {
-		c["password"] = currentConfig[0].(map[string]interface{})["password"].(string)
-		c["private_key"] = currentConfig[0].(map[string]interface{})["private_key"].(string)
-		c["secret_key"] = currentConfig[0].(map[string]interface{})["secret_key"].(string)
-		c["personal_access_token"] = currentConfig[0].(map[string]interface{})["personal_access_token"].(string)
-		c["role_arn"] = currentConfig[0].(map[string]interface{})["role_arn"].(string)
+		c["password"] = currentConfigMap["password"].(string)
+		c["private_key"] = currentConfigMap["private_key"].(string)
+		c["secret_key"] = currentConfigMap["secret_key"].(string)
+		c["personal_access_token"] = currentConfigMap["personal_access_token"].(string)
+		c["role_arn"] = currentConfigMap["role_arn"].(string)
+		c["passphrase"] = currentConfigMap["passphrase"].(string)
 	}
 	c["connection_type"] = dataSourceDestinationConfigNormalizeConnectionType(resp.Data.Config.ConnectionType)
 	c["tunnel_host"] = resp.Data.Config.TunnelHost
@@ -239,6 +245,12 @@ func resourceDestinationReadConfig(resp *fivetran.DestinationDetailsResponse, cu
 	c["cluster_id"] = resp.Data.Config.ClusterId
 	c["cluster_region"] = resp.Data.Config.ClusterRegion
 	c["public_key"] = resp.Data.Config.PublicKey
+	c["role"] = resp.Data.Config.Role
+
+	if _, ok := currentConfigMap["is_private_key_encrypted"]; ok || resp.Data.Config.IsPrivateKeyEncrypted {
+		// we should ignore default value if not configured to prevent data drifts
+		c["is_private_key_encrypted"] = boolToStr(resp.Data.Config.IsPrivateKeyEncrypted)
+	}
 
 	config = append(config, c)
 
@@ -256,100 +268,114 @@ func resourceDestinationCreateConfig(config []interface{}) (*fivetran.Destinatio
 	fivetranConfig := fivetran.NewDestinationConfig()
 	var hasConfig bool
 
-	if v := config[0].(map[string]interface{})["create_external_tables"].(string); v != "" {
+	c := config[0].(map[string]interface{})
+
+	if v := c["create_external_tables"].(string); v != "" {
 		fivetranConfig.CreateExternalTables(strToBool(v))
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["host"].(string); v != "" {
+	if v := c["host"].(string); v != "" {
 		fivetranConfig.Host(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["port"].(int); v != 0 {
+	if v := c["port"].(int); v != 0 {
 		fivetranConfig.Port(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["database"].(string); v != "" {
+	if v := c["database"].(string); v != "" {
 		fivetranConfig.Database(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["auth"].(string); v != "" {
+	if v := c["auth"].(string); v != "" {
 		fivetranConfig.Auth(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["user"].(string); v != "" {
+	if v := c["user"].(string); v != "" {
 		fivetranConfig.User(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["password"].(string); v != "" {
+	if v := c["password"].(string); v != "" {
 		fivetranConfig.Password(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["connection_type"].(string); v != "" {
+	if v := c["connection_type"].(string); v != "" {
 		fivetranConfig.ConnectionType(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["tunnel_host"].(string); v != "" {
+	if v := c["tunnel_host"].(string); v != "" {
 		fivetranConfig.TunnelHost(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["tunnel_port"].(string); v != "" {
+	if v := c["tunnel_port"].(string); v != "" {
 		fivetranConfig.TunnelPort(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["tunnel_user"].(string); v != "" {
+	if v := c["tunnel_user"].(string); v != "" {
 		fivetranConfig.TunnelUser(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["project_id"].(string); v != "" {
+	if v := c["project_id"].(string); v != "" {
 		fivetranConfig.ProjectID(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["data_set_location"].(string); v != "" {
+	if v := c["data_set_location"].(string); v != "" {
 		fivetranConfig.DataSetLocation(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["bucket"].(string); v != "" {
+	if v := c["bucket"].(string); v != "" {
 		fivetranConfig.Bucket(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["server_host_name"].(string); v != "" {
+	if v := c["server_host_name"].(string); v != "" {
 		fivetranConfig.ServerHostName(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["http_path"].(string); v != "" {
+	if v := c["http_path"].(string); v != "" {
 		fivetranConfig.HTTPPath(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["personal_access_token"].(string); v != "" {
+	if v := c["personal_access_token"].(string); v != "" {
 		fivetranConfig.PersonalAccessToken(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["external_location"].(string); v != "" {
+	if v := c["external_location"].(string); v != "" {
 		fivetranConfig.ExternalLocation(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["auth_type"].(string); v != "" {
+	if v := c["auth_type"].(string); v != "" {
 		fivetranConfig.AuthType(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["role_arn"].(string); v != "" {
+	if v := c["role_arn"].(string); v != "" {
 		fivetranConfig.RoleArn(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["secret_key"].(string); v != "" {
+	if v := c["secret_key"].(string); v != "" {
 		fivetranConfig.SecretKey(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["private_key"].(string); v != "" {
+	if v := c["private_key"].(string); v != "" {
 		fivetranConfig.PrivateKey(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["cluster_id"].(string); v != "" {
+	if v := c["cluster_id"].(string); v != "" {
 		fivetranConfig.ClusterId(v)
 		hasConfig = true
 	}
-	if v := config[0].(map[string]interface{})["cluster_region"].(string); v != "" {
+	if v := c["cluster_region"].(string); v != "" {
 		fivetranConfig.ClusterRegion(v)
+		hasConfig = true
+	}
+	if v := c["role"].(string); v != "" {
+		fivetranConfig.Role(v)
+		hasConfig = true
+	}
+	if v := c["is_private_key_encrypted"].(string); v != "" {
+		fivetranConfig.IsPrivateKeyEncrypted(strToBool(v))
+		hasConfig = true
+	}
+	if v := c["passphrase"].(string); v != "" {
+		fivetranConfig.Passphrase(v)
 		hasConfig = true
 	}
 
