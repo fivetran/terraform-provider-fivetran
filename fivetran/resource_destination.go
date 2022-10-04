@@ -247,10 +247,13 @@ func resourceDestinationReadConfig(resp *fivetran.DestinationDetailsResponse, cu
 	c["public_key"] = resp.Data.Config.PublicKey
 	c["role"] = resp.Data.Config.Role
 
-	if _, ok := currentConfigMap["is_private_key_encrypted"]; ok || resp.Data.Config.IsPrivateKeyEncrypted {
-		// we should ignore default value if not configured to prevent data drifts
-		c["is_private_key_encrypted"] = boolToStr(resp.Data.Config.IsPrivateKeyEncrypted)
-	}
+	//c["is_private_key_encrypted"] = resp.Data.Config.IsPrivateKeyEncrypted
+
+	//if _, ok := currentConfigMap["is_private_key_encrypted"]; ok || resp.Data.Config.IsPrivateKeyEncrypted {
+	// we should ignore default value if not configured to prevent data drifts
+	//c["is_private_key_encrypted"] = boolToStr(resp.Data.Config.IsPrivateKeyEncrypted)
+	//c["is_private_key_encrypted"] = resp.Data.Config.IsPrivateKeyEncrypted
+	//}
 
 	config = append(config, c)
 
