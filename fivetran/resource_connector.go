@@ -511,6 +511,9 @@ func resourceConnectorUpdate(ctx context.Context, d *schema.ResourceData, m inte
 	if d.HasChange("pause_after_trial") {
 		svc.PauseAfterTrial(strToBool(d.Get("pause_after_trial").(string)))
 	}
+	if d.Get("sync_frequency") == "1440" && d.HasChange("daily_sync_time") {
+		svc.DailySyncTime(d.Get("daily_sync_time").(string))
+	}
 
 	svc.Config(resourceConnectorUpdateConfig(d, false))
 	svc.Auth(resourceConnectorCreateAuth(d.Get("auth").([]interface{})))
