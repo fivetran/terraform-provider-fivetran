@@ -15,8 +15,32 @@ Make sure you read the Fivetran REST API [documentation](https://fivetran.com/do
 ## Example Usage
 
 ```hcl
-provider "fivetran" {
+# Terraform 0.13+ uses the Terraform Registry:
+
+terraform {
+  required_providers {
+    fivetran = {
+      source = "fivetran/fivetran"
+    }
+  }
 }
+
+
+# Configure the Fivetran provider
+provider "fivetran" {
+  api_key = var.fivetran_api_key
+  api_secret = var.fivetran_api_secret
+}
+
+
+
+# Terraform 0.12- can be specified as:
+
+# Configure the Fivetran provider
+# provider "fivetran" {
+#   api_key = "${var.fivetran_api_key}"
+#   api_secret = "${var.fivetran_api_secret}"
+# }
 ```
 
 ## Known issues
