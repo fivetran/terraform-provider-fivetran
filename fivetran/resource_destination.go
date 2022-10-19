@@ -213,16 +213,28 @@ func resourceDestinationReadConfig(resp *fivetran.DestinationDetailsResponse, cu
 	c["auth"] = resp.Data.Config.Auth
 	c["user"] = resp.Data.Config.User
 
-	currentConfigMap := currentConfig[0].(map[string]interface{})
-	// The REST API sends the password field masked. We use the state stored password here if possible.
 	if len(currentConfig) > 0 {
+		// The REST API sends the password field masked. We use the state stored password here if possible.
+		currentConfigMap := currentConfig[0].(map[string]interface{})
 		c["password"] = currentConfigMap["password"].(string)
 		c["private_key"] = currentConfigMap["private_key"].(string)
 		c["secret_key"] = currentConfigMap["secret_key"].(string)
 		c["personal_access_token"] = currentConfigMap["personal_access_token"].(string)
 		c["role_arn"] = currentConfigMap["role_arn"].(string)
 		c["passphrase"] = currentConfigMap["passphrase"].(string)
+
+		if _, ok := currentConfigMap["is_private_key_encrypted"]; ok {
+			// if `is_private_key_encrypted` is configured locally we should read upstream value
+			c["is_private_key_encrypted"] = resp.Data.Config.IsPrivateKeyEncrypted
+		}
 	}
+
+	if strToBool(resp.Data.Config.IsPrivateKeyEncrypted) {
+		// we should ignore default `false` value if not configured to prevent data drifts
+		// we read it only if `true` to prevent false data drifts
+		c["is_private_key_encrypted"] = resp.Data.Config.IsPrivateKeyEncrypted
+	}
+
 	c["connection_type"] = dataSourceDestinationConfigNormalizeConnectionType(resp.Data.Config.ConnectionType)
 	c["tunnel_host"] = resp.Data.Config.TunnelHost
 	c["tunnel_port"] = resp.Data.Config.TunnelPort
@@ -246,11 +258,6 @@ func resourceDestinationReadConfig(resp *fivetran.DestinationDetailsResponse, cu
 	c["cluster_region"] = resp.Data.Config.ClusterRegion
 	c["public_key"] = resp.Data.Config.PublicKey
 	c["role"] = resp.Data.Config.Role
-
-	if _, ok := currentConfigMap["is_private_key_encrypted"]; ok || strToBool(resp.Data.Config.IsPrivateKeyEncrypted) {
-		// we should ignore default value if not configured to prevent data drifts
-		c["is_private_key_encrypted"] = resp.Data.Config.IsPrivateKeyEncrypted
-	}
 
 	config = append(config, c)
 
