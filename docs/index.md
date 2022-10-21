@@ -20,18 +20,18 @@ Make sure you read the Fivetran REST API [documentation](https://fivetran.com/do
 terraform {
   required_providers {
     fivetran = {
-      source = "fivetran/fivetran"
+        version = "0.6.6"                            
+        source = "fivetran/fivetran"
     }
   }
 }
 
-
 # Configure the Fivetran provider
 provider "fivetran" {
-  api_key = var.fivetran_api_key
-  api_secret = var.fivetran_api_secret
+#   We recommend to use environment variables instead of explicit assignment
+#   api_key = var.fivetran_api_key
+#   api_secret = var.fivetran_api_secret
 }
-
 
 
 # Terraform 0.12- can be specified as:
