@@ -25,14 +25,11 @@ func resourceDestination() *schema.Resource {
 			"region":             {Type: schema.TypeString, Required: true},
 			"time_zone_offset":   {Type: schema.TypeString, Required: true},
 			"config":             resourceDestinationSchemaConfig(),
-			"trust_certificates": {Type: schema.TypeBool, Optional: true}, // T-112419, ForceNew can be removed and the field can be updated
-			"trust_fingerprints": {Type: schema.TypeBool, Optional: true}, // T-112419, ForceNew can be removed and the field can be updated
-			// "run_setup_tests" default value is true. It is set as required to avoid confusion, so the expected behaviour should
-			// be explicitly declared.
-			"run_setup_tests": {Type: schema.TypeBool, Required: true},
-			"setup_status":    {Type: schema.TypeString, Computed: true},
-			// "setup_tests": ... // missing /T-112419
-			"last_updated": {Type: schema.TypeString, Computed: true}, // internal
+			"trust_certificates": {Type: schema.TypeBool, Optional: true},
+			"trust_fingerprints": {Type: schema.TypeBool, Optional: true},
+			"run_setup_tests":    {Type: schema.TypeBool, Optional: true, Default: true},
+			"setup_status":       {Type: schema.TypeString, Computed: true},
+			"last_updated":       {Type: schema.TypeString, Computed: true}, // internal
 		},
 	}
 }
@@ -92,7 +89,9 @@ func resourceDestinationCreate(ctx context.Context, d *schema.ResourceData, m in
 	if v, ok := d.GetOk("trust_fingerprints"); ok {
 		svc.TrustFingerprints(v.(bool))
 	}
-	svc.RunSetupTests(d.Get("run_setup_tests").(bool))
+	if v, ok := d.GetOk("run_setup_tests"); ok {
+		svc.RunSetupTests(v.(bool))
+	}
 
 	resp, err := svc.Do(ctx)
 	if err != nil {
@@ -150,11 +149,15 @@ func resourceDestinationUpdate(ctx context.Context, d *schema.ResourceData, m in
 
 	svc.DestinationID(d.Get("id").(string))
 
+	hasChanges := false
+
 	if d.HasChange("region") {
 		svc.Region(d.Get("region").(string))
+		hasChanges = true
 	}
 	if d.HasChange("time_zone_offset") {
 		svc.TimeZoneOffset(d.Get("time_zone_offset").(string))
+		hasChanges = true
 	}
 	if d.HasChange("config") {
 		_, n := d.GetChange("config")
@@ -162,19 +165,25 @@ func resourceDestinationUpdate(ctx context.Context, d *schema.ResourceData, m in
 		// the whole "config" block must be sent to the REST API.
 		if v, ok := resourceDestinationCreateConfig(n.([]interface{})); ok {
 			svc.Config(v)
+			hasChanges = true
 			// only sets change if func resourceDestinationCreateConfig returns ok
 		}
 	}
+	if hasChanges {
+		if v, ok := d.GetOk("run_setup_tests"); ok {
+			svc.RunSetupTests(v.(bool))
+		}
 
-	resp, err := svc.Do(ctx)
-	if err != nil {
-		// resourceDestinationRead here makes sure the state is updated after a NewDestinationModify error.
-		diags = resourceDestinationRead(ctx, d, m)
-		return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
-	}
+		resp, err := svc.Do(ctx)
+		if err != nil {
+			// resourceDestinationRead here makes sure the state is updated after a NewDestinationModify error.
+			diags = resourceDestinationRead(ctx, d, m)
+			return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		}
 
-	if err := d.Set("last_updated", time.Now().Format(time.RFC850)); err != nil {
-		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+		if err := d.Set("last_updated", time.Now().Format(time.RFC850)); err != nil {
+			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+		}
 	}
 
 	return resourceDestinationRead(ctx, d, m)
