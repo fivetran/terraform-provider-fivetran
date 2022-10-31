@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.7](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.6...v0.6.7)
 
 ## Fixed
-- Make `fivetran_destination.run_setup_tests` optional with default value `true`
+- Make `fivetran_destination.run_setup_tests` optional with default value `false`
 
 ## [0.6.6](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.5...v0.6.6)
 
