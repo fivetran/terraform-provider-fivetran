@@ -184,6 +184,21 @@ func resourceDestinationUpdate(ctx context.Context, d *schema.ResourceData, m in
 		if err := d.Set("last_updated", time.Now().Format(time.RFC850)); err != nil {
 			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 		}
+	} else {
+		// if only "run_setup_tests" updated to true - setup tests should be performed without update request
+		if v, ok := d.GetOk("run_setup_tests"); ok && v.(bool) && d.HasChange("run_setup_tests") {
+			testsSvc := client.NewDestinationSetupTests().DestinationID(d.Get("id").(string))
+			if v, ok := d.GetOk("trust_certificates"); ok {
+				testsSvc.TrustCertificates(v.(bool))
+			}
+			if v, ok := d.GetOk("trust_fingerprints"); ok {
+				testsSvc.TrustFingerprints(v.(bool))
+			}
+			resp, err := testsSvc.Do(ctx)
+			if err != nil {
+				return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+			}
+		}
 	}
 
 	return resourceDestinationRead(ctx, d, m)

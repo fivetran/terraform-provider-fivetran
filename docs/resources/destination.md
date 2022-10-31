@@ -91,7 +91,7 @@ See [Destination Config](https://fivetran.com/docs/rest-api/destinations/config)
 
 Field `run_setup_tests` doesn't have upstream value, it only defines local resource behavoir. This means that when you update only `run_setup_tests` value (from `false` to `true` for example) it won't cause any upstream actions. The value will be just saved in terraform state and then used on effective field updates.
 
-The default value is `true` - this means that setup tests will be forced on every update. If the value is set to `false` no setup tests will be performed during create/update.
+The default value is `false` - this means that no setup tests will be performed during create/update. To perform setup tests you should set value to `true`.
 
 ## Import
 

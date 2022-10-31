@@ -14,6 +14,7 @@ import (
 var (
 	destinationPostHandler   *mock.Handler
 	destinationPatchHandler  *mock.Handler
+	destinationTestHandler   *mock.Handler
 	destinationDeleteHandler *mock.Handler
 	testDestinationData      map[string]interface{}
 )
@@ -58,6 +59,23 @@ func onPatchDestination(t *testing.T, req *http.Request) (*http.Response, error)
 	return response, nil
 }
 
+func onTestDestination(t *testing.T, req *http.Request) (*http.Response, error) {
+	// setup test results array
+	setupTests := make([]interface{}, 0)
+
+	setupTestResult := make(map[string]interface{})
+	setupTestResult["title"] = "Test Title"
+	setupTestResult["status"] = "PASSED"
+	setupTestResult["message"] = "Test passed"
+
+	setupTests = append(setupTests, setupTestResult)
+
+	testDestinationData["setup_tests"] = setupTests
+
+	response := fivetranSuccessResponse(t, req, http.StatusOK, "Setup tests have been completed", testDestinationData)
+	return response, nil
+}
+
 func updateMapDeep(source map[string]interface{}, target map[string]interface{}) {
 	for sk, sv := range source {
 		if tv, ok := target[sk]; ok {
@@ -93,6 +111,12 @@ func setupMockClientForDestination(t *testing.T) {
 	destinationPatchHandler = mockClient.When(http.MethodPatch, "/v1/destinations/destination_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			return onPatchDestination(t, req)
+		},
+	)
+
+	destinationTestHandler = mockClient.When(http.MethodPost, "/v1/destinations/destination_id/test").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			return onTestDestination(t, req)
 		},
 	)
 
@@ -219,6 +243,7 @@ func TestResourceDestinationMock(t *testing.T) {
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 				assertEqual(t, destinationPatchHandler.Interactions, 1)
+				assertEqual(t, destinationTestHandler.Interactions, 1)
 				return nil
 			},
 		),
