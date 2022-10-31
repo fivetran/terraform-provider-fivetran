@@ -27,7 +27,7 @@ func resourceDestination() *schema.Resource {
 			"config":             resourceDestinationSchemaConfig(),
 			"trust_certificates": {Type: schema.TypeBool, Optional: true},
 			"trust_fingerprints": {Type: schema.TypeBool, Optional: true},
-			"run_setup_tests":    {Type: schema.TypeBool, Optional: true, Default: true},
+			"run_setup_tests":    {Type: schema.TypeBool, Optional: true, Default: false},
 			"setup_status":       {Type: schema.TypeString, Computed: true},
 			"last_updated":       {Type: schema.TypeString, Computed: true}, // internal
 		},
