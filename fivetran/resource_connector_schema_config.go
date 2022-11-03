@@ -125,16 +125,24 @@ func resourceSchemaConfigCreate(ctx context.Context, d *schema.ResourceData, m i
 	client := m.(*fivetran.Client)
 	var schemaChangeHandling = d.Get(SCHEMA_CHANGE_HANDLING).(string)
 
-	// apply SCH policy from config
-	svc := client.NewConnectorSchemaUpdateService()
-	updateHandlingResp, err := svc.SchemaChangeHandling(schemaChangeHandling).ConnectorID(connectorID).Do(ctx)
+	// ensure connector has standard config with schema reloaded
+	upstreamSchema, schemaDiags := getUpstreamConfigResponse(client, ctx, connectorID, "create")
+	if upstreamSchema == nil {
+		return schemaDiags
+	}
 
-	if err != nil && updateHandlingResp.Code != "IllegalState" {
-		return newDiagAppend(
-			diags,
-			diag.Error,
-			"create error",
-			fmt.Sprintf("%v; code: %v; message: %v", err, updateHandlingResp.Code, updateHandlingResp.Message))
+	if upstreamSchema.Data.SchemaChangeHandling != schemaChangeHandling {
+		// apply SCH policy from config
+		svc := client.NewConnectorSchemaUpdateService()
+		updateHandlingResp, err := svc.SchemaChangeHandling(schemaChangeHandling).ConnectorID(connectorID).Do(ctx)
+
+		if err != nil {
+			return newDiagAppend(
+				diags,
+				diag.Error,
+				"create error",
+				fmt.Sprintf("%v; code: %v; message: %v", err, updateHandlingResp.Code, updateHandlingResp.Message))
+		}
 	}
 
 	// apply schema config
@@ -142,7 +150,7 @@ func resourceSchemaConfigCreate(ctx context.Context, d *schema.ResourceData, m i
 		d.Get(SCHEMA).(*schema.Set).List(),
 		connectorID, schemaChangeHandling,
 		"create error",
-		ctx, client)
+		ctx, client, upstreamSchema)
 
 	if !ok {
 		return applyDiags
@@ -214,7 +222,7 @@ func resourceSchemaConfigUpdate(ctx context.Context, d *schema.ResourceData, m i
 		d.Get(SCHEMA).(*schema.Set).List(),
 		connectorID, schemaChangeHandling,
 		"update error",
-		ctx, client)
+		ctx, client, nil)
 	if !ok {
 		return applyDiags
 	}
@@ -232,12 +240,16 @@ func applyLocalSchemaConfig(
 	localSchemas []interface{},
 	connectorID, sch, errorMessage string,
 	ctx context.Context,
-	client *fivetran.Client) (diag.Diagnostics, bool) {
-	// read upstream schema config
+	client *fivetran.Client,
+	upstreamSchemaResponse *fivetran.ConnectorSchemaDetailsResponse) (diag.Diagnostics, bool) {
 	var diags diag.Diagnostics
-	schemaResponse, getDiags := getUpstreamConfigResponse(client, ctx, connectorID, errorMessage)
+	schemaResponse := upstreamSchemaResponse
 	if schemaResponse == nil {
-		return getDiags, false
+		// read upstream schema config
+		schemaResponse, getDiags := getUpstreamConfigResponse(client, ctx, connectorID, errorMessage)
+		if schemaResponse == nil {
+			return getDiags, false
+		}
 	}
 
 	// prepare config patch
@@ -505,7 +517,8 @@ func include(item map[string]interface{}) map[string]interface{} {
 func getUpstreamConfigResponse(
 	client *fivetran.Client,
 	ctx context.Context,
-	connectorID, errorMessage string) (*fivetran.ConnectorSchemaDetailsResponse, diag.Diagnostics) {
+	connectorID,
+	errorMessage string) (*fivetran.ConnectorSchemaDetailsResponse, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	schemaResponse, err := client.NewConnectorSchemaDetails().ConnectorID(connectorID).Do(ctx)
 	if err != nil {
