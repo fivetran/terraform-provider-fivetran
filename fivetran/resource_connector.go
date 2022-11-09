@@ -1449,6 +1449,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 		mapAddStr(c, "function_trigger", resourceConfig["function_trigger"].(string))
 		mapAddStr(c, "token_key", resourceConfig["token_key"].(string))
 		mapAddStr(c, "token_secret", resourceConfig["token_secret"].(string))
+		mapAddXInterface(c, "project_credentials", resourceConnectorReadConfigFlattenProjectCredentials(resp, currentConfig))
 	}
 
 	// Collections
@@ -1457,7 +1458,6 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddXInterface(c, "metrics", xStrXInterface(resp.Data.Config.Metrics))
 	mapAddXInterface(c, "advertisables", xStrXInterface(resp.Data.Config.Advertisables))
 	mapAddXInterface(c, "dimensions", xStrXInterface(resp.Data.Config.Dimensions))
-	mapAddXInterface(c, "project_credentials", resourceConnectorReadConfigFlattenProjectCredentials(resp, currentConfig))
 	mapAddXInterface(c, "selected_exports", xStrXInterface(resp.Data.Config.SelectedExports))
 	mapAddXInterface(c, "apps", xStrXInterface(resp.Data.Config.Apps))
 	mapAddXInterface(c, "sales_accounts", xStrXInterface(resp.Data.Config.SalesAccounts))

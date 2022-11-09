@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Fixed
 - Issue: Unable to create `fivetran_connector_schema_config` resource for newly created connector. 
+- Issue: `import` command fails on resource `fivetran_connector` with `Error: Plugin did not respond`.
 
 ## [0.6.7](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.6...v0.6.7)
 
