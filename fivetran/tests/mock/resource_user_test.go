@@ -14,11 +14,11 @@ var (
 	userPostHandler   *mock.Handler
 	userPatchHandler  *mock.Handler
 	userDeleteHandler *mock.Handler
-	johnFoxData       map[string]interface{}
+	userData          map[string]interface{}
 )
 
 func onPostUsers(t *testing.T, req *http.Request) (*http.Response, error) {
-	assertEmpty(t, johnFoxData)
+	assertEmpty(t, userData)
 
 	body := requestBodyToJson(t, req)
 
@@ -37,7 +37,7 @@ func onPostUsers(t *testing.T, req *http.Request) (*http.Response, error) {
 	body["invited"] = true
 	body["logged_in_at"] = nil
 	body["created_at"] = time.Now().Format("2006-01-02T15:04:05.000000Z")
-	johnFoxData = body
+	userData = body
 
 	response := fivetranSuccessResponse(t, req, http.StatusCreated,
 		"User has been invited to the account", body)
@@ -46,7 +46,7 @@ func onPostUsers(t *testing.T, req *http.Request) (*http.Response, error) {
 }
 
 func onPatchUser(t *testing.T, req *http.Request) (*http.Response, error) {
-	assertNotEmpty(t, johnFoxData)
+	assertNotEmpty(t, userData)
 
 	body := requestBodyToJson(t, req)
 
@@ -60,17 +60,17 @@ func onPatchUser(t *testing.T, req *http.Request) (*http.Response, error) {
 
 	// Update saved values
 	for k, v := range body {
-		johnFoxData[k] = v
+		userData[k] = v
 	}
 
-	response := fivetranSuccessResponse(t, req, http.StatusOK, "User has been updated", johnFoxData)
+	response := fivetranSuccessResponse(t, req, http.StatusOK, "User has been updated", userData)
 
 	return response, nil
 }
 
-func setupMockClient(t *testing.T) {
+func setupMockClientUserResource(t *testing.T) {
 	mockClient.Reset()
-	johnFoxData = nil
+	userData = nil
 
 	userPostHandler = mockClient.When(http.MethodPost, "/v1/users").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
@@ -80,8 +80,8 @@ func setupMockClient(t *testing.T) {
 
 	mockClient.When(http.MethodGet, "/v1/users/john_fox_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			assertNotEmpty(t, johnFoxData)
-			response := fivetranSuccessResponse(t, req, http.StatusOK, "", johnFoxData)
+			assertNotEmpty(t, userData)
+			response := fivetranSuccessResponse(t, req, http.StatusOK, "", userData)
 			return response, nil
 		},
 	)
@@ -94,8 +94,8 @@ func setupMockClient(t *testing.T) {
 
 	userDeleteHandler = mockClient.When(http.MethodDelete, "/v1/users/john_fox_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			assertNotEmpty(t, johnFoxData)
-			johnFoxData = nil
+			assertNotEmpty(t, userData)
+			userData = nil
 			response := fivetranSuccessResponse(t, req, 200,
 				"User with id 'john_fox_id' has been deleted", nil)
 			return response, nil
@@ -120,7 +120,7 @@ func TestResourceUserMock(t *testing.T) {
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 				assertEqual(t, userPostHandler.Interactions, 1)
-				assertNotEmpty(t, johnFoxData)
+				assertNotEmpty(t, userData)
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_user.userjohn", "email", "john.fox@testmail.com"),
@@ -162,12 +162,12 @@ func TestResourceUserMock(t *testing.T) {
 		t,
 		resource.TestCase{
 			PreCheck: func() {
-				setupMockClient(t)
+				setupMockClientUserResource(t)
 			},
 			Providers: testProviders,
 			CheckDestroy: func(s *terraform.State) error {
 				assertEqual(t, userDeleteHandler.Interactions, 1)
-				assertEmpty(t, johnFoxData)
+				assertEmpty(t, userData)
 				return nil
 			},
 
