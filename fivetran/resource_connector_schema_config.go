@@ -202,6 +202,7 @@ func resourceSchemaConfigUpdate(ctx context.Context, d *schema.ResourceData, m i
 	connectorID := d.Get(ID).(string)
 	client := m.(*fivetran.Client)
 	var schemaChangeHandling = d.Get(SCHEMA_CHANGE_HANDLING).(string)
+	var upstreamSchema *fivetran.ConnectorSchemaDetailsResponse
 
 	// update SCH policy if needed
 	if d.HasChange(SCHEMA_CHANGE_HANDLING) {
@@ -214,6 +215,8 @@ func resourceSchemaConfigUpdate(ctx context.Context, d *schema.ResourceData, m i
 				diag.Error,
 				"update error",
 				fmt.Sprintf("%v; code: %v; message: %v", err, updateHandlingResp.Code, updateHandlingResp.Message))
+		} else {
+			upstreamSchema = &updateHandlingResp
 		}
 	}
 
@@ -222,7 +225,7 @@ func resourceSchemaConfigUpdate(ctx context.Context, d *schema.ResourceData, m i
 		d.Get(SCHEMA).(*schema.Set).List(),
 		connectorID, schemaChangeHandling,
 		"update error",
-		ctx, client, nil)
+		ctx, client, upstreamSchema)
 	if !ok {
 		return applyDiags
 	}
@@ -246,10 +249,11 @@ func applyLocalSchemaConfig(
 	schemaResponse := upstreamSchemaResponse
 	if schemaResponse == nil {
 		// read upstream schema config
-		schemaResponse, getDiags := getUpstreamConfigResponse(client, ctx, connectorID, errorMessage)
-		if schemaResponse == nil {
+		upstreamResponse, getDiags := getUpstreamConfigResponse(client, ctx, connectorID, errorMessage)
+		if upstreamResponse == nil {
 			return getDiags, false
 		}
+		schemaResponse = upstreamResponse
 	}
 
 	// prepare config patch
@@ -262,7 +266,7 @@ func applyLocalSchemaConfig(
 	configPatch := removeExcludedSchemas(config)
 
 	// convert patch into request
-	if schemas, ok := configPatch[SCHEMA].(map[string]interface{}); ok {
+	if schemas, ok := configPatch[SCHEMA].(map[string]interface{}); ok && len(schemas) > 0 {
 		svc := client.NewConnectorSchemaUpdateService().ConnectorID(connectorID)
 		for sname, s := range schemas {
 			srequest, _ := createUpdateSchemaConfigRequest(s.(map[string]interface{}))
@@ -394,8 +398,8 @@ func createUpdateColumnConfigRequest(columnConfig map[string]interface{}) (*five
 	return result, diags
 }
 
-func applyConfigOnAlignedUpstreamConfig(alignedConfigSchemas map[string]interface{}, localConfigSchemas map[string]interface{}, sch string) map[string]interface{} {
-	result := copyMapDeep(alignedConfigSchemas)
+func applyConfigOnAlignedUpstreamConfig(alignedUpstreamConfigSchemas map[string]interface{}, localConfigSchemas map[string]interface{}, sch string) map[string]interface{} {
+	result := copyMapDeep(alignedUpstreamConfigSchemas)
 	for sname, s := range localConfigSchemas {
 		if rs, ok := result[sname]; ok {
 			result[sname] = applySchemaConfig(rs.(map[string]interface{}), s.(map[string]interface{}))
@@ -451,7 +455,11 @@ func invertUnhandledColumn(column map[string]interface{}, sch string) map[string
 
 func applySchemaConfig(alignedSchema map[string]interface{}, localSchema map[string]interface{}) map[string]interface{} {
 	result := copyMapDeep(alignedSchema)
+	needInclude := false
 	if lenabled, ok := localSchema[ENABLED]; ok && lenabled.(string) != "" {
+		if renabled, ok := result[ENABLED].(string); !ok || renabled != lenabled {
+			needInclude = true
+		}
 		result[ENABLED] = lenabled
 	}
 	rtables := make(map[string]interface{})
@@ -461,22 +469,37 @@ func applySchemaConfig(alignedSchema map[string]interface{}, localSchema map[str
 	if ltables, ok := localSchema[TABLE]; ok && len(ltables.(map[string]interface{})) > 0 {
 		for ltname, lt := range ltables.(map[string]interface{}) {
 			if rt, ok := rtables[ltname]; ok {
-				rtables[ltname] = applyTableConfig(rt.(map[string]interface{}), lt.(map[string]interface{}))
+				ut := applyTableConfig(rt.(map[string]interface{}), lt.(map[string]interface{}))
+				rtables[ltname] = ut
+				if !isExcluded(ut) {
+					needInclude = true
+				}
 			} else {
 				rtables[ltname] = include(lt.(map[string]interface{}))
+				needInclude = true
 			}
 		}
 	}
 	result[TABLE] = rtables
-	return include(result)
+	if needInclude {
+		return include(result)
+	}
+	return handle(result)
 }
 
 func applyTableConfig(alignedTable map[string]interface{}, localTable map[string]interface{}) map[string]interface{} {
 	result := copyMapDeep(alignedTable)
+	needInclude := false
 	if lenabled, ok := localTable[ENABLED]; ok && lenabled.(string) != "" && !isLocked(alignedTable) {
+		if renabled, ok := result[ENABLED].(string); !ok || renabled != lenabled {
+			needInclude = true
+		}
 		result[ENABLED] = localTable[ENABLED]
 	}
 	if lsync_mode, ok := localTable[SYNC_MODE]; ok && lsync_mode.(string) != "" {
+		if rsync_mode, ok := result[SYNC_MODE].(string); !ok || rsync_mode != lsync_mode {
+			needInclude = true
+		}
 		result[SYNC_MODE] = localTable[SYNC_MODE]
 	}
 	rcolumns := make(map[string]interface{})
@@ -486,30 +509,50 @@ func applyTableConfig(alignedTable map[string]interface{}, localTable map[string
 	if lcolumns, ok := localTable[COLUMN]; ok && len(lcolumns.(map[string]interface{})) > 0 {
 		for lcname, lc := range lcolumns.(map[string]interface{}) {
 			if rc, ok := rcolumns[lcname]; ok {
-				rcolumns[lcname] = applyColumnConfig(rc.(map[string]interface{}), lc.(map[string]interface{}))
+				uc := applyColumnConfig(rc.(map[string]interface{}), lc.(map[string]interface{}))
+				rcolumns[lcname] = uc
+				if !isExcluded(uc) {
+					needInclude = true
+				}
 			} else {
 				rcolumns[lcname] = include(lc.(map[string]interface{}))
+				needInclude = true
 			}
 		}
 	}
 	result[COLUMN] = rcolumns
-	return include(result)
+	if needInclude {
+		return include(result)
+	}
+	return handle(result)
 }
 
 func applyColumnConfig(alignedColumn map[string]interface{}, localColumn map[string]interface{}) map[string]interface{} {
 	result := copyMapDeep(alignedColumn)
+	needInclude := false
 	if lenabled, ok := localColumn[ENABLED]; ok && lenabled.(string) != "" && !isLocked(localColumn) {
+		if renabled, ok := result[ENABLED].(string); !ok || renabled != lenabled {
+			needInclude = true
+		}
 		result[ENABLED] = localColumn[ENABLED]
 	}
 	if lhashed, ok := localColumn[HASHED]; ok && lhashed.(string) != "" && !isLocked(localColumn) {
+		if rhashed, ok := result[HASHED].(string); !ok || rhashed != lhashed {
+			needInclude = true
+		}
 		result[HASHED] = localColumn[HASHED]
 	}
-	result[EXCLUDED] = false
-	return include(result)
+	if needInclude {
+		return include(result)
+	}
+	return handle(result)
 }
 
 func include(item map[string]interface{}) map[string]interface{} {
 	item[EXCLUDED] = false
+	return handle(item)
+}
+func handle(item map[string]interface{}) map[string]interface{} {
 	item[HANDLED] = true
 	return item
 }
@@ -523,11 +566,12 @@ func getUpstreamConfigResponse(
 	schemaResponse, err := client.NewConnectorSchemaDetails().ConnectorID(connectorID).Do(ctx)
 	if err != nil {
 		if schemaResponse.Code == "NotFound_SchemaConfig" {
-			schemaResponse, err := client.NewConnectorSchemaReload().ConnectorID(connectorID).Do(ctx)
+			schemaReloadResponse, err := client.NewConnectorSchemaReload().ConnectorID(connectorID).Do(ctx)
 			if err != nil {
-				err := fmt.Sprintf("%v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message)
+				err := fmt.Sprintf("%v; code: %v; message: %v", err, schemaReloadResponse.Code, schemaReloadResponse.Message)
 				return nil, newDiagAppend(diags, diag.Error, errorMessage, err)
 			}
+			return &schemaReloadResponse, diags
 		} else {
 			err := fmt.Sprintf("%v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message)
 			return nil, newDiagAppend(diags, diag.Error, errorMessage, err)
