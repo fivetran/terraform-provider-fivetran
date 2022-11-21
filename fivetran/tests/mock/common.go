@@ -73,13 +73,13 @@ func requestBodyToJson(t *testing.T, req *http.Request) map[string]interface{} {
 	return result
 }
 
-func fivetranSuccessResponse(t *testing.T, req *http.Request, code int, message string,
+func fivetranResponse(t *testing.T, req *http.Request, statusCode string, code int, message string,
 	data map[string]interface{}) *http.Response {
 
 	t.Helper()
 
 	respBody := map[string]interface{}{
-		"code": "Success",
+		"code": statusCode,
 	}
 
 	if message != "" {
@@ -97,6 +97,12 @@ func fivetranSuccessResponse(t *testing.T, req *http.Request, code int, message 
 
 	response := mock.NewResponse(req, code, string(respBodyJson))
 	return response
+}
+
+func fivetranSuccessResponse(t *testing.T, req *http.Request, code int, message string,
+	data map[string]interface{}) *http.Response {
+
+	return fivetranResponse(t, req, "Success", code, message, data)
 }
 
 func printError(t *testing.T, actual interface{}, expected interface{}) {
@@ -142,4 +148,13 @@ func assertNotEmpty(t *testing.T, actual interface{}) {
 	if isEmpty(actual) {
 		printError(t, actual, "none-empty value")
 	}
+}
+
+func createMapFromJsonString(t *testing.T, schemaJson string) map[string]interface{} {
+	result := map[string]interface{}{}
+	err := json.Unmarshal([]byte(schemaJson), &result)
+	if err != nil {
+		t.Errorf("requestBodyToJson, cannot parse request body: %s", err)
+	}
+	return result
 }
