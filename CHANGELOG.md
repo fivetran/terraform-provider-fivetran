@@ -5,7 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.8...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.9...HEAD)
+
+## [0.6.9](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.8...v0.6.9)
+
+## Fixed
+- Issue: `fivetran_connector_schema_config` when updating an existing resource
+- Issue: `connector_resource.config.use_api_keys` field type handling fixed
+- Issue: `connector_resource.config.is_secure` field type handling fixed
+
+## Added
+- `fivetran_destination.config.catalog` missing field added
+
+## Updated
+- `connector_resource.config` is optional. Connector resource now can be created with empty config
 
 ## [0.6.8](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.7...v0.6.8)
 
