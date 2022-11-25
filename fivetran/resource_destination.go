@@ -66,6 +66,7 @@ func resourceDestinationSchemaConfig() *schema.Schema {
 				"role":                     {Type: schema.TypeString, Optional: true},
 				"is_private_key_encrypted": {Type: schema.TypeString, Optional: true, Computed: true},
 				"passphrase":               {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"catalog":                  {Type: schema.TypeString, Optional: true},
 			},
 		},
 	}
@@ -282,6 +283,7 @@ func resourceDestinationReadConfig(resp *fivetran.DestinationDetailsResponse, cu
 	c["cluster_region"] = resp.Data.Config.ClusterRegion
 	c["public_key"] = resp.Data.Config.PublicKey
 	c["role"] = resp.Data.Config.Role
+	c["catalog"] = resp.Data.Config.Catalog
 
 	config = append(config, c)
 
@@ -407,6 +409,10 @@ func resourceDestinationCreateConfig(config []interface{}) (*fivetran.Destinatio
 	}
 	if v := c["passphrase"].(string); v != "" {
 		fivetranConfig.Passphrase(v)
+		hasConfig = true
+	}
+	if v := c["catalog"].(string); v != "" {
+		fivetranConfig.Catalog(v)
 		hasConfig = true
 	}
 

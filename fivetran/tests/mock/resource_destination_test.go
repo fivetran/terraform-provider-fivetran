@@ -17,7 +17,212 @@ var (
 	destinationTestHandler   *mock.Handler
 	destinationDeleteHandler *mock.Handler
 	testDestinationData      map[string]interface{}
+
+	destinationMappingGetHandler    *mock.Handler
+	destinationMappingPostHandler   *mock.Handler
+	destinationMappingDeleteHandler *mock.Handler
 )
+
+const (
+	destinationMappingResponse = `
+	{
+		"id":"destination_id",
+        "group_id":"group_id",
+        "service":"snowflake",
+        "region":"GCP_US_EAST4",
+        "time_zone_offset":"0",
+        "setup_status":"connected",
+        "setup_tests":[
+            {
+                "title":"Host Connection",
+                "status":"PASSED",
+                "message":""
+            },
+            {
+                "title":"Database Connection",
+                "status":"PASSED",
+                "message":""
+            },
+            {
+                "title":"Permission Test",
+                "status":"PASSED",
+                "message":""
+            }
+        ],
+        "config":{
+			"host":                     "host",
+			"port":                     "123",
+			"database":                 "database",
+			"auth":                     "auth",
+			"user":                     "user",
+			"password":                 "******",
+			"connection_type":          "connection_type",
+			"tunnel_host":              "tunnel_host",
+			"tunnel_port":              "123",
+			"tunnel_user":              "tunnel_user",
+			"project_id":               "project_id",
+			"data_set_location":        "data_set_location",
+			"bucket":                   "bucket",
+			"server_host_name":         "server_host_name",
+			"http_path":                "http_path",
+			"personal_access_token":    "******",
+			"create_external_tables":   "false",
+			"external_location":        "external_location",
+			"auth_type":                "auth_type",
+			"role_arn":                 "******",
+			"secret_key":               "******",
+			"private_key":              "******",
+			"public_key":               "public_key",
+			"cluster_id":               "cluster_id",
+			"cluster_region":           "cluster_region",
+			"role":                     "role",
+			"is_private_key_encrypted": "false",
+			"passphrase":               "******",
+			"catalog": 					"catalog"
+        }
+	}
+	`
+)
+
+func setupMockClientDestinationConfigMapping(t *testing.T) {
+	mockClient.Reset()
+
+	destinationMappingGetHandler = mockClient.When(http.MethodGet, "/v1/destinations/destination_id").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", testDestinationData), nil
+		},
+	)
+
+	destinationMappingPostHandler = mockClient.When(http.MethodPost, "/v1/destinations").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+
+			body := requestBodyToJson(t, req)
+
+			assertKeyExists(t, body, "config")
+
+			config := body["config"].(map[string]interface{})
+
+			assertKeyExistsAndHasValue(t, config, "host", "host")
+
+			assertKeyExistsAndHasValue(t, config, "port", float64(123))
+			assertKeyExistsAndHasValue(t, config, "database", "database")
+			assertKeyExistsAndHasValue(t, config, "auth", "auth")
+			assertKeyExistsAndHasValue(t, config, "user", "user")
+			assertKeyExistsAndHasValue(t, config, "password", "password")
+			assertKeyExistsAndHasValue(t, config, "connection_type", "connection_type")
+			assertKeyExistsAndHasValue(t, config, "tunnel_host", "tunnel_host")
+			assertKeyExistsAndHasValue(t, config, "tunnel_user", "tunnel_user")
+			assertKeyExistsAndHasValue(t, config, "project_id", "project_id")
+			assertKeyExistsAndHasValue(t, config, "data_set_location", "data_set_location")
+			assertKeyExistsAndHasValue(t, config, "bucket", "bucket")
+			assertKeyExistsAndHasValue(t, config, "server_host_name", "server_host_name")
+			assertKeyExistsAndHasValue(t, config, "http_path", "http_path")
+			assertKeyExistsAndHasValue(t, config, "personal_access_token", "personal_access_token")
+			assertKeyExistsAndHasValue(t, config, "create_external_tables", false)
+			assertKeyExistsAndHasValue(t, config, "external_location", "external_location")
+			assertKeyExistsAndHasValue(t, config, "auth_type", "auth_type")
+			assertKeyExistsAndHasValue(t, config, "role_arn", "role_arn")
+			assertKeyExistsAndHasValue(t, config, "secret_key", "secret_key")
+			assertKeyExistsAndHasValue(t, config, "private_key", "private_key")
+			assertKeyExistsAndHasValue(t, config, "cluster_id", "cluster_id")
+			assertKeyExistsAndHasValue(t, config, "cluster_region", "cluster_region")
+			assertKeyExistsAndHasValue(t, config, "role", "role")
+			assertKeyExistsAndHasValue(t, config, "is_private_key_encrypted", false)
+			assertKeyExistsAndHasValue(t, config, "passphrase", "passphrase")
+			assertKeyExistsAndHasValue(t, config, "catalog", "catalog")
+
+			assertKeyExistsAndHasValue(t, config, "tunnel_port", "123")
+
+			testDestinationData = createMapFromJsonString(t, destinationMappingResponse)
+			return fivetranSuccessResponse(t, req, http.StatusCreated, "Success", testDestinationData), nil
+		},
+	)
+
+	destinationMappingDeleteHandler = mockClient.When(http.MethodDelete, "/v1/destinations/destination_id").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			testDestinationData = nil
+			response := fivetranSuccessResponse(t, req, 200,
+				"Destination with id 'destionation_id' has been deleted", nil)
+			return response, nil
+		},
+	)
+}
+
+func TestResourceDestinationMappingMock(t *testing.T) {
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_destination" "mydestination" {
+				provider = fivetran-provider
+
+				group_id = "group_id"
+				service = "snowflake"
+				time_zone_offset = "0"
+				region = "GCP_US_EAST4"
+				trust_certificates = "true"
+				trust_fingerprints = "true"
+				run_setup_tests = "false"
+
+				config {
+					host = "host"
+					port = "123"
+					database = "database"
+					auth = "auth"
+					user = "user"
+					password = "password"
+					connection_type = "connection_type"
+					tunnel_host = "tunnel_host"
+					tunnel_port = "123"
+					tunnel_user = "tunnel_user"
+					project_id = "project_id"
+					data_set_location = "data_set_location"
+					bucket = "bucket"
+					server_host_name = "server_host_name"
+					http_path = "http_path"
+					personal_access_token = "personal_access_token"
+					create_external_tables = "false"
+					external_location = "external_location"
+					auth_type = "auth_type"
+					role_arn = "role_arn"
+					secret_key = "secret_key"
+					private_key = "private_key"
+					cluster_id = "cluster_id"
+					cluster_region = "cluster_region"
+					role = "role"
+					is_private_key_encrypted = "false"
+					passphrase = "passphrase"
+					catalog = "catalog"
+				}
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				assertEqual(t, destinationMappingGetHandler.Interactions, 1)
+				assertEqual(t, destinationMappingPostHandler.Interactions, 1)
+				assertNotEmpty(t, testDestinationData)
+				return nil
+			},
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientDestinationConfigMapping(t)
+			},
+			Providers: testProviders,
+			CheckDestroy: func(s *terraform.State) error {
+				assertEqual(t, destinationMappingDeleteHandler.Interactions, 1)
+				assertEmpty(t, testDestinationData)
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
+			},
+		},
+	)
+}
 
 func onPostDestination(t *testing.T, req *http.Request) (*http.Response, error) {
 	assertEmpty(t, testDestinationData)

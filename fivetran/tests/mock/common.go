@@ -114,6 +114,16 @@ func printError(t *testing.T, actual interface{}, expected interface{}) {
 	)
 }
 
+func printErrorWithMessage(t *testing.T, actual, expected interface{}, message string) {
+	t.Helper()
+	t.Errorf("%s \n Expected: %s"+
+		"\n     but: <%s>\n",
+		message,
+		fmt.Sprintf("value equal to <%v>", expected),
+		fmt.Sprintf("%v", actual),
+	)
+}
+
 func isEmpty(actual interface{}) bool {
 	if actual == nil {
 		return true
@@ -147,6 +157,50 @@ func assertNotEmpty(t *testing.T, actual interface{}) {
 
 	if isEmpty(actual) {
 		printError(t, actual, "none-empty value")
+	}
+}
+
+func assertKeyExists(t *testing.T, source map[string]interface{}, key string) {
+	t.Helper()
+
+	if _, ok := source[key]; !ok {
+		printError(t, key, "key not found in source")
+	}
+}
+
+func assertArrayItems(t *testing.T, source []interface{}, expected []interface{}) {
+	t.Helper()
+
+	if len(source) != len(expected) {
+		printErrorWithMessage(t, len(source), len(expected), "Array size mismatch")
+		return
+	}
+	for _, a := range source {
+		if !contains(expected, a) {
+			printErrorWithMessage(t, a, "", "Expected value not found in provided array")
+			return
+		}
+	}
+}
+
+func contains(s []interface{}, e interface{}) bool {
+	for _, a := range s {
+		if reflect.DeepEqual(a, e) {
+			return true
+		}
+	}
+	return false
+}
+
+func assertKeyExistsAndHasValue(t *testing.T, source map[string]interface{}, key string, value interface{}) {
+	t.Helper()
+
+	if v, ok := source[key]; !ok || v != value {
+		if !ok {
+			printError(t, key, "key not found in source")
+		} else {
+			printError(t, v, value)
+		}
 	}
 }
 
