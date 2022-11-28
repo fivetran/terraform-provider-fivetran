@@ -29,31 +29,35 @@ func dataSourceDestinationSchemaConfig() *schema.Schema {
 	return &schema.Schema{Type: schema.TypeSet, Computed: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"host":                   {Type: schema.TypeString, Computed: true},
-				"port":                   {Type: schema.TypeInt, Computed: true},
-				"database":               {Type: schema.TypeString, Computed: true},
-				"auth":                   {Type: schema.TypeString, Computed: true},
-				"user":                   {Type: schema.TypeString, Computed: true},
-				"password":               {Type: schema.TypeString, Computed: true},
-				"connection_type":        {Type: schema.TypeString, Computed: true},
-				"tunnel_host":            {Type: schema.TypeString, Computed: true},
-				"tunnel_port":            {Type: schema.TypeString, Computed: true},
-				"tunnel_user":            {Type: schema.TypeString, Computed: true},
-				"project_id":             {Type: schema.TypeString, Computed: true},
-				"data_set_location":      {Type: schema.TypeString, Computed: true},
-				"bucket":                 {Type: schema.TypeString, Computed: true},
-				"server_host_name":       {Type: schema.TypeString, Computed: true},
-				"http_path":              {Type: schema.TypeString, Computed: true},
-				"personal_access_token":  {Type: schema.TypeString, Computed: true},
-				"create_external_tables": {Type: schema.TypeString, Computed: true},
-				"external_location":      {Type: schema.TypeString, Computed: true},
-				"auth_type":              {Type: schema.TypeString, Computed: true},
-				"role_arn":               {Type: schema.TypeString, Computed: true},
-				"secret_key":             {Type: schema.TypeString, Computed: true},
-				"private_key":            {Type: schema.TypeString, Computed: true},
-				"public_key":             {Type: schema.TypeString, Computed: true},
-				"cluster_id":             {Type: schema.TypeString, Computed: true},
-				"cluster_region":         {Type: schema.TypeString, Computed: true},
+				"host":                     {Type: schema.TypeString, Computed: true},
+				"port":                     {Type: schema.TypeInt, Computed: true},
+				"database":                 {Type: schema.TypeString, Computed: true},
+				"auth":                     {Type: schema.TypeString, Computed: true},
+				"user":                     {Type: schema.TypeString, Computed: true},
+				"password":                 {Type: schema.TypeString, Computed: true},
+				"connection_type":          {Type: schema.TypeString, Computed: true},
+				"tunnel_host":              {Type: schema.TypeString, Computed: true},
+				"tunnel_port":              {Type: schema.TypeString, Computed: true},
+				"tunnel_user":              {Type: schema.TypeString, Computed: true},
+				"project_id":               {Type: schema.TypeString, Computed: true},
+				"data_set_location":        {Type: schema.TypeString, Computed: true},
+				"bucket":                   {Type: schema.TypeString, Computed: true},
+				"server_host_name":         {Type: schema.TypeString, Computed: true},
+				"http_path":                {Type: schema.TypeString, Computed: true},
+				"personal_access_token":    {Type: schema.TypeString, Computed: true},
+				"create_external_tables":   {Type: schema.TypeString, Computed: true},
+				"external_location":        {Type: schema.TypeString, Computed: true},
+				"auth_type":                {Type: schema.TypeString, Computed: true},
+				"role_arn":                 {Type: schema.TypeString, Computed: true},
+				"secret_key":               {Type: schema.TypeString, Computed: true},
+				"private_key":              {Type: schema.TypeString, Computed: true},
+				"public_key":               {Type: schema.TypeString, Computed: true},
+				"cluster_id":               {Type: schema.TypeString, Computed: true},
+				"cluster_region":           {Type: schema.TypeString, Computed: true},
+				"role":                     {Type: schema.TypeString, Computed: true},
+				"is_private_key_encrypted": {Type: schema.TypeString, Computed: true},
+				"passphrase":               {Type: schema.TypeString, Computed: true},
+				"catalog":                  {Type: schema.TypeString, Computed: true},
 			},
 		},
 	}
@@ -137,6 +141,11 @@ func dataSourceDestinationConfig(resp *fivetran.DestinationDetailsResponse) ([]i
 	c["public_key"] = resp.Data.Config.PublicKey
 	c["cluster_id"] = resp.Data.Config.ClusterId
 	c["cluster_region"] = resp.Data.Config.ClusterRegion
+	c["role"] = resp.Data.Config.Role
+	c["is_private_key_encrypted"] = resp.Data.Config.IsPrivateKeyEncrypted
+	c["passphrase"] = resp.Data.Config.Passphrase
+	c["catalog"] = resp.Data.Config.Catalog
+
 	config = append(config, c)
 
 	return config, nil

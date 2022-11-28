@@ -87,7 +87,7 @@ func resourceConnectorSchemaStatus() *schema.Schema {
 }
 
 func resourceConnectorSchemaConfig() *schema.Schema {
-	return &schema.Schema{Type: schema.TypeList, Required: true, MaxItems: 1,
+	return &schema.Schema{Type: schema.TypeList, Optional: true, Computed: true, MaxItems: 1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				// Readonly config fields
@@ -170,6 +170,12 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"conversion_report_time":               {Type: schema.TypeString, Optional: true, Computed: true},
 				"skip_before":                          {Type: schema.TypeString, Optional: true, Computed: true},
 				"skip_after":                           {Type: schema.TypeString, Optional: true, Computed: true},
+				"ftp_port":                             {Type: schema.TypeString, Optional: true, Computed: true},
+				"sftp_port":                            {Type: schema.TypeString, Optional: true, Computed: true},
+				"port":                                 {Type: schema.TypeString, Optional: true, Computed: true},
+				"tunnel_port":                          {Type: schema.TypeString, Optional: true, Computed: true},
+				"daily_api_call_limit":                 {Type: schema.TypeString, Optional: true, Computed: true},
+				"api_quota":                            {Type: schema.TypeString, Optional: true, Computed: true},
 
 				// For db-like connectors it's a readonly field, but it also used in Braintree connector as public field
 				"public_key": {Type: schema.TypeString, Optional: true, Computed: true},
@@ -187,94 +193,89 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"abs_container_name":    {Type: schema.TypeString, Optional: true},
 				"folder_id":             {Type: schema.TypeString, Optional: true},
 				"ftp_host":              {Type: schema.TypeString, Optional: true},
-				"ftp_port":              {Type: schema.TypeString, Optional: true},
-				"ftp_user":              {Type: schema.TypeString, Optional: true},
-				"sftp_host":             {Type: schema.TypeString, Optional: true},
-				"sftp_port":             {Type: schema.TypeString, Optional: true},
-				"sftp_user":             {Type: schema.TypeString, Optional: true},
-				"bucket":                {Type: schema.TypeString, Optional: true},
-				"prefix":                {Type: schema.TypeString, Optional: true},
-				"pattern":               {Type: schema.TypeString, Optional: true},
-				"archive_pattern":       {Type: schema.TypeString, Optional: true},
-				"null_sequence":         {Type: schema.TypeString, Optional: true},
-				"delimiter":             {Type: schema.TypeString, Optional: true},
-				"escape_char":           {Type: schema.TypeString, Optional: true},
-				"auth_mode":             {Type: schema.TypeString, Optional: true},
 
-				"certificate":          {Type: schema.TypeString, Optional: true},
-				"consumer_group":       {Type: schema.TypeString, Optional: true},
-				"servers":              {Type: schema.TypeString, Optional: true},
-				"message_type":         {Type: schema.TypeString, Optional: true},
-				"sync_type":            {Type: schema.TypeString, Optional: true},
-				"security_protocol":    {Type: schema.TypeString, Optional: true},
-				"access_key_id":        {Type: schema.TypeString, Optional: true},
-				"home_folder":          {Type: schema.TypeString, Optional: true},
-				"function":             {Type: schema.TypeString, Optional: true},
-				"region":               {Type: schema.TypeString, Optional: true},
-				"container_name":       {Type: schema.TypeString, Optional: true},
-				"connection_string":    {Type: schema.TypeString, Optional: true},
-				"function_app":         {Type: schema.TypeString, Optional: true},
-				"function_name":        {Type: schema.TypeString, Optional: true},
-				"function_key":         {Type: schema.TypeString, Optional: true},
-				"merchant_id":          {Type: schema.TypeString, Optional: true},
-				"api_url":              {Type: schema.TypeString, Optional: true},
-				"cloud_storage_type":   {Type: schema.TypeString, Optional: true},
-				"s3external_id":        {Type: schema.TypeString, Optional: true},
-				"s3folder":             {Type: schema.TypeString, Optional: true},
-				"gcs_bucket":           {Type: schema.TypeString, Optional: true},
-				"gcs_folder":           {Type: schema.TypeString, Optional: true},
-				"instance":             {Type: schema.TypeString, Optional: true},
-				"aws_region_code":      {Type: schema.TypeString, Optional: true},
-				"subdomain":            {Type: schema.TypeString, Optional: true},
-				"host":                 {Type: schema.TypeString, Optional: true},
-				"port":                 {Type: schema.TypeString, Optional: true},
-				"user":                 {Type: schema.TypeString, Optional: true},
-				"network_code":         {Type: schema.TypeString, Optional: true},
-				"customer_id":          {Type: schema.TypeString, Optional: true},
-				"project_id":           {Type: schema.TypeString, Optional: true},
-				"dataset_id":           {Type: schema.TypeString, Optional: true},
-				"bucket_name":          {Type: schema.TypeString, Optional: true},
-				"config_method":        {Type: schema.TypeString, Optional: true},
-				"query_id":             {Type: schema.TypeString, Optional: true},
-				"path":                 {Type: schema.TypeString, Optional: true},
-				"endpoint":             {Type: schema.TypeString, Optional: true},
-				"identity":             {Type: schema.TypeString, Optional: true},
-				"api_quota":            {Type: schema.TypeString, Optional: true},
-				"domain_name":          {Type: schema.TypeString, Optional: true},
-				"resource_url":         {Type: schema.TypeString, Optional: true},
-				"tunnel_host":          {Type: schema.TypeString, Optional: true},
-				"tunnel_port":          {Type: schema.TypeString, Optional: true},
-				"tunnel_user":          {Type: schema.TypeString, Optional: true},
-				"database":             {Type: schema.TypeString, Optional: true},
-				"datasource":           {Type: schema.TypeString, Optional: true},
-				"account":              {Type: schema.TypeString, Optional: true},
-				"role":                 {Type: schema.TypeString, Optional: true},
-				"email":                {Type: schema.TypeString, Optional: true},
-				"account_id":           {Type: schema.TypeString, Optional: true},
-				"server_url":           {Type: schema.TypeString, Optional: true},
-				"user_key":             {Type: schema.TypeString, Optional: true},
-				"api_version":          {Type: schema.TypeString, Optional: true},
-				"daily_api_call_limit": {Type: schema.TypeString, Optional: true},
-				"time_zone":            {Type: schema.TypeString, Optional: true},
-				"integration_key":      {Type: schema.TypeString, Optional: true},
-				"domain":               {Type: schema.TypeString, Optional: true},
-				"replication_slot":     {Type: schema.TypeString, Optional: true},
-				"publication_name":     {Type: schema.TypeString, Optional: true},
-				"data_center":          {Type: schema.TypeString, Optional: true},
-				"sub_domain":           {Type: schema.TypeString, Optional: true},
-				"test_table_name":      {Type: schema.TypeString, Optional: true},
-				"shop":                 {Type: schema.TypeString, Optional: true},
-				"sid":                  {Type: schema.TypeString, Optional: true},
-				"key":                  {Type: schema.TypeString, Optional: true},
-				"bucket_service":       {Type: schema.TypeString, Optional: true},
-				"user_name":            {Type: schema.TypeString, Optional: true},
-				"username":             {Type: schema.TypeString, Optional: true},
-				"report_url":           {Type: schema.TypeString, Optional: true},
-				"unique_id":            {Type: schema.TypeString, Optional: true},
-				"base_url":             {Type: schema.TypeString, Optional: true},
-				"entity_id":            {Type: schema.TypeString, Optional: true},
-				"soap_uri":             {Type: schema.TypeString, Optional: true},
-				"user_id":              {Type: schema.TypeString, Optional: true},
+				"ftp_user":  {Type: schema.TypeString, Optional: true},
+				"sftp_host": {Type: schema.TypeString, Optional: true},
+
+				"sftp_user":          {Type: schema.TypeString, Optional: true},
+				"bucket":             {Type: schema.TypeString, Optional: true},
+				"prefix":             {Type: schema.TypeString, Optional: true},
+				"pattern":            {Type: schema.TypeString, Optional: true},
+				"archive_pattern":    {Type: schema.TypeString, Optional: true},
+				"null_sequence":      {Type: schema.TypeString, Optional: true},
+				"delimiter":          {Type: schema.TypeString, Optional: true},
+				"escape_char":        {Type: schema.TypeString, Optional: true},
+				"auth_mode":          {Type: schema.TypeString, Optional: true},
+				"certificate":        {Type: schema.TypeString, Optional: true},
+				"consumer_group":     {Type: schema.TypeString, Optional: true},
+				"servers":            {Type: schema.TypeString, Optional: true},
+				"message_type":       {Type: schema.TypeString, Optional: true},
+				"sync_type":          {Type: schema.TypeString, Optional: true},
+				"security_protocol":  {Type: schema.TypeString, Optional: true},
+				"access_key_id":      {Type: schema.TypeString, Optional: true},
+				"home_folder":        {Type: schema.TypeString, Optional: true},
+				"function":           {Type: schema.TypeString, Optional: true},
+				"region":             {Type: schema.TypeString, Optional: true},
+				"container_name":     {Type: schema.TypeString, Optional: true},
+				"connection_string":  {Type: schema.TypeString, Optional: true},
+				"function_app":       {Type: schema.TypeString, Optional: true},
+				"function_name":      {Type: schema.TypeString, Optional: true},
+				"function_key":       {Type: schema.TypeString, Optional: true},
+				"merchant_id":        {Type: schema.TypeString, Optional: true},
+				"api_url":            {Type: schema.TypeString, Optional: true},
+				"cloud_storage_type": {Type: schema.TypeString, Optional: true},
+				"s3external_id":      {Type: schema.TypeString, Optional: true},
+				"s3folder":           {Type: schema.TypeString, Optional: true},
+				"gcs_bucket":         {Type: schema.TypeString, Optional: true},
+				"gcs_folder":         {Type: schema.TypeString, Optional: true},
+				"instance":           {Type: schema.TypeString, Optional: true},
+				"aws_region_code":    {Type: schema.TypeString, Optional: true},
+				"subdomain":          {Type: schema.TypeString, Optional: true},
+				"host":               {Type: schema.TypeString, Optional: true},
+				"user":               {Type: schema.TypeString, Optional: true},
+				"network_code":       {Type: schema.TypeString, Optional: true},
+				"customer_id":        {Type: schema.TypeString, Optional: true},
+				"project_id":         {Type: schema.TypeString, Optional: true},
+				"dataset_id":         {Type: schema.TypeString, Optional: true},
+				"bucket_name":        {Type: schema.TypeString, Optional: true},
+				"config_method":      {Type: schema.TypeString, Optional: true},
+				"query_id":           {Type: schema.TypeString, Optional: true},
+				"path":               {Type: schema.TypeString, Optional: true},
+				"endpoint":           {Type: schema.TypeString, Optional: true},
+				"identity":           {Type: schema.TypeString, Optional: true},
+				"domain_name":        {Type: schema.TypeString, Optional: true},
+				"resource_url":       {Type: schema.TypeString, Optional: true},
+				"tunnel_host":        {Type: schema.TypeString, Optional: true},
+				"tunnel_user":        {Type: schema.TypeString, Optional: true},
+				"database":           {Type: schema.TypeString, Optional: true},
+				"datasource":         {Type: schema.TypeString, Optional: true},
+				"account":            {Type: schema.TypeString, Optional: true},
+				"role":               {Type: schema.TypeString, Optional: true},
+				"email":              {Type: schema.TypeString, Optional: true},
+				"account_id":         {Type: schema.TypeString, Optional: true},
+				"server_url":         {Type: schema.TypeString, Optional: true},
+				"user_key":           {Type: schema.TypeString, Optional: true},
+				"api_version":        {Type: schema.TypeString, Optional: true},
+				"time_zone":          {Type: schema.TypeString, Optional: true},
+				"integration_key":    {Type: schema.TypeString, Optional: true},
+				"domain":             {Type: schema.TypeString, Optional: true},
+				"replication_slot":   {Type: schema.TypeString, Optional: true},
+				"publication_name":   {Type: schema.TypeString, Optional: true},
+				"data_center":        {Type: schema.TypeString, Optional: true},
+				"sub_domain":         {Type: schema.TypeString, Optional: true},
+				"test_table_name":    {Type: schema.TypeString, Optional: true},
+				"shop":               {Type: schema.TypeString, Optional: true},
+				"sid":                {Type: schema.TypeString, Optional: true},
+				"key":                {Type: schema.TypeString, Optional: true},
+				"bucket_service":     {Type: schema.TypeString, Optional: true},
+				"user_name":          {Type: schema.TypeString, Optional: true},
+				"username":           {Type: schema.TypeString, Optional: true},
+				"report_url":         {Type: schema.TypeString, Optional: true},
+				"unique_id":          {Type: schema.TypeString, Optional: true},
+				"base_url":           {Type: schema.TypeString, Optional: true},
+				"entity_id":          {Type: schema.TypeString, Optional: true},
+				"soap_uri":           {Type: schema.TypeString, Optional: true},
+				"user_id":            {Type: schema.TypeString, Optional: true},
 
 				// Collections
 				"report_suites":            {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
@@ -474,7 +475,13 @@ func resourceConnectorRead(ctx context.Context, d *schema.ResourceData, m interf
 	mapAddStr(msi, "paused", boolPointerToStr(resp.Data.Paused))
 	mapAddStr(msi, "pause_after_trial", boolPointerToStr(resp.Data.PauseAfterTrial))
 	mapAddXInterface(msi, "status", resourceConnectorReadStatus(&resp))
-	mapAddXInterface(msi, "config", resourceConnectorReadConfig(&resp, d.Get("config").([]interface{})))
+	currentConfig := d.Get("config").([]interface{})
+	upstreamConfig := resourceConnectorReadConfig(&resp, currentConfig)
+
+	if len(upstreamConfig) > 0 {
+		mapAddXInterface(msi, "config", upstreamConfig)
+	}
+
 	for k, v := range msi {
 		if err := d.Set(k, v); err != nil {
 			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
@@ -871,7 +878,7 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData, creation bool) *fivet
 		fivetranConfig.Pages(xInterfaceStrXStr(v))
 	}
 	if v := c["subdomain"].(string); v != "" {
-		fivetranConfig.SubDomain(v)
+		fivetranConfig.Subdomain(v)
 	}
 	if v := c["port"].(string); v != "" {
 		fivetranConfig.Port(strToInt(v))
@@ -880,7 +887,7 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData, creation bool) *fivet
 		fivetranConfig.User(v)
 	}
 	if v := c["is_secure"].(string); v != "" {
-		fivetranConfig.IsSecure(v)
+		fivetranConfig.IsSecure(strToBool(v))
 	}
 	if v := c["repositories"].([]interface{}); len(v) > 0 {
 		fivetranConfig.Repositories(xInterfaceStrXStr(v))
@@ -952,7 +959,7 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData, creation bool) *fivet
 		fivetranConfig.PostClickAttributionWindowSize(v)
 	}
 	if v := c["use_api_keys"].(string); v != "" {
-		fivetranConfig.UseAPIKeys(v)
+		fivetranConfig.UseAPIKeys(strToBool(v))
 	}
 	if v := c["api_keys"].([]interface{}); len(v) > 0 {
 		fivetranConfig.APIKeys(xInterfaceStrXStr(v))
@@ -1158,6 +1165,9 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData, creation bool) *fivet
 	}
 	if v := c["token_secret"].(string); v != "" {
 		fivetranConfig.TokenSecret(v)
+	}
+	if v := c["public_key"].(string); v != "" {
+		fivetranConfig.PublicKey(v)
 	}
 
 	return fivetranConfig
@@ -1449,6 +1459,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 		mapAddStr(c, "function_trigger", resourceConfig["function_trigger"].(string))
 		mapAddStr(c, "token_key", resourceConfig["token_key"].(string))
 		mapAddStr(c, "token_secret", resourceConfig["token_secret"].(string))
+		mapAddXInterface(c, "api_keys", resourceConfig["api_keys"].([]interface{}))
 		mapAddXInterface(c, "project_credentials", resourceConnectorReadConfigFlattenProjectCredentials(resp, currentConfig))
 	}
 
@@ -1479,7 +1490,6 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddXInterface(c, "site_urls", xStrXInterface(resp.Data.Config.SiteURLs))
 	mapAddXInterface(c, "profiles", xStrXInterface(resp.Data.Config.Profiles))
 	mapAddXInterface(c, "hosts", xStrXInterface(resp.Data.Config.Hosts))
-	mapAddXInterface(c, "api_keys", xStrXInterface(resp.Data.Config.APIKeys))
 	mapAddXInterface(c, "adobe_analytics_configurations", resourceConnectorReadConfigFlattenAdobeAnalyticsConfigurations(resp))
 	mapAddXInterface(c, "advertisers", xStrXInterface(resp.Data.Config.Advertisers))
 	mapAddXInterface(c, "organizations", xStrXInterface(resp.Data.Config.Organizations))
@@ -1498,6 +1508,8 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddStr(c, "is_new_package", boolPointerToStr(resp.Data.Config.IsNewPackage))
 	mapAddStr(c, "is_multi_entity_feature_enabled", boolPointerToStr(resp.Data.Config.IsMultiEntityFeatureEnabled))
 	mapAddStr(c, "eu_region", boolPointerToStr(resp.Data.Config.EuRegion))
+	mapAddStr(c, "is_secure", boolPointerToStr(resp.Data.Config.IsSecure))
+	mapAddStr(c, "use_api_keys", boolPointerToStr(resp.Data.Config.UseAPIKeys))
 
 	// Integer fields
 	mapAddStr(c, "ftp_port", intPointerToStr(resp.Data.Config.FTPPort))
@@ -1507,8 +1519,8 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddStr(c, "api_quota", intPointerToStr(resp.Data.Config.APIQuota))
 	mapAddStr(c, "tunnel_port", intPointerToStr(resp.Data.Config.TunnelPort))
 	mapAddStr(c, "daily_api_call_limit", intPointerToStr(resp.Data.Config.DailyAPICallLimit))
-	mapAddStr(c, "skip_before", intPointerToStr(&resp.Data.Config.SkipBefore))
-	mapAddStr(c, "skip_after", intPointerToStr(&resp.Data.Config.SkipAfter))
+	mapAddStr(c, "skip_after", intPointerToStr(resp.Data.Config.SkipAfter))
+	mapAddStr(c, "skip_before", intPointerToStr(resp.Data.Config.SkipBefore))
 
 	// String fields
 	mapAddStr(c, "sheet_id", resp.Data.Config.SheetID)
@@ -1582,7 +1594,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddStr(c, "subdomain", resp.Data.Config.Subdomain)
 	mapAddStr(c, "host", resp.Data.Config.Host)
 	mapAddStr(c, "user", resp.Data.Config.User)
-	mapAddStr(c, "is_secure", resp.Data.Config.IsSecure)
+
 	mapAddStr(c, "network_code", resp.Data.Config.NetworkCode)
 	mapAddStr(c, "customer_id", resp.Data.Config.CustomerID)
 	mapAddStr(c, "project_id", resp.Data.Config.ProjectID)
@@ -1593,7 +1605,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddStr(c, "path", resp.Data.Config.Path)
 	mapAddStr(c, "view_through_attribution_window_size", resp.Data.Config.ViewThroughAttributionWindowSize)
 	mapAddStr(c, "post_click_attribution_window_size", resp.Data.Config.PostClickAttributionWindowSize)
-	mapAddStr(c, "use_api_keys", resp.Data.Config.UseAPIKeys)
+
 	mapAddStr(c, "endpoint", resp.Data.Config.Endpoint)
 	mapAddStr(c, "identity", resp.Data.Config.Identity)
 	mapAddStr(c, "tunnel_host", resp.Data.Config.TunnelHost)
