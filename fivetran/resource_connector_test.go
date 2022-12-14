@@ -2,7 +2,7 @@ package fivetran_test
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -174,7 +174,14 @@ func testFivetranConnectorResourceDestroy(s *terraform.State) error {
 			return err
 		}
 		if response.Code != "NotFound_Connector" {
-			return errors.New("Connector " + rs.Primary.ID + " still exists.")
+			return fmt.Errorf(`
+			Expected response.Code: 'NotFound_Connector'. 
+			Actual response.Code was: '%s'. 
+
+			Full response:
+			%v
+			
+			Connector %s still exists.`, rs.Primary.ID, response, response.Code)
 		}
 	}
 
