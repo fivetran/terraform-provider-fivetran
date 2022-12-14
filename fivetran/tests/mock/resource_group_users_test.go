@@ -1,6 +1,7 @@
 package mock
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -70,11 +71,11 @@ func setupMockClientGroupUsersResource(t *testing.T, initialUsers []interface{})
 			}
 			groupUsersData = newGroupUsersData
 			return fivetranSuccessResponse(t, req, http.StatusOK,
-				"User with id 'nozzle_eat' has been removed from the group", nil), nil
+				fmt.Sprintf("User with id '%s' has been removed from the group", userId), nil), nil
 		},
 	)
 
-	groupPostUserHandler = mockClient.WhenWc(http.MethodPost, "/v1/groups/group_id/users").ThenCall(
+	groupPostUserHandler = mockClient.When(http.MethodPost, "/v1/groups/group_id/users").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			body := requestBodyToJson(t, req)
 			assertKeyExists(t, body, "email")
@@ -88,6 +89,54 @@ func setupMockClientGroupUsersResource(t *testing.T, initialUsers []interface{})
 			addedUserId++
 			return fivetranSuccessResponse(t, req, http.StatusOK,
 				"User has been added to the group", nil), nil
+		},
+	)
+}
+
+func TestResourceGroupUsersCleanupGroupOnCreate(t *testing.T) {
+	initialUsers := make([]interface{}, 0)
+
+	user := make(map[string]interface{})
+
+	user["id"] = "initial_user"
+	user["email"] = "initial_user@email"
+	user["role"] = "Some Role"
+
+	initialUsers = append(initialUsers, user)
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientGroupUsersResource(t, initialUsers)
+			},
+			Providers: testProviders,
+			CheckDestroy: func(s *terraform.State) error {
+				assertEqual(t, groupDeleteUserHandler.Interactions, 1)
+				assertEmpty(t, groupUsersData)
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				{
+					Config: `
+						resource "fivetran_group_users" "testgroup_users" {
+							provider = fivetran-provider
+			
+							group_id = "group_id"
+						}`,
+
+					Check: resource.ComposeAggregateTestCheckFunc(
+						func(s *terraform.State) error {
+							assertEqual(t, groupGetUsersHandler.Interactions, 2)
+							assertEqual(t, groupDeleteUserHandler.Interactions, 1)
+							assertEmpty(t, groupUsersData)
+							return nil
+						},
+						//resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "test_group_name"),
+					),
+				},
+			},
 		},
 	)
 }

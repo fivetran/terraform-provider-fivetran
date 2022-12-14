@@ -81,6 +81,7 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 			Schema: map[string]*schema.Schema{
 				"table":                 {Type: schema.TypeString, Computed: true},
 				"sheet_id":              {Type: schema.TypeString, Computed: true},
+				"share_url":             {Type: schema.TypeString, Computed: true},
 				"named_range":           {Type: schema.TypeString, Computed: true},
 				"client_id":             {Type: schema.TypeString, Computed: true},
 				"client_secret":         {Type: schema.TypeString, Computed: true},
@@ -109,6 +110,7 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"sftp_user":             {Type: schema.TypeString, Computed: true},
 				"sftp_password":         {Type: schema.TypeString, Computed: true},
 				"sftp_is_key_pair":      {Type: schema.TypeString, Computed: true},
+				"is_keypair":            {Type: schema.TypeString, Computed: true},
 				"advertisables":         {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
 				"report_type":           {Type: schema.TypeString, Computed: true},
 				"dimensions":            {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
@@ -333,6 +335,14 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"pat":                             {Type: schema.TypeString, Computed: true},
 				"token_key":                       {Type: schema.TypeString, Computed: true},
 				"token_secret":                    {Type: schema.TypeString, Computed: true},
+				"secrets_list": {Type: schema.TypeList, Computed: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"key":   {Type: schema.TypeString, Computed: true},
+							"value": {Type: schema.TypeString, Computed: true},
+						},
+					},
+				},
 			},
 		},
 	}
@@ -643,9 +653,28 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddStr(c, "pat", resp.Data.Config.PAT)
 	mapAddStr(c, "token_key", resp.Data.Config.TokenKey)
 	mapAddStr(c, "token_secret", resp.Data.Config.TokenSecret)
+	mapAddStr(c, "share_url", resp.Data.Config.ShareURL)
+	mapAddStr(c, "is_keypair", boolPointerToStr(resp.Data.Config.IsKeypair))
+	mapAddXInterface(c, "secrets_list", dataSourceConnectorReadConfigFlattenSecretsList(resp))
 	config[0] = c
 
 	return config
+}
+
+func dataSourceConnectorReadConfigFlattenSecretsList(resp *fivetran.ConnectorDetailsResponse) []interface{} {
+	if len(resp.Data.Config.SecretsList) < 1 {
+		return make([]interface{}, 0)
+	}
+
+	secretsList := make([]interface{}, len(resp.Data.Config.SecretsList))
+	for i, v := range resp.Data.Config.SecretsList {
+		s := make(map[string]interface{})
+		mapAddStr(s, "key", v.Key)
+		mapAddStr(s, "value", v.Value)
+		secretsList[i] = s
+	}
+
+	return secretsList
 }
 
 func dataSourceConnectorReadConfigFlattenProjectCredentials(resp *fivetran.ConnectorDetailsResponse) []interface{} {
