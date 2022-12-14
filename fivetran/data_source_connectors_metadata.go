@@ -96,9 +96,7 @@ func dataSourceConnectorsMetadataGetMetadata(client *fivetran.Client, ctx contex
 			return fivetran.ConnectorsSourceMetadataResponse{}, err
 		}
 
-		for _, item := range respInner.Data.Items {
-			resp.Data.Items = append(resp.Data.Items, item)
-		}
+		resp.Data.Items = append(resp.Data.Items, respInner.Data.Items...)
 
 		if respInner.Data.NextCursor == "" {
 			break

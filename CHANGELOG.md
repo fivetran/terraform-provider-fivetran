@@ -5,7 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.9...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.10...HEAD)
+
+## [0.6.10](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.9...v0.6.10)
+
+## Fixed
+- Issue: `fivetran_connector.config.pattern` was always set even if it doesn't have value
+
+## Added
+- `fivetran_connector.config.is_keypair` missing field added
+- `fivetran_connector.config.share_url` missing field added
+- `fivetran_connector.config.secrets_list` missing field added
 
 ## [0.6.9](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.8...v0.6.9)
 

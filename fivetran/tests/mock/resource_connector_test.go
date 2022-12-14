@@ -217,7 +217,7 @@ const (
 			"always_encrypted":                  false,
 			"use_webhooks":                      false,
 			"eu_region":                         false,
-
+			"is_keypair":                        false,
 			"is_secure":                         false,
 			"use_api_keys":                      false,
 
@@ -354,6 +354,7 @@ const (
 			"entity_id":            "entity_id",
 			"soap_uri":             "soap_uri",
 			"user_id":              "user_id",
+			"share_url":            "share_url",
 
 			"report_suites":            ["report_suite"],
 			"elements":                 ["element"],
@@ -420,6 +421,10 @@ const (
 				"project": 		"project",
 				"api_key": 		"api_key",
 				"secret_key": 	"******"
+			}],
+			"secrets_list": [{
+				"key":   "key",
+				"value": "******"
 			}]
         }
 	}
@@ -486,6 +491,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "eu_region", false)
 			assertKeyExistsAndHasValue(t, config, "is_secure", false)
 			assertKeyExistsAndHasValue(t, config, "use_api_keys", false)
+			assertKeyExistsAndHasValue(t, config, "is_keypair", false)
 
 			assertKeyExistsAndHasValue(t, config, "connection_type", "connection_type")
 			assertKeyExistsAndHasValue(t, config, "sync_mode", "sync_mode")
@@ -618,6 +624,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "entity_id", "entity_id")
 			assertKeyExistsAndHasValue(t, config, "soap_uri", "soap_uri")
 			assertKeyExistsAndHasValue(t, config, "user_id", "user_id")
+			assertKeyExistsAndHasValue(t, config, "share_url", "share_url")
 
 			assertKeyExists(t, config, "report_suites")
 			assertArrayItems(t, config["report_suites"].([]interface{}), append(make([]interface{}, 0), "report_suite"))
@@ -786,6 +793,14 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, project_credential, "api_key", "api_key")
 			assertKeyExistsAndHasValue(t, project_credential, "secret_key", "secret_key")
 
+			assertKeyExists(t, config, "secrets_list")
+			secrets_list := config["secrets_list"].([]interface{})
+			assertEqual(t, len(secrets_list), 1)
+			function_secret := secrets_list[0].(map[string]interface{})
+
+			assertKeyExistsAndHasValue(t, function_secret, "key", "key")
+			assertKeyExistsAndHasValue(t, function_secret, "value", "value")
+
 			connectorMockData = createMapFromJsonString(t, connectorMappingResponse)
 			return fivetranSuccessResponse(t, req, http.StatusCreated, "Success", connectorMockData), nil
 		},
@@ -803,6 +818,13 @@ func setupMockClientConnectorResourceUpdate(t *testing.T) {
 	mockClient.Reset()
 	updateIteration := 0
 
+	checkPatternNotRepresentedIfNotSet := func(t *testing.T, body map[string]interface{}) {
+		assertKeyExists(t, body, "config")
+		config := body["config"].(map[string]interface{})
+		_, ok := config["pattern"]
+		assertEqual(t, ok, false)
+	}
+
 	connectorMockUpdateGetHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
@@ -811,6 +833,7 @@ func setupMockClientConnectorResourceUpdate(t *testing.T) {
 
 	connectorMockUpdatePostHandler = mockClient.When(http.MethodPost, "/v1/connectors").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
+			checkPatternNotRepresentedIfNotSet(t, requestBodyToJson(t, req))
 			connectorMockData = createMapFromJsonString(t, connectorUpdateResponse1)
 			return fivetranSuccessResponse(t, req, http.StatusCreated, "Success", connectorMockData), nil
 		},
@@ -819,6 +842,7 @@ func setupMockClientConnectorResourceUpdate(t *testing.T) {
 	connectorMockUpdatePatchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			updateIteration++
+			checkPatternNotRepresentedIfNotSet(t, requestBodyToJson(t, req))
 			connectorMockData = createMapFromJsonString(t, connectorUpdateResponse2)
 			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
 		},
@@ -922,6 +946,7 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 				use_api_keys = "false"
 				use_webhooks = "false"
 				eu_region = "false"
+				is_keypair = "false"
 
 				conversion_window_size = "0"
 				skip_before = "0"
@@ -1055,6 +1080,7 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 				entity_id = "entity_id"
 				soap_uri = "soap_uri"
 				user_id = "user_id"
+				share_url = "share_url"
 
 				report_suites = ["report_suite"]
 				elements = ["element"]
@@ -1121,6 +1147,10 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 					project = "project"
 					api_key = "api_key"
 					secret_key = "secret_key"
+				}
+				secrets_list {
+					key = "key"
+					value = "value"
 				}
 			}
 
