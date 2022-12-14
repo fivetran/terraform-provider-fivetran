@@ -180,8 +180,8 @@ func testFivetranConnectorResourceDestroy(s *terraform.State) error {
 
 			Full response:
 			%v
-			
-			Connector %s still exists.`, rs.Primary.ID, response, response.Code)
+
+			Connector %s still exists.`, response.Code, response, rs.Primary.ID)
 		}
 	}
 
