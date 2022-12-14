@@ -173,15 +173,17 @@ func testFivetranConnectorResourceDestroy(s *terraform.State) error {
 		if err.Error() != "status code: 404; expected: 200" {
 			return err
 		}
-		if response.Code != "NotFound_Connector" {
-			return fmt.Errorf(`
-			Expected response.Code: 'NotFound_Connector'. 
-			Actual response.Code was: '%s'. 
 
-			Full response:
-			%v
+		if err == nil {
+			if response.Code != "NotFound_Connector" {
+				return fmt.Errorf(`
+				There was no error occured on recieving connector after deletion!
 
-			Connector %s still exists.`, response.Code, response, rs.Primary.ID)
+				Expected response.Code: 'NotFound_Connector'. 
+				Actual response.Code was: '%s'. 
+				response.Message: '%s'
+				Connector %s still exists.`, response.Code, response.Message, rs.Primary.ID)
+			}
 		}
 	}
 
