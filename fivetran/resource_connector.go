@@ -141,6 +141,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"is_keypair":                        {Type: schema.TypeString, Optional: true, Computed: true},
 				// Enum & int values
 				"connection_type":                      {Type: schema.TypeString, Optional: true, Computed: true},
+				"sync_method":                          {Type: schema.TypeString, Optional: true, Computed: true},
 				"sync_mode":                            {Type: schema.TypeString, Optional: true, Computed: true},
 				"date_granularity":                     {Type: schema.TypeString, Optional: true, Computed: true},
 				"timeframe_months":                     {Type: schema.TypeString, Optional: true, Computed: true},
@@ -600,6 +601,9 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData, creation bool) *fivet
 	if v := c["private_key"].(string); v != "" {
 		fivetranConfig.PrivateKey(v)
 	}
+	if v := c["sync_method"].(string); v != "" {
+    	fivetranConfig.SyncMethod(v)
+    }
 	if v := c["sync_mode"].(string); v != "" {
 		fivetranConfig.SyncMode(v)
 	}
@@ -1561,6 +1565,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddStr(c, "client_id", resp.Data.Config.ClientID)
 	mapAddStr(c, "technical_account_id", resp.Data.Config.TechnicalAccountID)
 	mapAddStr(c, "organization_id", resp.Data.Config.OrganizationID)
+	mapAddStr(c, "sync_method", resp.Data.Config.SyncMethod)
 	mapAddStr(c, "sync_mode", resp.Data.Config.SyncMode)
 	mapAddStr(c, "date_granularity", resp.Data.Config.DateGranularity)
 	mapAddStr(c, "timeframe_months", resp.Data.Config.TimeframeMonths)

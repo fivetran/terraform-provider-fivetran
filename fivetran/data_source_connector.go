@@ -88,6 +88,7 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"technical_account_id":  {Type: schema.TypeString, Computed: true},
 				"organization_id":       {Type: schema.TypeString, Computed: true},
 				"private_key":           {Type: schema.TypeString, Computed: true},
+				"sync_method":           {Type: schema.TypeString, Computed: true},
 				"sync_mode":             {Type: schema.TypeString, Computed: true},
 				"report_suites":         {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
 				"elements":              {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
@@ -455,6 +456,7 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddStr(c, "technical_account_id", resp.Data.Config.TechnicalAccountID)
 	mapAddStr(c, "organization_id", resp.Data.Config.OrganizationID)
 	mapAddStr(c, "private_key", resp.Data.Config.PrivateKey)
+	mapAddStr(c, "sync_method", resp.Data.Config.SyncMethod)
 	mapAddStr(c, "sync_mode", resp.Data.Config.SyncMode)
 	mapAddXInterface(c, "report_suites", xStrXInterface(resp.Data.Config.ReportSuites))
 	mapAddXInterface(c, "elements", xStrXInterface(resp.Data.Config.Elements))
