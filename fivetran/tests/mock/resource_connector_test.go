@@ -272,6 +272,7 @@ const (
 			"ftp_host":              "ftp_host",
 			"ftp_user":              "ftp_user",
 			"sftp_host":             "sftp_host",
+			"sync_method":           "sync_method",
 			
 			"sftp_user":             "sftp_user",
 			"bucket":                "bucket",
@@ -932,6 +933,8 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 				function_trigger = "function_trigger"
 				token_key = "token_key"
 				token_secret = "token_secret"
+
+				sync_method = "sync_method"
 
 				is_ftps = "false"
 				sftp_is_key_pair = "false"

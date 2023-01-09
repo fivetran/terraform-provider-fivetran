@@ -141,6 +141,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"is_keypair":                        {Type: schema.TypeString, Optional: true, Computed: true},
 				// Enum & int values
 				"connection_type":                      {Type: schema.TypeString, Optional: true, Computed: true},
+				"sync_method":                          {Type: schema.TypeString, Optional: true, Computed: true},
 				"sync_mode":                            {Type: schema.TypeString, Optional: true, Computed: true},
 				"date_granularity":                     {Type: schema.TypeString, Optional: true, Computed: true},
 				"timeframe_months":                     {Type: schema.TypeString, Optional: true, Computed: true},
@@ -420,13 +421,15 @@ func resourceConnectorCreate(ctx context.Context, d *schema.ResourceData, m inte
 		svc.DailySyncTime(d.Get("daily_sync_time").(string))
 	}
 
-	fivetranConfig := resourceConnectorUpdateConfig(d, true)
+	fivetranConfig := resourceConnectorUpdateConfig(d)
 
 	svc.Config(resourceConnectorCreateConfig(fivetranConfig, d.Get("destination_schema").([]interface{})))
+	svc.ConfigCustom(resourceConnectorUpdateCustomConfig(d))
 
 	svc.Auth(resourceConnectorCreateAuth(d.Get("auth").([]interface{})))
+	svc.AuthCustom(resourceConnectorUpdateCustomAuth(d))
 
-	resp, err := svc.Do(ctx)
+	resp, err := svc.DoCustomMerged(ctx)
 	if err != nil {
 		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
@@ -441,7 +444,7 @@ func resourceConnectorRead(ctx context.Context, d *schema.ResourceData, m interf
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
 
-	resp, err := client.NewConnectorDetails().ConnectorID(d.Get("id").(string)).Do(ctx)
+	resp, err := client.NewConnectorDetails().ConnectorID(d.Get("id").(string)).DoCustomMerged(ctx)
 	if err != nil {
 		// If the resource does not exist (404), inform Terraform. We want to immediately
 		// return here to prevent further processing.
@@ -531,10 +534,12 @@ func resourceConnectorUpdate(ctx context.Context, d *schema.ResourceData, m inte
 		svc.DailySyncTime(d.Get("daily_sync_time").(string))
 	}
 
-	svc.Config(resourceConnectorUpdateConfig(d, false))
+	svc.Config(resourceConnectorUpdateConfig(d))
+	svc.ConfigCustom(resourceConnectorUpdateCustomConfig(d))
 	svc.Auth(resourceConnectorCreateAuth(d.Get("auth").([]interface{})))
+	svc.AuthCustom(resourceConnectorUpdateCustomAuth(d))
 
-	resp, err := svc.Do(ctx)
+	resp, err := svc.DoCustomMerged(ctx)
 	if err != nil {
 		// resourceConnectorRead here makes sure the state is updated after a NewConnectorModify error.
 		diags = resourceConnectorRead(ctx, d, m)
@@ -563,7 +568,51 @@ func resourceConnectorDelete(ctx context.Context, d *schema.ResourceData, m inte
 	return diags
 }
 
-func resourceConnectorUpdateConfig(d *schema.ResourceData, creation bool) *fivetran.ConnectorConfig {
+func resourceConnectorUpdateCustomConfig(d *schema.ResourceData) *map[string]interface{} {
+	configMap := make(map[string]interface{})
+
+	var config = d.Get("config").([]interface{})
+
+	if len(config) < 1 {
+		return &configMap
+	}
+	if config[0] == nil {
+		return &configMap
+	}
+
+	c := config[0].(map[string]interface{})
+
+	if v := c["sync_method"].(string); v != "" {
+		configMap["sync_method"] = v
+	}
+
+	return &configMap
+}
+
+func resourceConnectorUpdateCustomAuth(d *schema.ResourceData) *map[string]interface{} {
+	authMap := make(map[string]interface{})
+
+	var auth = d.Get("auth").([]interface{})
+
+	if len(auth) < 1 {
+		return &authMap
+	}
+	if auth[0] == nil {
+		return &authMap
+	}
+
+	// add custom auth fields here:
+
+	// a := auth[0].(map[string]interface{})
+
+	// if v := a["some_auth_custom_field"].(string); v != "" {
+	// 	authMap["some_auth_custom_field"] = v
+	// }
+
+	return &authMap
+}
+
+func resourceConnectorUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorConfig {
 	fivetranConfig := fivetran.NewConnectorConfig()
 	var config = d.Get("config").([]interface{})
 
@@ -1404,7 +1453,7 @@ func resourceConnectorCreateAuthClientAccess(clientAccess []interface{}) *fivetr
 
 // resourceConnectorReadStatus receives a *fivetran.ConnectorDetailsResponse and returns a []interface{}
 // containing the data type accepted by the "status" list.
-func resourceConnectorReadStatus(resp *fivetran.ConnectorDetailsResponse) []interface{} {
+func resourceConnectorReadStatus(resp *fivetran.ConnectorCustomMergedDetailsResponse) []interface{} {
 	status := make([]interface{}, 1)
 
 	s := make(map[string]interface{})
@@ -1419,7 +1468,7 @@ func resourceConnectorReadStatus(resp *fivetran.ConnectorDetailsResponse) []inte
 	return status
 }
 
-func resourceConnectorReadStatusFlattenTasks(resp *fivetran.ConnectorDetailsResponse) []interface{} {
+func resourceConnectorReadStatusFlattenTasks(resp *fivetran.ConnectorCustomMergedDetailsResponse) []interface{} {
 	if len(resp.Data.Status.Tasks) < 1 {
 		return make([]interface{}, 0)
 	}
@@ -1436,7 +1485,7 @@ func resourceConnectorReadStatusFlattenTasks(resp *fivetran.ConnectorDetailsResp
 	return tasks
 }
 
-func resourceConnectorReadStatusFlattenWarnings(resp *fivetran.ConnectorDetailsResponse) []interface{} {
+func resourceConnectorReadStatusFlattenWarnings(resp *fivetran.ConnectorCustomMergedDetailsResponse) []interface{} {
 	if len(resp.Data.Status.Warnings) < 1 {
 		return make([]interface{}, 0)
 	}
@@ -1455,7 +1504,7 @@ func resourceConnectorReadStatusFlattenWarnings(resp *fivetran.ConnectorDetailsR
 
 // dataSourceConnectorReadConfig receives a *fivetran.ConnectorDetailsResponse and returns a []interface{}
 // containing the data type accepted by the "config" list.
-func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, currentConfig []interface{}) []interface{} {
+func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResponse, currentConfig []interface{}) []interface{} {
 	config := make([]interface{}, 1)
 
 	c := make(map[string]interface{})
@@ -1561,6 +1610,11 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	mapAddStr(c, "client_id", resp.Data.Config.ClientID)
 	mapAddStr(c, "technical_account_id", resp.Data.Config.TechnicalAccountID)
 	mapAddStr(c, "organization_id", resp.Data.Config.OrganizationID)
+
+	if v, ok := resp.Data.CustomConfig["sync_method"].(string); ok {
+		mapAddStr(c, "sync_method", v)
+	}
+
 	mapAddStr(c, "sync_mode", resp.Data.Config.SyncMode)
 	mapAddStr(c, "date_granularity", resp.Data.Config.DateGranularity)
 	mapAddStr(c, "timeframe_months", resp.Data.Config.TimeframeMonths)
@@ -1689,7 +1743,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse, curren
 	return config
 }
 
-func resourceConnectorReadConfigFlattenProjectCredentials(resp *fivetran.ConnectorDetailsResponse, currentConfig []interface{}) []interface{} {
+func resourceConnectorReadConfigFlattenProjectCredentials(resp *fivetran.ConnectorCustomMergedDetailsResponse, currentConfig []interface{}) []interface{} {
 	if len(resp.Data.Config.ProjectCredentials) < 1 {
 		return make([]interface{}, 0)
 	}
@@ -1713,7 +1767,7 @@ func resourceConnectorReadConfigFlattenProjectCredentials(resp *fivetran.Connect
 	return projectCredentials
 }
 
-func resourceConnectorReadConfigFlattenSecretsList(resp *fivetran.ConnectorDetailsResponse, currentConfig []interface{}) []interface{} {
+func resourceConnectorReadConfigFlattenSecretsList(resp *fivetran.ConnectorCustomMergedDetailsResponse, currentConfig []interface{}) []interface{} {
 	if len(resp.Data.Config.SecretsList) < 1 {
 		return make([]interface{}, 0)
 	}
@@ -1762,7 +1816,7 @@ func getSubcollectionElementValue(configKey, subKey, subKeyValue, targetKey stri
 	return nil
 }
 
-func resourceConnectorReadConfigFlattenReports(resp *fivetran.ConnectorDetailsResponse) []interface{} {
+func resourceConnectorReadConfigFlattenReports(resp *fivetran.ConnectorCustomMergedDetailsResponse) []interface{} {
 	if len(resp.Data.Config.Reports) < 1 {
 		return make([]interface{}, 0)
 	}
@@ -1785,7 +1839,7 @@ func resourceConnectorReadConfigFlattenReports(resp *fivetran.ConnectorDetailsRe
 	return reports
 }
 
-func resourceConnectorReadConfigFlattenAdobeAnalyticsConfigurations(resp *fivetran.ConnectorDetailsResponse) []interface{} {
+func resourceConnectorReadConfigFlattenAdobeAnalyticsConfigurations(resp *fivetran.ConnectorCustomMergedDetailsResponse) []interface{} {
 	if len(resp.Data.Config.AdobeAnalyticsConfigurations) < 1 {
 		return make([]interface{}, 0)
 	}
@@ -1805,7 +1859,7 @@ func resourceConnectorReadConfigFlattenAdobeAnalyticsConfigurations(resp *fivetr
 	return configurations
 }
 
-func resourceConnectorReadConfigFlattenCustomTables(resp *fivetran.ConnectorDetailsResponse) []interface{} {
+func resourceConnectorReadConfigFlattenCustomTables(resp *fivetran.ConnectorCustomMergedDetailsResponse) []interface{} {
 	if len(resp.Data.Config.CustomTables) < 1 {
 		return make([]interface{}, 0)
 	}

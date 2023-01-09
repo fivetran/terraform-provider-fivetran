@@ -233,6 +233,7 @@ Read-Only:
 - `swipe_attribution_window` 
 - `sync_data_locker` 
 - `sync_format` 
+- `sync_method` 
 - `sync_mode` 
 - `sync_type` 
 - `technical_account_id` 
