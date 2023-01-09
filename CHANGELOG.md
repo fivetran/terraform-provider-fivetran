@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.11](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.10...v0.6.11)
 
 ## Added
-- `ConnectorConfigRequest.SyncMethod` missing field added
+- `fivetran_connector.config.sync_method` missing field added
+- `fivetran_connector.config.is_account_level_connector` missing field added
 
 ## [0.6.10](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.9...v0.6.10)
 

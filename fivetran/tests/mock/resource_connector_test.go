@@ -220,6 +220,7 @@ const (
 			"is_keypair":                        false,
 			"is_secure":                         false,
 			"use_api_keys":                      false,
+			"is_account_level_connector":        true,
 
 			"connection_type":                   	"connection_type",
 			"sync_mode":                         	"sync_mode",
@@ -950,6 +951,7 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 				use_webhooks = "false"
 				eu_region = "false"
 				is_keypair = "false"
+				is_account_level_connector = "true"
 
 				conversion_window_size = "0"
 				skip_before = "0"
