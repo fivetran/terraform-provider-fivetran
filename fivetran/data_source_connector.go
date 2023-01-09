@@ -353,7 +353,7 @@ func dataSourceConnectorRead(ctx context.Context, d *schema.ResourceData, m inte
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
 
-	resp, err := client.NewConnectorDetails().ConnectorID(d.Get("id").(string)).Do(ctx)
+	resp, err := client.NewConnectorDetails().ConnectorID(d.Get("id").(string)).DoCustomMerged(ctx)
 	if err != nil {
 		return newDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
@@ -394,7 +394,7 @@ func dataSourceConnectorReadDestinationSchema(schema string, service string) []i
 
 // dataSourceConnectorReadStatus receives a *fivetran.ConnectorDetailsResponse and returns a []interface{}
 // containing the data type accepted by the "status" list.
-func dataSourceConnectorReadStatus(resp *fivetran.ConnectorDetailsResponse) []interface{} {
+func dataSourceConnectorReadStatus(resp *fivetran.ConnectorCustomMergedDetailsResponse) []interface{} {
 	status := make([]interface{}, 1)
 
 	s := make(map[string]interface{})
@@ -409,7 +409,7 @@ func dataSourceConnectorReadStatus(resp *fivetran.ConnectorDetailsResponse) []in
 	return status
 }
 
-func dataSourceConnectorReadStatusFlattenTasks(resp *fivetran.ConnectorDetailsResponse) []interface{} {
+func dataSourceConnectorReadStatusFlattenTasks(resp *fivetran.ConnectorCustomMergedDetailsResponse) []interface{} {
 	if len(resp.Data.Status.Tasks) < 1 {
 		return make([]interface{}, 0)
 	}
@@ -426,7 +426,7 @@ func dataSourceConnectorReadStatusFlattenTasks(resp *fivetran.ConnectorDetailsRe
 	return tasks
 }
 
-func dataSourceConnectorReadStatusFlattenWarnings(resp *fivetran.ConnectorDetailsResponse) []interface{} {
+func dataSourceConnectorReadStatusFlattenWarnings(resp *fivetran.ConnectorCustomMergedDetailsResponse) []interface{} {
 	if len(resp.Data.Status.Warnings) < 1 {
 		return make([]interface{}, 0)
 	}
@@ -445,7 +445,7 @@ func dataSourceConnectorReadStatusFlattenWarnings(resp *fivetran.ConnectorDetail
 
 // dataSourceConnectorReadConfig receives a *fivetran.ConnectorDetailsResponse and returns a []interface{}
 // containing the data type accepted by the "config" list.
-func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []interface{} {
+func dataSourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResponse) []interface{} {
 	config := make([]interface{}, 1)
 
 	c := make(map[string]interface{})
@@ -456,7 +456,7 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	mapAddStr(c, "technical_account_id", resp.Data.Config.TechnicalAccountID)
 	mapAddStr(c, "organization_id", resp.Data.Config.OrganizationID)
 	mapAddStr(c, "private_key", resp.Data.Config.PrivateKey)
-	mapAddStr(c, "sync_method", resp.Data.Config.SyncMethod)
+	//mapAddStr(c, "sync_method", resp.Data.Config.SyncMethod)
 	mapAddStr(c, "sync_mode", resp.Data.Config.SyncMode)
 	mapAddXInterface(c, "report_suites", xStrXInterface(resp.Data.Config.ReportSuites))
 	mapAddXInterface(c, "elements", xStrXInterface(resp.Data.Config.Elements))
@@ -663,7 +663,7 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorDetailsResponse) []in
 	return config
 }
 
-func dataSourceConnectorReadConfigFlattenSecretsList(resp *fivetran.ConnectorDetailsResponse) []interface{} {
+func dataSourceConnectorReadConfigFlattenSecretsList(resp *fivetran.ConnectorCustomMergedDetailsResponse) []interface{} {
 	if len(resp.Data.Config.SecretsList) < 1 {
 		return make([]interface{}, 0)
 	}
@@ -679,7 +679,7 @@ func dataSourceConnectorReadConfigFlattenSecretsList(resp *fivetran.ConnectorDet
 	return secretsList
 }
 
-func dataSourceConnectorReadConfigFlattenProjectCredentials(resp *fivetran.ConnectorDetailsResponse) []interface{} {
+func dataSourceConnectorReadConfigFlattenProjectCredentials(resp *fivetran.ConnectorCustomMergedDetailsResponse) []interface{} {
 	if len(resp.Data.Config.ProjectCredentials) < 1 {
 		return make([]interface{}, 0)
 	}
@@ -696,7 +696,7 @@ func dataSourceConnectorReadConfigFlattenProjectCredentials(resp *fivetran.Conne
 	return projectCredentials
 }
 
-func dataSourceConnectorReadConfigFlattenReports(resp *fivetran.ConnectorDetailsResponse) []interface{} {
+func dataSourceConnectorReadConfigFlattenReports(resp *fivetran.ConnectorCustomMergedDetailsResponse) []interface{} {
 	if len(resp.Data.Config.Reports) < 1 {
 		return make([]interface{}, 0)
 	}
@@ -719,7 +719,7 @@ func dataSourceConnectorReadConfigFlattenReports(resp *fivetran.ConnectorDetails
 	return reports
 }
 
-func dataSourceConnectorReadConfigFlattenCustomTables(resp *fivetran.ConnectorDetailsResponse) []interface{} {
+func dataSourceConnectorReadConfigFlattenCustomTables(resp *fivetran.ConnectorCustomMergedDetailsResponse) []interface{} {
 	if len(resp.Data.Config.CustomTables) < 1 {
 		return make([]interface{}, 0)
 	}
@@ -743,7 +743,7 @@ func dataSourceConnectorReadConfigFlattenCustomTables(resp *fivetran.ConnectorDe
 	return customTables
 }
 
-func dataSourceConnectorReadConfigFlattenAdobeAnalyticsConfigurations(resp *fivetran.ConnectorDetailsResponse) []interface{} {
+func dataSourceConnectorReadConfigFlattenAdobeAnalyticsConfigurations(resp *fivetran.ConnectorCustomMergedDetailsResponse) []interface{} {
 	if len(resp.Data.Config.AdobeAnalyticsConfigurations) < 1 {
 		return make([]interface{}, 0)
 	}
