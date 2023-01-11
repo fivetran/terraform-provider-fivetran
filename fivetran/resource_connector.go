@@ -139,6 +139,8 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"use_webhooks":                      {Type: schema.TypeString, Optional: true, Computed: true},
 				"eu_region":                         {Type: schema.TypeString, Optional: true, Computed: true},
 				"is_keypair":                        {Type: schema.TypeString, Optional: true, Computed: true},
+				"is_account_level_connector":        {Type: schema.TypeString, Optional: true, Computed: true},
+
 				// Enum & int values
 				"connection_type":                      {Type: schema.TypeString, Optional: true, Computed: true},
 				"sync_method":                          {Type: schema.TypeString, Optional: true, Computed: true},
@@ -582,8 +584,12 @@ func resourceConnectorUpdateCustomConfig(d *schema.ResourceData) *map[string]int
 
 	c := config[0].(map[string]interface{})
 
-	if v := c["sync_method"].(string); v != "" {
+	if v, ok := c["sync_method"].(string); ok && v != "" {
 		configMap["sync_method"] = v
+	}
+
+	if v, ok := c["is_account_level_connector"].(string); ok && v != "" {
+		configMap["is_account_level_connector"] = strToBool(v)
 	}
 
 	return &configMap
@@ -1591,6 +1597,10 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResp
 	mapAddStr(c, "eu_region", boolPointerToStr(resp.Data.Config.EuRegion))
 	mapAddStr(c, "is_secure", boolPointerToStr(resp.Data.Config.IsSecure))
 	mapAddStr(c, "use_api_keys", boolPointerToStr(resp.Data.Config.UseAPIKeys))
+
+	if v, ok := resp.Data.CustomConfig["is_account_level_connector"].(bool); ok {
+		mapAddStr(c, "is_account_level_connector", boolToStr(v))
+	}
 
 	// Integer fields
 	mapAddStr(c, "ftp_port", intPointerToStr(resp.Data.Config.FTPPort))

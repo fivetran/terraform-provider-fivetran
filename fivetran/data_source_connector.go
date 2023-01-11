@@ -79,58 +79,59 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 	return &schema.Schema{Type: schema.TypeList, Computed: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"table":                 {Type: schema.TypeString, Computed: true},
-				"sheet_id":              {Type: schema.TypeString, Computed: true},
-				"share_url":             {Type: schema.TypeString, Computed: true},
-				"named_range":           {Type: schema.TypeString, Computed: true},
-				"client_id":             {Type: schema.TypeString, Computed: true},
-				"client_secret":         {Type: schema.TypeString, Computed: true},
-				"technical_account_id":  {Type: schema.TypeString, Computed: true},
-				"organization_id":       {Type: schema.TypeString, Computed: true},
-				"private_key":           {Type: schema.TypeString, Computed: true},
-				"sync_method":           {Type: schema.TypeString, Computed: true},
-				"sync_mode":             {Type: schema.TypeString, Computed: true},
-				"report_suites":         {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"elements":              {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"metrics":               {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"date_granularity":      {Type: schema.TypeString, Computed: true},
-				"timeframe_months":      {Type: schema.TypeString, Computed: true},
-				"source":                {Type: schema.TypeString, Computed: true},
-				"s3bucket":              {Type: schema.TypeString, Computed: true},
-				"s3role_arn":            {Type: schema.TypeString, Computed: true},
-				"abs_connection_string": {Type: schema.TypeString, Computed: true},
-				"abs_container_name":    {Type: schema.TypeString, Computed: true},
-				"folder_id":             {Type: schema.TypeString, Computed: true},
-				"ftp_host":              {Type: schema.TypeString, Computed: true},
-				"ftp_port":              {Type: schema.TypeString, Computed: true},
-				"ftp_user":              {Type: schema.TypeString, Computed: true},
-				"ftp_password":          {Type: schema.TypeString, Computed: true},
-				"is_ftps":               {Type: schema.TypeString, Computed: true},
-				"sftp_host":             {Type: schema.TypeString, Computed: true},
-				"sftp_port":             {Type: schema.TypeString, Computed: true},
-				"sftp_user":             {Type: schema.TypeString, Computed: true},
-				"sftp_password":         {Type: schema.TypeString, Computed: true},
-				"sftp_is_key_pair":      {Type: schema.TypeString, Computed: true},
-				"is_keypair":            {Type: schema.TypeString, Computed: true},
-				"advertisables":         {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"report_type":           {Type: schema.TypeString, Computed: true},
-				"dimensions":            {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"api_key":               {Type: schema.TypeString, Computed: true},
-				"external_id":           {Type: schema.TypeString, Computed: true},
-				"role_arn":              {Type: schema.TypeString, Computed: true},
-				"bucket":                {Type: schema.TypeString, Computed: true},
-				"prefix":                {Type: schema.TypeString, Computed: true},
-				"pattern":               {Type: schema.TypeString, Computed: true},
-				"file_type":             {Type: schema.TypeString, Computed: true},
-				"compression":           {Type: schema.TypeString, Computed: true},
-				"on_error":              {Type: schema.TypeString, Computed: true},
-				"append_file_option":    {Type: schema.TypeString, Computed: true},
-				"archive_pattern":       {Type: schema.TypeString, Computed: true},
-				"null_sequence":         {Type: schema.TypeString, Computed: true},
-				"delimiter":             {Type: schema.TypeString, Computed: true},
-				"escape_char":           {Type: schema.TypeString, Computed: true},
-				"skip_before":           {Type: schema.TypeString, Computed: true},
-				"skip_after":            {Type: schema.TypeString, Computed: true},
+				"table":                      {Type: schema.TypeString, Computed: true},
+				"sheet_id":                   {Type: schema.TypeString, Computed: true},
+				"share_url":                  {Type: schema.TypeString, Computed: true},
+				"named_range":                {Type: schema.TypeString, Computed: true},
+				"client_id":                  {Type: schema.TypeString, Computed: true},
+				"client_secret":              {Type: schema.TypeString, Computed: true},
+				"technical_account_id":       {Type: schema.TypeString, Computed: true},
+				"organization_id":            {Type: schema.TypeString, Computed: true},
+				"private_key":                {Type: schema.TypeString, Computed: true},
+				"sync_method":                {Type: schema.TypeString, Computed: true},
+				"sync_mode":                  {Type: schema.TypeString, Computed: true},
+				"report_suites":              {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"elements":                   {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"metrics":                    {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"date_granularity":           {Type: schema.TypeString, Computed: true},
+				"timeframe_months":           {Type: schema.TypeString, Computed: true},
+				"source":                     {Type: schema.TypeString, Computed: true},
+				"s3bucket":                   {Type: schema.TypeString, Computed: true},
+				"s3role_arn":                 {Type: schema.TypeString, Computed: true},
+				"abs_connection_string":      {Type: schema.TypeString, Computed: true},
+				"abs_container_name":         {Type: schema.TypeString, Computed: true},
+				"folder_id":                  {Type: schema.TypeString, Computed: true},
+				"ftp_host":                   {Type: schema.TypeString, Computed: true},
+				"ftp_port":                   {Type: schema.TypeString, Computed: true},
+				"ftp_user":                   {Type: schema.TypeString, Computed: true},
+				"ftp_password":               {Type: schema.TypeString, Computed: true},
+				"is_ftps":                    {Type: schema.TypeString, Computed: true},
+				"sftp_host":                  {Type: schema.TypeString, Computed: true},
+				"sftp_port":                  {Type: schema.TypeString, Computed: true},
+				"sftp_user":                  {Type: schema.TypeString, Computed: true},
+				"sftp_password":              {Type: schema.TypeString, Computed: true},
+				"sftp_is_key_pair":           {Type: schema.TypeString, Computed: true},
+				"is_keypair":                 {Type: schema.TypeString, Computed: true},
+				"is_account_level_connector": {Type: schema.TypeString, Computed: true},
+				"advertisables":              {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"report_type":                {Type: schema.TypeString, Computed: true},
+				"dimensions":                 {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"api_key":                    {Type: schema.TypeString, Computed: true},
+				"external_id":                {Type: schema.TypeString, Computed: true},
+				"role_arn":                   {Type: schema.TypeString, Computed: true},
+				"bucket":                     {Type: schema.TypeString, Computed: true},
+				"prefix":                     {Type: schema.TypeString, Computed: true},
+				"pattern":                    {Type: schema.TypeString, Computed: true},
+				"file_type":                  {Type: schema.TypeString, Computed: true},
+				"compression":                {Type: schema.TypeString, Computed: true},
+				"on_error":                   {Type: schema.TypeString, Computed: true},
+				"append_file_option":         {Type: schema.TypeString, Computed: true},
+				"archive_pattern":            {Type: schema.TypeString, Computed: true},
+				"null_sequence":              {Type: schema.TypeString, Computed: true},
+				"delimiter":                  {Type: schema.TypeString, Computed: true},
+				"escape_char":                {Type: schema.TypeString, Computed: true},
+				"skip_before":                {Type: schema.TypeString, Computed: true},
+				"skip_after":                 {Type: schema.TypeString, Computed: true},
 				"project_credentials": {Type: schema.TypeList, Computed: true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
@@ -456,7 +457,6 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsRe
 	mapAddStr(c, "technical_account_id", resp.Data.Config.TechnicalAccountID)
 	mapAddStr(c, "organization_id", resp.Data.Config.OrganizationID)
 	mapAddStr(c, "private_key", resp.Data.Config.PrivateKey)
-	//mapAddStr(c, "sync_method", resp.Data.Config.SyncMethod)
 	mapAddStr(c, "sync_mode", resp.Data.Config.SyncMode)
 	mapAddXInterface(c, "report_suites", xStrXInterface(resp.Data.Config.ReportSuites))
 	mapAddXInterface(c, "elements", xStrXInterface(resp.Data.Config.Elements))
@@ -658,6 +658,14 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsRe
 	mapAddStr(c, "share_url", resp.Data.Config.ShareURL)
 	mapAddStr(c, "is_keypair", boolPointerToStr(resp.Data.Config.IsKeypair))
 	mapAddXInterface(c, "secrets_list", dataSourceConnectorReadConfigFlattenSecretsList(resp))
+
+	if v, ok := resp.Data.CustomConfig["is_account_level_connector"].(bool); ok {
+		mapAddStr(c, "is_account_level_connector", boolToStr(v))
+	}
+	if v, ok := resp.Data.CustomConfig["sync_method"].(string); ok {
+		mapAddStr(c, "sync_method", v)
+	}
+
 	config[0] = c
 
 	return config
