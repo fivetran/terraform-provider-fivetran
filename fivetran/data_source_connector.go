@@ -256,7 +256,7 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"view_through_attribution_window_size": {Type: schema.TypeString, Computed: true},
 				"post_click_attribution_window_size":   {Type: schema.TypeString, Computed: true},
 				"use_api_keys":                         {Type: schema.TypeString, Computed: true},
-				"api_keys":                             {Type: schema.TypeString, Computed: true},
+				"api_keys":                             {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
 				"endpoint":                             {Type: schema.TypeString, Computed: true},
 				"identity":                             {Type: schema.TypeString, Computed: true},
 				"api_quota":                            {Type: schema.TypeString, Computed: true},
