@@ -455,7 +455,7 @@ terraform state show 'fivetran_connector.my_imported_connector'
 
 ## GitHub connector example
 
-To authorize a GutHub connector via terraform using personal access token you should specify `auth_mode`, `username` and `pat` inside `config` block instead of `auth` and set `run_setup_tests` to `true`:
+To authorize a GitHub connector via terraform using personal access token you should specify `auth_mode`, `username` and `pat` inside `config` block instead of `auth` and set `run_setup_tests` to `true`:
 
 ```hcl
 resource "fivetran_connector" "my_github_connector" {
