@@ -53,9 +53,9 @@ func dataSourceGroupUsersRead(ctx context.Context, d *schema.ResourceData, m int
 		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
 
+	d.SetId(id)
+
 	msi := make(map[string]interface{})
-	msi["id"] = id
-	msi["group_id"] = id
 
 	for k, v := range msi {
 		if err := d.Set(k, v); err != nil {
