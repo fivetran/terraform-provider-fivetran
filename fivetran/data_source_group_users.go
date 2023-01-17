@@ -74,7 +74,7 @@ func dataSourceGroupUsersFlattenUsers(resp *fivetran.GroupListUsersResponse) []i
 		return make([]interface{}, 0)
 	}
 
-	users := make([]interface{}, len(resp.Data.Items), len(resp.Data.Items))
+	users := make([]interface{}, len(resp.Data.Items))
 	for i, v := range resp.Data.Items {
 		user := make(map[string]interface{})
 		user["id"] = v.ID

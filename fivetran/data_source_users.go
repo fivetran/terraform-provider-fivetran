@@ -16,15 +16,14 @@ func dataSourceUsers() *schema.Resource {
 			"users": {Type: schema.TypeSet, Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"id":          {Type: schema.TypeString, Computed: true},
-						"email":       {Type: schema.TypeString, Computed: true},
-						"given_name":  {Type: schema.TypeString, Computed: true},
-						"family_name": {Type: schema.TypeString, Computed: true},
-						"verified":    {Type: schema.TypeBool, Computed: true},
-						"invited":     {Type: schema.TypeBool, Computed: true},
-						"picture":     {Type: schema.TypeString, Computed: true},
-						"phone":       {Type: schema.TypeString, Computed: true},
-						// "role":        {Type: schema.TypeString, Computed: true}, // commented until T-109040 is fixed.
+						"id":           {Type: schema.TypeString, Computed: true},
+						"email":        {Type: schema.TypeString, Computed: true},
+						"given_name":   {Type: schema.TypeString, Computed: true},
+						"family_name":  {Type: schema.TypeString, Computed: true},
+						"verified":     {Type: schema.TypeBool, Computed: true},
+						"invited":      {Type: schema.TypeBool, Computed: true},
+						"picture":      {Type: schema.TypeString, Computed: true},
+						"phone":        {Type: schema.TypeString, Computed: true},
 						"logged_in_at": {Type: schema.TypeString, Computed: true},
 						"created_at":   {Type: schema.TypeString, Computed: true},
 					},
@@ -47,7 +46,7 @@ func dataSourceUsersRead(ctx context.Context, d *schema.ResourceData, m interfac
 		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
 
-	// Enforces ID
+	// Enforces ID, there can't be two account-wide datasources
 	d.SetId("0")
 
 	return diags
@@ -60,7 +59,7 @@ func dataSourceUsersFlattenUsers(resp *fivetran.UsersListResponse) []interface{}
 		return make([]interface{}, 0)
 	}
 
-	users := make([]interface{}, len(resp.Data.Items), len(resp.Data.Items))
+	users := make([]interface{}, len(resp.Data.Items))
 	for i, v := range resp.Data.Items {
 		user := make(map[string]interface{})
 		user["id"] = v.ID
@@ -99,9 +98,7 @@ func dataSourceUsersGetUsers(client *fivetran.Client, ctx context.Context) (five
 			return fivetran.UsersListResponse{}, err
 		}
 
-		for _, item := range respInner.Data.Items {
-			resp.Data.Items = append(resp.Data.Items, item)
-		}
+		resp.Data.Items = append(resp.Data.Items, respInner.Data.Items...)
 
 		if respInner.Data.NextCursor == "" {
 			break
