@@ -31,6 +31,7 @@ func dataSourceGroupUsersSchemaUsers() *schema.Schema {
 				"invited":      {Type: schema.TypeBool, Computed: true},
 				"picture":      {Type: schema.TypeString, Computed: true},
 				"phone":        {Type: schema.TypeString, Computed: true},
+				"role":         {Type: schema.TypeString, Computed: true},
 				"logged_in_at": {Type: schema.TypeString, Computed: true},
 				"created_at":   {Type: schema.TypeString, Computed: true},
 			},
@@ -84,6 +85,7 @@ func dataSourceGroupUsersFlattenUsers(resp *fivetran.GroupListUsersResponse) []i
 		user["invited"] = v.Invited
 		user["picture"] = v.Picture
 		user["phone"] = v.Phone
+		user["role"] = v.Role
 		user["logged_in_at"] = v.LoggedInAt.String()
 		user["created_at"] = v.CreatedAt.String()
 
