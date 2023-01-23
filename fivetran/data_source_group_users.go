@@ -31,6 +31,7 @@ func dataSourceGroupUsersSchemaUsers() *schema.Schema {
 				"invited":      {Type: schema.TypeBool, Computed: true},
 				"picture":      {Type: schema.TypeString, Computed: true},
 				"phone":        {Type: schema.TypeString, Computed: true},
+				"role":         {Type: schema.TypeString, Computed: true},
 				"logged_in_at": {Type: schema.TypeString, Computed: true},
 				"created_at":   {Type: schema.TypeString, Computed: true},
 			},
@@ -53,9 +54,9 @@ func dataSourceGroupUsersRead(ctx context.Context, d *schema.ResourceData, m int
 		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
 
+	d.SetId(id)
+
 	msi := make(map[string]interface{})
-	msi["id"] = id
-	msi["group_id"] = id
 
 	for k, v := range msi {
 		if err := d.Set(k, v); err != nil {
@@ -73,7 +74,7 @@ func dataSourceGroupUsersFlattenUsers(resp *fivetran.GroupListUsersResponse) []i
 		return make([]interface{}, 0)
 	}
 
-	users := make([]interface{}, len(resp.Data.Items), len(resp.Data.Items))
+	users := make([]interface{}, len(resp.Data.Items))
 	for i, v := range resp.Data.Items {
 		user := make(map[string]interface{})
 		user["id"] = v.ID
@@ -84,6 +85,7 @@ func dataSourceGroupUsersFlattenUsers(resp *fivetran.GroupListUsersResponse) []i
 		user["invited"] = v.Invited
 		user["picture"] = v.Picture
 		user["phone"] = v.Phone
+		user["role"] = v.Role
 		user["logged_in_at"] = v.LoggedInAt.String()
 		user["created_at"] = v.CreatedAt.String()
 
