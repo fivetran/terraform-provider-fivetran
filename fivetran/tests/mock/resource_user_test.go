@@ -45,32 +45,51 @@ func onPostUsers(t *testing.T, req *http.Request) (*http.Response, error) {
 	return response, nil
 }
 
-func onPatchUser(t *testing.T, req *http.Request) (*http.Response, error) {
+func onPatchUser(t *testing.T, req *http.Request, updateIteration int) (*http.Response, error) {
 	assertNotEmpty(t, userData)
 
 	body := requestBodyToJson(t, req)
 
-	// Check the request
-	assertEqual(t, len(body), 5)
-	assertEqual(t, body["given_name"], "Jane")
-	assertEqual(t, body["family_name"], "Connor")
-	assertEqual(t, body["phone"], "+19876543219")
-	assertEqual(t, body["picture"], "https://yourPicturecom")
-	assertEqual(t, body["role"], "Account Administrator")
+	if updateIteration == 0 {
+		// Check the request
+		assertEqual(t, len(body), 5)
+		assertEqual(t, body["given_name"], "Jane")
+		assertEqual(t, body["family_name"], "Connor")
+		assertEqual(t, body["phone"], "+19876543219")
+		assertEqual(t, body["picture"], "https://yourPicturecom")
+		assertEqual(t, body["role"], "Account Administrator")
 
-	// Update saved values
-	for k, v := range body {
-		userData[k] = v
+		// Update saved values
+		for k, v := range body {
+			userData[k] = v
+		}
+
+		response := fivetranSuccessResponse(t, req, http.StatusOK, "User has been updated", userData)
+		return response, nil
 	}
 
-	response := fivetranSuccessResponse(t, req, http.StatusOK, "User has been updated", userData)
+	if updateIteration == 1 {
+		// Check the request
+		assertEqual(t, len(body), 2)
+		assertEqual(t, body["phone"], nil)
+		assertEqual(t, body["picture"], nil)
 
-	return response, nil
+		// Update saved values
+		for k, v := range body {
+			userData[k] = v
+		}
+
+		response := fivetranSuccessResponse(t, req, http.StatusOK, "User has been updated", userData)
+		return response, nil
+	}
+
+	return nil, nil
 }
 
 func setupMockClientUserResource(t *testing.T) {
 	mockClient.Reset()
 	userData = nil
+	updateCounter := 0
 
 	userPostHandler = mockClient.When(http.MethodPost, "/v1/users").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
@@ -88,7 +107,9 @@ func setupMockClientUserResource(t *testing.T) {
 
 	userPatchHandler = mockClient.When(http.MethodPatch, "/v1/users/john_fox_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			return onPatchUser(t, req)
+			response, err := onPatchUser(t, req, updateCounter)
+			updateCounter++
+			return response, err
 		},
 	)
 
@@ -158,6 +179,30 @@ func TestResourceUserMock(t *testing.T) {
 		),
 	}
 
+	step3 := resource.TestStep{
+		Config: `
+			resource "fivetran_user" "userjohn" {
+				provider = fivetran-provider
+				role = "Account Administrator"
+				email = "john.fox@testmail.com"
+				family_name = "Connor"
+				given_name = "Jane"
+			}
+		`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				assertEqual(t, userPatchHandler.Interactions, 2)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_user.userjohn", "email", "john.fox@testmail.com"),
+			resource.TestCheckResourceAttr("fivetran_user.userjohn", "role", "Account Administrator"),
+			resource.TestCheckResourceAttr("fivetran_user.userjohn", "family_name", "Connor"),
+			resource.TestCheckResourceAttr("fivetran_user.userjohn", "given_name", "Jane"),
+			resource.TestCheckResourceAttr("fivetran_user.userjohn", "phone", ""),
+			resource.TestCheckResourceAttr("fivetran_user.userjohn", "picture", ""),
+		),
+	}
+
 	resource.Test(
 		t,
 		resource.TestCase{
@@ -174,6 +219,7 @@ func TestResourceUserMock(t *testing.T) {
 			Steps: []resource.TestStep{
 				step1,
 				step2,
+				step3,
 			},
 		},
 	)
