@@ -26,6 +26,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `fivetran_connector.config.asm_tns` missing field added
 - `fivetran_connector.config.sap_user` missing field added
 
+## Fixed
+- Issue with `fivetran_user.picture`: unable to set value to `null`
+- Issue with `fivetran_user.phone`: unable to set value to `null`
 
 ## [0.6.11](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.10...v0.6.11)
 
