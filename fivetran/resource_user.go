@@ -54,6 +54,7 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 	if v, ok := d.GetOk("picture"); ok && v != "" {
 		svc.Picture(v.(string))
 	}
+
 	if v, ok := d.GetOk("phone"); ok && v != "" {
 		svc.Phone(v.(string))
 	}
@@ -124,10 +125,18 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface
 		svc.FamilyName(d.Get("family_name").(string))
 	}
 	if d.HasChange("picture") {
-		svc.Picture(d.Get("picture").(string))
+		if d.Get("picture") == "" {
+			svc.ClearPicture()
+		} else {
+			svc.Picture(d.Get("picture").(string))
+		}
 	}
 	if d.HasChange("phone") {
-		svc.Phone(d.Get("phone").(string))
+		if d.Get("phone") == "" {
+			svc.ClearPhone()
+		} else {
+			svc.Phone(d.Get("phone").(string))
+		}
 	}
 	if d.HasChange("role") {
 		svc.Role(d.Get("role").(string))
