@@ -205,6 +205,8 @@ const (
 			"function_trigger":   "******",
 			"token_key":          "******",
 			"token_secret":       "******",
+			"agent_password":     "******",
+			"asm_password":		  "******",
 
 			"is_ftps":                           false,
 			"sftp_is_key_pair":                  false,
@@ -221,7 +223,19 @@ const (
 			"is_secure":                         false,
 			"use_api_keys":                      false,
 			"is_account_level_connector":        true,
+			"use_oracle_rac": 					 false,
+			"asm_option": 						 false,
 
+			"pdb_name":                         	"pdb_name",
+			"agent_host":                       	"agent_host",
+			"agent_user":                       	"agent_user",
+			"agent_public_cert":                	"agent_public_cert",
+			"agent_ora_home":						"agent_ora_home",
+			"tns":									"tns",
+			"asm_user":								"asm_user",
+			"asm_oracle_home":						"asm_oracle_home",
+			"asm_tns": 								"asm_tns",
+			"sap_user": 							"sap_user",
 			"connection_type":                   	"connection_type",
 			"sync_mode":                         	"sync_mode",
 			"date_granularity":                 	"date_granularity",
@@ -259,6 +273,7 @@ const (
 			"tunnel_port":                          0,
 			"api_quota":                            0,
 			"daily_api_call_limit":                 0,
+			"agent_port":                           0,
 
 			"public_key": 			"public_key",
 			"external_id": 			"external_id",
@@ -479,6 +494,8 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "function_trigger", "function_trigger")
 			assertKeyExistsAndHasValue(t, config, "token_key", "token_key")
 			assertKeyExistsAndHasValue(t, config, "token_secret", "token_secret")
+			assertKeyExistsAndHasValue(t, config, "asm_password", "asm_password")
+			assertKeyExistsAndHasValue(t, config, "agent_password", "agent_password")
 
 			assertKeyExistsAndHasValue(t, config, "is_ftps", false)
 			assertKeyExistsAndHasValue(t, config, "sftp_is_key_pair", false)
@@ -494,6 +511,9 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "is_secure", false)
 			assertKeyExistsAndHasValue(t, config, "use_api_keys", false)
 			assertKeyExistsAndHasValue(t, config, "is_keypair", false)
+			assertKeyExistsAndHasValue(t, config, "is_account_level_connector", true)
+			assertKeyExistsAndHasValue(t, config, "use_oracle_rac", false)
+			assertKeyExistsAndHasValue(t, config, "asm_option", false)
 
 			assertKeyExistsAndHasValue(t, config, "connection_type", "connection_type")
 			assertKeyExistsAndHasValue(t, config, "sync_mode", "sync_mode")
@@ -530,9 +550,21 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "ftp_port", float64(0))
 			assertKeyExistsAndHasValue(t, config, "sftp_port", float64(0))
 			assertKeyExistsAndHasValue(t, config, "port", float64(0))
+			assertKeyExistsAndHasValue(t, config, "agent_port", float64(0))
 			assertKeyExistsAndHasValue(t, config, "tunnel_port", float64(0))
 			assertKeyExistsAndHasValue(t, config, "api_quota", float64(0))
 			assertKeyExistsAndHasValue(t, config, "daily_api_call_limit", float64(0))
+
+			assertKeyExistsAndHasValue(t, config, "pdb_name", "pdb_name")
+			assertKeyExistsAndHasValue(t, config, "agent_host", "agent_host")
+			assertKeyExistsAndHasValue(t, config, "agent_user", "agent_user")
+			assertKeyExistsAndHasValue(t, config, "agent_public_cert", "agent_public_cert")
+			assertKeyExistsAndHasValue(t, config, "agent_ora_home", "agent_ora_home")
+			assertKeyExistsAndHasValue(t, config, "tns", "tns")
+			assertKeyExistsAndHasValue(t, config, "asm_user", "asm_user")
+			assertKeyExistsAndHasValue(t, config, "asm_oracle_home", "asm_oracle_home")
+			assertKeyExistsAndHasValue(t, config, "asm_tns", "asm_tns")
+			assertKeyExistsAndHasValue(t, config, "sap_user", "sap_user")
 
 			assertKeyExistsAndHasValue(t, config, "public_key", "public_key")
 			assertKeyExistsAndHasValue(t, config, "external_id", "external_id")
@@ -962,6 +994,22 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 				tunnel_port = "0"
 				api_quota = "0"
 				daily_api_call_limit = "0"
+				agent_port = "0"
+
+				pdb_name = "pdb_name"
+				agent_host = "agent_host"
+				agent_user = "agent_user"
+				agent_password = "agent_password"
+				agent_public_cert = "agent_public_cert"
+				agent_ora_home = "agent_ora_home"
+				tns = "tns"
+				use_oracle_rac = "false"
+				asm_option = "false"
+				asm_user = "asm_user"
+				asm_password = "asm_password"
+				asm_oracle_home = "asm_oracle_home"
+				asm_tns = "asm_tns"
+				sap_user = "sap_user"
 
 				connection_type = "connection_type"
 				sync_mode = "sync_mode"

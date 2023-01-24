@@ -345,6 +345,21 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 						},
 					},
 				},
+				"pdb_name":          {Type: schema.TypeString, Computed: true},
+				"agent_host":        {Type: schema.TypeString, Computed: true},
+				"agent_port":        {Type: schema.TypeString, Computed: true},
+				"agent_user":        {Type: schema.TypeString, Computed: true},
+				"agent_password":    {Type: schema.TypeString, Computed: true},
+				"agent_public_cert": {Type: schema.TypeString, Computed: true},
+				"agent_ora_home":    {Type: schema.TypeString, Computed: true},
+				"tns":               {Type: schema.TypeString, Computed: true},
+				"use_oracle_rac":    {Type: schema.TypeString, Computed: true},
+				"asm_option":        {Type: schema.TypeString, Computed: true},
+				"asm_user":          {Type: schema.TypeString, Computed: true},
+				"asm_password":      {Type: schema.TypeString, Computed: true},
+				"asm_oracle_home":   {Type: schema.TypeString, Computed: true},
+				"asm_tns":           {Type: schema.TypeString, Computed: true},
+				"sap_user":          {Type: schema.TypeString, Computed: true},
 			},
 		},
 	}
@@ -664,6 +679,51 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsRe
 	}
 	if v, ok := resp.Data.CustomConfig["sync_method"].(string); ok {
 		mapAddStr(c, "sync_method", v)
+	}
+	if v, ok := resp.Data.CustomConfig["pdb_name"].(string); ok {
+		mapAddStr(c, "pdb_name", v)
+	}
+	if v, ok := resp.Data.CustomConfig["agent_host"].(string); ok {
+		mapAddStr(c, "agent_host", v)
+	}
+	if v, ok := resp.Data.CustomConfig["agent_port"].(float64); ok {
+		mapAddStr(c, "agent_port", intToStr(int(v)))
+	}
+	if v, ok := resp.Data.CustomConfig["agent_user"].(string); ok {
+		mapAddStr(c, "agent_user", v)
+	}
+	if v, ok := resp.Data.CustomConfig["agent_password"].(string); ok {
+		mapAddStr(c, "agent_password", v)
+	}
+	if v, ok := resp.Data.CustomConfig["agent_public_cert"].(string); ok {
+		mapAddStr(c, "agent_public_cert", v)
+	}
+	if v, ok := resp.Data.CustomConfig["agent_ora_home"].(string); ok {
+		mapAddStr(c, "agent_ora_home", v)
+	}
+	if v, ok := resp.Data.CustomConfig["tns"].(string); ok {
+		mapAddStr(c, "tns", v)
+	}
+	if v, ok := resp.Data.CustomConfig["use_oracle_rac"].(bool); ok {
+		mapAddStr(c, "use_oracle_rac", boolToStr(v))
+	}
+	if v, ok := resp.Data.CustomConfig["asm_option"].(bool); ok {
+		mapAddStr(c, "asm_option", boolToStr(v))
+	}
+	if v, ok := resp.Data.CustomConfig["asm_user"].(string); ok {
+		mapAddStr(c, "asm_user", v)
+	}
+	if v, ok := resp.Data.CustomConfig["asm_password"].(string); ok {
+		mapAddStr(c, "asm_password", v)
+	}
+	if v, ok := resp.Data.CustomConfig["asm_oracle_home"].(string); ok {
+		mapAddStr(c, "asm_oracle_home", v)
+	}
+	if v, ok := resp.Data.CustomConfig["asm_tns"].(string); ok {
+		mapAddStr(c, "asm_tns", v)
+	}
+	if v, ok := resp.Data.CustomConfig["sap_user"].(string); ok {
+		mapAddStr(c, "sap_user", v)
 	}
 
 	config[0] = c

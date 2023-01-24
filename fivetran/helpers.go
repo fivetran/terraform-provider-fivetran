@@ -45,11 +45,7 @@ func strToInt(s string) int {
 }
 
 // intToStr receives an int and returns a string.
-// This is currently not in use.
 func intToStr(i int) string {
-	if i == 0 {
-		return ""
-	}
 	return strconv.Itoa(i)
 }
 
