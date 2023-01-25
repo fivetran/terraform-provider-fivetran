@@ -114,6 +114,12 @@ Optional:
 - `advertisables` 
 - `advertisers` 
 - `advertisers_id` 
+- `agent_host` 
+- `agent_port` 
+- `agent_user` 
+- `agent_password`
+- `agent_public_cert`
+- `agent_ora_home`
 - `aggregation` 
 - `always_encrypted` 
 - `api_access_token` 
@@ -129,6 +135,11 @@ Optional:
 - `append_file_option` 
 - `apps` 
 - `archive_pattern` 
+- `asm_option` 
+- `asm_oracle_home`
+- `asm_password` 
+- `asm_tns` 
+- `asm_user` 
 - `auth_mode` 
 - `auth_type` 
 - `aws_region_code`
@@ -221,6 +232,7 @@ Optional:
 - `password` 
 - `path` 
 - `pattern` 
+- `pdb_name`
 - `pem_certificate` 
 - `port` 
 - `post_click_attribution_window_size` 
@@ -251,6 +263,7 @@ Optional:
 - `s3role_arn` 
 - `sales_account_sync_mode` 
 - `sales_accounts` 
+- `sap_user`
 - `secret` 
 - `secret_key` 
 - `secrets` 
@@ -283,6 +296,7 @@ Optional:
 - `test_table_name` 
 - `time_zone` 
 - `timeframe_months` 
+- `tns` 
 - `token_key` 
 - `token_secret`
 - `tunnel_host` 
@@ -292,6 +306,7 @@ Optional:
 - `update_config_on_each_sync` 
 - `update_method` 
 - `use_api_keys` 
+- `use_oracle_rac`
 - `use_webhooks` 
 - `user` 
 - `user_id` 

@@ -5,7 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.11...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.12...HEAD)
+
+## [0.6.12](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.11...v0.6.12)
+
+## Added support for HVA connectors
+- `fivetran_connector.config.pdb_name` missing field added
+- `fivetran_connector.config.agent_host` missing field added
+- `fivetran_connector.config.agent_port` missing field added
+- `fivetran_connector.config.agent_user` missing field added
+- `fivetran_connector.config.agent_password` missing field added
+- `fivetran_connector.config.agent_public_cert` missing field added
+- `fivetran_connector.config.agent_ora_home` missing field added
+- `fivetran_connector.config.tns` missing field added
+- `fivetran_connector.config.use_oracle_rac` missing field added
+- `fivetran_connector.config.asm_option` missing field added
+- `fivetran_connector.config.asm_user` missing field added
+- `fivetran_connector.config.asm_password` missing field added
+- `fivetran_connector.config.asm_oracle_home` missing field added
+- `fivetran_connector.config.asm_tns` missing field added
+- `fivetran_connector.config.sap_user` missing field added
+
+## Fixed
+- Issue with `fivetran_user.picture`: unable to set value to `null`
+- Issue with `fivetran_user.phone`: unable to set value to `null`
 
 ## [0.6.11](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.10...v0.6.11)
 

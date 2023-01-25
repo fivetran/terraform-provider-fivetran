@@ -3,6 +3,7 @@ package fivetran
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/fivetran/go-fivetran"
@@ -122,6 +123,8 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"function_trigger":   {Type: schema.TypeString, Optional: true, Sensitive: true},
 				"token_key":          {Type: schema.TypeString, Optional: true, Sensitive: true},
 				"token_secret":       {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"agent_password":     {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"asm_password":       {Type: schema.TypeString, Optional: true, Sensitive: true},
 
 				// Fields that are always have default value (and should be marked as Computed to prevent drifting)
 				// Boolean values
@@ -140,6 +143,8 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"eu_region":                         {Type: schema.TypeString, Optional: true, Computed: true},
 				"is_keypair":                        {Type: schema.TypeString, Optional: true, Computed: true},
 				"is_account_level_connector":        {Type: schema.TypeString, Optional: true, Computed: true},
+				"use_oracle_rac":                    {Type: schema.TypeString, Optional: true, Computed: true},
+				"asm_option":                        {Type: schema.TypeString, Optional: true, Computed: true},
 
 				// Enum & int values
 				"connection_type":                      {Type: schema.TypeString, Optional: true, Computed: true},
@@ -180,6 +185,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"tunnel_port":                          {Type: schema.TypeString, Optional: true, Computed: true},
 				"daily_api_call_limit":                 {Type: schema.TypeString, Optional: true, Computed: true},
 				"api_quota":                            {Type: schema.TypeString, Optional: true, Computed: true},
+				"agent_port":                           {Type: schema.TypeString, Optional: true, Computed: true},
 
 				// For db-like connectors it's a readonly field, but it also used in Braintree connector as public field
 				"public_key": {Type: schema.TypeString, Optional: true, Computed: true},
@@ -187,6 +193,16 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				// external_id is used among AWS connectors and correcponds to group_id. For some connectors it is computed, some expect it as a parameter.
 				"external_id": {Type: schema.TypeString, Optional: true, Computed: true},
 
+				"asm_oracle_home":       {Type: schema.TypeString, Optional: true},
+				"asm_tns":               {Type: schema.TypeString, Optional: true},
+				"pdb_name":              {Type: schema.TypeString, Optional: true},
+				"agent_host":            {Type: schema.TypeString, Optional: true},
+				"agent_user":            {Type: schema.TypeString, Optional: true},
+				"agent_public_cert":     {Type: schema.TypeString, Optional: true},
+				"agent_ora_home":        {Type: schema.TypeString, Optional: true},
+				"tns":                   {Type: schema.TypeString, Optional: true},
+				"asm_user":              {Type: schema.TypeString, Optional: true},
+				"sap_user":              {Type: schema.TypeString, Optional: true},
 				"sheet_id":              {Type: schema.TypeString, Optional: true},
 				"named_range":           {Type: schema.TypeString, Optional: true},
 				"client_id":             {Type: schema.TypeString, Optional: true},
@@ -591,6 +607,70 @@ func resourceConnectorUpdateCustomConfig(d *schema.ResourceData) *map[string]int
 	if v, ok := c["is_account_level_connector"].(string); ok && v != "" {
 		configMap["is_account_level_connector"] = strToBool(v)
 	}
+
+	// HVA connector parameters
+
+	if v, ok := c["pdb_name"].(string); ok && v != "" {
+		configMap["pdb_name"] = v
+	}
+
+	if v, ok := c["agent_host"].(string); ok && v != "" {
+		configMap["agent_host"] = v
+	}
+
+	if v, ok := c["agent_port"].(string); ok && v != "" {
+		configMap["agent_port"] = strToInt(v)
+	}
+
+	if v, ok := c["agent_user"].(string); ok && v != "" {
+		configMap["agent_user"] = v
+	}
+
+	if v, ok := c["agent_password"].(string); ok && v != "" {
+		configMap["agent_password"] = v
+	}
+
+	if v, ok := c["agent_public_cert"].(string); ok && v != "" {
+		configMap["agent_public_cert"] = v
+	}
+
+	if v, ok := c["agent_ora_home"].(string); ok && v != "" {
+		configMap["agent_ora_home"] = v
+	}
+
+	if v, ok := c["tns"].(string); ok && v != "" {
+		configMap["tns"] = v
+	}
+
+	if v, ok := c["use_oracle_rac"].(string); ok && v != "" {
+		configMap["use_oracle_rac"] = strToBool(v)
+	}
+
+	if v, ok := c["asm_option"].(string); ok && v != "" {
+		configMap["asm_option"] = strToBool(v)
+	}
+
+	if v, ok := c["asm_user"].(string); ok && v != "" {
+		configMap["asm_user"] = v
+	}
+
+	if v, ok := c["asm_password"].(string); ok && v != "" {
+		configMap["asm_password"] = v
+	}
+
+	if v, ok := c["asm_oracle_home"].(string); ok && v != "" {
+		configMap["asm_oracle_home"] = v
+	}
+
+	if v, ok := c["asm_tns"].(string); ok && v != "" {
+		configMap["asm_tns"] = v
+	}
+
+	if v, ok := c["sap_user"].(string); ok && v != "" {
+		configMap["sap_user"] = v
+	}
+
+	// HVA parameters end
 
 	return &configMap
 }
@@ -1544,6 +1624,8 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResp
 		mapAddStr(c, "token_key", resourceConfig["token_key"].(string))
 		mapAddStr(c, "token_secret", resourceConfig["token_secret"].(string))
 		mapAddXInterface(c, "api_keys", resourceConfig["api_keys"].([]interface{}))
+		mapAddStr(c, "agent_password", resourceConfig["agent_password"].(string))
+		mapAddStr(c, "asm_password", resourceConfig["asm_password"].(string))
 	}
 
 	mapAddXInterface(c, "project_credentials", resourceConnectorReadConfigFlattenProjectCredentials(resp, currentConfig))
@@ -1623,6 +1705,58 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResp
 
 	if v, ok := resp.Data.CustomConfig["sync_method"].(string); ok {
 		mapAddStr(c, "sync_method", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["pdb_name"].(string); ok {
+		mapAddStr(c, "pdb_name", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["agent_host"].(string); ok {
+		mapAddStr(c, "agent_host", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["agent_port"].(float64); ok {
+		mapAddStr(c, "agent_port", strconv.Itoa((int(v))))
+	}
+
+	if v, ok := resp.Data.CustomConfig["agent_user"].(string); ok {
+		mapAddStr(c, "agent_user", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["agent_public_cert"].(string); ok {
+		mapAddStr(c, "agent_public_cert", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["agent_ora_home"].(string); ok {
+		mapAddStr(c, "agent_ora_home", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["tns"].(string); ok {
+		mapAddStr(c, "tns", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["use_oracle_rac"].(bool); ok {
+		mapAddStr(c, "use_oracle_rac", boolToStr(v))
+	}
+
+	if v, ok := resp.Data.CustomConfig["asm_option"].(bool); ok {
+		mapAddStr(c, "asm_option", boolToStr(v))
+	}
+
+	if v, ok := resp.Data.CustomConfig["asm_user"].(string); ok {
+		mapAddStr(c, "asm_user", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["asm_oracle_home"].(string); ok {
+		mapAddStr(c, "asm_oracle_home", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["asm_tns"].(string); ok {
+		mapAddStr(c, "asm_tns", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["sap_user"].(string); ok {
+		mapAddStr(c, "sap_user", v)
 	}
 
 	mapAddStr(c, "sync_mode", resp.Data.Config.SyncMode)
