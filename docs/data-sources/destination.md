@@ -34,30 +34,34 @@ data "fivetran_destination" "dest" {
 
 Read-Only:
 
-- `auth` 
-- `auth_type` 
-- `bucket` 
-- `cluster_id`
-- `cluster_region`
-- `connection_type` 
-- `create_external_tables` 
-- `data_set_location` 
-- `database` 
-- `external_location` 
-- `host` 
-- `http_path` 
-- `password` 
-- `personal_access_token` 
-- `port`
-- `private_key`
-- `project_id` 
-- `public_key`
-- `role_arn` 
-- `secret_key`
-- `server_host_name` 
-- `tunnel_host` 
-- `tunnel_port` 
-- `tunnel_user` 
-- `user` 
+- `auth` (String)
+- `auth_type` (String)
+- `bucket` (String)
+- `catalog` (String)
+- `cluster_id` (String)
+- `cluster_region` (String)
+- `connection_type` (String)
+- `create_external_tables` (String)
+- `data_set_location` (String)
+- `database` (String)
+- `external_location` (String)
+- `host` (String)
+- `http_path` (String)
+- `is_private_key_encrypted` (String)
+- `passphrase` (String)
+- `password` (String)
+- `personal_access_token` (String)
+- `port` (Number)
+- `private_key` (String)
+- `project_id` (String)
+- `public_key` (String)
+- `role` (String)
+- `role_arn` (String)
+- `secret_key` (String)
+- `server_host_name` (String)
+- `tunnel_host` (String)
+- `tunnel_port` (String)
+- `tunnel_user` (String)
+- `user` (String)
 
 

@@ -8,8 +8,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-var limit = 1000        // REST API response objects limit per HTTP request
-const version = "0.6.5" // Current provider version
+var limit = 1000         // REST API response objects limit per HTTP request
+const version = "0.6.12" // Current provider version
 
 func Provider() *schema.Provider {
 	return &schema.Provider{
