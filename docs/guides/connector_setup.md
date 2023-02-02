@@ -170,3 +170,7 @@ resource "fivetran_connector" "connector" {
 ```bash
 terraform apply
 ```
+
+## Example configuration
+
+Example .tf file with configuration could be found [here](https://github.com/fivetran/terraform-provider-fivetran/tree/main/config-examples/connector_setup.tf).
