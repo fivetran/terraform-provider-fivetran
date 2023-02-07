@@ -326,6 +326,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"advertisers":              {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
 				"organizations":            {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
 				"account_ids":              {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"packed_mode_tables":       {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
 
 				"secrets_list": {Type: schema.TypeList, Optional: true,
 					Elem: &schema.Resource{
@@ -1324,6 +1325,9 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorCo
 	if v := c["public_key"].(string); v != "" {
 		fivetranConfig.PublicKey(v)
 	}
+	if v := c["packed_mode_tables"].([]interface{}); len(v) > 0 {
+		fivetranConfig.PackedModeTables(xInterfaceStrXStr(v))
+	}
 
 	return fivetranConfig
 }
@@ -1663,6 +1667,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResp
 	mapAddXInterface(c, "organizations", xStrXInterface(resp.Data.Config.Organizations))
 	mapAddXInterface(c, "account_ids", xStrXInterface(resp.Data.Config.AccountIDs))
 	mapAddXInterface(c, "advertisers_id", xStrXInterface(resp.Data.Config.AdvertisersID))
+	mapAddXInterface(c, "packed_mode_tables", xStrXInterface(resp.Data.Config.PackedModeTables))
 
 	// Boolean fields
 	mapAddStr(c, "is_ftps", boolPointerToStr(resp.Data.Config.IsFTPS))

@@ -360,6 +360,7 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"asm_oracle_home":   {Type: schema.TypeString, Computed: true},
 				"asm_tns":           {Type: schema.TypeString, Computed: true},
 				"sap_user":          {Type: schema.TypeString, Computed: true},
+				"packed_mode_tables":{Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
 			},
 		},
 	}
@@ -673,6 +674,7 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsRe
 	mapAddStr(c, "share_url", resp.Data.Config.ShareURL)
 	mapAddStr(c, "is_keypair", boolPointerToStr(resp.Data.Config.IsKeypair))
 	mapAddXInterface(c, "secrets_list", dataSourceConnectorReadConfigFlattenSecretsList(resp))
+	mapAddXInterface(c, "packed_mode_tables", xStrXInterface(resp.Data.Config.PackedModeTables))
 
 	if v, ok := resp.Data.CustomConfig["is_account_level_connector"].(bool); ok {
 		mapAddStr(c, "is_account_level_connector", boolToStr(v))

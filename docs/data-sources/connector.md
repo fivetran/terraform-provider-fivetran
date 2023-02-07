@@ -173,6 +173,7 @@ Read-Only:
 - `on_premise` 
 - `organization_id` 
 - `organizations` 
+- `packed_mode_tables` 
 - `pages` 
 - `password` 
 - `path` 
