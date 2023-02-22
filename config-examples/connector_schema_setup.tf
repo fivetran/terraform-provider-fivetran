@@ -38,7 +38,10 @@ resource "fivetran_connector" "connector" {
     group_id = fivetran_group.group.id
     service = "fivetran_log"
     sync_frequency = 60
-    paused = false 
+
+    # connector should be paused on first apply
+    paused = true 
+
     pause_after_trial = false
     run_setup_tests = true
 
@@ -53,4 +56,31 @@ resource "fivetran_connector" "connector" {
     depends_on = [
         fivetran_destination.destination
     ]
+}
+
+resource "fivetran_connector_schema_config" "connector_schema" {
+  connector_id = "fivetran_connector.connector.id"
+  schema_change_handling = "BLOCK_ALL"
+  schema {
+    name = "my_fivetran_log_connector"
+    table {
+      name = "log"
+      column {
+        name = "event"
+        enabled = "true"
+      }
+      column {
+        name = "message_data"
+        enabled = "true"
+      }
+      column {
+        name = "message_event"
+        enabled = "true"
+      }
+      column {
+        name = "sync_id"
+        enabled = "true"
+      }
+    }
+  }
 }

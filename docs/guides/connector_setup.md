@@ -104,68 +104,7 @@ resource "fivetran_connector" "connector" {
 }
 ```
 
-## Set up connector schema config
-
--> We have to create *paused* connector to avoid syncing unwanted data before schema config applied
-
-```hcl
-resource "fivetran_connector" "connector" {
-    ...
-    paused = true 
-    ...
-}
-```
-
-Once we apply such configuration - connector will be in paused state, but ready to sync. 
-
-Let's define what exactly we want to sync using `fivetran_connector_schema_config` resource:
-
-```hcl
-resource "fivetran_connector_schema_config" "connector_schema" {
-  connector_id = "fivetran_connector.connector.id"
-  schema_change_handling = "BLOCK_ALL"
-  schema {
-    name = "my_fivetran_log_connector"
-    table {
-      name = "log"
-      column {
-        name = "event"
-        enabled = "true"
-      }
-      column {
-        name = "message_data"
-        enabled = "true"
-      }
-      column {
-        name = "message_event"
-        enabled = "true"
-      }
-      column {
-        name = "sync_id"
-        enabled = "true"
-      }
-    }
-  }
-}
-```
-
 Now we are ready to apply our configuration:
-
-```bash
-terraform apply
-```
-
-After schema configuration applied we can un-pause our connector:
-
-```hcl
-resource "fivetran_connector" "connector" {
-    ...
-
-    paused = true 
-
-   ...
-}
-```
 
 ```bash
 terraform apply
