@@ -19,7 +19,8 @@ func resourceUser() *schema.Resource {
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
 		Schema: map[string]*schema.Schema{
 			"id": {Type: schema.TypeString, Computed: true},
-
+			// The REST API doesn't provide a method to change the the user's email address.
+			// That's why "ForceNew" is true.
 			"email":       {Type: schema.TypeString, Required: true, ForceNew: true},
 			"given_name":  {Type: schema.TypeString, Required: true},
 			"family_name": {Type: schema.TypeString, Required: true},
