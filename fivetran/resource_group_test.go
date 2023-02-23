@@ -172,7 +172,7 @@ func testFivetranGroupResourceDestroy(s *terraform.State) error {
 			return err
 		}
 		if response.Code != "NotFound" {
-			return errors.New("Group " + rs.Primary.ID + " still exists.")
+			return errors.New("Group " + rs.Primary.ID + " still exists. Response code: " + response.Code)
 		}
 
 	}
