@@ -171,8 +171,8 @@ func testFivetranGroupResourceDestroy(s *terraform.State) error {
 		if err.Error() != "status code: 404; expected: 200" {
 			return err
 		}
-		if response.Code != "NotFound" {
-			return errors.New("Group " + rs.Primary.ID + " still exists.")
+		if response.Code != "NotFound_Group" {
+			return errors.New("Group " + rs.Primary.ID + " still exists. Response code: " + response.Code)
 		}
 
 	}

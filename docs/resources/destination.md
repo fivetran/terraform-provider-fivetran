@@ -56,36 +56,38 @@ resource "fivetran_destination" "dest" {
 
 See [Destination Config](https://fivetran.com/docs/rest-api/destinations/config) for details.
 
-### Optional
+- `auth` (String)
+- `auth_type` (String)
+- `bucket` (String)
+- `catalog` (String)
+- `cluster_id` (String)
+- `cluster_region` (String)
+- `connection_type` (String)
+- `create_external_tables` (String)
+- `data_set_location` (String)
+- `database` (String)
+- `external_location` (String)
+- `host` (String)
+- `http_path` (String)
+- `is_private_key_encrypted` (String)
+- `passphrase` (String, Sensitive)
+- `password` (String, Sensitive)
+- `personal_access_token` (String, Sensitive)
+- `port` (Number)
+- `private_key` (String, Sensitive)
+- `project_id` (String)
+- `role` (String)
+- `role_arn` (String, Sensitive)
+- `secret_key` (String, Sensitive)
+- `server_host_name` (String)
+- `tunnel_host` (String)
+- `tunnel_port` (String)
+- `tunnel_user` (String)
+- `user` (String)
 
-- `auth`
-- `auth_type` 
-- `bucket` 
-- `cluster_id`
-- `cluster_region`
-- `connection_type` 
-- `create_external_tables` 
-- `data_set_location` 
-- `database`
-- `external_location` 
-- `host` 
-- `http_path` 
-- `password` 
-- `personal_access_token` 
-- `port`
-- `private_key`
-- `project_id`
-- `role_arn` 
-- `secret_key`
-- `server_host_name` 
-- `tunnel_host` 
-- `tunnel_port` 
-- `tunnel_user` 
-- `user` 
+Read-Only:
 
-### ReadOnly
-
-- `public_key`
+- `public_key` (String)
 
 ## Setup tests
 

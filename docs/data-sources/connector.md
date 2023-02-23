@@ -53,263 +53,296 @@ Read-Only:
 
 Read-Only:
 
-- `abs_connection_string` 
-- `abs_container_name` 
-- `access_key_id` 
-- `access_token` 
-- `account` 
-- `account_id` 
-- `account_ids` 
-- `accounts` 
-- `action_breakdowns` 
-- `action_report_time` 
-- `adobe_analytics_configurations` - see [below for nested schema](#nestedblock--config--adobe_analytics_configurations)
-- `advertisables` 
-- `advertisers` 
-- `advertisers_id` 
-- `aggregation` 
-- `always_encrypted` 
-- `api_access_token` 
-- `api_key` 
-- `api_keys` 
-- `api_quota` 
-- `api_secret` 
-- `api_token` 
-- `api_type`
-- `api_url` 
-- `api_version` 
-- `app_sync_mode` 
-- `append_file_option` 
-- `apps` 
-- `archive_pattern` 
-- `auth_mode` 
-- `auth_type` 
-- `authorization_method` 
-- `aws_region_code`
-- `base_url`
-- `breakdowns` 
-- `bucket` 
-- `bucket_name` 
-- `bucket_service` 
-- `certificate` 
-- `click_attribution_window` 
-- `client_id` 
-- `client_secret` 
-- `cloud_storage_type` 
-- `columns` 
-- `compression` 
-- `config_method` 
-- `config_type` 
-- `connection_string` 
-- `connection_type`
-- `consumer_group` 
-- `consumer_key` 
-- `consumer_secret` 
-- `container_name` 
-- `conversion_report_time` 
-- `conversion_window_size` 
-- `custom_tables` - see [below for nested schema](#nestedobjatt--config--custom_tables)
-- `customer_id` 
-- `daily_api_call_limit` 
-- `data_center` 
-- `database` 
-- `dataset_id` 
-- `datasource` 
-- `date_granularity` 
-- `delimiter` 
-- `dimension_attributes` 
-- `dimensions` 
-- `domain` 
-- `domain_name` 
-- `elements` 
-- `email` 
-- `enable_all_dimension_combinations`
-- `encryption_key`
-- `endpoint` 
-- `engagement_attribution_window`
-- `entity_id` 
-- `escape_char` 
-- `eu_region` 
-- `external_id` 
-- `fields` 
-- `file_type` 
-- `finance_account_sync_mode` 
-- `finance_accounts` 
-- `folder_id`
-- `ftp_host` 
-- `ftp_password` 
-- `ftp_port` 
-- `ftp_user` 
-- `function` 
-- `function_app` 
-- `function_key` 
-- `function_name` 
-- `function_trigger` 
-- `gcs_bucket` 
-- `gcs_folder` 
-- `home_folder` 
-- `host` 
-- `hosts` 
-- `identity` 
-- `instance` 
-- `integration_key` 
-- `is_ftps` 
-- `is_multi_entity_feature_enabled`
-- `is_new_package`
-- `is_secure` 
-- `key` 
-- `last_synced_changes__utc_` 
-- `latest_version` 
-- `manager_accounts` 
-- `merchant_id` 
-- `message_type` 
-- `metrics` 
-- `named_range` 
-- `network_code` 
-- `null_sequence` 
-- `oauth_token` 
-- `oauth_token_secret` 
-- `on_error` 
-- `on_premise` 
-- `organization_id` 
-- `organizations` 
-- `pages` 
-- `password` 
-- `path` 
-- `pattern` 
-- `pem_certificate` 
-- `port` 
-- `post_click_attribution_window_size` 
-- `prebuilt_report` 
-- `prefix` 
-- `private_key` 
-- `profiles` 
-- `project_credentials` - see [below for nested schema](#nestedobjatt--config--project_credentials)
-- `project_id` 
-- `projects` 
-- `public_key` 
-- `publication_name` 
-- `query_id` 
-- `region` 
-- `replication_slot` 
-- `report_configuration_ids` 
-- `report_suites` 
-- `report_type` 
-- `report_url` 
-- `reports` - see [below for nested schema](#nestedobjatt--config--reports)
-- `repositories` 
-- `resource_url` 
-- `role` 
-- `role_arn` 
-- `s3bucket` 
-- `s3external_id` 
-- `s3folder` 
-- `s3role_arn` 
-- `sales_account_sync_mode` 
-- `sales_accounts` 
-- `secret` 
-- `secret_key` 
-- `secrets` 
-- `security_protocol` 
-- `selected_exports` 
-- `server_url` 
-- `servers` 
-- `service_version` 
-- `sftp_host` 
-- `sftp_is_key_pair` 
-- `sftp_password` 
-- `sftp_port` 
-- `sftp_user` 
-- `sheet_id` 
-- `shop` 
-- `sid` 
-- `site_urls` 
-- `skip_after` 
-- `skip_before`
-- `soap_uri`
-- `source` 
-- `sub_domain` 
-- `subdomain` 
-- `swipe_attribution_window` 
-- `sync_data_locker` 
-- `sync_format` 
-- `sync_method` 
-- `sync_mode` 
-- `sync_type` 
-- `technical_account_id` 
-- `test_table_name` 
-- `time_zone` 
-- `timeframe_months` 
-- `token_key` 
-- `token_secret`
-- `tunnel_host` 
-- `tunnel_port` 
-- `tunnel_user` 
-- `unique_id` 
-- `update_config_on_each_sync` 
-- `update_method` 
-- `use_api_keys` 
-- `use_webhooks` 
-- `user`
-- `user_id`
-- `user_key` 
-- `user_name` 
-- `user_profiles` 
-- `username` 
-- `view_attribution_window` 
-- `view_through_attribution_window_size` 
+- `abs_connection_string` (String)
+- `abs_container_name` (String)
+- `access_key_id` (String)
+- `access_token` (String)
+- `account` (String)
+- `account_id` (String)
+- `account_ids` (List of String)
+- `accounts` (List of String)
+- `action_breakdowns` (List of String)
+- `action_report_time` (String)
+- `adobe_analytics_configurations` (List of Object) (see [below for nested schema](#nestedobjatt--config--adobe_analytics_configurations))
+- `advertisables` (List of String)
+- `advertisers` (List of String)
+- `advertisers_id` (List of String)
+- `agent_host` (String)
+- `agent_ora_home` (String)
+- `agent_password` (String)
+- `agent_port` (String)
+- `agent_public_cert` (String)
+- `agent_user` (String)
+- `aggregation` (String)
+- `always_encrypted` (String)
+- `api_access_token` (String)
+- `api_key` (String)
+- `api_keys` (List of String)
+- `api_quota` (String)
+- `api_secret` (String)
+- `api_token` (String)
+- `api_type` (String)
+- `api_url` (String)
+- `api_version` (String)
+- `app_sync_mode` (String)
+- `append_file_option` (String)
+- `apps` (List of String)
+- `archive_pattern` (String)
+- `asm_option` (String)
+- `asm_oracle_home` (String)
+- `asm_password` (String)
+- `asm_tns` (String)
+- `asm_user` (String)
+- `auth_mode` (String)
+- `auth_type` (String)
+- `authorization_method` (String)
+- `aws_region_code` (String)
+- `base_url` (String)
+- `breakdowns` (List of String)
+- `bucket` (String)
+- `bucket_name` (String)
+- `bucket_service` (String)
+- `certificate` (String)
+- `click_attribution_window` (String)
+- `client_id` (String)
+- `client_secret` (String)
+- `cloud_storage_type` (String)
+- `columns` (List of String)
+- `compression` (String)
+- `config_method` (String)
+- `config_type` (String)
+- `connection_string` (String)
+- `connection_type` (String)
+- `consumer_group` (String)
+- `consumer_key` (String)
+- `consumer_secret` (String)
+- `container_name` (String)
+- `conversion_report_time` (String)
+- `conversion_window_size` (String)
+- `custom_tables` (List of Object) (see [below for nested schema](#nestedobjatt--config--custom_tables))
+- `customer_id` (String)
+- `daily_api_call_limit` (String)
+- `data_center` (String)
+- `database` (String)
+- `dataset_id` (String)
+- `datasource` (String)
+- `date_granularity` (String)
+- `delimiter` (String)
+- `dimension_attributes` (List of String)
+- `dimensions` (List of String)
+- `domain` (String)
+- `domain_name` (String)
+- `elements` (List of String)
+- `email` (String)
+- `enable_all_dimension_combinations` (String)
+- `encryption_key` (String)
+- `endpoint` (String)
+- `engagement_attribution_window` (String)
+- `entity_id` (String)
+- `escape_char` (String)
+- `eu_region` (String)
+- `external_id` (String)
+- `fields` (List of String)
+- `file_type` (String)
+- `finance_account_sync_mode` (String)
+- `finance_accounts` (List of String)
+- `folder_id` (String)
+- `ftp_host` (String)
+- `ftp_password` (String)
+- `ftp_port` (String)
+- `ftp_user` (String)
+- `function` (String)
+- `function_app` (String)
+- `function_key` (String)
+- `function_name` (String)
+- `function_trigger` (String)
+- `gcs_bucket` (String)
+- `gcs_folder` (String)
+- `home_folder` (String)
+- `host` (String)
+- `hosts` (List of String)
+- `identity` (String)
+- `instance` (String)
+- `integration_key` (String)
+- `is_account_level_connector` (String)
+- `is_ftps` (String)
+- `is_keypair` (String)
+- `is_multi_entity_feature_enabled` (String)
+- `is_new_package` (String)
+- `is_secure` (String)
+- `key` (String)
+- `last_synced_changes__utc_` (String)
+- `latest_version` (String)
+- `manager_accounts` (List of String)
+- `merchant_id` (String)
+- `message_type` (String)
+- `metrics` (List of String)
+- `named_range` (String)
+- `network_code` (String)
+- `null_sequence` (String)
+- `oauth_token` (String)
+- `oauth_token_secret` (String)
+- `on_error` (String)
+- `on_premise` (String)
+- `organization_id` (String)
+- `organizations` (List of String)
+- `pages` (List of String)
+- `password` (String)
+- `pat` (String)
+- `path` (String)
+- `pattern` (String)
+- `pdb_name` (String)
+- `pem_certificate` (String)
+- `port` (String)
+- `post_click_attribution_window_size` (String)
+- `prebuilt_report` (String)
+- `prefix` (String)
+- `private_key` (String)
+- `profiles` (List of String)
+- `project_credentials` (List of Object) (see [below for nested schema](#nestedobjatt--config--project_credentials))
+- `project_id` (String)
+- `projects` (List of String)
+- `public_key` (String)
+- `publication_name` (String)
+- `query_id` (String)
+- `region` (String)
+- `replication_slot` (String)
+- `report_configuration_ids` (List of String)
+- `report_suites` (List of String)
+- `report_type` (String)
+- `report_url` (String)
+- `reports` (List of Object) (see [below for nested schema](#nestedobjatt--config--reports))
+- `repositories` (List of String)
+- `resource_url` (String)
+- `role` (String)
+- `role_arn` (String)
+- `s3bucket` (String)
+- `s3external_id` (String)
+- `s3folder` (String)
+- `s3role_arn` (String)
+- `sales_account_sync_mode` (String)
+- `sales_accounts` (List of String)
+- `sap_user` (String)
+- `secret` (String)
+- `secret_key` (String)
+- `secrets` (String)
+- `secrets_list` (List of Object) (see [below for nested schema](#nestedobjatt--config--secrets_list))
+- `security_protocol` (String)
+- `selected_exports` (List of String)
+- `server_url` (String)
+- `servers` (String)
+- `service_version` (String)
+- `sftp_host` (String)
+- `sftp_is_key_pair` (String)
+- `sftp_password` (String)
+- `sftp_port` (String)
+- `sftp_user` (String)
+- `share_url` (String)
+- `sheet_id` (String)
+- `shop` (String)
+- `sid` (String)
+- `site_urls` (List of String)
+- `skip_after` (String)
+- `skip_before` (String)
+- `soap_uri` (String)
+- `source` (String)
+- `sub_domain` (String)
+- `subdomain` (String)
+- `swipe_attribution_window` (String)
+- `sync_data_locker` (String)
+- `sync_format` (String)
+- `sync_method` (String)
+- `sync_mode` (String)
+- `sync_type` (String)
+- `table` (String)
+- `technical_account_id` (String)
+- `test_table_name` (String)
+- `time_zone` (String)
+- `timeframe_months` (String)
+- `tns` (String)
+- `token_key` (String)
+- `token_secret` (String)
+- `tunnel_host` (String)
+- `tunnel_port` (String)
+- `tunnel_user` (String)
+- `unique_id` (String)
+- `update_config_on_each_sync` (String)
+- `update_method` (String)
+- `use_api_keys` (String)
+- `use_oracle_rac` (String)
+- `use_webhooks` (String)
+- `user` (String)
+- `user_id` (String)
+- `user_key` (String)
+- `user_name` (String)
+- `user_profiles` (List of String)
+- `username` (String)
+- `view_attribution_window` (String)
+- `view_through_attribution_window_size` (String)
 
-<a id="nestedblock--config--adobe_analytics_configurations"></a>
+<a id="nestedobjatt--config--adobe_analytics_configurations"></a>
 ### Nested Schema for `config.adobe_analytics_configurations`
 
 Read-Only:
 
-- `sync_mode` 
-- `report_suites` 
-- `elements` 
-- `metrics` 
-- `calculated_metrics` 
-- `segments` 
+- `calculated_metrics` (List of String)
+- `elements` (List of String)
+- `metrics` (List of String)
+- `report_suites` (List of String)
+- `segments` (List of String)
+- `sync_mode` (String)
+
 
 <a id="nestedobjatt--config--custom_tables"></a>
 ### Nested Schema for `config.custom_tables`
 
 Read-Only:
 
-- `action_breakdowns` 
-- `action_report_time` 
-- `aggregation` 
-- `breakdowns` 
-- `click_attribution_window` 
-- `config_type` 
-- `fields` 
-- `prebuilt_report_name` 
-- `table_name` 
-- `view_attribution_window` 
+- `action_breakdowns` (List of String)
+- `action_report_time` (String)
+- `aggregation` (String)
+- `breakdowns` (List of String)
+- `click_attribution_window` (String)
+- `config_type` (String)
+- `fields` (List of String)
+- `prebuilt_report_name` (String)
+- `table_name` (String)
+- `view_attribution_window` (String)
+
 
 <a id="nestedobjatt--config--project_credentials"></a>
 ### Nested Schema for `config.project_credentials`
 
 Read-Only:
 
-- `api_key` 
-- `project` 
-- `secret_key` 
+- `api_key` (String)
+- `project` (String)
+- `secret_key` (String)
+
 
 <a id="nestedobjatt--config--reports"></a>
 ### Nested Schema for `config.reports`
 
 Read-Only:
 
-- `config_type` 
-- `dimensions` 
-- `fields` 
-- `filter` 
-- `metrics` 
-- `prebuilt_report` 
-- `report_type` 
-- `segments` 
-- `table` 
+- `config_type` (String)
+- `dimensions` (List of String)
+- `fields` (List of String)
+- `filter` (String)
+- `metrics` (List of String)
+- `prebuilt_report` (String)
+- `report_type` (String)
+- `segments` (List of String)
+- `table` (String)
+
+
+<a id="nestedobjatt--config--secrets_list"></a>
+### Nested Schema for `config.secrets_list`
+
+Read-Only:
+
+- `key` (String)
+- `value` (String)
 
 <a id="nestedatt--status"></a>
 ### Nested Schema for `status`
