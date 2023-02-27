@@ -402,6 +402,7 @@ const (
 			"advertisers": 				["advertiser"],
 			"organizations": 			["organization"],
 			"account_ids": 				["account_id"],
+			"packed_mode_tables":       ["packed_mode_table"],
 
 			"adobe_analytics_configurations": [{
 				"sync_mode": 			"sync_mode",
@@ -746,6 +747,9 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 
 			assertKeyExists(t, config, "account_ids")
 			assertArrayItems(t, config["account_ids"].([]interface{}), append(make([]interface{}, 0), "account_id"))
+
+			assertKeyExists(t, config, "packed_mode_tables")
+			assertArrayItems(t, config["packed_mode_tables"].([]interface{}), append(make([]interface{}, 0), "packed_mode_table"))
 
 			assertKeyExists(t, config, "adobe_analytics_configurations")
 
@@ -1164,6 +1168,8 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 				advertisers = ["advertiser"]
 				organizations = ["organization"]
 				account_ids = ["account_id"]
+				packed_mode_tables = ["packed_mode_table"]
+
 
 				adobe_analytics_configurations {
 					sync_mode = "sync_mode"

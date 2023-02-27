@@ -326,6 +326,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"advertisers":              {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
 				"organizations":            {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
 				"account_ids":              {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"packed_mode_tables":       {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
 
 				"secrets_list": {Type: schema.TypeList, Optional: true,
 					Elem: &schema.Resource{
@@ -668,6 +669,10 @@ func resourceConnectorUpdateCustomConfig(d *schema.ResourceData) *map[string]int
 
 	if v, ok := c["sap_user"].(string); ok && v != "" {
 		configMap["sap_user"] = v
+	}
+
+	if v, ok := c["packed_mode_tables"].([]interface{}); ok {
+		configMap["packed_mode_tables"] = xInterfaceStrXStr(v)
 	}
 
 	// HVA parameters end
@@ -1663,6 +1668,10 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResp
 	mapAddXInterface(c, "organizations", xStrXInterface(resp.Data.Config.Organizations))
 	mapAddXInterface(c, "account_ids", xStrXInterface(resp.Data.Config.AccountIDs))
 	mapAddXInterface(c, "advertisers_id", xStrXInterface(resp.Data.Config.AdvertisersID))
+
+	if v, ok := resp.Data.CustomConfig["packed_mode_tables"].([]interface{}); ok {
+		mapAddXInterface(c, "packed_mode_tables", v)
+	}
 
 	// Boolean fields
 	mapAddStr(c, "is_ftps", boolPointerToStr(resp.Data.Config.IsFTPS))

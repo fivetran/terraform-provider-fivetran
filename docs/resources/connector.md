@@ -230,6 +230,7 @@ Optional:
 - `on_premise` (String)
 - `organization_id` (String)
 - `organizations` (List of String)
+- `packed_mode_tables` (List of String)
 - `pages` (List of String)
 - `password` (String, Sensitive)
 - `pat` (String, Sensitive)
