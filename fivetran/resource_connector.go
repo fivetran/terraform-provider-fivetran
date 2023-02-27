@@ -295,6 +295,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"soap_uri":              {Type: schema.TypeString, Optional: true},
 				"user_id":               {Type: schema.TypeString, Optional: true},
 				"share_url":             {Type: schema.TypeString, Optional: true},
+				"organization":          {Type: schema.TypeString, Optional: true},
 
 				// Collections
 				"report_suites":            {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
@@ -669,6 +670,10 @@ func resourceConnectorUpdateCustomConfig(d *schema.ResourceData) *map[string]int
 
 	if v, ok := c["sap_user"].(string); ok && v != "" {
 		configMap["sap_user"] = v
+	}
+
+	if v, ok := c["organization"].(string); ok && v != "" {
+		configMap["organization"] = v
 	}
 
 	if v, ok := c["packed_mode_tables"].([]interface{}); ok {
@@ -1766,6 +1771,10 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResp
 
 	if v, ok := resp.Data.CustomConfig["sap_user"].(string); ok {
 		mapAddStr(c, "sap_user", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["organization"].(string); ok {
+		mapAddStr(c, "organization", v)
 	}
 
 	mapAddStr(c, "sync_mode", resp.Data.Config.SyncMode)

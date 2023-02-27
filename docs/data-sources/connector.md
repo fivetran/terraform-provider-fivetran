@@ -184,6 +184,7 @@ Read-Only:
 - `oauth_token_secret` (String)
 - `on_error` (String)
 - `on_premise` (String)
+- `organization` (String)
 - `organization_id` (String)
 - `organizations` (List of String)
 - `packed_mode_tables` (List of String)

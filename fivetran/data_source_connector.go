@@ -360,6 +360,7 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"asm_oracle_home":    {Type: schema.TypeString, Computed: true},
 				"asm_tns":            {Type: schema.TypeString, Computed: true},
 				"sap_user":           {Type: schema.TypeString, Computed: true},
+				"organization":       {Type: schema.TypeString, Computed: true},
 				"packed_mode_tables": {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
 			},
 		},
@@ -725,6 +726,9 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsRe
 	}
 	if v, ok := resp.Data.CustomConfig["sap_user"].(string); ok {
 		mapAddStr(c, "sap_user", v)
+	}
+	if v, ok := resp.Data.CustomConfig["organization"].(string); ok {
+		mapAddStr(c, "organization", v)
 	}
 	if v, ok := resp.Data.CustomConfig["packed_mode_tables"].([]interface{}); ok {
 		mapAddXInterface(c, "packed_mode_tables", v)

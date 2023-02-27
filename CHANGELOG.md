@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Added
 - `fivetran_connector.config.packed_mode_tables` field support
+- `fivetran_connector.config.organization` field support
 
 ## [0.6.12](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.11...v0.6.12)
 
