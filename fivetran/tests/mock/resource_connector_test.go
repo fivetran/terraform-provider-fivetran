@@ -372,6 +372,7 @@ const (
 			"soap_uri":             "soap_uri",
 			"user_id":              "user_id",
 			"share_url":            "share_url",
+			"organization":         "organization",
 
 			"report_suites":            ["report_suite"],
 			"elements":                 ["element"],
@@ -402,6 +403,7 @@ const (
 			"advertisers": 				["advertiser"],
 			"organizations": 			["organization"],
 			"account_ids": 				["account_id"],
+			"packed_mode_tables":       ["packed_mode_table"],
 
 			"adobe_analytics_configurations": [{
 				"sync_mode": 			"sync_mode",
@@ -659,6 +661,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "soap_uri", "soap_uri")
 			assertKeyExistsAndHasValue(t, config, "user_id", "user_id")
 			assertKeyExistsAndHasValue(t, config, "share_url", "share_url")
+			assertKeyExistsAndHasValue(t, config, "organization", "organization")
 
 			assertKeyExists(t, config, "report_suites")
 			assertArrayItems(t, config["report_suites"].([]interface{}), append(make([]interface{}, 0), "report_suite"))
@@ -746,6 +749,9 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 
 			assertKeyExists(t, config, "account_ids")
 			assertArrayItems(t, config["account_ids"].([]interface{}), append(make([]interface{}, 0), "account_id"))
+
+			assertKeyExists(t, config, "packed_mode_tables")
+			assertArrayItems(t, config["packed_mode_tables"].([]interface{}), append(make([]interface{}, 0), "packed_mode_table"))
 
 			assertKeyExists(t, config, "adobe_analytics_configurations")
 
@@ -1134,6 +1140,7 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 				soap_uri = "soap_uri"
 				user_id = "user_id"
 				share_url = "share_url"
+				organization = "organization"
 
 				report_suites = ["report_suite"]
 				elements = ["element"]
@@ -1164,6 +1171,8 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 				advertisers = ["advertiser"]
 				organizations = ["organization"]
 				account_ids = ["account_id"]
+				packed_mode_tables = ["packed_mode_table"]
+
 
 				adobe_analytics_configurations {
 					sync_mode = "sync_mode"
