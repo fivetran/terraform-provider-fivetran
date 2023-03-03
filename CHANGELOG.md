@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.12...HEAD)
 
+## [0.6.14](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.12...v0.6.13)
+
+## Added
+- `fivetran_connector.config.domain_host_name` field support
+- `fivetran_connector.config.access_key` field support
+- `fivetran_connector.config.client_name` field support
+- `fivetran_connector.config.domain_type` field support
+- `fivetran_connector.config.connection_method` field support
+
 ## [0.6.13](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.12...v0.6.13)
 
 ## Added

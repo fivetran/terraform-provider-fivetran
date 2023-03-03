@@ -296,6 +296,11 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"user_id":               {Type: schema.TypeString, Optional: true},
 				"share_url":             {Type: schema.TypeString, Optional: true},
 				"organization":          {Type: schema.TypeString, Optional: true},
+				"access_key":            {Type: schema.TypeString, Optional: true},
+				"domain_host_name":      {Type: schema.TypeString, Optional: true},
+				"client_name":           {Type: schema.TypeString, Optional: true},
+				"domain_type":           {Type: schema.TypeString, Optional: true},
+				"connection_method":     {Type: schema.TypeString, Optional: true},
 
 				// Collections
 				"report_suites":            {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
@@ -1775,6 +1780,26 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResp
 
 	if v, ok := resp.Data.CustomConfig["organization"].(string); ok {
 		mapAddStr(c, "organization", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["access_key"].(string); ok {
+		mapAddStr(c, "access_key", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["domain_host_name"].(string); ok {
+		mapAddStr(c, "domain_host_name", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["client_name"].(string); ok {
+		mapAddStr(c, "client_name", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["domain_type"].(string); ok {
+		mapAddStr(c, "domain_type", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["connection_method"].(string); ok {
+		mapAddStr(c, "connection_method", v)
 	}
 
 	mapAddStr(c, "sync_mode", resp.Data.Config.SyncMode)

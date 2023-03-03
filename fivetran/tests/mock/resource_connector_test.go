@@ -373,6 +373,11 @@ const (
 			"user_id":              "user_id",
 			"share_url":            "share_url",
 			"organization":         "organization",
+			"access_key":           "access_key",
+			"domain_host_name":     "domain_host_name",
+			"client_name":          "client_name",
+			"domain_type":          "domain_type",
+			"connection_method":    "connection_method",
 
 			"report_suites":            ["report_suite"],
 			"elements":                 ["element"],
@@ -662,6 +667,11 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "user_id", "user_id")
 			assertKeyExistsAndHasValue(t, config, "share_url", "share_url")
 			assertKeyExistsAndHasValue(t, config, "organization", "organization")
+			assertKeyExistsAndHasValue(t, config, "access_key", "access_key")
+			assertKeyExistsAndHasValue(t, config, "domain_host_name", "domain_host_name")
+			assertKeyExistsAndHasValue(t, config, "client_name", "client_name")
+			assertKeyExistsAndHasValue(t, config, "domain_type", "domain_type")
+			assertKeyExistsAndHasValue(t, config, "connection_method", "connection_method")
 
 			assertKeyExists(t, config, "report_suites")
 			assertArrayItems(t, config["report_suites"].([]interface{}), append(make([]interface{}, 0), "report_suite"))
@@ -1141,6 +1151,11 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 				user_id = "user_id"
 				share_url = "share_url"
 				organization = "organization"
+				access_key = "access_key"
+				domain_host_name = "domain_host_name"
+				client_name = "client_name"
+				domain_type = "domain_type"
+				connection_method = "connection_method"
 
 				report_suites = ["report_suite"]
 				elements = ["element"]

@@ -362,6 +362,11 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"sap_user":           {Type: schema.TypeString, Computed: true},
 				"organization":       {Type: schema.TypeString, Computed: true},
 				"packed_mode_tables": {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"access_key":         {Type: schema.TypeString, Computed: true},
+				"domain_host_name":   {Type: schema.TypeString, Computed: true},
+				"client_name":        {Type: schema.TypeString, Computed: true},
+				"domain_type":        {Type: schema.TypeString, Computed: true},
+				"connection_method":  {Type: schema.TypeString, Computed: true},
 			},
 		},
 	}
@@ -732,6 +737,24 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsRe
 	}
 	if v, ok := resp.Data.CustomConfig["packed_mode_tables"].([]interface{}); ok {
 		mapAddXInterface(c, "packed_mode_tables", v)
+	}
+	if v, ok := resp.Data.CustomConfig["access_key"].(string); ok {
+		mapAddStr(c, "accessKey", v)
+	}
+	if v, ok := resp.Data.CustomConfig["domain_host_name"].(string); ok {
+		mapAddStr(c, "domain_host_name", v)
+	}
+	if v, ok := resp.Data.CustomConfig["client_name"].(string); ok {
+		mapAddStr(c, "client_name", v)
+	}
+	if v, ok := resp.Data.CustomConfig["domain_type"].(string); ok {
+		mapAddStr(c, "domain_type", v)
+	}
+	if v, ok := resp.Data.CustomConfig["domain_type"].(string); ok {
+		mapAddStr(c, "domain_type", v)
+	}
+	if v, ok := resp.Data.CustomConfig["connection_method"].(string); ok {
+		mapAddStr(c, "connection_method", v)
 	}
 
 	config[0] = c
