@@ -739,7 +739,7 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsRe
 		mapAddXInterface(c, "packed_mode_tables", v)
 	}
 	if v, ok := resp.Data.CustomConfig["access_key"].(string); ok {
-		mapAddStr(c, "accessKey", v)
+		mapAddStr(c, "access_key", v)
 	}
 	if v, ok := resp.Data.CustomConfig["domain_host_name"].(string); ok {
 		mapAddStr(c, "domain_host_name", v)
