@@ -102,6 +102,11 @@ Optional:
 
 - `abs_connection_string` (String)
 - `abs_container_name` (String)
+- `access_key` (String) 
+- `domain_host_name` (String)
+- `client_name` (String)
+- `domain_type` (String)
+- `connection_method` (String)
 - `access_key_id` (String)
 - `access_token` (String, Sensitive)
 - `account` (String)
