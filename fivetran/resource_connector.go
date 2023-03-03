@@ -685,6 +685,26 @@ func resourceConnectorUpdateCustomConfig(d *schema.ResourceData) *map[string]int
 		configMap["packed_mode_tables"] = xInterfaceStrXStr(v)
 	}
 
+	if v, ok := c["access_key"].(string); ok && v != "" {
+		configMap["access_key"] = v
+	}
+
+	if v, ok := c["domain_host_name"].(string); ok && v != "" {
+		configMap["domain_host_name"] = v
+	}
+
+	if v, ok := c["client_name"].(string); ok && v != "" {
+		configMap["client_name"] = v
+	}
+
+	if v, ok := c["domain_type"].(string); ok && v != "" {
+		configMap["domain_type"] = v
+	}
+
+	if v, ok := c["connection_method"].(string); ok && v != "" {
+		configMap["connection_method"] = v
+	}
+
 	// HVA parameters end
 
 	return &configMap
