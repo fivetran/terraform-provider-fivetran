@@ -345,28 +345,29 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 						},
 					},
 				},
-				"pdb_name":           {Type: schema.TypeString, Computed: true},
-				"agent_host":         {Type: schema.TypeString, Computed: true},
-				"agent_port":         {Type: schema.TypeString, Computed: true},
-				"agent_user":         {Type: schema.TypeString, Computed: true},
-				"agent_password":     {Type: schema.TypeString, Computed: true},
-				"agent_public_cert":  {Type: schema.TypeString, Computed: true},
-				"agent_ora_home":     {Type: schema.TypeString, Computed: true},
-				"tns":                {Type: schema.TypeString, Computed: true},
-				"use_oracle_rac":     {Type: schema.TypeString, Computed: true},
-				"asm_option":         {Type: schema.TypeString, Computed: true},
-				"asm_user":           {Type: schema.TypeString, Computed: true},
-				"asm_password":       {Type: schema.TypeString, Computed: true},
-				"asm_oracle_home":    {Type: schema.TypeString, Computed: true},
-				"asm_tns":            {Type: schema.TypeString, Computed: true},
-				"sap_user":           {Type: schema.TypeString, Computed: true},
-				"organization":       {Type: schema.TypeString, Computed: true},
-				"packed_mode_tables": {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"access_key":         {Type: schema.TypeString, Computed: true},
-				"domain_host_name":   {Type: schema.TypeString, Computed: true},
-				"client_name":        {Type: schema.TypeString, Computed: true},
-				"domain_type":        {Type: schema.TypeString, Computed: true},
-				"connection_method":  {Type: schema.TypeString, Computed: true},
+				"pdb_name":             {Type: schema.TypeString, Computed: true},
+				"agent_host":           {Type: schema.TypeString, Computed: true},
+				"agent_port":           {Type: schema.TypeString, Computed: true},
+				"agent_user":           {Type: schema.TypeString, Computed: true},
+				"agent_password":       {Type: schema.TypeString, Computed: true},
+				"agent_public_cert":    {Type: schema.TypeString, Computed: true},
+				"agent_ora_home":       {Type: schema.TypeString, Computed: true},
+				"tns":                  {Type: schema.TypeString, Computed: true},
+				"use_oracle_rac":       {Type: schema.TypeString, Computed: true},
+				"asm_option":           {Type: schema.TypeString, Computed: true},
+				"asm_user":             {Type: schema.TypeString, Computed: true},
+				"asm_password":         {Type: schema.TypeString, Computed: true},
+				"asm_oracle_home":      {Type: schema.TypeString, Computed: true},
+				"asm_tns":              {Type: schema.TypeString, Computed: true},
+				"sap_user":             {Type: schema.TypeString, Computed: true},
+				"organization":         {Type: schema.TypeString, Computed: true},
+				"packed_mode_tables":   {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"access_key":           {Type: schema.TypeString, Computed: true},
+				"domain_host_name":     {Type: schema.TypeString, Computed: true},
+				"client_name":          {Type: schema.TypeString, Computed: true},
+				"domain_type":          {Type: schema.TypeString, Computed: true},
+				"connection_method":    {Type: schema.TypeString, Computed: true},
+				"is_single_table_mode": {Type: schema.TypeString, Computed: true},
 			},
 		},
 	}
@@ -755,6 +756,9 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsRe
 	}
 	if v, ok := resp.Data.CustomConfig["connection_method"].(string); ok {
 		mapAddStr(c, "connection_method", v)
+	}
+	if v, ok := resp.Data.CustomConfig["is_single_table_mode"].(string); ok {
+		mapAddStr(c, "is_single_table_mode", v)
 	}
 
 	config[0] = c

@@ -378,6 +378,7 @@ const (
 			"client_name":          "client_name",
 			"domain_type":          "domain_type",
 			"connection_method":    "connection_method",
+			"is_single_table_mode": "is_single_table_mode",
 
 			"report_suites":            ["report_suite"],
 			"elements":                 ["element"],
@@ -672,6 +673,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "client_name", "client_name")
 			assertKeyExistsAndHasValue(t, config, "domain_type", "domain_type")
 			assertKeyExistsAndHasValue(t, config, "connection_method", "connection_method")
+			assertKeyExistsAndHasValue(t, config, "is_single_table_mode", "is_single_table_mode")
 
 			assertKeyExists(t, config, "report_suites")
 			assertArrayItems(t, config["report_suites"].([]interface{}), append(make([]interface{}, 0), "report_suite"))
@@ -1154,6 +1156,7 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 				access_key = "access_key"
 				domain_host_name = "domain_host_name"
 				client_name = "client_name"
+				is_single_table_mode = "is_single_table_mode"
 				domain_type = "domain_type"
 				connection_method = "connection_method"
 

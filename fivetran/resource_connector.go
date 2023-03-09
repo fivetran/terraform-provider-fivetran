@@ -301,6 +301,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"client_name":           {Type: schema.TypeString, Optional: true},
 				"domain_type":           {Type: schema.TypeString, Optional: true},
 				"connection_method":     {Type: schema.TypeString, Optional: true},
+				"is_single_table_mode":  {Type: schema.TypeString, Optional: true},
 
 				// Collections
 				"report_suites":            {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
@@ -703,6 +704,10 @@ func resourceConnectorUpdateCustomConfig(d *schema.ResourceData) *map[string]int
 
 	if v, ok := c["connection_method"].(string); ok && v != "" {
 		configMap["connection_method"] = v
+	}
+
+	if v, ok := c["is_single_table_mode"].(string); ok && v != "" {
+		configMap["is_single_table_mode"] = v
 	}
 
 	// HVA parameters end
@@ -1820,6 +1825,10 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResp
 
 	if v, ok := resp.Data.CustomConfig["connection_method"].(string); ok {
 		mapAddStr(c, "connection_method", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["is_single_table_mode"].(string); ok {
+		mapAddStr(c, "is_single_table_mode", v)
 	}
 
 	mapAddStr(c, "sync_mode", resp.Data.Config.SyncMode)
