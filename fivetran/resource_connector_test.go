@@ -174,7 +174,7 @@ func testFivetranConnectorResourceDestroy(s *terraform.State) error {
 			return err
 		}
 
-		if response.Code != "NotFound_Integration" {
+		if response.Code != "NotFound_Connector" {
 			return fmt.Errorf(`
 			There was no error occured on recieving connector after deletion!
 
