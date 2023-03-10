@@ -1001,7 +1001,7 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 				eu_region = "false"
 				is_keypair = "false"
 				is_account_level_connector = "true"
-				connection_method = "true"
+				is_single_table_mode = "true"
 
 				conversion_window_size = "0"
 				skip_before = "0"
@@ -1156,8 +1156,8 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 				access_key = "access_key"
 				domain_host_name = "domain_host_name"
 				client_name = "client_name"
-				is_single_table_mode = "is_single_table_mode"
 				domain_type = "domain_type"
+				connection_method = "connection_method"
 
 				report_suites = ["report_suite"]
 				elements = ["element"]
