@@ -355,6 +355,7 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"tns":                  {Type: schema.TypeString, Computed: true},
 				"use_oracle_rac":       {Type: schema.TypeString, Computed: true},
 				"asm_option":           {Type: schema.TypeString, Computed: true},
+				"is_single_table_mode": {Type: schema.TypeString, Computed: true},
 				"asm_user":             {Type: schema.TypeString, Computed: true},
 				"asm_password":         {Type: schema.TypeString, Computed: true},
 				"asm_oracle_home":      {Type: schema.TypeString, Computed: true},
@@ -367,7 +368,6 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"client_name":          {Type: schema.TypeString, Computed: true},
 				"domain_type":          {Type: schema.TypeString, Computed: true},
 				"connection_method":    {Type: schema.TypeString, Computed: true},
-				"is_single_table_mode": {Type: schema.TypeString, Computed: true},
 			},
 		},
 	}
@@ -718,6 +718,9 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsRe
 	if v, ok := resp.Data.CustomConfig["asm_option"].(bool); ok {
 		mapAddStr(c, "asm_option", boolToStr(v))
 	}
+	if v, ok := resp.Data.CustomConfig["is_single_table_mode"].(bool); ok {
+		mapAddStr(c, "is_single_table_mode", boolToStr(v))
+	}
 	if v, ok := resp.Data.CustomConfig["asm_user"].(string); ok {
 		mapAddStr(c, "asm_user", v)
 	}
@@ -756,9 +759,6 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsRe
 	}
 	if v, ok := resp.Data.CustomConfig["connection_method"].(string); ok {
 		mapAddStr(c, "connection_method", v)
-	}
-	if v, ok := resp.Data.CustomConfig["is_single_table_mode"].(string); ok {
-		mapAddStr(c, "is_single_table_mode", v)
 	}
 
 	config[0] = c
