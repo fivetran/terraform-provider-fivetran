@@ -225,6 +225,7 @@ const (
 			"is_account_level_connector":        true,
 			"use_oracle_rac": 					 false,
 			"asm_option": 						 false,
+			"is_single_table_mode":              true,
 
 			"pdb_name":                         	"pdb_name",
 			"agent_host":                       	"agent_host",
@@ -378,7 +379,6 @@ const (
 			"client_name":          "client_name",
 			"domain_type":          "domain_type",
 			"connection_method":    "connection_method",
-			"is_single_table_mode": "is_single_table_mode",
 
 			"report_suites":            ["report_suite"],
 			"elements":                 ["element"],
@@ -522,6 +522,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "is_account_level_connector", true)
 			assertKeyExistsAndHasValue(t, config, "use_oracle_rac", false)
 			assertKeyExistsAndHasValue(t, config, "asm_option", false)
+			assertKeyExistsAndHasValue(t, config, "is_single_table_mode", true)
 
 			assertKeyExistsAndHasValue(t, config, "connection_type", "connection_type")
 			assertKeyExistsAndHasValue(t, config, "sync_mode", "sync_mode")
@@ -673,8 +674,6 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "client_name", "client_name")
 			assertKeyExistsAndHasValue(t, config, "domain_type", "domain_type")
 			assertKeyExistsAndHasValue(t, config, "connection_method", "connection_method")
-			assertKeyExistsAndHasValue(t, config, "is_single_table_mode", "is_single_table_mode")
-
 			assertKeyExists(t, config, "report_suites")
 			assertArrayItems(t, config["report_suites"].([]interface{}), append(make([]interface{}, 0), "report_suite"))
 
@@ -1002,6 +1001,7 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 				eu_region = "false"
 				is_keypair = "false"
 				is_account_level_connector = "true"
+				connection_method = "true"
 
 				conversion_window_size = "0"
 				skip_before = "0"
@@ -1158,7 +1158,6 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 				client_name = "client_name"
 				is_single_table_mode = "is_single_table_mode"
 				domain_type = "domain_type"
-				connection_method = "connection_method"
 
 				report_suites = ["report_suite"]
 				elements = ["element"]
