@@ -1630,7 +1630,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResp
 
 	c := make(map[string]interface{})
 
-	// get sensitive fields from the currentConfig to prevent drifting (Fivetran returns this values masked)
+	// get sensitive fields from the currentConfig to prevent drifting (Fivetran returns these values masked)
 	if len(currentConfig) > 0 {
 		resourceConfig := currentConfig[0].(map[string]interface{})
 		mapAddStr(c, "password", resourceConfig["password"].(string))

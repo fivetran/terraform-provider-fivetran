@@ -10,12 +10,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func resourceDbt() *schema.Resource {
+func resourceDbtProject() *schema.Resource {
 	return &schema.Resource{
-		CreateContext: resourceDbtCreate,
-		ReadContext:   resourceDbtRead,
-		UpdateContext: resourceDbtUpdate,
-		DeleteContext: resourceDbtDelete,
+		CreateContext: resourceDbtProjectCreate,
+		ReadContext:   resourceDbtProjectRead,
+		UpdateContext: resourceDbtProjectUpdate,
+		DeleteContext: resourceDbtProjectDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
 		Schema: map[string]*schema.Schema{
 			"id":             {Type: schema.TypeString, Computed: true},
@@ -32,10 +32,10 @@ func resourceDbt() *schema.Resource {
 	}
 }
 
-func resourceDbtCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostic {
+func resourceDbtProjectCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostic {
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
-	svc := client.NewDbtCreate()
+	svc := client.NewDbtProjectCreate()
 
 	svc.GroupID(d.Get("group_id").(string))
 
@@ -56,16 +56,16 @@ func resourceDbtCreate(ctx context.Context, d *schema.ResourceData, m interface{
 	}
 
 	d.SetId(resp.Data.ID)
-	resourceDbtRead(ctx, d, m)
+	resourceDbtProjectRead(ctx, d, m)
 
 	return diags
 }
 
-func resourceDbtRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostic {
+func resourceDbtProjectRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostic {
 	var diags diag.Diagnostic
 	client := m.(*fivetran.Client)
 
-	resp, err := client.NewDbtDetails().DbtID(d.Get("id").(string)).Do(ctx)
+	resp, err := client.NewDbtProjectDetails().DbtID(d.Get("id").(string)).Do(ctx)
 	if err != nil {
 		// If the resource does not exist (404), inform Terraform. We want to immediately
 		// return here to prevent further processing.
@@ -105,11 +105,11 @@ func resourceDbtRead(ctx context.Context, d *schema.ResourceData, m interface{})
 	return diags
 }
 
-func resourceDbtRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostic {
+func resourceDbtProjectRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostic {
 	var diags diag.Diagnostic
 	client := m.(*fivetran.Client)
 
-	resp, err := client.NewDbDetails().DbtID(d.Get("id").(string)).Do(ctx)
+	resp, err := client.NewDbProjectDetails().DbtID(d.Get("id").(string)).Do(ctx)
 	if err != nil {
 		// If the resource does not exist (404), inform Terraform. We want to immediately
 		// return here to prevent further processing
@@ -150,10 +150,10 @@ func resourceDbtRead(ctx context.Context, d *schema.ResourceData, m interface{})
 	return diags
 }
 
-func resourceDbtUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostic {
+func resourceDbtProjectUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostic {
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
-	svc := client.NewDbtModify()
+	svc := client.NewDbtProjectModify()
 
 	svc.DbtID(d.Get("id").(string))
 
@@ -197,13 +197,13 @@ func resourceDbtUpdate(ctx context.Context, d *schema.ResourceData, m interface{
 		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
 
-	return resourceDbtRead(ctx, d, m)
+	return resourceDbtProjectRead(ctx, d, m)
 }
 
-func resourceDbtDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostic {
+func resourceDbtProjectDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostic {
 	var diags diag.Diagnostic
 	client := m.(*fivetran.Client)
-	svc := client.NewConnectorDelete()
+	svc := client.NewDbtProjectDelete()
 
 	resp, err := svc.DbtID(d.Get("id").(string)).Do(ctx)
 	if err != nil {
