@@ -126,7 +126,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"agent_password":     {Type: schema.TypeString, Optional: true, Sensitive: true},
 				"asm_password":       {Type: schema.TypeString, Optional: true, Sensitive: true},
 
-				// Fields that are always have default value (and should be marked as Computed to prevent drifting)
+				// Fields that always have default value (and should be marked as Computed to prevent drifting)
 				// Boolean values
 				"is_ftps":                           {Type: schema.TypeString, Optional: true, Computed: true},
 				"sftp_is_key_pair":                  {Type: schema.TypeString, Optional: true, Computed: true},
@@ -145,6 +145,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"is_account_level_connector":        {Type: schema.TypeString, Optional: true, Computed: true},
 				"use_oracle_rac":                    {Type: schema.TypeString, Optional: true, Computed: true},
 				"asm_option":                        {Type: schema.TypeString, Optional: true, Computed: true},
+				"is_single_table_mode":              {Type: schema.TypeString, Optional: true, Computed: true},
 
 				// Enum & int values
 				"connection_type":                      {Type: schema.TypeString, Optional: true, Computed: true},
@@ -703,6 +704,10 @@ func resourceConnectorUpdateCustomConfig(d *schema.ResourceData) *map[string]int
 
 	if v, ok := c["connection_method"].(string); ok && v != "" {
 		configMap["connection_method"] = v
+	}
+
+	if v, ok := c["is_single_table_mode"].(string); ok && v != "" {
+		configMap["is_single_table_mode"] = strToBool(v)
 	}
 
 	// HVA parameters end
@@ -1820,6 +1825,10 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResp
 
 	if v, ok := resp.Data.CustomConfig["connection_method"].(string); ok {
 		mapAddStr(c, "connection_method", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["is_single_table_mode"].(bool); ok {
+		mapAddStr(c, "is_single_table_mode", boolToStr(v))
 	}
 
 	mapAddStr(c, "sync_mode", resp.Data.Config.SyncMode)

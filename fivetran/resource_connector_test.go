@@ -3,6 +3,7 @@ package fivetran_test
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -174,7 +175,7 @@ func testFivetranConnectorResourceDestroy(s *terraform.State) error {
 			return err
 		}
 
-		if response.Code != "NotFound_Integration" {
+		if !strings.HasPrefix(response.Code, "NotFound_") {
 			return fmt.Errorf(`
 			There was no error occured on recieving connector after deletion!
 

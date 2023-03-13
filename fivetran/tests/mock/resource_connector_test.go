@@ -225,6 +225,7 @@ const (
 			"is_account_level_connector":        true,
 			"use_oracle_rac": 					 false,
 			"asm_option": 						 false,
+			"is_single_table_mode":              true,
 
 			"pdb_name":                         	"pdb_name",
 			"agent_host":                       	"agent_host",
@@ -521,6 +522,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "is_account_level_connector", true)
 			assertKeyExistsAndHasValue(t, config, "use_oracle_rac", false)
 			assertKeyExistsAndHasValue(t, config, "asm_option", false)
+			assertKeyExistsAndHasValue(t, config, "is_single_table_mode", true)
 
 			assertKeyExistsAndHasValue(t, config, "connection_type", "connection_type")
 			assertKeyExistsAndHasValue(t, config, "sync_mode", "sync_mode")
@@ -672,7 +674,6 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "client_name", "client_name")
 			assertKeyExistsAndHasValue(t, config, "domain_type", "domain_type")
 			assertKeyExistsAndHasValue(t, config, "connection_method", "connection_method")
-
 			assertKeyExists(t, config, "report_suites")
 			assertArrayItems(t, config["report_suites"].([]interface{}), append(make([]interface{}, 0), "report_suite"))
 
@@ -1020,8 +1021,9 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 				agent_ora_home = "agent_ora_home"
 				tns = "tns"
 				use_oracle_rac = "false"
-				asm_option = "false"
-				asm_user = "asm_user"
+				is_single_table_mode = "true"
+			    asm_option = "false"
+               asm_user = "asm_user"
 				asm_password = "asm_password"
 				asm_oracle_home = "asm_oracle_home"
 				asm_tns = "asm_tns"
