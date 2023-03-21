@@ -346,6 +346,8 @@ Optional:
 - `table` - required for some non db-like connectors, represents `config.table` field.
 - `prefix` - required only for db-like connectors, represents `config.schema_prefix` field.
 
+> Note: **name** and **prefix** are mutually exclusive for the resource, if you configure both, terraform will start to have a drift every time you make a plan/apply.
+
 See [Connector Config](https://fivetran.com/docs/rest-api/connectors/config) for details.
 
 <a id="nestedblock--config--adobe_analytics_configurations"></a>
