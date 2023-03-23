@@ -304,38 +304,38 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"connection_method":     {Type: schema.TypeString, Optional: true},
 
 				// Collections
-				"report_suites":            {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"elements":                 {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"metrics":                  {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"advertisables":            {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"dimensions":               {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"selected_exports":         {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"apps":                     {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"sales_accounts":           {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"finance_accounts":         {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"projects":                 {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"user_profiles":            {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"report_configuration_ids": {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"accounts":                 {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"fields":                   {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"breakdowns":               {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"action_breakdowns":        {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"pages":                    {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"repositories":             {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"dimension_attributes":     {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"columns":                  {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"manager_accounts":         {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"profiles":                 {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"site_urls":                {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"api_keys":                 {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"advertisers_id":           {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"hosts":                    {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"advertisers":              {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"organizations":            {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"account_ids":              {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				"packed_mode_tables":       {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"report_suites":            {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"elements":                 {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"metrics":                  {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"advertisables":            {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"dimensions":               {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"selected_exports":         {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"apps":                     {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"sales_accounts":           {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"finance_accounts":         {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"projects":                 {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"user_profiles":            {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"report_configuration_ids": {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"accounts":                 {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"fields":                   {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"breakdowns":               {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"action_breakdowns":        {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"pages":                    {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"repositories":             {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"dimension_attributes":     {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"columns":                  {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"manager_accounts":         {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"profiles":                 {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"site_urls":                {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"api_keys":                 {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"advertisers_id":           {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"hosts":                    {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"advertisers":              {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"organizations":            {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"account_ids":              {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"packed_mode_tables":       {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
 
-				"secrets_list": {Type: schema.TypeList, Optional: true,
+				"secrets_list": {Type: schema.TypeSet, Optional: true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"key":   {Type: schema.TypeString, Required: true},
@@ -344,41 +344,41 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 					},
 				},
 
-				"adobe_analytics_configurations": {Type: schema.TypeList, Optional: true,
+				"adobe_analytics_configurations": {Type: schema.TypeSet, Optional: true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"sync_mode":          {Type: schema.TypeString, Optional: true},
-							"report_suites":      {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-							"elements":           {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-							"metrics":            {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-							"calculated_metrics": {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-							"segments":           {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"report_suites":      {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"elements":           {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"metrics":            {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"calculated_metrics": {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"segments":           {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
 						},
 					},
 				},
-				"reports": {Type: schema.TypeList, Optional: true,
+				"reports": {Type: schema.TypeSet, Optional: true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"table":           {Type: schema.TypeString, Optional: true},
 							"config_type":     {Type: schema.TypeString, Optional: true, Computed: true},
 							"prebuilt_report": {Type: schema.TypeString, Optional: true},
 							"report_type":     {Type: schema.TypeString, Optional: true, Computed: true},
-							"fields":          {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-							"dimensions":      {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-							"metrics":         {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-							"segments":        {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"fields":          {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"dimensions":      {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"metrics":         {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"segments":        {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
 							"filter":          {Type: schema.TypeString, Optional: true},
 						},
 					},
 				},
-				"custom_tables": {Type: schema.TypeList, Optional: true,
+				"custom_tables": {Type: schema.TypeSet, Optional: true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"table_name":               {Type: schema.TypeString, Optional: true},
 							"config_type":              {Type: schema.TypeString, Optional: true, Computed: true},
-							"fields":                   {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-							"breakdowns":               {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
-							"action_breakdowns":        {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"fields":                   {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"breakdowns":               {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+							"action_breakdowns":        {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
 							"aggregation":              {Type: schema.TypeString, Optional: true, Computed: true},
 							"action_report_time":       {Type: schema.TypeString, Optional: true, Computed: true},
 							"click_attribution_window": {Type: schema.TypeString, Optional: true, Computed: true},
@@ -387,7 +387,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 						},
 					},
 				},
-				"project_credentials": {Type: schema.TypeList, Optional: true,
+				"project_credentials": {Type: schema.TypeSet, Optional: true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"project":    {Type: schema.TypeString, Optional: true},
@@ -682,8 +682,8 @@ func resourceConnectorUpdateCustomConfig(d *schema.ResourceData) *map[string]int
 		configMap["organization"] = v
 	}
 
-	if v, ok := c["packed_mode_tables"].([]interface{}); ok {
-		configMap["packed_mode_tables"] = xInterfaceStrXStr(v)
+	if v, ok := c["packed_mode_tables"]; ok {
+		configMap["packed_mode_tables"] = xInterfaceStrXStr(v.(*schema.Set).List())
 	}
 
 	if v, ok := c["access_key"].(string); ok && v != "" {
@@ -778,13 +778,13 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorCo
 	if v := c["sync_mode"].(string); v != "" {
 		fivetranConfig.SyncMode(v)
 	}
-	if v := c["report_suites"].([]interface{}); len(v) > 0 {
+	if v := c["report_suites"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.ReportSuites(xInterfaceStrXStr(v))
 	}
-	if v := c["elements"].([]interface{}); len(v) > 0 {
+	if v := c["elements"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.Elements(xInterfaceStrXStr(v))
 	}
-	if v := c["metrics"].([]interface{}); len(v) > 0 {
+	if v := c["metrics"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.Metrics(xInterfaceStrXStr(v))
 	}
 	if v := c["date_granularity"].(string); v != "" {
@@ -844,13 +844,13 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorCo
 	if v := c["is_keypair"].(string); v != "" {
 		fivetranConfig.IsKeypair(strToBool(v))
 	}
-	if v := c["advertisables"].([]interface{}); len(v) > 0 {
+	if v := c["advertisables"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.Advertisables(xInterfaceStrXStr(v))
 	}
 	if v := c["report_type"].(string); v != "" {
 		fivetranConfig.ReportType(v)
 	}
-	if v := c["dimensions"].([]interface{}); len(v) > 0 {
+	if v := c["dimensions"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.Dimensions(xInterfaceStrXStr(v))
 	}
 	if v := c["api_key"].(string); v != "" {
@@ -901,10 +901,10 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorCo
 	if v := c["skip_after"].(string); v != "" {
 		fivetranConfig.SkipAfter(strToInt(v))
 	}
-	if v := c["project_credentials"].([]interface{}); len(v) > 0 {
+	if v := c["project_credentials"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.ProjectCredentials(resourceConnectorCreateConfigProjectCredentials(v))
 	}
-	if v := c["secrets_list"].([]interface{}); len(v) > 0 {
+	if v := c["secrets_list"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.SecretsList(resourceConnectorCreateFunctionSecrets(v))
 	}
 	if v := c["auth_mode"].(string); v != "" {
@@ -922,7 +922,7 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorCo
 	if v := c["certificate"].(string); v != "" {
 		fivetranConfig.Certificate(v)
 	}
-	if v := c["selected_exports"].([]interface{}); len(v) > 0 {
+	if v := c["selected_exports"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.SelectedExports(xInterfaceStrXStr(v))
 	}
 	if v := c["consumer_group"].(string); v != "" {
@@ -940,13 +940,13 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorCo
 	if v := c["security_protocol"].(string); v != "" {
 		fivetranConfig.SecurityProtocol(v)
 	}
-	if v := c["apps"].([]interface{}); len(v) > 0 {
+	if v := c["apps"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.Apps(xInterfaceStrXStr(v))
 	}
-	if v := c["sales_accounts"].([]interface{}); len(v) > 0 {
+	if v := c["sales_accounts"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.SalesAccounts(xInterfaceStrXStr(v))
 	}
-	if v := c["finance_accounts"].([]interface{}); len(v) > 0 {
+	if v := c["finance_accounts"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.FinanceAccounts(xInterfaceStrXStr(v))
 	}
 	if v := c["app_sync_mode"].(string); v != "" {
@@ -973,7 +973,7 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorCo
 	if v := c["sync_data_locker"].(string); v != "" {
 		fivetranConfig.SyncDataLocker(strToBool(v))
 	}
-	if v := c["projects"].([]interface{}); len(v) > 0 {
+	if v := c["projects"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.Projects(xInterfaceStrXStr(v))
 	}
 	if v := c["function"].(string); v != "" {
@@ -1021,10 +1021,10 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorCo
 	if v := c["gcs_folder"].(string); v != "" {
 		fivetranConfig.GCSFolder(v)
 	}
-	if v := c["user_profiles"].([]interface{}); len(v) > 0 {
+	if v := c["user_profiles"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.UserProfiles(xInterfaceStrXStr(v))
 	}
-	if v := c["report_configuration_ids"].([]interface{}); len(v) > 0 {
+	if v := c["report_configuration_ids"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.ReportConfigurationIDs(xInterfaceStrXStr(v))
 	}
 	if v := c["enable_all_dimension_combinations"].(string); v != "" {
@@ -1036,16 +1036,16 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorCo
 	if v := c["aws_region_code"].(string); v != "" {
 		fivetranConfig.AWSRegionCode(v)
 	}
-	if v := c["accounts"].([]interface{}); len(v) > 0 {
+	if v := c["accounts"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.Accounts(xInterfaceStrXStr(v))
 	}
-	if v := c["fields"].([]interface{}); len(v) > 0 {
+	if v := c["fields"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.Fields(xInterfaceStrXStr(v))
 	}
-	if v := c["breakdowns"].([]interface{}); len(v) > 0 {
+	if v := c["breakdowns"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.Breakdowns(xInterfaceStrXStr(v))
 	}
-	if v := c["action_breakdowns"].([]interface{}); len(v) > 0 {
+	if v := c["action_breakdowns"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.ActionBreakdowns(xInterfaceStrXStr(v))
 	}
 	if v := c["aggregation"].(string); v != "" {
@@ -1066,10 +1066,10 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorCo
 	if v := c["view_attribution_window"].(string); v != "" {
 		fivetranConfig.ViewAttributionWindow(v)
 	}
-	if v := c["custom_tables"].([]interface{}); len(v) > 0 {
+	if v := c["custom_tables"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.CustomTables(resourceConnectorCreateConfigCustomTables(v))
 	}
-	if v := c["pages"].([]interface{}); len(v) > 0 {
+	if v := c["pages"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.Pages(xInterfaceStrXStr(v))
 	}
 	if v := c["subdomain"].(string); v != "" {
@@ -1084,16 +1084,16 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorCo
 	if v := c["is_secure"].(string); v != "" {
 		fivetranConfig.IsSecure(strToBool(v))
 	}
-	if v := c["repositories"].([]interface{}); len(v) > 0 {
+	if v := c["repositories"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.Repositories(xInterfaceStrXStr(v))
 	}
 	if v := c["use_webhooks"].(string); v != "" {
 		fivetranConfig.UseWebhooks(strToBool(v))
 	}
-	if v := c["dimension_attributes"].([]interface{}); len(v) > 0 {
+	if v := c["dimension_attributes"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.DimensionAttributes(xInterfaceStrXStr(v))
 	}
-	if v := c["columns"].([]interface{}); len(v) > 0 {
+	if v := c["columns"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.Columns(xInterfaceStrXStr(v))
 	}
 	if v := c["network_code"].(string); v != "" {
@@ -1102,16 +1102,16 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorCo
 	if v := c["customer_id"].(string); v != "" {
 		fivetranConfig.CustomerID(v)
 	}
-	if v := c["manager_accounts"].([]interface{}); len(v) > 0 {
+	if v := c["manager_accounts"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.ManagerAccounts(xInterfaceStrXStr(v))
 	}
-	if v := c["reports"].([]interface{}); len(v) > 0 {
+	if v := c["reports"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.Reports(resourceConnectorCreateConfigReports(v))
 	}
 	if v := c["conversion_window_size"].(string); v != "" {
 		fivetranConfig.ConversionWindowSize(strToInt(v))
 	}
-	if v := c["profiles"].([]interface{}); len(v) > 0 {
+	if v := c["profiles"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.Profiles(xInterfaceStrXStr(v))
 	}
 	if v := c["project_id"].(string); v != "" {
@@ -1135,7 +1135,7 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorCo
 	if v := c["update_config_on_each_sync"].(string); v != "" {
 		fivetranConfig.UpdateConfigOnEachSync(strToBool(v))
 	}
-	if v := c["site_urls"].([]interface{}); len(v) > 0 {
+	if v := c["site_urls"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.SiteURLs(xInterfaceStrXStr(v))
 	}
 	if v := c["path"].(string); v != "" {
@@ -1156,7 +1156,7 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorCo
 	if v := c["use_api_keys"].(string); v != "" {
 		fivetranConfig.UseAPIKeys(strToBool(v))
 	}
-	if v := c["api_keys"].([]interface{}); len(v) > 0 {
+	if v := c["api_keys"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.APIKeys(xInterfaceStrXStr(v))
 	}
 	if v := c["endpoint"].(string); v != "" {
@@ -1180,7 +1180,7 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorCo
 	if v := c["host"].(string); v != "" {
 		fivetranConfig.Host(v)
 	}
-	if v := c["hosts"].([]interface{}); len(v) > 0 {
+	if v := c["hosts"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.Hosts(xInterfaceStrXStr(v))
 	}
 	if v := c["tunnel_host"].(string); v != "" {
@@ -1228,7 +1228,7 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorCo
 	if v := c["integration_key"].(string); v != "" {
 		fivetranConfig.IntegrationKey(v)
 	}
-	if v := c["advertisers"].([]interface{}); len(v) > 0 {
+	if v := c["advertisers"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.Advertisers(xInterfaceStrXStr(v))
 	}
 	if v := c["engagement_attribution_window"].(string); v != "" {
@@ -1267,7 +1267,7 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorCo
 	if v := c["shop"].(string); v != "" {
 		fivetranConfig.Shop(v)
 	}
-	if v := c["organizations"].([]interface{}); len(v) > 0 {
+	if v := c["organizations"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.Organizations(xInterfaceStrXStr(v))
 	}
 	if v := c["swipe_attribution_window"].(string); v != "" {
@@ -1276,7 +1276,7 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorCo
 	if v := c["api_access_token"].(string); v != "" {
 		fivetranConfig.APIAccessToken(v)
 	}
-	if v := c["account_ids"].([]interface{}); len(v) > 0 {
+	if v := c["account_ids"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.AccountIDs(xInterfaceStrXStr(v))
 	}
 	if v := c["sid"].(string); v != "" {
@@ -1300,7 +1300,7 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorCo
 	if v := c["key"].(string); v != "" {
 		fivetranConfig.Key(v)
 	}
-	if v := c["advertisers_id"].([]interface{}); len(v) > 0 {
+	if v := c["advertisers_id"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.AdvertisersID(xInterfaceStrXStr(v))
 	}
 	if v := c["sync_format"].(string); v != "" {
@@ -1322,7 +1322,7 @@ func resourceConnectorUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorCo
 	if v := c["is_new_package"].(string); v != "" {
 		fivetranConfig.IsNewPackage(strToBool(v))
 	}
-	if v := c["adobe_analytics_configurations"].([]interface{}); len(v) > 0 {
+	if v := c["adobe_analytics_configurations"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.AdobeAnalyticsConfigurations(resourceConnectorCreateConfigAdobeAnalyticsConfigurations(v))
 	}
 	if v := c["is_multi_entity_feature_enabled"].(string); v != "" {
@@ -1425,14 +1425,14 @@ func resourceConnectorCreateConfigCustomTables(xi []interface{}) []*fivetran.Con
 		if configType, ok := v.(map[string]interface{})["config_type"].(string); ok && configType != "" {
 			ct.ConfigType(configType)
 		}
-		if fields, ok := v.(map[string]interface{})["fields"].([]interface{}); ok && len(fields) > 0 {
-			ct.Fields(xInterfaceStrXStr(fields))
+		if fields, ok := v.(map[string]interface{})["fields"]; ok {
+			ct.Fields(xInterfaceStrXStr(fields.(*schema.Set).List()))
 		}
-		if breakdowns, ok := v.(map[string]interface{})["breakdowns"].([]interface{}); ok && len(breakdowns) > 0 {
-			ct.Breakdowns(xInterfaceStrXStr(breakdowns))
+		if breakdowns, ok := v.(map[string]interface{})["breakdowns"]; ok {
+			ct.Breakdowns(xInterfaceStrXStr(breakdowns.(*schema.Set).List()))
 		}
-		if actionBreakdowns, ok := v.(map[string]interface{})["action_breakdowns"].([]interface{}); ok && len(actionBreakdowns) > 0 {
-			ct.ActionBreakdowns(xInterfaceStrXStr(actionBreakdowns))
+		if actionBreakdowns, ok := v.(map[string]interface{})["action_breakdowns"]; ok {
+			ct.ActionBreakdowns(xInterfaceStrXStr(actionBreakdowns.(*schema.Set).List()))
 		}
 		if aggregation, ok := v.(map[string]interface{})["aggregation"].(string); ok && aggregation != "" {
 			ct.Aggregation(aggregation)
@@ -1463,20 +1463,20 @@ func resourceConnectorCreateConfigAdobeAnalyticsConfigurations(xi []interface{})
 		if syncMode, ok := v.(map[string]interface{})["sync_mode"].(string); ok && syncMode != "" {
 			c.SyncMode(syncMode)
 		}
-		if metrics, ok := v.(map[string]interface{})["metrics"].([]interface{}); ok && len(metrics) > 0 {
-			c.Metrics(xInterfaceStrXStr(metrics))
+		if metrics, ok := v.(map[string]interface{})["metrics"]; ok {
+			c.Metrics(xInterfaceStrXStr(metrics.(*schema.Set).List()))
 		}
-		if reportSuites, ok := v.(map[string]interface{})["report_suites"].([]interface{}); ok && len(reportSuites) > 0 {
-			c.ReportSuites(xInterfaceStrXStr(reportSuites))
+		if reportSuites, ok := v.(map[string]interface{})["report_suites"]; ok {
+			c.ReportSuites(xInterfaceStrXStr(reportSuites.(*schema.Set).List()))
 		}
-		if segments, ok := v.(map[string]interface{})["segments"].([]interface{}); ok && len(segments) > 0 {
-			c.Segments(xInterfaceStrXStr(segments))
+		if segments, ok := v.(map[string]interface{})["segments"]; ok {
+			c.Segments(xInterfaceStrXStr(segments.(*schema.Set).List()))
 		}
-		if elements, ok := v.(map[string]interface{})["elements"].([]interface{}); ok && len(elements) > 0 {
-			c.Elements(xInterfaceStrXStr(elements))
+		if elements, ok := v.(map[string]interface{})["elements"]; ok {
+			c.Elements(xInterfaceStrXStr(elements.(*schema.Set).List()))
 		}
-		if calculatedMetrics, ok := v.(map[string]interface{})["calculated_metrics"].([]interface{}); ok && len(calculatedMetrics) > 0 {
-			c.CalculatedMetrics(xInterfaceStrXStr(calculatedMetrics))
+		if calculatedMetrics, ok := v.(map[string]interface{})["calculated_metrics"]; ok {
+			c.CalculatedMetrics(xInterfaceStrXStr(calculatedMetrics.(*schema.Set).List()))
 		}
 
 		configurations[i] = c
@@ -1501,17 +1501,17 @@ func resourceConnectorCreateConfigReports(xi []interface{}) []*fivetran.Connecto
 		if reportType, ok := v.(map[string]interface{})["report_type"].(string); ok && reportType != "" {
 			r.ReportType(reportType)
 		}
-		if fields, ok := v.(map[string]interface{})["fields"].([]interface{}); ok && len(fields) > 0 {
-			r.Fields(xInterfaceStrXStr(fields))
+		if fields, ok := v.(map[string]interface{})["fields"]; ok {
+			r.Fields(xInterfaceStrXStr(fields.(*schema.Set).List()))
 		}
-		if dimensions, ok := v.(map[string]interface{})["dimensions"].([]interface{}); ok && len(dimensions) > 0 {
-			r.Dimensions(xInterfaceStrXStr(dimensions))
+		if dimensions, ok := v.(map[string]interface{})["dimensions"]; ok {
+			r.Dimensions(xInterfaceStrXStr(dimensions.(*schema.Set).List()))
 		}
-		if metrics, ok := v.(map[string]interface{})["metrics"].([]interface{}); ok && len(metrics) > 0 {
-			r.Metrics(xInterfaceStrXStr(metrics))
+		if metrics, ok := v.(map[string]interface{})["metrics"]; ok {
+			r.Metrics(xInterfaceStrXStr(metrics.(*schema.Set).List()))
 		}
-		if segments, ok := v.(map[string]interface{})["segments"].([]interface{}); ok && len(segments) > 0 {
-			r.Segments(xInterfaceStrXStr(segments))
+		if segments, ok := v.(map[string]interface{})["segments"]; ok {
+			r.Segments(xInterfaceStrXStr(segments.(*schema.Set).List()))
 		}
 		if filter, ok := v.(map[string]interface{})["filter"].(string); ok && filter != "" {
 			r.Filter(filter)
@@ -1663,7 +1663,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResp
 		mapAddStr(c, "function_trigger", resourceConfig["function_trigger"].(string))
 		mapAddStr(c, "token_key", resourceConfig["token_key"].(string))
 		mapAddStr(c, "token_secret", resourceConfig["token_secret"].(string))
-		mapAddXInterface(c, "api_keys", resourceConfig["api_keys"].([]interface{}))
+		mapAddXInterface(c, "api_keys", resourceConfig["api_keys"].(*schema.Set).List())
 		mapAddStr(c, "agent_password", resourceConfig["agent_password"].(string))
 		mapAddStr(c, "asm_password", resourceConfig["asm_password"].(string))
 	}
@@ -2023,7 +2023,7 @@ func resourceConnectorReadConfigFlattenSecretsListGetStateValue(key string, curr
 }
 
 func getSubcollectionElementValue(configKey, subKey, subKeyValue, targetKey string, currentConfig []interface{}) interface{} {
-	targetList := currentConfig[0].(map[string]interface{})[configKey].([]interface{})
+	targetList := currentConfig[0].(map[string]interface{})[configKey].(*schema.Set).List()
 	for _, v := range targetList {
 		if v.(map[string]interface{})[subKey].(string) == subKeyValue {
 			return v.(map[string]interface{})[targetKey]
