@@ -163,6 +163,7 @@ Read-Only:
 - `function_trigger` (String)
 - `gcs_bucket` (String)
 - `gcs_folder` (String)
+- `group_name` (String)
 - `home_folder` (String)
 - `host` (String)
 - `hosts` (List of String)
