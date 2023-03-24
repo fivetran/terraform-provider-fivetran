@@ -38,7 +38,7 @@ func TestResourceConnectorE2E(t *testing.T) {
 					run_setup_tests = false
 			
 					config {
-						group_name = fivetran_group.test_group.id
+						group_name = fivetran_group.test_group.name
 					}
 				}
 		  `,
@@ -85,7 +85,7 @@ func TestResourceConnectorE2E(t *testing.T) {
 					run_setup_tests = true
 			
 					config {
-						group_name = fivetran_group.test_group.id
+						group_name = fivetran_group.test_group.name
 					}
 				}
 		  `,
