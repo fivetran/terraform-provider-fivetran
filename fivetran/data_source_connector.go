@@ -368,6 +368,7 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"client_name":          {Type: schema.TypeString, Computed: true},
 				"domain_type":          {Type: schema.TypeString, Computed: true},
 				"connection_method":    {Type: schema.TypeString, Computed: true},
+				"group_name":           {Type: schema.TypeString, Computed: true},
 			},
 		},
 	}
@@ -759,6 +760,9 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsRe
 	}
 	if v, ok := resp.Data.CustomConfig["connection_method"].(string); ok {
 		mapAddStr(c, "connection_method", v)
+	}
+	if v, ok := resp.Data.CustomConfig["group_name"].(string); ok {
+		mapAddStr(c, "group_name", v)
 	}
 
 	config[0] = c

@@ -302,6 +302,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"client_name":           {Type: schema.TypeString, Optional: true},
 				"domain_type":           {Type: schema.TypeString, Optional: true},
 				"connection_method":     {Type: schema.TypeString, Optional: true},
+				"group_name":            {Type: schema.TypeString, Optional: true},
 
 				// Collections
 				"report_suites":            {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
@@ -607,6 +608,10 @@ func resourceConnectorUpdateCustomConfig(d *schema.ResourceData) *map[string]int
 	}
 
 	c := config[0].(map[string]interface{})
+
+	if v, ok := c["group_name"].(string); ok && v != "" {
+		configMap["group_name"] = v
+	}
 
 	if v, ok := c["sync_method"].(string); ok && v != "" {
 		configMap["sync_method"] = v
@@ -1749,6 +1754,10 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResp
 
 	if v, ok := resp.Data.CustomConfig["sync_method"].(string); ok {
 		mapAddStr(c, "sync_method", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["group_name"].(string); ok {
+		mapAddStr(c, "group_name", v)
 	}
 
 	if v, ok := resp.Data.CustomConfig["pdb_name"].(string); ok {

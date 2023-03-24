@@ -282,7 +282,7 @@ const (
 
 			"public_key": 			"public_key",
 			"external_id": 			"external_id",
-
+			"group_name":           "group_name",
 			"client_id":             "client_id",
 			"technical_account_id":  "technical_account_id",
 			"organization_id":       "organization_id",
@@ -553,6 +553,7 @@ const (
 			asm_oracle_home = "asm_oracle_home"
 			asm_tns = "asm_tns"
 			sap_user = "sap_user"
+			group_name = "group_name"
 
 			connection_type = "connection_type"
 			sync_mode = "sync_mode"
@@ -1028,6 +1029,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "api_quota", float64(0))
 			assertKeyExistsAndHasValue(t, config, "daily_api_call_limit", float64(0))
 
+			assertKeyExistsAndHasValue(t, config, "group_name", "group_name")
 			assertKeyExistsAndHasValue(t, config, "pdb_name", "pdb_name")
 			assertKeyExistsAndHasValue(t, config, "agent_host", "agent_host")
 			assertKeyExistsAndHasValue(t, config, "agent_user", "agent_user")

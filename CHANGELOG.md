@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.6.16](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.16...v0.6.16)
 
+## Added
+- `fivetran_connector.config.group_name` field support
+
 ## Fixed
 - Issue with `fivetran_connector.config.packed_mode_tables` order
 - All collections transformed into sets to avoid drifting changes caused by elements order.
