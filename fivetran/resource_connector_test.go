@@ -96,7 +96,7 @@ func TestResourceConnectorE2E(t *testing.T) {
 
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.is_historical_sync", "true"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.update_state", "on_schedule"),
-					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.setup_state", "incomplete"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.setup_state", "connected"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.sync_state", "scheduled"),
 
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "fivetran_log_schema"),
