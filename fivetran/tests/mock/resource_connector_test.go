@@ -420,7 +420,7 @@ const (
 			"organizations": 			["organization"],
 			"account_ids": 				["account_id"],
 			"packed_mode_tables":       ["packed_mode_table"],
-			"properties":               ["propertie"],
+			"properties":               ["property"],
 
 			"adobe_analytics_configurations": [{
 				"sync_mode": 			"sync_mode",
@@ -728,7 +728,7 @@ const (
 			organizations = ["organization"]
 			account_ids = ["account_id"]
 			packed_mode_tables = ["packed_mode_table"]
-			properties = ["propertie"]
+			properties = ["property"]
 
 
 			adobe_analytics_configurations {
@@ -823,7 +823,7 @@ const (
         }],
         "config": {
 			"packed_mode_tables":["packed_mode_table_3", "packed_mode_table_2", "packed_mode_table_1"],
-			"properties":["propertie_2", "propertie_1"],
+			"properties":["property_2", "property_1"],
 			"report_suites": ["value_2", "value_1"],
 			"elements": ["value_2", "value_1"],
 			"metrics": ["value_2", "value_1"],
@@ -878,7 +878,7 @@ const (
 
 		config {
 			packed_mode_tables = ["packed_mode_table_1", "packed_mode_table_2", "packed_mode_table_3"]
-			properties = ["propertie_1", "propertie_2"]
+			properties = ["property_1", "property_2"]
 			report_suites = ["value_1", "value_2"]
 			elements = ["value_1", "value_2"]
 			metrics = ["value_1", "value_2"]
@@ -1254,7 +1254,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertArrayItems(t, config["packed_mode_tables"].([]interface{}), append(make([]interface{}, 0), "packed_mode_table"))
 
 			assertKeyExists(t, config, "properties")
-			assertArrayItems(t, config["properties"].([]interface{}), append(make([]interface{}, 0), "propertie"))
+			assertArrayItems(t, config["properties"].([]interface{}), append(make([]interface{}, 0), "property"))
 
 			assertKeyExists(t, config, "adobe_analytics_configurations")
 
