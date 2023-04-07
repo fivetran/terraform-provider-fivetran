@@ -696,6 +696,7 @@ const (
 			connection_method = "connection_method"
 			company_id = "company_id"
 			environment = "environment"
+			list_strategy = "list_strategy"
 
 			report_suites = ["report_suite"]
 			elements = ["element"]
@@ -727,7 +728,7 @@ const (
 			organizations = ["organization"]
 			account_ids = ["account_id"]
 			packed_mode_tables = ["packed_mode_table"]
-			properties = ["properties"]
+			properties = ["propertie"]
 
 
 			adobe_analytics_configurations {
@@ -822,7 +823,7 @@ const (
         }],
         "config": {
 			"packed_mode_tables":["packed_mode_table_3", "packed_mode_table_2", "packed_mode_table_1"],
-			"properties":["propertie_2", "properties_1"],
+			"properties":["propertie_2", "propertie_1"],
 			"report_suites": ["value_2", "value_1"],
 			"elements": ["value_2", "value_1"],
 			"metrics": ["value_2", "value_1"],
@@ -877,7 +878,7 @@ const (
 
 		config {
 			packed_mode_tables = ["packed_mode_table_1", "packed_mode_table_2", "packed_mode_table_3"]
-			properties = ["properties_1", "properties_2"],
+			properties = ["propertie_1", "propertie_2"]
 			report_suites = ["value_1", "value_2"]
 			elements = ["value_1", "value_2"]
 			metrics = ["value_1", "value_2"]
@@ -1160,6 +1161,8 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "connection_method", "connection_method")
 			assertKeyExistsAndHasValue(t, config, "company_id", "company_id")
 			assertKeyExistsAndHasValue(t, config, "environment", "environment")
+			assertKeyExistsAndHasValue(t, config, "list_strategy", "list_strategy")
+
 			assertKeyExists(t, config, "report_suites")
 			assertArrayItems(t, config["report_suites"].([]interface{}), append(make([]interface{}, 0), "report_suite"))
 
