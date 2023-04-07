@@ -369,6 +369,13 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"domain_type":          {Type: schema.TypeString, Computed: true},
 				"connection_method":    {Type: schema.TypeString, Computed: true},
 				"group_name":           {Type: schema.TypeString, Computed: true},
+				"company_id":           {Type: schema.TypeString, Computed: true},
+				"login_password":       {Type: schema.TypeString, Computed: true},
+				"environment":          {Type: schema.TypeString, Computed: true},
+				"properties":           {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"is_public":            {Type: schema.TypeString, Computed: true},
+				"empty_header":         {Type: schema.TypeString, Computed: true},
+				"list_strategy":        {Type: schema.TypeString, Computed: true},
 			},
 		},
 	}
@@ -763,6 +770,27 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsRe
 	}
 	if v, ok := resp.Data.CustomConfig["group_name"].(string); ok {
 		mapAddStr(c, "group_name", v)
+	}
+	if v, ok := resp.Data.CustomConfig["company_id"].(string); ok {
+		mapAddStr(c, "company_id", v)
+	}
+	if v, ok := resp.Data.CustomConfig["login_password"].(string); ok {
+		mapAddStr(c, "login_password", v)
+	}
+	if v, ok := resp.Data.CustomConfig["environment"].(string); ok {
+		mapAddStr(c, "environment", v)
+	}
+	if v, ok := resp.Data.CustomConfig["properties"].([]interface{}); ok {
+		mapAddXInterface(c, "properties", v)
+	}
+	if v, ok := resp.Data.CustomConfig["is_public"].(bool); ok {
+		mapAddStr(c, "is_public", boolToStr(v))
+	}
+	if v, ok := resp.Data.CustomConfig["empty_header"].(bool); ok {
+		mapAddStr(c, "empty_header", boolToStr(v))
+	}
+	if v, ok := resp.Data.CustomConfig["list_strategy"].(string); ok {
+		mapAddStr(c, "list_strategy", v)
 	}
 
 	config[0] = c
