@@ -1706,6 +1706,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResp
 		mapAddXInterface(c, "api_keys", resourceConfig["api_keys"].(*schema.Set).List())
 		mapAddStr(c, "agent_password", resourceConfig["agent_password"].(string))
 		mapAddStr(c, "asm_password", resourceConfig["asm_password"].(string))
+		mapAddStr(c, "login_password", resourceConfig["login_password"].(string))
 	}
 
 	mapAddXInterface(c, "project_credentials", resourceConnectorReadConfigFlattenProjectCredentials(resp, currentConfig))
@@ -1881,10 +1882,6 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResp
 
 	if v, ok := resp.Data.CustomConfig["company_id"].(string); ok {
 		mapAddStr(c, "company_id", v)
-	}
-
-	if v, ok := resp.Data.CustomConfig["login_password"].(string); ok {
-		mapAddStr(c, "login_password", v)
 	}
 
 	if v, ok := resp.Data.CustomConfig["environment"].(string); ok {
