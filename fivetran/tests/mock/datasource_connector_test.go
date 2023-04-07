@@ -278,7 +278,7 @@ func TestDataSourceConnectorConfigMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.organizations.0", "organization"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.account_ids.0", "account_id"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.packed_mode_tables.0", "packed_mode_table"),
-			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.properties.0", "propertie"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.properties.0", "property"),
 
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.pdb_name", "pdb_name"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.agent_host", "agent_host"),
