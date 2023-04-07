@@ -211,6 +211,7 @@ const (
 			"token_secret":       "******",
 			"agent_password":     "******",
 			"asm_password":		  "******",
+			"login_password":     "******",
 
 			"is_ftps":                           false,
 			"sftp_is_key_pair":                  false,
@@ -230,6 +231,8 @@ const (
 			"use_oracle_rac": 					 false,
 			"asm_option": 						 false,
 			"is_single_table_mode":              true,
+			"is_public":                         false,
+			"empty_header":                      false,
 
 			"pdb_name":                         	"pdb_name",
 			"agent_host":                       	"agent_host",
@@ -383,6 +386,9 @@ const (
 			"client_name":          "client_name",
 			"domain_type":          "domain_type",
 			"connection_method":    "connection_method",
+			"company_id":           "company_id",
+			"environment":          "environment",
+			"list_strategy":        "list_strategy",
 
 			"report_suites":            ["report_suite"],
 			"elements":                 ["element"],
@@ -414,6 +420,7 @@ const (
 			"organizations": 			["organization"],
 			"account_ids": 				["account_id"],
 			"packed_mode_tables":       ["packed_mode_table"],
+			"properties":               ["property"],
 
 			"adobe_analytics_configurations": [{
 				"sync_mode": 			"sync_mode",
@@ -508,6 +515,7 @@ const (
 			function_trigger = "function_trigger"
 			token_key = "token_key"
 			token_secret = "token_secret"
+			login_password = "login_password"
 
 			sync_method = "sync_method"
 
@@ -547,6 +555,8 @@ const (
 			tns = "tns"
 			use_oracle_rac = "false"
 			is_single_table_mode = "true"
+			is_public = "false"
+			empty_header = "false"
 			asm_option = "false"
 		    asm_user = "asm_user"
 			asm_password = "asm_password"
@@ -684,6 +694,9 @@ const (
 			client_name = "client_name"
 			domain_type = "domain_type"
 			connection_method = "connection_method"
+			company_id = "company_id"
+			environment = "environment"
+			list_strategy = "list_strategy"
 
 			report_suites = ["report_suite"]
 			elements = ["element"]
@@ -715,6 +728,7 @@ const (
 			organizations = ["organization"]
 			account_ids = ["account_id"]
 			packed_mode_tables = ["packed_mode_table"]
+			properties = ["property"]
 
 
 			adobe_analytics_configurations {
@@ -809,6 +823,7 @@ const (
         }],
         "config": {
 			"packed_mode_tables":["packed_mode_table_3", "packed_mode_table_2", "packed_mode_table_1"],
+			"properties":["property_2", "property_1"],
 			"report_suites": ["value_2", "value_1"],
 			"elements": ["value_2", "value_1"],
 			"metrics": ["value_2", "value_1"],
@@ -863,6 +878,7 @@ const (
 
 		config {
 			packed_mode_tables = ["packed_mode_table_1", "packed_mode_table_2", "packed_mode_table_3"]
+			properties = ["property_1", "property_2"]
 			report_suites = ["value_1", "value_2"]
 			elements = ["value_1", "value_2"]
 			metrics = ["value_1", "value_2"]
@@ -969,6 +985,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "token_secret", "token_secret")
 			assertKeyExistsAndHasValue(t, config, "asm_password", "asm_password")
 			assertKeyExistsAndHasValue(t, config, "agent_password", "agent_password")
+			assertKeyExistsAndHasValue(t, config, "login_password", "login_password")
 
 			assertKeyExistsAndHasValue(t, config, "is_ftps", false)
 			assertKeyExistsAndHasValue(t, config, "sftp_is_key_pair", false)
@@ -988,6 +1005,8 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "use_oracle_rac", false)
 			assertKeyExistsAndHasValue(t, config, "asm_option", false)
 			assertKeyExistsAndHasValue(t, config, "is_single_table_mode", true)
+			assertKeyExistsAndHasValue(t, config, "is_public", false)
+			assertKeyExistsAndHasValue(t, config, "empty_header", false)
 
 			assertKeyExistsAndHasValue(t, config, "connection_type", "connection_type")
 			assertKeyExistsAndHasValue(t, config, "sync_mode", "sync_mode")
@@ -1140,6 +1159,10 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "client_name", "client_name")
 			assertKeyExistsAndHasValue(t, config, "domain_type", "domain_type")
 			assertKeyExistsAndHasValue(t, config, "connection_method", "connection_method")
+			assertKeyExistsAndHasValue(t, config, "company_id", "company_id")
+			assertKeyExistsAndHasValue(t, config, "environment", "environment")
+			assertKeyExistsAndHasValue(t, config, "list_strategy", "list_strategy")
+
 			assertKeyExists(t, config, "report_suites")
 			assertArrayItems(t, config["report_suites"].([]interface{}), append(make([]interface{}, 0), "report_suite"))
 
@@ -1229,6 +1252,9 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 
 			assertKeyExists(t, config, "packed_mode_tables")
 			assertArrayItems(t, config["packed_mode_tables"].([]interface{}), append(make([]interface{}, 0), "packed_mode_table"))
+
+			assertKeyExists(t, config, "properties")
+			assertArrayItems(t, config["properties"].([]interface{}), append(make([]interface{}, 0), "property"))
 
 			assertKeyExists(t, config, "adobe_analytics_configurations")
 

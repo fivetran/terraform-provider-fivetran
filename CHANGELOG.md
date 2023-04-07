@@ -5,7 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.16...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.17...HEAD)
+
+## [0.6.17](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.16...v0.6.17)
+
+## Added
+- `fivetran_connector.config.company_id` field support
+- `fivetran_connector.config.login_password` field support
+- `fivetran_connector.config.environment` field support
+- `fivetran_connector.config.properties` field support
+- `fivetran_connector.config.is_public` bool field support
+- `fivetran_connector.config.empty_header` bool field support
+- `fivetran_connector.config.list_strategy` string field support
 
 ## [0.6.16](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.15...v0.6.16)
 

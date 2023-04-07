@@ -88,6 +88,7 @@ func TestDataSourceConnectorConfigMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.function_trigger", "******"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.token_key", "******"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.token_secret", "******"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.login_password", "******"),
 
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.sheet_id", "sheet_id"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.auth_type", "OAuth"),
@@ -108,7 +109,8 @@ func TestDataSourceConnectorConfigMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.use_webhooks", "false"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.eu_region", "false"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.is_keypair", "false"),
-			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.is_account_level_connector", "true"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.is_public", "false"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.empty_header", "false"),
 
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.conversion_window_size", "0"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.skip_before", "0"),
@@ -276,6 +278,7 @@ func TestDataSourceConnectorConfigMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.organizations.0", "organization"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.account_ids.0", "account_id"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.packed_mode_tables.0", "packed_mode_table"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.properties.0", "propertie"),
 
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.pdb_name", "pdb_name"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.agent_host", "agent_host"),
@@ -293,6 +296,9 @@ func TestDataSourceConnectorConfigMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.asm_oracle_home", "asm_oracle_home"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.asm_tns", "asm_tns"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.sap_user", "sap_user"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.company_id", "company_id"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.environment", "environment"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.list_strategy", "list_strategy"),
 
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.adobe_analytics_configurations.0.sync_mode", "sync_mode"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.adobe_analytics_configurations.0.report_suites.0", "report_suite"),

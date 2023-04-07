@@ -125,6 +125,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"token_secret":       {Type: schema.TypeString, Optional: true, Sensitive: true},
 				"agent_password":     {Type: schema.TypeString, Optional: true, Sensitive: true},
 				"asm_password":       {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"login_password":     {Type: schema.TypeString, Optional: true, Sensitive: true},
 
 				// Fields that always have default value (and should be marked as Computed to prevent drifting)
 				// Boolean values
@@ -146,6 +147,8 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"use_oracle_rac":                    {Type: schema.TypeString, Optional: true, Computed: true},
 				"asm_option":                        {Type: schema.TypeString, Optional: true, Computed: true},
 				"is_single_table_mode":              {Type: schema.TypeString, Optional: true, Computed: true},
+				"is_public":                         {Type: schema.TypeString, Optional: true, Computed: true},
+				"empty_header":                      {Type: schema.TypeString, Optional: true, Computed: true},
 
 				// Enum & int values
 				"connection_type":                      {Type: schema.TypeString, Optional: true, Computed: true},
@@ -303,6 +306,9 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"domain_type":           {Type: schema.TypeString, Optional: true},
 				"connection_method":     {Type: schema.TypeString, Optional: true},
 				"group_name":            {Type: schema.TypeString, Optional: true},
+				"company_id":            {Type: schema.TypeString, Optional: true},
+				"environment":           {Type: schema.TypeString, Optional: true},
+				"list_strategy":         {Type: schema.TypeString, Optional: true},
 
 				// Collections
 				"report_suites":            {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
@@ -335,6 +341,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"organizations":            {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
 				"account_ids":              {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
 				"packed_mode_tables":       {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"properties":               {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
 
 				"secrets_list": {Type: schema.TypeSet, Optional: true,
 					Elem: &schema.Resource{
@@ -713,6 +720,34 @@ func resourceConnectorUpdateCustomConfig(d *schema.ResourceData) *map[string]int
 
 	if v, ok := c["is_single_table_mode"].(string); ok && v != "" {
 		configMap["is_single_table_mode"] = strToBool(v)
+	}
+
+	if v, ok := c["company_id"].(string); ok && v != "" {
+		configMap["company_id"] = v
+	}
+
+	if v, ok := c["login_password"].(string); ok && v != "" {
+		configMap["login_password"] = v
+	}
+
+	if v, ok := c["environment"].(string); ok && v != "" {
+		configMap["environment"] = v
+	}
+
+	if v, ok := c["properties"]; ok {
+		configMap["properties"] = xInterfaceStrXStr(v.(*schema.Set).List())
+	}
+
+	if v, ok := c["is_public"].(string); ok && v != "" {
+		configMap["is_public"] = strToBool(v)
+	}
+
+	if v, ok := c["empty_header"].(string); ok && v != "" {
+		configMap["empty_header"] = strToBool(v)
+	}
+
+	if v, ok := c["list_strategy"].(string); ok && v != "" {
+		configMap["list_strategy"] = v
 	}
 
 	// HVA parameters end
@@ -1671,6 +1706,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResp
 		mapAddXInterface(c, "api_keys", resourceConfig["api_keys"].(*schema.Set).List())
 		mapAddStr(c, "agent_password", resourceConfig["agent_password"].(string))
 		mapAddStr(c, "asm_password", resourceConfig["asm_password"].(string))
+		mapAddStr(c, "login_password", resourceConfig["login_password"].(string))
 	}
 
 	mapAddXInterface(c, "project_credentials", resourceConnectorReadConfigFlattenProjectCredentials(resp, currentConfig))
@@ -1711,6 +1747,10 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResp
 
 	if v, ok := resp.Data.CustomConfig["packed_mode_tables"].([]interface{}); ok {
 		mapAddXInterface(c, "packed_mode_tables", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["properties"].([]interface{}); ok {
+		mapAddXInterface(c, "properties", v)
 	}
 
 	// Boolean fields
@@ -1838,6 +1878,26 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResp
 
 	if v, ok := resp.Data.CustomConfig["is_single_table_mode"].(bool); ok {
 		mapAddStr(c, "is_single_table_mode", boolToStr(v))
+	}
+
+	if v, ok := resp.Data.CustomConfig["company_id"].(string); ok {
+		mapAddStr(c, "company_id", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["environment"].(string); ok {
+		mapAddStr(c, "environment", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["is_public"].(bool); ok {
+		mapAddStr(c, "is_public", boolToStr(v))
+	}
+
+	if v, ok := resp.Data.CustomConfig["empty_header"].(bool); ok {
+		mapAddStr(c, "empty_header", boolToStr(v))
+	}
+
+	if v, ok := resp.Data.CustomConfig["list_strategy"].(string); ok {
+		mapAddStr(c, "list_strategy", v)
 	}
 
 	mapAddStr(c, "sync_mode", resp.Data.Config.SyncMode)
