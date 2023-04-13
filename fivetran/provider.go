@@ -22,7 +22,7 @@ func Provider() *schema.Provider {
 			"fivetran_group":                   resourceGroup(),
 			"fivetran_group_users":             resourceGroupUsers(),
 			"fivetran_destination":             resourceDestination(),
-			"fivetran_connector":               resourceConnector(),
+			"fivetran_connector":               resourceConnectorAutomatic(),
 			"fivetran_connector_schema_config": resourceSchemaConfig(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
@@ -43,5 +43,6 @@ func Provider() *schema.Provider {
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	fivetranClient := fivetran.New(d.Get("api_key").(string), d.Get("api_secret").(string))
 	fivetranClient.CustomUserAgent("terraform-provider-fivetran/" + version)
+	fivetranClient.BaseURL("http://localhost:8001/v1")
 	return fivetranClient, diag.Diagnostics{}
 }
