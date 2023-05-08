@@ -149,6 +149,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"is_single_table_mode":              {Type: schema.TypeString, Optional: true, Computed: true},
 				"is_public":                         {Type: schema.TypeString, Optional: true, Computed: true},
 				"empty_header":                      {Type: schema.TypeString, Optional: true, Computed: true},
+				"support_nested_columns":            {Type: schema.TypeString, Optional: true, Computed: true},
 
 				// Enum & int values
 				"connection_type":                      {Type: schema.TypeString, Optional: true, Computed: true},
@@ -748,6 +749,10 @@ func resourceConnectorUpdateCustomConfig(d *schema.ResourceData) *map[string]int
 
 	if v, ok := c["list_strategy"].(string); ok && v != "" {
 		configMap["list_strategy"] = v
+	}
+
+	if v, ok := c["support_nested_columns"].(string); ok && v != "" {
+		configMap["support_nested_columns"] = strToBool(v)
 	}
 
 	// HVA parameters end
@@ -1898,6 +1903,10 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResp
 
 	if v, ok := resp.Data.CustomConfig["list_strategy"].(string); ok {
 		mapAddStr(c, "list_strategy", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["support_nested_columns"].(bool); ok {
+		mapAddStr(c, "support_nested_columns", boolToStr(v))
 	}
 
 	mapAddStr(c, "sync_mode", resp.Data.Config.SyncMode)

@@ -233,6 +233,7 @@ const (
 			"is_single_table_mode":              true,
 			"is_public":                         false,
 			"empty_header":                      false,
+			"support_nested_columns":            false,
 
 			"pdb_name":                         	"pdb_name",
 			"agent_host":                       	"agent_host",
@@ -557,6 +558,7 @@ const (
 			is_single_table_mode = "true"
 			is_public = "false"
 			empty_header = "false"
+			support_nested_columns = "false"
 			asm_option = "false"
 		    asm_user = "asm_user"
 			asm_password = "asm_password"
@@ -1007,6 +1009,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "is_single_table_mode", true)
 			assertKeyExistsAndHasValue(t, config, "is_public", false)
 			assertKeyExistsAndHasValue(t, config, "empty_header", false)
+			assertKeyExistsAndHasValue(t, config, "support_nested_columns", false)
 
 			assertKeyExistsAndHasValue(t, config, "connection_type", "connection_type")
 			assertKeyExistsAndHasValue(t, config, "sync_mode", "sync_mode")
