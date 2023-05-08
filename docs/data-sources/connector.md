@@ -264,6 +264,7 @@ Read-Only:
 - `source` (String)
 - `sub_domain` (String)
 - `subdomain` (String)
+- `support_nested_columns` (String)
 - `swipe_attribution_window` (String)
 - `sync_data_locker` (String)
 - `sync_format` (String)

@@ -111,6 +111,7 @@ func TestDataSourceConnectorConfigMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.is_keypair", "false"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.is_public", "false"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.empty_header", "false"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.support_nested_columns", "false"),
 
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.conversion_window_size", "0"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.skip_before", "0"),
