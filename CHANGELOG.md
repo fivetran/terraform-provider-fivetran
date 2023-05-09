@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Added
 - `fivetran_connector.config.support_nested_columns` field support
+- `fivetran_connector.config.csv_definition` field support
+- `fivetran_connector.config.export_storage_type` field support
 
 ## [0.6.17](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.16...v0.6.17)
 

@@ -390,6 +390,8 @@ const (
 			"company_id":           "company_id",
 			"environment":          "environment",
 			"list_strategy":        "list_strategy",
+			"csv_definition":       "csv_definition",
+			"export_storage_type":  "export_storage_type",
 
 			"report_suites":            ["report_suite"],
 			"elements":                 ["element"],
@@ -699,6 +701,8 @@ const (
 			company_id = "company_id"
 			environment = "environment"
 			list_strategy = "list_strategy"
+			csv_definition = "csv_definition"
+			export_storage_type = "export_storage_type"
 
 			report_suites = ["report_suite"]
 			elements = ["element"]
@@ -1165,6 +1169,8 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "company_id", "company_id")
 			assertKeyExistsAndHasValue(t, config, "environment", "environment")
 			assertKeyExistsAndHasValue(t, config, "list_strategy", "list_strategy")
+			assertKeyExistsAndHasValue(t, config, "csv_definition", "csv_definition")
+			assertKeyExistsAndHasValue(t, config, "export_storage_type", "export_storage_type")
 
 			assertKeyExists(t, config, "report_suites")
 			assertArrayItems(t, config["report_suites"].([]interface{}), append(make([]interface{}, 0), "report_suite"))

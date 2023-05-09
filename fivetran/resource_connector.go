@@ -310,6 +310,8 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"company_id":            {Type: schema.TypeString, Optional: true},
 				"environment":           {Type: schema.TypeString, Optional: true},
 				"list_strategy":         {Type: schema.TypeString, Optional: true},
+				"csv_definition":        {Type: schema.TypeString, Optional: true},
+				"export_storage_type":   {Type: schema.TypeString, Optional: true},
 
 				// Collections
 				"report_suites":            {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
@@ -753,6 +755,14 @@ func resourceConnectorUpdateCustomConfig(d *schema.ResourceData) *map[string]int
 
 	if v, ok := c["support_nested_columns"].(string); ok && v != "" {
 		configMap["support_nested_columns"] = strToBool(v)
+	}
+
+	if v, ok := c["csv_definition"].(string); ok && v != "" {
+		configMap["csv_definition"] = v
+	}
+
+	if v, ok := c["export_storage_type"].(string); ok && v != "" {
+		configMap["export_storage_type"] = v
 	}
 
 	// HVA parameters end
@@ -1907,6 +1917,14 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResp
 
 	if v, ok := resp.Data.CustomConfig["support_nested_columns"].(bool); ok {
 		mapAddStr(c, "support_nested_columns", boolToStr(v))
+	}
+
+	if v, ok := resp.Data.CustomConfig["csv_definition"].(string); ok {
+		mapAddStr(c, "csv_definition", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["export_storage_type"].(string); ok {
+		mapAddStr(c, "export_storage_type", v)
 	}
 
 	mapAddStr(c, "sync_mode", resp.Data.Config.SyncMode)
