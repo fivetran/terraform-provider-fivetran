@@ -345,6 +345,7 @@ func resourceConnectorSchemaConfig() *schema.Schema {
 				"account_ids":              {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
 				"packed_mode_tables":       {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
 				"properties":               {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				"primary_keys":             {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
 
 				"secrets_list": {Type: schema.TypeSet, Optional: true,
 					Elem: &schema.Resource{
@@ -763,6 +764,10 @@ func resourceConnectorUpdateCustomConfig(d *schema.ResourceData) *map[string]int
 
 	if v, ok := c["export_storage_type"].(string); ok && v != "" {
 		configMap["export_storage_type"] = v
+	}
+
+	if v, ok := c["primary_keys"]; ok {
+		configMap["primary_keys"] = xInterfaceStrXStr(v.(*schema.Set).List())
 	}
 
 	// HVA parameters end
@@ -1766,6 +1771,10 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResp
 
 	if v, ok := resp.Data.CustomConfig["properties"].([]interface{}); ok {
 		mapAddXInterface(c, "properties", v)
+	}
+
+	if v, ok := resp.Data.CustomConfig["primary_keys"].([]interface{}); ok {
+		mapAddXInterface(c, "primary_keys", v)
 	}
 
 	// Boolean fields

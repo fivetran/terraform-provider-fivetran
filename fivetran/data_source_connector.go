@@ -379,6 +379,7 @@ func dataSourceConnectorSchemaConfig() *schema.Schema {
 				"support_nested_columns": {Type: schema.TypeString, Computed: true},
 				"csv_definition":         {Type: schema.TypeString, Computed: true},
 				"export_storage_type":    {Type: schema.TypeString, Computed: true},
+				"primary_keys":           {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
 			},
 		},
 	}
@@ -803,6 +804,9 @@ func dataSourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsRe
 	}
 	if v, ok := resp.Data.CustomConfig["export_storage_type"].(string); ok {
 		mapAddStr(c, "export_storage_type", v)
+	}
+	if v, ok := resp.Data.CustomConfig["primary_keys"].([]interface{}); ok {
+		mapAddXInterface(c, "primary_keys", v)
 	}
 
 	config[0] = c

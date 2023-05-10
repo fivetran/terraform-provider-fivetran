@@ -214,6 +214,7 @@ Read-Only:
 - `post_click_attribution_window_size` (String)
 - `prebuilt_report` (String)
 - `prefix` (String)
+- `primary_keys` (List of String)
 - `private_key` (String)
 - `profiles` (List of String)
 - `project_credentials` (List of Object) (see [below for nested schema](#nestedobjatt--config--project_credentials))
