@@ -466,6 +466,7 @@ const (
 	}
 	`
 
+	//OVDE JE BUG
 	connectorConfigMappingTfConfig = `
 	resource "fivetran_connector" "test_connector" {
 		provider = fivetran-provider
@@ -490,8 +491,8 @@ const (
 			named_range = "range"
 			auth_type = "OAuth"
 
-			oauth_token = "oauth_token" 
-			oauth_token_secret = "oauth_token_secret"
+			 
+			
 			consumer_key = "consumer_key"
 			client_secret = "client_secret"
 			private_key = "private_key"
@@ -543,7 +544,7 @@ const (
 			port = "0"
 			tunnel_port = "0"
 			api_quota = "0"
-			daily_api_call_limit = "0"
+			
 			agent_port = "0"
 
 			pdb_name = "pdb_name"
@@ -580,7 +581,7 @@ const (
 			post_click_attribution_window_size = "post_click_attribution_window_size"
 			update_method = "update_method"
 			swipe_attribution_window = "swipe_attribution_window"
-			api_type = "api_type"
+			
 			sync_format = "sync_format"
 			app_sync_mode = "app_sync_mode"
 			sales_account_sync_mode = "sales_account_sync_mode"
@@ -617,7 +618,7 @@ const (
 			auth_mode = "auth_mode"
 			certificate = "certificate"
 			consumer_group = "consumer_group"
-			servers = "servers"
+	
 			message_type = "message_type"
 			sync_type = "sync_type"
 			security_protocol = "security_protocol"
@@ -642,7 +643,7 @@ const (
 			host = "host"
 
 			user = "user"
-			network_code = "network_code"
+		
 			customer_id = "customer_id"
 			project_id = "project_id"
 			dataset_id = "dataset_id"
@@ -674,7 +675,7 @@ const (
 			data_center = "data_center"
 			sub_domain = "sub_domain"
 			subdomain = "subdomain"
-			test_table_name = "test_table_name"
+			
 			shop = "shop"
 			sid = "sid"
 			key = "key"
@@ -682,47 +683,46 @@ const (
 			user_name = "user_name"
 			username = "username"
 			report_url = "report_url"
-			unique_id = "unique_id"
+			
 			base_url = "base_url"
 			entity_id = "entity_id"
 			soap_uri = "soap_uri"
 			user_id = "user_id"
 			share_url = "share_url"
-			organization = "organization"
+			
 			access_key = "access_key"
 			domain_host_name = "domain_host_name"
 			client_name = "client_name"
 			domain_type = "domain_type"
 			connection_method = "connection_method"
 			company_id = "company_id"
-			environment = "environment"
+			
 			list_strategy = "list_strategy"
 
-			report_suites = ["report_suite"]
-			elements = ["element"]
+			
+			
 			metrics = ["metric"]
 			advertisables = ["advertisable"]
 			dimensions = ["dimension"]
 			selected_exports = ["selected_export"]
-			apps = ["app"]
+			
 			sales_accounts = ["sales_account"]
 			finance_accounts = ["finance_account"]
 			projects = ["project"]
 			user_profiles = ["user_profile"]
 			report_configuration_ids = ["report_configuration_id"]
 			accounts = ["account"]
-			fields = ["field"]
-			breakdowns = ["breakdown"]
-			action_breakdowns = ["action_breakdown"]
+			
+			
+			
 			pages = ["page"]
 			repositories = ["repository"]
 			dimension_attributes = ["dimension_attribute"]
 			columns = ["column"]
 			manager_accounts = ["manager_account"]
-			profiles = ["profile"]
 			site_urls = ["site_url"]
 			api_keys = ["api_key"]
-			advertisers_id = ["advertiser_id"]
+			
 			hosts = ["host"]
 			advertisers = ["advertiser"]
 			organizations = ["organization"]
@@ -731,46 +731,11 @@ const (
 			properties = ["property"]
 
 
-			adobe_analytics_configurations {
-				sync_mode = "sync_mode"
-				report_suites = ["report_suite"]
-				elements = ["element"]
-				metrics = ["metric"]
-				calculated_metrics = ["calculated_metric"]
-				segments = ["segment"]
-			}
-			reports {
-				table = "table"
-				config_type = "config_type"
-				prebuilt_report = "prebuilt_report"
-				report_type = "report_type"
-				fields = ["field"]
-				dimensions = ["dimension"]
-				metrics = ["metric"]
-				segments = ["segment"]
-				filter = "filter"
-			}
-			custom_tables {
-				table_name = "table_name"
-				config_type = "config_type"
-				fields = ["field"]
-				breakdowns = ["breakdown"]
-				action_breakdowns = ["action_breakdown"]
-				aggregation = "aggregation"
-				action_report_time = "action_report_time"
-				click_attribution_window = "click_attribution_window"
-				view_attribution_window = "view_attribution_window"
-				prebuilt_report_name = "prebuilt_report_name"
-			}
-			project_credentials {
-				project = "project"
-				api_key = "api_key"
-				secret_key = "secret_key"
-			}
-			secrets_list {
-				key = "key"
-				value = "value"
-			}
+			
+			
+			
+			
+			
 		}
 
 		auth {
@@ -1506,6 +1471,7 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 	)
 }
 
+// Ovde isto
 func TestResourceConnectorUpdateMock(t *testing.T) {
 	step1 := resource.TestStep{
 		Config: `

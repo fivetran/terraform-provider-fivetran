@@ -571,7 +571,7 @@ func resourceConnectorUpdate(ctx context.Context, d *schema.ResourceData, m inte
 	}
 
 	svc.Config(resourceConnectorUpdateConfig(d))
-	svc.ConfigCustom(resourceConnectorUpdateCustomConfig(d))
+	svc.ConfigCustom(resourceConnectorAutomaticUpdateCustomConfig(d))
 	svc.Auth(resourceConnectorCreateAuth(d.Get("auth").([]interface{})))
 	svc.AuthCustom(resourceConnectorUpdateCustomAuth(d))
 
@@ -617,6 +617,8 @@ func resourceConnectorUpdateCustomConfig(d *schema.ResourceData) *map[string]int
 	}
 
 	c := config[0].(map[string]interface{})
+
+	
 
 	if v, ok := c["group_name"].(string); ok && v != "" {
 		configMap["group_name"] = v
