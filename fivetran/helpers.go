@@ -1,12 +1,11 @@
 package fivetran
 
 import (
-	"fmt"
-	"log"
 	"strconv"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 // strToBool receives a string and returns a boolean
@@ -19,7 +18,7 @@ func strToBool(s string) bool {
 
 // boolToStr receives a boolean and returns a string
 func boolToStr(b bool) string {
-	if b == true {
+	if b {
 		return "true"
 	}
 	return "false"
@@ -84,19 +83,19 @@ func mapAddStr(msi map[string]interface{}, k, v string) {
 }
 
 // mapAddInt adds a non-zero int to a map[string]interface{}
-func mapAddInt(msi map[string]interface{}, k string, v int) {
-	if v != 0 {
-		msi[k] = v
-	}
-}
+// func mapAddInt(msi map[string]interface{}, k string, v int) {
+// 	if v != 0 {
+// 		msi[k] = v
+// 	}
+// }
 
 // mapAddIntPointer adds a non-nil *int to a map[string]interface{}.
 // This is currently not in use.
-func mapAddIntP(msi map[string]interface{}, k string, v *int) {
-	if v != nil {
-		msi[k] = v
-	}
-}
+// func mapAddIntP(msi map[string]interface{}, k string, v *int) {
+// 	if v != nil {
+// 		msi[k] = v
+// 	}
+// }
 
 // mapAddXInterface adds a non-empty []interface{} to a map[string]interface{}
 func mapAddXInterface(msi map[string]interface{}, k string, v []interface{}) {
@@ -123,9 +122,9 @@ func newDiagAppend(diags diag.Diagnostics, severity diag.Severity, summary, deta
 
 // debug is a temporary function. It should be improved to accept a variadic parameter
 // and its name should change to logDebug
-func debug(v interface{}) {
-	log.Println(fmt.Sprintf("[DEBUG] FIVETRAN: %s", v))
-}
+// func debug(v interface{}) {
+// 	log.Println(fmt.Sprintf("[DEBUG] FIVETRAN: %s", v))
+// }
 
 func copyMap(source map[string]interface{}) map[string]interface{} {
 	result := make(map[string]interface{})
@@ -210,4 +209,14 @@ func readDestinationSchema(schema string, service string) []interface{} {
 
 	destination_schema[0] = ds
 	return destination_schema
+}
+
+func getSubcollectionElementValue(configKey, subKey, subKeyValue, targetKey string, currentConfig []interface{}) interface{} {
+	targetList := currentConfig[0].(map[string]interface{})[configKey].(*schema.Set).List()
+	for _, v := range targetList {
+		if v.(map[string]interface{})[subKey].(string) == subKeyValue {
+			return v.(map[string]interface{})[targetKey]
+		}
+	}
+	return nil
 }
