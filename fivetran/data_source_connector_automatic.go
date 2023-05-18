@@ -90,38 +90,38 @@ func dataSourceConnectorAutomaticSchemaConfig() *schema.Schema {
 	for _, service := range services {
 		path := SCHEMAS_PATH + service + PROPERTIES_PATH
 		oasProperties := getDataSourceProperties(path)
-		for k, v := range oasProperties {
-			if val, ok := properties[k]; ok {
+		for key, value := range oasProperties {
+			if existingValue, ok := properties[key]; ok {
 				// if k == "reports" {
 				// 	fmt.Printf("Type of val.Elem is %T\n", val.Elem)
 				// }
-				if val.Type == schema.TypeList {
-					if v2, ok := val.Elem.(*schema.Resource); ok {
-						if vX1, ok := v.Elem.(*schema.Resource); ok {
-							for kY, vY := range vX1.Schema {
-								v2.Schema[kY] = vY
+				if existingValue.Type == schema.TypeList {
+					if existingSchemaResourceValue, ok := existingValue.Elem.(*schema.Resource); ok {
+						if newSchemaResourceValue, ok := value.Elem.(*schema.Resource); ok {
+							for kY, vY := range newSchemaResourceValue.Schema {
+								existingSchemaResourceValue.Schema[kY] = vY
 							}
-							val.Elem = v2
-							properties[k] = val
+							existingValue.Elem = existingSchemaResourceValue
+							properties[key] = existingValue
 							continue
 						}
-					} else if v2, ok := val.Elem.(*schema.Schema); ok {
-						if v3, ok := v2.Elem.(*schema.Resource); ok {
-							if vX1, ok := v.Elem.(*schema.Resource); ok {
-								for kY, vY := range vX1.Schema {
-									v3.Schema[kY] = vY
-								}
-								val.Elem = v3
-								properties[k] = val
-								continue
-							}
-						}
-					} else if _, ok := val.Elem.(map[string]*schema.Schema); ok {
+					} else if _, ok := existingValue.Elem.(*schema.Schema); ok {
+						// if v3, ok := schemaSchemaValue.Elem.(*schema.Resource); ok {
+						// 	if vX1, ok := value.Elem.(*schema.Resource); ok {
+						// 		for kY, vY := range vX1.Schema {
+						// 			v3.Schema[kY] = vY
+						// 		}
+						// 		existingValue.Elem = v3
+						// 		properties[key] = existingValue
+						// 		continue
+						// 	}
+						// }
+					} else if _, ok := existingValue.Elem.(map[string]*schema.Schema); ok {
 						continue
 					}
 				}
 			}
-			properties[k] = v
+			properties[key] = value
 		}
 	}
 
