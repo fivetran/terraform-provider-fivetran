@@ -12,6 +12,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+const SCHEMAS_PATH = "schemas."
+const PROPERTIES_PATH = ".properties.config.properties"
+
 func dataSourceConnectorAutomatic() *schema.Resource {
 	var result = &schema.Resource{
 		ReadContext: dataSourceConnectorAutomaticRead,
@@ -85,24 +88,15 @@ func dataSourceConnectorAutomaticSchemaConfig() *schema.Schema {
 	properties := make(map[string]*schema.Schema)
 
 	for _, service := range services {
-		path := "schemas." + service + ".properties.config.properties"
-		if service == "adroll_config_V1" {
-			log.Output(1, "luka")
-		}
-		newProperties := getDataSourceProperties(path)
-		for k, v := range *newProperties {
-			if k == "reports" {
-				fmt.Printf("reports fields now\n")
-			}
+		path := SCHEMAS_PATH + service + PROPERTIES_PATH
+		oasProperties := getDataSourceProperties(path)
+		for k, v := range oasProperties {
 			if val, ok := properties[k]; ok {
-
-				if k == "reports" {
-					fmt.Printf("Type of val.Elem is %T\n", val.Elem)
-				}
-
+				// if k == "reports" {
+				// 	fmt.Printf("Type of val.Elem is %T\n", val.Elem)
+				// }
 				if val.Type == schema.TypeList {
 					if v2, ok := val.Elem.(*schema.Resource); ok {
-						fmt.Printf("reports fields now 2\n")
 						if vX1, ok := v.Elem.(*schema.Resource); ok {
 							for kY, vY := range vX1.Schema {
 								v2.Schema[kY] = vY
@@ -113,7 +107,6 @@ func dataSourceConnectorAutomaticSchemaConfig() *schema.Schema {
 						}
 					} else if v2, ok := val.Elem.(*schema.Schema); ok {
 						if v3, ok := v2.Elem.(*schema.Resource); ok {
-							fmt.Printf("reports fields now 2\n")
 							if vX1, ok := v.Elem.(*schema.Resource); ok {
 								for kY, vY := range vX1.Schema {
 									v3.Schema[kY] = vY
@@ -123,9 +116,7 @@ func dataSourceConnectorAutomaticSchemaConfig() *schema.Schema {
 								continue
 							}
 						}
-					} else if v2, ok := val.Elem.(map[string]*schema.Schema); ok {
-						fmt.Printf("reports fields now 2\n")
-						fmt.Printf(intToStr(len(v2)))
+					} else if _, ok := val.Elem.(map[string]*schema.Schema); ok {
 						continue
 					}
 				}
@@ -141,7 +132,7 @@ func dataSourceConnectorAutomaticSchemaConfig() *schema.Schema {
 	}
 }
 
-func getDataSourceProperties(path string) *map[string]*schema.Schema {
+func getDataSourceProperties(path string) map[string]*schema.Schema {
 	shemasJson, err := gabs.ParseJSONFile("/Users/lukadevic/Fivetran/terraform-provider-fivetran/fivetran/schemas.json")
 	if err != nil {
 		panic(err)
@@ -150,7 +141,6 @@ func getDataSourceProperties(path string) *map[string]*schema.Schema {
 	properties := make(map[string]*schema.Schema)
 
 	for key, child := range shemasJson.Path(path).ChildrenMap() {
-		// introduce int, bool and maybe other types
 		value := &schema.Schema{
 			Type:     schema.TypeString,
 			Computed: true}
@@ -258,7 +248,7 @@ func getDataSourceProperties(path string) *map[string]*schema.Schema {
 		properties[key] = value
 	}
 
-	return &properties
+	return properties
 }
 
 func dataSourceConnectorAutomaticRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -356,21 +346,19 @@ func dataSourceConnectorAutomaticReadConfig(resp *fivetran.ConnectorCustomMerged
 	properties := make(map[string]*schema.Schema)
 
 	for _, service := range services {
-		path := "schemas." + service + ".properties.config.properties"
+		path := SCHEMAS_PATH + service + PROPERTIES_PATH
 		newProperties := getDataSourceProperties(path)
-		for k, v := range *newProperties {
+		for k, v := range newProperties {
 			properties[k] = v
 		}
 	}
 
 	for key, value := range properties {
 
-		if key == "adobe_analytics_configurations" {
-			log.Output(1, "LLL")
-			fmt.Printf("Type of c[key] is %T\n", c[key])
-		}
+		// if key == "adobe_analytics_configurations" {
+		// 	fmt.Printf("Type of c[key] is %T\n", c[key])
+		// }
 		if value.Type == schema.TypeSet || value.Type == schema.TypeList {
-
 			if v, ok := c[key].([]string); ok {
 				configMap[key] = xStrXInterface(v)
 				continue
