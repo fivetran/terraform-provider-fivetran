@@ -102,63 +102,34 @@ func dataSourceConnectorAutomaticSchemaConfig() *schema.Schema {
 
 				if val.Type == schema.TypeList {
 					if v2, ok := val.Elem.(*schema.Resource); ok {
-						//if v3, ok := v2.Schema; ok {
 						fmt.Printf("reports fields now 2\n")
 						if vX1, ok := v.Elem.(*schema.Resource); ok {
-							//if vX2, ok := vX1[0].(map[string]interface{}); ok {
 							for kY, vY := range vX1.Schema {
 								v2.Schema[kY] = vY
 							}
-
 							val.Elem = v2
 							properties[k] = val
 							continue
-							//}
-
 						}
-						//}
 					} else if v2, ok := val.Elem.(*schema.Schema); ok {
 						if v3, ok := v2.Elem.(*schema.Resource); ok {
-							//if v3, ok := v2.Schema; ok {
 							fmt.Printf("reports fields now 2\n")
 							if vX1, ok := v.Elem.(*schema.Resource); ok {
-								//if vX2, ok := vX1[0].(map[string]interface{}); ok {
 								for kY, vY := range vX1.Schema {
 									v3.Schema[kY] = vY
 								}
-
 								val.Elem = v3
 								properties[k] = val
 								continue
-								//}
-
 							}
-							//}
 						}
 					} else if v2, ok := val.Elem.(map[string]*schema.Schema); ok {
-						//if v3, ok := v2.Schema; ok {
 						fmt.Printf("reports fields now 2\n")
 						fmt.Printf(intToStr(len(v2)))
 						continue
-						// if vX1, ok := v.Elem.(*schema.Resource); ok {
-						// 	//if vX2, ok := vX1[0].(map[string]interface{}); ok {
-						// 	for kY, vY := range vX1.Schema {
-						// 		v2.Schema[kY] = vY
-						// 	}
-
-						// 	val.Elem = v2.Schema
-						// 	properties[k] = val
-						// 	continue
-						//}
-
 					}
-					//}
 				}
 			}
-			// schema112 := &schema.Schema{Type: schema.TypeList, Computed: true,
-			// 	Elem: &schema.Resource{
-			// 		Schema: map[string]*schema.Schema{}}}
-
 			properties[k] = v
 		}
 	}
@@ -565,22 +536,6 @@ func getDataSourceProperties(path string) *map[string]*schema.Schema {
 						Schema: childrenSchemaMap,
 					},
 				}
-
-				//"adobe_analytics_configurations": {
-				// Type: schema.TypeList,
-				// Computed: true,
-				// Elem: &schema.Resource{
-				// 					Schema: map[string]*schema.Schema{
-				// 						"sync_mode":          {Type: schema.TypeString, Computed: true},
-				// 						"report_suites":      {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				// 						"elements":           {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				// 						"metrics":            {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				// 						"calculated_metrics": {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				// 						"segments":           {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
-				// 					},
-				// 				},
-				// 			},
-
 			} else if itemType == "string" || itemType == "object" {
 				value = &schema.Schema{
 					Type:     schema.TypeList,
@@ -598,44 +553,12 @@ func getDataSourceProperties(path string) *map[string]*schema.Schema {
 						Type: schema.TypeString,
 					}}
 			}
-
-			// newPath := path + key + "items.properties"
-			// listProperties := getProperties(newPath)
-			// value = &schema.Schema{
-			// 	Type:     schema.TypeSet,
-			// 	Computed: true,
-			// 	Elem: &schema.Resource{
-			// 		Schema: *listProperties,
-			// 	},
-			// }
 		default:
 			value = &schema.Schema{
 				Type:     schema.TypeString,
 				Computed: true}
 
 		}
-
-		// if propertyType == "array" {
-		// 	itemType := child.Path("items.type").Data()
-		// 	if itemType == "string" {
-		// 		value = &schema.Schema{
-		// 			Type:     schema.TypeSet,
-		// 			Optional: true,
-		// 			Elem: &schema.Schema{
-		// 				Type: schema.TypeString,
-		// 			}}
-		// 		break
-		// 	}
-		// 	newPath := path + key + "items.properties"
-		// 	listProperties := getProperties(newPath)
-		// 	value = &schema.Schema{
-		// 		Type:     schema.TypeSet,
-		// 		Optional: true,
-		// 		Elem: &schema.Resource{
-		// 			Schema: *listProperties,
-		// 		},
-		// 	}
-		// }
 		properties[key] = value
 	}
 
@@ -779,9 +702,6 @@ func dataSourceConnectorAutomaticReadConfig(resp *fivetran.ConnectorCustomMerged
 	}
 
 	for key, value := range properties {
-		// if v, ok := resp.Data.CustomConfig["empty_header"].(bool); ok {
-		// 	mapAddStr(c, "empty_header", boolToStr(v))
-		// }
 
 		if key == "adobe_analytics_configurations" {
 			log.Output(1, "LLL")
@@ -789,65 +709,8 @@ func dataSourceConnectorAutomaticReadConfig(resp *fivetran.ConnectorCustomMerged
 		}
 		if value.Type == schema.TypeSet || value.Type == schema.TypeList {
 
-			// if v2, ok := value.Elem.(map[string]interface{}); ok {
-
-			// 	mapAddXInterface(c, "adobe_analytics_configurations", dataSourceConnectorReadConfigFlattenAdobeAnalyticsConfigurations(resp))
-			// 	// if len(resp.Data.Config.CustomTables) < 1 {
-			// 	// 	return make([]interface{}, 0)
-			// 	// }
-
-			// 	//ct := make(map[string]interface{})
-
-			// 	for key2, value2 := range v2 {
-			// 		// if value.Type == schema.TypeSet || value.Type == schema.TypeList {
-
-			// 		// 	if v, ok := c[key].([]string); ok {
-			// 		// 		configMap[key] = xStrXInterface(v)
-			// 		// 		continue
-			// 		// 	}
-			// 		// 	if v, ok := c[key].([]interface{}); ok {
-			// 		// 		configMap[key] = xInterfaceStrXStr(v)
-			// 		// 		continue
-			// 		// 	}
-			// 		log.Output(1, key2)
-			// 		log.Output(1, value2.(string))
-			// 	}
-			// }
-
-			// mapAddStr(ct, "table_name", v2.TableName)
-			// 	mapAddStr(ct, "config_type", v.ConfigType)
-			// 	mapAddXInterface(ct, "fields", xStrXInterface(v.Fields))
-			// 	mapAddXInterface(ct, "breakdowns", xStrXInterface(v.Breakdowns))
-			// 	mapAddXInterface(ct, "action_breakdowns", xStrXInterface(v.ActionBreakdowns))
-			// 	mapAddStr(ct, "aggregation", v.Aggregation)
-			// 	mapAddStr(ct, "action_report_time", v.ActionReportTime)
-			// 	mapAddStr(ct, "click_attribution_window", v.ClickAttributionWindow)
-			// 	mapAddStr(ct, "view_attribution_window", v.ViewAttributionWindow)
-			// 	mapAddStr(ct, "prebuilt_report_name", v.PrebuiltReportName)
-
-			// customTables := make([]interface{}, len(resp.Data.Config.CustomTables))
-			// for i, v := range resp.Data.Config.CustomTables {
-			// 	ct := make(map[string]interface{})
-			// 	mapAddStr(ct, "table_name", v.TableName)
-			// 	mapAddStr(ct, "config_type", v.ConfigType)
-			// 	mapAddXInterface(ct, "fields", xStrXInterface(v.Fields))
-			// 	mapAddXInterface(ct, "breakdowns", xStrXInterface(v.Breakdowns))
-			// 	mapAddXInterface(ct, "action_breakdowns", xStrXInterface(v.ActionBreakdowns))
-			// 	mapAddStr(ct, "aggregation", v.Aggregation)
-			// 	mapAddStr(ct, "action_report_time", v.ActionReportTime)
-			// 	mapAddStr(ct, "click_attribution_window", v.ClickAttributionWindow)
-			// 	mapAddStr(ct, "view_attribution_window", v.ViewAttributionWindow)
-			// 	mapAddStr(ct, "prebuilt_report_name", v.PrebuiltReportName)
-			// 	customTables[i] = ct
-			// }
-
 			if v, ok := c[key].([]string); ok {
 				configMap[key] = xStrXInterface(v)
-				// if v, ok := resp.Data.CustomConfig["packed_mode_tables"].([]interface{}); ok {
-				// 	mapAddXInterface(c, "packed_mode_tables", v)
-				// }
-
-				// mapAddXInterface(c, "advertisables", xStrXInterface(resp.Data.Config.Advertisables))
 				continue
 			}
 			if v, ok := c[key].([]interface{}); ok {
@@ -857,11 +720,6 @@ func dataSourceConnectorAutomaticReadConfig(resp *fivetran.ConnectorCustomMerged
 				} else {
 					configMap[key] = xInterfaceStrXStr(v)
 				}
-				// if v, ok := resp.Data.CustomConfig["packed_mode_tables"].([]interface{}); ok {
-				// 	mapAddXInterface(c, "packed_mode_tables", v)
-				// }
-
-				// mapAddXInterface(c, "advertisables", xStrXInterface(resp.Data.Config.Advertisables))
 				continue
 			}
 		}
@@ -877,319 +735,6 @@ func dataSourceConnectorAutomaticReadConfig(resp *fivetran.ConnectorCustomMerged
 			}
 		}
 	}
-
-	//mapAddStr(c, "sheet_id", resp.Data.Config.SheetID)
-	// mapAddStr(c, "named_range", resp.Data.Config.NamedRange)
-	// mapAddStr(c, "client_id", resp.Data.Config.ClientID)
-	// mapAddStr(c, "client_secret", resp.Data.Config.ClientSecret)
-	// mapAddStr(c, "technical_account_id", resp.Data.Config.TechnicalAccountID)
-	// mapAddStr(c, "organization_id", resp.Data.Config.OrganizationID)
-	// mapAddStr(c, "private_key", resp.Data.Config.PrivateKey)
-	// mapAddStr(c, "sync_mode", resp.Data.Config.SyncMode)
-	// mapAddXInterface(c, "report_suites", xStrXInterface(resp.Data.Config.ReportSuites))
-	// mapAddXInterface(c, "elements", xStrXInterface(resp.Data.Config.Elements))
-	// mapAddXInterface(c, "metrics", xStrXInterface(resp.Data.Config.Metrics))
-	// mapAddStr(c, "date_granularity", resp.Data.Config.DateGranularity)
-	// mapAddStr(c, "timeframe_months", resp.Data.Config.TimeframeMonths)
-	// mapAddStr(c, "source", resp.Data.Config.Source)
-	// mapAddStr(c, "s3bucket", resp.Data.Config.S3Bucket)
-	// mapAddStr(c, "s3role_arn", resp.Data.Config.S3RoleArn)
-	// mapAddStr(c, "abs_connection_string", resp.Data.Config.ABSConnectionString)
-	// mapAddStr(c, "abs_container_name", resp.Data.Config.ABSContainerName)
-	// mapAddStr(c, "folder_id", resp.Data.Config.FolderId)
-	// mapAddStr(c, "ftp_host", resp.Data.Config.FTPHost)
-	// mapAddStr(c, "ftp_port", intPointerToStr(resp.Data.Config.FTPPort))
-	// mapAddStr(c, "ftp_user", resp.Data.Config.FTPUser)
-	// mapAddStr(c, "ftp_password", resp.Data.Config.FTPPassword)
-	// mapAddStr(c, "is_ftps", boolPointerToStr(resp.Data.Config.IsFTPS))
-	// mapAddStr(c, "sftp_host", resp.Data.Config.SFTPHost)
-	// mapAddStr(c, "sftp_port", intPointerToStr(resp.Data.Config.SFTPPort))
-	// mapAddStr(c, "sftp_user", resp.Data.Config.SFTPUser)
-	// mapAddStr(c, "sftp_password", resp.Data.Config.SFTPPassword)
-	// mapAddStr(c, "sftp_is_key_pair", boolPointerToStr(resp.Data.Config.SFTPIsKeyPair))
-	// mapAddXInterface(c, "advertisables", xStrXInterface(resp.Data.Config.Advertisables))
-	// mapAddStr(c, "report_type", resp.Data.Config.ReportType)
-	// mapAddXInterface(c, "dimensions", xStrXInterface(resp.Data.Config.Dimensions))
-	// mapAddStr(c, "api_key", resp.Data.Config.APIKey)
-	// mapAddStr(c, "external_id", resp.Data.Config.ExternalID)
-	// mapAddStr(c, "role_arn", resp.Data.Config.RoleArn)
-	// mapAddStr(c, "bucket", resp.Data.Config.Bucket)
-	// mapAddStr(c, "prefix", resp.Data.Config.Prefix)
-	// mapAddStr(c, "pattern", resp.Data.Config.Pattern)
-	// mapAddStr(c, "file_type", resp.Data.Config.FileType)
-	// mapAddStr(c, "compression", resp.Data.Config.Compression)
-	// mapAddStr(c, "on_error", resp.Data.Config.OnError)
-	// mapAddStr(c, "append_file_option", resp.Data.Config.AppendFileOption)
-	// mapAddStr(c, "archive_pattern", resp.Data.Config.ArchivePattern)
-	// mapAddStr(c, "null_sequence", resp.Data.Config.NullSequence)
-	// mapAddStr(c, "delimiter", resp.Data.Config.Delimiter)
-	// mapAddStr(c, "escape_char", resp.Data.Config.EscapeChar)
-	// mapAddStr(c, "skip_before", intPointerToStr(resp.Data.Config.SkipBefore))
-	// mapAddStr(c, "skip_after", intPointerToStr(resp.Data.Config.SkipAfter))
-	// mapAddXInterface(c, "project_credentials", dataSourceConnectorReadConfigFlattenProjectCredentials(resp))
-	// mapAddStr(c, "auth_mode", resp.Data.Config.AuthMode)
-	// mapAddStr(c, "user_name", resp.Data.Config.UserName)
-	// mapAddStr(c, "username", resp.Data.Config.Username)
-	// mapAddStr(c, "password", resp.Data.Config.Password)
-	// mapAddStr(c, "certificate", resp.Data.Config.Certificate)
-	// mapAddXInterface(c, "selected_exports", xStrXInterface(resp.Data.Config.SelectedExports))
-	// mapAddStr(c, "consumer_group", resp.Data.Config.ConsumerGroup)
-	// mapAddStr(c, "servers", resp.Data.Config.Servers)
-	// mapAddStr(c, "message_type", resp.Data.Config.MessageType)
-	// mapAddStr(c, "sync_type", resp.Data.Config.SyncType)
-	// mapAddStr(c, "security_protocol", resp.Data.Config.SecurityProtocol)
-	// mapAddXInterface(c, "apps", xStrXInterface(resp.Data.Config.Apps))
-	// mapAddXInterface(c, "sales_accounts", xStrXInterface(resp.Data.Config.SalesAccounts))
-	// mapAddXInterface(c, "finance_accounts", xStrXInterface(resp.Data.Config.FinanceAccounts))
-	// mapAddStr(c, "app_sync_mode", resp.Data.Config.AppSyncMode)
-	// mapAddStr(c, "sales_account_sync_mode", resp.Data.Config.SalesAccountSyncMode)
-	// mapAddStr(c, "finance_account_sync_mode", resp.Data.Config.FinanceAccountSyncMode)
-	// mapAddStr(c, "pem_certificate", resp.Data.Config.PEMCertificate)
-	// mapAddStr(c, "access_key_id", resp.Data.Config.AccessKeyID)
-	// mapAddStr(c, "secret_key", resp.Data.Config.SecretKey)
-	// mapAddStr(c, "home_folder", resp.Data.Config.HomeFolder)
-	// mapAddStr(c, "sync_data_locker", boolPointerToStr(resp.Data.Config.SyncDataLocker))
-	// mapAddXInterface(c, "projects", xStrXInterface(resp.Data.Config.Projects))
-	// mapAddStr(c, "function", resp.Data.Config.Function)
-	// mapAddStr(c, "region", resp.Data.Config.Region)
-	// mapAddStr(c, "secrets", resp.Data.Config.Secrets)
-	// mapAddStr(c, "container_name", resp.Data.Config.ContainerName)
-	// mapAddStr(c, "connection_string", resp.Data.Config.ConnectionString)
-	// mapAddStr(c, "connection_type", resp.Data.Config.ConnectionType)
-	// mapAddStr(c, "function_app", resp.Data.Config.FunctionApp)
-	// mapAddStr(c, "function_name", resp.Data.Config.FunctionName)
-	// mapAddStr(c, "function_key", resp.Data.Config.FunctionKey)
-	// mapAddStr(c, "public_key", resp.Data.Config.PublicKey)
-	// mapAddStr(c, "merchant_id", resp.Data.Config.MerchantID)
-	// mapAddStr(c, "api_url", resp.Data.Config.APIURL)
-	// mapAddStr(c, "cloud_storage_type", resp.Data.Config.CloudStorageType)
-	// mapAddStr(c, "s3external_id", resp.Data.Config.S3ExternalID)
-	// mapAddStr(c, "s3folder", resp.Data.Config.S3Folder)
-	// mapAddStr(c, "gcs_bucket", resp.Data.Config.GCSBucket)
-	// mapAddStr(c, "gcs_folder", resp.Data.Config.GCSFolder)
-	// mapAddXInterface(c, "user_profiles", xStrXInterface(resp.Data.Config.UserProfiles))
-	// mapAddXInterface(c, "report_configuration_ids", xStrXInterface(resp.Data.Config.ReportConfigurationIDs))
-	// mapAddStr(c, "enable_all_dimension_combinations", boolPointerToStr(resp.Data.Config.EnableAllDimensionCombinations))
-	// mapAddStr(c, "instance", resp.Data.Config.Instance)
-	// mapAddStr(c, "aws_region_code", resp.Data.Config.AWSRegionCode)
-	// mapAddXInterface(c, "accounts", xStrXInterface(resp.Data.Config.Accounts))
-	// mapAddXInterface(c, "fields", xStrXInterface(resp.Data.Config.Fields))
-	// mapAddXInterface(c, "breakdowns", xStrXInterface(resp.Data.Config.Breakdowns))
-	// mapAddXInterface(c, "action_breakdowns", xStrXInterface(resp.Data.Config.ActionBreakdowns))
-	// mapAddStr(c, "aggregation", resp.Data.Config.Aggregation)
-	// mapAddStr(c, "config_type", resp.Data.Config.ConfigType)
-	// mapAddStr(c, "prebuilt_report", resp.Data.Config.PrebuiltReport)
-	// mapAddStr(c, "action_report_time", resp.Data.Config.ActionReportTime)
-	// mapAddStr(c, "click_attribution_window", resp.Data.Config.ClickAttributionWindow)
-	// mapAddStr(c, "view_attribution_window", resp.Data.Config.ViewAttributionWindow)
-	// mapAddXInterface(c, "custom_tables", dataSourceConnectorReadConfigFlattenCustomTables(resp))
-	// mapAddXInterface(c, "pages", xStrXInterface(resp.Data.Config.Pages))
-	// mapAddStr(c, "subdomain", resp.Data.Config.Subdomain)
-	// mapAddStr(c, "host", resp.Data.Config.Host)
-	// mapAddStr(c, "port", intPointerToStr(resp.Data.Config.Port))
-	// mapAddStr(c, "user", resp.Data.Config.User)
-	// mapAddStr(c, "is_secure", boolPointerToStr(resp.Data.Config.IsSecure))
-	// mapAddXInterface(c, "repositories", xStrXInterface(resp.Data.Config.Repositories))
-	// mapAddStr(c, "use_webhooks", boolPointerToStr(resp.Data.Config.UseWebhooks))
-	// mapAddXInterface(c, "dimension_attributes", xStrXInterface(resp.Data.Config.DimensionAttributes))
-	// mapAddXInterface(c, "columns", xStrXInterface(resp.Data.Config.Columns))
-	// mapAddStr(c, "network_code", resp.Data.Config.NetworkCode)
-	// mapAddStr(c, "customer_id", resp.Data.Config.CustomerID)
-	// mapAddXInterface(c, "manager_accounts", xStrXInterface(resp.Data.Config.ManagerAccounts))
-	// mapAddXInterface(c, "reports", dataSourceConnectorReadConfigFlattenReports(resp))
-	// mapAddStr(c, "conversion_window_size", intPointerToStr(resp.Data.Config.ConversionWindowSize))
-	// mapAddXInterface(c, "profiles", xStrXInterface(resp.Data.Config.Profiles))
-	// mapAddStr(c, "project_id", resp.Data.Config.ProjectID)
-	// mapAddStr(c, "dataset_id", resp.Data.Config.DatasetID)
-	// mapAddStr(c, "bucket_name", resp.Data.Config.BucketName)
-	// mapAddStr(c, "function_trigger", resp.Data.Config.FunctionTrigger)
-	// mapAddStr(c, "config_method", resp.Data.Config.ConfigMethod)
-	// mapAddStr(c, "query_id", resp.Data.Config.QueryID)
-	// mapAddStr(c, "update_config_on_each_sync", boolPointerToStr(resp.Data.Config.UpdateConfigOnEachSync))
-	// mapAddXInterface(c, "site_urls", xStrXInterface(resp.Data.Config.SiteURLs))
-	// mapAddStr(c, "path", resp.Data.Config.Path)
-	// mapAddStr(c, "on_premise", boolPointerToStr(resp.Data.Config.OnPremise))
-	// mapAddStr(c, "access_token", resp.Data.Config.AccessToken)
-	// mapAddStr(c, "view_through_attribution_window_size", resp.Data.Config.ViewThroughAttributionWindowSize)
-	// mapAddStr(c, "post_click_attribution_window_size", resp.Data.Config.PostClickAttributionWindowSize)
-	// mapAddStr(c, "use_api_keys", boolPointerToStr(resp.Data.Config.UseAPIKeys))
-	// mapAddXInterface(c, "api_keys", xStrXInterface(resp.Data.Config.APIKeys))
-	// mapAddStr(c, "endpoint", resp.Data.Config.Endpoint)
-	// mapAddStr(c, "identity", resp.Data.Config.Identity)
-	// mapAddStr(c, "api_quota", intPointerToStr(resp.Data.Config.APIQuota))
-	// mapAddStr(c, "domain_name", resp.Data.Config.DomainName)
-	// mapAddStr(c, "resource_url", resp.Data.Config.ResourceURL)
-	// mapAddStr(c, "api_secret", resp.Data.Config.APISecret)
-	// mapAddXInterface(c, "hosts", xStrXInterface(resp.Data.Config.Hosts))
-	// mapAddStr(c, "tunnel_host", resp.Data.Config.TunnelHost)
-	// mapAddStr(c, "tunnel_port", intPointerToStr(resp.Data.Config.TunnelPort))
-	// mapAddStr(c, "tunnel_user", resp.Data.Config.TunnelUser)
-	// mapAddStr(c, "database", resp.Data.Config.Database)
-	// mapAddStr(c, "datasource", resp.Data.Config.Datasource)
-	// mapAddStr(c, "account", resp.Data.Config.Account)
-	// mapAddStr(c, "role", resp.Data.Config.Role)
-	// mapAddStr(c, "email", resp.Data.Config.Email)
-	// mapAddStr(c, "account_id", resp.Data.Config.AccountID)
-	// mapAddStr(c, "server_url", resp.Data.Config.ServerURL)
-	// mapAddStr(c, "user_key", resp.Data.Config.UserKey)
-	// mapAddStr(c, "api_version", resp.Data.Config.APIVersion)
-	// mapAddStr(c, "daily_api_call_limit", intPointerToStr(resp.Data.Config.DailyAPICallLimit))
-	// mapAddStr(c, "time_zone", resp.Data.Config.TimeZone)
-	// mapAddStr(c, "integration_key", resp.Data.Config.IntegrationKey)
-	// mapAddXInterface(c, "advertisers", xStrXInterface(resp.Data.Config.Advertisers))
-	// mapAddStr(c, "engagement_attribution_window", resp.Data.Config.EngagementAttributionWindow)
-	// mapAddStr(c, "conversion_report_time", resp.Data.Config.ConversionReportTime)
-	// mapAddStr(c, "domain", resp.Data.Config.Domain)
-	// mapAddStr(c, "update_method", resp.Data.Config.UpdateMethod)
-	// mapAddStr(c, "replication_slot", resp.Data.Config.ReplicationSlot)
-	// mapAddStr(c, "publication_name", resp.Data.Config.PublicationName)
-	// mapAddStr(c, "data_center", resp.Data.Config.DataCenter)
-	// mapAddStr(c, "api_token", resp.Data.Config.APIToken)
-	// mapAddStr(c, "sub_domain", resp.Data.Config.SubDomain)
-	// mapAddStr(c, "test_table_name", resp.Data.Config.TestTableName)
-	// mapAddStr(c, "shop", resp.Data.Config.Shop)
-	// mapAddXInterface(c, "organizations", xStrXInterface(resp.Data.Config.Organizations))
-	// mapAddStr(c, "swipe_attribution_window", resp.Data.Config.SwipeAttributionWindow)
-	// mapAddStr(c, "api_access_token", resp.Data.Config.APIAccessToken)
-	// mapAddXInterface(c, "account_ids", xStrXInterface(resp.Data.Config.AccountIDs))
-	// mapAddStr(c, "sid", resp.Data.Config.SID)
-	// mapAddStr(c, "secret", resp.Data.Config.Secret)
-	// mapAddStr(c, "oauth_token", resp.Data.Config.OauthToken)
-	// mapAddStr(c, "oauth_token_secret", resp.Data.Config.OauthTokenSecret)
-	// mapAddStr(c, "consumer_key", resp.Data.Config.ConsumerKey)
-	// mapAddStr(c, "consumer_secret", resp.Data.Config.ConsumerSecret)
-	// mapAddStr(c, "key", resp.Data.Config.Key)
-	// mapAddXInterface(c, "advertisers_id", xStrXInterface(resp.Data.Config.AdvertisersID))
-	// mapAddStr(c, "sync_format", resp.Data.Config.SyncFormat)
-	// mapAddStr(c, "bucket_service", resp.Data.Config.BucketService)
-	// mapAddStr(c, "report_url", resp.Data.Config.ReportURL)
-	// mapAddStr(c, "unique_id", resp.Data.Config.UniqueID)
-	// mapAddStr(c, "auth_type", resp.Data.Config.AuthType)
-	// mapAddStr(c, "latest_version", resp.Data.Config.LatestVersion)
-	// mapAddStr(c, "authorization_method", resp.Data.Config.AuthorizationMethod)
-	// mapAddStr(c, "service_version", resp.Data.Config.ServiceVersion)
-	// mapAddStr(c, "last_synced_changes__utc_", resp.Data.Config.LastSyncedChangesUtc)
-	// mapAddStr(c, "is_new_package", boolPointerToStr(resp.Data.Config.IsNewPackage))
-	// mapAddXInterface(c, "adobe_analytics_configurations", dataSourceConnectorReadConfigFlattenAdobeAnalyticsConfigurations(resp))
-	// mapAddStr(c, "is_multi_entity_feature_enabled", boolPointerToStr(resp.Data.Config.IsMultiEntityFeatureEnabled))
-	// mapAddStr(c, "api_type", resp.Data.Config.ApiType)
-	// mapAddStr(c, "base_url", resp.Data.Config.BaseUrl)
-	// mapAddStr(c, "entity_id", resp.Data.Config.EntityId)
-	// mapAddStr(c, "soap_uri", resp.Data.Config.SoapUri)
-	// mapAddStr(c, "user_id", resp.Data.Config.UserId)
-	// mapAddStr(c, "encryption_key", resp.Data.Config.EncryptionKey)
-	// mapAddStr(c, "always_encrypted", boolPointerToStr(resp.Data.Config.AlwaysEncrypted))
-	// mapAddStr(c, "eu_region", boolPointerToStr(resp.Data.Config.EuRegion))
-	// mapAddStr(c, "pat", resp.Data.Config.PAT)
-	// mapAddStr(c, "token_key", resp.Data.Config.TokenKey)
-	// mapAddStr(c, "token_secret", resp.Data.Config.TokenSecret)
-	// mapAddStr(c, "share_url", resp.Data.Config.ShareURL)
-	// mapAddStr(c, "is_keypair", boolPointerToStr(resp.Data.Config.IsKeypair))
-	// mapAddXInterface(c, "secrets_list", dataSourceConnectorReadConfigFlattenSecretsList(resp))
-
-	// if v, ok := resp.Data.CustomConfig["is_account_level_connector"].(bool); ok {
-	// 	mapAddStr(c, "is_account_level_connector", boolToStr(v))
-	// }
-	// if v, ok := resp.Data.CustomConfig["sync_method"].(string); ok {
-	// 	mapAddStr(c, "sync_method", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["pdb_name"].(string); ok {
-	// 	mapAddStr(c, "pdb_name", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["agent_host"].(string); ok {
-	// 	mapAddStr(c, "agent_host", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["agent_port"].(float64); ok {
-	// 	mapAddStr(c, "agent_port", intToStr(int(v)))
-	// }
-	// if v, ok := resp.Data.CustomConfig["agent_user"].(string); ok {
-	// 	mapAddStr(c, "agent_user", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["agent_password"].(string); ok {
-	// 	mapAddStr(c, "agent_password", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["agent_public_cert"].(string); ok {
-	// 	mapAddStr(c, "agent_public_cert", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["agent_ora_home"].(string); ok {
-	// 	mapAddStr(c, "agent_ora_home", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["tns"].(string); ok {
-	// 	mapAddStr(c, "tns", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["use_oracle_rac"].(bool); ok {
-	// 	mapAddStr(c, "use_oracle_rac", boolToStr(v))
-	// }
-	// if v, ok := resp.Data.CustomConfig["asm_option"].(bool); ok {
-	// 	mapAddStr(c, "asm_option", boolToStr(v))
-	// }
-	// if v, ok := resp.Data.CustomConfig["is_single_table_mode"].(bool); ok {
-	// 	mapAddStr(c, "is_single_table_mode", boolToStr(v))
-	// }
-	// if v, ok := resp.Data.CustomConfig["asm_user"].(string); ok {
-	// 	mapAddStr(c, "asm_user", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["asm_password"].(string); ok {
-	// 	mapAddStr(c, "asm_password", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["asm_oracle_home"].(string); ok {
-	// 	mapAddStr(c, "asm_oracle_home", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["asm_tns"].(string); ok {
-	// 	mapAddStr(c, "asm_tns", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["sap_user"].(string); ok {
-	// 	mapAddStr(c, "sap_user", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["organization"].(string); ok {
-	// 	mapAddStr(c, "organization", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["packed_mode_tables"].([]interface{}); ok {
-	// 	mapAddXInterface(c, "packed_mode_tables", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["access_key"].(string); ok {
-	// 	mapAddStr(c, "access_key", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["domain_host_name"].(string); ok {
-	// 	mapAddStr(c, "domain_host_name", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["client_name"].(string); ok {
-	// 	mapAddStr(c, "client_name", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["domain_type"].(string); ok {
-	// 	mapAddStr(c, "domain_type", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["domain_type"].(string); ok {
-	// 	mapAddStr(c, "domain_type", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["connection_method"].(string); ok {
-	// 	mapAddStr(c, "connection_method", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["group_name"].(string); ok {
-	// 	mapAddStr(c, "group_name", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["company_id"].(string); ok {
-	// 	mapAddStr(c, "company_id", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["login_password"].(string); ok {
-	// 	mapAddStr(c, "login_password", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["environment"].(string); ok {
-	// 	mapAddStr(c, "environment", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["properties"].([]interface{}); ok {
-	// 	mapAddXInterface(c, "properties", v)
-	// }
-	// if v, ok := resp.Data.CustomConfig["is_public"].(bool); ok {
-	// 	mapAddStr(c, "is_public", boolToStr(v))
-	// }
-	// if v, ok := resp.Data.CustomConfig["empty_header"].(bool); ok {
-	// 	mapAddStr(c, "empty_header", boolToStr(v))
-	// }
-	// if v, ok := resp.Data.CustomConfig["list_strategy"].(string); ok {
-	// 	mapAddStr(c, "list_strategy", v)
-	// }
-
 	config[0] = configMap
 
 	return config
