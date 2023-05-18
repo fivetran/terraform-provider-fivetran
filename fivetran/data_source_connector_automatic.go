@@ -14,6 +14,13 @@ import (
 
 const SCHEMAS_PATH = "schemas."
 const PROPERTIES_PATH = ".properties.config.properties"
+const SCHEMAS_JSON_PATH = "/Users/lukadevic/Fivetran/terraform-provider-fivetran/fivetran/schemas.json"
+
+const OBJECT_PROPERTY_TYPE = "object"
+const INT_PROPERTY_TYPE = "integer"
+const BOOL_PROPERTY_TYPE = "boolean"
+const ARRAY_PROPERTY_TYPE = "array"
+const STRING_PROPERTY_TYPE = "string"
 
 func dataSourceConnectorAutomatic() *schema.Resource {
 	var result = &schema.Resource{
@@ -92,33 +99,11 @@ func dataSourceConnectorAutomaticSchemaConfig() *schema.Schema {
 		oasProperties := getDataSourceProperties(path)
 		for key, value := range oasProperties {
 			if existingValue, ok := properties[key]; ok {
-				// if k == "reports" {
-				// 	fmt.Printf("Type of val.Elem is %T\n", val.Elem)
-				// }
 				if existingValue.Type == schema.TypeList {
-					if existingSchemaResourceValue, ok := existingValue.Elem.(*schema.Resource); ok {
-						if newSchemaResourceValue, ok := value.Elem.(*schema.Resource); ok {
-							for kY, vY := range newSchemaResourceValue.Schema {
-								existingSchemaResourceValue.Schema[kY] = vY
-							}
-							existingValue.Elem = existingSchemaResourceValue
-							properties[key] = existingValue
-							continue
-						}
-					} else if _, ok := existingValue.Elem.(*schema.Schema); ok {
-						// if v3, ok := schemaSchemaValue.Elem.(*schema.Resource); ok {
-						// 	if vX1, ok := value.Elem.(*schema.Resource); ok {
-						// 		for kY, vY := range vX1.Schema {
-						// 			v3.Schema[kY] = vY
-						// 		}
-						// 		existingValue.Elem = v3
-						// 		properties[key] = existingValue
-						// 		continue
-						// 	}
-						// }
-					} else if _, ok := existingValue.Elem.(map[string]*schema.Schema); ok {
+					if _, ok := existingValue.Elem.(map[string]*schema.Schema); ok {
 						continue
 					}
+					value = updateExistingValue(existingValue, value)
 				}
 			}
 			properties[key] = value
@@ -132,8 +117,20 @@ func dataSourceConnectorAutomaticSchemaConfig() *schema.Schema {
 	}
 }
 
+func updateExistingValue(existingValue *schema.Schema, newValue *schema.Schema) *schema.Schema {
+	if existingSchemaResourceValue, ok := existingValue.Elem.(*schema.Resource); ok {
+		if newSchemaResourceValue, ok := newValue.Elem.(*schema.Resource); ok {
+			for newSchemaResourceKey, newSchemaResourceValue := range newSchemaResourceValue.Schema {
+				existingSchemaResourceValue.Schema[newSchemaResourceKey] = newSchemaResourceValue
+			}
+			existingValue.Elem = existingSchemaResourceValue
+		}
+	}
+	return existingValue
+}
+
 func getDataSourceProperties(path string) map[string]*schema.Schema {
-	shemasJson, err := gabs.ParseJSONFile("/Users/lukadevic/Fivetran/terraform-provider-fivetran/fivetran/schemas.json")
+	shemasJson, err := gabs.ParseJSONFile(SCHEMAS_JSON_PATH)
 	if err != nil {
 		panic(err)
 	}
@@ -148,24 +145,24 @@ func getDataSourceProperties(path string) map[string]*schema.Schema {
 		propertyType := child.Search("type").Data()
 
 		switch propertyType {
-		case "object":
+		case OBJECT_PROPERTY_TYPE:
 			value = &schema.Schema{
 				Type:     schema.TypeString,
 				Computed: true}
-		case "integer":
+		case INT_PROPERTY_TYPE:
 			value = &schema.Schema{
 				Type:     schema.TypeInt,
 				Computed: true}
-		case "boolean":
+		case BOOL_PROPERTY_TYPE:
 			value = &schema.Schema{
 				Type:     schema.TypeBool,
 				Computed: true}
-		case "array":
+		case ARRAY_PROPERTY_TYPE:
 			itemType := child.Path("items.type").Data()
 
 			childrenMap := child.Path("items.properties").ChildrenMap()
 
-			if itemType == "object" && len(childrenMap) > 0 {
+			if itemType == OBJECT_PROPERTY_TYPE && len(childrenMap) > 0 {
 				childrenSchemaMap := make(map[string]*schema.Schema)
 
 				for key2, child2 := range childrenMap {
@@ -174,22 +171,22 @@ func getDataSourceProperties(path string) map[string]*schema.Schema {
 						Computed: true}
 					propertyType2 := child2.Search("type").Data()
 					switch propertyType2 {
-					case "object":
+					case OBJECT_PROPERTY_TYPE:
 						value2 = &schema.Schema{
 							Type:     schema.TypeString,
 							Computed: true}
-					case "integer":
+					case INT_PROPERTY_TYPE:
 						value2 = &schema.Schema{
 							Type:     schema.TypeInt,
 							Computed: true}
-					case "boolean":
+					case BOOL_PROPERTY_TYPE:
 						value2 = &schema.Schema{
 							Type:     schema.TypeBool,
 							Computed: true}
-					case "array":
+					case ARRAY_PROPERTY_TYPE:
 						itemType2 := child2.Path("items.type").Data()
 
-						if itemType2 == "string" || itemType2 == "object" {
+						if itemType2 == STRING_PROPERTY_TYPE || itemType2 == OBJECT_PROPERTY_TYPE {
 							value2 = &schema.Schema{
 								Type:     schema.TypeList,
 								Computed: true,
@@ -198,7 +195,7 @@ func getDataSourceProperties(path string) map[string]*schema.Schema {
 								}}
 						}
 
-						if itemType2 == "integer" {
+						if itemType2 == INT_PROPERTY_TYPE {
 							value2 = &schema.Schema{
 								Type:     schema.TypeList,
 								Computed: true,
@@ -222,7 +219,7 @@ func getDataSourceProperties(path string) map[string]*schema.Schema {
 						Schema: childrenSchemaMap,
 					},
 				}
-			} else if itemType == "string" || itemType == "object" {
+			} else if itemType == "string" || itemType == OBJECT_PROPERTY_TYPE {
 				value = &schema.Schema{
 					Type:     schema.TypeList,
 					Computed: true,
@@ -231,7 +228,7 @@ func getDataSourceProperties(path string) map[string]*schema.Schema {
 					}}
 			}
 
-			if itemType == "integer" {
+			if itemType == INT_PROPERTY_TYPE {
 				value = &schema.Schema{
 					Type:     schema.TypeList,
 					Computed: true,
