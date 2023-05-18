@@ -20390,16 +20390,7 @@
                   "type": "string",
                   "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
                 },
-                "reports": {
-                  "title": "",
-                  "type": "array",
-                  "description": "Specific analytics reports to sync. Must be populated if adAnalytics is set to 'SpecificReports'.",
-                  "items": {
-                    "title": "",
-                    "type": "string",
-                    "description": "Specific analytics reports to sync. Must be populated if adAnalytics is set to 'SpecificReports'."
-                  }
-                },
+  
                 "post_click_attribution_window_size": {
                   "title": "",
                   "type": "object",

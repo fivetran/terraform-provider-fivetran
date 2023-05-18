@@ -618,8 +618,6 @@ func resourceConnectorUpdateCustomConfig(d *schema.ResourceData) *map[string]int
 
 	c := config[0].(map[string]interface{})
 
-	
-
 	if v, ok := c["group_name"].(string); ok && v != "" {
 		configMap["group_name"] = v
 	}
@@ -1680,6 +1678,7 @@ func resourceConnectorReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResp
 	c := make(map[string]interface{})
 
 	// get sensitive fields from the currentConfig to prevent drifting (Fivetran returns this values masked)
+	// All sensitive fields are here
 	if len(currentConfig) > 0 {
 		resourceConfig := currentConfig[0].(map[string]interface{})
 		mapAddStr(c, "password", resourceConfig["password"].(string))

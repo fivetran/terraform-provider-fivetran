@@ -3,7 +3,10 @@ package fivetran
 import (
 	"context"
 	"fmt"
+	"log"
+	"reflect"
 
+	"github.com/Jeffail/gabs/v2"
 	"github.com/fivetran/go-fivetran"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -83,8 +86,79 @@ func dataSourceConnectorAutomaticSchemaConfig() *schema.Schema {
 
 	for _, service := range services {
 		path := "schemas." + service + ".properties.config.properties"
-		newProperties := getProperties(path)
+		if service == "adroll_config_V1" {
+			log.Output(1, "luka")
+		}
+		newProperties := getDataSourceProperties(path)
 		for k, v := range *newProperties {
+			if k == "reports" {
+				fmt.Printf("reports fields now\n")
+			}
+			if val, ok := properties[k]; ok {
+
+				if k == "reports" {
+					fmt.Printf("Type of val.Elem is %T\n", val.Elem)
+				}
+
+				if val.Type == schema.TypeList {
+					if v2, ok := val.Elem.(*schema.Resource); ok {
+						//if v3, ok := v2.Schema; ok {
+						fmt.Printf("reports fields now 2\n")
+						if vX1, ok := v.Elem.(*schema.Resource); ok {
+							//if vX2, ok := vX1[0].(map[string]interface{}); ok {
+							for kY, vY := range vX1.Schema {
+								v2.Schema[kY] = vY
+							}
+
+							val.Elem = v2
+							properties[k] = val
+							continue
+							//}
+
+						}
+						//}
+					} else if v2, ok := val.Elem.(*schema.Schema); ok {
+						if v3, ok := v2.Elem.(*schema.Resource); ok {
+							//if v3, ok := v2.Schema; ok {
+							fmt.Printf("reports fields now 2\n")
+							if vX1, ok := v.Elem.(*schema.Resource); ok {
+								//if vX2, ok := vX1[0].(map[string]interface{}); ok {
+								for kY, vY := range vX1.Schema {
+									v3.Schema[kY] = vY
+								}
+
+								val.Elem = v3
+								properties[k] = val
+								continue
+								//}
+
+							}
+							//}
+						}
+					} else if v2, ok := val.Elem.(map[string]*schema.Schema); ok {
+						//if v3, ok := v2.Schema; ok {
+						fmt.Printf("reports fields now 2\n")
+						fmt.Printf(intToStr(len(v2)))
+						continue
+						// if vX1, ok := v.Elem.(*schema.Resource); ok {
+						// 	//if vX2, ok := vX1[0].(map[string]interface{}); ok {
+						// 	for kY, vY := range vX1.Schema {
+						// 		v2.Schema[kY] = vY
+						// 	}
+
+						// 	val.Elem = v2.Schema
+						// 	properties[k] = val
+						// 	continue
+						//}
+
+					}
+					//}
+				}
+			}
+			// schema112 := &schema.Schema{Type: schema.TypeList, Computed: true,
+			// 	Elem: &schema.Resource{
+			// 		Schema: map[string]*schema.Schema{}}}
+
 			properties[k] = v
 		}
 	}
@@ -400,6 +474,174 @@ func dataSourceConnectorAutomaticSchemaConfig() *schema.Schema {
 	// }
 }
 
+func getDataSourceProperties(path string) *map[string]*schema.Schema {
+	shemasJson, err := gabs.ParseJSONFile("/Users/lukadevic/Fivetran/terraform-provider-fivetran/fivetran/schemas.json")
+	if err != nil {
+		panic(err)
+	}
+
+	properties := make(map[string]*schema.Schema)
+
+	for key, child := range shemasJson.Path(path).ChildrenMap() {
+		// introduce int, bool and maybe other types
+		value := &schema.Schema{
+			Type:     schema.TypeString,
+			Computed: true}
+
+		propertyType := child.Search("type").Data()
+
+		switch propertyType {
+		case "object":
+			value = &schema.Schema{
+				Type:     schema.TypeString,
+				Computed: true}
+		case "integer":
+			value = &schema.Schema{
+				Type:     schema.TypeInt,
+				Computed: true}
+		case "boolean":
+			value = &schema.Schema{
+				Type:     schema.TypeBool,
+				Computed: true}
+		case "array":
+			itemType := child.Path("items.type").Data()
+
+			childrenMap := child.Path("items.properties").ChildrenMap()
+
+			if itemType == "object" && len(childrenMap) > 0 {
+				childrenSchemaMap := make(map[string]*schema.Schema)
+
+				for key2, child2 := range childrenMap {
+					value2 := &schema.Schema{
+						Type:     schema.TypeString,
+						Computed: true}
+					propertyType2 := child2.Search("type").Data()
+					switch propertyType2 {
+					case "object":
+						value2 = &schema.Schema{
+							Type:     schema.TypeString,
+							Computed: true}
+					case "integer":
+						value2 = &schema.Schema{
+							Type:     schema.TypeInt,
+							Computed: true}
+					case "boolean":
+						value2 = &schema.Schema{
+							Type:     schema.TypeBool,
+							Computed: true}
+					case "array":
+						itemType2 := child2.Path("items.type").Data()
+
+						if itemType2 == "string" || itemType2 == "object" {
+							value2 = &schema.Schema{
+								Type:     schema.TypeList,
+								Computed: true,
+								Elem: &schema.Schema{
+									Type: schema.TypeString,
+								}}
+						}
+
+						if itemType2 == "integer" {
+							value2 = &schema.Schema{
+								Type:     schema.TypeList,
+								Computed: true,
+								Elem: &schema.Schema{
+									Type: schema.TypeString,
+								}}
+						}
+					default:
+						value2 = &schema.Schema{
+							Type:     schema.TypeString,
+							Computed: true}
+					}
+
+					childrenSchemaMap[key2] = value2
+				}
+
+				value = &schema.Schema{
+					Type:     schema.TypeList,
+					Computed: true,
+					Elem: &schema.Resource{
+						Schema: childrenSchemaMap,
+					},
+				}
+
+				//"adobe_analytics_configurations": {
+				// Type: schema.TypeList,
+				// Computed: true,
+				// Elem: &schema.Resource{
+				// 					Schema: map[string]*schema.Schema{
+				// 						"sync_mode":          {Type: schema.TypeString, Computed: true},
+				// 						"report_suites":      {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				// 						"elements":           {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				// 						"metrics":            {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				// 						"calculated_metrics": {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				// 						"segments":           {Type: schema.TypeList, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
+				// 					},
+				// 				},
+				// 			},
+
+			} else if itemType == "string" || itemType == "object" {
+				value = &schema.Schema{
+					Type:     schema.TypeList,
+					Computed: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					}}
+			}
+
+			if itemType == "integer" {
+				value = &schema.Schema{
+					Type:     schema.TypeList,
+					Computed: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					}}
+			}
+
+			// newPath := path + key + "items.properties"
+			// listProperties := getProperties(newPath)
+			// value = &schema.Schema{
+			// 	Type:     schema.TypeSet,
+			// 	Computed: true,
+			// 	Elem: &schema.Resource{
+			// 		Schema: *listProperties,
+			// 	},
+			// }
+		default:
+			value = &schema.Schema{
+				Type:     schema.TypeString,
+				Computed: true}
+
+		}
+
+		// if propertyType == "array" {
+		// 	itemType := child.Path("items.type").Data()
+		// 	if itemType == "string" {
+		// 		value = &schema.Schema{
+		// 			Type:     schema.TypeSet,
+		// 			Optional: true,
+		// 			Elem: &schema.Schema{
+		// 				Type: schema.TypeString,
+		// 			}}
+		// 		break
+		// 	}
+		// 	newPath := path + key + "items.properties"
+		// 	listProperties := getProperties(newPath)
+		// 	value = &schema.Schema{
+		// 		Type:     schema.TypeSet,
+		// 		Optional: true,
+		// 		Elem: &schema.Resource{
+		// 			Schema: *listProperties,
+		// 		},
+		// 	}
+		// }
+		properties[key] = value
+	}
+
+	return &properties
+}
+
 func dataSourceConnectorAutomaticRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
@@ -503,27 +745,125 @@ func dataSourceConnectorAutomaticReadConfig(resp *fivetran.ConnectorCustomMerged
 
 	c := resp.Data.CustomConfig
 
+	m := structToMap(resp.Data.Config)
+	for key, value := range m {
+		rv := reflect.ValueOf(value)
+		if rv.Kind() == reflect.Slice && reflect.TypeOf(value).Elem().Kind() != reflect.String {
+			fmt.Printf("Type of value is %T\n", value)
+
+			var out []interface{}
+			for i := 0; i < rv.Len(); i++ {
+				out = append(out, rv.Index(i).Interface())
+			}
+
+			adb := structToMap(out[0])
+			log.Output(1, intToStr(len(adb)))
+			out[0] = adb
+			c[key] = out
+			continue
+		}
+
+		c[key] = value
+	}
+
 	services := getAvailableServiceIds()
 
 	properties := make(map[string]*schema.Schema)
 
 	for _, service := range services {
 		path := "schemas." + service + ".properties.config.properties"
-		newProperties := getProperties(path)
+		newProperties := getDataSourceProperties(path)
 		for k, v := range *newProperties {
 			properties[k] = v
 		}
 	}
 
 	for key, value := range properties {
-		if value.Type == schema.TypeSet {
-			if v, ok := c[key]; ok {
-				configMap[key] = xInterfaceStrXStr(v.([]interface{}))
+		// if v, ok := resp.Data.CustomConfig["empty_header"].(bool); ok {
+		// 	mapAddStr(c, "empty_header", boolToStr(v))
+		// }
+
+		if key == "adobe_analytics_configurations" {
+			log.Output(1, "LLL")
+			fmt.Printf("Type of c[key] is %T\n", c[key])
+		}
+		if value.Type == schema.TypeSet || value.Type == schema.TypeList {
+
+			// if v2, ok := value.Elem.(map[string]interface{}); ok {
+
+			// 	mapAddXInterface(c, "adobe_analytics_configurations", dataSourceConnectorReadConfigFlattenAdobeAnalyticsConfigurations(resp))
+			// 	// if len(resp.Data.Config.CustomTables) < 1 {
+			// 	// 	return make([]interface{}, 0)
+			// 	// }
+
+			// 	//ct := make(map[string]interface{})
+
+			// 	for key2, value2 := range v2 {
+			// 		// if value.Type == schema.TypeSet || value.Type == schema.TypeList {
+
+			// 		// 	if v, ok := c[key].([]string); ok {
+			// 		// 		configMap[key] = xStrXInterface(v)
+			// 		// 		continue
+			// 		// 	}
+			// 		// 	if v, ok := c[key].([]interface{}); ok {
+			// 		// 		configMap[key] = xInterfaceStrXStr(v)
+			// 		// 		continue
+			// 		// 	}
+			// 		log.Output(1, key2)
+			// 		log.Output(1, value2.(string))
+			// 	}
+			// }
+
+			// mapAddStr(ct, "table_name", v2.TableName)
+			// 	mapAddStr(ct, "config_type", v.ConfigType)
+			// 	mapAddXInterface(ct, "fields", xStrXInterface(v.Fields))
+			// 	mapAddXInterface(ct, "breakdowns", xStrXInterface(v.Breakdowns))
+			// 	mapAddXInterface(ct, "action_breakdowns", xStrXInterface(v.ActionBreakdowns))
+			// 	mapAddStr(ct, "aggregation", v.Aggregation)
+			// 	mapAddStr(ct, "action_report_time", v.ActionReportTime)
+			// 	mapAddStr(ct, "click_attribution_window", v.ClickAttributionWindow)
+			// 	mapAddStr(ct, "view_attribution_window", v.ViewAttributionWindow)
+			// 	mapAddStr(ct, "prebuilt_report_name", v.PrebuiltReportName)
+
+			// customTables := make([]interface{}, len(resp.Data.Config.CustomTables))
+			// for i, v := range resp.Data.Config.CustomTables {
+			// 	ct := make(map[string]interface{})
+			// 	mapAddStr(ct, "table_name", v.TableName)
+			// 	mapAddStr(ct, "config_type", v.ConfigType)
+			// 	mapAddXInterface(ct, "fields", xStrXInterface(v.Fields))
+			// 	mapAddXInterface(ct, "breakdowns", xStrXInterface(v.Breakdowns))
+			// 	mapAddXInterface(ct, "action_breakdowns", xStrXInterface(v.ActionBreakdowns))
+			// 	mapAddStr(ct, "aggregation", v.Aggregation)
+			// 	mapAddStr(ct, "action_report_time", v.ActionReportTime)
+			// 	mapAddStr(ct, "click_attribution_window", v.ClickAttributionWindow)
+			// 	mapAddStr(ct, "view_attribution_window", v.ViewAttributionWindow)
+			// 	mapAddStr(ct, "prebuilt_report_name", v.PrebuiltReportName)
+			// 	customTables[i] = ct
+			// }
+
+			if v, ok := c[key].([]string); ok {
+				configMap[key] = xStrXInterface(v)
 				// if v, ok := resp.Data.CustomConfig["packed_mode_tables"].([]interface{}); ok {
 				// 	mapAddXInterface(c, "packed_mode_tables", v)
 				// }
+
+				// mapAddXInterface(c, "advertisables", xStrXInterface(resp.Data.Config.Advertisables))
+				continue
 			}
-			continue
+			if v, ok := c[key].([]interface{}); ok {
+				if v2, ok := v[0].(map[string]interface{}); ok {
+					log.Output(2, intToStr(len(v2)))
+					configMap[key] = v
+				} else {
+					configMap[key] = xInterfaceStrXStr(v)
+				}
+				// if v, ok := resp.Data.CustomConfig["packed_mode_tables"].([]interface{}); ok {
+				// 	mapAddXInterface(c, "packed_mode_tables", v)
+				// }
+
+				// mapAddXInterface(c, "advertisables", xStrXInterface(resp.Data.Config.Advertisables))
+				continue
+			}
 		}
 		if v, ok := c[key].(string); ok && v != "" {
 			valueType := value.Type
@@ -538,7 +878,7 @@ func dataSourceConnectorAutomaticReadConfig(resp *fivetran.ConnectorCustomMerged
 		}
 	}
 
-	// mapAddStr(c, "sheet_id", resp.Data.Config.SheetID)
+	//mapAddStr(c, "sheet_id", resp.Data.Config.SheetID)
 	// mapAddStr(c, "named_range", resp.Data.Config.NamedRange)
 	// mapAddStr(c, "client_id", resp.Data.Config.ClientID)
 	// mapAddStr(c, "client_secret", resp.Data.Config.ClientSecret)
@@ -853,6 +1193,37 @@ func dataSourceConnectorAutomaticReadConfig(resp *fivetran.ConnectorCustomMerged
 	config[0] = configMap
 
 	return config
+}
+
+/*
+This function will help you to convert your object from struct to map[string]interface{} based on your JSON tag in your structs.
+Example how to use posted in sample_test.go file.
+*/
+func structToMap(item interface{}) map[string]interface{} {
+
+	res := map[string]interface{}{}
+	if item == nil {
+		return res
+	}
+	v := reflect.TypeOf(item)
+	reflectValue := reflect.ValueOf(item)
+	reflectValue = reflect.Indirect(reflectValue)
+
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
+	for i := 0; i < v.NumField(); i++ {
+		tag := v.Field(i).Tag.Get("json")
+		field := reflectValue.Field(i).Interface()
+		if tag != "" && tag != "-" {
+			if v.Field(i).Type.Kind() == reflect.Struct {
+				res[tag] = structToMap(field)
+			} else {
+				res[tag] = field
+			}
+		}
+	}
+	return res
 }
 
 func dataSourceConnectorAutomaticReadConfigFlattenSecretsList(resp *fivetran.ConnectorCustomMergedDetailsResponse) []interface{} {

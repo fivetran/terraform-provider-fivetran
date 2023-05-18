@@ -145,6 +145,7 @@ const (
 	}
 	`
 
+	//OVDE treba uneti ocekivane vrednosti
 	connectorMappingResponse = `
 	{
 		"id": "connector_id",
@@ -309,7 +310,7 @@ const (
 			"auth_mode":             "auth_mode",
 			"certificate":           "certificate",
 			"consumer_group":        "consumer_group",
-			"servers":               "servers",
+			
 			"message_type":          "message_type",
 			"sync_type":             "sync_type",
 			"security_protocol":     "security_protocol",

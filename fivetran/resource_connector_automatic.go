@@ -99,6 +99,10 @@ func getProperties(path string) *map[string]*schema.Schema {
 		propertyType := child.Search("type").Data()
 
 		switch propertyType {
+		case "object":
+			value = &schema.Schema{
+				Type:     schema.TypeString,
+				Computed: true}
 		case "integer":
 			value = &schema.Schema{
 				Type:     schema.TypeInt,
@@ -112,7 +116,7 @@ func getProperties(path string) *map[string]*schema.Schema {
 			if itemType == "string" {
 				value = &schema.Schema{
 					Type:     schema.TypeSet,
-					Optional: true,
+					Computed: true,
 					Elem: &schema.Schema{
 						Type: schema.TypeString,
 					}}
@@ -122,7 +126,7 @@ func getProperties(path string) *map[string]*schema.Schema {
 			listProperties := getProperties(newPath)
 			value = &schema.Schema{
 				Type:     schema.TypeSet,
-				Optional: true,
+				Computed: true,
 				Elem: &schema.Resource{
 					Schema: *listProperties,
 				},
