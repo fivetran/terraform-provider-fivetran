@@ -130,6 +130,7 @@ func updateExistingValue(existingValue *schema.Schema, newValue *schema.Schema) 
 }
 
 func getDataSourceProperties(path string) map[string]*schema.Schema {
+
 	shemasJson, err := gabs.ParseJSONFile(SCHEMAS_JSON_PATH)
 	if err != nil {
 		panic(err)
@@ -137,12 +138,10 @@ func getDataSourceProperties(path string) map[string]*schema.Schema {
 
 	properties := make(map[string]*schema.Schema)
 
-	for key, child := range shemasJson.Path(path).ChildrenMap() {
-		value := &schema.Schema{
-			Type:     schema.TypeString,
-			Computed: true}
+	for key, node := range shemasJson.Path(path).ChildrenMap() {
+		var value *schema.Schema
 
-		propertyType := child.Search("type").Data()
+		propertyType := node.Search("type").Data()
 
 		switch propertyType {
 		case OBJECT_PROPERTY_TYPE:
@@ -158,94 +157,96 @@ func getDataSourceProperties(path string) map[string]*schema.Schema {
 				Type:     schema.TypeBool,
 				Computed: true}
 		case ARRAY_PROPERTY_TYPE:
-			itemType := child.Path("items.type").Data()
-
-			childrenMap := child.Path("items.properties").ChildrenMap()
-
-			if itemType == OBJECT_PROPERTY_TYPE && len(childrenMap) > 0 {
-				childrenSchemaMap := make(map[string]*schema.Schema)
-
-				for key2, child2 := range childrenMap {
-					value2 := &schema.Schema{
-						Type:     schema.TypeString,
-						Computed: true}
-					propertyType2 := child2.Search("type").Data()
-					switch propertyType2 {
-					case OBJECT_PROPERTY_TYPE:
-						value2 = &schema.Schema{
-							Type:     schema.TypeString,
-							Computed: true}
-					case INT_PROPERTY_TYPE:
-						value2 = &schema.Schema{
-							Type:     schema.TypeInt,
-							Computed: true}
-					case BOOL_PROPERTY_TYPE:
-						value2 = &schema.Schema{
-							Type:     schema.TypeBool,
-							Computed: true}
-					case ARRAY_PROPERTY_TYPE:
-						itemType2 := child2.Path("items.type").Data()
-
-						if itemType2 == STRING_PROPERTY_TYPE || itemType2 == OBJECT_PROPERTY_TYPE {
-							value2 = &schema.Schema{
-								Type:     schema.TypeList,
-								Computed: true,
-								Elem: &schema.Schema{
-									Type: schema.TypeString,
-								}}
-						}
-
-						if itemType2 == INT_PROPERTY_TYPE {
-							value2 = &schema.Schema{
-								Type:     schema.TypeList,
-								Computed: true,
-								Elem: &schema.Schema{
-									Type: schema.TypeString,
-								}}
-						}
-					default:
-						value2 = &schema.Schema{
-							Type:     schema.TypeString,
-							Computed: true}
-					}
-
-					childrenSchemaMap[key2] = value2
-				}
-
-				value = &schema.Schema{
-					Type:     schema.TypeList,
-					Computed: true,
-					Elem: &schema.Resource{
-						Schema: childrenSchemaMap,
-					},
-				}
-			} else if itemType == "string" || itemType == OBJECT_PROPERTY_TYPE {
-				value = &schema.Schema{
-					Type:     schema.TypeList,
-					Computed: true,
-					Elem: &schema.Schema{
-						Type: schema.TypeString,
-					}}
-			}
-
-			if itemType == INT_PROPERTY_TYPE {
-				value = &schema.Schema{
-					Type:     schema.TypeList,
-					Computed: true,
-					Elem: &schema.Schema{
-						Type: schema.TypeString,
-					}}
-			}
+			value = getArrayPropertySchema(node)
 		default:
 			value = &schema.Schema{
 				Type:     schema.TypeString,
 				Computed: true}
-
 		}
 		properties[key] = value
 	}
 
 	return properties
+}
+
+func getArrayPropertySchema(node *gabs.Container) *schema.Schema {
+	itemType := node.Path("items.type").Data()
+
+	childrenMap := node.Path("items.properties").ChildrenMap()
+
+	if itemType == OBJECT_PROPERTY_TYPE && len(childrenMap) > 0 {
+		childrenSchemaMap := make(map[string]*schema.Schema)
+
+		for key, childNode := range childrenMap {
+			var childSchema *schema.Schema
+
+			propertyType2 := childNode.Search("type").Data()
+			switch propertyType2 {
+			case OBJECT_PROPERTY_TYPE:
+				childSchema = &schema.Schema{
+					Type:     schema.TypeString,
+					Computed: true}
+			case INT_PROPERTY_TYPE:
+				childSchema = &schema.Schema{
+					Type:     schema.TypeInt,
+					Computed: true}
+			case BOOL_PROPERTY_TYPE:
+				childSchema = &schema.Schema{
+					Type:     schema.TypeBool,
+					Computed: true}
+			case ARRAY_PROPERTY_TYPE:
+				itemType2 := childNode.Path("items.type").Data()
+
+				if itemType2 == STRING_PROPERTY_TYPE || itemType2 == OBJECT_PROPERTY_TYPE {
+					childSchema = &schema.Schema{
+						Type:     schema.TypeList,
+						Computed: true,
+						Elem: &schema.Schema{
+							Type: schema.TypeString,
+						}}
+				}
+
+				if itemType2 == INT_PROPERTY_TYPE {
+					childSchema = &schema.Schema{
+						Type:     schema.TypeList,
+						Computed: true,
+						Elem: &schema.Schema{
+							Type: schema.TypeString,
+						}}
+				}
+			default:
+				childSchema = &schema.Schema{
+					Type:     schema.TypeString,
+					Computed: true}
+			}
+
+			childrenSchemaMap[key] = childSchema
+		}
+		//
+		return &schema.Schema{
+			Type:     schema.TypeList,
+			Computed: true,
+			Elem: &schema.Resource{
+				Schema: childrenSchemaMap,
+			},
+		}
+	}
+
+	if itemType == INT_PROPERTY_TYPE {
+		return &schema.Schema{
+			Type:     schema.TypeList,
+			Computed: true,
+			Elem: &schema.Schema{
+				Type: schema.TypeString,
+			}}
+	}
+
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		Computed: true,
+		Elem: &schema.Schema{
+			Type: schema.TypeString,
+		}}
 }
 
 func dataSourceConnectorAutomaticRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
