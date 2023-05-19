@@ -139,24 +139,6 @@ func getDataSourceProperties(path string) map[string]*schema.Schema {
 
 	properties := getProperties(nodesMap)
 
-	// for key, node := range nodesMap {
-	// 	nodeSchema := &schema.Schema{
-	// 		Type:     schema.TypeString,
-	// 		Computed: true}
-
-	// 	nodeType := node.Search("type").Data()
-
-	// 	switch nodeType {
-	// 	case INT_PROPERTY_TYPE:
-	// 		nodeSchema.Type = schema.TypeInt
-	// 	case BOOL_PROPERTY_TYPE:
-	// 		nodeSchema.Type = schema.TypeBool
-	// 	case ARRAY_PROPERTY_TYPE:
-	// 		nodeSchema = getArrayPropertySchema(node)
-	// 	}
-	// 	properties[key] = nodeSchema
-	// }
-
 	return properties
 }
 
@@ -198,26 +180,6 @@ func getArrayPropertySchema(node *gabs.Container) *schema.Schema {
 
 	if itemType == OBJECT_PROPERTY_TYPE && len(childrenMap) > 0 {
 		childrenSchemaMap := getProperties(childrenMap)
-		//childrenSchemaMap := make(map[string]*schema.Schema)
-
-		// for key, childNode := range childrenMap {
-		// 	childSchema := &schema.Schema{
-		// 		Type:     schema.TypeString,
-		// 		Computed: true}
-
-		// 	childType := childNode.Search("type").Data()
-
-		// 	switch childType {
-		// 	case INT_PROPERTY_TYPE:
-		// 		childSchema.Type = schema.TypeInt
-		// 	case BOOL_PROPERTY_TYPE:
-		// 		childSchema.Type = schema.TypeBool
-		// 	case ARRAY_PROPERTY_TYPE:
-		// 		childSchema = getArrayPropertySchema(childNode)
-		// 	}
-
-		// 	childrenSchemaMap[key] = childSchema
-		// }
 
 		arraySchema.Elem = &schema.Resource{
 			Schema: childrenSchemaMap,
@@ -290,31 +252,33 @@ func dataSourceConnectorAutomaticReadStatus(resp *fivetran.ConnectorCustomMerged
 // dataSourceConnectorReadConfig receives a *fivetran.ConnectorDetailsResponse and returns a []interface{}
 // containing the data type accepted by the "config" list.
 func dataSourceConnectorAutomaticReadConfig(resp *fivetran.ConnectorCustomMergedDetailsResponse) []interface{} {
-	config := make([]interface{}, 1)
+	configArray := make([]interface{}, 1)
 
-	configMap := make(map[string]interface{})
+	configResult := make(map[string]interface{})
 
-	c := resp.Data.CustomConfig
+	responseConfig := resp.Data.CustomConfig
 
-	m := structToMap(resp.Data.Config)
-	for key, value := range m {
-		rv := reflect.ValueOf(value)
-		if rv.Kind() == reflect.Slice && reflect.TypeOf(value).Elem().Kind() != reflect.String {
-			fmt.Printf("Type of value is %T\n", value)
-
-			var out []interface{}
-			for i := 0; i < rv.Len(); i++ {
-				out = append(out, rv.Index(i).Interface())
+	responseConfigFromStruct := structToMap(resp.Data.Config)
+	for key, value := range responseConfigFromStruct {
+		reflectedValue := reflect.ValueOf(value)
+		if reflectedValue.Kind() == reflect.Slice && reflect.TypeOf(value).Elem().Kind() != reflect.String {
+			var valueArray []interface{}
+			for i := 0; i < reflectedValue.Len(); i++ {
+				valueArray = append(valueArray, reflectedValue.Index(i).Interface())
 			}
 
-			adb := structToMap(out[0])
-			log.Output(1, intToStr(len(adb)))
-			out[0] = adb
-			c[key] = out
+			childPropertiesFromStruct := structToMap(valueArray[0])
+			valueArray[0] = childPropertiesFromStruct
+			responseConfig[key] = valueArray
 			continue
 		}
 
-		c[key] = value
+		//
+		//
+		//////////////
+		//////
+
+		responseConfig[key] = value
 	}
 
 	services := getAvailableServiceIds()
@@ -330,40 +294,36 @@ func dataSourceConnectorAutomaticReadConfig(resp *fivetran.ConnectorCustomMerged
 	}
 
 	for key, value := range properties {
-
-		// if key == "adobe_analytics_configurations" {
-		// 	fmt.Printf("Type of c[key] is %T\n", c[key])
-		// }
 		if value.Type == schema.TypeSet || value.Type == schema.TypeList {
-			if v, ok := c[key].([]string); ok {
-				configMap[key] = xStrXInterface(v)
+			if v, ok := responseConfig[key].([]string); ok {
+				configResult[key] = xStrXInterface(v)
 				continue
 			}
-			if v, ok := c[key].([]interface{}); ok {
+			if v, ok := responseConfig[key].([]interface{}); ok {
 				if v2, ok := v[0].(map[string]interface{}); ok {
 					log.Output(2, intToStr(len(v2)))
-					configMap[key] = v
+					configResult[key] = v
 				} else {
-					configMap[key] = xInterfaceStrXStr(v)
+					configResult[key] = xInterfaceStrXStr(v)
 				}
 				continue
 			}
 		}
-		if v, ok := c[key].(string); ok && v != "" {
+		if v, ok := responseConfig[key].(string); ok && v != "" {
 			valueType := value.Type
 			switch valueType {
 			case schema.TypeBool:
-				configMap[key] = strToBool(v)
+				configResult[key] = strToBool(v)
 			case schema.TypeInt:
-				configMap[key] = strToInt(v)
+				configResult[key] = strToInt(v)
 			default:
-				configMap[key] = v
+				configResult[key] = v
 			}
 		}
 	}
-	config[0] = configMap
+	configArray[0] = configResult
 
-	return config
+	return configArray
 }
 
 /*
