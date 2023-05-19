@@ -54,7 +54,7 @@ func resourceConnectorAutomaticConfigCreate() *schema.Schema {
 
 	for _, service := range services {
 		path := "schemas." + service + ".properties.config.properties"
-		newProperties := getProperties(path)
+		newProperties := getConnectorProperties(path)
 		for k, v := range *newProperties {
 			properties[k] = v
 		}
@@ -82,7 +82,7 @@ func getAvailableServiceIds() []string {
 	return services
 }
 
-func getProperties(path string) *map[string]*schema.Schema {
+func getConnectorProperties(path string) *map[string]*schema.Schema {
 	shemasJson, err := gabs.ParseJSONFile("/Users/lukadevic/Fivetran/terraform-provider-fivetran/fivetran/schemas.json")
 	if err != nil {
 		panic(err)
@@ -123,7 +123,7 @@ func getProperties(path string) *map[string]*schema.Schema {
 				break
 			}
 			newPath := path + key + "items.properties"
-			listProperties := getProperties(newPath)
+			listProperties := getConnectorProperties(newPath)
 			value = &schema.Schema{
 				Type:     schema.TypeSet,
 				Computed: true,
@@ -742,7 +742,7 @@ func resourceConnectorAutomaticUpdateCustomConfig(d *schema.ResourceData) *map[s
 
 	for _, service := range services {
 		path := "schemas." + service + ".properties.config.properties"
-		newProperties := getProperties(path)
+		newProperties := getConnectorProperties(path)
 		for k, v := range *newProperties {
 			properties[k] = v
 		}
@@ -1839,7 +1839,7 @@ func resourceConnectorAutomaticReadConfig(resp *fivetran.ConnectorCustomMergedDe
 
 	for _, service := range services {
 		path := "schemas." + service + ".properties.config.properties"
-		newProperties := getProperties(path)
+		newProperties := getConnectorProperties(path)
 		for k, v := range *newProperties {
 			properties[k] = v
 		}

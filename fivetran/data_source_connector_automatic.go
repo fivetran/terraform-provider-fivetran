@@ -135,9 +135,35 @@ func getDataSourceProperties(path string) map[string]*schema.Schema {
 		panic(err)
 	}
 
+	nodesMap := shemasJson.Path(path).ChildrenMap()
+
+	properties := getProperties(nodesMap)
+
+	// for key, node := range nodesMap {
+	// 	nodeSchema := &schema.Schema{
+	// 		Type:     schema.TypeString,
+	// 		Computed: true}
+
+	// 	nodeType := node.Search("type").Data()
+
+	// 	switch nodeType {
+	// 	case INT_PROPERTY_TYPE:
+	// 		nodeSchema.Type = schema.TypeInt
+	// 	case BOOL_PROPERTY_TYPE:
+	// 		nodeSchema.Type = schema.TypeBool
+	// 	case ARRAY_PROPERTY_TYPE:
+	// 		nodeSchema = getArrayPropertySchema(node)
+	// 	}
+	// 	properties[key] = nodeSchema
+	// }
+
+	return properties
+}
+
+func getProperties(nodesMap map[string]*gabs.Container) map[string]*schema.Schema {
 	properties := make(map[string]*schema.Schema)
 
-	for key, node := range shemasJson.Path(path).ChildrenMap() {
+	for key, node := range nodesMap {
 		nodeSchema := &schema.Schema{
 			Type:     schema.TypeString,
 			Computed: true}
@@ -171,25 +197,27 @@ func getArrayPropertySchema(node *gabs.Container) *schema.Schema {
 		}}
 
 	if itemType == OBJECT_PROPERTY_TYPE && len(childrenMap) > 0 {
-		childrenSchemaMap := make(map[string]*schema.Schema)
+		childrenSchemaMap := getProperties(childrenMap)
+		//childrenSchemaMap := make(map[string]*schema.Schema)
 
-		for key, childNode := range childrenMap {
-			childSchema := &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true}
+		// for key, childNode := range childrenMap {
+		// 	childSchema := &schema.Schema{
+		// 		Type:     schema.TypeString,
+		// 		Computed: true}
 
-			childType := childNode.Search("type").Data()
-			switch childType {
-			case INT_PROPERTY_TYPE:
-				childSchema.Type = schema.TypeInt
-			case BOOL_PROPERTY_TYPE:
-				childSchema.Type = schema.TypeBool
-			case ARRAY_PROPERTY_TYPE:
-				childSchema = getArrayPropertySchema(childNode)
-			}
+		// 	childType := childNode.Search("type").Data()
 
-			childrenSchemaMap[key] = childSchema
-		}
+		// 	switch childType {
+		// 	case INT_PROPERTY_TYPE:
+		// 		childSchema.Type = schema.TypeInt
+		// 	case BOOL_PROPERTY_TYPE:
+		// 		childSchema.Type = schema.TypeBool
+		// 	case ARRAY_PROPERTY_TYPE:
+		// 		childSchema = getArrayPropertySchema(childNode)
+		// 	}
+
+		// 	childrenSchemaMap[key] = childSchema
+		// }
 
 		arraySchema.Elem = &schema.Resource{
 			Schema: childrenSchemaMap,
