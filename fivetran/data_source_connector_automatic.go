@@ -163,6 +163,13 @@ func getArrayPropertySchema(node *gabs.Container) *schema.Schema {
 
 	childrenMap := node.Path("items.properties").ChildrenMap()
 
+	arraySchema := &schema.Schema{
+		Type:     schema.TypeList,
+		Computed: true,
+		Elem: &schema.Schema{
+			Type: schema.TypeString,
+		}}
+
 	if itemType == OBJECT_PROPERTY_TYPE && len(childrenMap) > 0 {
 		childrenSchemaMap := make(map[string]*schema.Schema)
 
@@ -179,62 +186,17 @@ func getArrayPropertySchema(node *gabs.Container) *schema.Schema {
 				childSchema.Type = schema.TypeBool
 			case ARRAY_PROPERTY_TYPE:
 				childSchema = getArrayPropertySchema(childNode)
-				//
-
-				// itemType2 := childNode.Path("items.type").Data()
-
-				// if itemType2 == STRING_PROPERTY_TYPE || itemType2 == OBJECT_PROPERTY_TYPE {
-				// 	childSchema = &schema.Schema{
-				// 		Type:     schema.TypeList,
-				// 		Computed: true,
-				// 		Elem: &schema.Schema{
-				// 			Type: schema.TypeString,
-				// 		}}
-				// }
-
-				// if itemType2 == INT_PROPERTY_TYPE {
-				// 	childSchema = &schema.Schema{
-				// 		Type:     schema.TypeList,
-				// 		Computed: true,
-				// 		Elem: &schema.Schema{
-				// 			Type: schema.TypeString,
-				// 		}}
-				// }
-
-				//
-			default:
-				childSchema = &schema.Schema{
-					Type:     schema.TypeString,
-					Computed: true}
 			}
 
 			childrenSchemaMap[key] = childSchema
 		}
 
-		return &schema.Schema{
-			Type:     schema.TypeList,
-			Computed: true,
-			Elem: &schema.Resource{
-				Schema: childrenSchemaMap,
-			},
+		arraySchema.Elem = &schema.Resource{
+			Schema: childrenSchemaMap,
 		}
 	}
 
-	if itemType == INT_PROPERTY_TYPE {
-		return &schema.Schema{
-			Type:     schema.TypeList,
-			Computed: true,
-			Elem: &schema.Schema{
-				Type: schema.TypeString,
-			}}
-	}
-
-	return &schema.Schema{
-		Type:     schema.TypeList,
-		Computed: true,
-		Elem: &schema.Schema{
-			Type: schema.TypeString,
-		}}
+	return arraySchema
 }
 
 func dataSourceConnectorAutomaticRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
