@@ -167,42 +167,41 @@ func getArrayPropertySchema(node *gabs.Container) *schema.Schema {
 		childrenSchemaMap := make(map[string]*schema.Schema)
 
 		for key, childNode := range childrenMap {
-			var childSchema *schema.Schema
+			childSchema := &schema.Schema{
+				Type:     schema.TypeString,
+				Computed: true}
 
 			childType := childNode.Search("type").Data()
 			switch childType {
-			case OBJECT_PROPERTY_TYPE:
-				childSchema = &schema.Schema{
-					Type:     schema.TypeString,
-					Computed: true}
 			case INT_PROPERTY_TYPE:
-				childSchema = &schema.Schema{
-					Type:     schema.TypeInt,
-					Computed: true}
+				childSchema.Type = schema.TypeInt
 			case BOOL_PROPERTY_TYPE:
-				childSchema = &schema.Schema{
-					Type:     schema.TypeBool,
-					Computed: true}
+				childSchema.Type = schema.TypeBool
 			case ARRAY_PROPERTY_TYPE:
-				itemType2 := childNode.Path("items.type").Data()
+				childSchema = getArrayPropertySchema(childNode)
+				//
 
-				if itemType2 == STRING_PROPERTY_TYPE || itemType2 == OBJECT_PROPERTY_TYPE {
-					childSchema = &schema.Schema{
-						Type:     schema.TypeList,
-						Computed: true,
-						Elem: &schema.Schema{
-							Type: schema.TypeString,
-						}}
-				}
+				// itemType2 := childNode.Path("items.type").Data()
 
-				if itemType2 == INT_PROPERTY_TYPE {
-					childSchema = &schema.Schema{
-						Type:     schema.TypeList,
-						Computed: true,
-						Elem: &schema.Schema{
-							Type: schema.TypeString,
-						}}
-				}
+				// if itemType2 == STRING_PROPERTY_TYPE || itemType2 == OBJECT_PROPERTY_TYPE {
+				// 	childSchema = &schema.Schema{
+				// 		Type:     schema.TypeList,
+				// 		Computed: true,
+				// 		Elem: &schema.Schema{
+				// 			Type: schema.TypeString,
+				// 		}}
+				// }
+
+				// if itemType2 == INT_PROPERTY_TYPE {
+				// 	childSchema = &schema.Schema{
+				// 		Type:     schema.TypeList,
+				// 		Computed: true,
+				// 		Elem: &schema.Schema{
+				// 			Type: schema.TypeString,
+				// 		}}
+				// }
+
+				//
 			default:
 				childSchema = &schema.Schema{
 					Type:     schema.TypeString,
