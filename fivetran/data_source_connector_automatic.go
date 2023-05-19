@@ -130,7 +130,6 @@ func updateExistingValue(existingValue *schema.Schema, newValue *schema.Schema) 
 }
 
 func getDataSourceProperties(path string) map[string]*schema.Schema {
-
 	shemasJson, err := gabs.ParseJSONFile(SCHEMAS_JSON_PATH)
 	if err != nil {
 		panic(err)
@@ -139,31 +138,21 @@ func getDataSourceProperties(path string) map[string]*schema.Schema {
 	properties := make(map[string]*schema.Schema)
 
 	for key, node := range shemasJson.Path(path).ChildrenMap() {
-		var value *schema.Schema
+		nodeSchema := &schema.Schema{
+			Type:     schema.TypeString,
+			Computed: true}
 
-		propertyType := node.Search("type").Data()
+		nodeType := node.Search("type").Data()
 
-		switch propertyType {
-		case OBJECT_PROPERTY_TYPE:
-			value = &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true}
+		switch nodeType {
 		case INT_PROPERTY_TYPE:
-			value = &schema.Schema{
-				Type:     schema.TypeInt,
-				Computed: true}
+			nodeSchema.Type = schema.TypeInt
 		case BOOL_PROPERTY_TYPE:
-			value = &schema.Schema{
-				Type:     schema.TypeBool,
-				Computed: true}
+			nodeSchema.Type = schema.TypeBool
 		case ARRAY_PROPERTY_TYPE:
-			value = getArrayPropertySchema(node)
-		default:
-			value = &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true}
+			nodeSchema = getArrayPropertySchema(node)
 		}
-		properties[key] = value
+		properties[key] = nodeSchema
 	}
 
 	return properties
@@ -180,8 +169,8 @@ func getArrayPropertySchema(node *gabs.Container) *schema.Schema {
 		for key, childNode := range childrenMap {
 			var childSchema *schema.Schema
 
-			propertyType2 := childNode.Search("type").Data()
-			switch propertyType2 {
+			childType := childNode.Search("type").Data()
+			switch childType {
 			case OBJECT_PROPERTY_TYPE:
 				childSchema = &schema.Schema{
 					Type:     schema.TypeString,
@@ -222,7 +211,7 @@ func getArrayPropertySchema(node *gabs.Container) *schema.Schema {
 
 			childrenSchemaMap[key] = childSchema
 		}
-		//
+
 		return &schema.Schema{
 			Type:     schema.TypeList,
 			Computed: true,
