@@ -3,7 +3,6 @@ package fivetran
 import (
 	"context"
 	"fmt"
-	"log"
 	"reflect"
 
 	"github.com/Jeffail/gabs/v2"
@@ -259,7 +258,7 @@ func dataSourceConnectorAutomaticReadConfig(resp *fivetran.ConnectorCustomMerged
 	responseConfig := resp.Data.CustomConfig
 
 	responseConfigFromStruct := structToMap(resp.Data.Config)
-	for key, value := range responseConfigFromStruct {
+	for responseProperty, value := range responseConfigFromStruct {
 		reflectedValue := reflect.ValueOf(value)
 		if reflectedValue.Kind() == reflect.Slice && reflect.TypeOf(value).Elem().Kind() != reflect.String {
 			var valueArray []interface{}
@@ -269,16 +268,10 @@ func dataSourceConnectorAutomaticReadConfig(resp *fivetran.ConnectorCustomMerged
 
 			childPropertiesFromStruct := structToMap(valueArray[0])
 			valueArray[0] = childPropertiesFromStruct
-			responseConfig[key] = valueArray
+			responseConfig[responseProperty] = valueArray
 			continue
 		}
-
-		//
-		//
-		//////////////
-		//////
-
-		responseConfig[key] = value
+		responseConfig[responseProperty] = value
 	}
 
 	services := getAvailableServiceIds()
@@ -288,36 +281,35 @@ func dataSourceConnectorAutomaticReadConfig(resp *fivetran.ConnectorCustomMerged
 	for _, service := range services {
 		path := SCHEMAS_PATH + service + PROPERTIES_PATH
 		newProperties := getDataSourceProperties(path)
-		for k, v := range newProperties {
-			properties[k] = v
+		for newPropertyKey, newPropertySchema := range newProperties {
+			properties[newPropertyKey] = newPropertySchema
 		}
 	}
 
-	for key, value := range properties {
-		if value.Type == schema.TypeSet || value.Type == schema.TypeList {
-			if v, ok := responseConfig[key].([]string); ok {
-				configResult[key] = xStrXInterface(v)
+	for property, propertySchema := range properties {
+		if propertySchema.Type == schema.TypeSet || propertySchema.Type == schema.TypeList {
+			if values, ok := responseConfig[property].([]string); ok {
+				configResult[property] = xStrXInterface(values)
 				continue
 			}
-			if v, ok := responseConfig[key].([]interface{}); ok {
-				if v2, ok := v[0].(map[string]interface{}); ok {
-					log.Output(2, intToStr(len(v2)))
-					configResult[key] = v
+			if interfaceValues, ok := responseConfig[property].([]interface{}); ok {
+				if _, ok := interfaceValues[0].(map[string]interface{}); ok {
+					configResult[property] = interfaceValues
 				} else {
-					configResult[key] = xInterfaceStrXStr(v)
+					configResult[property] = xInterfaceStrXStr(interfaceValues)
 				}
 				continue
 			}
 		}
-		if v, ok := responseConfig[key].(string); ok && v != "" {
-			valueType := value.Type
+		if value, ok := responseConfig[property].(string); ok && value != "" {
+			valueType := propertySchema.Type
 			switch valueType {
 			case schema.TypeBool:
-				configResult[key] = strToBool(v)
+				configResult[property] = strToBool(value)
 			case schema.TypeInt:
-				configResult[key] = strToInt(v)
+				configResult[property] = strToInt(value)
 			default:
-				configResult[key] = v
+				configResult[property] = value
 			}
 		}
 	}
