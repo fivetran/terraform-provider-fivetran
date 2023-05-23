@@ -5,8 +5,58 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
+
+func filterList(list []interface{}, filter func(elem interface{}) bool) *interface{} {
+	for _, v := range list {
+		if filter(v) {
+			return &v
+		}
+	}
+	return nil
+}
+
+func tryReadValue(source map[string]interface{}, key string) interface{} {
+	if v, ok := source[key]; ok {
+		return v
+	}
+	return nil
+}
+
+func tryReadListValue(source map[string]interface{}, key string) []interface{} {
+	if v, ok := source[key]; ok {
+		return v.([]interface{})
+	}
+	return nil
+}
+
+// tryCopyStringValue copies string value from map `source` to map `target` if `key` represented in `source` map
+func tryCopyStringValue(target, source map[string]interface{}, key string) {
+	if v, ok := source[key].(string); ok {
+		mapAddStr(target, key, v)
+	}
+}
+
+// tryReadBooleanValue copies bool value from map `source` to map `target` if `key` represented in `source` map
+func tryCopyBooleanValue(target, source map[string]interface{}, key string) {
+	if v, ok := source[key].(bool); ok {
+		mapAddStr(target, key, boolToStr(v))
+	}
+}
+
+// tryReadIntegerValue copies int value from map `source` to map `target` if `key` represented in `source` map
+func tryCopyIntegerValue(target, source map[string]interface{}, key string) {
+	if v, ok := source[key].(float64); ok {
+		mapAddStr(target, key, strconv.Itoa((int(v))))
+	}
+}
+
+// tryReadList copies abstract list ()`[]interface{}`) from map `source` to map `target` if `key` represented in `source` map
+func tryCopyList(target, source map[string]interface{}, key string) {
+	if v, ok := source[key].([]interface{}); ok {
+		mapAddXInterface(target, key, v)
+	}
+}
 
 // strToBool receives a string and returns a boolean
 func strToBool(s string) bool {
@@ -58,13 +108,13 @@ func intPointerToStr(i *int) string {
 }
 
 // xStrXInterface receives a []string and returns a []interface{}
-func xStrXInterface(xs []string) []interface{} {
-	xi := make([]interface{}, len(xs))
-	for i, v := range xs {
-		xi[i] = v
-	}
-	return xi
-}
+// func xStrXInterface(xs []string) []interface{} {
+// 	xi := make([]interface{}, len(xs))
+// 	for i, v := range xs {
+// 		xi[i] = v
+// 	}
+// 	return xi
+// }
 
 // xInterfaceStrXStr receives a []interface{} of type string and returns a []string
 func xInterfaceStrXStr(xi []interface{}) []string {
@@ -188,14 +238,4 @@ func readDestinationSchema(schema string, service string) []interface{} {
 
 	destination_schema[0] = ds
 	return destination_schema
-}
-
-func getSubcollectionElementValue(configKey, subKey, subKeyValue, targetKey string, currentConfig []interface{}) interface{} {
-	targetList := currentConfig[0].(map[string]interface{})[configKey].(*schema.Set).List()
-	for _, v := range targetList {
-		if v.(map[string]interface{})[subKey].(string) == subKeyValue {
-			return v.(map[string]interface{})[targetKey]
-		}
-	}
-	return nil
 }
