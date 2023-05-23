@@ -41,12 +41,19 @@ func resourceConnectorScheduleCreate(ctx context.Context, d *schema.ResourceData
 		return newDiagAppend(diags, diag.Error, "Connector with id ="+connectorId+" doesn't exist.", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
-	svc := client.NewConnectorModify().
-		ConnectorID(connectorId).
-		SyncFrequency(strToInt(d.Get("sync_frequency").(string))).
-		ScheduleType(d.Get("schedule_type").(string)).
-		Paused(strToBool(d.Get("paused").(string))).
-		PauseAfterTrial(strToBool(d.Get("pause_after_trial").(string)))
+	svc := client.NewConnectorModify().ConnectorID(connectorId)
+	if d.Get("sync_frequency").(string) != "" {
+		svc.SyncFrequency(strToInt(d.Get("sync_frequency").(string)))
+	}
+	if d.Get("schedule_type").(string) != "" {
+		svc.ScheduleType(d.Get("schedule_type").(string))
+	}
+	if d.Get("paused").(string) != "" {
+		svc.Paused(strToBool(d.Get("paused").(string)))
+	}
+	if d.Get("pause_after_trial").(string) != "" {
+		svc.PauseAfterTrial(strToBool(d.Get("pause_after_trial").(string)))
+	}
 
 	if d.Get("sync_frequency") == "1440" && d.Get("daily_sync_time").(string) != "" {
 		svc.DailySyncTime(d.Get("daily_sync_time").(string))
