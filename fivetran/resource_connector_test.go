@@ -41,6 +41,8 @@ func TestResourceConnectorE2E(t *testing.T) {
 				}
 
 				resource "fivetran_connector_schedule" "test_connector_schedule" {
+					provider = fivetran-provider
+
 					connector_id = fivetran_connector.test_connector.id
 					sync_frequency = 5
 					paused = true
@@ -95,6 +97,8 @@ func TestResourceConnectorE2E(t *testing.T) {
 				}
 
 				resource "fivetran_connector_schedule" "test_connector_schedule" {
+					provider = fivetran-provider
+					
 					connector_id = fivetran_connector.test_connector.id
 					sync_frequency = 15
 					paused = false
