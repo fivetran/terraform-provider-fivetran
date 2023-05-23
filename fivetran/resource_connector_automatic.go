@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Jeffail/gabs/v2"
 	"github.com/fivetran/go-fivetran"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -53,10 +52,18 @@ func resourceConnectorAutomaticConfigCreate() *schema.Schema {
 	properties := make(map[string]*schema.Schema)
 
 	for _, service := range services {
-		path := "schemas." + service + ".properties.config.properties"
-		newProperties := getConnectorProperties(path)
-		for k, v := range *newProperties {
-			properties[k] = v
+		path := SCHEMAS_PATH + service + PROPERTIES_PATH
+		oasProperties := getCSchemaAndProperties(path)
+		for key, value := range oasProperties {
+			if existingValue, ok := properties[key]; ok {
+				if existingValue.Type == schema.TypeList {
+					if _, ok := existingValue.Elem.(map[string]*schema.Schema); ok {
+						continue
+					}
+					value = updateExistingValue(existingValue, value)
+				}
+			}
+			properties[key] = value
 		}
 	}
 
@@ -67,103 +74,88 @@ func resourceConnectorAutomaticConfigCreate() *schema.Schema {
 	}
 }
 
-func getAvailableServiceIds() []string {
-	servicesJson, err := gabs.ParseJSONFile("/Users/lukadevic/Fivetran/terraform-provider-fivetran/fivetran/services.json")
-	if err != nil {
-		panic(err)
-	}
+// func getConnectorProperties(path string) *map[string]*schema.Schema {
+// 	shemasJson, err := gabs.ParseJSONFile(SCHEMAS_FILE_PATH)
+// 	if err != nil {
+// 		panic(err)
+// 	}
 
-	var services []string
+// 	properties := make(map[string]*schema.Schema)
 
-	for key, _ := range servicesJson.S("services").ChildrenMap() {
-		services = append(services, key+"_config_V1")
-	}
+// 	for key, child := range shemasJson.Path(path).ChildrenMap() {
+// 		// introduce int, bool and maybe other types
+// 		value := &schema.Schema{
+// 			Type:     schema.TypeString,
+// 			Computed: true}
 
-	return services
-}
+// 		propertyType := child.Search("type").Data()
 
-func getConnectorProperties(path string) *map[string]*schema.Schema {
-	shemasJson, err := gabs.ParseJSONFile("/Users/lukadevic/Fivetran/terraform-provider-fivetran/fivetran/schemas.json")
-	if err != nil {
-		panic(err)
-	}
+// 		switch propertyType {
+// 		case "object":
+// 			value = &schema.Schema{
+// 				Type:     schema.TypeString,
+// 				Computed: true}
+// 		case "integer":
+// 			value = &schema.Schema{
+// 				Type:     schema.TypeInt,
+// 				Computed: true}
+// 		case "boolean":
+// 			value = &schema.Schema{
+// 				Type:     schema.TypeBool,
+// 				Computed: true}
+// 		case "array":
+// 			itemType := child.Path("items.type").Data()
+// 			if itemType == "string" {
+// 				value = &schema.Schema{
+// 					Type:     schema.TypeSet,
+// 					Computed: true,
+// 					Elem: &schema.Schema{
+// 						Type: schema.TypeString,
+// 					}}
+// 				break
+// 			}
+// 			newPath := path + key + "items.properties"
+// 			listProperties := getConnectorProperties(newPath)
+// 			value = &schema.Schema{
+// 				Type:     schema.TypeSet,
+// 				Computed: true,
+// 				Elem: &schema.Resource{
+// 					Schema: *listProperties,
+// 				},
+// 			}
+// 		default:
+// 			value = &schema.Schema{
+// 				Type:     schema.TypeString,
+// 				Computed: true}
 
-	properties := make(map[string]*schema.Schema)
+// 		}
 
-	for key, child := range shemasJson.Path(path).ChildrenMap() {
-		// introduce int, bool and maybe other types
-		value := &schema.Schema{
-			Type:     schema.TypeString,
-			Computed: true}
+// 		// if propertyType == "array" {
+// 		// 	itemType := child.Path("items.type").Data()
+// 		// 	if itemType == "string" {
+// 		// 		value = &schema.Schema{
+// 		// 			Type:     schema.TypeSet,
+// 		// 			Optional: true,
+// 		// 			Elem: &schema.Schema{
+// 		// 				Type: schema.TypeString,
+// 		// 			}}
+// 		// 		break
+// 		// 	}
+// 		// 	newPath := path + key + "items.properties"
+// 		// 	listProperties := getProperties(newPath)
+// 		// 	value = &schema.Schema{
+// 		// 		Type:     schema.TypeSet,
+// 		// 		Optional: true,
+// 		// 		Elem: &schema.Resource{
+// 		// 			Schema: *listProperties,
+// 		// 		},
+// 		// 	}
+// 		// }
+// 		properties[key] = value
+// 	}
 
-		propertyType := child.Search("type").Data()
-
-		switch propertyType {
-		case "object":
-			value = &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true}
-		case "integer":
-			value = &schema.Schema{
-				Type:     schema.TypeInt,
-				Computed: true}
-		case "boolean":
-			value = &schema.Schema{
-				Type:     schema.TypeBool,
-				Computed: true}
-		case "array":
-			itemType := child.Path("items.type").Data()
-			if itemType == "string" {
-				value = &schema.Schema{
-					Type:     schema.TypeSet,
-					Computed: true,
-					Elem: &schema.Schema{
-						Type: schema.TypeString,
-					}}
-				break
-			}
-			newPath := path + key + "items.properties"
-			listProperties := getConnectorProperties(newPath)
-			value = &schema.Schema{
-				Type:     schema.TypeSet,
-				Computed: true,
-				Elem: &schema.Resource{
-					Schema: *listProperties,
-				},
-			}
-		default:
-			value = &schema.Schema{
-				Type:     schema.TypeString,
-				Computed: true}
-
-		}
-
-		// if propertyType == "array" {
-		// 	itemType := child.Path("items.type").Data()
-		// 	if itemType == "string" {
-		// 		value = &schema.Schema{
-		// 			Type:     schema.TypeSet,
-		// 			Optional: true,
-		// 			Elem: &schema.Schema{
-		// 				Type: schema.TypeString,
-		// 			}}
-		// 		break
-		// 	}
-		// 	newPath := path + key + "items.properties"
-		// 	listProperties := getProperties(newPath)
-		// 	value = &schema.Schema{
-		// 		Type:     schema.TypeSet,
-		// 		Optional: true,
-		// 		Elem: &schema.Resource{
-		// 			Schema: *listProperties,
-		// 		},
-		// 	}
-		// }
-		properties[key] = value
-	}
-
-	return &properties
-}
+// 	return &properties
+// }
 
 func resourceConnectorAutomaticDestinationSchemaSchema() *schema.Schema {
 	return &schema.Schema{Type: schema.TypeList, Required: true,
@@ -575,9 +567,9 @@ func resourceConnectorAutomaticCreate(ctx context.Context, d *schema.ResourceDat
 		svc.DailySyncTime(d.Get("daily_sync_time").(string))
 	}
 
-	fivetranConfig := resourceConnectorAutomaticUpdateConfig(d)
+	// fivetranConfig := resourceConnectorAutomaticUpdateConfig(d)
 
-	svc.Config(resourceConnectorAutomaticCreateConfig(fivetranConfig, d.Get("destination_schema").([]interface{})))
+	// svc.Config(resourceConnectorAutomaticCreateConfig(fivetranConfig, d.Get("destination_schema").([]interface{})))
 	svc.ConfigCustom(resourceConnectorAutomaticUpdateCustomConfig(d))
 
 	svc.Auth(resourceConnectorAutomaticCreateAuth(d.Get("auth").([]interface{})))
@@ -688,7 +680,7 @@ func resourceConnectorAutomaticUpdate(ctx context.Context, d *schema.ResourceDat
 		svc.DailySyncTime(d.Get("daily_sync_time").(string))
 	}
 
-	svc.Config(resourceConnectorAutomaticUpdateConfig(d))
+	//svc.Config(resourceConnectorAutomaticUpdateConfig(d))
 	svc.ConfigCustom(resourceConnectorAutomaticUpdateCustomConfig(d))
 	svc.Auth(resourceConnectorCreateAuth(d.Get("auth").([]interface{})))
 	svc.AuthCustom(resourceConnectorUpdateCustomAuth(d))
@@ -723,53 +715,115 @@ func resourceConnectorAutomaticDelete(ctx context.Context, d *schema.ResourceDat
 }
 
 func resourceConnectorAutomaticUpdateCustomConfig(d *schema.ResourceData) *map[string]interface{} {
-	configMap := make(map[string]interface{})
+	configResult := make(map[string]interface{})
 
 	var config = d.Get("config").([]interface{})
 
 	if len(config) < 1 {
-		return &configMap
+		return &configResult
 	}
 	if config[0] == nil {
-		return &configMap
+		return &configResult
 	}
 
-	c := config[0].(map[string]interface{})
+	responseConfig := config[0].(map[string]interface{})
 
 	services := getAvailableServiceIds()
 
 	properties := make(map[string]*schema.Schema)
 
 	for _, service := range services {
-		path := "schemas." + service + ".properties.config.properties"
-		newProperties := getConnectorProperties(path)
-		for k, v := range *newProperties {
-			properties[k] = v
-		}
-	}
-
-	for key, value := range properties {
-		if value.Type == schema.TypeSet {
-			if v, ok := c[key]; ok {
-				configMap[key] = xInterfaceStrXStr(v.(*schema.Set).List())
+		path := SCHEMAS_PATH + service + PROPERTIES_PATH
+		oasProperties := getCSchemaAndProperties(path)
+		for key, value := range oasProperties {
+			if existingValue, ok := properties[key]; ok {
+				if existingValue.Type == schema.TypeList {
+					if _, ok := existingValue.Elem.(map[string]*schema.Schema); ok {
+						continue
+					}
+					value = updateExistingValue(existingValue, value)
+				}
 			}
-			continue
-		}
-		if v, ok := c[key].(string); ok && v != "" {
-			valueType := value.Type
-			switch valueType {
-			case schema.TypeBool:
-				configMap[key] = strToBool(v)
-			case schema.TypeInt:
-				configMap[key] = strToInt(v)
-			default:
-				configMap[key] = v
-			}
+			properties[key] = value
 		}
 	}
 
 	// if v, ok := c["packed_mode_tables"]; ok {
 	// 	configMap["packed_mode_tables"] = xInterfaceStrXStr(v.(*schema.Set).List())
+	// }
+
+	for property, propertySchema := range properties {
+		if property == "custom_tables" {
+			fmt.Printf("this property is now:%v", property)
+		}
+		if propertySchema.Type == schema.TypeSet || propertySchema.Type == schema.TypeList {
+
+			//(*localConfig)[name].(*schema.Set).List()
+			if values, ok := responseConfig[property].(map[string]interface{}); ok {
+				fmt.Printf("this property is now:%v", property)
+				fmt.Printf("this property is now:%v", values)
+				// configResult[property] = xInterfaceStrXStr(values.(*schema.Set).List())
+				continue
+			}
+
+			if values := responseConfig[property].(*schema.Set).List(); len(values) > 0 {
+				fmt.Printf("this property is now:%v", property)
+				// configResult[property] = xInterfaceStrXStr(values.(*schema.Set).List())
+				continue
+			}
+
+			// if v := c["adobe_analytics_configurations"].(*schema.Set).List(); len(v) > 0 {
+			// 	fivetranConfig.AdobeAnalyticsConfigurations(resourceConnectorCreateConfigAdobeAnalyticsConfigurations(v))
+			// }
+
+			if values, ok := responseConfig[property]; ok {
+				configResult[property] = xInterfaceStrXStr(values.(*schema.Set).List())
+				continue
+			}
+			if values, ok := responseConfig[property].([]string); ok {
+				configResult[property] = xStrXInterface(values)
+				continue
+			}
+			if interfaceValues, ok := responseConfig[property].([]interface{}); ok {
+				if _, ok := interfaceValues[0].(map[string]interface{}); ok {
+					configResult[property] = interfaceValues
+				} else {
+					configResult[property] = xInterfaceStrXStr(interfaceValues)
+				}
+				continue
+			}
+		}
+		if value, ok := responseConfig[property].(string); ok && value != "" {
+			valueType := propertySchema.Type
+			switch valueType {
+			case schema.TypeBool:
+				configResult[property] = strToBool(value)
+			case schema.TypeInt:
+				configResult[property] = strToInt(value)
+			default:
+				configResult[property] = value
+			}
+		}
+	}
+
+	// for key, value := range properties {
+	// 	if value.Type == schema.TypeSet {
+	// 		if v, ok := c[key]; ok {
+	// 			configMap[key] = xInterfaceStrXStr(v.(*schema.Set).List())
+	// 		}
+	// 		continue
+	// 	}
+	// 	if v, ok := c[key].(string); ok && v != "" {
+	// 		valueType := value.Type
+	// 		switch valueType {
+	// 		case schema.TypeBool:
+	// 			configMap[key] = strToBool(v)
+	// 		case schema.TypeInt:
+	// 			configMap[key] = strToInt(v)
+	// 		default:
+	// 			configMap[key] = v
+	// 		}
+	// 	}
 	// }
 
 	// if v, ok := c["group_name"].(string); ok && v != "" {
@@ -908,7 +962,7 @@ func resourceConnectorAutomaticUpdateCustomConfig(d *schema.ResourceData) *map[s
 
 	// HVA parameters end
 
-	return &configMap
+	return &configResult
 }
 
 func resourceConnectorAutomaticUpdateCustomAuth(d *schema.ResourceData) *map[string]interface{} {
@@ -946,6 +1000,14 @@ func resourceConnectorAutomaticUpdateConfig(d *schema.ResourceData) *fivetran.Co
 	}
 
 	c := config[0].(map[string]interface{})
+
+	if v := c["custom_tables"].(*schema.Set).List(); len(v) > 0 {
+		fivetranConfig.CustomTables(resourceConnectorCreateConfigCustomTables(v))
+	}
+
+	if v := c["adobe_analytics_configurations"].(*schema.Set).List(); len(v) > 0 {
+		fivetranConfig.AdobeAnalyticsConfigurations(resourceConnectorCreateConfigAdobeAnalyticsConfigurations(v))
+	}
 
 	if v := c["sheet_id"].(string); v != "" {
 		fivetranConfig.SheetID(v)
@@ -1262,9 +1324,7 @@ func resourceConnectorAutomaticUpdateConfig(d *schema.ResourceData) *fivetran.Co
 	if v := c["view_attribution_window"].(string); v != "" {
 		fivetranConfig.ViewAttributionWindow(v)
 	}
-	if v := c["custom_tables"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.CustomTables(resourceConnectorCreateConfigCustomTables(v))
-	}
+
 	if v := c["pages"].(*schema.Set).List(); len(v) > 0 {
 		fivetranConfig.Pages(xInterfaceStrXStr(v))
 	}
@@ -1518,9 +1578,7 @@ func resourceConnectorAutomaticUpdateConfig(d *schema.ResourceData) *fivetran.Co
 	if v := c["is_new_package"].(string); v != "" {
 		fivetranConfig.IsNewPackage(strToBool(v))
 	}
-	if v := c["adobe_analytics_configurations"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.AdobeAnalyticsConfigurations(resourceConnectorCreateConfigAdobeAnalyticsConfigurations(v))
-	}
+
 	if v := c["is_multi_entity_feature_enabled"].(string); v != "" {
 		fivetranConfig.IsMultiEntityFeatureEnabled(strToBool(v))
 	}
@@ -1838,10 +1896,18 @@ func resourceConnectorAutomaticReadConfig(resp *fivetran.ConnectorCustomMergedDe
 	properties := make(map[string]*schema.Schema)
 
 	for _, service := range services {
-		path := "schemas." + service + ".properties.config.properties"
-		newProperties := getConnectorProperties(path)
-		for k, v := range *newProperties {
-			properties[k] = v
+		path := SCHEMAS_PATH + service + PROPERTIES_PATH
+		oasProperties := getCSchemaAndProperties(path)
+		for key, value := range oasProperties {
+			if existingValue, ok := properties[key]; ok {
+				if existingValue.Type == schema.TypeList {
+					if _, ok := existingValue.Elem.(map[string]*schema.Schema); ok {
+						continue
+					}
+					value = updateExistingValue(existingValue, value)
+				}
+			}
+			properties[key] = value
 		}
 	}
 
