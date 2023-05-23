@@ -43,6 +43,12 @@ func resourceconnectorInstanceStateUpgradeV0(ctx context.Context, rawState map[s
 	delete(rawState, "pause_after_trial")
 	delete(rawState, "daily_sync_time")
 
+	// These fields doesn't make sense for resource as they are mutable
+	delete(rawState, "status")
+	delete(rawState, "succeeded_at")
+	delete(rawState, "failed_at")
+	delete(rawState, "service_version")
+
 	return rawState, nil
 }
 

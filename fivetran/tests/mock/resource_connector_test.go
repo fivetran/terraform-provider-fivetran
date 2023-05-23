@@ -1449,21 +1449,10 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "google_sheets"),
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service_version", "1"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "google_sheets_schema.table"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "false"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "false"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
-
-			// scheck status fields
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.is_historical_sync", "true"),
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.update_state", "on_schedule"),
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.setup_state", "incomplete"),
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.sync_state", "paused"),
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.tasks.0.code", "task_code"),
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.tasks.0.message", "task_message"),
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.warnings.0.code", "warning_code"),
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.warnings.0.message", "warning_message"),
 
 			// check sensitive fields are have original values
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.oauth_token", "oauth_token"),
