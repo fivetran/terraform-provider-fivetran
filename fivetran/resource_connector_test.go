@@ -52,7 +52,6 @@ func TestResourceConnectorE2E(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranConnectorResourceCreate(t, "fivetran_connector.test_connector"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "fivetran_log"),
-					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "schedule_type", "auto"),
 
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.is_historical_sync", "true"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.update_state", "on_schedule"),
@@ -67,6 +66,7 @@ func TestResourceConnectorE2E(t *testing.T) {
 
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.is_account_level_connector", "false"),
 
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "schedule_type", "auto"),
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "sync_frequency", "5"),
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "paused", "true"),
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "pause_after_trial", "true"),
@@ -108,7 +108,6 @@ func TestResourceConnectorE2E(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranConnectorResourceUpdate(t, "fivetran_connector.test_connector"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "fivetran_log"),
-					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "schedule_type", "auto"),
 
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.is_historical_sync", "true"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.update_state", "on_schedule"),
@@ -121,6 +120,7 @@ func TestResourceConnectorE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "true"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "true"),
 
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "schedule_type", "auto"),
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "sync_frequency", "15"),
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "paused", "false"),
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "pause_after_trial", "false"),
