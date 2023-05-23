@@ -44,7 +44,7 @@ func Provider() *schema.Provider {
 
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	fivetranClient := fivetran.New(d.Get("api_key").(string), d.Get("api_secret").(string))
-	if d.Get("api_url") != nil {
+	if d.Get("api_url") != "" {
 		fivetranClient.BaseURL(d.Get("api_url").(string))
 	}
 	fivetranClient.CustomUserAgent("terraform-provider-fivetran/" + Version)

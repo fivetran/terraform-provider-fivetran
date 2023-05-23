@@ -7,22 +7,20 @@ subcategory: "Getting Started"
 
 In this guide we will set up simple pipeline with one connector and schema using Fivetran Terraform Provider. 
 
-## Initial setup
+## Create a connector resource
 
-Please follow our [Initial Setup guide](https://registry.terraform.io/providers/fivetran/fivetran/latest/docs/resources/connector_schema_config) with one minor diff - connector should be in paused state.
-
--> We have to create *paused* connector to avoid syncing unwanted data before schema config applied
+Create `fivetran_connector` resource:
 
 ```hcl
 resource "fivetran_connector" "connector" {
-    ...
-    # connector should be paused on first apply
-    paused = true 
-    ...
+   ...
+   run_setup_tests = "true" # it is necessary to authorise connector
 }
 ```
 
-If we apply such configuration - connector will be in paused state, but ready to sync. 
+Connector will be in paused state, but ready to sync.
+
+-> Connector should be **authorized** to be able to fetch schema from source. Set `run_setup_tests = "true"`.
 
 ## Set up connector schema config
 
@@ -30,7 +28,7 @@ Let's define what exactly we want to sync using `fivetran_connector_schema_confi
 
 ```hcl
 resource "fivetran_connector_schema_config" "connector_schema" {
-  connector_id = "fivetran_connector.connector.id"
+  connector_id = fivetran_connector.connector.id
   schema_change_handling = "BLOCK_ALL"
   schema {
     name = "my_fivetran_log_connector"
@@ -57,23 +55,24 @@ resource "fivetran_connector_schema_config" "connector_schema" {
 }
 ```
 
-Now we are ready to apply our configuration:
+## Set up connector schedule configuration
 
-```bash
-terraform apply
-```
-
-After schema configuration applied we can un-pause our connector:
+-> Schedule should depend on schema resource to enable connector **after** schema changes apply.
 
 ```hcl
-resource "fivetran_connector" "connector" {
-    ...
+resource "fivetran_connector_schedule" "my_connector_schedule" {
+    connector_id = fivetran_connector_schema_config.connector_schema.id
 
-    paused = true 
+    sync_frequency     = "5"
 
-   ...
+    paused             = false
+    pause_after_trial  = true
+
+    schedule_type      = "auto"
 }
 ```
+
+## Apply configuration
 
 ```bash
 terraform apply

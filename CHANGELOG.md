@@ -5,7 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.19...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.7.9...HEAD)
+
+## [0.7.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.19...v0.7.0)
+
+## Added
+- New `fivetran_connector_schedule` resource introduced
+
+## Breaking changes
+- Resource `fivetran_connector` updated
+    - Field `fivetran_connector.sync_frequency` moved to `fivetran_connector_schedule` resource
+    - Field `fivetran_connector.paused` moved to `fivetran_connector_schedule` resource
+    - Field `fivetran_connector.pause_after_trial` moved to `fivetran_connector_schedule` resource
+    - Field `fivetran_connector.daily_sync_time` moved to `fivetran_connector_schedule` resource
+    - Field `fivetran_connector.schedule_type` moved to `fivetran_connector_schedule` resource
+    - Readonly field `fivetran_connector.status` removed
+    - Readonly field `fivetran_connector.succeeded_at` removed
+    - Readonly field `fivetran_connector.failed_at` removed
+    - Readonly field `fivetran_connector.service_version` removed
 
 ## [0.6.19](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.18...v0.6.19)
 
