@@ -18,8 +18,6 @@ const (
 	HISTORY       = "HISTORY"
 	LIVE          = "LIVE"
 
-	ID                     = "id"
-	CONNECTOR_ID           = "connector_id"
 	SCHEMA_CHANGE_HANDLING = "schema_change_handling"
 	SCHEMA                 = "schema"
 	TABLE                  = "table"

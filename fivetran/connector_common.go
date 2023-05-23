@@ -5,7 +5,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func connectorSchema(readonly bool) map[string]*schema.Schema {
+const (
+	ID           = "id"
+	CONNECTOR_ID = "connector_id"
+)
+
+func connectorSchema(readonly bool, version int) map[string]*schema.Schema {
 
 	// Common for Resource and Datasource
 	var result = map[string]*schema.Schema{
@@ -26,15 +31,17 @@ func connectorSchema(readonly bool) map[string]*schema.Schema {
 		"service":            {Type: schema.TypeString, Required: !readonly, ForceNew: !readonly, Computed: readonly},
 		"destination_schema": connectorDestinationSchemaSchema(readonly),
 
-		// Optional with default values in upstream
-		"sync_frequency":    {Type: schema.TypeString, Optional: !readonly, Computed: true}, // Default: 360
-		"schedule_type":     {Type: schema.TypeString, Optional: !readonly, Computed: true}, // Default: AUTO
-		"paused":            {Type: schema.TypeString, Optional: !readonly, Computed: true}, // Default: false
-		"pause_after_trial": {Type: schema.TypeString, Optional: !readonly, Computed: true}, // Default: false
+		"config": connectorSchemaConfig(readonly),
+	}
 
+	if version == 0 {
+		// Optional with default values in upstream
+		result["sync_frequency"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: true}    // Default: 360
+		result["schedule_type"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: true}     // Default: AUTO
+		result["paused"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: true}            // Default: false
+		result["pause_after_trial"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: true} // Default: false
 		// Optional nullable in upstream
-		"daily_sync_time": {Type: schema.TypeString, Optional: !readonly, Computed: readonly},
-		"config":          connectorSchemaConfig(readonly),
+		result["daily_sync_time"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: readonly}
 	}
 
 	// Resource specific
@@ -100,7 +107,7 @@ func connectorDestinationSchemaSchema(readonly bool) *schema.Schema {
 	}
 }
 
-func connectorRead(currentConfig *[]interface{}, resp fivetran.ConnectorCustomDetailsResponse) map[string]interface{} {
+func connectorRead(currentConfig *[]interface{}, resp fivetran.ConnectorCustomDetailsResponse, version int) map[string]interface{} {
 	// msi stands for Map String Interface
 	msi := make(map[string]interface{})
 	mapAddStr(msi, "id", resp.Data.ID)
@@ -113,11 +120,15 @@ func connectorRead(currentConfig *[]interface{}, resp fivetran.ConnectorCustomDe
 	mapAddStr(msi, "created_at", resp.Data.CreatedAt.String())
 	mapAddStr(msi, "succeeded_at", resp.Data.SucceededAt.String())
 	mapAddStr(msi, "failed_at", resp.Data.FailedAt.String())
-	mapAddStr(msi, "sync_frequency", intPointerToStr(resp.Data.SyncFrequency))
-	mapAddStr(msi, "daily_sync_time", resp.Data.DailySyncTime)
-	mapAddStr(msi, "schedule_type", resp.Data.ScheduleType)
-	mapAddStr(msi, "paused", boolPointerToStr(resp.Data.Paused))
-	mapAddStr(msi, "pause_after_trial", boolPointerToStr(resp.Data.PauseAfterTrial))
+
+	if version == 0 {
+		mapAddStr(msi, "sync_frequency", intPointerToStr(resp.Data.SyncFrequency))
+		mapAddStr(msi, "daily_sync_time", resp.Data.DailySyncTime)
+		mapAddStr(msi, "schedule_type", resp.Data.ScheduleType)
+		mapAddStr(msi, "paused", boolPointerToStr(resp.Data.Paused))
+		mapAddStr(msi, "pause_after_trial", boolPointerToStr(resp.Data.PauseAfterTrial))
+	}
+
 	mapAddXInterface(msi, "status", connectorReadStatus(&resp))
 
 	upstreamConfig := connectorReadCustomConfig(&resp, currentConfig)

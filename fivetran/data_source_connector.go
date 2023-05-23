@@ -12,7 +12,7 @@ import (
 func dataSourceConnector() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceConnectorRead,
-		Schema:      connectorSchema(true),
+		Schema:      connectorSchema(true, 0),
 	}
 }
 
@@ -26,7 +26,7 @@ func dataSourceConnectorRead(ctx context.Context, d *schema.ResourceData, m inte
 	}
 
 	// msi stands for Map String Interface
-	msi := connectorRead(nil, resp)
+	msi := connectorRead(nil, resp, 0)
 
 	for k, v := range msi {
 		if err := d.Set(k, v); err != nil {

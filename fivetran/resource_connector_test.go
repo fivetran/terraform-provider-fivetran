@@ -30,9 +30,7 @@ func TestResourceConnectorE2E(t *testing.T) {
 					destination_schema {
 						name = "fivetran_log_schema"
 					}
-					sync_frequency = 5
-					paused = true
-					pause_after_trial = true
+					
 					trust_certificates = false
 					trust_fingerprints = false
 					run_setup_tests = false
@@ -40,6 +38,13 @@ func TestResourceConnectorE2E(t *testing.T) {
 					config {
 						group_name = fivetran_group.test_group.name
 					}
+				}
+
+				resource "fivetran_connector_schedule" "test_connector_schedule" {
+					connector_id = fivetran_connector.test_connector.id
+					sync_frequency = 5
+					paused = true
+					pause_after_trial = true
 				}
 		  `,
 				Check: resource.ComposeAggregateTestCheckFunc(
@@ -53,14 +58,16 @@ func TestResourceConnectorE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.sync_state", "paused"),
 
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "fivetran_log_schema"),
-					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "sync_frequency", "5"),
-					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "paused", "true"),
-					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "pause_after_trial", "true"),
+
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "false"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "false"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
 
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.is_account_level_connector", "false"),
+
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "sync_frequency", "5"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "paused", "true"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "pause_after_trial", "true"),
 				),
 			},
 			{
@@ -77,9 +84,7 @@ func TestResourceConnectorE2E(t *testing.T) {
 					destination_schema {
 						name = "fivetran_log_schema"
 					}
-					sync_frequency = 15
-					paused = false
-					pause_after_trial = false
+
 					trust_certificates = true
 					trust_fingerprints = true
 					run_setup_tests = true
@@ -87,6 +92,13 @@ func TestResourceConnectorE2E(t *testing.T) {
 					config {
 						group_name = fivetran_group.test_group.name
 					}
+				}
+
+				resource "fivetran_connector_schedule" "test_connector_schedule" {
+					connector_id = fivetran_connector.test_connector.id
+					sync_frequency = 15
+					paused = false
+					pause_after_trial = false
 				}
 		  `,
 				Check: resource.ComposeAggregateTestCheckFunc(
@@ -100,12 +112,14 @@ func TestResourceConnectorE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.sync_state", "scheduled"),
 
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "fivetran_log_schema"),
-					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "sync_frequency", "15"),
-					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "paused", "false"),
-					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "pause_after_trial", "false"),
+
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "true"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "true"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "true"),
+
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "sync_frequency", "15"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "paused", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "pause_after_trial", "false"),
 				),
 			},
 		},
