@@ -1,6 +1,8 @@
 package fivetran
 
 import (
+	"fmt"
+
 	"github.com/Jeffail/gabs/v2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -108,6 +110,9 @@ func getCProperties(nodesMap map[string]*gabs.Container) map[string]*schema.Sche
 	properties := make(map[string]*schema.Schema)
 
 	for key, node := range nodesMap {
+		if key == "advertisers_id" {
+			fmt.Printf("this property is now:%v", key)
+		}
 		nodeSchema := &schema.Schema{
 			Type:     schema.TypeString,
 			Optional: true,
@@ -137,18 +142,35 @@ func getCArrayPropertySchema(node *gabs.Container) *schema.Schema {
 	arraySchema := &schema.Schema{
 		Type:     schema.TypeSet,
 		Optional: true,
-		Computed: true,
 		Elem: &schema.Schema{
 			Type: schema.TypeString,
 		}}
 
+	// "breakdowns": {
+	// 	Type: schema.TypeSet,
+	// 	 Optional: true,
+	// 	  Elem: &schema.Schema
+	// 	  {Type: schema.TypeString}},
+
+	// "apps":   {
+	// 	Type: schema.TypeSet,
+	// 	 Optional: true,
+	// 	  Elem: &schema.Schema{
+	// 		Type: schema.TypeString}},
+
 	if itemType == OBJECT_PROPERTY_TYPE && len(childrenMap) > 0 {
-		childrenSchemaMap := getProperties(childrenMap)
+		childrenSchemaMap := getCProperties(childrenMap)
 
 		arraySchema.Elem = &schema.Resource{
 			Schema: childrenSchemaMap,
 		}
 	}
+
+	// if itemType == INT_PROPERTY_TYPE {
+	// 	arraySchema.Elem = &schema.Schema{
+	// 		Type: schema.TypeInt,
+	// 	}
+	// }
 
 	return arraySchema
 }

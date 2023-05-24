@@ -3,6 +3,7 @@ package fivetran
 import (
 	"context"
 	"fmt"
+	"reflect"
 	"time"
 
 	"github.com/fivetran/go-fivetran"
@@ -753,7 +754,7 @@ func resourceConnectorAutomaticUpdateCustomConfig(d *schema.ResourceData) *map[s
 	// }
 
 	for property, propertySchema := range properties {
-		if property == "custom_tables" {
+		if property == "breakdowns" {
 			fmt.Printf("this property is now:%v", property)
 		}
 		if propertySchema.Type == schema.TypeSet || propertySchema.Type == schema.TypeList {
@@ -766,20 +767,56 @@ func resourceConnectorAutomaticUpdateCustomConfig(d *schema.ResourceData) *map[s
 				continue
 			}
 
-			if values := responseConfig[property].(*schema.Set).List(); len(values) > 0 {
-				fmt.Printf("this property is now:%v", property)
-				// configResult[property] = xInterfaceStrXStr(values.(*schema.Set).List())
-				continue
-			}
+			// Na ovo obrati paznju
+			// if v := c["apps"].(*schema.Set).List(); len(v) > 0 {
+			// 	fivetranConfig.Apps(xInterfaceStrXStr(v))
+			// }
+
+			// if values := responseConfig[property].(*schema.Set).List(); len(values) > 0 {
+			// 	fmt.Printf("this property is now:%v", property)
+			// 	// configResult[property] = xInterfaceStrXStr(values.(*schema.Set).List())
+			// 	continue
+			// }
 
 			// if v := c["adobe_analytics_configurations"].(*schema.Set).List(); len(v) > 0 {
 			// 	fivetranConfig.AdobeAnalyticsConfigurations(resourceConnectorCreateConfigAdobeAnalyticsConfigurations(v))
 			// }
 
-			if values, ok := responseConfig[property]; ok {
-				configResult[property] = xInterfaceStrXStr(values.(*schema.Set).List())
+			if values := responseConfig[property].(*schema.Set).List(); len(values) > 0 {
+				if mapValues, ok := values[0].(map[string]interface{}); ok {
+					for childPropertyKey, _ := range mapValues {
+						if _, ok := mapValues[childPropertyKey].(string); ok {
+							continue
+						}
+						if _, ok := mapValues[childPropertyKey].(bool); ok {
+							continue
+						}
+						if _, ok := mapValues[childPropertyKey].([]interface{}); ok {
+							continue
+						}
+						if childPropertyValues := mapValues[childPropertyKey].(*schema.Set).List(); len(childPropertyValues) > 0 {
+							mapValues[childPropertyKey] = childPropertyValues
+							continue
+						}
+					}
+					if property == "custom_tables" {
+						// if breakdownsValues := mapValues["breakdowns"].(*schema.Set).List(); len(breakdownsValues) > 0 {
+						// 	fmt.Printf("this breakdownsValues is now:%v", breakdownsValues)
+						// }
+					}
+					values[0] = mapValues
+					configResult[property] = values
+				} else {
+					configResult[property] = xInterfaceStrXStr(values)
+				}
 				continue
 			}
+			if values, ok := responseConfig[property].(*schema.Set); ok {
+				setValues := values.List()
+
+				fmt.Printf("this property is now:%v", setValues)
+			}
+
 			if values, ok := responseConfig[property].([]string); ok {
 				configResult[property] = xStrXInterface(values)
 				continue
@@ -988,639 +1025,639 @@ func resourceConnectorAutomaticUpdateCustomAuth(d *schema.ResourceData) *map[str
 	return &authMap
 }
 
-func resourceConnectorAutomaticUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorConfig {
-	fivetranConfig := fivetran.NewConnectorConfig()
-	var config = d.Get("config").([]interface{})
+// func resourceConnectorAutomaticUpdateConfig(d *schema.ResourceData) *fivetran.ConnectorConfig {
+// 	fivetranConfig := fivetran.NewConnectorConfig()
+// 	var config = d.Get("config").([]interface{})
 
-	if len(config) < 1 {
-		return fivetranConfig
-	}
-	if config[0] == nil {
-		return fivetranConfig
-	}
+// 	if len(config) < 1 {
+// 		return fivetranConfig
+// 	}
+// 	if config[0] == nil {
+// 		return fivetranConfig
+// 	}
 
-	c := config[0].(map[string]interface{})
+// 	c := config[0].(map[string]interface{})
 
-	if v := c["custom_tables"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.CustomTables(resourceConnectorCreateConfigCustomTables(v))
-	}
+// 	if v := c["custom_tables"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.CustomTables(resourceConnectorCreateConfigCustomTables(v))
+// 	}
 
-	if v := c["adobe_analytics_configurations"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.AdobeAnalyticsConfigurations(resourceConnectorCreateConfigAdobeAnalyticsConfigurations(v))
-	}
+// 	if v := c["adobe_analytics_configurations"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.AdobeAnalyticsConfigurations(resourceConnectorCreateConfigAdobeAnalyticsConfigurations(v))
+// 	}
 
-	if v := c["sheet_id"].(string); v != "" {
-		fivetranConfig.SheetID(v)
-	}
-	if v := c["share_url"].(string); v != "" {
-		fivetranConfig.ShareURL(v)
-	}
-	if v := c["named_range"].(string); v != "" {
-		fivetranConfig.NamedRange(v)
-	}
-	if v := c["client_id"].(string); v != "" {
-		fivetranConfig.ClientID(v)
-	}
-	if v := c["client_secret"].(string); v != "" {
-		fivetranConfig.ClientSecret(v)
-	}
-	if v := c["technical_account_id"].(string); v != "" {
-		fivetranConfig.TechnicalAccountID(v)
-	}
-	if v := c["organization_id"].(string); v != "" {
-		fivetranConfig.OrganizationID(v)
-	}
-	if v := c["private_key"].(string); v != "" {
-		fivetranConfig.PrivateKey(v)
-	}
-	if v := c["sync_mode"].(string); v != "" {
-		fivetranConfig.SyncMode(v)
-	}
-	if v := c["report_suites"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.ReportSuites(xInterfaceStrXStr(v))
-	}
-	if v := c["elements"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.Elements(xInterfaceStrXStr(v))
-	}
-	if v := c["metrics"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.Metrics(xInterfaceStrXStr(v))
-	}
-	if v := c["date_granularity"].(string); v != "" {
-		fivetranConfig.DateGranularity(v)
-	}
-	if v := c["timeframe_months"].(string); v != "" {
-		fivetranConfig.TimeframeMonths(v)
-	}
-	if v := c["source"].(string); v != "" {
-		fivetranConfig.Source(v)
-	}
-	if v := c["s3bucket"].(string); v != "" {
-		fivetranConfig.S3Bucket(v)
-	}
-	if v := c["s3role_arn"].(string); v != "" {
-		fivetranConfig.S3RoleArn(v)
-	}
-	if v := c["abs_connection_string"].(string); v != "" {
-		fivetranConfig.ABSConnectionString(v)
-	}
-	if v := c["abs_container_name"].(string); v != "" {
-		fivetranConfig.ABSContainerName(v)
-	}
-	if v := c["folder_id"].(string); v != "" {
-		fivetranConfig.FolderId(v)
-	}
-	if v := c["ftp_host"].(string); v != "" {
-		fivetranConfig.FTPHost(v)
-	}
-	if v := c["ftp_port"].(string); v != "" {
-		fivetranConfig.FTPPort(strToInt(v))
-	}
-	if v := c["ftp_user"].(string); v != "" {
-		fivetranConfig.FTPUser(v)
-	}
-	if v := c["ftp_password"].(string); v != "" {
-		fivetranConfig.FTPPassword(v)
-	}
-	if v := c["is_ftps"].(string); v != "" {
-		fivetranConfig.IsFTPS(strToBool(v))
-	}
-	if v := c["sftp_host"].(string); v != "" {
-		fivetranConfig.SFTPHost(v)
-	}
-	if v := c["sftp_port"].(string); v != "" {
-		fivetranConfig.SFTPPort(strToInt(v))
-	}
-	if v := c["sftp_user"].(string); v != "" {
-		fivetranConfig.SFTPUser(v)
-	}
-	if v := c["sftp_password"].(string); v != "" {
-		fivetranConfig.SFTPPassword(v)
-	}
-	if v := c["sftp_is_key_pair"].(string); v != "" {
-		fivetranConfig.SFTPIsKeyPair(strToBool(v))
-	}
-	if v := c["is_keypair"].(string); v != "" {
-		fivetranConfig.IsKeypair(strToBool(v))
-	}
-	if v := c["advertisables"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.Advertisables(xInterfaceStrXStr(v))
-	}
-	if v := c["report_type"].(string); v != "" {
-		fivetranConfig.ReportType(v)
-	}
-	if v := c["dimensions"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.Dimensions(xInterfaceStrXStr(v))
-	}
-	if v := c["api_key"].(string); v != "" {
-		fivetranConfig.APIKey(v)
-	}
-	if v := c["external_id"].(string); v != "" {
-		fivetranConfig.ExternalID(v)
-	}
-	if v := c["role_arn"].(string); v != "" {
-		fivetranConfig.RoleArn(v)
-	}
-	if v := c["bucket"].(string); v != "" {
-		fivetranConfig.Bucket(v)
-	}
-	if v := c["prefix"].(string); v != "" {
-		fivetranConfig.Prefix(v)
-	}
-	if v := c["pattern"].(string); v != "" {
-		fivetranConfig.Pattern(v)
-	}
-	if v := c["file_type"].(string); v != "" {
-		fivetranConfig.FileType(v)
-	}
-	if v := c["compression"].(string); v != "" {
-		fivetranConfig.Compression(v)
-	}
-	if v := c["on_error"].(string); v != "" {
-		fivetranConfig.OnError(v)
-	}
-	if v := c["append_file_option"].(string); v != "" {
-		fivetranConfig.AppendFileOption(v)
-	}
-	if v := c["archive_pattern"].(string); v != "" {
-		fivetranConfig.ArchivePattern(v)
-	}
-	if v := c["null_sequence"].(string); v != "" {
-		fivetranConfig.NullSequence(v)
-	}
-	if v := c["delimiter"].(string); v != "" {
-		fivetranConfig.Delimiter(v)
-	}
-	if v := c["escape_char"].(string); v != "" {
-		fivetranConfig.EscapeChar(v)
-	}
-	if v := c["skip_before"].(string); v != "" {
-		fivetranConfig.SkipBefore(strToInt(v))
-	}
-	if v := c["skip_after"].(string); v != "" {
-		fivetranConfig.SkipAfter(strToInt(v))
-	}
-	if v := c["project_credentials"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.ProjectCredentials(resourceConnectorCreateConfigProjectCredentials(v))
-	}
-	if v := c["secrets_list"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.SecretsList(resourceConnectorCreateFunctionSecrets(v))
-	}
-	if v := c["auth_mode"].(string); v != "" {
-		fivetranConfig.AuthMode(v)
-	}
-	if v := c["username"].(string); v != "" {
-		fivetranConfig.Username(v)
-	}
-	if v := c["user_name"].(string); v != "" {
-		fivetranConfig.UserName(v)
-	}
-	if v := c["password"].(string); v != "" {
-		fivetranConfig.Password(v)
-	}
-	if v := c["certificate"].(string); v != "" {
-		fivetranConfig.Certificate(v)
-	}
-	if v := c["selected_exports"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.SelectedExports(xInterfaceStrXStr(v))
-	}
-	if v := c["consumer_group"].(string); v != "" {
-		fivetranConfig.ConsumerGroup(v)
-	}
-	if v := c["servers"].(string); v != "" {
-		fivetranConfig.Servers(v)
-	}
-	if v := c["message_type"].(string); v != "" {
-		fivetranConfig.MessageType(v)
-	}
-	if v := c["sync_type"].(string); v != "" {
-		fivetranConfig.SyncType(v)
-	}
-	if v := c["security_protocol"].(string); v != "" {
-		fivetranConfig.SecurityProtocol(v)
-	}
-	if v := c["apps"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.Apps(xInterfaceStrXStr(v))
-	}
-	if v := c["sales_accounts"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.SalesAccounts(xInterfaceStrXStr(v))
-	}
-	if v := c["finance_accounts"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.FinanceAccounts(xInterfaceStrXStr(v))
-	}
-	if v := c["app_sync_mode"].(string); v != "" {
-		fivetranConfig.AppSyncMode(v)
-	}
-	if v := c["sales_account_sync_mode"].(string); v != "" {
-		fivetranConfig.SalesAccountSyncMode(v)
-	}
-	if v := c["finance_account_sync_mode"].(string); v != "" {
-		fivetranConfig.FinanceAccountSyncMode(v)
-	}
-	if v := c["pem_certificate"].(string); v != "" {
-		fivetranConfig.PEMCertificate(v)
-	}
-	if v := c["access_key_id"].(string); v != "" {
-		fivetranConfig.AccessKeyID(v)
-	}
-	if v := c["secret_key"].(string); v != "" {
-		fivetranConfig.SecretKey(v)
-	}
-	if v := c["home_folder"].(string); v != "" {
-		fivetranConfig.HomeFolder(v)
-	}
-	if v := c["sync_data_locker"].(string); v != "" {
-		fivetranConfig.SyncDataLocker(strToBool(v))
-	}
-	if v := c["projects"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.Projects(xInterfaceStrXStr(v))
-	}
-	if v := c["function"].(string); v != "" {
-		fivetranConfig.Function(v)
-	}
-	if v := c["region"].(string); v != "" {
-		fivetranConfig.Region(v)
-	}
-	if v := c["secrets"].(string); v != "" {
-		fivetranConfig.Secrets(v)
-	}
-	if v := c["container_name"].(string); v != "" {
-		fivetranConfig.ContainerName(v)
-	}
-	if v := c["connection_string"].(string); v != "" {
-		fivetranConfig.ConnectionString(v)
-	}
-	if v := c["function_app"].(string); v != "" {
-		fivetranConfig.FunctionApp(v)
-	}
-	if v := c["function_name"].(string); v != "" {
-		fivetranConfig.FunctionName(v)
-	}
-	if v := c["function_key"].(string); v != "" {
-		fivetranConfig.FunctionKey(v)
-	}
-	if v := c["merchant_id"].(string); v != "" {
-		fivetranConfig.MerchantID(v)
-	}
-	if v := c["api_url"].(string); v != "" {
-		fivetranConfig.APIURL(v)
-	}
-	if v := c["cloud_storage_type"].(string); v != "" {
-		fivetranConfig.CloudStorageType(v)
-	}
-	if v := c["s3external_id"].(string); v != "" {
-		fivetranConfig.S3ExternalID(v)
-	}
-	if v := c["s3folder"].(string); v != "" {
-		fivetranConfig.S3Folder(v)
-	}
-	if v := c["gcs_bucket"].(string); v != "" {
-		fivetranConfig.GCSBucket(v)
-	}
-	if v := c["gcs_folder"].(string); v != "" {
-		fivetranConfig.GCSFolder(v)
-	}
-	if v := c["user_profiles"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.UserProfiles(xInterfaceStrXStr(v))
-	}
-	if v := c["report_configuration_ids"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.ReportConfigurationIDs(xInterfaceStrXStr(v))
-	}
-	if v := c["enable_all_dimension_combinations"].(string); v != "" {
-		fivetranConfig.EnableAllDimensionCombinations(strToBool(v))
-	}
-	if v := c["instance"].(string); v != "" {
-		fivetranConfig.Instance(v)
-	}
-	if v := c["aws_region_code"].(string); v != "" {
-		fivetranConfig.AWSRegionCode(v)
-	}
-	if v := c["accounts"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.Accounts(xInterfaceStrXStr(v))
-	}
-	if v := c["fields"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.Fields(xInterfaceStrXStr(v))
-	}
-	if v := c["breakdowns"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.Breakdowns(xInterfaceStrXStr(v))
-	}
-	if v := c["action_breakdowns"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.ActionBreakdowns(xInterfaceStrXStr(v))
-	}
-	if v := c["aggregation"].(string); v != "" {
-		fivetranConfig.Aggregation(v)
-	}
-	if v := c["config_type"].(string); v != "" {
-		fivetranConfig.ConfigType(v)
-	}
-	if v := c["prebuilt_report"].(string); v != "" {
-		fivetranConfig.PrebuiltReport(v)
-	}
-	if v := c["action_report_time"].(string); v != "" {
-		fivetranConfig.ActionReportTime(v)
-	}
-	if v := c["click_attribution_window"].(string); v != "" {
-		fivetranConfig.ClickAttributionWindow(v)
-	}
-	if v := c["view_attribution_window"].(string); v != "" {
-		fivetranConfig.ViewAttributionWindow(v)
-	}
+// 	if v := c["sheet_id"].(string); v != "" {
+// 		fivetranConfig.SheetID(v)
+// 	}
+// 	if v := c["share_url"].(string); v != "" {
+// 		fivetranConfig.ShareURL(v)
+// 	}
+// 	if v := c["named_range"].(string); v != "" {
+// 		fivetranConfig.NamedRange(v)
+// 	}
+// 	if v := c["client_id"].(string); v != "" {
+// 		fivetranConfig.ClientID(v)
+// 	}
+// 	if v := c["client_secret"].(string); v != "" {
+// 		fivetranConfig.ClientSecret(v)
+// 	}
+// 	if v := c["technical_account_id"].(string); v != "" {
+// 		fivetranConfig.TechnicalAccountID(v)
+// 	}
+// 	if v := c["organization_id"].(string); v != "" {
+// 		fivetranConfig.OrganizationID(v)
+// 	}
+// 	if v := c["private_key"].(string); v != "" {
+// 		fivetranConfig.PrivateKey(v)
+// 	}
+// 	if v := c["sync_mode"].(string); v != "" {
+// 		fivetranConfig.SyncMode(v)
+// 	}
+// 	if v := c["report_suites"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.ReportSuites(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["elements"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.Elements(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["metrics"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.Metrics(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["date_granularity"].(string); v != "" {
+// 		fivetranConfig.DateGranularity(v)
+// 	}
+// 	if v := c["timeframe_months"].(string); v != "" {
+// 		fivetranConfig.TimeframeMonths(v)
+// 	}
+// 	if v := c["source"].(string); v != "" {
+// 		fivetranConfig.Source(v)
+// 	}
+// 	if v := c["s3bucket"].(string); v != "" {
+// 		fivetranConfig.S3Bucket(v)
+// 	}
+// 	if v := c["s3role_arn"].(string); v != "" {
+// 		fivetranConfig.S3RoleArn(v)
+// 	}
+// 	if v := c["abs_connection_string"].(string); v != "" {
+// 		fivetranConfig.ABSConnectionString(v)
+// 	}
+// 	if v := c["abs_container_name"].(string); v != "" {
+// 		fivetranConfig.ABSContainerName(v)
+// 	}
+// 	if v := c["folder_id"].(string); v != "" {
+// 		fivetranConfig.FolderId(v)
+// 	}
+// 	if v := c["ftp_host"].(string); v != "" {
+// 		fivetranConfig.FTPHost(v)
+// 	}
+// 	if v := c["ftp_port"].(string); v != "" {
+// 		fivetranConfig.FTPPort(strToInt(v))
+// 	}
+// 	if v := c["ftp_user"].(string); v != "" {
+// 		fivetranConfig.FTPUser(v)
+// 	}
+// 	if v := c["ftp_password"].(string); v != "" {
+// 		fivetranConfig.FTPPassword(v)
+// 	}
+// 	if v := c["is_ftps"].(string); v != "" {
+// 		fivetranConfig.IsFTPS(strToBool(v))
+// 	}
+// 	if v := c["sftp_host"].(string); v != "" {
+// 		fivetranConfig.SFTPHost(v)
+// 	}
+// 	if v := c["sftp_port"].(string); v != "" {
+// 		fivetranConfig.SFTPPort(strToInt(v))
+// 	}
+// 	if v := c["sftp_user"].(string); v != "" {
+// 		fivetranConfig.SFTPUser(v)
+// 	}
+// 	if v := c["sftp_password"].(string); v != "" {
+// 		fivetranConfig.SFTPPassword(v)
+// 	}
+// 	if v := c["sftp_is_key_pair"].(string); v != "" {
+// 		fivetranConfig.SFTPIsKeyPair(strToBool(v))
+// 	}
+// 	if v := c["is_keypair"].(string); v != "" {
+// 		fivetranConfig.IsKeypair(strToBool(v))
+// 	}
+// 	if v := c["advertisables"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.Advertisables(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["report_type"].(string); v != "" {
+// 		fivetranConfig.ReportType(v)
+// 	}
+// 	if v := c["dimensions"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.Dimensions(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["api_key"].(string); v != "" {
+// 		fivetranConfig.APIKey(v)
+// 	}
+// 	if v := c["external_id"].(string); v != "" {
+// 		fivetranConfig.ExternalID(v)
+// 	}
+// 	if v := c["role_arn"].(string); v != "" {
+// 		fivetranConfig.RoleArn(v)
+// 	}
+// 	if v := c["bucket"].(string); v != "" {
+// 		fivetranConfig.Bucket(v)
+// 	}
+// 	if v := c["prefix"].(string); v != "" {
+// 		fivetranConfig.Prefix(v)
+// 	}
+// 	if v := c["pattern"].(string); v != "" {
+// 		fivetranConfig.Pattern(v)
+// 	}
+// 	if v := c["file_type"].(string); v != "" {
+// 		fivetranConfig.FileType(v)
+// 	}
+// 	if v := c["compression"].(string); v != "" {
+// 		fivetranConfig.Compression(v)
+// 	}
+// 	if v := c["on_error"].(string); v != "" {
+// 		fivetranConfig.OnError(v)
+// 	}
+// 	if v := c["append_file_option"].(string); v != "" {
+// 		fivetranConfig.AppendFileOption(v)
+// 	}
+// 	if v := c["archive_pattern"].(string); v != "" {
+// 		fivetranConfig.ArchivePattern(v)
+// 	}
+// 	if v := c["null_sequence"].(string); v != "" {
+// 		fivetranConfig.NullSequence(v)
+// 	}
+// 	if v := c["delimiter"].(string); v != "" {
+// 		fivetranConfig.Delimiter(v)
+// 	}
+// 	if v := c["escape_char"].(string); v != "" {
+// 		fivetranConfig.EscapeChar(v)
+// 	}
+// 	if v := c["skip_before"].(string); v != "" {
+// 		fivetranConfig.SkipBefore(strToInt(v))
+// 	}
+// 	if v := c["skip_after"].(string); v != "" {
+// 		fivetranConfig.SkipAfter(strToInt(v))
+// 	}
+// 	if v := c["project_credentials"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.ProjectCredentials(resourceConnectorCreateConfigProjectCredentials(v))
+// 	}
+// 	if v := c["secrets_list"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.SecretsList(resourceConnectorCreateFunctionSecrets(v))
+// 	}
+// 	if v := c["auth_mode"].(string); v != "" {
+// 		fivetranConfig.AuthMode(v)
+// 	}
+// 	if v := c["username"].(string); v != "" {
+// 		fivetranConfig.Username(v)
+// 	}
+// 	if v := c["user_name"].(string); v != "" {
+// 		fivetranConfig.UserName(v)
+// 	}
+// 	if v := c["password"].(string); v != "" {
+// 		fivetranConfig.Password(v)
+// 	}
+// 	if v := c["certificate"].(string); v != "" {
+// 		fivetranConfig.Certificate(v)
+// 	}
+// 	if v := c["selected_exports"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.SelectedExports(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["consumer_group"].(string); v != "" {
+// 		fivetranConfig.ConsumerGroup(v)
+// 	}
+// 	if v := c["servers"].(string); v != "" {
+// 		fivetranConfig.Servers(v)
+// 	}
+// 	if v := c["message_type"].(string); v != "" {
+// 		fivetranConfig.MessageType(v)
+// 	}
+// 	if v := c["sync_type"].(string); v != "" {
+// 		fivetranConfig.SyncType(v)
+// 	}
+// 	if v := c["security_protocol"].(string); v != "" {
+// 		fivetranConfig.SecurityProtocol(v)
+// 	}
+// 	if v := c["apps"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.Apps(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["sales_accounts"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.SalesAccounts(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["finance_accounts"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.FinanceAccounts(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["app_sync_mode"].(string); v != "" {
+// 		fivetranConfig.AppSyncMode(v)
+// 	}
+// 	if v := c["sales_account_sync_mode"].(string); v != "" {
+// 		fivetranConfig.SalesAccountSyncMode(v)
+// 	}
+// 	if v := c["finance_account_sync_mode"].(string); v != "" {
+// 		fivetranConfig.FinanceAccountSyncMode(v)
+// 	}
+// 	if v := c["pem_certificate"].(string); v != "" {
+// 		fivetranConfig.PEMCertificate(v)
+// 	}
+// 	if v := c["access_key_id"].(string); v != "" {
+// 		fivetranConfig.AccessKeyID(v)
+// 	}
+// 	if v := c["secret_key"].(string); v != "" {
+// 		fivetranConfig.SecretKey(v)
+// 	}
+// 	if v := c["home_folder"].(string); v != "" {
+// 		fivetranConfig.HomeFolder(v)
+// 	}
+// 	if v := c["sync_data_locker"].(string); v != "" {
+// 		fivetranConfig.SyncDataLocker(strToBool(v))
+// 	}
+// 	if v := c["projects"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.Projects(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["function"].(string); v != "" {
+// 		fivetranConfig.Function(v)
+// 	}
+// 	if v := c["region"].(string); v != "" {
+// 		fivetranConfig.Region(v)
+// 	}
+// 	if v := c["secrets"].(string); v != "" {
+// 		fivetranConfig.Secrets(v)
+// 	}
+// 	if v := c["container_name"].(string); v != "" {
+// 		fivetranConfig.ContainerName(v)
+// 	}
+// 	if v := c["connection_string"].(string); v != "" {
+// 		fivetranConfig.ConnectionString(v)
+// 	}
+// 	if v := c["function_app"].(string); v != "" {
+// 		fivetranConfig.FunctionApp(v)
+// 	}
+// 	if v := c["function_name"].(string); v != "" {
+// 		fivetranConfig.FunctionName(v)
+// 	}
+// 	if v := c["function_key"].(string); v != "" {
+// 		fivetranConfig.FunctionKey(v)
+// 	}
+// 	if v := c["merchant_id"].(string); v != "" {
+// 		fivetranConfig.MerchantID(v)
+// 	}
+// 	if v := c["api_url"].(string); v != "" {
+// 		fivetranConfig.APIURL(v)
+// 	}
+// 	if v := c["cloud_storage_type"].(string); v != "" {
+// 		fivetranConfig.CloudStorageType(v)
+// 	}
+// 	if v := c["s3external_id"].(string); v != "" {
+// 		fivetranConfig.S3ExternalID(v)
+// 	}
+// 	if v := c["s3folder"].(string); v != "" {
+// 		fivetranConfig.S3Folder(v)
+// 	}
+// 	if v := c["gcs_bucket"].(string); v != "" {
+// 		fivetranConfig.GCSBucket(v)
+// 	}
+// 	if v := c["gcs_folder"].(string); v != "" {
+// 		fivetranConfig.GCSFolder(v)
+// 	}
+// 	if v := c["user_profiles"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.UserProfiles(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["report_configuration_ids"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.ReportConfigurationIDs(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["enable_all_dimension_combinations"].(string); v != "" {
+// 		fivetranConfig.EnableAllDimensionCombinations(strToBool(v))
+// 	}
+// 	if v := c["instance"].(string); v != "" {
+// 		fivetranConfig.Instance(v)
+// 	}
+// 	if v := c["aws_region_code"].(string); v != "" {
+// 		fivetranConfig.AWSRegionCode(v)
+// 	}
+// 	if v := c["accounts"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.Accounts(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["fields"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.Fields(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["breakdowns"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.Breakdowns(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["action_breakdowns"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.ActionBreakdowns(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["aggregation"].(string); v != "" {
+// 		fivetranConfig.Aggregation(v)
+// 	}
+// 	if v := c["config_type"].(string); v != "" {
+// 		fivetranConfig.ConfigType(v)
+// 	}
+// 	if v := c["prebuilt_report"].(string); v != "" {
+// 		fivetranConfig.PrebuiltReport(v)
+// 	}
+// 	if v := c["action_report_time"].(string); v != "" {
+// 		fivetranConfig.ActionReportTime(v)
+// 	}
+// 	if v := c["click_attribution_window"].(string); v != "" {
+// 		fivetranConfig.ClickAttributionWindow(v)
+// 	}
+// 	if v := c["view_attribution_window"].(string); v != "" {
+// 		fivetranConfig.ViewAttributionWindow(v)
+// 	}
 
-	if v := c["pages"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.Pages(xInterfaceStrXStr(v))
-	}
-	if v := c["subdomain"].(string); v != "" {
-		fivetranConfig.Subdomain(v)
-	}
-	if v := c["port"].(string); v != "" {
-		fivetranConfig.Port(strToInt(v))
-	}
-	if v := c["user"].(string); v != "" {
-		fivetranConfig.User(v)
-	}
-	if v := c["is_secure"].(string); v != "" {
-		fivetranConfig.IsSecure(strToBool(v))
-	}
-	if v := c["repositories"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.Repositories(xInterfaceStrXStr(v))
-	}
-	if v := c["use_webhooks"].(string); v != "" {
-		fivetranConfig.UseWebhooks(strToBool(v))
-	}
-	if v := c["dimension_attributes"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.DimensionAttributes(xInterfaceStrXStr(v))
-	}
-	if v := c["columns"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.Columns(xInterfaceStrXStr(v))
-	}
-	if v := c["network_code"].(string); v != "" {
-		fivetranConfig.NetworkCode(v)
-	}
-	if v := c["customer_id"].(string); v != "" {
-		fivetranConfig.CustomerID(v)
-	}
-	if v := c["manager_accounts"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.ManagerAccounts(xInterfaceStrXStr(v))
-	}
-	if v := c["reports"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.Reports(resourceConnectorCreateConfigReports(v))
-	}
-	if v := c["conversion_window_size"].(string); v != "" {
-		fivetranConfig.ConversionWindowSize(strToInt(v))
-	}
-	if v := c["profiles"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.Profiles(xInterfaceStrXStr(v))
-	}
-	if v := c["project_id"].(string); v != "" {
-		fivetranConfig.ProjectID(v)
-	}
-	if v := c["dataset_id"].(string); v != "" {
-		fivetranConfig.DatasetID(v)
-	}
-	if v := c["bucket_name"].(string); v != "" {
-		fivetranConfig.BucketName(v)
-	}
-	if v := c["function_trigger"].(string); v != "" {
-		fivetranConfig.FunctionTrigger(v)
-	}
-	if v := c["config_method"].(string); v != "" {
-		fivetranConfig.ConfigMethod(v)
-	}
-	if v := c["query_id"].(string); v != "" {
-		fivetranConfig.QueryID(v)
-	}
-	if v := c["update_config_on_each_sync"].(string); v != "" {
-		fivetranConfig.UpdateConfigOnEachSync(strToBool(v))
-	}
-	if v := c["site_urls"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.SiteURLs(xInterfaceStrXStr(v))
-	}
-	if v := c["path"].(string); v != "" {
-		fivetranConfig.Path(v)
-	}
-	if v := c["on_premise"].(string); v != "" {
-		fivetranConfig.OnPremise(strToBool(v))
-	}
-	if v := c["access_token"].(string); v != "" {
-		fivetranConfig.AccessToken(v)
-	}
-	if v := c["view_through_attribution_window_size"].(string); v != "" {
-		fivetranConfig.ViewThroughAttributionWindowSize(v)
-	}
-	if v := c["post_click_attribution_window_size"].(string); v != "" {
-		fivetranConfig.PostClickAttributionWindowSize(v)
-	}
-	if v := c["use_api_keys"].(string); v != "" {
-		fivetranConfig.UseAPIKeys(strToBool(v))
-	}
-	if v := c["api_keys"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.APIKeys(xInterfaceStrXStr(v))
-	}
-	if v := c["endpoint"].(string); v != "" {
-		fivetranConfig.Endpoint(v)
-	}
-	if v := c["identity"].(string); v != "" {
-		fivetranConfig.Identity(v)
-	}
-	if v := c["api_quota"].(string); v != "" {
-		fivetranConfig.APIQuota(strToInt(v))
-	}
-	if v := c["domain_name"].(string); v != "" {
-		fivetranConfig.DomainName(v)
-	}
-	if v := c["resource_url"].(string); v != "" {
-		fivetranConfig.ResourceURL(v)
-	}
-	if v := c["api_secret"].(string); v != "" {
-		fivetranConfig.APISecret(v)
-	}
-	if v := c["host"].(string); v != "" {
-		fivetranConfig.Host(v)
-	}
-	if v := c["hosts"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.Hosts(xInterfaceStrXStr(v))
-	}
-	if v := c["tunnel_host"].(string); v != "" {
-		fivetranConfig.TunnelHost(v)
-	}
-	if v := c["tunnel_port"].(string); v != "" {
-		fivetranConfig.TunnelPort(strToInt(v))
-	}
-	if v := c["tunnel_user"].(string); v != "" {
-		fivetranConfig.TunnelUser(v)
-	}
-	if v := c["database"].(string); v != "" {
-		fivetranConfig.Database(v)
-	}
-	if v := c["datasource"].(string); v != "" {
-		fivetranConfig.Datasource(v)
-	}
-	if v := c["account"].(string); v != "" {
-		fivetranConfig.Account(v)
-	}
-	if v := c["role"].(string); v != "" {
-		fivetranConfig.Role(v)
-	}
-	if v := c["email"].(string); v != "" {
-		fivetranConfig.Email(v)
-	}
-	if v := c["account_id"].(string); v != "" {
-		fivetranConfig.AccountID(v)
-	}
-	if v := c["server_url"].(string); v != "" {
-		fivetranConfig.ServerURL(v)
-	}
-	if v := c["user_key"].(string); v != "" {
-		fivetranConfig.UserKey(v)
-	}
-	if v := c["api_version"].(string); v != "" {
-		fivetranConfig.APIVersion(v)
-	}
-	if v := c["daily_api_call_limit"].(string); v != "" {
-		fivetranConfig.DailyAPICallLimit(strToInt(v))
-	}
-	if v := c["time_zone"].(string); v != "" {
-		fivetranConfig.TimeZone(v)
-	}
-	if v := c["integration_key"].(string); v != "" {
-		fivetranConfig.IntegrationKey(v)
-	}
-	if v := c["advertisers"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.Advertisers(xInterfaceStrXStr(v))
-	}
-	if v := c["engagement_attribution_window"].(string); v != "" {
-		fivetranConfig.EngagementAttributionWindow(v)
-	}
-	if v := c["conversion_report_time"].(string); v != "" {
-		fivetranConfig.ConversionReportTime(v)
-	}
-	if v := c["domain"].(string); v != "" {
-		fivetranConfig.Domain(v)
-	}
-	if v := c["update_method"].(string); v != "" {
-		fivetranConfig.UpdateMethod(v)
-	}
-	if v := c["connection_type"].(string); v != "" {
-		fivetranConfig.ConnectionType(v)
-	}
-	if v := c["replication_slot"].(string); v != "" {
-		fivetranConfig.ReplicationSlot(v)
-	}
-	if v := c["publication_name"].(string); v != "" {
-		fivetranConfig.PublicationName(v)
-	}
-	if v := c["data_center"].(string); v != "" {
-		fivetranConfig.DataCenter(v)
-	}
-	if v := c["api_token"].(string); v != "" {
-		fivetranConfig.APIToken(v)
-	}
-	if v := c["sub_domain"].(string); v != "" {
-		fivetranConfig.SubDomain(v)
-	}
-	if v := c["test_table_name"].(string); v != "" {
-		fivetranConfig.TestTableName(v)
-	}
-	if v := c["shop"].(string); v != "" {
-		fivetranConfig.Shop(v)
-	}
-	if v := c["organizations"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.Organizations(xInterfaceStrXStr(v))
-	}
-	if v := c["swipe_attribution_window"].(string); v != "" {
-		fivetranConfig.SwipeAttributionWindow(v)
-	}
-	if v := c["api_access_token"].(string); v != "" {
-		fivetranConfig.APIAccessToken(v)
-	}
-	if v := c["account_ids"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.AccountIDs(xInterfaceStrXStr(v))
-	}
-	if v := c["sid"].(string); v != "" {
-		fivetranConfig.SID(v)
-	}
-	if v := c["secret"].(string); v != "" {
-		fivetranConfig.Secret(v)
-	}
-	if v := c["oauth_token"].(string); v != "" {
-		fivetranConfig.OauthToken(v)
-	}
-	if v := c["oauth_token_secret"].(string); v != "" {
-		fivetranConfig.OauthTokenSecret(v)
-	}
-	if v := c["consumer_key"].(string); v != "" {
-		fivetranConfig.ConsumerKey(v)
-	}
-	if v := c["consumer_secret"].(string); v != "" {
-		fivetranConfig.ConsumerSecret(v)
-	}
-	if v := c["key"].(string); v != "" {
-		fivetranConfig.Key(v)
-	}
-	if v := c["advertisers_id"].(*schema.Set).List(); len(v) > 0 {
-		fivetranConfig.AdvertisersID(xInterfaceStrXStr(v))
-	}
-	if v := c["sync_format"].(string); v != "" {
-		fivetranConfig.SyncFormat(v)
-	}
-	if v := c["bucket_service"].(string); v != "" {
-		fivetranConfig.BucketService(v)
-	}
+// 	if v := c["pages"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.Pages(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["subdomain"].(string); v != "" {
+// 		fivetranConfig.Subdomain(v)
+// 	}
+// 	if v := c["port"].(string); v != "" {
+// 		fivetranConfig.Port(strToInt(v))
+// 	}
+// 	if v := c["user"].(string); v != "" {
+// 		fivetranConfig.User(v)
+// 	}
+// 	if v := c["is_secure"].(string); v != "" {
+// 		fivetranConfig.IsSecure(strToBool(v))
+// 	}
+// 	if v := c["repositories"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.Repositories(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["use_webhooks"].(string); v != "" {
+// 		fivetranConfig.UseWebhooks(strToBool(v))
+// 	}
+// 	if v := c["dimension_attributes"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.DimensionAttributes(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["columns"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.Columns(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["network_code"].(string); v != "" {
+// 		fivetranConfig.NetworkCode(v)
+// 	}
+// 	if v := c["customer_id"].(string); v != "" {
+// 		fivetranConfig.CustomerID(v)
+// 	}
+// 	if v := c["manager_accounts"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.ManagerAccounts(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["reports"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.Reports(resourceConnectorCreateConfigReports(v))
+// 	}
+// 	if v := c["conversion_window_size"].(string); v != "" {
+// 		fivetranConfig.ConversionWindowSize(strToInt(v))
+// 	}
+// 	if v := c["profiles"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.Profiles(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["project_id"].(string); v != "" {
+// 		fivetranConfig.ProjectID(v)
+// 	}
+// 	if v := c["dataset_id"].(string); v != "" {
+// 		fivetranConfig.DatasetID(v)
+// 	}
+// 	if v := c["bucket_name"].(string); v != "" {
+// 		fivetranConfig.BucketName(v)
+// 	}
+// 	if v := c["function_trigger"].(string); v != "" {
+// 		fivetranConfig.FunctionTrigger(v)
+// 	}
+// 	if v := c["config_method"].(string); v != "" {
+// 		fivetranConfig.ConfigMethod(v)
+// 	}
+// 	if v := c["query_id"].(string); v != "" {
+// 		fivetranConfig.QueryID(v)
+// 	}
+// 	if v := c["update_config_on_each_sync"].(string); v != "" {
+// 		fivetranConfig.UpdateConfigOnEachSync(strToBool(v))
+// 	}
+// 	if v := c["site_urls"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.SiteURLs(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["path"].(string); v != "" {
+// 		fivetranConfig.Path(v)
+// 	}
+// 	if v := c["on_premise"].(string); v != "" {
+// 		fivetranConfig.OnPremise(strToBool(v))
+// 	}
+// 	if v := c["access_token"].(string); v != "" {
+// 		fivetranConfig.AccessToken(v)
+// 	}
+// 	if v := c["view_through_attribution_window_size"].(string); v != "" {
+// 		fivetranConfig.ViewThroughAttributionWindowSize(v)
+// 	}
+// 	if v := c["post_click_attribution_window_size"].(string); v != "" {
+// 		fivetranConfig.PostClickAttributionWindowSize(v)
+// 	}
+// 	if v := c["use_api_keys"].(string); v != "" {
+// 		fivetranConfig.UseAPIKeys(strToBool(v))
+// 	}
+// 	if v := c["api_keys"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.APIKeys(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["endpoint"].(string); v != "" {
+// 		fivetranConfig.Endpoint(v)
+// 	}
+// 	if v := c["identity"].(string); v != "" {
+// 		fivetranConfig.Identity(v)
+// 	}
+// 	if v := c["api_quota"].(string); v != "" {
+// 		fivetranConfig.APIQuota(strToInt(v))
+// 	}
+// 	if v := c["domain_name"].(string); v != "" {
+// 		fivetranConfig.DomainName(v)
+// 	}
+// 	if v := c["resource_url"].(string); v != "" {
+// 		fivetranConfig.ResourceURL(v)
+// 	}
+// 	if v := c["api_secret"].(string); v != "" {
+// 		fivetranConfig.APISecret(v)
+// 	}
+// 	if v := c["host"].(string); v != "" {
+// 		fivetranConfig.Host(v)
+// 	}
+// 	if v := c["hosts"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.Hosts(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["tunnel_host"].(string); v != "" {
+// 		fivetranConfig.TunnelHost(v)
+// 	}
+// 	if v := c["tunnel_port"].(string); v != "" {
+// 		fivetranConfig.TunnelPort(strToInt(v))
+// 	}
+// 	if v := c["tunnel_user"].(string); v != "" {
+// 		fivetranConfig.TunnelUser(v)
+// 	}
+// 	if v := c["database"].(string); v != "" {
+// 		fivetranConfig.Database(v)
+// 	}
+// 	if v := c["datasource"].(string); v != "" {
+// 		fivetranConfig.Datasource(v)
+// 	}
+// 	if v := c["account"].(string); v != "" {
+// 		fivetranConfig.Account(v)
+// 	}
+// 	if v := c["role"].(string); v != "" {
+// 		fivetranConfig.Role(v)
+// 	}
+// 	if v := c["email"].(string); v != "" {
+// 		fivetranConfig.Email(v)
+// 	}
+// 	if v := c["account_id"].(string); v != "" {
+// 		fivetranConfig.AccountID(v)
+// 	}
+// 	if v := c["server_url"].(string); v != "" {
+// 		fivetranConfig.ServerURL(v)
+// 	}
+// 	if v := c["user_key"].(string); v != "" {
+// 		fivetranConfig.UserKey(v)
+// 	}
+// 	if v := c["api_version"].(string); v != "" {
+// 		fivetranConfig.APIVersion(v)
+// 	}
+// 	if v := c["daily_api_call_limit"].(string); v != "" {
+// 		fivetranConfig.DailyAPICallLimit(strToInt(v))
+// 	}
+// 	if v := c["time_zone"].(string); v != "" {
+// 		fivetranConfig.TimeZone(v)
+// 	}
+// 	if v := c["integration_key"].(string); v != "" {
+// 		fivetranConfig.IntegrationKey(v)
+// 	}
+// 	if v := c["advertisers"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.Advertisers(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["engagement_attribution_window"].(string); v != "" {
+// 		fivetranConfig.EngagementAttributionWindow(v)
+// 	}
+// 	if v := c["conversion_report_time"].(string); v != "" {
+// 		fivetranConfig.ConversionReportTime(v)
+// 	}
+// 	if v := c["domain"].(string); v != "" {
+// 		fivetranConfig.Domain(v)
+// 	}
+// 	if v := c["update_method"].(string); v != "" {
+// 		fivetranConfig.UpdateMethod(v)
+// 	}
+// 	if v := c["connection_type"].(string); v != "" {
+// 		fivetranConfig.ConnectionType(v)
+// 	}
+// 	if v := c["replication_slot"].(string); v != "" {
+// 		fivetranConfig.ReplicationSlot(v)
+// 	}
+// 	if v := c["publication_name"].(string); v != "" {
+// 		fivetranConfig.PublicationName(v)
+// 	}
+// 	if v := c["data_center"].(string); v != "" {
+// 		fivetranConfig.DataCenter(v)
+// 	}
+// 	if v := c["api_token"].(string); v != "" {
+// 		fivetranConfig.APIToken(v)
+// 	}
+// 	if v := c["sub_domain"].(string); v != "" {
+// 		fivetranConfig.SubDomain(v)
+// 	}
+// 	if v := c["test_table_name"].(string); v != "" {
+// 		fivetranConfig.TestTableName(v)
+// 	}
+// 	if v := c["shop"].(string); v != "" {
+// 		fivetranConfig.Shop(v)
+// 	}
+// 	if v := c["organizations"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.Organizations(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["swipe_attribution_window"].(string); v != "" {
+// 		fivetranConfig.SwipeAttributionWindow(v)
+// 	}
+// 	if v := c["api_access_token"].(string); v != "" {
+// 		fivetranConfig.APIAccessToken(v)
+// 	}
+// 	if v := c["account_ids"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.AccountIDs(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["sid"].(string); v != "" {
+// 		fivetranConfig.SID(v)
+// 	}
+// 	if v := c["secret"].(string); v != "" {
+// 		fivetranConfig.Secret(v)
+// 	}
+// 	if v := c["oauth_token"].(string); v != "" {
+// 		fivetranConfig.OauthToken(v)
+// 	}
+// 	if v := c["oauth_token_secret"].(string); v != "" {
+// 		fivetranConfig.OauthTokenSecret(v)
+// 	}
+// 	if v := c["consumer_key"].(string); v != "" {
+// 		fivetranConfig.ConsumerKey(v)
+// 	}
+// 	if v := c["consumer_secret"].(string); v != "" {
+// 		fivetranConfig.ConsumerSecret(v)
+// 	}
+// 	if v := c["key"].(string); v != "" {
+// 		fivetranConfig.Key(v)
+// 	}
+// 	if v := c["advertisers_id"].(*schema.Set).List(); len(v) > 0 {
+// 		fivetranConfig.AdvertisersID(xInterfaceStrXStr(v))
+// 	}
+// 	if v := c["sync_format"].(string); v != "" {
+// 		fivetranConfig.SyncFormat(v)
+// 	}
+// 	if v := c["bucket_service"].(string); v != "" {
+// 		fivetranConfig.BucketService(v)
+// 	}
 
-	if v := c["report_url"].(string); v != "" {
-		fivetranConfig.ReportURL(v)
-	}
-	if v := c["unique_id"].(string); v != "" {
-		fivetranConfig.UniqueID(v)
-	}
-	if v := c["auth_type"].(string); v != "" {
-		fivetranConfig.AuthType(v)
-	}
-	if v := c["is_new_package"].(string); v != "" {
-		fivetranConfig.IsNewPackage(strToBool(v))
-	}
+// 	if v := c["report_url"].(string); v != "" {
+// 		fivetranConfig.ReportURL(v)
+// 	}
+// 	if v := c["unique_id"].(string); v != "" {
+// 		fivetranConfig.UniqueID(v)
+// 	}
+// 	if v := c["auth_type"].(string); v != "" {
+// 		fivetranConfig.AuthType(v)
+// 	}
+// 	if v := c["is_new_package"].(string); v != "" {
+// 		fivetranConfig.IsNewPackage(strToBool(v))
+// 	}
 
-	if v := c["is_multi_entity_feature_enabled"].(string); v != "" {
-		fivetranConfig.IsMultiEntityFeatureEnabled(strToBool(v))
-	}
-	if v := c["api_type"].(string); v != "" {
-		fivetranConfig.ApiType(v)
-	}
-	if v := c["base_url"].(string); v != "" {
-		fivetranConfig.BaseUrl(v)
-	}
-	if v := c["entity_id"].(string); v != "" {
-		fivetranConfig.EntityId(v)
-	}
-	if v := c["soap_uri"].(string); v != "" {
-		fivetranConfig.SoapUri(v)
-	}
-	if v := c["user_id"].(string); v != "" {
-		fivetranConfig.UserId(v)
-	}
-	if v := c["encryption_key"].(string); v != "" {
-		fivetranConfig.EncryptionKey(v)
-	}
-	if v := c["pat"].(string); v != "" {
-		fivetranConfig.PAT(v)
-	}
-	if v := c["always_encrypted"].(string); v != "" {
-		fivetranConfig.AlwaysEncrypted(strToBool(v))
-	}
-	if v := c["eu_region"].(string); v != "" {
-		fivetranConfig.EuRegion(strToBool(v))
-	}
-	if v := c["token_key"].(string); v != "" {
-		fivetranConfig.TokenKey(v)
-	}
-	if v := c["token_secret"].(string); v != "" {
-		fivetranConfig.TokenSecret(v)
-	}
-	if v := c["public_key"].(string); v != "" {
-		fivetranConfig.PublicKey(v)
-	}
+// 	if v := c["is_multi_entity_feature_enabled"].(string); v != "" {
+// 		fivetranConfig.IsMultiEntityFeatureEnabled(strToBool(v))
+// 	}
+// 	if v := c["api_type"].(string); v != "" {
+// 		fivetranConfig.ApiType(v)
+// 	}
+// 	if v := c["base_url"].(string); v != "" {
+// 		fivetranConfig.BaseUrl(v)
+// 	}
+// 	if v := c["entity_id"].(string); v != "" {
+// 		fivetranConfig.EntityId(v)
+// 	}
+// 	if v := c["soap_uri"].(string); v != "" {
+// 		fivetranConfig.SoapUri(v)
+// 	}
+// 	if v := c["user_id"].(string); v != "" {
+// 		fivetranConfig.UserId(v)
+// 	}
+// 	if v := c["encryption_key"].(string); v != "" {
+// 		fivetranConfig.EncryptionKey(v)
+// 	}
+// 	if v := c["pat"].(string); v != "" {
+// 		fivetranConfig.PAT(v)
+// 	}
+// 	if v := c["always_encrypted"].(string); v != "" {
+// 		fivetranConfig.AlwaysEncrypted(strToBool(v))
+// 	}
+// 	if v := c["eu_region"].(string); v != "" {
+// 		fivetranConfig.EuRegion(strToBool(v))
+// 	}
+// 	if v := c["token_key"].(string); v != "" {
+// 		fivetranConfig.TokenKey(v)
+// 	}
+// 	if v := c["token_secret"].(string); v != "" {
+// 		fivetranConfig.TokenSecret(v)
+// 	}
+// 	if v := c["public_key"].(string); v != "" {
+// 		fivetranConfig.PublicKey(v)
+// 	}
 
-	return fivetranConfig
-}
+// 	return fivetranConfig
+// }
 
 func resourceConnectorAutomaticCreateConfig(fivetranConfig *fivetran.ConnectorConfig, destination_schema []interface{}) *fivetran.ConnectorConfig {
 	d := destination_schema[0].(map[string]interface{})
@@ -1889,7 +1926,27 @@ func resourceConnectorAutomaticReadConfig(resp *fivetran.ConnectorCustomMergedDe
 
 	configMap := make(map[string]interface{})
 
-	c := resp.Data.CustomConfig
+	responseConfig := resp.Data.CustomConfig
+
+	responseConfigFromStruct := structToMap(resp.Data.Config)
+	for responseProperty, value := range responseConfigFromStruct {
+		reflectedValue := reflect.ValueOf(value)
+		if reflectedValue.Kind() == reflect.Slice && reflect.TypeOf(value).Elem().Kind() != reflect.String {
+			var valueArray []interface{}
+			for i := 0; i < reflectedValue.Len(); i++ {
+				valueArray = append(valueArray, reflectedValue.Index(i).Interface())
+			}
+
+			if len(valueArray) > 0 {
+				childPropertiesFromStruct := structToMap(valueArray[0])
+				valueArray[0] = childPropertiesFromStruct
+			}
+
+			responseConfig[responseProperty] = valueArray
+			continue
+		}
+		responseConfig[responseProperty] = value
+	}
 
 	services := getAvailableServiceIds()
 
@@ -1911,22 +1968,47 @@ func resourceConnectorAutomaticReadConfig(resp *fivetran.ConnectorCustomMergedDe
 		}
 	}
 
-	for key, value := range properties {
-		if value.Type == schema.TypeSet {
-			if v, ok := c[key]; ok {
-				configMap[key] = xInterfaceStrXStr(v.(*schema.Set).List())
+	// Ovde je BUG i problem za int i obj array's
+	for property, propertySchema := range properties {
+		if property == "advertisers_id" {
+			fmt.Printf(property)
+		}
+		if propertySchema.Type == schema.TypeSet {
+			if values, ok := responseConfig[property].([]string); ok {
+				configMap[property] = xStrXInterface(values)
+				continue
 			}
+			if interfaceValues, ok := responseConfig[property].([]interface{}); ok {
+				if len(interfaceValues) > 0 {
+					if _, ok := interfaceValues[0].(map[string]interface{}); ok {
+						configMap[property] = interfaceValues
+					}
+					continue
+				}
+				configMap[property] = xInterfaceStrXStr(interfaceValues)
+
+				continue
+			}
+
+			// if v, ok := responseConfig[key]; ok {
+			// 	//mapAddXInterface(c, "advertisers_id", xStrXInterface(resp.Data.Config.AdvertisersID))
+			// 	if key == "advertisers_id" {
+			// 		fmt.Printf(key)
+			// 	}
+			// 	if()
+			// 	configMap[key] = xInterfaceStrXStr(v.(*schema.Set).List())
+			// }
 			continue
 		}
-		if v, ok := c[key].(string); ok && v != "" {
-			valueType := value.Type
+		if v, ok := responseConfig[property].(string); ok && v != "" {
+			valueType := propertySchema.Type
 			switch valueType {
 			case schema.TypeBool:
-				configMap[key] = strToBool(v)
+				configMap[property] = strToBool(v)
 			case schema.TypeInt:
-				configMap[key] = strToInt(v)
+				configMap[property] = strToInt(v)
 			default:
-				configMap[key] = v
+				configMap[property] = v
 			}
 		}
 	}
