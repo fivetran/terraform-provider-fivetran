@@ -10,8 +10,8 @@ subcategory: "Upgrade Guides"
 In version `0.7.0` of Fivetran Terraform provider resource `fivetran_connector` is separated onto two resources:
 - `fivetran_connector` resource
 - `fivetran_connector_schedule` resource
-With this new structure it's now possible to coreate connector, define schema config for it and enable it in one `apply` cycle without intermediate stages.
-Before this version you have to "un-pause" connector after applying initial schema configuration with additional `apply` to avoid unneeded data to be synced.
+With this new structure it's now possible to create connector, define schema config for it and enable it in one `apply` cycle without intermediate stages.
+Before this version you had to "un-pause" connector after applying initial schema configuration with additional `apply` to avoid unneeded data to be synced.
 
 ## Migration guide
 
