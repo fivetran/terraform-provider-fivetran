@@ -17,8 +17,39 @@ func resourceConnector() *schema.Resource {
 		UpdateContext: resourceConnectorUpdate,
 		DeleteContext: resourceConnectorDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		Schema:        connectorSchema(false),
+		Schema:        connectorSchema(false, 1),
+		SchemaVersion: 1,
+		StateUpgraders: []schema.StateUpgrader{
+			{
+				Type:    resourceConnectorV0().CoreConfigSchema().ImpliedType(),
+				Upgrade: resourceconnectorInstanceStateUpgradeV0,
+				Version: 0,
+			},
+		},
 	}
+}
+
+func resourceConnectorV0() *schema.Resource {
+	return &schema.Resource{
+		Schema: connectorSchema(false, 0),
+	}
+}
+
+func resourceconnectorInstanceStateUpgradeV0(ctx context.Context, rawState map[string]any, meta any) (map[string]any, error) {
+	// These fields are managed by `fivetran_connector_schedule` resource
+	delete(rawState, "sync_frequency")
+	delete(rawState, "schedule_type")
+	delete(rawState, "paused")
+	delete(rawState, "pause_after_trial")
+	delete(rawState, "daily_sync_time")
+
+	// These fields doesn't make sense for resource as they are mutable
+	delete(rawState, "status")
+	delete(rawState, "succeeded_at")
+	delete(rawState, "failed_at")
+	delete(rawState, "service_version")
+
+	return rawState, nil
 }
 
 func resourceConnectorCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -35,15 +66,15 @@ func resourceConnectorCreate(ctx context.Context, d *schema.ResourceData, m inte
 	}
 
 	svc.Service(currentService)
+
+	// new connector always in paused state
+	// `fivetran_connector_schedule` should be used for schedule management
+	svc.Paused(true)
+	svc.PauseAfterTrial(true)
+
 	svc.TrustCertificates(strToBool(d.Get("trust_certificates").(string)))
 	svc.TrustFingerprints(strToBool(d.Get("trust_fingerprints").(string)))
 	svc.RunSetupTests(strToBool(d.Get("run_setup_tests").(string)))
-	svc.Paused(strToBool(d.Get("paused").(string)))
-	svc.PauseAfterTrial(strToBool(d.Get("pause_after_trial").(string)))
-	svc.SyncFrequency(strToInt(d.Get("sync_frequency").(string)))
-	if d.Get("sync_frequency") == "1440" && d.Get("daily_sync_time").(string) != "" {
-		svc.DailySyncTime(d.Get("daily_sync_time").(string))
-	}
 
 	fivetranConfig := resourceConnectorUpdateConfig(d)
 
@@ -82,7 +113,7 @@ func resourceConnectorRead(ctx context.Context, d *schema.ResourceData, m interf
 	// msi stands for Map String Interface
 	currentConfig := d.Get("config").([]interface{})
 
-	msi := connectorRead(&currentConfig, resp)
+	msi := connectorRead(&currentConfig, resp, 1)
 
 	currentService := d.Get("service").(string)
 
@@ -90,11 +121,6 @@ func resourceConnectorRead(ctx context.Context, d *schema.ResourceData, m interf
 	if currentService == "adwords" && resp.Data.Service == "google_ads" {
 		mapAddStr(msi, "service", "adwords")
 		diags = newDiagAppend(diags, diag.Warning, "Google Ads service migration detected", "service update supressed to prevent resource re-creation.")
-	}
-
-	// Value for daily_sync_time won't be returned if sync_frequency < 1440
-	if *resp.Data.SyncFrequency != 1440 {
-		mapAddStr(msi, "daily_sync_time", d.Get("daily_sync_time").(string))
 	}
 
 	for k, v := range msi {

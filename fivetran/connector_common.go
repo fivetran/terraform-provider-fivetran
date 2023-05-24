@@ -5,7 +5,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func connectorSchema(readonly bool) map[string]*schema.Schema {
+const (
+	ID           = "id"
+	CONNECTOR_ID = "connector_id"
+)
+
+func connectorSchema(readonly bool, version int) map[string]*schema.Schema {
 
 	// Common for Resource and Datasource
 	var result = map[string]*schema.Schema{
@@ -13,28 +18,33 @@ func connectorSchema(readonly bool) map[string]*schema.Schema {
 		"id": {Type: schema.TypeString, Computed: !readonly, Required: readonly},
 
 		// Computed
-		"name":            {Type: schema.TypeString, Computed: true},
-		"connected_by":    {Type: schema.TypeString, Computed: true},
-		"created_at":      {Type: schema.TypeString, Computed: true},
-		"succeeded_at":    {Type: schema.TypeString, Computed: true},
-		"failed_at":       {Type: schema.TypeString, Computed: true},
-		"service_version": {Type: schema.TypeString, Computed: true},
-		"status":          connectorSchemaStatus(),
+		"name":         {Type: schema.TypeString, Computed: true},
+		"connected_by": {Type: schema.TypeString, Computed: true},
+		"created_at":   {Type: schema.TypeString, Computed: true},
 
 		// Required
 		"group_id":           {Type: schema.TypeString, Required: !readonly, ForceNew: !readonly, Computed: readonly},
 		"service":            {Type: schema.TypeString, Required: !readonly, ForceNew: !readonly, Computed: readonly},
 		"destination_schema": connectorDestinationSchemaSchema(readonly),
 
-		// Optional with default values in upstream
-		"sync_frequency":    {Type: schema.TypeString, Optional: !readonly, Computed: true}, // Default: 360
-		"schedule_type":     {Type: schema.TypeString, Optional: !readonly, Computed: true}, // Default: AUTO
-		"paused":            {Type: schema.TypeString, Optional: !readonly, Computed: true}, // Default: false
-		"pause_after_trial": {Type: schema.TypeString, Optional: !readonly, Computed: true}, // Default: false
+		// Config
+		"config": connectorSchemaConfig(readonly),
+	}
 
+	if version == 0 {
+		// Computed
+		result["succeeded_at"] = &schema.Schema{Type: schema.TypeString, Computed: true}
+		result["failed_at"] = &schema.Schema{Type: schema.TypeString, Computed: true}
+		result["service_version"] = &schema.Schema{Type: schema.TypeString, Computed: true}
+
+		// Optional with default values in upstream
+		result["sync_frequency"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: true}    // Default: 360
+		result["schedule_type"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: true}     // Default: AUTO
+		result["paused"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: true}            // Default: false
+		result["pause_after_trial"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: true} // Default: false
 		// Optional nullable in upstream
-		"daily_sync_time": {Type: schema.TypeString, Optional: !readonly, Computed: readonly},
-		"config":          connectorSchemaConfig(readonly),
+		result["daily_sync_time"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: readonly}
+		result["status"] = connectorSchemaStatus()
 	}
 
 	// Resource specific
@@ -51,30 +61,32 @@ func connectorSchema(readonly bool) map[string]*schema.Schema {
 }
 
 func connectorSchemaStatus() *schema.Schema {
-	return &schema.Schema{Type: schema.TypeList, Computed: true,
-		Elem: &schema.Resource{
-			Schema: map[string]*schema.Schema{
-				"setup_state":        {Type: schema.TypeString, Computed: true},
-				"sync_state":         {Type: schema.TypeString, Computed: true},
-				"update_state":       {Type: schema.TypeString, Computed: true},
-				"is_historical_sync": {Type: schema.TypeString, Computed: true},
-				"tasks": {Type: schema.TypeList, Computed: true,
-					Elem: &schema.Resource{
-						Schema: map[string]*schema.Schema{
-							"code":    {Type: schema.TypeString, Computed: true},
-							"message": {Type: schema.TypeString, Computed: true},
-						},
-					},
-				},
-				"warnings": {Type: schema.TypeList, Computed: true,
-					Elem: &schema.Resource{
-						Schema: map[string]*schema.Schema{
-							"code":    {Type: schema.TypeString, Computed: true},
-							"message": {Type: schema.TypeString, Computed: true},
-						},
-					},
+	var result = map[string]*schema.Schema{
+		"setup_state":        {Type: schema.TypeString, Computed: true},
+		"is_historical_sync": {Type: schema.TypeString, Computed: true},
+		"sync_state":         {Type: schema.TypeString, Computed: true},
+		"update_state":       {Type: schema.TypeString, Computed: true},
+		"tasks": {Type: schema.TypeList, Computed: true,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"code":    {Type: schema.TypeString, Computed: true},
+					"message": {Type: schema.TypeString, Computed: true},
 				},
 			},
+		},
+		"warnings": {Type: schema.TypeList, Computed: true,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"code":    {Type: schema.TypeString, Computed: true},
+					"message": {Type: schema.TypeString, Computed: true},
+				},
+			},
+		},
+	}
+
+	return &schema.Schema{Type: schema.TypeList, Computed: true,
+		Elem: &schema.Resource{
+			Schema: result,
 		},
 	}
 }
@@ -100,26 +112,30 @@ func connectorDestinationSchemaSchema(readonly bool) *schema.Schema {
 	}
 }
 
-func connectorRead(currentConfig *[]interface{}, resp fivetran.ConnectorCustomDetailsResponse) map[string]interface{} {
+func connectorRead(currentConfig *[]interface{}, resp fivetran.ConnectorCustomDetailsResponse, version int) map[string]interface{} {
 	// msi stands for Map String Interface
 	msi := make(map[string]interface{})
 	mapAddStr(msi, "id", resp.Data.ID)
 	mapAddStr(msi, "group_id", resp.Data.GroupID)
 	mapAddStr(msi, "service", resp.Data.Service)
-	mapAddStr(msi, "service_version", intPointerToStr(resp.Data.ServiceVersion))
+
 	mapAddStr(msi, "name", resp.Data.Schema)
 	mapAddXInterface(msi, "destination_schema", readDestinationSchema(resp.Data.Schema, resp.Data.Service))
 	mapAddStr(msi, "connected_by", resp.Data.ConnectedBy)
 	mapAddStr(msi, "created_at", resp.Data.CreatedAt.String())
-	mapAddStr(msi, "succeeded_at", resp.Data.SucceededAt.String())
-	mapAddStr(msi, "failed_at", resp.Data.FailedAt.String())
-	mapAddStr(msi, "sync_frequency", intPointerToStr(resp.Data.SyncFrequency))
-	mapAddStr(msi, "daily_sync_time", resp.Data.DailySyncTime)
-	mapAddStr(msi, "schedule_type", resp.Data.ScheduleType)
-	mapAddStr(msi, "paused", boolPointerToStr(resp.Data.Paused))
-	mapAddStr(msi, "pause_after_trial", boolPointerToStr(resp.Data.PauseAfterTrial))
-	mapAddXInterface(msi, "status", connectorReadStatus(&resp))
 
+	if version == 0 {
+		mapAddStr(msi, "service_version", intPointerToStr(resp.Data.ServiceVersion))
+		mapAddStr(msi, "succeeded_at", resp.Data.SucceededAt.String())
+		mapAddStr(msi, "failed_at", resp.Data.FailedAt.String())
+		mapAddStr(msi, "sync_frequency", intPointerToStr(resp.Data.SyncFrequency))
+		mapAddStr(msi, "daily_sync_time", resp.Data.DailySyncTime)
+		mapAddStr(msi, "schedule_type", resp.Data.ScheduleType)
+		mapAddStr(msi, "paused", boolPointerToStr(resp.Data.Paused))
+		mapAddStr(msi, "pause_after_trial", boolPointerToStr(resp.Data.PauseAfterTrial))
+
+		mapAddXInterface(msi, "status", connectorReadStatus(&resp))
+	}
 	upstreamConfig := connectorReadCustomConfig(&resp, currentConfig)
 
 	if len(upstreamConfig) > 0 {

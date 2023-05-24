@@ -12,10 +12,7 @@ This resource allows you to create, update, and delete connectors.
 resource "fivetran_connector" "amplitude" {
     group_id = fivetran_group.group.id
     service = "amplitude"
-    sync_frequency = 60
-    paused = false
-    pause_after_trial = false
-
+   
     destination_schema {
         name = "amplitude_connector"
     } 
@@ -62,18 +59,13 @@ resource "fivetran_connector" "amplitude" {
 
 ### Required
 
-- `config` - The connector setup configuration. The format is specific for each connector. (see [below for nested schema](#nestedblock--config))
-- `group_id` - The unique identifier for the group within the Fivetran system.
-- `pause_after_trial` - Specifies whether the connector should be paused after the free trial period has ended.
-- `paused` - Specifies whether the connector is paused.
 - `destination_schema` - The connector destination schema configuration. Defines connector schema identity in destination. (see [below for nested schema](#nestedblock--schema)) 
+- `group_id` - The unique identifier for the group within the Fivetran system.
 - `service` - The name for the connector type within the Fivetran system.
-- `sync_frequency` - The connector sync frequency in minutes. The supported values are: `5`, `15`, `30`, `60`, `120`, `180`, `360`, `480`, `720`, `1440`.
 
 ### Optional
-
+- `config` - The connector setup configuration. The format is specific for each connector. (see [below for nested schema](#nestedblock--config))
 - `auth` - The connector authorization settings. Can be used to authorize a connector using your external client credentials. The format is specific for each connector. (see [below for nested schema](#nestedblock--auth))
-- `daily_sync_time` - Defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use the baseline sync start time. This parameter has no effect on the 0 to 60 minutes offset used to determine the actual sync start time.
 - `run_setup_tests` - Specifies whether the setup tests should be run automatically.
 - `trust_certificates` - Specifies whether we should trust the certificate automatically. Applicable only for database connectors.
 - `trust_fingerprints` - Specifies whether we should trust the SSH fingerprint automatically. Applicable only for database connectors.
@@ -84,14 +76,9 @@ resource "fivetran_connector" "amplitude" {
 
 - `connected_by` 
 - `created_at` 
-- `failed_at` 
 - `id` 
 - `last_updated` 
 - `name`
-- `schedule_type` 
-- `service_version` 
-- `status` - (see [below for nested schema](#nestedatt--status))
-- `succeeded_at` 
 
 <a id="nestedblock--config"></a>
 ### Nested Schema for `config`
@@ -347,7 +334,6 @@ Read-Only:
 - `authorization_method` 
 - `last_synced_changes__utc_` 
 - `latest_version` 
-- `service_version` 
 
 <a id="nestedblock--schema"></a>
 ### Nested Schema for `destination-schema`
@@ -443,34 +429,6 @@ Optional:
 - `client_secret` 
 - `developer_token` 
 - `user_agent` 
-
-<a id="nestedatt--status"></a>
-### Nested Schema for `status`
-
-Read-Only:
-
-- `is_historical_sync` 
-- `setup_state` 
-- `sync_state` 
-- `tasks` see [below for nested schema](#nestedobjatt--status--tasks)
-- `update_state` 
-- `warnings` see [below for nested schema](#nestedobjatt--status--warnings)
-
-<a id="nestedobjatt--status--tasks"></a>
-### Nested Schema for `status.tasks`
-
-Read-Only:
-
-- `code` 
-- `message` 
-
-<a id="nestedobjatt--status--warnings"></a>
-### Nested Schema for `status.warnings`
-
-Read-Only:
-
-- `code` 
-- `message` 
 
 ## Import
 

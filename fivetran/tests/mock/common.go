@@ -160,12 +160,14 @@ func assertNotEmpty(t *testing.T, actual interface{}) {
 	}
 }
 
-func assertKeyExists(t *testing.T, source map[string]interface{}, key string) {
+func assertKeyExists(t *testing.T, source map[string]interface{}, key string) bool {
 	t.Helper()
 
 	if _, ok := source[key]; !ok {
 		printError(t, key, "key not found in source")
+		return false
 	}
+	return true
 }
 
 func assertArrayItems(t *testing.T, source []interface{}, expected []interface{}) {

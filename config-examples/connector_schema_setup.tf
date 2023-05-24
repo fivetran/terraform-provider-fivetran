@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     fivetran = {
-        version = "0.6.13"                            
+        version = ">= 0.7.0"                            
         source = "fivetran/fivetran"
     }
   }
@@ -37,13 +37,7 @@ resource "fivetran_destination" "destination" {
 resource "fivetran_connector" "connector" {
     group_id = fivetran_group.group.id
     service = "fivetran_log"
-    sync_frequency = 60
-
-    # connector should be paused on first apply
-    paused = true 
-
-    pause_after_trial = false
-    run_setup_tests = true
+    run_setup_tests = "true"
 
     destination_schema {
         name = "my_fivetran_log_connector"
@@ -59,7 +53,7 @@ resource "fivetran_connector" "connector" {
 }
 
 resource "fivetran_connector_schema_config" "connector_schema" {
-  connector_id = "fivetran_connector.connector.id"
+  connector_id = fivetran_connector.connector.id
   schema_change_handling = "BLOCK_ALL"
   schema {
     name = "my_fivetran_log_connector"
@@ -83,4 +77,12 @@ resource "fivetran_connector_schema_config" "connector_schema" {
       }
     }
   }
+}
+
+resource "fivetran_connector_schedule" "connector_schedule" {
+    connector_id = fivetran_connector_schema_config.connector_schema.id
+
+    paused = "false" 
+    pause_after_trial = "false"
+    sync_frequency = "60"
 }

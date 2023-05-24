@@ -482,9 +482,6 @@ const (
 			table = "table"
 		}
 
-		sync_frequency = 5
-		paused = true
-		pause_after_trial = true
 		trust_certificates = false
 		trust_fingerprints = false
 		run_setup_tests = false
@@ -877,9 +874,6 @@ const (
 			table = "table"
 		}
 
-		sync_frequency = 5
-		paused = true
-		pause_after_trial = true
 		trust_certificates = false
 		trust_fingerprints = false
 		run_setup_tests = false
@@ -1377,10 +1371,11 @@ func setupMockClientConnectorResourceUpdate(t *testing.T) {
 	updateIteration := 0
 
 	checkPatternNotRepresentedIfNotSet := func(t *testing.T, body map[string]interface{}) {
-		assertKeyExists(t, body, "config")
-		config := body["config"].(map[string]interface{})
-		_, ok := config["pattern"]
-		assertEqual(t, ok, false)
+		if c, ok := body["config"]; ok {
+			config := c.(map[string]interface{})
+			_, ok := config["pattern"]
+			assertEqual(t, ok, false)
+		}
 	}
 
 	connectorMockUpdateGetHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id").ThenCall(
@@ -1401,7 +1396,11 @@ func setupMockClientConnectorResourceUpdate(t *testing.T) {
 		func(req *http.Request) (*http.Response, error) {
 			updateIteration++
 			checkPatternNotRepresentedIfNotSet(t, requestBodyToJson(t, req))
-			connectorMockData = createMapFromJsonString(t, connectorUpdateResponse2)
+			if updateIteration == 1 {
+				connectorMockData = createMapFromJsonString(t, connectorUpdateResponse1)
+			} else {
+				connectorMockData = createMapFromJsonString(t, connectorUpdateResponse2)
+			}
 			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
 		},
 	)
@@ -1450,24 +1449,7 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "google_sheets"),
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service_version", "1"),
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "schedule_type", "auto"),
-
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.is_historical_sync", "true"),
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.update_state", "on_schedule"),
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.setup_state", "incomplete"),
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.sync_state", "paused"),
-
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.tasks.0.code", "task_code"),
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.tasks.0.message", "task_message"),
-
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.warnings.0.code", "warning_code"),
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "status.0.warnings.0.message", "warning_message"),
-
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "google_sheets_schema.table"),
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "sync_frequency", "5"),
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "paused", "true"),
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "pause_after_trial", "true"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "false"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "false"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
@@ -1534,9 +1516,6 @@ func TestResourceConnectorUpdateMock(t *testing.T) {
 				prefix = "postgres"
 			}
 
-			sync_frequency = 5
-			paused = true
-			pause_after_trial = true
 			trust_certificates = false
 			trust_fingerprints = false
 			run_setup_tests = false
@@ -1545,12 +1524,22 @@ func TestResourceConnectorUpdateMock(t *testing.T) {
 				user = "user"
 				password = "password"
 			}
-		}`,
+		}
+
+		resource "fivetran_connector_schedule" "test_connector_schedule" {
+			provider = fivetran-provider
+
+			connector_id = "connector_id"
+			sync_frequency = 5
+			paused = true
+			pause_after_trial = true
+		}
+		`,
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 				assertEqual(t, connectorMockUpdatePostHandler.Interactions, 1)
-				assertEqual(t, connectorMockUpdateGetHandler.Interactions, 1)
+				assertEqual(t, connectorMockUpdateGetHandler.Interactions, 3)
 				assertNotEmpty(t, connectorMockData)
 				return nil
 			},
@@ -1570,10 +1559,6 @@ func TestResourceConnectorUpdateMock(t *testing.T) {
 				prefix = "postgres"
 			}
 
-			sync_frequency = 1440
-			daily_sync_time = "3:30"
-			paused = false
-			pause_after_trial = false
 			trust_certificates = true
 			trust_fingerprints = true
 			run_setup_tests = true
@@ -1584,12 +1569,23 @@ func TestResourceConnectorUpdateMock(t *testing.T) {
 				host = "host"
 				port = "123"
 			}
-		}`,
+		}
+
+		resource "fivetran_connector_schedule" "test_connector_schedule" {
+			provider = fivetran-provider
+
+			connector_id = "connector_id"
+			sync_frequency = 1440
+			paused = false
+			pause_after_trial = false
+			daily_sync_time = "3:30"
+		}
+		`,
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 				assertEqual(t, connectorMockUpdatePostHandler.Interactions, 1)
-				assertEqual(t, connectorMockUpdateGetHandler.Interactions, 4)
+				assertEqual(t, connectorMockUpdateGetHandler.Interactions, 9)
 				assertNotEmpty(t, connectorMockData)
 				return nil
 			},
@@ -1631,9 +1627,6 @@ func TestResourceConnectorEmptyConfigMock(t *testing.T) {
 				prefix = "postgres"
 			}
 
-			sync_frequency = 5
-			paused = true
-			pause_after_trial = true
 			trust_certificates = false
 			trust_fingerprints = false
 			run_setup_tests = false
