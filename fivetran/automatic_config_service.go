@@ -113,10 +113,53 @@ func getCProperties(nodesMap map[string]*gabs.Container) map[string]*schema.Sche
 		if key == "advertisers_id" {
 			fmt.Printf("this property is now:%v", key)
 		}
+
+		sensitiveFields := map[string]bool{
+			"oauth_token":        true,
+			"oauth_token_secret": true,
+			"consumer_key":       true,
+			"client_secret":      true,
+			"private_key":        true,
+			"s3role_arn":         true,
+			"ftp_password":       true,
+			"sftp_password":      true,
+			"api_key":            true,
+			"role_arn":           true,
+			"password":           true,
+			"secret_key":         true,
+			"pem_certificate":    true,
+			"access_token":       true,
+			"api_secret":         true,
+			"api_access_token":   true,
+			"secret":             true,
+			"consumer_secret":    true,
+			"secrets":            true,
+			"api_token":          true,
+			"encryption_key":     true,
+			"pat":                true,
+			"function_trigger":   true,
+			"token_key":          true,
+			"token_secret":       true,
+			"agent_password":     true,
+			"asm_password":       true,
+			"login_password":     true,
+		}
+
+		if _, ok := sensitiveFields[key]; ok {
+			properties[key] = &schema.Schema{
+				Type:      schema.TypeString,
+				Optional:  true,
+				Sensitive: true}
+			continue
+		}
+
 		nodeSchema := &schema.Schema{
 			Type:     schema.TypeString,
 			Optional: true,
-			Computed: true}
+			Computed: true,
+		}
+
+		// 				"is_ftps":                           {Type: schema.TypeString, Optional: true, Computed: true},
 
 		nodeType := node.Search("type").Data()
 

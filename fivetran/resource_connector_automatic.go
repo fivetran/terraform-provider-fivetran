@@ -754,7 +754,7 @@ func resourceConnectorAutomaticUpdateCustomConfig(d *schema.ResourceData) *map[s
 	// }
 
 	for property, propertySchema := range properties {
-		if property == "breakdowns" {
+		if property == "api_type" {
 			fmt.Printf("this property is now:%v", property)
 		}
 		if propertySchema.Type == schema.TypeSet || propertySchema.Type == schema.TypeList {
@@ -840,6 +840,15 @@ func resourceConnectorAutomaticUpdateCustomConfig(d *schema.ResourceData) *map[s
 			default:
 				configResult[property] = value
 			}
+			continue
+		}
+		if value, ok := responseConfig[property].(bool); ok {
+			configResult[property] = value
+			continue
+		}
+		if value, ok := responseConfig[property].(int); ok {
+			configResult[property] = value
+			continue
 		}
 	}
 
@@ -1970,7 +1979,7 @@ func resourceConnectorAutomaticReadConfig(resp *fivetran.ConnectorCustomMergedDe
 
 	// Ovde je BUG i problem za int i obj array's
 	for property, propertySchema := range properties {
-		if property == "advertisers_id" {
+		if property == "is_ftps" {
 			fmt.Printf(property)
 		}
 		if propertySchema.Type == schema.TypeSet {
