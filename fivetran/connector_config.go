@@ -1,6 +1,8 @@
 package fivetran
 
 import (
+	"reflect"
+
 	"github.com/fivetran/go-fivetran"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -348,9 +350,18 @@ var simpleFields = map[string]configField{
 func getFieldSchema(isDataSourceSchema bool, field *configField) *schema.Schema {
 	if field.readonly {
 		if field.fieldValueType == StringList {
-			return &schema.Schema{Type: schema.TypeSet, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}}
+			return &schema.Schema{
+				Type:     schema.TypeSet,
+				Computed: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			}
 		}
-		return &schema.Schema{Type: schema.TypeString, Computed: true}
+		return &schema.Schema{
+			Type:     schema.TypeString,
+			Computed: true,
+		}
 	}
 
 	if field.fieldValueType == StringList {
@@ -359,7 +370,10 @@ func getFieldSchema(isDataSourceSchema bool, field *configField) *schema.Schema 
 			Optional:  !isDataSourceSchema,
 			Computed:  isDataSourceSchema,
 			Sensitive: field.sensitive,
-			Elem:      &schema.Schema{Type: schema.TypeString}}
+			Elem: &schema.Schema{
+				Type: schema.TypeString,
+			},
+		}
 	}
 
 	if field.fieldValueType == ObjectList {
@@ -388,22 +402,48 @@ func getFieldSchema(isDataSourceSchema bool, field *configField) *schema.Schema 
 
 }
 
-func connectorSchemaConfig(readonly bool) *schema.Schema {
-	var schemaMap = map[string]*schema.Schema{}
+func getConnectorSchemaConfig(readonly bool) *schema.Schema {
+	services := getAvailableServiceIds()
 
-	for k, v := range simpleFields {
-		schemaMap[k] = getFieldSchema(readonly, &v)
+	properties := make(map[string]*schema.Schema)
+
+	for _, service := range services {
+		path := SCHEMAS_PATH + service + PROPERTIES_PATH
+		oasProperties := getSchemaAndProperties(path)
+		for key, value := range oasProperties {
+			if existingValue, ok := properties[key]; ok {
+				if existingValue.Type == schema.TypeList {
+					if _, ok := existingValue.Elem.(map[string]*schema.Schema); ok {
+						continue
+					}
+					value = updateExistingValue(existingValue, value)
+				}
+			}
+			properties[key] = value
+		}
 	}
 
-	return &schema.Schema{
-		Type:     schema.TypeList,
-		Optional: !readonly,
-		Computed: true,
-		MaxItems: getMaxItems(readonly),
+	return &schema.Schema{Type: schema.TypeList, Optional: true, Computed: true, MaxItems: 1,
 		Elem: &schema.Resource{
-			Schema: schemaMap,
+			Schema: properties,
 		},
 	}
+
+	// var schemaMap = map[string]*schema.Schema{}
+
+	// for k, v := range simpleFields {
+	// 	schemaMap[k] = getFieldSchema(readonly, &v)
+	// }
+
+	// return &schema.Schema{
+	// 	Type:     schema.TypeList,
+	// 	Optional: !readonly,
+	// 	Computed: true,
+	// 	MaxItems: getMaxItems(readonly),
+	// 	Elem: &schema.Resource{
+	// 		Schema: schemaMap,
+	// 	},
+	// }
 }
 
 func connectorSchemaAuth() *schema.Schema {
@@ -446,20 +486,90 @@ func tryCopySensitiveListValue(localConfig *map[string]interface{}, targetConfig
 
 // connectorReadConfig receives a *fivetran.ConnectorDetailsResponse and returns a []interface{}
 // containing the data type accepted by the "config" list.
-func connectorReadCustomConfig(resp *fivetran.ConnectorCustomDetailsResponse, currentConfig *[]interface{}) []interface{} {
-	c := make(map[string]interface{})
-	var currentConfigMap *map[string]interface{} = nil
+func getConnectorReadCustomConfig(resp *fivetran.ConnectorCustomDetailsResponse, currentConfig *[]interface{}) []interface{} {
+	configArray := make([]interface{}, 1)
 
+	configResult := make(map[string]interface{})
+	responseConfig := make(map[string]interface{})
 	if currentConfig != nil && len(*currentConfig) > 0 {
-		vlocalConfigAsMap := (*currentConfig)[0].(map[string]interface{})
-		currentConfigMap = &vlocalConfigAsMap
+		responseConfig = (*currentConfig)[0].(map[string]interface{})
 	}
 
-	for k, v := range simpleFields {
-		readFieldValueCore(k, v, currentConfigMap, c, resp.Data.Config)
+	responseConfigFromStruct := resp.Data.Config
+	for responseProperty, value := range responseConfigFromStruct {
+		reflectedValue := reflect.ValueOf(value)
+		if reflectedValue.Kind() == reflect.Slice && reflect.TypeOf(value).Elem().Kind() != reflect.String {
+			var valueArray []interface{}
+			for i := 0; i < reflectedValue.Len(); i++ {
+				valueArray = append(valueArray, reflectedValue.Index(i).Interface())
+			}
+
+			childPropertiesFromStruct := valueArray[0]
+			valueArray[0] = childPropertiesFromStruct
+			responseConfig[responseProperty] = valueArray
+			continue
+		}
+		responseConfig[responseProperty] = value
 	}
 
-	return []interface{}{c}
+	services := getAvailableServiceIds()
+
+	properties := make(map[string]*schema.Schema)
+
+	for _, service := range services {
+		path := SCHEMAS_PATH + service + PROPERTIES_PATH
+		newProperties := getSchemaAndProperties(path)
+		for newPropertyKey, newPropertySchema := range newProperties {
+			properties[newPropertyKey] = newPropertySchema
+		}
+	}
+
+	for property, propertySchema := range properties {
+		if propertySchema.Type == schema.TypeSet || propertySchema.Type == schema.TypeList {
+			if values, ok := responseConfig[property].([]string); ok {
+				configResult[property] = xStrXInterface(values)
+				continue
+			}
+			if interfaceValues, ok := responseConfig[property].([]interface{}); ok {
+				if _, ok := interfaceValues[0].(map[string]interface{}); ok {
+					configResult[property] = interfaceValues
+				} else {
+					configResult[property] = xInterfaceStrXStr(interfaceValues)
+				}
+				continue
+			}
+		}
+		if value, ok := responseConfig[property].(string); ok && value != "" {
+			valueType := propertySchema.Type
+			switch valueType {
+			case schema.TypeBool:
+				configResult[property] = strToBool(value)
+			case schema.TypeInt:
+				configResult[property] = strToInt(value)
+			default:
+				configResult[property] = value
+			}
+		}
+	}
+	configArray[0] = configResult
+
+	return configArray
+
+	///////
+
+	// c := make(map[string]interface{})
+	// var currentConfigMap *map[string]interface{} = nil
+
+	// if currentConfig != nil && len(*currentConfig) > 0 {
+	// 	vlocalConfigAsMap := (*currentConfig)[0].(map[string]interface{})
+	// 	currentConfigMap = &vlocalConfigAsMap
+	// }
+
+	// for k, v := range simpleFields {
+	// 	readFieldValueCore(k, v, currentConfigMap, c, resp.Data.Config)
+	// }
+
+	// return []interface{}{c}
 }
 
 func readFieldValueCore(k string, v configField, currentConfig *map[string]interface{}, c map[string]interface{}, upstream map[string]interface{}) {

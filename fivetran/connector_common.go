@@ -10,7 +10,7 @@ const (
 	CONNECTOR_ID = "connector_id"
 )
 
-func connectorSchema(readonly bool, version int) map[string]*schema.Schema {
+func getConnectorSchema(readonly bool, version int) map[string]*schema.Schema {
 
 	// Common for Resource and Datasource
 	var result = map[string]*schema.Schema{
@@ -28,7 +28,7 @@ func connectorSchema(readonly bool, version int) map[string]*schema.Schema {
 		"destination_schema": connectorDestinationSchemaSchema(readonly),
 
 		// Config
-		"config": connectorSchemaConfig(readonly),
+		"config": getConnectorSchemaConfig(readonly),
 	}
 
 	if version == 0 {
@@ -136,7 +136,7 @@ func connectorRead(currentConfig *[]interface{}, resp fivetran.ConnectorCustomDe
 
 		mapAddXInterface(msi, "status", connectorReadStatus(&resp))
 	}
-	upstreamConfig := connectorReadCustomConfig(&resp, currentConfig)
+	upstreamConfig := getConnectorReadCustomConfig(&resp, currentConfig)
 
 	if len(upstreamConfig) > 0 {
 		mapAddXInterface(msi, "config", upstreamConfig)

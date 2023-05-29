@@ -12,7 +12,7 @@ import (
 func dataSourceConnector() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceConnectorRead,
-		Schema:      connectorSchema(true, 0),
+		Schema:      getConnectorSchema(true, 0),
 	}
 }
 
