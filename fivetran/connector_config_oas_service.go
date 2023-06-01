@@ -10,11 +10,10 @@ const PROPERTIES_PATH = ".properties.config.properties"
 const SCHEMAS_FILE_PATH = "/Users/lukadevic/Fivetran/terraform-provider-fivetran/fivetran/schemas.json"
 const SERVICES_FILE_PATH = "/Users/lukadevic/Fivetran/terraform-provider-fivetran/fivetran/services.json"
 
-const OBJECT_PROPERTY_TYPE = "object"
-const INT_PROPERTY_TYPE = "integer"
-const BOOL_PROPERTY_TYPE = "boolean"
-const ARRAY_PROPERTY_TYPE = "array"
-const STRING_PROPERTY_TYPE = "string"
+const OBJECT_FIELD = "object"
+const INT_FIELD = "integer"
+const BOOL_FIELD = "boolean"
+const ARRAY_FIELD = "array"
 
 var sensitiveFields = map[string]bool{
 	"oauth_token":        true,
@@ -68,8 +67,8 @@ func getFields() map[string]*schema.Schema {
 
 	for _, service := range services {
 		path := SCHEMAS_PATH + service + PROPERTIES_PATH
-		propertiesOasSchema := getOasSchema(path)
-		serviceFields := createFields(propertiesOasSchema)
+		serviceSchema := getServiceSchema(path)
+		serviceFields := createFields(serviceSchema)
 		for property, value := range serviceFields {
 			if existingValue, ok := fields[property]; ok {
 				if existingValue.Type == schema.TypeList {
@@ -100,7 +99,7 @@ func getAvailableServiceIds() []string {
 	return services
 }
 
-func getOasSchema(path string) map[string]*gabs.Container {
+func getServiceSchema(path string) map[string]*gabs.Container {
 	shemasJson, err := gabs.ParseJSONFile(SCHEMAS_FILE_PATH)
 	if err != nil {
 		panic(err)
@@ -110,11 +109,11 @@ func getOasSchema(path string) map[string]*gabs.Container {
 }
 
 func createFields(nodesMap map[string]*gabs.Container) map[string]*schema.Schema {
-	properties := make(map[string]*schema.Schema)
+	fields := make(map[string]*schema.Schema)
 
 	for key, node := range nodesMap {
 		if _, ok := sensitiveFields[key]; ok {
-			properties[key] = &schema.Schema{
+			fields[key] = &schema.Schema{
 				Type:      schema.TypeString,
 				Optional:  true,
 				Sensitive: true}
@@ -130,17 +129,17 @@ func createFields(nodesMap map[string]*gabs.Container) map[string]*schema.Schema
 		nodeType := node.Search("type").Data()
 
 		switch nodeType {
-		case INT_PROPERTY_TYPE:
+		case INT_FIELD:
 			nodeSchema.Type = schema.TypeInt
-		case BOOL_PROPERTY_TYPE:
+		case BOOL_FIELD:
 			nodeSchema.Type = schema.TypeBool
-		case ARRAY_PROPERTY_TYPE:
+		case ARRAY_FIELD:
 			nodeSchema = getArrayFieldSchema(node)
 		}
-		properties[key] = nodeSchema
+		fields[key] = nodeSchema
 	}
 
-	return properties
+	return fields
 }
 
 func getArrayFieldSchema(node *gabs.Container) *schema.Schema {
@@ -155,7 +154,7 @@ func getArrayFieldSchema(node *gabs.Container) *schema.Schema {
 			Type: schema.TypeString,
 		}}
 
-	if itemType == OBJECT_PROPERTY_TYPE && len(childrenMap) > 0 {
+	if itemType == OBJECT_FIELD && len(childrenMap) > 0 {
 		childrenSchemaMap := createFields(childrenMap)
 
 		arraySchema.Elem = &schema.Resource{
