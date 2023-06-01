@@ -19,6 +19,7 @@ const INT_PROPERTY_TYPE = "integer"
 const BOOL_PROPERTY_TYPE = "boolean"
 const ARRAY_PROPERTY_TYPE = "array"
 const STRING_PROPERTY_TYPE = "string"
+const MASKED_VALUE = "******"
 
 type FieldValueType int64
 type FieldType int64
@@ -80,14 +81,15 @@ var sensitiveFields = map[string]bool{
 	"login_password":     true,
 }
 
-func getConnectorSchemaConfig(readonly bool) *schema.Schema {
+func getProperties() map[string]*schema.Schema {
 	services := getAvailableServiceIds()
 
 	properties := make(map[string]*schema.Schema)
 
 	for _, service := range services {
 		path := SCHEMAS_PATH + service + PROPERTIES_PATH
-		oasProperties := getSchemaAndProperties(path)
+		propertiesOasSchema := getOasSchema(path)
+		oasProperties := getOasProperties(propertiesOasSchema)
 		for key, value := range oasProperties {
 			if existingValue, ok := properties[key]; ok {
 				if existingValue.Type == schema.TypeList {
@@ -100,6 +102,11 @@ func getConnectorSchemaConfig(readonly bool) *schema.Schema {
 			properties[key] = value
 		}
 	}
+	return properties
+}
+
+func getConnectorSchemaConfig() *schema.Schema {
+	properties := getProperties()
 
 	return &schema.Schema{Type: schema.TypeList, Optional: true, Computed: true, MaxItems: 1,
 		Elem: &schema.Resource{
@@ -123,20 +130,16 @@ func getAvailableServiceIds() []string {
 	return services
 }
 
-func getSchemaAndProperties(path string) map[string]*schema.Schema {
+func getOasSchema(path string) map[string]*gabs.Container {
 	shemasJson, err := gabs.ParseJSONFile(SCHEMAS_FILE_PATH)
 	if err != nil {
 		panic(err)
 	}
 
-	nodesMap := shemasJson.Path(path).ChildrenMap()
-
-	properties := getProperties(nodesMap)
-
-	return properties
+	return shemasJson.Path(path).ChildrenMap()
 }
 
-func getProperties(nodesMap map[string]*gabs.Container) map[string]*schema.Schema {
+func getOasProperties(nodesMap map[string]*gabs.Container) map[string]*schema.Schema {
 	properties := make(map[string]*schema.Schema)
 
 	for key, node := range nodesMap {
@@ -176,15 +179,14 @@ func getArrayPropertySchema(node *gabs.Container) *schema.Schema {
 	childrenMap := node.Path("items.properties").ChildrenMap()
 
 	arraySchema := &schema.Schema{
-		Type: schema.TypeList,
-		// for data source maybe we need Computed: true, also here
+		Type:     schema.TypeList,
 		Optional: true,
 		Elem: &schema.Schema{
 			Type: schema.TypeString,
 		}}
 
 	if itemType == OBJECT_PROPERTY_TYPE && len(childrenMap) > 0 {
-		childrenSchemaMap := getProperties(childrenMap)
+		childrenSchemaMap := getOasProperties(childrenMap)
 
 		arraySchema.Elem = &schema.Resource{
 			Schema: childrenSchemaMap,
@@ -207,22 +209,54 @@ func updateExistingValue(existingValue *schema.Schema, newValue *schema.Schema) 
 }
 
 func connectorSchemaAuth() *schema.Schema {
-	return &schema.Schema{Type: schema.TypeList, Optional: true, MaxItems: 1,
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		Optional: true,
+		MaxItems: 1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"client_access": {Type: schema.TypeList, Optional: true, MaxItems: 1,
+				"client_access": {
+					Type:     schema.TypeList,
+					Optional: true,
+					MaxItems: 1,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
-							"client_id":       {Type: schema.TypeString, Optional: true},
-							"client_secret":   {Type: schema.TypeString, Optional: true, Sensitive: true},
-							"user_agent":      {Type: schema.TypeString, Optional: true},
-							"developer_token": {Type: schema.TypeString, Optional: true, Sensitive: true},
+							"client_id": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"client_secret": {
+								Type:      schema.TypeString,
+								Optional:  true,
+								Sensitive: true,
+							},
+							"user_agent": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"developer_token": {
+								Type:      schema.TypeString,
+								Optional:  true,
+								Sensitive: true,
+							},
 						},
 					},
 				},
-				"refresh_token": {Type: schema.TypeString, Optional: true, Sensitive: true},
-				"access_token":  {Type: schema.TypeString, Optional: true, Sensitive: true},
-				"realm_id":      {Type: schema.TypeString, Optional: true, Sensitive: true},
+				"refresh_token": {
+					Type:      schema.TypeString,
+					Optional:  true,
+					Sensitive: true,
+				},
+				"access_token": {
+					Type:      schema.TypeString,
+					Optional:  true,
+					Sensitive: true,
+				},
+				"realm_id": {
+					Type:      schema.TypeString,
+					Optional:  true,
+					Sensitive: true,
+				},
 			},
 		},
 	}
@@ -263,13 +297,13 @@ func getConnectorReadCustomConfig(resp *fivetran.ConnectorCustomDetailsResponse,
 			}
 
 			if value1, ok := valueArray[0].(map[string]interface{}); ok {
-				if value1["value"] == "******" && responseConfig[responseProperty] != nil {
+				if value1["value"] == MASKED_VALUE && responseConfig[responseProperty] != nil {
 					continue
 				}
 			}
 			if value2, ok := valueArray[0].([]string); ok {
 
-				if value2[0] == "******" {
+				if value2[0] == MASKED_VALUE {
 					continue
 				}
 			}
@@ -278,25 +312,15 @@ func getConnectorReadCustomConfig(resp *fivetran.ConnectorCustomDetailsResponse,
 			continue
 
 		}
-		if value != "******" {
+		if value != MASKED_VALUE {
 			responseConfig[responseProperty] = value
 		}
-		if value == "******" && responseConfig[responseProperty] == nil {
+		if value == MASKED_VALUE && responseConfig[responseProperty] == nil {
 			responseConfig[responseProperty] = value
 		}
 	}
 
-	services := getAvailableServiceIds()
-
-	properties := make(map[string]*schema.Schema)
-
-	for _, service := range services {
-		path := SCHEMAS_PATH + service + PROPERTIES_PATH
-		newProperties := getSchemaAndProperties(path)
-		for newPropertyKey, newPropertySchema := range newProperties {
-			properties[newPropertyKey] = newPropertySchema
-		}
-	}
+	properties := getProperties()
 
 	for property, propertySchema := range properties {
 

@@ -11,7 +11,6 @@ const (
 )
 
 func getConnectorSchema(readonly bool, version int) map[string]*schema.Schema {
-
 	// Common for Resource and Datasource
 	var result = map[string]*schema.Schema{
 		// Id
@@ -28,7 +27,7 @@ func getConnectorSchema(readonly bool, version int) map[string]*schema.Schema {
 		"destination_schema": connectorDestinationSchemaSchema(readonly),
 
 		// Config
-		"config": getConnectorSchemaConfig(readonly),
+		"config": getConnectorSchemaConfig(),
 	}
 
 	if version == 0 {

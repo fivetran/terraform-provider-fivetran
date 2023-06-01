@@ -208,25 +208,9 @@ func resourceConnectorUpdateCustomConfig(d *schema.ResourceData) *map[string]int
 
 	responseConfig := config[0].(map[string]interface{})
 
-	services := getAvailableServiceIds()
+	//services := getAvailableServiceIds()
 
-	properties := make(map[string]*schema.Schema)
-
-	for _, service := range services {
-		path := SCHEMAS_PATH + service + PROPERTIES_PATH
-		oasProperties := getSchemaAndProperties(path)
-		for key, value := range oasProperties {
-			if existingValue, ok := properties[key]; ok {
-				if existingValue.Type == schema.TypeList {
-					if _, ok := existingValue.Elem.(map[string]*schema.Schema); ok {
-						continue
-					}
-					value = updateExistingValue(existingValue, value)
-				}
-			}
-			properties[key] = value
-		}
-	}
+	properties := getProperties()
 
 	for property, propertySchema := range properties {
 		if property == "api_type" {
