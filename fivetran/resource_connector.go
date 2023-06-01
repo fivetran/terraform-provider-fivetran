@@ -110,7 +110,7 @@ func resourceConnectorRead(ctx context.Context, d *schema.ResourceData, m interf
 	// msi stands for Map String Interface
 	currentConfig := d.Get("config").([]interface{})
 
-	msi := connectorRead(&currentConfig, resp, 1)
+	msi := getConnectorRead(&currentConfig, resp, 1)
 
 	currentService := d.Get("service").(string)
 

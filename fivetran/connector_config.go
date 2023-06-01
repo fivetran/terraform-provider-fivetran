@@ -9,7 +9,7 @@ import (
 
 const MASKED_VALUE = "******"
 
-func connectorSchemaAuth() *schema.Schema {
+func getConnectorSchemaAuth() *schema.Schema {
 	return &schema.Schema{
 		Type:     schema.TypeList,
 		Optional: true,
