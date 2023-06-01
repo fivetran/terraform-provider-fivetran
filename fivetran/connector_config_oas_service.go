@@ -48,26 +48,30 @@ var sensitiveFields = map[string]bool{
 }
 
 func getConnectorSchemaConfig() *schema.Schema {
-	properties := getProperties()
+	fields := getFields()
 
-	return &schema.Schema{Type: schema.TypeList, Optional: true, Computed: true, MaxItems: 1,
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		Optional: true,
+		Computed: true,
+		MaxItems: 1,
 		Elem: &schema.Resource{
-			Schema: properties,
+			Schema: fields,
 		},
 	}
 }
 
-func getProperties() map[string]*schema.Schema {
+func getFields() map[string]*schema.Schema {
 	services := getAvailableServiceIds()
 
-	properties := make(map[string]*schema.Schema)
+	fields := make(map[string]*schema.Schema)
 
 	for _, service := range services {
 		path := SCHEMAS_PATH + service + PROPERTIES_PATH
 		propertiesOasSchema := getOasSchema(path)
-		oasProperties := getOasProperties(propertiesOasSchema)
-		for key, value := range oasProperties {
-			if existingValue, ok := properties[key]; ok {
+		serviceFields := createFields(propertiesOasSchema)
+		for property, value := range serviceFields {
+			if existingValue, ok := fields[property]; ok {
 				if existingValue.Type == schema.TypeList {
 					if _, ok := existingValue.Elem.(map[string]*schema.Schema); ok {
 						continue
@@ -75,10 +79,10 @@ func getProperties() map[string]*schema.Schema {
 					value = updateExistingValue(existingValue, value)
 				}
 			}
-			properties[key] = value
+			fields[property] = value
 		}
 	}
-	return properties
+	return fields
 }
 
 func getAvailableServiceIds() []string {
@@ -87,7 +91,7 @@ func getAvailableServiceIds() []string {
 		panic(err)
 	}
 
-	var services []string
+	services := []string{}
 
 	for serviceKey := range servicesJson.S("services").ChildrenMap() {
 		services = append(services, serviceKey+"_config_V1")
@@ -105,7 +109,7 @@ func getOasSchema(path string) map[string]*gabs.Container {
 	return shemasJson.Path(path).ChildrenMap()
 }
 
-func getOasProperties(nodesMap map[string]*gabs.Container) map[string]*schema.Schema {
+func createFields(nodesMap map[string]*gabs.Container) map[string]*schema.Schema {
 	properties := make(map[string]*schema.Schema)
 
 	for key, node := range nodesMap {
@@ -131,7 +135,7 @@ func getOasProperties(nodesMap map[string]*gabs.Container) map[string]*schema.Sc
 		case BOOL_PROPERTY_TYPE:
 			nodeSchema.Type = schema.TypeBool
 		case ARRAY_PROPERTY_TYPE:
-			nodeSchema = getArrayPropertySchema(node)
+			nodeSchema = getArrayFieldSchema(node)
 		}
 		properties[key] = nodeSchema
 	}
@@ -139,7 +143,7 @@ func getOasProperties(nodesMap map[string]*gabs.Container) map[string]*schema.Sc
 	return properties
 }
 
-func getArrayPropertySchema(node *gabs.Container) *schema.Schema {
+func getArrayFieldSchema(node *gabs.Container) *schema.Schema {
 	itemType := node.Path("items.type").Data()
 
 	childrenMap := node.Path("items.properties").ChildrenMap()
@@ -152,7 +156,7 @@ func getArrayPropertySchema(node *gabs.Container) *schema.Schema {
 		}}
 
 	if itemType == OBJECT_PROPERTY_TYPE && len(childrenMap) > 0 {
-		childrenSchemaMap := getOasProperties(childrenMap)
+		childrenSchemaMap := createFields(childrenMap)
 
 		arraySchema.Elem = &schema.Resource{
 			Schema: childrenSchemaMap,

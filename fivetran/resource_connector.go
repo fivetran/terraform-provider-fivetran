@@ -210,14 +210,11 @@ func resourceConnectorUpdateCustomConfig(d *schema.ResourceData) *map[string]int
 
 	//services := getAvailableServiceIds()
 
-	properties := getProperties()
+	fields := getFields()
 
-	for property, propertySchema := range properties {
-		if property == "api_type" {
-			fmt.Printf("this property is now:%v", property)
-		}
-		if propertySchema.Type == schema.TypeSet || propertySchema.Type == schema.TypeList {
-			if values := responseConfig[property].([]interface{}); len(values) > 0 {
+	for fieldName, fieldSchema := range fields {
+		if fieldSchema.Type == schema.TypeSet || fieldSchema.Type == schema.TypeList {
+			if values := responseConfig[fieldName].([]interface{}); len(values) > 0 {
 				if mapValues, ok := values[0].(map[string]interface{}); ok {
 					for childPropertyKey, _ := range mapValues {
 						if _, ok := mapValues[childPropertyKey].(string); ok {
@@ -235,41 +232,40 @@ func resourceConnectorUpdateCustomConfig(d *schema.ResourceData) *map[string]int
 						}
 					}
 					values[0] = mapValues
-					configResult[property] = values
+					configResult[fieldName] = values
 				} else {
-					configResult[property] = xInterfaceStrXStr(values)
+					configResult[fieldName] = xInterfaceStrXStr(values)
 				}
 				continue
 			}
-			if values, ok := responseConfig[property].(*schema.Set); ok {
+			if values, ok := responseConfig[fieldName].(*schema.Set); ok {
 				setValues := values.List()
 
 				fmt.Printf("this property is now:%v", setValues)
 			}
 
-			if values, ok := responseConfig[property].([]string); ok {
-				configResult[property] = xStrXInterface(values)
+			if values, ok := responseConfig[fieldName].([]string); ok {
+				configResult[fieldName] = xStrXInterface(values)
 				continue
 			}
 		}
-		if value, ok := responseConfig[property].(string); ok && value != "" {
-			valueType := propertySchema.Type
-			switch valueType {
+		if value, ok := responseConfig[fieldName].(string); ok && value != "" {
+			switch fieldSchema.Type {
 			case schema.TypeBool:
-				configResult[property] = strToBool(value)
+				configResult[fieldName] = strToBool(value)
 			case schema.TypeInt:
-				configResult[property] = strToInt(value)
+				configResult[fieldName] = strToInt(value)
 			default:
-				configResult[property] = value
+				configResult[fieldName] = value
 			}
 			continue
 		}
-		if value, ok := responseConfig[property].(bool); ok {
-			configResult[property] = value
+		if value, ok := responseConfig[fieldName].(bool); ok {
+			configResult[fieldName] = value
 			continue
 		}
-		if value, ok := responseConfig[property].(int); ok {
-			configResult[property] = value
+		if value, ok := responseConfig[fieldName].(int); ok {
+			configResult[fieldName] = value
 			continue
 		}
 	}

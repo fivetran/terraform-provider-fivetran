@@ -74,32 +74,32 @@ func getConnectorReadCustomConfig(resp *fivetran.ConnectorCustomDetailsResponse,
 
 	originConfig = populateOriginConfigFromResponse(originConfig, resp.Data.Config)
 
-	properties := getProperties()
+	fields := getFields()
 
-	for property, propertySchema := range properties {
-		if propertySchema.Type == schema.TypeSet || propertySchema.Type == schema.TypeList {
-			if values, ok := originConfig[property].([]string); ok {
-				config[property] = xStrXInterface(values)
+	for fieldName, fieldSchema := range fields {
+		if fieldSchema.Type == schema.TypeSet || fieldSchema.Type == schema.TypeList {
+			if values, ok := originConfig[fieldName].([]string); ok {
+				config[fieldName] = xStrXInterface(values)
 				continue
 			}
 
-			if interfaceValues, ok := originConfig[property].([]interface{}); ok && len(interfaceValues) > 0 {
+			if interfaceValues, ok := originConfig[fieldName].([]interface{}); ok && len(interfaceValues) > 0 {
 				if _, ok := interfaceValues[0].(map[string]interface{}); ok {
-					config[property] = interfaceValues
+					config[fieldName] = interfaceValues
 				} else {
-					config[property] = xInterfaceStrXStr(interfaceValues)
+					config[fieldName] = xInterfaceStrXStr(interfaceValues)
 				}
 				continue
 			}
 		}
-		if value, ok := originConfig[property].(string); ok && value != "" {
-			switch propertySchema.Type {
+		if value, ok := originConfig[fieldName].(string); ok && value != "" {
+			switch fieldSchema.Type {
 			case schema.TypeBool:
-				config[property] = strToBool(value)
+				config[fieldName] = strToBool(value)
 			case schema.TypeInt:
-				config[property] = strToInt(value)
+				config[fieldName] = strToInt(value)
 			default:
-				config[property] = value
+				config[fieldName] = value
 			}
 		}
 	}
