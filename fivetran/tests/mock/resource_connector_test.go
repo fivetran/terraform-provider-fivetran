@@ -451,6 +451,8 @@ const (
 				"dimensions": 		["dimension"],
 				"metrics": 			["metric"],
 				"segments": 		["segment"],
+				"search_types":     ["search_type"],
+				"segment_ids":      ["segment_id"],
 				"filter": 			"filter"
 			}],
 			"custom_tables": [{
@@ -769,6 +771,8 @@ const (
 				dimensions = ["dimension"]
 				metrics = ["metric"]
 				segments = ["segment"]
+				search_types = ["search_type"]
+				segment_ids = ["segment_id"]
 				filter = "filter"
 			}
 			
