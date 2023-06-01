@@ -155,7 +155,7 @@ func getConnectorReadStatus(resp *fivetran.ConnectorCustomDetailsResponse) []int
 	mapAddStr(s, "update_state", resp.Data.Status.UpdateState)
 	mapAddStr(s, "is_historical_sync", boolPointerToStr(resp.Data.Status.IsHistoricalSync))
 	mapAddXInterface(s, "tasks", getConnectorReadStatusFlattenTasks(resp))
-	mapAddXInterface(s, "warnings", connectorReadStatusFlattenWarnings(resp))
+	mapAddXInterface(s, "warnings", getConnectorReadStatusFlattenWarnings(resp))
 	status[0] = s
 
 	return status
@@ -178,7 +178,7 @@ func getConnectorReadStatusFlattenTasks(resp *fivetran.ConnectorCustomDetailsRes
 	return tasks
 }
 
-func connectorReadStatusFlattenWarnings(resp *fivetran.ConnectorCustomDetailsResponse) []interface{} {
+func getConnectorReadStatusFlattenWarnings(resp *fivetran.ConnectorCustomDetailsResponse) []interface{} {
 	if len(resp.Data.Status.Warnings) < 1 {
 		return make([]interface{}, 0)
 	}
