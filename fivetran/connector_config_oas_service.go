@@ -10,6 +10,12 @@ const PROPERTIES_PATH = ".properties.config.properties"
 const SCHEMAS_FILE_PATH = "/Users/lukadevic/Fivetran/terraform-provider-fivetran/fivetran/schemas.json"
 const SERVICES_FILE_PATH = "/Users/lukadevic/Fivetran/terraform-provider-fivetran/fivetran/services.json"
 
+const OBJECT_PROPERTY_TYPE = "object"
+const INT_PROPERTY_TYPE = "integer"
+const BOOL_PROPERTY_TYPE = "boolean"
+const ARRAY_PROPERTY_TYPE = "array"
+const STRING_PROPERTY_TYPE = "string"
+
 var sensitiveFields = map[string]bool{
 	"oauth_token":        true,
 	"oauth_token_secret": true,

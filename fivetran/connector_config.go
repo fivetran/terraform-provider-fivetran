@@ -1,48 +1,13 @@
 package fivetran
 
 import (
-	"fmt"
 	"reflect"
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-const OBJECT_PROPERTY_TYPE = "object"
-const INT_PROPERTY_TYPE = "integer"
-const BOOL_PROPERTY_TYPE = "boolean"
-const ARRAY_PROPERTY_TYPE = "array"
-const STRING_PROPERTY_TYPE = "string"
 const MASKED_VALUE = "******"
-
-// type FieldValueType int64
-// type FieldType int64
-
-// const (
-// 	String     FieldValueType = 0
-// 	Integer    FieldValueType = 1
-// 	Boolean    FieldValueType = 2
-// 	StringList FieldValueType = 3
-// 	ObjectList FieldValueType = 4
-// )
-
-// type configField struct {
-// 	readonly       bool
-// 	sensitive      bool
-// 	nullable       bool
-// 	fieldValueType FieldValueType
-// 	itemFields     map[string]configField
-// 	itemKeyField   string
-// }
-
-// func NewconfigField() configField {
-// 	field := configField{}
-// 	field.fieldValueType = String
-// 	field.readonly = false
-// 	field.sensitive = false
-// 	field.nullable = true
-// 	return field
-// }
 
 func connectorSchemaAuth() *schema.Schema {
 	return &schema.Schema{
@@ -98,106 +63,111 @@ func connectorSchemaAuth() *schema.Schema {
 	}
 }
 
-// connectorReadConfig receives a *fivetran.ConnectorDetailsResponse and returns a []interface{}
-// containing the data type accepted by the "config" list.
-func getConnectorReadCustomConfig(resp *fivetran.ConnectorCustomDetailsResponse, currentConfig *[]interface{}) []interface{} {
-	configArray := make([]interface{}, 1)
-
-	configResult := make(map[string]interface{})
-	responseConfig := make(map[string]interface{})
-	if currentConfig != nil && len(*currentConfig) > 0 {
-		responseConfig = (*currentConfig)[0].(map[string]interface{})
-	}
-
-	responseConfigFromStruct := resp.Data.Config
-	for responseProperty, value := range responseConfigFromStruct {
-		if responseProperty == "project_credentials" && responseConfig[responseProperty] != nil {
+func populateOriginConfigFromResponse(originConfig map[string]interface{}, responseConfig map[string]interface{}) map[string]interface{} {
+	for responseProperty, value := range responseConfig {
+		if responseProperty == "project_credentials" && originConfig[responseProperty] != nil {
 			// Hack for project_credentials property
 			continue
 		}
 
-		if responseProperty == "consumer_key" {
-			fmt.Printf("consumer_key")
-		}
 		reflectedValue := reflect.ValueOf(value)
 		if reflectedValue.Kind() == reflect.Slice && reflect.TypeOf(value).Elem().Kind() != reflect.String {
 			var valueArray []interface{}
 			for i := 0; i < reflectedValue.Len(); i++ {
 				valueArray = append(valueArray, reflectedValue.Index(i).Interface())
 			}
-
-			childPropertiesFromStruct := valueArray[0]
-			valueArray[0] = childPropertiesFromStruct
-			if responseProperty == "secrets_list" {
-				fmt.Printf("now")
+			if isMaskedValue(valueArray, originConfig, responseProperty) {
+				continue
 			}
-
-			if value1, ok := valueArray[0].(map[string]interface{}); ok {
-				if value1["value"] == MASKED_VALUE && responseConfig[responseProperty] != nil {
-					continue
-				}
-			}
-			if value2, ok := valueArray[0].([]string); ok {
-
-				if value2[0] == MASKED_VALUE {
-					continue
-				}
-			}
-
-			responseConfig[responseProperty] = valueArray
+			// if valueMap, ok := valueArray[0].(map[string]interface{}); ok {
+			// 	if valueMap["value"] == MASKED_VALUE && originConfig[responseProperty] != nil {
+			// 		continue
+			// 	}
+			// }
+			// if valueStringArray, ok := valueArray[0].([]string); ok {
+			// 	if valueStringArray[0] == MASKED_VALUE {
+			// 		continue
+			// 	}
+			// }
+			originConfig[responseProperty] = valueArray
 			continue
-
 		}
-		if value != MASKED_VALUE {
-			responseConfig[responseProperty] = value
-		}
-		if value == MASKED_VALUE && responseConfig[responseProperty] == nil {
-			responseConfig[responseProperty] = value
+		if value != MASKED_VALUE || originConfig[responseProperty] == nil {
+			originConfig[responseProperty] = value
 		}
 	}
+	return originConfig
+}
+
+func isMaskedValue(valueArray []interface{}, originConfig map[string]interface{}, responseProperty string) bool {
+	if valueMap, ok := valueArray[0].(map[string]interface{}); ok {
+		if valueMap["value"] == MASKED_VALUE && originConfig[responseProperty] != nil {
+			return true
+		}
+	}
+	if valueStringArray, ok := valueArray[0].([]string); ok {
+		if valueStringArray[0] == MASKED_VALUE {
+			return true
+		}
+	}
+	return false
+}
+
+// connectorReadConfig receives a *fivetran.ConnectorDetailsResponse and returns a []interface{}
+// containing the data type accepted by the "config" list.
+func getConnectorReadCustomConfig(resp *fivetran.ConnectorCustomDetailsResponse, currentConfigs *[]interface{}) []interface{} {
+	configs := make([]interface{}, 1)
+
+	config := make(map[string]interface{})
+	originConfig := make(map[string]interface{})
+	if currentConfigs != nil && len(*currentConfigs) > 0 {
+		originConfig = (*currentConfigs)[0].(map[string]interface{})
+	}
+
+	originConfig = populateOriginConfigFromResponse(originConfig, resp.Data.Config)
 
 	properties := getProperties()
 
 	for property, propertySchema := range properties {
 
 		if _, ok := sensitiveFields[property]; ok {
-			if v, ok := responseConfig[property].(string); ok {
-				mapAddStr(configResult, property, v)
+			if v, ok := originConfig[property].(string); ok {
+				mapAddStr(config, property, v)
 			}
-			if v, ok := responseConfig[property].([]interface{}); ok {
-				mapAddXInterface(configResult, property, v)
+			if v, ok := originConfig[property].([]interface{}); ok {
+				mapAddXInterface(config, property, v)
 			}
 			continue
 		}
 
 		if propertySchema.Type == schema.TypeSet || propertySchema.Type == schema.TypeList {
-			if values, ok := responseConfig[property].([]string); ok {
-				configResult[property] = xStrXInterface(values)
+			if values, ok := originConfig[property].([]string); ok {
+				config[property] = xStrXInterface(values)
 				continue
 			}
 
-			if interfaceValues, ok := responseConfig[property].([]interface{}); ok && len(interfaceValues) > 0 {
+			if interfaceValues, ok := originConfig[property].([]interface{}); ok && len(interfaceValues) > 0 {
 				if _, ok := interfaceValues[0].(map[string]interface{}); ok {
-					configResult[property] = interfaceValues
+					config[property] = interfaceValues
 				} else {
-					configResult[property] = xInterfaceStrXStr(interfaceValues)
+					config[property] = xInterfaceStrXStr(interfaceValues)
 				}
 				continue
 			}
 		}
-		if value, ok := responseConfig[property].(string); ok && value != "" {
+		if value, ok := originConfig[property].(string); ok && value != "" {
 			valueType := propertySchema.Type
 			switch valueType {
 			case schema.TypeBool:
-				configResult[property] = strToBool(value)
+				config[property] = strToBool(value)
 			case schema.TypeInt:
-				configResult[property] = strToInt(value)
+				config[property] = strToInt(value)
 			default:
-				configResult[property] = value
+				config[property] = value
 			}
 		}
 	}
-	configArray[0] = configResult
+	configs[0] = config
 
-	return configArray
+	return configs
 }
