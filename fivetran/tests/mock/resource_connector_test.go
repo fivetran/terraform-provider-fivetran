@@ -227,10 +227,10 @@ const (
 			"is_keypair":                        false,
 			"is_secure":                         false,
 			"use_api_keys":                      false,
-			"is_account_level_connector":        true,
+			"is_account_level_connector":        false,
 			"use_oracle_rac": 					 false,
 			"asm_option": 						 false,
-			"is_single_table_mode":              true,
+			"is_single_table_mode":              false,
 			"is_public":                         false,
 			"empty_header":                      false,
 			"support_nested_columns":            false,
@@ -393,39 +393,46 @@ const (
 			"csv_definition":       "csv_definition",
 			"export_storage_type":  "export_storage_type",
 
-			"report_suites":            ["report_suite"],
-			"elements":                 ["element"],
-			"metrics":                  ["metric"],
-			"advertisables":     		["advertisable"],
-			"dimensions": 				["dimension"],
-			"selected_exports": 		["selected_export"],
-			"apps": 					["app"],
-			"sales_accounts": 			["sales_account"],
-			"finance_accounts": 		["finance_account"],
-			"projects": 				["project"],
-			"user_profiles": 			["user_profile"],
-			"report_configuration_ids": ["report_configuration_id"],
-			"accounts": 				["account"],
-			"fields": 					["field"],
-			"breakdowns": 				["breakdown"],
-			"action_breakdowns": 		["action_breakdown"],
-			"pages": 					["page"],
-			"repositories": 			["repository"],
-			"dimension_attributes": 	["dimension_attribute"],
-			"columns": 					["column"],
-			"manager_accounts": 		["manager_account"],
-			"profiles": 				["profile"],
-			"site_urls": 				["site_url"],
-			"api_keys": 				["api_key"],
-			"advertisers_id": 			["advertiser_id"],
-			"hosts": 					["host"],
-			"advertisers": 				["advertiser"],
-			"organizations": 			["organization"],
-			"account_ids": 				["account_id"],
-			"packed_mode_tables":       ["packed_mode_table"],
-			"properties":               ["property"],
-			"primary_keys":             ["primary_key"],
-			"app_ids":                  ["app_id"],
+			"report_suites":               ["report_suite"],
+			"elements":                    ["element"],
+			"metrics":                     ["metric"],
+			"advertisables":     		   ["advertisable"],
+			"dimensions": 				   ["dimension"],
+			"selected_exports": 		   ["selected_export"],
+			"apps": 					   ["app"],
+			"sales_accounts": 			   ["sales_account"],
+			"finance_accounts": 		   ["finance_account"],
+			"projects": 				   ["project"],
+			"user_profiles": 			   ["user_profile"],
+			"report_configuration_ids":    ["report_configuration_id"],
+			"accounts": 				   ["account"],
+			"fields": 					   ["field"],
+			"breakdowns": 				   ["breakdown"],
+			"action_breakdowns": 		   ["action_breakdown"],
+			"pages": 					   ["page"],
+			"repositories": 			   ["repository"],
+			"dimension_attributes": 	   ["dimension_attribute"],
+			"columns": 					   ["column"],
+			"manager_accounts": 		   ["manager_account"],
+			"profiles": 				   ["profile"],
+			"site_urls": 				   ["site_url"],
+			"api_keys": 				   ["api_key"],
+			"advertisers_id": 			   ["advertiser_id"],
+			"hosts": 					   ["host"],
+			"advertisers": 				   ["advertiser"],
+			"organizations": 			   ["organization"],
+			"account_ids": 				   ["account_id"],
+			"packed_mode_tables":          ["packed_mode_table"],
+			"properties":                  ["property"],
+			"primary_keys":                ["primary_key"],
+			"app_ids":                     ["app_id"],
+			"conversion_dimensions":       ["conversion_dimension"],
+			"custom_floodlight_variables": ["custom_floodlight_variable"],
+			"partners":                    ["partner"],
+			"per_interaction_dimensions":  ["per_interaction_dimension"],
+			"schema_registry_urls":        ["schema_registry_url"],
+			"segments":                    ["segment"],
+			"topics":                      ["topic"],
 
 			"adobe_analytics_configurations": [{
 				"sync_mode": 			"sync_mode",
@@ -535,7 +542,7 @@ const (
 			use_webhooks = "false"
 			eu_region = "false"
 			is_keypair = "false"
-			is_account_level_connector = "true"
+			is_account_level_connector = "false"
 
 			conversion_window_size = "0"
 			skip_before = "0"
@@ -556,7 +563,7 @@ const (
 			agent_ora_home = "agent_ora_home"
 			tns = "tns"
 			use_oracle_rac = "false"
-			is_single_table_mode = "true"
+			is_single_table_mode = "false"
 			is_public = "false"
 			empty_header = "false"
 			support_nested_columns = "false"
@@ -736,6 +743,13 @@ const (
 			properties = ["property"]
 			primary_keys = ["primary_key"]
 			app_ids = ["app_id"]
+			conversion_dimensions = ["conversion_dimension"]
+			custom_floodlight_variables = ["custom_floodlight_variable"]
+			partners = ["partner"]
+			per_interaction_dimensions = ["per_interaction_dimension"]
+			schema_registry_urls = ["schema_registry_url"]
+			segments = ["segment"]
+			topics = ["topic"]
 
 			adobe_analytics_configurations {
 				sync_mode = "sync_mode"
@@ -832,7 +846,14 @@ const (
         "config": {
 			"packed_mode_tables":["packed_mode_table_3", "packed_mode_table_2", "packed_mode_table_1"],
 			"properties":["property_2", "property_1"],
-			"app_ids": ["app_id_2", "app_id_1"]
+			"app_ids": ["app_id_2", "app_id_1"],
+			"conversion_dimensions": ["conversion_dimension_2", "conversion_dimension_1"],
+			"custom_floodlight_variables": ["custom_floodlight_variable_2", "custom_floodlight_variable_1"],
+			"partners": ["partner_2", "partners_1"],
+			"per_interaction_dimensions": ["per_interaction_dimension_2", "per_interaction_dimension_1"],
+			"schema_registry_urls": ["schema_registry_url_2", "schema_registry_url_1"],
+			"segments": ["segment_2", "segment_1"]
+			"topics": ["topic_2", "topic_1"]
 			"primary_keys":["primary_key_2", "primary_key_1"],
 			"report_suites": ["value_2", "value_1"],
 			"elements": ["value_2", "value_1"],
@@ -888,6 +909,13 @@ const (
 			properties = ["property_1", "property_2"]
 			primary_keys = ["primary_key_1", "primary_key_2"]
 			app_ids = ["app_id_1", "app_id_2"]
+			conversion_dimensions = ["conversion_dimension_1", "conversion_dimension_2"]
+			custom_floodlight_variables = ["custom_floodlight_variable_1", "custom_floodlight_variable_2"]
+			partners = ["partner_1", "partner_2"]
+			per_interaction_dimensions = ["per_interaction_dimension_1", "per_interaction_dimension_2"]
+			schema_registry_urls = ["schema_registry_url_1", "schema_registry_url_2"]
+			segments = ["segment_1", "segment_2"]
+			topics = ["topics_1", "topics_2"]
 			report_suites = ["value_1", "value_2"]
 			elements = ["value_1", "value_2"]
 			metrics = ["value_1", "value_2"]
@@ -1010,10 +1038,10 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "is_secure", false)
 			assertKeyExistsAndHasValue(t, config, "use_api_keys", false)
 			assertKeyExistsAndHasValue(t, config, "is_keypair", false)
-			assertKeyExistsAndHasValue(t, config, "is_account_level_connector", true)
+			assertKeyExistsAndHasValue(t, config, "is_account_level_connector", false)
 			assertKeyExistsAndHasValue(t, config, "use_oracle_rac", false)
 			assertKeyExistsAndHasValue(t, config, "asm_option", false)
-			assertKeyExistsAndHasValue(t, config, "is_single_table_mode", true)
+			assertKeyExistsAndHasValue(t, config, "is_single_table_mode", false)
 			assertKeyExistsAndHasValue(t, config, "is_public", false)
 			assertKeyExistsAndHasValue(t, config, "empty_header", false)
 			assertKeyExistsAndHasValue(t, config, "support_nested_columns", false)
@@ -1273,6 +1301,27 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 
 			assertKeyExists(t, config, "app_ids")
 			assertArrayItems(t, config["app_ids"].([]interface{}), append(make([]interface{}, 0), "app_id"))
+
+			assertKeyExists(t, config, "conversion_dimensions")
+			assertArrayItems(t, config["conversion_dimensions"].([]interface{}), append(make([]interface{}, 0), "conversion_dimension"))
+
+			assertKeyExists(t, config, "custom_floodlight_variables")
+			assertArrayItems(t, config["custom_floodlight_variables"].([]interface{}), append(make([]interface{}, 0), "custom_floodlight_variable"))
+
+			assertKeyExists(t, config, "partners")
+			assertArrayItems(t, config["partners"].([]interface{}), append(make([]interface{}, 0), "partner"))
+
+			assertKeyExists(t, config, "per_interaction_dimensions")
+			assertArrayItems(t, config["per_interaction_dimensions"].([]interface{}), append(make([]interface{}, 0), "per_interaction_dimension"))
+
+			assertKeyExists(t, config, "schema_registry_urls")
+			assertArrayItems(t, config["schema_registry_urls"].([]interface{}), append(make([]interface{}, 0), "schema_registry_url"))
+
+			assertKeyExists(t, config, "segments")
+			assertArrayItems(t, config["segments"].([]interface{}), append(make([]interface{}, 0), "segment"))
+
+			assertKeyExists(t, config, "topics")
+			assertArrayItems(t, config["topics"].([]interface{}), append(make([]interface{}, 0), "topic"))
 
 			assertKeyExists(t, config, "adobe_analytics_configurations")
 
