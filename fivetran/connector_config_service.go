@@ -50,9 +50,50 @@ func getProperties(nodesMap map[string]*gabs.Container) map[string]*schema.Schem
 	properties := make(map[string]*schema.Schema)
 
 	for key, node := range nodesMap {
+		sensitiveFields := map[string]bool{
+			"oauth_token":        true,
+			"oauth_token_secret": true,
+			"consumer_key":       true,
+			"client_secret":      true,
+			"private_key":        true,
+			"s3role_arn":         true,
+			"ftp_password":       true,
+			"sftp_password":      true,
+			"api_key":            true,
+			"role_arn":           true,
+			"password":           true,
+			"secret_key":         true,
+			"pem_certificate":    true,
+			"access_token":       true,
+			"api_secret":         true,
+			"api_access_token":   true,
+			"secret":             true,
+			"consumer_secret":    true,
+			"secrets":            true,
+			"api_token":          true,
+			"encryption_key":     true,
+			"pat":                true,
+			"function_trigger":   true,
+			"token_key":          true,
+			"token_secret":       true,
+			"agent_password":     true,
+			"asm_password":       true,
+			"login_password":     true,
+		}
+
+		if _, ok := sensitiveFields[key]; ok {
+			properties[key] = &schema.Schema{
+				Type:      schema.TypeString,
+				Optional:  true,
+				Sensitive: true}
+			continue
+		}
+
 		nodeSchema := &schema.Schema{
 			Type:     schema.TypeString,
-			Computed: true}
+			Optional: true,
+			Computed: true,
+		}
 
 		nodeType := node.Search("type").Data()
 
@@ -76,8 +117,9 @@ func getArrayPropertySchema(node *gabs.Container) *schema.Schema {
 	childrenMap := node.Path("items.properties").ChildrenMap()
 
 	arraySchema := &schema.Schema{
-		Type:     schema.TypeList,
-		Computed: true,
+		Type: schema.TypeList,
+		// for data source maybe we need Computed: true, also here
+		Optional: true,
 		Elem: &schema.Schema{
 			Type: schema.TypeString,
 		}}

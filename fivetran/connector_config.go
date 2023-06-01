@@ -1,6 +1,7 @@
 package fivetran
 
 import (
+	"fmt"
 	"reflect"
 
 	"github.com/fivetran/go-fivetran"
@@ -495,6 +496,59 @@ func getConnectorReadCustomConfig(resp *fivetran.ConnectorCustomDetailsResponse,
 		responseConfig = (*currentConfig)[0].(map[string]interface{})
 	}
 
+	// var currentConfigMap *map[string]interface{} = nil
+	// if currentConfig != nil && len(*currentConfig) > 0 {
+	// 	vlocalConfigAsMap := (*currentConfig)[0].(map[string]interface{})
+	// 	currentConfigMap = &vlocalConfigAsMap
+	// }
+	// for k, v := range *currentConfigMap {
+	// 	fmt.Println(k, "value is", v)
+	// }
+
+	// Terraform used the selected providers to generate the following execution
+	//     plan. Resource actions are indicated with the following symbols:
+	//       ~ update in-place
+
+	//     Terraform will perform the following actions:
+
+	//       # fivetran_connector.test_connector will be updated in-place
+	//       ~ resource "fivetran_connector" "test_connector" {
+	//             id                 = "connector_id"
+	//             name               = "google_sheets_schema.table"
+	//             # (7 unchanged attributes hidden)
+
+	//           ~ config {
+	//               + app_ids                              = []
+	//               + conversion_dimensions                = []
+	//               + custom_floodlight_variables          = []
+	//               ~ is_account_level_connector           = false -> true
+	//               ~ is_single_table_mode                 = false -> true
+	//               + partners                             = []
+	//               + per_interaction_dimensions           = []
+	//               + schema_registry_urls                 = []
+	//               + segments                             = []
+	//               + topics                               = []
+	//                 # (239 unchanged attributes hidden)
+
+	//               ~ project_credentials {
+	//                   ~ secret_key = (sensitive value)
+	//                     # (2 unchanged attributes hidden)
+	//                 }
+
+	//               ~ reports {
+	//                   + search_types    = []
+	//                   + segment_ids     = []
+	//                     # (9 unchanged attributes hidden)
+	//                 }
+
+	//                 # (3 unchanged blocks hidden)
+	//             }
+
+	//             # (2 unchanged blocks hidden)
+	//         }
+
+	//     Plan: 0 to add, 1 to change, 0 to destroy.
+
 	responseConfigFromStruct := resp.Data.Config
 	for responseProperty, value := range responseConfigFromStruct {
 		reflectedValue := reflect.ValueOf(value)
@@ -506,10 +560,29 @@ func getConnectorReadCustomConfig(resp *fivetran.ConnectorCustomDetailsResponse,
 
 			childPropertiesFromStruct := valueArray[0]
 			valueArray[0] = childPropertiesFromStruct
+			if responseProperty == "api_keys" {
+				fmt.Printf("now")
+			}
+			if value1, ok := valueArray[0].(map[string]interface{}); ok {
+
+				if value1["value"] == "******" {
+					continue
+				}
+			}
+			if value2, ok := valueArray[0].([]string); ok {
+
+				if value2[0] == "******" {
+					continue
+				}
+			}
+
 			responseConfig[responseProperty] = valueArray
 			continue
+
 		}
-		responseConfig[responseProperty] = value
+		if value != "******" {
+			responseConfig[responseProperty] = value
+		}
 	}
 
 	services := getAvailableServiceIds()
@@ -525,12 +598,63 @@ func getConnectorReadCustomConfig(resp *fivetran.ConnectorCustomDetailsResponse,
 	}
 
 	for property, propertySchema := range properties {
+
+		sensitiveFields := map[string]bool{
+			"oauth_token":        true,
+			"oauth_token_secret": true,
+			"consumer_key":       true,
+			"client_secret":      true,
+			"private_key":        true,
+			"s3role_arn":         true,
+			"ftp_password":       true,
+			"sftp_password":      true,
+			"api_key":            true,
+			"role_arn":           true,
+			"password":           true,
+			"secret_key":         true,
+			"pem_certificate":    true,
+			"access_token":       true,
+			"api_secret":         true,
+			"api_access_token":   true,
+			"secret":             true,
+			"consumer_secret":    true,
+			"secrets":            true,
+			"api_token":          true,
+			"encryption_key":     true,
+			"pat":                true,
+			"function_trigger":   true,
+			"token_key":          true,
+			"token_secret":       true,
+			"agent_password":     true,
+			"asm_password":       true,
+			"login_password":     true,
+		}
+
+		if _, ok := sensitiveFields[property]; ok {
+			if v, ok := responseConfig[property].(string); ok {
+				mapAddStr(configResult, property, v)
+			}
+			if v, ok := responseConfig[property].([]interface{}); ok {
+				mapAddXInterface(configResult, property, v)
+			}
+			continue
+		}
+
+		// func tryCopySensitiveListValue(localConfig *map[string]interface{}, targetConfig, upstreamConfig map[string]interface{}, name string) {
+		// 	if localConfig != nil {
+		// 		mapAddXInterface(targetConfig, name, (*localConfig)[name].(*schema.Set).List())
+		// 	} else {
+		// 		tryCopyList(targetConfig, upstreamConfig, name)
+		// 	}
+		// }
+
 		if propertySchema.Type == schema.TypeSet || propertySchema.Type == schema.TypeList {
 			if values, ok := responseConfig[property].([]string); ok {
 				configResult[property] = xStrXInterface(values)
 				continue
 			}
-			if interfaceValues, ok := responseConfig[property].([]interface{}); ok {
+
+			if interfaceValues := responseConfig[property].([]interface{}); len(interfaceValues) > 0 {
 				if _, ok := interfaceValues[0].(map[string]interface{}); ok {
 					configResult[property] = interfaceValues
 				} else {
