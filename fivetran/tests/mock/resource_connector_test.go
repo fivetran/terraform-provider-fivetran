@@ -500,9 +500,7 @@ const (
 			sheet_id = "sheet_id"
 			named_range = "range"
 			auth_type = "OAuth"
-
-			
-			
+		
 			consumer_key = "consumer_key"
 			client_secret = "client_secret"
 			private_key = "private_key"
@@ -712,8 +710,6 @@ const (
 			csv_definition = "csv_definition"
 			export_storage_type = "export_storage_type"
 
-			
-			
 			metrics = ["metric"]
 			advertisables = ["advertisable"]
 			dimensions = ["dimension"]
@@ -1520,7 +1516,6 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 			// commented for now resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.oauth_token", "oauth_token"),
 			// commented for now resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.oauth_token_secret", "oauth_token_secret"),
 
-			// Talk with Vitaly about this
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.consumer_key", "consumer_key"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.client_secret", "client_secret"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.private_key", "private_key"),

@@ -52,9 +52,9 @@ func resourceconnectorInstanceStateUpgradeV0(ctx context.Context, rawState map[s
 	return rawState, nil
 }
 
-func resourceConnectorCreate(ctx context.Context, resourceData *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceConnectorCreate(ctx context.Context, resourceData *schema.ResourceData, clientInterface interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*fivetran.Client)
+	client := clientInterface.(*fivetran.Client)
 	createConnectorService := client.NewConnectorCreate()
 
 	createConnectorService.GroupID(resourceData.Get("group_id").(string))
@@ -87,14 +87,14 @@ func resourceConnectorCreate(ctx context.Context, resourceData *schema.ResourceD
 	}
 
 	resourceData.SetId(resp.Data.ID)
-	resourceConnectorRead(ctx, resourceData, m)
+	resourceConnectorRead(ctx, resourceData, clientInterface)
 
 	return diags
 }
 
-func resourceConnectorRead(ctx context.Context, resourceData *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceConnectorRead(ctx context.Context, resourceData *schema.ResourceData, clientInterface interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*fivetran.Client)
+	client := clientInterface.(*fivetran.Client)
 
 	resp, err := client.NewConnectorDetails().ConnectorID(resourceData.Get("id").(string)).DoCustom(ctx)
 	if err != nil {
@@ -109,18 +109,17 @@ func resourceConnectorRead(ctx context.Context, resourceData *schema.ResourceDat
 
 	currentConfig := resourceData.Get("config").([]interface{})
 
-	// msi stands for Map String Interface
-	msi := getConnectorRead(&currentConfig, resp, 1)
+	dataBucket := getConnectorRead(&currentConfig, resp, 1)
 
 	currentService := resourceData.Get("service").(string)
 
 	// Ignore service change for migrated `adwords` connectors
 	if currentService == "adwords" && resp.Data.Service == "google_ads" {
-		mapAddStr(msi, "service", "adwords")
+		mapAddStr(dataBucket, "service", "adwords")
 		diags = newDiagAppend(diags, diag.Warning, "Google Ads service migration detected", "service update supressed to prevent resource re-creation.")
 	}
 
-	for k, v := range msi {
+	for k, v := range dataBucket {
 		if err := resourceData.Set(k, v); err != nil {
 			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 		}
@@ -131,9 +130,9 @@ func resourceConnectorRead(ctx context.Context, resourceData *schema.ResourceDat
 	return diags
 }
 
-func resourceConnectorUpdate(ctx context.Context, resourceData *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceConnectorUpdate(ctx context.Context, resourceData *schema.ResourceData, clientInterface interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*fivetran.Client)
+	client := clientInterface.(*fivetran.Client)
 	modifyConnectorService := client.NewConnectorModify()
 
 	modifyConnectorService.ConnectorID(resourceData.Get("id").(string))
@@ -167,7 +166,7 @@ func resourceConnectorUpdate(ctx context.Context, resourceData *schema.ResourceD
 	resp, err := modifyConnectorService.DoCustomMerged(ctx)
 	if err != nil {
 		// resourceConnectorRead here makes sure the state is updated after a NewConnectorModify error.
-		diags = resourceConnectorRead(ctx, resourceData, m)
+		diags = resourceConnectorRead(ctx, resourceData, clientInterface)
 		return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
@@ -175,12 +174,12 @@ func resourceConnectorUpdate(ctx context.Context, resourceData *schema.ResourceD
 		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
 
-	return resourceConnectorRead(ctx, resourceData, m)
+	return resourceConnectorRead(ctx, resourceData, clientInterface)
 }
 
-func resourceConnectorDelete(ctx context.Context, resourceData *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceConnectorDelete(ctx context.Context, resourceData *schema.ResourceData, clientInterface interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*fivetran.Client)
+	client := clientInterface.(*fivetran.Client)
 	deleteConnectorService := client.NewConnectorDelete()
 
 	resp, err := deleteConnectorService.ConnectorID(resourceData.Get("id").(string)).Do(ctx)
@@ -194,23 +193,31 @@ func resourceConnectorDelete(ctx context.Context, resourceData *schema.ResourceD
 }
 
 func resourceConnectorUpdateCustomConfig(resourceData *schema.ResourceData) *map[string]interface{} {
-	configResult := make(map[string]interface{})
-
 	var resourceConfigs = resourceData.Get("config").([]interface{})
 
 	if len(resourceConfigs) < 1 {
-		return &configResult
+		return &map[string]interface{}{}
 	}
 	if resourceConfigs[0] == nil {
-		return &configResult
+		return &map[string]interface{}{}
 	}
 
 	responseConfig := resourceConfigs[0].(map[string]interface{})
 
 	fields := getFields()
 
+	config := createConfig(responseConfig, fields)
+
+	return &config
+}
+
+func createConfig(responseConfig map[string]interface{}, fields map[string]*schema.Schema) map[string]interface{} {
+	config := make(map[string]interface{})
+
 	for fieldName, fieldSchema := range fields {
+
 		if fieldSchema.Type == schema.TypeSet || fieldSchema.Type == schema.TypeList {
+
 			if values := responseConfig[fieldName].([]interface{}); len(values) > 0 {
 				if mapValues, ok := values[0].(map[string]interface{}); ok {
 					for childPropertyKey, _ := range mapValues {
@@ -220,12 +227,13 @@ func resourceConnectorUpdateCustomConfig(resourceData *schema.ResourceData) *map
 						}
 					}
 					values[0] = mapValues
-					configResult[fieldName] = values
+					config[fieldName] = values
 				} else {
-					configResult[fieldName] = xInterfaceStrXStr(values)
+					config[fieldName] = xInterfaceStrXStr(values)
 				}
 				continue
 			}
+
 			if values, ok := responseConfig[fieldName].(*schema.Set); ok {
 				setValues := values.List()
 
@@ -233,38 +241,38 @@ func resourceConnectorUpdateCustomConfig(resourceData *schema.ResourceData) *map
 			}
 
 			if values, ok := responseConfig[fieldName].([]string); ok {
-				configResult[fieldName] = xStrXInterface(values)
+				config[fieldName] = xStrXInterface(values)
 				continue
 			}
 		}
+
 		if value, ok := responseConfig[fieldName].(string); ok && value != "" {
 			switch fieldSchema.Type {
 			case schema.TypeBool:
-				configResult[fieldName] = strToBool(value)
+				config[fieldName] = strToBool(value)
 			case schema.TypeInt:
-				configResult[fieldName] = strToInt(value)
+				config[fieldName] = strToInt(value)
 			default:
-				configResult[fieldName] = value
+				config[fieldName] = value
 			}
 			continue
 		}
 		if value, ok := responseConfig[fieldName].(bool); ok {
-			configResult[fieldName] = value
+			config[fieldName] = value
 			continue
 		}
 		if value, ok := responseConfig[fieldName].(int); ok {
-			configResult[fieldName] = value
+			config[fieldName] = value
 			continue
 		}
 	}
-
-	return &configResult
+	return config
 }
 
-func resourceConnectorUpdateCustomAuth(d *schema.ResourceData) *map[string]interface{} {
+func resourceConnectorUpdateCustomAuth(resourceData *schema.ResourceData) *map[string]interface{} {
 	authMap := make(map[string]interface{})
 
-	var auth = d.Get("auth").([]interface{})
+	var auth = resourceData.Get("auth").([]interface{})
 
 	if len(auth) < 1 {
 		return &authMap
