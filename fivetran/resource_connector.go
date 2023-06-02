@@ -52,67 +52,67 @@ func resourceconnectorInstanceStateUpgradeV0(ctx context.Context, rawState map[s
 	return rawState, nil
 }
 
-func resourceConnectorCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceConnectorCreate(ctx context.Context, resourceData *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
-	svc := client.NewConnectorCreate()
+	createConnectorService := client.NewConnectorCreate()
 
-	svc.GroupID(d.Get("group_id").(string))
+	createConnectorService.GroupID(resourceData.Get("group_id").(string))
 
-	currentService := d.Get("service").(string)
+	currentService := resourceData.Get("service").(string)
 
 	if currentService == "adwords" {
 		return newDiagAppend(diags, diag.Error, "create error", "service `adwords` has been deprecated, use `google_ads` instead")
 	}
 
-	svc.Service(currentService)
+	createConnectorService.Service(currentService)
 
 	// new connector always in paused state
 	// `fivetran_connector_schedule` should be used for schedule management
-	svc.Paused(true)
-	svc.PauseAfterTrial(true)
+	createConnectorService.Paused(true)
+	createConnectorService.PauseAfterTrial(true)
 
-	svc.TrustCertificates(strToBool(d.Get("trust_certificates").(string)))
-	svc.TrustFingerprints(strToBool(d.Get("trust_fingerprints").(string)))
-	svc.RunSetupTests(strToBool(d.Get("run_setup_tests").(string)))
+	createConnectorService.TrustCertificates(strToBool(resourceData.Get("trust_certificates").(string)))
+	createConnectorService.TrustFingerprints(strToBool(resourceData.Get("trust_fingerprints").(string)))
+	createConnectorService.RunSetupTests(strToBool(resourceData.Get("run_setup_tests").(string)))
 
-	svc.ConfigCustom(resourceConnectorUpdateCustomConfig(d))
+	createConnectorService.ConfigCustom(resourceConnectorUpdateCustomConfig(resourceData))
 
-	svc.Auth(resourceConnectorCreateAuth(d.Get("auth").([]interface{})))
-	svc.AuthCustom(resourceConnectorUpdateCustomAuth(d))
+	createConnectorService.Auth(resourceConnectorCreateAuth(resourceData.Get("auth").([]interface{})))
+	createConnectorService.AuthCustom(resourceConnectorUpdateCustomAuth(resourceData))
 
-	resp, err := svc.DoCustomMerged(ctx)
+	resp, err := createConnectorService.DoCustomMerged(ctx)
 	if err != nil {
 		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
-	d.SetId(resp.Data.ID)
-	resourceConnectorRead(ctx, d, m)
+	resourceData.SetId(resp.Data.ID)
+	resourceConnectorRead(ctx, resourceData, m)
 
 	return diags
 }
 
-func resourceConnectorRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceConnectorRead(ctx context.Context, resourceData *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
 
-	resp, err := client.NewConnectorDetails().ConnectorID(d.Get("id").(string)).DoCustom(ctx)
+	resp, err := client.NewConnectorDetails().ConnectorID(resourceData.Get("id").(string)).DoCustom(ctx)
 	if err != nil {
 		// If the resource does not exist (404), inform Terraform. We want to immediately
 		// return here to prevent further processing.
 		if resp.Code == "404" {
-			d.SetId("")
+			resourceData.SetId("")
 			return nil
 		}
 		return newDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
-	// msi stands for Map String Interface
-	currentConfig := d.Get("config").([]interface{})
+	currentConfig := resourceData.Get("config").([]interface{})
 
+	// msi stands for Map String Interface
 	msi := getConnectorRead(&currentConfig, resp, 1)
 
-	currentService := d.Get("service").(string)
+	currentService := resourceData.Get("service").(string)
 
 	// Ignore service change for migrated `adwords` connectors
 	if currentService == "adwords" && resp.Data.Service == "google_ads" {
@@ -121,91 +121,91 @@ func resourceConnectorRead(ctx context.Context, d *schema.ResourceData, m interf
 	}
 
 	for k, v := range msi {
-		if err := d.Set(k, v); err != nil {
+		if err := resourceData.Set(k, v); err != nil {
 			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 		}
 	}
 
-	d.SetId(resp.Data.ID)
+	resourceData.SetId(resp.Data.ID)
 
 	return diags
 }
 
-func resourceConnectorUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceConnectorUpdate(ctx context.Context, resourceData *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
-	svc := client.NewConnectorModify()
+	modifyConnectorService := client.NewConnectorModify()
 
-	svc.ConnectorID(d.Get("id").(string))
+	modifyConnectorService.ConnectorID(resourceData.Get("id").(string))
 
-	if d.HasChange("sync_frequency") {
-		svc.SyncFrequency(strToInt(d.Get("sync_frequency").(string)))
+	if resourceData.HasChange("sync_frequency") {
+		modifyConnectorService.SyncFrequency(strToInt(resourceData.Get("sync_frequency").(string)))
 	}
-	if d.HasChange("trust_certificates") {
-		svc.TrustCertificates(strToBool(d.Get("trust_certificates").(string)))
+	if resourceData.HasChange("trust_certificates") {
+		modifyConnectorService.TrustCertificates(strToBool(resourceData.Get("trust_certificates").(string)))
 	}
-	if d.HasChange("trust_fingerprints") {
-		svc.TrustFingerprints(strToBool(d.Get("trust_fingerprints").(string)))
+	if resourceData.HasChange("trust_fingerprints") {
+		modifyConnectorService.TrustFingerprints(strToBool(resourceData.Get("trust_fingerprints").(string)))
 	}
-	if d.HasChange("run_setup_tests") {
-		svc.RunSetupTests(strToBool(d.Get("run_setup_tests").(string)))
+	if resourceData.HasChange("run_setup_tests") {
+		modifyConnectorService.RunSetupTests(strToBool(resourceData.Get("run_setup_tests").(string)))
 	}
-	if d.HasChange("paused") {
-		svc.Paused(strToBool(d.Get("paused").(string)))
+	if resourceData.HasChange("paused") {
+		modifyConnectorService.Paused(strToBool(resourceData.Get("paused").(string)))
 	}
-	if d.HasChange("pause_after_trial") {
-		svc.PauseAfterTrial(strToBool(d.Get("pause_after_trial").(string)))
+	if resourceData.HasChange("pause_after_trial") {
+		modifyConnectorService.PauseAfterTrial(strToBool(resourceData.Get("pause_after_trial").(string)))
 	}
-	if d.Get("sync_frequency") == "1440" && d.HasChange("daily_sync_time") {
-		svc.DailySyncTime(d.Get("daily_sync_time").(string))
+	if resourceData.Get("sync_frequency") == "1440" && resourceData.HasChange("daily_sync_time") {
+		modifyConnectorService.DailySyncTime(resourceData.Get("daily_sync_time").(string))
 	}
 
-	svc.ConfigCustom(resourceConnectorUpdateCustomConfig(d))
-	svc.Auth(resourceConnectorCreateAuth(d.Get("auth").([]interface{})))
-	svc.AuthCustom(resourceConnectorUpdateCustomAuth(d))
+	modifyConnectorService.ConfigCustom(resourceConnectorUpdateCustomConfig(resourceData))
+	modifyConnectorService.Auth(resourceConnectorCreateAuth(resourceData.Get("auth").([]interface{})))
+	modifyConnectorService.AuthCustom(resourceConnectorUpdateCustomAuth(resourceData))
 
-	resp, err := svc.DoCustomMerged(ctx)
+	resp, err := modifyConnectorService.DoCustomMerged(ctx)
 	if err != nil {
 		// resourceConnectorRead here makes sure the state is updated after a NewConnectorModify error.
-		diags = resourceConnectorRead(ctx, d, m)
+		diags = resourceConnectorRead(ctx, resourceData, m)
 		return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
-	if err := d.Set("last_updated", time.Now().Format(time.RFC850)); err != nil {
+	if err := resourceData.Set("last_updated", time.Now().Format(time.RFC850)); err != nil {
 		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
 
-	return resourceConnectorRead(ctx, d, m)
+	return resourceConnectorRead(ctx, resourceData, m)
 }
 
-func resourceConnectorDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceConnectorDelete(ctx context.Context, resourceData *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
-	svc := client.NewConnectorDelete()
+	deleteConnectorService := client.NewConnectorDelete()
 
-	resp, err := svc.ConnectorID(d.Get("id").(string)).Do(ctx)
+	resp, err := deleteConnectorService.ConnectorID(resourceData.Get("id").(string)).Do(ctx)
 	if err != nil {
 		return newDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
-	d.SetId("")
+	resourceData.SetId("")
 
 	return diags
 }
 
-func resourceConnectorUpdateCustomConfig(d *schema.ResourceData) *map[string]interface{} {
+func resourceConnectorUpdateCustomConfig(resourceData *schema.ResourceData) *map[string]interface{} {
 	configResult := make(map[string]interface{})
 
-	var config = d.Get("config").([]interface{})
+	var resourceConfigs = resourceData.Get("config").([]interface{})
 
-	if len(config) < 1 {
+	if len(resourceConfigs) < 1 {
 		return &configResult
 	}
-	if config[0] == nil {
+	if resourceConfigs[0] == nil {
 		return &configResult
 	}
 
-	responseConfig := config[0].(map[string]interface{})
+	responseConfig := resourceConfigs[0].(map[string]interface{})
 
 	fields := getFields()
 
