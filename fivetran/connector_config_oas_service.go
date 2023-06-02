@@ -1,14 +1,16 @@
 package fivetran
 
 import (
+	"os"
+
 	"github.com/Jeffail/gabs/v2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 const SCHEMAS_PATH = "schemas."
 const PROPERTIES_PATH = ".properties.config.properties"
-const SCHEMAS_FILE_PATH = "/Users/lukadevic/Fivetran/terraform-provider-fivetran/fivetran/schemas.json"
-const SERVICES_FILE_PATH = "/Users/lukadevic/Fivetran/terraform-provider-fivetran/fivetran/services.json"
+const SERVICES_FILE_PATH = "/services.json"
+const SCHEMAS_FILE_PATH = "/schemas.json"
 
 const OBJECT_FIELD = "object"
 const INT_FIELD = "integer"
@@ -85,7 +87,8 @@ func getFields() map[string]*schema.Schema {
 }
 
 func getAvailableServiceIds() []string {
-	servicesJson, err := gabs.ParseJSONFile(SERVICES_FILE_PATH)
+	pwd, _ := os.Getwd()
+	servicesJson, err := gabs.ParseJSONFile(pwd + SERVICES_FILE_PATH)
 	if err != nil {
 		panic(err)
 	}
@@ -100,7 +103,8 @@ func getAvailableServiceIds() []string {
 }
 
 func getServiceSchema(path string) map[string]*gabs.Container {
-	shemasJson, err := gabs.ParseJSONFile(SCHEMAS_FILE_PATH)
+	pwd, _ := os.Getwd()
+	shemasJson, err := gabs.ParseJSONFile(pwd + SCHEMAS_FILE_PATH)
 	if err != nil {
 		panic(err)
 	}
