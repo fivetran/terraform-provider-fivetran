@@ -7,10 +7,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-const SCHEMAS_PATH = "schemas."
+const SCHEMAS_PATH = "components.schemas."
 const PROPERTIES_PATH = ".properties.config.properties"
 const SERVICES_FILE_PATH = "/services.json"
-const SCHEMAS_FILE_PATH = "/schemas.json"
+const SCHEMAS_FILE_PATH = "/open-api-spec.json"
 
 const OBJECT_FIELD = "object"
 const INT_FIELD = "integer"

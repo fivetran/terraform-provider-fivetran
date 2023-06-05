@@ -310,7 +310,6 @@ const (
 			"auth_mode":             "auth_mode",
 			"certificate":           "certificate",
 			"consumer_group":        "consumer_group",
-			"servers":               "servers",
 			"message_type":          "message_type",
 			"sync_type":             "sync_type",
 			"security_protocol":     "security_protocol",
@@ -852,8 +851,8 @@ const (
 			"partners": ["partner_2", "partners_1"],
 			"per_interaction_dimensions": ["per_interaction_dimension_2", "per_interaction_dimension_1"],
 			"schema_registry_urls": ["schema_registry_url_2", "schema_registry_url_1"],
-			"segments": ["segment_2", "segment_1"]
-			"topics": ["topic_2", "topic_1"]
+			"segments": ["segment_2", "segment_1"],
+			"topics": ["topic_2", "topic_1"],
 			"primary_keys":["primary_key_2", "primary_key_1"],
 			"report_suites": ["value_2", "value_1"],
 			"elements": ["value_2", "value_1"],
@@ -1322,6 +1321,9 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 
 			assertKeyExists(t, config, "topics")
 			assertArrayItems(t, config["topics"].([]interface{}), append(make([]interface{}, 0), "topic"))
+
+			// assertKeyExists(t, config, "servers")
+			// assertArrayItems(t, config["servers"].([]interface{}), append(make([]interface{}, 0), "server"))
 
 			assertKeyExists(t, config, "adobe_analytics_configurations")
 

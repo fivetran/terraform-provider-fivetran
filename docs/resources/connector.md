@@ -280,7 +280,7 @@ Optional:
 - `security_protocol` (String)
 - `selected_exports` (List of String)
 - `server_url` (String)
-- `servers` (String)
+- `servers` (List of String)
 - `sftp_host` (String)
 - `sftp_is_key_pair` (String)
 - `sftp_password` (String, Sensitive)

@@ -249,7 +249,7 @@ Read-Only:
 - `security_protocol` (String)
 - `selected_exports` (List of String)
 - `server_url` (String)
-- `servers` (String)
+- `servers` (List of String)
 - `service_version` (String)
 - `sftp_host` (String)
 - `sftp_is_key_pair` (String)
