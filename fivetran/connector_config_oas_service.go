@@ -1,16 +1,22 @@
 package fivetran
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/icza/dyno"
+	"gopkg.in/yaml.v2"
 )
 
 const SCHEMAS_PATH = "components.schemas."
 const PROPERTIES_PATH = ".properties.config.properties"
 const SERVICES_FILE_PATH = "/services.json"
-const SCHEMAS_FILE_PATH = "/open-api-spec.json"
+const SCHEMAS_FILE_PATH = "/oas.yaml"
 
 const OBJECT_FIELD = "object"
 const INT_FIELD = "integer"
@@ -103,13 +109,41 @@ func getAvailableServiceIds() []string {
 }
 
 func getServiceSchema(path string) map[string]*gabs.Container {
-	pwd, _ := os.Getwd()
-	shemasJson, err := gabs.ParseJSONFile(pwd + SCHEMAS_FILE_PATH)
+	yamlFile, err := ioutil.ReadFile("oas.yaml")
+	if err != nil {
+		log.Printf("yamlFile.Get err   #%v ", err)
+	}
+	m := make(map[interface{}]interface{})
+	err = yaml.Unmarshal(yamlFile, &m)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	m2 := dyno.ConvertMapI2MapS(m)
+	data, err := json.Marshal(m2)
+	if err != nil {
+		panic(err)
+	}
+	//pwd, _ := os.Getwd()
+	//shemasJson, err := gabs.ParseJSONFile(pwd + SCHEMAS_FILE_PATH)
+	shemasJson, err := gabs.ParseJSON(data)
 	if err != nil {
 		panic(err)
 	}
 
 	return shemasJson.Path(path).ChildrenMap()
+}
+
+func convert(m map[interface{}]interface{}) map[string]interface{} {
+	res := map[string]interface{}{}
+	for k, v := range m {
+		switch v2 := v.(type) {
+		case map[interface{}]interface{}:
+			res[fmt.Sprint(k)] = convert(v2)
+		default:
+			res[fmt.Sprint(k)] = v
+		}
+	}
+	return res
 }
 
 func createFields(nodesMap map[string]*gabs.Container) map[string]*schema.Schema {
