@@ -49,7 +49,15 @@ func getConnectorSchema(readonly bool, version int) map[string]*schema.Schema {
 		result["pause_after_trial"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: true} // Default: false
 		// Optional nullable in upstream
 		result["daily_sync_time"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: readonly}
+		result["test_table_name"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: readonly}
+		result["unique_id"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: readonly}
+		result["organization"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: readonly}
+		result["environment"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: readonly}
 		result["status"] = getConnectorSchemaStatus()
+
+		// String collections
+		result["report_suites"] = &schema.Schema{Type: schema.TypeSet, Optional: !readonly, Computed: readonly, Elem: &schema.Schema{Type: schema.TypeString}}
+		result["elements"] = &schema.Schema{Type: schema.TypeSet, Optional: !readonly, Computed: readonly, Elem: &schema.Schema{Type: schema.TypeString}}
 	}
 
 	// Resource specific

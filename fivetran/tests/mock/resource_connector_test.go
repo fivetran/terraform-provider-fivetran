@@ -431,7 +431,9 @@ const (
 			"partners":                    ["partner"],
 			"per_interaction_dimensions":  ["per_interaction_dimension"],
 			"schema_registry_urls":        ["schema_registry_url"],
+			"servers":                     ["server"],
 			"segments":                    ["segment"],
+			"topics":                      ["topic"],
 
 			"adobe_analytics_configurations": [{
 				"sync_mode": 			"sync_mode",
@@ -850,7 +852,9 @@ const (
 			"partners": ["partner_2", "partners_1"],
 			"per_interaction_dimensions": ["per_interaction_dimension_2", "per_interaction_dimension_1"],
 			"schema_registry_urls": ["schema_registry_url_2", "schema_registry_url_1"],
+			"servers": ["server_2", "server_1"],
 			"segments": ["segment_2", "segment_1"],
+			"topics": ["topic_2", "topic_1],
 			"primary_keys":["primary_key_2", "primary_key_1"],
 			"report_suites": ["value_2", "value_1"],
 			"elements": ["value_2", "value_1"],
@@ -912,8 +916,6 @@ const (
 			per_interaction_dimensions = ["value_1", "value_2"]
 			schema_registry_urls = ["value_1", "value_2"]
 			segments = ["value_1", "value_2"]
-			report_suites = ["value_1", "value_2"]
-			elements = ["value_1", "value_2"]
 			metrics = ["value_1", "value_2"]
 			advertisables = ["value_1", "value_2"]
 			dimensions = ["value_1", "value_2"]
@@ -1169,7 +1171,6 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "publication_name", "publication_name")
 			assertKeyExistsAndHasValue(t, config, "data_center", "data_center")
 			assertKeyExistsAndHasValue(t, config, "sub_domain", "sub_domain")
-			//			assertKeyExistsAndHasValue(t, config, "test_table_name", "test_table_name")
 			assertKeyExistsAndHasValue(t, config, "shop", "shop")
 			assertKeyExistsAndHasValue(t, config, "sid", "sid")
 			assertKeyExistsAndHasValue(t, config, "key", "key")
@@ -1177,29 +1178,20 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "user_name", "user_name")
 			assertKeyExistsAndHasValue(t, config, "username", "username")
 			assertKeyExistsAndHasValue(t, config, "report_url", "report_url")
-			//			assertKeyExistsAndHasValue(t, config, "unique_id", "unique_id")
 			assertKeyExistsAndHasValue(t, config, "base_url", "base_url")
 			assertKeyExistsAndHasValue(t, config, "entity_id", "entity_id")
 			assertKeyExistsAndHasValue(t, config, "soap_uri", "soap_uri")
 			assertKeyExistsAndHasValue(t, config, "user_id", "user_id")
 			assertKeyExistsAndHasValue(t, config, "share_url", "share_url")
-			//			assertKeyExistsAndHasValue(t, config, "organization", "organization")
 			assertKeyExistsAndHasValue(t, config, "access_key", "access_key")
 			assertKeyExistsAndHasValue(t, config, "domain_host_name", "domain_host_name")
 			assertKeyExistsAndHasValue(t, config, "client_name", "client_name")
 			assertKeyExistsAndHasValue(t, config, "domain_type", "domain_type")
 			assertKeyExistsAndHasValue(t, config, "connection_method", "connection_method")
 			assertKeyExistsAndHasValue(t, config, "company_id", "company_id")
-			//			assertKeyExistsAndHasValue(t, config, "environment", "environment")
 			assertKeyExistsAndHasValue(t, config, "list_strategy", "list_strategy")
 			assertKeyExistsAndHasValue(t, config, "csv_definition", "csv_definition")
 			assertKeyExistsAndHasValue(t, config, "export_storage_type", "export_storage_type")
-
-			// this filed is nested in the adobe prop not needed here assertKeyExists(t, config, "report_suites")
-			// doesnt exist in oas as stand alone field, this filed is nested in the adobe prop not needed here assertArrayItems(t, config["report_suites"].([]interface{}), append(make([]interface{}, 0), "report_suite"))
-
-			// doesnt exist in oas as stand alone field, this filed is nested in the adobe prop not needed here assertKeyExists(t, config, "elements")
-			// doesnt exist in oas as stand alone field, this filed is nested in the adobe prop not needed here assertArrayItems(t, config["elements"].([]interface{}), append(make([]interface{}, 0), "element"))
 
 			assertKeyExists(t, config, "metrics")
 			assertArrayItems(t, config["metrics"].([]interface{}), append(make([]interface{}, 0), "metric"))
@@ -1312,11 +1304,11 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExists(t, config, "segments")
 			assertArrayItems(t, config["segments"].([]interface{}), append(make([]interface{}, 0), "segment"))
 
-			// assertKeyExists(t, config, "topics")
-			// assertArrayItems(t, config["topics"].([]interface{}), append(make([]interface{}, 0), "topic"))
+			// i dont have it in response config, ask vitaly for tip assertKeyExists(t, config, "topics")
+			// i dont have it in response config, ask vitaly for tip assertArrayItems(t, config["topics"].([]interface{}), append(make([]interface{}, 0), "topic"))
 
-			// assertKeyExists(t, config, "servers")
-			// assertArrayItems(t, config["servers"].([]interface{}), append(make([]interface{}, 0), "server"))
+			// i dont have it in response config, ask vitaly for tip assertKeyExists(t, config, "servers")
+			// i dont have it in response config, ask vitaly for tip assertArrayItems(t, config["servers"].([]interface{}), append(make([]interface{}, 0), "server"))
 
 			assertKeyExists(t, config, "adobe_analytics_configurations")
 
