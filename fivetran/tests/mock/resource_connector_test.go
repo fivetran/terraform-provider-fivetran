@@ -283,6 +283,7 @@ const (
 			"api_quota":                            0,
 			"daily_api_call_limit":                 0,
 			"agent_port":                           0,
+			"network_code":                         0,
 
 			"public_key": 			"public_key",
 			"external_id": 			"external_id",
@@ -335,7 +336,7 @@ const (
 			"host":                  "host",
 
 			"user":                 "user",
-			"network_code":         "network_code",
+			
 			"customer_id":          "customer_id",
 			"project_id":           "project_id",
 			"dataset_id":           "dataset_id",
@@ -431,7 +432,6 @@ const (
 			"per_interaction_dimensions":  ["per_interaction_dimension"],
 			"schema_registry_urls":        ["schema_registry_url"],
 			"segments":                    ["segment"],
-			"topics":                      ["topic"],
 
 			"adobe_analytics_configurations": [{
 				"sync_mode": 			"sync_mode",
@@ -746,7 +746,6 @@ const (
 			per_interaction_dimensions = ["per_interaction_dimension"]
 			schema_registry_urls = ["schema_registry_url"]
 			segments = ["segment"]
-			topics = ["topic"]
 
 			adobe_analytics_configurations {
 				sync_mode = "sync_mode"
@@ -852,7 +851,6 @@ const (
 			"per_interaction_dimensions": ["per_interaction_dimension_2", "per_interaction_dimension_1"],
 			"schema_registry_urls": ["schema_registry_url_2", "schema_registry_url_1"],
 			"segments": ["segment_2", "segment_1"],
-			"topics": ["topic_2", "topic_1"],
 			"primary_keys":["primary_key_2", "primary_key_1"],
 			"report_suites": ["value_2", "value_1"],
 			"elements": ["value_2", "value_1"],
@@ -914,7 +912,6 @@ const (
 			per_interaction_dimensions = ["value_1", "value_2"]
 			schema_registry_urls = ["value_1", "value_2"]
 			segments = ["value_1", "value_2"]
-			topics = ["value_1", "value_2"]
 			report_suites = ["value_1", "value_2"]
 			elements = ["value_1", "value_2"]
 			metrics = ["value_1", "value_2"]
@@ -994,8 +991,6 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "named_range", "range")
 			assertKeyExistsAndHasValue(t, config, "auth_type", "OAuth")
 
-			// commented for now assertKeyExistsAndHasValue(t, config, "oauth_token", "oauth_token")
-			// assertKeyExistsAndHasValue(t, config, "oauth_token_secret", "oauth_token_secret")
 			assertKeyExistsAndHasValue(t, config, "consumer_key", "consumer_key")
 			assertKeyExistsAndHasValue(t, config, "client_secret", "client_secret")
 			assertKeyExistsAndHasValue(t, config, "private_key", "private_key")
@@ -1060,7 +1055,6 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "post_click_attribution_window_size", "post_click_attribution_window_size")
 			assertKeyExistsAndHasValue(t, config, "update_method", "update_method")
 			assertKeyExistsAndHasValue(t, config, "swipe_attribution_window", "swipe_attribution_window")
-			//assertKeyExistsAndHasValue(t, config, "api_type", "api_type")
 			assertKeyExistsAndHasValue(t, config, "sync_format", "sync_format")
 			assertKeyExistsAndHasValue(t, config, "app_sync_mode", "app_sync_mode")
 			assertKeyExistsAndHasValue(t, config, "sales_account_sync_mode", "sales_account_sync_mode")
@@ -1083,7 +1077,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "agent_port", float64(0))
 			assertKeyExistsAndHasValue(t, config, "tunnel_port", float64(0))
 			assertKeyExistsAndHasValue(t, config, "api_quota", float64(0))
-			//assertKeyExistsAndHasValue(t, config, "daily_api_call_limit", float64(0))
+			assertKeyExistsAndHasValue(t, config, "network_code", float64(0))
 
 			assertKeyExistsAndHasValue(t, config, "group_name", "group_name")
 			assertKeyExistsAndHasValue(t, config, "pdb_name", "pdb_name")
@@ -1120,7 +1114,6 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "auth_mode", "auth_mode")
 			assertKeyExistsAndHasValue(t, config, "certificate", "certificate")
 			assertKeyExistsAndHasValue(t, config, "consumer_group", "consumer_group")
-			//			assertKeyExistsAndHasValue(t, config, "servers", "servers")
 			assertKeyExistsAndHasValue(t, config, "message_type", "message_type")
 			assertKeyExistsAndHasValue(t, config, "sync_type", "sync_type")
 			assertKeyExistsAndHasValue(t, config, "security_protocol", "security_protocol")
@@ -1146,7 +1139,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "subdomain", "subdomain")
 			assertKeyExistsAndHasValue(t, config, "host", "host")
 			assertKeyExistsAndHasValue(t, config, "user", "user")
-			//			assertKeyExistsAndHasValue(t, config, "network_code", "network_code")
+
 			assertKeyExistsAndHasValue(t, config, "customer_id", "customer_id")
 			assertKeyExistsAndHasValue(t, config, "project_id", "project_id")
 			assertKeyExistsAndHasValue(t, config, "dataset_id", "dataset_id")
@@ -1319,8 +1312,8 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExists(t, config, "segments")
 			assertArrayItems(t, config["segments"].([]interface{}), append(make([]interface{}, 0), "segment"))
 
-			assertKeyExists(t, config, "topics")
-			assertArrayItems(t, config["topics"].([]interface{}), append(make([]interface{}, 0), "topic"))
+			// assertKeyExists(t, config, "topics")
+			// assertArrayItems(t, config["topics"].([]interface{}), append(make([]interface{}, 0), "topic"))
 
 			// assertKeyExists(t, config, "servers")
 			// assertArrayItems(t, config["servers"].([]interface{}), append(make([]interface{}, 0), "server"))
@@ -1515,9 +1508,6 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
 
 			// check sensitive fields are have original values
-			// commented for now resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.oauth_token", "oauth_token"),
-			// commented for now resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.oauth_token_secret", "oauth_token_secret"),
-
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.consumer_key", "consumer_key"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.client_secret", "client_secret"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.private_key", "private_key"),

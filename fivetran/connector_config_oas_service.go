@@ -2,7 +2,6 @@ package fivetran
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -133,19 +132,6 @@ func getServiceSchema(path string) map[string]*gabs.Container {
 	return shemasJson.Path(path).ChildrenMap()
 }
 
-func convert(m map[interface{}]interface{}) map[string]interface{} {
-	res := map[string]interface{}{}
-	for k, v := range m {
-		switch v2 := v.(type) {
-		case map[interface{}]interface{}:
-			res[fmt.Sprint(k)] = convert(v2)
-		default:
-			res[fmt.Sprint(k)] = v
-		}
-	}
-	return res
-}
-
 func createFields(nodesMap map[string]*gabs.Container) map[string]*schema.Schema {
 	fields := make(map[string]*schema.Schema)
 
@@ -188,6 +174,7 @@ func getArrayFieldSchema(node *gabs.Container) *schema.Schema {
 	arraySchema := &schema.Schema{
 		Type:     schema.TypeList,
 		Optional: true,
+		Computed: true,
 		Elem: &schema.Schema{
 			Type: schema.TypeString,
 		}}

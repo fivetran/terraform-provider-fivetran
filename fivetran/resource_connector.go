@@ -81,7 +81,7 @@ func resourceConnectorCreate(ctx context.Context, resourceData *schema.ResourceD
 	createConnectorService.Auth(resourceConnectorCreateAuth(resourceData.Get("auth").([]interface{})))
 	createConnectorService.AuthCustom(resourceConnectorUpdateCustomAuth(resourceData))
 
-	resp, err := createConnectorService.DoCustomMerged(ctx)
+	resp, err := createConnectorService.DoCustom(ctx)
 	if err != nil {
 		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
@@ -163,7 +163,7 @@ func resourceConnectorUpdate(ctx context.Context, resourceData *schema.ResourceD
 	modifyConnectorService.Auth(resourceConnectorCreateAuth(resourceData.Get("auth").([]interface{})))
 	modifyConnectorService.AuthCustom(resourceConnectorUpdateCustomAuth(resourceData))
 
-	resp, err := modifyConnectorService.DoCustomMerged(ctx)
+	resp, err := modifyConnectorService.DoCustom(ctx)
 	if err != nil {
 		// resourceConnectorRead here makes sure the state is updated after a NewConnectorModify error.
 		diags = resourceConnectorRead(ctx, resourceData, clientInterface)

@@ -31,10 +31,16 @@ func getConnectorSchema(readonly bool, version int) map[string]*schema.Schema {
 	}
 
 	if version == 0 {
+		// Sensitive config fields, Fivetran returns this fields masked
+		result["oauth_token"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Sensitive: true, Computed: readonly}
+		result["oauth_token_secret"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Sensitive: true, Computed: readonly}
+
 		// Computed
 		result["succeeded_at"] = &schema.Schema{Type: schema.TypeString, Computed: true}
 		result["failed_at"] = &schema.Schema{Type: schema.TypeString, Computed: true}
 		result["service_version"] = &schema.Schema{Type: schema.TypeString, Computed: true}
+		result["api_type"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: true}
+		result["daily_api_call_limit"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: true}
 
 		// Optional with default values in upstream
 		result["sync_frequency"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: true}    // Default: 360
