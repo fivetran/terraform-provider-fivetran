@@ -1,21 +1,17 @@
 package fivetran
 
 import (
-	"encoding/json"
-	"io/ioutil"
-	"log"
+	"fmt"
 	"os"
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/icza/dyno"
-	"gopkg.in/yaml.v2"
 )
 
 const SCHEMAS_PATH = "components.schemas."
 const PROPERTIES_PATH = ".properties.config.properties"
 const SERVICES_FILE_PATH = "/services.json"
-const SCHEMAS_FILE_PATH = "/oas.yaml"
+const SCHEMAS_FILE_PATH = "/open-api-spec.json"
 
 const OBJECT_FIELD = "object"
 const INT_FIELD = "integer"
@@ -74,6 +70,9 @@ func getFields() map[string]*schema.Schema {
 
 	for _, service := range services {
 		path := SCHEMAS_PATH + service + PROPERTIES_PATH
+		if service == "azure_service_bus_config_V1" {
+			fmt.Println("azure_service_bus_config_V1 is now")
+		}
 		serviceSchema := getServiceSchema(path)
 		serviceFields := createFields(serviceSchema)
 		for property, value := range serviceFields {
@@ -108,23 +107,8 @@ func getAvailableServiceIds() []string {
 }
 
 func getServiceSchema(path string) map[string]*gabs.Container {
-	yamlFile, err := ioutil.ReadFile("oas.yaml")
-	if err != nil {
-		log.Printf("yamlFile.Get err   #%v ", err)
-	}
-	m := make(map[interface{}]interface{})
-	err = yaml.Unmarshal(yamlFile, &m)
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	m2 := dyno.ConvertMapI2MapS(m)
-	data, err := json.Marshal(m2)
-	if err != nil {
-		panic(err)
-	}
-	//pwd, _ := os.Getwd()
-	//shemasJson, err := gabs.ParseJSONFile(pwd + SCHEMAS_FILE_PATH)
-	shemasJson, err := gabs.ParseJSON(data)
+	pwd, _ := os.Getwd()
+	shemasJson, err := gabs.ParseJSONFile(pwd + SCHEMAS_FILE_PATH)
 	if err != nil {
 		panic(err)
 	}
