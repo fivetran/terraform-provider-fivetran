@@ -111,9 +111,11 @@ func getConnectorReadCustomConfig(resp *fivetran.ConnectorCustomDetailsResponse,
 
 func populateOriginConfigFromResponse(originConfig map[string]interface{}, responseConfig map[string]interface{}) map[string]interface{} {
 	for responseProperty, value := range responseConfig {
-		if responseProperty == "project_credentials" && originConfig[responseProperty] != nil {
-			// Hack for project_credentials property
-			continue
+		if originConfig[responseProperty] != nil {
+			if valueSet, ok := originConfig[responseProperty].(*schema.Set); ok {
+				originConfig[responseProperty] = valueSet.List()
+				continue
+			}
 		}
 
 		reflectedValue := reflect.ValueOf(value)
@@ -122,7 +124,8 @@ func populateOriginConfigFromResponse(originConfig map[string]interface{}, respo
 			for i := 0; i < reflectedValue.Len(); i++ {
 				valueArray = append(valueArray, reflectedValue.Index(i).Interface())
 			}
-			if isMaskedValue(valueArray, originConfig, responseProperty) {
+
+			if originConfig[responseProperty] != nil && isMaskedValue(valueArray, originConfig, responseProperty) {
 				continue
 			}
 			originConfig[responseProperty] = valueArray
@@ -137,8 +140,10 @@ func populateOriginConfigFromResponse(originConfig map[string]interface{}, respo
 
 func isMaskedValue(valueArray []interface{}, originConfig map[string]interface{}, responseProperty string) bool {
 	if valueMap, ok := valueArray[0].(map[string]interface{}); ok {
-		if valueMap["value"] == MASKED_VALUE && originConfig[responseProperty] != nil {
-			return true
+		for _, value := range valueMap {
+			if value == MASKED_VALUE {
+				return true
+			}
 		}
 	}
 	if valueStringArray, ok := valueArray[0].([]string); ok {

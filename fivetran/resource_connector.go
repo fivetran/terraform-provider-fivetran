@@ -216,9 +216,6 @@ func createConfig(responseConfig map[string]interface{}, fields map[string]*sche
 	config := make(map[string]interface{})
 
 	for fieldName, fieldSchema := range fields {
-		if fieldName == "custom_tables" {
-			fmt.Printf("custom_tables")
-		}
 		if _, ok := responseConfig[fieldName]; !ok {
 			continue
 		}

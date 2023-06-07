@@ -1,7 +1,6 @@
 package fivetran
 
 import (
-	"fmt"
 	"os"
 	"strings"
 
@@ -48,6 +47,7 @@ var sensitiveFields = map[string]bool{
 	"agent_password":     true,
 	"asm_password":       true,
 	"login_password":     true,
+	"value":              true,
 }
 
 func getConnectorSchemaConfig() *schema.Schema {
@@ -76,9 +76,6 @@ func getFields() map[string]*schema.Schema {
 		serviceSchema := schemaJson.Path(path).ChildrenMap()
 		serviceFields := createFields(serviceSchema)
 		for property, value := range serviceFields {
-			if property == "reports" {
-				fmt.Println("reports is now")
-			}
 			if existingValue, ok := fields[property]; ok {
 				if existingValue.Type != value.Type {
 					property = service + property
@@ -90,9 +87,6 @@ func getFields() map[string]*schema.Schema {
 							property = service + "." + property
 						}
 					}
-					// if _, ok := existingValue.Elem.(map[string]*schema.Schema); ok {
-					// 	continue
-					// }
 					value, ok = updateExistingValue(existingValue, value)
 					if !ok {
 						property = strings.ToLower(service + "_" + property)
@@ -138,6 +132,7 @@ func createFields(nodesMap map[string]*gabs.Container) map[string]*schema.Schema
 		if _, ok := sensitiveFields[key]; ok {
 			fields[key] = &schema.Schema{
 				Type:      schema.TypeString,
+				Computed:  true,
 				Optional:  true,
 				Sensitive: true}
 			continue
