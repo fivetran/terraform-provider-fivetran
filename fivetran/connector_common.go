@@ -97,7 +97,9 @@ func getConnectorSchemaStatus() *schema.Schema {
 		},
 	}
 
-	return &schema.Schema{Type: schema.TypeList, Computed: true,
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		Computed: true,
 		Elem: &schema.Resource{
 			Schema: result,
 		},

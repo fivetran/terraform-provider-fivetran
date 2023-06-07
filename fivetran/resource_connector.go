@@ -215,10 +215,15 @@ func createConfig(responseConfig map[string]interface{}, fields map[string]*sche
 	config := make(map[string]interface{})
 
 	for fieldName, fieldSchema := range fields {
+		if fieldName == "reports" {
+			fmt.Printf("reports are now")
+		}
+		if _, ok := responseConfig[fieldName]; !ok {
+			continue
+		}
 
 		if fieldSchema.Type == schema.TypeSet || fieldSchema.Type == schema.TypeList {
-
-			if values := responseConfig[fieldName].([]interface{}); len(values) > 0 {
+			if values := responseConfig[fieldName].(*schema.Set).List(); len(values) > 0 {
 				if mapValues, ok := values[0].(map[string]interface{}); ok {
 					for childPropertyKey, _ := range mapValues {
 						if childPropertyValues, ok := mapValues[childPropertyKey].(*schema.Set); ok && len(childPropertyValues.List()) > 0 {
@@ -232,12 +237,6 @@ func createConfig(responseConfig map[string]interface{}, fields map[string]*sche
 					config[fieldName] = xInterfaceStrXStr(values)
 				}
 				continue
-			}
-
-			if values, ok := responseConfig[fieldName].(*schema.Set); ok {
-				setValues := values.List()
-
-				fmt.Printf("this property is now:%v", setValues)
 			}
 
 			if values, ok := responseConfig[fieldName].([]string); ok {

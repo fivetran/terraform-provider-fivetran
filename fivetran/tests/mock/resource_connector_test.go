@@ -846,15 +846,15 @@ const (
         "config": {
 			"packed_mode_tables":["packed_mode_table_3", "packed_mode_table_2", "packed_mode_table_1"],
 			"properties":["property_2", "property_1"],
-			"app_ids": ["app_id_2", "app_id_1"],
-			"conversion_dimensions": ["conversion_dimension_2", "conversion_dimension_1"],
-			"custom_floodlight_variables": ["custom_floodlight_variable_2", "custom_floodlight_variable_1"],
-			"partners": ["partner_2", "partners_1"],
-			"per_interaction_dimensions": ["per_interaction_dimension_2", "per_interaction_dimension_1"],
-			"schema_registry_urls": ["schema_registry_url_2", "schema_registry_url_1"],
-			"servers": ["server_2", "server_1"],
-			"segments": ["segment_2", "segment_1"],
-			"topics": ["topic_2", "topic_1],
+			"app_ids": ["value_2", "value_1"],
+			"conversion_dimensions": ["value_2", "value_1"],
+			"custom_floodlight_variables": ["value_2", "value_1"],
+			"partners": ["value_2", "value_1"],
+			"per_interaction_dimensions": ["value_2", "value_1"],
+			"schema_registry_urls": ["value_2", "value_1"],
+			"servers": ["value_2", "value_1"],
+			"segments": ["value_2", "value_1"],
+			"topics": ["topic_2", "topic_1"],
 			"primary_keys":["primary_key_2", "primary_key_1"],
 			"report_suites": ["value_2", "value_1"],
 			"elements": ["value_2", "value_1"],
@@ -1304,11 +1304,11 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExists(t, config, "segments")
 			assertArrayItems(t, config["segments"].([]interface{}), append(make([]interface{}, 0), "segment"))
 
-			// i dont have it in response config, ask vitaly for tip assertKeyExists(t, config, "topics")
-			// i dont have it in response config, ask vitaly for tip assertArrayItems(t, config["topics"].([]interface{}), append(make([]interface{}, 0), "topic"))
+			// assertKeyExists(t, config, "topics")
+			// assertArrayItems(t, config["topics"].([]interface{}), append(make([]interface{}, 0), "topic"))
 
-			// i dont have it in response config, ask vitaly for tip assertKeyExists(t, config, "servers")
-			// i dont have it in response config, ask vitaly for tip assertArrayItems(t, config["servers"].([]interface{}), append(make([]interface{}, 0), "server"))
+			assertKeyExists(t, config, "servers")
+			assertArrayItems(t, config["servers"].([]interface{}), append(make([]interface{}, 0), "server"))
 
 			assertKeyExists(t, config, "adobe_analytics_configurations")
 

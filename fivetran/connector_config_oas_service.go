@@ -3,6 +3,7 @@ package fivetran
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -66,22 +67,36 @@ func getConnectorSchemaConfig() *schema.Schema {
 func getFields() map[string]*schema.Schema {
 	services := getAvailableServiceIds()
 
-	fields := make(map[string]*schema.Schema)
+	schemaJson := getSchemaJson()
 
+	fields := make(map[string]*schema.Schema)
 	for _, service := range services {
 		path := SCHEMAS_PATH + service + PROPERTIES_PATH
-		if service == "azure_service_bus_config_V1" {
-			fmt.Println("azure_service_bus_config_V1 is now")
-		}
-		serviceSchema := getServiceSchema(path)
+
+		serviceSchema := schemaJson.Path(path).ChildrenMap()
 		serviceFields := createFields(serviceSchema)
 		for property, value := range serviceFields {
+			if property == "reports" {
+				fmt.Println("reports is now")
+			}
 			if existingValue, ok := fields[property]; ok {
-				if existingValue.Type == schema.TypeList {
-					if _, ok := existingValue.Elem.(map[string]*schema.Schema); ok {
-						continue
+				if existingValue.Type != value.Type {
+					property = service + property
+				} else if existingValue.Type == schema.TypeSet {
+					if _, ok := value.Elem.([]string); ok {
+						if _, ok := existingValue.Elem.([]string); ok {
+
+						} else {
+							property = service + "." + property
+						}
 					}
-					value = updateExistingValue(existingValue, value)
+					// if _, ok := existingValue.Elem.(map[string]*schema.Schema); ok {
+					// 	continue
+					// }
+					value, ok = updateExistingValue(existingValue, value)
+					if !ok {
+						property = strings.ToLower(service + "_" + property)
+					}
 				}
 			}
 			fields[property] = value
@@ -106,14 +121,14 @@ func getAvailableServiceIds() []string {
 	return services
 }
 
-func getServiceSchema(path string) map[string]*gabs.Container {
+func getSchemaJson() *gabs.Container {
 	pwd, _ := os.Getwd()
-	shemasJson, err := gabs.ParseJSONFile(pwd + SCHEMAS_FILE_PATH)
+	shemaJson, err := gabs.ParseJSONFile(pwd + SCHEMAS_FILE_PATH)
 	if err != nil {
 		panic(err)
 	}
 
-	return shemasJson.Path(path).ChildrenMap()
+	return shemaJson
 }
 
 func createFields(nodesMap map[string]*gabs.Container) map[string]*schema.Schema {
@@ -156,7 +171,7 @@ func getArrayFieldSchema(node *gabs.Container) *schema.Schema {
 	childrenMap := node.Path("items.properties").ChildrenMap()
 
 	arraySchema := &schema.Schema{
-		Type:     schema.TypeList,
+		Type:     schema.TypeSet,
 		Optional: true,
 		Computed: true,
 		Elem: &schema.Schema{
@@ -174,14 +189,15 @@ func getArrayFieldSchema(node *gabs.Container) *schema.Schema {
 	return arraySchema
 }
 
-func updateExistingValue(existingValue *schema.Schema, newValue *schema.Schema) *schema.Schema {
+func updateExistingValue(existingValue *schema.Schema, newValue *schema.Schema) (*schema.Schema, bool) {
 	if existingSchemaResourceValue, ok := existingValue.Elem.(*schema.Resource); ok {
 		if newSchemaResourceValue, ok := newValue.Elem.(*schema.Resource); ok {
 			for newSchemaResourceKey, newSchemaResourceValue := range newSchemaResourceValue.Schema {
 				existingSchemaResourceValue.Schema[newSchemaResourceKey] = newSchemaResourceValue
 			}
 			existingValue.Elem = existingSchemaResourceValue
+			return existingValue, true
 		}
 	}
-	return existingValue
+	return existingValue, false
 }

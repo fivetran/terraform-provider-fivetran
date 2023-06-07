@@ -12688,6 +12688,16 @@
                                 "type": "string",
                                 "description": "API Secret"
                             },
+                            "servers": {
+                                "title": "",
+                                "type": "array",
+                                "description": "Comma-separated list of Kafka servers in the format `server:port`.",
+                                "items": {
+                                    "title": "",
+                                    "type": "string",
+                                    "description": "Comma-separated list of Kafka servers in the format `server:port`."
+                                }
+                            },
                             "sasl_plain_key": {
                                 "title": "",
                                 "type": "string",
@@ -13400,6 +13410,16 @@
                                 "title": "",
                                 "type": "string",
                                 "description": "The name of consumer group created for Fivetran."
+                            },
+                            "servers": {
+                                "title": "",
+                                "type": "array",
+                                "description": "Comma-separated list of Kafka servers in the `server:port` format.",
+                                "items": {
+                                    "title": "",
+                                    "type": "string",
+                                    "description": "Comma-separated list of Kafka servers in the `server:port` format."
+                                }
                             },
                             "sync_type": {
                                 "title": "",
@@ -15076,6 +15096,16 @@
                                 "title": "",
                                 "type": "string",
                                 "description": "Confluent Cloud consumer group name."
+                            },
+                            "servers": {
+                                "title": "",
+                                "type": "array",
+                                "description": "Comma-separated list of Confluent Cloud servers in the format `server:port`.",
+                                "items": {
+                                    "title": "",
+                                    "type": "string",
+                                    "description": "Comma-separated list of Confluent Cloud servers in the format `server:port`."
+                                }
                             },
                             "sync_type": {
                                 "title": "",
@@ -20331,6 +20361,16 @@
                                 "type": "string",
                                 "description": "Heroku Kafka consumer group name."
                             },
+                            "servers": {
+                                "title": "",
+                                "type": "array",
+                                "description": "Comma-separated list of Heroku Kafka servers in the format `server:port`.",
+                                "items": {
+                                    "title": "",
+                                    "type": "string",
+                                    "description": "Comma-separated list of Heroku Kafka servers in the format `server:port`."
+                                }
+                            },
                             "sync_type": {
                                 "title": "",
                                 "type": "object",
@@ -21335,6 +21375,16 @@
                                 "title": "Destination schema",
                                 "type": "string",
                                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+                            },
+                            "reports": {
+                                "title": "",
+                                "type": "array",
+                                "description": "Specific analytics reports to sync. Must be populated if adAnalytics is set to 'SpecificReports'.",
+                                "items": {
+                                    "title": "",
+                                    "type": "string",
+                                    "description": "Specific analytics reports to sync. Must be populated if adAnalytics is set to 'SpecificReports'."
+                                }
                             },
                             "post_click_attribution_window_size": {
                                 "title": "",
