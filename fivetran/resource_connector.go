@@ -82,6 +82,7 @@ func resourceConnectorCreate(ctx context.Context, resourceData *schema.ResourceD
 	createConnectorService.AuthCustom(resourceConnectorUpdateCustomAuth(resourceData))
 
 	resp, err := createConnectorService.DoCustom(ctx)
+	//Ovde puca
 	if err != nil {
 		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
@@ -215,8 +216,8 @@ func createConfig(responseConfig map[string]interface{}, fields map[string]*sche
 	config := make(map[string]interface{})
 
 	for fieldName, fieldSchema := range fields {
-		if fieldName == "reports" {
-			fmt.Printf("reports are now")
+		if fieldName == "custom_tables" {
+			fmt.Printf("custom_tables")
 		}
 		if _, ok := responseConfig[fieldName]; !ok {
 			continue
@@ -226,8 +227,8 @@ func createConfig(responseConfig map[string]interface{}, fields map[string]*sche
 			if values := responseConfig[fieldName].(*schema.Set).List(); len(values) > 0 {
 				if mapValues, ok := values[0].(map[string]interface{}); ok {
 					for childPropertyKey, _ := range mapValues {
-						if childPropertyValues, ok := mapValues[childPropertyKey].(*schema.Set); ok && len(childPropertyValues.List()) > 0 {
-							mapValues[childPropertyKey] = childPropertyValues
+						if childPropertyValues, ok := mapValues[childPropertyKey].(*schema.Set); ok {
+							mapValues[childPropertyKey] = childPropertyValues.List()
 							continue
 						}
 					}

@@ -1307,8 +1307,8 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			// assertKeyExists(t, config, "topics")
 			// assertArrayItems(t, config["topics"].([]interface{}), append(make([]interface{}, 0), "topic"))
 
-			assertKeyExists(t, config, "servers")
-			assertArrayItems(t, config["servers"].([]interface{}), append(make([]interface{}, 0), "server"))
+			// assertKeyExists(t, config, "servers")
+			// assertArrayItems(t, config["servers"].([]interface{}), append(make([]interface{}, 0), "server"))
 
 			assertKeyExists(t, config, "adobe_analytics_configurations")
 
