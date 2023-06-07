@@ -125,9 +125,6 @@ func populateOriginConfigFromResponse(originConfig map[string]interface{}, respo
 				valueArray = append(valueArray, reflectedValue.Index(i).Interface())
 			}
 
-			if originConfig[responseProperty] != nil && isMaskedValue(valueArray, originConfig, responseProperty) {
-				continue
-			}
 			originConfig[responseProperty] = valueArray
 			continue
 		}
@@ -136,20 +133,4 @@ func populateOriginConfigFromResponse(originConfig map[string]interface{}, respo
 		}
 	}
 	return originConfig
-}
-
-func isMaskedValue(valueArray []interface{}, originConfig map[string]interface{}, responseProperty string) bool {
-	if valueMap, ok := valueArray[0].(map[string]interface{}); ok {
-		for _, value := range valueMap {
-			if value == MASKED_VALUE {
-				return true
-			}
-		}
-	}
-	if valueStringArray, ok := valueArray[0].([]string); ok {
-		if valueStringArray[0] == MASKED_VALUE {
-			return true
-		}
-	}
-	return false
 }
