@@ -350,7 +350,7 @@ func getFieldSchema(isDataSourceSchema bool, field *configField) *schema.Schema 
 		if field.fieldValueType == StringList {
 			return &schema.Schema{Type: schema.TypeSet, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}}
 		}
-		return &schema.Schema{Type: schema.TypeString, Computed: true}
+		return &schema.Schema{Type: getSchemaTypeByFieldType(field.fieldValueType), Computed: true}
 	}
 
 	if field.fieldValueType == StringList {
@@ -381,11 +381,22 @@ func getFieldSchema(isDataSourceSchema bool, field *configField) *schema.Schema 
 		return result
 	}
 
-	return &schema.Schema{Type: schema.TypeString,
+	return &schema.Schema{Type: getSchemaTypeByFieldType(field.fieldValueType),
 		Optional:  !isDataSourceSchema,
 		Computed:  isDataSourceSchema || !field.nullable,
 		Sensitive: field.sensitive}
+}
 
+func getSchemaTypeByFieldType(fvt FieldValueType) schema.ValueType {
+	switch fvt {
+	case String:
+		return schema.TypeString
+	case Integer:
+		return schema.TypeInt
+	case Boolean:
+		return schema.TypeBool
+	}
+	return schema.TypeInvalid
 }
 
 func connectorSchemaConfig(readonly bool) *schema.Schema {

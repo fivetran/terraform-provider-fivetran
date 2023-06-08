@@ -37,17 +37,25 @@ func tryCopyStringValue(target, source map[string]interface{}, key string) {
 	}
 }
 
+func tryCopyValue(target, source map[string]interface{}, key string) {
+	if v, ok := source[key]; ok {
+		target[key] = v
+	}
+}
+
 // tryReadBooleanValue copies bool value from map `source` to map `target` if `key` represented in `source` map
 func tryCopyBooleanValue(target, source map[string]interface{}, key string) {
 	if v, ok := source[key].(bool); ok {
-		mapAddStr(target, key, boolToStr(v))
+		//mapAddStr(target, key, boolToStr(v))
+		target[key] = v
 	}
 }
 
 // tryReadIntegerValue copies int value from map `source` to map `target` if `key` represented in `source` map
 func tryCopyIntegerValue(target, source map[string]interface{}, key string) {
 	if v, ok := source[key].(float64); ok {
-		mapAddStr(target, key, strconv.Itoa((int(v))))
+		target[key] = int(v)
+		//mapAddStr(target, key, (int(v)))
 	}
 }
 
