@@ -76,7 +76,7 @@ func resourceConnectorCreate(ctx context.Context, resourceData *schema.ResourceD
 	createConnectorService.TrustFingerprints(strToBool(resourceData.Get("trust_fingerprints").(string)))
 	createConnectorService.RunSetupTests(strToBool(resourceData.Get("run_setup_tests").(string)))
 
-	createConnectorService.ConfigCustom(resourceConnectorUpdateCustomConfig(resourceData))
+	createConnectorService.ConfigCustom(resourceConnectorUpdateCustomConfig(resourceData, true))
 
 	createConnectorService.Auth(resourceConnectorCreateAuth(resourceData.Get("auth").([]interface{})))
 	createConnectorService.AuthCustom(resourceConnectorUpdateCustomAuth(resourceData))
@@ -160,7 +160,7 @@ func resourceConnectorUpdate(ctx context.Context, resourceData *schema.ResourceD
 		modifyConnectorService.DailySyncTime(resourceData.Get("daily_sync_time").(string))
 	}
 
-	modifyConnectorService.ConfigCustom(resourceConnectorUpdateCustomConfig(resourceData))
+	modifyConnectorService.ConfigCustom(resourceConnectorUpdateCustomConfig(resourceData, false))
 	modifyConnectorService.Auth(resourceConnectorCreateAuth(resourceData.Get("auth").([]interface{})))
 	modifyConnectorService.AuthCustom(resourceConnectorUpdateCustomAuth(resourceData))
 
@@ -193,7 +193,7 @@ func resourceConnectorDelete(ctx context.Context, resourceData *schema.ResourceD
 	return diags
 }
 
-func resourceConnectorUpdateCustomConfig(resourceData *schema.ResourceData) *map[string]interface{} {
+func resourceConnectorUpdateCustomConfig(resourceData *schema.ResourceData, create bool) *map[string]interface{} {
 	var resourceConfigs = resourceData.Get("config").([]interface{})
 
 	if len(resourceConfigs) < 1 {
@@ -208,6 +208,20 @@ func resourceConnectorUpdateCustomConfig(resourceData *schema.ResourceData) *map
 	fields := getFields()
 
 	config := createConfig(responseConfig, fields)
+
+	if create {
+		var destinationSchema = resourceData.Get("destination_schema").([]interface{})
+		schema := destinationSchema[0].(map[string]interface{})
+		if v := schema["name"].(string); v != "" {
+			config["schema"] = v
+		}
+		if v := schema["table"].(string); v != "" {
+			config["table"] = v
+		}
+		if v := schema["prefix"].(string); v != "" {
+			config["schema_prefix"] = v
+		}
+	}
 
 	return &config
 }

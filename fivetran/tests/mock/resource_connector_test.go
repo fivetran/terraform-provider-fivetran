@@ -430,10 +430,10 @@ const (
 			"custom_floodlight_variables": ["custom_floodlight_variable"],
 			"partners":                    ["partner"],
 			"per_interaction_dimensions":  ["per_interaction_dimension"],
+			"topics":                      ["topic"],
 			"schema_registry_urls":        ["schema_registry_url"],
 			"servers":                     ["server"],
 			"segments":                    ["segment"],
-			"topics":                      ["topic"],
 
 			"adobe_analytics_configurations": [{
 				"sync_mode": 			"sync_mode",
@@ -748,6 +748,8 @@ const (
 			per_interaction_dimensions = ["per_interaction_dimension"]
 			schema_registry_urls = ["schema_registry_url"]
 			segments = ["segment"]
+			topics = ["topic"]
+			servers = ["server"]
 
 			adobe_analytics_configurations {
 				sync_mode = "sync_mode"
@@ -852,9 +854,9 @@ const (
 			"partners": ["value_2", "value_1"],
 			"per_interaction_dimensions": ["value_2", "value_1"],
 			"schema_registry_urls": ["value_2", "value_1"],
+			"topics": ["value_2", "value_1"],
 			"servers": ["value_2", "value_1"],
 			"segments": ["value_2", "value_1"],
-			"topics": ["topic_2", "topic_1"],
 			"primary_keys":["primary_key_2", "primary_key_1"],
 			"report_suites": ["value_2", "value_1"],
 			"elements": ["value_2", "value_1"],
@@ -1304,11 +1306,11 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExists(t, config, "segments")
 			assertArrayItems(t, config["segments"].([]interface{}), append(make([]interface{}, 0), "segment"))
 
-			// assertKeyExists(t, config, "topics")
-			// assertArrayItems(t, config["topics"].([]interface{}), append(make([]interface{}, 0), "topic"))
+			assertKeyExists(t, config, "topics")
+			assertArrayItems(t, config["topics"].([]interface{}), append(make([]interface{}, 0), "topic"))
 
-			// assertKeyExists(t, config, "servers")
-			// assertArrayItems(t, config["servers"].([]interface{}), append(make([]interface{}, 0), "server"))
+			assertKeyExists(t, config, "servers")
+			assertArrayItems(t, config["servers"].([]interface{}), append(make([]interface{}, 0), "server"))
 
 			assertKeyExists(t, config, "adobe_analytics_configurations")
 
