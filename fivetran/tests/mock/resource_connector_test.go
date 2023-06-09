@@ -529,32 +529,32 @@ const (
 
 			sync_method = "sync_method"
 
-			is_ftps = "false"
-			sftp_is_key_pair = "false"
-			sync_data_locker = "false"
-			enable_all_dimension_combinations = "false"
-			update_config_on_each_sync = "false"
-			on_premise = "false"
-			is_new_package = "false"
-			is_multi_entity_feature_enabled = "false"
-			always_encrypted = "false"
-			is_secure = "false"
-			use_api_keys = "false"
-			use_webhooks = "false"
-			eu_region = "false"
-			is_keypair = "false"
-			is_account_level_connector = "false"
+			is_ftps = false
+			sftp_is_key_pair = false
+			sync_data_locker = false
+			enable_all_dimension_combinations = false
+			update_config_on_each_sync = false
+			on_premise = false
+			is_new_package = false
+			is_multi_entity_feature_enabled = false
+			always_encrypted = false
+			is_secure = false
+			use_api_keys = false
+			use_webhooks = false
+			eu_region = false
+			is_keypair = false
+			is_account_level_connector = false
 
-			conversion_window_size = "0"
-			skip_before = "0"
-			skip_after = "0"
-			ftp_port = "0"
-			sftp_port = "0"
-			port = "0"
-			tunnel_port = "0"
-			api_quota = "0"
+			conversion_window_size = 0
+			skip_before = 0
+			skip_after = 0
+			ftp_port = 0
+			sftp_port = 0
+			port = 0
+			tunnel_port = 0
+			api_quota = 0
 			
-			agent_port = "0"
+			agent_port = 0
 
 			pdb_name = "pdb_name"
 			agent_host = "agent_host"
