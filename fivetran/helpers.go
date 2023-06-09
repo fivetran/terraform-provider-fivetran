@@ -108,13 +108,13 @@ func intPointerToStr(i *int) string {
 }
 
 // xStrXInterface receives a []string and returns a []interface{}
-// func xStrXInterface(xs []string) []interface{} {
-// 	xi := make([]interface{}, len(xs))
-// 	for i, v := range xs {
-// 		xi[i] = v
-// 	}
-// 	return xi
-// }
+func xStrXInterface(xs []string) []interface{} {
+	xi := make([]interface{}, len(xs))
+	for i, v := range xs {
+		xi[i] = v
+	}
+	return xi
+}
 
 // xInterfaceStrXStr receives a []interface{} of type string and returns a []string
 func xInterfaceStrXStr(xi []interface{}) []string {

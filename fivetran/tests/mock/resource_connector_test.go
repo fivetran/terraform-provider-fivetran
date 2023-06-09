@@ -227,10 +227,10 @@ const (
 			"is_keypair":                        false,
 			"is_secure":                         false,
 			"use_api_keys":                      false,
-			"is_account_level_connector":        true,
+			"is_account_level_connector":        false,
 			"use_oracle_rac": 					 false,
 			"asm_option": 						 false,
-			"is_single_table_mode":              true,
+			"is_single_table_mode":              false,
 			"is_public":                         false,
 			"empty_header":                      false,
 			"support_nested_columns":            false,
@@ -283,6 +283,7 @@ const (
 			"api_quota":                            0,
 			"daily_api_call_limit":                 0,
 			"agent_port":                           0,
+			"network_code":                         0,
 
 			"public_key": 			"public_key",
 			"external_id": 			"external_id",
@@ -310,7 +311,6 @@ const (
 			"auth_mode":             "auth_mode",
 			"certificate":           "certificate",
 			"consumer_group":        "consumer_group",
-			"servers":               "servers",
 			"message_type":          "message_type",
 			"sync_type":             "sync_type",
 			"security_protocol":     "security_protocol",
@@ -336,7 +336,7 @@ const (
 			"host":                  "host",
 
 			"user":                 "user",
-			"network_code":         "network_code",
+			
 			"customer_id":          "customer_id",
 			"project_id":           "project_id",
 			"dataset_id":           "dataset_id",
@@ -393,38 +393,47 @@ const (
 			"csv_definition":       "csv_definition",
 			"export_storage_type":  "export_storage_type",
 
-			"report_suites":            ["report_suite"],
-			"elements":                 ["element"],
-			"metrics":                  ["metric"],
-			"advertisables":     		["advertisable"],
-			"dimensions": 				["dimension"],
-			"selected_exports": 		["selected_export"],
-			"apps": 					["app"],
-			"sales_accounts": 			["sales_account"],
-			"finance_accounts": 		["finance_account"],
-			"projects": 				["project"],
-			"user_profiles": 			["user_profile"],
-			"report_configuration_ids": ["report_configuration_id"],
-			"accounts": 				["account"],
-			"fields": 					["field"],
-			"breakdowns": 				["breakdown"],
-			"action_breakdowns": 		["action_breakdown"],
-			"pages": 					["page"],
-			"repositories": 			["repository"],
-			"dimension_attributes": 	["dimension_attribute"],
-			"columns": 					["column"],
-			"manager_accounts": 		["manager_account"],
-			"profiles": 				["profile"],
-			"site_urls": 				["site_url"],
-			"api_keys": 				["******"],
-			"advertisers_id": 			["advertiser_id"],
-			"hosts": 					["host"],
-			"advertisers": 				["advertiser"],
-			"organizations": 			["organization"],
-			"account_ids": 				["account_id"],
-			"packed_mode_tables":       ["packed_mode_table"],
-			"properties":               ["property"],
-			"primary_keys":             ["primary_key"],
+			"report_suites":               ["report_suite"],
+			"elements":                    ["element"],
+			"metrics":                     ["metric"],
+			"advertisables":     		   ["advertisable"],
+			"dimensions": 				   ["dimension"],
+			"selected_exports": 		   ["selected_export"],
+			"apps": 					   ["app"],
+			"sales_accounts": 			   ["sales_account"],
+			"finance_accounts": 		   ["finance_account"],
+			"projects": 				   ["project"],
+			"user_profiles": 			   ["user_profile"],
+			"report_configuration_ids":    ["report_configuration_id"],
+			"accounts": 				   ["account"],
+			"fields": 					   ["field"],
+			"breakdowns": 				   ["breakdown"],
+			"action_breakdowns": 		   ["action_breakdown"],
+			"pages": 					   ["page"],
+			"repositories": 			   ["repository"],
+			"dimension_attributes": 	   ["dimension_attribute"],
+			"columns": 					   ["column"],
+			"manager_accounts": 		   ["manager_account"],
+			"profiles": 				   ["profile"],
+			"site_urls": 				   ["site_url"],
+			"api_keys": 				   ["api_key"],
+			"advertisers_id": 			   ["advertiser_id"],
+			"hosts": 					   ["host"],
+			"advertisers": 				   ["advertiser"],
+			"organizations": 			   ["organization"],
+			"account_ids": 				   ["account_id"],
+			"packed_mode_tables":          ["packed_mode_table"],
+			"properties":                  ["property"],
+			"primary_keys":                ["primary_key"],
+			"app_ids":                     ["app_id"],
+			"conversion_dimensions":       ["conversion_dimension"],
+			"custom_floodlight_variables": ["custom_floodlight_variable"],
+			"partners":                    ["partner"],
+			"per_interaction_dimensions":  ["per_interaction_dimension"],
+			"topics":                      ["topic"],
+			"schema_registry_urls":        ["schema_registry_url"],
+			"servers":                     ["server"],
+			"segments":                    ["segment"],
 
 			"adobe_analytics_configurations": [{
 				"sync_mode": 			"sync_mode",
@@ -443,6 +452,8 @@ const (
 				"dimensions": 		["dimension"],
 				"metrics": 			["metric"],
 				"segments": 		["segment"],
+				"search_types":     ["search_type"],
+				"segment_ids":      ["segment_id"],
 				"filter": 			"filter"
 			}],
 			"custom_tables": [{
@@ -490,9 +501,7 @@ const (
 			sheet_id = "sheet_id"
 			named_range = "range"
 			auth_type = "OAuth"
-
-			oauth_token = "oauth_token" 
-			oauth_token_secret = "oauth_token_secret"
+		
 			consumer_key = "consumer_key"
 			client_secret = "client_secret"
 			private_key = "private_key"
@@ -520,32 +529,32 @@ const (
 
 			sync_method = "sync_method"
 
-			is_ftps = "false"
-			sftp_is_key_pair = "false"
-			sync_data_locker = "false"
-			enable_all_dimension_combinations = "false"
-			update_config_on_each_sync = "false"
-			on_premise = "false"
-			is_new_package = "false"
-			is_multi_entity_feature_enabled = "false"
-			always_encrypted = "false"
-			is_secure = "false"
-			use_api_keys = "false"
-			use_webhooks = "false"
-			eu_region = "false"
-			is_keypair = "false"
-			is_account_level_connector = "true"
+			is_ftps = false
+			sftp_is_key_pair = false
+			sync_data_locker = false
+			enable_all_dimension_combinations = false
+			update_config_on_each_sync = false
+			on_premise = false
+			is_new_package = false
+			is_multi_entity_feature_enabled = false
+			always_encrypted = false
+			is_secure = false
+			use_api_keys = false
+			use_webhooks = false
+			eu_region = false
+			is_keypair = false
+			is_account_level_connector = false
 
-			conversion_window_size = "0"
-			skip_before = "0"
-			skip_after = "0"
-			ftp_port = "0"
-			sftp_port = "0"
-			port = "0"
-			tunnel_port = "0"
-			api_quota = "0"
-			daily_api_call_limit = "0"
-			agent_port = "0"
+			conversion_window_size = 0
+			skip_before = 0
+			skip_after = 0
+			ftp_port = 0
+			sftp_port = 0
+			port = 0
+			tunnel_port = 0
+			api_quota = 0
+			
+			agent_port = 0
 
 			pdb_name = "pdb_name"
 			agent_host = "agent_host"
@@ -555,7 +564,7 @@ const (
 			agent_ora_home = "agent_ora_home"
 			tns = "tns"
 			use_oracle_rac = "false"
-			is_single_table_mode = "true"
+			is_single_table_mode = "false"
 			is_public = "false"
 			empty_header = "false"
 			support_nested_columns = "false"
@@ -582,7 +591,7 @@ const (
 			post_click_attribution_window_size = "post_click_attribution_window_size"
 			update_method = "update_method"
 			swipe_attribution_window = "swipe_attribution_window"
-			api_type = "api_type"
+			
 			sync_format = "sync_format"
 			app_sync_mode = "app_sync_mode"
 			sales_account_sync_mode = "sales_account_sync_mode"
@@ -619,7 +628,7 @@ const (
 			auth_mode = "auth_mode"
 			certificate = "certificate"
 			consumer_group = "consumer_group"
-			servers = "servers"
+			
 			message_type = "message_type"
 			sync_type = "sync_type"
 			security_protocol = "security_protocol"
@@ -644,7 +653,7 @@ const (
 			host = "host"
 
 			user = "user"
-			network_code = "network_code"
+			
 			customer_id = "customer_id"
 			project_id = "project_id"
 			dataset_id = "dataset_id"
@@ -676,7 +685,7 @@ const (
 			data_center = "data_center"
 			sub_domain = "sub_domain"
 			subdomain = "subdomain"
-			test_table_name = "test_table_name"
+			
 			shop = "shop"
 			sid = "sid"
 			key = "key"
@@ -684,26 +693,24 @@ const (
 			user_name = "user_name"
 			username = "username"
 			report_url = "report_url"
-			unique_id = "unique_id"
+			
 			base_url = "base_url"
 			entity_id = "entity_id"
 			soap_uri = "soap_uri"
 			user_id = "user_id"
 			share_url = "share_url"
-			organization = "organization"
+			
 			access_key = "access_key"
 			domain_host_name = "domain_host_name"
 			client_name = "client_name"
 			domain_type = "domain_type"
 			connection_method = "connection_method"
 			company_id = "company_id"
-			environment = "environment"
+			
 			list_strategy = "list_strategy"
 			csv_definition = "csv_definition"
 			export_storage_type = "export_storage_type"
 
-			report_suites = ["report_suite"]
-			elements = ["element"]
 			metrics = ["metric"]
 			advertisables = ["advertisable"]
 			dimensions = ["dimension"]
@@ -734,6 +741,15 @@ const (
 			packed_mode_tables = ["packed_mode_table"]
 			properties = ["property"]
 			primary_keys = ["primary_key"]
+			app_ids = ["app_id"]
+			conversion_dimensions = ["conversion_dimension"]
+			custom_floodlight_variables = ["custom_floodlight_variable"]
+			partners = ["partner"]
+			per_interaction_dimensions = ["per_interaction_dimension"]
+			schema_registry_urls = ["schema_registry_url"]
+			segments = ["segment"]
+			topics = ["topic"]
+			servers = ["server"]
 
 			adobe_analytics_configurations {
 				sync_mode = "sync_mode"
@@ -743,6 +759,7 @@ const (
 				calculated_metrics = ["calculated_metric"]
 				segments = ["segment"]
 			}
+
 			reports {
 				table = "table"
 				config_type = "config_type"
@@ -752,8 +769,11 @@ const (
 				dimensions = ["dimension"]
 				metrics = ["metric"]
 				segments = ["segment"]
+				search_types = ["search_type"]
+				segment_ids = ["segment_id"]
 				filter = "filter"
 			}
+			
 			custom_tables {
 				table_name = "table_name"
 				config_type = "config_type"
@@ -828,6 +848,15 @@ const (
         "config": {
 			"packed_mode_tables":["packed_mode_table_3", "packed_mode_table_2", "packed_mode_table_1"],
 			"properties":["property_2", "property_1"],
+			"app_ids": ["value_2", "value_1"],
+			"conversion_dimensions": ["value_2", "value_1"],
+			"custom_floodlight_variables": ["value_2", "value_1"],
+			"partners": ["value_2", "value_1"],
+			"per_interaction_dimensions": ["value_2", "value_1"],
+			"schema_registry_urls": ["value_2", "value_1"],
+			"topics": ["value_2", "value_1"],
+			"servers": ["value_2", "value_1"],
+			"segments": ["value_2", "value_1"],
 			"primary_keys":["primary_key_2", "primary_key_1"],
 			"report_suites": ["value_2", "value_1"],
 			"elements": ["value_2", "value_1"],
@@ -882,8 +911,13 @@ const (
 			packed_mode_tables = ["packed_mode_table_1", "packed_mode_table_2", "packed_mode_table_3"]
 			properties = ["property_1", "property_2"]
 			primary_keys = ["primary_key_1", "primary_key_2"]
-			report_suites = ["value_1", "value_2"]
-			elements = ["value_1", "value_2"]
+			app_ids = ["value_1", "value_2"]
+			conversion_dimensions = ["value_1", "value_2"]
+			custom_floodlight_variables = ["value_1", "value_2"]
+			partners = ["value_1", "value_2"]
+			per_interaction_dimensions = ["value_1", "value_2"]
+			schema_registry_urls = ["value_1", "value_2"]
+			segments = ["value_1", "value_2"]
 			metrics = ["value_1", "value_2"]
 			advertisables = ["value_1", "value_2"]
 			dimensions = ["value_1", "value_2"]
@@ -961,8 +995,6 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "named_range", "range")
 			assertKeyExistsAndHasValue(t, config, "auth_type", "OAuth")
 
-			assertKeyExistsAndHasValue(t, config, "oauth_token", "oauth_token")
-			assertKeyExistsAndHasValue(t, config, "oauth_token_secret", "oauth_token_secret")
 			assertKeyExistsAndHasValue(t, config, "consumer_key", "consumer_key")
 			assertKeyExistsAndHasValue(t, config, "client_secret", "client_secret")
 			assertKeyExistsAndHasValue(t, config, "private_key", "private_key")
@@ -1004,10 +1036,10 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "is_secure", false)
 			assertKeyExistsAndHasValue(t, config, "use_api_keys", false)
 			assertKeyExistsAndHasValue(t, config, "is_keypair", false)
-			assertKeyExistsAndHasValue(t, config, "is_account_level_connector", true)
+			assertKeyExistsAndHasValue(t, config, "is_account_level_connector", false)
 			assertKeyExistsAndHasValue(t, config, "use_oracle_rac", false)
 			assertKeyExistsAndHasValue(t, config, "asm_option", false)
-			assertKeyExistsAndHasValue(t, config, "is_single_table_mode", true)
+			assertKeyExistsAndHasValue(t, config, "is_single_table_mode", false)
 			assertKeyExistsAndHasValue(t, config, "is_public", false)
 			assertKeyExistsAndHasValue(t, config, "empty_header", false)
 			assertKeyExistsAndHasValue(t, config, "support_nested_columns", false)
@@ -1027,7 +1059,6 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "post_click_attribution_window_size", "post_click_attribution_window_size")
 			assertKeyExistsAndHasValue(t, config, "update_method", "update_method")
 			assertKeyExistsAndHasValue(t, config, "swipe_attribution_window", "swipe_attribution_window")
-			assertKeyExistsAndHasValue(t, config, "api_type", "api_type")
 			assertKeyExistsAndHasValue(t, config, "sync_format", "sync_format")
 			assertKeyExistsAndHasValue(t, config, "app_sync_mode", "app_sync_mode")
 			assertKeyExistsAndHasValue(t, config, "sales_account_sync_mode", "sales_account_sync_mode")
@@ -1050,7 +1081,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "agent_port", float64(0))
 			assertKeyExistsAndHasValue(t, config, "tunnel_port", float64(0))
 			assertKeyExistsAndHasValue(t, config, "api_quota", float64(0))
-			assertKeyExistsAndHasValue(t, config, "daily_api_call_limit", float64(0))
+			assertKeyExistsAndHasValue(t, config, "network_code", float64(0))
 
 			assertKeyExistsAndHasValue(t, config, "group_name", "group_name")
 			assertKeyExistsAndHasValue(t, config, "pdb_name", "pdb_name")
@@ -1087,7 +1118,6 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "auth_mode", "auth_mode")
 			assertKeyExistsAndHasValue(t, config, "certificate", "certificate")
 			assertKeyExistsAndHasValue(t, config, "consumer_group", "consumer_group")
-			assertKeyExistsAndHasValue(t, config, "servers", "servers")
 			assertKeyExistsAndHasValue(t, config, "message_type", "message_type")
 			assertKeyExistsAndHasValue(t, config, "sync_type", "sync_type")
 			assertKeyExistsAndHasValue(t, config, "security_protocol", "security_protocol")
@@ -1113,7 +1143,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "subdomain", "subdomain")
 			assertKeyExistsAndHasValue(t, config, "host", "host")
 			assertKeyExistsAndHasValue(t, config, "user", "user")
-			assertKeyExistsAndHasValue(t, config, "network_code", "network_code")
+
 			assertKeyExistsAndHasValue(t, config, "customer_id", "customer_id")
 			assertKeyExistsAndHasValue(t, config, "project_id", "project_id")
 			assertKeyExistsAndHasValue(t, config, "dataset_id", "dataset_id")
@@ -1143,7 +1173,6 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "publication_name", "publication_name")
 			assertKeyExistsAndHasValue(t, config, "data_center", "data_center")
 			assertKeyExistsAndHasValue(t, config, "sub_domain", "sub_domain")
-			assertKeyExistsAndHasValue(t, config, "test_table_name", "test_table_name")
 			assertKeyExistsAndHasValue(t, config, "shop", "shop")
 			assertKeyExistsAndHasValue(t, config, "sid", "sid")
 			assertKeyExistsAndHasValue(t, config, "key", "key")
@@ -1151,29 +1180,20 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "user_name", "user_name")
 			assertKeyExistsAndHasValue(t, config, "username", "username")
 			assertKeyExistsAndHasValue(t, config, "report_url", "report_url")
-			assertKeyExistsAndHasValue(t, config, "unique_id", "unique_id")
 			assertKeyExistsAndHasValue(t, config, "base_url", "base_url")
 			assertKeyExistsAndHasValue(t, config, "entity_id", "entity_id")
 			assertKeyExistsAndHasValue(t, config, "soap_uri", "soap_uri")
 			assertKeyExistsAndHasValue(t, config, "user_id", "user_id")
 			assertKeyExistsAndHasValue(t, config, "share_url", "share_url")
-			assertKeyExistsAndHasValue(t, config, "organization", "organization")
 			assertKeyExistsAndHasValue(t, config, "access_key", "access_key")
 			assertKeyExistsAndHasValue(t, config, "domain_host_name", "domain_host_name")
 			assertKeyExistsAndHasValue(t, config, "client_name", "client_name")
 			assertKeyExistsAndHasValue(t, config, "domain_type", "domain_type")
 			assertKeyExistsAndHasValue(t, config, "connection_method", "connection_method")
 			assertKeyExistsAndHasValue(t, config, "company_id", "company_id")
-			assertKeyExistsAndHasValue(t, config, "environment", "environment")
 			assertKeyExistsAndHasValue(t, config, "list_strategy", "list_strategy")
 			assertKeyExistsAndHasValue(t, config, "csv_definition", "csv_definition")
 			assertKeyExistsAndHasValue(t, config, "export_storage_type", "export_storage_type")
-
-			assertKeyExists(t, config, "report_suites")
-			assertArrayItems(t, config["report_suites"].([]interface{}), append(make([]interface{}, 0), "report_suite"))
-
-			assertKeyExists(t, config, "elements")
-			assertArrayItems(t, config["elements"].([]interface{}), append(make([]interface{}, 0), "element"))
 
 			assertKeyExists(t, config, "metrics")
 			assertArrayItems(t, config["metrics"].([]interface{}), append(make([]interface{}, 0), "metric"))
@@ -1264,6 +1284,33 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 
 			assertKeyExists(t, config, "primary_keys")
 			assertArrayItems(t, config["primary_keys"].([]interface{}), append(make([]interface{}, 0), "primary_key"))
+
+			assertKeyExists(t, config, "app_ids")
+			assertArrayItems(t, config["app_ids"].([]interface{}), append(make([]interface{}, 0), "app_id"))
+
+			assertKeyExists(t, config, "conversion_dimensions")
+			assertArrayItems(t, config["conversion_dimensions"].([]interface{}), append(make([]interface{}, 0), "conversion_dimension"))
+
+			assertKeyExists(t, config, "custom_floodlight_variables")
+			assertArrayItems(t, config["custom_floodlight_variables"].([]interface{}), append(make([]interface{}, 0), "custom_floodlight_variable"))
+
+			assertKeyExists(t, config, "partners")
+			assertArrayItems(t, config["partners"].([]interface{}), append(make([]interface{}, 0), "partner"))
+
+			assertKeyExists(t, config, "per_interaction_dimensions")
+			assertArrayItems(t, config["per_interaction_dimensions"].([]interface{}), append(make([]interface{}, 0), "per_interaction_dimension"))
+
+			assertKeyExists(t, config, "schema_registry_urls")
+			assertArrayItems(t, config["schema_registry_urls"].([]interface{}), append(make([]interface{}, 0), "schema_registry_url"))
+
+			assertKeyExists(t, config, "segments")
+			assertArrayItems(t, config["segments"].([]interface{}), append(make([]interface{}, 0), "segment"))
+
+			assertKeyExists(t, config, "topics")
+			assertArrayItems(t, config["topics"].([]interface{}), append(make([]interface{}, 0), "topic"))
+
+			assertKeyExists(t, config, "servers")
+			assertArrayItems(t, config["servers"].([]interface{}), append(make([]interface{}, 0), "server"))
 
 			assertKeyExists(t, config, "adobe_analytics_configurations")
 
@@ -1455,8 +1502,6 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
 
 			// check sensitive fields are have original values
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.oauth_token", "oauth_token"),
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.oauth_token_secret", "oauth_token_secret"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.consumer_key", "consumer_key"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.client_secret", "client_secret"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.private_key", "private_key"),
@@ -1567,7 +1612,7 @@ func TestResourceConnectorUpdateMock(t *testing.T) {
 				user = "user1"
 				password = "password1"
 				host = "host"
-				port = "123"
+				port = "0"
 			}
 		}
 

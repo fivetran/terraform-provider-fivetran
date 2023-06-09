@@ -10,8 +10,7 @@ const (
 	CONNECTOR_ID = "connector_id"
 )
 
-func connectorSchema(readonly bool, version int) map[string]*schema.Schema {
-
+func getConnectorSchema(readonly bool, version int) map[string]*schema.Schema {
 	// Common for Resource and Datasource
 	var result = map[string]*schema.Schema{
 		// Id
@@ -25,17 +24,23 @@ func connectorSchema(readonly bool, version int) map[string]*schema.Schema {
 		// Required
 		"group_id":           {Type: schema.TypeString, Required: !readonly, ForceNew: !readonly, Computed: readonly},
 		"service":            {Type: schema.TypeString, Required: !readonly, ForceNew: !readonly, Computed: readonly},
-		"destination_schema": connectorDestinationSchemaSchema(readonly),
+		"destination_schema": getConnectorDestinationSchema(readonly),
 
 		// Config
-		"config": connectorSchemaConfig(readonly),
+		"config": getConnectorSchemaConfig(),
 	}
 
 	if version == 0 {
+		// Sensitive config fields, Fivetran returns this fields masked
+		result["oauth_token"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Sensitive: true, Computed: readonly}
+		result["oauth_token_secret"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Sensitive: true, Computed: readonly}
+
 		// Computed
 		result["succeeded_at"] = &schema.Schema{Type: schema.TypeString, Computed: true}
 		result["failed_at"] = &schema.Schema{Type: schema.TypeString, Computed: true}
 		result["service_version"] = &schema.Schema{Type: schema.TypeString, Computed: true}
+		result["api_type"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: true}
+		result["daily_api_call_limit"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: true}
 
 		// Optional with default values in upstream
 		result["sync_frequency"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: true}    // Default: 360
@@ -44,12 +49,20 @@ func connectorSchema(readonly bool, version int) map[string]*schema.Schema {
 		result["pause_after_trial"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: true} // Default: false
 		// Optional nullable in upstream
 		result["daily_sync_time"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: readonly}
-		result["status"] = connectorSchemaStatus()
+		result["test_table_name"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: readonly}
+		result["unique_id"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: readonly}
+		result["organization"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: readonly}
+		result["environment"] = &schema.Schema{Type: schema.TypeString, Optional: !readonly, Computed: readonly}
+		result["status"] = getConnectorSchemaStatus()
+
+		// String collections
+		result["report_suites"] = &schema.Schema{Type: schema.TypeSet, Optional: !readonly, Computed: readonly, Elem: &schema.Schema{Type: schema.TypeString}}
+		result["elements"] = &schema.Schema{Type: schema.TypeSet, Optional: !readonly, Computed: readonly, Elem: &schema.Schema{Type: schema.TypeString}}
 	}
 
 	// Resource specific
 	if !readonly {
-		result["auth"] = connectorSchemaAuth()
+		result["auth"] = getConnectorSchemaAuth()
 		result["trust_certificates"] = &schema.Schema{Type: schema.TypeString, Optional: true}
 		result["trust_fingerprints"] = &schema.Schema{Type: schema.TypeString, Optional: true}
 		result["run_setup_tests"] = &schema.Schema{Type: schema.TypeString, Optional: true}
@@ -60,7 +73,7 @@ func connectorSchema(readonly bool, version int) map[string]*schema.Schema {
 	return result
 }
 
-func connectorSchemaStatus() *schema.Schema {
+func getConnectorSchemaStatus() *schema.Schema {
 	var result = map[string]*schema.Schema{
 		"setup_state":        {Type: schema.TypeString, Computed: true},
 		"is_historical_sync": {Type: schema.TypeString, Computed: true},
@@ -84,21 +97,16 @@ func connectorSchemaStatus() *schema.Schema {
 		},
 	}
 
-	return &schema.Schema{Type: schema.TypeList, Computed: true,
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		Computed: true,
 		Elem: &schema.Resource{
 			Schema: result,
 		},
 	}
 }
 
-func getMaxItems(readonly bool) int {
-	if readonly {
-		return 0
-	}
-	return 1
-}
-
-func connectorDestinationSchemaSchema(readonly bool) *schema.Schema {
+func getConnectorDestinationSchema(readonly bool) *schema.Schema {
 	return &schema.Schema{
 		Type: schema.TypeList, MaxItems: getMaxItems(readonly),
 		Required: !readonly, Computed: readonly,
@@ -112,7 +120,14 @@ func connectorDestinationSchemaSchema(readonly bool) *schema.Schema {
 	}
 }
 
-func connectorRead(currentConfig *[]interface{}, resp fivetran.ConnectorCustomDetailsResponse, version int) map[string]interface{} {
+func getMaxItems(readonly bool) int {
+	if readonly {
+		return 0
+	}
+	return 1
+}
+
+func getConnectorRead(currentConfig *[]interface{}, resp fivetran.ConnectorCustomDetailsResponse, version int) map[string]interface{} {
 	// msi stands for Map String Interface
 	msi := make(map[string]interface{})
 	mapAddStr(msi, "id", resp.Data.ID)
@@ -134,9 +149,9 @@ func connectorRead(currentConfig *[]interface{}, resp fivetran.ConnectorCustomDe
 		mapAddStr(msi, "paused", boolPointerToStr(resp.Data.Paused))
 		mapAddStr(msi, "pause_after_trial", boolPointerToStr(resp.Data.PauseAfterTrial))
 
-		mapAddXInterface(msi, "status", connectorReadStatus(&resp))
+		mapAddXInterface(msi, "status", getConnectorReadStatus(&resp))
 	}
-	upstreamConfig := connectorReadCustomConfig(&resp, currentConfig)
+	upstreamConfig := getConnectorReadCustomConfig(&resp, currentConfig)
 
 	if len(upstreamConfig) > 0 {
 		mapAddXInterface(msi, "config", upstreamConfig)
@@ -147,7 +162,7 @@ func connectorRead(currentConfig *[]interface{}, resp fivetran.ConnectorCustomDe
 
 // resourceConnectorReadStatus receives a *fivetran.ConnectorDetailsResponse and returns a []interface{}
 // containing the data type accepted by the "status" list.
-func connectorReadStatus(resp *fivetran.ConnectorCustomDetailsResponse) []interface{} {
+func getConnectorReadStatus(resp *fivetran.ConnectorCustomDetailsResponse) []interface{} {
 	status := make([]interface{}, 1)
 
 	s := make(map[string]interface{})
@@ -155,14 +170,14 @@ func connectorReadStatus(resp *fivetran.ConnectorCustomDetailsResponse) []interf
 	mapAddStr(s, "sync_state", resp.Data.Status.SyncState)
 	mapAddStr(s, "update_state", resp.Data.Status.UpdateState)
 	mapAddStr(s, "is_historical_sync", boolPointerToStr(resp.Data.Status.IsHistoricalSync))
-	mapAddXInterface(s, "tasks", connectorReadStatusFlattenTasks(resp))
-	mapAddXInterface(s, "warnings", connectorReadStatusFlattenWarnings(resp))
+	mapAddXInterface(s, "tasks", getConnectorReadStatusFlattenTasks(resp))
+	mapAddXInterface(s, "warnings", getConnectorReadStatusFlattenWarnings(resp))
 	status[0] = s
 
 	return status
 }
 
-func connectorReadStatusFlattenTasks(resp *fivetran.ConnectorCustomDetailsResponse) []interface{} {
+func getConnectorReadStatusFlattenTasks(resp *fivetran.ConnectorCustomDetailsResponse) []interface{} {
 	if len(resp.Data.Status.Tasks) < 1 {
 		return make([]interface{}, 0)
 	}
@@ -179,7 +194,7 @@ func connectorReadStatusFlattenTasks(resp *fivetran.ConnectorCustomDetailsRespon
 	return tasks
 }
 
-func connectorReadStatusFlattenWarnings(resp *fivetran.ConnectorCustomDetailsResponse) []interface{} {
+func getConnectorReadStatusFlattenWarnings(resp *fivetran.ConnectorCustomDetailsResponse) []interface{} {
 	if len(resp.Data.Status.Warnings) < 1 {
 		return make([]interface{}, 0)
 	}

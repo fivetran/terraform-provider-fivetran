@@ -12,29 +12,28 @@ import (
 func dataSourceConnector() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceConnectorRead,
-		Schema:      connectorSchema(true, 0),
+		Schema:      getConnectorSchema(true, 0),
 	}
 }
 
-func dataSourceConnectorRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourceConnectorRead(ctx context.Context, resourceData *schema.ResourceData, clientInterface interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*fivetran.Client)
+	client := clientInterface.(*fivetran.Client)
 
-	resp, err := client.NewConnectorDetails().ConnectorID(d.Get("id").(string)).DoCustom(ctx)
+	resp, err := client.NewConnectorDetails().ConnectorID(resourceData.Get("id").(string)).DoCustom(ctx)
 	if err != nil {
 		return newDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
-	// msi stands for Map String Interface
-	msi := connectorRead(nil, resp, 0)
+	dataBucket := getConnectorRead(nil, resp, 0)
 
-	for k, v := range msi {
-		if err := d.Set(k, v); err != nil {
+	for k, v := range dataBucket {
+		if err := resourceData.Set(k, v); err != nil {
 			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 		}
 	}
 
-	d.SetId(resp.Data.ID)
+	resourceData.SetId(resp.Data.ID)
 
 	return diags
 }
