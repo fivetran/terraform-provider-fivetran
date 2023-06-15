@@ -22,9 +22,21 @@ func dataSourceGroupSchemaGroups() *schema.Schema {
 	return &schema.Schema{Type: schema.TypeSet, Computed: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"id":         {Type: schema.TypeString, Computed: true},
-				"name":       {Type: schema.TypeString, Computed: true},
-				"created_at": {Type: schema.TypeString, Computed: true},
+				"id": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The unique identifier for the group within the Fivetran system.",
+				},
+				"name": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The name of the group within your account.",
+				},
+				"created_at": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The timestamp of when the group was created in your account.",
+				},
 			},
 		},
 	}

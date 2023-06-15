@@ -13,8 +13,14 @@ func dataSourceGroupConnectors() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceGroupConnectorsRead,
 		Schema: map[string]*schema.Schema{
-			"id":         {Type: schema.TypeString, Required: true},
-			"schema":     {Type: schema.TypeString, Optional: true},
+			"id": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"schema": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"connectors": dataSourceGroupConnectorsSchemaConnectors(),
 		},
 	}
@@ -24,44 +30,130 @@ func dataSourceGroupConnectorsSchemaConnectors() *schema.Schema {
 	return &schema.Schema{Type: schema.TypeSet, Computed: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"id":              {Type: schema.TypeString, Computed: true},
-				"group_id":        {Type: schema.TypeString, Computed: true},
-				"service":         {Type: schema.TypeString, Computed: true},
-				"service_version": {Type: schema.TypeInt, Computed: true},
-				"schema":          {Type: schema.TypeString, Computed: true},
-				"connected_by":    {Type: schema.TypeString, Computed: true},
-				"created_at":      {Type: schema.TypeString, Computed: true},
-				"succeeded_at":    {Type: schema.TypeString, Computed: true},
-				"failed_at":       {Type: schema.TypeString, Computed: true},
-				"sync_frequency":  {Type: schema.TypeInt, Computed: true},
-				"schedule_type":   {Type: schema.TypeString, Computed: true},
-				"status": {Type: schema.TypeSet, Computed: true,
+				"id": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The unique identifier for the group within the Fivetran system.",
+				},
+				"group_id": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The unique identifier for the Group within the Fivetran system.",
+				},
+				"service": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The connector type name within the Fivetran system",
+				},
+				"service_version": {
+					Type:        schema.TypeInt,
+					Computed:    true,
+					Description: "The connector type version within the Fivetran system",
+				},
+				"schema": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The name used both as the connector's name within the Fivetran system and as the source schema's name within your destination",
+				},
+				"connected_by": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The unique identifier of the user who has created the connector in your account",
+				},
+				"created_at": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The timestamp of the time the connector was created in your account",
+				},
+				"succeeded_at": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The timestamp of the time the connector sync succeeded last time",
+				},
+				"failed_at": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The timestamp of the time the connector sync failed last time",
+				},
+				"sync_frequency": {
+					Type:        schema.TypeInt,
+					Computed:    true,
+					Description: "The connector sync frequency in minutes",
+				},
+				"schedule_type": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The connector schedule configuration type. Supported values: auto, manual",
+				},
+				"status": {
+					Type:        schema.TypeSet,
+					Computed:    true,
+					Description: "",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
-							"setup_state":        {Type: schema.TypeString, Computed: true},
-							"sync_state":         {Type: schema.TypeString, Computed: true},
-							"update_state":       {Type: schema.TypeString, Computed: true},
-							"is_historical_sync": {Type: schema.TypeBool, Computed: true},
-							"tasks": {Type: schema.TypeSet, Computed: true,
+							"setup_state": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Description: "The current setup state of the connector. The available values are: <br /> - incomplete - the setup config is incomplete, the setup tests never succeeded <br /> - connected - the connector is properly set up <br /> - broken - the connector setup config is broken.",
+							},
+							"sync_state": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Description: "The current sync state of the connector. The available values are: <br /> - scheduled - the sync is waiting to be run <br /> - syncing - the sync is currently running <br /> - paused - the sync is currently paused <br /> - rescheduled - the sync is waiting until more API calls are available in the source service.",
+							},
+							"update_state": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Description: "The current data update state of the connector. The available values are: <br /> - on_schedule - the sync is running smoothly, no delays <br /> - delayed - the data is delayed for a longer time than expected for the update.",
+							},
+							"is_historical_sync": {
+								Type:        schema.TypeBool,
+								Computed:    true,
+								Description: "The boolean specifying whether the connector should be triggered to re-sync all historical data. If you set this parameter to TRUE, the next scheduled sync will be historical. If the value is FALSE or not specified, the connector will not re-sync historical data. NOTE: When the value is TRUE, only the next scheduled sync will be historical, all subsequent ones will be incremental. This parameter is set to FALSE once the historical sync is completed.",
+							},
+							"tasks": {
+								Type:        schema.TypeSet,
+								Computed:    true,
+								Description: "The collection of tasks for the connector",
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
-										"code":    {Type: schema.TypeString, Computed: true},
-										"message": {Type: schema.TypeString, Computed: true},
+										"code": {
+											Type:        schema.TypeString,
+											Computed:    true,
+											Description: "Response status code",
+										},
+										"message": {
+											Type:        schema.TypeString,
+											Computed:    true,
+											Description: "Response status text",
+										},
 									},
 								},
 							},
 							"warnings": {Type: schema.TypeSet, Computed: true,
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
-										"code":    {Type: schema.TypeString, Computed: true},
-										"message": {Type: schema.TypeString, Computed: true},
+										"code": {
+											Type:        schema.TypeString,
+											Computed:    true,
+											Description: "Response status code",
+										},
+										"message": {
+											Type:        schema.TypeString,
+											Computed:    true,
+											Description: "Response status text",
+										},
 									},
 								},
 							},
 						},
 					},
 				},
-				"daily_sync_time": {Type: schema.TypeString, Computed: true},
+				"daily_sync_time": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use [the baseline sync start time](https://fivetran.com/docs/getting-started/syncoverview#syncfrequencyandscheduling). This parameter has no effect on the [0 to 60 minutes offset](https://fivetran.com/docs/getting-started/syncoverview#syncstarttimesandoffsets) used to determine the actual sync start time",
+				},
 			},
 		},
 	}
