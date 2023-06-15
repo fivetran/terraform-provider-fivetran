@@ -18,38 +18,6 @@ const INT_FIELD = "integer"
 const BOOL_FIELD = "boolean"
 const ARRAY_FIELD = "array"
 
-var sensitiveFields = map[string]bool{
-	"oauth_token":        true,
-	"oauth_token_secret": true,
-	"consumer_key":       true,
-	"client_secret":      true,
-	"private_key":        true,
-	"s3role_arn":         true,
-	"ftp_password":       true,
-	"sftp_password":      true,
-	"api_key":            true,
-	"role_arn":           true,
-	"password":           true,
-	"secret_key":         true,
-	"pem_certificate":    true,
-	"access_token":       true,
-	"api_secret":         true,
-	"api_access_token":   true,
-	"secret":             true,
-	"consumer_secret":    true,
-	"secrets":            true,
-	"api_token":          true,
-	"encryption_key":     true,
-	"pat":                true,
-	"function_trigger":   true,
-	"token_key":          true,
-	"token_secret":       true,
-	"agent_password":     true,
-	"asm_password":       true,
-	"login_password":     true,
-	"value":              true,
-}
-
 func getConnectorSchemaConfig() *schema.Schema {
 	fields := getFields()
 
@@ -129,19 +97,24 @@ func createFields(nodesMap map[string]*gabs.Container) map[string]*schema.Schema
 	fields := make(map[string]*schema.Schema)
 
 	for key, node := range nodesMap {
-		if _, ok := sensitiveFields[key]; ok {
-			fields[key] = &schema.Schema{
-				Type:      schema.TypeString,
-				Computed:  true,
-				Optional:  true,
-				Sensitive: true}
-			continue
-		}
-
 		nodeSchema := &schema.Schema{
 			Type:     schema.TypeString,
 			Optional: true,
 			Computed: true,
+		}
+
+		nodeDescription := node.Search("description").Data()
+
+		if nodeDescription != nil {
+			nodeSchema.Description = nodeDescription.(string)
+		}
+
+		nodeFormat := node.Search("format").Data()
+
+		if nodeFormat != nil && nodeFormat == "password" {
+			nodeSchema.Sensitive = true
+			fields[key] = nodeSchema
+			continue
 		}
 
 		nodeType := node.Search("type").Data()
