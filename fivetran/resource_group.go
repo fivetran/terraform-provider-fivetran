@@ -18,10 +18,26 @@ func resourceGroup() *schema.Resource {
 		DeleteContext: resourceGroupDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
 		Schema: map[string]*schema.Schema{
-			"id":           {Type: schema.TypeString, Computed: true},
-			"name":         {Type: schema.TypeString, Required: true},
-			"created_at":   {Type: schema.TypeString, Computed: true},
-			"last_updated": {Type: schema.TypeString, Computed: true}, // internal
+			"id": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The unique identifier for the group within the Fivetran system.",
+			},
+			"name": {
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The name of the group within your account.",
+			},
+			"created_at": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The timestamp of when the group was created in your account.",
+			},
+			"last_updated": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "",
+			}, // internal
 		},
 	}
 }

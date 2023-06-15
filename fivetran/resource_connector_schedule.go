@@ -17,15 +17,47 @@ func resourceConnectorSchedule() *schema.Resource {
 		DeleteContext: resourceConnectorScheduleDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
 		Schema: map[string]*schema.Schema{
-			ID:           {Type: schema.TypeString, Computed: true},
-			CONNECTOR_ID: {Type: schema.TypeString, Required: true, ForceNew: true},
+			ID: {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The unique identifier for the user within the account.",
+			},
+			CONNECTOR_ID: {
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "The unique identifier for the connector",
+			},
 
-			"sync_frequency":    {Type: schema.TypeString, Optional: true, Computed: true}, // Default: 360
-			"schedule_type":     {Type: schema.TypeString, Optional: true, Computed: true}, // Default: AUTO
-			"paused":            {Type: schema.TypeString, Optional: true, Computed: true}, // Default: false
-			"pause_after_trial": {Type: schema.TypeString, Optional: true, Computed: true}, // Default: false
-
-			"daily_sync_time": {Type: schema.TypeString, Optional: true},
+			"sync_frequency": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				Description: "The connector sync frequency in minutes",
+			}, // Default: 360
+			"schedule_type": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				Description: "The connector schedule configuration type. Supported values: auto, manual",
+			}, // Default: AUTO
+			"paused": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				Description: "Specifies whether the connector is paused",
+			}, // Default: false
+			"pause_after_trial": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				Description: "Specifies whether the connector should be paused after the free trial period has ended",
+			}, // Default: false
+			"daily_sync_time": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use [the baseline sync start time](https://fivetran.com/docs/getting-started/syncoverview#syncfrequencyandscheduling). This parameter has no effect on the [0 to 60 minutes offset](https://fivetran.com/docs/getting-started/syncoverview#syncstarttimesandoffsets) used to determine the actual sync start time",
+			},
 		},
 	}
 }

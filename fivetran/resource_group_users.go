@@ -26,10 +26,22 @@ func resourceGroupUsers() *schema.Resource {
 		DeleteContext: resourceGroupUsersDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
 		Schema: map[string]*schema.Schema{
-			"id":           {Type: schema.TypeString, Computed: true},
-			"group_id":     {Type: schema.TypeString, Required: true},
-			"user":         resourceGroupUsersSchemaUser(),
-			"last_updated": {Type: schema.TypeString, Computed: true}, // internal
+			"id": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The unique identifier for the user within the account.",
+			},
+			"group_id": {
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The unique identifier for the Group within the Fivetran system.",
+			},
+			"user": resourceGroupUsersSchemaUser(),
+			"last_updated": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "",
+			}, // internal
 		},
 	}
 }
@@ -38,9 +50,21 @@ func resourceGroupUsersSchemaUser() *schema.Schema {
 	return &schema.Schema{Type: schema.TypeSet, Optional: true, Set: resourceGroupUsersHashGroupUser,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"id":    {Type: schema.TypeString, Computed: true},
-				"email": {Type: schema.TypeString, Required: true},
-				"role":  {Type: schema.TypeString, Required: true},
+				"id": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The unique identifier for the user within the account.",
+				},
+				"email": {
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "The email address that the user has associated with their user profile.",
+				},
+				"role": {
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "The group role that you would like to assign this new user to. Supported group roles: ‘Destination Administrator‘, ‘Destination Reviewer‘, ‘Destination Analyst‘, ‘Connector Creator‘, or a custom destination role",
+				},
 			},
 		},
 	}
