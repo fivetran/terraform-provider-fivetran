@@ -103,6 +103,12 @@ func createFields(nodesMap map[string]*gabs.Container) map[string]*schema.Schema
 			Computed: true,
 		}
 
+		nodeDescription := node.Search("description").Data()
+
+		if nodeDescription != nil {
+			nodeSchema.Description = nodeDescription.(string)
+		}
+
 		nodeFormat := node.Search("format").Data()
 
 		if nodeFormat != nil && nodeFormat == "password" {
