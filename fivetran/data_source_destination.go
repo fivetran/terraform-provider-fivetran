@@ -16,29 +16,27 @@ func dataSourceDestination() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"id": {
 				Type:        schema.TypeString,
-				Computed:    true,
+				Required:    true,
 				Description: "The unique identifier for the destination within the Fivetran system",
 			},
 			"group_id": {
 				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true,
+				Computed:    true,
 				Description: "The unique identifier for the Group within the Fivetran system.",
 			},
 			"service": {
 				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true,
+				Computed:    true,
 				Description: "The connector type name within the Fivetran system",
 			},
 			"region": {
 				Type:        schema.TypeString,
-				Required:    true,
+				Computed:    true,
 				Description: "Data processing location. This is where Fivetran will operate and run computation on data.",
 			},
 			"time_zone_offset": {
 				Type:        schema.TypeString,
-				Required:    true,
+				Computed:    true,
 				Description: "Determines the time zone for the Fivetran sync schedule.",
 			},
 			"config": dataSourceDestinationSchemaConfig(),
