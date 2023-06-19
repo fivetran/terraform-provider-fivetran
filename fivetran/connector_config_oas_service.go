@@ -1,12 +1,18 @@
 package fivetran
 
 import (
-	"os"
+	_ "embed"
 	"strings"
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
+
+//go:embed services.json
+var servicesJson []byte
+
+//go:embed open-api-spec.json
+var oasJson []byte
 
 const SCHEMAS_PATH = "components.schemas."
 const PROPERTIES_PATH = ".properties.config.properties"
@@ -68,8 +74,7 @@ func getFields() map[string]*schema.Schema {
 }
 
 func getAvailableServiceIds() []string {
-	pwd, _ := os.Getwd()
-	servicesJson, err := gabs.ParseJSONFile(pwd + SERVICES_FILE_PATH)
+	servicesJson, err := gabs.ParseJSON(servicesJson)
 	if err != nil {
 		panic(err)
 	}
@@ -84,8 +89,7 @@ func getAvailableServiceIds() []string {
 }
 
 func getSchemaJson() *gabs.Container {
-	pwd, _ := os.Getwd()
-	shemaJson, err := gabs.ParseJSONFile(pwd + SCHEMAS_FILE_PATH)
+	shemaJson, err := gabs.ParseJSON(oasJson)
 	if err != nil {
 		panic(err)
 	}
