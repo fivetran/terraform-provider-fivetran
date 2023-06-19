@@ -22,13 +22,41 @@ func dataSourceConnectorsMetadataSchemaSources() *schema.Schema {
 	return &schema.Schema{Type: schema.TypeSet, Computed: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"id":           {Type: schema.TypeString, Computed: true},
-				"name":         {Type: schema.TypeString, Computed: true},
-				"type":         {Type: schema.TypeString, Computed: true},
-				"description":  {Type: schema.TypeString, Computed: true},
-				"icon_url":     {Type: schema.TypeString, Computed: true},
-				"link_to_docs": {Type: schema.TypeString, Computed: true},
-				"link_to_erd":  {Type: schema.TypeString, Computed: true},
+				"id": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The unique identifier for the connector within the Fivetran system",
+				},
+				"name": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "",
+				},
+				"type": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "",
+				},
+				"description": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "",
+				},
+				"icon_url": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "",
+				},
+				"link_to_docs": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "",
+				},
+				"link_to_erd": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "",
+				},
 			},
 		},
 	}

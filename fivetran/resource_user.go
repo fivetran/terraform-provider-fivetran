@@ -18,22 +18,69 @@ func resourceUser() *schema.Resource {
 		DeleteContext: resourceUserDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
 		Schema: map[string]*schema.Schema{
-			"id": {Type: schema.TypeString, Computed: true},
+			"id": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The unique identifier for the user within the Fivetran system.",
+			},
 			// The REST API doesn't provide a method to change the the user's email address.
 			// That's why "ForceNew" is true.
-			"email":       {Type: schema.TypeString, Required: true, ForceNew: true},
-			"given_name":  {Type: schema.TypeString, Required: true},
-			"family_name": {Type: schema.TypeString, Required: true},
-
-			"role":    {Type: schema.TypeString, Optional: true},
-			"picture": {Type: schema.TypeString, Optional: true},
-			"phone":   {Type: schema.TypeString, Optional: true},
-
-			"logged_in_at": {Type: schema.TypeString, Computed: true},
-			"created_at":   {Type: schema.TypeString, Computed: true},
-			"last_updated": {Type: schema.TypeString, Computed: true}, // internal
-			"verified":     {Type: schema.TypeBool, Computed: true},
-			"invited":      {Type: schema.TypeBool, Computed: true},
+			"email": {
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "The email address that the user has associated with their user profile.",
+			},
+			"given_name": {
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The first name of the user.",
+			},
+			"family_name": {
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The last name of the user.",
+			},
+			"role": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The role that you would like to assign to the user",
+			},
+			"picture": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The user's avatar as a URL link (for example, 'http://mycompany.com/avatars/john_white.png') or base64 data URI (for example, 'data:image/png;base64,aHR0cDovL215Y29tcGFueS5jb20vYXZhdGFycy9qb2huX3doaXRlLnBuZw==')",
+			},
+			"phone": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The phone number of the user.",
+			},
+			"logged_in_at": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The last time that the user has logged into their Fivetran account.",
+			},
+			"created_at": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The timestamp that the user created their Fivetran account",
+			},
+			"last_updated": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "",
+			}, // internal
+			"verified": {
+				Type:        schema.TypeBool,
+				Computed:    true,
+				Description: "The field indicates whether the user has verified their email address in the account creation process.",
+			},
+			"invited": {
+				Type:        schema.TypeBool,
+				Computed:    true,
+				Description: "The field indicates whether the user has been invited to your account.",
+			},
 		},
 	}
 }

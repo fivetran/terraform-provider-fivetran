@@ -40,8 +40,17 @@ func resourceSchemaConfig() *schema.Resource {
 		DeleteContext: resourceSchemaConfigDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
 		Schema: map[string]*schema.Schema{
-			ID:                     {Type: schema.TypeString, Computed: true},
-			CONNECTOR_ID:           {Type: schema.TypeString, Required: true, ForceNew: true},
+			ID: {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The unique identifier for the user within the account.",
+			},
+			CONNECTOR_ID: {
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "The unique identifier for the connector",
+			},
 			SCHEMA_CHANGE_HANDLING: resourceSchemaConfigSchemaShangeHandling(),
 			SCHEMA:                 resourceSchemaConfigSchema(),
 		},
@@ -72,9 +81,19 @@ func resourceSchemaConfigSchema() *schema.Schema {
 	return &schema.Schema{Type: schema.TypeSet, Optional: true, Set: resourceSchemaConfigHash,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				NAME:    {Type: schema.TypeString, Required: true},
-				ENABLED: {Type: schema.TypeString, Optional: true, Default: "true", ValidateFunc: resourceSchemaConfigBooleanValidateFunc},
-				TABLE:   resourceSchemaConfigTable(),
+				NAME: {
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "The unique identifier for the team within the account",
+				},
+				ENABLED: {
+					Type:         schema.TypeString,
+					Optional:     true,
+					Default:      "true",
+					ValidateFunc: resourceSchemaConfigBooleanValidateFunc,
+					Description:  "The boolean value specifying whether the sync for the table into the destination is enabled.",
+				},
+				TABLE: resourceSchemaConfigTable(),
 			},
 		},
 	}
@@ -84,8 +103,18 @@ func resourceSchemaConfigTable() *schema.Schema {
 	return &schema.Schema{Type: schema.TypeSet, Optional: true, Set: resourceTableConfigHash,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				NAME:      {Type: schema.TypeString, Required: true},
-				ENABLED:   {Type: schema.TypeString, Optional: true, Default: "true", ValidateFunc: resourceSchemaConfigBooleanValidateFunc},
+				NAME: {
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "The unique identifier for the team within the account",
+				},
+				ENABLED: {
+					Type:         schema.TypeString,
+					Optional:     true,
+					Default:      "true",
+					ValidateFunc: resourceSchemaConfigBooleanValidateFunc,
+					Description:  "The boolean value specifying whether the sync for the table into the destination is enabled.",
+				},
 				SYNC_MODE: resourceSchemaConfigSyncMode(),
 				COLUMN:    resourceSchemaConfigColumn(),
 			},
@@ -109,9 +138,25 @@ func resourceSchemaConfigColumn() *schema.Schema {
 	return &schema.Schema{Type: schema.TypeSet, Optional: true, Set: resourceColumnConfigHash,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				NAME:    {Type: schema.TypeString, Required: true},
-				ENABLED: {Type: schema.TypeString, Optional: true, Default: "true", ValidateFunc: resourceSchemaConfigBooleanValidateFunc},
-				HASHED:  {Type: schema.TypeString, Optional: true, Default: "false", ValidateFunc: resourceSchemaConfigBooleanValidateFunc},
+				NAME: {
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "The unique identifier for the team within the account",
+				},
+				ENABLED: {
+					Type:         schema.TypeString,
+					Optional:     true,
+					Default:      "true",
+					ValidateFunc: resourceSchemaConfigBooleanValidateFunc,
+					Description:  "The boolean value specifying whether the sync for the table into the destination is enabled.",
+				},
+				HASHED: {
+					Type:         schema.TypeString,
+					Optional:     true,
+					Default:      "false",
+					ValidateFunc: resourceSchemaConfigBooleanValidateFunc,
+					Description:  "The boolean value specifying whether a column should be hashed",
+				},
 			},
 		},
 	}

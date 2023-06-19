@@ -13,7 +13,11 @@ func dataSourceGroupUsers() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceGroupUsersRead,
 		Schema: map[string]*schema.Schema{
-			"id":    {Type: schema.TypeString, Required: true},
+			"id": {
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The unique identifier for the user within the account.",
+			},
 			"users": dataSourceGroupUsersSchemaUsers(),
 		},
 	}
@@ -23,17 +27,61 @@ func dataSourceGroupUsersSchemaUsers() *schema.Schema {
 	return &schema.Schema{Type: schema.TypeSet, Computed: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"id":           {Type: schema.TypeString, Computed: true},
-				"email":        {Type: schema.TypeString, Computed: true},
-				"given_name":   {Type: schema.TypeString, Computed: true},
-				"family_name":  {Type: schema.TypeString, Computed: true},
-				"verified":     {Type: schema.TypeBool, Computed: true},
-				"invited":      {Type: schema.TypeBool, Computed: true},
-				"picture":      {Type: schema.TypeString, Computed: true},
-				"phone":        {Type: schema.TypeString, Computed: true},
-				"role":         {Type: schema.TypeString, Computed: true},
-				"logged_in_at": {Type: schema.TypeString, Computed: true},
-				"created_at":   {Type: schema.TypeString, Computed: true},
+				"id": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The unique identifier for the user within the account.",
+				},
+				"email": {
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "The email address that the user has associated with their user profile.",
+				},
+				"given_name": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The first name of the user.",
+				},
+				"family_name": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The last name of the user.",
+				},
+				"verified": {
+					Type:        schema.TypeBool,
+					Computed:    true,
+					Description: "The field indicates whether the user has verified their email address in the account creation process.",
+				},
+				"invited": {
+					Type:        schema.TypeBool,
+					Computed:    true,
+					Description: "The field indicates whether the user has verified their email address in the account creation process.",
+				},
+				"picture": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The user's avatar as a URL link (for example, 'http://mycompany.com/avatars/john_white.png') or base64 data URI (for example, 'data:image/png;base64,aHR0cDovL215Y29tcGFueS5jb20vYXZhdGFycy9qb2huX3doaXRlLnBuZw==')",
+				},
+				"phone": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The phone number of the user.",
+				},
+				"role": {
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "The group role that you would like to assign this new user to. Supported group roles: ‘Destination Administrator‘, ‘Destination Reviewer‘, ‘Destination Analyst‘, ‘Connector Creator‘, or a custom destination role",
+				},
+				"logged_in_at": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The last time that the user has logged into their Fivetran account.",
+				},
+				"created_at": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The timestamp that the user created their Fivetran account",
+				},
 			},
 		},
 	}
