@@ -21,23 +21,26 @@ data "fivetran_group_users" "group_users" {
 
 - `id` (String) The unique identifier for the user within the account.
 
-### Read-Only
+### Optional
 
-- `users` (Set of Object) (see [below for nested schema](#nestedatt--users))
+- `users` (Block Set) (see [below for nested schema](#nestedblock--users))
 
-<a id="nestedatt--users"></a>
+<a id="nestedblock--users"></a>
 ### Nested Schema for `users`
+
+Required:
+
+- `email` (String) The email address that the user has associated with their user profile.
+- `role` (String) The group role that you would like to assign this new user to. Supported group roles: ‘Destination Administrator‘, ‘Destination Reviewer‘, ‘Destination Analyst‘, ‘Connector Creator‘, or a custom destination role
 
 Read-Only:
 
-- `created_at` (String)
-- `email` (String)
-- `family_name` (String)
-- `given_name` (String)
-- `id` (String)
-- `invited` (Boolean)
-- `logged_in_at` (String)
-- `phone` (String)
-- `picture` (String)
-- `role` (String)
-- `verified` (Boolean)
+- `created_at` (String) The timestamp that the user created their Fivetran account
+- `family_name` (String) The last name of the user.
+- `given_name` (String) The first name of the user.
+- `id` (String) The unique identifier for the user within the account.
+- `invited` (Boolean) The field indicates whether the user has verified their email address in the account creation process.
+- `logged_in_at` (String) The last time that the user has logged into their Fivetran account.
+- `phone` (String) The phone number of the user.
+- `picture` (String) The user's avatar as a URL link (for example, 'http://mycompany.com/avatars/john_white.png') or base64 data URI (for example, 'data:image/png;base64,aHR0cDovL215Y29tcGFueS5jb20vYXZhdGFycy9qb2huX3doaXRlLnBuZw==')
+- `verified` (Boolean) The field indicates whether the user has verified their email address in the account creation process.

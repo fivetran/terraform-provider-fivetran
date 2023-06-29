@@ -13,14 +13,21 @@ func dataSourceUsers() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceUsersRead,
 		Schema: map[string]*schema.Schema{
-			"users": {Type: schema.TypeSet, Computed: true,
+			"users": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
 							Type:        schema.TypeString,
 							Computed:    true,
 							Description: "The unique identifier for the user within the Fivetran system.",
-						}, "email": {Type: schema.TypeString, Computed: true},
+						},
+						"email": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
 						"given_name": {
 							Type:        schema.TypeString,
 							Computed:    true,

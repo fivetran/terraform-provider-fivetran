@@ -21,46 +21,52 @@ data "fivetran_destination" "dest" {
 
 - `id` (String) The unique identifier for the destination within the Fivetran system
 
+### Optional
+
+- `config` (Block Set) (see [below for nested schema](#nestedblock--config))
+
 ### Read-Only
 
-- `config` (Set of Object) (see [below for nested schema](#nestedatt--config))
 - `group_id` (String) The unique identifier for the Group within the Fivetran system.
 - `region` (String) Data processing location. This is where Fivetran will operate and run computation on data.
 - `service` (String) The connector type name within the Fivetran system
 - `setup_status` (String) Destination setup status
 - `time_zone_offset` (String) Determines the time zone for the Fivetran sync schedule.
 
-<a id="nestedatt--config"></a>
+<a id="nestedblock--config"></a>
 ### Nested Schema for `config`
+
+Optional:
+
+- `auth` (String) The connector authorization settings. Check possible config formats in [create method](/openapi/reference/v1/operation/create_connector/)
+- `auth_type` (String) Authentication type. Default value: `PASSWORD`.
+- `bucket` (String) Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.
+- `catalog` (String) Catalog name
+- `cluster_id` (String) Cluster ID. Must be populated if `connection_type` is set to `SshTunnel` and `auth_type` is set to `IAM`.
+- `cluster_region` (String) Cluster region. Must be populated if `connection_type` is set to `SshTunnel` and `auth_type` is set to `IAM`.
+- `connection_type` (String) Connection method. Default value: `Directly`.
+- `create_external_tables` (String) Whether to create external tables
+- `data_set_location` (String) Data location. Datasets will reside in this location.
+- `database` (String) Database name
+- `external_location` (String) External location to store Delta tables. Default value: `""`  (null). By default, the external tables will reside in the `/{schema}/{table}` path, and if you specify an external location in the `{externalLocation}/{schema}/{table}` path.
+- `host` (String) Server name
+- `http_path` (String) HTTP path
+- `is_private_key_encrypted` (String) Indicates that a private key is encrypted. The default value: `false`. The field can be specified if authentication type is `KEY_PAIR`.
+- `passphrase` (String, Sensitive) In case private key is encrypted, you are required to enter passphrase that was used to encrypt the private key. The field can be specified if authentication type is `KEY_PAIR`.
+- `password` (String, Sensitive) Database user password
+- `personal_access_token` (String, Sensitive) Personal access token
+- `port` (Number) Server port number
+- `private_key` (String, Sensitive) Private access key.  The field should be specified if authentication type is `KEY_PAIR`.
+- `project_id` (String) BigQuery project ID
+- `role` (String) The group role that you would like to assign this new user to. Supported group roles: ‘Destination Administrator‘, ‘Destination Reviewer‘, ‘Destination Analyst‘, ‘Connector Creator‘, or a custom destination role
+- `role_arn` (String, Sensitive) Role ARN with Redshift permissions. Required if authentication type is `IAM`.
+- `secret_key` (String, Sensitive) Private key of the customer service account. If specified, your service account will be used to process the data instead of the Fivetran-managed service account.
+- `server_host_name` (String) Server name
+- `tunnel_host` (String) SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+- `tunnel_port` (String) SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+- `tunnel_user` (String) SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+- `user` (String) Database user name
 
 Read-Only:
 
-- `auth` (String)
-- `auth_type` (String)
-- `bucket` (String)
-- `catalog` (String)
-- `cluster_id` (String)
-- `cluster_region` (String)
-- `connection_type` (String)
-- `create_external_tables` (String)
-- `data_set_location` (String)
-- `database` (String)
-- `external_location` (String)
-- `host` (String)
-- `http_path` (String)
-- `is_private_key_encrypted` (String)
-- `passphrase` (String)
-- `password` (String)
-- `personal_access_token` (String)
-- `port` (Number)
-- `private_key` (String)
-- `project_id` (String)
-- `public_key` (String)
-- `role` (String)
-- `role_arn` (String)
-- `secret_key` (String)
-- `server_host_name` (String)
-- `tunnel_host` (String)
-- `tunnel_port` (String)
-- `tunnel_user` (String)
-- `user` (String)
+- `public_key` (String) Public key to grant Fivetran SSH access to git repository.

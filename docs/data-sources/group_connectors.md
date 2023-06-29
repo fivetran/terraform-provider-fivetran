@@ -23,41 +23,41 @@ data "fivetran_group_users" "group_users" {
 
 ### Read-Only
 
-- `connectors` (Set of Object) (see [below for nested schema](#nestedatt--connectors))
+- `connectors` (Block Set) (see [below for nested schema](#nestedblock--connectors))
 - `id` (String) The ID of this resource.
 
-<a id="nestedatt--connectors"></a>
+<a id="nestedblock--connectors"></a>
 ### Nested Schema for `connectors`
 
 Read-Only:
 
-- `connected_by` (String)
-- `created_at` (String)
-- `daily_sync_time` (String)
-- `failed_at` (String)
-- `group_id` (String)
-- `id` (String)
-- `schedule_type` (String)
-- `schema` (String)
-- `service` (String)
-- `service_version` (Number)
-- `status` (Set of Object) (see [below for nested schema](#nestedobjatt--connectors--status))
-- `succeeded_at` (String)
-- `sync_frequency` (Number)
+- `connected_by` (String) The unique identifier of the user who has created the connector in your account
+- `created_at` (String) The timestamp of the time the connector was created in your account
+- `daily_sync_time` (String) The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use [the baseline sync start time](https://fivetran.com/docs/getting-started/syncoverview#syncfrequencyandscheduling). This parameter has no effect on the [0 to 60 minutes offset](https://fivetran.com/docs/getting-started/syncoverview#syncstarttimesandoffsets) used to determine the actual sync start time
+- `failed_at` (String) The timestamp of the time the connector sync failed last time
+- `group_id` (String) The unique identifier for the Group within the Fivetran system.
+- `id` (String) The unique identifier for the group within the Fivetran system.
+- `schedule_type` (String) The connector schedule configuration type. Supported values: auto, manual
+- `schema` (String) The name used both as the connector's name within the Fivetran system and as the source schema's name within your destination
+- `service` (String) The connector type name within the Fivetran system
+- `service_version` (Number) The connector type version within the Fivetran system
+- `status` (Block Set) (see [below for nested schema](#nestedblock--connectors--status))
+- `succeeded_at` (String) The timestamp of the time the connector sync succeeded last time
+- `sync_frequency` (Number) The connector sync frequency in minutes
 
-<a id="nestedobjatt--connectors--status"></a>
+<a id="nestedblock--connectors--status"></a>
 ### Nested Schema for `connectors.status`
 
 Read-Only:
 
-- `is_historical_sync` (Boolean)
-- `setup_state` (String)
-- `sync_state` (String)
-- `tasks` (Set of Object) (see [below for nested schema](#nestedobjatt--connectors--status--tasks))
-- `update_state` (String)
-- `warnings` (Set of Object) (see [below for nested schema](#nestedobjatt--connectors--status--warnings))
+- `is_historical_sync` (Boolean) The boolean specifying whether the connector should be triggered to re-sync all historical data. If you set this parameter to TRUE, the next scheduled sync will be historical. If the value is FALSE or not specified, the connector will not re-sync historical data. NOTE: When the value is TRUE, only the next scheduled sync will be historical, all subsequent ones will be incremental. This parameter is set to FALSE once the historical sync is completed.
+- `setup_state` (String) The current setup state of the connector. The available values are: <br /> - incomplete - the setup config is incomplete, the setup tests never succeeded <br /> - connected - the connector is properly set up <br /> - broken - the connector setup config is broken.
+- `sync_state` (String) The current sync state of the connector. The available values are: <br /> - scheduled - the sync is waiting to be run <br /> - syncing - the sync is currently running <br /> - paused - the sync is currently paused <br /> - rescheduled - the sync is waiting until more API calls are available in the source service.
+- `tasks` (Set of Object) The collection of tasks for the connector (see [below for nested schema](#nestedatt--connectors--status--tasks))
+- `update_state` (String) The current data update state of the connector. The available values are: <br /> - on_schedule - the sync is running smoothly, no delays <br /> - delayed - the data is delayed for a longer time than expected for the update.
+- `warnings` (Block Set) (see [below for nested schema](#nestedblock--connectors--status--warnings))
 
-<a id="nestedobjatt--connectors--status--tasks"></a>
+<a id="nestedatt--connectors--status--tasks"></a>
 ### Nested Schema for `connectors.status.tasks`
 
 Read-Only:
@@ -66,10 +66,10 @@ Read-Only:
 - `message` (String)
 
 
-<a id="nestedobjatt--connectors--status--warnings"></a>
+<a id="nestedblock--connectors--status--warnings"></a>
 ### Nested Schema for `connectors.status.warnings`
 
 Read-Only:
 
-- `code` (String)
-- `message` (String)
+- `code` (String) Response status code
+- `message` (String) Response status text
