@@ -56,26 +56,10 @@ func getConnectorSchema(readonly bool, version int) map[string]*schema.Schema {
 		"destination_schema": getConnectorDestinationSchema(readonly),
 
 		// Config
-		"config": getConnectorSchemaConfig(),
+		"config": getConnectorSchemaConfig(readonly, version),
 	}
 
 	if version == 0 {
-		// Sensitive config fields, Fivetran returns this fields masked
-		result["oauth_token"] = &schema.Schema{
-			Type:        schema.TypeString,
-			Optional:    !readonly,
-			Sensitive:   true,
-			Computed:    readonly,
-			Description: "The Twitter App access token.",
-		}
-		result["oauth_token_secret"] = &schema.Schema{
-			Type:        schema.TypeString,
-			Optional:    !readonly,
-			Sensitive:   true,
-			Computed:    readonly,
-			Description: "The Twitter App access token secret.",
-		}
-
 		// Computed
 		result["succeeded_at"] = &schema.Schema{
 			Type:        schema.TypeString,
@@ -91,18 +75,6 @@ func getConnectorSchema(readonly bool, version int) map[string]*schema.Schema {
 			Type:        schema.TypeString,
 			Computed:    true,
 			Description: "The connector type version within the Fivetran system.",
-		}
-		result["api_type"] = &schema.Schema{
-			Type:        schema.TypeString,
-			Optional:    !readonly,
-			Computed:    true,
-			Description: "",
-		}
-		result["daily_api_call_limit"] = &schema.Schema{
-			Type:        schema.TypeString,
-			Optional:    !readonly,
-			Computed:    true,
-			Description: "",
 		}
 
 		// Optional with default values in upstream
@@ -137,51 +109,8 @@ func getConnectorSchema(readonly bool, version int) map[string]*schema.Schema {
 			Computed:    readonly,
 			Description: "The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use [the baseline sync start time](https://fivetran.com/docs/getting-started/syncoverview#syncfrequencyandscheduling). This parameter has no effect on the [0 to 60 minutes offset](https://fivetran.com/docs/getting-started/syncoverview#syncstarttimesandoffsets) used to determine the actual sync start time",
 		}
-		result["test_table_name"] = &schema.Schema{
-			Type:        schema.TypeString,
-			Optional:    !readonly,
-			Computed:    readonly,
-			Description: "",
-		}
-		result["unique_id"] = &schema.Schema{
-			Type:        schema.TypeString,
-			Optional:    !readonly,
-			Computed:    readonly,
-			Description: "",
-		}
-		result["organization"] = &schema.Schema{
-			Type:        schema.TypeString,
-			Optional:    !readonly,
-			Computed:    readonly,
-			Description: "",
-		}
-		result["environment"] = &schema.Schema{
-			Type:        schema.TypeString,
-			Optional:    !readonly,
-			Computed:    readonly,
-			Description: "",
-		}
-		result["status"] = getConnectorSchemaStatus()
 
-		// String collections
-		result["report_suites"] = &schema.Schema{
-			Type:        schema.TypeSet,
-			Optional:    !readonly,
-			Computed:    readonly,
-			Description: "Specific report suites to sync. Must be populated if `sync_mode` is set to `SpecificReportSuites`.",
-			Elem: &schema.Schema{
-				Type: schema.TypeString,
-			},
-		}
-		result["elements"] = &schema.Schema{
-			Type:        schema.TypeSet,
-			Optional:    !readonly,
-			Computed:    readonly,
-			Description: "The elements that you want to sync.",
-			Elem: &schema.Schema{
-				Type: schema.TypeString,
-			},
-		}
+		result["status"] = getConnectorSchemaStatus()
 	}
 
 	// Resource specific
