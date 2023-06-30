@@ -41,7 +41,7 @@ data "fivetran_connector" "connector" {
 - `oauth_token` (String, Sensitive) The Twitter App access token.
 - `oauth_token_secret` (String, Sensitive) The Twitter App access token secret.
 - `organization` (String)
-- `pause_after_trial` (String) Specifies whether the connector should be paused after the free trial period has ende
+- `pause_after_trial` (String) Specifies whether the connector should be paused after the free trial period has ended
 - `paused` (String) Specifies whether the connector is paused
 - `report_suites` (Set of String) Specific report suites to sync. Must be populated if `sync_mode` is set to `SpecificReportSuites`.
 - `schedule_type` (String) The connector schedule configuration type. Supported values: auto, manual
@@ -130,7 +130,7 @@ Optional:
 - `bucket` (String) The name of the Segment bucket. Must be populated if `sync_type` is set to `S3`.
 - `bucket_name` (String) The name of the bucket.
 - `bucket_service` (String) Whether to store the events in Fivetran's container service or your S3 bucket. Default value: `Fivetran`.
-- `business_unit_id` (String) Business Unit Id
+- `business_unit_id` (String) Business Unit ID
 - `certificate` (String, Sensitive) The contents of your PEM certificate file. Must be populated if `auth_mode` is set to `Certificate`.
 - `click_attribution_window` (String) The number of days to use as the conversion attribution window for a 'click' action.
 - `client_access` (String) Your application client access fields.
@@ -447,7 +447,7 @@ Optional:
 - `use_webhooks` (Boolean) Set to `true` to capture deletes.
 - `use_workspace` (Boolean) Choose a database and schema to create temporary tables for syncs.
 - `user` (String) The user name.
-- `user_id` (String) Marketo SOAP API User Id.
+- `user_id` (String) Marketo SOAP API User ID.
 - `user_key` (String, Sensitive)
 - `user_name` (String) Workday username.
 - `user_profiles` (Set of String)
