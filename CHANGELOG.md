@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Added
 - New `fivetran_connector_schedule` resource introduced
+- `fivetran_destination.config.fivetran_role_arn` missing field added
+- `fivetran_destination.config.prefix_path` missing field added
+- `fivetran_destination.config.region` missing field added
 
 ## Breaking changes
 - Resource `fivetran_connector` updated
