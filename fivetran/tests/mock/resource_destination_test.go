@@ -78,7 +78,10 @@ const (
 			"role":                     "role",
 			"is_private_key_encrypted": "false",
 			"passphrase":               "******",
-			"catalog": 					"catalog"
+			"catalog": 					"catalog",
+			"fivetran_role_arn": 		"fivetran_role_arn",
+			"prefix_path": 				"prefix_path",
+			"region": 					"region"
         }
 	}
 	`
@@ -130,6 +133,9 @@ func setupMockClientDestinationConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "is_private_key_encrypted", false)
 			assertKeyExistsAndHasValue(t, config, "passphrase", "passphrase")
 			assertKeyExistsAndHasValue(t, config, "catalog", "catalog")
+			assertKeyExistsAndHasValue(t, config, "fivetran_role_arn", "fivetran_role_arn")
+			assertKeyExistsAndHasValue(t, config, "prefix_path", "prefix_path")
+			assertKeyExistsAndHasValue(t, config, "region", "region")
 
 			assertKeyExistsAndHasValue(t, config, "tunnel_port", "123")
 
@@ -191,6 +197,9 @@ func TestResourceDestinationMappingMock(t *testing.T) {
 					is_private_key_encrypted = "false"
 					passphrase = "passphrase"
 					catalog = "catalog"
+					fivetran_role_arn = "fivetran_role_arn"
+					prefix_path = "prefix_path"
+					region = "region"
 				}
 			}`,
 

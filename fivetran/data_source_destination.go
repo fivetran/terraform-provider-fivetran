@@ -205,6 +205,21 @@ func dataSourceDestinationSchemaConfig() *schema.Schema {
 					Optional:    true,
 					Description: "Catalog name",
 				},
+				"fivetran_role_arn": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "ARN of the role which you created with different required policy mentioned in our setup guide",
+				},
+				"prefix_path": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Prefix path of the bucket for which you have configured access policy. It is not required if access has been granted to entire Bucket in the access policy",
+				},
+				"region": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Region of your AWS S3 bucket",
+				},
 			},
 		},
 	}
@@ -292,6 +307,9 @@ func dataSourceDestinationConfig(resp *fivetran.DestinationDetailsResponse) ([]i
 	c["is_private_key_encrypted"] = resp.Data.Config.IsPrivateKeyEncrypted
 	c["passphrase"] = resp.Data.Config.Passphrase
 	c["catalog"] = resp.Data.Config.Catalog
+	c["fivetran_role_arn"] = resp.Data.Config.FivetranRoleArn
+	c["prefix_path"] = resp.Data.Config.PrefixPath
+	c["region"] = resp.Data.Config.Region
 
 	config = append(config, c)
 

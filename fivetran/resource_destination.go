@@ -233,6 +233,21 @@ func resourceDestinationSchemaConfig() *schema.Schema {
 					Optional:    true,
 					Description: "Catalog name",
 				},
+				"fivetran_role_arn": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "ARN of the role which you created with different required policy mentioned in our setup guide",
+				},
+				"prefix_path": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Prefix path of the bucket for which you have configured access policy. It is not required if access has been granted to entire Bucket in the access policy",
+				},
+				"region": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Region of your AWS S3 bucket",
+				},
 			},
 		},
 	}
@@ -450,6 +465,9 @@ func resourceDestinationReadConfig(resp *fivetran.DestinationDetailsResponse, cu
 	c["public_key"] = resp.Data.Config.PublicKey
 	c["role"] = resp.Data.Config.Role
 	c["catalog"] = resp.Data.Config.Catalog
+	c["fivetran_role_arn"] = resp.Data.Config.FivetranRoleArn
+	c["prefix_path"] = resp.Data.Config.PrefixPath
+	c["region"] = resp.Data.Config.Region
 
 	config = append(config, c)
 
@@ -579,6 +597,18 @@ func resourceDestinationCreateConfig(config []interface{}) (*fivetran.Destinatio
 	}
 	if v := c["catalog"].(string); v != "" {
 		fivetranConfig.Catalog(v)
+		hasConfig = true
+	}
+	if v := c["fivetran_role_arn"].(string); v != "" {
+		fivetranConfig.FivetranRoleArn(v)
+		hasConfig = true
+	}
+	if v := c["prefix_path"].(string); v != "" {
+		fivetranConfig.PrefixPath(v)
+		hasConfig = true
+	}
+	if v := c["region"].(string); v != "" {
+		fivetranConfig.Region(v)
 		hasConfig = true
 	}
 
