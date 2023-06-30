@@ -5,11 +5,11 @@ subcategory: "Getting Started"
 
 # How to set up Fivetran connector schema config using Terraform
 
-In this guide we will set up simple pipeline with one connector and schema using Fivetran Terraform Provider. 
+In this guide, we will set up a simple pipeline with one connector and schema using Fivetran Terraform Provider. 
 
 ## Create a connector resource
 
-Create `fivetran_connector` resource:
+Create the `fivetran_connector` resource:
 
 ```hcl
 resource "fivetran_connector" "connector" {
@@ -18,13 +18,13 @@ resource "fivetran_connector" "connector" {
 }
 ```
 
-Connector will be in paused state, but ready to sync.
+Connector will be in the paused state, but ready to sync.
 
 -> Connector should be **authorized** to be able to fetch schema from source. Set `run_setup_tests = "true"`.
 
 ## Set up connector schema config
 
-Let's define what exactly we want to sync using `fivetran_connector_schema_config` resource:
+Let's define what exactly we want to sync by using the `fivetran_connector_schema_config` resource:
 
 ```hcl
 resource "fivetran_connector_schema_config" "connector_schema" {
@@ -57,7 +57,7 @@ resource "fivetran_connector_schema_config" "connector_schema" {
 
 ## Set up connector schedule configuration
 
--> Schedule should depend on schema resource to enable connector **after** schema changes apply.
+-> The schedule should depend on the schema resource to enable the connector **after** the schema changes are applied.
 
 ```hcl
 resource "fivetran_connector_schedule" "my_connector_schedule" {
@@ -80,4 +80,4 @@ terraform apply
 
 ## Example configuration
 
-Example .tf file with configuration could be found [here](https://github.com/fivetran/terraform-provider-fivetran/tree/main/config-examples/connector_schema_setup.tf).
+An example .tf file with the configuration could be found [here](https://github.com/fivetran/terraform-provider-fivetran/tree/main/config-examples/connector_schema_setup.tf).
