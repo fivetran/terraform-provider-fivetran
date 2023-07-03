@@ -51,8 +51,9 @@ func dataSourceDestination() *schema.Resource {
 
 func dataSourceDestinationSchemaConfig() *schema.Schema {
 	return &schema.Schema{
-		Type:     schema.TypeSet,
-		Optional: true,
+		Type: schema.TypeSet,
+		// Uncomment Optional:true, before re-generating docs
+		//Optional: true,
 		Computed: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{

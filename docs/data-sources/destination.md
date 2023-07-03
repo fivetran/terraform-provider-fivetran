@@ -49,6 +49,7 @@ Optional:
 - `data_set_location` (String) Data location. Datasets will reside in this location.
 - `database` (String) Database name
 - `external_location` (String) External location to store Delta tables. Default value: `""`  (null). By default, the external tables will reside in the `/{schema}/{table}` path, and if you specify an external location in the `{externalLocation}/{schema}/{table}` path.
+- `fivetran_role_arn` (String) ARN of the role which you created with different required policy mentioned in our setup guide
 - `host` (String) Server name
 - `http_path` (String) HTTP path
 - `is_private_key_encrypted` (String) Indicates that a private key is encrypted. The default value: `false`. The field can be specified if authentication type is `KEY_PAIR`.
@@ -56,8 +57,10 @@ Optional:
 - `password` (String, Sensitive) Database user password
 - `personal_access_token` (String, Sensitive) Personal access token
 - `port` (Number) Server port number
+- `prefix_path` (String) Prefix path of the bucket for which you have configured access policy. It is not required if access has been granted to entire Bucket in the access policy
 - `private_key` (String, Sensitive) Private access key.  The field should be specified if authentication type is `KEY_PAIR`.
 - `project_id` (String) BigQuery project ID
+- `region` (String) Region of your AWS S3 bucket
 - `role` (String) The group role that you would like to assign this new user to. Supported group roles: ‘Destination Administrator‘, ‘Destination Reviewer‘, ‘Destination Analyst‘, ‘Connector Creator‘, or a custom destination role
 - `role_arn` (String, Sensitive) Role ARN with Redshift permissions. Required if authentication type is `IAM`.
 - `secret_key` (String, Sensitive) Private key of the customer service account. If specified, your service account will be used to process the data instead of the Fivetran-managed service account.

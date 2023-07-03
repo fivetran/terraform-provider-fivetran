@@ -33,9 +33,9 @@ resource "fivetran_destination" "dest" {
 
 ## Setup tests
 
-Field `run_setup_tests` doesn't have upstream value, it only defines local resource behavoir. This means that when you update only `run_setup_tests` value (from `false` to `true` for example) it won't cause any upstream actions. The value will be just saved in terraform state and then used on effective field updates.
+The `run_setup_tests` field doesn't have upstream value, it only defines local resource behavoir. This means that when you update only the `run_setup_tests` value (from `false` to `true`, for example) it won't cause any upstream actions. The value will be just saved in terraform state and then used on effective field updates.
 
-The default value is `false` - this means that no setup tests will be performed during create/update. To perform setup tests you should set value to `true`.
+The default value is `false` - this means that no setup tests will be performed during create/update. To perform setup tests, you should set value to `true`.
 
 ## Import
 
