@@ -117,12 +117,12 @@ Optional:
 
 Optional:
 
-- `abs_connection_string` (String) Azure blob storage connection string.
-- `abs_container_name` (String) Azure blob storage container name.
+- `abs_connection_string` (String, Sensitive) Connection String
+- `abs_container_name` (String) Container Name
 - `abs_prefix` (String) Prefix
 - `access_key` (String, Sensitive) The access key for API authentication.
 - `access_key_id` (String, Sensitive) Your AWS access key ID.
-- `access_token` (String, Sensitive) The long-lived `Access Token` carries the information necessary for API resources to fetch data.
+- `access_token` (String, Sensitive) The Stripe API Restricted Key
 - `access_type` (String) Access Type
 - `account` (String) The NetSuite Account ID.
 - `account_id` (String) Your Optimizely account ID.
@@ -140,24 +140,23 @@ Optional:
 - `advertisables` (Set of String)
 - `advertisers` (Set of String)
 - `advertisers_id` (Set of String)
-- `agent_host` (String) The agent host.
+- `agent_host` (String) The host of the agent. This is the same as the database host, since the agent must be installed on the same machine as the source database.
 - `agent_ora_home` (String) The home directory of the Oracle database.
-- `agent_password` (String, Sensitive) The agent password.
-- `agent_port` (Number) The agent port.
-- `agent_public_cert` (String) The public certificate for the agent.
-- `agent_user` (String) The agent user name.
+- `agent_password` (String, Sensitive) The agent user's password. It must have a minimum length of 10 characters.
+- `agent_port` (Number) The port number of the agent.
+- `agent_public_cert` (String) The agent public certificate.
+- `agent_user` (String) The agent's user.
 - `aggregation` (String) Options to select aggregation duration. [Possible aggregation values](/docs/applications/facebook-ad-insights/api-config#aggregation).
 - `always_encrypted` (Boolean) Require TLS through Tunnel
 - `amazon_ads_config_v1_profiles` (Set of String)
-- `apache_kafka_config_v1_schema_registry_urls` (Set of String)
 - `apache_kafka_config_v1_servers` (Set of String)
 - `api_access_token` (String, Sensitive) API access token of your custom app.
-- `api_key` (String, Sensitive) The SendGrid API key.
+- `api_key` (String, Sensitive) Your Greenhouse API key.
 - `api_keys` (Set of String)
 - `api_quota` (Number) Allowed number of API requests to Marketo instance per day, the default value is 10000.
 - `api_requests_per_minute` (Number) Allowed number of API requests to Qualtrics per minute, the default value is 2000. Maximum allowed number is 3000 because brands may make up to 3000 API requests per minute across all of its API calls.
 - `api_secret` (String, Sensitive) API Secret
-- `api_token` (String, Sensitive) Zendesk API tokens are auto-generated passwords in the Support admin interface.
+- `api_token` (String) Your Okta API token.
 - `api_url` (String) Your Braze API URL.
 - `api_usage` (String) Maximum Zendesk Api Usage allowed
 - `api_version` (String) API Version
@@ -166,38 +165,40 @@ Optional:
 - `app_specific_password` (String, Sensitive) Your app-specific password
 - `app_sync_mode` (String) Whether to sync all apps or specific apps.
 - `append_file_option` (String) If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.
+- `apple_search_ads_config_v1_organizations` (Set of String)
 - `apps` (Set of String)
 - `archive_pattern` (String) Files inside of compressed archives with filenames matching this regular expression will be synced.
 - `asb_ip` (String) The IP address (or) the URL of ASB namespace
-- `asm_option` (Boolean) Default value: `false`. Set to `true` if you are using ASM on a non-RAC instance.
-- `asm_oracle_home` (String) The Oracle ASM home directory.
-- `asm_password` (String, Sensitive) The ASM user's password. Mandatory if `use_oracle_rac` or `asm_option` is set to `true`.
+- `asm_option` (Boolean) Default value: `false`. Set to `true` if you're using ASM on a non-RAC instance.
+- `asm_oracle_home` (String) ASM Oracle Home path.
+- `asm_password` (String, Sensitive) ASM password. Mandatory if `use_oracle_rac` or `asm_option` is set to `true`.
 - `asm_tns` (String) ASM TNS.
-- `asm_user` (String) The ASM user. Mandatory if `use_oracle_rac` or `asm_option` is set to `true`.
+- `asm_user` (String) ASM user. Mandatory if `use_oracle_rac` or `asm_option` is set to `true`.
 - `attribution_window` (String) Time period used to attribute conversions based on clicks.
 - `auth` (String) Password-based or key-based authentication type
 - `auth_method` (String) The authentication mechanism you want to use
-- `auth_mode` (String) Authorization type.
+- `auth_mode` (String) The Anaplan authentication method.
 - `auth_type` (String) Authorization type. Required for storage bucket authentication.
 - `aws_msk_config_v1_schema_registry_urls` (Set of String)
+- `aws_msk_config_v1_servers` (Set of String)
 - `aws_region_code` (String) The AWS region code for the DynamoDB instance, e.g. `us-east-1`.
+- `azure_service_bus_config_v1_schema_registry_urls` (Set of String)
 - `base_id` (String) ID of base in Airtable
 - `base_url` (String) (Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.
-- `bingads_config_v1_accounts` (Set of String)
 - `blob_sas_url` (String, Sensitive) The blob SAS URL of your Azure container. Required if `bucket_service` is set to `AZURE`.
 - `breakdowns` (Set of String)
-- `bucket` (String) The name of the GCS bucket.
+- `bucket` (String) The bucket name for CloudFront.
 - `bucket_name` (String) The name of the bucket.
 - `bucket_service` (String) Whether to store the events in Fivetran's container service or your S3 bucket. Default value: `Fivetran`.
 - `business_unit_id` (String) Business Unit Id
 - `certificate` (String, Sensitive) The contents of your PEM certificate file. Must be populated if `auth_mode` is set to `Certificate`.
-- `click_attribution_window` (String) The number of days to use as the conversion attribution window for a 'click' action.
-- `client_access` (String) Your application client access fields
-- `client_cert` (String, Sensitive) Heroku Kafka client certificate. Required for `TLS` security protocol.
-- `client_cert_key` (String, Sensitive) Heroku Kafka client certificate key.  Required for `TLS` security protocol.
-- `client_id` (String, Sensitive) Medallia Client ID
+- `click_attribution_window` (String) Time period to attribute conversions based on clicks. [Possible click_attribution_window values](/docs/applications/facebook-ad-insights/api-config#clickattributionwindow).
+- `client_access` (String) Your application client access fields.
+- `client_cert` (String, Sensitive) Kafka client certificate.
+- `client_cert_key` (String, Sensitive) Kafka client certificate key.
+- `client_id` (String) The SAP Concur Client ID.
 - `client_name` (String, Sensitive) Medallia company name
-- `client_secret` (String, Sensitive) Medallia Client Secret key
+- `client_secret` (String, Sensitive) The SAP Concur Client secret.
 - `cloud_storage_type` (String) Cloud storage type Braze Current is connected to.
 - `columns` (Set of String)
 - `company_id` (String) Company ID
@@ -207,12 +208,12 @@ Optional:
 - `config_type` (String) Option to select Prebuilt Reports or Custom Reports. [Possible config_type values](/docs/applications/facebook-ad-insights/api-config#configtype).
 - `confluent_cloud_config_v1_schema_registry_urls` (Set of String)
 - `confluent_cloud_config_v1_servers` (Set of String)
-- `connection_method` (String) The connection method used to connect to SFTP Server.
-- `connection_string` (String) Connection string of the Event Hub Namespace you want to sync.
+- `connection_method` (String) The connection method
+- `connection_string` (String, Sensitive) The connection string used for authentication. Required if the authentication type is `ConnectionString`
 - `connection_type` (String) Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
-- `consumer_group` (String) Name of consumer group created for Fivetran.
-- `consumer_key` (String, Sensitive) Consumer Key
-- `consumer_secret` (String, Sensitive) Consumer Secret
+- `consumer_group` (String) Confluent Cloud consumer group name.
+- `consumer_key` (String) The Twitter App consumer key.
+- `consumer_secret` (String, Sensitive) The Twitter App consumer secret.
 - `container_address` (String) IP address of Azure Storage Container which is accessible from host machine.
 - `container_name` (String) The name of the blob container.
 - `content_owner_id` (String) Used only for Content Owner reports. The ID of the content owner for whom the API request is being made.
@@ -237,15 +238,14 @@ Optional:
 - `dimension_attributes` (Set of String)
 - `dimension_filters` (Block Set) (see [below for nested schema](#nestedblock--config--dimension_filters))
 - `dimensions` (Set of String)
-- `domain` (String) Zendesk domain.
+- `domain` (String) Your Okta domain.
 - `domain_host_name` (String) Workday host name.
 - `domain_name` (String) The custom domain name associated with Dynamics 365.
 - `domain_type` (String) Domain type of your Medallia URL
 - `double_click_campaign_manager_config_v1_dimensions` (Set of String)
 - `double_click_campaign_manager_config_v1_metrics` (Set of String)
-- `double_click_publishers_config_v1_dimensions` (Set of String)
 - `dynamodb_config_v1_packed_mode_tables` (Set of String)
-- `email` (String) Zendesk email.
+- `email` (String) The NetSuite user's email address.
 - `empty_header` (Boolean) <strong>Optional.</strong> If your CSV generating software doesn't provide header line for the documents, Fivetran can generate the generic column names and sync data rows with them.
 - `enable_all_dimension_combinations` (Boolean) Whether to enable all reach dimension combinations in the report. Default value: `false`
 - `enable_enrichments` (Boolean) Enable Enrichments
@@ -265,7 +265,7 @@ Optional:
 - `facebook_ads_config_v1_accounts` (Set of String)
 - `facebook_config_v1_accounts` (Set of String)
 - `fields` (Set of String)
-- `file_type` (String) If your files are saved with improper extensions, you can force them to be synced as the selected file type.
+- `file_type` (String) If your files are saved with improper extensions, you can force them to be synced as the selected filetype.
 - `filter` (String) String parameter restricts the data returned for your report. To use the filters parameter, specify a dimension or metric on which to filter, followed by the filter expression
 - `finance_account_sync_mode` (String) Whether to sync all finance accounts or specific finance accounts.
 - `finance_accounts` (Set of String)
@@ -286,14 +286,14 @@ Optional:
 - `google_ads_config_v1_accounts` (Set of String)
 - `google_analytics_4_config_v1_accounts` (Set of String)
 - `google_analytics_config_v1_accounts` (Set of String)
+- `google_analytics_config_v1_dimensions` (Set of String)
+- `google_analytics_config_v1_profiles` (Set of String)
 - `google_analytics_mcf_config_v1_accounts` (Set of String)
-- `google_analytics_mcf_config_v1_profiles` (Set of String)
 - `google_display_and_video_360_config_v1_dimensions` (Set of String)
 - `google_display_and_video_360_config_v1_metrics` (Set of String)
 - `google_display_and_video_360_config_v1_partners` (Set of String)
 - `group_name` (String) (Optional) The group name of the `target_group_id`.
 - `has_manage_permissions` (Boolean) The boolean value specifying whether the connection string has manage permissions
-- `heroku_kafka_config_v1_servers` (Set of String)
 - `home_folder` (String) Your S3 home folder path of the Data Locker.
 - `host` (String) DB instance host or IP address.
 - `host_ip` (String) The IP address of the host machine which we use to connect to ASB via ssh
@@ -329,10 +329,10 @@ Optional:
 - `log_journal_schema` (String) The log journal schema.
 - `log_truncater` (String) Log Truncater.
 - `login` (String) The Trade Desk email. It is a part of the login credentials.
-- `login_password` (String, Sensitive) The login password. It is a part of the login credentials.
+- `login_password` (String, Sensitive) The SAP Concur password.
 - `manager_accounts` (Set of String)
 - `merchant_id` (String) Your Braintree merchant ID.
-- `message_type` (String) Message type.
+- `message_type` (String) Confluent Cloud message type.
 - `metrics` (Set of String)
 - `mongo_sharded_config_v1_hosts` (Set of String)
 - `mongo_sharded_config_v1_packed_mode_tables` (Set of String)
@@ -344,7 +344,7 @@ Optional:
 - `oauth_token_secret` (String, Sensitive) The Twitter App access token secret.
 - `on_error` (String) If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.
 - `on_premise` (Boolean) Whether the Jira instance is local or in cloud.
-- `organization_id` (String) The organization ID from Salesforce Commerce Cloud account.
+- `organization_id` (String) Organization ID from the Service Account (JWT) credentials of your Adobe Project.
 - `organizations` (Set of String)
 - `packed_mode_tables` (Set of String)
 - `packing_mode` (String) Whether to sync all tables in unpacked mode only, all tables in packed mode only, or specific tables in packed mode. Default value: `UseUnpackedModeOnly`.
@@ -366,9 +366,9 @@ Optional:
 - `port` (Number) The port number.
 - `post_click_attribution_window_size` (String) The time period to attribute conversions based on clicks. Default value: `DAY_30`
 - `prebuilt_report` (String) The name of report of which connector will sync the data. [Possible prebuilt_report values](/docs/applications/facebook-ad-insights/api-config#prebuiltreport).
-- `prefix` (String) All files and folders under this folder path link will be searched for files to sync. This can be any shared folder link.
+- `prefix` (String) All files and folders under this folder path will be searched for files to sync.
 - `primary_keys` (Set of String)
-- `private_key` (String, Sensitive) The contents of your private key file. Must be populated if `auth_mode` is set to `Certificate`.
+- `private_key` (String, Sensitive) The contents of your secret key file.
 - `profiles` (Set of String)
 - `project_credentials` (Block Set) (see [below for nested schema](#nestedblock--config--project_credentials))
 - `project_id` (String) The project ID.
@@ -380,11 +380,11 @@ Optional:
 - `realm_id` (String) `Realm ID` of your QuickBooks application.
 - `refresh_token` (String, Sensitive) The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 - `refresh_token_expires_at` (String) The expiration date of the refresh token. Unix timestamp in seconds
-- `region` (String) The region used by the Amazon Ads profile.
+- `region` (String) The region.
 - `replication_slot` (String) Replication slot name. Specify only for `"updated_method": "WAL"` or `"WAL_PGOUTPUT"`.
 - `report_configuration_ids` (Set of String)
 - `report_timezone` (String) Report Timezone
-- `report_type` (String) Type of reporting data to sync. Default value: `STANDARD`.
+- `report_type` (String) The name of report of which connector will sync the data.
 - `report_url` (String) URL for a live custom report.
 - `reports` (Block Set) (see [below for nested schema](#nestedblock--config--reports))
 - `repositories` (Set of String)
@@ -393,30 +393,30 @@ Optional:
 - `rest_api_limit` (Number) The number of API calls that the connector should not exceed in a day. Default REST API call limit per day: 150,000.
 - `rfc_library_path` (String) Directory path containing the SAP NetWeaver RFC SDK library files.
 - `role` (String) The NetSuite Role ID for connection.
-- `role_arn` (String, Sensitive) Role ARN
+- `role_arn` (String, Sensitive) The Role ARN required for authentication.
 - `rollback_window_size` (Number) A period of time in days during which a conversion is recorded.
 - `s3_bucket` (String) The S3 bucket name. Required if `bucket_service` is set to `S3`.
 - `s3_export_bucket` (String) Exports Bucket
 - `s3_export_folder` (String) Exports Folder
 - `s3_export_role_arn` (String, Sensitive) Exports Role ARN
 - `s3_role_arn` (String, Sensitive) The Role ARN required for authentication. Required if `bucket_service` is set to `S3`.
-- `s3bucket` (String) The S3 bucket name.
+- `s3bucket` (String) Your S3 bucket required if `AWS_S3` is the `cloud_storage_type`
 - `s3external_id` (String) This is the same as your `group_id`, used for authentication along with the `role_arn` required if `AWS_S3` is the `cloud_storage_type`
 - `s3folder` (String) Your S3 folder name required if `AWS_S3` is the `cloud_storage_type`
 - `s3path` (String) Copy and use this to configure Sailthru Connect in your sailthru account.
-- `s3role_arn` (String, Sensitive) The Role ARN required for authentication.
+- `s3role_arn` (String, Sensitive) The Role ARN required for authentication required if `AWS_S3` is the `cloud_storage_type`
 - `sales_account_sync_mode` (String) Whether to sync all sales accounts or specific sales accounts.
 - `sales_accounts` (Set of String)
 - `salesforce_security_token` (String, Sensitive) The Pardot user's Salesforce SSO Account Security Token.
-- `sap_schema` (String) The SAP schema.
+- `sap_schema` (String) SAP schema name.
 - `sap_user` (String) The Oracle schema name where the SAP tables reside.
 - `sasl_mechanism` (String) SASL Mechanism
 - `sasl_plain_key` (String, Sensitive) API Key
 - `sasl_plain_secret` (String, Sensitive) API Secret
 - `sasl_scram256_key` (String, Sensitive) API Key
 - `sasl_scram256_secret` (String, Sensitive) API Secret
-- `sasl_scram512_key` (String, Sensitive) API Key
-- `sasl_scram512_secret` (String, Sensitive) API Secret
+- `sasl_scram512_key` (String, Sensitive) If `security_protocol` is set to `SASL`, enter your secret's `saslScram512Key`.
+- `sasl_scram512_secret` (String, Sensitive) If `security_protocol` is set to `SASL`, enter your secret's `saslScram512Key`.
 - `schema` (String) Destination schema. Schema is permanent and cannot be changed after connection creation
 - `schema_prefix` (String) Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation
 - `schema_registry_credentials_source` (String) Schema Registry Credentials source
@@ -448,16 +448,15 @@ Optional:
 - `short_code` (String, Sensitive) The Salesforce eight-character string assigned to a realm for routing purposes.
 - `show_records_with_no_metrics` (Boolean) Turn the toggle on if you want the reports to also return records without metrics.
 - `sid` (String) The Twilio API key SID
-- `site_id` (String) The name of the site from which you want to sync data.
+- `site_id` (String) The Site ID of the SharePoint site from which you want to sync your lists. The Site ID is the `id` field in the [Graph API](https://docs.microsoft.com/en-us/graph/api/site-search?view=graph-rest-1.0&tabs=http) response for sites.
 - `site_name` (String) The Name of the SharePoint site. The Site Name is the `name` field in the Graph API response for sites.
 - `site_urls` (Set of String)
 - `skip_after` (Number) We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.
 - `skip_before` (Number) We will skip over the number of lines specified before syncing data.
-- `snapchat_ads_config_v1_organizations` (Set of String)
 - `soap_uri` (String) Marketo SOAP API Endpoint.
 - `source` (String) The data source.
-- `sub_domain` (String) Your company's Recurly subdomain.
-- `subdomain` (String) Medallia subdomain
+- `sub_domain` (String) The subdomain of your Gainsight account.
+- `subdomain` (String) The subdomain used to access your account. If you access BambooHR at 'https://mycompany.bamboohr.com', then the subdomain is 'mycompany'.
 - `subscriber_name` (String) The subscriber name. If the connection string does not have manage permission, you need to specify a subscriber name we can use to fetch data. If not specified, we default to `fivetran_sub_<schema>`
 - `support_connected_accounts_sync` (Boolean) Sync Connected Accounts. Connected Account Documentation - https://stripe.com/docs/api/connected_accounts.
 - `support_nested_columns` (Boolean) This option is to unpack the nested columns and sync them separately. By default, we sync the nested columns as JSON objects.
@@ -466,9 +465,9 @@ Optional:
 - `sync_format` (String) The webhooks sync format.  Default value: `Unpacked`. Unpacked messages must be valid JSON.
 - `sync_metadata` (Boolean) Parameter defining whether to enable or disable metadata synchronisation. Default value: `TRUE`.
 - `sync_method` (String) Sync Method
-- `sync_mode` (String) Whether to sync all tables in unpacked mode only or specific tables in packed mode. Default value: `UseUnpackedModeOnly`.
+- `sync_mode` (String) Whether to sync all accounts or specific accounts.
 - `sync_pack_mode` (String) The packing mode type. Supported values:<br>`STANDARD_UNPACKED_MODE`- Unpacks _one_ layer of nested fields and infers types.<br>`PACKED_MODE`- Delivers packed data as a single destination column value.<br>Learn more in our [Cosmos DB Sync Pack Mode Options documentation](/docs/databases/cosmos#packmodeoptions).
-- `sync_type` (String) Sync type.  Unpacked messages must be valid JSON.
+- `sync_type` (String) Kafka sync type.  Unpacked messages must be valid JSON.
 - `table` (String) Destination table. Table is permanent and cannot be changed after connection creation
 - `table_name` (String) Name of table in Airtable
 - `tde_certificate` (String, Sensitive) Certificate used to protect a database encryption key
@@ -479,22 +478,23 @@ Optional:
 - `tenant_id` (String, Sensitive) Azure AD tenant ID.
 - `tiktok_ads_config_v1_accounts` (Set of String)
 - `time_zone` (String) The time zone configured in your Pardot instance. An empty value defaults to `UTC+00:00`.
-- `timeframe_months` (String) Number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `THREE`.
-- `tns` (String) Single-tenant database: The database SID. <br> Multi-tenant database: The database TNS.
+- `timeframe_months` (String) Historical sync timeframe in months.
+- `tns` (String) Single-tenant database: The database's SID. <br> Multi-tenant database: The database's TNS.
 - `token_authenticated_container` (String) The container name. Required for the `RESOURCE_TOKEN` data access method.
 - `token_authenticated_database` (String) The database name. Required for the `RESOURCE_TOKEN` data access method.
 - `token_key` (String, Sensitive) Token ID
 - `token_secret` (String, Sensitive) Token Secret
 - `topics` (Set of String)
 - `trust_store_type` (String) Trust Store Type
-- `trusted_cert` (String, Sensitive) Heroku Kafka trusted certificate. Required for `TLS` security protocol.
+- `trusted_cert` (String, Sensitive) Kafka trusted certificate.
 - `tunnel_host` (String) SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).
 - `tunnel_port` (Number) SSH port, specify only to connect via an SSH tunnel.
 - `tunnel_user` (String) SSH user, specify only to connect via an SSH tunnel.
+- `twilio_config_v1_accounts` (Set of String)
 - `twitter_ads_config_v1_accounts` (Set of String)
 - `twitter_config_v1_accounts` (Set of String)
 - `update_config_on_each_sync` (Boolean) Specifies whether the configuration is updated before each sync or only when the connector settings are saved. This parameter only takes effect when `config_method` is set to `REUSE_EXISTING`. The default value is `true`.
-- `update_method` (String) The method to detect new or changed rows. <br>Supported values:<br>`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. <br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
+- `update_method` (String) The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables.  - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
 - `uri` (String) Cosmos resource instance address.
 - `use_api_keys` (Boolean) Whether to use multiple API keys for interaction.
 - `use_customer_bucket` (Boolean) Use Custom Bucket. Set it to 'true' if the data is being synced to your S3 bucket instead of an AppsFlyer-managed bucket.
@@ -507,8 +507,8 @@ Optional:
 - `user_key` (String, Sensitive)
 - `user_name` (String) Workday username.
 - `user_profiles` (Set of String)
-- `username` (String) The Oracle Fusion Cloud username.
-- `view_attribution_window` (String) The number of days to use as the conversion attribution window for a 'view' action.
+- `username` (String) The SAP Concur username.
+- `view_attribution_window` (String) Time period to attribute conversions based on views. [Possible view_attribution_window values](/docs/applications/facebook-ad-insights/api-config#viewattributionwindow).
 - `view_through_attribution_window_size` (String) The time period to attribute conversions based on views. Default value: `DAY_7`
 - `webhook_url` (String) The registered URL for webhooks in your Pipedrive dashboard.
 - `workspace_name` (String) The name of the database where the temporary tables will be created.
@@ -591,7 +591,7 @@ Optional:
 - `filter_value` (String)
 - `metrics` (Set of String)
 - `prebuilt_report` (String) The name of the Prebuilt Report from which the connector will sync the data.
-- `report_type` (String) The name of the Google Ads report from which the connector will sync the data. [Possible report_type values](https://developers.google.com/adwords/api/docs/appendix/reports#report-types).
+- `report_type` (String) The type of report
 - `search_types` (Set of String)
 - `segment_ids` (Set of String)
 - `segments` (Set of String)
@@ -622,7 +622,7 @@ Optional:
 - `filter_value` (String)
 - `metrics` (Set of String)
 - `prebuilt_report` (String) The name of the Prebuilt Report from which the connector will sync the data.
-- `report_type` (String) The name of the Google Ads report from which the connector will sync the data. [Possible report_type values](https://developers.google.com/adwords/api/docs/appendix/reports#report-types).
+- `report_type` (String) The type of report
 - `search_types` (Set of String)
 - `segment_ids` (Set of String)
 - `segments` (Set of String)

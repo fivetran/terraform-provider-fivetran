@@ -24,8 +24,84 @@ const INT_FIELD = "integer"
 const BOOL_FIELD = "boolean"
 const ARRAY_FIELD = "array"
 
-func getConnectorSchemaConfig() *schema.Schema {
+func getConnectorSchemaConfig(readonly bool, version int) *schema.Schema {
 	fields := getFields()
+
+	if version == 0 {
+		// Sensitive config fields, Fivetran returns this fields masked
+		fields["oauth_token"] = &schema.Schema{
+			Type:        schema.TypeString,
+			Optional:    !readonly,
+			Sensitive:   true,
+			Computed:    readonly,
+			Description: "The Twitter App access token.",
+		}
+		fields["oauth_token_secret"] = &schema.Schema{
+			Type:        schema.TypeString,
+			Optional:    !readonly,
+			Sensitive:   true,
+			Computed:    readonly,
+			Description: "The Twitter App access token secret.",
+		}
+
+		// Computed
+		fields["api_type"] = &schema.Schema{
+			Type:        schema.TypeString,
+			Optional:    !readonly,
+			Computed:    true,
+			Description: "",
+		}
+		fields["daily_api_call_limit"] = &schema.Schema{
+			Type:        schema.TypeString,
+			Optional:    !readonly,
+			Computed:    true,
+			Description: "",
+		}
+		fields["test_table_name"] = &schema.Schema{
+			Type:        schema.TypeString,
+			Optional:    !readonly,
+			Computed:    readonly,
+			Description: "",
+		}
+		fields["unique_id"] = &schema.Schema{
+			Type:        schema.TypeString,
+			Optional:    !readonly,
+			Computed:    readonly,
+			Description: "",
+		}
+		fields["organization"] = &schema.Schema{
+			Type:        schema.TypeString,
+			Optional:    !readonly,
+			Computed:    readonly,
+			Description: "",
+		}
+		fields["environment"] = &schema.Schema{
+			Type:        schema.TypeString,
+			Optional:    !readonly,
+			Computed:    readonly,
+			Description: "",
+		}
+
+		// String collections
+		fields["report_suites"] = &schema.Schema{
+			Type:        schema.TypeSet,
+			Optional:    !readonly,
+			Computed:    readonly,
+			Description: "Specific report suites to sync. Must be populated if `sync_mode` is set to `SpecificReportSuites`.",
+			Elem: &schema.Schema{
+				Type: schema.TypeString,
+			},
+		}
+		fields["elements"] = &schema.Schema{
+			Type:        schema.TypeSet,
+			Optional:    !readonly,
+			Computed:    readonly,
+			Description: "The elements that you want to sync.",
+			Elem: &schema.Schema{
+				Type: schema.TypeString,
+			},
+		}
+	}
 
 	return &schema.Schema{
 		Type:     schema.TypeList,

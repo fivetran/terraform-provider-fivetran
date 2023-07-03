@@ -19,16 +19,16 @@ data "fivetran_connectors_metadata" "sources" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `sources` (Set of Object) (see [below for nested schema](#nestedatt--sources))
+- `sources` (Block Set) (see [below for nested schema](#nestedblock--sources))
 
-<a id="nestedatt--sources"></a>
+<a id="nestedblock--sources"></a>
 ### Nested Schema for `sources`
 
 Read-Only:
 
 - `description` (String)
 - `icon_url` (String)
-- `id` (String)
+- `id` (String) The unique identifier for the connector within the Fivetran system
 - `link_to_docs` (String)
 - `link_to_erd` (String)
 - `name` (String)

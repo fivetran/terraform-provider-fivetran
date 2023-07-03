@@ -27,7 +27,11 @@ func dataSourceGroupConnectors() *schema.Resource {
 }
 
 func dataSourceGroupConnectorsSchemaConnectors() *schema.Schema {
-	return &schema.Schema{Type: schema.TypeSet, Computed: true,
+	return &schema.Schema{
+		Type: schema.TypeSet,
+		// Uncomment Optional:true, before re-generating docs
+		//Optional: true,
+		Computed: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"id": {
@@ -87,6 +91,7 @@ func dataSourceGroupConnectorsSchemaConnectors() *schema.Schema {
 				},
 				"status": {
 					Type:        schema.TypeSet,
+					Optional:    true,
 					Computed:    true,
 					Description: "",
 					Elem: &schema.Resource{
@@ -130,7 +135,10 @@ func dataSourceGroupConnectorsSchemaConnectors() *schema.Schema {
 									},
 								},
 							},
-							"warnings": {Type: schema.TypeSet, Computed: true,
+							"warnings": {
+								Type:     schema.TypeSet,
+								Optional: true,
+								Computed: true,
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
 										"code": {

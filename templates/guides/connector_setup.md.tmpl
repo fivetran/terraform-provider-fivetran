@@ -5,11 +5,11 @@ subcategory: "Getting Started"
 
 # How to set up your Fivetran environment using Terraform
 
-In this guide we will set up simple pipeline with one source using Fivetran Terraform Provider.
+In this guide, we will set up a simple pipeline with one source using Fivetran Terraform Provider.
 
 ## Provider setup
 
-First of all you need to get your [Fivetran API Key and Secret](https://fivetran.com/docs/rest-api/getting-started#gettingstarted) and save it into environment variables:
+First of all, you need to get your [Fivetran API Key and Secret](https://fivetran.com/docs/rest-api/getting-started#gettingstarted) and save it into environment variables:
 
 ```bash
 export FIVETRAN_APIKEY=<your_Fivetran_API_key>
@@ -46,7 +46,7 @@ provider "fivetran" {
 
 ## Add your group and destination
 
-The root resource for your Fivetran infrastructure setup is always `Destination group`. So first of all you need to set up the group:
+The root resource for your Fivetran infrastructure setup is always `Destination group`. First of all, you need to set up the group:
 
 ```hcl
 resource "fivetran_group" "group" {
@@ -54,7 +54,7 @@ resource "fivetran_group" "group" {
 }
 ```
 
-Once you have created the group you need to associate a `Destination` with it:
+Once you have created the group, you need to associate a `Destination` with it:
 
 ```hcl
 resource "fivetran_destination" "destination" {
@@ -79,7 +79,7 @@ resource "fivetran_destination" "destination" {
 
 ## Add your first connector
 
-We are now ready to set-up our first connector:
+We are now ready to set up our first connector:
 
 ```hcl
 resource "fivetran_connector" "connector" {
@@ -112,4 +112,4 @@ terraform apply
 
 ## Example configuration
 
-Example .tf file with configuration could be found [here](https://github.com/fivetran/terraform-provider-fivetran/tree/main/config-examples/connector_setup.tf).
+An example .tf file with the configuration could be found [here](https://github.com/fivetran/terraform-provider-fivetran/tree/main/config-examples/connector_setup.tf).

@@ -18,14 +18,14 @@ data "fivetran_groups" "all" {
 
 ### Read-Only
 
-- `groups` (Set of Object) (see [below for nested schema](#nestedatt--groups))
+- `groups` (Block Set) (see [below for nested schema](#nestedblock--groups))
 - `id` (String) The ID of this resource.
 
-<a id="nestedatt--groups"></a>
+<a id="nestedblock--groups"></a>
 ### Nested Schema for `groups`
 
 Read-Only:
 
-- `created_at` (String)
-- `id` (String)
-- `name` (String)
+- `created_at` (String) The timestamp of when the group was created in your account.
+- `id` (String) The unique identifier for the group within the Fivetran system.
+- `name` (String) The name of the group within your account.

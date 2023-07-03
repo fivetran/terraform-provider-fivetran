@@ -7,11 +7,11 @@ subcategory: "Upgrade Guides"
 
 ## What's new in 0.7.0
 
-In version `0.7.0` of Fivetran Terraform provider resource `fivetran_connector` is separated onto two resources:
+In version `0.7.0` of Fivetran Terraform provider, resource `fivetran_connector` is separated onto two resources:
 - `fivetran_connector` resource
 - `fivetran_connector_schedule` resource
-With this new structure it's now possible to create connector, define schema config for it and enable it in one `apply` cycle without intermediate stages.
-Before this version you had to "un-pause" connector after applying initial schema configuration with additional `apply` to avoid unneeded data to be synced.
+With this new structure, it's now possible to create a connector, define the schema config for it, and enable it in one `apply` cycle without intermediate stages.
+Before this version, you had to "un-pause" connector after applying initial schema configuration with additional `apply` to avoid unneeded data to be synced.
 
 ## Migration guide
 
@@ -101,7 +101,7 @@ resource "fivetran_connector_schedule" "test_connector_schedule" {
 
 ### Update terraform state
 
-After all configurations updated run:
+Once all configurations have been updated, run:
 
 ```
 terraform init -upgrade
