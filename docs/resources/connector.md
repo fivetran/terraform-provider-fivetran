@@ -265,8 +265,8 @@ Optional:
 - `facebook_ads_config_v1_accounts` (Set of String)
 - `facebook_config_v1_accounts` (Set of String)
 - `fields` (Set of String)
-- `file_type` (String) If your files are saved with improper extensions, you can force them to be synced as the selected filetype.
-- `filter` (String) String parameter restricts the data returned for your report. To use the filters parameter, specify a dimension or metric on which to filter, followed by the filter expression
+- `file_type` (String) If your files are saved with improper extensions, you can force them to be synced as the selected file type.
+- `filter` (String) String parameter restricts the data returned for your report. To use the filter parameter, specify a dimension or metric on which to filter, followed by the filter expression
 - `finance_account_sync_mode` (String) Whether to sync all finance accounts or specific finance accounts.
 - `finance_accounts` (Set of String)
 - `folder` (String) Your Dropbox Folder URL.
@@ -586,7 +586,7 @@ Optional:
 - `config_type` (String) Whether to use the Prebuilt Reports or Custom Reports.
 - `dimensions` (Set of String)
 - `fields` (Set of String)
-- `filter` (String) String parameter restricts the data returned for your report. To use the filters parameter, specify a dimension or metric on which to filter, followed by the filter expression
+- `filter` (String) String parameter restricts the data returned for your report. To use the filter parameter, specify a dimension or metric on which to filter, followed by the filter expression
 - `filter_field_name` (String) The dimension name to filter on.
 - `filter_value` (String)
 - `metrics` (Set of String)
@@ -617,7 +617,7 @@ Optional:
 - `config_type` (String) Whether to use the Prebuilt Reports or Custom Reports.
 - `dimensions` (Set of String)
 - `fields` (Set of String)
-- `filter` (String) String parameter restricts the data returned for your report. To use the filters parameter, specify a dimension or metric on which to filter, followed by the filter expression
+- `filter` (String) String parameter restricts the data returned for your report. To use the filter parameter, specify a dimension or metric on which to filter, followed by the filter expression
 - `filter_field_name` (String) The dimension name to filter on.
 - `filter_value` (String)
 - `metrics` (Set of String)
