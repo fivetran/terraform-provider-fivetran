@@ -8,15 +8,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-//go:embed services.json
-var servicesJson []byte
-
 //go:embed open-api-spec.json
 var oasJson []byte
 
+const SERVICES_PATH = "components.schemas.NewConnectorRequestV1.discriminator.mapping"
 const SCHEMAS_PATH = "components.schemas."
 const PROPERTIES_PATH = ".properties.config.properties"
-const SERVICES_FILE_PATH = "/services.json"
 const SCHEMAS_FILE_PATH = "/open-api-spec.json"
 
 const OBJECT_FIELD = "object"
@@ -115,9 +112,9 @@ func getConnectorSchemaConfig(readonly bool, version int) *schema.Schema {
 }
 
 func getFields() map[string]*schema.Schema {
-	services := getAvailableServiceIds()
-
 	schemaJson := getSchemaJson()
+
+	services := getAvailableServiceIds(schemaJson)
 
 	fields := make(map[string]*schema.Schema)
 	for _, service := range services {
@@ -149,15 +146,12 @@ func getFields() map[string]*schema.Schema {
 	return fields
 }
 
-func getAvailableServiceIds() []string {
-	servicesJson, err := gabs.ParseJSON(servicesJson)
-	if err != nil {
-		panic(err)
-	}
-
+func getAvailableServiceIds(oasJson *gabs.Container) []string {
 	services := []string{}
 
-	for serviceKey := range servicesJson.S("services").ChildrenMap() {
+	file := oasJson.Path(SERVICES_PATH).ChildrenMap()
+
+	for serviceKey := range file {
 		services = append(services, serviceKey+"_config_V1")
 	}
 
