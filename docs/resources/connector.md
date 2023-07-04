@@ -265,7 +265,7 @@ Optional:
 - `facebook_ads_config_v1_accounts` (Set of String)
 - `facebook_config_v1_accounts` (Set of String)
 - `fields` (Set of String)
-- `file_type` (String) If your files are saved with improper extensions, you can force them to by synced as the selected file type.
+- `file_type` (String) If your files are saved with improper extensions, you can force them to be synced as the selected file type.
 - `filter` (String) String parameter restricts the data returned for your report. To use the filter parameter, specify a dimension or metric on which to filter, followed by the filter expression
 - `finance_account_sync_mode` (String) Whether to sync all finance accounts or specific finance accounts.
 - `finance_accounts` (Set of String)
