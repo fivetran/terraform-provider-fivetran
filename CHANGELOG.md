@@ -31,7 +31,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Release identical to v0.6.19;
 
-
 ## [0.7.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.19...v0.7.0)
 
 Release reverted due to unexpected issues; 
