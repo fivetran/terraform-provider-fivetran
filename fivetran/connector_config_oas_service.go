@@ -2,6 +2,7 @@ package fivetran
 
 import (
 	_ "embed"
+	"sort"
 	"strings"
 
 	"github.com/Jeffail/gabs/v2"
@@ -123,17 +124,14 @@ func getFields() map[string]*schema.Schema {
 		serviceSchema := schemaJson.Path(path).ChildrenMap()
 		serviceFields := createFields(serviceSchema)
 		for property, value := range serviceFields {
+			if property == "app_ids" && service == "appsflyer_config_V1" {
+				fields[strings.ToLower(service+"_"+property)] = value
+				continue
+			}
 			if existingValue, ok := fields[property]; ok {
 				if existingValue.Type != value.Type {
-					property = service + property
+					property = service + "_" + property
 				} else if existingValue.Type == schema.TypeSet {
-					if _, ok := value.Elem.([]string); ok {
-						if _, ok := existingValue.Elem.([]string); ok {
-
-						} else {
-							property = service + "." + property
-						}
-					}
 					value, ok = updateExistingValue(existingValue, value)
 					if !ok {
 						property = strings.ToLower(service + "_" + property)
@@ -154,6 +152,8 @@ func getAvailableServiceIds(oasJson *gabs.Container) []string {
 	for serviceKey := range file {
 		services = append(services, serviceKey+"_config_V1")
 	}
+
+	sort.Strings(services)
 
 	return services
 }
