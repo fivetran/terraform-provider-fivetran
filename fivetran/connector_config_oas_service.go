@@ -3,6 +3,7 @@ package fivetran
 import (
 	_ "embed"
 	"sort"
+	"strings"
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -122,9 +123,8 @@ func getFields(readonly bool) map[string]*schema.Schema {
 		serviceSchema := schemaJson.Path(path).ChildrenMap()
 		serviceFields := createFields(serviceSchema, readonly)
 		for property, value := range serviceFields {
-			// Edge case: if we dont modify this field here, it will break our existing contract which has same field but of a different type
-			if property == "app_ids" && service == "appsflyer" {
-				fields[service+"_"+property] = value
+			if property == "app_ids" && service == "appsflyer_config_V1" {
+				fields[strings.ToLower(service+"_"+property)] = value
 				continue
 			}
 			if existingValue, ok := fields[property]; ok {
