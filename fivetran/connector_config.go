@@ -74,7 +74,7 @@ func getConnectorReadCustomConfig(resp *fivetran.ConnectorCustomDetailsResponse,
 
 	originConfig = populateOriginConfigFromResponse(originConfig, resp.Data.Config)
 
-	fields := getFields()
+	fields := getFields(false)
 
 	for fieldName, fieldSchema := range fields {
 		if fieldSchema.Type == schema.TypeSet || fieldSchema.Type == schema.TypeList {

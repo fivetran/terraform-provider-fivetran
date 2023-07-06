@@ -205,7 +205,7 @@ func resourceConnectorUpdateCustomConfig(resourceData *schema.ResourceData, crea
 
 	responseConfig := resourceConfigs[0].(map[string]interface{})
 
-	fields := getFields()
+	fields := getFields(false)
 
 	config := createConfig(responseConfig, fields)
 

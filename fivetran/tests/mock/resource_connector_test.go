@@ -466,7 +466,8 @@ const (
 				"action_report_time": 		"action_report_time",
 				"click_attribution_window": "click_attribution_window",
 				"view_attribution_window": 	"view_attribution_window",
-				"prebuilt_report_name": 	"prebuilt_report_name"
+				"prebuilt_report_name": 	"prebuilt_report_name",
+				"use_unified_attribution_setting": false
 			}],
 			"project_credentials": [{
 				"project": 		"project",
@@ -663,7 +664,7 @@ const (
 			path = "path"
 			endpoint = "endpoint"
 			identity = "identity"
-			
+			organization = "organization"
 			domain_name = "domain_name"
 			resource_url = "resource_url"
 			tunnel_host = "tunnel_host"
@@ -785,6 +786,7 @@ const (
 				click_attribution_window = "click_attribution_window"
 				view_attribution_window = "view_attribution_window"
 				prebuilt_report_name = "prebuilt_report_name"
+				use_unified_attribution_setting = false
 			}
 			project_credentials {
 				project = "project"
@@ -1375,6 +1377,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, custom_table, "click_attribution_window", "click_attribution_window")
 			assertKeyExistsAndHasValue(t, custom_table, "view_attribution_window", "view_attribution_window")
 			assertKeyExistsAndHasValue(t, custom_table, "prebuilt_report_name", "prebuilt_report_name")
+			assertKeyExistsAndHasValue(t, custom_table, "use_unified_attribution_setting", false)
 
 			assertKeyExists(t, custom_table, "fields")
 			assertArrayItems(t, custom_table["fields"].([]interface{}), append(make([]interface{}, 0), "field"))

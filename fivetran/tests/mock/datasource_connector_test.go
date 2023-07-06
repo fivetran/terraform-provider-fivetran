@@ -329,6 +329,7 @@ func TestDataSourceConnectorConfigMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.custom_tables.0.click_attribution_window", "click_attribution_window"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.custom_tables.0.view_attribution_window", "view_attribution_window"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.custom_tables.0.prebuilt_report_name", "prebuilt_report_name"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.custom_tables.0.use_unified_attribution_setting", "false"),
 
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.project_credentials.0.project", "project"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.0.project_credentials.0.api_key", "api_key"),

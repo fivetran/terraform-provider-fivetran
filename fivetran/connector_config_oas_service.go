@@ -23,7 +23,7 @@ const BOOL_FIELD = "boolean"
 const ARRAY_FIELD = "array"
 
 func getConnectorSchemaConfig(readonly bool, version int) *schema.Schema {
-	fields := getFields()
+	fields := getFields(readonly)
 
 	if version == 0 {
 		// Sensitive config fields, Fivetran returns this fields masked
@@ -62,12 +62,6 @@ func getConnectorSchemaConfig(readonly bool, version int) *schema.Schema {
 			Description: "",
 		}
 		fields["unique_id"] = &schema.Schema{
-			Type:        schema.TypeString,
-			Optional:    !readonly,
-			Computed:    readonly,
-			Description: "",
-		}
-		fields["organization"] = &schema.Schema{
 			Type:        schema.TypeString,
 			Optional:    !readonly,
 			Computed:    readonly,
@@ -112,7 +106,7 @@ func getConnectorSchemaConfig(readonly bool, version int) *schema.Schema {
 	}
 }
 
-func getFields() map[string]*schema.Schema {
+func getFields(readonly bool) map[string]*schema.Schema {
 	schemaJson := getSchemaJson()
 
 	services := getAvailableServiceIds(schemaJson)
@@ -122,7 +116,7 @@ func getFields() map[string]*schema.Schema {
 		path := SCHEMAS_PATH + service + PROPERTIES_PATH
 
 		serviceSchema := schemaJson.Path(path).ChildrenMap()
-		serviceFields := createFields(serviceSchema)
+		serviceFields := createFields(serviceSchema, readonly)
 		for property, value := range serviceFields {
 			if property == "app_ids" && service == "appsflyer_config_V1" {
 				fields[strings.ToLower(service+"_"+property)] = value
@@ -167,14 +161,14 @@ func getSchemaJson() *gabs.Container {
 	return shemaJson
 }
 
-func createFields(nodesMap map[string]*gabs.Container) map[string]*schema.Schema {
+func createFields(nodesMap map[string]*gabs.Container, readonly bool) map[string]*schema.Schema {
 	fields := make(map[string]*schema.Schema)
 
 	for key, node := range nodesMap {
 		nodeSchema := &schema.Schema{
 			Type:     schema.TypeString,
-			Optional: true,
-			Computed: true,
+			Optional: !readonly,
+			Computed: readonly,
 		}
 
 		nodeDescription := node.Search("description").Data()
@@ -199,7 +193,7 @@ func createFields(nodesMap map[string]*gabs.Container) map[string]*schema.Schema
 		case BOOL_FIELD:
 			nodeSchema.Type = schema.TypeBool
 		case ARRAY_FIELD:
-			nodeSchema = getArrayFieldSchema(node)
+			nodeSchema = getArrayFieldSchema(node, readonly)
 		}
 		fields[key] = nodeSchema
 	}
@@ -207,21 +201,21 @@ func createFields(nodesMap map[string]*gabs.Container) map[string]*schema.Schema
 	return fields
 }
 
-func getArrayFieldSchema(node *gabs.Container) *schema.Schema {
+func getArrayFieldSchema(node *gabs.Container, readonly bool) *schema.Schema {
 	itemType := node.Path("items.type").Data()
 
 	childrenMap := node.Path("items.properties").ChildrenMap()
 
 	arraySchema := &schema.Schema{
 		Type:     schema.TypeSet,
-		Optional: true,
-		Computed: true,
+		Optional: !readonly,
+		Computed: readonly,
 		Elem: &schema.Schema{
 			Type: schema.TypeString,
 		}}
 
 	if itemType == OBJECT_FIELD && len(childrenMap) > 0 {
-		childrenSchemaMap := createFields(childrenMap)
+		childrenSchemaMap := createFields(childrenMap, readonly)
 
 		arraySchema.Elem = &schema.Resource{
 			Schema: childrenSchemaMap,
@@ -232,12 +226,19 @@ func getArrayFieldSchema(node *gabs.Container) *schema.Schema {
 }
 
 func updateExistingValue(existingValue *schema.Schema, newValue *schema.Schema) (*schema.Schema, bool) {
-	if existingSchemaResourceValue, ok := existingValue.Elem.(*schema.Resource); ok {
-		if newSchemaResourceValue, ok := newValue.Elem.(*schema.Resource); ok {
-			for newSchemaResourceKey, newSchemaResourceValue := range newSchemaResourceValue.Schema {
-				existingSchemaResourceValue.Schema[newSchemaResourceKey] = newSchemaResourceValue
+	if existingArrayFieldItems, ok := existingValue.Elem.(*schema.Schema); ok {
+		if newArrayFieldItems, ok := newValue.Elem.(*schema.Schema); ok {
+			if existingArrayFieldItems.Type == newArrayFieldItems.Type {
+				return existingValue, true
 			}
-			existingValue.Elem = existingSchemaResourceValue
+		}
+	}
+	if existingObjectArrayItems, ok := existingValue.Elem.(*schema.Resource); ok {
+		if newObjectArrayItems, ok := newValue.Elem.(*schema.Resource); ok {
+			for newSchemaResourceKey, newSchemaResourceValue := range newObjectArrayItems.Schema {
+				existingObjectArrayItems.Schema[newSchemaResourceKey] = newSchemaResourceValue
+			}
+			existingValue.Elem = existingObjectArrayItems
 			return existingValue, true
 		}
 	}
