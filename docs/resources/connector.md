@@ -67,7 +67,7 @@ resource "fivetran_connector" "amplitude" {
 ### Optional
 
 - `auth` (Block List, Max: 1) (see [below for nested schema](#nestedblock--auth))
-- `config` (Block List, Max: 1) (see [below for nested schema](#nestedblock--config))
+- `config` (Block List) (see [below for nested schema](#nestedblock--config))
 - `run_setup_tests` (String) Specifies whether the setup tests should be run automatically. The default value is TRUE.
 - `trust_certificates` (String) Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).
 - `trust_fingerprints` (String) Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).
@@ -179,11 +179,8 @@ Optional:
 - `auth_mode` (String) Authorization type.
 - `auth_type` (String) Authorization type.
 - `aws_access_key` (String) `AWS Access Key` of your AWS Account User.
-- `aws_msk_config_v1_schema_registry_urls` (Set of String)
-- `aws_msk_config_v1_servers` (Set of String)
 - `aws_region_code` (String) The AWS region code for the DynamoDB instance, e.g. `us-east-1`.
 - `aws_secret_key` (String, Sensitive) `AWS Secret Key` of your AWS Account User.
-- `azure_service_bus_config_v1_schema_registry_urls` (Set of String)
 - `base_domain` (String) Your company's Freshteam base domain name (usually **company**.freshteam.com).
 - `base_id` (String) ID of base in Airtable
 - `base_url` (String) (Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.
@@ -210,8 +207,6 @@ Optional:
 - `config_method` (String) The report configuration method. Specifies whether a new configuration is defined manually or an existing configuration is reused. The default value is `CREATE_NEW`.
 - `config_repository_url` (String) Public repository URL containing JSON configuration files.
 - `config_type` (String) Whether to use the [Prebuilt Reports or Custom Reports](/docs/applications/google-analytics#schemainformation).
-- `confluent_cloud_config_v1_schema_registry_urls` (Set of String)
-- `confluent_cloud_config_v1_servers` (Set of String)
 - `connection_method` (String) The connection method used to connect to SFTP Server.
 - `connection_string` (String, Sensitive) The blob storage container connection string.
 - `connection_type` (String) Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
@@ -225,7 +220,6 @@ Optional:
 - `conversion_dimensions` (Set of String)
 - `conversion_report_time` (String) The date that the user interacted with the ad OR completed a conversion event.
 - `conversion_window_size` (Number) A period of time in days during which a conversion is recorded.
-- `criteo_config_v1_metrics` (Set of String)
 - `csv_definition` (String) CSV definition for the CSV export (https://help.adjust.com/en/article/csv-uploads#how-do-i-format-my-csv-definition).
 - `currency` (String) Currency
 - `custom_floodlight_variables` (Set of String)
@@ -247,9 +241,6 @@ Optional:
 - `domain_host_name` (String) Workday host name.
 - `domain_name` (String) The custom domain name associated with Dynamics 365.
 - `domain_type` (String) Domain type of your Medallia URL
-- `double_click_campaign_manager_config_v1_dimensions` (Set of String)
-- `double_click_campaign_manager_config_v1_metrics` (Set of String)
-- `double_click_publishers_config_v1_dimensions` (Set of String)
 - `email` (String) Zendesk email.
 - `empty_header` (Boolean) <strong>Optional.</strong> If your CSV generating software doesn't provide header line for the documents, Fivetran can generate the generic column names and sync data rows with them.
 - `enable_all_dimension_combinations` (Boolean) Whether to enable all reach dimension combinations in the report. Default value: `false`
@@ -266,15 +257,11 @@ Optional:
 - `eu_region` (Boolean) The SurveyMonkey account region. Specify `true`, if your account is hosted in the EU region. Default value is `false`.
 - `export_storage_type` (String) Export Storage
 - `external_id` (String) The external ID is a string that designates who can assume the role. For more information, see <a href="http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html">Amazon's AWS Identity and Access Management User Guide</a>.
-- `facebook_ad_account_config_v1_accounts` (Set of String)
-- `facebook_ads_config_v1_accounts` (Set of String)
-- `facebook_config_v1_accounts` (Set of String)
 - `fields` (Set of String)
 - `file_type` (String) If your files are saved with improper extensions, you can force them to be synced as the selected file type.
 - `filter` (String) String parameter restricts the data returned for your report. To use the filter parameter, specify a dimension or metric on which to filter, followed by the filter expression
 - `finance_account_sync_mode` (String) Whether to sync all finance accounts or specific finance accounts.
 - `finance_accounts` (Set of String)
-- `firebase_config_v1_packed_mode_tables` (Set of String)
 - `folder` (String) Your Dropbox Folder URL.
 - `folder_id` (String) Folder URL
 - `folder_path` (String) Your OneDrive folder URL
@@ -289,26 +276,14 @@ Optional:
 - `function_trigger` (String, Sensitive) The trigger URL of the cloud function.
 - `gcs_bucket` (String) The GCS bucket name. Required if `bucket_service` is set to `GCS`.
 - `gcs_folder` (String) Your GCS folder name. Required if `GCS` is the `cloud_storage_type`
-- `google_ads_config_v1_accounts` (Set of String)
-- `google_analytics_4_config_v1_accounts` (Set of String)
-- `google_analytics_config_v1_accounts` (Set of String)
-- `google_analytics_config_v1_dimensions` (Set of String)
-- `google_analytics_config_v1_metrics` (Set of String)
-- `google_analytics_config_v1_profiles` (Set of String)
-- `google_analytics_mcf_config_v1_accounts` (Set of String)
-- `google_analytics_mcf_config_v1_profiles` (Set of String)
-- `google_display_and_video_360_config_v1_dimensions` (Set of String)
-- `google_display_and_video_360_config_v1_metrics` (Set of String)
 - `group_name` (String) (Optional) The group name of the `target_group_id`.
 - `has_manage_permissions` (Boolean) The boolean value specifying whether the connection string has manage permissions
-- `heroku_kafka_config_v1_servers` (Set of String)
 - `home_folder` (String) Your S3 home folder path of the Data Locker.
 - `host` (String) DB instance host or IP address.
 - `host_ip` (String) The IP address of the host machine which we use to connect to ASB via ssh
 - `host_user` (String) The username on the host machine which we use to connect to ASB via ssh
 - `hosts` (Set of String)
 - `identity` (String) Marketo REST API identity url.
-- `instagram_business_config_v1_accounts` (Set of String)
 - `instance` (String) ServiceNow Instance ID.
 - `instance_number` (String) Two-digit number (00-97) of the SAP instance within its host.
 - `instance_url` (String) The SAP Business ByDesign instance URL.
@@ -327,12 +302,10 @@ Optional:
 - `is_secure` (Boolean) Whether the server supports FTPS.
 - `is_single_table_mode` (Boolean) Allows the creation of connector using Merge Mode strategy.
 - `is_vendor` (Boolean) Whether or not you have a Vendor Account. Default value: `false`.
-- `itunes_connect_config_v1_accounts` (Set of String)
 - `json_delivery_mode` (String) Control how your JSON data is delivered into your destination
 - `key` (String) The UserVoice API key.
 - `key_store_type` (String) Key Store Type
 - `line_separator` (String) You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.
-- `linkedin_ads_config_v1_accounts` (Set of String)
 - `linkedin_ads_config_v1_reports` (Block Set) (see [below for nested schema](#nestedblock--config--linkedin_ads_config_v1_reports))
 - `list_strategy` (String) The listing strategy you want to use. Default value: `complete_listing`.
 - `log_journal` (String) The log journal name.
@@ -343,9 +316,6 @@ Optional:
 - `merchant_id` (String) Your Braintree merchant ID.
 - `message_type` (String) Heroku Kafka message type.
 - `metrics` (Set of String)
-- `mongo_config_v1_packed_mode_tables` (Set of String)
-- `mongo_sharded_config_v1_hosts` (Set of String)
-- `mongo_sharded_config_v1_packed_mode_tables` (Set of String)
 - `named_range` (String) The name of the named data range on the sheet that contains the data to be synced.
 - `namespace` (String) The ASB namespace which we have to sync. Required for `AzureActiveDirectory` authentication.
 - `network_code` (Number) Network code is a unique, numeric identifier for your Ad Manager network.
@@ -373,7 +343,6 @@ Optional:
 - `pgp_pass_phrase` (String, Sensitive) The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.
 - `pgp_secret_key` (String, Sensitive) The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.
 - `phone_number` (String) Register the number on AppleId Account Page for 2FA
-- `pinterest_ads_config_v1_advertisers` (Set of String)
 - `port` (Number) The port number.
 - `post_click_attribution_window_size` (String) The time period to attribute conversions based on clicks. Default value: `DAY_30`
 - `prebuilt_report` (String) The name of the Prebuilt Report from which the connector will sync the data.
@@ -466,7 +435,6 @@ Optional:
 - `site_urls` (Set of String)
 - `skip_after` (Number) We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.
 - `skip_before` (Number) We will skip over the number of lines specified before syncing data.
-- `snapchat_ads_config_v1_organizations` (Set of String)
 - `soap_uri` (String) Marketo SOAP API Endpoint.
 - `source` (String) The data source.
 - `store_hash` (String) The BigCommerce store hash.
@@ -493,8 +461,6 @@ Optional:
 - `tde_private_key` (String, Sensitive) Private key associated with the TDE certificate
 - `technical_account_id` (String) Technical Account ID from the Service Account (JWT) credentials of your Adobe Project.
 - `tenant_id` (String, Sensitive) Azure AD tenant ID.
-- `the_trade_desk_config_v1_partners` (Set of String)
-- `tiktok_ads_config_v1_accounts` (Set of String)
 - `time_zone` (String) The time zone configured in your Pardot instance. An empty value defaults to `UTC+00:00`.
 - `timeframe_months` (String) Number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `TWELVE`.
 - `tns` (String) Single-tenant database: The database SID. <br> Multi-tenant database: The database TNS.
@@ -510,9 +476,6 @@ Optional:
 - `tunnel_host` (String) SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).
 - `tunnel_port` (Number) SSH port, specify only to connect via an SSH tunnel.
 - `tunnel_user` (String) SSH user, specify only to connect via an SSH tunnel.
-- `twilio_config_v1_accounts` (Set of String)
-- `twitter_ads_config_v1_accounts` (Set of String)
-- `twitter_config_v1_accounts` (Set of String)
 - `update_config_on_each_sync` (Boolean) Specifies whether the configuration is updated before each sync or only when the connector settings are saved. This parameter only takes effect when `config_method` is set to `REUSE_EXISTING`. The default value is `true`.
 - `update_method` (String) (Optional) The incremental update method the connector will use. The possible values are `"TELEPORT"` or `"NATIVE_UPDATE"`. The type defaults to `"NATIVE_UPDATE"` if the value is set to `null` or not specified.
 - `uri` (String) Cosmos resource instance address.
