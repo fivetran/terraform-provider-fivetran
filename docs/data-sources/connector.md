@@ -194,7 +194,6 @@ Read-Only:
 - `filter` (String) String parameter restricts the data returned for your report. To use the filter parameter, specify a dimension or metric on which to filter, followed by the filter expression
 - `finance_account_sync_mode` (String) Whether to sync all finance accounts or specific finance accounts.
 - `finance_accounts` (Set of String)
-- `firebase_config_v1_packed_mode_tables` (Set of String)
 - `folder` (String) Your Dropbox Folder URL.
 - `folder_id` (String) Folder URL
 - `folder_path` (String) Your OneDrive folder URL
@@ -369,7 +368,6 @@ Read-Only:
 - `site_urls` (Set of String)
 - `skip_after` (Number) We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.
 - `skip_before` (Number) We will skip over the number of lines specified before syncing data.
-- `snapchat_ads_config_v1_organizations` (Set of String)
 - `soap_uri` (String) Marketo SOAP API Endpoint.
 - `source` (String) The data source.
 - `store_hash` (String) The BigCommerce store hash.

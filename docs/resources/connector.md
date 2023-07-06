@@ -262,7 +262,6 @@ Optional:
 - `filter` (String) String parameter restricts the data returned for your report. To use the filter parameter, specify a dimension or metric on which to filter, followed by the filter expression
 - `finance_account_sync_mode` (String) Whether to sync all finance accounts or specific finance accounts.
 - `finance_accounts` (Set of String)
-- `firebase_config_v1_packed_mode_tables` (Set of String)
 - `folder` (String) Your Dropbox Folder URL.
 - `folder_id` (String) Folder URL
 - `folder_path` (String) Your OneDrive folder URL
@@ -279,7 +278,6 @@ Optional:
 - `gcs_folder` (String) Your GCS folder name. Required if `GCS` is the `cloud_storage_type`
 - `group_name` (String) (Optional) The group name of the `target_group_id`.
 - `has_manage_permissions` (Boolean) The boolean value specifying whether the connection string has manage permissions
-- `heroku_kafka_config_v1_servers` (Set of String)
 - `home_folder` (String) Your S3 home folder path of the Data Locker.
 - `host` (String) DB instance host or IP address.
 - `host_ip` (String) The IP address of the host machine which we use to connect to ASB via ssh
@@ -437,7 +435,6 @@ Optional:
 - `site_urls` (Set of String)
 - `skip_after` (Number) We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.
 - `skip_before` (Number) We will skip over the number of lines specified before syncing data.
-- `snapchat_ads_config_v1_organizations` (Set of String)
 - `soap_uri` (String) Marketo SOAP API Endpoint.
 - `source` (String) The data source.
 - `store_hash` (String) The BigCommerce store hash.
