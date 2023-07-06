@@ -93,7 +93,7 @@ Read-Only:
 - `append_file_option` (String) If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.
 - `application_key` (String) Your Dear Application key.
 - `apps` (Set of String)
-- `appsflyer_config_v1_app_ids` (Set of Object) (see [below for nested schema](#nestedatt--config--appsflyer_config_v1_app_ids))
+- `appsflyer_app_ids` (Set of Object) (see [below for nested schema](#nestedatt--config--appsflyer_app_ids))
 - `archive_pattern` (String) Files inside of compressed archives with filenames matching this regular expression will be synced.
 - `asb_ip` (String) The IP address (or) the URL of ASB namespace
 - `asm_option` (Boolean) Default value: `false`. Set to `true` if you are using ASM on a non-RAC instance.
@@ -140,8 +140,8 @@ Read-Only:
 - `connection_string` (String, Sensitive) The blob storage container connection string.
 - `connection_type` (String) Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
 - `consumer_group` (String) Heroku Kafka consumer group name.
-- `consumer_key` (String)
-- `consumer_secret` (String, Sensitive)
+- `consumer_key` (String) The Twitter App consumer key.
+- `consumer_secret` (String, Sensitive) The Twitter App consumer secret.
 - `container_address` (String) IP address of the Azure Storage Container which is accessible from host machine.
 - `container_name` (String) The name of the blob container.
 - `content_owner_id` (String) Used only for Content Owner reports. The ID of the content owner for whom the API request is being made.
@@ -238,7 +238,7 @@ Read-Only:
 - `key` (String) The UserVoice API key.
 - `key_store_type` (String) Key Store Type
 - `line_separator` (String) You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.
-- `linkedin_ads_config_v1_reports` (Set of Object) (see [below for nested schema](#nestedatt--config--linkedin_ads_config_v1_reports))
+- `linkedin_ads_reports` (Set of Object) (see [below for nested schema](#nestedatt--config--linkedin_ads_reports))
 - `list_strategy` (String) The listing strategy you want to use. Default value: `complete_listing`.
 - `log_journal` (String) The log journal name.
 - `log_journal_schema` (String) The log journal schema.
@@ -450,8 +450,8 @@ Read-Only:
 - `table` (String) The table name unique within the schema to which connector will sync the data. Required for connector creation.
 
 
-<a id="nestedatt--config--appsflyer_config_v1_app_ids"></a>
-### Nested Schema for `config.appsflyer_config_v1_app_ids`
+<a id="nestedatt--config--appsflyer_app_ids"></a>
+### Nested Schema for `config.appsflyer_app_ids`
 
 Read-Only:
 
@@ -496,8 +496,8 @@ Read-Only:
 - `view_attribution_window` (String) Time period to attribute conversions based on views. [Possible view_attribution_window values](/docs/applications/facebook-ads-insights/api-config#viewattributionwindow).
 
 
-<a id="nestedatt--config--linkedin_ads_config_v1_reports"></a>
-### Nested Schema for `config.linkedin_ads_config_v1_reports`
+<a id="nestedatt--config--linkedin_ads_reports"></a>
+### Nested Schema for `config.linkedin_ads_reports`
 
 Read-Only:
 

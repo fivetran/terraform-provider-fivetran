@@ -3,7 +3,6 @@ package fivetran
 import (
 	_ "embed"
 	"sort"
-	"strings"
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -14,7 +13,7 @@ var oasJson []byte
 
 const SERVICES_PATH = "components.schemas.NewConnectorRequestV1.discriminator.mapping"
 const SCHEMAS_PATH = "components.schemas."
-const PROPERTIES_PATH = ".properties.config.properties"
+const PROPERTIES_PATH = "_config_V1.properties.config.properties"
 const SCHEMAS_FILE_PATH = "/open-api-spec.json"
 
 const OBJECT_FIELD = "object"
@@ -95,14 +94,20 @@ func getConnectorSchemaConfig(readonly bool, version int) *schema.Schema {
 		}
 	}
 
-	return &schema.Schema{
+	config := &schema.Schema{
 		Type:     schema.TypeList,
-		Optional: !readonly, // set to true when generating documentation for connector datasource
+		Optional: !readonly, // set to true when generating documentation for connector data source
 		Computed: true,
 		Elem: &schema.Resource{
 			Schema: fields,
 		},
 	}
+
+	if !readonly {
+		config.MaxItems = 1
+	}
+
+	return config
 }
 
 func getFields(readonly bool) map[string]*schema.Schema {
@@ -117,8 +122,9 @@ func getFields(readonly bool) map[string]*schema.Schema {
 		serviceSchema := schemaJson.Path(path).ChildrenMap()
 		serviceFields := createFields(serviceSchema, readonly)
 		for property, value := range serviceFields {
-			if property == "app_ids" && service == "appsflyer_config_V1" {
-				fields[strings.ToLower(service+"_"+property)] = value
+			// Edge case: if we dont modify this field here, it will break our existing contract which has same field but of a different type
+			if property == "app_ids" && service == "appsflyer" {
+				fields[service+"_"+property] = value
 				continue
 			}
 			if existingValue, ok := fields[property]; ok {
@@ -127,7 +133,7 @@ func getFields(readonly bool) map[string]*schema.Schema {
 				} else if existingValue.Type == schema.TypeSet {
 					value, ok = updateExistingValue(existingValue, value)
 					if !ok {
-						property = strings.ToLower(service + "_" + property)
+						property = service + "_" + property
 					}
 				}
 			}
@@ -143,7 +149,7 @@ func getAvailableServiceIds(oasJson *gabs.Container) []string {
 	file := oasJson.Path(SERVICES_PATH).ChildrenMap()
 
 	for serviceKey := range file {
-		services = append(services, serviceKey+"_config_V1")
+		services = append(services, serviceKey)
 	}
 
 	sort.Strings(services)
