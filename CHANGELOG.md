@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.7.0...HEAD)
 
-## [0.7.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.19...v0.7.0)
+## [0.7.2](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.7.1...v0.7.2)
 
 ## Added
 - New `fivetran_connector_schedule` resource introduced
@@ -26,6 +26,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Readonly field `fivetran_connector.succeeded_at` removed
     - Readonly field `fivetran_connector.failed_at` removed
     - Readonly field `fivetran_connector.service_version` removed
+
+## [0.7.1](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.7.0...v0.7.1)
+
+Release identical to v0.6.19;
+
+## [0.7.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.19...v0.7.0)
+
+Release reverted due to unexpected issues; 
 
 ## [0.6.19](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.6.18...v0.6.19)
 
