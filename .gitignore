@@ -23,3 +23,6 @@ temp/
 # Ignore IDE specific files
 .idea/
 .vscode/
+
+# Ignore tfplugindocs exec
+tfplugindocs 

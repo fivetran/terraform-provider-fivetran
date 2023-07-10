@@ -237,7 +237,7 @@ func createConfig(responseConfig map[string]interface{}, fields map[string]*sche
 		if fieldSchema.Type == schema.TypeSet || fieldSchema.Type == schema.TypeList {
 			if values := responseConfig[fieldName].(*schema.Set).List(); len(values) > 0 {
 				if mapValues, ok := values[0].(map[string]interface{}); ok {
-					for childPropertyKey, _ := range mapValues {
+					for childPropertyKey := range mapValues {
 						if childPropertyValues, ok := mapValues[childPropertyKey].(*schema.Set); ok {
 							mapValues[childPropertyKey] = childPropertyValues.List()
 							continue
