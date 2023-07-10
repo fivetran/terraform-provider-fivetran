@@ -8,36 +8,46 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-var limit = 1000        // REST API response objects limit per HTTP request
-const Version = "0.7.0" // Current provider version
+var limit = 1000               // REST API response objects limit per HTTP request
+const Version = "0.7.2-pre"    // Current provider version
+const developmentBuild = false // Should be `false` in production build. Set to true to enable features in-dev for local debug.
 
 func Provider() *schema.Provider {
+	var resourceMap = map[string]*schema.Resource{
+		"fivetran_user":                    resourceUser(),
+		"fivetran_group":                   resourceGroup(),
+		"fivetran_group_users":             resourceGroupUsers(),
+		"fivetran_destination":             resourceDestination(),
+		"fivetran_connector":               resourceConnectorLegacy(),
+		"fivetran_connector_schedule":      resourceConnectorSchedule(),
+		"fivetran_connector_schema_config": resourceSchemaConfig(),
+	}
+
+	var dataSourceMap = map[string]*schema.Resource{
+		"fivetran_user":                dataSourceUser(),
+		"fivetran_users":               dataSourceUsers(),
+		"fivetran_group":               dataSourceGroup(),
+		"fivetran_groups":              dataSourceGroups(),
+		"fivetran_group_connectors":    dataSourceGroupConnectors(),
+		"fivetran_group_users":         dataSourceGroupUsers(),
+		"fivetran_destination":         dataSourceDestination(),
+		"fivetran_connectors_metadata": dataSourceConnectorsMetadata(),
+		"fivetran_connector":           dataSourceConnectorLegacy(),
+	}
+
+	if developmentBuild {
+		resourceMap["fivetran_connector_experimental"] = resourceConnector()     // OAS-based resource
+		dataSourceMap["fivetran_connector_experimental"] = dataSourceConnector() // OAS-based data-source
+	}
+
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"api_key":    {Type: schema.TypeString, Required: true, DefaultFunc: schema.EnvDefaultFunc("FIVETRAN_APIKEY", nil)},
 			"api_secret": {Type: schema.TypeString, Required: true, Sensitive: true, DefaultFunc: schema.EnvDefaultFunc("FIVETRAN_APISECRET", nil)},
 			"api_url":    {Type: schema.TypeString, Optional: true, DefaultFunc: schema.EnvDefaultFunc("FIVETRAN_APIURL", nil)},
 		},
-		ResourcesMap: map[string]*schema.Resource{
-			"fivetran_user":                    resourceUser(),
-			"fivetran_group":                   resourceGroup(),
-			"fivetran_group_users":             resourceGroupUsers(),
-			"fivetran_destination":             resourceDestination(),
-			"fivetran_connector":               resourceConnector(),
-			"fivetran_connector_schedule":      resourceConnectorSchedule(),
-			"fivetran_connector_schema_config": resourceSchemaConfig(),
-		},
-		DataSourcesMap: map[string]*schema.Resource{
-			"fivetran_user":                dataSourceUser(),
-			"fivetran_users":               dataSourceUsers(),
-			"fivetran_group":               dataSourceGroup(),
-			"fivetran_groups":              dataSourceGroups(),
-			"fivetran_group_connectors":    dataSourceGroupConnectors(),
-			"fivetran_group_users":         dataSourceGroupUsers(),
-			"fivetran_destination":         dataSourceDestination(),
-			"fivetran_connectors_metadata": dataSourceConnectorsMetadata(),
-			"fivetran_connector":           dataSourceConnector(),
-		},
+		ResourcesMap:         resourceMap,
+		DataSourcesMap:       dataSourceMap,
 		ConfigureContextFunc: providerConfigure,
 	}
 }
