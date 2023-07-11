@@ -457,7 +457,7 @@ func TestResourceConnectorUpdateMock(t *testing.T) {
 			sync_frequency = 1440
 			paused = false
 			pause_after_trial = false
-			daily_sync_time = "3:30"
+			daily_sync_time = "3:00"
 		}
 		`,
 
