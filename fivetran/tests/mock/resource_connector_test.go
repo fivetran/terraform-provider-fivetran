@@ -105,7 +105,7 @@ const (
         "paused": false,
         "pause_after_trial": false,
         "sync_frequency": 1440,
-		"daily_sync_time": "3:30",
+		"daily_sync_time": "03:00",
 
 		"connected_by": "user_id",
         "created_at": "2022-01-01T11:22:33.012345Z",
@@ -457,7 +457,7 @@ func TestResourceConnectorUpdateMock(t *testing.T) {
 			sync_frequency = 1440
 			paused = false
 			pause_after_trial = false
-			daily_sync_time = "3:00"
+			daily_sync_time = "03:00"
 		}
 		`,
 

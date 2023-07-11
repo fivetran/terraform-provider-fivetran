@@ -93,10 +93,10 @@ func validateConnectorScheduleSyncFrequency(val any, key string) (warns []string
 func validateConnectorScheduleDailySyncTime(val any, key string) (warns []string, errs []error) {
 	v := val.(string)
 
-	valid := len(v) == 5 && strings.HasSuffix(v, ":00")
+	valid := (len(v) == 5 || len(v) == 4) && strings.HasSuffix(v, ":00")
 
 	if valid {
-		hr, err := strconv.Atoi(v[0:3])
+		hr, err := strconv.Atoi(v[0 : len(v)-3])
 		if err != nil || hr < 0 || hr > 23 {
 			valid = false
 		}
