@@ -97,7 +97,7 @@ func getConnectorSchemaConfig(readonly bool, version int) *schema.Schema {
 
 	config := &schema.Schema{
 		Type:     schema.TypeList,
-		Optional: !readonly, // set to true when generating documentation for connector data source
+		Optional: true,
 		Computed: true,
 		Elem: &schema.Resource{
 			Schema: fields,

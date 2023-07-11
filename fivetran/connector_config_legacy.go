@@ -401,7 +401,7 @@ func connectorSchemaConfig(readonly bool) *schema.Schema {
 
 	return &schema.Schema{
 		Type:     schema.TypeList,
-		Optional: !readonly,
+		Optional: true,
 		Computed: true,
 		MaxItems: getMaxItems(readonly),
 		Elem: &schema.Resource{
@@ -409,28 +409,6 @@ func connectorSchemaConfig(readonly bool) *schema.Schema {
 		},
 	}
 }
-
-// func connectorSchemaAuth() *schema.Schema {
-// 	return &schema.Schema{Type: schema.TypeList, Optional: true, MaxItems: 1,
-// 		Elem: &schema.Resource{
-// 			Schema: map[string]*schema.Schema{
-// 				"client_access": {Type: schema.TypeList, Optional: true, MaxItems: 1,
-// 					Elem: &schema.Resource{
-// 						Schema: map[string]*schema.Schema{
-// 							"client_id":       {Type: schema.TypeString, Optional: true},
-// 							"client_secret":   {Type: schema.TypeString, Optional: true, Sensitive: true},
-// 							"user_agent":      {Type: schema.TypeString, Optional: true},
-// 							"developer_token": {Type: schema.TypeString, Optional: true, Sensitive: true},
-// 						},
-// 					},
-// 				},
-// 				"refresh_token": {Type: schema.TypeString, Optional: true, Sensitive: true},
-// 				"access_token":  {Type: schema.TypeString, Optional: true, Sensitive: true},
-// 				"realm_id":      {Type: schema.TypeString, Optional: true, Sensitive: true},
-// 			},
-// 		},
-// 	}
-// }
 
 func tryCopySensitiveStringValue(localConfig *map[string]interface{}, targetConfig, upstreamConfig map[string]interface{}, name string) {
 	if localConfig == nil {

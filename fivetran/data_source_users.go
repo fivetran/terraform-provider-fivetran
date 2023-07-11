@@ -14,9 +14,8 @@ func dataSourceUsers() *schema.Resource {
 		ReadContext: dataSourceUsersRead,
 		Schema: map[string]*schema.Schema{
 			"users": {
-				Type: schema.TypeSet,
-				// Uncomment `Optional: true,` before re-generating docs
-				// Optional: true,
+				Type:     schema.TypeSet,
+				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
