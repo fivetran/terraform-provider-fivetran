@@ -3,6 +3,8 @@ package fivetran
 import (
 	"context"
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -20,7 +22,7 @@ func resourceConnectorSchedule() *schema.Resource {
 			ID: {
 				Type:        schema.TypeString,
 				Computed:    true,
-				Description: "The unique identifier for the user within the account.",
+				Description: "The unique resource identifier (equals to `connector_id`).",
 			},
 			CONNECTOR_ID: {
 				Type:        schema.TypeString,
@@ -28,38 +30,97 @@ func resourceConnectorSchedule() *schema.Resource {
 				ForceNew:    true,
 				Description: "The unique identifier for the connector",
 			},
-
 			"sync_frequency": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Computed:    true,
-				Description: "The connector sync frequency in minutes",
+				Type:         schema.TypeString,
+				Optional:     true,
+				Computed:     true,
+				Description:  "The connector sync frequency in minutes. Supported values: 5, 15, 30, 60, 120, 180, 360, 480, 720, 1440.",
+				ValidateFunc: validateConnectorScheduleSyncFrequency,
 			}, // Default: 360
 			"schedule_type": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Computed:    true,
-				Description: "The connector schedule configuration type. Supported values: auto, manual",
-			}, // Default: AUTO
+				Type:         schema.TypeString,
+				Optional:     true,
+				Computed:     true,
+				Description:  "The connector schedule configuration type. Supported values: auto, manual",
+				ValidateFunc: validateConnectorScheduleType,
+			}, // Default: auto
 			"paused": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Computed:    true,
-				Description: "Specifies whether the connector is paused",
+				Type:         schema.TypeString,
+				Optional:     true,
+				Computed:     true,
+				Description:  "Specifies whether the connector is paused",
+				ValidateFunc: validateStringBooleanValue,
 			}, // Default: false
 			"pause_after_trial": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Computed:    true,
-				Description: "Specifies whether the connector should be paused after the free trial period has ended",
+				Type:         schema.TypeString,
+				Optional:     true,
+				Computed:     true,
+				Description:  "Specifies whether the connector should be paused after the free trial period has ended",
+				ValidateFunc: validateStringBooleanValue,
 			}, // Default: false
 			"daily_sync_time": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use [the baseline sync start time](https://fivetran.com/docs/getting-started/syncoverview#syncfrequencyandscheduling). This parameter has no effect on the [0 to 60 minutes offset](https://fivetran.com/docs/getting-started/syncoverview#syncstarttimesandoffsets) used to determine the actual sync start time",
+				Type:         schema.TypeString,
+				Optional:     true,
+				Description:  "The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use [the baseline sync start time](https://fivetran.com/docs/getting-started/syncoverview#syncfrequencyandscheduling). This parameter has no effect on the [0 to 60 minutes offset](https://fivetran.com/docs/getting-started/syncoverview#syncstarttimesandoffsets) used to determine the actual sync start time",
+				ValidateFunc: validateConnectorScheduleDailySyncTime,
 			},
 		},
 	}
+}
+
+func validateConnectorScheduleSyncFrequency(val any, key string) (warns []string, errs []error) {
+	v := val.(string)
+	// Allowed values 5, 15, 30, 60, 120, 180, 360, 480, 720, 1440
+	var stub struct{}
+	set := make(map[string]struct{})
+	set[""] = stub
+	set["5"] = stub
+	set["15"] = stub
+	set["30"] = stub
+	set["60"] = stub
+	set["120"] = stub
+	set["180"] = stub
+	set["360"] = stub
+	set["480"] = stub
+	set["720"] = stub
+	set["1440"] = stub
+	if _, ok := set[v]; !ok {
+		errs = append(errs, fmt.Errorf("%q must be one of allowed values (5, 15, 30, 60, 120, 180, 360, 480, 720, 1440); got: %s", key, v))
+	}
+	return
+}
+
+func validateConnectorScheduleDailySyncTime(val any, key string) (warns []string, errs []error) {
+	v := val.(string)
+
+	valid := len(v) == 5 && strings.HasSuffix(v, ":00")
+
+	if valid {
+		hr, err := strconv.Atoi(v[0:3])
+		if err != nil || hr < 0 || hr > 23 {
+			valid = false
+		}
+	}
+
+	if v != "" && !valid {
+		errs = append(errs, fmt.Errorf("%q must be a day time in format \"HH:MM\": one hour increments starting from 00:00 to 23:00; got: `%s`", key, v))
+	}
+	return
+}
+
+func validateConnectorScheduleType(val any, key string) (warns []string, errs []error) {
+	v := val.(string)
+
+	var stub struct{}
+	set := make(map[string]struct{})
+	set[""] = stub
+	set["auto"] = stub
+	set["manual"] = stub
+
+	if _, ok := set[v]; !ok {
+		errs = append(errs, fmt.Errorf("%q must be one of allowed values (auto, manual); got: %s", key, v))
+	}
+	return
 }
 
 func resourceConnectorScheduleCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

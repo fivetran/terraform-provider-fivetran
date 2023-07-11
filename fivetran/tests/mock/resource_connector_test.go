@@ -411,6 +411,7 @@ func TestResourceConnectorUpdateMock(t *testing.T) {
 			sync_frequency = 5
 			paused = true
 			pause_after_trial = true
+			schedule_type = "auto"
 		}
 		`,
 

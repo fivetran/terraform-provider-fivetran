@@ -39,7 +39,7 @@ resource "fivetran_connector_schedule" "my_connector_schedule" {
 
 ### Read-Only
 
-- `id` (String) The unique identifier for the user within the account.
+- `id` (String) The unique resource identifier (equals to `connector_id`).
 
 ## Import
 

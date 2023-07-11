@@ -8,9 +8,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-var limit = 1000               // REST API response objects limit per HTTP request
-const Version = "0.7.2-pre"    // Current provider version
-const developmentBuild = false // Should be `false` in production build. Set to true to enable features in-dev for local debug.
+var limit = 1000            // REST API response objects limit per HTTP request
+const Version = "0.7.2-pre" // Current provider version
+const devBuild = false      // Should be `false` in production build. Set to true to enable features in-dev for local debug.
 
 func Provider() *schema.Provider {
 	var resourceMap = map[string]*schema.Resource{
@@ -35,7 +35,7 @@ func Provider() *schema.Provider {
 		"fivetran_connector":           dataSourceConnectorLegacy(),
 	}
 
-	if developmentBuild {
+	if devBuild {
 		resourceMap["fivetran_connector_experimental"] = resourceConnector()     // OAS-based resource
 		dataSourceMap["fivetran_connector_experimental"] = dataSourceConnector() // OAS-based data-source
 	}
