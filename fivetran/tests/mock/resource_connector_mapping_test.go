@@ -62,6 +62,7 @@ const (
 			token_key = "token_key"
 			token_secret = "token_secret"
 			login_password = "login_password"
+			account_key = "account_key"
 
 			sync_method = "sync_method"
 
@@ -139,6 +140,8 @@ const (
 			append_file_option = "append_file_option"
 			engagement_attribution_window = "engagement_attribution_window"
 			conversion_report_time = "conversion_report_time"
+			data_access_method = "data_access_method"
+			sync_pack_mode = "sync_pack_mode"
 
 			external_id = "external_id"
 			public_key = "public_key"
@@ -187,9 +190,11 @@ const (
 			instance = "instance"
 			aws_region_code = "aws_region_code"
 			host = "host"
-
 			user = "user"
+
+			uri = "uri"
 			
+
 			customer_id = "customer_id"
 			project_id = "project_id"
 			dataset_id = "dataset_id"
@@ -419,6 +424,7 @@ const (
 			"agent_password":     "******",
 			"asm_password":		  "******",
 			"login_password":     "******",
+			"account_key": "******",
 
 			"is_ftps":                           false,
 			"sftp_is_key_pair":                  false,
@@ -479,7 +485,8 @@ const (
 			"append_file_option":                   "append_file_option",
 			"engagement_attribution_window":        "engagement_attribution_window",
 			"conversion_report_time":               "conversion_report_time",
-
+			"sync_pack_mode":                       "sync_pack_mode",
+			"data_access_method": "data_access_method",
 			"conversion_window_size":               0,
 			"skip_before":                          0,
 			"skip_after":                           0,
@@ -540,9 +547,8 @@ const (
 			"aws_region_code":       "aws_region_code",
 			"subdomain":             "subdomain",
 			"host":                  "host",
-
 			"user":                 "user",
-			
+			"uri":                  "uri",
 			"customer_id":          "customer_id",
 			"project_id":           "project_id",
 			"dataset_id":           "dataset_id",
@@ -736,6 +742,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "asm_password", "asm_password")
 			assertKeyExistsAndHasValue(t, config, "agent_password", "agent_password")
 			assertKeyExistsAndHasValue(t, config, "login_password", "login_password")
+			assertKeyExistsAndHasValue(t, config, "account_key", "account_key")
 
 			assertKeyExistsAndHasValue(t, config, "is_ftps", false)
 			assertKeyExistsAndHasValue(t, config, "sftp_is_key_pair", false)
@@ -785,7 +792,8 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "append_file_option", "append_file_option")
 			assertKeyExistsAndHasValue(t, config, "engagement_attribution_window", "engagement_attribution_window")
 			assertKeyExistsAndHasValue(t, config, "conversion_report_time", "conversion_report_time")
-
+			assertKeyExistsAndHasValue(t, config, "data_access_method", "data_access_method")
+			assertKeyExistsAndHasValue(t, config, "sync_pack_mode", "sync_pack_mode")
 			// all numbers in json are float64
 			assertKeyExistsAndHasValue(t, config, "conversion_window_size", float64(0))
 			assertKeyExistsAndHasValue(t, config, "skip_before", float64(0))
@@ -859,7 +867,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "subdomain", "subdomain")
 			assertKeyExistsAndHasValue(t, config, "host", "host")
 			assertKeyExistsAndHasValue(t, config, "user", "user")
-
+			assertKeyExistsAndHasValue(t, config, "uri", "uri")
 			assertKeyExistsAndHasValue(t, config, "customer_id", "customer_id")
 			assertKeyExistsAndHasValue(t, config, "project_id", "project_id")
 			assertKeyExistsAndHasValue(t, config, "dataset_id", "dataset_id")

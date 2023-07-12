@@ -363,6 +363,22 @@ func resourceConnectorLegacyUpdateCustomConfig(d *schema.ResourceData) *map[stri
 
 	// HVA parameters end
 
+	if v, ok := c["uri"]; ok && v != "" {
+		configMap["uri"] = v
+	}
+
+	if v, ok := c["data_access_method"]; ok && v != "" {
+		configMap["data_access_method"] = v
+	}
+
+	if v, ok := c["account_key"]; ok && v != "" {
+		configMap["account_key"] = v
+	}
+
+	if v, ok := c["sync_pack_mode"]; ok && v != "" {
+		configMap["sync_pack_mode"] = v
+	}
+
 	return &configMap
 }
 
