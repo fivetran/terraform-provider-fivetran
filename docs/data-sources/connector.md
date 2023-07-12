@@ -23,7 +23,7 @@ data "fivetran_connector" "connector" {
 
 ### Read-Only
 
-- `config` (List of Object) (see [below for nested schema](#nestedatt--config))
+- `config` (Block List) (see [below for nested schema](#nestedblock--config))
 - `connected_by` (String) The unique identifier of the user who has created the connector in your account
 - `created_at` (String) The timestamp of the time the connector was created in your account
 - `daily_sync_time` (String) The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use [the baseline sync start time](https://fivetran.com/docs/getting-started/syncoverview#syncfrequencyandscheduling). This parameter has no effect on the [0 to 60 minutes offset](https://fivetran.com/docs/getting-started/syncoverview#syncstarttimesandoffsets) used to determine the actual sync start time
@@ -40,7 +40,7 @@ data "fivetran_connector" "connector" {
 - `succeeded_at` (String) The timestamp of the time the connector sync succeeded last time
 - `sync_frequency` (String) The connector sync frequency in minutes
 
-<a id="nestedatt--config"></a>
+<a id="nestedblock--config"></a>
 ### Nested Schema for `config`
 
 Read-Only:
@@ -49,59 +49,50 @@ Read-Only:
 - `abs_container_name` (String)
 - `access_key` (String)
 - `access_key_id` (String)
-- `access_token` (String)
+- `access_token` (String, Sensitive)
 - `account` (String)
 - `account_id` (String)
 - `account_ids` (Set of String)
+- `account_key` (String, Sensitive)
 - `accounts` (Set of String)
 - `action_breakdowns` (Set of String)
 - `action_report_time` (String)
-- `adobe_analytics_configurations` (Set of Object) (see [below for nested schema](#nestedobjatt--config--adobe_analytics_configurations))
+- `adobe_analytics_configurations` (Set of Object) (see [below for nested schema](#nestedatt--config--adobe_analytics_configurations))
 - `advertisables` (Set of String)
 - `advertisers` (Set of String)
 - `advertisers_id` (Set of String)
 - `agent_host` (String)
 - `agent_ora_home` (String)
-- `agent_password` (String)
+- `agent_password` (String, Sensitive)
 - `agent_port` (String)
 - `agent_public_cert` (String)
 - `agent_user` (String)
 - `aggregation` (String)
 - `always_encrypted` (String)
-- `api_access_token` (String)
-- `api_key` (String)
-- `api_keys` (Set of String)
+- `api_access_token` (String, Sensitive)
+- `api_key` (String, Sensitive)
+- `api_keys` (Set of String, Sensitive)
 - `api_quota` (String)
-- `api_secret` (String)
-- `api_token` (String)
+- `api_secret` (String, Sensitive)
+- `api_token` (String, Sensitive)
 - `api_type` (String)
 - `api_url` (String)
 - `api_version` (String)
 - `app_sync_mode` (String)
 - `append_file_option` (String)
 - `apps` (Set of String)
-- `appsflyer_app_ids` (Set of Object) (see [below for nested schema](#nestedatt--config--appsflyer_app_ids))
-- `archive_pattern` (String) Files inside of compressed archives with filenames matching this regular expression will be synced.
-- `asb_ip` (String) The IP address (or) the URL of ASB namespace
-- `asm_option` (Boolean) Default value: `false`. Set to `true` if you are using ASM on a non-RAC instance.
-- `asm_oracle_home` (String) The Oracle ASM home directory.
-- `asm_password` (String, Sensitive) The ASM user's password. Mandatory if `use_oracle_rac` or `asm_option` is set to `true`.
-- `asm_tns` (String) ASM TNS.
-- `asm_user` (String) The ASM user. Mandatory if `use_oracle_rac` or `asm_option` is set to `true`.
-- `attribution_window` (String) Time period used to attribute conversions based on clicks.
-- `attribution_window_size` (String) Rollback sync duration to capture conversions. Set this to your configured attribution window in TikTok Ads. The default value is 7 days.
-- `auth` (String) Password-based or key-based authentication type
-- `auth_method` (String) The authentication mechanism you want to use
-- `auth_mode` (String) Authorization type.
-- `auth_type` (String) Authorization type.
-- `aws_access_key` (String) `AWS Access Key` of your AWS Account User.
-- `aws_region_code` (String) The AWS region code for the DynamoDB instance, e.g. `us-east-1`.
-- `aws_secret_key` (String, Sensitive) `AWS Secret Key` of your AWS Account User.
-- `base_domain` (String) Your company's Freshteam base domain name (usually **company**.freshteam.com).
-- `base_id` (String) ID of base in Airtable
-- `base_url` (String) (Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.
-- `bearer_token` (String) Your Productboard API key.
-- `blob_sas_url` (String, Sensitive) The blob SAS URL of your Azure container. Required if `bucket_service` is set to `AZURE`.
+- `archive_pattern` (String)
+- `asm_option` (String)
+- `asm_oracle_home` (String)
+- `asm_password` (String, Sensitive)
+- `asm_tns` (String)
+- `asm_user` (String)
+- `auth` (String)
+- `auth_mode` (String)
+- `auth_type` (String)
+- `authorization_method` (String)
+- `aws_region_code` (String)
+- `base_url` (String)
 - `breakdowns` (Set of String)
 - `bucket` (String)
 - `bucket_name` (String)
@@ -110,36 +101,27 @@ Read-Only:
 - `click_attribution_window` (String)
 - `client_id` (String)
 - `client_name` (String)
-- `client_secret` (String)
+- `client_secret` (String, Sensitive)
 - `cloud_storage_type` (String)
 - `columns` (Set of String)
-- `company_id` (String) Company ID
-- `company_key` (String) Your Khoros Care companyKey.
-- `compression` (String) The compression format is used to let Fivetran know that even files without a compression extension should be decompressed using the selected compression format.
-- `config_method` (String) The report configuration method. Specifies whether a new configuration is defined manually or an existing configuration is reused. The default value is `CREATE_NEW`.
-- `config_repository_url` (String) Public repository URL containing JSON configuration files.
-- `config_type` (String) Whether to use the [Prebuilt Reports or Custom Reports](/docs/applications/google-analytics#schemainformation).
-- `connection_method` (String) The connection method used to connect to SFTP Server.
-- `connection_string` (String, Sensitive) The blob storage container connection string.
-- `connection_type` (String) Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
-- `consumer_group` (String) Heroku Kafka consumer group name.
-- `consumer_key` (String) The Twitter App consumer key.
-- `consumer_secret` (String, Sensitive) The Twitter App consumer secret.
-- `container_address` (String) IP address of the Azure Storage Container which is accessible from host machine.
-- `container_name` (String) The name of the blob container.
-- `content_owner_id` (String) Used only for Content Owner reports. The ID of the content owner for whom the API request is being made.
-- `conversation_webhook_url` (String) Your conversation webhook URL
-- `conversion_dimensions` (Set of String)
-- `conversion_report_time` (String) The date that the user interacted with the ad OR completed a conversion event.
-- `conversion_window_size` (Number) A period of time in days during which a conversion is recorded.
-- `csv_definition` (String) CSV definition for the CSV export (https://help.adjust.com/en/article/csv-uploads#how-do-i-format-my-csv-definition).
-- `currency` (String) Currency
-- `custom_floodlight_variables` (Set of String)
-- `custom_reports` (Set of Object) (see [below for nested schema](#nestedatt--config--custom_reports))
+- `company_id` (String)
+- `compression` (String)
+- `config_method` (String)
+- `config_type` (String)
+- `connection_method` (String)
+- `connection_string` (String)
+- `connection_type` (String)
+- `consumer_group` (String)
+- `consumer_key` (String, Sensitive)
+- `consumer_secret` (String, Sensitive)
+- `container_name` (String)
+- `conversion_report_time` (String)
+- `conversion_window_size` (String)
+- `csv_definition` (String)
 - `custom_tables` (Set of Object) (see [below for nested schema](#nestedatt--config--custom_tables))
-- `customer_id` (String) ID of the customer, can be retrieved from your AdWords dashboard.
-- `customer_list_id` (String) The parameter to retrieve customer details.
+- `customer_id` (String)
 - `daily_api_call_limit` (String)
+- `data_access_method` (String)
 - `data_center` (String)
 - `database` (String)
 - `dataset_id` (String)
@@ -156,7 +138,7 @@ Read-Only:
 - `email` (String)
 - `empty_header` (String)
 - `enable_all_dimension_combinations` (String)
-- `encryption_key` (String)
+- `encryption_key` (String, Sensitive)
 - `endpoint` (String)
 - `engagement_attribution_window` (String)
 - `entity_id` (String)
@@ -171,49 +153,37 @@ Read-Only:
 - `finance_accounts` (Set of String)
 - `folder_id` (String)
 - `ftp_host` (String)
-- `ftp_password` (String)
+- `ftp_password` (String, Sensitive)
 - `ftp_port` (String)
 - `ftp_user` (String)
 - `function` (String)
 - `function_app` (String)
 - `function_key` (String)
 - `function_name` (String)
-- `function_trigger` (String)
+- `function_trigger` (String, Sensitive)
 - `gcs_bucket` (String)
 - `gcs_folder` (String)
 - `group_name` (String)
 - `home_folder` (String)
 - `host` (String)
 - `hosts` (Set of String)
-- `identity` (String) Marketo REST API identity url.
-- `instance` (String) ServiceNow Instance ID.
-- `instance_number` (String) Two-digit number (00-97) of the SAP instance within its host.
-- `instance_url` (String) The SAP Business ByDesign instance URL.
-- `integration_key` (String, Sensitive) The integration key of the Pendo account.
-- `is_account_level_connector` (Boolean) (Optional) Retrieve account-level logs.
-- `is_auth2_enabled` (Boolean) The contents of your PEM certificate file. Default value: `false`
-- `is_custom_api_credentials` (Boolean) Custom API credentials
-- `is_ftps` (Boolean) Use Secure FTP (FTPS).
-- `is_keypair` (Boolean) Whether to use a key pair for authentication.  When `true`, do not use `password`.
-- `is_multi_entity_feature_enabled` (Boolean) Set to `true` if there are multiple entities in your Zuora account and you only want to use one entity. Otherwise, set to `false`.
-- `is_new_package` (Boolean) Indicates that that your installed package uses OAuth 2.0. Default value: `false`
-- `is_private_key_encrypted` (Boolean) Indicates that a private key is encrypted. The default value: `false`. The field can be specified if authentication type is `KEY_PAIR`.
-- `is_private_link_required` (Boolean) We use PrivateLink by default if your AWS Lambda is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to AWS lambda over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/databases/connection-options#awsprivatelinkbeta).
-- `is_public` (Boolean) Whether you are syncing from a public bucket. Default value: `false`.
-- `is_sailthru_connect_enabled` (Boolean) Enable this if you want to sync Sailthru Connect
-- `is_secure` (Boolean) Whether the server supports FTPS.
-- `is_single_table_mode` (Boolean) Allows the creation of connector using Merge Mode strategy.
-- `is_vendor` (Boolean) Whether or not you have a Vendor Account. Default value: `false`.
-- `json_delivery_mode` (String) Control how your JSON data is delivered into your destination
-- `key` (String) The UserVoice API key.
-- `key_store_type` (String) Key Store Type
-- `line_separator` (String) You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.
-- `linkedin_ads_reports` (Set of Object) (see [below for nested schema](#nestedatt--config--linkedin_ads_reports))
-- `list_strategy` (String) The listing strategy you want to use. Default value: `complete_listing`.
-- `log_journal` (String) The log journal name.
-- `log_journal_schema` (String) The log journal schema.
-- `login` (String) The Trade Desk email. It is a part of the login credentials.
-- `login_password` (String, Sensitive) The login password. It is a part of the login credentials.
+- `identity` (String)
+- `instance` (String)
+- `integration_key` (String)
+- `is_account_level_connector` (String)
+- `is_ftps` (String)
+- `is_keypair` (String)
+- `is_multi_entity_feature_enabled` (String)
+- `is_new_package` (String)
+- `is_private_key_encrypted` (String)
+- `is_public` (String)
+- `is_secure` (String)
+- `is_single_table_mode` (String)
+- `key` (String)
+- `last_synced_changes__utc_` (String)
+- `latest_version` (String)
+- `list_strategy` (String)
+- `login_password` (String, Sensitive)
 - `manager_accounts` (Set of String)
 - `merchant_id` (String)
 - `message_type` (String)
@@ -221,8 +191,8 @@ Read-Only:
 - `named_range` (String)
 - `network_code` (String)
 - `null_sequence` (String)
-- `oauth_token` (String)
-- `oauth_token_secret` (String)
+- `oauth_token` (String, Sensitive)
+- `oauth_token_secret` (String, Sensitive)
 - `on_error` (String)
 - `on_premise` (String)
 - `organization` (String)
@@ -230,20 +200,21 @@ Read-Only:
 - `organizations` (Set of String)
 - `packed_mode_tables` (Set of String)
 - `pages` (Set of String)
-- `password` (String)
-- `pat` (String)
+- `passphrase` (String, Sensitive)
+- `password` (String, Sensitive)
+- `pat` (String, Sensitive)
 - `path` (String)
 - `pattern` (String)
 - `pdb_name` (String)
-- `pem_certificate` (String)
+- `pem_certificate` (String, Sensitive)
 - `port` (String)
 - `post_click_attribution_window_size` (String)
 - `prebuilt_report` (String)
 - `prefix` (String)
 - `primary_keys` (Set of String)
-- `private_key` (String)
+- `private_key` (String, Sensitive)
 - `profiles` (Set of String)
-- `project_credentials` (Set of Object) (see [below for nested schema](#nestedobjatt--config--project_credentials))
+- `project_credentials` (Set of Object) (see [below for nested schema](#nestedatt--config--project_credentials))
 - `project_id` (String)
 - `projects` (Set of String)
 - `properties` (Set of String)
@@ -256,22 +227,22 @@ Read-Only:
 - `report_suites` (Set of String)
 - `report_type` (String)
 - `report_url` (String)
-- `reports` (Set of Object) (see [below for nested schema](#nestedobjatt--config--reports))
+- `reports` (Set of Object) (see [below for nested schema](#nestedatt--config--reports))
 - `repositories` (Set of String)
 - `resource_url` (String)
 - `role` (String)
-- `role_arn` (String)
+- `role_arn` (String, Sensitive)
 - `s3bucket` (String)
 - `s3external_id` (String)
 - `s3folder` (String)
-- `s3role_arn` (String)
+- `s3role_arn` (String, Sensitive)
 - `sales_account_sync_mode` (String)
 - `sales_accounts` (Set of String)
 - `sap_user` (String)
-- `secret` (String)
-- `secret_key` (String)
-- `secrets` (String)
-- `secrets_list` (Set of Object) (see [below for nested schema](#nestedobjatt--config--secrets_list))
+- `secret` (String, Sensitive)
+- `secret_key` (String, Sensitive)
+- `secrets` (String, Sensitive)
+- `secrets_list` (Set of Object) (see [below for nested schema](#nestedatt--config--secrets_list))
 - `security_protocol` (String)
 - `selected_exports` (Set of String)
 - `server_url` (String)
@@ -279,7 +250,7 @@ Read-Only:
 - `service_version` (String)
 - `sftp_host` (String)
 - `sftp_is_key_pair` (String)
-- `sftp_password` (String)
+- `sftp_password` (String, Sensitive)
 - `sftp_port` (String)
 - `sftp_user` (String)
 - `share_url` (String)
@@ -299,20 +270,22 @@ Read-Only:
 - `sync_format` (String)
 - `sync_method` (String)
 - `sync_mode` (String)
+- `sync_pack_mode` (String)
 - `sync_type` (String)
 - `technical_account_id` (String)
 - `test_table_name` (String)
 - `time_zone` (String)
 - `timeframe_months` (String)
 - `tns` (String)
-- `token_key` (String)
-- `token_secret` (String)
+- `token_key` (String, Sensitive)
+- `token_secret` (String, Sensitive)
 - `tunnel_host` (String)
 - `tunnel_port` (String)
 - `tunnel_user` (String)
 - `unique_id` (String)
 - `update_config_on_each_sync` (String)
 - `update_method` (String)
+- `uri` (String)
 - `use_api_keys` (String)
 - `use_oracle_rac` (String)
 - `use_webhooks` (String)
@@ -325,7 +298,7 @@ Read-Only:
 - `view_attribution_window` (String)
 - `view_through_attribution_window_size` (String)
 
-<a id="nestedobjatt--config--adobe_analytics_configurations"></a>
+<a id="nestedatt--config--adobe_analytics_configurations"></a>
 ### Nested Schema for `config.adobe_analytics_configurations`
 
 Read-Only:
@@ -336,32 +309,6 @@ Read-Only:
 - `report_suites` (Set of String)
 - `segments` (Set of String)
 - `sync_mode` (String)
-
-<a id="nestedatt--config--appsflyer_app_ids"></a>
-### Nested Schema for `config.appsflyer_app_ids`
-
-Read-Only:
-
-- `app_id` (String) Your App ID
-
-
-<a id="nestedatt--config--custom_reports"></a>
-### Nested Schema for `config.custom_reports`
-
-Read-Only:
-
-- `aggregate` (String) Time aggregation of report
-- `conversions_report_included` (Boolean) The boolean value specifying whether to enable or disable event conversions data synchronisation. Default value: `false`
-- `custom_events_included` (Boolean) The boolean value specifying whether the custom events are included in event conversions report. Default value: `false`
-- `dimensions` (Set of String)
-- `event_names` (Set of String)
-- `level` (String) Level of custom report.
-- `metrics` (Set of String)
-- `report_fields` (Set of String)
-- `report_name` (String) The table name within the schema to which connector syncs the data of the specific report.
-- `report_type` (String) Type of report to be generated
-- `segmentation` (String) Level of custom report.
-- `table_name` (String) Destination Table name of report
 
 
 <a id="nestedatt--config--custom_tables"></a>
@@ -381,27 +328,6 @@ Read-Only:
 - `view_attribution_window` (String)
 
 
-<a id="nestedatt--config--linkedin_ads_reports"></a>
-### Nested Schema for `config.linkedin_ads_reports`
-
-Read-Only:
-
-- `aggregation` (String) (Optional) Aggregation type. Supported only for the `SEARCH_RESULTS` report type
-- `config_type` (String) Whether to use the [Prebuilt Reports or Custom Reports](/docs/applications/google-analytics#schemainformation).
-- `dimensions` (Set of String)
-- `fields` (Set of String)
-- `filter` (String) String parameter restricts the data returned for your report. To use the filter parameter, specify a dimension or metric on which to filter, followed by the filter expression
-- `filter_field_name` (String) The dimension name to filter on.
-- `filter_value` (String)
-- `metrics` (Set of String)
-- `prebuilt_report` (String) The name of the Prebuilt Report from which the connector will sync the data.
-- `report_type` (String) The type of report
-- `search_types` (Set of String)
-- `segment_ids` (Set of String)
-- `segments` (Set of String)
-- `table` (String) The name of a table within the schema to which connector syncs the data of a given report.
-
-
 <a id="nestedatt--config--project_credentials"></a>
 ### Nested Schema for `config.project_credentials`
 
@@ -412,7 +338,7 @@ Read-Only:
 - `secret_key` (String)
 
 
-<a id="nestedobjatt--config--reports"></a>
+<a id="nestedatt--config--reports"></a>
 ### Nested Schema for `config.reports`
 
 Read-Only:
@@ -428,7 +354,7 @@ Read-Only:
 - `table` (String)
 
 
-<a id="nestedobjatt--config--secrets_list"></a>
+<a id="nestedatt--config--secrets_list"></a>
 ### Nested Schema for `config.secrets_list`
 
 Read-Only:
