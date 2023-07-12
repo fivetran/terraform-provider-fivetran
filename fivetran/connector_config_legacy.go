@@ -67,6 +67,7 @@ var configFields = map[string]configField{
 	"empty_header":                      {nullable: false, fieldValueType: Boolean},
 	"support_nested_columns":            {nullable: false, fieldValueType: Boolean},
 
+	"list_strategy":                        {nullable: false},
 	"connection_type":                      {nullable: false},
 	"sync_method":                          {nullable: false},
 	"sync_mode":                            {nullable: false},
@@ -218,7 +219,6 @@ var configFields = map[string]configField{
 	"group_name":            {},
 	"company_id":            {},
 	"environment":           {},
-	"list_strategy":         {},
 	"csv_definition":        {},
 	"export_storage_type":   {},
 
