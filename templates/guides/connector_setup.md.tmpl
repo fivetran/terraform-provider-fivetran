@@ -101,7 +101,9 @@ resource "fivetran_connector" "connector" {
 }
 ```
 
-## Configure connector schedule:
+## Configure connector schedule
+
+We should configure how connector will be scheduled to sync:
 
 ```hcl
 resource "fivetran_connector_schedule" "connector_schedule" {
