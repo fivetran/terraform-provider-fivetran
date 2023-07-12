@@ -2,7 +2,7 @@
 page_title: "Resource: fivetran_connector_schedule"
 ---
 
-# Resource: fivetran_connector_swchedule
+# Resource: fivetran_connector_schedule
 
 -This resource allows you to manage connectors schedule: pause/unpause connector, set daily_sync_time and sync_frequency.
 
@@ -39,7 +39,7 @@ resource "fivetran_connector_schedule" "my_connector_schedule" {
 
 ### Read-Only
 
-- `id` (String) The unique identifier for the user within the account.
+- `id` (String) The unique resource identifier (equals to `connector_id`).
 
 ## Import
 

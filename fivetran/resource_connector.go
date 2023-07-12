@@ -147,9 +147,6 @@ func resourceConnectorUpdate(ctx context.Context, resourceData *schema.ResourceD
 	if resourceData.HasChange("trust_fingerprints") {
 		modifyConnectorService.TrustFingerprints(strToBool(resourceData.Get("trust_fingerprints").(string)))
 	}
-	if resourceData.HasChange("run_setup_tests") {
-		modifyConnectorService.RunSetupTests(strToBool(resourceData.Get("run_setup_tests").(string)))
-	}
 	if resourceData.HasChange("paused") {
 		modifyConnectorService.Paused(strToBool(resourceData.Get("paused").(string)))
 	}
@@ -163,6 +160,14 @@ func resourceConnectorUpdate(ctx context.Context, resourceData *schema.ResourceD
 	modifyConnectorService.ConfigCustom(resourceConnectorUpdateCustomConfig(resourceData, false))
 	modifyConnectorService.Auth(resourceConnectorCreateAuth(resourceData.Get("auth").([]interface{})))
 	modifyConnectorService.AuthCustom(resourceConnectorUpdateCustomAuth(resourceData))
+
+	if resourceData.Get("run_setup_tests").(string) != "" {
+		// Each time user updates resource we should run setup tests if the value is set to `true`
+		modifyConnectorService.RunSetupTests(strToBool(resourceData.Get("run_setup_tests").(string)))
+	} else {
+		// If value doesn't set we should not run tests
+		modifyConnectorService.RunSetupTests(false)
+	}
 
 	resp, err := modifyConnectorService.DoCustom(ctx)
 	if err != nil {
@@ -237,7 +242,7 @@ func createConfig(responseConfig map[string]interface{}, fields map[string]*sche
 		if fieldSchema.Type == schema.TypeSet || fieldSchema.Type == schema.TypeList {
 			if values := responseConfig[fieldName].(*schema.Set).List(); len(values) > 0 {
 				if mapValues, ok := values[0].(map[string]interface{}); ok {
-					for childPropertyKey, _ := range mapValues {
+					for childPropertyKey := range mapValues {
 						if childPropertyValues, ok := mapValues[childPropertyKey].(*schema.Set); ok {
 							mapValues[childPropertyKey] = childPropertyValues.List()
 							continue

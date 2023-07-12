@@ -1,11 +1,29 @@
 package fivetran
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 )
+
+func validateStringBooleanValue(val any, key string) (warns []string, errs []error) {
+	v := val.(string)
+	if v == "" {
+		return
+	}
+
+	if strings.ToLower(v) == "true" || strings.ToLower(v) == "false" {
+		if strings.ToLower(v) != v {
+			warns = append(warns, "For %q please use lower case boolean value `true` or `false`")
+		}
+		return
+	}
+
+	errs = append(errs, fmt.Errorf("%q must be a boolean value `true` or `false`; got: %s", key, v))
+	return
+}
 
 func filterList(list []interface{}, filter func(elem interface{}) bool) *interface{} {
 	for _, v := range list {
@@ -60,10 +78,7 @@ func tryCopyList(target, source map[string]interface{}, key string) {
 
 // strToBool receives a string and returns a boolean
 func strToBool(s string) bool {
-	if s == "true" || s == "TRUE" || s == "True" {
-		return true
-	}
-	return false
+	return strings.ToLower(s) == "true"
 }
 
 // boolToStr receives a boolean and returns a string

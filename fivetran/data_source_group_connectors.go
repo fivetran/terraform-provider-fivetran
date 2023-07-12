@@ -28,9 +28,8 @@ func dataSourceGroupConnectors() *schema.Resource {
 
 func dataSourceGroupConnectorsSchemaConnectors() *schema.Schema {
 	return &schema.Schema{
-		Type: schema.TypeSet,
-		// Uncomment Optional:true, before re-generating docs
-		//Optional: true,
+		Type:     schema.TypeSet,
+		Optional: true,
 		Computed: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
@@ -195,7 +194,7 @@ func dataSourceGroupConnectorsFlattenConnectors(resp *fivetran.GroupListConnecto
 		return make([]interface{}, 0)
 	}
 
-	connectors := make([]interface{}, len(resp.Data.Items), len(resp.Data.Items))
+	connectors := make([]interface{}, len(resp.Data.Items))
 	for i, v := range resp.Data.Items {
 		connector := make(map[string]interface{})
 		connector["id"] = v.ID
@@ -265,9 +264,7 @@ func dataSourceGroupConnectorsGetConnectors(client *fivetran.Client, id, schema 
 			return fivetran.GroupListConnectorsResponse{}, err
 		}
 
-		for _, item := range respInner.Data.Items {
-			resp.Data.Items = append(resp.Data.Items, item)
-		}
+		resp.Data.Items = append(resp.Data.Items, respInner.Data.Items...)
 
 		if respInner.Data.NextCursor == "" {
 			break

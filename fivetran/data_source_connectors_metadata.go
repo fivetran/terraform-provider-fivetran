@@ -21,8 +21,8 @@ func dataSourceConnectorsMetadata() *schema.Resource {
 func dataSourceConnectorsMetadataSchemaSources() *schema.Schema {
 	return &schema.Schema{
 		Type: schema.TypeSet,
-		// Uncomment Optional:true, before re-generating docs
-		//Optional: true,
+		// Uncomment `Optional: true,` before re-generating docs
+		// Optional: true,
 		Computed: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
@@ -92,7 +92,7 @@ func dataSourceConnectorsMetadataFlattenMetadata(resp *fivetran.ConnectorsSource
 		return make([]interface{}, 0)
 	}
 
-	sources := make([]interface{}, len(resp.Data.Items), len(resp.Data.Items))
+	sources := make([]interface{}, len(resp.Data.Items))
 	for i, v := range resp.Data.Items {
 		source := make(map[string]interface{})
 		source["id"] = v.ID
