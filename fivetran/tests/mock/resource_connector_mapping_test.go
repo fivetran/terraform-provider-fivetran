@@ -62,9 +62,12 @@ const (
 			token_key = "token_key"
 			token_secret = "token_secret"
 			login_password = "login_password"
+			account_key = "account_key"
+			passphrase = "passphrase"
 
 			sync_method = "sync_method"
 
+			is_private_key_encrypted = false
 			is_ftps = false
 			sftp_is_key_pair = false
 			sync_data_locker = false
@@ -112,6 +115,7 @@ const (
 			sap_user = "sap_user"
 			group_name = "group_name"
 
+			auth = "auth"
 			connection_type = "connection_type"
 			sync_mode = "sync_mode"
 			date_granularity = "date_granularity"
@@ -139,6 +143,8 @@ const (
 			append_file_option = "append_file_option"
 			engagement_attribution_window = "engagement_attribution_window"
 			conversion_report_time = "conversion_report_time"
+			data_access_method = "data_access_method"
+			sync_pack_mode = "sync_pack_mode"
 
 			external_id = "external_id"
 			public_key = "public_key"
@@ -187,9 +193,8 @@ const (
 			instance = "instance"
 			aws_region_code = "aws_region_code"
 			host = "host"
-
 			user = "user"
-			
+			uri = "uri"
 			customer_id = "customer_id"
 			project_id = "project_id"
 			dataset_id = "dataset_id"
@@ -419,7 +424,10 @@ const (
 			"agent_password":     "******",
 			"asm_password":		  "******",
 			"login_password":     "******",
+			"account_key":        "******",
+			"passphrase":         "******",
 
+			"is_private_key_encrypted": false,
 			"is_ftps":                           false,
 			"sftp_is_key_pair":                  false,
 			"sync_data_locker":                  false,
@@ -452,6 +460,7 @@ const (
 			"asm_oracle_home":						"asm_oracle_home",
 			"asm_tns": 								"asm_tns",
 			"sap_user": 							"sap_user",
+			"auth": "auth",
 			"connection_type":                   	"connection_type",
 			"sync_mode":                         	"sync_mode",
 			"date_granularity":                 	"date_granularity",
@@ -479,7 +488,8 @@ const (
 			"append_file_option":                   "append_file_option",
 			"engagement_attribution_window":        "engagement_attribution_window",
 			"conversion_report_time":               "conversion_report_time",
-
+			"sync_pack_mode":                       "sync_pack_mode",
+			"data_access_method": "data_access_method",
 			"conversion_window_size":               0,
 			"skip_before":                          0,
 			"skip_after":                           0,
@@ -540,9 +550,8 @@ const (
 			"aws_region_code":       "aws_region_code",
 			"subdomain":             "subdomain",
 			"host":                  "host",
-
 			"user":                 "user",
-			
+			"uri":                  "uri",
 			"customer_id":          "customer_id",
 			"project_id":           "project_id",
 			"dataset_id":           "dataset_id",
@@ -736,7 +745,10 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "asm_password", "asm_password")
 			assertKeyExistsAndHasValue(t, config, "agent_password", "agent_password")
 			assertKeyExistsAndHasValue(t, config, "login_password", "login_password")
+			assertKeyExistsAndHasValue(t, config, "account_key", "account_key")
+			assertKeyExistsAndHasValue(t, config, "passphrase", "passphrase")
 
+			assertKeyExistsAndHasValue(t, config, "is_private_key_encrypted", false)
 			assertKeyExistsAndHasValue(t, config, "is_ftps", false)
 			assertKeyExistsAndHasValue(t, config, "sftp_is_key_pair", false)
 			assertKeyExistsAndHasValue(t, config, "sync_data_locker", false)
@@ -759,6 +771,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "empty_header", false)
 			assertKeyExistsAndHasValue(t, config, "support_nested_columns", false)
 
+			assertKeyExistsAndHasValue(t, config, "auth", "auth")
 			assertKeyExistsAndHasValue(t, config, "connection_type", "connection_type")
 			assertKeyExistsAndHasValue(t, config, "sync_mode", "sync_mode")
 			assertKeyExistsAndHasValue(t, config, "date_granularity", "date_granularity")
@@ -785,7 +798,8 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "append_file_option", "append_file_option")
 			assertKeyExistsAndHasValue(t, config, "engagement_attribution_window", "engagement_attribution_window")
 			assertKeyExistsAndHasValue(t, config, "conversion_report_time", "conversion_report_time")
-
+			assertKeyExistsAndHasValue(t, config, "data_access_method", "data_access_method")
+			assertKeyExistsAndHasValue(t, config, "sync_pack_mode", "sync_pack_mode")
 			// all numbers in json are float64
 			assertKeyExistsAndHasValue(t, config, "conversion_window_size", float64(0))
 			assertKeyExistsAndHasValue(t, config, "skip_before", float64(0))
@@ -859,7 +873,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "subdomain", "subdomain")
 			assertKeyExistsAndHasValue(t, config, "host", "host")
 			assertKeyExistsAndHasValue(t, config, "user", "user")
-
+			assertKeyExistsAndHasValue(t, config, "uri", "uri")
 			assertKeyExistsAndHasValue(t, config, "customer_id", "customer_id")
 			assertKeyExistsAndHasValue(t, config, "project_id", "project_id")
 			assertKeyExistsAndHasValue(t, config, "dataset_id", "dataset_id")
