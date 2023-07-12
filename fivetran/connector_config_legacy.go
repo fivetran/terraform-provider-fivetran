@@ -66,6 +66,7 @@ var configFields = map[string]configField{
 	"is_public":                         {nullable: false, fieldValueType: Boolean},
 	"empty_header":                      {nullable: false, fieldValueType: Boolean},
 	"support_nested_columns":            {nullable: false, fieldValueType: Boolean},
+	"is_private_key_encrypted":          {nullable: false, fieldValueType: Boolean},
 
 	"list_strategy":                        {nullable: false},
 	"connection_type":                      {nullable: false},
@@ -99,6 +100,7 @@ var configFields = map[string]configField{
 	"conversion_report_time":               {nullable: false},
 	"data_access_method":                   {nullable: false},
 	"sync_pack_mode":                       {nullable: false},
+	"auth":                                 {nullable: false},
 	"conversion_window_size":               {nullable: false, fieldValueType: Integer},
 	"skip_before":                          {nullable: false, fieldValueType: Integer},
 	"skip_after":                           {nullable: false, fieldValueType: Integer},
@@ -257,6 +259,7 @@ var configFields = map[string]configField{
 	"properties":               {fieldValueType: StringList},
 	"primary_keys":             {fieldValueType: StringList},
 
+	"passphrase":         {sensitive: true},
 	"account_key":        {sensitive: true},
 	"oauth_token":        {sensitive: true},
 	"oauth_token_secret": {sensitive: true},

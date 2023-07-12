@@ -63,9 +63,11 @@ const (
 			token_secret = "token_secret"
 			login_password = "login_password"
 			account_key = "account_key"
+			passphrase = "passphrase"
 
 			sync_method = "sync_method"
 
+			is_private_key_encrypted = false
 			is_ftps = false
 			sftp_is_key_pair = false
 			sync_data_locker = false
@@ -113,6 +115,7 @@ const (
 			sap_user = "sap_user"
 			group_name = "group_name"
 
+			auth = "auth"
 			connection_type = "connection_type"
 			sync_mode = "sync_mode"
 			date_granularity = "date_granularity"
@@ -191,10 +194,7 @@ const (
 			aws_region_code = "aws_region_code"
 			host = "host"
 			user = "user"
-
 			uri = "uri"
-			
-
 			customer_id = "customer_id"
 			project_id = "project_id"
 			dataset_id = "dataset_id"
@@ -424,8 +424,10 @@ const (
 			"agent_password":     "******",
 			"asm_password":		  "******",
 			"login_password":     "******",
-			"account_key": "******",
+			"account_key":        "******",
+			"passphrase":         "******",
 
+			"is_private_key_encrypted": false,
 			"is_ftps":                           false,
 			"sftp_is_key_pair":                  false,
 			"sync_data_locker":                  false,
@@ -458,6 +460,7 @@ const (
 			"asm_oracle_home":						"asm_oracle_home",
 			"asm_tns": 								"asm_tns",
 			"sap_user": 							"sap_user",
+			"auth": "auth",
 			"connection_type":                   	"connection_type",
 			"sync_mode":                         	"sync_mode",
 			"date_granularity":                 	"date_granularity",
@@ -743,7 +746,9 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "agent_password", "agent_password")
 			assertKeyExistsAndHasValue(t, config, "login_password", "login_password")
 			assertKeyExistsAndHasValue(t, config, "account_key", "account_key")
+			assertKeyExistsAndHasValue(t, config, "passphrase", "passphrase")
 
+			assertKeyExistsAndHasValue(t, config, "is_private_key_encrypted", false)
 			assertKeyExistsAndHasValue(t, config, "is_ftps", false)
 			assertKeyExistsAndHasValue(t, config, "sftp_is_key_pair", false)
 			assertKeyExistsAndHasValue(t, config, "sync_data_locker", false)
@@ -766,6 +771,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "empty_header", false)
 			assertKeyExistsAndHasValue(t, config, "support_nested_columns", false)
 
+			assertKeyExistsAndHasValue(t, config, "auth", "auth")
 			assertKeyExistsAndHasValue(t, config, "connection_type", "connection_type")
 			assertKeyExistsAndHasValue(t, config, "sync_mode", "sync_mode")
 			assertKeyExistsAndHasValue(t, config, "date_granularity", "date_granularity")
