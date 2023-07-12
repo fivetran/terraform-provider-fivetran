@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Fixed
 - Run setup tests in update resource only if `run_setup_tests` = true is set
+- Issue with drifting changes for `fivetran_connector.config.list_strategy` field
+- Issue with re-creation of connectors that are using `destination_schema.prefix` field
+- Supported config fields for CosmosDB and Snowflake DB connectors
 
 ## Breaking changes
 - Resource `fivetran_connector` updated
