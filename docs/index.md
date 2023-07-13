@@ -16,7 +16,7 @@ description: |-
 terraform {
   required_providers {
     fivetran = {
-        version = "0.6.13"                            
+        version = "0.7.2"                            
         source = "fivetran/fivetran"
     }
   }

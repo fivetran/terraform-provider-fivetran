@@ -222,6 +222,7 @@ Read-Only:
 - `publication_name` (String)
 - `query_id` (String)
 - `region` (String)
+- `replica_id` (String)
 - `replication_slot` (String)
 - `report_configuration_ids` (Set of String)
 - `report_suites` (Set of String)

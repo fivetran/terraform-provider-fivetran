@@ -1,13 +1,13 @@
 ----
-page_title: "Version Update 0.7.0"
+page_title: "Version Update 0.7.2"
 subcategory: "Upgrade Guides"
 ---
 
-# Version 0.7.0
+# Version 0.7.2
 
-## What's new in 0.7.0
+## What's new in 0.7.2
 
-In version `0.7.0` of Fivetran Terraform provider, resource `fivetran_connector` is separated onto two resources:
+In version `0.7.2` of Fivetran Terraform provider, resource `fivetran_connector` is separated onto two resources:
 - `fivetran_connector` resource
 - `fivetran_connector_schedule` resource
 With this new structure, it's now possible to create a connector, define the schema config for it, and enable it in one `apply` cycle without intermediate stages.
@@ -24,7 +24,7 @@ Previous configuration:
 ```hcl
 required_providers {
    fivetran = {
-     version = "~> 0.6.19"
+     version = "~> 0.7.1"
      source  = "fivetran/fivetran"                
    }
  }
@@ -35,7 +35,7 @@ Updated configuration:
 ```hcl
 required_providers {
    fivetran = {
-     version = ">= 0.7.0"
+     version = ">= 0.7.2"
      source  = "fivetran/fivetran"                
    }
  }
