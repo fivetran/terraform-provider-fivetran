@@ -22,7 +22,7 @@ export FIVETRAN_APISECRET=<your_Fivetran_API_secret>
 terraform {
   required_providers {
     fivetran = {
-        version = "0.6.13"                            
+        version = "0.7.2"                            
         source = "fivetran/fivetran"
     }
   }
@@ -85,9 +85,6 @@ We are now ready to set up our first connector:
 resource "fivetran_connector" "connector" {
     group_id = fivetran_group.group.id
     service = "fivetran_log"
-    sync_frequency = 60
-    paused = false 
-    pause_after_trial = false
     run_setup_tests = true
 
     destination_schema {
@@ -101,6 +98,19 @@ resource "fivetran_connector" "connector" {
     depends_on = [
         fivetran_destination.destination
     ]
+}
+```
+
+## Configure connector schedule
+
+We should configure how connector will be scheduled to sync:
+
+```hcl
+resource "fivetran_connector_schedule" "connector_schedule" {
+    connector_id = fivetran_connector.connector.id
+    sync_frequency = 60
+    paused = false 
+    pause_after_trial = false
 }
 ```
 
