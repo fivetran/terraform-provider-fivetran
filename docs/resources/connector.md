@@ -291,6 +291,7 @@ Optional:
 - `publication_name` (String)
 - `query_id` (String)
 - `region` (String)
+- `replica_id` (String)
 - `replication_slot` (String)
 - `report_configuration_ids` (Set of String)
 - `report_suites` (Set of String)
@@ -476,10 +477,7 @@ To authorize a GitHub connector via terraform using personal access token you sh
 resource "fivetran_connector" "my_github_connector" {
     group_id = "group_id"
     service = "github"
-    sync_frequency = 60
-    paused = false
-    pause_after_trial = false
-    run_setup_tests = true
+    run_setup_tests = "true"
 
     destination_schema {
         name = "github_connector"
@@ -487,7 +485,7 @@ resource "fivetran_connector" "my_github_connector" {
 
     config {
         sync_mode = "AllRepositories"
-        use_webhooks = false
+        use_webhooks = "false"
         auth_mode = "PersonalAccessToken"
         username = "git-hub-user-name"
         pat = "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"

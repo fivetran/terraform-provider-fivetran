@@ -92,8 +92,8 @@ const (
 			port = 0
 			tunnel_port = 0
 			api_quota = 0
-			
 			agent_port = 0
+			replica_id = 999999
 
 			pdb_name = "pdb_name"
 			agent_host = "agent_host"
@@ -499,7 +499,8 @@ const (
 			"tunnel_port":                          0,
 			"api_quota":                            0,
 			"daily_api_call_limit":                 0,
-			"agent_port":                           0,` +
+			"agent_port":                           0,
+			"replica_id":                      999999,` +
 		//"network_code":                         0,
 		`"public_key": 			"public_key",
 			"external_id": 			"external_id",
@@ -810,6 +811,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "agent_port", float64(0))
 			assertKeyExistsAndHasValue(t, config, "tunnel_port", float64(0))
 			assertKeyExistsAndHasValue(t, config, "api_quota", float64(0))
+			assertKeyExistsAndHasValue(t, config, "replica_id", float64(999999))
 
 			//assertKeyExistsAndHasValue(t, config, "network_code", float64(0))
 

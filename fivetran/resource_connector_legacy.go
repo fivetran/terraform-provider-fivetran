@@ -391,6 +391,10 @@ func resourceConnectorLegacyUpdateCustomConfig(d *schema.ResourceData) *map[stri
 		configMap["is_private_key_encrypted"] = strToBool(v)
 	}
 
+	if v, ok := c["replica_id"].(string); ok && v != "" {
+		configMap["replica_id"] = strToInt(v)
+	}
+
 	return &configMap
 }
 

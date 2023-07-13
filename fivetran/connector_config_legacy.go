@@ -111,6 +111,7 @@ var configFields = map[string]configField{
 	"daily_api_call_limit":                 {nullable: false, fieldValueType: Integer},
 	"api_quota":                            {nullable: false, fieldValueType: Integer},
 	"agent_port":                           {nullable: false, fieldValueType: Integer},
+	"replica_id":                           {nullable: false, fieldValueType: Integer},
 
 	"asm_oracle_home":       {},
 	"asm_tns":               {},
