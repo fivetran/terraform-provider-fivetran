@@ -397,7 +397,6 @@ func getFieldSchema(isDataSourceSchema bool, field *configField) *schema.Schema 
 
 	result.Description = field.description
 	return result
-
 }
 
 func connectorSchemaConfig(readonly bool) *schema.Schema {
@@ -503,5 +502,56 @@ func readFieldValueCore(k string, v configField, currentConfig *map[string]inter
 			mapAddXInterface(c, k, resultList)
 		}
 
+	}
+}
+
+func connectorUpdateCustomConfig(c map[string]interface{}) *map[string]interface{} {
+	configMap := make(map[string]interface{})
+	for k, v := range c {
+		if field, ok := configFields[k]; ok {
+			updateConfigFieldImpl(k, field, v, configMap)
+		}
+	}
+	return &configMap
+}
+
+func updateConfigFieldImpl(name string, field configField, v interface{}, configMap map[string]interface{}) {
+	switch field.fieldValueType {
+	case String:
+		{
+			if v.(string) != "" {
+				configMap[name] = v
+			}
+		}
+	case Integer:
+		{
+			if v.(string) != "" {
+				configMap[name] = strToInt(v.(string))
+			}
+		}
+	case StringList:
+		{
+			configMap[name] = xInterfaceStrXStr(v.(*schema.Set).List())
+		}
+	case Boolean:
+		{
+			if v.(string) != "" {
+				configMap[name] = strToBool(v.(string))
+			}
+		}
+	case ObjectList:
+		{
+			var list = v.(*schema.Set).List()
+			result := make([]interface{}, len(list))
+			for i, v := range list {
+				vmap := v.(map[string]interface{})
+				item := make(map[string]interface{})
+				for subName, subField := range field.itemFields {
+					updateConfigFieldImpl(subName, subField, vmap[subName], item)
+				}
+				result[i] = item
+			}
+			configMap[name] = result
+		}
 	}
 }
