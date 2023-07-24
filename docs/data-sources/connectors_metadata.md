@@ -19,17 +19,17 @@ data "fivetran_connectors_metadata" "sources" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `sources` (Set of Object) (see [below for nested schema](#nestedatt--sources))
+- `sources` (Block Set) (see [below for nested schema](#nestedblock--sources))
 
-<a id="nestedatt--sources"></a>
+<a id="nestedblock--sources"></a>
 ### Nested Schema for `sources`
 
 Read-Only:
 
-- `description` (String)
-- `icon_url` (String)
-- `id` (String)
-- `link_to_docs` (String)
-- `link_to_erd` (String)
-- `name` (String)
-- `type` (String)
+- `description` (String) The description characterizing the purpose of the connector.
+- `icon_url` (String) The icon resource URL.
+- `id` (String) The unique identifier for the connector within the Fivetran system
+- `link_to_docs` (String) The link to the connector documentation.
+- `link_to_erd` (String) The link to the connector ERD (entity–relationship diagram).
+- `name` (String) The connector service name within the Fivetran system.
+- `type` (String) The connector service type within the Fivetran system.

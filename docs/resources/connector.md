@@ -33,6 +33,8 @@ resource "fivetran_connector" "amplitude" {
 }
 ```
 
+-> Use `destination_schema` to define connector schema configuration. Field `destination_schema.name` will be mapped into `config.schema` in REST API payload. Field `destination_schema.table` will be mapped into `config.table` in REST API payload. Field `destination_schema.prefix` will be mapped into `config.schema_prefix` in REST API payload. Specify values according to [public documentation](https://fivetran.com/docs/rest-api/connectors/config) for particular connector type.
+
 ### NOTE: resources indirect dependencies
 
 The connector resource receives the `group_id` parameter value from the group resource, but the destination resource depends on the group resource.  When you try to destroy the destination resource infrastructure, the terraform plan is created successfully, but once you run the `terraform apply` command, it returns an error because the Fivetran API doesn't let you delete destinations that have linked connectors. To solve this problem, you should either explicitly define `depends_on` between the connector and destination:
@@ -61,8 +63,8 @@ resource "fivetran_connector" "amplitude" {
 ### Required
 
 - `destination_schema` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--destination_schema))
-- `group_id` (String) The unique identifier for the Group within the Fivetran system.
-- `service` (String) The connector type name within the Fivetran system
+- `group_id` (String) The unique identifier for the Group (Destination) within the Fivetran system.
+- `service` (String) The connector type name within the Fivetran system.
 
 ### Optional
 
@@ -76,18 +78,18 @@ resource "fivetran_connector" "amplitude" {
 
 - `connected_by` (String) The unique identifier of the user who has created the connector in your account
 - `created_at` (String) The timestamp of the time the connector was created in your account
-- `id` (String) The unique identifier for the user within the account.
+- `id` (String) The unique identifier for the connector within the Fivetran system.
 - `last_updated` (String)
-- `name` (String) The unique identifier for the team within the account
+- `name` (String) The name used both as the connector's name within the Fivetran system and as the source schema's name within your destination.
 
 <a id="nestedblock--destination_schema"></a>
 ### Nested Schema for `destination_schema`
 
 Optional:
 
-- `name` (String) The unique identifier for the team within the account
-- `prefix` (String) If prefix is present when configuring the bucket.
-- `table` (String) The table name within your database schema
+- `name` (String) The connector schema name in destination. Has to be unique within the group (destination). Required for connector creation.
+- `prefix` (String) The connector schema prefix has to be unique within the group (destination). Each replicated schema is prefixed with the provided value. Required for connector creation.
+- `table` (String) The table name unique within the schema to which connector will sync the data. Required for connector creation.
 
 
 <a id="nestedblock--auth"></a>
@@ -95,20 +97,20 @@ Optional:
 
 Optional:
 
-- `access_token` (String, Sensitive)
-- `client_access` (Block List, Max: 1) (see [below for nested schema](#nestedblock--auth--client_access))
-- `realm_id` (String, Sensitive)
-- `refresh_token` (String, Sensitive)
+- `access_token` (String, Sensitive) The `Access Token` carries the information necessary for API resources to fetch data.
+- `client_access` (Block List, Max: 1) Your application client access fields. (see [below for nested schema](#nestedblock--auth--client_access))
+- `realm_id` (String, Sensitive) `Realm ID` of your application.
+- `refresh_token` (String, Sensitive) The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 
 <a id="nestedblock--auth--client_access"></a>
 ### Nested Schema for `auth.client_access`
 
 Optional:
 
-- `client_id` (String)
-- `client_secret` (String, Sensitive)
-- `developer_token` (String, Sensitive)
-- `user_agent` (String)
+- `client_id` (String) `Client ID` of your client application.
+- `client_secret` (String, Sensitive) `Client secret` of your client application.
+- `developer_token` (String, Sensitive) Your approved `Developer token` to connect to the API.
+- `user_agent` (String) Your company's name in your client application.
 
 
 

@@ -19,7 +19,7 @@ data "fivetran_connector" "connector" {
 
 ### Required
 
-- `id` (String) The unique identifier for the user within the account.
+- `id` (String) The unique identifier for the connector within the Fivetran system.
 
 ### Read-Only
 
@@ -29,16 +29,16 @@ data "fivetran_connector" "connector" {
 - `daily_sync_time` (String) The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use [the baseline sync start time](https://fivetran.com/docs/getting-started/syncoverview#syncfrequencyandscheduling). This parameter has no effect on the [0 to 60 minutes offset](https://fivetran.com/docs/getting-started/syncoverview#syncstarttimesandoffsets) used to determine the actual sync start time
 - `destination_schema` (List of Object) (see [below for nested schema](#nestedatt--destination_schema))
 - `failed_at` (String) The timestamp of the time the connector sync failed last time
-- `group_id` (String) The unique identifier for the Group within the Fivetran system.
-- `name` (String) The unique identifier for the team within the account
+- `group_id` (String) The unique identifier for the Group (Destination) within the Fivetran system.
+- `name` (String) The name used both as the connector's name within the Fivetran system and as the source schema's name within your destination.
 - `pause_after_trial` (String) Specifies whether the connector should be paused after the free trial period has ende
 - `paused` (String) Specifies whether the connector is paused
 - `schedule_type` (String) The connector schedule configuration type. Supported values: auto, manual
-- `service` (String) The connector type name within the Fivetran system
+- `service` (String) The connector type name within the Fivetran system.
 - `service_version` (String) The connector type version within the Fivetran system.
 - `status` (List of Object) (see [below for nested schema](#nestedatt--status))
 - `succeeded_at` (String) The timestamp of the time the connector sync succeeded last time
-- `sync_frequency` (String) The connector sync frequency in minutes
+- `sync_frequency` (String) The connector sync frequency in minutes.
 
 <a id="nestedblock--config"></a>
 ### Nested Schema for `config`

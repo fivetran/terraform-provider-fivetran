@@ -19,7 +19,7 @@ data "fivetran_group_users" "group_users" {
 
 ### Required
 
-- `id` (String) The unique identifier for the user within the account.
+- `id` (String) The unique identifier for the group within the Fivetran system. Data-source will represent a set of users who has membership in this group.
 
 ### Optional
 

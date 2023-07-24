@@ -119,6 +119,7 @@ func dataSourceGroupConnectorsSchemaConnectors() *schema.Schema {
 							"tasks": {
 								Type:        schema.TypeSet,
 								Computed:    true,
+								Optional:    true,
 								Description: "The collection of tasks for the connector",
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{

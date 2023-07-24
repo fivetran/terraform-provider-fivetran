@@ -29,7 +29,7 @@ data "fivetran_destination" "dest" {
 
 - `group_id` (String) The unique identifier for the Group within the Fivetran system.
 - `region` (String) Data processing location. This is where Fivetran will operate and run computation on data.
-- `service` (String) The connector type name within the Fivetran system
+- `service` (String) The destination type name within the Fivetran system
 - `setup_status` (String) Destination setup status
 - `time_zone_offset` (String) Determines the time zone for the Fivetran sync schedule.
 
