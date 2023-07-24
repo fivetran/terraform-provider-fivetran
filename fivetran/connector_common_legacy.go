@@ -13,14 +13,14 @@ func connectorSchemaLegacy(readonly bool, version int) map[string]*schema.Schema
 			Type:        schema.TypeString,
 			Computed:    !readonly,
 			Required:    readonly,
-			Description: "The unique identifier for the user within the account.",
+			Description: "The unique identifier for the connector within the Fivetran system.",
 		},
 
 		// Computed
 		"name": {
 			Type:        schema.TypeString,
 			Computed:    true,
-			Description: "The unique identifier for the team within the account",
+			Description: "The name used both as the connector's name within the Fivetran system and as the source schema's name within your destination.",
 		},
 		"connected_by": {
 			Type:        schema.TypeString,
@@ -39,14 +39,14 @@ func connectorSchemaLegacy(readonly bool, version int) map[string]*schema.Schema
 			Required:    !readonly,
 			ForceNew:    !readonly,
 			Computed:    readonly,
-			Description: "The unique identifier for the Group within the Fivetran system.",
+			Description: "The unique identifier for the Group (Destination) within the Fivetran system.",
 		},
 		"service": {
 			Type:        schema.TypeString,
 			Required:    !readonly,
 			ForceNew:    !readonly,
 			Computed:    readonly,
-			Description: "The connector type name within the Fivetran system",
+			Description: "The connector type name within the Fivetran system.",
 		},
 		"destination_schema": getConnectorDestinationSchema(readonly),
 
@@ -77,7 +77,7 @@ func connectorSchemaLegacy(readonly bool, version int) map[string]*schema.Schema
 			Type:        schema.TypeString,
 			Optional:    !readonly,
 			Computed:    true,
-			Description: "The connector sync frequency in minutes",
+			Description: "The connector sync frequency in minutes.",
 		} // Default: 360
 		result["schedule_type"] = &schema.Schema{
 			Type:        schema.TypeString,

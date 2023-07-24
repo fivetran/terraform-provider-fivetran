@@ -18,8 +18,9 @@ func dataSourceGroupConnectors() *schema.Resource {
 				Required: true,
 			},
 			"schema": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Optional filter. When defined, the data source will only contain information for the connector with the specified schema name.",
 			},
 			"connectors": dataSourceGroupConnectorsSchemaConnectors(),
 		},
@@ -36,7 +37,7 @@ func dataSourceGroupConnectorsSchemaConnectors() *schema.Schema {
 				"id": {
 					Type:        schema.TypeString,
 					Computed:    true,
-					Description: "The unique identifier for the group within the Fivetran system.",
+					Description: "The unique identifier for the Connector within the Fivetran system.",
 				},
 				"group_id": {
 					Type:        schema.TypeString,

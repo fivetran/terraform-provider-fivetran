@@ -27,7 +27,7 @@ func dataSourceDestination() *schema.Resource {
 			"service": {
 				Type:        schema.TypeString,
 				Computed:    true,
-				Description: "The connector type name within the Fivetran system",
+				Description: "The destination type name within the Fivetran system",
 			},
 			"region": {
 				Type:        schema.TypeString,

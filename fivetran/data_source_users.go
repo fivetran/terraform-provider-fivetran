@@ -25,8 +25,9 @@ func dataSourceUsers() *schema.Resource {
 							Description: "The unique identifier for the user within the Fivetran system.",
 						},
 						"email": {
-							Type:     schema.TypeString,
-							Computed: true,
+							Type:        schema.TypeString,
+							Computed:    true,
+							Description: "The email address that the user has associated with their user profile.",
 						},
 						"given_name": {
 							Type:        schema.TypeString,

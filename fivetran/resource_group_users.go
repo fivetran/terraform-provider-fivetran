@@ -29,7 +29,7 @@ func resourceGroupUsers() *schema.Resource {
 			"id": {
 				Type:        schema.TypeString,
 				Computed:    true,
-				Description: "The unique identifier for the user within the account.",
+				Description: "The unique identifier for the resource.",
 			},
 			"group_id": {
 				Type:        schema.TypeString,

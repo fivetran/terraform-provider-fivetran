@@ -22,7 +22,7 @@ func resourceDestination() *schema.Resource {
 			"id": {
 				Type:        schema.TypeString,
 				Computed:    true,
-				Description: "The unique identifier for the destination within the Fivetran system",
+				Description: "The unique identifier for the destination within the Fivetran system.",
 			},
 			"group_id": {
 				Type:        schema.TypeString,
@@ -34,7 +34,7 @@ func resourceDestination() *schema.Resource {
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    true,
-				Description: "The connector type name within the Fivetran system",
+				Description: "The destination type name within the Fivetran system.",
 			},
 			"region": {
 				Type:        schema.TypeString,

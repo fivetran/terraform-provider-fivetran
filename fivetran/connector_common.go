@@ -18,14 +18,14 @@ func getConnectorSchema(readonly bool, version int) map[string]*schema.Schema {
 			Type:        schema.TypeString,
 			Computed:    !readonly,
 			Required:    readonly,
-			Description: "The unique identifier for the user within the account.",
+			Description: "The unique identifier for the connector within the Fivetran system.",
 		},
 
 		// Computed
 		"name": {
 			Type:        schema.TypeString,
 			Computed:    true,
-			Description: "The unique identifier for the team within the account",
+			Description: "The name used both as the connector's name within the Fivetran system and as the source schema's name within your destination.",
 		},
 		"connected_by": {
 			Type:        schema.TypeString,
@@ -44,7 +44,7 @@ func getConnectorSchema(readonly bool, version int) map[string]*schema.Schema {
 			Required:    !readonly,
 			ForceNew:    !readonly,
 			Computed:    readonly,
-			Description: "The unique identifier for the Group within the Fivetran system.",
+			Description: "The unique identifier for the Group (Destination) within the Fivetran system.",
 		},
 		"service": {
 			Type:        schema.TypeString,
@@ -224,21 +224,21 @@ func getConnectorDestinationSchema(readonly bool) *schema.Schema {
 					Optional:    !readonly,
 					ForceNew:    !readonly,
 					Computed:    readonly,
-					Description: "The unique identifier for the team within the account",
+					Description: "The connector schema name in destination. Has to be unique within the group (destination). Required for connector creation.",
 				},
 				"table": {
 					Type:        schema.TypeString,
 					Optional:    !readonly,
 					ForceNew:    !readonly,
 					Computed:    readonly,
-					Description: "The table name within your database schema",
+					Description: "The table name unique within the schema to which connector will sync the data. Required for connector creation.",
 				},
 				"prefix": {
 					Type:        schema.TypeString,
 					Optional:    !readonly,
 					ForceNew:    !readonly,
 					Computed:    readonly,
-					Description: "If prefix is present when configuring the bucket.",
+					Description: "The connector schema prefix has to be unique within the group (destination). Each replicated schema is prefixed with the provided value. Required for connector creation.",
 				},
 			},
 		},

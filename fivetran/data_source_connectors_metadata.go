@@ -34,32 +34,32 @@ func dataSourceConnectorsMetadataSchemaSources() *schema.Schema {
 				"name": {
 					Type:        schema.TypeString,
 					Computed:    true,
-					Description: "",
+					Description: "The connector service name within the Fivetran system.",
 				},
 				"type": {
 					Type:        schema.TypeString,
 					Computed:    true,
-					Description: "",
+					Description: "The connector service type within the Fivetran system.",
 				},
 				"description": {
 					Type:        schema.TypeString,
 					Computed:    true,
-					Description: "",
+					Description: "The description characterizing the purpose of the connector.",
 				},
 				"icon_url": {
 					Type:        schema.TypeString,
 					Computed:    true,
-					Description: "",
+					Description: "The icon resource URL.",
 				},
 				"link_to_docs": {
 					Type:        schema.TypeString,
 					Computed:    true,
-					Description: "",
+					Description: "The link to the connector documentation.",
 				},
 				"link_to_erd": {
 					Type:        schema.TypeString,
 					Computed:    true,
-					Description: "",
+					Description: "The link to the connector ERD (entity–relationship diagram).",
 				},
 			},
 		},
