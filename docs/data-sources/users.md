@@ -27,7 +27,7 @@ data "fivetran_users" "users" {
 Read-Only:
 
 - `created_at` (String) The timestamp that the user created their Fivetran account
-- `email` (String)
+- `email` (String) The email address that the user has associated with their user profile.
 - `family_name` (String) The last name of the user.
 - `given_name` (String) The first name of the user.
 - `id` (String) The unique identifier for the user within the Fivetran system.

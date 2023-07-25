@@ -37,7 +37,7 @@ resource "fivetran_group_users" "group_users" {
 
 ### Read-Only
 
-- `id` (String) The unique identifier for the user within the account.
+- `id` (String) The unique identifier for the resource.
 - `last_updated` (String)
 
 <a id="nestedblock--user"></a>

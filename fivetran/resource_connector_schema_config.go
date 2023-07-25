@@ -43,13 +43,13 @@ func resourceSchemaConfig() *schema.Resource {
 			ID: {
 				Type:        schema.TypeString,
 				Computed:    true,
-				Description: "The unique identifier for the user within the account.",
+				Description: "The unique resource identifier (equals to `connector_id`).",
 			},
 			CONNECTOR_ID: {
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    true,
-				Description: "The unique identifier for the connector",
+				Description: "The unique identifier for the connector within the Fivetran system.",
 			},
 			SCHEMA_CHANGE_HANDLING: resourceSchemaConfigSchemaShangeHandling(),
 			SCHEMA:                 resourceSchemaConfigSchema(),
@@ -84,14 +84,14 @@ func resourceSchemaConfigSchema() *schema.Schema {
 				NAME: {
 					Type:        schema.TypeString,
 					Required:    true,
-					Description: "The unique identifier for the team within the account",
+					Description: "The schema name within your destination in accordance with Fivetran conventional rules.",
 				},
 				ENABLED: {
 					Type:         schema.TypeString,
 					Optional:     true,
 					Default:      "true",
 					ValidateFunc: resourceSchemaConfigBooleanValidateFunc,
-					Description:  "The boolean value specifying whether the sync for the table into the destination is enabled.",
+					Description:  "The boolean value specifying whether the sync for the schema into the destination is enabled.",
 				},
 				TABLE: resourceSchemaConfigTable(),
 			},
@@ -106,14 +106,14 @@ func resourceSchemaConfigTable() *schema.Schema {
 				NAME: {
 					Type:        schema.TypeString,
 					Required:    true,
-					Description: "The unique identifier for the team within the account",
+					Description: "The table name within your destination in accordance with Fivetran conventional rules.",
 				},
 				ENABLED: {
 					Type:         schema.TypeString,
 					Optional:     true,
 					Default:      "true",
 					ValidateFunc: resourceSchemaConfigBooleanValidateFunc,
-					Description:  "The boolean value specifying whether the sync for the table into the destination is enabled.",
+					Description:  "The boolean value specifying whether the sync of table into the destination is enabled.",
 				},
 				SYNC_MODE: resourceSchemaConfigSyncMode(),
 				COLUMN:    resourceSchemaConfigColumn(),
@@ -123,7 +123,10 @@ func resourceSchemaConfigTable() *schema.Schema {
 }
 
 func resourceSchemaConfigSyncMode() *schema.Schema {
-	return &schema.Schema{Type: schema.TypeString, Optional: true,
+	return &schema.Schema{
+		Type:        schema.TypeString,
+		Optional:    true,
+		Description: "This field appears in the response if the connector supports switching sync modes for tables.",
 		ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
 			v := val.(string)
 			if !(v == HISTORY || v == SOFT_DELETE || v == LIVE) {
@@ -141,14 +144,14 @@ func resourceSchemaConfigColumn() *schema.Schema {
 				NAME: {
 					Type:        schema.TypeString,
 					Required:    true,
-					Description: "The unique identifier for the team within the account",
+					Description: "The column name within your destination in accordance with Fivetran conventional rules.",
 				},
 				ENABLED: {
 					Type:         schema.TypeString,
 					Optional:     true,
 					Default:      "true",
 					ValidateFunc: resourceSchemaConfigBooleanValidateFunc,
-					Description:  "The boolean value specifying whether the sync for the table into the destination is enabled.",
+					Description:  "The boolean value specifying whether the sync of the column into the destination is enabled.",
 				},
 				HASHED: {
 					Type:         schema.TypeString,

@@ -16,7 +16,7 @@ func dataSourceGroupUsers() *schema.Resource {
 			"id": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "The unique identifier for the user within the account.",
+				Description: "The unique identifier for the group within the Fivetran system. Data-source will represent a set of users who has membership in this group.",
 			},
 			"users": dataSourceGroupUsersSchemaUsers(),
 		},

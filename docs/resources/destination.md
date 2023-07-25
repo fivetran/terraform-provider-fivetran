@@ -37,7 +37,7 @@ resource "fivetran_destination" "dest" {
 - `config` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--config))
 - `group_id` (String) The unique identifier for the Group within the Fivetran system.
 - `region` (String) Data processing location. This is where Fivetran will operate and run computation on data.
-- `service` (String) The connector type name within the Fivetran system
+- `service` (String) The destination type name within the Fivetran system.
 - `time_zone_offset` (String) Determines the time zone for the Fivetran sync schedule.
 
 ### Optional
@@ -48,7 +48,7 @@ resource "fivetran_destination" "dest" {
 
 ### Read-Only
 
-- `id` (String) The unique identifier for the destination within the Fivetran system
+- `id` (String) The unique identifier for the destination within the Fivetran system.
 - `last_updated` (String)
 - `setup_status` (String) Destination setup status
 

@@ -168,7 +168,7 @@ resource "fivetran_connector_schema_config" "schema" {
 
 ### Required
 
-- `connector_id` (String) The unique identifier for the connector
+- `connector_id` (String) The unique identifier for the connector within the Fivetran system.
 - `schema_change_handling` (String)
 
 ### Optional
@@ -177,18 +177,18 @@ resource "fivetran_connector_schema_config" "schema" {
 
 ### Read-Only
 
-- `id` (String) The unique identifier for the user within the account.
+- `id` (String) The unique resource identifier (equals to `connector_id`).
 
 <a id="nestedblock--schema"></a>
 ### Nested Schema for `schema`
 
 Required:
 
-- `name` (String) The unique identifier for the team within the account
+- `name` (String) The schema name within your destination in accordance with Fivetran conventional rules.
 
 Optional:
 
-- `enabled` (String) The boolean value specifying whether the sync for the table into the destination is enabled.
+- `enabled` (String) The boolean value specifying whether the sync for the schema into the destination is enabled.
 - `table` (Block Set) (see [below for nested schema](#nestedblock--schema--table))
 
 <a id="nestedblock--schema--table"></a>
@@ -196,24 +196,24 @@ Optional:
 
 Required:
 
-- `name` (String) The unique identifier for the team within the account
+- `name` (String) The table name within your destination in accordance with Fivetran conventional rules.
 
 Optional:
 
 - `column` (Block Set) (see [below for nested schema](#nestedblock--schema--table--column))
-- `enabled` (String) The boolean value specifying whether the sync for the table into the destination is enabled.
-- `sync_mode` (String)
+- `enabled` (String) The boolean value specifying whether the sync of table into the destination is enabled.
+- `sync_mode` (String) This field appears in the response if the connector supports switching sync modes for tables.
 
 <a id="nestedblock--schema--table--column"></a>
 ### Nested Schema for `schema.table.column`
 
 Required:
 
-- `name` (String) The unique identifier for the team within the account
+- `name` (String) The column name within your destination in accordance with Fivetran conventional rules.
 
 Optional:
 
-- `enabled` (String) The boolean value specifying whether the sync for the table into the destination is enabled.
+- `enabled` (String) The boolean value specifying whether the sync of the column into the destination is enabled.
 - `hashed` (String) The boolean value specifying whether a column should be hashed
 
 ## Import
