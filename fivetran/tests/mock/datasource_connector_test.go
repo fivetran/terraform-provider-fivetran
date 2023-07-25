@@ -57,7 +57,7 @@ func TestDataSourceConnectorConfigMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "status.0.warnings.0.code", "warning_code"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "status.0.warnings.0.message", "warning_message"),
 
-			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "name", "google_sheets_schema.table"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "name", "schema.table"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "sync_frequency", "5"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "paused", "true"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "pause_after_trial", "true"),
