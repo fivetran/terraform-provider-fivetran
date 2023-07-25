@@ -76,10 +76,6 @@ func resourceConnectorLegacyCreate(ctx context.Context, d *schema.ResourceData, 
 	svc.TrustFingerprints(strToBool(d.Get("trust_fingerprints").(string)))
 	svc.RunSetupTests(strToBool(d.Get("run_setup_tests").(string)))
 
-	//svc.Config(resourceConnectorLegacyCreateConfig(resourceConnectorLegacyUpdateConfig(d), d.Get("destination_schema").([]interface{})))
-
-	svc.Config(resourceConnectorLegacyCreateConfig(fivetran.NewConnectorConfig(), d.Get("destination_schema").([]interface{})))
-
 	destination_schema := d.Get("destination_schema").([]interface{})[0].(map[string]interface{})
 
 	config := resourceConnectorLegacyUpdateCustomConfig(d)
@@ -249,22 +245,6 @@ func resourceConnectorLegacyUpdateCustomAuth(d *schema.ResourceData) *map[string
 	// }
 
 	return &authMap
-}
-
-func resourceConnectorLegacyCreateConfig(fivetranConfig *fivetran.ConnectorConfig, destination_schema []interface{}) *fivetran.ConnectorConfig {
-	d := destination_schema[0].(map[string]interface{})
-
-	if v := d["name"].(string); v != "" {
-		fivetranConfig.Schema(v)
-	}
-	if v := d["table"].(string); v != "" {
-		fivetranConfig.Table(v)
-	}
-	if v := d["prefix"].(string); v != "" {
-		fivetranConfig.SchemaPrefix(v)
-	}
-
-	return fivetranConfig
 }
 
 func resourceConnectorLegacyCreateAuth(auth []interface{}) *fivetran.ConnectorAuth {
