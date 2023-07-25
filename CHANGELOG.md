@@ -12,8 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Fixed
 - Issue with drifting changes for `fivetran_connector.config.list_strategy` field
 - Issue with re-creation of connectors that are using `destination_schema.prefix` field
-- Supported config fields for `CosmosDB` and `Snowflake DB` connectors
-- Supported `replica_id` in connector config for `MySQL` connectors
+- Supported config fields for CosmosDB and Snowflake DB connectors
+- Supported missing fields for S3 source connector
+- Supported `replica_id` in connector config for MySQL connectors
+- Supported `short_code`, `site_id` and `customer_list_id` fields for Salesforce Commerce Cloud
 
 ## [0.7.2-pre](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.7.1...v0.7.2-pre)
 

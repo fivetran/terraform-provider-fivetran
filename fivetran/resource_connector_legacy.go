@@ -76,15 +76,26 @@ func resourceConnectorLegacyCreate(ctx context.Context, d *schema.ResourceData, 
 	svc.TrustFingerprints(strToBool(d.Get("trust_fingerprints").(string)))
 	svc.RunSetupTests(strToBool(d.Get("run_setup_tests").(string)))
 
-	//svc.Config(resourceConnectorLegacyCreateConfig(resourceConnectorLegacyUpdateConfig(d), d.Get("destination_schema").([]interface{})))
+	destination_schema := d.Get("destination_schema").([]interface{})[0].(map[string]interface{})
 
-	svc.Config(resourceConnectorLegacyCreateConfig(fivetran.NewConnectorConfig(), d.Get("destination_schema").([]interface{})))
-	svc.ConfigCustom(resourceConnectorLegacyUpdateCustomConfig(d))
+	config := resourceConnectorLegacyUpdateCustomConfig(d)
+
+	if v := destination_schema["name"].(string); v != "" {
+		config["schema"] = v
+	}
+	if v := destination_schema["table"].(string); v != "" {
+		config["table"] = v
+	}
+	if v := destination_schema["prefix"].(string); v != "" {
+		config["schema_prefix"] = v
+	}
+
+	svc.ConfigCustom(&config)
 
 	svc.Auth(resourceConnectorLegacyCreateAuth(d.Get("auth").([]interface{})))
 	svc.AuthCustom(resourceConnectorLegacyUpdateCustomAuth(d))
 
-	resp, err := svc.DoCustomMerged(ctx)
+	resp, err := svc.DoCustom(ctx)
 	if err != nil {
 		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
@@ -164,11 +175,13 @@ func resourceConnectorLegacyUpdate(ctx context.Context, d *schema.ResourceData, 
 	}
 
 	//svc.Config(resourceConnectorLegacyUpdateConfig(d))
-	svc.ConfigCustom(resourceConnectorLegacyUpdateCustomConfig(d))
+	config := resourceConnectorLegacyUpdateCustomConfig(d)
+
+	svc.ConfigCustom(&config)
 	svc.Auth(resourceConnectorLegacyCreateAuth(d.Get("auth").([]interface{})))
 	svc.AuthCustom(resourceConnectorLegacyUpdateCustomAuth(d))
 
-	resp, err := svc.DoCustomMerged(ctx)
+	resp, err := svc.DoCustom(ctx)
 	if err != nil {
 		// resourceConnectorRead here makes sure the state is updated after a NewConnectorModify error.
 		diags = resourceConnectorLegacyRead(ctx, d, m)
@@ -197,13 +210,13 @@ func resourceConnectorLegacyDelete(ctx context.Context, d *schema.ResourceData, 
 	return diags
 }
 
-func resourceConnectorLegacyUpdateCustomConfig(d *schema.ResourceData) *map[string]interface{} {
+func resourceConnectorLegacyUpdateCustomConfig(d *schema.ResourceData) map[string]interface{} {
 	configMap := make(map[string]interface{})
 
 	var config = d.Get("config").([]interface{})
 
 	if len(config) < 1 || config[0] == nil {
-		return &configMap
+		return configMap
 	}
 
 	c := config[0].(map[string]interface{})
@@ -232,21 +245,6 @@ func resourceConnectorLegacyUpdateCustomAuth(d *schema.ResourceData) *map[string
 	// }
 
 	return &authMap
-}
-
-func resourceConnectorLegacyCreateConfig(fivetranConfig *fivetran.ConnectorConfig, destination_schema []interface{}) *fivetran.ConnectorConfig {
-	d := destination_schema[0].(map[string]interface{})
-	if v := d["name"].(string); v != "" {
-		fivetranConfig.Schema(v)
-	}
-	if v := d["table"].(string); v != "" {
-		fivetranConfig.Table(v)
-	}
-	if v := d["prefix"].(string); v != "" {
-		fivetranConfig.SchemaPrefix(v)
-	}
-
-	return fivetranConfig
 }
 
 func resourceConnectorLegacyCreateAuth(auth []interface{}) *fivetran.ConnectorAuth {

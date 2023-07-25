@@ -25,7 +25,7 @@ const (
 		service = "google_sheets"
 
 		destination_schema {
-			name = "google_sheets_schema"
+			name = "schema"
 			table = "table"
 		}
 
@@ -37,7 +37,11 @@ const (
 			sheet_id = "sheet_id"
 			named_range = "range"
 			auth_type = "OAuth"
-		
+
+			site_id = "site_id"
+			customer_list_id = "customer_list_id"
+			short_code = "short_code"
+
 			consumer_key = "consumer_key"
 			client_secret = "client_secret"
 			private_key = "private_key"
@@ -94,6 +98,7 @@ const (
 			api_quota = 0
 			agent_port = 0
 			replica_id = 999999
+			network_code = 0
 
 			pdb_name = "pdb_name"
 			agent_host = "agent_host"
@@ -283,16 +288,17 @@ const (
 			properties = ["property"]
 			primary_keys = ["primary_key"]
 
-			# app_ids = ["app_id"]
-			# conversion_dimensions = ["conversion_dimension"]
-			# custom_floodlight_variables = ["custom_floodlight_variable"]
-			# partners = ["partner"]
-			# per_interaction_dimensions = ["per_interaction_dimension"]
-			# schema_registry_urls = ["schema_registry_url"]
-			# segments = ["segment"]
-			# topics = ["topic"]
-			# servers = ["server"]
+			app_ids = ["app_id"]
 
+			conversion_dimensions = ["conversion_dimension"]
+			custom_floodlight_variables = ["custom_floodlight_variable"]
+			partners = ["partner"]
+			per_interaction_dimensions = ["per_interaction_dimension"]
+			schema_registry_urls = ["schema_registry_url"]
+			segments = ["segment"]
+			topics = ["topic"]
+
+			servers = ["server"]
 			report_suites = ["report_suite"]
 			elements = ["element"]
 
@@ -363,7 +369,7 @@ const (
         "group_id": "group_id",
         "service": "google_sheets",
         "service_version": 1,
-        "schema": "google_sheets_schema.table",
+        "schema": "schema.table",
         "paused": true,
         "pause_after_trial": true,
         "connected_by": "user_id",
@@ -396,6 +402,10 @@ const (
             "named_range": "range",
 			"auth_type": "OAuth",
 
+			"site_id" : "site_id",
+			"customer_list_id" : "customer_list_id",
+
+			"short_code" :        "******",
 			"oauth_token":        "******",
 			"oauth_token_secret": "******",
 			"consumer_key":       "******",
@@ -489,7 +499,8 @@ const (
 			"engagement_attribution_window":        "engagement_attribution_window",
 			"conversion_report_time":               "conversion_report_time",
 			"sync_pack_mode":                       "sync_pack_mode",
-			"data_access_method": "data_access_method",
+			"data_access_method":                   "data_access_method",
+
 			"conversion_window_size":               0,
 			"skip_before":                          0,
 			"skip_after":                           0,
@@ -500,9 +511,10 @@ const (
 			"api_quota":                            0,
 			"daily_api_call_limit":                 0,
 			"agent_port":                           0,
-			"replica_id":                      999999,` +
-		//"network_code":                         0,
-		`"public_key": 			"public_key",
+			"replica_id":                      999999,
+		    "network_code":                         0,
+
+		    "public_key": 			"public_key",
 			"external_id": 			"external_id",
 			"group_name":           "group_name",
 			"client_id":             "client_id",
@@ -551,6 +563,7 @@ const (
 			"aws_region_code":       "aws_region_code",
 			"subdomain":             "subdomain",
 			"host":                  "host",
+
 			"user":                 "user",
 			"uri":                  "uri",
 			"customer_id":          "customer_id",
@@ -562,7 +575,6 @@ const (
 			"path":                 "path",
 			"endpoint":             "endpoint",
 			"identity":             "identity",
-			
 			"domain_name":          "domain_name",
 			"resource_url":         "resource_url",
 			"tunnel_host":          "tunnel_host",
@@ -647,9 +659,9 @@ const (
 			"partners":                    ["partner"],
 			"per_interaction_dimensions":  ["per_interaction_dimension"],
 			"topics":                      ["topic"],
-			"schema_registry_urls":        ["schema_registry_url"],` +
-		//"servers":                     ["server"],
-		`"segments":                    ["segment"],
+			"schema_registry_urls":        ["schema_registry_url"],
+		    "servers":                     ["server"],
+		    "segments":                    ["segment"],
 
 			"adobe_analytics_configurations": [{
 				"sync_mode": 			"sync_mode",
@@ -716,9 +728,16 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 
 			config := body["config"].(map[string]interface{})
 
+			assertKeyExistsAndHasValue(t, config, "schema", "schema")
+			assertKeyExistsAndHasValue(t, config, "table", "table")
+
 			assertKeyExistsAndHasValue(t, config, "sheet_id", "sheet_id")
 			assertKeyExistsAndHasValue(t, config, "named_range", "range")
 			assertKeyExistsAndHasValue(t, config, "auth_type", "OAuth")
+
+			assertKeyExistsAndHasValue(t, config, "site_id", "site_id")
+			assertKeyExistsAndHasValue(t, config, "customer_list_id", "customer_list_id")
+			assertKeyExistsAndHasValue(t, config, "short_code", "short_code")
 
 			assertKeyExistsAndHasValue(t, config, "consumer_key", "consumer_key")
 			assertKeyExistsAndHasValue(t, config, "client_secret", "client_secret")
@@ -812,8 +831,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "tunnel_port", float64(0))
 			assertKeyExistsAndHasValue(t, config, "api_quota", float64(0))
 			assertKeyExistsAndHasValue(t, config, "replica_id", float64(999999))
-
-			//assertKeyExistsAndHasValue(t, config, "network_code", float64(0))
+			assertKeyExistsAndHasValue(t, config, "network_code", float64(0))
 
 			assertKeyExistsAndHasValue(t, config, "group_name", "group_name")
 			assertKeyExistsAndHasValue(t, config, "pdb_name", "pdb_name")
@@ -1017,32 +1035,32 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExists(t, config, "primary_keys")
 			assertArrayItems(t, config["primary_keys"].([]interface{}), append(make([]interface{}, 0), "primary_key"))
 
-			// assertKeyExists(t, config, "app_ids")
-			// assertArrayItems(t, config["app_ids"].([]interface{}), append(make([]interface{}, 0), "app_id"))
+			assertKeyExists(t, config, "app_ids")
+			assertArrayItems(t, config["app_ids"].([]interface{}), append(make([]interface{}, 0), "app_id"))
 
-			// assertKeyExists(t, config, "conversion_dimensions")
-			// assertArrayItems(t, config["conversion_dimensions"].([]interface{}), append(make([]interface{}, 0), "conversion_dimension"))
+			assertKeyExists(t, config, "conversion_dimensions")
+			assertArrayItems(t, config["conversion_dimensions"].([]interface{}), append(make([]interface{}, 0), "conversion_dimension"))
 
-			// assertKeyExists(t, config, "custom_floodlight_variables")
-			// assertArrayItems(t, config["custom_floodlight_variables"].([]interface{}), append(make([]interface{}, 0), "custom_floodlight_variable"))
+			assertKeyExists(t, config, "custom_floodlight_variables")
+			assertArrayItems(t, config["custom_floodlight_variables"].([]interface{}), append(make([]interface{}, 0), "custom_floodlight_variable"))
 
-			// assertKeyExists(t, config, "partners")
-			// assertArrayItems(t, config["partners"].([]interface{}), append(make([]interface{}, 0), "partner"))
+			assertKeyExists(t, config, "partners")
+			assertArrayItems(t, config["partners"].([]interface{}), append(make([]interface{}, 0), "partner"))
 
-			// assertKeyExists(t, config, "per_interaction_dimensions")
-			// assertArrayItems(t, config["per_interaction_dimensions"].([]interface{}), append(make([]interface{}, 0), "per_interaction_dimension"))
+			assertKeyExists(t, config, "per_interaction_dimensions")
+			assertArrayItems(t, config["per_interaction_dimensions"].([]interface{}), append(make([]interface{}, 0), "per_interaction_dimension"))
 
-			// assertKeyExists(t, config, "schema_registry_urls")
-			// assertArrayItems(t, config["schema_registry_urls"].([]interface{}), append(make([]interface{}, 0), "schema_registry_url"))
+			assertKeyExists(t, config, "schema_registry_urls")
+			assertArrayItems(t, config["schema_registry_urls"].([]interface{}), append(make([]interface{}, 0), "schema_registry_url"))
 
-			// assertKeyExists(t, config, "segments")
-			// assertArrayItems(t, config["segments"].([]interface{}), append(make([]interface{}, 0), "segment"))
+			assertKeyExists(t, config, "segments")
+			assertArrayItems(t, config["segments"].([]interface{}), append(make([]interface{}, 0), "segment"))
 
-			// assertKeyExists(t, config, "topics")
-			// assertArrayItems(t, config["topics"].([]interface{}), append(make([]interface{}, 0), "topic"))
+			assertKeyExists(t, config, "topics")
+			assertArrayItems(t, config["topics"].([]interface{}), append(make([]interface{}, 0), "topic"))
 
-			// assertKeyExists(t, config, "servers")
-			// assertArrayItems(t, config["servers"].([]interface{}), append(make([]interface{}, 0), "server"))
+			assertKeyExists(t, config, "servers")
+			assertArrayItems(t, config["servers"].([]interface{}), append(make([]interface{}, 0), "server"))
 
 			assertKeyExists(t, config, "adobe_analytics_configurations")
 
@@ -1158,12 +1176,13 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "google_sheets"),
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "google_sheets_schema.table"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "schema.table"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "false"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "false"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
 
-			// check sensitive fields are have original values
+			// check sensitive fields
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.short_code", "short_code"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.consumer_key", "consumer_key"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.client_secret", "client_secret"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.private_key", "private_key"),
