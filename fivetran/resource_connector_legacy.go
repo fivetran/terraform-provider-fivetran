@@ -84,7 +84,7 @@ func resourceConnectorLegacyCreate(ctx context.Context, d *schema.ResourceData, 
 	svc.Auth(resourceConnectorLegacyCreateAuth(d.Get("auth").([]interface{})))
 	svc.AuthCustom(resourceConnectorLegacyUpdateCustomAuth(d))
 
-	resp, err := svc.DoCustomMerged(ctx)
+	resp, err := svc.DoCustom(ctx)
 	if err != nil {
 		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
@@ -168,7 +168,7 @@ func resourceConnectorLegacyUpdate(ctx context.Context, d *schema.ResourceData, 
 	svc.Auth(resourceConnectorLegacyCreateAuth(d.Get("auth").([]interface{})))
 	svc.AuthCustom(resourceConnectorLegacyUpdateCustomAuth(d))
 
-	resp, err := svc.DoCustomMerged(ctx)
+	resp, err := svc.DoCustom(ctx)
 	if err != nil {
 		// resourceConnectorRead here makes sure the state is updated after a NewConnectorModify error.
 		diags = resourceConnectorLegacyRead(ctx, d, m)
