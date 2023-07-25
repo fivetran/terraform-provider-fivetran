@@ -79,7 +79,22 @@ func resourceConnectorLegacyCreate(ctx context.Context, d *schema.ResourceData, 
 	//svc.Config(resourceConnectorLegacyCreateConfig(resourceConnectorLegacyUpdateConfig(d), d.Get("destination_schema").([]interface{})))
 
 	svc.Config(resourceConnectorLegacyCreateConfig(fivetran.NewConnectorConfig(), d.Get("destination_schema").([]interface{})))
-	svc.ConfigCustom(resourceConnectorLegacyUpdateCustomConfig(d))
+
+	destination_schema := d.Get("destination_schema").([]interface{})[0].(map[string]interface{})
+
+	config := resourceConnectorLegacyUpdateCustomConfig(d)
+
+	if v := destination_schema["name"].(string); v != "" {
+		config["schema"] = v
+	}
+	if v := destination_schema["table"].(string); v != "" {
+		config["table"] = v
+	}
+	if v := destination_schema["prefix"].(string); v != "" {
+		config["schema_prefix"] = v
+	}
+
+	svc.ConfigCustom(&config)
 
 	svc.Auth(resourceConnectorLegacyCreateAuth(d.Get("auth").([]interface{})))
 	svc.AuthCustom(resourceConnectorLegacyUpdateCustomAuth(d))
@@ -164,7 +179,9 @@ func resourceConnectorLegacyUpdate(ctx context.Context, d *schema.ResourceData, 
 	}
 
 	//svc.Config(resourceConnectorLegacyUpdateConfig(d))
-	svc.ConfigCustom(resourceConnectorLegacyUpdateCustomConfig(d))
+	config := resourceConnectorLegacyUpdateCustomConfig(d)
+
+	svc.ConfigCustom(&config)
 	svc.Auth(resourceConnectorLegacyCreateAuth(d.Get("auth").([]interface{})))
 	svc.AuthCustom(resourceConnectorLegacyUpdateCustomAuth(d))
 
@@ -197,13 +214,13 @@ func resourceConnectorLegacyDelete(ctx context.Context, d *schema.ResourceData, 
 	return diags
 }
 
-func resourceConnectorLegacyUpdateCustomConfig(d *schema.ResourceData) *map[string]interface{} {
+func resourceConnectorLegacyUpdateCustomConfig(d *schema.ResourceData) map[string]interface{} {
 	configMap := make(map[string]interface{})
 
 	var config = d.Get("config").([]interface{})
 
 	if len(config) < 1 || config[0] == nil {
-		return &configMap
+		return configMap
 	}
 
 	c := config[0].(map[string]interface{})
@@ -236,6 +253,7 @@ func resourceConnectorLegacyUpdateCustomAuth(d *schema.ResourceData) *map[string
 
 func resourceConnectorLegacyCreateConfig(fivetranConfig *fivetran.ConnectorConfig, destination_schema []interface{}) *fivetran.ConnectorConfig {
 	d := destination_schema[0].(map[string]interface{})
+
 	if v := d["name"].(string); v != "" {
 		fivetranConfig.Schema(v)
 	}

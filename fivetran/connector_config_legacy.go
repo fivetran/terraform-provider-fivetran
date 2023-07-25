@@ -517,14 +517,14 @@ func readFieldValueCore(k string, v configField, currentConfig *map[string]inter
 	}
 }
 
-func connectorUpdateCustomConfig(c map[string]interface{}) *map[string]interface{} {
+func connectorUpdateCustomConfig(c map[string]interface{}) map[string]interface{} {
 	configMap := make(map[string]interface{})
 	for k, v := range c {
 		if field, ok := configFields[k]; ok {
 			updateConfigFieldImpl(k, field, v, configMap)
 		}
 	}
-	return &configMap
+	return configMap
 }
 
 func updateConfigFieldImpl(name string, field configField, v interface{}, configMap map[string]interface{}) {

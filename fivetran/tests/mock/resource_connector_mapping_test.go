@@ -25,7 +25,7 @@ const (
 		service = "google_sheets"
 
 		destination_schema {
-			name = "google_sheets_schema"
+			name = "schema"
 			table = "table"
 		}
 
@@ -369,7 +369,7 @@ const (
         "group_id": "group_id",
         "service": "google_sheets",
         "service_version": 1,
-        "schema": "google_sheets_schema.table",
+        "schema": "schema.table",
         "paused": true,
         "pause_after_trial": true,
         "connected_by": "user_id",
@@ -727,6 +727,9 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExists(t, body, "config")
 
 			config := body["config"].(map[string]interface{})
+
+			assertKeyExistsAndHasValue(t, config, "schema", "schema")
+			assertKeyExistsAndHasValue(t, config, "table", "table")
 
 			assertKeyExistsAndHasValue(t, config, "sheet_id", "sheet_id")
 			assertKeyExistsAndHasValue(t, config, "named_range", "range")
@@ -1173,7 +1176,7 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "google_sheets"),
-			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "google_sheets_schema.table"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "schema.table"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "false"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "false"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
