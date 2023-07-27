@@ -2,15 +2,18 @@
 page_title: "Data Source: fivetran_group_users"
 ---
 
-# Data Source: fivetran_group_users
+# Data Source: fivetran_group_connectors
 
-This data source returns a list of information about all users within a group in your Fivetran account.
+This data source returns a list of information about all connectors within a group in your Fivetran account.
 
 ## Example Usage
 
 ```hcl
-data "fivetran_group_users" "group_users" {
-        id = "anonymous_mystery"
+data "fivetran_group_connectors" "group_connectors" {
+    id = "anonymous_mystery"
+
+    # optional 
+    schema = "connector_schema_name"
 }
 ```
 
