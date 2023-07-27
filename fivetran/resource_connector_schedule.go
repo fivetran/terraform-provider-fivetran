@@ -157,7 +157,6 @@ func resourceConnectorScheduleCreate(ctx context.Context, d *schema.ResourceData
 		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, mResp.Code, mResp.Message))
 	}
 
-	d.SetId(resp.Data.ID)
 	resourceConnectorScheduleRead(ctx, d, m)
 
 	return diags
@@ -198,6 +197,8 @@ func resourceConnectorScheduleRead(ctx context.Context, d *schema.ResourceData, 
 			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 		}
 	}
+
+	d.SetId(connectorId)
 
 	return diags
 }
