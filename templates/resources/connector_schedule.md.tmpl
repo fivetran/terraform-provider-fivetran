@@ -27,6 +27,18 @@ resource "fivetran_connector_schedule" "my_connector_schedule" {
 ## Import
 
 You don't need to import this resource as it is synthetic. 
+
+To fetch schedule values from existing connector use `fivetran_connector` data source:
+```hcl
+data "fivetran_connector" "my_connector" {
+    id = "my_connector_id"
+}
+
+# now you can use schedule values from this data_source:
+#   sync_frequency = data.fivetran_connector.my_connector.sync_frequency
+#   paused = data.fivetran_connector.my_connector.paused
+```
+
 This resource manages settings for already existing connector instance and doesn't create a new one.
 If you already have an existing connector with id = `my_connector_id` just define `fivetran_connector_schedule` resource:
 
