@@ -157,6 +157,7 @@ func resourceConnectorScheduleCreate(ctx context.Context, d *schema.ResourceData
 		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, mResp.Code, mResp.Message))
 	}
 
+	d.SetId(connectorId)
 	resourceConnectorScheduleRead(ctx, d, m)
 
 	return diags
@@ -179,6 +180,8 @@ func resourceConnectorScheduleRead(ctx context.Context, d *schema.ResourceData, 
 	}
 
 	msi := make(map[string]interface{})
+	msi[ID] = connectorId
+	msi[CONNECTOR_ID] = connectorId
 
 	mapAddStr(msi, "sync_frequency", intPointerToStr(resp.Data.SyncFrequency))
 	mapAddStr(msi, "schedule_type", resp.Data.ScheduleType)
@@ -197,8 +200,6 @@ func resourceConnectorScheduleRead(ctx context.Context, d *schema.ResourceData, 
 			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 		}
 	}
-
-	d.SetId(connectorId)
 
 	return diags
 }
