@@ -162,10 +162,11 @@ func resourceConnectorScheduleCreate(ctx context.Context, d *schema.ResourceData
 
 	return diags
 }
+
 func resourceConnectorScheduleRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	connectorId := d.Get(CONNECTOR_ID).(string)
+	connectorId := d.Get(ID).(string)
 	client := m.(*fivetran.Client)
 
 	// Fetch connector
@@ -198,15 +199,15 @@ func resourceConnectorScheduleRead(ctx context.Context, d *schema.ResourceData, 
 		}
 	}
 
-	d.SetId(resp.Data.ID)
 	return diags
 }
+
 func resourceConnectorScheduleUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
 	svc := client.NewConnectorModify()
 
-	svc.ConnectorID(d.Get("id").(string))
+	svc.ConnectorID(d.Get(ID).(string))
 
 	if d.HasChange("sync_frequency") {
 		svc.SyncFrequency(strToInt(d.Get("sync_frequency").(string)))
@@ -234,6 +235,7 @@ func resourceConnectorScheduleUpdate(ctx context.Context, d *schema.ResourceData
 
 	return resourceConnectorScheduleRead(ctx, d, m)
 }
+
 func resourceConnectorScheduleDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	// nothing to delete
