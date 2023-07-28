@@ -17,13 +17,18 @@ func resourceConnectorLegacy() *schema.Resource {
 		UpdateContext: resourceConnectorLegacyUpdate,
 		DeleteContext: resourceConnectorLegacyDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		Schema:        connectorSchemaLegacy(false, 1),
-		SchemaVersion: 1,
+		Schema:        connectorSchemaLegacy(false, 2),
+		SchemaVersion: 2,
 		StateUpgraders: []schema.StateUpgrader{
 			{
 				Type:    resourceConnectorLegacyV0().CoreConfigSchema().ImpliedType(),
 				Upgrade: resourceconnectorInstanceStateUpgradeV0Legacy,
 				Version: 0,
+			},
+			{
+				Type:    resourceConnectorLegacyV1().CoreConfigSchema().ImpliedType(),
+				Upgrade: resourceconnectorInstanceStateUpgradeV1Legacy,
+				Version: 1,
 			},
 		},
 	}
@@ -33,6 +38,24 @@ func resourceConnectorLegacyV0() *schema.Resource {
 	return &schema.Resource{
 		Schema: connectorSchemaLegacy(false, 0),
 	}
+}
+
+func resourceConnectorLegacyV1() *schema.Resource {
+	return &schema.Resource{
+		Schema: connectorSchemaLegacy(false, 1),
+	}
+}
+
+func resourceconnectorInstanceStateUpgradeV1Legacy(ctx context.Context, rawState map[string]any, meta any) (map[string]any, error) {
+	if c, ok := rawState["config"].([]interface{}); ok && len(c) == 1 {
+		// The field `servers` had wrong type and couldn't be used effectively
+		// Now we should just override it in state object to avoid migration collision
+		if config, ok := c[0].(map[string]interface{}); ok {
+			config["servers"] = nil
+		}
+	}
+
+	return rawState, nil
 }
 
 func resourceconnectorInstanceStateUpgradeV0Legacy(ctx context.Context, rawState map[string]any, meta any) (map[string]any, error) {
