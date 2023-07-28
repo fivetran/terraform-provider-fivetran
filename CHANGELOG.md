@@ -5,9 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.7.2...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.7.3...HEAD)
 
-## [0.7.2](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.7.2-pre...v0.7.2) *Unreleased*
+## [0.7.3](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.7.2...v0.7.3) 
+
+## Fixed
+- State migration issue when switching on v0.7.2 from earlier versions:
+    - Previously created configurations now can be upgraded to v0.7.3 directly
+    - Newly created configurations with v0.7.2 could be also upgraded to v0.7.3
+
+## [0.7.2](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.7.2-pre...v0.7.2) 
 
 ## Fixed
 - Issue with drifting changes for `fivetran_connector.config.list_strategy` field
