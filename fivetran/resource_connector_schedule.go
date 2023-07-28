@@ -157,15 +157,16 @@ func resourceConnectorScheduleCreate(ctx context.Context, d *schema.ResourceData
 		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, mResp.Code, mResp.Message))
 	}
 
-	d.SetId(resp.Data.ID)
+	d.SetId(connectorId)
 	resourceConnectorScheduleRead(ctx, d, m)
 
 	return diags
 }
+
 func resourceConnectorScheduleRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	connectorId := d.Get(CONNECTOR_ID).(string)
+	connectorId := d.Get(ID).(string)
 	client := m.(*fivetran.Client)
 
 	// Fetch connector
@@ -179,6 +180,8 @@ func resourceConnectorScheduleRead(ctx context.Context, d *schema.ResourceData, 
 	}
 
 	msi := make(map[string]interface{})
+	msi[ID] = connectorId
+	msi[CONNECTOR_ID] = connectorId
 
 	mapAddStr(msi, "sync_frequency", intPointerToStr(resp.Data.SyncFrequency))
 	mapAddStr(msi, "schedule_type", resp.Data.ScheduleType)
@@ -198,15 +201,15 @@ func resourceConnectorScheduleRead(ctx context.Context, d *schema.ResourceData, 
 		}
 	}
 
-	d.SetId(resp.Data.ID)
 	return diags
 }
+
 func resourceConnectorScheduleUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
 	svc := client.NewConnectorModify()
 
-	svc.ConnectorID(d.Get("id").(string))
+	svc.ConnectorID(d.Get(ID).(string))
 
 	if d.HasChange("sync_frequency") {
 		svc.SyncFrequency(strToInt(d.Get("sync_frequency").(string)))
@@ -234,6 +237,7 @@ func resourceConnectorScheduleUpdate(ctx context.Context, d *schema.ResourceData
 
 	return resourceConnectorScheduleRead(ctx, d, m)
 }
+
 func resourceConnectorScheduleDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	// nothing to delete
