@@ -114,9 +114,7 @@ func resourceConnectorLegacyCreate(ctx context.Context, d *schema.ResourceData, 
 	}
 
 	svc.ConfigCustom(&config)
-
-	svc.Auth(resourceConnectorLegacyCreateAuth(d.Get("auth").([]interface{})))
-	svc.AuthCustom(resourceConnectorLegacyUpdateCustomAuth(d))
+	svc.AuthCustom(resourceConnectorUpdateCustomAuth(d))
 
 	resp, err := svc.DoCustom(ctx)
 	if err != nil {
@@ -197,12 +195,10 @@ func resourceConnectorLegacyUpdate(ctx context.Context, d *schema.ResourceData, 
 		svc.DailySyncTime(d.Get("daily_sync_time").(string))
 	}
 
-	//svc.Config(resourceConnectorLegacyUpdateConfig(d))
 	config := resourceConnectorLegacyUpdateCustomConfig(d)
 
 	svc.ConfigCustom(&config)
-	svc.Auth(resourceConnectorLegacyCreateAuth(d.Get("auth").([]interface{})))
-	svc.AuthCustom(resourceConnectorLegacyUpdateCustomAuth(d))
+	svc.AuthCustom(resourceConnectorUpdateCustomAuth(d))
 
 	resp, err := svc.DoCustom(ctx)
 	if err != nil {
@@ -245,82 +241,4 @@ func resourceConnectorLegacyUpdateCustomConfig(d *schema.ResourceData) map[strin
 	c := config[0].(map[string]interface{})
 
 	return connectorUpdateCustomConfig(c)
-}
-
-func resourceConnectorLegacyUpdateCustomAuth(d *schema.ResourceData) *map[string]interface{} {
-	authMap := make(map[string]interface{})
-
-	var auth = d.Get("auth").([]interface{})
-
-	if len(auth) < 1 {
-		return &authMap
-	}
-	if auth[0] == nil {
-		return &authMap
-	}
-
-	// add custom auth fields here:
-
-	// a := auth[0].(map[string]interface{})
-
-	// if v := a["some_auth_custom_field"].(string); v != "" {
-	// 	authMap["some_auth_custom_field"] = v
-	// }
-
-	return &authMap
-}
-
-func resourceConnectorLegacyCreateAuth(auth []interface{}) *fivetran.ConnectorAuth {
-	fivetranAuth := fivetran.NewConnectorAuth()
-
-	if len(auth) < 1 {
-		return fivetranAuth
-	}
-	if auth[0] == nil {
-		return fivetranAuth
-	}
-
-	a := auth[0].(map[string]interface{})
-
-	if v := a["client_access"].([]interface{}); len(v) > 0 {
-		fivetranAuth.ClientAccess(resourceConnectorLegacyCreateAuthClientAccess(v))
-	}
-	if v := a["refresh_token"].(string); v != "" {
-		fivetranAuth.RefreshToken(v)
-	}
-	if v := a["access_token"].(string); v != "" {
-		fivetranAuth.AccessToken(v)
-	}
-	if v := a["realm_id"].(string); v != "" {
-		fivetranAuth.RealmID(v)
-	}
-
-	return fivetranAuth
-}
-
-func resourceConnectorLegacyCreateAuthClientAccess(clientAccess []interface{}) *fivetran.ConnectorAuthClientAccess {
-	fivetranAuthClientAccess := fivetran.NewConnectorAuthClientAccess()
-
-	if len(clientAccess) < 1 {
-		return fivetranAuthClientAccess
-	}
-	if clientAccess[0] == nil {
-		return fivetranAuthClientAccess
-	}
-
-	ca := clientAccess[0].(map[string]interface{})
-	if v := ca["client_id"].(string); v != "" {
-		fivetranAuthClientAccess.ClientID(v)
-	}
-	if v := ca["client_secret"].(string); v != "" {
-		fivetranAuthClientAccess.ClientSecret(v)
-	}
-	if v := ca["user_agent"].(string); v != "" {
-		fivetranAuthClientAccess.UserAgent(v)
-	}
-	if v := ca["developer_token"].(string); v != "" {
-		fivetranAuthClientAccess.DeveloperToken(v)
-	}
-
-	return fivetranAuthClientAccess
 }

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.7.3...HEAD)
 
+## [0.7.4](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.7.3...v0.7.4) 
+
+## Fixed
+- Resource `fivetran_connector` issue: auth values not applied.
+
 ## [0.7.3](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.7.2...v0.7.3) 
 
 ## Fixed
