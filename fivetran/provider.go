@@ -14,8 +14,15 @@ const version = "0.6.14" // Current provider version
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
-			"api_key":    {Type: schema.TypeString, Required: true, DefaultFunc: schema.EnvDefaultFunc("FIVETRAN_APIKEY", nil)},
-			"api_secret": {Type: schema.TypeString, Required: true, Sensitive: true, DefaultFunc: schema.EnvDefaultFunc("FIVETRAN_APISECRET", nil)},
+			"api_key": {
+				Type:        schema.TypeString,
+				Required:    true,
+				DefaultFunc: schema.EnvDefaultFunc("FIVETRAN_APIKEY", nil)},
+			"api_secret": {
+				Type:        schema.TypeString,
+				Required:    true,
+				Sensitive:   true,
+				DefaultFunc: schema.EnvDefaultFunc("FIVETRAN_APISECRET", nil)},
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"fivetran_user":                    resourceUser(),

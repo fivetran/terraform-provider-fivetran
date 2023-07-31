@@ -18,10 +18,18 @@ func resourceGroup() *schema.Resource {
 		DeleteContext: resourceGroupDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
 		Schema: map[string]*schema.Schema{
-			"id":           {Type: schema.TypeString, Computed: true},
-			"name":         {Type: schema.TypeString, Required: true},
-			"created_at":   {Type: schema.TypeString, Computed: true},
-			"last_updated": {Type: schema.TypeString, Computed: true}, // internal
+			"id": {
+				Type:     schema.TypeString,
+				Computed: true},
+			"name": {
+				Type:     schema.TypeString,
+				Required: true},
+			"created_at": {
+				Type:     schema.TypeString,
+				Computed: true},
+			"last_updated": {
+				Type:     schema.TypeString,
+				Computed: true}, // internal
 		},
 	}
 }
