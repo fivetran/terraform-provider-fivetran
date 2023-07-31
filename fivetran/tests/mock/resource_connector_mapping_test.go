@@ -726,6 +726,22 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 
 			assertKeyExists(t, body, "config")
 
+			assertKeyExists(t, body, "auth")
+
+			auth := body["auth"].(map[string]interface{})
+
+			assertKeyExistsAndHasValue(t, auth, "refresh_token", "refresh_token")
+			assertKeyExistsAndHasValue(t, auth, "access_token", "access_token")
+			assertKeyExistsAndHasValue(t, auth, "realm_id", "realm_id")
+
+			assertKeyExists(t, auth, "client_access")
+
+			clientAccess := auth["client_access"].(map[string]interface{})
+			assertKeyExistsAndHasValue(t, clientAccess, "client_id", "client_id")
+			assertKeyExistsAndHasValue(t, clientAccess, "client_secret", "client_secret")
+			assertKeyExistsAndHasValue(t, clientAccess, "user_agent", "user_agent")
+			assertKeyExistsAndHasValue(t, clientAccess, "developer_token", "developer_token")
+
 			config := body["config"].(map[string]interface{})
 
 			assertKeyExistsAndHasValue(t, config, "schema", "schema")
