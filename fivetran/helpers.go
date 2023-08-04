@@ -76,6 +76,17 @@ func tryCopyList(target, source map[string]interface{}, key string) {
 	}
 }
 
+// List of integers is represented on terraform side as list of strings for simplicity, but on upstream side it's strict list of integers
+func tryCopyIntegersList(target, source map[string]interface{}, key string) {
+	if v, ok := source[key].([]interface{}); ok {
+		result := make([]interface{}, len(v))
+		for i, iv := range v {
+			result[i] = strconv.Itoa(int(iv.(float64)))
+		}
+		mapAddXInterface(target, key, result)
+	}
+}
+
 // strToBool receives a string and returns a boolean
 func strToBool(s string) bool {
 	return strings.ToLower(s) == "true"
@@ -123,19 +134,32 @@ func intPointerToStr(i *int) string {
 }
 
 // xStrXInterface receives a []string and returns a []interface{}
-func xStrXInterface(xs []string) []interface{} {
-	xi := make([]interface{}, len(xs))
-	for i, v := range xs {
-		xi[i] = v
-	}
-	return xi
-}
+// func xStrXInterface(xs []string) []interface{} {
+// 	xi := make([]interface{}, len(xs))
+// 	for i, v := range xs {
+// 		xi[i] = v
+// 	}
+// 	return xi
+// }
 
 // xInterfaceStrXStr receives a []interface{} of type string and returns a []string
 func xInterfaceStrXStr(xi []interface{}) []string {
 	xs := make([]string, len(xi))
 	for i, v := range xi {
 		xs[i] = v.(string)
+	}
+	return xs
+}
+
+// xInterfaceStrXStr receives a []interface{} of type string and returns a []string
+func xInterfaceStrXIneger(xi []interface{}) []int {
+	xs := make([]int, len(xi))
+	for i, v := range xi {
+		integerValue, e := strconv.Atoi(v.(string))
+		if e != nil {
+			panic(e)
+		}
+		xs[i] = integerValue
 	}
 	return xs
 }

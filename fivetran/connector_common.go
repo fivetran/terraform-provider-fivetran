@@ -10,138 +10,6 @@ const (
 	CONNECTOR_ID = "connector_id"
 )
 
-func getConnectorSchema(readonly bool, version int) map[string]*schema.Schema {
-	// Common for Resource and Datasource
-	var result = map[string]*schema.Schema{
-		// Id
-		"id": {
-			Type:        schema.TypeString,
-			Computed:    !readonly,
-			Required:    readonly,
-			Description: "The unique identifier for the connector within the Fivetran system.",
-		},
-
-		// Computed
-		"name": {
-			Type:        schema.TypeString,
-			Computed:    true,
-			Description: "The name used both as the connector's name within the Fivetran system and as the source schema's name within your destination.",
-		},
-		"connected_by": {
-			Type:        schema.TypeString,
-			Computed:    true,
-			Description: "The unique identifier of the user who has created the connector in your account",
-		},
-		"created_at": {
-			Type:        schema.TypeString,
-			Computed:    true,
-			Description: "The timestamp of the time the connector was created in your account",
-		},
-
-		// Required
-		"group_id": {
-			Type:        schema.TypeString,
-			Required:    !readonly,
-			ForceNew:    !readonly,
-			Computed:    readonly,
-			Description: "The unique identifier for the Group (Destination) within the Fivetran system.",
-		},
-		"service": {
-			Type:        schema.TypeString,
-			Required:    !readonly,
-			ForceNew:    !readonly,
-			Computed:    readonly,
-			Description: "The connector type name within the Fivetran system",
-		},
-		"destination_schema": getConnectorDestinationSchema(readonly),
-
-		// Config
-		"config": getConnectorSchemaConfig(readonly, version),
-	}
-
-	if version == 0 {
-		// Computed
-		result["succeeded_at"] = &schema.Schema{
-			Type:        schema.TypeString,
-			Computed:    true,
-			Description: "The timestamp of the time the connector sync succeeded last time",
-		}
-		result["failed_at"] = &schema.Schema{
-			Type:        schema.TypeString,
-			Computed:    true,
-			Description: "The timestamp of the time the connector sync failed last time",
-		}
-		result["service_version"] = &schema.Schema{
-			Type:        schema.TypeString,
-			Computed:    true,
-			Description: "The connector type version within the Fivetran system.",
-		}
-
-		// Optional with default values in upstream
-		result["sync_frequency"] = &schema.Schema{
-			Type:        schema.TypeString,
-			Optional:    !readonly,
-			Computed:    true,
-			Description: "The connector sync frequency in minutes",
-		} // Default: 360
-		result["schedule_type"] = &schema.Schema{
-			Type:        schema.TypeString,
-			Optional:    !readonly,
-			Computed:    true,
-			Description: "The connector schedule configuration type. Supported values: auto, manual",
-		} // Default: AUTO
-		result["paused"] = &schema.Schema{
-			Type:        schema.TypeString,
-			Optional:    !readonly,
-			Computed:    true,
-			Description: "Specifies whether the connector is paused",
-		} // Default: false
-		result["pause_after_trial"] = &schema.Schema{
-			Type:        schema.TypeString,
-			Optional:    !readonly,
-			Computed:    true,
-			Description: "Specifies whether the connector should be paused after the free trial period has ende",
-		} // Default: false
-		// Optional nullable in upstream
-		result["daily_sync_time"] = &schema.Schema{
-			Type:        schema.TypeString,
-			Optional:    !readonly,
-			Computed:    readonly,
-			Description: "The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use [the baseline sync start time](https://fivetran.com/docs/getting-started/syncoverview#syncfrequencyandscheduling). This parameter has no effect on the [0 to 60 minutes offset](https://fivetran.com/docs/getting-started/syncoverview#syncstarttimesandoffsets) used to determine the actual sync start time",
-		}
-
-		result["status"] = getConnectorSchemaStatus()
-	}
-
-	// Resource specific
-	if !readonly {
-		result["auth"] = getConnectorSchemaAuth()
-		result["trust_certificates"] = &schema.Schema{
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
-		}
-		result["trust_fingerprints"] = &schema.Schema{
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
-		}
-		result["run_setup_tests"] = &schema.Schema{
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "Specifies whether the setup tests should be run automatically. The default value is TRUE.",
-		}
-
-		// Internal resource attribute (no upstream value)
-		result["last_updated"] = &schema.Schema{
-			Type:        schema.TypeString,
-			Computed:    true,
-			Description: "",
-		}
-	}
-	return result
-}
-
 func getConnectorSchemaStatus() *schema.Schema {
 	var result = map[string]*schema.Schema{
 		"setup_state": {
@@ -213,6 +81,200 @@ func getConnectorSchemaStatus() *schema.Schema {
 	}
 }
 
+func connectorSchemaLegacy(readonly bool, version int) map[string]*schema.Schema {
+	// Common for Resource and Datasource
+	var result = map[string]*schema.Schema{
+		// Id
+		"id": {
+			Type:        schema.TypeString,
+			Computed:    !readonly,
+			Required:    readonly,
+			Description: "The unique identifier for the connector within the Fivetran system.",
+		},
+
+		// Computed
+		"name": {
+			Type:        schema.TypeString,
+			Computed:    true,
+			Description: "The name used both as the connector's name within the Fivetran system and as the source schema's name within your destination.",
+		},
+		"connected_by": {
+			Type:        schema.TypeString,
+			Computed:    true,
+			Description: "The unique identifier of the user who has created the connector in your account",
+		},
+		"created_at": {
+			Type:        schema.TypeString,
+			Computed:    true,
+			Description: "The timestamp of the time the connector was created in your account",
+		},
+
+		// Required
+		"group_id": {
+			Type:        schema.TypeString,
+			Required:    !readonly,
+			ForceNew:    !readonly,
+			Computed:    readonly,
+			Description: "The unique identifier for the Group (Destination) within the Fivetran system.",
+		},
+		"service": {
+			Type:        schema.TypeString,
+			Required:    !readonly,
+			ForceNew:    !readonly,
+			Computed:    readonly,
+			Description: "The connector type name within the Fivetran system.",
+		},
+		"destination_schema": getConnectorDestinationSchema(readonly),
+
+		// Config
+		"config": connectorSchemaConfig(readonly),
+	}
+
+	if version == 0 {
+		// Computed
+		result["succeeded_at"] = &schema.Schema{
+			Type:        schema.TypeString,
+			Computed:    true,
+			Description: "The timestamp of the time the connector sync succeeded last time",
+		}
+		result["failed_at"] = &schema.Schema{
+			Type:        schema.TypeString,
+			Computed:    true,
+			Description: "The timestamp of the time the connector sync failed last time",
+		}
+		result["service_version"] = &schema.Schema{
+			Type:        schema.TypeString,
+			Computed:    true,
+			Description: "The connector type version within the Fivetran system.",
+		}
+
+		// Optional with default values in upstream
+		result["sync_frequency"] = &schema.Schema{
+			Type:        schema.TypeString,
+			Optional:    !readonly,
+			Computed:    true,
+			Description: "The connector sync frequency in minutes.",
+		} // Default: 360
+		result["schedule_type"] = &schema.Schema{
+			Type:        schema.TypeString,
+			Optional:    !readonly,
+			Computed:    true,
+			Description: "The connector schedule configuration type. Supported values: auto, manual",
+		} // Default: AUTO
+		result["paused"] = &schema.Schema{
+			Type:        schema.TypeString,
+			Optional:    !readonly,
+			Computed:    true,
+			Description: "Specifies whether the connector is paused",
+		} // Default: false
+		result["pause_after_trial"] = &schema.Schema{
+			Type:        schema.TypeString,
+			Optional:    !readonly,
+			Computed:    true,
+			Description: "Specifies whether the connector should be paused after the free trial period has ende",
+		} // Default: false
+		// Optional nullable in upstream
+		result["daily_sync_time"] = &schema.Schema{
+			Type:        schema.TypeString,
+			Optional:    !readonly,
+			Computed:    readonly,
+			Description: "The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use [the baseline sync start time](https://fivetran.com/docs/getting-started/syncoverview#syncfrequencyandscheduling). This parameter has no effect on the [0 to 60 minutes offset](https://fivetran.com/docs/getting-started/syncoverview#syncstarttimesandoffsets) used to determine the actual sync start time",
+		}
+
+		result["status"] = getConnectorSchemaStatus()
+	}
+
+	// Resource specific
+	if !readonly {
+		result["auth"] = getConnectorSchemaAuth()
+		result["trust_certificates"] = &schema.Schema{
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
+		}
+		result["trust_fingerprints"] = &schema.Schema{
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
+		}
+		result["run_setup_tests"] = &schema.Schema{
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Specifies whether the setup tests should be run automatically. The default value is TRUE.",
+		}
+
+		// Internal resource attribute (no upstream value)
+		result["last_updated"] = &schema.Schema{
+			Type:        schema.TypeString,
+			Computed:    true,
+			Description: "",
+		}
+	}
+	return result
+}
+
+func getConnectorSchemaAuth() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		Optional: true,
+		MaxItems: 1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"client_access": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Description: "Your application client access fields.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"client_id": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "`Client ID` of your client application.",
+							},
+							"client_secret": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Sensitive:   true,
+								Description: "`Client secret` of your client application.",
+							},
+							"user_agent": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "Your company's name in your client application.",
+							},
+							"developer_token": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Sensitive:   true,
+								Description: "Your approved `Developer token` to connect to the API.",
+							},
+						},
+					},
+				},
+				"refresh_token": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Sensitive:   true,
+					Description: "The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.",
+				},
+				"access_token": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Sensitive:   true,
+					Description: "The `Access Token` carries the information necessary for API resources to fetch data.",
+				},
+				"realm_id": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Sensitive:   true,
+					Description: "`Realm ID` of your application.",
+				},
+			},
+		},
+	}
+}
+
 func getConnectorDestinationSchema(readonly bool) *schema.Schema {
 	return &schema.Schema{
 		Type: schema.TypeList, MaxItems: getMaxItems(readonly),
@@ -245,14 +307,7 @@ func getConnectorDestinationSchema(readonly bool) *schema.Schema {
 	}
 }
 
-func getMaxItems(readonly bool) int {
-	if readonly {
-		return 0
-	}
-	return 1
-}
-
-func getConnectorRead(currentConfig *[]interface{}, resp fivetran.ConnectorCustomDetailsResponse, version int) map[string]interface{} {
+func connectorRead(currentConfig *[]interface{}, resp fivetran.ConnectorCustomDetailsResponse, version int) map[string]interface{} {
 	// msi stands for Map String Interface
 	msi := make(map[string]interface{})
 	mapAddStr(msi, "id", resp.Data.ID)
@@ -274,9 +329,9 @@ func getConnectorRead(currentConfig *[]interface{}, resp fivetran.ConnectorCusto
 		mapAddStr(msi, "paused", boolPointerToStr(resp.Data.Paused))
 		mapAddStr(msi, "pause_after_trial", boolPointerToStr(resp.Data.PauseAfterTrial))
 
-		mapAddXInterface(msi, "status", getConnectorReadStatus(&resp))
+		mapAddXInterface(msi, "status", connectorReadStatus(&resp))
 	}
-	upstreamConfig := getConnectorReadCustomConfig(&resp, currentConfig)
+	upstreamConfig := connectorReadCustomConfig(&resp, currentConfig, resp.Data.Service)
 
 	if len(upstreamConfig) > 0 {
 		mapAddXInterface(msi, "config", upstreamConfig)
@@ -287,7 +342,7 @@ func getConnectorRead(currentConfig *[]interface{}, resp fivetran.ConnectorCusto
 
 // resourceConnectorReadStatus receives a *fivetran.ConnectorDetailsResponse and returns a []interface{}
 // containing the data type accepted by the "status" list.
-func getConnectorReadStatus(resp *fivetran.ConnectorCustomDetailsResponse) []interface{} {
+func connectorReadStatus(resp *fivetran.ConnectorCustomDetailsResponse) []interface{} {
 	status := make([]interface{}, 1)
 
 	s := make(map[string]interface{})
@@ -295,14 +350,14 @@ func getConnectorReadStatus(resp *fivetran.ConnectorCustomDetailsResponse) []int
 	mapAddStr(s, "sync_state", resp.Data.Status.SyncState)
 	mapAddStr(s, "update_state", resp.Data.Status.UpdateState)
 	mapAddStr(s, "is_historical_sync", boolPointerToStr(resp.Data.Status.IsHistoricalSync))
-	mapAddXInterface(s, "tasks", getConnectorReadStatusFlattenTasks(resp))
-	mapAddXInterface(s, "warnings", getConnectorReadStatusFlattenWarnings(resp))
+	mapAddXInterface(s, "tasks", connectorReadStatusFlattenTasks(resp))
+	mapAddXInterface(s, "warnings", connectorReadStatusFlattenWarnings(resp))
 	status[0] = s
 
 	return status
 }
 
-func getConnectorReadStatusFlattenTasks(resp *fivetran.ConnectorCustomDetailsResponse) []interface{} {
+func connectorReadStatusFlattenTasks(resp *fivetran.ConnectorCustomDetailsResponse) []interface{} {
 	if len(resp.Data.Status.Tasks) < 1 {
 		return make([]interface{}, 0)
 	}
@@ -319,7 +374,7 @@ func getConnectorReadStatusFlattenTasks(resp *fivetran.ConnectorCustomDetailsRes
 	return tasks
 }
 
-func getConnectorReadStatusFlattenWarnings(resp *fivetran.ConnectorCustomDetailsResponse) []interface{} {
+func connectorReadStatusFlattenWarnings(resp *fivetran.ConnectorCustomDetailsResponse) []interface{} {
 	if len(resp.Data.Status.Warnings) < 1 {
 		return make([]interface{}, 0)
 	}

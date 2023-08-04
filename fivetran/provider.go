@@ -10,7 +10,7 @@ import (
 
 var limit = 1000            // REST API response objects limit per HTTP request
 const Version = "0.7.2-pre" // Current provider version
-const devBuild = false      // Should be `false` in production build. Set to true to enable features in-dev for local debug.
+//const devBuild = false      // Should be `false` in production build. Set to true to enable features in-dev for local debug.
 
 func Provider() *schema.Provider {
 	var resourceMap = map[string]*schema.Resource{
@@ -35,10 +35,10 @@ func Provider() *schema.Provider {
 		"fivetran_connector":           dataSourceConnectorLegacy(),
 	}
 
-	if devBuild {
-		resourceMap["fivetran_connector_experimental"] = resourceConnector()     // OAS-based resource
-		dataSourceMap["fivetran_connector_experimental"] = dataSourceConnector() // OAS-based data-source
-	}
+	//if devBuild {
+	//resourceMap["fivetran_connector_experimental"] = resourceConnector()     // OAS-based resource
+	//dataSourceMap["fivetran_connector_experimental"] = dataSourceConnector() // OAS-based data-source
+	//}
 
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{

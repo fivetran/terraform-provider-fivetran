@@ -326,17 +326,17 @@ const (
 			}
 			
 			custom_tables {
-				table_name = "table_name"
+				action_breakdowns = ["action_breakdown"]
+				action_report_time = "action_report_time"
+				aggregation = "aggregation"
+				breakdowns = ["breakdown"]
+				click_attribution_window = "click_attribution_window"
 				config_type = "config_type"
 				fields = ["field"]
-				breakdowns = ["breakdown"]
-				action_breakdowns = ["action_breakdown"]
-				aggregation = "aggregation"
-				action_report_time = "action_report_time"
-				click_attribution_window = "click_attribution_window"
-				view_attribution_window = "view_attribution_window"
 				prebuilt_report_name = "prebuilt_report_name"
+				table_name = "table_name"
 				# use_unified_attribution_setting = false
+				view_attribution_window = "view_attribution_window"
 			}
 			project_credentials {
 				project = "project"
@@ -679,10 +679,10 @@ const (
 				"fields": 			["field"],
 				"dimensions": 		["dimension"],
 				"metrics": 			["metric"],
-				"segments": 		["segment"],
-				"search_types":     ["search_type"],
-				"segment_ids":      ["segment_id"],
-				"filter": 			"filter"
+				"segments": 		["segment"],` +
+		//"search_types":     ["search_type"],
+		//"segment_ids":      ["segment_id"],
+		`"filter": 			"filter"
 			}],
 			"custom_tables": [{
 				"table_name": 				"table_name",
@@ -693,9 +693,9 @@ const (
 				"aggregation": 				"aggregation",
 				"action_report_time": 		"action_report_time",
 				"click_attribution_window": "click_attribution_window",
-				"view_attribution_window": 	"view_attribution_window",
-				"prebuilt_report_name": 	"prebuilt_report_name",
-				"use_unified_attribution_setting": false
+				"view_attribution_window": 	"view_attribution_window",` +
+		//"use_unified_attribution_setting": false,
+		`"prebuilt_report_name": 	"prebuilt_report_name"
 			}],
 			"project_credentials": [{
 				"project": 		"project",
