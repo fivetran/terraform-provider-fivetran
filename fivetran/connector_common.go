@@ -1,6 +1,9 @@
 package fivetran
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/fivetran/go-fivetran"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -81,7 +84,7 @@ func getConnectorSchemaStatus() *schema.Schema {
 	}
 }
 
-func connectorSchemaLegacy(readonly bool, version int) map[string]*schema.Schema {
+func connectorSchema(readonly bool, version int) map[string]*schema.Schema {
 	// Common for Resource and Datasource
 	var result = map[string]*schema.Schema{
 		// Id
@@ -307,7 +310,7 @@ func getConnectorDestinationSchema(readonly bool) *schema.Schema {
 	}
 }
 
-func connectorRead(currentConfig *[]interface{}, resp fivetran.ConnectorCustomDetailsResponse, version int) map[string]interface{} {
+func connectorRead(currentConfig *[]interface{}, resp fivetran.ConnectorCustomDetailsResponse, version int) (map[string]interface{}, error) {
 	// msi stands for Map String Interface
 	msi := make(map[string]interface{})
 	mapAddStr(msi, "id", resp.Data.ID)
@@ -315,7 +318,14 @@ func connectorRead(currentConfig *[]interface{}, resp fivetran.ConnectorCustomDe
 	mapAddStr(msi, "service", resp.Data.Service)
 
 	mapAddStr(msi, "name", resp.Data.Schema)
-	mapAddXInterface(msi, "destination_schema", readDestinationSchema(resp.Data.Schema, resp.Data.Service))
+
+	ds, err := readDestinationSchema(resp.Data.Schema, resp.Data.Service)
+
+	if err != nil {
+		return nil, err
+	}
+
+	mapAddXInterface(msi, "destination_schema", ds)
 	mapAddStr(msi, "connected_by", resp.Data.ConnectedBy)
 	mapAddStr(msi, "created_at", resp.Data.CreatedAt.String())
 
@@ -337,7 +347,30 @@ func connectorRead(currentConfig *[]interface{}, resp fivetran.ConnectorCustomDe
 		mapAddXInterface(msi, "config", upstreamConfig)
 	}
 
-	return msi
+	return msi, nil
+}
+
+func readDestinationSchema(schema string, service string) ([]interface{}, error) {
+	destination_schema := make([]interface{}, 1)
+
+	ds := make(map[string]interface{})
+
+	if _, ok := destinationSchemaFields[service]; !ok {
+		return nil, fmt.Errorf("unknown service: `%v`", service)
+	}
+
+	if destinationSchemaFields[service]["schema_prefix"] {
+		mapAddStr(ds, "prefix", schema)
+	} else {
+		s := strings.Split(schema, ".")
+		mapAddStr(ds, "name", s[0])
+		if len(s) > 1 && destinationSchemaFields[service]["table"] {
+			mapAddStr(ds, "table", s[1])
+		}
+	}
+
+	destination_schema[0] = ds
+	return destination_schema, nil
 }
 
 // resourceConnectorReadStatus receives a *fivetran.ConnectorDetailsResponse and returns a []interface{}

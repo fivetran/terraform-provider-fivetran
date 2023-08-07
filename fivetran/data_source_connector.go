@@ -9,14 +9,14 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func dataSourceConnectorLegacy() *schema.Resource {
+func dataSourceConnector() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: dataSourceConnectorLegacyRead,
-		Schema:      connectorSchemaLegacy(true, 0),
+		ReadContext: dataSourceConnectorRead,
+		Schema:      connectorSchema(true, 0),
 	}
 }
 
-func dataSourceConnectorLegacyRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourceConnectorRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
 
@@ -26,7 +26,11 @@ func dataSourceConnectorLegacyRead(ctx context.Context, d *schema.ResourceData, 
 	}
 
 	// msi stands for Map String Interface
-	msi := connectorRead(nil, resp, 0)
+	msi, err := connectorRead(nil, resp, 0)
+
+	if err != nil {
+		return newDiagAppend(diags, diag.Error, "service error", err.Error())
+	}
 
 	for k, v := range msi {
 		if err := d.Set(k, v); err != nil {

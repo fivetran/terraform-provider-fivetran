@@ -46,13 +46,27 @@ func readFieldsFromJson(target *map[string]ConfigField) {
 	if err != nil {
 		panic(err)
 	}
-	// remove destination schema fields
-	delete(configFields, "schema")
-	delete(configFields, "table")
-	delete(configFields, "schema_prefix")
+	// handle and remove destination schema fields
+	handleDestinationSchemaField("schema")
+	handleDestinationSchemaField("table")
+	handleDestinationSchemaField("schema_prefix")
+}
+
+func handleDestinationSchemaField(fieldName string) {
+	if schema, ok := configFields[fieldName]; ok {
+		for k := range schema.Description {
+			if _, ok := destinationSchemaFields[k]; !ok {
+				destinationSchemaFields[k] = make(map[string]bool)
+			}
+			destinationSchemaFields[k][fieldName] = true
+		}
+		delete(configFields, fieldName)
+	}
 }
 
 var configFields = make(map[string]ConfigField)
+
+var destinationSchemaFields = make(map[string]map[string]bool)
 
 func getFieldSchema(isDataSourceSchema bool, field *ConfigField) *schema.Schema {
 	result := &schema.Schema{

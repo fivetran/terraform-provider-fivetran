@@ -10,24 +10,24 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func resourceConnectorLegacy() *schema.Resource {
+func resourceConnector() *schema.Resource {
 	return &schema.Resource{
-		CreateContext: resourceConnectorLegacyCreate,
-		ReadContext:   resourceConnectorLegacyRead,
-		UpdateContext: resourceConnectorLegacyUpdate,
-		DeleteContext: resourceConnectorLegacyDelete,
+		CreateContext: resourceConnectorCreate,
+		ReadContext:   resourceConnectorRead,
+		UpdateContext: resourceConnectorUpdate,
+		DeleteContext: resourceConnectorDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		Schema:        connectorSchemaLegacy(false, 2),
+		Schema:        connectorSchema(false, 2),
 		SchemaVersion: 2,
 		StateUpgraders: []schema.StateUpgrader{
 			{
 				Type:    resourceConnectorLegacyV0().CoreConfigSchema().ImpliedType(),
-				Upgrade: resourceconnectorInstanceStateUpgradeV0Legacy,
+				Upgrade: resourceconnectorInstanceStateUpgradeV0,
 				Version: 0,
 			},
 			{
 				Type:    resourceConnectorLegacyV1().CoreConfigSchema().ImpliedType(),
-				Upgrade: resourceconnectorInstanceStateUpgradeV1Legacy,
+				Upgrade: resourceconnectorInstanceStateUpgradeV1,
 				Version: 1,
 			},
 		},
@@ -36,17 +36,17 @@ func resourceConnectorLegacy() *schema.Resource {
 
 func resourceConnectorLegacyV0() *schema.Resource {
 	return &schema.Resource{
-		Schema: connectorSchemaLegacy(false, 0),
+		Schema: connectorSchema(false, 0),
 	}
 }
 
 func resourceConnectorLegacyV1() *schema.Resource {
 	return &schema.Resource{
-		Schema: connectorSchemaLegacy(false, 1),
+		Schema: connectorSchema(false, 1),
 	}
 }
 
-func resourceconnectorInstanceStateUpgradeV1Legacy(ctx context.Context, rawState map[string]any, meta any) (map[string]any, error) {
+func resourceconnectorInstanceStateUpgradeV1(ctx context.Context, rawState map[string]any, meta any) (map[string]any, error) {
 	if c, ok := rawState["config"].([]interface{}); ok && len(c) == 1 {
 		// The field `servers` had wrong type and couldn't be used effectively
 		// Now we should just override it in state object to avoid migration collision
@@ -58,7 +58,7 @@ func resourceconnectorInstanceStateUpgradeV1Legacy(ctx context.Context, rawState
 	return rawState, nil
 }
 
-func resourceconnectorInstanceStateUpgradeV0Legacy(ctx context.Context, rawState map[string]any, meta any) (map[string]any, error) {
+func resourceconnectorInstanceStateUpgradeV0(ctx context.Context, rawState map[string]any, meta any) (map[string]any, error) {
 	// These fields are managed by `fivetran_connector_schedule` resource
 	delete(rawState, "sync_frequency")
 	delete(rawState, "schedule_type")
@@ -75,7 +75,7 @@ func resourceconnectorInstanceStateUpgradeV0Legacy(ctx context.Context, rawState
 	return rawState, nil
 }
 
-func resourceConnectorLegacyCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceConnectorCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
 	svc := client.NewConnectorCreate()
@@ -101,17 +101,9 @@ func resourceConnectorLegacyCreate(ctx context.Context, d *schema.ResourceData, 
 
 	destination_schema := d.Get("destination_schema").([]interface{})[0].(map[string]interface{})
 
-	config := resourceConnectorLegacyUpdateCustomConfig(d)
+	config := resourceConnectorUpdateCustomConfig(d)
 
-	if v := destination_schema["name"].(string); v != "" {
-		config["schema"] = v
-	}
-	if v := destination_schema["table"].(string); v != "" {
-		config["table"] = v
-	}
-	if v := destination_schema["prefix"].(string); v != "" {
-		config["schema_prefix"] = v
-	}
+	appendDestinationSchemaFields(destination_schema, config, currentService)
 
 	svc.ConfigCustom(&config)
 	svc.AuthCustom(resourceConnectorUpdateCustomAuth(d))
@@ -122,12 +114,58 @@ func resourceConnectorLegacyCreate(ctx context.Context, d *schema.ResourceData, 
 	}
 
 	d.SetId(resp.Data.ID)
-	resourceConnectorLegacyRead(ctx, d, m)
+	resourceConnectorRead(ctx, d, m)
 
 	return diags
 }
 
-func resourceConnectorLegacyRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func appendDestinationSchemaField(tfName, apiName string, destinationSchema, config map[string]interface{}, dsf map[string]bool, service string) error {
+	_, fieldRequired := dsf[apiName]
+	fieldValue := destinationSchema[tfName].(string)
+	fieldDefined := (fieldValue != "")
+	if fieldRequired {
+		if fieldDefined {
+			config[apiName] = fieldValue
+		} else {
+			return fmt.Errorf("field `destination_schema.%v` should be defined for service: %v", tfName, service)
+		}
+	} else {
+		if fieldDefined {
+			return fmt.Errorf("field `destination_schema.%v` should not be defined for service: %v", tfName, service)
+		}
+	}
+	return nil
+}
+
+func appendDestinationSchemaFields(destinationSchema, config map[string]interface{}, service string) error {
+	if dsf, ok := destinationSchemaFields[service]; ok {
+		err := appendDestinationSchemaField("name", "schema", destinationSchema, config, dsf, service)
+		if err != nil {
+			return err
+		}
+		err = appendDestinationSchemaField("table", "table", destinationSchema, config, dsf, service)
+		if err != nil {
+			return err
+		}
+		err = appendDestinationSchemaField("prefix", "schema_prefix", destinationSchema, config, dsf, service)
+		if err != nil {
+			return err
+		}
+	} else {
+		if v := destinationSchema["name"].(string); v != "" {
+			config["schema"] = v
+		}
+		if v := destinationSchema["table"].(string); v != "" {
+			config["table"] = v
+		}
+		if v := destinationSchema["prefix"].(string); v != "" {
+			config["schema_prefix"] = v
+		}
+	}
+	return nil
+}
+
+func resourceConnectorRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
 
@@ -145,7 +183,11 @@ func resourceConnectorLegacyRead(ctx context.Context, d *schema.ResourceData, m 
 	// msi stands for Map String Interface
 	currentConfig := d.Get("config").([]interface{})
 
-	msi := connectorRead(&currentConfig, resp, 1)
+	msi, err := connectorRead(&currentConfig, resp, 1)
+
+	if err != nil {
+		return newDiagAppend(diags, diag.Error, "read error", err.Error())
+	}
 
 	currentService := d.Get("service").(string)
 
@@ -166,7 +208,7 @@ func resourceConnectorLegacyRead(ctx context.Context, d *schema.ResourceData, m 
 	return diags
 }
 
-func resourceConnectorLegacyUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceConnectorUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
 	svc := client.NewConnectorModify()
@@ -195,7 +237,7 @@ func resourceConnectorLegacyUpdate(ctx context.Context, d *schema.ResourceData, 
 		svc.DailySyncTime(d.Get("daily_sync_time").(string))
 	}
 
-	config := resourceConnectorLegacyUpdateCustomConfig(d)
+	config := resourceConnectorUpdateCustomConfig(d)
 
 	svc.ConfigCustom(&config)
 	svc.AuthCustom(resourceConnectorUpdateCustomAuth(d))
@@ -203,7 +245,7 @@ func resourceConnectorLegacyUpdate(ctx context.Context, d *schema.ResourceData, 
 	resp, err := svc.DoCustom(ctx)
 	if err != nil {
 		// resourceConnectorRead here makes sure the state is updated after a NewConnectorModify error.
-		diags = resourceConnectorLegacyRead(ctx, d, m)
+		diags = resourceConnectorRead(ctx, d, m)
 		return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
@@ -211,10 +253,10 @@ func resourceConnectorLegacyUpdate(ctx context.Context, d *schema.ResourceData, 
 		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
 
-	return resourceConnectorLegacyRead(ctx, d, m)
+	return resourceConnectorRead(ctx, d, m)
 }
 
-func resourceConnectorLegacyDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceConnectorDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
 	svc := client.NewConnectorDelete()
@@ -229,7 +271,7 @@ func resourceConnectorLegacyDelete(ctx context.Context, d *schema.ResourceData, 
 	return diags
 }
 
-func resourceConnectorLegacyUpdateCustomConfig(d *schema.ResourceData) map[string]interface{} {
+func resourceConnectorUpdateCustomConfig(d *schema.ResourceData) map[string]interface{} {
 	configMap := make(map[string]interface{})
 
 	var config = d.Get("config").([]interface{})
