@@ -138,22 +138,6 @@ func connectorSchemaConfig(readonly bool) *schema.Schema {
 	}
 }
 
-func tryCopySensitiveStringValue(localConfig *map[string]interface{}, targetConfig, upstreamConfig map[string]interface{}, name string) {
-	if localConfig == nil {
-		tryCopyStringValue(targetConfig, upstreamConfig, name)
-	} else {
-		tryCopyStringValue(targetConfig, *localConfig, name)
-	}
-}
-
-func tryCopySensitiveListValue(localConfig *map[string]interface{}, targetConfig, upstreamConfig map[string]interface{}, name string) {
-	if localConfig != nil {
-		mapAddXInterface(targetConfig, name, (*localConfig)[name].(*schema.Set).List())
-	} else {
-		tryCopyList(targetConfig, upstreamConfig, name)
-	}
-}
-
 // connectorReadConfig receives a *fivetran.ConnectorDetailsResponse and returns a []interface{}
 // containing the data type accepted by the "config" list.
 func connectorReadCustomConfig(resp *fivetran.ConnectorCustomDetailsResponse, currentConfig *[]interface{}, service string) []interface{} {
@@ -165,61 +149,82 @@ func connectorReadCustomConfig(resp *fivetran.ConnectorCustomDetailsResponse, cu
 		currentConfigMap = &vlocalConfigAsMap
 	}
 
-	for k, v := range GetConfigFieldsMap() {
+	for k, v := range getServiceSpecificFields(service) {
 		readFieldValueCore(k, v, currentConfigMap, c, resp.Data.Config, service)
 	}
 
 	return []interface{}{c}
 }
 
-func readFieldValueCore(
-	k string,
-	v ConfigField,
-	currentConfig *map[string]interface{},
-	c map[string]interface{},
-	upstream map[string]interface{},
-	service string) {
-	switch v.FieldValueType {
-	case String:
-		if v.Sensitive {
-			tryCopySensitiveStringValue(currentConfig, c, upstream, k)
+func getServiceSpecificFields(service string) map[string]ConfigField {
+	result := make(map[string]ConfigField)
+	allFields := GetConfigFieldsMap()
+	serviceSuffix := "_" + service
+
+	for k, v := range GetConfigFieldsMap() {
+		if v.ApiField == "" {
+			// no service specific pair
+			if _, ok := allFields[k+serviceSuffix]; !ok {
+				result[k] = v
+			}
 		} else {
-			tryCopyStringValue(c, upstream, k)
+			// correct service
+			if strings.HasSuffix(k, serviceSuffix) {
+				result[k] = v
+			}
+		}
+	}
+
+	return result
+}
+
+func readFieldValueCore(
+	fieldName string, field ConfigField, localConfig *map[string]interface{},
+	c map[string]interface{}, upstream map[string]interface{}, service string) {
+	switch field.FieldValueType {
+	case String:
+		if field.Sensitive {
+			copySensitiveStringValue(localConfig, c, upstream, fieldName, field.ApiField)
+		} else {
+			copyStringValue(c, upstream, fieldName, field.ApiField)
 		}
 	case Integer:
-		tryCopyIntegerValue(c, upstream, k)
+		copyIntegerValue(c, upstream, fieldName, field.ApiField)
 	case Boolean:
-		tryCopyBooleanValue(c, upstream, k)
+		copyBooleanValue(c, upstream, fieldName, field.ApiField)
 	case StringList:
-		if v.Sensitive {
-			tryCopySensitiveListValue(currentConfig, c, upstream, k)
+		if field.Sensitive {
+			copySensitiveListValue(localConfig, c, upstream, fieldName, field.ApiField)
 		} else {
-			if t, ok := v.ItemType[service]; ok && t != String {
+			if t, ok := field.ItemType[service]; ok && t != String {
 				if t == Integer {
-					tryCopyIntegersList(c, upstream, k)
+					copyIntegersList(c, upstream, fieldName, field.ApiField)
 				}
 			} else {
-				tryCopyList(c, upstream, k)
+				copyList(c, upstream, fieldName, field.ApiField)
 			}
 		}
 	case ObjectList:
-		var upstreamList = tryReadListValue(upstream, k)
+		upstreamFieldName := fieldName
+		if field.ApiField != "" {
+			upstreamFieldName = field.ApiField
+		}
+		upstreamList := tryReadListValue(upstream, upstreamFieldName)
 		if upstreamList == nil || len(upstreamList) < 1 {
-			mapAddXInterface(c, k, make([]interface{}, 0))
+			mapAddXInterface(c, fieldName, make([]interface{}, 0))
 		} else {
 			resultList := make([]interface{}, len(upstreamList))
 			for i, elem := range upstreamList {
 				upstreamElem := elem.(map[string]interface{})
 				resultElem := make(map[string]interface{})
-				localElem := getCorrespondingLocalElem(upstreamElem, currentConfig, k, v)
-				for fn, fv := range v.ItemFields {
+				localElem := getCorrespondingLocalElem(upstreamElem, localConfig, fieldName, field)
+				for fn, fv := range field.ItemFields {
 					readFieldValueCore(fn, fv, localElem, resultElem, upstreamElem, service)
 				}
 				resultList[i] = resultElem
 			}
-			mapAddXInterface(c, k, resultList)
+			mapAddXInterface(c, fieldName, resultList)
 		}
-
 	}
 }
 
@@ -247,47 +252,52 @@ func getCorrespondingLocalElem(upstreamElem map[string]interface{}, currentConfi
 
 func connectorUpdateCustomConfig(c map[string]interface{}, service string) map[string]interface{} {
 	configMap := make(map[string]interface{})
+	serviceFields := getServiceSpecificFields(service)
 	for k, v := range c {
-		if field, ok := GetConfigFieldsMap()[k]; ok {
+		if field, ok := serviceFields[k]; ok {
 			updateConfigFieldImpl(k, field, v, configMap, service)
 		}
 	}
 	return configMap
 }
 
-func updateConfigFieldImpl(name string, field ConfigField, v interface{}, configMap map[string]interface{}, service string) {
+func updateConfigFieldImpl(name string, field ConfigField, value interface{}, configMap map[string]interface{}, service string) {
+	upstreamFieldName := name
+	if field.ApiField != "" {
+		upstreamFieldName = field.ApiField
+	}
 	switch field.FieldValueType {
 	case String:
 		{
-			if v.(string) != "" {
-				configMap[name] = v
+			if value.(string) != "" {
+				configMap[upstreamFieldName] = value
 			}
 		}
 	case Integer:
 		{
-			if v.(string) != "" {
-				configMap[name] = strToInt(v.(string))
+			if value.(string) != "" {
+				configMap[upstreamFieldName] = strToInt(value.(string))
 			}
 		}
 	case StringList:
 		{
 			if t, ok := field.ItemType[service]; ok && t != String {
 				if t == Integer {
-					configMap[name] = xInterfaceStrXIneger(v.(*schema.Set).List())
+					configMap[upstreamFieldName] = xInterfaceStrXIneger(value.(*schema.Set).List())
 				}
 			} else {
-				configMap[name] = xInterfaceStrXStr(v.(*schema.Set).List())
+				configMap[upstreamFieldName] = xInterfaceStrXStr(value.(*schema.Set).List())
 			}
 		}
 	case Boolean:
 		{
-			if v.(string) != "" {
-				configMap[name] = strToBool(v.(string))
+			if value.(string) != "" {
+				configMap[upstreamFieldName] = strToBool(value.(string))
 			}
 		}
 	case ObjectList:
 		{
-			var list = v.(*schema.Set).List()
+			var list = value.(*schema.Set).List()
 			result := make([]interface{}, len(list))
 			for i, v := range list {
 				vmap := v.(map[string]interface{})
@@ -297,7 +307,7 @@ func updateConfigFieldImpl(name string, field ConfigField, v interface{}, config
 				}
 				result[i] = item
 			}
-			configMap[name] = result
+			configMap[upstreamFieldName] = result
 		}
 	}
 }

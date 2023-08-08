@@ -320,8 +320,8 @@ const (
 				dimensions = ["dimension"]
 				metrics = ["metric"]
 				segments = ["segment"]
-				# search_types = ["search_type"]
-				# segment_ids = ["segment_id"]
+				search_types = ["search_type"]
+				segment_ids = ["segment_id"]
 				filter = "filter"
 			}
 			
@@ -335,7 +335,7 @@ const (
 				fields = ["field"]
 				prebuilt_report_name = "prebuilt_report_name"
 				table_name = "table_name"
-				# use_unified_attribution_setting = false
+				use_unified_attribution_setting = false
 				view_attribution_window = "view_attribution_window"
 			}
 			project_credentials {
@@ -679,10 +679,10 @@ const (
 				"fields": 			["field"],
 				"dimensions": 		["dimension"],
 				"metrics": 			["metric"],
-				"segments": 		["segment"],` +
-		//"search_types":     ["search_type"],
-		//"segment_ids":      ["segment_id"],
-		`"filter": 			"filter"
+				"segments": 		["segment"],
+				"search_types":     ["search_type"],
+				"segment_ids":      ["segment_id"],
+				"filter": 			"filter"
 			}],
 			"custom_tables": [{
 				"table_name": 				"table_name",
@@ -693,9 +693,9 @@ const (
 				"aggregation": 				"aggregation",
 				"action_report_time": 		"action_report_time",
 				"click_attribution_window": "click_attribution_window",
-				"view_attribution_window": 	"view_attribution_window",` +
-		//"use_unified_attribution_setting": false,
-		`"prebuilt_report_name": 	"prebuilt_report_name"
+				"view_attribution_window": 	"view_attribution_window",
+				"prebuilt_report_name": 	"prebuilt_report_name",
+				"use_unified_attribution_setting": false
 			}],
 			"project_credentials": [{
 				"project": 		"project",
@@ -1141,7 +1141,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, custom_table, "click_attribution_window", "click_attribution_window")
 			assertKeyExistsAndHasValue(t, custom_table, "view_attribution_window", "view_attribution_window")
 			assertKeyExistsAndHasValue(t, custom_table, "prebuilt_report_name", "prebuilt_report_name")
-			// assertKeyExistsAndHasValue(t, custom_table, "use_unified_attribution_setting", false)
+			assertKeyExistsAndHasValue(t, custom_table, "use_unified_attribution_setting", false)
 
 			assertKeyExists(t, custom_table, "fields")
 			assertArrayItems(t, custom_table["fields"].([]interface{}), append(make([]interface{}, 0), "field"))
@@ -1191,6 +1191,17 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 				assertNotEmpty(t, connectorMappingMockData)
 				return nil
 			},
+
+			// check auth fields
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.refresh_token", "refresh_token"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.access_token", "access_token"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.realm_id", "realm_id"),
+
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.client_access.0.client_id", "client_id"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.client_access.0.client_secret", "client_secret"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.client_access.0.user_agent", "user_agent"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.client_access.0.developer_token", "developer_token"),
+
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "google_sheets"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "schema.table"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "false"),

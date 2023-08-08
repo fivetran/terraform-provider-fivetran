@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func validateStringBooleanValue(val any, key string) (warns []string, errs []error) {
@@ -48,42 +49,76 @@ func tryReadListValue(source map[string]interface{}, key string) []interface{} {
 	return nil
 }
 
-// tryCopyStringValue copies string value from map `source` to map `target` if `key` represented in `source` map
-func tryCopyStringValue(target, source map[string]interface{}, key string) {
-	if v, ok := source[key].(string); ok {
-		mapAddStr(target, key, v)
+func copySensitiveStringValue(localConfig *map[string]interface{}, targetConfig, upstreamConfig map[string]interface{}, localKey, upstreamKey string) {
+	if upstreamKey == "" {
+		upstreamKey = localKey
+	}
+	if localConfig == nil {
+		// when using upstream value - use upstream key for source
+		copyStringValue(targetConfig, upstreamConfig, localKey, upstreamKey)
+	} else {
+		// when copying local value - use locak key for source
+		copyStringValue(targetConfig, *localConfig, localKey, "")
 	}
 }
 
-// tryReadBooleanValue copies bool value from map `source` to map `target` if `key` represented in `source` map
-func tryCopyBooleanValue(target, source map[string]interface{}, key string) {
-	if v, ok := source[key].(bool); ok {
-		mapAddStr(target, key, boolToStr(v))
+func copySensitiveListValue(localConfig *map[string]interface{}, targetConfig, upstreamConfig map[string]interface{}, targetKey, sourceKey string) {
+	if localConfig != nil {
+		if sourceKey == "" {
+			sourceKey = targetKey
+		}
+		mapAddXInterface(targetConfig, targetKey, (*localConfig)[sourceKey].(*schema.Set).List())
+	} else {
+		copyList(targetConfig, upstreamConfig, targetKey, sourceKey)
 	}
 }
 
-// tryReadIntegerValue copies int value from map `source` to map `target` if `key` represented in `source` map
-func tryCopyIntegerValue(target, source map[string]interface{}, key string) {
-	if v, ok := source[key].(float64); ok {
-		mapAddStr(target, key, strconv.Itoa((int(v))))
+func copyStringValue(target, source map[string]interface{}, targetKey, sourceKey string) {
+	if sourceKey == "" {
+		sourceKey = targetKey
+	}
+	if v, ok := source[sourceKey].(string); ok {
+		mapAddStr(target, targetKey, v)
 	}
 }
 
-// tryReadList copies abstract list ()`[]interface{}`) from map `source` to map `target` if `key` represented in `source` map
-func tryCopyList(target, source map[string]interface{}, key string) {
-	if v, ok := source[key].([]interface{}); ok {
-		mapAddXInterface(target, key, v)
+func copyBooleanValue(target, source map[string]interface{}, targetKey, sourceKey string) {
+	if sourceKey == "" {
+		sourceKey = targetKey
+	}
+	if v, ok := source[sourceKey].(bool); ok {
+		mapAddStr(target, targetKey, boolToStr(v))
 	}
 }
 
-// List of integers is represented on terraform side as list of strings for simplicity, but on upstream side it's strict list of integers
-func tryCopyIntegersList(target, source map[string]interface{}, key string) {
-	if v, ok := source[key].([]interface{}); ok {
+func copyIntegerValue(target, source map[string]interface{}, targetKey, sourceKey string) {
+	if sourceKey == "" {
+		sourceKey = targetKey
+	}
+	if v, ok := source[sourceKey].(float64); ok {
+		mapAddStr(target, targetKey, strconv.Itoa((int(v))))
+	}
+}
+
+func copyList(target, source map[string]interface{}, targetKey, sourceKey string) {
+	if sourceKey == "" {
+		sourceKey = targetKey
+	}
+	if v, ok := source[sourceKey].([]interface{}); ok {
+		mapAddXInterface(target, targetKey, v)
+	}
+}
+
+func copyIntegersList(target, source map[string]interface{}, targetKey, sourceKey string) {
+	if sourceKey == "" {
+		sourceKey = targetKey
+	}
+	if v, ok := source[sourceKey].([]interface{}); ok {
 		result := make([]interface{}, len(v))
 		for i, iv := range v {
 			result[i] = strconv.Itoa(int(iv.(float64)))
 		}
-		mapAddXInterface(target, key, result)
+		mapAddXInterface(target, targetKey, result)
 	}
 }
 
