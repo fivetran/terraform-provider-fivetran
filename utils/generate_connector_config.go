@@ -150,7 +150,6 @@ func loadFieldsFromOAS(existingFields map[string]fivetran.ConfigField) (bool, ma
 }
 
 func fieldCouldBeIncluded(field fivetran.ConfigField) bool {
-
 	// Do not include empty object-fields
 	if field.FieldValueType == fivetran.ObjectList && len(field.ItemFields) == 0 {
 		return false

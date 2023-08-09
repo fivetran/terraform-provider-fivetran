@@ -84,7 +84,7 @@ func getConnectorSchemaStatus() *schema.Schema {
 	}
 }
 
-func connectorSchema(readonly bool, version int) map[string]*schema.Schema {
+func getConnectorSchema(readonly bool, version int) map[string]*schema.Schema {
 	// Common for Resource and Datasource
 	var result = map[string]*schema.Schema{
 		// Id

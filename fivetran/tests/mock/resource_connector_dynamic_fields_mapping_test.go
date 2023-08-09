@@ -214,25 +214,6 @@ func getJsonSchemaValue(service string) string {
 	return service
 }
 
-func testConfigFieldMapping(t *testing.T, fieldName string) {
-	if f, ok := fivetran.GetConfigFieldsMap()[fieldName]; ok {
-		for k := range f.Description {
-			testServiceXFieldMapping(t, k, fieldName)
-			return
-		}
-	}
-}
-
-func testServiceXFieldMapping(t *testing.T, service, field string) {
-	testResourceConnectorConfigConflictingFieldsMappingMock(t,
-		service,
-		getTfDestinationSchema(service),
-		getJsonSchemaValue(service),
-		getTfConfigForField(field, service),
-		getJsonConfigForField(field, service),
-	)
-}
-
 func getAllServiceSpecificFields(service string) map[string]bool {
 	fieldsMap := fivetran.GetConfigFieldsMap()
 
@@ -309,7 +290,7 @@ func getSortedFields() *[]string {
 var fields *[]string
 
 func TestResourceConnectorDynamicByServiceMapping(t *testing.T) {
-	t.Skip("This test for manual testing & debug for particular field")
+	t.Skip("This test is for manual testing & debug for particular field")
 	rf := make([]string, 0)
 	rf = append(rf, "custom_tables")
 

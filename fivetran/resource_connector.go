@@ -17,7 +17,7 @@ func resourceConnector() *schema.Resource {
 		UpdateContext: resourceConnectorUpdate,
 		DeleteContext: resourceConnectorDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		Schema:        connectorSchema(false, 2),
+		Schema:        getConnectorSchema(false, 2),
 		SchemaVersion: 2,
 		StateUpgraders: []schema.StateUpgrader{
 			{
@@ -36,13 +36,13 @@ func resourceConnector() *schema.Resource {
 
 func resourceConnectorLegacyV0() *schema.Resource {
 	return &schema.Resource{
-		Schema: connectorSchema(false, 0),
+		Schema: getConnectorSchema(false, 0),
 	}
 }
 
 func resourceConnectorLegacyV1() *schema.Resource {
 	return &schema.Resource{
-		Schema: connectorSchema(false, 1),
+		Schema: getConnectorSchema(false, 1),
 	}
 }
 
