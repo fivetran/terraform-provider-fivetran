@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func validateStringBooleanValue(val any, key string) (warns []string, errs []error) {
@@ -48,31 +49,76 @@ func tryReadListValue(source map[string]interface{}, key string) []interface{} {
 	return nil
 }
 
-// tryCopyStringValue copies string value from map `source` to map `target` if `key` represented in `source` map
-func tryCopyStringValue(target, source map[string]interface{}, key string) {
-	if v, ok := source[key].(string); ok {
-		mapAddStr(target, key, v)
+func copySensitiveStringValue(localConfig *map[string]interface{}, targetConfig, upstreamConfig map[string]interface{}, localKey, upstreamKey string) {
+	if upstreamKey == "" {
+		upstreamKey = localKey
+	}
+	if localConfig == nil {
+		// when using upstream value - use upstream key for source
+		copyStringValue(targetConfig, upstreamConfig, localKey, upstreamKey)
+	} else {
+		// when copying local value - use locak key for source
+		copyStringValue(targetConfig, *localConfig, localKey, "")
 	}
 }
 
-// tryReadBooleanValue copies bool value from map `source` to map `target` if `key` represented in `source` map
-func tryCopyBooleanValue(target, source map[string]interface{}, key string) {
-	if v, ok := source[key].(bool); ok {
-		mapAddStr(target, key, boolToStr(v))
+func copySensitiveListValue(localConfig *map[string]interface{}, targetConfig, upstreamConfig map[string]interface{}, targetKey, sourceKey string) {
+	if localConfig != nil {
+		if sourceKey == "" {
+			sourceKey = targetKey
+		}
+		mapAddXInterface(targetConfig, targetKey, (*localConfig)[sourceKey].(*schema.Set).List())
+	} else {
+		copyList(targetConfig, upstreamConfig, targetKey, sourceKey)
 	}
 }
 
-// tryReadIntegerValue copies int value from map `source` to map `target` if `key` represented in `source` map
-func tryCopyIntegerValue(target, source map[string]interface{}, key string) {
-	if v, ok := source[key].(float64); ok {
-		mapAddStr(target, key, strconv.Itoa((int(v))))
+func copyStringValue(target, source map[string]interface{}, targetKey, sourceKey string) {
+	if sourceKey == "" {
+		sourceKey = targetKey
+	}
+	if v, ok := source[sourceKey].(string); ok {
+		mapAddStr(target, targetKey, v)
 	}
 }
 
-// tryReadList copies abstract list ()`[]interface{}`) from map `source` to map `target` if `key` represented in `source` map
-func tryCopyList(target, source map[string]interface{}, key string) {
-	if v, ok := source[key].([]interface{}); ok {
-		mapAddXInterface(target, key, v)
+func copyBooleanValue(target, source map[string]interface{}, targetKey, sourceKey string) {
+	if sourceKey == "" {
+		sourceKey = targetKey
+	}
+	if v, ok := source[sourceKey].(bool); ok {
+		mapAddStr(target, targetKey, boolToStr(v))
+	}
+}
+
+func copyIntegerValue(target, source map[string]interface{}, targetKey, sourceKey string) {
+	if sourceKey == "" {
+		sourceKey = targetKey
+	}
+	if v, ok := source[sourceKey].(float64); ok {
+		mapAddStr(target, targetKey, strconv.Itoa((int(v))))
+	}
+}
+
+func copyList(target, source map[string]interface{}, targetKey, sourceKey string) {
+	if sourceKey == "" {
+		sourceKey = targetKey
+	}
+	if v, ok := source[sourceKey].([]interface{}); ok {
+		mapAddXInterface(target, targetKey, v)
+	}
+}
+
+func copyIntegersList(target, source map[string]interface{}, targetKey, sourceKey string) {
+	if sourceKey == "" {
+		sourceKey = targetKey
+	}
+	if v, ok := source[sourceKey].([]interface{}); ok {
+		result := make([]interface{}, len(v))
+		for i, iv := range v {
+			result[i] = strconv.Itoa(int(iv.(float64)))
+		}
+		mapAddXInterface(target, targetKey, result)
 	}
 }
 
@@ -122,20 +168,24 @@ func intPointerToStr(i *int) string {
 	return strconv.Itoa(*i)
 }
 
-// xStrXInterface receives a []string and returns a []interface{}
-func xStrXInterface(xs []string) []interface{} {
-	xi := make([]interface{}, len(xs))
-	for i, v := range xs {
-		xi[i] = v
-	}
-	return xi
-}
-
 // xInterfaceStrXStr receives a []interface{} of type string and returns a []string
 func xInterfaceStrXStr(xi []interface{}) []string {
 	xs := make([]string, len(xi))
 	for i, v := range xi {
 		xs[i] = v.(string)
+	}
+	return xs
+}
+
+// xInterfaceStrXStr receives a []interface{} of type string and returns a []string
+func xInterfaceStrXIneger(xi []interface{}) []int {
+	xs := make([]int, len(xi))
+	for i, v := range xi {
+		integerValue, e := strconv.Atoi(v.(string))
+		if e != nil {
+			panic(e)
+		}
+		xs[i] = integerValue
 	}
 	return xs
 }
@@ -205,74 +255,4 @@ func filterMap(
 		}
 	}
 	return result
-}
-
-func readDestinationSchema(schema string, service string) []interface{} {
-	destination_schema := make([]interface{}, 1)
-
-	prefix_required_services := make(map[string]bool)
-
-	// this list reflects all db-like connectors we know that should use destination_schema.prefix field
-	prefix_required_services["azure_sql_managed_db"] = true
-	prefix_required_services["oracle_fusion_cloud_apps_hcm"] = true
-	prefix_required_services["oracle_fusion_cloud_apps_fscm"] = true
-	prefix_required_services["google_cloud_postgresql"] = true
-	prefix_required_services["google_cloud_mysql"] = true
-	prefix_required_services["sql_server_hva"] = true
-	prefix_required_services["oracle_rac"] = true
-	prefix_required_services["oracle_ebs"] = true
-	prefix_required_services["google_cloud_sqlserver"] = true
-	prefix_required_services["maria"] = true
-	prefix_required_services["teradata"] = true
-	prefix_required_services["mongo_sharded"] = true
-	prefix_required_services["oracle_fusion_cloud_apps_crm"] = true
-	prefix_required_services["dynamics_365_fo"] = true
-	prefix_required_services["magento_mysql_rds"] = true
-	prefix_required_services["documentdb"] = true
-	prefix_required_services["hana_sap_hva_s4"] = true
-	prefix_required_services["sql_server_rds"] = true
-	prefix_required_services["maria_azure"] = true
-	prefix_required_services["db2i_hva"] = true
-	prefix_required_services["azure_postgres"] = true
-	prefix_required_services["postgres"] = true
-	prefix_required_services["aurora_postgres"] = true
-	prefix_required_services["mysql"] = true
-	prefix_required_services["oracle"] = true
-	prefix_required_services["mysql_azure"] = true
-	prefix_required_services["mongo"] = true
-	prefix_required_services["hana_sap_hva_ecc"] = true
-	prefix_required_services["maria_rds"] = true
-	prefix_required_services["airtable"] = true
-	prefix_required_services["aurora"] = true
-	prefix_required_services["db2i_sap_hva"] = true
-	prefix_required_services["oracle_hva"] = true
-	prefix_required_services["postgres_rds"] = true
-	prefix_required_services["cosmos"] = true
-	prefix_required_services["oracle_sap_hva"] = true
-	prefix_required_services["db2"] = true
-	prefix_required_services["sql_server"] = true
-	prefix_required_services["azure_sql_db"] = true
-	prefix_required_services["sap_hana_db"] = true
-	prefix_required_services["mysql_rds"] = true
-	prefix_required_services["snowflake_db"] = true
-	prefix_required_services["magento_mysql"] = true
-	prefix_required_services["heroku_postgres"] = true
-	prefix_required_services["sql_server_sap_ecc_hva"] = true
-	prefix_required_services["oracle_rds"] = true
-	prefix_required_services["bigquery_db"] = true
-
-	ds := make(map[string]interface{})
-
-	if prefix_required_services[service] {
-		mapAddStr(ds, "prefix", schema)
-	} else {
-		s := strings.Split(schema, ".")
-		mapAddStr(ds, "name", s[0])
-		if len(s) > 1 {
-			mapAddStr(ds, "table", s[1])
-		}
-	}
-
-	destination_schema[0] = ds
-	return destination_schema
 }

@@ -1,0 +1,2653 @@
+{
+   "abs_connection_string":   {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "abs_container_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "access_key": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "access_key_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "access_token": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "account": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "account_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "account_ids": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "account_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "accounts": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "action_breakdowns": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "action_report_time": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "adobe_analytics_configurations": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "object_list",
+      "fields": {
+         "calculated_metrics": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "elements": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "metrics": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "report_suites": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "segments": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "sync_mode": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         }
+      },
+      "key_field": "",
+      "description": {}
+   },
+   "advertisables": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "advertisers": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "advertisers_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "agent_host": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "agent_ora_home": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "agent_password": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "agent_port": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "agent_public_cert": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "agent_user": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "aggregation": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "always_encrypted": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "api_access_token": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "api_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "api_keys": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "api_quota": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "api_secret": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "api_token": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "api_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "api_url": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "api_version": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "app_ids": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "app_sync_mode": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "append_file_option": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "apps": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "archive_pattern": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "asm_option": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "asm_oracle_home": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "asm_password": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "asm_tns": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "asm_user": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "auth": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "auth_mode": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "auth_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "authorization_method": {
+      "readonly": true,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "aws_region_code": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "base_url": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "breakdowns": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "bucket": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "bucket_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "bucket_service": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "certificate": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "click_attribution_window": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "client_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "client_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "client_secret": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "cloud_storage_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "columns": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "company_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "compression": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "config_method": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "config_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "connection_method": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "connection_string": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "connection_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "consumer_group": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "consumer_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "consumer_secret": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "container_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "conversion_dimensions": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "conversion_report_time": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "conversion_window_size": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "csv_definition": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "custom_floodlight_variables": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "custom_tables": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "object_list",
+      "fields": {
+         "action_breakdowns": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "action_report_time": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "aggregation": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "breakdowns": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "click_attribution_window": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "config_type": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "fields": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "prebuilt_report_name": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "table_name": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "view_attribution_window": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         }
+      },
+      "key_field": "",
+      "description": {}
+   },
+   "customer_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "customer_list_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "daily_api_call_limit": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "data_access_method": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "data_center": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "database": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "dataset_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "datasource": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "date_granularity": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "delimiter": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "dimension_attributes": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "dimensions": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "domain": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "domain_host_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "domain_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "domain_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "elements": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "email": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "empty_header": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "enable_all_dimension_combinations": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "encryption_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "endpoint": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "engagement_attribution_window": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "entity_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "environment": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "escape_char": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "eu_region": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "export_storage_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "external_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "fields": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "file_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "finance_account_sync_mode": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "finance_accounts": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "folder_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "ftp_host": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "ftp_password": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "ftp_port": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "ftp_user": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "function": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "function_app": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "function_key": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "function_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "function_trigger": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "gcs_bucket": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "gcs_folder": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "group_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "home_folder": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "host": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "hosts": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "identity": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "instance": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "integration_key": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "is_account_level_connector": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "is_ftps": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "is_keypair": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "is_multi_entity_feature_enabled": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "is_new_package": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "is_private_key_encrypted": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "is_public": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "is_secure": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "is_single_table_mode": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "key": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "last_synced_changes__utc_": {
+      "readonly": true,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "latest_version": {
+      "readonly": true,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "list_strategy": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "login_password": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "manager_accounts": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "merchant_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "message_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "metrics": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "named_range": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "network_code": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "null_sequence": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "oauth_token": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "oauth_token_secret": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "on_error": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "on_premise": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "organization": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "organization_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "organizations": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "packed_mode_tables": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "pages": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "partners": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "passphrase": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "password": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "pat": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "path": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "pattern": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "pdb_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "pem_certificate": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "per_interaction_dimensions": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "port": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "post_click_attribution_window_size": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "prebuilt_report": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "prefix": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "primary_keys": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "private_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "profiles": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "project_credentials": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "object_list",
+      "fields": {
+         "api_key": {
+            "readonly": false,
+            "sensitive": true,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "project": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "secret_key": {
+            "readonly": false,
+            "sensitive": true,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         }
+      },
+      "key_field": "project",
+      "description": {}
+   },
+   "project_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "projects": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "properties": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "public_key": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "publication_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "query_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "region": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "replica_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "replication_slot": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "report_configuration_ids": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "report_suites": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "report_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "report_url": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "reports": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "object_list",
+      "fields": {
+         "config_type": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "dimensions": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "fields": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "filter": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "metrics": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "prebuilt_report": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "report_type": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "segments": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "table": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         }
+      },
+      "key_field": "",
+      "description": {}
+   },
+   "repositories": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "resource_url": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "role": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "role_arn": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "s3bucket": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "s3external_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "s3folder": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "s3role_arn": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "sales_account_sync_mode": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "sales_accounts": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "sap_user": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "schema_registry_urls": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "secret": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "secret_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "secrets": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "secrets_list": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "object_list",
+      "fields": {
+         "key": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         },
+         "value": {
+            "readonly": false,
+            "sensitive": true,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "description": {}
+         }
+      },
+      "key_field": "key",
+      "description": {}
+   },
+   "security_protocol": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "segments": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "selected_exports": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "server_url": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "servers": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "service_version": {
+      "readonly": true,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "sftp_host": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "sftp_is_key_pair": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "sftp_password": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "sftp_port": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "sftp_user": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "share_url": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "sheet_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "shop": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "short_code": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "sid": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "site_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "site_urls": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "skip_after": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "skip_before": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "soap_uri": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "source": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "sub_domain": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "subdomain": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "support_nested_columns": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "swipe_attribution_window": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "sync_data_locker": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "sync_format": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "sync_method": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "sync_mode": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "sync_pack_mode": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "sync_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "technical_account_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "test_table_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "time_zone": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "timeframe_months": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "tns": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "token_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "token_secret": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "topics": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "tunnel_host": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "tunnel_port": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "tunnel_user": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "unique_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "update_config_on_each_sync": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "update_method": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "uri": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "use_api_keys": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "use_oracle_rac": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "use_webhooks": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "user": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "user_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "user_key": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "user_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "user_profiles": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "username": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "view_attribution_window": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   },
+   "view_through_attribution_window_size": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "description": {}
+   }
+}

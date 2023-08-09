@@ -9,8 +9,7 @@ import (
 )
 
 var limit = 1000            // REST API response objects limit per HTTP request
-const Version = "0.7.2-pre" // Current provider version
-const devBuild = false      // Should be `false` in production build. Set to true to enable features in-dev for local debug.
+const Version = "1.0.0-pre" // Current provider version
 
 func Provider() *schema.Provider {
 	var resourceMap = map[string]*schema.Resource{
@@ -18,7 +17,7 @@ func Provider() *schema.Provider {
 		"fivetran_group":                   resourceGroup(),
 		"fivetran_group_users":             resourceGroupUsers(),
 		"fivetran_destination":             resourceDestination(),
-		"fivetran_connector":               resourceConnectorLegacy(),
+		"fivetran_connector":               resourceConnector(),
 		"fivetran_connector_schedule":      resourceConnectorSchedule(),
 		"fivetran_connector_schema_config": resourceSchemaConfig(),
 	}
@@ -32,12 +31,7 @@ func Provider() *schema.Provider {
 		"fivetran_group_users":         dataSourceGroupUsers(),
 		"fivetran_destination":         dataSourceDestination(),
 		"fivetran_connectors_metadata": dataSourceConnectorsMetadata(),
-		"fivetran_connector":           dataSourceConnectorLegacy(),
-	}
-
-	if devBuild {
-		resourceMap["fivetran_connector_experimental"] = resourceConnector()     // OAS-based resource
-		dataSourceMap["fivetran_connector_experimental"] = dataSourceConnector() // OAS-based data-source
+		"fivetran_connector":           dataSourceConnector(),
 	}
 
 	return &schema.Provider{

@@ -5,12 +5,173 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.7.3...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.0.0-pre...HEAD)
 
-## [0.7.4](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.7.3...v0.7.4) 
+## [1.0.0-pre](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.7.3...v1.0.0-pre) 
 
 ## Fixed
 - Resource `fivetran_connector` issue: auth values not applied.
+
+## Added
+Connector config fields support by Open API schema:
+- Added field `fivetran_connector.config.account_name` for services: `talkdesk`.
+- Added field `fivetran_connector.config.custom_reports.aggregate` for services: `tiktok_ads`.
+- Added field `fivetran_connector.config.blob_sas_url` for services: `webhooks`.
+- Added field `fivetran_connector.config.workspace_schema` for services: `snowflake_db`.
+- Added field `fivetran_connector.config.keystore` for services: `aws_msk`.
+- Added field `fivetran_connector.config.key_password` for services: `aws_msk`.
+- Added field `fivetran_connector.config.report_timezone` for services: `criteo`.
+- Added field `fivetran_connector.config.reports.aggregation` for services: `google_search_console`.
+- Added field `fivetran_connector.config.sender_id` for services: `sage_intacct`.
+- Added field `fivetran_connector.config.enable_tde` for services: `sql_server_hva`.
+- Added field `fivetran_connector.config.custom_reports.report_type` for services: `tiktok_ads`.
+- Added field `fivetran_connector.config.sasl_mechanism` for services: `apache_kafka`.
+- Added field `fivetran_connector.config.custom_tables.level` for services: `facebook_ads`.
+- Added field `fivetran_connector.config.packing_mode` for services: `firebase`, `mongo`, `mongo_sharded`.
+- Added field `fivetran_connector.config.reports.segment_ids` for services: `google_analytics`.
+- Added field `fivetran_connector.config.service_account_email` for services: `google_cloud_function`.
+- Added field `fivetran_connector.config.phone_number` for services: `itunes_connect`.
+- Added field `fivetran_connector.config.tde_certificate_name` for services: `sql_server_hva`.
+- Added field `fivetran_connector.config.use_service_account` for services: `bigquery_db`.
+- Added field `fivetran_connector.config.sync_pull_api` for services: `appsflyer`.
+- Added field `fivetran_connector.config.instance_number` for services: `oracle_sap_hva_netweaver`.
+- Added field `fivetran_connector.config.show_records_with_no_metrics` for services: `apple_search_ads`.
+- Added field `fivetran_connector.config.advertisers_sync_mode` for services: `google_search_ads_360`.
+- Added field `fivetran_connector.config.ad_analytics` for services: `linkedin_ads`.
+- Added field `fivetran_connector.config.refresh_token_expires_at` for services: `pinterest_ads`.
+- Added field `fivetran_connector.config.webhook_url` for services: `pipedrive`, `segment`.
+- Added field `fivetran_connector.config.api_requests_per_minute` for services: `qualtrics`.
+- Added field `fivetran_connector.config.sync_multiple_accounts` for services: `reddit_ads`.
+- Added field `fivetran_connector.config.access_type` for services: `share_point`.
+- Added field `fivetran_connector.config.forecast_id` for services: `clari`.
+- Added field `fivetran_connector.config.token_authenticated_container` for services: `cosmos`.
+- Added field `fivetran_connector.config.accounts_sync_mode` for services: `google_search_ads_360`.
+- Added field `fivetran_connector.config.reports.attributes` for services: `google_search_ads_360`.
+- Added field `fivetran_connector.config.table_name` for services: `airtable`.
+- Added field `fivetran_connector.config.asb_ip` for services: `azure_service_bus`.
+- Added field `fivetran_connector.config.token_id` for services: `chargedesk`, `mux`.
+- Added field `fivetran_connector.config.account_sync_mode` for services: `itunes_connect`.
+- Added field `fivetran_connector.config.salesforce_security_token` for services: `pardot`.
+- Added field `fivetran_connector.config.is_private_link_required` for services: `aws_lambda`.
+- Added field `fivetran_connector.config.app_id` for services: `open_exchange_rates`.
+- Added field `fivetran_connector.config.enable_exports` for services: `braze`.
+- Added field `fivetran_connector.config.sasl_scram256_secret` for services: `apache_kafka`.
+- Added field `fivetran_connector.config.store_hash` for services: `big_commerce`.
+- Added field `fivetran_connector.config.business_id` for services: `birdeye`.
+- Added field `fivetran_connector.config.reports.filter_field_name` for services: `google_analytics_4`.
+- Added field `fivetran_connector.config.service_account` for services: `google_drive`.
+- Added field `fivetran_connector.config.subscription` for services: `retailnext`.
+- Added field `fivetran_connector.config.support_connected_accounts_sync` for services: `stripe`, `stripe_test`.
+- Added field `fivetran_connector.config.api_secret_key` for services: `alchemer`.
+- Added field `fivetran_connector.config.enriched_export` for services: `optimizely`.
+- Added field `fivetran_connector.config.reports.filter_value` for services: `google_analytics_4`.
+- Added field `fivetran_connector.config.pgp_pass_phrase` for services: `azure_blob_storage`, `s3`, `sftp`.
+- Added field `fivetran_connector.config.workspace_same_as_source` for services: `bigquery_db`.
+- Added field `fivetran_connector.config.ad_unit_view` for services: `double_click_publishers`.
+- Added field `fivetran_connector.config.folder` for services: `dropbox`.
+- Added field `fivetran_connector.config.use_template_labels` for services: `mandrill`.
+- Added field `fivetran_connector.config.pem_private_key` for services: `apple_search_ads`.
+- Added field `fivetran_connector.config.sender_password` for services: `sage_intacct`.
+- Added field `fivetran_connector.config.tde_private_key` for services: `sql_server_hva`.
+- Added field `fivetran_connector.config.sasl_plain_key` for services: `apache_kafka`.
+- Added field `fivetran_connector.config.template_labels` for services: `mandrill`.
+- Added field `fivetran_connector.config.tenant_id` for services: `azure_sql_db`, `azure_sql_managed_db`.
+- Added field `fivetran_connector.config.sap_schema` for services: `db2i_hva`.
+- Added field `fivetran_connector.config.reports_linkedin_ads` for services: `linkedin_ads`.
+- Added field `fivetran_connector.config.login` for services: `the_trade_desk`.
+- Added field `fivetran_connector.config.attribution_window_size` for services: `tiktok_ads`.
+- Added field `fivetran_connector.config.custom_reports.metrics` for services: `tiktok_ads`.
+- Added field `fivetran_connector.config.app_ids_appsflyer` for services: `appsflyer`.
+- Added field `fivetran_connector.config.schema_registry_credentials_source` for services: `apache_kafka`, `aws_msk`, `confluent_cloud`.
+- Added field `fivetran_connector.config.custom_reports.dimensions` for services: `tiktok_ads`.
+- Added field `fivetran_connector.config.base_id` for services: `airtable`.
+- Added field `fivetran_connector.config.rollback_window_size` for services: `bingads`.
+- Added field `fivetran_connector.config.base_domain` for services: `freshteam`.
+- Added field `fivetran_connector.config.rest_api_limit` for services: `pardot`.
+- Added field `fivetran_connector.config.survey_ids` for services: `qualaroo`.
+- Added field `fivetran_connector.config.webhook_endpoint` for services: `appsflyer`.
+- Added field `fivetran_connector.config.bearer_token` for services: `freshchat`, `orbit`, `productboard`, `ada`.
+- Added field `fivetran_connector.config.service_account_key` for services: `firebase`.
+- Added field `fivetran_connector.config.config_repository_url` for services: `snowplow`.
+- Added field `fivetran_connector.config.line_separator` for services: `gcs`, `google_drive`, `box`, `dropbox`, `email`, `ftp`, `share_point`, `azure_blob_storage`, `kinesis`, `s3`, `sftp`.
+- Added field `fivetran_connector.config.custom_tables.use_unified_attribution_setting` for services: `facebook_ads`.
+- Added field `fivetran_connector.config.admin_api_key` for services: `splitio`.
+- Added field `fivetran_connector.config.sasl_plain_secret` for services: `apache_kafka`.
+- Added field `fivetran_connector.config.app_specific_password` for services: `itunes_connect`.
+- Added field `fivetran_connector.config.use_customer_bucket` for services: `appsflyer`.
+- Added field `fivetran_connector.config.use_pgp_encryption_options` for services: `sftp`, `azure_blob_storage`, `s3`.
+- Added field `fivetran_connector.config.resource_token` for services: `cosmos`.
+- Added field `fivetran_connector.config.application_key` for services: `dear`.
+- Added field `fivetran_connector.config.reports.search_types` for services: `google_search_console`.
+- Added field `fivetran_connector.config.s3_bucket` for services: `webhooks`.
+- Added field `fivetran_connector.config.sasl_scram512_key` for services: `apache_kafka`, `aws_msk`.
+- Added field `fivetran_connector.config.abs_prefix` for services: `braze`.
+- Added field `fivetran_connector.config.tde_password` for services: `sql_server_hva`.
+- Added field `fivetran_connector.config.site_address` for services: `teamwork`.
+- Added field `fivetran_connector.config.sftp_public_key` for services: `adobe_analytics_data_feed`.
+- Added field `fivetran_connector.config.client_cert` for services: `apache_kafka`, `heroku_kafka`.
+- Added field `fivetran_connector.config.sasl_scram256_key` for services: `apache_kafka`.
+- Added field `fivetran_connector.config.sasl_scram512_secret` for services: `apache_kafka`, `aws_msk`.
+- Added field `fivetran_connector.config.schema_registry_key` for services: `apache_kafka`, `aws_msk`, `azure_service_bus`, `confluent_cloud`.
+- Added field `fivetran_connector.config.pgp_secret_key` for services: `azure_blob_storage`, `s3`, `sftp`.
+- Added field `fivetran_connector.config.s3_export_role_arn` for services: `braze`.
+- Added field `fivetran_connector.config.filter` for services: `google_analytics`.
+- Added field `fivetran_connector.config.ws_certificate` for services: `adp_workforce_now`.
+- Added field `fivetran_connector.config.trusted_cert` for services: `apache_kafka`, `heroku_kafka`.
+- Added field `fivetran_connector.config.data_set_name` for services: `bigquery_db`.
+- Added field `fivetran_connector.config.token_authenticated_database` for services: `cosmos`.
+- Added field `fivetran_connector.config.token_secret_key` for services: `mux`.
+- Added field `fivetran_connector.config.business_unit_id` for services: `pardot`.
+- Added field `fivetran_connector.config.custom_reports.table_name` for services: `tiktok_ads`.
+- Added field `fivetran_connector.config.content_owner_id` for services: `youtube_analytics`.
+- Added field `fivetran_connector.config.is_vendor` for services: `amazon_selling_partner`.
+- Added field `fivetran_connector.config.report_format_type` for services: `workday`.
+- Added field `fivetran_connector.config.keystore_password` for services: `aws_msk`.
+- Added field `fivetran_connector.config.team_id` for services: `asana`.
+- Added field `fivetran_connector.config.host_ip` for services: `azure_blob_storage`, `azure_service_bus`.
+- Added field `fivetran_connector.config.namespace` for services: `azure_service_bus`.
+- Added field `fivetran_connector.config.s3_export_folder` for services: `braze`.
+- Added field `fivetran_connector.config.trust_store_type` for services: `heroku_kafka`.
+- Added field `fivetran_connector.config.custom_reports` for services: `tiktok_ads`, `reddit_ads`.
+- Added field `fivetran_connector.config.schema_registry_secret` for services: `apache_kafka`, `aws_msk`, `azure_service_bus`, `confluent_cloud`.
+- Added field `fivetran_connector.config.sync_formula_fields` for services: `financial_force`, `salesforce`, `salesforce_sandbox`.
+- Added field `fivetran_connector.config.site_name` for services: `microsoft_lists`.
+- Added field `fivetran_connector.config.folder_path` for services: `one_drive`.
+- Added field `fivetran_connector.config.is_sailthru_connect_enabled` for services: `sailthru`.
+- Added field `fivetran_connector.config.is_custom_api_credentials` for services: `twitter_ads`.
+- Added field `fivetran_connector.config.sync_metadata` for services: `facebook_ads`.
+- Added field `fivetran_connector.config.is_auth2_enabled` for services: `apple_search_ads`.
+- Added field `fivetran_connector.config.workspace_name` for services: `bigquery_db`, `snowflake_db`.
+- Added field `fivetran_connector.config.currency` for services: `criteo`.
+- Added field `fivetran_connector.config.log_journal` for services: `db2i_hva`.
+- Added field `fivetran_connector.config.conversation_webhook_url` for services: `helpscout`.
+- Added field `fivetran_connector.config.s3path` for services: `sailthru`.
+- Added field `fivetran_connector.config.adobe_analytics_configurations.table` for services: `adobe_analytics`.
+- Added field `fivetran_connector.config.container_address` for services: `azure_blob_storage`.
+- Added field `fivetran_connector.config.host_user` for services: `azure_service_bus`, `azure_blob_storage`.
+- Added field `fivetran_connector.config.key_store_type` for services: `heroku_kafka`.
+- Added field `fivetran_connector.config.rfc_library_path` for services: `oracle_sap_hva_netweaver`.
+- Added field `fivetran_connector.config.enable_enrichments` for services: `snowplow`.
+- Added field `fivetran_connector.config.json_delivery_mode` for services: `ftp`, `google_drive`, `kinesis`, `sftp`, `share_point`, `azure_blob_storage`, `box`, `dropbox`, `email`, `gcs`, `s3`.
+- Added field `fivetran_connector.config.encoded_public_key` for services: `apple_search_ads`.
+- Added field `fivetran_connector.config.has_manage_permissions` for services: `azure_service_bus`.
+- Added field `fivetran_connector.config.access_key_secret` for services: `s3`.
+- Added field `fivetran_connector.config.instance_url` for services: `sap_business_by_design`.
+- Added field `fivetran_connector.config.api_usage` for services: `zendesk`.
+- Added field `fivetran_connector.config.client_cert_key` for services: `heroku_kafka`, `apache_kafka`.
+- Added field `fivetran_connector.config.truststore` for services: `aws_msk`.
+- Added field `fivetran_connector.config.auth_method` for services: `azure_sql_db`, `azure_sql_managed_db`, `webhooks`.
+- Added field `fivetran_connector.config.list_sync_mode` for services: `google_analytics_4_export`.
+- Added field `fivetran_connector.config.s3_role_arn` for services: `adjust`, `webhooks`.
+- Added field `fivetran_connector.config.query_param_value` for services: `alchemer`, `birdeye`.
+- Added field `fivetran_connector.config.log_journal_schema` for services: `db2i_hva`.
+- Added field `fivetran_connector.config.company_key` for services: `khoros_care`.
+- Added field `fivetran_connector.config.word_press_site_id_or_woocommerce_domain_name` for services: `woocommerce`.
+- Added field `fivetran_connector.config.subscriber_name` for services: `azure_service_bus`.
+- Added field `fivetran_connector.config.use_workspace` for services: `bigquery_db`, `snowflake_db`.
+- Added field `fivetran_connector.config.s3_export_bucket` for services: `braze`.
+- Added field `fivetran_connector.config.tde_certificate` for services: `sql_server_hva`.
+- Added field `fivetran_connector.config.attribution_window` for services: `amazon_ads`.
 
 ## [0.7.3](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.7.2...v0.7.3) 
 
