@@ -26,3 +26,6 @@ temp/
 
 # Ignore tfplugindocs exec
 tfplugindocs 
+
+# Ignore temporary files
+fivetran/config-changes.txt
