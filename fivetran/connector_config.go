@@ -124,7 +124,7 @@ func buildDescription(fieldDescription map[string]string) string {
 	return "Field usage depends on `service` value: \n" + strings.Join(result, "\n")
 }
 
-func connectorSchemaConfig(readonly bool) *schema.Schema {
+func getConnectorSchemaConfig(readonly bool) *schema.Schema {
 	var schemaMap = map[string]*schema.Schema{}
 
 	for k, v := range GetConfigFieldsMap() {

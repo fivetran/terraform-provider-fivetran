@@ -130,7 +130,7 @@ func getConnectorSchema(readonly bool, version int) map[string]*schema.Schema {
 		"destination_schema": getConnectorDestinationSchema(readonly),
 
 		// Config
-		"config": connectorSchemaConfig(readonly),
+		"config": getConnectorSchemaConfig(readonly),
 	}
 
 	if version == 0 {
