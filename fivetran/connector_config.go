@@ -68,6 +68,10 @@ var configFields = make(map[string]ConfigField)
 
 var destinationSchemaFields = make(map[string]map[string]bool)
 
+func GetDestinationSchemaFields() map[string]map[string]bool {
+	return destinationSchemaFields
+}
+
 func getFieldSchema(isDataSourceSchema bool, field *ConfigField) *schema.Schema {
 	result := &schema.Schema{
 		Type:      schema.TypeString,

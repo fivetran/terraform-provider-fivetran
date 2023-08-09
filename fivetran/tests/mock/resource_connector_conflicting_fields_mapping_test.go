@@ -3,9 +3,12 @@ package mock
 import (
 	"fmt"
 	"net/http"
+	"sort"
+	"strings"
 	"testing"
 
 	"github.com/fivetran/go-fivetran/tests/mock"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
@@ -117,131 +120,145 @@ func setupMockClientConnectorResourceConfigConflictingFieldsMapping(t *testing.T
 	)
 }
 
-//func testConflictingField(tfConfig, jsonResponse string, checkFunc resource.TestCheckFunc, )
+func getTfConfigForField(fieldName, service string) string {
+	if f, ok := fivetran.GetConfigFieldsMap()[fieldName]; ok {
+		return getTfConfigForFieldImpl(fieldName, service, f)
+	}
+	return ""
+}
 
-func TestResourceConnectorConfigConflictingFieldsMappingMock(t *testing.T) {
-	testResourceConnectorConfigConflictingFieldsMappingMock(t,
-		"pendo",
-		`
-		name = "pendo"
-		`,
-		"pendo",
-		`
-	 	app_ids = ["app_id"]
-	 	`, `
-		 "app_ids":["app_id"]
-		`,
-	)
-
-	testResourceConnectorConfigConflictingFieldsMappingMock(t,
-		"appsflyer",
-		`
-		name = "appsflyer"
-		`,
-		"appsflyer",
-		`
-	 	app_ids_appsflyer {
-	 		app_id = "app_id"
-	 	}
-	 	`, `
-		 "app_ids":[{"app_id":"app_id"}]
-		`,
-	)
-
-	testResourceConnectorConfigConflictingFieldsMappingMock(t,
-		"linkedin_ads",
-		`
-		name = "linkedin"
-		`,
-		"linkedin",
-		`
-		reports_linkedin_ads = ["report"]
-	 	`, `
-		 "reports":["report"]
-		`,
-	)
-
-	testResourceConnectorConfigConflictingFieldsMappingMock(t,
-		"google_analytics",
-		`
-		name = "google_analytics"
-		`,
-		"google_analytics",
-		`
-		reports {
-			aggregation = "aggregation"
-			attributes = ["attribute"]
-			config_type = "config_type"
-			dimensions = ["dimension"]
-			fields = ["field"]
-			filter = "filter"
-			filter_field_name = "filter_field_name"
-			filter_value = "filter_value"
-			metrics = ["metric"]
-			prebuilt_report = "prebuilt_report"
-			report_type = "report_type"
-			search_types = ["search_type"]
-			segment_ids = ["segment_id"]
-			segments = ["segment"]
-			table = "table1"
+func getTfConfigForFieldImpl(fieldName, service string, field fivetran.ConfigField) string {
+	switch field.FieldValueType {
+	case fivetran.String:
+		return fmt.Sprintf(`%v = "%v"`, fieldName, fieldName)
+	case fivetran.Boolean:
+		return fmt.Sprintf(`%v = "%v"`, fieldName, "true")
+	case fivetran.Integer:
+		return fmt.Sprintf(`%v = "%v"`, fieldName, "123")
+	case fivetran.StringList:
+		if field.ItemType[service] == fivetran.Integer {
+			return fmt.Sprintf("%v = [%v]", fieldName, "1")
 		}
-		reports {
-			aggregation = "aggregation"
-			attributes = ["attribute"]
-			config_type = "config_type"
-			dimensions = ["dimension"]
-			fields = ["field"]
-			filter = "filter"
-			filter_field_name = "filter_field_name"
-			filter_value = "filter_value"
-			metrics = ["metric"]
-			prebuilt_report = "prebuilt_report"
-			report_type = "report_type"
-			search_types = ["search_type"]
-			segment_ids = ["segment_id"]
-			segments = ["segment"]
-			table = "table2"
+		return fmt.Sprintf(`%v = ["%v"]`, fieldName, fieldName)
+	case fivetran.ObjectList:
+		if len(field.ItemFields) > 0 {
+			subFields := make([]string, 0)
+			for n, f := range field.ItemFields {
+				subFields = append(subFields, getTfConfigForFieldImpl(n, service, f))
+			}
+			subFieldsStr := strings.Join(subFields, "\n\t")
+			return fmt.Sprintf("%v {\n\t%v\n}",
+				fieldName, subFieldsStr)
 		}
-	 	`, `
-		 "reports": [{
-			"aggregation" : "aggregation",
-			"attributes" : ["attribute"],
-			"config_type" : "config_type",
-			"dimensions" : ["dimension"],
-			"fields" : ["field"],
-			"filter" : "filter",
-			"filter_field_name" : "filter_field_name",
-			"filter_value" : "filter_value",
-			"metrics" : ["metric"],
-			"prebuilt_report" : "prebuilt_report",
-			"report_type" : "report_type",
-			"search_types" : ["search_type"],
-			"segment_ids" : ["segment_id"],
-			"segments" : ["segment"],
-			"table" : "table1"
-		 },{
-			"aggregation" : "aggregation",
-			"attributes" : ["attribute"],
-			"config_type" : "config_type",
-			"dimensions" : ["dimension"],
-			"fields" : ["field"],
-			"filter" : "filter",
-			"filter_field_name" : "filter_field_name",
-			"filter_value" : "filter_value",
-			"metrics" : ["metric"],
-			"prebuilt_report" : "prebuilt_report",
-			"report_type" : "report_type",
-			"search_types" : ["search_type"],
-			"segment_ids" : ["segment_id"],
-			"segments" : ["segment"],
-			"table" : "table2"
-		 }]
-		`,
+	}
+
+	return ""
+}
+
+func getJsonConfigForField(fieldName, service string) string {
+	if f, ok := fivetran.GetConfigFieldsMap()[fieldName]; ok {
+		return getJsonConfigForFieldImpl(fieldName, service, f)
+	}
+	return ""
+}
+
+func getJsonConfigForFieldImpl(fieldName, service string, field fivetran.ConfigField) string {
+	apiFieldName := fieldName
+	if field.ApiField != "" {
+		apiFieldName = field.ApiField
+	}
+	switch field.FieldValueType {
+	case fivetran.String:
+		return fmt.Sprintf(`"%v": "%v"`, apiFieldName, fieldName)
+	case fivetran.Boolean:
+		return fmt.Sprintf(`"%v": %v`, apiFieldName, "true")
+	case fivetran.Integer:
+		return fmt.Sprintf(`"%v": %v`, apiFieldName, "123")
+	case fivetran.StringList:
+		if field.ItemType[service] == fivetran.Integer {
+			return fmt.Sprintf(`"%v": [%v]`, apiFieldName, "1")
+		}
+		return fmt.Sprintf(`"%v": ["%v"]`, apiFieldName, fieldName)
+	case fivetran.ObjectList:
+		if len(field.ItemFields) > 0 {
+			subFields := make([]string, 0)
+			for n, f := range field.ItemFields {
+				subFields = append(subFields, getJsonConfigForFieldImpl(n, service, f))
+			}
+			subFieldsStr := strings.Join(subFields, ",\n\t")
+			return fmt.Sprintf("\"%v\": [{\n\t%v\n}]",
+				apiFieldName, subFieldsStr)
+		}
+	}
+
+	return ""
+}
+
+func getTfDestinationSchema(service string) string {
+	if fivetran.GetDestinationSchemaFields()[service]["schema"] {
+		if fivetran.GetDestinationSchemaFields()[service]["table"] {
+			return fmt.Sprintf("\n\tname = \"%v\"\n\ttable = \"table\"\n", service)
+		}
+	} else {
+		return fmt.Sprintf("\n\tprefix = \"%v\"\n", service)
+	}
+	return fmt.Sprintf("\n\tname = \"%v\"\n", service)
+}
+
+func getJsonSchemaValue(service string) string {
+	if fivetran.GetDestinationSchemaFields()[service]["schema"] {
+		if fivetran.GetDestinationSchemaFields()[service]["table"] {
+			return fmt.Sprintf("%v.table", service)
+		}
+	}
+	return service
+}
+
+func testConfigFieldMapping(t *testing.T, fieldName string) {
+	if f, ok := fivetran.GetConfigFieldsMap()[fieldName]; ok {
+		for k := range f.Description {
+			testServiceXFieldMapping(t, k, fieldName)
+			return
+		}
+	}
+}
+
+func testServiceXFieldMapping(t *testing.T, service, field string) {
+	testResourceConnectorConfigConflictingFieldsMappingMock(t,
+		service,
+		getTfDestinationSchema(service),
+		getJsonSchemaValue(service),
+		getTfConfigForField(field, service),
+		getJsonConfigForField(field, service),
 	)
 }
 
+func getSortedFields() *[]string {
+	if fields == nil || len(*fields) == 0 {
+		fieldsMap := fivetran.GetConfigFieldsMap()
+		// Extract keys from map
+		result := make([]string, 0, len(fieldsMap))
+		for k := range fieldsMap {
+			result = append(result, k)
+		}
+
+		// Sort keys
+		sort.Strings(result)
+		fields = &result
+	}
+	return fields
+}
+
+var fields *[]string
+
+func TestResourceConnectorConfigConflictingFieldsMappingMock(t *testing.T) {
+	for _, fieldName := range *getSortedFields() {
+		fmt.Println("Testing field: " + fieldName)
+		testConfigFieldMapping(t, fieldName)
+	}
+}
+
 func testResourceConnectorConfigConflictingFieldsMappingMock(t *testing.T, service, destinationSchema, schema, tfConfig, jsonConfig string) {
-	// NOTE: the config is totally inconsistent and contains all possible values for mapping test
 	step1 := resource.TestStep{
 		Config: getTfConfigForConflictingFields(service, destinationSchema, tfConfig),
 		Check: resource.ComposeAggregateTestCheckFunc(
