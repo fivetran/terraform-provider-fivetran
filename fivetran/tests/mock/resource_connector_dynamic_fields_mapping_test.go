@@ -22,63 +22,64 @@ var (
 
 const (
 	connectorConfigConflictingMappingTfConfig = `
-	resource "fivetran_connector" "test_connector" {
-		provider = fivetran-provider
+resource "fivetran_connector" "test_connector" {
+	provider = fivetran-provider
 
-		group_id = "group_id"
-		service = "%v"
+	group_id = "group_id"
+	service = "%v"
 
-		destination_schema {
-			%v
-		}
+	destination_schema {
+		%v
+	}
 
-		trust_certificates = false
-		trust_fingerprints = false
-		run_setup_tests = false
+	trust_certificates = false
+	trust_fingerprints = false
+	run_setup_tests = false
 
-		config {
-			%v
-		}
-	}`
+	config {
+		%v
+	}
+}
+	`
 
 	connectorConflictingMappingResponse = `
-	{
-		"id": "connector_id",
-        "group_id": "group_id",
-        "service": "%v",
-        "service_version": 1,
-        "schema": "%v",
-        "paused": true,
-        "pause_after_trial": true,
-        "connected_by": "user_id",
-        "created_at": "2022-01-01T11:22:33.012345Z",
-        "succeeded_at": null,
-        "failed_at": null,
-        "sync_frequency": 5,
-		"schedule_type": "auto",
-        "status": {
-            "setup_state": "incomplete",
-            "sync_state": "paused",
-            "update_state": "on_schedule",
-            "is_historical_sync": true,
-            "tasks": [{
-				"code":"task_code",
-				"message":"task_message"
-			}],
-            "warnings": [{
-				"code":"warning_code",
-				"message":"warning_message"
-			}]
-        },
-        "setup_tests": [{
-            "title": "Validate Login",
-            "status": "FAILED",
-            "message": "Invalid login credentials"
-        }],
-        "config": {
-			%v
-		}
+{
+	"id": "connector_id",
+	"group_id": "group_id",
+	"service": "%v",
+	"service_version": 1,
+	"schema": "%v",
+	"paused": true,
+	"pause_after_trial": true,
+	"connected_by": "user_id",
+	"created_at": "2022-01-01T11:22:33.012345Z",
+	"succeeded_at": null,
+	"failed_at": null,
+	"sync_frequency": 5,
+	"schedule_type": "auto",
+	"status": {
+		"setup_state": "incomplete",
+		"sync_state": "paused",
+		"update_state": "on_schedule",
+		"is_historical_sync": true,
+		"tasks": [{
+			"code":"task_code",
+			"message":"task_message"
+		}],
+		"warnings": [{
+			"code":"warning_code",
+			"message":"warning_message"
+		}]
+	},
+	"setup_tests": [{
+		"title": "Validate Login",
+		"status": "FAILED",
+		"message": "Invalid login credentials"
+	}],
+	"config": {
+		%v
 	}
+}
 	`
 )
 
@@ -101,13 +102,12 @@ func setupMockClientConnectorResourceConfigConflictingFieldsMapping(t *testing.T
 
 	connectorConflictingMockPostHandler = mockClient.When(http.MethodPost, "/v1/connectors").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			//body := requestBodyToJson(t, req)
 
-			//assertKeyExists(t, body, "config")
+			response := getJsonConfigForConflictingFields(service, schema, configJson)
 
-			//config := body["config"].(map[string]interface{})
+			fmt.Print(response)
 
-			connectorConflictingMappingMockData = createMapFromJsonString(t, getJsonConfigForConflictingFields(service, schema, configJson))
+			connectorConflictingMappingMockData = createMapFromJsonString(t, response)
 			return fivetranSuccessResponse(t, req, http.StatusCreated, "Success", connectorConflictingMappingMockData), nil
 		},
 	)
@@ -233,6 +233,63 @@ func testServiceXFieldMapping(t *testing.T, service, field string) {
 	)
 }
 
+func getAllServiceSpecificFields(service string) map[string]bool {
+	fieldsMap := fivetran.GetConfigFieldsMap()
+
+	result := make(map[string]bool)
+
+	for k, v := range fieldsMap {
+		if _, ok := v.Description[service]; ok {
+			result[k] = true
+		}
+	}
+
+	return result
+}
+
+func excludeKeysFromStringList(list []string, keys map[string]bool) []string {
+	result := make([]string, 0)
+	for _, s := range list {
+		if _, ok := keys[s]; !ok {
+			result = append(result, s)
+		}
+	}
+	return result
+}
+
+func fetchFieldsBatchByService(fields []string) ([]string, []string, string) {
+	if len(fields) > 0 {
+		f := fields[0]
+		if field, ok := fivetran.GetConfigFieldsMap()[f]; ok {
+			var service string
+			for s := range field.Description {
+				service = s
+				break
+			}
+			serviceFields := getAllServiceSpecificFields(service)
+
+			if len(serviceFields) == 0 {
+				fmt.Printf("No found for service %v for field %v", service, f)
+			}
+			result := make([]string, 0, len(serviceFields))
+
+			if len(serviceFields) == 0 {
+				fmt.Printf("SKIP: field %v not in use by any service", f)
+				return make([]string, 0), fields[1:], ""
+			}
+
+			for k := range serviceFields {
+				result = append(result, k)
+			}
+
+			return result, excludeKeysFromStringList(fields, serviceFields), service
+		} else {
+			return make([]string, 0), fields[1:], ""
+		}
+	}
+	return make([]string, 0), make([]string, 0), ""
+}
+
 func getSortedFields() *[]string {
 	if fields == nil || len(*fields) == 0 {
 		fieldsMap := fivetran.GetConfigFieldsMap()
@@ -251,16 +308,76 @@ func getSortedFields() *[]string {
 
 var fields *[]string
 
-func TestResourceConnectorConfigConflictingFieldsMappingMock(t *testing.T) {
-	for _, fieldName := range *getSortedFields() {
-		fmt.Println("Testing field: " + fieldName)
-		testConfigFieldMapping(t, fieldName)
+func TestResourceConnectorDynamicByServiceMapping(t *testing.T) {
+	t.Skip("This test for manual testing & debug for particular field")
+	rf := make([]string, 0)
+	rf = append(rf, "custom_tables")
+
+	restFields := &rf
+
+	for len(*restFields) > 0 {
+		stepFields, rest, service := fetchFieldsBatchByService(*restFields)
+		fmt.Printf("Fields left to test: %v", len(rest))
+		fmt.Printf("Testing fields for service %v : [%v]", service, strings.Join(stepFields, ", "))
+		if len(stepFields) > 0 {
+			tfConfig := make([]string, 0)
+			jsonConfig := make([]string, 0)
+			for _, fname := range stepFields {
+				tfConfig = append(tfConfig, getTfConfigForField(fname, service))
+				jsonConfig = append(jsonConfig, getJsonConfigForField(fname, service))
+			}
+			tfc := strings.Join(tfConfig, "\n\t\t")
+			jsonc := strings.Join(jsonConfig, ",\n\t\t")
+
+			testResourceConnectorConfigConflictingFieldsMappingMock(t,
+				service,
+				getTfDestinationSchema(service),
+				getJsonSchemaValue(service),
+				tfc,
+				jsonc,
+			)
+		}
+		fmt.Printf("Fields left to test: %v", len(rest))
+		restFields = &rest
+	}
+}
+
+func TestResourceConnectorDynamicMapping(t *testing.T) {
+	restFields := getSortedFields()
+
+	for len(*restFields) > 0 {
+		stepFields, rest, service := fetchFieldsBatchByService(*restFields)
+		fmt.Printf("Fields left to test: %v", len(rest))
+		fmt.Printf("Testing fields for service %v : [%v]", service, strings.Join(stepFields, ", "))
+		if len(stepFields) > 0 {
+			tfConfig := make([]string, 0)
+			jsonConfig := make([]string, 0)
+			for _, fname := range stepFields {
+				tfConfig = append(tfConfig, getTfConfigForField(fname, service))
+				jsonConfig = append(jsonConfig, getJsonConfigForField(fname, service))
+			}
+			tfc := strings.Join(tfConfig, "\n\t\t")
+			jsonc := strings.Join(jsonConfig, ",\n\t\t")
+
+			testResourceConnectorConfigConflictingFieldsMappingMock(t,
+				service,
+				getTfDestinationSchema(service),
+				getJsonSchemaValue(service),
+				tfc,
+				jsonc,
+			)
+		}
+		fmt.Printf("Fields left to test: %v", len(rest))
+		restFields = &rest
 	}
 }
 
 func testResourceConnectorConfigConflictingFieldsMappingMock(t *testing.T, service, destinationSchema, schema, tfConfig, jsonConfig string) {
+	config := getTfConfigForConflictingFields(service, destinationSchema, tfConfig)
+	fmt.Print(config)
+
 	step1 := resource.TestStep{
-		Config: getTfConfigForConflictingFields(service, destinationSchema, tfConfig),
+		Config: config,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 				assertEqual(t, connectorConflictingMockPostHandler.Interactions, 1)
