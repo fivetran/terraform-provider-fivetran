@@ -74,6 +74,14 @@ resource "fivetran_destination" "destination" {
         database = "myDatabaseName"
         connection_type = "Directly"
     }
+
+    # setup tests operation could take time
+    # you can define custom timeout for create and update
+    # default values for destination resource is 30 minutes
+    timeouts {
+        create = "60m"
+        update = "60m"
+    }
 }
 ```
 
@@ -93,6 +101,14 @@ resource "fivetran_connector" "connector" {
 
     config {
         is_account_level_connector = "false"
+    }
+
+    # setup tests operation could take time
+    # you can define custom timeout for create and update
+    # default values for connector resource is 30 minutes
+    timeouts {
+        create = "60m"
+        update = "60m"
     }
 
     depends_on = [

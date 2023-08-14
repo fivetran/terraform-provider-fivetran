@@ -8,7 +8,10 @@ This resource allows you to manage the Standard Configuration settings of a conn
  - Define the schema change handling settings
  - Enable and disable schemas, tables, and columns
 
-The resource is in ALPHA state. The resource schema and behavior are subject to change without prior notice.
+The resource is in **ALPHA** state. The resource schema and behavior are subject to change without prior notice.
+
+Known issues:
+ - Definition of `sync_mode` for table causes infinite drifting changes in plan
 
 ## Usage guide
 

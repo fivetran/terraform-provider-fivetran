@@ -13,6 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Resource `fivetran_connector` issue: auth values not applied.
 
 ## Added
+Supported custom timeouts for the following operations:
+- Resource `fivetran_connector`: Create (default: 30 minutes)
+- Resource `fivetran_connector`: Update (default: 30 minutes)
+- Resource `fivetran_destination`: Create (default: 30 minutes)
+- Resource `fivetran_destination`: Update (default: 30 minutes)
+- Resource `fivetran_connector_schema_config`: Create (default: 2 hours)
+- Resource `fivetran_connector_schema_config`: Read   (default: 2 hours)
+- Resource `fivetran_connector_schema_config`: Update (default: 2 hours)
+
 Connector config fields support by Open API schema:
 - Added field `fivetran_connector.config.account_name` for services: `talkdesk`.
 - Added field `fivetran_connector.config.custom_reports.aggregate` for services: `tiktok_ads`.

@@ -8,7 +8,10 @@ This resource allows you to manage the Standard Configuration settings of a conn
  - Define the schema change handling settings
  - Enable and disable schemas, tables, and columns
 
-The resource is in ALPHA state. The resource schema and behavior are subject to change without prior notice.
+The resource is in **ALPHA** state. The resource schema and behavior are subject to change without prior notice.
+
+Known issues:
+ - Definition of `sync_mode` for table causes infinite drifting changes in plan
 
 ## Usage guide
 
@@ -174,6 +177,7 @@ resource "fivetran_connector_schema_config" "schema" {
 ### Optional
 
 - `schema` (Block Set) (see [below for nested schema](#nestedblock--schema))
+- `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 
 ### Read-Only
 
@@ -215,6 +219,18 @@ Optional:
 
 - `enabled` (String) The boolean value specifying whether the sync of the column into the destination is enabled.
 - `hashed` (String) The boolean value specifying whether a column should be hashed
+
+
+
+
+<a id="nestedblock--timeouts"></a>
+### Nested Schema for `timeouts`
+
+Optional:
+
+- `create` (String)
+- `read` (String)
+- `update` (String)
 
 ## Import
 
