@@ -12,13 +12,13 @@ import (
 
 func resourceConnector() *schema.Resource {
 	return &schema.Resource{
-		CreateContext: resourceConnectorCreate,
-		ReadContext:   resourceConnectorRead,
-		UpdateContext: resourceConnectorUpdate,
-		DeleteContext: resourceConnectorDelete,
-		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		Schema:        getConnectorSchema(false, 2),
-		SchemaVersion: 2,
+		CreateWithoutTimeout: resourceConnectorCreate,
+		ReadContext:          resourceConnectorRead,
+		UpdateWithoutTimeout: resourceConnectorUpdate,
+		DeleteContext:        resourceConnectorDelete,
+		Importer:             &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
+		Schema:               getConnectorSchema(false, 2),
+		SchemaVersion:        2,
 		StateUpgraders: []schema.StateUpgrader{
 			{
 				Type:    resourceConnectorLegacyV0().CoreConfigSchema().ImpliedType(),
@@ -30,6 +30,10 @@ func resourceConnector() *schema.Resource {
 				Upgrade: resourceconnectorInstanceStateUpgradeV1,
 				Version: 1,
 			},
+		},
+		Timeouts: &schema.ResourceTimeout{
+			Create: schema.DefaultTimeout(30 * time.Minute),
+			Update: schema.DefaultTimeout(30 * time.Minute),
 		},
 	}
 }
@@ -107,6 +111,9 @@ func resourceConnectorCreate(ctx context.Context, d *schema.ResourceData, m inte
 
 	svc.ConfigCustom(&config)
 	svc.AuthCustom(resourceConnectorUpdateCustomAuth(d))
+
+	ctx, cancel := setContextTimeout(ctx, d.Timeout(schema.TimeoutCreate))
+	defer cancel()
 
 	resp, err := svc.DoCustom(ctx)
 	if err != nil {
@@ -241,6 +248,9 @@ func resourceConnectorUpdate(ctx context.Context, d *schema.ResourceData, m inte
 
 	svc.ConfigCustom(&config)
 	svc.AuthCustom(resourceConnectorUpdateCustomAuth(d))
+
+	ctx, cancel := setContextTimeout(ctx, d.Timeout(schema.TimeoutUpdate))
+	defer cancel()
 
 	resp, err := svc.DoCustom(ctx)
 	if err != nil {

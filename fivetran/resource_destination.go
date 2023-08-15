@@ -13,11 +13,11 @@ import (
 
 func resourceDestination() *schema.Resource {
 	return &schema.Resource{
-		CreateContext: resourceDestinationCreate,
-		ReadContext:   resourceDestinationRead,
-		UpdateContext: resourceDestinationUpdate,
-		DeleteContext: resourceDestinationDelete,
-		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
+		CreateWithoutTimeout: resourceDestinationCreate,
+		ReadContext:          resourceDestinationRead,
+		UpdateWithoutTimeout: resourceDestinationUpdate,
+		DeleteContext:        resourceDestinationDelete,
+		Importer:             &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
 		Schema: map[string]*schema.Schema{
 			"id": {
 				Type:        schema.TypeString,
@@ -73,6 +73,10 @@ func resourceDestination() *schema.Resource {
 				Computed:    true,
 				Description: "",
 			}, // internal
+		},
+		Timeouts: &schema.ResourceTimeout{
+			Create: schema.DefaultTimeout(30 * time.Minute),
+			Update: schema.DefaultTimeout(30 * time.Minute),
 		},
 	}
 }
@@ -275,6 +279,9 @@ func resourceDestinationCreate(ctx context.Context, d *schema.ResourceData, m in
 		svc.RunSetupTests(v.(bool))
 	}
 
+	ctx, cancel := setContextTimeout(ctx, d.Timeout(schema.TimeoutCreate))
+	defer cancel()
+
 	resp, err := svc.Do(ctx)
 	if err != nil {
 		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
@@ -351,6 +358,9 @@ func resourceDestinationUpdate(ctx context.Context, d *schema.ResourceData, m in
 			// only sets change if func resourceDestinationCreateConfig returns ok
 		}
 	}
+	ctx, cancel := setContextTimeout(ctx, d.Timeout(schema.TimeoutUpdate))
+	defer cancel()
+
 	if hasChanges {
 		if v, ok := d.GetOk("run_setup_tests"); ok {
 			svc.RunSetupTests(v.(bool))

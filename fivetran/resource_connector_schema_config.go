@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"hash/fnv"
+	"time"
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -34,11 +35,11 @@ const (
 
 func resourceSchemaConfig() *schema.Resource {
 	return &schema.Resource{
-		CreateContext: resourceSchemaConfigCreate,
-		ReadContext:   resourceSchemaConfigRead,
-		UpdateContext: resourceSchemaConfigUpdate,
-		DeleteContext: resourceSchemaConfigDelete,
-		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
+		CreateWithoutTimeout: resourceSchemaConfigCreate,
+		ReadWithoutTimeout:   resourceSchemaConfigRead,
+		UpdateWithoutTimeout: resourceSchemaConfigUpdate,
+		DeleteContext:        resourceSchemaConfigDelete,
+		Importer:             &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
 		Schema: map[string]*schema.Schema{
 			ID: {
 				Type:        schema.TypeString,
@@ -53,6 +54,11 @@ func resourceSchemaConfig() *schema.Resource {
 			},
 			SCHEMA_CHANGE_HANDLING: resourceSchemaConfigSchemaShangeHandling(),
 			SCHEMA:                 resourceSchemaConfigSchema(),
+		},
+		Timeouts: &schema.ResourceTimeout{
+			Read:   schema.DefaultTimeout(2 * time.Hour), // Import operation can trigger schema reload
+			Create: schema.DefaultTimeout(2 * time.Hour),
+			Update: schema.DefaultTimeout(2 * time.Hour),
 		},
 	}
 }
@@ -171,8 +177,12 @@ func resourceSchemaConfigCreate(ctx context.Context, d *schema.ResourceData, m i
 	client := m.(*fivetran.Client)
 	var schemaChangeHandling = d.Get(SCHEMA_CHANGE_HANDLING).(string)
 
+	ctx, cancel := setContextTimeout(ctx, d.Timeout(schema.TimeoutCreate))
+	defer cancel()
+
 	// ensure connector has standard config with schema reloaded
 	upstreamSchema, schemaDiags := getUpstreamConfigResponse(client, ctx, connectorID, "create")
+
 	if upstreamSchema == nil {
 		return schemaDiags
 	}
@@ -203,13 +213,25 @@ func resourceSchemaConfigCreate(ctx context.Context, d *schema.ResourceData, m i
 	}
 
 	d.SetId(connectorID)
-	return resourceSchemaConfigRead(ctx, d, m)
+
+	return resourceSchemaConfigReadImpl(ctx, d, m, false)
 }
 
 func resourceSchemaConfigRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	return resourceSchemaConfigReadImpl(ctx, d, m, true)
+}
+
+func resourceSchemaConfigReadImpl(ctx context.Context, d *schema.ResourceData, m interface{}, setTimeout bool) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
 	connectorID := d.Get(ID).(string)
+
+	// we don't need to set timeout additionally if it was already set in caller func (Create/Update)
+	if setTimeout {
+		var cancel context.CancelFunc
+		ctx, cancel = setContextTimeout(ctx, d.Timeout(schema.TimeoutRead))
+		defer cancel()
+	}
 
 	schemaResponse, getDiags := getUpstreamConfigResponse(client, ctx, connectorID, "read error")
 	if schemaResponse == nil {
@@ -250,6 +272,9 @@ func resourceSchemaConfigUpdate(ctx context.Context, d *schema.ResourceData, m i
 	var schemaChangeHandling = d.Get(SCHEMA_CHANGE_HANDLING).(string)
 	var upstreamSchema *fivetran.ConnectorSchemaDetailsResponse
 
+	ctx, cancel := setContextTimeout(ctx, d.Timeout(schema.TimeoutUpdate))
+	defer cancel()
+
 	// update SCH policy if needed
 	if d.HasChange(SCHEMA_CHANGE_HANDLING) {
 		svc := client.NewConnectorSchemaUpdateService()
@@ -276,7 +301,7 @@ func resourceSchemaConfigUpdate(ctx context.Context, d *schema.ResourceData, m i
 		return applyDiags
 	}
 
-	return resourceSchemaConfigRead(ctx, d, m)
+	return resourceSchemaConfigReadImpl(ctx, d, m, false)
 }
 
 func resourceSchemaConfigDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

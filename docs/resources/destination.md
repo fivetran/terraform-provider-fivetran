@@ -43,6 +43,7 @@ resource "fivetran_destination" "dest" {
 ### Optional
 
 - `run_setup_tests` (Boolean) Specifies whether the setup tests should be run automatically. The default value is TRUE.
+- `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 - `trust_certificates` (Boolean) Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).
 - `trust_fingerprints` (Boolean) Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).
 
@@ -92,6 +93,15 @@ Optional:
 Read-Only:
 
 - `public_key` (String) Public key to grant Fivetran SSH access to git repository.
+
+
+<a id="nestedblock--timeouts"></a>
+### Nested Schema for `timeouts`
+
+Optional:
+
+- `create` (String)
+- `update` (String)
 
 ## Setup tests
 

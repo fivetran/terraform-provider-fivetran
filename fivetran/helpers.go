@@ -1,13 +1,24 @@
 package fivetran
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
+
+func setContextTimeout(ctx context.Context, timeout time.Duration) (context.Context, context.CancelFunc) {
+	var cancel context.CancelFunc
+	if timeout > 0 {
+		ctx, cancel = context.WithTimeout(ctx, timeout)
+		return ctx, cancel
+	}
+	return ctx, func() {}
+}
 
 func validateStringBooleanValue(val any, key string) (warns []string, errs []error) {
 	v := val.(string)

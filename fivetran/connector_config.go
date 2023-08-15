@@ -3,6 +3,7 @@ package fivetran
 import (
 	_ "embed"
 	"fmt"
+	"sort"
 	"strings"
 
 	"encoding/json"
@@ -118,8 +119,16 @@ func getFieldSchema(isDataSourceSchema bool, field *ConfigField) *schema.Schema 
 
 func buildDescription(fieldDescription map[string]string) string {
 	var result []string
-	for service, description := range fieldDescription {
-		result = append(result, fmt.Sprintf("\t- Service `%v`: %v", service, description))
+
+	keys := make([]string, 0, len(fieldDescription))
+	for k := range fieldDescription {
+		keys = append(keys, k)
+	}
+
+	sort.Strings(keys)
+
+	for _, service := range keys {
+		result = append(result, fmt.Sprintf("\t- Service `%v`: %v", service, fieldDescription[service]))
 	}
 	return "Field usage depends on `service` value: \n" + strings.Join(result, "\n")
 }

@@ -177,19 +177,8 @@ const (
         }],
         "config": {
 			"packed_mode_tables":["packed_mode_table_3", "packed_mode_table_2", "packed_mode_table_1"],
-			"properties":["property_2", "property_1"],` +
-
-		// "app_ids": ["value_2", "value_1"],
-		// "conversion_dimensions": ["value_2", "value_1"],
-		// "custom_floodlight_variables": ["value_2", "value_1"],
-		// "partners": ["value_2", "value_1"],
-		// "per_interaction_dimensions": ["value_2", "value_1"],
-		// "schema_registry_urls": ["value_2", "value_1"],
-		// "topics": ["value_2", "value_1"],
-		// "servers": ["value_2", "value_1"],
-		// "segments": ["value_2", "value_1"],
-
-		`"primary_keys":["primary_key_2", "primary_key_1"],
+			"properties":["property_2", "property_1"],
+			"primary_keys":["primary_key_2", "primary_key_1"],
 			"report_suites": ["value_2", "value_1"],
 			"elements": ["value_2", "value_1"],
 			"metrics": ["value_2", "value_1"],
@@ -510,6 +499,9 @@ func TestResourceConnectorEmptyConfigMock(t *testing.T) {
 			trust_fingerprints = false
 			run_setup_tests = false
 
+			timeouts {
+				create = "0"
+			}
 			#config {}
 		}`,
 

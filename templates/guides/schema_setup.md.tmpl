@@ -52,6 +52,21 @@ resource "fivetran_connector_schema_config" "connector_schema" {
       }
     }
   }
+  # before applying schema resource will trigger "Reload connector schema config" endpoint
+  # it could take time for slow sources or for source with huge connector_schema_setup
+  # to prevent timeouts you can set custom timeouts
+  timeouts {
+      create = "6h"
+      read   = "6h"
+      update = "6h"
+  }
+  # if you not sure in timing you can set timeouts to 0 - it means `no timeout`
+  # WARNING: this could lead to unpredictable apply process hanging
+  #timeouts {
+  #    create = "0"
+  #    read   = "0"
+  #    update = "0"
+  #}
 }
 ```
 
