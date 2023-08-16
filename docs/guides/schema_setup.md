@@ -61,7 +61,7 @@ resource "fivetran_connector_schema_config" "connector_schema" {
       update = "6h"
   }
   # if you not sure in timing you can set timeouts to 0 - it means `no timeout`
-  # WARNING: this could lead to unpredictable apply process hanging
+  # WARNING: not recommended - this could lead to unpredictable apply process hanging
   #timeouts {
   #    create = "0"
   #    read   = "0"

@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.0.0-pre...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.0.0...HEAD)
+
+## [1.0.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.0.0-pre...v1.0.0)
+
+## Fixed
+- Issue with rate limits: now rate limit exceeded error will be automatically handled with retry after back-off period
 
 ## [1.0.0-pre](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.7.3...v1.0.0-pre) 
 
