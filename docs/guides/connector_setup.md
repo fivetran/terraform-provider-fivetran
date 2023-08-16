@@ -22,7 +22,7 @@ export FIVETRAN_APISECRET=<your_Fivetran_API_secret>
 terraform {
   required_providers {
     fivetran = {
-        version = "0.7.2"                                                   
+        version = "1.0.0"                                                   
         source = "fivetran/fivetran"
     }
   }

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.0.0-pre...HEAD)
 
+## [1.0.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.0.0-pre...v1.0.0)
+
+## Fixed
+- Issue with rate limits: now rate limit exceeded error will be automatically handled with retry after back-off period
+
 ## [1.0.0-pre](https://github.com/fivetran/terraform-provider-fivetran/compare/v0.7.3...v1.0.0-pre) 
 
 ## Fixed
