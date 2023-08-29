@@ -19,42 +19,50 @@ func resourceDbtTransformation() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"id": {Type: schema.TypeString, Computed: true},
 
-			"dbt_model_id": {Type: schema.TypeString, Required: true, ForceNew: true},
+			"dbt_model_id": {
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "The unique identifier for the dbt Model within the Fivetran system."},
 
-			"run_tests": {Type: schema.TypeBool, Required: true},
-			"paused":    {Type: schema.TypeBool, Required: true},
-
+			"run_tests": {Type: schema.TypeBool, Required: true, Description: "The field indicating whether the tests have been configured for dbt Transformation. By default, the value is false."},
+			"paused":    {Type: schema.TypeBool, Required: true, Description: "The field indicating whether the transformation will be created in paused state. By default, the value is false."},
 			"schedule": {
-				Type:     schema.TypeList,
-				MaxItems: 1,
-				Required: true,
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Required:    true,
+				Description: "dbt Transformation schedule parameters.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"schedule_type": {Type: schema.TypeString, Required: true},
+						"schedule_type": {Type: schema.TypeString, Required: true, Description: "The type of the schedule to run the dbt Transformation on. The following values are supported: INTEGRATED, TIME_OF_DAY, INTERVAL. For INTEGRATED schedule type, interval and time_of_day values are ignored and only the days_of_week parameter values are taken into account (but may be empty or null). For TIME_OF_DAY schedule type, the interval parameter value is ignored and the time_of_day values is taken into account along with days_of_week value. For INTERVAL schedule type, time_of_day value is ignored and the interval parameter value is taken into account along with days_of_week value."},
 						"days_of_week": {
-							Type:     schema.TypeSet,
-							Elem:     &schema.Schema{Type: schema.TypeString},
-							Optional: true,
-							Computed: true,
+							Type:        schema.TypeSet,
+							Elem:        &schema.Schema{Type: schema.TypeString},
+							Optional:    true,
+							Computed:    true,
+							Description: "The set of the days of the week the transformation should be launched on. The following values are supported: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY.",
 						},
-						"interval":    {Type: schema.TypeInt, Computed: true, Optional: true},
-						"time_of_day": {Type: schema.TypeString, Computed: true, Optional: true},
+						"interval":    {Type: schema.TypeInt, Computed: true, Optional: true, Description: "The time interval in minutes between subsequent transformation runs."},
+						"time_of_day": {Type: schema.TypeString, Computed: true, Optional: true, Description: `The time of the day the transformation should be launched at. Supported values are: "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"`},
 					},
 				},
 			},
 
-			"dbt_project_id":    {Type: schema.TypeString, Computed: true},
-			"output_model_name": {Type: schema.TypeString, Computed: true},
-			"created_at":        {Type: schema.TypeString, Computed: true},
+			// resdonly fields
+			"dbt_project_id":    {Type: schema.TypeString, Computed: true, Description: "The unique identifier for the dbt Project within the Fivetran system."},
+			"output_model_name": {Type: schema.TypeString, Computed: true, Description: "The dbt Model name."},
+			"created_at":        {Type: schema.TypeString, Computed: true, Description: "The timestamp of the dbt Transformation creation."},
 			"connector_ids": {
-				Type:     schema.TypeSet,
-				Elem:     &schema.Schema{Type: schema.TypeString},
-				Computed: true,
+				Type:        schema.TypeSet,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+				Computed:    true,
+				Description: "Identifiers of related connectors.",
 			},
 			"model_ids": {
-				Type:     schema.TypeSet,
-				Elem:     &schema.Schema{Type: schema.TypeString},
-				Computed: true,
+				Type:        schema.TypeSet,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+				Computed:    true,
+				Description: "Identifiers of related models.",
 			},
 		},
 	}
