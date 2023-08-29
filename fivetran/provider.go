@@ -20,6 +20,7 @@ func Provider() *schema.Provider {
 		"fivetran_connector":               resourceConnector(),
 		"fivetran_connector_schedule":      resourceConnectorSchedule(),
 		"fivetran_connector_schema_config": resourceSchemaConfig(),
+		"fivetran_dbt_transformation":      resourceDbtTransformation(),
 	}
 
 	var dataSourceMap = map[string]*schema.Resource{

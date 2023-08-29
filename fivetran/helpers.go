@@ -215,6 +215,13 @@ func mapAddXInterface(msi map[string]interface{}, k string, v []interface{}) {
 	}
 }
 
+// mapAddXInterface adds a non-empty []interface{} to a map[string]interface{}
+func mapAddXString(msi map[string]interface{}, k string, v []string) {
+	if len(v) > 0 {
+		msi[k] = v
+	}
+}
+
 // newDiag receives a diag.Severity, a summary, a detail, and returns a diag.Diagnostic
 func newDiag(severity diag.Severity, summary, detail string) diag.Diagnostic {
 	return diag.Diagnostic{
