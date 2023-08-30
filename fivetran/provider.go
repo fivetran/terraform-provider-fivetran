@@ -33,6 +33,7 @@ func Provider() *schema.Provider {
 		"fivetran_destination":         dataSourceDestination(),
 		"fivetran_connectors_metadata": dataSourceConnectorsMetadata(),
 		"fivetran_connector":           dataSourceConnector(),
+		"fivetran_dbt_transformation":  dataSourceDbtTransformation(),
 	}
 
 	return &schema.Provider{
