@@ -16,56 +16,71 @@ func resourceDbtTransformation() *schema.Resource {
 		UpdateContext: resourceDbtTransformationUpdate,
 		DeleteContext: resourceDbtTransformationDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		Schema: map[string]*schema.Schema{
-			"id": {Type: schema.TypeString, Computed: true},
+		Schema:        getDbtTransformationSchema(false),
+	}
+}
 
-			"dbt_model_id": {
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true,
-				Description: "The unique identifier for the dbt Model within the Fivetran system."},
+func getDbtTransformationSchema(datasource bool) map[string]*schema.Schema {
+	maxItems := 1
+	if datasource {
+		maxItems = 0
+	}
+	result := map[string]*schema.Schema{
+		"id": {
+			Type:     schema.TypeString,
+			Computed: !datasource,
+			Required: datasource,
+		},
 
-			"run_tests": {Type: schema.TypeBool, Required: true, Description: "The field indicating whether the tests have been configured for dbt Transformation. By default, the value is false."},
-			"paused":    {Type: schema.TypeBool, Required: true, Description: "The field indicating whether the transformation will be created in paused state. By default, the value is false."},
-			"schedule": {
-				Type:        schema.TypeList,
-				MaxItems:    1,
-				Required:    true,
-				Description: "dbt Transformation schedule parameters.",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"schedule_type": {Type: schema.TypeString, Required: true, Description: "The type of the schedule to run the dbt Transformation on. The following values are supported: INTEGRATED, TIME_OF_DAY, INTERVAL. For INTEGRATED schedule type, interval and time_of_day values are ignored and only the days_of_week parameter values are taken into account (but may be empty or null). For TIME_OF_DAY schedule type, the interval parameter value is ignored and the time_of_day values is taken into account along with days_of_week value. For INTERVAL schedule type, time_of_day value is ignored and the interval parameter value is taken into account along with days_of_week value."},
-						"days_of_week": {
-							Type:        schema.TypeSet,
-							Elem:        &schema.Schema{Type: schema.TypeString},
-							Optional:    true,
-							Computed:    true,
-							Description: "The set of the days of the week the transformation should be launched on. The following values are supported: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY.",
-						},
-						"interval":    {Type: schema.TypeInt, Computed: true, Optional: true, Description: "The time interval in minutes between subsequent transformation runs."},
-						"time_of_day": {Type: schema.TypeString, Computed: true, Optional: true, Description: `The time of the day the transformation should be launched at. Supported values are: "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"`},
+		"dbt_model_id": {
+			Type:        schema.TypeString,
+			Required:    !datasource,
+			ForceNew:    !datasource,
+			Computed:    datasource,
+			Description: "The unique identifier for the dbt Model within the Fivetran system."},
+
+		"run_tests": {Type: schema.TypeBool, Required: !datasource, Computed: datasource, Description: "The field indicating whether the tests have been configured for dbt Transformation. By default, the value is false."},
+		"paused":    {Type: schema.TypeBool, Required: !datasource, Computed: datasource, Description: "The field indicating whether the transformation will be created in paused state. By default, the value is false."},
+		"schedule": {
+			Type:        schema.TypeList,
+			MaxItems:    maxItems,
+			Required:    !datasource,
+			Computed:    datasource,
+			Description: "dbt Transformation schedule parameters.",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"schedule_type": {Type: schema.TypeString, Required: !datasource, Computed: datasource, Description: "The type of the schedule to run the dbt Transformation on. The following values are supported: INTEGRATED, TIME_OF_DAY, INTERVAL. For INTEGRATED schedule type, interval and time_of_day values are ignored and only the days_of_week parameter values are taken into account (but may be empty or null). For TIME_OF_DAY schedule type, the interval parameter value is ignored and the time_of_day values is taken into account along with days_of_week value. For INTERVAL schedule type, time_of_day value is ignored and the interval parameter value is taken into account along with days_of_week value."},
+					"days_of_week": {
+						Type:        schema.TypeSet,
+						Elem:        &schema.Schema{Type: schema.TypeString},
+						Optional:    !datasource,
+						Computed:    true,
+						Description: "The set of the days of the week the transformation should be launched on. The following values are supported: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY.",
 					},
+					"interval":    {Type: schema.TypeInt, Computed: true, Optional: !datasource, Description: "The time interval in minutes between subsequent transformation runs."},
+					"time_of_day": {Type: schema.TypeString, Computed: true, Optional: !datasource, Description: `The time of the day the transformation should be launched at. Supported values are: "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"`},
 				},
 			},
+		},
 
-			// resdonly fields
-			"dbt_project_id":    {Type: schema.TypeString, Computed: true, Description: "The unique identifier for the dbt Project within the Fivetran system."},
-			"output_model_name": {Type: schema.TypeString, Computed: true, Description: "The dbt Model name."},
-			"created_at":        {Type: schema.TypeString, Computed: true, Description: "The timestamp of the dbt Transformation creation."},
-			"connector_ids": {
-				Type:        schema.TypeSet,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-				Computed:    true,
-				Description: "Identifiers of related connectors.",
-			},
-			"model_ids": {
-				Type:        schema.TypeSet,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-				Computed:    true,
-				Description: "Identifiers of related models.",
-			},
+		// resdonly fields
+		"dbt_project_id":    {Type: schema.TypeString, Computed: true, Description: "The unique identifier for the dbt Project within the Fivetran system."},
+		"output_model_name": {Type: schema.TypeString, Computed: true, Description: "The dbt Model name."},
+		"created_at":        {Type: schema.TypeString, Computed: true, Description: "The timestamp of the dbt Transformation creation."},
+		"connector_ids": {
+			Type:        schema.TypeSet,
+			Elem:        &schema.Schema{Type: schema.TypeString},
+			Computed:    true,
+			Description: "Identifiers of related connectors.",
+		},
+		"model_ids": {
+			Type:        schema.TypeSet,
+			Elem:        &schema.Schema{Type: schema.TypeString},
+			Computed:    true,
+			Description: "Identifiers of related models.",
 		},
 	}
+	return result
 }
 
 func resourceDbtTransformationCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -131,12 +146,15 @@ func resourceDbtTransformationRead(ctx context.Context, d *schema.ResourceData, 
 	mapStringInterface := make(map[string]interface{})
 	mapAddStr(mapStringInterface, "id", resp.Data.ID)
 	mapAddStr(mapStringInterface, "dbt_model_id", resp.Data.DbtModelId)
+
 	mapAddStr(mapStringInterface, "output_model_name", resp.Data.OutputModelName)
 	mapAddStr(mapStringInterface, "dbt_project_id", resp.Data.DbtProjectId)
-	mapStringInterface["run_tests"] = resp.Data.RunTests
-	mapStringInterface["paused"] = resp.Data.Paused
+	mapAddStr(mapStringInterface, "created_at", resp.Data.CreatedAt)
 	mapAddXString(mapStringInterface, "connector_ids", resp.Data.ConnectorIds)
 	mapAddXString(mapStringInterface, "model_ids", resp.Data.ModelIds)
+
+	mapStringInterface["run_tests"] = resp.Data.RunTests
+	mapStringInterface["paused"] = resp.Data.Paused
 
 	upstreamSchedule := make(map[string]interface{})
 	upstreamSchedule["schedule_type"] = resp.Data.Schedule.ScheduleType

@@ -1,0 +1,17 @@
+---
+page_title: "Data Source: fivetran_dbt_transformation"
+---
+
+# Data Source: fivetran_dbt_transformation
+
+This data source returns a bdt Transformation object.
+
+## Example Usage
+
+```hcl
+data "fivetran_dbt_transformation" "transformation" {
+    id = "transformation_id"
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}
