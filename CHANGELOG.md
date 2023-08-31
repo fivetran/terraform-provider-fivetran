@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Added
 New `fivetran_dbt_transformation` resource that allows to manage dbt Transfomrations.
 
+## Fixed 
+Resource `fivetran_connector_schema_config` issue with table `sync_mode`:
+- Non-empty `sync_mode` value for table causes non-empty plan after each apply
+
 ## [1.0.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.0.0-pre...v1.0.0)
 
 ## Fixed

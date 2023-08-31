@@ -22,6 +22,10 @@ var (
 	schemaHashedAlignmentGetHandler   *mock.Handler
 	schemaHashedAlignmentPatchHandler *mock.Handler
 	schemaHashedAlignmentData         map[string]interface{}
+
+	schemaConsistentWithUpstreamGetHandler    *mock.Handler
+	schemaConsistentWithUpstreamPathchHandler *mock.Handler
+	schemaConsistentWithUpstreamData          map[string]interface{}
 )
 
 const (
@@ -757,6 +761,96 @@ func setupMockClientHashedAlignmentSchemaResource(t *testing.T) {
 
 			updateIteration++
 			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaHashedAlignmentData), nil
+		},
+	)
+}
+
+func setupMockClientConsistentWithUpstreamResource(t *testing.T) {
+	mockClient.Reset()
+	schemaConsistentWithUpstreamData = nil
+
+	schemaConsistentWithUpstreamGetHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			if nil == schemaHashedAlignmentData {
+				schemaConsistentWithUpstreamData = createMapFromJsonString(t, `
+				{
+					"enable_new_by_default": true,
+					"schema_change_handling": "BLOCK_ALL",
+					"schemas": {
+						"schema_1": {
+							"name_in_destination": "schema_1",
+							"enabled": true,
+							"tables": {
+								"table_1": {
+									"name_in_destination": "table_1",
+									"enabled": true,
+									"sync_mode": "SOFT_DELETE",
+									"enabled_patch_settings": {
+										"allowed": true
+									}
+									
+								}
+							}
+						}
+					}
+				}
+				`)
+			}
+			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaConsistentWithUpstreamData), nil
+		},
+	)
+
+	schemaConsistentWithUpstreamPathchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas/").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaConsistentWithUpstreamData), nil
+		},
+	)
+}
+
+func TestConsistentWithUpstreamSchemaMock(t *testing.T) {
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "BLOCK_ALL"
+				schema {
+					name = "schema_1"
+					enabled = true
+					table {
+						name = "table_1"
+						enabled = true
+						sync_mode = "SOFT_DELETE"
+					}
+				}
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 2) // 1 read attempt before reload, 1 read after create
+				assertNotEmpty(t, schemaConsistentWithUpstreamData)                    // schema initialised
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.0.sync_mode", "SOFT_DELETE"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientConsistentWithUpstreamResource(t)
+			},
+			Providers: testProviders,
+			CheckDestroy: func(s *terraform.State) error {
+				// there is no possibility to destroy schema config - it alsways exists within the connector
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
+			},
 		},
 	)
 }
