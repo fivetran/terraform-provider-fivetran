@@ -394,7 +394,13 @@ func includeLocalConfiguredTables(upstream, local map[string]interface{}) (map[s
 					usmap[COLUMN] = c
 				}
 			}
-			result[k] = include(usmap)
+
+			// do not save sync_mode from upstream to state if it's not managed
+			if !hasSyncMode(lsmap) {
+				delete(usmap, "sync_mode")
+			}
+
+			result[k] = copyMapDeep(include(usmap))
 			diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("Handling table %v: %+v", k, result[k]), "")
 		}
 	}
@@ -811,7 +817,10 @@ func excludeTableBySCH(tname string, table map[string]interface{}, sch string) (
 			result[COLUMN].(map[string]interface{})[cname] = ac
 		}
 	}
-	excluded := includedColumnsCount == 0 && !hasSyncMode(table) && (tableEnabledAlignToSCH(table[ENABLED].(string), sch) || isLocked(table))
+
+	hasSyncMode := strToBool(table[ENABLED].(string)) && hasSyncMode(table)
+
+	excluded := includedColumnsCount == 0 && !hasSyncMode && (tableEnabledAlignToSCH(table[ENABLED].(string), sch) || isLocked(table))
 	result[EXCLUDED] = excluded
 	return result, excluded
 }

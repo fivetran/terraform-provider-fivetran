@@ -1,6 +1,7 @@
 package mock
 
 import (
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -788,7 +789,22 @@ func setupMockClientConsistentWithUpstreamResource(t *testing.T) {
 									"enabled_patch_settings": {
 										"allowed": true
 									}
-									
+								},
+								"table_2": {
+									"name_in_destination": "table_2",
+									"enabled": true,
+									"sync_mode": "LIVE",
+									"enabled_patch_settings": {
+										"allowed": true
+									}
+								},
+								"table_3": {
+									"name_in_destination": "table_3",
+									"enabled": false,
+									"sync_mode": "LIVE",
+									"enabled_patch_settings": {
+										"allowed": true
+									}
 								}
 							}
 						}
@@ -802,6 +818,8 @@ func setupMockClientConsistentWithUpstreamResource(t *testing.T) {
 
 	schemaConsistentWithUpstreamPathchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas/").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
+			body := requestBodyToJson(t, req)
+			fmt.Print(body)
 			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaConsistentWithUpstreamData), nil
 		},
 	)
@@ -822,6 +840,10 @@ func TestConsistentWithUpstreamSchemaMock(t *testing.T) {
 						enabled = true
 						sync_mode = "SOFT_DELETE"
 					}
+					table {
+						name = "table_2"
+						enabled = true
+					}
 				}
 			}`,
 
@@ -833,6 +855,35 @@ func TestConsistentWithUpstreamSchemaMock(t *testing.T) {
 			},
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.0.sync_mode", "SOFT_DELETE"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.1.sync_mode", ""),
+		),
+	}
+
+	step2 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "BLOCK_ALL"
+				schema {
+					name = "schema_1"
+					enabled = true
+					table {
+						name = "table_1"
+						enabled = true
+					}
+					table {
+						name = "table_2"
+						enabled = true
+						sync_mode = "LIVE"
+					}
+				}
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.0.sync_mode", ""),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.1.sync_mode", "LIVE"),
 		),
 	}
 
@@ -850,6 +901,7 @@ func TestConsistentWithUpstreamSchemaMock(t *testing.T) {
 
 			Steps: []resource.TestStep{
 				step1,
+				step2,
 			},
 		},
 	)
