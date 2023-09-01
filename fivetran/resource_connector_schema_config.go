@@ -328,7 +328,8 @@ func applyLocalSchemaConfig(
 	}
 
 	// prepare config patch
-	var alignedConfig = excludeConfigBySCH(readUpstreamConfig(schemaResponse), sch)
+	var upstreamConfig = readUpstreamConfig(schemaResponse)
+	var alignedConfig = excludeConfigBySCH(upstreamConfig, sch)
 	config := make(map[string]interface{})
 	config[SCHEMA] = applyConfigOnAlignedUpstreamConfig(
 		alignedConfig[SCHEMA].(map[string]interface{}),
@@ -519,7 +520,9 @@ func invertUnhandledTable(table map[string]interface{}, sch string) map[string]i
 		}
 		table[COLUMN] = invertedColumns
 	}
-	return table
+	// for table unhandled in config we should not touch sync_mode
+	delete(table, "sync_mode")
+	return copyMapDeep(table)
 }
 
 func invertUnhandledColumn(column map[string]interface{}, sch string) map[string]interface{} {
@@ -818,7 +821,7 @@ func excludeTableBySCH(tname string, table map[string]interface{}, sch string) (
 		}
 	}
 
-	hasSyncMode := strToBool(table[ENABLED].(string)) && hasSyncMode(table)
+	hasSyncMode := false //strToBool(table[ENABLED].(string)) && hasSyncMode(table)
 
 	excluded := includedColumnsCount == 0 && !hasSyncMode && (tableEnabledAlignToSCH(table[ENABLED].(string), sch) || isLocked(table))
 	result[EXCLUDED] = excluded

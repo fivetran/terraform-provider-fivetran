@@ -539,7 +539,8 @@ func TestResourceEmptyDefaultSchemaMock(t *testing.T) {
 			func(s *terraform.State) error {
 				assertEqual(t, schemaEmptyDefaultReloadHandler.Interactions, 1) // 1 reload on create
 				assertEqual(t, schemaEmptyDefaultGetHandler.Interactions, 2)    // 1 read attempt before reload, 1 read after create
-				assertNotEmpty(t, schemaEmptyDefaultData)                       // schema initialised
+				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 0)
+				assertNotEmpty(t, schemaEmptyDefaultData) // schema initialised
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "ALLOW_ALL"),
