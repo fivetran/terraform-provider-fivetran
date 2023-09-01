@@ -328,7 +328,8 @@ func applyLocalSchemaConfig(
 	}
 
 	// prepare config patch
-	var alignedConfig = excludeConfigBySCH(readUpstreamConfig(schemaResponse), sch)
+	var upstreamConfig = readUpstreamConfig(schemaResponse)
+	var alignedConfig = excludeConfigBySCH(upstreamConfig, sch)
 	config := make(map[string]interface{})
 	config[SCHEMA] = applyConfigOnAlignedUpstreamConfig(
 		alignedConfig[SCHEMA].(map[string]interface{}),
@@ -394,7 +395,13 @@ func includeLocalConfiguredTables(upstream, local map[string]interface{}) (map[s
 					usmap[COLUMN] = c
 				}
 			}
-			result[k] = include(usmap)
+
+			// do not save sync_mode from upstream to state if it's not managed
+			if !hasSyncMode(lsmap) {
+				delete(usmap, "sync_mode")
+			}
+
+			result[k] = copyMapDeep(include(usmap))
 			diags = newDiagAppend(diags, diag.Warning, fmt.Sprintf("Handling table %v: %+v", k, result[k]), "")
 		}
 	}
@@ -513,7 +520,9 @@ func invertUnhandledTable(table map[string]interface{}, sch string) map[string]i
 		}
 		table[COLUMN] = invertedColumns
 	}
-	return table
+	// for table unhandled in config we should not touch sync_mode
+	delete(table, "sync_mode")
+	return copyMapDeep(table)
 }
 
 func invertUnhandledColumn(column map[string]interface{}, sch string) map[string]interface{} {
@@ -811,7 +820,10 @@ func excludeTableBySCH(tname string, table map[string]interface{}, sch string) (
 			result[COLUMN].(map[string]interface{})[cname] = ac
 		}
 	}
-	excluded := includedColumnsCount == 0 && !hasSyncMode(table) && (tableEnabledAlignToSCH(table[ENABLED].(string), sch) || isLocked(table))
+
+	hasSyncMode := false //strToBool(table[ENABLED].(string)) && hasSyncMode(table)
+
+	excluded := includedColumnsCount == 0 && !hasSyncMode && (tableEnabledAlignToSCH(table[ENABLED].(string), sch) || isLocked(table))
 	result[EXCLUDED] = excluded
 	return result, excluded
 }
@@ -944,7 +956,7 @@ func readUpstreamTable(tableResponse *fivetran.ConnectorSchemaConfigTableRespons
 	}
 	result[COLUMN] = columns
 	result[ENABLED] = boolPointerToStr(tableResponse.Enabled)
-	result[SYNC_MODE] = tableResponse.SyncMode
+	result[SYNC_MODE] = *tableResponse.SyncMode
 	result[PATCH_ALLOWED] = boolPointerToStr(tableResponse.EnabledPatchSettings.Allowed)
 	return result
 }
