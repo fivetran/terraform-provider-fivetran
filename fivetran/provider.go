@@ -9,7 +9,7 @@ import (
 )
 
 var limit = 1000        // REST API response objects limit per HTTP request
-const Version = "1.0.0" // Current provider version
+const Version = "1.0.1" // Current provider version
 
 func Provider() *schema.Provider {
 	var resourceMap = map[string]*schema.Resource{

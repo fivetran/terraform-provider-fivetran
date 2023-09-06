@@ -200,7 +200,7 @@ func resourceDbtTransformationUpdate(ctx context.Context, d *schema.ResourceData
 		if d.HasChange("schedule.0.days_of_week") {
 			days := make([]string, 0)
 			for _, day := range d.Get("schedule.0.days_of_week").(*schema.Set).List() {
-				day = append(days, day.(string))
+				days = append(days, day.(string))
 			}
 			schedule.DaysOfWeek(days)
 		}
