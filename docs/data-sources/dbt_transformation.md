@@ -4,7 +4,7 @@ page_title: "Data Source: fivetran_dbt_transformation"
 
 # Data Source: fivetran_dbt_transformation
 
-This data source returns a bdt Transformation object.
+This data source returns a dbt Transformation object.
 
 ## Example Usage
 
