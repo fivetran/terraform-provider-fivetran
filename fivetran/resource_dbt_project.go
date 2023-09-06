@@ -226,7 +226,7 @@ func resourceDbtProjectRead(ctx context.Context, d *schema.ResourceData, m inter
 func resourceDbtProjectUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
-	svc := client.NewDbtProjectModify().ProjectId(d.Get("id").(string))
+	svc := client.NewDbtProjectModify().DbtProjectID(d.Get("id").(string))
 
 	if d.HasChange("dbt_version") {
 		svc.DbtVersion(d.Get("dbt_version").(string))
@@ -272,7 +272,7 @@ func resourceDbtProjectDelete(ctx context.Context, d *schema.ResourceData, m int
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
 
-	resp, err := client.NewDbtProjectDelete().ProjectID(d.Get("id").(string)).Do(ctx)
+	resp, err := client.NewDbtProjectDelete().DbtProjectID(d.Get("id").(string)).Do(ctx)
 
 	if err != nil {
 		return newDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))

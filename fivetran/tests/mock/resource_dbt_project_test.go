@@ -110,7 +110,7 @@ func setupMockClientDbtProjectResourceMappingTest(t *testing.T) {
 	)
 
 	dbtProjectResourceMockDeleteHandler = mockClient.When(http.MethodDelete,
-		"/v1/projects/project_id", //"/v1/dbt/projects/project_id",
+		"/v1/dbt/projects/project_id",
 	).ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			dbtProjectResourceMockData = nil
