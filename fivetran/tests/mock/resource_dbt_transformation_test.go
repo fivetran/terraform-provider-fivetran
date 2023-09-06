@@ -39,7 +39,7 @@ func onPostTranformation(t *testing.T, req *http.Request) (*http.Response, error
 	expectedDays := make([]interface{}, 0)
 
 	expectedDays = append(expectedDays, "MONDAY")
-	expectedDays = append(expectedDays, "SATURDAY")
+	//expectedDays = append(expectedDays, "SATURDAY")
 
 	assertArrayItems(t, requestScheduleDays, expectedDays)
 
@@ -70,13 +70,26 @@ func onPatchTransformation(t *testing.T, req *http.Request, updateIteration int)
 
 	if updateIteration == 0 {
 		// Check the request
-		assertEqual(t, len(body), 2)
+		assertEqual(t, len(body), 3)
 		assertKeyExistsAndHasValue(t, body, "paused", true)
 		assertKeyExistsAndHasValue(t, body, "run_tests", true)
+		requestSchedule := assertKeyExists(t, body, "schedule").(map[string]interface{})
+
+		requestScheduleDays := assertKeyExists(t, requestSchedule, "days_of_week").([]interface{})
+		expectedDays := make([]interface{}, 0)
+		expectedDays = append(expectedDays, "MONDAY")
+		expectedDays = append(expectedDays, "SATURDAY")
+
+		assertArrayItems(t, requestScheduleDays, expectedDays)
 
 		// Update saved values
 		for k, v := range body {
-			transformationData[k] = v
+			if k != "schedule" {
+				transformationData[k] = v
+			} else {
+				stateSchedule := transformationData[k].(map[string]interface{})
+				stateSchedule["days_of_week"] = expectedDays
+			}
 		}
 
 		response := fivetranSuccessResponse(t, req, http.StatusOK, "Transformation has been updated", transformationData)
@@ -153,7 +166,7 @@ func TestResourceTransformationMock(t *testing.T) {
 			schedule {
 				schedule_type = "TIME_OF_DAY"
 				time_of_day = "12:00"
-				days_of_week = ["MONDAY", "SATURDAY"]
+				days_of_week = ["MONDAY"]
 			}
 		}
 		`,
@@ -171,11 +184,10 @@ func TestResourceTransformationMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_dbt_transformation.transformation", "schedule.0.schedule_type", "TIME_OF_DAY"),
 			resource.TestCheckResourceAttr("fivetran_dbt_transformation.transformation", "schedule.0.time_of_day", "12:00"),
 			resource.TestCheckResourceAttr("fivetran_dbt_transformation.transformation", "schedule.0.days_of_week.0", "MONDAY"),
-			resource.TestCheckResourceAttr("fivetran_dbt_transformation.transformation", "schedule.0.days_of_week.1", "SATURDAY"),
 		),
 	}
 
-	// Update run_tests and paused fields
+	// Update run_tests and paused fields, update days of week in schedule
 	step2 := resource.TestStep{
 		Config: `
 		resource "fivetran_dbt_transformation" "transformation" {
@@ -201,6 +213,7 @@ func TestResourceTransformationMock(t *testing.T) {
 
 			resource.TestCheckResourceAttr("fivetran_dbt_transformation.transformation", "run_tests", "true"),
 			resource.TestCheckResourceAttr("fivetran_dbt_transformation.transformation", "paused", "true"),
+			resource.TestCheckResourceAttr("fivetran_dbt_transformation.transformation", "schedule.0.days_of_week.1", "SATURDAY"),
 		),
 	}
 
