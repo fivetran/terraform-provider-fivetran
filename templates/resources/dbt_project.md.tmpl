@@ -1,0 +1,54 @@
+---
+page_title: "Resource: fivetran_dbt_project"
+---
+
+# Resource: fivetran_dbt_project
+
+This resource allows you to add, manage and delete dbt Projects in your account. 
+
+## Example Usage
+
+```hcl
+resource "fivetran_dbt_project" "project" {
+    group_id = "group_id"
+    dbt_version = "1.4.1"
+    default_schema = "default_schema"
+    target_name = "target_name"
+    environment_vars = ["environment_var=value"]
+    threads = 8
+    type = "GIT"
+    project_config {
+        git_remote_url = "your_git_remote_url"
+        git_branch = "main"
+        folder_path = "/dbt/project/folder/path"
+    }
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}
+
+## Import
+
+1. To import an existing `fivetran_dbt_project` resource into your Terraform state, you need to get **Dbt Project ID** via API call `GET https://api.fivetran.com/v1/dbt/projects` to retrieve available projects.
+2. Fetch project details for particular `project-id` using `GET https://api.fivetran.com/v1/dbt/projects/{project-id}` to ensure that this is the project you want to import.
+3. Define an empty resource in your `.tf` configuration:
+
+```hcl
+resource "fivetran_dbt_project" "my_imported_fivetran_dbt_project" {
+
+}
+```
+
+4. Run the `terraform import` command:
+
+```
+terraform import fivetran_dbt_project.my_imported_fivetran_dbt_project {Dbt Project ID}
+```
+
+4. Use the `terraform state show` command to get the values from the state:
+
+```
+terraform state show 'fivetran_dbt_project.my_imported_fivetran_dbt_project'
+```
+
+5. Copy the values and paste them to your `.tf` configuration.
