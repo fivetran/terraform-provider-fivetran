@@ -88,13 +88,29 @@ func resourceDbtTransformationCreate(ctx context.Context, d *schema.ResourceData
 	client := m.(*fivetran.Client)
 	svc := client.NewDbtTransformationCreateService()
 
-	dbtModelId := d.Get("dbt_model_id").(string)
-
-	svc.DbtModelId(dbtModelId)
+	svc.DbtModelId(d.Get("dbt_model_id").(string))
 	svc.RunTests(d.Get("run_tests").(bool))
 
 	schedule := d.Get("schedule").([]interface{})[0].(map[string]interface{})
-	svc.Schedule(createDbtTransformationSchedule(schedule))
+
+	scheduleRequest := fivetran.NewDbtTransformationSchedule()
+
+	// schedule_type is required for schedule
+	scheduleRequest.ScheduleType(schedule["schedule_type"].(string))
+
+	if v, ok := schedule["days_of_week"]; ok {
+		scheduleRequest.DaysOfWeek(xInterfaceStrXStr(v.(*schema.Set).List()))
+	}
+
+	if v, ok := schedule["interval"].(int); ok && v > 0 {
+		scheduleRequest.Interval(v)
+	}
+
+	if v, ok := schedule["time_of_day"].(string); ok {
+		scheduleRequest.TimeOfDay(v)
+	}
+
+	svc.Schedule(scheduleRequest)
 
 	svc.Paused(d.Get("paused").(bool))
 
@@ -106,26 +122,6 @@ func resourceDbtTransformationCreate(ctx context.Context, d *schema.ResourceData
 
 	d.SetId(resp.Data.ID)
 	return resourceDbtTransformationRead(ctx, d, m)
-}
-
-func createDbtTransformationSchedule(s map[string]interface{}) *fivetran.DbtTransformationSchedule {
-	result := fivetran.NewDbtTransformationSchedule()
-
-	// schedule_type is required for schedule
-	result.ScheduleType(s["schedule_type"].(string))
-
-	if v, ok := s["days_of_week"]; ok {
-		result.DaysOfWeek(xInterfaceStrXStr(v.(*schema.Set).List()))
-	}
-
-	if v, ok := s["interval"].(int); ok && v > 0 {
-		result.Interval(v)
-	}
-
-	if v, ok := s["time_of_day"].(string); ok {
-		result.TimeOfDay(v)
-	}
-	return result
 }
 
 func resourceDbtTransformationRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

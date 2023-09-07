@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.0.1...HEAD)
 
+## Added
+- New resource `fivetran_dbt_project` that allows to manage dbt Project.
+- New data source `fivetran_dbt_projects` that allows to retrieve list of dbt Projects for your account.
+- New data source `fivetran_dbt_project` that allows to retrieve dbt Project details.
+
 ## [1.0.1](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.0.0...v1.0.1)
 
 ## Added
