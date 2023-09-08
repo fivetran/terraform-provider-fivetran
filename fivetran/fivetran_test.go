@@ -20,6 +20,14 @@ var PredefinedGroupId string
 var PredefinedUserId string
 
 func init() {
+	// Uncomment for local e2e debugging, note that account will be cleaned up except one user with id="user_id" and one group with id="group_id"
+	// os.Setenv("FIVETRAN_GROUP_ID", "group_id")
+	// os.Setenv("FIVETRAN_USER_ID", "user_id")
+	// os.Setenv("FIVETRAN_API_URL", "https://api-staging.fivetran.com/v1")
+	// os.Setenv("FIVETRAN_APIKEY", "apikey")
+	// os.Setenv("FIVETRAN_APISECRET", "apisecret")
+	// os.Setenv("TF_ACC", "True")
+
 	var apiUrl, apiKey, apiSecret string
 	valuesToLoad := map[string]*string{
 		"FIVETRAN_API_URL":   &apiUrl,
@@ -38,6 +46,7 @@ func init() {
 
 	client = gofivetran.New(apiKey, apiSecret)
 	client.BaseURL(apiUrl)
+
 	provider := fivetran.Provider()
 	provider.ConfigureContextFunc = func(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 		return client, diag.Diagnostics{}
@@ -77,6 +86,7 @@ func GetResource(t *testing.T, s *terraform.State, resourceName string) *terrafo
 func cleanupAccount() {
 	cleanupUsers()
 	cleanupDestinations()
+	cleanupDbtProjects()
 	cleanupGroups()
 }
 
@@ -113,6 +123,49 @@ func cleanupDestinations() {
 		if err != nil && err.Error() != "status code: 404; expected: 200" {
 			log.Fatal(err)
 		}
+	}
+}
+
+func cleanupDbtProjects() {
+	projects, err := client.NewDbtProjectsList().Do(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, project := range projects.Data.Items {
+		cleanupDbtTransformations(project.ID, "")
+		_, err := client.NewDbtProjectDelete().DbtProjectID(project.ID).Do(context.Background())
+		if err != nil && err.Error() != "status code: 404; expected: 200" {
+			log.Fatal(err)
+		}
+	}
+	if projects.Data.NextCursor != "" {
+		cleanupDbtProjects()
+	}
+}
+
+func cleanupDbtTransformations(projectId, nextCursor string) {
+	svc := client.NewDbtModelsList().ProjectId(projectId)
+
+	if nextCursor != "" {
+		svc.Cursor(nextCursor)
+	}
+
+	models, err := svc.Do(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, model := range models.Data.Items {
+		if model.Scheduled {
+			_, err := client.NewDbtTransformationDeleteService().TransformationId(model.ID).Do(context.Background())
+			if err != nil && err.Error() != "status code: 404; expected: 200" {
+				log.Fatal(err)
+			}
+		}
+	}
+
+	if models.Data.NextCursor != "" {
+		cleanupDbtTransformations(projectId, models.Data.NextCursor)
 	}
 }
 
