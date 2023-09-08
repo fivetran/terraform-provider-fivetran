@@ -1,0 +1,116 @@
+package fivetran
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/fivetran/go-fivetran"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+)
+
+func dataSourceDbtModels() *schema.Resource {
+	return &schema.Resource{
+		ReadContext: dataSourceDbtModelsRead,
+		Schema: map[string]*schema.Schema{
+			"project_id": {
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The unique identifier for the dbt project within the Fivetran system.",
+			},
+			"models": dataSourceDbtModelsSchema(),
+		},
+	}
+}
+
+func dataSourceDbtModelsSchema() *schema.Schema {
+	return &schema.Schema{
+		Type:        schema.TypeSet,
+		Optional:    true,
+		Computed:    true,
+		Description: "The collection of dbt Models.",
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"id": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The unique identifier for the dbt Model within the Fivetran system.",
+				},
+				"model_name": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The dbt Model name.",
+				},
+				"scheduled": {
+					Type:        schema.TypeBool,
+					Computed:    true,
+					Description: "Boolean specifying whether the model is selected for execution.",
+				},
+			},
+		},
+	}
+}
+
+func dataSourceDbtModelsRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+	client := m.(*fivetran.Client)
+
+	resp, err := dataSourceDbtModelsGetAllModels(client, ctx, d.Get("project_id").(string))
+	if err != nil {
+		return newDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+	}
+
+	if err := d.Set("models", dataSourceGroupsFlattenDbtModels(resp)); err != nil {
+		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+	}
+
+	// Enforces ID
+	d.SetId("0")
+
+	return diags
+}
+
+// dataSourceGroupsGetGroups gets the groups list. It handles limits and cursors.
+func dataSourceDbtModelsGetAllModels(client *fivetran.Client, ctx context.Context, projectId string) (fivetran.DbtModelsListResponse, error) {
+	var resp fivetran.DbtModelsListResponse
+	var respNextCursor string
+
+	for {
+		var err error
+		var respInner fivetran.DbtModelsListResponse
+		svc := client.NewDbtModelsList().ProjectId(projectId)
+		if respNextCursor == "" {
+			respInner, err = svc.Limit(limit).Do(ctx)
+		}
+		if respNextCursor != "" {
+			respInner, err = svc.Limit(limit).Cursor(respNextCursor).Do(ctx)
+		}
+		if err != nil {
+			return fivetran.DbtModelsListResponse{}, err
+		}
+
+		resp.Data.Items = append(resp.Data.Items, respInner.Data.Items...)
+
+		if respInner.Data.NextCursor == "" {
+			break
+		}
+
+		respNextCursor = respInner.Data.NextCursor
+	}
+
+	return resp, nil
+}
+
+func dataSourceGroupsFlattenDbtModels(response fivetran.DbtModelsListResponse) []interface{} {
+	result := make([]interface{}, 0)
+
+	for _, model := range response.Data.Items {
+		modelMap := make(map[string]interface{})
+		modelMap["id"] = model.ID
+		modelMap["model_name"] = model.ModelName
+		modelMap["scheduled"] = model.Scheduled
+		result = append(result, modelMap)
+	}
+
+	return result
+}
