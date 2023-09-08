@@ -37,6 +37,7 @@ func Provider() *schema.Provider {
 		"fivetran_dbt_transformation":  dataSourceDbtTransformation(),
 		"fivetran_dbt_project":         dataSourceDbtProject(),
 		"fivetran_dbt_projects":        dataSourceDbtProjects(),
+		"fivetran_dbt_models":          dataSourceDbtModels(),
 	}
 
 	return &schema.Provider{
