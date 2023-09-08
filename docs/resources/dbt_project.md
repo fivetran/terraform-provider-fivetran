@@ -4,6 +4,8 @@ page_title: "Resource: fivetran_dbt_project"
 
 # Resource: fivetran_dbt_project
 
+Resource is in ALPHA state.
+
 This resource allows you to add, manage and delete dbt Projects in your account. 
 
 ## Example Usage

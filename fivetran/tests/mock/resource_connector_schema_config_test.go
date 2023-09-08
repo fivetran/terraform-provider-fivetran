@@ -42,7 +42,7 @@ const (
 					"table_1": {
 						"name_in_destination": "table_1",
 						"enabled": true,
-						"sync_mode": "SOFT_DELETE",
+						
 						"enabled_patch_settings": {
 							"allowed": true
 						},

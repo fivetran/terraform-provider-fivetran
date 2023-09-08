@@ -956,7 +956,9 @@ func readUpstreamTable(tableResponse *fivetran.ConnectorSchemaConfigTableRespons
 	}
 	result[COLUMN] = columns
 	result[ENABLED] = boolPointerToStr(tableResponse.Enabled)
-	result[SYNC_MODE] = *tableResponse.SyncMode
+	if tableResponse.SyncMode != nil {
+		result[SYNC_MODE] = *tableResponse.SyncMode
+	}
 	result[PATCH_ALLOWED] = boolPointerToStr(tableResponse.EnabledPatchSettings.Allowed)
 	return result
 }
