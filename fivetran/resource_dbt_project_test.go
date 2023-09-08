@@ -23,7 +23,7 @@ func TestResourceDbtProjectE2E(t *testing.T) {
 						name = "dbt_test_group"
 					}
 
-					resource "fivetran_dbt_project" "test_project {
+					resource "fivetran_dbt_project" "test_project" {
 						group_id = fivetran_group.test_group.id
 						dbt_version = "1.0.1"
 						threads = 1
