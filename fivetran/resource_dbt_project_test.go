@@ -79,7 +79,7 @@ func TestResourceDbtProjectE2E(t *testing.T) {
 func testFivetranDbtProjectResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
-		response, err := client.NewDbtDetails().DbtProjectID(rs.Primary.ID).Do(context.Background())
+		response, err := client.NewDbtProjectDetails().DbtProjectID(rs.Primary.ID).Do(context.Background())
 		if err != nil {
 			return err
 		}
@@ -116,7 +116,7 @@ func testFivetranDbtProjectResourceCreate(t *testing.T, resourceName string) res
 func testFivetranDbtProjectResourceUpdate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
-		response, err := client.NewDbtDetails().DbtProjectID(rs.Primary.ID).Do(context.Background())
+		response, err := client.NewDbtProjectDetails().DbtProjectID(rs.Primary.ID).Do(context.Background())
 		if err != nil {
 			return err
 		}
@@ -143,7 +143,7 @@ func testFivetranDbtProjectResourceUpdate(t *testing.T, resourceName string) res
 func testFivetranDbtProjectResourceDestroy(s *terraform.State) error {
 	for _, rs := range s.RootModule().Resources {
 		if rs.Type == "fivetran_dbt_project" {
-			response, err := client.NewDbtDetails().DbtProjectID(rs.Primary.ID).Do(context.Background())
+			response, err := client.NewDbtProjectDetails().DbtProjectID(rs.Primary.ID).Do(context.Background())
 			if err.Error() != "status code: 404; expected: 200" {
 				return err
 			}

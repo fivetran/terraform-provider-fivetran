@@ -25,7 +25,5 @@ jobs:
         FIVETRAN_API_URL: "https://api-staging.fivetran.com/v1"
         FIVETRAN_APIKEY : ${{ secrets.FIVETRAN_APIKEY }}
         FIVETRAN_APISECRET : ${{ secrets.FIVETRAN_APISECRET }}
-        FIVETRAN_GROUP_ID : "harbour_choking"
-        FIVETRAN_USER_ID : "buyer_warring"
         TF_ACC: true
       run: go test -timeout 30m -v ./...
