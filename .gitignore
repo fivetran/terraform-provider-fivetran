@@ -29,3 +29,5 @@ tfplugindocs
 
 # Ignore temporary files
 fivetran/config-changes.txt
+.DS_Store
+*/.DS_Store

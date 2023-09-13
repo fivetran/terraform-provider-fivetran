@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.0.2...HEAD)
 
+- New resource `fivetran_webhook` that allows to manage Webhooks.
+- New data source `fivetran_webhook` that allows to retrieve details of the existing webhook for a given identifier.
+- New data source `fivetran_webhooks` that allows to retrieve the list of existing webhooks available for the current account.
+
 ## [1.0.2](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.0.1...v1.0.2)
 
 ## Fixed 

@@ -22,6 +22,7 @@ func Provider() *schema.Provider {
 		"fivetran_connector_schema_config": resourceSchemaConfig(),
 		"fivetran_dbt_transformation":      resourceDbtTransformation(),
 		"fivetran_dbt_project":             resourceDbtProject(),
+		"fivetran_webhook":                 resourceWebhook(),
 	}
 
 	var dataSourceMap = map[string]*schema.Resource{
@@ -38,6 +39,8 @@ func Provider() *schema.Provider {
 		"fivetran_dbt_project":         dataSourceDbtProject(),
 		"fivetran_dbt_projects":        dataSourceDbtProjects(),
 		"fivetran_dbt_models":          dataSourceDbtModels(),
+		"fivetran_webhook":             dataSourceWebhook(),
+		"fivetran_webhooks":            dataSourceWebhooks(),
 	}
 
 	return &schema.Provider{
