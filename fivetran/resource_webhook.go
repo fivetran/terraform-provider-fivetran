@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/fivetran/go-fivetran"
+	fivetran "github.com/fivetran/go-fivetran"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -205,21 +205,18 @@ func resourceWebhookUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	if hasChanges {
 		resp, err := svc.Do(ctx)
 		if err != nil {
-			// resourceUserRead here makes sure the state is updated after a NewUserModify error.
-			diags = resourceUserRead(ctx, d, m)
 			return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v", err, resp.Code, resp.Message))
 		}		
 	}
-
+	
 	if v, ok := d.GetOk("run_tests"); ok && v.(bool) && d.HasChange("run_tests") {
-		testsSvc := client.NewWebhookTest().WebhookId(d.Get("id").(string))
+		testsSvc := m.(*fivetran.Client).NewWebhookTestsRunner().WebhookId(d.Get("id").(string))
 		for _, varValue := range d.Get("events").(*schema.Set).List() {
 			testsSvc.Event(varValue.(string))
-		}
-
-		resp, err := testsSvc.Do(ctx)
-		if err != nil {
-			return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+			resp, err := testsSvc.Do(ctx)
+			if err != nil {
+				return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code))
+			}
 		}
 	}
 
