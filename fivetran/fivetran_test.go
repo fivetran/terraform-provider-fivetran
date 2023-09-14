@@ -92,6 +92,7 @@ func cleanupAccount() {
 	cleanupDestinations()
 	cleanupDbtProjects()
 	cleanupGroups()
+	cleanupWebhooks()
 }
 
 func isPredefinedUserExist() bool {
@@ -206,6 +207,19 @@ func cleanupConnectors(groupId string) {
 		_, err := client.NewConnectorDelete().ConnectorID(connector.ID).Do(context.Background())
 		if err != nil {
 			log.Fatal(err)
+		}
+	}
+}
+
+func cleanupWebhooks() {
+	webhooks, err := client.NewWebhookList().Do(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, webhook := range webhooks.Data.Items {
+		_, err := client.NewWebhookDelete().WebhookId(webhook.Id).Do(context.Background())
+		if err != nil {
+			log.Fatal(err)			
 		}
 	}
 }

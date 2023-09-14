@@ -84,10 +84,7 @@ func resourceWebhookCreate(ctx context.Context, d *schema.ResourceData, m interf
 		svcAcc := client.NewWebhookAccountCreate()
 		svcAcc.Url(d.Get("url").(string))
 		svcAcc.Secret(d.Get("secret").(string))
-
-		if v, ok := d.GetOk("active"); ok {
-			svcAcc.Active(v.(bool))
-		}
+		svcAcc.Active(d.Get("active").(bool))
 
 		if v, ok := d.GetOk("events"); ok {
 			svcAcc.Events(xInterfaceStrXStr(v.(*schema.Set).List()))
@@ -103,10 +100,7 @@ func resourceWebhookCreate(ctx context.Context, d *schema.ResourceData, m interf
 		svcGroup := client.NewWebhookGroupCreate().GroupId(d.Get("group_id").(string))
 		svcGroup.Url(d.Get("url").(string))
 		svcGroup.Secret(d.Get("secret").(string))
-
-		if v, ok := d.GetOk("active"); ok {
-			svcGroup.Active(v.(bool))
-		}
+		svcGroup.Active(d.Get("active").(bool))
 
 		if v, ok := d.GetOk("events"); ok {
 			svcGroup.Events(xInterfaceStrXStr(v.(*schema.Set).List()))
@@ -153,7 +147,7 @@ func resourceWebhookRead(ctx context.Context, d *schema.ResourceData, m interfac
 	msi["url"] = resp.Data.Url
 	msi["events"] = resp.Data.Events
 	msi["active"] = resp.Data.Active
-	msi["secret"] = resp.Data.Secret
+	msi["secret"] = d.Get("secret")				// sensitive field
 	msi["created_at"] = resp.Data.CreatedAt
 	msi["created_by"] = resp.Data.CreatedBy
 	for k, v := range msi {

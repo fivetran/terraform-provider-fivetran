@@ -21,18 +21,16 @@ func TestResourceWebhookE2E(t *testing.T) {
                  provider = fivetran-provider
 
                  type = "account"
-                 group_id = "_moonbeam"
                  url = "https://your-host.your-domain/webhook"
                  secret = "password"
-                 active = false
-                 run_tests = false
+                 active = "false"
+                 run_tests = "false"
                  events = ["sync_start","sync_end"]
             }
           `,
                 Check: resource.ComposeAggregateTestCheckFunc(
                     testFivetranWebhookResourceCreate(t, "fivetran_webhook.test_webhook"),
                     resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "type", "account"),
-                    resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "group_id", "_moonbeam"),
                     resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "url", "https://your-host.your-domain/webhook"),
                     resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "secret", "password"),
                     resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "active", "false"),
@@ -46,18 +44,16 @@ func TestResourceWebhookE2E(t *testing.T) {
                  provider = fivetran-provider
 
                  type = "account"
-                 group_id = "_moonbeam"
                  url = "https://your-host.your-domain/webhook_1"
                  secret = "password"
-                 active = false
-                 run_tests = false
+                 active = "false"
+                 run_tests = "false"
                  events = ["sync_start","sync_end"]
             }
           `,
                 Check: resource.ComposeAggregateTestCheckFunc(
-                    testFivetranWebhookResourceCreate(t, "fivetran_webhook.test_webhook"),
+                    testFivetranWebhookResourceUpdate(t, "fivetran_webhook.test_webhook"),
                     resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "type", "account"),
-                    resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "group_id", "_moonbeam"),
                     resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "url", "https://your-host.your-domain/webhook_1"),
                     resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "secret", "password"),
                     resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "active", "false"),
