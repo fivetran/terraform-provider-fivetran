@@ -20,29 +20,24 @@ func TestResourceWebhookE2E(t *testing.T) {
             resource "fivetran_webhook" "test_webhook" {
                  provider = fivetran-provider
 
-                 id = "recur_readable"
-                 type = "group"
+                 type = "account"
                  group_id = "_moonbeam"
                  url = "https://your-host.your-domain/webhook"
                  secret = "password"
                  active = false
-                 created_at = "2022-04-29T10:45:00.000Z"
-                 created_by = "_airworthy"
-                 events : ["sync_start","sync_end"]
+                 run_tests = false
+                 events = ["sync_start","sync_end"]
             }
           `,
                 Check: resource.ComposeAggregateTestCheckFunc(
                     testFivetranWebhookResourceCreate(t, "fivetran_webhook.test_webhook"),
-                    resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "id", "recur_readable"),
-                    resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "type", "group"),
+                    resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "type", "account"),
                     resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "group_id", "_moonbeam"),
                     resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "url", "https://your-host.your-domain/webhook"),
                     resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "secret", "password"),
                     resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "active", "false"),
-                    resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "created_at", "2022-04-29T10:45:00.000Z"),
-                    resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "created_by", "_airworthy"),
-                    resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.0", "sync_start"),
-                    resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.1", "sync_end"),
+                    resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.0", "sync_end"),
+                    resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.1", "sync_start"),
                 ),
             },
             {
@@ -50,29 +45,25 @@ func TestResourceWebhookE2E(t *testing.T) {
             resource "fivetran_webhook" "test_webhook" {
                  provider = fivetran-provider
 
-                 id = "recur_readable"
-                 type = "group"
+                 type = "account"
                  group_id = "_moonbeam"
                  url = "https://your-host.your-domain/webhook_1"
                  secret = "password"
                  active = false
-                 created_at = "2022-04-29T10:45:00.000Z"
-                 created_by = "_airworthy"
-                 events : ["sync_start","sync_end"]
+                 run_tests = false
+                 events = ["sync_start","sync_end"]
             }
           `,
                 Check: resource.ComposeAggregateTestCheckFunc(
                     testFivetranWebhookResourceCreate(t, "fivetran_webhook.test_webhook"),
-                    resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "id", "recur_readable"),
-                    resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "type", "group"),
+                    resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "type", "account"),
                     resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "group_id", "_moonbeam"),
                     resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "url", "https://your-host.your-domain/webhook_1"),
                     resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "secret", "password"),
                     resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "active", "false"),
-                    resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "created_at", "2022-04-29T10:45:00.000Z"),
-                    resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "created_by", "_airworthy"),
-                    resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.0", "sync_start"),
-                    resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.1", "sync_end"),                ),
+                    resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.0", "sync_end"),
+                    resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.1", "sync_start"),
+                ),
             },
         },
     })
