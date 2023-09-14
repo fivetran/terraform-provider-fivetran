@@ -206,7 +206,7 @@ func resourceWebhookUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	if hasChanges {
 		resp, err := svc.Do(ctx)
 		if err != nil {
-			return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v", err, resp.Code, resp.Message))
+			return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v", err, resp.Code))
 		}		
 	}
 	
@@ -216,7 +216,7 @@ func resourceWebhookUpdate(ctx context.Context, d *schema.ResourceData, m interf
 			testsSvc.Event(varValue.(string))
 			resp, err := testsSvc.Do(ctx)
 			if err != nil {
-				return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code))
+				return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v", err, resp.Code))
 			}
 		}
 	}
