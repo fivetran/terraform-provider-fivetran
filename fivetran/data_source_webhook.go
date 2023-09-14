@@ -15,7 +15,7 @@ func dataSourceWebhook() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"id": {
 				Type:        schema.TypeString,
-				Computed:    true,
+				Required:    true,
 				Description: "The webhook ID",
 			},
 			"type": {
@@ -37,6 +37,7 @@ func dataSourceWebhook() *schema.Resource {
 				Type:        schema.TypeSet,
 				Computed:    true,
 				Description: "The array of event types",
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"active": {
 				Type:        schema.TypeBool,

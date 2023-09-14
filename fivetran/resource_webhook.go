@@ -43,6 +43,7 @@ func resourceWebhook() *schema.Resource {
 				Type:        schema.TypeSet,
 				Required:    true,
 				Description: "The array of event types",
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"active": {
 				Type:        schema.TypeBool,
@@ -210,7 +211,7 @@ func resourceWebhookUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	}
 	
 	if v, ok := d.GetOk("run_tests"); ok && v.(bool) && d.HasChange("run_tests") {
-		testsSvc := m.(*fivetran.Client).NewWebhookTestsRunner().WebhookId(d.Get("id").(string))
+		testsSvc := m.(*fivetran.Client).NewWebhookTest().WebhookId(d.Get("id").(string))
 		for _, varValue := range d.Get("events").(*schema.Set).List() {
 			testsSvc.Event(varValue.(string))
 			resp, err := testsSvc.Do(ctx)

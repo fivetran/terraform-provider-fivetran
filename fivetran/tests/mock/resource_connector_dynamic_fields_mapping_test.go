@@ -81,6 +81,7 @@ resource "fivetran_connector" "test_connector" {
 	}
 }
 	`
+	debug = false
 )
 
 func getTfConfigForConflictingFields(service, destinationSchema, configTf string) string {
@@ -105,7 +106,9 @@ func setupMockClientConnectorResourceConfigConflictingFieldsMapping(t *testing.T
 
 			response := getJsonConfigForConflictingFields(service, schema, configJson)
 
-			fmt.Print(response)
+			if debug {
+				fmt.Print(response)
+			}
 
 			connectorConflictingMappingMockData = createMapFromJsonString(t, response)
 			return fivetranSuccessResponse(t, req, http.StatusCreated, "Success", connectorConflictingMappingMockData), nil
@@ -249,13 +252,15 @@ func fetchFieldsBatchByService(fields []string) ([]string, []string, string) {
 			}
 			serviceFields := getAllServiceSpecificFields(service)
 
-			if len(serviceFields) == 0 {
+			if len(serviceFields) == 0 && debug {
 				fmt.Printf("No found for service %v for field %v", service, f)
 			}
 			result := make([]string, 0, len(serviceFields))
 
 			if len(serviceFields) == 0 {
-				fmt.Printf("SKIP: field %v not in use by any service", f)
+				if debug {
+					fmt.Printf("SKIP: field %v not in use by any service", f)	
+				}
 				return make([]string, 0), fields[1:], ""
 			}
 
@@ -298,8 +303,10 @@ func TestResourceConnectorDynamicByServiceMapping(t *testing.T) {
 
 	for len(*restFields) > 0 {
 		stepFields, rest, service := fetchFieldsBatchByService(*restFields)
-		fmt.Printf("Fields left to test: %v", len(rest))
-		fmt.Printf("Testing fields for service %v : [%v]", service, strings.Join(stepFields, ", "))
+		if debug {
+			fmt.Printf("Fields left to test: %v", len(rest))
+			fmt.Printf("Testing fields for service %v : [%v]", service, strings.Join(stepFields, ", "))
+		}
 		if len(stepFields) > 0 {
 			tfConfig := make([]string, 0)
 			jsonConfig := make([]string, 0)
@@ -318,7 +325,9 @@ func TestResourceConnectorDynamicByServiceMapping(t *testing.T) {
 				jsonc,
 			)
 		}
-		fmt.Printf("Fields left to test: %v", len(rest))
+		if debug {
+			fmt.Printf("Fields left to test: %v", len(rest))
+		}
 		restFields = &rest
 	}
 }
@@ -328,8 +337,10 @@ func TestResourceConnectorDynamicMapping(t *testing.T) {
 
 	for len(*restFields) > 0 {
 		stepFields, rest, service := fetchFieldsBatchByService(*restFields)
-		fmt.Printf("Fields left to test: %v", len(rest))
-		fmt.Printf("Testing fields for service %v : [%v]", service, strings.Join(stepFields, ", "))
+		if debug {
+			fmt.Printf("Fields left to test: %v", len(rest))
+			fmt.Printf("Testing fields for service %v : [%v]", service, strings.Join(stepFields, ", "))
+		}
 		if len(stepFields) > 0 {
 			tfConfig := make([]string, 0)
 			jsonConfig := make([]string, 0)
@@ -348,14 +359,18 @@ func TestResourceConnectorDynamicMapping(t *testing.T) {
 				jsonc,
 			)
 		}
-		fmt.Printf("Fields left to test: %v", len(rest))
+		if debug {
+			fmt.Printf("Fields left to test: %v", len(rest))
+		}
 		restFields = &rest
 	}
 }
 
 func testResourceConnectorConfigConflictingFieldsMappingMock(t *testing.T, service, destinationSchema, schema, tfConfig, jsonConfig string) {
 	config := getTfConfigForConflictingFields(service, destinationSchema, tfConfig)
-	fmt.Print(config)
+	if debug {
+		fmt.Println(config)
+	}
 
 	step1 := resource.TestStep{
 		Config: config,
