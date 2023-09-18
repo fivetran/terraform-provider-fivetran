@@ -41,6 +41,12 @@ func init() {
 		"FIVETRAN_APISECRET": &apiSecret,
 	}
 
+	// ATTENTION
+	// Changing these settings may result in unexpected behavior from the provider, such as clearing all account data
+	PredefinedGroupId = "harbour_choking"
+	PredefinedUserId = "buyer_warring"
+	// ATTENTION
+
 	for name, value := range valuesToLoad {
 		*value = os.Getenv(name)
 		if *value == "" {
@@ -89,6 +95,7 @@ func GetResource(t *testing.T, s *terraform.State, resourceName string) *terrafo
 
 func cleanupAccount() {
 	cleanupUsers()
+	cleanupExternalLogging()
 	cleanupDestinations()
 	cleanupDbtProjects()
 	cleanupGroups()
@@ -133,6 +140,19 @@ func cleanupDestinations() {
 	}
 	for _, group := range groups.Data.Items {
 		_, err := client.NewDestinationDelete().DestinationID(group.ID).Do(context.Background())
+		if err != nil && err.Error() != "status code: 404; expected: 200" {
+			log.Fatal(err)
+		}
+	}
+}
+
+func cleanupExternalLogging() {
+	groups, err := client.NewGroupsList().Do(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, group := range groups.Data.Items {
+		_, err := client.NewExternalLoggingDelete().ExternalLoggingId(group.ID).Do(context.Background())
 		if err != nil && err.Error() != "status code: 404; expected: 200" {
 			log.Fatal(err)
 		}
