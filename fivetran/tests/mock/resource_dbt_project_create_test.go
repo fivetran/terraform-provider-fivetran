@@ -10,9 +10,10 @@ import (
 )
 
 var (
-	dbtProjectResourceCreateMockGetHandler    *mock.Handler
-	dbtProjectResourceCreateMockPostHandler   *mock.Handler
-	dbtProjectResourceCreateMockDeleteHandler *mock.Handler
+	dbtProjectResourceCreateMockGetHandler       *mock.Handler
+	dbtProjectResourceCreateMockGetModelsHandler *mock.Handler
+	dbtProjectResourceCreateMockPostHandler      *mock.Handler
+	dbtProjectResourceCreateMockDeleteHandler    *mock.Handler
 
 	dbtProjectResourceCreateMockData map[string]interface{}
 )
@@ -72,6 +73,21 @@ func setupMockClientDbtProjectResourceCreateTest(t *testing.T) {
 				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", createMapFromJsonString(t, dbtProjectResponseReady)), nil
 			}
 
+		},
+	)
+
+	dbtProjectResourceCreateMockGetModelsHandler = mockClient.When(http.MethodGet, "/v1/dbt/models").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			project_id := req.URL.Query().Get("project_id")
+			assertEqual(t, project_id, "project_id")
+			cursor := req.URL.Query().Get("cursor")
+			if cursor == "" {
+				dbtModelsDataSourceMockData = createMapFromJsonString(t, dbtModelsMappingResponseWithCursor)
+			} else {
+				assertEqual(t, cursor, "next_cursor")
+				dbtModelsDataSourceMockData = createMapFromJsonString(t, dbtModelsMappingResponse)
+			}
+			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", dbtModelsDataSourceMockData), nil
 		},
 	)
 
@@ -135,7 +151,7 @@ func TestResourceDbtProjectCreateMock(t *testing.T) {
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 				assertEqual(t, dbtProjectResourceCreateMockPostHandler.Interactions, 1)
-				assertEqual(t, dbtProjectResourceCreateMockGetHandler.Interactions, 3)
+				assertEqual(t, dbtProjectResourceCreateMockGetHandler.Interactions, 1)
 				assertNotEmpty(t, dbtProjectResourceCreateMockData)
 				return nil
 			},
