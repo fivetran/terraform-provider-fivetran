@@ -80,7 +80,7 @@ func getWebhookSchema(datasource bool) map[string]*schema.Schema {
 		},
 		"run_tests": {
 			Type:        schema.TypeBool,
-			Optional:    !datasource,
+			Optional:    true,
 			Default:     datasource,
 			Description: "Specifies whether the setup tests should be run",
 		},
@@ -176,11 +176,12 @@ func resourceWebhookRead(ctx context.Context, d *schema.ResourceData, m interfac
 	msi["url"] = resp.Data.Url
 	msi["events"] = resp.Data.Events
 	msi["active"] = resp.Data.Active
-	if resp.Data.Secret == "******" {
+	
+	msi["secret"] = resp.Data.Secret
+	if resp.Data.Secret == "******" && d.Get("secret") != "" {
 		msi["secret"] = d.Get("secret")				// sensitive field	
-	} else {
-		msi["secret"] = resp.Data.Secret
-	}
+	} 
+
 	msi["created_at"] = resp.Data.CreatedAt
 	msi["created_by"] = resp.Data.CreatedBy
 	for k, v := range msi {
