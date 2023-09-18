@@ -18,54 +18,7 @@ func dataSourceWebhooks() *schema.Resource {
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "The webhook ID",
-						},
-						"type": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "The webhook type (group, account)",
-						},
-						"group_id": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "The group ID",
-						},
-						"url": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "Your webhooks URL endpoint for your application",
-						},
-						"events": {
-							Type:        schema.TypeSet,
-							Computed:    true,
-							Description: "The array of event types",
-							Elem:        &schema.Schema{Type: schema.TypeString},
-						},
-						"active": {
-							Type:        schema.TypeBool,
-							Computed:    true,
-							Description: "Boolean, if set to true, webhooks are immediately sent in response to events",
-						},
-						"secret": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "The secret string used for payload signing and masked in the response.",
-						},
-						"created_at": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "The webhook creation timestamp",
-						},
-						"created_by": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "The ID of the user who created the webhook.",
-						},
-					},
+					Schema: getWebhookSchema(true),
 				},
 			},
 		},
