@@ -29,11 +29,23 @@ data "fivetran_dbt_project" "project" {
 - `default_schema` (String) Default schema in destination. This production schema will contain your transformed data.
 - `environment_vars` (Set of String)
 - `group_id` (String) The unique identifier for the group within the Fivetran system.
+- `models` (Block Set) The collection of dbt Models. (see [below for nested schema](#nestedblock--models))
 - `project_config` (List of Object) Type specific dbt Project configuration parameters. (see [below for nested schema](#nestedatt--project_config))
 - `public_key` (String) Public key to grant Fivetran SSH access to git repository.
+- `status` (String) Status of dbt Project (NOT_READY, READY, ERROR).
 - `target_name` (String) Target name to set or override the value from the deployment.yaml
 - `threads` (Number) The number of threads dbt will use (from 1 to 32). Make sure this value is compatible with your destination type. For example, Snowflake supports only 8 concurrent queries on an X-Small warehouse.
 - `type` (String) Type of dbt Project. Currently only `GIT` supported. Empty value will be considered as default (GIT).
+
+<a id="nestedblock--models"></a>
+### Nested Schema for `models`
+
+Read-Only:
+
+- `id` (String) The unique identifier for the dbt Model within the Fivetran system.
+- `model_name` (String) The dbt Model name.
+- `scheduled` (Boolean) Boolean specifying whether the model is selected for execution.
+
 
 <a id="nestedatt--project_config"></a>
 ### Nested Schema for `project_config`

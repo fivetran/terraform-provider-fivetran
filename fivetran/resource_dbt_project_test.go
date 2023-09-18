@@ -12,16 +12,30 @@ import (
 )
 
 func TestResourceDbtProjectE2E(t *testing.T) {
+	destinationConfig := `
+	resource "fivetran_destination" "test_destination" {
+		provider = fivetran-provider
+		group_id = "` + PredefinedGroupId + `"
+		service = "big_query"
+		region = "GCP_US_EAST4"
+		time_zone_offset = "-5"
+		config {
+			project_id = "` + BqProjectId + `"
+			data_set_location = "US"
+		}
+	}
+	`
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() {},
 		ProviderFactories: providerFactory,
 		CheckDestroy:      testFivetranDbtProjectResourceDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: `
+				Config: destinationConfig + `
 					resource "fivetran_dbt_project" "test_project" {
 						provider = fivetran-provider
-						group_id = "` + PredefinedGroupId + `"
+						group_id = fivetran_destination.test_destination.id
 						dbt_version = "1.0.1"
 						threads = 1
 						default_schema = "dbt_demo_test_e2e_terraform"
@@ -31,6 +45,7 @@ func TestResourceDbtProjectE2E(t *testing.T) {
 							git_remote_url = "git@github.com:fivetran/dbt_demo.git"
 							git_branch = "main"
 						}
+						ensure_readiness = false
 					}
 				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
@@ -46,7 +61,7 @@ func TestResourceDbtProjectE2E(t *testing.T) {
 				),
 			},
 			{
-				Config: `
+				Config: destinationConfig + `
 					resource "fivetran_dbt_project" "test_project" {
 						provider = fivetran-provider
 						group_id = "` + PredefinedGroupId + `"
@@ -149,6 +164,15 @@ func testFivetranDbtProjectResourceDestroy(s *terraform.State) error {
 			}
 			if !strings.HasPrefix(response.Code, "NotFound") {
 				return errors.New("DBT Project " + rs.Primary.ID + " still exists. Response code: " + response.Code)
+			}
+		}
+		if rs.Type == "fivetran_destination" {
+			response, err := client.NewDestinationDetails().DestinationID(PredefinedGroupId).Do(context.Background())
+			if err.Error() != "status code: 404; expected: 200" {
+				return err
+			}
+			if !strings.HasPrefix(response.Code, "NotFound") {
+				return errors.New("Destination " + PredefinedGroupId + " still exists. Response code: " + response.Code)
 			}
 		}
 	}

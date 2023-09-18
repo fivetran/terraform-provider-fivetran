@@ -13,14 +13,22 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
+const (
+	// ! WARNING !
+	// ! Before changing these values usure you're using BLANK ACCOUNT API KEY. All data from account will be deleted !
+	PredefinedGroupId       = "harbour_choking"
+	PredefinedUserId        = "buyer_warring"
+	PredefinedUserGivenName = "Terraform"
+	PredefinedGroupName     = "Warehouse"
+	BqProjectId             = "dulcet-yew-246109"
+)
+
 var client *gofivetran.Client
 var testProviders map[string]*schema.Provider
 var providerFactory = make(map[string]func() (*schema.Provider, error))
-var PredefinedGroupId string
-var PredefinedUserId string
 
 func init() {
-	// Uncomment for local e2e debugging, note that account will be cleaned up except one user with id="user_id" and one group with id="group_id"
+	// uncomment for local testing
 	// os.Setenv("FIVETRAN_API_URL", "https://api-staging.fivetran.com/v1")
 	// os.Setenv("FIVETRAN_APIKEY", "apikey")
 	// os.Setenv("FIVETRAN_APISECRET", "apisecret")
@@ -32,12 +40,6 @@ func init() {
 		"FIVETRAN_APIKEY":    &apiKey,
 		"FIVETRAN_APISECRET": &apiSecret,
 	}
-
-	// ATTENTION
-	// Changing these settings may result in unexpected behavior from the provider, such as clearing all account data
-	PredefinedGroupId = "harbour_choking"
-	PredefinedUserId = "buyer_warring"
-	// ATTENTION
 
 	for name, value := range valuesToLoad {
 		*value = os.Getenv(name)
@@ -64,7 +66,7 @@ func init() {
 		}
 	}
 
-	if isPredefinedUserExist() {
+	if isPredefinedUserExist() && isPredefinedGroupExist() {
 		cleanupAccount()
 	} else {
 		log.Fatalln("The predefined user doesn't belong to the Testing account. Make sure that credentials are using in the tests belong to the Testing account.")
@@ -97,7 +99,15 @@ func isPredefinedUserExist() bool {
 	if err != nil {
 		return false
 	}
-	return user.Data.ID == PredefinedUserId
+	return user.Data.GivenName == PredefinedUserGivenName
+}
+
+func isPredefinedGroupExist() bool {
+	group, err := client.NewGroupDetails().GroupID(PredefinedGroupId).Do(context.Background())
+	if err != nil {
+		return false
+	}
+	return group.Data.Name == PredefinedGroupName
 }
 
 func cleanupUsers() {
