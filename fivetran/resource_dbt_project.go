@@ -179,7 +179,7 @@ func resourceDbtProjectRead(ctx context.Context, d *schema.ResourceData, m inter
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
 
-	resp, err := client.NewDbtDetails().DbtProjectID(d.Get("id").(string)).Do(ctx)
+	resp, err := client.NewDbtProjectDetails().DbtProjectID(d.Get("id").(string)).Do(ctx)
 	if err != nil {
 		// If the resource does not exist (404), inform Terraform. We want to immediately
 		// return here to prevent further processing.

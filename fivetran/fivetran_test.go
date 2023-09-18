@@ -21,8 +21,6 @@ var PredefinedUserId string
 
 func init() {
 	// Uncomment for local e2e debugging, note that account will be cleaned up except one user with id="user_id" and one group with id="group_id"
-	// os.Setenv("FIVETRAN_GROUP_ID", "group_id")
-	// os.Setenv("FIVETRAN_USER_ID", "user_id")
 	// os.Setenv("FIVETRAN_API_URL", "https://api-staging.fivetran.com/v1")
 	// os.Setenv("FIVETRAN_APIKEY", "apikey")
 	// os.Setenv("FIVETRAN_APISECRET", "apisecret")
@@ -33,9 +31,13 @@ func init() {
 		"FIVETRAN_API_URL":   &apiUrl,
 		"FIVETRAN_APIKEY":    &apiKey,
 		"FIVETRAN_APISECRET": &apiSecret,
-		"FIVETRAN_GROUP_ID":  &PredefinedGroupId,
-		"FIVETRAN_USER_ID":   &PredefinedUserId,
 	}
+
+	// ATTENTION
+	// Changing these settings may result in unexpected behavior from the provider, such as clearing all account data
+	PredefinedGroupId = "harbour_choking"
+	PredefinedUserId = "buyer_warring"
+	// ATTENTION
 
 	for name, value := range valuesToLoad {
 		*value = os.Getenv(name)
