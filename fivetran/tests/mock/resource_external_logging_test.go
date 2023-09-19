@@ -36,7 +36,7 @@ const (
             "region":         "region",
             "log_group_name": "log_group_name",
             "sub_domain":     "sub_domain",
-            "enable_ssl":     "enable_ssl",
+            "enable_ssl":     true,
             "channel":        "channel",
             "token":          "token",
             "external_id":    "external_id",
