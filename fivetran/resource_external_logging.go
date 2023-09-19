@@ -157,14 +157,12 @@ func resourceExternalLoggingCreate(ctx context.Context, d *schema.ResourceData, 
 
 	svc.GroupId(d.Get("group_id").(string))
 	svc.Service(d.Get("service").(string))
-	if v, ok := d.GetOk("enabled"); ok {
-		svc.Enabled(v.(bool))
-	}
-	if v, ok := resourceExternalLoggingCreateConfig(d.Get("config").([]interface{})); ok {
-		svc.Config(v)
-	}
+	svc.Enabled(d.Get("enabled").(bool))
+	config := resourceExternalLoggingCreateConfig(d)
 
-	resp, err := svc.Do(ctx)
+	svc.ConfigCustom(&config)
+
+	resp, err := svc.DoCustom(ctx)
 	if err != nil {
 		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
@@ -228,21 +226,17 @@ func resourceExternalLoggingUpdate(ctx context.Context, d *schema.ResourceData, 
 	}
 
 	if d.HasChange("config") {
-		_, n := d.GetChange("config")
-		// resourceExternalLoggingCreateConfig is used here because
-		// the whole "config" block must be sent to the REST API.
-		if v, ok := resourceExternalLoggingCreateConfig(n.([]interface{})); ok {
-			svc.Config(v)
-			hasChanges = true
-			// only sets change if func resourceExternalLoggingCreateConfig returns ok
-		}
+		config := resourceExternalLoggingCreateConfig(d)
+		svc.ConfigCustom(&config)
+
+		hasChanges = true
 	}
 	if hasChanges {
 		if v, ok := d.GetOk("run_setup_tests"); ok {
 			svc.RunSetupTests(v.(bool))
 		}
 
-		resp, err := svc.Do(ctx)
+		resp, err := svc.DoCustom(ctx)
 		if err != nil {
 			// resourceExternalLoggingRead here makes sure the state is updated after a NewExternalLoggingModify error.
 			diags = resourceExternalLoggingRead(ctx, d, m)
@@ -277,73 +271,18 @@ func resourceExternalLoggingDelete(ctx context.Context, d *schema.ResourceData, 
 	return diags
 }
 
-// resourceExternalLoggingCreateConfig receives a config type []interface{} and returns a
-// *fivetran.ExternalLoggingConfig and a ok value. The ok value is true if any configuration
-// has been set.
-func resourceExternalLoggingCreateConfig(config []interface{}) (*fivetran.ExternalLoggingConfig, bool) {
-	fivetranConfig := fivetran.NewExternalLoggingConfig()
-	var hasConfig bool
+func resourceExternalLoggingCreateConfig(d *schema.ResourceData) map[string]interface{} {
+	configMap := make(map[string]interface{})
+
+	var config = d.Get("config").([]interface{})
+
+	if len(config) < 1 || config[0] == nil {
+		return configMap
+	}
 
 	c := config[0].(map[string]interface{})
 
-	if v := c["workspace_id"].(string); v != "" {
-		fivetranConfig.WorkspaceId(v)
-		hasConfig = true
-	}
-	if v := c["port"].(int); v != 0 {
-		fivetranConfig.Port(v)
-		hasConfig = true
-	}
-	if v := c["log_group_name"].(string); v != "" {
-		fivetranConfig.LogGroupName(v)
-		hasConfig = true
-	}
-	if v := c["role_arn"].(string); v != "" {
-		fivetranConfig.RoleArn(v)
-		hasConfig = true
-	}
-	if v := c["external_id"].(string); v != "" {
-		fivetranConfig.ExternalId(v)
-		hasConfig = true
-	}
-	if v := c["region"].(string); v != "" {
-		fivetranConfig.Region(v)
-		hasConfig = true
-	}
-	if v := c["sub_domain"].(string); v != "" {
-		fivetranConfig.SubDomain(v)
-		hasConfig = true
-	}
-	if v := c["host"].(string); v != "" {
-		fivetranConfig.Host(v)
-		hasConfig = true
-	}
-	if v := c["hostname"].(string); v != "" {
-		fivetranConfig.Hostname(v)
-		hasConfig = true
-	}
-	if v := c["enable_ssl"].(bool); v != "" {
-		fivetranConfig.EnableSsl(v) // here will be a bug currently - we need to fix go-fivetran client. Or just use custom config.
-		hasConfig = true
-	}
-	if v := c["channel"].(string); v != "" {
-		fivetranConfig.Channel(v)
-		hasConfig = true
-	}
-	if v := c["primary_key"].(string); v != "" {
-		fivetranConfig.PrimaryKey(v)
-		hasConfig = true
-	}
-	if v := c["api_key"].(string); v != "" {
-		fivetranConfig.ApiKey(v)
-		hasConfig = true
-	}
-	if v := c["token"].(string); v != "" {
-		fivetranConfig.Token(v)
-		hasConfig = true
-	}
-
-	return fivetranConfig, hasConfig
+	return c
 }
 
 
