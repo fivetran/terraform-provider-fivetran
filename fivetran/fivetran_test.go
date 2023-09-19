@@ -151,6 +151,9 @@ func cleanupExternalLogging() {
 			log.Fatal(err)
 		}
 	}
+	if groups.Data.NextCursor != nil {
+	   cleanupExternalLogging()
+	}
 }
 
 func cleanupDbtProjects() {
