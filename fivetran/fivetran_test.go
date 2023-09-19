@@ -41,12 +41,6 @@ func init() {
 		"FIVETRAN_APISECRET": &apiSecret,
 	}
 
-	// ATTENTION
-	// Changing these settings may result in unexpected behavior from the provider, such as clearing all account data
-	PredefinedGroupId = "harbour_choking"
-	PredefinedUserId = "buyer_warring"
-	// ATTENTION
-
 	for name, value := range valuesToLoad {
 		*value = os.Getenv(name)
 		if *value == "" {
