@@ -47,7 +47,7 @@ func TestDataSourceExternalLoggingConfigMappingMock(t *testing.T) {
             resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.primary_key", "primary_key"),
             resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.log_group_name", "log_group_name"),
             resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.sub_domain", "sub_domain"),
-            resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.enable_ssl", "enable_ssl"),
+            resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.enable_ssl", "true"),
             resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.port", "443"),           
             resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.role_arn", "role_arn"),
             resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.channel", "channel"),

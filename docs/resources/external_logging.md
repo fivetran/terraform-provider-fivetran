@@ -50,7 +50,7 @@ Optional:
 - `hostname` (String) Server name
 - `port` (Number) Server port number
 - `channel` (String) Channel
-- `enable_ssl` (String) Enable SSL
+- `enable_ssl` (Boolean) Enable SSL
 - `token` (String) Token
 
 ## Import

@@ -89,7 +89,7 @@ func GetResource(t *testing.T, s *terraform.State, resourceName string) *terrafo
 
 func cleanupAccount() {
 	cleanupUsers()
-	cleanupExternalLogging()
+	cleanupExternalLogging("")
 	cleanupDestinations()
 	cleanupDbtProjects()
 	cleanupGroups()
@@ -140,8 +140,14 @@ func cleanupDestinations() {
 	}
 }
 
-func cleanupExternalLogging() {
-	groups, err := client.NewGroupsList().Do(context.Background())
+func cleanupExternalLogging(nextCursor string) {
+	svc := client.NewGroupsList()
+
+	if nextCursor != "" {
+		svc.Cursor(nextCursor)
+	}
+
+	groups, err := svc.Do(context.Background())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -151,8 +157,8 @@ func cleanupExternalLogging() {
 			log.Fatal(err)
 		}
 	}
-	if groups.Data.NextCursor != nil {
-	   cleanupExternalLogging()
+	if groups.Data.NextCursor != "" {
+	   cleanupExternalLogging(groups.Data.NextCursor)
 	}
 }
 
