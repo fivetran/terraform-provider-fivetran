@@ -39,9 +39,11 @@ resource "fivetran_dbt_project" "project" {
 
 ### Optional
 
+- `ensure_readiness` (Boolean) Should resource wait for project to finish initialization.
 - `environment_vars` (Set of String)
 - `target_name` (String) Target name to set or override the value from the deployment.yaml
 - `threads` (Number) The number of threads dbt will use (from 1 to 32). Make sure this value is compatible with your destination type. For example, Snowflake supports only 8 concurrent queries on an X-Small warehouse.
+- `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 - `type` (String) Type of dbt Project. Currently only `GIT` supported. Empty value will be considered as default (GIT).
 
 ### Read-Only
@@ -49,7 +51,9 @@ resource "fivetran_dbt_project" "project" {
 - `created_at` (String) The timestamp of the dbt Project creation.
 - `created_by_id` (String) The unique identifier for the User within the Fivetran system who created the dbt Project.
 - `id` (String) The unique identifier for the dbt Project within the Fivetran system.
+- `models` (Block Set) The collection of dbt Models. (see [below for nested schema](#nestedblock--models))
 - `public_key` (String) Public key to grant Fivetran SSH access to git repository.
+- `status` (String) Status of dbt Project (NOT_READY, READY, ERROR).
 
 <a id="nestedblock--project_config"></a>
 ### Nested Schema for `project_config`
@@ -59,6 +63,24 @@ Optional:
 - `folder_path` (String) Folder in Git repo with your dbt project.
 - `git_branch` (String) Git branch.
 - `git_remote_url` (String) Git remote URL with your dbt project.
+
+
+<a id="nestedblock--timeouts"></a>
+### Nested Schema for `timeouts`
+
+Optional:
+
+- `create` (String)
+
+
+<a id="nestedblock--models"></a>
+### Nested Schema for `models`
+
+Read-Only:
+
+- `id` (String) The unique identifier for the dbt Model within the Fivetran system.
+- `model_name` (String) The dbt Model name.
+- `scheduled` (Boolean) Boolean specifying whether the model is selected for execution.
 
 ## Import
 

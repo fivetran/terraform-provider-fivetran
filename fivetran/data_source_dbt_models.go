@@ -18,12 +18,12 @@ func dataSourceDbtModels() *schema.Resource {
 				Required:    true,
 				Description: "The unique identifier for the dbt project within the Fivetran system.",
 			},
-			"models": dataSourceDbtModelsSchema(),
+			"models": dbtModelsSchema(),
 		},
 	}
 }
 
-func dataSourceDbtModelsSchema() *schema.Schema {
+func dbtModelsSchema() *schema.Schema {
 	return &schema.Schema{
 		Type:        schema.TypeSet,
 		Optional:    true,
@@ -55,12 +55,12 @@ func dataSourceDbtModelsRead(ctx context.Context, d *schema.ResourceData, m inte
 	var diags diag.Diagnostics
 	client := m.(*fivetran.Client)
 
-	resp, err := dataSourceDbtModelsGetAllModels(client, ctx, d.Get("project_id").(string))
+	resp, err := getAllDbtModelsForProject(client, ctx, d.Get("project_id").(string))
 	if err != nil {
 		return newDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
-	if err := d.Set("models", dataSourceGroupsFlattenDbtModels(resp)); err != nil {
+	if err := d.Set("models", flattenDbtModels(resp)); err != nil {
 		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
 
@@ -71,7 +71,7 @@ func dataSourceDbtModelsRead(ctx context.Context, d *schema.ResourceData, m inte
 }
 
 // dataSourceGroupsGetGroups gets the groups list. It handles limits and cursors.
-func dataSourceDbtModelsGetAllModels(client *fivetran.Client, ctx context.Context, projectId string) (fivetran.DbtModelsListResponse, error) {
+func getAllDbtModelsForProject(client *fivetran.Client, ctx context.Context, projectId string) (fivetran.DbtModelsListResponse, error) {
 	var resp fivetran.DbtModelsListResponse
 	var respNextCursor string
 
@@ -101,7 +101,7 @@ func dataSourceDbtModelsGetAllModels(client *fivetran.Client, ctx context.Contex
 	return resp, nil
 }
 
-func dataSourceGroupsFlattenDbtModels(response fivetran.DbtModelsListResponse) []interface{} {
+func flattenDbtModels(response fivetran.DbtModelsListResponse) []interface{} {
 	result := make([]interface{}, 0)
 
 	for _, model := range response.Data.Items {

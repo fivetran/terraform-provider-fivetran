@@ -274,3 +274,14 @@ func filterMap(
 	}
 	return result
 }
+
+func contextDelay(ctx context.Context, d time.Duration) error {
+	t := time.NewTimer(d)
+	select {
+	case <-ctx.Done():
+		t.Stop()
+		return fmt.Errorf("interrupted: context deadline exceeded")
+	case <-t.C:
+	}
+	return nil
+}

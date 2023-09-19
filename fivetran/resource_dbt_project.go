@@ -3,6 +3,8 @@ package fivetran
 import (
 	"context"
 	"fmt"
+	"strings"
+	"time"
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -11,12 +13,15 @@ import (
 
 func resourceDbtProject() *schema.Resource {
 	return &schema.Resource{
-		CreateContext: resourceDbtProjectCreate,
-		ReadContext:   resourceDbtProjectRead,
-		UpdateContext: resourceDbtProjectUpdate,
-		DeleteContext: resourceDbtProjectDelete,
-		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		Schema:        getDbtProjectSchema(false),
+		CreateWithoutTimeout: resourceDbtProjectCreate,
+		ReadContext:          resourceDbtProjectRead,
+		UpdateContext:        resourceDbtProjectUpdate,
+		DeleteContext:        resourceDbtProjectDelete,
+		Importer:             &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
+		Schema:               getDbtProjectSchema(false),
+		Timeouts: &schema.ResourceTimeout{
+			Create: schema.DefaultTimeout(20 * time.Minute),
+		},
 	}
 }
 
@@ -106,15 +111,29 @@ func getDbtProjectSchema(datasource bool) map[string]*schema.Schema {
 		},
 
 		// readonly fields
+		"status":        {Type: schema.TypeString, Computed: true, Description: "Status of dbt Project (NOT_READY, READY, ERROR)."},
 		"created_at":    {Type: schema.TypeString, Computed: true, Description: "The timestamp of the dbt Project creation."},
 		"created_by_id": {Type: schema.TypeString, Computed: true, Description: "The unique identifier for the User within the Fivetran system who created the dbt Project."},
 		"public_key":    {Type: schema.TypeString, Computed: true, Description: "Public key to grant Fivetran SSH access to git repository."},
+
+		"models": dbtModelsSchema(),
+	}
+
+	if !datasource {
+		result["ensure_readiness"] = &schema.Schema{
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Description: "Should resource wait for project to finish initialization.",
+		}
 	}
 	return result
 }
 
 func resourceDbtProjectCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
+
+	ctx, cancel := setContextTimeout(ctx, d.Timeout(schema.TimeoutCreate))
+	defer cancel()
 
 	client := m.(*fivetran.Client)
 	svc := client.NewDbtProjectCreate()
@@ -171,8 +190,58 @@ func resourceDbtProjectCreate(ctx context.Context, d *schema.ResourceData, m int
 		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
+	if d.Get("ensure_readiness").(bool) && strings.ToLower(resp.Data.Status) != "ready" {
+		if ed, ok := ensureProjectIsReady(ctx, client, resp.Data.ID); !ok {
+			return ed
+		}
+	}
+
 	d.SetId(resp.Data.ID)
 	return resourceDbtProjectRead(ctx, d, m)
+}
+
+func ensureProjectIsReady(ctx context.Context, client *fivetran.Client, projectId string) (diag.Diagnostics, bool) {
+	var diags diag.Diagnostics
+	for {
+		s, errs, e := pollProjectStatus(ctx, client, projectId)
+		if e != nil {
+			deleteResp, err := client.NewDbtProjectDelete().DbtProjectID(projectId).Do(context.Background())
+			if err != nil {
+				return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("failed to cleanup after unsuccesful deletion; error: %v; code: %v; message: %v", err, deleteResp.Code, deleteResp.Message)), false
+			}
+			return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("unable to get status for dbt project: %v error: %v", projectId, err)), false
+		}
+		if s != "not_ready" {
+			if s == "ready" {
+				break
+			} else {
+				deleteResp, err := client.NewDbtProjectDelete().DbtProjectID(projectId).Do(context.Background())
+				if err != nil {
+					return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("failed to cleanup after unsuccesful deletion; error: %v; code: %v; message: %v", err, deleteResp.Code, deleteResp.Message)), false
+				}
+				return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("dbt project: %v has \"ERROR\" status after creation; errors: %v;", projectId, errs)), false
+			}
+		}
+
+		if dl, ok := ctx.Deadline(); ok && time.Now().After(dl.Add(-time.Minute)) {
+			// deadline will be exceeded on next iteration - it's time to cleanup
+			deleteResp, err := client.NewDbtProjectDelete().DbtProjectID(projectId).Do(context.Background())
+			if err != nil {
+				return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("failed to cleanup after unsuccesful deletion; error: %v; code: %v; message: %v", err, deleteResp.Code, deleteResp.Message)), false
+			}
+			return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("project %v is stuck in \"NOT_READY\" status", projectId)), false
+		}
+		contextDelay(ctx, time.Second)
+	}
+	return diags, true
+}
+
+func pollProjectStatus(ctx context.Context, client *fivetran.Client, projectId string) (string, []string, error) {
+	resp, err := client.NewDbtProjectDetails().DbtProjectID(projectId).Do(ctx)
+	if err != nil {
+		return "", []string{}, err
+	}
+	return strings.ToLower(resp.Data.Status), resp.Data.Errors, err
 }
 
 func resourceDbtProjectRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -212,6 +281,15 @@ func resourceDbtProjectRead(ctx context.Context, d *schema.ResourceData, m inter
 	mapAddStr(mapStringInterface, "created_at", resp.Data.CreatedAt)
 	mapAddStr(mapStringInterface, "created_by_id", resp.Data.CreatedById)
 	mapAddStr(mapStringInterface, "public_key", resp.Data.PublicKey)
+	mapAddStr(mapStringInterface, "status", resp.Data.Status)
+
+	if strings.ToLower(resp.Data.Status) == "ready" {
+		modelsResp, err := getAllDbtModelsForProject(client, ctx, resp.Data.ID)
+		if err != nil {
+			return newDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, modelsResp.Code, modelsResp.Message))
+		}
+		mapAddXInterface(mapStringInterface, "models", flattenDbtModels(modelsResp))
+	}
 
 	for k, v := range mapStringInterface {
 		if err := d.Set(k, v); err != nil {

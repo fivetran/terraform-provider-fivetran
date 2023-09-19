@@ -32,7 +32,8 @@ func setupMockClientDbtProjectDataSourceMappingTest(t *testing.T) {
 			"git_remote_url": "git_remote_url",
 			"git_branch": "git_branch",
 			"folder_path": "folder_path"
-		}
+		},
+		"status":"NOT_READY"
 	}`
 	mockClient.Reset()
 
