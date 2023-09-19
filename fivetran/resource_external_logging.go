@@ -135,7 +135,7 @@ func resourceExternalLoggingSchemaConfig(datasource bool) *schema.Schema {
 					Description: "Channel",
 				},
 				"enable_ssl": {
-					Type:        schema.TypeString,
+					Type:        schema.TypeBool,
 					Optional:    true,
 					Description: "Enable SSL",
 				},
