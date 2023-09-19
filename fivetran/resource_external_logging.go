@@ -322,8 +322,8 @@ func resourceExternalLoggingCreateConfig(config []interface{}) (*fivetran.Extern
 		fivetranConfig.Hostname(v)
 		hasConfig = true
 	}
-	if v := c["enable_ssl"].(string); v != "" {
-		fivetranConfig.EnableSsl(v)
+	if v := c["enable_ssl"].(bool); v != "" {
+		fivetranConfig.EnableSsl(v) // here will be a bug currently - we need to fix go-fivetran client. Or just use custom config.
 		hasConfig = true
 	}
 	if v := c["channel"].(string); v != "" {
