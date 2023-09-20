@@ -152,6 +152,69 @@ func setupMockClientTransformationResource(t *testing.T) {
 			return response, nil
 		},
 	)
+
+	projectResponse := `{
+		"id": "project_id",
+		"group_id": "group_id",
+		"dbt_version": "dbt_version",
+		"created_at": "created_at",
+		"created_by_id": "created_by_id",
+		"public_key": "public_key",
+		"default_schema": "default_schema",
+		"target_name": "target_name",
+		"environment_vars": ["environment_var"],
+		"threads": 1,
+		"type": "GIT",
+		"project_config": {
+			"git_remote_url": "git_remote_url",
+			"git_branch": "git_branch",
+			"folder_path": "folder_path"
+		},
+		"status": "READY"
+	}
+	`
+
+	mockClient.When(http.MethodGet, "/v1/dbt/projects/dbt_project_id").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", createMapFromJsonString(t, projectResponse)), nil
+		},
+	)
+
+	modelsMappingResponse := `
+	{
+		"items":[
+			{
+				"id": "dbt_model_id",
+				"model_name": "dbt_model_name",
+				"scheduled": true
+			}
+		],
+		"next_cursor": null	
+    }
+	`
+
+	modelMappingResponse := `
+	{
+		"id": "dbt_model_id",
+		"model_name": "dbt_model_name",
+		"scheduled": true
+	}
+	`
+
+	mockClient.When(http.MethodGet, "/v1/dbt/models/dbt_model_id").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", createMapFromJsonString(t, modelMappingResponse)), nil
+		},
+	)
+
+	mockClient.When(http.MethodGet, "/v1/dbt/models").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			project_id := req.URL.Query().Get("project_id")
+			assertEqual(t, project_id, "dbt_project_id")
+			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", createMapFromJsonString(t, modelsMappingResponse)), nil
+		},
+	)
+
 }
 
 func TestResourceTransformationMock(t *testing.T) {
@@ -160,7 +223,8 @@ func TestResourceTransformationMock(t *testing.T) {
 		resource "fivetran_dbt_transformation" "transformation" {
 			provider = fivetran-provider
 
-			dbt_model_id = "dbt_model_id"
+			dbt_project_id = "dbt_project_id"
+			dbt_model_name = "dbt_model_name"
 			run_tests = "false"
 			paused = "false"
 			schedule {
@@ -193,7 +257,8 @@ func TestResourceTransformationMock(t *testing.T) {
 		resource "fivetran_dbt_transformation" "transformation" {
 			provider = fivetran-provider
 
-			dbt_model_id = "dbt_model_id"
+			dbt_project_id = "dbt_project_id"
+			dbt_model_name = "dbt_model_name"
 			run_tests = "true"
 			paused = "true"
 			schedule {
@@ -223,7 +288,8 @@ func TestResourceTransformationMock(t *testing.T) {
 		resource "fivetran_dbt_transformation" "transformation" {
 			provider = fivetran-provider
 
-			dbt_model_id = "dbt_model_id"
+			dbt_project_id = "dbt_project_id"
+			dbt_model_name = "dbt_model_name"
 			run_tests = "true"
 			paused = "true"
 			schedule {

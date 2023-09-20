@@ -75,6 +75,7 @@ func TestResourceDbtProjectE2E(t *testing.T) {
 							git_remote_url = "git@github.com:fivetran/dbt_demo.git"
 							git_branch = "not_main"
 						}
+						ensure_readiness = false
 					}
 				`,
 				Check: resource.ComposeAggregateTestCheckFunc(

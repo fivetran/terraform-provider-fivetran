@@ -3,6 +3,7 @@ package fivetran
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -11,12 +12,15 @@ import (
 
 func resourceDbtTransformation() *schema.Resource {
 	return &schema.Resource{
-		CreateContext: resourceDbtTransformationCreate,
-		ReadContext:   resourceDbtTransformationRead,
-		UpdateContext: resourceDbtTransformationUpdate,
-		DeleteContext: resourceDbtTransformationDelete,
-		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		Schema:        getDbtTransformationSchema(false),
+		CreateWithoutTimeout: resourceDbtTransformationCreate,
+		ReadContext:          resourceDbtTransformationRead,
+		UpdateContext:        resourceDbtTransformationUpdate,
+		DeleteContext:        resourceDbtTransformationDelete,
+		Importer:             &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
+		Schema:               getDbtTransformationSchema(false),
+		Timeouts: &schema.ResourceTimeout{
+			Create: schema.DefaultTimeout(20 * time.Minute),
+		},
 	}
 }
 
@@ -31,13 +35,20 @@ func getDbtTransformationSchema(datasource bool) map[string]*schema.Schema {
 			Computed: !datasource,
 			Required: datasource,
 		},
-
-		"dbt_model_id": {
+		"dbt_project_id": {
 			Type:        schema.TypeString,
 			Required:    !datasource,
 			ForceNew:    !datasource,
 			Computed:    datasource,
-			Description: "The unique identifier for the dbt Model within the Fivetran system."},
+			Description: "The unique identifier for the dbt Project within the Fivetran system.",
+		},
+		"dbt_model_name": {
+			Type:        schema.TypeString,
+			Required:    !datasource,
+			ForceNew:    !datasource,
+			Computed:    datasource,
+			Description: "Target dbt Model name.",
+		},
 
 		"run_tests": {Type: schema.TypeBool, Required: !datasource, Computed: datasource, Description: "The field indicating whether the tests have been configured for dbt Transformation. By default, the value is false."},
 		"paused":    {Type: schema.TypeBool, Required: !datasource, Computed: datasource, Description: "The field indicating whether the transformation will be created in paused state. By default, the value is false."},
@@ -64,7 +75,7 @@ func getDbtTransformationSchema(datasource bool) map[string]*schema.Schema {
 		},
 
 		// resdonly fields
-		"dbt_project_id":    {Type: schema.TypeString, Computed: true, Description: "The unique identifier for the dbt Project within the Fivetran system."},
+		"dbt_model_id":      {Type: schema.TypeString, Computed: true, Description: "The unique identifier for the dbt Model within the Fivetran system."},
 		"output_model_name": {Type: schema.TypeString, Computed: true, Description: "The dbt Model name."},
 		"created_at":        {Type: schema.TypeString, Computed: true, Description: "The timestamp of the dbt Transformation creation."},
 		"connector_ids": {
@@ -85,10 +96,47 @@ func getDbtTransformationSchema(datasource bool) map[string]*schema.Schema {
 
 func resourceDbtTransformationCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
+
+	ctx, cancel := setContextTimeout(ctx, d.Timeout(schema.TimeoutCreate))
+	defer cancel()
+
 	client := m.(*fivetran.Client)
+	projectId := d.Get("dbt_project_id").(string)
+	modelName := d.Get("dbt_model_name").(string)
+
+	diags, ok := ensureProjectIsReady(ctx, client, projectId, nil, nil, nil)
+
+	if !ok {
+		return diags
+	}
+
+	var filteredModelId interface{} = nil
+
+	for filteredModelId == nil {
+		modelsResp, err := getAllDbtModelsForProject(client, ctx, projectId)
+		if err != nil {
+			return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, modelsResp.Code, modelsResp.Message))
+		}
+		for _, model := range modelsResp.Data.Items {
+			if model.ModelName == modelName {
+				filteredModelId = model.ID
+				break
+			}
+		}
+		if filteredModelId != nil {
+			break
+		}
+		if dl, ok := ctx.Deadline(); ok && time.Now().After(dl.Add(-20*time.Second)) {
+			return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("timed out: model with name %v not found in project %v.", modelName, projectId))
+		}
+		contextDelay(ctx, 10*time.Second)
+	}
+
+	dbtModelId := filteredModelId.(string)
+
 	svc := client.NewDbtTransformationCreateService()
 
-	svc.DbtModelId(d.Get("dbt_model_id").(string))
+	svc.DbtModelId(dbtModelId)
 	svc.RunTests(d.Get("run_tests").(bool))
 
 	schedule := d.Get("schedule").([]interface{})[0].(map[string]interface{})
@@ -139,10 +187,16 @@ func resourceDbtTransformationRead(ctx context.Context, d *schema.ResourceData, 
 		return newDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
+	modelResp, err := client.NewDbtModelDetails().ModelId(resp.Data.DbtModelId).Do(ctx)
+	if err != nil {
+		return newDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+	}
+
 	mapStringInterface := make(map[string]interface{})
+	mapAddStr(mapStringInterface, "dbt_model_name", modelResp.Data.ModelName)
+
 	mapAddStr(mapStringInterface, "id", resp.Data.ID)
 	mapAddStr(mapStringInterface, "dbt_model_id", resp.Data.DbtModelId)
-
 	mapAddStr(mapStringInterface, "output_model_name", resp.Data.OutputModelName)
 	mapAddStr(mapStringInterface, "dbt_project_id", resp.Data.DbtProjectId)
 	mapAddStr(mapStringInterface, "created_at", resp.Data.CreatedAt)

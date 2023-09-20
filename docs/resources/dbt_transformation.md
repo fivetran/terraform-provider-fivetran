@@ -29,16 +29,21 @@ resource "fivetran_dbt_transformation" "transformation" {
 
 ### Required
 
-- `dbt_model_id` (String) The unique identifier for the dbt Model within the Fivetran system.
+- `dbt_model_name` (String) Target dbt Model name.
+- `dbt_project_id` (String) The unique identifier for the dbt Project within the Fivetran system.
 - `paused` (Boolean) The field indicating whether the transformation will be created in paused state. By default, the value is false.
 - `run_tests` (Boolean) The field indicating whether the tests have been configured for dbt Transformation. By default, the value is false.
 - `schedule` (Block List, Min: 1, Max: 1) dbt Transformation schedule parameters. (see [below for nested schema](#nestedblock--schedule))
+
+### Optional
+
+- `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 
 ### Read-Only
 
 - `connector_ids` (Set of String) Identifiers of related connectors.
 - `created_at` (String) The timestamp of the dbt Transformation creation.
-- `dbt_project_id` (String) The unique identifier for the dbt Project within the Fivetran system.
+- `dbt_model_id` (String) The unique identifier for the dbt Model within the Fivetran system.
 - `id` (String) The ID of this resource.
 - `model_ids` (Set of String) Identifiers of related models.
 - `output_model_name` (String) The dbt Model name.
@@ -55,6 +60,14 @@ Optional:
 - `days_of_week` (Set of String) The set of the days of the week the transformation should be launched on. The following values are supported: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY.
 - `interval` (Number) The time interval in minutes between subsequent transformation runs.
 - `time_of_day` (String) The time of the day the transformation should be launched at. Supported values are: "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"
+
+
+<a id="nestedblock--timeouts"></a>
+### Nested Schema for `timeouts`
+
+Optional:
+
+- `create` (String)
 
 ## Import
 

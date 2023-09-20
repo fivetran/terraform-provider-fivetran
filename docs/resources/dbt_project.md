@@ -39,7 +39,7 @@ resource "fivetran_dbt_project" "project" {
 
 ### Optional
 
-- `ensure_readiness` (Boolean) Should resource wait for project to finish initialization.
+- `ensure_readiness` (Boolean) Should resource wait for project to finish initialization. Default value: true.
 - `environment_vars` (Set of String)
 - `target_name` (String) Target name to set or override the value from the deployment.yaml
 - `threads` (Number) The number of threads dbt will use (from 1 to 32). Make sure this value is compatible with your destination type. For example, Snowflake supports only 8 concurrent queries on an X-Small warehouse.
