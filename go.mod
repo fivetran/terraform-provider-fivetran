@@ -1,7 +1,7 @@
 module github.com/fivetran/terraform-provider-fivetran
 
 require (
-	github.com/fivetran/go-fivetran v0.7.10
+	github.com/fivetran/go-fivetran v0.7.11-0.20230919182250-34ead4587815
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.10.0
 )
 
