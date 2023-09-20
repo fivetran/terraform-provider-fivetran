@@ -123,7 +123,8 @@ func getDbtProjectSchema(datasource bool) map[string]*schema.Schema {
 		result["ensure_readiness"] = &schema.Schema{
 			Type:        schema.TypeBool,
 			Optional:    true,
-			Description: "Should resource wait for project to finish initialization.",
+			Default:     true,
+			Description: "Should resource wait for project to finish initialization. Default value: true.",
 		}
 	}
 	return result
@@ -191,7 +192,7 @@ func resourceDbtProjectCreate(ctx context.Context, d *schema.ResourceData, m int
 	}
 
 	if d.Get("ensure_readiness").(bool) && strings.ToLower(resp.Data.Status) != "ready" {
-		if ed, ok := ensureProjectIsReady(ctx, client, resp.Data.ID); !ok {
+		if ed, ok := ensureProjectIsReady(ctx, client, resp.Data.ID, pollingErrorCleanup, projectErrorCleanup, deadlineExceededCleanup); !ok {
 			return ed
 		}
 	}
@@ -200,38 +201,76 @@ func resourceDbtProjectCreate(ctx context.Context, d *schema.ResourceData, m int
 	return resourceDbtProjectRead(ctx, d, m)
 }
 
-func ensureProjectIsReady(ctx context.Context, client *fivetran.Client, projectId string) (diag.Diagnostics, bool) {
+type cleanupFunc func(context.Context, *fivetran.Client, ...interface{}) diag.Diagnostics
+
+func pollingErrorCleanup(ctx context.Context, client *fivetran.Client, args ...interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+	projectId := args[0].(string)
+	pollError := args[1].(error)
+	deleteResp, err := client.NewDbtProjectDelete().DbtProjectID(projectId).Do(context.Background())
+	if err != nil {
+		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("failed to cleanup after unsuccesful deletion; error: %v; code: %v; message: %v", err, deleteResp.Code, deleteResp.Message))
+	}
+	return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("unable to get status for dbt project: %v error: %v", projectId, pollError))
+}
+
+func projectErrorCleanup(ctx context.Context, client *fivetran.Client, args ...interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+	projectId := args[0].(string)
+	errs := args[1]
+	deleteResp, err := client.NewDbtProjectDelete().DbtProjectID(projectId).Do(context.Background())
+	if err != nil {
+		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("failed to cleanup after unsuccesful deletion; error: %v; code: %v; message: %v", err, deleteResp.Code, deleteResp.Message))
+	}
+	return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("dbt project: %v has \"ERROR\" status after creation; errors: %v;", projectId, errs))
+}
+
+func deadlineExceededCleanup(ctx context.Context, client *fivetran.Client, args ...interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+	projectId := args[0].(string)
+	deleteResp, err := client.NewDbtProjectDelete().DbtProjectID(projectId).Do(context.Background())
+	if err != nil {
+		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("failed to cleanup after unsuccesful deletion; error: %v; code: %v; message: %v", err, deleteResp.Code, deleteResp.Message))
+	}
+	return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("project %v is stuck in \"NOT_READY\" status", projectId))
+}
+
+func ensureProjectIsReady(
+	ctx context.Context,
+	client *fivetran.Client,
+	projectId string,
+	pollingErrorCleanupFunc cleanupFunc,
+	projectErrorCleanupFunc cleanupFunc,
+	deadlineExceededCleanupFunc cleanupFunc) (diag.Diagnostics, bool) {
 	var diags diag.Diagnostics
 	for {
-		s, errs, e := pollProjectStatus(ctx, client, projectId)
+		s, projectErrors, e := pollProjectStatus(ctx, client, projectId)
 		if e != nil {
-			deleteResp, err := client.NewDbtProjectDelete().DbtProjectID(projectId).Do(context.Background())
-			if err != nil {
-				return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("failed to cleanup after unsuccesful deletion; error: %v; code: %v; message: %v", err, deleteResp.Code, deleteResp.Message)), false
+			if pollingErrorCleanupFunc != nil {
+				return pollingErrorCleanupFunc(context.Background(), client, projectId, e), false
+			} else {
+				return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("unable to get status for dbt project: %v error: %v", projectId, e)), false
 			}
-			return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("unable to get status for dbt project: %v error: %v", projectId, err)), false
 		}
 		if s != "not_ready" {
-			if s == "ready" {
-				break
-			} else {
-				deleteResp, err := client.NewDbtProjectDelete().DbtProjectID(projectId).Do(context.Background())
-				if err != nil {
-					return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("failed to cleanup after unsuccesful deletion; error: %v; code: %v; message: %v", err, deleteResp.Code, deleteResp.Message)), false
+			if s != "ready" {
+				if projectErrorCleanupFunc != nil {
+					return projectErrorCleanupFunc(context.Background(), client, projectId, projectErrors), false
+				} else {
+					return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("dbt project: %v has \"ERROR\" status after creation; errors: %v;", projectId, projectErrors)), false
 				}
-				return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("dbt project: %v has \"ERROR\" status after creation; errors: %v;", projectId, errs)), false
 			}
+			break
 		}
-
-		if dl, ok := ctx.Deadline(); ok && time.Now().After(dl.Add(-time.Minute)) {
+		if dl, ok := ctx.Deadline(); ok && time.Now().After(dl.Add(-20*time.Second)) {
 			// deadline will be exceeded on next iteration - it's time to cleanup
-			deleteResp, err := client.NewDbtProjectDelete().DbtProjectID(projectId).Do(context.Background())
-			if err != nil {
-				return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("failed to cleanup after unsuccesful deletion; error: %v; code: %v; message: %v", err, deleteResp.Code, deleteResp.Message)), false
+			if deadlineExceededCleanupFunc != nil {
+				return deadlineExceededCleanupFunc(context.Background(), client, projectId), false
+			} else {
+				return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("project %v is stuck in \"NOT_READY\" status", projectId)), false
 			}
-			return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("project %v is stuck in \"NOT_READY\" status", projectId)), false
 		}
-		contextDelay(ctx, time.Second)
+		contextDelay(ctx, 10*time.Second)
 	}
 	return diags, true
 }

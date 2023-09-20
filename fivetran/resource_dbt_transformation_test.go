@@ -36,7 +36,6 @@ func TestResourceDbtTransformationE2E(t *testing.T) {
 			git_remote_url = "git@github.com:fivetran/dbt_demo.git"
 			git_branch = "main"
 		}
-		ensure_readiness = true
 	}
 	`
 
@@ -49,7 +48,8 @@ func TestResourceDbtTransformationE2E(t *testing.T) {
 				Config: destinationConfig + projectConfig + `
 				resource "fivetran_dbt_transformation" "test_transformation" {
 					provider = fivetran-provider
-					dbt_model_id = [for m in fivetran_dbt_project.test_project.models : m.id if m.model_name == "statistics"].0
+					dbt_project_id = fivetran_dbt_project.test_project.id
+					dbt_model_name = "statistics"
 					paused = true
 					run_tests = false
 					schedule {

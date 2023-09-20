@@ -36,6 +36,7 @@ const (
 
 var (
 	dbtTransformationDataSourceMockGetHandler *mock.Handler
+	dbtModelDataSourceMockGetHandler          *mock.Handler
 
 	dbtTransformationDataSourceMockData map[string]interface{}
 )
@@ -43,10 +44,23 @@ var (
 func setupMockClientDbtTransformationDataSourceMappingTest(t *testing.T) {
 	mockClient.Reset()
 
+	dbtModelResponse := `
+	{
+		"id": "dbt_model_id",
+		"model_name": "dbt_model_name",
+		"scheduled": true
+    }
+	`
+
 	dbtTransformationDataSourceMockGetHandler = mockClient.When(http.MethodGet, "/v1/dbt/transformations/transformation_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			dbtTransformationDataSourceMockData = createMapFromJsonString(t, dbtTransformationResponse)
 			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", dbtTransformationDataSourceMockData), nil
+		},
+	)
+	dbtModelDataSourceMockGetHandler = mockClient.When(http.MethodGet, "/v1/dbt/models/dbt_model_id").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", createMapFromJsonString(t, dbtModelResponse)), nil
 		},
 	)
 }
@@ -67,6 +81,7 @@ func TestDataSourceDbtTranformationMappingMock(t *testing.T) {
 				return nil
 			},
 			resource.TestCheckResourceAttr("data.fivetran_dbt_transformation.transformation", "dbt_model_id", "dbt_model_id"),
+			resource.TestCheckResourceAttr("data.fivetran_dbt_transformation.transformation", "dbt_model_name", "dbt_model_name"),
 			resource.TestCheckResourceAttr("data.fivetran_dbt_transformation.transformation", "run_tests", "true"),
 			resource.TestCheckResourceAttr("data.fivetran_dbt_transformation.transformation", "paused", "false"),
 			resource.TestCheckResourceAttr("data.fivetran_dbt_transformation.transformation", "schedule.0.schedule_type", "TIME_OF_DAY"),

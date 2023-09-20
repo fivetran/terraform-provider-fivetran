@@ -22,6 +22,7 @@ data "fivetran_dbt_transformation" "transformation" {
 - `connector_ids` (Set of String) Identifiers of related connectors.
 - `created_at` (String) The timestamp of the dbt Transformation creation.
 - `dbt_model_id` (String) The unique identifier for the dbt Model within the Fivetran system.
+- `dbt_model_name` (String) Target dbt Model name.
 - `dbt_project_id` (String) The unique identifier for the dbt Project within the Fivetran system.
 - `id` (String) The ID of this resource.
 - `model_ids` (Set of String) Identifiers of related models.
