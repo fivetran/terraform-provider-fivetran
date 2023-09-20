@@ -318,7 +318,7 @@ func TestResourceExternalLoggingMock(t *testing.T) {
                     region = "region"
                     log_group_name = "log_group_name"
                     sub_domain = "sub_domain"
-                    enable_ssl = "enable_ssl"
+                    enable_ssl = true
                     channel = "channel"
                     token = "token"
                     external_id = "external_id"
@@ -342,7 +342,7 @@ func TestResourceExternalLoggingMock(t *testing.T) {
             resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.0.primary_key", "primary_key"),
             resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.0.log_group_name", "log_group_name"),
             resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.0.sub_domain", "sub_domain"),
-            resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.0.enable_ssl", "enable_ssl"),
+            resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.0.enable_ssl", "true"),
             resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.0.port", "443"),           
             resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.0.role_arn", "role_arn"),
             resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.0.channel", "channel"),
@@ -372,7 +372,7 @@ func TestResourceExternalLoggingMock(t *testing.T) {
                     region = "region"
                     log_group_name = "log_group_name"
                     sub_domain = "sub_domain"
-                    enable_ssl = "enable_ssl"
+                    enable_ssl = true
                     channel = "channel"
                     token = "token"
                     external_id = "external_id"
