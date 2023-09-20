@@ -5,8 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.0.2...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.0...HEAD)
 
+## [1.1.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.0.2...v1.1.0)
+
+- Reworked `fivetran_dbt_tranformation` resource: dbt_model_name and dbt_project_id are now used for resource creation instead of dbt_model_id
+- Resource `fivetran_dbt_project` updated: it now checks if project was created and initialized correctly. Resource considered as succesfully created only in case if project received `READY` status in upstream. 
 - New resource `fivetran_webhook` that allows to manage Webhooks.
 - New data source `fivetran_webhook` that allows to retrieve details of the existing webhook for a given identifier.
 - New data source `fivetran_webhooks` that allows to retrieve the list of existing webhooks available for the current account.
