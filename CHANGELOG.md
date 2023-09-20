@@ -5,11 +5,43 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.0.2...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.0...HEAD)
 
+## [1.1.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.0.2...v1.1.0)
+
+## Updated
+- Reworked `fivetran_dbt_tranformation` resource: dbt_model_name and dbt_project_id are now used for resource creation instead of dbt_model_id
+- Resource `fivetran_dbt_project` updated: it now checks if project was created and initialized correctly. Resource considered as succesfully created only in case if project received `READY` status in upstream. 
+
+## Added
 - New resource `fivetran_webhook` that allows to manage Webhooks.
 - New data source `fivetran_webhook` that allows to retrieve details of the existing webhook for a given identifier.
 - New data source `fivetran_webhooks` that allows to retrieve the list of existing webhooks available for the current account.
+- Connector `fivetran_connector.config` fields support:
+    - Added field `fivetran_connector.config.custom_field_ids` for services: `double_click_publishers`.
+    - Added field `fivetran_connector.config.connecting_user_email` for services: `financial_force`, `salesforce`, `salesforce_sandbox`.
+    - Added field `fivetran_connector.config.abs_connection_method` for services: `adobe_analytics_data_feed`.
+    - Added field `fivetran_connector.config.abs_public_key` for services: `adobe_analytics_data_feed`.
+    - Added field `fivetran_connector.config.abs_host_ip` for services: `adobe_analytics_data_feed`.
+    - Added field `fivetran_connector.config.client_key` for services: `appfigures`.
+    - Added field `fivetran_connector.config.signer_public_key` for services: `azure_blob_storage`, `s3`, `sftp`.
+    - Added field `fivetran_connector.config.enable_archive_log_only` for services: `sql_server_hva`.
+    - Added field `fivetran_connector.config.archive_log_path` for services: `sql_server_hva`.
+    - Added field `fivetran_connector.config.webhook_key` for services: `xero`.
+    - Added field `fivetran_connector.config.abs_host_user` for services: `adobe_analytics_data_feed`.
+    - Added field `fivetran_connector.config.sandbox_account` for services: `gocardless`.
+    - Added field `fivetran_connector.config.social_data_sync_timeframe` for services: `linkedin_company_pages`.
+    - Added field `fivetran_connector.config.are_soap_credentials_provided` for services: `marketo`.
+    - Added field `fivetran_connector.config.accounts_reddit_ads` for services: `reddit_ads`.
+    - Added field `fivetran_connector.config.personal_access_token` for services: `harvest`.
+    - Added field `fivetran_connector.config.custom_events` for services: `iterable`.
+    - Added field `fivetran_connector.config.archive_log_format` for services: `sql_server_hva`.
+    - Added field `fivetran_connector.config.base_currency` for services: `open_exchange_rates`.
+    - Added field `fivetran_connector.config.abs_container_address` for services: `adobe_analytics_data_feed`.
+    - Added field `fivetran_connector.config.api_id` for services: `aircall`.
+    - Added field `fivetran_connector.config.connecting_user` for services: `financial_force`, `salesforce`, `salesforce_sandbox`.
+    - Added field `fivetran_connector.config.custom_event_sync_mode` for services: `iterable`.
+    - Added field `fivetran_connector.config.events` for services: `iterable`.
 
 ## [1.0.2](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.0.1...v1.0.2)
 
