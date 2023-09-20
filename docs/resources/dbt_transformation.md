@@ -13,7 +13,8 @@ To retrieve available dbt Models use this [Retrieve dbt Project models](https://
 
 ```hcl
 resource "fivetran_dbt_transformation" "transformation" {
-    dbt_model_id = "dbt_model_id"
+    dbt_model_name = "dbt_model_name"
+    dbt_project_id = "dbt_project_id"
     run_tests = "false"
     paused = "false"
     schedule {
