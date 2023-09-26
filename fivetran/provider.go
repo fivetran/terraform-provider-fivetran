@@ -24,6 +24,7 @@ func Provider() *schema.Provider {
 		"fivetran_dbt_project":             resourceDbtProject(),
 		"fivetran_webhook":                 resourceWebhook(),
 		"fivetran_external_logging":        resourceExternalLogging(),
+		"fivetran_team":                    resourceTeam(),
 	}
 
 	var dataSourceMap = map[string]*schema.Resource{
@@ -47,6 +48,8 @@ func Provider() *schema.Provider {
 		"fivetran_metadata_schemas":    dataSourceMetadataSchemas(),
 		"fivetran_metadata_tables":    	dataSourceMetadataTables(),
 		"fivetran_metadata_columns":    dataSourceMetadataColumns(),
+		"fivetran_team":                dataSourceTeam(),
+		"fivetran_teams":               dataSourceTeams(),
 	}
 
 	return &schema.Provider{
