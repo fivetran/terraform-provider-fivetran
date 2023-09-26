@@ -125,7 +125,7 @@ func testFivetranTeamGroupMembershipResourceDestroy(s *terraform.State) error {
             return err
         }
         if response.Code != "NotFound" && response.Code != "NotFound_Team" {
-            return errors.New("Team Group memebrship " + rs.Primary.ID + " still exists." + response.Code)
+            return errors.New("Team Group memebrship " + rs.Primary.ID + " still exists.")
         }
 
     }

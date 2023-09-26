@@ -90,7 +90,7 @@ func testFivetranTeamsResourceDestroy(s *terraform.State) error {
         if err.Error() != "status code: 404; expected: 200" {
             return err
         }
-        if response.Code != "NotFound" {
+        if response.Code != "NotFound_Team" {
             return errors.New("Team " + rs.Primary.ID + " still exists.")
         }
 
