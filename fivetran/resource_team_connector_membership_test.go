@@ -17,35 +17,93 @@ func TestResourceTeamConnectorMembershipE2E(t *testing.T) {
         Steps: []resource.TestStep{
             {
                 Config: `
+            resource "fivetran_team" "testteam" {
+                provider = fivetran-provider
+                name = "test_team"
+                description = "test_team"
+                role = "Account Analyst"
+            }
+
+            resource "fivetran_group" "test_group" {
+                provider = fivetran-provider
+                name = "test_group_name"
+            }
+
+            resource "fivetran_connector" "test_connector" {
+                provider = fivetran-provider
+                group_id = fivetran_group.test_group.id
+                service = "fivetran_log"
+                destination_schema {
+                    name = "fivetran_log_schema"
+                }
+                    
+                trust_certificates = false
+                trust_fingerprints = false
+                run_setup_tests = false
+            
+                config {
+                    group_name = fivetran_group.test_group.name
+                }
+            }
+
             resource "fivetran_team_connector_membership" "test_team_connector_membership" {
                  provider = fivetran-provider
 
-                 team_id = "test_team"
-                 connector_id = "test_connector"
+                 team_id = fivetran_team.testteam.id
+                 connector_id = fivetran_connector.test_connector.id
                  role = "Connector Reviewer"
             }
           `,
                 Check: resource.ComposeAggregateTestCheckFunc(
                     testFivetranTeamConnectorMembershipResourceCreate(t, "fivetran_team_connector_membership.test_team_connector_membership"),
-                    resource.TestCheckResourceAttr("fivetran_team_connector_membership.test_team_connector_membership", "team_id", "test_team"),
-                    resource.TestCheckResourceAttr("fivetran_team_connector_membership.test_team_connector_membership", "connector_id", "test_connector"),
+                    resource.TestCheckResourceAttrSet("fivetran_team_connector_membership.test_team_connector_membership", "team_id"),
+                    resource.TestCheckResourceAttrSet("fivetran_team_connector_membership.test_team_connector_membership", "connector_id"),
                     resource.TestCheckResourceAttr("fivetran_team_connector_membership.test_team_connector_membership", "role", "Connector Reviewer"),
                 ),
             },
             {
                 Config: `
+            resource "fivetran_team" "testteam" {
+                provider = fivetran-provider
+                name = "test_team"
+                description = "test_team"
+                role = "Account Analyst"
+            }
+
+            resource "fivetran_group" "test_group" {
+                provider = fivetran-provider
+                name = "test_group_name"
+            }
+
+            resource "fivetran_connector" "test_connector" {
+                provider = fivetran-provider
+                group_id = fivetran_group.test_group.id
+                service = "fivetran_log"
+                destination_schema {
+                    name = "fivetran_log_schema"
+                }
+                    
+                trust_certificates = false
+                trust_fingerprints = false
+                run_setup_tests = false
+            
+                config {
+                    group_name = fivetran_group.test_group.name
+                }
+            }
+
             resource "fivetran_team_connector_membership" "test_team_connector_membership" {
                  provider = fivetran-provider
 
-                 team_id = "test_team"
-                 connector_id = "test_connector"
+                 team_id = fivetran_team.testteam.id
+                 connector_id = fivetran_connector.test_connector.id
                  role = "Connector Administrator"
             }
           `,
                 Check: resource.ComposeAggregateTestCheckFunc(
                     testFivetranTeamConnectorMembershipResourceUpdate(t, "fivetran_team_connector_membership.test_team_connector_membership"),
-                    resource.TestCheckResourceAttr("fivetran_team_connector_membership.test_team_connector_membership", "team_id", "test_team"),
-                    resource.TestCheckResourceAttr("fivetran_team_connector_membership.test_team_connector_membership", "connector_id", "test_connector"),
+                    resource.TestCheckResourceAttrSet("fivetran_team_connector_membership.test_team_connector_membership", "team_id"),
+                    resource.TestCheckResourceAttrSet("fivetran_team_connector_membership.test_team_connector_membership", "connector_id"),
                     resource.TestCheckResourceAttr("fivetran_team_connector_membership.test_team_connector_membership", "role", "Connector Administrator"),
                 ),
             },

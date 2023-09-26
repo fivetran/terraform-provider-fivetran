@@ -17,35 +17,69 @@ func TestResourceTeamUserMembershipE2E(t *testing.T) {
         Steps: []resource.TestStep{
             {
                 Config: `
+            resource "fivetran_team" "testteam" {
+                provider = fivetran-provider
+                name = "test_team"
+                description = "test_team"
+                role = "Account Analyst"
+            }
+
+            resource "fivetran_user" "testuser" {
+                provider = fivetran-provider
+                role = "Account Administrator"
+                email = "john.fox@testmail.com"
+                family_name = "Connor"
+                given_name = "Jane"
+                phone = "+19876543219"
+                picture = "https://yourPicturecom"
+            }
+
             resource "fivetran_team_user_membership" "test_team_user_membership" {
                  provider = fivetran-provider
 
-                 team_id = "test_team"
-                 user_id = "test_user"
+                 team_id = fivetran_team.testteam.id
+                 user_id = fivetran_user.testuser.id
                  role = "Team Member"
             }
           `,
                 Check: resource.ComposeAggregateTestCheckFunc(
                     testFivetranTeamUserMembershipResourceCreate(t, "fivetran_team_user_membership.test_team_user_membership"),
-                    resource.TestCheckResourceAttr("fivetran_team_user_membership.test_team_user_membership", "team_id", "test_team"),
-                    resource.TestCheckResourceAttr("fivetran_team_user_membership.test_team_user_membership", "user_id", "test_user"),
+                    resource.TestCheckResourceAttrSet("fivetran_team_user_membership.test_team_user_membership", "team_id"),
+                    resource.TestCheckResourceAttrSet("fivetran_team_user_membership.test_team_user_membership", "user_id"),
                     resource.TestCheckResourceAttr("fivetran_team_user_membership.test_team_user_membership", "role", "Team Member"),
                 ),
             },
             {
                 Config: `
+            resource "fivetran_team" "testteam" {
+                provider = fivetran-provider
+                name = "test_team"
+                description = "test_team"
+                role = "Account Analyst"
+            }
+
+            resource "fivetran_user" "testuser" {
+                provider = fivetran-provider
+                role = "Account Administrator"
+                email = "john.fox@testmail.com"
+                family_name = "Connor"
+                given_name = "Jane"
+                phone = "+19876543219"
+                picture = "https://yourPicturecom"
+            }
+            
             resource "fivetran_team_user_membership" "test_team_user_membership" {
                  provider = fivetran-provider
 
-                 team_id = "test_team"
-                 user_id = "test_user"
+                 team_id = fivetran_team.testteam.id
+                 user_id = fivetran_user.testuser.id
                  role = "Team Manager"
             }
           `,
                 Check: resource.ComposeAggregateTestCheckFunc(
                     testFivetranTeamUserMembershipResourceUpdate(t, "fivetran_team_user_membership.test_team_user_membership"),
-                    resource.TestCheckResourceAttr("fivetran_team_user_membership.test_team_user_membership", "team_id", "test_team"),
-                    resource.TestCheckResourceAttr("fivetran_team_user_membership.test_team_user_membership", "user_id", "test_user"),
+                    resource.TestCheckResourceAttrSet("fivetran_team_user_membership.test_team_user_membership", "team_id"),
+                    resource.TestCheckResourceAttrSet("fivetran_team_user_membership.test_team_user_membership", "user_id"),
                     resource.TestCheckResourceAttr("fivetran_team_user_membership.test_team_user_membership", "role", "Team Manager"),
                 ),
             },
@@ -88,7 +122,7 @@ func testFivetranTeamUserMembershipResourceUpdate(t *testing.T, resourceName str
 
 func testFivetranTeamUserMembershipResourceDestroy(s *terraform.State) error {
     for _, rs := range s.RootModule().Resources {
-        if rs.Type != "fivetran_team" {
+        if rs.Type != "fivetran_team_user_membership" {
             continue
         }
 
@@ -100,7 +134,7 @@ func testFivetranTeamUserMembershipResourceDestroy(s *terraform.State) error {
         if err.Error() != "status code: 404; expected: 200" {
             return err
         }
-        if response.Code != "NotFound" {
+        if response.Code != "NotFound" && response.Code != "NotFound_Team" {
             return errors.New("Team User memebrship " + rs.Primary.ID + " still exists.")
         }
 

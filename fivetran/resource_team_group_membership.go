@@ -142,8 +142,9 @@ func resourceTeamGroupMembershipDelete(ctx context.Context, d *schema.ResourceDa
     svc.GroupId(d.Get("group_id").(string)).Do(ctx)
 
     resp, err := svc.Do(ctx)
-    if err != nil {
-        return newDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+    // for DELETE endpoint idempotence rule breaks
+    if err != nil && resp.Code != "NotFound" {
+        return newDiagAppend(diags, diag.Error, "delete error " + d.Get("team_id").(string) + " " + d.Get("group_id").(string), fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
     }
 
     d.SetId("")

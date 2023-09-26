@@ -17,35 +17,59 @@ func TestResourceTeamGroupMembershipE2E(t *testing.T) {
         Steps: []resource.TestStep{
             {
                 Config: `
+            resource "fivetran_team" "testteam" {
+                provider = fivetran-provider
+                name = "test_team"
+                description = "test_team"
+                role = "Account Analyst"
+            }
+
+            resource "fivetran_group" "testgroup" {
+                provider = fivetran-provider
+                name = "test_group_name"
+            }
+
             resource "fivetran_team_group_membership" "test_team_group_membership" {
                  provider = fivetran-provider
 
-                 team_id = "test_team"
-                 group_id = "test_group"
+                 team_id = fivetran_team.testteam.id
+                 group_id = fivetran_group.testgroup.id
                  role = "Destination Administrator"
             }
           `,
                 Check: resource.ComposeAggregateTestCheckFunc(
                     testFivetranTeamGroupMembershipResourceCreate(t, "fivetran_team_group_membership.test_team_group_membership"),
-                    resource.TestCheckResourceAttr("fivetran_team_group_membership.test_team_group_membership", "team_id", "test_team"),
-                    resource.TestCheckResourceAttr("fivetran_team_group_membership.test_team_group_membership", "group_id", "test_group"),
+                    resource.TestCheckResourceAttrSet("fivetran_team_group_membership.test_team_group_membership", "team_id"),
+                    resource.TestCheckResourceAttrSet("fivetran_team_group_membership.test_team_group_membership", "group_id"),
                     resource.TestCheckResourceAttr("fivetran_team_group_membership.test_team_group_membership", "role", "Destination Administrator"),
                 ),
             },
             {
                 Config: `
+            resource "fivetran_team" "testteam" {
+                provider = fivetran-provider
+                name = "test_team"
+                description = "test_team"
+                role = "Account Analyst"
+            }
+
+            resource "fivetran_group" "testgroup" {
+                provider = fivetran-provider
+                name = "test_group_name"
+            }
+
             resource "fivetran_team_group_membership" "test_team_group_membership" {
                  provider = fivetran-provider
 
-                 team_id = "test_team"
-                 group_id = "test_group"
+                 team_id = fivetran_team.testteam.id
+                 group_id = fivetran_group.testgroup.id
                  role = "Destination Reviewer"
             }
           `,
                 Check: resource.ComposeAggregateTestCheckFunc(
                     testFivetranTeamGroupMembershipResourceUpdate(t, "fivetran_team_group_membership.test_team_group_membership"),
-                    resource.TestCheckResourceAttr("fivetran_team_group_membership.test_team_group_membership", "team_id", "test_team"),
-                    resource.TestCheckResourceAttr("fivetran_team_group_membership.test_team_group_membership", "group_id", "test_group"),
+                    resource.TestCheckResourceAttrSet("fivetran_team_group_membership.test_team_group_membership", "team_id"),
+                    resource.TestCheckResourceAttrSet("fivetran_team_group_membership.test_team_group_membership", "group_id"),
                     resource.TestCheckResourceAttr("fivetran_team_group_membership.test_team_group_membership", "role", "Destination Reviewer"),
                 ),
             },
@@ -88,7 +112,7 @@ func testFivetranTeamGroupMembershipResourceUpdate(t *testing.T, resourceName st
 
 func testFivetranTeamGroupMembershipResourceDestroy(s *terraform.State) error {
     for _, rs := range s.RootModule().Resources {
-        if rs.Type != "fivetran_team" {
+        if rs.Type != "fivetran_team_group_membership" {
             continue
         }
 
@@ -100,8 +124,8 @@ func testFivetranTeamGroupMembershipResourceDestroy(s *terraform.State) error {
         if err.Error() != "status code: 404; expected: 200" {
             return err
         }
-        if response.Code != "NotFound" {
-            return errors.New("Team Group memebrship " + rs.Primary.ID + " still exists.")
+        if response.Code != "NotFound" && response.Code != "NotFound_Team" {
+            return errors.New("Team Group memebrship " + rs.Primary.ID + " still exists." + response.Code)
         }
 
     }

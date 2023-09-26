@@ -136,7 +136,8 @@ func resourceTeamUserMembershipDelete(ctx context.Context, d *schema.ResourceDat
     svc.UserId(d.Get("user_id").(string))
 
     resp, err := svc.Do(ctx)
-    if err != nil {
+    // for DELETE endpoint idempotence rule breaks
+    if err != nil && resp.Code != "NotFound" {
         return newDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
     }
 
