@@ -12,7 +12,7 @@ import (
 func resourceTeamConnectorMembership() *schema.Resource {
     return &schema.Resource{
         CreateContext: resourceTeamConnectorMembershipCreate,
-        ReadContext:   resourceTeamRead,
+        ReadContext:   resourceTeamConnectorMembershipRead,
         UpdateContext: resourceTeamConnectorMembershipUpdate,
         DeleteContext: resourceTeamConnectorMembershipDelete,
         Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
@@ -30,16 +30,14 @@ func getTeamConnectorMembershipSchema(datasource bool) map[string]*schema.Schema
         },
         "team_id": {
             Type:        schema.TypeString,
+            Required:    true,
             ForceNew:    !datasource,
-            Required:    datasource,
-            Computed:    !datasource,
             Description: "The unique identifier for the team within your account.",
         },
         "connector_id": {
             Type:        schema.TypeString,
+            Required:    true,
             ForceNew:    !datasource,
-            Required:    datasource,
-            Computed:    !datasource,
             Description: "The connector unique identifier",
         },
         "role": {
@@ -50,8 +48,7 @@ func getTeamConnectorMembershipSchema(datasource bool) map[string]*schema.Schema
         },
         "created_at": {
             Type:        schema.TypeString,
-            Required:    !datasource,
-            Computed:    datasource,
+            Computed:    true,
             Description: "The date and time the membership was created",
         },
     }

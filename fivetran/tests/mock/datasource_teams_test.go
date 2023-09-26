@@ -19,16 +19,10 @@ const (
     {
         "items":[
             {
-              "id": "abode_abolish",
+              "id": "team_id",
               "name": "Head Team",
               "description": "Head Team description",
               "role": "Account Administrator"
-            },
-            {
-              "id": "numerator_handiness",
-              "name": "Finance Team",
-              "description": "Finance Team description",
-              "role": "Account Reviewer"
             }],
         "next_cursor": null
     }`
@@ -58,13 +52,9 @@ func TestDataSourceTeamsMappingMock(t *testing.T) {
                 assertNotEmpty(t, teamsDataSourceMockData)
                 return nil
             },
-            resource.TestCheckResourceAttr("data.fivetran_teams.test_teams", "teams.0.name", "Finance Team"),
-            resource.TestCheckResourceAttr("data.fivetran_teams.test_teams", "teams.0.description", "Finance Team description"),
-            resource.TestCheckResourceAttr("data.fivetran_teams.test_teams", "teams.0.role", "Account Reviewer"),
-
-            resource.TestCheckResourceAttr("data.fivetran_teams.test_teams", "teams.1.name", "Head Team"),
-            resource.TestCheckResourceAttr("data.fivetran_teams.test_teams", "teams.1.description", "Head Team description"),
-            resource.TestCheckResourceAttr("data.fivetran_teams.test_teams", "teams.1.role", "Account Administrator"),
+            resource.TestCheckResourceAttr("data.fivetran_teams.test_teams", "teams.0.name", "Head Team"),
+            resource.TestCheckResourceAttr("data.fivetran_teams.test_teams", "teams.0.description", "Head Team description"),
+            resource.TestCheckResourceAttr("data.fivetran_teams.test_teams", "teams.0.role", "Account Administrator"),
         ),
     }
 

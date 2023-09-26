@@ -36,7 +36,6 @@ func setupMockClientTeamDataSourceConfigMapping(t *testing.T) {
 }
 
 func TestDataSourceTeamMappingMock(t *testing.T) {
-	// NOTE: the config is totally inconsistent and contains all possible values for mapping test
 	step1 := resource.TestStep{
 		Config: `
 		data "fivetran_team" "test_team" {

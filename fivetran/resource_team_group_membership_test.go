@@ -17,7 +17,7 @@ func TestResourceTeamGroupMembershipE2E(t *testing.T) {
         Steps: []resource.TestStep{
             {
                 Config: `
-            resource "fivetran_resource_team_group_membership" "test_resource_team_group_membership" {
+            resource "fivetran_team_group_membership" "test_team_group_membership" {
                  provider = fivetran-provider
 
                  team_id = "test_team"
@@ -26,15 +26,15 @@ func TestResourceTeamGroupMembershipE2E(t *testing.T) {
             }
           `,
                 Check: resource.ComposeAggregateTestCheckFunc(
-                    testFivetranTeamGroupMembershipResourceCreate(t, "fivetran_resource_team_group_membership.test_resource_team_group_membership"),
-                    resource.TestCheckResourceAttr("fivetran_resource_team_group_membership.test_resource_team_group_membership", "team_id", "test_team"),
-                    resource.TestCheckResourceAttr("fivetran_resource_team_group_membership.test_resource_team_group_membership", "group_id", "test_group"),
-                    resource.TestCheckResourceAttr("fivetran_resource_team_group_membership.test_resource_team_group_membership", "role", "Destination Administrator"),
+                    testFivetranTeamGroupMembershipResourceCreate(t, "fivetran_team_group_membership.test_team_group_membership"),
+                    resource.TestCheckResourceAttr("fivetran_team_group_membership.test_team_group_membership", "team_id", "test_team"),
+                    resource.TestCheckResourceAttr("fivetran_team_group_membership.test_team_group_membership", "group_id", "test_group"),
+                    resource.TestCheckResourceAttr("fivetran_team_group_membership.test_team_group_membership", "role", "Destination Administrator"),
                 ),
             },
             {
                 Config: `
-            resource "fivetran_resource_team_group_membership" "test_resource_team_group_membership" {
+            resource "fivetran_team_group_membership" "test_team_group_membership" {
                  provider = fivetran-provider
 
                  team_id = "test_team"
@@ -43,10 +43,10 @@ func TestResourceTeamGroupMembershipE2E(t *testing.T) {
             }
           `,
                 Check: resource.ComposeAggregateTestCheckFunc(
-                    testFivetranTeamGroupMembershipResourceUpdate(t, "fivetran_resource_team_group_membership.test_resource_team_group_membership"),
-                    resource.TestCheckResourceAttr("fivetran_resource_team_group_membership.test_resource_team_group_membership", "team_id", "test_team"),
-                    resource.TestCheckResourceAttr("fivetran_resource_team_group_membership.test_resource_team_group_membership", "group_id", "test_group"),
-                    resource.TestCheckResourceAttr("fivetran_resource_team_group_membership.test_resource_team_group_membership", "role", "Destination Reviewer"),
+                    testFivetranTeamGroupMembershipResourceUpdate(t, "fivetran_team_group_membership.test_team_group_membership"),
+                    resource.TestCheckResourceAttr("fivetran_team_group_membership.test_team_group_membership", "team_id", "test_team"),
+                    resource.TestCheckResourceAttr("fivetran_team_group_membership.test_team_group_membership", "group_id", "test_group"),
+                    resource.TestCheckResourceAttr("fivetran_team_group_membership.test_team_group_membership", "role", "Destination Reviewer"),
                 ),
             },
         },

@@ -33,13 +33,13 @@ func dataSourceTeamConnectorMembershipsRead(ctx context.Context, d *schema.Resou
 
 	teams, err := dataSourceTeamsGetTeams(client, ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v", teams, teams.Code))
+		return newDiagAppend(diags, diag.Error, "teams service error", fmt.Sprintf("%v; code: %v", teams, teams.Code))
 	}
 
 	for _, v := range teams.Data.Items {
 		cur_membership, err := dataSourceTeamConnectorMembershipsGet(client, ctx, v.Id)
 		if err != nil {
-			return newDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v", err, cur_membership.Code))
+			return newDiagAppend(diags, diag.Error, "team memberships service error", fmt.Sprintf("%v; code: %v", err, cur_membership.Code))
 		}
 
 		result = append(result, dataSourceTeamConnectorMembershipsFlatten(&cur_membership, v.Id)...)

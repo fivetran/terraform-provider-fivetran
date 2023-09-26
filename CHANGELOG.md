@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.0...HEAD)
 
+## Added
+- New resource `fivetran_team` that allows to manage Teams.
+- New resource `fivetran_team_connector_membership` that allows to manage Team Management Connector memberships.
+- New resource `fivetran_team_group_membership` that allows to manage Team Management Group memberships.
+- New resource `fivetran_team_user_membership` that allows to manage Team Management User memberships.
+- New data source `fivetran_team` that allows to retrieve details of the existing team for a given identifier.
+- New data source `fivetran_teams` that allows to retrieve the list of existing teams available for the current account.
+- New data source `fivetran_team_connector_membership` that allows to retrieve details of existing connector membership for a given identifiers of team and connector.
+- New data source `fivetran_team_connector_memberships` that allows to retrieve the list of existing connector memberships available for teams.
+- New data source `fivetran_team_group_membership` that allows to retrieve details of existing group membership for a given identifiers of team and group.
+- New data source `fivetran_team_group_memberships` that allows to retrieve the list of existing group memberships available for teams.
+- New data source `fivetran_team_user_membership` that allows to retrieve details of existing user membership for a given identifiers of team and user.
+- New data source `fivetran_team_user_memberships` that allows to retrieve the list of existing user memberships available for teams.
+
 ## [1.1.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.0.2...v1.1.0)
 
 ## Updated

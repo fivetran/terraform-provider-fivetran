@@ -30,16 +30,14 @@ func getTeamUserMembershipSchema(datasource bool) map[string]*schema.Schema {
         },
         "team_id": {
             Type:        schema.TypeString,
+            Required:    true,
             ForceNew:    !datasource,
-            Required:    datasource,
-            Computed:    !datasource,
             Description: "The unique identifier for the team within your account.",
         },
         "user_id": {
             Type:        schema.TypeString,
+            Required:    true,
             ForceNew:    !datasource,
-            Required:    datasource,
-            Computed:    !datasource,
             Description: "The User unique identifier",
         },
         "role": {

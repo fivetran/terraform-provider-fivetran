@@ -12,7 +12,7 @@ import (
 func resourceTeamGroupMembership() *schema.Resource {
     return &schema.Resource{
         CreateContext: resourceTeamGroupMembershipCreate,
-        ReadContext:   resourceTeamRead,
+        ReadContext:   resourceTeamGroupMembershipRead,
         UpdateContext: resourceTeamGroupMembershipUpdate,
         DeleteContext: resourceTeamGroupMembershipDelete,
         Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
@@ -30,16 +30,14 @@ func getTeamGroupMembershipSchema(datasource bool) map[string]*schema.Schema {
         },
         "team_id": {
             Type:        schema.TypeString,
+            Required:    true,
             ForceNew:    !datasource,
-            Required:    datasource,
-            Computed:    !datasource,
             Description: "The unique identifier for the team within your account.",
         },
         "group_id": {
             Type:        schema.TypeString,
+            Required:    true,
             ForceNew:    !datasource,
-            Required:    datasource,
-            Computed:    !datasource,
             Description: "The Group unique identifier",
         },
         "role": {
@@ -50,8 +48,7 @@ func getTeamGroupMembershipSchema(datasource bool) map[string]*schema.Schema {
         },
         "created_at": {
             Type:        schema.TypeString,
-            Required:    !datasource,
-            Computed:    datasource,
+            Computed:    true,
             Description: "The date and time the membership was created",
         },
     }
