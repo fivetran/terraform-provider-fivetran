@@ -1,0 +1,16 @@
+---
+page_title: "Data Source: fivetran_metadata_tables"
+---
+
+# Data Source: fivetran_metadata_tables
+
+This data source returns table-level metadata for an existing connector within your Fivetran account.
+
+## Example Usage
+
+```hcl
+data "fivetran_metadata_tables" "metadata_tables" {
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}

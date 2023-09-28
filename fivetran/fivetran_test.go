@@ -89,6 +89,7 @@ func GetResource(t *testing.T, s *terraform.State, resourceName string) *terrafo
 
 func cleanupAccount() {
 	cleanupUsers()
+	cleanupExternalLogging("")
 	cleanupDestinations()
 	cleanupDbtProjects()
 	cleanupGroups()
@@ -136,6 +137,28 @@ func cleanupDestinations() {
 		if err != nil && err.Error() != "status code: 404; expected: 200" {
 			log.Fatal(err)
 		}
+	}
+}
+
+func cleanupExternalLogging(nextCursor string) {
+	svc := client.NewGroupsList()
+
+	if nextCursor != "" {
+		svc.Cursor(nextCursor)
+	}
+
+	groups, err := svc.Do(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, group := range groups.Data.Items {
+		_, err := client.NewExternalLoggingDelete().ExternalLoggingId(group.ID).Do(context.Background())
+		if err != nil && err.Error() != "status code: 404; expected: 200" {
+			log.Fatal(err)
+		}
+	}
+	if groups.Data.NextCursor != "" {
+	   cleanupExternalLogging(groups.Data.NextCursor)
 	}
 }
 

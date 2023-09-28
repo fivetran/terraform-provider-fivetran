@@ -43,6 +43,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Added field `fivetran_connector.config.custom_event_sync_mode` for services: `iterable`.
     - Added field `fivetran_connector.config.events` for services: `iterable`.
 
+- New resource `fivetran_external_logging` that allows to manage Log Services.
+- New data source `fivetran_metadata_schemas` that allows to retrieve schema-level metadata for an existing connector within your Fivetran account.
+- New data source `fivetran_metadata_tables` that allows to retrieve table-level metadata for an existing connector within your Fivetran account.
+- New data source `fivetran_metadata_columns` that allows to retrieve column-level metadata for an existing connector within your Fivetran account.
+- New data source `fivetran_roles` that allows to retrieve a list of all predefined and custom roles within your Fivetran account
+
 ## [1.0.2](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.0.1...v1.0.2)
 
 ## Fixed 

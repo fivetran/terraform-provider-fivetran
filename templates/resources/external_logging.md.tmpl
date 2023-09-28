@@ -1,0 +1,58 @@
+---
+page_title: "Resource: fivetran_external_logging"
+---
+
+# Resource: fivetran_external_logging
+
+This resource allows you to create, update, and delete logging service.
+
+## Example Usage
+
+```hcl
+resource "fivetran_external_logging" "extlog" {
+    group_id = fivetran_group.group.id
+    service = "azure_monitor_log"
+    enabled = "true"
+    run_setup_tests = "true"
+
+    config {
+        workspace_id = "workspace_id"
+        primary_key = "PASSWORD"
+    }
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}
+
+## Setup tests
+
+The `run_setup_tests` field doesn't have upstream value, it only defines local resource behavoir. This means that when you update only the `run_setup_tests` value (from `false` to `true`, for example) it won't cause any upstream actions. The value will be just saved in terraform state and then used on effective field updates.
+
+The default value is `false` - this means that no setup tests will be performed during create/update. To perform setup tests, you should set value to `true`.
+
+## Import
+
+1. To import an existing `fivetran_external_logging` resource into your Terraform state, you need to get **External Logging Group ID** on the external logging page in your Fivetran dashboard.
+To retrieve existing groups, use the [fivetran_groups data source](/docs/data-sources/groups).
+2. Define an empty resource in your `.tf` configuration:
+
+```hcl
+resource "fivetran_external_logging" "my_imported_external_logging" {
+
+}
+```
+
+3. Run the `terraform import` command with the following parameters:
+
+```
+terraform import fivetran_external_logging.my_imported_external_logging {your External Logging Group ID}
+```
+
+4. Use the `terraform state show` command to get the values from the state:
+
+```
+terraform state show 'fivetran_external_logging.my_imported_external_logging'
+```
+5. Copy the values and paste them to your `.tf` configuration.
+
+-> The `config` object in the state contains all properties defined in the schema. You need to remove properties from the `config` that are not related to destinations. See the [Fivetran REST API documentation](https://fivetran.com/docs/rest-api/log-service-management#logservicesetupconfigurations) for reference to find the properties you need to keep in the `config` section.
