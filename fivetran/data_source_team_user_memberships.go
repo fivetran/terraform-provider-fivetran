@@ -12,52 +12,32 @@ import (
 func dataSourceTeamUserMemberships() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceTeamUserMembershipsRead,
-		Schema: map[string]*schema.Schema{
-			"memberships": {
-				Type:     schema.TypeSet,
-				Optional: true,
-				Computed: true,
-				Elem: &schema.Resource{
-					Schema: getTeamUserMembershipSchema(true),
-				},
-			},
-		},
+		Schema:      resourceTeamUserMembershipBase(true),
 	}
 }
 
 func dataSourceTeamUserMembershipsRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var result []interface{}
-
 	client := m.(*fivetran.Client)
+	teamId := d.Get("team_id").(string)
 
-	teams, err := dataSourceTeamsGetTeams(client, ctx)
+	users, err := dataSourceTeamUserMembershipsGet(client, ctx, teamId)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v", teams, teams.Code))
+		return newDiagAppend(diags, diag.Error, "team memberships service error", fmt.Sprintf("%v; code: %v", err, users.Code))
 	}
 
-	for _, v := range teams.Data.Items {
-		cur_membership, err := dataSourceTeamUserMembershipsGet(client, ctx, v.Id)
-		if err != nil {
-			return newDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v", err, cur_membership.Code))
-		}
-
-		result = append(result, dataSourceTeamUserMembershipsFlatten(&cur_membership, v.Id)...)
-	}
-
-	if err := d.Set("memberships", result); err != nil {
+	if err := d.Set("user", dataSourceTeamUserMembershipsFlatten(&users)); err != nil {
 		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
-
-	// Enforces ID, there can't be two account-wide datasources
-	d.SetId("0")
+	
+	d.SetId(teamId)
 
 	return diags
 }
 
 // dataSourceTeamUserMembershipsFlatten receives a *fivetran.TeamUserMembershipsListResponse and returns a []interface{}
 // containing the data type accepted by the "TeamUserMemberships" set.
-func dataSourceTeamUserMembershipsFlatten(resp *fivetran.TeamUserMembershipsListResponse, teamId string) []interface{} {
+func dataSourceTeamUserMembershipsFlatten(resp *fivetran.TeamUserMembershipsListResponse) []interface{} {
 	if resp.Data.Items == nil {
 		return make([]interface{}, 0)
 	}
@@ -65,7 +45,6 @@ func dataSourceTeamUserMembershipsFlatten(resp *fivetran.TeamUserMembershipsList
 	memberships := make([]interface{}, len(resp.Data.Items))
 	for i, v := range resp.Data.Items {
 		membership := make(map[string]interface{})
-		membership["team_id"] = teamId
 		membership["user_id"] = v.UserId
 		membership["role"] = v.Role
 
@@ -75,7 +54,7 @@ func dataSourceTeamUserMembershipsFlatten(resp *fivetran.TeamUserMembershipsList
 	return memberships
 }
 
-// dataSourceTeamUserMembershipsGetTeamUserMemberships gets the memberships list of a User. It handles limits and cursors.
+// dataSourceTeamUserMembershipsGetTeamUserMemberships gets the memberships list of a user. It handles limits and cursors.
 func dataSourceTeamUserMembershipsGet(client *fivetran.Client, ctx context.Context, teamId string) (fivetran.TeamUserMembershipsListResponse, error) {
 	var resp fivetran.TeamUserMembershipsListResponse
 	var respNextCursor string

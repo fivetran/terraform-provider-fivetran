@@ -50,15 +50,19 @@ func TestResourceTeamConnectorMembershipE2E(t *testing.T) {
                  provider = fivetran-provider
 
                  team_id = fivetran_team.testteam.id
-                 connector_id = fivetran_connector.test_connector.id
-                 role = "Connector Reviewer"
+
+                 connector {
+                    connector_id = fivetran_connector.test_connector.id
+                    role = "Connector Reviewer"                    
+                 }
             }
           `,
                 Check: resource.ComposeAggregateTestCheckFunc(
                     testFivetranTeamConnectorMembershipResourceCreate(t, "fivetran_team_connector_membership.test_team_connector_membership"),
                     resource.TestCheckResourceAttrSet("fivetran_team_connector_membership.test_team_connector_membership", "team_id"),
-                    resource.TestCheckResourceAttrSet("fivetran_team_connector_membership.test_team_connector_membership", "connector_id"),
-                    resource.TestCheckResourceAttr("fivetran_team_connector_membership.test_team_connector_membership", "role", "Connector Reviewer"),
+                    resource.TestCheckResourceAttrSet("fivetran_team_connector_membership.test_team_connector_membership", "connector.0.connector_id"),
+                    resource.TestCheckResourceAttr("fivetran_team_connector_membership.test_team_connector_membership", "connector.0.role", "Connector Reviewer"),
+                    resource.TestCheckResourceAttr("fivetran_team_connector_membership.test_team_connector_membership", "connector.#", "1"),
                 ),
             },
             {
@@ -96,33 +100,42 @@ func TestResourceTeamConnectorMembershipE2E(t *testing.T) {
                  provider = fivetran-provider
 
                  team_id = fivetran_team.testteam.id
-                 connector_id = fivetran_connector.test_connector.id
-                 role = "Connector Administrator"
+
+                 connector {
+                    connector_id = fivetran_connector.test_connector.id
+                    role = "Connector Administrator"
+                 }
             }
           `,
                 Check: resource.ComposeAggregateTestCheckFunc(
-                    testFivetranTeamConnectorMembershipResourceUpdate(t, "fivetran_team_connector_membership.test_team_connector_membership"),
+                    testFivetranTeamConnectorMembershipResourceCreate(t, "fivetran_team_connector_membership.test_team_connector_membership"),
                     resource.TestCheckResourceAttrSet("fivetran_team_connector_membership.test_team_connector_membership", "team_id"),
-                    resource.TestCheckResourceAttrSet("fivetran_team_connector_membership.test_team_connector_membership", "connector_id"),
-                    resource.TestCheckResourceAttr("fivetran_team_connector_membership.test_team_connector_membership", "role", "Connector Administrator"),
+                    resource.TestCheckResourceAttrSet("fivetran_team_connector_membership.test_team_connector_membership", "connector.0.connector_id"),
+                    resource.TestCheckResourceAttr("fivetran_team_connector_membership.test_team_connector_membership", "connector.0.role", "Connector Administrator"),
+                    resource.TestCheckResourceAttr("fivetran_team_connector_membership.test_team_connector_membership", "connector.#", "1"),
                 ),
             },
         },
     })
 }
 
+
 func testFivetranTeamConnectorMembershipResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {
     return func(s *terraform.State) error {
         rs := GetResource(t, s, resourceName)
 
-        _, err := client.NewTeamConnectorMembershipDetails().
-            TeamId(rs.Primary.Attributes["team_id"]).
-            ConnectorId(rs.Primary.Attributes["connector_id"]).
+        response, err := client.NewTeamConnectorMembershipsList().
+            TeamId(rs.Primary.ID).
             Do(context.Background())
 
         if err != nil {
             return err
         }
+
+        if response.Code == "NotFound" || len(response.Data.Items) == 0 {
+            return errors.New("Team connector membership didn't created.")
+        }
+
         //todo: check response _  fields
         return nil
     }
@@ -131,16 +144,21 @@ func testFivetranTeamConnectorMembershipResourceCreate(t *testing.T, resourceNam
 func testFivetranTeamConnectorMembershipResourceUpdate(t *testing.T, resourceName string) resource.TestCheckFunc {
     return func(s *terraform.State) error {
         rs := GetResource(t, s, resourceName)
-        _, err := client.NewTeamConnectorMembershipDetails().
-            TeamId(rs.Primary.Attributes["team_id"]).
-            ConnectorId(rs.Primary.Attributes["connector_id"]).
+        response, err := client.NewTeamConnectorMembershipsList().
+            TeamId(rs.Primary.ID).
             Do(context.Background())
 
         if err != nil {
             return err
         }
-        //todo: check response _  fields
-        return nil
+
+        for _, value := range response.Data.Items {
+            if value.Role == "Connector Reviewer" {
+                return nil
+            }
+        }
+
+        return errors.New("Team connector membership " + rs.Primary.ID + " didn't updated.")
     }
 }
 
@@ -150,16 +168,15 @@ func testFivetranTeamConnectorMembershipResourceDestroy(s *terraform.State) erro
             continue
         }
 
-        response, err := client.NewTeamConnectorMembershipDetails().
-            TeamId(rs.Primary.Attributes["team_id"]).
-            ConnectorId(rs.Primary.Attributes["connector_id"]).
+        response, err := client.NewTeamConnectorMembershipsList().
+            TeamId(rs.Primary.ID).
             Do(context.Background())
 
         if err.Error() != "status code: 404; expected: 200" {
             return err
         }
-        if response.Code != "NotFound" {
-            return errors.New("Team connector memebrship " + rs.Primary.ID + " still exists.")
+        if response.Code != "NotFound_Tea" || len(response.Data.Items) > 0 {
+            return errors.New("Team connector membership " + rs.Primary.ID + " still exists.")
         }
 
     }

@@ -12,52 +12,32 @@ import (
 func dataSourceTeamConnectorMemberships() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceTeamConnectorMembershipsRead,
-		Schema: map[string]*schema.Schema{
-			"memberships": {
-				Type:     schema.TypeSet,
-				Optional: true,
-				Computed: true,
-				Elem: &schema.Resource{
-					Schema: getTeamConnectorMembershipSchema(true),
-				},
-			},
-		},
+		Schema:      resourceTeamConnectorMembershipBase(true),
 	}
 }
 
 func dataSourceTeamConnectorMembershipsRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var result []interface{}
-
 	client := m.(*fivetran.Client)
+	teamId := d.Get("team_id").(string)
 
-	teams, err := dataSourceTeamsGetTeams(client, ctx)
+	connectors, err := dataSourceTeamConnectorMembershipsGet(client, ctx, teamId)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "teams service error", fmt.Sprintf("%v; code: %v", teams, teams.Code))
+		return newDiagAppend(diags, diag.Error, "team memberships service error", fmt.Sprintf("%v; code: %v", err, connectors.Code))
 	}
 
-	for _, v := range teams.Data.Items {
-		cur_membership, err := dataSourceTeamConnectorMembershipsGet(client, ctx, v.Id)
-		if err != nil {
-			return newDiagAppend(diags, diag.Error, "team memberships service error", fmt.Sprintf("%v; code: %v", err, cur_membership.Code))
-		}
-
-		result = append(result, dataSourceTeamConnectorMembershipsFlatten(&cur_membership, v.Id)...)
-	}
-
-	if err := d.Set("memberships", result); err != nil {
+	if err := d.Set("connector", dataSourceTeamConnectorMembershipsFlatten(&connectors)); err != nil {
 		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
-
-	// Enforces ID, there can't be two account-wide datasources
-	d.SetId("0")
+	
+	d.SetId(teamId)
 
 	return diags
 }
 
 // dataSourceTeamConnectorMembershipsFlatten receives a *fivetran.TeamConnectorMembershipsListResponse and returns a []interface{}
 // containing the data type accepted by the "TeamConnectorMemberships" set.
-func dataSourceTeamConnectorMembershipsFlatten(resp *fivetran.TeamConnectorMembershipsListResponse, teamId string) []interface{} {
+func dataSourceTeamConnectorMembershipsFlatten(resp *fivetran.TeamConnectorMembershipsListResponse) []interface{} {
 	if resp.Data.Items == nil {
 		return make([]interface{}, 0)
 	}
@@ -65,9 +45,9 @@ func dataSourceTeamConnectorMembershipsFlatten(resp *fivetran.TeamConnectorMembe
 	memberships := make([]interface{}, len(resp.Data.Items))
 	for i, v := range resp.Data.Items {
 		membership := make(map[string]interface{})
-		membership["team_id"] = teamId
 		membership["connector_id"] = v.ConnectorId
 		membership["role"] = v.Role
+		membership["created_at"] = v.CreatedAt
 
 		memberships[i] = membership
 	}

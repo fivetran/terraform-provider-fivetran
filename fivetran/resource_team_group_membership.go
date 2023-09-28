@@ -16,40 +16,50 @@ func resourceTeamGroupMembership() *schema.Resource {
         UpdateContext: resourceTeamGroupMembershipUpdate,
         DeleteContext: resourceTeamGroupMembershipDelete,
         Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-        Schema:        getTeamGroupMembershipSchema(false),
+        Schema:        resourceTeamGroupMembershipBase(false),
     }
 }
 
-func getTeamGroupMembershipSchema(datasource bool) map[string]*schema.Schema {
+func resourceTeamGroupMembershipBase(datasource bool) map[string]*schema.Schema {
     return map[string]*schema.Schema{
         "id": {
             Type:        schema.TypeString,
-            Optional:    true,
             Computed:    true,
-            Description: "Fake record Id, compile from team_id and connector_id",
+            Description: "The unique identifier for resource.",
         },
         "team_id": {
             Type:        schema.TypeString,
             Required:    true,
-            ForceNew:    !datasource,
             Description: "The unique identifier for the team within your account.",
         },
-        "group_id": {
-            Type:        schema.TypeString,
-            Required:    true,
-            ForceNew:    !datasource,
-            Description: "The Group unique identifier",
-        },
-        "role": {
-            Type:        schema.TypeString,
-            Required:    !datasource,
-            Computed:    datasource,
-            Description: "The team's role that links the team and the Group",
-        },
-        "created_at": {
-            Type:        schema.TypeString,
-            Computed:    true,
-            Description: "The date and time the membership was created",
+        "group": resourceTeamGroupMembershipBaseGroups(datasource),
+    }
+}
+
+func resourceTeamGroupMembershipBaseGroups(datasource bool) *schema.Schema {
+    return &schema.Schema{
+        Type: schema.TypeSet, 
+        Optional: true, 
+        Elem: &schema.Resource{
+            Schema: map[string]*schema.Schema{
+                "group_id": {
+                    Type:        schema.TypeString,
+                    Required:    true,
+                    ForceNew:    !datasource,
+                    Description: "The group unique identifier",
+                },
+                "role": {
+                    Type:        schema.TypeString,
+                    Required:    !datasource,
+                    Computed:    datasource,
+                    Description: "The team's role that links the team and the group",
+                },
+                "created_at": {
+                    Type:        schema.TypeString,
+                    Computed:    true,
+                    Description: "The date and time the membership was created",
+                },
+            },
         },
     }
 }
@@ -57,18 +67,13 @@ func getTeamGroupMembershipSchema(datasource bool) map[string]*schema.Schema {
 func resourceTeamGroupMembershipCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
     var diags diag.Diagnostics
     client := m.(*fivetran.Client)
+    teamId := d.Get("team_id").(string)
 
-    svc := client.NewTeamGroupMembershipCreate()
-    svc.TeamId(d.Get("team_id").(string))
-    svc.GroupId(d.Get("group_id").(string))
-    svc.Role(d.Get("role").(string))
-
-    resp, err := svc.Do(ctx)
-    if err != nil {
-        return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v", err, resp.Code))
+    if err := resourceTeamGroupMembershipSyncGroups(client, d.Get("group").(*schema.Set).List(), teamId, ctx); err != nil {
+        return newDiagAppend(diags, diag.Error, "create error: resourceTeamGroupMembershipSyncGroups", fmt.Sprint(err))
     }
 
-    d.SetId(d.Get("team_id").(string) + "|" + d.Get("group_id").(string))
+    d.SetId(teamId)
 
     resourceTeamGroupMembershipRead(ctx, d, m)
 
@@ -78,15 +83,10 @@ func resourceTeamGroupMembershipCreate(ctx context.Context, d *schema.ResourceDa
 func resourceTeamGroupMembershipRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
     var diags diag.Diagnostics
     client := m.(*fivetran.Client)
-    svc := client.NewTeamGroupMembershipDetails()
+    teamId := d.Get("team_id").(string)
 
-    svc.TeamId(d.Get("team_id").(string))
-    svc.GroupId(d.Get("group_id").(string))
-
-    resp, err := svc.Do(ctx)
+    resp, err  := dataSourceTeamGroupMembershipsGet(client, ctx, teamId)
     if err != nil {
-        // If the resource does not exist (404), inform Terraform. We want to immediately
-        // return here to prevent further processing.
         if resp.Code == "404" {
             d.SetId("")
             return nil
@@ -96,10 +96,21 @@ func resourceTeamGroupMembershipRead(ctx context.Context, d *schema.ResourceData
 
     // msi stands for Map String Interface
     msi := make(map[string]interface{})
-    msi["team_id"] = d.Get("team_id").(string)
-    msi["group_id"] = resp.Data.GroupId
-    msi["role"] = resp.Data.Role
-    msi["created_at"] = resp.Data.CreatedAt
+    msi["team_id"] = teamId
+
+    var groups []interface{}
+    for _, group := range resp.Data.Items {
+        if group.Role == "" {
+            continue
+        }
+        con := make(map[string]interface{})
+        con["group_id"] = group.GroupId
+        con["role"] = group.Role
+        con["created_at"] = group.CreatedAt
+        groups = append(groups, con)
+    }
+
+    msi["group"] = groups
 
     for k, v := range msi {
         if err := d.Set(k, v); err != nil {
@@ -107,7 +118,7 @@ func resourceTeamGroupMembershipRead(ctx context.Context, d *schema.ResourceData
         }
     }
 
-    d.SetId(d.Get("team_id").(string) + "|" + d.Get("group_id").(string))
+    d.SetId(teamId)
 
     return diags
 }
@@ -115,20 +126,13 @@ func resourceTeamGroupMembershipRead(ctx context.Context, d *schema.ResourceData
 func resourceTeamGroupMembershipUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
     var diags diag.Diagnostics
     client := m.(*fivetran.Client)
+    teamId := d.Get("team_id").(string)
 
-    svc := client.NewTeamGroupMembershipModify()
-
-    svc.TeamId(d.Get("team_id").(string)).Do(ctx)
-    svc.GroupId(d.Get("group_id").(string)).Do(ctx)
-
-    if d.HasChange("role") {
-        svc.Role(d.Get("role").(string))
+    if d.HasChange("group") {
+        if err := resourceTeamGroupMembershipSyncGroups(client, d.Get("group").(*schema.Set).List(), teamId, ctx); err != nil {
+            return newDiagAppend(diags, diag.Error, "read error: resourceTeamGroupMembershipSyncGroups", fmt.Sprint(err))
+        }
     }
-
-    resp, err := svc.Do(ctx)
-    if err != nil {
-        return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v", err, resp.Code))
-    }       
     
     return resourceTeamGroupMembershipRead(ctx, d, m)
 }
@@ -136,18 +140,57 @@ func resourceTeamGroupMembershipUpdate(ctx context.Context, d *schema.ResourceDa
 func resourceTeamGroupMembershipDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
     var diags diag.Diagnostics
     client := m.(*fivetran.Client)
-    svc := client.NewTeamGroupMembershipDelete()
-
-    svc.TeamId(d.Get("team_id").(string)).Do(ctx)
-    svc.GroupId(d.Get("group_id").(string)).Do(ctx)
-
-    resp, err := svc.Do(ctx)
-    // for DELETE endpoint idempotence rule breaks
-    if err != nil && resp.Code != "NotFound" {
-        return newDiagAppend(diags, diag.Error, "delete error " + d.Get("team_id").(string) + " " + d.Get("group_id").(string), fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+    teamId := d.Get("team_id").(string)
+    
+    for _, v := range d.Get("group").(*schema.Set).List() {
+        if resp, err := client.NewTeamGroupMembershipDelete().TeamId(teamId).GroupId(v.(map[string]interface{})["group_id"].(string)).Do(ctx); err != nil {
+            return newDiagAppend(diags, diag.Error, "set error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+        }
     }
 
-    d.SetId("")
-
     return diags
+}
+
+func resourceTeamGroupMembershipSyncGroups(client *fivetran.Client, groups []interface{}, teamId string, ctx context.Context) error {
+    responseGroups, err := dataSourceTeamGroupMembershipsGet(client, ctx, teamId)
+    if err != nil {
+        return fmt.Errorf("read error: dataSourceTeamGroupMembershipsGet %v; code: %v", err, responseGroups.Code)
+    }
+
+    localGroups := make(map[string]interface{})
+    for _, v := range groups {
+        localGroups[v.(map[string]interface{})["group_id"].(string)] = v.(map[string]interface{})["role"].(string)
+    }
+
+    remoteGroups := make(map[string]interface{})
+    for _, v := range responseGroups.Data.Items {
+        remoteGroups[v.GroupId] = v.Role
+    }
+
+    for remoteKey, remoteValue := range remoteGroups {
+        role, found := localGroups[remoteKey]
+
+        if !found {
+            if resp, err := client.NewTeamGroupMembershipDelete().TeamId(teamId).GroupId(remoteKey).Do(ctx); err != nil {
+                return fmt.Errorf("%v; code: %v; message: %v", err, resp.Code, resp.Message)
+            }
+        } else if role.(string) != remoteValue {
+            if resp, err := client.NewTeamGroupMembershipModify().TeamId(teamId).GroupId(remoteKey).Role(role.(string)).Do(ctx); err != nil {
+                return fmt.Errorf("%v; code: %v; message: %v", err, resp.Code, resp.Message)
+            }
+        }
+    }
+
+
+    for localKey, localValue := range localGroups {
+        _, exists := remoteGroups[localKey]
+
+        if !exists {
+            if resp, err := client.NewTeamGroupMembershipCreate().TeamId(teamId).GroupId(localKey).Role(localValue.(string)).Do(ctx); err != nil {
+                return fmt.Errorf("%v; code: %v; message: %v", err, resp.Code, resp.Message)
+            }
+        }
+    }
+
+    return nil
 }

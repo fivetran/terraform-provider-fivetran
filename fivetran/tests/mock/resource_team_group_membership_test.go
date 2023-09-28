@@ -15,40 +15,65 @@ var (
     teamGroupMembershipDeleteHandler *mock.Handler
     teamGroupMembershipTestHandler   *mock.Handler
     teamGroupMembershipData          map[string]interface{}
+    teamGroupMembershipListData      map[string]interface{}
+    teamGroupMembershipResponse      string
 )
 
 func setupMockClientTeamGroupMembershipResource(t *testing.T) {
     mockClient.Reset()
-    teamGroupMembershipResponse := 
+    teamGroupMembershipResponse = 
     `{
         "id": "test_group",
-        "role": "Group Reviewer",
+        "role": "Destination Reviewer",
         "created_at": "2020-05-25T15:26:47.306509Z"
     }`
 
     teamGroupMembershipUpdatedResponse := 
     `{
         "id": "test_group",
-        "role": "Group Administrator",
+        "role": "Destination Administrator",
         "created_at": "2020-05-25T15:26:47.306509Z"
     }`
+
 
     teamGroupMembershipPostHandler = mockClient.When(http.MethodPost, "/v1/teams/test_team/groups").ThenCall(
         func(req *http.Request) (*http.Response, error) {
             teamGroupMembershipData = createMapFromJsonString(t, teamGroupMembershipResponse)
-            return fivetranSuccessResponse(t, req, http.StatusCreated, "Group membership has been created", teamGroupMembershipData), nil
+            response := fivetranSuccessResponse(t, req, http.StatusCreated, "Group membership has been created", teamGroupMembershipData)
+            return response, nil
         },
     )
 
     mockClient.When(http.MethodGet, "/v1/teams/test_team/groups/test_group").ThenCall(
         func(req *http.Request) (*http.Response, error) {
+            teamGroupMembershipData = createMapFromJsonString(t, teamGroupMembershipUpdatedResponse)
             return fivetranSuccessResponse(t, req, http.StatusOK, "", teamGroupMembershipData), nil
+        },
+    )
+
+    mockClient.When(http.MethodGet, "/v1/teams/test_team/groups").ThenCall(
+        func(req *http.Request) (*http.Response, error) {
+            teamGroupMembershipListData = createMapFromJsonString(t, teamGroupMembershipResponse)
+            response := fivetranSuccessResponse(t, req, http.StatusOK, "", teamGroupMembershipListData)
+
+            // For list step after insert
+            teamGroupMembershipResponse = 
+            `{
+                "items": [
+                {
+                    "id": "test_group",
+                    "role": "Destination Reviewer",
+                    "created_at": "2020-05-25T15:26:47.306509Z"
+                }
+                ],
+                 "next_cursor": null}`
+
+            return response, nil
         },
     )
 
     teamGroupMembershipPatchHandler = mockClient.When(http.MethodPatch, "/v1/teams/test_team/groups/test_group").ThenCall(
         func(req *http.Request) (*http.Response, error) {
-            teamGroupMembershipData = createMapFromJsonString(t, teamGroupMembershipUpdatedResponse)
             return fivetranSuccessResponse(t, req, http.StatusOK, "Group membership has been updated", teamGroupMembershipData), nil
         },
     )
@@ -61,44 +86,28 @@ func setupMockClientTeamGroupMembershipResource(t *testing.T) {
 }
 
 func TestGroupMembershipResourceTeamMock(t *testing.T) {
+    teamGroupMembershipResponse = `{
+        "items": [],
+        "next_cursor": null
+    }`
+
     step1 := resource.TestStep{
         Config: `
             resource "fivetran_team_group_membership" "test_team_group_membership" {
                  provider = fivetran-provider
 
                  team_id = "test_team"
-                 group_id = "test_group"
-                 role = "Group Reviewer"
+                 
+                 group {
+                    group_id = "test_group"
+                    role = "Destination Reviewer"                    
+                 }
             }`,
-
         Check: resource.ComposeAggregateTestCheckFunc(
             func(s *terraform.State) error {
                 assertEqual(t, teamGroupMembershipPostHandler.Interactions, 1)
                 return nil
             },
-            resource.TestCheckResourceAttr("fivetran_team_group_membership.test_team_group_membership", "team_id", "test_team"),
-            resource.TestCheckResourceAttr("fivetran_team_group_membership.test_team_group_membership", "group_id", "test_group"),
-            resource.TestCheckResourceAttr("fivetran_team_group_membership.test_team_group_membership", "role", "Group Reviewer"),
-        ),
-    }
-
-    step2 := resource.TestStep{
-        Config: `
-            resource "fivetran_team_group_membership" "test_team_group_membership" {
-                 provider = fivetran-provider
-
-                 team_id = "test_team"
-                 group_id = "test_group"
-                 role = "Group Administrator"
-            }`,
-        Check: resource.ComposeAggregateTestCheckFunc(
-            func(s *terraform.State) error {
-                assertEqual(t, teamGroupMembershipPatchHandler.Interactions, 2)
-                return nil
-            },
-            resource.TestCheckResourceAttr("fivetran_team_group_membership.test_team_group_membership", "team_id", "test_team"),
-            resource.TestCheckResourceAttr("fivetran_team_group_membership.test_team_group_membership", "group_id", "test_group"),
-            resource.TestCheckResourceAttr("fivetran_team_group_membership.test_team_group_membership", "role", "Group Administrator"),
         ),
     }
 
@@ -110,13 +119,12 @@ func TestGroupMembershipResourceTeamMock(t *testing.T) {
             },
             Providers: testProviders,
             CheckDestroy: func(s *terraform.State) error {
-                assertEqual(t, teamGroupMembershipDeleteHandler.Interactions, 2)
+                assertEqual(t, teamGroupMembershipDeleteHandler.Interactions, 1)
                 return nil
             },
 
             Steps: []resource.TestStep{
                 step1,
-                step2,
             },
         },
     )

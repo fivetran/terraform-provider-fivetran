@@ -13,8 +13,18 @@ resource "fivetran_team_group_membership" "test_team_group_membership" {
     provider = fivetran-provider
 
     team_id = "test_team"
-    group_id = "test_group"
-    role = "Destination Administrator"
+
+    group {
+        connector_id = "test_connector"
+        group_id = "test_group"
+        role = "Destination Administrator"
+    }
+
+    group {
+        connector_id = "test_connector"
+        group_id = "test_group"
+        role = "Destination Administrator"
+    }
 }
 ```
 

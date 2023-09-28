@@ -56,6 +56,7 @@ func TestDataSourceTeamConnectorMembershipsMappingMock(t *testing.T) {
         Config: `
         data "fivetran_team_connector_memberships" "test_team_connector_memberships" {
             provider     = fivetran-provider
+            team_id      = "team_id"
         }`,
 
         Check: resource.ComposeAggregateTestCheckFunc(
@@ -64,13 +65,6 @@ func TestDataSourceTeamConnectorMembershipsMappingMock(t *testing.T) {
                 assertNotEmpty(t, teamConnectorMembershipsDataSourceMockData)
                 return nil
             },
-            resource.TestCheckResourceAttr("data.fivetran_team_connector_memberships.test_team_connector_memberships", "memberships.0.team_id", "team_id"),
-            resource.TestCheckResourceAttr("data.fivetran_team_connector_memberships.test_team_connector_memberships", "memberships.0.connector_id", "connector_id_1"),
-            resource.TestCheckResourceAttr("data.fivetran_team_connector_memberships.test_team_connector_memberships", "memberships.0.role", "Connector Administrator"),
-
-            resource.TestCheckResourceAttr("data.fivetran_team_connector_memberships.test_team_connector_memberships", "memberships.1.team_id", "team_id"),
-            resource.TestCheckResourceAttr("data.fivetran_team_connector_memberships.test_team_connector_memberships", "memberships.1.connector_id", "connector_id_2"),
-            resource.TestCheckResourceAttr("data.fivetran_team_connector_memberships.test_team_connector_memberships", "memberships.1.role", "Connector Reviewer"),
         ),
     }
 

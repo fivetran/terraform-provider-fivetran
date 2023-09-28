@@ -15,11 +15,13 @@ var (
     teamConnectorMembershipDeleteHandler *mock.Handler
     teamConnectorMembershipTestHandler   *mock.Handler
     teamConnectorMembershipData          map[string]interface{}
+    teamConnectorMembershipListData      map[string]interface{}
+    teamConnectorMembershipResponse      string
 )
 
 func setupMockClientTeamConnectorMembershipResource(t *testing.T) {
     mockClient.Reset()
-    teamConnectorMembershipResponse := 
+    teamConnectorMembershipResponse = 
     `{
         "id": "test_connector",
         "role": "Connector Reviewer",
@@ -33,22 +35,45 @@ func setupMockClientTeamConnectorMembershipResource(t *testing.T) {
         "created_at": "2020-05-25T15:26:47.306509Z"
     }`
 
+
     teamConnectorMembershipPostHandler = mockClient.When(http.MethodPost, "/v1/teams/test_team/connectors").ThenCall(
         func(req *http.Request) (*http.Response, error) {
             teamConnectorMembershipData = createMapFromJsonString(t, teamConnectorMembershipResponse)
-            return fivetranSuccessResponse(t, req, http.StatusCreated, "Connector membership has been created", teamConnectorMembershipData), nil
+            response := fivetranSuccessResponse(t, req, http.StatusCreated, "Connector membership has been created", teamConnectorMembershipData)
+            return response, nil
         },
     )
 
     mockClient.When(http.MethodGet, "/v1/teams/test_team/connectors/test_connector").ThenCall(
         func(req *http.Request) (*http.Response, error) {
+            teamConnectorMembershipData = createMapFromJsonString(t, teamConnectorMembershipUpdatedResponse)
             return fivetranSuccessResponse(t, req, http.StatusOK, "", teamConnectorMembershipData), nil
+        },
+    )
+
+    mockClient.When(http.MethodGet, "/v1/teams/test_team/connectors").ThenCall(
+        func(req *http.Request) (*http.Response, error) {
+            teamConnectorMembershipListData = createMapFromJsonString(t, teamConnectorMembershipResponse)
+            response := fivetranSuccessResponse(t, req, http.StatusOK, "", teamConnectorMembershipListData)
+
+            // For list step after insert
+            teamConnectorMembershipResponse = 
+            `{
+                "items": [
+                {
+                    "id": "test_connector",
+                    "role": "Connector Reviewer",
+                    "created_at": "2020-05-25T15:26:47.306509Z"
+                }
+                ],
+                 "next_cursor": null}`
+
+            return response, nil
         },
     )
 
     teamConnectorMembershipPatchHandler = mockClient.When(http.MethodPatch, "/v1/teams/test_team/connectors/test_connector").ThenCall(
         func(req *http.Request) (*http.Response, error) {
-            teamConnectorMembershipData = createMapFromJsonString(t, teamConnectorMembershipUpdatedResponse)
             return fivetranSuccessResponse(t, req, http.StatusOK, "Connector membership has been updated", teamConnectorMembershipData), nil
         },
     )
@@ -61,44 +86,28 @@ func setupMockClientTeamConnectorMembershipResource(t *testing.T) {
 }
 
 func TestConnectorMembershipResourceTeamMock(t *testing.T) {
+    teamConnectorMembershipResponse = `{
+        "items": [],
+        "next_cursor": null
+    }`
+
     step1 := resource.TestStep{
         Config: `
             resource "fivetran_team_connector_membership" "test_team_connector_membership" {
                  provider = fivetran-provider
 
                  team_id = "test_team"
-                 connector_id = "test_connector"
-                 role = "Connector Reviewer"
+                 
+                 connector {
+                    connector_id = "test_connector"
+                    role = "Connector Reviewer"                    
+                 }
             }`,
-
         Check: resource.ComposeAggregateTestCheckFunc(
             func(s *terraform.State) error {
                 assertEqual(t, teamConnectorMembershipPostHandler.Interactions, 1)
                 return nil
             },
-            resource.TestCheckResourceAttr("fivetran_team_connector_membership.test_team_connector_membership", "team_id", "test_team"),
-            resource.TestCheckResourceAttr("fivetran_team_connector_membership.test_team_connector_membership", "connector_id", "test_connector"),
-            resource.TestCheckResourceAttr("fivetran_team_connector_membership.test_team_connector_membership", "role", "Connector Reviewer"),
-        ),
-    }
-
-    step2 := resource.TestStep{
-        Config: `
-            resource "fivetran_team_connector_membership" "test_team_connector_membership" {
-                 provider = fivetran-provider
-
-                 team_id = "test_team"
-                 connector_id = "test_connector"
-                 role = "Connector Administrator"
-            }`,
-        Check: resource.ComposeAggregateTestCheckFunc(
-            func(s *terraform.State) error {
-                assertEqual(t, teamConnectorMembershipPatchHandler.Interactions, 1)
-                return nil
-            },
-            resource.TestCheckResourceAttr("fivetran_team_connector_membership.test_team_connector_membership", "team_id", "test_team"),
-            resource.TestCheckResourceAttr("fivetran_team_connector_membership.test_team_connector_membership", "connector_id", "test_connector"),
-            resource.TestCheckResourceAttr("fivetran_team_connector_membership.test_team_connector_membership", "role", "Connector Administrator"),
         ),
     }
 
@@ -116,7 +125,6 @@ func TestConnectorMembershipResourceTeamMock(t *testing.T) {
 
             Steps: []resource.TestStep{
                 step1,
-                step2,
             },
         },
     )

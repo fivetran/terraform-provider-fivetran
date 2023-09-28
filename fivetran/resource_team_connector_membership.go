@@ -16,40 +16,50 @@ func resourceTeamConnectorMembership() *schema.Resource {
         UpdateContext: resourceTeamConnectorMembershipUpdate,
         DeleteContext: resourceTeamConnectorMembershipDelete,
         Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-        Schema:        getTeamConnectorMembershipSchema(false),
+        Schema:        resourceTeamConnectorMembershipBase(false),
     }
 }
 
-func getTeamConnectorMembershipSchema(datasource bool) map[string]*schema.Schema {
+func resourceTeamConnectorMembershipBase(datasource bool) map[string]*schema.Schema {
     return map[string]*schema.Schema{
         "id": {
             Type:        schema.TypeString,
-            Optional:    true,
             Computed:    true,
-            Description: "Fake record Id, compile from team_id and connector_id",
+            Description: "The unique identifier for resource.",
         },
         "team_id": {
             Type:        schema.TypeString,
             Required:    true,
-            ForceNew:    !datasource,
             Description: "The unique identifier for the team within your account.",
         },
-        "connector_id": {
-            Type:        schema.TypeString,
-            Required:    true,
-            ForceNew:    !datasource,
-            Description: "The connector unique identifier",
-        },
-        "role": {
-            Type:        schema.TypeString,
-            Required:    !datasource,
-            Computed:    datasource,
-            Description: "The team's role that links the team and the connector",
-        },
-        "created_at": {
-            Type:        schema.TypeString,
-            Computed:    true,
-            Description: "The date and time the membership was created",
+        "connector": resourceTeamConnectorMembershipBaseConnectors(datasource),
+    }
+}
+
+func resourceTeamConnectorMembershipBaseConnectors(datasource bool) *schema.Schema {
+    return &schema.Schema{
+        Type: schema.TypeSet, 
+        Optional: true, 
+        Elem: &schema.Resource{
+            Schema: map[string]*schema.Schema{
+                "connector_id": {
+                    Type:        schema.TypeString,
+                    Required:    true,
+                    ForceNew:    !datasource,
+                    Description: "The connector unique identifier",
+                },
+                "role": {
+                    Type:        schema.TypeString,
+                    Required:    !datasource,
+                    Computed:    datasource,
+                    Description: "The team's role that links the team and the connector",
+                },
+                "created_at": {
+                    Type:        schema.TypeString,
+                    Computed:    true,
+                    Description: "The date and time the membership was created",
+                },
+            },
         },
     }
 }
@@ -57,18 +67,13 @@ func getTeamConnectorMembershipSchema(datasource bool) map[string]*schema.Schema
 func resourceTeamConnectorMembershipCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
     var diags diag.Diagnostics
     client := m.(*fivetran.Client)
+    teamId := d.Get("team_id").(string)
 
-    svc := client.NewTeamConnectorMembershipCreate()
-    svc.TeamId(d.Get("team_id").(string))
-    svc.ConnectorId(d.Get("connector_id").(string))
-    svc.Role(d.Get("role").(string))
-
-    resp, err := svc.Do(ctx)
-    if err != nil {
-        return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v", err, resp.Code))
+    if err := resourceTeamConnectorMembershipSyncConnectors(client, d.Get("connector").(*schema.Set).List(), teamId, ctx); err != nil {
+        return newDiagAppend(diags, diag.Error, "create error: resourceTeamConnectorMembershipSyncConnectors", fmt.Sprint(err))
     }
 
-    d.SetId(d.Get("team_id").(string) + "|" + resp.Data.ConnectorId)
+    d.SetId(teamId)
 
     resourceTeamConnectorMembershipRead(ctx, d, m)
 
@@ -78,15 +83,10 @@ func resourceTeamConnectorMembershipCreate(ctx context.Context, d *schema.Resour
 func resourceTeamConnectorMembershipRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
     var diags diag.Diagnostics
     client := m.(*fivetran.Client)
-    svc := client.NewTeamConnectorMembershipDetails()
+    teamId := d.Get("team_id").(string)
 
-    svc.TeamId(d.Get("team_id").(string))
-    svc.ConnectorId(d.Get("connector_id").(string))
-
-    resp, err := svc.Do(ctx)
+    resp, err  := dataSourceTeamConnectorMembershipsGet(client, ctx, teamId)
     if err != nil {
-        // If the resource does not exist (404), inform Terraform. We want to immediately
-        // return here to prevent further processing.
         if resp.Code == "404" {
             d.SetId("")
             return nil
@@ -96,10 +96,21 @@ func resourceTeamConnectorMembershipRead(ctx context.Context, d *schema.Resource
 
     // msi stands for Map String Interface
     msi := make(map[string]interface{})
-    msi["team_id"] = d.Get("team_id").(string)
-    msi["connector_id"] = resp.Data.ConnectorId
-    msi["role"] = resp.Data.Role
-    msi["created_at"] = resp.Data.CreatedAt
+    msi["team_id"] = teamId
+
+    var connectors []interface{}
+    for _, connector := range resp.Data.Items {
+        if connector.Role == "" {
+            continue
+        }
+        con := make(map[string]interface{})
+        con["connector_id"] = connector.ConnectorId
+        con["role"] = connector.Role
+        con["created_at"] = connector.CreatedAt
+        connectors = append(connectors, con)
+    }
+
+    msi["connector"] = connectors
 
     for k, v := range msi {
         if err := d.Set(k, v); err != nil {
@@ -107,7 +118,7 @@ func resourceTeamConnectorMembershipRead(ctx context.Context, d *schema.Resource
         }
     }
 
-    d.SetId(d.Get("team_id").(string) + "|" + resp.Data.ConnectorId)
+    d.SetId(teamId)
 
     return diags
 }
@@ -115,20 +126,13 @@ func resourceTeamConnectorMembershipRead(ctx context.Context, d *schema.Resource
 func resourceTeamConnectorMembershipUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
     var diags diag.Diagnostics
     client := m.(*fivetran.Client)
+    teamId := d.Get("team_id").(string)
 
-    svc := client.NewTeamConnectorMembershipModify()
-
-    svc.TeamId(d.Get("team_id").(string))
-    svc.ConnectorId(d.Get("connector_id").(string))
-
-    if d.HasChange("role") {
-        svc.Role(d.Get("role").(string))
+    if d.HasChange("connector") {
+        if err := resourceTeamConnectorMembershipSyncConnectors(client, d.Get("connector").(*schema.Set).List(), teamId, ctx); err != nil {
+            return newDiagAppend(diags, diag.Error, "read error: resourceTeamConnectorMembershipSyncConnectors", fmt.Sprint(err))
+        }
     }
-
-    resp, err := svc.Do(ctx)
-    if err != nil {
-        return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v", err, resp.Code))
-    }       
     
     return resourceTeamConnectorMembershipRead(ctx, d, m)
 }
@@ -136,17 +140,57 @@ func resourceTeamConnectorMembershipUpdate(ctx context.Context, d *schema.Resour
 func resourceTeamConnectorMembershipDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
     var diags diag.Diagnostics
     client := m.(*fivetran.Client)
-    svc := client.NewTeamConnectorMembershipDelete()
-
-    svc.TeamId(d.Get("team_id").(string))
-    svc.ConnectorId(d.Get("connector_id").(string))
-
-    resp, err := svc.Do(ctx)
-    if err != nil {
-        return newDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+    teamId := d.Get("team_id").(string)
+    
+    for _, v := range d.Get("connector").(*schema.Set).List() {
+        if resp, err := client.NewTeamConnectorMembershipDelete().TeamId(teamId).ConnectorId(v.(map[string]interface{})["connector_id"].(string)).Do(ctx); err != nil {
+            return newDiagAppend(diags, diag.Error, "set error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+        }
     }
 
-    d.SetId("")
-
     return diags
+}
+
+func resourceTeamConnectorMembershipSyncConnectors(client *fivetran.Client, connectors []interface{}, teamId string, ctx context.Context) error {
+    responseConnectors, err := dataSourceTeamConnectorMembershipsGet(client, ctx, teamId)
+    if err != nil {
+        return fmt.Errorf("read error: dataSourceTeamConnectorMembershipsGet %v; code: %v", err, responseConnectors.Code)
+    }
+
+    localConnectors := make(map[string]interface{})
+    for _, v := range connectors {
+        localConnectors[v.(map[string]interface{})["connector_id"].(string)] = v.(map[string]interface{})["role"].(string)
+    }
+
+    remoteConnectors := make(map[string]interface{})
+    for _, v := range responseConnectors.Data.Items {
+        remoteConnectors[v.ConnectorId] = v.Role
+    }
+
+    for remoteKey, remoteValue := range remoteConnectors {
+        role, found := localConnectors[remoteKey]
+
+        if !found {
+            if resp, err := client.NewTeamConnectorMembershipDelete().TeamId(teamId).ConnectorId(remoteKey).Do(ctx); err != nil {
+                return fmt.Errorf("%v; code: %v; message: %v", err, resp.Code, resp.Message)
+            }
+        } else if role.(string) != remoteValue {
+            if resp, err := client.NewTeamConnectorMembershipModify().TeamId(teamId).ConnectorId(remoteKey).Role(role.(string)).Do(ctx); err != nil {
+                return fmt.Errorf("%v; code: %v; message: %v", err, resp.Code, resp.Message)
+            }
+        }
+    }
+
+
+    for localKey, localValue := range localConnectors {
+        _, exists := remoteConnectors[localKey]
+
+        if !exists {
+            if resp, err := client.NewTeamConnectorMembershipCreate().TeamId(teamId).ConnectorId(localKey).Role(localValue.(string)).Do(ctx); err != nil {
+                return fmt.Errorf("%v; code: %v; message: %v", err, resp.Code, resp.Message)
+            }
+        }
+    }
+
+    return nil
 }

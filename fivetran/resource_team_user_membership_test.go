@@ -24,7 +24,7 @@ func TestResourceTeamUserMembershipE2E(t *testing.T) {
                 role = "Account Analyst"
             }
 
-            resource "fivetran_user" "testuser" {
+            resource "fivetran_user" "test_user" {
                 provider = fivetran-provider
                 role = "Account Administrator"
                 email = "john.fox@testmail.com"
@@ -38,15 +38,19 @@ func TestResourceTeamUserMembershipE2E(t *testing.T) {
                  provider = fivetran-provider
 
                  team_id = fivetran_team.testteam.id
-                 user_id = fivetran_user.testuser.id
-                 role = "Team Member"
+
+                 user {
+                    user_id = fivetran_user.test_user.id
+                    role = "Team Member"
+                 }
             }
           `,
                 Check: resource.ComposeAggregateTestCheckFunc(
                     testFivetranTeamUserMembershipResourceCreate(t, "fivetran_team_user_membership.test_team_user_membership"),
                     resource.TestCheckResourceAttrSet("fivetran_team_user_membership.test_team_user_membership", "team_id"),
-                    resource.TestCheckResourceAttrSet("fivetran_team_user_membership.test_team_user_membership", "user_id"),
-                    resource.TestCheckResourceAttr("fivetran_team_user_membership.test_team_user_membership", "role", "Team Member"),
+                    resource.TestCheckResourceAttrSet("fivetran_team_user_membership.test_team_user_membership", "user.0.user_id"),
+                    resource.TestCheckResourceAttr("fivetran_team_user_membership.test_team_user_membership", "user.0.role", "Team Member"),
+                    resource.TestCheckResourceAttr("fivetran_team_user_membership.test_team_user_membership", "user.#", "1"),
                 ),
             },
             {
@@ -58,7 +62,7 @@ func TestResourceTeamUserMembershipE2E(t *testing.T) {
                 role = "Account Analyst"
             }
 
-            resource "fivetran_user" "testuser" {
+            resource "fivetran_user" "test_user" {
                 provider = fivetran-provider
                 role = "Account Administrator"
                 email = "john.fox@testmail.com"
@@ -67,20 +71,24 @@ func TestResourceTeamUserMembershipE2E(t *testing.T) {
                 phone = "+19876543219"
                 picture = "https://yourPicturecom"
             }
-            
+
             resource "fivetran_team_user_membership" "test_team_user_membership" {
                  provider = fivetran-provider
 
                  team_id = fivetran_team.testteam.id
-                 user_id = fivetran_user.testuser.id
-                 role = "Team Manager"
+
+                 user {
+                    user_id = fivetran_user.test_user.id
+                    role = "Team Manager"
+                 }
             }
           `,
                 Check: resource.ComposeAggregateTestCheckFunc(
-                    testFivetranTeamUserMembershipResourceUpdate(t, "fivetran_team_user_membership.test_team_user_membership"),
+                    testFivetranTeamUserMembershipResourceCreate(t, "fivetran_team_user_membership.test_team_user_membership"),
                     resource.TestCheckResourceAttrSet("fivetran_team_user_membership.test_team_user_membership", "team_id"),
-                    resource.TestCheckResourceAttrSet("fivetran_team_user_membership.test_team_user_membership", "user_id"),
-                    resource.TestCheckResourceAttr("fivetran_team_user_membership.test_team_user_membership", "role", "Team Manager"),
+                    resource.TestCheckResourceAttrSet("fivetran_team_user_membership.test_team_user_membership", "user.0.user_id"),
+                    resource.TestCheckResourceAttr("fivetran_team_user_membership.test_team_user_membership", "user.0.role", "Team Manager"),
+                    resource.TestCheckResourceAttr("fivetran_team_user_membership.test_team_user_membership", "user.#", "1"),
                 ),
             },
         },
@@ -91,14 +99,18 @@ func testFivetranTeamUserMembershipResourceCreate(t *testing.T, resourceName str
     return func(s *terraform.State) error {
         rs := GetResource(t, s, resourceName)
 
-        _, err := client.NewTeamUserMembershipDetails().
-            TeamId(rs.Primary.Attributes["team_id"]).
-            UserId(rs.Primary.Attributes["user_id"]).
+        response, err := client.NewTeamUserMembershipsList().
+            TeamId(rs.Primary.ID).
             Do(context.Background())
 
         if err != nil {
             return err
         }
+
+        if response.Code == "NotFound" || len(response.Data.Items) == 0 {
+            return errors.New("Team user membership didn't created.")
+        }
+
         //todo: check response _  fields
         return nil
     }
@@ -107,35 +119,39 @@ func testFivetranTeamUserMembershipResourceCreate(t *testing.T, resourceName str
 func testFivetranTeamUserMembershipResourceUpdate(t *testing.T, resourceName string) resource.TestCheckFunc {
     return func(s *terraform.State) error {
         rs := GetResource(t, s, resourceName)
-        _, err := client.NewTeamUserMembershipDetails().
-            TeamId(rs.Primary.Attributes["team_id"]).
-            UserId(rs.Primary.Attributes["user_id"]).
+        response, err := client.NewTeamUserMembershipsList().
+            TeamId(rs.Primary.ID).
             Do(context.Background())
 
         if err != nil {
             return err
         }
-        //todo: check response _  fields
-        return nil
+
+        for _, value := range response.Data.Items {
+            if value.Role == "Team Manager" {
+                return nil
+            }
+        }
+
+        return errors.New("Team user membership " + rs.Primary.ID + " didn't updated.")
     }
 }
 
 func testFivetranTeamUserMembershipResourceDestroy(s *terraform.State) error {
     for _, rs := range s.RootModule().Resources {
-        if rs.Type != "fivetran_team_user_membership" {
+        if rs.Type != "fivetran_team" {
             continue
         }
 
-        response, err := client.NewTeamUserMembershipDetails().
-            TeamId(rs.Primary.Attributes["team_id"]).
-            UserId(rs.Primary.Attributes["user_id"]).
+        response, err := client.NewTeamUserMembershipsList().
+            TeamId(rs.Primary.ID).
             Do(context.Background())
 
         if err.Error() != "status code: 404; expected: 200" {
             return err
         }
-        if response.Code != "NotFound" && response.Code != "NotFound_Team" {
-            return errors.New("Team User memebrship " + rs.Primary.ID + " still exists.")
+        if response.Code != "NotFound_Team" || len(response.Data.Items) > 0 {
+            return errors.New("Team user membership " + rs.Primary.ID + " still exists.")
         }
 
     }

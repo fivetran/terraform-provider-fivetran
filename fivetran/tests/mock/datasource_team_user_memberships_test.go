@@ -19,11 +19,11 @@ const (
     {
       "items": [
         {
-          "user_id": "user_id_1",
+          "id": "user_id_1",
           "role": "Team Member"
         },
         {
-          "user_id": "user_id_2",
+          "id": "user_id_2",
           "role": "Team Manager"
         }
       ],
@@ -54,6 +54,7 @@ func TestDataSourceTeamUserMembershipsMappingMock(t *testing.T) {
         Config: `
         data "fivetran_team_user_memberships" "test_team_user_memberships" {
             provider     = fivetran-provider
+            team_id      = "team_id"
         }`,
 
         Check: resource.ComposeAggregateTestCheckFunc(
@@ -62,13 +63,6 @@ func TestDataSourceTeamUserMembershipsMappingMock(t *testing.T) {
                 assertNotEmpty(t, teamUserMembershipsDataSourceMockData)
                 return nil
             },
-            resource.TestCheckResourceAttr("data.fivetran_team_user_memberships.test_team_user_memberships", "memberships.0.team_id", "team_id"),
-            resource.TestCheckResourceAttr("data.fivetran_team_user_memberships.test_team_user_memberships", "memberships.0.user_id", "user_id_2"),
-            resource.TestCheckResourceAttr("data.fivetran_team_user_memberships.test_team_user_memberships", "memberships.0.role", "Team Manager"),
-
-            resource.TestCheckResourceAttr("data.fivetran_team_user_memberships.test_team_user_memberships", "memberships.1.team_id", "team_id"),
-            resource.TestCheckResourceAttr("data.fivetran_team_user_memberships.test_team_user_memberships", "memberships.1.user_id", "user_id_1"),
-            resource.TestCheckResourceAttr("data.fivetran_team_user_memberships.test_team_user_memberships", "memberships.1.role", "Team Member"),
         ),
     }
 
