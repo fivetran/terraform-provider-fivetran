@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_external_logging"
 
 # Resource: fivetran_external_logging
 
-This resource allows you to create, update, and delete log services.
+This resource allows you to create, update, and delete logging service.
 
 ## Example Usage
 
@@ -27,35 +27,48 @@ resource "fivetran_external_logging" "extlog" {
 
 ### Required
 
-- `id` (String) The unique identifier for the log service within the Fivetran system
-- `group_id` (String) The unique identifier for the log service within the Fivetran system
-- `service` (String) The name for the log service type within the Fivetran system
-- `enable` (Boolean) The boolean value specifying whether the log service is enabled
-- `run_setup_tests` (Boolean) Specifies whether the setup tests should be run automatically. The default value is TRUE
+- `config` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--config))
+- `group_id` (String) The unique identifier for the log service within the Fivetran system.
+- `service` (String) The name for the log service type within the Fivetran system. We support the following log services: azure_monitor_log, cloudwatch, datadog_log, new_relic_log, splunkLog, stackdriver.
+
+### Optional
+
+- `enabled` (Boolean) The boolean value specifying whether the log service is enabled.
+- `run_setup_tests` (Boolean) Specifies whether the setup tests should be run automatically. The default value is TRUE.
+
+### Read-Only
+
+- `id` (String) The unique identifier for the log service within the Fivetran system.
 
 <a id="nestedblock--config"></a>
 ### Nested Schema for `config`
 
 Optional:
 
-- `workspace_id` (String) Workspace ID
-- `primary_key` (String, Sensitive) Primary Key
-- `log_group_name` (String) Log Group Name
-- `role_arn` (String) Role Arn
-- `external_id` (String) External Id
-- `region` (String) Region
 - `api_key` (String, Sensitive) API Key
-- `sub_domain` (String) Sub Domain
-- `host` (String) Server name
-- `hostname` (String) Server name
-- `port` (Number) Server port number
 - `channel` (String) Channel
 - `enable_ssl` (Boolean) Enable SSL
-- `token` (String) Token
+- `external_id` (String) external_id
+- `host` (String) Server name
+- `hostname` (String) Server name
+- `log_group_name` (String) Log Group Name
+- `port` (Number) Port
+- `primary_key` (String, Sensitive) Primary Key
+- `region` (String) Region
+- `role_arn` (String) Role Arn
+- `sub_domain` (String) Sub Domain
+- `token` (String, Sensitive) Token
+- `workspace_id` (String) Workspace ID
+
+## Setup tests
+
+The `run_setup_tests` field doesn't have upstream value, it only defines local resource behavoir. This means that when you update only the `run_setup_tests` value (from `false` to `true`, for example) it won't cause any upstream actions. The value will be just saved in terraform state and then used on effective field updates.
+
+The default value is `false` - this means that no setup tests will be performed during create/update. To perform setup tests, you should set value to `true`.
 
 ## Import
 
-1. To import an existing `fivetran_external_logging` resource into your Terraform state, you need to get **Destination Group ID** on the destination page in your Fivetran dashboard.
+1. To import an existing `fivetran_external_logging` resource into your Terraform state, you need to get **External Logging Group ID** on the external logging page in your Fivetran dashboard.
 To retrieve existing groups, use the [fivetran_groups data source](/docs/data-sources/groups).
 2. Define an empty resource in your `.tf` configuration:
 
@@ -68,7 +81,7 @@ resource "fivetran_external_logging" "my_imported_external_logging" {
 3. Run the `terraform import` command with the following parameters:
 
 ```
-terraform import fivetran_external_logging.my_imported_external_logging {your Destination Group ID}
+terraform import fivetran_external_logging.my_imported_external_logging {your External Logging Group ID}
 ```
 
 4. Use the `terraform state show` command to get the values from the state:
@@ -78,4 +91,4 @@ terraform state show 'fivetran_external_logging.my_imported_external_logging'
 ```
 5. Copy the values and paste them to your `.tf` configuration.
 
--> The `config` object in the state contains all properties defined in the schema. You need to remove properties from the `config` that are not related to log service. See the [Fivetran REST API documentation](https://fivetran.com/docs/rest-api/log-service-management#logservicesetupconfigurations) for reference to find the properties you need to keep in the `config` section.
+-> The `config` object in the state contains all properties defined in the schema. You need to remove properties from the `config` that are not related to destinations. See the [Fivetran REST API documentation](https://fivetran.com/docs/rest-api/log-service-management#logservicesetupconfigurations) for reference to find the properties you need to keep in the `config` section.

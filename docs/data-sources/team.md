@@ -4,7 +4,7 @@ page_title: "Data Source: fivetran_team"
 
 # Data Source: fivetran_team
 
-This data source returns a webhook object.
+This data source returns a team object.
 
 ## Example Usage
 
@@ -21,9 +21,8 @@ data "fivetran_team" "team" {
 
 - `id` (String) The unique identifier for the team within your account.
 
-
 ### Read-Only
 
-- `name` (String) The name of the team within your account.
 - `description` (String) The description of the team within your account.
+- `name` (String) The name of the team within your account.
 - `role` (String) The account role of the team.

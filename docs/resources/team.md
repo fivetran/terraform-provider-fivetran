@@ -23,9 +23,13 @@ resource "fivetran_team" "test_team" {
 
 ### Required
 
-- `name` (String) The name of the team within your account.
 - `description` (String) The description of the team within your account.
+- `name` (String) The name of the team within your account.
 - `role` (String) The account role of the team.
+
+### Read-Only
+
+- `id` (String) The unique identifier for the team within your account.
 
 ## Import
 

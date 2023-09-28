@@ -4,7 +4,7 @@ page_title: "Data Source: fivetran_roles"
 
 # Data Source: fivetran_roles
 
-This data source returns a list of roles within your Fivetran account.
+This data source returns a list of all predefined and custom roles within your Fivetran account.
 
 ## Example Usage
 
@@ -26,7 +26,7 @@ data "fivetran_roles" "roles" {
 
 Read-Only:
 
-- `name` (String) The role name
 - `description` (String) The role description
-- `is_custom` (Boolean) Defines whether the role is standard or custom
+- `is_custom` (Boolean) TypeBool
+- `name` (String) The role name
 - `scope` (Set of String) Defines the list of resources the role manages. Supported values: ACCOUNT, DESTINATION, CONNECTOR, and TEAM

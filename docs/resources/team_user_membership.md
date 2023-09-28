@@ -13,8 +13,16 @@ resource "fivetran_team_user_membership" "test_team_user_membership" {
     provider = fivetran-provider
 
     team_id = "test_team"
-    user_id = "test_user"
-    role = "Connector Administrator"
+    
+    user {
+        user_id = "test_user"
+        role = "Connector Administrator"
+    }
+
+    user {
+        user_id = "test_user"
+        role = "Connector Administrator"
+    }
 }
 ```
 
@@ -24,8 +32,22 @@ resource "fivetran_team_user_membership" "test_team_user_membership" {
 ### Required
 
 - `team_id` (String) The unique identifier for the team within your account.
-- `user_id` (String) The Connector unique identifier.
-- `role` (String) The team's role that links the team and the Connector.
+
+### Optional
+
+- `user` (Block Set) (see [below for nested schema](#nestedblock--user))
+
+### Read-Only
+
+- `id` (String) The unique identifier for resource.
+
+<a id="nestedblock--user"></a>
+### Nested Schema for `user`
+
+Required:
+
+- `role` (String) The team's role that links the team and the user
+- `user_id` (String) The user unique identifier
 
 ## Import
 

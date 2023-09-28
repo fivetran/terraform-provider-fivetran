@@ -13,8 +13,18 @@ resource "fivetran_team_group_membership" "test_team_group_membership" {
     provider = fivetran-provider
 
     team_id = "test_team"
-    group_id = "test_group"
-    role = "Destination Administrator"
+
+    group {
+        connector_id = "test_connector"
+        group_id = "test_group"
+        role = "Destination Administrator"
+    }
+
+    group {
+        connector_id = "test_connector"
+        group_id = "test_group"
+        role = "Destination Administrator"
+    }
 }
 ```
 
@@ -24,8 +34,26 @@ resource "fivetran_team_group_membership" "test_team_group_membership" {
 ### Required
 
 - `team_id` (String) The unique identifier for the team within your account.
-- `group_id` (String) The Connector unique identifier.
-- `role` (String) The team's role that links the team and the Connector.
+
+### Optional
+
+- `group` (Block Set) (see [below for nested schema](#nestedblock--group))
+
+### Read-Only
+
+- `id` (String) The unique identifier for resource.
+
+<a id="nestedblock--group"></a>
+### Nested Schema for `group`
+
+Required:
+
+- `group_id` (String) The group unique identifier
+- `role` (String) The team's role that links the team and the group
+
+Read-Only:
+
+- `created_at` (String) The date and time the membership was created
 
 ## Import
 
