@@ -175,7 +175,7 @@ func testFivetranTeamConnectorMembershipResourceDestroy(s *terraform.State) erro
         if err.Error() != "status code: 404; expected: 200" {
             return err
         }
-        if response.Code != "NotFound_Tea" || len(response.Data.Items) > 0 {
+        if response.Code != "NotFound_Team" || len(response.Data.Items) > 0 {
             return errors.New("Team connector membership " + rs.Primary.ID + " still exists.")
         }
 
