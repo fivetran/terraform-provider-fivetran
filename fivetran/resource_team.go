@@ -36,7 +36,7 @@ func getTeamSchema(datasource bool) map[string]*schema.Schema {
 		},
 		"description": {
 			Type:        schema.TypeString,
-			Required:    !datasource,
+			Optional:    !datasource,
 			Computed:    datasource,
 			Description: "The description of the team within your account.",
 		},
