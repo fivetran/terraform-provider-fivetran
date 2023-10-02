@@ -157,12 +157,12 @@ func resourceTeamConnectorMembershipSyncConnectors(client *fivetran.Client, conn
         return fmt.Errorf("read error: dataSourceTeamConnectorMembershipsGet %v; code: %v", err, responseConnectors.Code)
     }
 
-    localConnectors := make(map[string]interface{})
+    localConnectors := make(map[string]string)
     for _, v := range connectors {
         localConnectors[v.(map[string]interface{})["connector_id"].(string)] = v.(map[string]interface{})["role"].(string)
     }
 
-    remoteConnectors := make(map[string]interface{})
+    remoteConnectors := make(map[string]string)
     for _, v := range responseConnectors.Data.Items {
         remoteConnectors[v.ConnectorId] = v.Role
     }

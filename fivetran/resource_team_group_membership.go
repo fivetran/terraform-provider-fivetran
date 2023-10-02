@@ -157,12 +157,12 @@ func resourceTeamGroupMembershipSyncGroups(client *fivetran.Client, groups []int
         return fmt.Errorf("read error: dataSourceTeamGroupMembershipsGet %v; code: %v", err, responseGroups.Code)
     }
 
-    localGroups := make(map[string]interface{})
+    localGroups := make(map[string]string)
     for _, v := range groups {
         localGroups[v.(map[string]interface{})["group_id"].(string)] = v.(map[string]interface{})["role"].(string)
     }
 
-    remoteGroups := make(map[string]interface{})
+    remoteGroups := make(map[string]string)
     for _, v := range responseGroups.Data.Items {
         remoteGroups[v.GroupId] = v.Role
     }
@@ -174,7 +174,7 @@ func resourceTeamGroupMembershipSyncGroups(client *fivetran.Client, groups []int
             if resp, err := client.NewTeamGroupMembershipDelete().TeamId(teamId).GroupId(remoteKey).Do(ctx); err != nil {
                 return fmt.Errorf("%v; code: %v; message: %v", err, resp.Code, resp.Message)
             }
-        } else if role.(string) != remoteValue {
+        } else if role != remoteValue {
             if resp, err := client.NewTeamGroupMembershipModify().TeamId(teamId).GroupId(remoteKey).Role(role.(string)).Do(ctx); err != nil {
                 return fmt.Errorf("%v; code: %v; message: %v", err, resp.Code, resp.Message)
             }
