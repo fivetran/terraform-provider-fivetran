@@ -1,0 +1,17 @@
+---
+page_title: "Data Source: fivetran_team_user_memberships"
+---
+
+# Data Source: fivetran_team_user_memberships
+
+This data source returns a list of user memberships within team object.
+
+## Example Usage
+
+```hcl
+data "fivetran_team_user_memberships" "team_user_memberships" {
+    team_id = "team_id"
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}
