@@ -175,7 +175,7 @@ func resourceTeamGroupMembershipSyncGroups(client *fivetran.Client, groups []int
                 return fmt.Errorf("%v; code: %v; message: %v", err, resp.Code, resp.Message)
             }
         } else if role != remoteValue {
-            if resp, err := client.NewTeamGroupMembershipModify().TeamId(teamId).GroupId(remoteKey).Role(role.(string)).Do(ctx); err != nil {
+            if resp, err := client.NewTeamGroupMembershipModify().TeamId(teamId).GroupId(remoteKey).Role(role).Do(ctx); err != nil {
                 return fmt.Errorf("%v; code: %v; message: %v", err, resp.Code, resp.Message)
             }
         }
@@ -186,7 +186,7 @@ func resourceTeamGroupMembershipSyncGroups(client *fivetran.Client, groups []int
         _, exists := remoteGroups[localKey]
 
         if !exists {
-            if resp, err := client.NewTeamGroupMembershipCreate().TeamId(teamId).GroupId(localKey).Role(localValue.(string)).Do(ctx); err != nil {
+            if resp, err := client.NewTeamGroupMembershipCreate().TeamId(teamId).GroupId(localKey).Role(localValue).Do(ctx); err != nil {
                 return fmt.Errorf("%v; code: %v; message: %v", err, resp.Code, resp.Message)
             }
         }

@@ -174,8 +174,8 @@ func resourceTeamConnectorMembershipSyncConnectors(client *fivetran.Client, conn
             if resp, err := client.NewTeamConnectorMembershipDelete().TeamId(teamId).ConnectorId(remoteKey).Do(ctx); err != nil {
                 return fmt.Errorf("%v; code: %v; message: %v", err, resp.Code, resp.Message)
             }
-        } else if role.(string) != remoteValue {
-            if resp, err := client.NewTeamConnectorMembershipModify().TeamId(teamId).ConnectorId(remoteKey).Role(role.(string)).Do(ctx); err != nil {
+        } else if role != remoteValue {
+            if resp, err := client.NewTeamConnectorMembershipModify().TeamId(teamId).ConnectorId(remoteKey).Role(role).Do(ctx); err != nil {
                 return fmt.Errorf("%v; code: %v; message: %v", err, resp.Code, resp.Message)
             }
         }
@@ -186,7 +186,7 @@ func resourceTeamConnectorMembershipSyncConnectors(client *fivetran.Client, conn
         _, exists := remoteConnectors[localKey]
 
         if !exists {
-            if resp, err := client.NewTeamConnectorMembershipCreate().TeamId(teamId).ConnectorId(localKey).Role(localValue.(string)).Do(ctx); err != nil {
+            if resp, err := client.NewTeamConnectorMembershipCreate().TeamId(teamId).ConnectorId(localKey).Role(localValue).Do(ctx); err != nil {
                 return fmt.Errorf("%v; code: %v; message: %v", err, resp.Code, resp.Message)
             }
         }
