@@ -300,7 +300,7 @@ func resourceDbtProjectRead(ctx context.Context, d *schema.ResourceData, m inter
 
 	mapStringInterface := make(map[string]interface{})
 	mapAddStr(mapStringInterface, "id", resp.Data.ID)
-	mapAddStr(mapStringInterface, "group_id", resp.Data.GroupID)
+	mapAddStr(mapStringInterface, "group_id", resp.Data.GroupId)
 	mapAddStr(mapStringInterface, "default_schema", resp.Data.DefaultSchema)
 	mapAddStr(mapStringInterface, "dbt_version", resp.Data.DbtVersion)
 	mapAddStr(mapStringInterface, "target_name", resp.Data.TargetName)

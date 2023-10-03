@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/go-fivetran/connectors"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -270,7 +271,7 @@ func resourceSchemaConfigUpdate(ctx context.Context, d *schema.ResourceData, m i
 	connectorID := d.Get(ID).(string)
 	client := m.(*fivetran.Client)
 	var schemaChangeHandling = d.Get(SCHEMA_CHANGE_HANDLING).(string)
-	var upstreamSchema *fivetran.ConnectorSchemaDetailsResponse
+	var upstreamSchema *connectors.ConnectorSchemaDetailsResponse
 
 	ctx, cancel := setContextTimeout(ctx, d.Timeout(schema.TimeoutUpdate))
 	defer cancel()
@@ -315,7 +316,7 @@ func applyLocalSchemaConfig(
 	connectorID, sch, errorMessage string,
 	ctx context.Context,
 	client *fivetran.Client,
-	upstreamSchemaResponse *fivetran.ConnectorSchemaDetailsResponse) (diag.Diagnostics, bool) {
+	upstreamSchemaResponse *connectors.ConnectorSchemaDetailsResponse) (diag.Diagnostics, bool) {
 	var diags diag.Diagnostics
 	schemaResponse := upstreamSchemaResponse
 	if schemaResponse == nil {
@@ -424,7 +425,7 @@ func includeLocalConfiguredColumns(upstream, local map[string]interface{}) (map[
 	return result, diags
 }
 
-func createUpdateSchemaConfigRequest(schemaConfig map[string]interface{}) (*fivetran.ConnectorSchemaConfigSchema, diag.Diagnostics) {
+func createUpdateSchemaConfigRequest(schemaConfig map[string]interface{}) (*connectors.ConnectorSchemaConfigSchema, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	result := fivetran.NewConnectorSchemaConfigSchema()
 	if enabled, ok := schemaConfig[ENABLED].(string); ok && enabled != "" {
@@ -442,7 +443,7 @@ func createUpdateSchemaConfigRequest(schemaConfig map[string]interface{}) (*five
 	return result, diags
 }
 
-func createUpdateTableConfigRequest(tableConfig map[string]interface{}) (*fivetran.ConnectorSchemaConfigTable, diag.Diagnostics) {
+func createUpdateTableConfigRequest(tableConfig map[string]interface{}) (*connectors.ConnectorSchemaConfigTable, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	result := fivetran.NewConnectorSchemaConfigTable()
 	if enabled, ok := tableConfig[ENABLED].(string); ok && enabled != "" && !isLocked(tableConfig) {
@@ -464,7 +465,7 @@ func createUpdateTableConfigRequest(tableConfig map[string]interface{}) (*fivetr
 	return result, diags
 }
 
-func createUpdateColumnConfigRequest(columnConfig map[string]interface{}) (*fivetran.ConnectorSchemaConfigColumn, diag.Diagnostics) {
+func createUpdateColumnConfigRequest(columnConfig map[string]interface{}) (*connectors.ConnectorSchemaConfigColumn, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	result := fivetran.NewConnectorSchemaConfigColumn()
 	if enabled, ok := columnConfig[ENABLED].(string); ok && enabled != "" && !isLocked(columnConfig) {
@@ -641,7 +642,7 @@ func getUpstreamConfigResponse(
 	client *fivetran.Client,
 	ctx context.Context,
 	connectorID,
-	errorMessage string) (*fivetran.ConnectorSchemaDetailsResponse, diag.Diagnostics) {
+	errorMessage string) (*connectors.ConnectorSchemaDetailsResponse, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	schemaResponse, err := client.NewConnectorSchemaDetails().ConnectorID(connectorID).Do(ctx)
 	if err != nil {
@@ -923,7 +924,7 @@ func removeExcludedColumns(t interface{}) interface{} {
 }
 
 // Function maps response without filtering by SCH (Schema Change Handling) policy
-func readUpstreamConfig(response *fivetran.ConnectorSchemaDetailsResponse) map[string]interface{} {
+func readUpstreamConfig(response *connectors.ConnectorSchemaDetailsResponse) map[string]interface{} {
 	result := make(map[string]interface{})
 	result[SCHEMA_CHANGE_HANDLING] = response.Data.SchemaChangeHandling
 	schemas := make(map[string]interface{})
@@ -935,7 +936,7 @@ func readUpstreamConfig(response *fivetran.ConnectorSchemaDetailsResponse) map[s
 	return result
 }
 
-func readUpstreamSchema(schemaResponse *fivetran.ConnectorSchemaConfigSchemaResponse) map[string]interface{} {
+func readUpstreamSchema(schemaResponse *connectors.ConnectorSchemaConfigSchemaResponse) map[string]interface{} {
 	result := make(map[string]interface{})
 	result[ENABLED] = boolPointerToStr(schemaResponse.Enabled)
 	tables := make(map[string]interface{})
@@ -947,7 +948,7 @@ func readUpstreamSchema(schemaResponse *fivetran.ConnectorSchemaConfigSchemaResp
 	return result
 }
 
-func readUpstreamTable(tableResponse *fivetran.ConnectorSchemaConfigTableResponse) map[string]interface{} {
+func readUpstreamTable(tableResponse *connectors.ConnectorSchemaConfigTableResponse) map[string]interface{} {
 	result := make(map[string]interface{})
 	columns := make(map[string]interface{})
 	for cname, column := range tableResponse.Columns {
@@ -963,7 +964,7 @@ func readUpstreamTable(tableResponse *fivetran.ConnectorSchemaConfigTableRespons
 	return result
 }
 
-func readUpstreamColumn(columnResponse *fivetran.ConnectorSchemaConfigColumnResponse) map[string]interface{} {
+func readUpstreamColumn(columnResponse *connectors.ConnectorSchemaConfigColumnResponse) map[string]interface{} {
 	result := make(map[string]interface{})
 	result[ENABLED] = boolPointerToStr(columnResponse.Enabled)
 	if columnResponse.Hashed != nil {

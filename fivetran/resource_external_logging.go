@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/fivetran/go-fivetran"
+	externallogging "github.com/fivetran/go-fivetran/external_logging"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -16,46 +17,46 @@ func resourceExternalLogging() *schema.Resource {
 		UpdateContext: resourceExternalLoggingUpdate,
 		DeleteContext: resourceExternalLoggingDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		Schema: 	   getExternalLoggingSchema(false),
+		Schema:        getExternalLoggingSchema(false),
 	}
 }
 
 func getExternalLoggingSchema(datasource bool) map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-			"id": {
-				Type:        schema.TypeString,
-				Computed:    !datasource,
-                Required:    datasource,
-				Description: "The unique identifier for the log service within the Fivetran system.",
-			},
-			"group_id": {
-				Type:        schema.TypeString,
-				Computed:    datasource,
-				Required:    !datasource,
-				ForceNew:    !datasource,
-				Description: "The unique identifier for the log service within the Fivetran system.",
-			},
-			"service": {
-				Type:        schema.TypeString,
-				Required:    !datasource,
-				Computed:    datasource,
-				ForceNew:    true,
-				Description: "The name for the log service type within the Fivetran system. We support the following log services: azure_monitor_log, cloudwatch, datadog_log, new_relic_log, splunkLog, stackdriver.",
-			},
-			"enabled": {
-				Type:        schema.TypeBool,
-				Optional:    !datasource,
-				Computed:    datasource,
-				Description: "The boolean value specifying whether the log service is enabled.",
-			},
-			"run_setup_tests": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Default:     false,
-				Description: "Specifies whether the setup tests should be run automatically. The default value is TRUE.",
-			},
-			"config": resourceExternalLoggingSchemaConfig(datasource),
-		}
+		"id": {
+			Type:        schema.TypeString,
+			Computed:    !datasource,
+			Required:    datasource,
+			Description: "The unique identifier for the log service within the Fivetran system.",
+		},
+		"group_id": {
+			Type:        schema.TypeString,
+			Computed:    datasource,
+			Required:    !datasource,
+			ForceNew:    !datasource,
+			Description: "The unique identifier for the log service within the Fivetran system.",
+		},
+		"service": {
+			Type:        schema.TypeString,
+			Required:    !datasource,
+			Computed:    datasource,
+			ForceNew:    true,
+			Description: "The name for the log service type within the Fivetran system. We support the following log services: azure_monitor_log, cloudwatch, datadog_log, new_relic_log, splunkLog, stackdriver.",
+		},
+		"enabled": {
+			Type:        schema.TypeBool,
+			Optional:    !datasource,
+			Computed:    datasource,
+			Description: "The boolean value specifying whether the log service is enabled.",
+		},
+		"run_setup_tests": {
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Default:     false,
+			Description: "Specifies whether the setup tests should be run automatically. The default value is TRUE.",
+		},
+		"config": resourceExternalLoggingSchemaConfig(datasource),
+	}
 }
 
 func resourceExternalLoggingSchemaConfig(datasource bool) *schema.Schema {
@@ -65,10 +66,10 @@ func resourceExternalLoggingSchemaConfig(datasource bool) *schema.Schema {
 	}
 
 	return &schema.Schema{
-		Type: schema.TypeList, 
+		Type:     schema.TypeList,
 		Required: !datasource,
 		Optional: datasource,
-        Computed: datasource,
+		Computed: datasource,
 		MaxItems: maxItems,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
@@ -285,8 +286,7 @@ func resourceExternalLoggingCreateConfig(d *schema.ResourceData) map[string]inte
 	return c
 }
 
-
-func resourceExternalLoggingReadConfig(resp *fivetran.ExternalLoggingDetailsResponse, currentConfig []interface{}) ([]interface{}, error) {
+func resourceExternalLoggingReadConfig(resp *externallogging.ExternalLoggingResponse, currentConfig []interface{}) ([]interface{}, error) {
 	var config []interface{}
 
 	c := make(map[string]interface{})
@@ -301,7 +301,7 @@ func resourceExternalLoggingReadConfig(resp *fivetran.ExternalLoggingDetailsResp
 	c["hostname"] = resp.Data.Config.Hostname
 	c["enable_ssl"] = resp.Data.Config.EnableSsl
 	c["channel"] = resp.Data.Config.Channel
-			
+
 	if len(currentConfig) > 0 {
 		// The REST API sends the password field masked. We use the state stored password here if possible.
 		currentConfigMap := currentConfig[0].(map[string]interface{})
@@ -310,8 +310,8 @@ func resourceExternalLoggingReadConfig(resp *fivetran.ExternalLoggingDetailsResp
 		c["token"] = currentConfigMap["token"].(string)
 	} else {
 		c["primary_key"] = resp.Data.Config.PrimaryKey
-    	c["api_key"] = resp.Data.Config.ApiKey
-    	c["token"] = resp.Data.Config.Token
+		c["api_key"] = resp.Data.Config.ApiKey
+		c["token"] = resp.Data.Config.Token
 	}
 
 	config = append(config, c)

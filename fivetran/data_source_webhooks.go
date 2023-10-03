@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/go-fivetran/webhooks"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -46,7 +47,7 @@ func dataSourceWebhooksRead(ctx context.Context, d *schema.ResourceData, m inter
 
 // dataSourceWebhooksFlattenWebhooks receives a *fivetran.WebhookListResponse and returns a []interface{}
 // containing the data type accepted by the "webhooks" set.
-func dataSourceWebhooksFlattenWebhooks(resp *fivetran.WebhookListResponse) []interface{} {
+func dataSourceWebhooksFlattenWebhooks(resp *webhooks.WebhookListResponse) []interface{} {
 	if resp.Data.Items == nil {
 		return make([]interface{}, 0)
 	}
@@ -71,13 +72,13 @@ func dataSourceWebhooksFlattenWebhooks(resp *fivetran.WebhookListResponse) []int
 }
 
 // dataSourceWebhooksGetWebhooks gets the webhooks list of a group. It handles limits and cursors.
-func dataSourceWebhooksGetWebhooks(client *fivetran.Client, ctx context.Context) (fivetran.WebhookListResponse, error) {
-	var resp fivetran.WebhookListResponse
+func dataSourceWebhooksGetWebhooks(client *fivetran.Client, ctx context.Context) (webhooks.WebhookListResponse, error) {
+	var resp webhooks.WebhookListResponse
 	var respNextCursor string
 
 	for {
 		var err error
-		var respInner fivetran.WebhookListResponse
+		var respInner webhooks.WebhookListResponse
 		svc := client.NewWebhookList()
 		if respNextCursor == "" {
 			respInner, err = svc.Limit(limit).Do(ctx)
@@ -86,7 +87,7 @@ func dataSourceWebhooksGetWebhooks(client *fivetran.Client, ctx context.Context)
 			respInner, err = svc.Limit(limit).Cursor(respNextCursor).Do(ctx)
 		}
 		if err != nil {
-			return fivetran.WebhookListResponse{}, err
+			return webhooks.WebhookListResponse{}, err
 		}
 
 		resp.Data.Items = append(resp.Data.Items, respInner.Data.Items...)
