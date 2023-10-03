@@ -12,8 +12,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-type FieldValueType int64
-
 /*
 The following directive will do the following:
 - process fivetran/open-api-spec.json file, fetch connector config fields and descriptions
