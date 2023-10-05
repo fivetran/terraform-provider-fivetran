@@ -41,7 +41,7 @@ func resourceTeamConnectorMembershipBaseConnectors(datasource bool) *schema.Sche
 		Type:     schema.TypeSet,
 		Optional: true,
 		Set: func(v interface{}) int {
-			return stringInt32Hash(v.(map[string]interface{})["connector_id"].(string))
+			return stringInt32Hash(v.(map[string]interface{})["connector_id"].(string) + v.(map[string]interface{})["role"].(string))
 		},
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{

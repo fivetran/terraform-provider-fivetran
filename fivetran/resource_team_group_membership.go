@@ -41,7 +41,7 @@ func resourceTeamGroupMembershipBaseGroups(datasource bool) *schema.Schema {
 		Type:     schema.TypeSet,
 		Optional: true,
 		Set: func(v interface{}) int {
-			return stringInt32Hash(v.(map[string]interface{})["group_id"].(string))
+			return stringInt32Hash(v.(map[string]interface{})["group_id"].(string) + v.(map[string]interface{})["role"].(string))
 		},
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
