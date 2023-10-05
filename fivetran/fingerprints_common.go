@@ -38,7 +38,7 @@ func resourceFingerprints(resourceType ResourceType) *schema.Resource {
 		},
 		ReadContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 			var diags diag.Diagnostics
-			err := resourceFingerprintsRead(ctx, d, m, resourceType)
+			err := resourceFingerprintsRead(ctx, d, m, resourceType, "fingerprint")
 			if err != nil {
 				return newDiagAppend(diags, diag.Error, "read error", err.Error())
 			}
@@ -69,7 +69,7 @@ func dataSourceFingerprints(resourceType ResourceType) *schema.Resource {
 	return &schema.Resource{
 		ReadContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 			var diags diag.Diagnostics
-			err := resourceFingerprintsRead(ctx, d, m, resourceType)
+			err := resourceFingerprintsRead(ctx, d, m, resourceType, "fingerprints")
 			if err != nil {
 				return newDiagAppend(diags, diag.Error, "read error", err.Error())
 			}
@@ -80,6 +80,10 @@ func dataSourceFingerprints(resourceType ResourceType) *schema.Resource {
 }
 
 func resourceFingerprintsSchema(datasource bool, resourceType ResourceType) map[string]*schema.Schema {
+	itemsKey := "fingerprint"
+	if datasource {
+		itemsKey = "fingerprints"
+	}
 	result := map[string]*schema.Schema{
 		"id": {
 			Type:        schema.TypeString,
@@ -94,7 +98,7 @@ func resourceFingerprintsSchema(datasource bool, resourceType ResourceType) map[
 			ForceNew:    !datasource,
 			Description: "The unique identifier for the target " + resourceType.String() + " within the Fivetran system.",
 		},
-		"fingerprint": fingerprintSchema(datasource),
+		itemsKey: fingerprintSchema(datasource),
 	}
 	return result
 }
@@ -144,10 +148,10 @@ func resourceFingerprintsCreate(ctx context.Context, d *schema.ResourceData, m i
 		return err
 	}
 	d.SetId(resourceId)
-	return resourceFingerprintsRead(ctx, d, m, resourceType)
+	return resourceFingerprintsRead(ctx, d, m, resourceType, "fingerprint")
 }
 
-func resourceFingerprintsRead(ctx context.Context, d *schema.ResourceData, m interface{}, resourceType ResourceType) error {
+func resourceFingerprintsRead(ctx context.Context, d *schema.ResourceData, m interface{}, resourceType ResourceType, itemsField string) error {
 	id := d.Get("id").(string)
 	response, err := fetchFingerprints(ctx, m.(*fivetran.Client), id, resourceType)
 	if err != nil {
@@ -155,28 +159,29 @@ func resourceFingerprintsRead(ctx context.Context, d *schema.ResourceData, m int
 	}
 	msi := make(map[string]interface{})
 	msi[resourceType.String()+"_id"] = id
-	msi["fingerprint"] = flattenFingerprints(response)
+	msi[itemsField] = flattenFingerprints(response)
 	for k, v := range msi {
 		if err := d.Set(k, v); err != nil {
 			return err
 		}
 	}
+	d.SetId(id)
 	return nil
 }
 
 func resourceFingerprintsUpdate(ctx context.Context, d *schema.ResourceData, m interface{}, resourceType ResourceType) error {
 	client := m.(*fivetran.Client)
-	connectorId := d.Get("connector_id").(string)
+	id := d.Get(resourceType.String() + "_id").(string)
 	if d.HasChange("fingerprint") {
 		// Sync fingerprints
-		err := syncFingerprints(ctx, client, d.Get("fingerprint").(*schema.Set).List(), connectorId,
+		err := syncFingerprints(ctx, client, d.Get("fingerprint").(*schema.Set).List(), id,
 			resourceType,
 		)
 		if err != nil {
 			return err
 		}
 	}
-	return resourceFingerprintsRead(ctx, d, m, Connector)
+	return resourceFingerprintsRead(ctx, d, m, resourceType, "fingerprint")
 }
 
 func resourceFingerprintsDelete(ctx context.Context, d *schema.ResourceData, m interface{}, resourceType ResourceType) error {
@@ -193,7 +198,7 @@ func fetchFingerprints(ctx context.Context, client *fivetran.Client, id string, 
 	result, err := getFingerprints(ctx, client, id, "", resourceType)
 	cursor := result.Data.NextCursor
 	for err == nil && cursor != "" {
-		if innerResult, err := getFingerprints(ctx, client, id, "", resourceType); err == nil {
+		if innerResult, err := getFingerprints(ctx, client, id, cursor, resourceType); err == nil {
 			cursor = innerResult.Data.NextCursor
 			result.Data.Items = append(result.Data.Items, innerResult.Data.Items...)
 		}
@@ -325,7 +330,7 @@ func revokeFingerprint(ctx context.Context, client *fivetran.Client, id, hash st
 // Connectors
 func getConnectorFingerprintsFunction(ctx context.Context, client *fivetran.Client, id, cursor string) (fingerprints.FingerprintsListResponse, error) {
 	svc := client.NewConnectorFingerprintsList().ConnectorID(id)
-	if cursor == "" {
+	if cursor != "" {
 		svc.Cursor(cursor)
 	}
 	return svc.Do(ctx)
@@ -349,7 +354,7 @@ func revokeConnectorFingerprintFunc(ctx context.Context, client *fivetran.Client
 // Destinations
 func getDestinationFingerprintsFunction(ctx context.Context, client *fivetran.Client, id, cursor string) (fingerprints.FingerprintsListResponse, error) {
 	svc := client.NewDestinationFingerprintsList().DestinationID(id)
-	if cursor == "" {
+	if cursor != "" {
 		svc.Cursor(cursor)
 	}
 	return svc.Do(ctx)

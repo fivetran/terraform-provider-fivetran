@@ -24,10 +24,10 @@ data "fivetran_destination_fingerprints" "destination_fingerprints" {
 ### Read-Only
 
 - `destination_id` (String) The unique identifier for the target destination within the Fivetran system.
-- `fingerprint` (Block Set) (see [below for nested schema](#nestedblock--fingerprint))
+- `fingerprints` (Block Set) (see [below for nested schema](#nestedblock--fingerprints))
 
-<a id="nestedblock--fingerprint"></a>
-### Nested Schema for `fingerprint`
+<a id="nestedblock--fingerprints"></a>
+### Nested Schema for `fingerprints`
 
 Read-Only:
 

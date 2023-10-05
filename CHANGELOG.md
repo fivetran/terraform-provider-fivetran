@@ -5,9 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.0...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.1...HEAD)
+
+## [1.1.1](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.0...v1.1.1)
 
 ## Added
+- New resource `fivetran_connector_certificates` that allows to manage the list of certificates approved for connector.
+- New resource `fivetran_connector_fingerprints` that allows to manage the list of SSH fingerprints approved for connector.
+- New resource `fivetran_destination_certificates` that allows to manage the list of certificates approved for destination.
+- New resource `fivetran_destination_fingerprints` that allows to manage the list of SSH fingerprints approved for destination.
+- New data source `fivetran_connector_certificates` that allows to retrieve the list of certificates approved for connector.
+- New data source `fivetran_connector_fingerprints` that allows to retrieve the list of SSH fingerprints approved for connector.
+- New data source `fivetran_destination_certificates` that allows to retrieve the list of certificates approved for destination.
+- New data source `fivetran_destination_fingerprints` that allows to retrieve the list of SSH fingerprints approved for destination.
 - New resource `fivetran_team` that allows to manage Teams.
 - New resource `fivetran_team_connector_membership` that allows to manage Team Management Connector memberships.
 - New resource `fivetran_team_group_membership` that allows to manage Team Management Group memberships.

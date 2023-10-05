@@ -15,7 +15,7 @@ func dataSourceCertificates(resourceType ResourceType) *schema.Resource {
 	return &schema.Resource{
 		ReadContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 			var diags diag.Diagnostics
-			err := resourceCertificatesRead(ctx, d, m, resourceType)
+			err := resourceCertificatesRead(ctx, d, m, resourceType, "certificates")
 			if err != nil {
 				return newDiagAppend(diags, diag.Error, "read error", err.Error())
 			}
@@ -37,7 +37,7 @@ func resourceCertificates(resourceType ResourceType) *schema.Resource {
 		},
 		ReadContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 			var diags diag.Diagnostics
-			err := resourceCertificatesRead(ctx, d, m, resourceType)
+			err := resourceCertificatesRead(ctx, d, m, resourceType, "certificate")
 			if err != nil {
 				return newDiagAppend(diags, diag.Error, "read error", err.Error())
 			}
@@ -65,6 +65,10 @@ func resourceCertificates(resourceType ResourceType) *schema.Resource {
 }
 
 func resourceCertificatesSchema(datasource bool, resourceType ResourceType) map[string]*schema.Schema {
+	itemsField := "certificate"
+	if datasource {
+		itemsField = itemsField + "s"
+	}
 	result := map[string]*schema.Schema{
 		"id": {
 			Type:        schema.TypeString,
@@ -79,7 +83,7 @@ func resourceCertificatesSchema(datasource bool, resourceType ResourceType) map[
 			ForceNew:    !datasource,
 			Description: "The unique identifier for the target " + resourceType.String() + " within the Fivetran system.",
 		},
-		"certificate": certificateSchema(datasource),
+		itemsField: certificateSchema(datasource),
 	}
 	return result
 }
@@ -159,39 +163,42 @@ func resourceCertificatesCreate(ctx context.Context, d *schema.ResourceData, m i
 		return err
 	}
 	d.SetId(resourceId)
-	return resourceCertificatesRead(ctx, d, m, resourceType)
+	return resourceCertificatesRead(ctx, d, m, resourceType, "certificate")
 }
 
-func resourceCertificatesRead(ctx context.Context, d *schema.ResourceData, m interface{}, resourceType ResourceType) error {
+func resourceCertificatesRead(ctx context.Context, d *schema.ResourceData, m interface{}, resourceType ResourceType, itemsField string) error {
 	id := d.Get("id").(string)
 	response, err := fetchCertificates(ctx, m.(*fivetran.Client), id, resourceType)
 	if err != nil {
 		return fmt.Errorf("%v; code: %v; message: %v", err, response.Code, response.Message)
 	}
+
+	local := mapItemsFromResourceData(d.Get(itemsField).(*schema.Set).List())
 	msi := make(map[string]interface{})
 	msi[resourceType.String()+"_id"] = id
-	msi["certificate"] = flattenCertificates(response)
+	msi[itemsField] = flattenCertificates(response, local)
 	for k, v := range msi {
 		if err := d.Set(k, v); err != nil {
 			return err
 		}
 	}
+	d.SetId(id)
 	return nil
 }
 
 func resourceCertificatesUpdate(ctx context.Context, d *schema.ResourceData, m interface{}, resourceType ResourceType) error {
 	client := m.(*fivetran.Client)
-	connectorId := d.Get("connector_id").(string)
+	id := d.Get(resourceType.String() + "_id").(string)
 	if d.HasChange("certificate") {
 		// Sync fingerprints
-		err := syncCertificates(ctx, client, d.Get("certificate").(*schema.Set).List(), connectorId,
+		err := syncCertificates(ctx, client, d.Get("certificate").(*schema.Set).List(), id,
 			resourceType,
 		)
 		if err != nil {
 			return err
 		}
 	}
-	return resourceCertificatesRead(ctx, d, m, Connector)
+	return resourceCertificatesRead(ctx, d, m, resourceType, "certificate")
 }
 
 func resourceCertificatesDelete(ctx context.Context, d *schema.ResourceData, m interface{}, resourceType ResourceType) error {
@@ -238,7 +245,7 @@ func fetchCertificates(ctx context.Context, client *fivetran.Client, id string, 
 	result, err := getCertificates(ctx, client, id, "", resourceType)
 	cursor := result.Data.NextCursor
 	for err == nil && cursor != "" {
-		if innerResult, err := getCertificates(ctx, client, id, "", resourceType); err == nil {
+		if innerResult, err := getCertificates(ctx, client, id, cursor, resourceType); err == nil {
 			cursor = innerResult.Data.NextCursor
 			result.Data.Items = append(result.Data.Items, innerResult.Data.Items...)
 		}
@@ -254,10 +261,15 @@ func mapCertificatesFromResponse(resp certificates.CertificatesListResponse) map
 	return result
 }
 
-func flattenCertificates(resp certificates.CertificatesListResponse) []interface{} {
+func flattenCertificates(resp certificates.CertificatesListResponse, local map[string]interface{}) []interface{} {
 	result := make([]interface{}, 0)
-	for _, fp := range resp.Data.Items {
-		result = append(result, flattenCertificate(fp))
+	for _, fc := range resp.Data.Items {
+		cert := flattenCertificate(fc)
+		// copy local value from resource data to state
+		if localCertificate, ok := local[fc.Hash].(map[string]interface{}); ok {
+			cert["encoded_cert"] = localCertificate["encoded_cert"]
+		}
+		result = append(result, cert)
 	}
 	return result
 }
@@ -311,7 +323,7 @@ func revokeCertificate(ctx context.Context, client *fivetran.Client, id, hash st
 // Connectors
 func getConnectorCertificatesFunction(ctx context.Context, client *fivetran.Client, id, cursor string) (certificates.CertificatesListResponse, error) {
 	svc := client.NewConnectorCertificatesList().ConnectorID(id)
-	if cursor == "" {
+	if cursor != "" {
 		svc.Cursor(cursor)
 	}
 	return svc.Do(ctx)
@@ -335,7 +347,7 @@ func revokeConnectorCertificateFunc(ctx context.Context, client *fivetran.Client
 // Destinations
 func getDestinationCertificatesFunction(ctx context.Context, client *fivetran.Client, id, cursor string) (certificates.CertificatesListResponse, error) {
 	svc := client.NewDestinationCertificatesList().DestinationID(id)
-	if cursor == "" {
+	if cursor != "" {
 		svc.Cursor(cursor)
 	}
 	return svc.Do(ctx)
