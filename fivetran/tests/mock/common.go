@@ -136,12 +136,20 @@ func isEmpty(actual interface{}) bool {
 	return false
 }
 
+func AssertEqual(t *testing.T, actual interface{}, expected interface{}) {
+	assertEqual(t, actual, expected)
+}
+
 func assertEqual(t *testing.T, actual interface{}, expected interface{}) {
 	t.Helper()
 
 	if !reflect.DeepEqual(expected, actual) {
 		printError(t, actual, expected)
 	}
+}
+
+func AssertEmpty(t *testing.T, actual interface{}) {
+	assertEmpty(t, actual)
 }
 
 func assertEmpty(t *testing.T, actual interface{}) {

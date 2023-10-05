@@ -3,6 +3,7 @@ package fivetran
 import (
 	"context"
 	"fmt"
+	"hash/fnv"
 	"strconv"
 	"strings"
 	"time"
@@ -284,4 +285,38 @@ func contextDelay(ctx context.Context, d time.Duration) error {
 	case <-t.C:
 	}
 	return nil
+}
+
+// intersection accepts two slices of same type as arguments and returns three slices:
+// uniques for the first argument, intersection and uniques for second argument
+// results are collections of distinct elements (sets)
+func intersection[T comparable](a, b []T) (uniqueA, intersection, uniqueB []T) {
+	hashA := make(map[T]bool)
+	hashB := make(map[T]bool)
+	for _, ai := range a {
+		hashA[ai] = true
+	}
+	for _, bi := range b {
+		hashB[bi] = true
+	}
+
+	for ai := range hashA {
+		if _, ok := hashB[ai]; ok {
+			intersection = append(intersection, ai)
+			delete(hashB, ai)
+		} else {
+			uniqueA = append(uniqueA, ai)
+		}
+	}
+	for bi := range hashB {
+		uniqueB = append(uniqueB, bi)
+	}
+	return uniqueA, intersection, uniqueB
+}
+
+func stringInt32Hash(s string) int {
+	h := fnv.New32a()
+	var hashKey = []byte(s)
+	h.Write(hashKey)
+	return int(h.Sum32())
 }

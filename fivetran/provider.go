@@ -30,6 +30,8 @@ func Provider() *schema.Provider {
 		"fivetran_team_user_membership":      resourceTeamUserMembership(),
 		"fivetran_connector_fingerprints":    resourceFingerprints(Connector),
 		"fivetran_destination_fingerprints":  resourceFingerprints(Destination),
+		"fivetran_connector_certificates":    resourceCertificates(Connector),
+		"fivetran_destination_certificates":  resourceCertificates(Destination),
 	}
 
 	var dataSourceMap = map[string]*schema.Resource{
@@ -60,6 +62,8 @@ func Provider() *schema.Provider {
 		"fivetran_team_user_memberships":      dataSourceTeamUserMemberships(),
 		"fivetran_connector_fingerprints":     dataSourceFingerprints(Connector),
 		"fivetran_destination_fingerprints":   dataSourceFingerprints(Destination),
+		"fivetran_connector_certificates":     dataSourceCertificates(Connector),
+		"fivetran_destination_certificates":   dataSourceCertificates(Destination),
 	}
 
 	return &schema.Provider{

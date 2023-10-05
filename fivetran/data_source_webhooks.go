@@ -18,6 +18,9 @@ func dataSourceWebhooks() *schema.Resource {
 				Type:     schema.TypeSet,
 				Optional: true,
 				Computed: true,
+				Set: func(v interface{}) int {
+					return stringInt32Hash(v.(map[string]interface{})["id"].(string))
+				},
 				Elem: &schema.Resource{
 					Schema: getWebhookSchema(true),
 				},

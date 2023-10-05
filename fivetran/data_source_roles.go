@@ -17,6 +17,9 @@ func dataSourceRoles() *schema.Resource {
 				Type:     schema.TypeSet,
 				Optional: true,
 				Computed: true,
+				Set: func(v interface{}) int {
+					return stringInt32Hash(v.(map[string]interface{})["name"].(string))
+				},
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"name": {

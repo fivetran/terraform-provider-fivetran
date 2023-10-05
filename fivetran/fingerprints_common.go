@@ -26,11 +26,6 @@ func (lang ResourceType) String() string {
 	}[lang]
 }
 
-// common function types
-type getFingerprintsListFunc func(ctx context.Context, client *fivetran.Client, id, cursor string) (fingerprints.FingerprintsListResponse, error)
-type approveFingerprintFunc func(ctx context.Context, client *fivetran.Client, id, hash, public_key string) (fingerprints.FingerprintResponse, error)
-type revokeFingerprintFunc func(ctx context.Context, client *fivetran.Client, id, hash string) (common.CommonResponse, error)
-
 func resourceFingerprints(resourceType ResourceType) *schema.Resource {
 	return &schema.Resource{
 		CreateContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -61,11 +56,12 @@ func resourceFingerprints(resourceType ResourceType) *schema.Resource {
 			var diags diag.Diagnostics
 			err := resourceFingerprintsDelete(ctx, d, m, resourceType)
 			if err != nil {
-				return newDiagAppend(diags, diag.Error, "update error", err.Error())
+				return newDiagAppend(diags, diag.Error, "delete error", err.Error())
 			}
 			return diags
 		},
-		Schema: resourceFingerprintsSchema(false, Connector),
+		Importer: &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
+		Schema:   resourceFingerprintsSchema(false, resourceType),
 	}
 }
 
@@ -79,7 +75,7 @@ func dataSourceFingerprints(resourceType ResourceType) *schema.Resource {
 			}
 			return diags
 		},
-		Schema: resourceFingerprintsSchema(true, Connector),
+		Schema: resourceFingerprintsSchema(true, resourceType),
 	}
 }
 
@@ -89,7 +85,7 @@ func resourceFingerprintsSchema(datasource bool, resourceType ResourceType) map[
 			Type:        schema.TypeString,
 			Computed:    !datasource,
 			Required:    datasource,
-			Description: "The unique identifier for the resource.",
+			Description: "The unique identifier for the resource. Equal to target " + resourceType.String() + " id.",
 		},
 		resourceType.String() + "_id": {
 			Type:        schema.TypeString,
@@ -135,69 +131,25 @@ func fingerprintSchema(datasource bool) *schema.Schema {
 }
 
 func resourceFingerprintsCreate(ctx context.Context, d *schema.ResourceData, m interface{}, resourceType ResourceType) error {
-	switch resourceType {
-	case Connector:
-		err := resourceFingerprintsCreateBase(ctx, d, m, resourceType,
-			getConnectorFingerprintsFunction,
-			approveConnectorFingerprintFunc,
-			revokeConnectorFingerprintFunc)
-		if err != nil {
-			return err
-		}
-		return resourceFingerprintsRead(ctx, d, m, resourceType)
-	case Destination:
-		err := resourceFingerprintsCreateBase(ctx, d, m, resourceType,
-			getDestinationFingerprintsFunction,
-			approveDestinationFingerprintFunc,
-			revokeDestinationFingerprintFunc)
-		if err != nil {
-			return err
-		}
-		return resourceFingerprintsRead(ctx, d, m, resourceType)
-	}
-	return fmt.Errorf("unknown resource type " + resourceType.String())
-}
-
-func resourceFingerprintsCreateBase(ctx context.Context, d *schema.ResourceData, m interface{},
-	resourceType ResourceType,
-	getFingerprintsFunction getFingerprintsListFunc,
-	approveFingerprintFunction approveFingerprintFunc,
-	revokeFingerprintFunction revokeFingerprintFunc,
-) error {
 	client := m.(*fivetran.Client)
 	// Verify resource exists
 	var id = d.Get(resourceType.String() + "_id").(string)
-	resourceId, err := verifyFingerprint(ctx, client, id, resourceType)
+	resourceId, err := verifyApproveTarget(ctx, client, id, resourceType)
 	if err != nil {
 		return err
 	}
 	// Sync fingerprints
-	err = syncFingerprints(ctx, client, d.Get("fingerprint").(*schema.Set).List(), id,
-		getFingerprintsFunction,
-		approveFingerprintFunction,
-		revokeFingerprintFunction,
-	)
+	err = syncFingerprints(ctx, client, d.Get("fingerprint").(*schema.Set).List(), id, resourceType)
 	if err != nil {
 		return err
 	}
 	d.SetId(resourceId)
-	return nil
+	return resourceFingerprintsRead(ctx, d, m, resourceType)
 }
 
 func resourceFingerprintsRead(ctx context.Context, d *schema.ResourceData, m interface{}, resourceType ResourceType) error {
-	switch resourceType {
-	case Connector:
-		return resourceFingerprintsReadBase(ctx, d, m, resourceType, getConnectorFingerprintsFunction)
-	case Destination:
-		return resourceFingerprintsReadBase(ctx, d, m, resourceType, getDestinationFingerprintsFunction)
-	}
-	return fmt.Errorf("unknown resource type " + resourceType.String())
-}
-
-func resourceFingerprintsReadBase(ctx context.Context, d *schema.ResourceData, m interface{},
-	resourceType ResourceType, fetchFunc getFingerprintsListFunc) error {
 	id := d.Get("id").(string)
-	response, err := fetchFingerprints(ctx, m.(*fivetran.Client), id, fetchFunc)
+	response, err := fetchFingerprints(ctx, m.(*fivetran.Client), id, resourceType)
 	if err != nil {
 		return fmt.Errorf("%v; code: %v; message: %v", err, response.Code, response.Message)
 	}
@@ -212,95 +164,36 @@ func resourceFingerprintsReadBase(ctx context.Context, d *schema.ResourceData, m
 	return nil
 }
 
-func resourceFingerprintsUpdate(ctx context.Context, d *schema.ResourceData, m interface{},
-	resourceType ResourceType) error {
-	switch resourceType {
-	case Connector:
-		err := resourceFingerprintsUpdateBase(ctx, d, m, resourceType,
-			getConnectorFingerprintsFunction,
-			approveConnectorFingerprintFunc,
-			revokeConnectorFingerprintFunc)
-		if err != nil {
-			return err
-		}
-		return resourceFingerprintsRead(ctx, d, m, Connector)
-	case Destination:
-		err := resourceFingerprintsUpdateBase(ctx, d, m, resourceType,
-			getDestinationFingerprintsFunction,
-			approveDestinationFingerprintFunc,
-			revokeDestinationFingerprintFunc)
-		if err != nil {
-			return err
-		}
-		return resourceFingerprintsRead(ctx, d, m, Connector)
-	}
-	return fmt.Errorf("unknown resource type " + resourceType.String())
-}
-
-func resourceFingerprintsUpdateBase(ctx context.Context, d *schema.ResourceData, m interface{},
-	resourceType ResourceType,
-	getFingerprintsFunction getFingerprintsListFunc,
-	approveFingerprintFunction approveFingerprintFunc,
-	revokeFingerprintFunction revokeFingerprintFunc,
-) error {
+func resourceFingerprintsUpdate(ctx context.Context, d *schema.ResourceData, m interface{}, resourceType ResourceType) error {
 	client := m.(*fivetran.Client)
 	connectorId := d.Get("connector_id").(string)
 	if d.HasChange("fingerprint") {
 		// Sync fingerprints
 		err := syncFingerprints(ctx, client, d.Get("fingerprint").(*schema.Set).List(), connectorId,
-			getFingerprintsFunction,
-			approveFingerprintFunction,
-			revokeFingerprintFunction,
+			resourceType,
 		)
 		if err != nil {
 			return err
 		}
 	}
-	return nil
+	return resourceFingerprintsRead(ctx, d, m, Connector)
 }
 
 func resourceFingerprintsDelete(ctx context.Context, d *schema.ResourceData, m interface{}, resourceType ResourceType) error {
-	switch resourceType {
-	case Connector:
-		return resourceFingerprintsDeleteBase(ctx, d, m, resourceType,
-			getConnectorFingerprintsFunction,
-			approveConnectorFingerprintFunc,
-			revokeConnectorFingerprintFunc)
-	case Destination:
-		return resourceFingerprintsDeleteBase(ctx, d, m, resourceType,
-			getDestinationFingerprintsFunction,
-			approveDestinationFingerprintFunc,
-			revokeDestinationFingerprintFunc)
-	}
-	return fmt.Errorf("unknown resource type " + resourceType.String())
-}
-
-func resourceFingerprintsDeleteBase(ctx context.Context, d *schema.ResourceData, m interface{},
-	resourceType ResourceType,
-	getFingerprintsFunction getFingerprintsListFunc,
-	approveFingerprintFunction approveFingerprintFunc,
-	revokeFingerprintFunction revokeFingerprintFunc,
-) error {
 	client := m.(*fivetran.Client)
 	id := d.Get(resourceType.String() + "_id").(string)
 
 	// Sync with empty local fingerprints list leads to cleanup
 	return syncFingerprints(ctx, client, []interface{}{}, id,
-		getFingerprintsFunction,
-		approveFingerprintFunction,
-		revokeFingerprintFunction)
+		resourceType)
 }
 
-func fetchFingerprints(
-	ctx context.Context,
-	client *fivetran.Client,
-	id string,
-	fetchFunc getFingerprintsListFunc) (fingerprints.FingerprintsListResponse, error) {
+func fetchFingerprints(ctx context.Context, client *fivetran.Client, id string, resourceType ResourceType) (fingerprints.FingerprintsListResponse, error) {
 	var result fingerprints.FingerprintsListResponse
-	result, err := fetchFunc(ctx, client, id, "")
+	result, err := getFingerprints(ctx, client, id, "", resourceType)
 	cursor := result.Data.NextCursor
 	for err == nil && cursor != "" {
-		if innerResult, err := fetchFunc(ctx, client, id, cursor); err == nil {
+		if innerResult, err := getFingerprints(ctx, client, id, "", resourceType); err == nil {
 			cursor = innerResult.Data.NextCursor
 			result.Data.Items = append(result.Data.Items, innerResult.Data.Items...)
 		}
@@ -308,36 +201,28 @@ func fetchFingerprints(
 	return result, err
 }
 
-func syncFingerprints(
-	ctx context.Context,
-	client *fivetran.Client,
-	local []interface{},
-	id string,
-	getFingerprintsFunction getFingerprintsListFunc,
-	approveFingerprintFunction approveFingerprintFunc,
-	revrevokeFingerprintFunction revokeFingerprintFunc) error {
-	response, err := fetchFingerprints(ctx, client, id, getFingerprintsFunction)
+func syncFingerprints(ctx context.Context, client *fivetran.Client, local []interface{}, id string, resourceType ResourceType) error {
+	response, err := fetchFingerprints(ctx, client, id, resourceType)
 	if err == nil {
 		upstream := make([]string, 0)
 		for k := range mapFingerprintsFromResponse(response) {
 			upstream = append(upstream, k)
 		}
-		localFingerprints := mapFingerprintsFromResourceData(local)
+		localFingerprints := mapItemsFromResourceData(local)
 		local := make([]string, 0)
 		for k := range localFingerprints {
 			local = append(local, k)
 		}
-		revoke, approve := observeDiffFingerprints(upstream, local)
+		revoke, _, approve := intersection(upstream, local)
 
 		for _, r := range revoke {
-			resp, err := revrevokeFingerprintFunction(ctx, client, id, r)
+			resp, err := revokeFingerprint(ctx, client, id, r, resourceType)
 			if err != nil {
 				return fmt.Errorf("%v; code: %v; message: %v", err, resp.Code, resp.Message)
 			}
 		}
-
 		for _, a := range approve {
-			resp, err := approveFingerprintFunction(ctx, client, id, a, localFingerprints[a].(map[string]interface{})["public_key"].(string))
+			resp, err := approveFingerprint(ctx, client, id, a, localFingerprints[a].(map[string]interface{})["public_key"].(string), resourceType)
 			if err != nil {
 				return fmt.Errorf("%v; code: %v; message: %v", err, resp.Code, resp.Message)
 			}
@@ -346,7 +231,7 @@ func syncFingerprints(
 	return err
 }
 
-func verifyFingerprint(ctx context.Context, client *fivetran.Client, id string, resourceType ResourceType) (string, error) {
+func verifyApproveTarget(ctx context.Context, client *fivetran.Client, id string, resourceType ResourceType) (string, error) {
 	if resourceType == Connector {
 		connectorResponse, err := client.NewConnectorDetails().ConnectorID(id).Do(ctx)
 		if err != nil {
@@ -364,12 +249,6 @@ func verifyFingerprint(ctx context.Context, client *fivetran.Client, id string, 
 	}
 }
 
-// Function accepts two sets of item hashes: upstream items list and local items list
-// Returns list of items to revoke from upstream and list of items to approve in upstream
-func observeDiffFingerprints(upstream, local []string) (revoke, approve []string) {
-	return []string{}, []string{}
-}
-
 func mapFingerprintsFromResponse(resp fingerprints.FingerprintsListResponse) map[string]interface{} {
 	result := make(map[string]interface{})
 	for _, fp := range resp.Data.Items {
@@ -378,7 +257,7 @@ func mapFingerprintsFromResponse(resp fingerprints.FingerprintsListResponse) map
 	return result
 }
 
-func mapFingerprintsFromResourceData(fingerprints []interface{}) map[string]interface{} {
+func mapItemsFromResourceData(fingerprints []interface{}) map[string]interface{} {
 	result := make(map[string]interface{})
 	for _, fp := range fingerprints {
 		result[fp.(map[string]interface{})["hash"].(string)] = fp
@@ -408,6 +287,39 @@ func fingerprintItemHash(v interface{}) int {
 	var hashKey = v.(map[string]interface{})["hash"].(string)
 	h.Write([]byte(hashKey))
 	return int(h.Sum32())
+}
+
+func getFingerprints(ctx context.Context, client *fivetran.Client, id, cursor string, resourceType ResourceType) (fingerprints.FingerprintsListResponse, error) {
+	switch resourceType {
+	case Connector:
+		return getConnectorFingerprintsFunction(ctx, client, id, cursor)
+	case Destination:
+		return getDestinationFingerprintsFunction(ctx, client, id, cursor)
+	}
+	var result fingerprints.FingerprintsListResponse
+	return result, fmt.Errorf("unknown resource type %v", resourceType.String())
+}
+
+func approveFingerprint(ctx context.Context, client *fivetran.Client, id, hash, publicKey string, resourceType ResourceType) (fingerprints.FingerprintResponse, error) {
+	switch resourceType {
+	case Connector:
+		return approveConnectorFingerprintFunc(ctx, client, id, hash, publicKey)
+	case Destination:
+		return approveDestinationFingerprintFunc(ctx, client, id, hash, publicKey)
+	}
+	var result fingerprints.FingerprintResponse
+	return result, fmt.Errorf("unknown resource type %v", resourceType.String())
+}
+
+func revokeFingerprint(ctx context.Context, client *fivetran.Client, id, hash string, resourceType ResourceType) (common.CommonResponse, error) {
+	switch resourceType {
+	case Connector:
+		return revokeConnectorFingerprintFunc(ctx, client, id, hash)
+	case Destination:
+		return revokeDestinationFingerprintFunc(ctx, client, id, hash)
+	}
+	var result common.CommonResponse
+	return result, fmt.Errorf("unknown resource type %v", resourceType.String())
 }
 
 // Connectors

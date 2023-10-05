@@ -1,0 +1,53 @@
+---
+page_title: "Resource: fivetran_destination_fingerprints"
+---
+
+# Resource: fivetran_destination_fingerprints
+
+This resource allows you to manage list of approved SSH fingerprints for a particular destination.
+
+## Example Usage
+
+```hcl
+resource "fivetran_destination_fingerprints" "my_destination_approved_fingerprints" {
+    destination_id = fivetran_destination.my_destination.id
+    fingerprint {
+        hash = "jhgfJfgrI6yy..."
+        public_key= "ssh-rsa CCCCB3NzaC1yc2ECCASFWFWDFRWT5WAS ... fivetran user key"
+    }
+    fingerprint {
+        hash = "eUtPirI6yytWe..."
+        public_key= "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6 ... fivetran user key"
+    }
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}
+
+## Import
+
+1. To import an existing `fivetran_destination_fingerprints` resource into your Terraform state, you need to get **Destination Group ID** on the destination page in your Fivetran dashboard.
+
+2. To retrieve existing groups, use the [fivetran_groups data source](/docs/data-sources/groups).
+
+3. Define an empty resource in your `.tf` configuration:
+
+```hcl
+resource "fivetran_destination_fingerprints" "my_imported_destination_fingerprints" {
+
+}
+```
+
+4. Run the `terraform import` command:
+
+```
+terraform import fivetran_destination_fingerprints.my_imported_destination_fingerprints {your Destination Group ID}
+```
+
+5.  Use the `terraform state show` command to get the values from the state:
+
+```
+terraform state show 'fivetran_destination_fingerprints.my_imported_destination_fingerprints'
+```
+
+6. Copy the values and paste them to your `.tf` configuration.
