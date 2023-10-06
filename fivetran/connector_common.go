@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/go-fivetran/connectors"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -310,7 +310,7 @@ func getConnectorDestinationSchema(readonly bool) *schema.Schema {
 	}
 }
 
-func connectorRead(currentConfig *[]interface{}, resp fivetran.ConnectorCustomDetailsResponse, version int) (map[string]interface{}, error) {
+func connectorRead(currentConfig *[]interface{}, resp connectors.DetailsWithCustomConfigNoTestsResponse, version int) (map[string]interface{}, error) {
 	// msi stands for Map String Interface
 	msi := make(map[string]interface{})
 	mapAddStr(msi, "id", resp.Data.ID)
@@ -375,7 +375,7 @@ func readDestinationSchema(schema string, service string) ([]interface{}, error)
 
 // resourceConnectorReadStatus receives a *fivetran.ConnectorDetailsResponse and returns a []interface{}
 // containing the data type accepted by the "status" list.
-func connectorReadStatus(resp *fivetran.ConnectorCustomDetailsResponse) []interface{} {
+func connectorReadStatus(resp *connectors.DetailsWithCustomConfigNoTestsResponse) []interface{} {
 	status := make([]interface{}, 1)
 
 	s := make(map[string]interface{})
@@ -390,7 +390,7 @@ func connectorReadStatus(resp *fivetran.ConnectorCustomDetailsResponse) []interf
 	return status
 }
 
-func connectorReadStatusFlattenTasks(resp *fivetran.ConnectorCustomDetailsResponse) []interface{} {
+func connectorReadStatusFlattenTasks(resp *connectors.DetailsWithCustomConfigNoTestsResponse) []interface{} {
 	if len(resp.Data.Status.Tasks) < 1 {
 		return make([]interface{}, 0)
 	}
@@ -407,7 +407,7 @@ func connectorReadStatusFlattenTasks(resp *fivetran.ConnectorCustomDetailsRespon
 	return tasks
 }
 
-func connectorReadStatusFlattenWarnings(resp *fivetran.ConnectorCustomDetailsResponse) []interface{} {
+func connectorReadStatusFlattenWarnings(resp *connectors.DetailsWithCustomConfigNoTestsResponse) []interface{} {
 	if len(resp.Data.Status.Warnings) < 1 {
 		return make([]interface{}, 0)
 	}

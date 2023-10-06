@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/go-fivetran/dbt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -29,6 +30,9 @@ func dbtModelsSchema() *schema.Schema {
 		Optional:    true,
 		Computed:    true,
 		Description: "The collection of dbt Models.",
+		Set: func(v interface{}) int {
+			return stringInt32Hash(v.(map[string]interface{})["id"].(string))
+		},
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"id": {
@@ -71,13 +75,13 @@ func dataSourceDbtModelsRead(ctx context.Context, d *schema.ResourceData, m inte
 }
 
 // dataSourceGroupsGetGroups gets the groups list. It handles limits and cursors.
-func getAllDbtModelsForProject(client *fivetran.Client, ctx context.Context, projectId string) (fivetran.DbtModelsListResponse, error) {
-	var resp fivetran.DbtModelsListResponse
+func getAllDbtModelsForProject(client *fivetran.Client, ctx context.Context, projectId string) (dbt.DbtModelsListResponse, error) {
+	var resp dbt.DbtModelsListResponse
 	var respNextCursor string
 
 	for {
 		var err error
-		var respInner fivetran.DbtModelsListResponse
+		var respInner dbt.DbtModelsListResponse
 		svc := client.NewDbtModelsList().ProjectId(projectId)
 		if respNextCursor == "" {
 			respInner, err = svc.Limit(limit).Do(ctx)
@@ -86,7 +90,7 @@ func getAllDbtModelsForProject(client *fivetran.Client, ctx context.Context, pro
 			respInner, err = svc.Limit(limit).Cursor(respNextCursor).Do(ctx)
 		}
 		if err != nil {
-			return fivetran.DbtModelsListResponse{}, err
+			return dbt.DbtModelsListResponse{}, err
 		}
 
 		resp.Data.Items = append(resp.Data.Items, respInner.Data.Items...)
@@ -101,7 +105,7 @@ func getAllDbtModelsForProject(client *fivetran.Client, ctx context.Context, pro
 	return resp, nil
 }
 
-func flattenDbtModels(response fivetran.DbtModelsListResponse) []interface{} {
+func flattenDbtModels(response dbt.DbtModelsListResponse) []interface{} {
 	result := make([]interface{}, 0)
 
 	for _, model := range response.Data.Items {

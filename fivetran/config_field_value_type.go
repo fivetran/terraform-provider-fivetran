@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 )
 
+type FieldValueType int64
+
 const (
 	String FieldValueType = iota
 	Integer

@@ -1,0 +1,17 @@
+---
+page_title: "Data Source: fivetran_destination_fingerprints"
+---
+
+# Data Source: fivetran_connector_fingerprints
+
+This data source returns a list of SSH fingerprints approved for specified destination.
+
+## Example Usage
+
+```hcl
+data "fivetran_destination_fingerprints" "destination_fingerprints" {
+    id = "destination_id"
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}

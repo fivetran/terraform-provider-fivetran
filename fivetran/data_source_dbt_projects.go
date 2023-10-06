@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/go-fivetran/dbt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -23,6 +24,9 @@ func dataSourceDbtProjectsSchema() *schema.Schema {
 		Type:     schema.TypeSet,
 		Optional: true,
 		Computed: true,
+		Set: func(v interface{}) int {
+			return stringInt32Hash(v.(map[string]interface{})["id"].(string))
+		},
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"id": {
@@ -70,13 +74,13 @@ func dataSourceDbtProjectsRead(ctx context.Context, d *schema.ResourceData, m in
 }
 
 // dataSourceGroupsGetGroups gets the groups list. It handles limits and cursors.
-func dataSourceDbtProjectsGetAllProjects(client *fivetran.Client, ctx context.Context) (fivetran.DbtProjectsListResponse, error) {
-	var resp fivetran.DbtProjectsListResponse
+func dataSourceDbtProjectsGetAllProjects(client *fivetran.Client, ctx context.Context) (dbt.DbtProjectsListResponse, error) {
+	var resp dbt.DbtProjectsListResponse
 	var respNextCursor string
 
 	for {
 		var err error
-		var respInner fivetran.DbtProjectsListResponse
+		var respInner dbt.DbtProjectsListResponse
 		svc := client.NewDbtProjectsList()
 		if respNextCursor == "" {
 			respInner, err = svc.Limit(limit).Do(ctx)
@@ -85,7 +89,7 @@ func dataSourceDbtProjectsGetAllProjects(client *fivetran.Client, ctx context.Co
 			respInner, err = svc.Limit(limit).Cursor(respNextCursor).Do(ctx)
 		}
 		if err != nil {
-			return fivetran.DbtProjectsListResponse{}, err
+			return dbt.DbtProjectsListResponse{}, err
 		}
 
 		resp.Data.Items = append(resp.Data.Items, respInner.Data.Items...)
@@ -100,7 +104,7 @@ func dataSourceDbtProjectsGetAllProjects(client *fivetran.Client, ctx context.Co
 	return resp, nil
 }
 
-func dataSourceGroupsFlattenDbtProjects(response fivetran.DbtProjectsListResponse) []interface{} {
+func dataSourceGroupsFlattenDbtProjects(response dbt.DbtProjectsListResponse) []interface{} {
 	result := make([]interface{}, 0)
 
 	for _, prj := range response.Data.Items {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/go-fivetran/users"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -17,6 +18,9 @@ func dataSourceUsers() *schema.Resource {
 				Type:     schema.TypeSet,
 				Optional: true,
 				Computed: true,
+				Set: func(v interface{}) int {
+					return stringInt32Hash(v.(map[string]interface{})["id"].(string))
+				},
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
@@ -97,7 +101,7 @@ func dataSourceUsersRead(ctx context.Context, d *schema.ResourceData, m interfac
 
 // dataSourceUsersFlattenUsers receives a *fivetran.UsersListResponse and returns a []interface{}
 // containing the data type accepted by the "users" set.
-func dataSourceUsersFlattenUsers(resp *fivetran.UsersListResponse) []interface{} {
+func dataSourceUsersFlattenUsers(resp *users.UsersListResponse) []interface{} {
 	if resp.Data.Items == nil {
 		return make([]interface{}, 0)
 	}
@@ -123,13 +127,13 @@ func dataSourceUsersFlattenUsers(resp *fivetran.UsersListResponse) []interface{}
 }
 
 // dataSourceGroupUsersGetUsers gets the users list of a group. It handles limits and cursors.
-func dataSourceUsersGetUsers(client *fivetran.Client, ctx context.Context) (fivetran.UsersListResponse, error) {
-	var resp fivetran.UsersListResponse
+func dataSourceUsersGetUsers(client *fivetran.Client, ctx context.Context) (users.UsersListResponse, error) {
+	var resp users.UsersListResponse
 	var respNextCursor string
 
 	for {
 		var err error
-		var respInner fivetran.UsersListResponse
+		var respInner users.UsersListResponse
 		svc := client.NewUsersList()
 		if respNextCursor == "" {
 			respInner, err = svc.Limit(limit).Do(ctx)
@@ -138,7 +142,7 @@ func dataSourceUsersGetUsers(client *fivetran.Client, ctx context.Context) (five
 			respInner, err = svc.Limit(limit).Cursor(respNextCursor).Do(ctx)
 		}
 		if err != nil {
-			return fivetran.UsersListResponse{}, err
+			return users.UsersListResponse{}, err
 		}
 
 		resp.Data.Items = append(resp.Data.Items, respInner.Data.Items...)

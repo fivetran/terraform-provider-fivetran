@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/go-fivetran/destinations"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -413,7 +414,7 @@ func resourceDestinationDelete(ctx context.Context, d *schema.ResourceData, m in
 
 // resourceDestinationReadConfig receives a *fivetran.DestinationDetailsResponse and returns a []interface{}
 // containing the data type accepted by the "config" set.
-func resourceDestinationReadConfig(resp *fivetran.DestinationDetailsResponse, currentConfig []interface{}) ([]interface{}, error) {
+func resourceDestinationReadConfig(resp *destinations.DestinationDetailsResponse, currentConfig []interface{}) ([]interface{}, error) {
 	var config []interface{}
 
 	c := make(map[string]interface{})
@@ -491,7 +492,7 @@ func resourceDestinationIsBigQuery(service string) bool {
 // resourceDestinationCreateConfig receives a config type []interface{} and returns a
 // *fivetran.DestinationConfig and a ok value. The ok value is true if any configuration
 // has been set.
-func resourceDestinationCreateConfig(config []interface{}) (*fivetran.DestinationConfig, bool) {
+func resourceDestinationCreateConfig(config []interface{}) (*destinations.DestinationConfig, bool) {
 	fivetranConfig := fivetran.NewDestinationConfig()
 	var hasConfig bool
 

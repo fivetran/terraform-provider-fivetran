@@ -8,11 +8,9 @@ import (
 
 	"encoding/json"
 
-	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/go-fivetran/connectors"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
-
-type FieldValueType int64
 
 /*
 The following directive will do the following:
@@ -153,7 +151,7 @@ func getConnectorSchemaConfig(readonly bool) *schema.Schema {
 
 // connectorReadConfig receives a *fivetran.ConnectorDetailsResponse and returns a []interface{}
 // containing the data type accepted by the "config" list.
-func connectorReadCustomConfig(resp *fivetran.ConnectorCustomDetailsResponse, currentConfig *[]interface{}, service string) []interface{} {
+func connectorReadCustomConfig(resp *connectors.DetailsWithCustomConfigNoTestsResponse, currentConfig *[]interface{}, service string) []interface{} {
 	c := make(map[string]interface{})
 	var currentConfigMap *map[string]interface{} = nil
 

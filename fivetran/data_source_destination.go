@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/go-fivetran/destinations"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -264,7 +265,7 @@ func dataSourceDestinationRead(ctx context.Context, d *schema.ResourceData, m in
 
 // dataSourceDestinationConfig receives a *fivetran.DestinationDetailsResponse and returns a []interface{}
 // containing the data type accepted by the "config" set.
-func dataSourceDestinationConfig(resp *fivetran.DestinationDetailsResponse) ([]interface{}, error) {
+func dataSourceDestinationConfig(resp *destinations.DestinationDetailsResponse) ([]interface{}, error) {
 	var config []interface{}
 
 	c := make(map[string]interface{})
