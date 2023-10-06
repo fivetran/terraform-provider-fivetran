@@ -516,6 +516,172 @@
         }
       }
     },
+    "/v1/connectors/{connectorId}/certificates": {
+      "get": {
+        "tags": [
+          "Certificate Management"
+        ],
+        "summary": "Get connector approved certificates.",
+        "description": "Returns the list of approved certificates for specified connector.",
+        "operationId": "get_connector_certificates_list",
+        "parameters": [
+          {
+            "name": "connectorId",
+            "in": "path",
+            "description": "The unique identifier for the connector within the Fivetran system.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Paging cursor, [read more about pagination](https://fivetran.com/docs/rest-api/pagination)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    },
+                    "data": {
+                      "required": [
+                        "items"
+                      ],
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "description": "The collection of return items",
+                          "items": {
+                            "$ref": "#/components/schemas/CertificateDetailsResponse"
+                          }
+                        },
+                        "nextCursor": {
+                          "type": "string",
+                          "description": "The value of the cursor parameter for the next page"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Connector not found."
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Certificate Management"
+        ],
+        "summary": "Approve a certificate for the connector",
+        "description": "Approves a certificate, so Fivetran trusts this certificate for a source database connection.",
+        "operationId": "approve_connector_certificate",
+        "parameters": [
+          {
+            "name": "connectorId",
+            "in": "path",
+            "description": "The unique identifier for the connector within the Fivetran system.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveCertificateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/CertificateDetailsResponse"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing `hash` or `encoded_cert` fields in request payload"
+          },
+          "404": {
+            "description": "Connector not found"
+          }
+        }
+      }
+    },
     "/v1/teams/{teamId}": {
       "get": {
         "tags": [
@@ -906,6 +1072,172 @@
           },
           "404": {
             "description": "Not found error"
+          }
+        }
+      }
+    },
+    "/v1/destinations/{destinationId}/certificates": {
+      "get": {
+        "tags": [
+          "Certificate Management"
+        ],
+        "summary": "Get destination approved certificates.",
+        "description": "Returns the list of approved certificates for specified destination.",
+        "operationId": "get_destination_certificates_list",
+        "parameters": [
+          {
+            "name": "destinationId",
+            "in": "path",
+            "description": "The unique identifier for the destination within the Fivetran system.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Paging cursor, [read more about pagination](https://fivetran.com/docs/rest-api/pagination)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    },
+                    "data": {
+                      "required": [
+                        "items"
+                      ],
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "description": "The collection of return items",
+                          "items": {
+                            "$ref": "#/components/schemas/CertificateDetailsResponse"
+                          }
+                        },
+                        "nextCursor": {
+                          "type": "string",
+                          "description": "The value of the cursor parameter for the next page"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Destination not found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Certificate Management"
+        ],
+        "summary": "Approve a certificate for the destination",
+        "description": "Approves a certificate, so Fivetran trusts this certificate for a destination database connection.",
+        "operationId": "approve_destination_certificate",
+        "parameters": [
+          {
+            "name": "destinationId",
+            "in": "path",
+            "description": "The unique identifier for the destination within the Fivetran system.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveCertificateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/CertificateDetailsResponse"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing `hash` or `encoded_cert` fields in request payload"
+          },
+          "404": {
+            "description": "Destination not found"
           }
         }
       }
@@ -2350,6 +2682,64 @@
         }
       }
     },
+    "/v1/groups/{groupId}/service-account": {
+      "get": {
+        "tags": [
+          "Group Management"
+        ],
+        "summary": "Retrieve Group Service Account",
+        "description": "Returns Fivetran service account associated with the group.",
+        "operationId": "group_service_account",
+        "parameters": [
+          {
+            "name": "groupId",
+            "in": "path",
+            "description": "The unique identifier for the group within the Fivetran system.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/GroupServiceAccountResponse"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/dbt/projects/{projectId}": {
       "get": {
         "tags": [
@@ -3067,6 +3457,141 @@
         }
       }
     },
+    "/v1/destinations/{destinationId}/fingerprints/{hash}": {
+      "get": {
+        "tags": [
+          "Certificate Management"
+        ],
+        "summary": "Get destination approved fingerprint details",
+        "description": "Returns SSH fingerprint details approved for specified destination with specified hash",
+        "operationId": "get_destination_fingerprint_details",
+        "parameters": [
+          {
+            "name": "destinationId",
+            "in": "path",
+            "description": "The unique identifier for the destination within the Fivetran system.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "hash",
+            "in": "path",
+            "description": "Hash of the fingerprint.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/FingerprintDetailsResponse"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fingerprint with specified hash not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Certificate Management"
+        ],
+        "summary": "Revoke destination fingerprint",
+        "description": "Revokes a fingerprint, so Fivetran no longer trusts it while connecting to the destination database through an SSH tunnel.",
+        "operationId": "revoke_destination_fingerprint",
+        "parameters": [
+          {
+            "name": "destinationId",
+            "in": "path",
+            "description": "The unique identifier for the destination within the Fivetran system.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "hash",
+            "in": "path",
+            "description": "Hash of the fingerprint.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fingerprint with specified hash not found"
+          }
+        }
+      }
+    },
     "/v1/connectors/{connectorId}/test": {
       "post": {
         "tags": [
@@ -3558,6 +4083,141 @@
         }
       }
     },
+    "/v1/connectors/{connectorId}/fingerprints/{hash}": {
+      "get": {
+        "tags": [
+          "Certificate Management"
+        ],
+        "summary": "Get connector approved fingerprint details",
+        "description": "Returns SSH fingerprint details approved for specified connector with specified hash",
+        "operationId": "get_connector_fingerprint_details",
+        "parameters": [
+          {
+            "name": "connectorId",
+            "in": "path",
+            "description": "The unique identifier for the connector within the Fivetran system.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "hash",
+            "in": "path",
+            "description": "Hash of the fingerprint.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/FingerprintDetailsResponse"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fingerprint with specified hash not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Certificate Management"
+        ],
+        "summary": "Revoke connector fingerprint",
+        "description": "Revokes a fingerprint, so Fivetran no longer trusts it while connecting to the source database through an SSH tunnel.",
+        "operationId": "revoke_connector_fingerprint",
+        "parameters": [
+          {
+            "name": "connectorId",
+            "in": "path",
+            "description": "The unique identifier for the connector within the Fivetran system.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "hash",
+            "in": "path",
+            "description": "Hash of the fingerprint.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fingerprint with specified hash not found"
+          }
+        }
+      }
+    },
     "/v1/dbt/transformations": {
       "get": {
         "tags": [
@@ -3705,6 +4365,307 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/v1/destinations/{destinationId}/certificates/{hash}": {
+      "get": {
+        "tags": [
+          "Certificate Management"
+        ],
+        "summary": "Get destination approved certificate details.",
+        "description": "Returns details of the certificate approved for specified destination with specified hash.",
+        "operationId": "get_destination_certificate_details",
+        "parameters": [
+          {
+            "name": "destinationId",
+            "in": "path",
+            "description": "The unique identifier for the destination within the Fivetran system.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "hash",
+            "in": "path",
+            "description": "Hash of the certificate.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/CertificateDetailsResponse"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Certificate with specified hash not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Certificate Management"
+        ],
+        "summary": "Revoke destination certificate",
+        "description": "Revokes a certificate, so Fivetran no longer trusts it while connecting to the destination database.",
+        "operationId": "revoke_destination_certificate",
+        "parameters": [
+          {
+            "name": "destinationId",
+            "in": "path",
+            "description": "The unique identifier for the destination within the Fivetran system.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "hash",
+            "in": "path",
+            "description": "Hash of the certificate.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Certificate with specified hash not found"
+          }
+        }
+      }
+    },
+    "/v1/destinations/{destinationId}/fingerprints": {
+      "get": {
+        "tags": [
+          "Certificate Management"
+        ],
+        "summary": "Get destination approved fingerprints",
+        "description": "Returns the list of approved SSH fingerprints for specified destination",
+        "operationId": "get_destination_fingerprints_list",
+        "parameters": [
+          {
+            "name": "destinationId",
+            "in": "path",
+            "description": "The unique identifier for the destination within the Fivetran system.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Paging cursor, [read more about pagination](https://fivetran.com/docs/rest-api/pagination)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    },
+                    "data": {
+                      "required": [
+                        "items"
+                      ],
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "description": "The collection of return items",
+                          "items": {
+                            "$ref": "#/components/schemas/FingerprintDetailsResponse"
+                          }
+                        },
+                        "nextCursor": {
+                          "type": "string",
+                          "description": "The value of the cursor parameter for the next page"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Destination not found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Certificate Management"
+        ],
+        "summary": "Approve a fingerprint for the destination",
+        "description": "Approves a fingerprint, so Fivetran trusts this fingerprint for a destination database, and connectors can connect to the destination through an SSH tunnel",
+        "operationId": "approve_destination_fingerprint",
+        "parameters": [
+          {
+            "name": "destinationId",
+            "in": "path",
+            "description": "The unique identifier for the destination within the Fivetran system.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveFingerprintRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/FingerprintDetailsResponse"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing `hash` or `public_key` fields in request payload"
+          },
+          "404": {
+            "description": "Destination not found"
           }
         }
       }
@@ -3868,7 +4829,7 @@
           {
             "name": "logId",
             "in": "path",
-            "description": "The unique identifier for the logging service within your Fivetran account.",
+            "description": "The unique identifier for the log service within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string"
@@ -4058,7 +5019,7 @@
         "tags": [
           "Certificate Management"
         ],
-        "summary": "Approve a fingerprint",
+        "summary": "(Deprecated) Approve a fingerprint",
         "description": "Approves a fingerprint, so Fivetran trusts this fingerprint for a source/destination database, and connectors can connect to the source/destination through an SSH tunnel",
         "operationId": "approve_fingerprint",
         "parameters": [
@@ -4180,6 +5141,172 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/v1/connectors/{connectorId}/fingerprints": {
+      "get": {
+        "tags": [
+          "Certificate Management"
+        ],
+        "summary": "Get connector approved fingerprints",
+        "description": "Returns the list of approved SSH fingerprints for specified connector",
+        "operationId": "get_connector_fingerprints_list",
+        "parameters": [
+          {
+            "name": "connectorId",
+            "in": "path",
+            "description": "The unique identifier for the connector within the Fivetran system.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Paging cursor, [read more about pagination](https://fivetran.com/docs/rest-api/pagination)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    },
+                    "data": {
+                      "required": [
+                        "items"
+                      ],
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "description": "The collection of return items",
+                          "items": {
+                            "$ref": "#/components/schemas/FingerprintDetailsResponse"
+                          }
+                        },
+                        "nextCursor": {
+                          "type": "string",
+                          "description": "The value of the cursor parameter for the next page"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Connector not found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Certificate Management"
+        ],
+        "summary": "Approve a fingerprint for the connector",
+        "description": "Approves a fingerprint, so Fivetran trusts this fingerprint for a source database, and connectors can connect to the source through an SSH tunnel",
+        "operationId": "approve_connector_fingerprint",
+        "parameters": [
+          {
+            "name": "connectorId",
+            "in": "path",
+            "description": "The unique identifier for the connector within the Fivetran system.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveFingerprintRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/FingerprintDetailsResponse"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing `hash` or `public_key` fields in request payload"
+          },
+          "404": {
+            "description": "Connector not found"
           }
         }
       }
@@ -5297,6 +6424,141 @@
         }
       }
     },
+    "/v1/connectors/{connectorId}/certificates/{hash}": {
+      "get": {
+        "tags": [
+          "Certificate Management"
+        ],
+        "summary": "Get connector approved certificate details.",
+        "description": "Returns details of the certificate approved for specified connector with specified hash.",
+        "operationId": "get_connector_certificate_details",
+        "parameters": [
+          {
+            "name": "connectorId",
+            "in": "path",
+            "description": "The unique identifier for the connector within the Fivetran system.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "hash",
+            "in": "path",
+            "description": "Hash of the certificate.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/CertificateDetailsResponse"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Certificate with specified hash not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Certificate Management"
+        ],
+        "summary": "Revoke connector certificate",
+        "description": "Revokes a certificate, so Fivetran no longer trusts it while connecting to the source database.",
+        "operationId": "revoke_connector_certificate",
+        "parameters": [
+          {
+            "name": "connectorId",
+            "in": "path",
+            "description": "The unique identifier for the connector within the Fivetran system.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "hash",
+            "in": "path",
+            "description": "Hash of the certificate.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Certificate with specified hash not found"
+          }
+        }
+      }
+    },
     "/v1/dbt/projects": {
       "get": {
         "tags": [
@@ -5833,7 +7095,7 @@
           {
             "name": "logId",
             "in": "path",
-            "description": "The unique identifier for the logging service within your Fivetran account.",
+            "description": "The unique identifier for the log service within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string"
@@ -5889,7 +7151,7 @@
           {
             "name": "logId",
             "in": "path",
-            "description": "The unique identifier for the logging service within your Fivetran account.",
+            "description": "The unique identifier for the log service within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string"
@@ -5942,7 +7204,7 @@
           {
             "name": "logId",
             "in": "path",
-            "description": "The unique identifier for the logging service within your Fivetran account.",
+            "description": "The unique identifier for the log service within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string"
@@ -7732,14 +8994,31 @@
         ],
         "type": "object",
         "properties": {
-          "connector_id": {
+          "hash": {
             "type": "string",
-            "description": "The unique identifier for the connector"
+            "description": "Hash of the certificate."
           },
           "destination_id": {
             "type": "string",
-            "description": "The unique identifier for the destination."
+            "description": "The unique identifier for the destination within the Fivetran system."
           },
+          "encoded_cert": {
+            "type": "string",
+            "description": "The certificate encoded in base64."
+          },
+          "connector_id": {
+            "type": "string",
+            "description": "The unique identifier for the connector within the Fivetran system."
+          }
+        }
+      },
+      "ApproveCertificateRequest": {
+        "required": [
+          "encoded_cert",
+          "hash"
+        ],
+        "type": "object",
+        "properties": {
           "hash": {
             "type": "string",
             "description": "Hash of the certificate."
@@ -7747,6 +9026,54 @@
           "encoded_cert": {
             "type": "string",
             "description": "The certificate encoded in base64."
+          }
+        }
+      },
+      "CertificateDetailsResponse": {
+        "required": [
+          "hash",
+          "name",
+          "public_key",
+          "sha1",
+          "sha256",
+          "type",
+          "validated_by",
+          "validated_date"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The certificate name."
+          },
+          "hash": {
+            "type": "string",
+            "description": "Hash of the certificate."
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of the certificate."
+          },
+          "sha1": {
+            "type": "string",
+            "description": "SHA1 of certificate."
+          },
+          "sha256": {
+            "type": "string",
+            "description": "SHA256 of certificate."
+          },
+          "validated_date": {
+            "type": "string",
+            "description": "Date when certificate has been validated and approved.",
+            "format": "date-time"
+          },
+          "validated_by": {
+            "type": "string",
+            "description": "The unique identified for the user who has approved the certificate."
+          },
+          "public_key": {
+            "type": "string",
+            "description": "The certificate decoded public key."
           }
         }
       },
@@ -7914,8 +9241,10 @@
             "criteo": "#/components/schemas/criteo_NewConnectorRequestV1",
             "crossbeam": "#/components/schemas/crossbeam_NewConnectorRequestV1",
             "db2i_hva": "#/components/schemas/db2i_hva_NewConnectorRequestV1",
+            "dcl_logistics": "#/components/schemas/dcl_logistics_NewConnectorRequestV1",
             "dear": "#/components/schemas/dear_NewConnectorRequestV1",
             "delighted": "#/components/schemas/delighted_NewConnectorRequestV1",
+            "destini": "#/components/schemas/destini_NewConnectorRequestV1",
             "dixa": "#/components/schemas/dixa_NewConnectorRequestV1",
             "docebo": "#/components/schemas/docebo_NewConnectorRequestV1",
             "documentdb": "#/components/schemas/documentdb_NewConnectorRequestV1",
@@ -8007,6 +9336,7 @@
             "linkedin_ads": "#/components/schemas/linkedin_ads_NewConnectorRequestV1",
             "linkedin_company_pages": "#/components/schemas/linkedin_company_pages_NewConnectorRequestV1",
             "livechat": "#/components/schemas/livechat_NewConnectorRequestV1",
+            "luma": "#/components/schemas/luma_NewConnectorRequestV1",
             "magento_mysql": "#/components/schemas/magento_mysql_NewConnectorRequestV1",
             "magento_mysql_rds": "#/components/schemas/magento_mysql_rds_NewConnectorRequestV1",
             "mailchimp": "#/components/schemas/mailchimp_NewConnectorRequestV1",
@@ -8080,8 +9410,10 @@
             "salesforce_marketing_cloud": "#/components/schemas/salesforce_marketing_cloud_NewConnectorRequestV1",
             "salesforce_sandbox": "#/components/schemas/salesforce_sandbox_NewConnectorRequestV1",
             "salesloft": "#/components/schemas/salesloft_NewConnectorRequestV1",
+            "salsify": "#/components/schemas/salsify_NewConnectorRequestV1",
             "samsara": "#/components/schemas/samsara_NewConnectorRequestV1",
             "sap_business_by_design": "#/components/schemas/sap_business_by_design_NewConnectorRequestV1",
+            "sap_hana_db": "#/components/schemas/sap_hana_db_NewConnectorRequestV1",
             "scorm": "#/components/schemas/scorm_NewConnectorRequestV1",
             "segment": "#/components/schemas/segment_NewConnectorRequestV1",
             "sendgrid": "#/components/schemas/sendgrid_NewConnectorRequestV1",
@@ -8092,6 +9424,7 @@
             "shiphero": "#/components/schemas/shiphero_NewConnectorRequestV1",
             "shipstation": "#/components/schemas/shipstation_NewConnectorRequestV1",
             "shopify": "#/components/schemas/shopify_NewConnectorRequestV1",
+            "simplesat": "#/components/schemas/simplesat_NewConnectorRequestV1",
             "skuvault": "#/components/schemas/skuvault_NewConnectorRequestV1",
             "slack": "#/components/schemas/slack_NewConnectorRequestV1",
             "snapchat_ads": "#/components/schemas/snapchat_ads_NewConnectorRequestV1",
@@ -8111,6 +9444,7 @@
             "subscript": "#/components/schemas/subscript_NewConnectorRequestV1",
             "survey_monkey": "#/components/schemas/survey_monkey_NewConnectorRequestV1",
             "survicate": "#/components/schemas/survicate_NewConnectorRequestV1",
+            "tableau_source": "#/components/schemas/tableau_source_NewConnectorRequestV1",
             "taboola": "#/components/schemas/taboola_NewConnectorRequestV1",
             "talkdesk": "#/components/schemas/talkdesk_NewConnectorRequestV1",
             "teamwork": "#/components/schemas/teamwork_NewConnectorRequestV1",
@@ -8122,9 +9456,11 @@
             "twitter": "#/components/schemas/twitter_NewConnectorRequestV1",
             "twitter_ads": "#/components/schemas/twitter_ads_NewConnectorRequestV1",
             "typeform": "#/components/schemas/typeform_NewConnectorRequestV1",
+            "upland": "#/components/schemas/upland_NewConnectorRequestV1",
             "uservoice": "#/components/schemas/uservoice_NewConnectorRequestV1",
             "webhooks": "#/components/schemas/webhooks_NewConnectorRequestV1",
             "when_i_work": "#/components/schemas/when_i_work_NewConnectorRequestV1",
+            "wherefour": "#/components/schemas/wherefour_NewConnectorRequestV1",
             "woocommerce": "#/components/schemas/woocommerce_NewConnectorRequestV1",
             "workable": "#/components/schemas/workable_NewConnectorRequestV1",
             "workday": "#/components/schemas/workday_NewConnectorRequestV1",
@@ -8481,8 +9817,10 @@
             "criteo": "#/components/schemas/criteo_ConnectorResponseV1",
             "crossbeam": "#/components/schemas/crossbeam_ConnectorResponseV1",
             "db2i_hva": "#/components/schemas/db2i_hva_ConnectorResponseV1",
+            "dcl_logistics": "#/components/schemas/dcl_logistics_ConnectorResponseV1",
             "dear": "#/components/schemas/dear_ConnectorResponseV1",
             "delighted": "#/components/schemas/delighted_ConnectorResponseV1",
+            "destini": "#/components/schemas/destini_ConnectorResponseV1",
             "dixa": "#/components/schemas/dixa_ConnectorResponseV1",
             "docebo": "#/components/schemas/docebo_ConnectorResponseV1",
             "documentdb": "#/components/schemas/documentdb_ConnectorResponseV1",
@@ -8574,6 +9912,7 @@
             "linkedin_ads": "#/components/schemas/linkedin_ads_ConnectorResponseV1",
             "linkedin_company_pages": "#/components/schemas/linkedin_company_pages_ConnectorResponseV1",
             "livechat": "#/components/schemas/livechat_ConnectorResponseV1",
+            "luma": "#/components/schemas/luma_ConnectorResponseV1",
             "magento_mysql": "#/components/schemas/magento_mysql_ConnectorResponseV1",
             "magento_mysql_rds": "#/components/schemas/magento_mysql_rds_ConnectorResponseV1",
             "mailchimp": "#/components/schemas/mailchimp_ConnectorResponseV1",
@@ -8647,8 +9986,10 @@
             "salesforce_marketing_cloud": "#/components/schemas/salesforce_marketing_cloud_ConnectorResponseV1",
             "salesforce_sandbox": "#/components/schemas/salesforce_sandbox_ConnectorResponseV1",
             "salesloft": "#/components/schemas/salesloft_ConnectorResponseV1",
+            "salsify": "#/components/schemas/salsify_ConnectorResponseV1",
             "samsara": "#/components/schemas/samsara_ConnectorResponseV1",
             "sap_business_by_design": "#/components/schemas/sap_business_by_design_ConnectorResponseV1",
+            "sap_hana_db": "#/components/schemas/sap_hana_db_ConnectorResponseV1",
             "scorm": "#/components/schemas/scorm_ConnectorResponseV1",
             "segment": "#/components/schemas/segment_ConnectorResponseV1",
             "sendgrid": "#/components/schemas/sendgrid_ConnectorResponseV1",
@@ -8659,6 +10000,7 @@
             "shiphero": "#/components/schemas/shiphero_ConnectorResponseV1",
             "shipstation": "#/components/schemas/shipstation_ConnectorResponseV1",
             "shopify": "#/components/schemas/shopify_ConnectorResponseV1",
+            "simplesat": "#/components/schemas/simplesat_ConnectorResponseV1",
             "skuvault": "#/components/schemas/skuvault_ConnectorResponseV1",
             "slack": "#/components/schemas/slack_ConnectorResponseV1",
             "snapchat_ads": "#/components/schemas/snapchat_ads_ConnectorResponseV1",
@@ -8678,6 +10020,7 @@
             "subscript": "#/components/schemas/subscript_ConnectorResponseV1",
             "survey_monkey": "#/components/schemas/survey_monkey_ConnectorResponseV1",
             "survicate": "#/components/schemas/survicate_ConnectorResponseV1",
+            "tableau_source": "#/components/schemas/tableau_source_ConnectorResponseV1",
             "taboola": "#/components/schemas/taboola_ConnectorResponseV1",
             "talkdesk": "#/components/schemas/talkdesk_ConnectorResponseV1",
             "teamwork": "#/components/schemas/teamwork_ConnectorResponseV1",
@@ -8689,9 +10032,11 @@
             "twitter": "#/components/schemas/twitter_ConnectorResponseV1",
             "twitter_ads": "#/components/schemas/twitter_ads_ConnectorResponseV1",
             "typeform": "#/components/schemas/typeform_ConnectorResponseV1",
+            "upland": "#/components/schemas/upland_ConnectorResponseV1",
             "uservoice": "#/components/schemas/uservoice_ConnectorResponseV1",
             "webhooks": "#/components/schemas/webhooks_ConnectorResponseV1",
             "when_i_work": "#/components/schemas/when_i_work_ConnectorResponseV1",
+            "wherefour": "#/components/schemas/wherefour_ConnectorResponseV1",
             "woocommerce": "#/components/schemas/woocommerce_ConnectorResponseV1",
             "workable": "#/components/schemas/workable_ConnectorResponseV1",
             "workday": "#/components/schemas/workday_ConnectorResponseV1",
@@ -9651,6 +10996,7 @@
             "azure_sql_database": "#/components/schemas/azure_sql_database_NewDestinationRequest",
             "azure_sql_managed_db_warehouse": "#/components/schemas/azure_sql_managed_db_warehouse_NewDestinationRequest",
             "big_query": "#/components/schemas/big_query_NewDestinationRequest",
+            "big_query_dts": "#/components/schemas/big_query_dts_NewDestinationRequest",
             "confluent_cloud_wh": "#/components/schemas/confluent_cloud_wh_NewDestinationRequest",
             "databricks": "#/components/schemas/databricks_NewDestinationRequest",
             "managed_big_query": "#/components/schemas/managed_big_query_NewDestinationRequest",
@@ -9800,6 +11146,7 @@
             "azure_sql_database": "#/components/schemas/azure_sql_database_DestinationResponse",
             "azure_sql_managed_db_warehouse": "#/components/schemas/azure_sql_managed_db_warehouse_DestinationResponse",
             "big_query": "#/components/schemas/big_query_DestinationResponse",
+            "big_query_dts": "#/components/schemas/big_query_dts_DestinationResponse",
             "confluent_cloud_wh": "#/components/schemas/confluent_cloud_wh_DestinationResponse",
             "databricks": "#/components/schemas/databricks_DestinationResponse",
             "managed_big_query": "#/components/schemas/managed_big_query_DestinationResponse",
@@ -9821,6 +11168,23 @@
           }
         }
       },
+      "ApproveFingerprintRequest": {
+        "required": [
+          "hash",
+          "public_key"
+        ],
+        "type": "object",
+        "properties": {
+          "hash": {
+            "type": "string",
+            "description": "Hash of the fingerprint."
+          },
+          "public_key": {
+            "type": "string",
+            "description": "The SSH public key."
+          }
+        }
+      },
       "TrustFingerprintRequest": {
         "required": [
           "hash",
@@ -9828,21 +11192,49 @@
         ],
         "type": "object",
         "properties": {
-          "connector_id": {
-            "type": "string",
-            "description": "The unique identifier for the connector"
-          },
-          "destination_id": {
-            "type": "string",
-            "description": "The unique identifier for the destination"
-          },
           "hash": {
             "type": "string",
-            "description": "Hash of the fingerprint"
+            "description": "Hash of the fingerprint."
           },
           "public_key": {
             "type": "string",
-            "description": "The SSH public key"
+            "description": "The SSH public key."
+          },
+          "destination_id": {
+            "type": "string",
+            "description": "The unique identifier for the destination within the Fivetran system."
+          },
+          "connector_id": {
+            "type": "string",
+            "description": "The unique identifier for the connector within the Fivetran system."
+          }
+        }
+      },
+      "FingerprintDetailsResponse": {
+        "required": [
+          "hash",
+          "public_key",
+          "validated_by",
+          "validated_date"
+        ],
+        "type": "object",
+        "properties": {
+          "hash": {
+            "type": "string",
+            "description": "Hash of the fingerprint."
+          },
+          "validated_by": {
+            "type": "string",
+            "description": "The unique identified for the user who has approved the fingerprint."
+          },
+          "public_key": {
+            "type": "string",
+            "description": "The SSH public key."
+          },
+          "validated_date": {
+            "type": "string",
+            "description": "Date when fingerprint has been validated and approved.",
+            "format": "date-time"
           }
         }
       },
@@ -10016,6 +11408,17 @@
           }
         }
       },
+      "GroupServiceAccountResponse": {
+        "required": [
+          "service_account"
+        ],
+        "type": "object",
+        "properties": {
+          "service_account": {
+            "type": "string"
+          }
+        }
+      },
       "GroupSshKeyResponse": {
         "required": [
           "public_key"
@@ -10100,11 +11503,11 @@
           },
           "service": {
             "type": "string",
-            "description": "The name for the logging service type within the Fivetran system"
+            "description": "The name for the log service type within the Fivetran system. We support the following log services: `azure_monitor_log`, `cloudwatch`, `datadog_log`, `splunkLog`."
           },
           "enabled": {
             "type": "boolean",
-            "description": "The boolean value specifying whether the logging service is enabled"
+            "description": "The boolean value specifying whether the log service is enabled."
           }
         },
         "discriminator": {
@@ -10124,7 +11527,7 @@
         "properties": {
           "enabled": {
             "type": "boolean",
-            "description": "The boolean value specifying whether the logging service is enabled"
+            "description": "The boolean value specifying whether the log service is enabled."
           },
           "config": {
             "description": "The connector setup configuration. Check possible config formats in [create method](/openapi/reference/v1/operation/add_log_service/)"
@@ -10141,15 +11544,15 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "The unique identifier for the logging service within the Fivetran system"
+            "description": "The unique identifier for the log service within the Fivetran system."
           },
           "service": {
             "type": "string",
-            "description": "The name for the logging service type within the Fivetran system"
+            "description": "The name for the log service type within the Fivetran system. We support the following log services: `azure_monitor_log`, `cloudwatch`, `datadog_log`, `splunkLog`."
           },
           "enabled": {
             "type": "boolean",
-            "description": "The boolean value specifying whether the logging service is enabled"
+            "description": "The boolean value specifying whether the log service is enabled."
           }
         },
         "discriminator": {
@@ -11462,6 +12865,47 @@
           },
           {
             "$ref": "#/components/schemas/big_query_config_V1"
+          }
+        ]
+      },
+      "big_query_dts_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "bucket": {
+                "title": "",
+                "type": "string",
+                "description": ""
+              },
+              "secret_key": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password"
+              },
+              "project_id": {
+                "title": "",
+                "type": "string",
+                "description": ""
+              },
+              "data_set_location": {
+                "title": "",
+                "type": "string",
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "big_query_dts_NewDestinationRequest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewDestinationRequest"
+          },
+          {
+            "$ref": "#/components/schemas/big_query_dts_config_V1"
           }
         ]
       },
@@ -13123,6 +14567,16 @@
           }
         ]
       },
+      "big_query_dts_DestinationResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/DestinationResponse"
+          },
+          {
+            "$ref": "#/components/schemas/big_query_dts_config_V1"
+          }
+        ]
+      },
       "confluent_cloud_wh_DestinationResponse": {
         "allOf": [
           {
@@ -14004,7 +15458,8 @@
                 "description": "Azure Blob Storage connection method",
                 "enum": [
                   "SSH_TUNNEL",
-                  "DIRECT"
+                  "DIRECT",
+                  "PRIVATE_LINK"
                 ]
               },
               "abs_host_ip": {
@@ -17866,6 +19321,11 @@
           "config": {
             "type": "object",
             "properties": {
+              "company_uuid": {
+                "title": "",
+                "type": "string",
+                "description": "The SAP Concur Company UUID"
+              },
               "schema": {
                 "title": "Destination schema",
                 "type": "string",
@@ -17876,6 +19336,21 @@
                 "type": "string",
                 "description": "The SAP Concur password.",
                 "format": "password"
+              },
+              "company_request_token": {
+                "title": "",
+                "type": "string",
+                "description": "The SAP Concur Company Request Token",
+                "format": "password"
+              },
+              "auth_mode": {
+                "title": "",
+                "type": "object",
+                "description": "The Authentication Mode used by SAP Concur. It can be PasswordGrant or CompanyLevel auth mode",
+                "enum": [
+                  "CompanyLevel",
+                  "PasswordGrant"
+                ]
               },
               "client_secret": {
                 "title": "",
@@ -19144,6 +20619,42 @@
           }
         ]
       },
+      "dcl_logistics_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your DCL Logistics API key.",
+                "format": "password"
+              },
+              "username": {
+                "title": "",
+                "type": "string",
+                "description": "Your DCL Logistics username."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "dcl_logistics_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/dcl_logistics_config_V1"
+          }
+        ]
+      },
       "dear_config_V1": {
         "properties": {
           "config": {
@@ -19208,6 +20719,42 @@
           },
           {
             "$ref": "#/components/schemas/delighted_config_V1"
+          }
+        ]
+      },
+      "destini_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Destini API Key.",
+                "format": "password"
+              },
+              "client_name": {
+                "title": "",
+                "type": "string",
+                "description": "Your Destini Client Name."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "destini_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/destini_config_V1"
           }
         ]
       },
@@ -22619,17 +24166,22 @@
                 "type": "string",
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
               },
-              "password": {
+              "access_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Gongio Access key.",
+                "format": "password"
+              },
+              "access_key_secret": {
                 "title": "",
                 "type": "string",
                 "description": "Your Gongio Access Key Secret.",
                 "format": "password"
               },
-              "username": {
+              "base_url": {
                 "title": "",
                 "type": "string",
-                "description": "Your Gongio Access key.",
-                "format": "password"
+                "description": "Your Gong API Base URL."
               }
             },
             "description": ""
@@ -26993,6 +28545,37 @@
           },
           {
             "$ref": "#/components/schemas/livechat_config_V1"
+          }
+        ]
+      },
+      "luma_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Luma API key.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "luma_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/luma_config_V1"
           }
         ]
       },
@@ -32402,6 +33985,42 @@
           }
         ]
       },
+      "salsify_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Salsify API Key.",
+                "format": "password"
+              },
+              "sub_domain": {
+                "title": "",
+                "type": "string",
+                "description": "Your Salsify Organization ID."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "salsify_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/salsify_config_V1"
+          }
+        ]
+      },
       "samsara_config_V1": {
         "properties": {
           "config": {
@@ -32471,6 +34090,105 @@
           },
           {
             "$ref": "#/components/schemas/sap_business_by_design_config_V1"
+          }
+        ]
+      },
+      "sap_hana_db_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "public_key": {
+                "title": "",
+                "type": "string",
+                "description": ""
+              },
+              "connection_type": {
+                "title": "",
+                "type": "object",
+                "description": "",
+                "enum": [
+                  "Directly",
+                  "PrivateLink",
+                  "SshTunnel",
+                  "ProxyAgent"
+                ]
+              },
+              "always_encrypted": {
+                "title": "",
+                "type": "boolean",
+                "description": ""
+              },
+              "tunnel_user": {
+                "title": "",
+                "type": "string",
+                "description": "SSH user, specify only to connect via an SSH tunnel."
+              },
+              "database": {
+                "title": "",
+                "type": "string",
+                "description": ""
+              },
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password"
+              },
+              "tunnel_port": {
+                "title": "",
+                "type": "integer",
+                "description": "SSH port, specify only to connect via an SSH tunnel.",
+                "format": "int32"
+              },
+              "port": {
+                "title": "",
+                "type": "integer",
+                "description": "",
+                "format": "int32"
+              },
+              "host": {
+                "title": "",
+                "type": "string",
+                "description": ""
+              },
+              "tunnel_host": {
+                "title": "",
+                "type": "string",
+                "description": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer)."
+              },
+              "client": {
+                "title": "",
+                "type": "string",
+                "description": ""
+              },
+              "schema_prefix": {
+                "title": "Destination schema prefix",
+                "type": "string",
+                "description": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation"
+              },
+              "sysnr": {
+                "title": "",
+                "type": "string",
+                "description": ""
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "sap_hana_db_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/sap_hana_db_config_V1"
           }
         ]
       },
@@ -33207,6 +34925,37 @@
           },
           {
             "$ref": "#/components/schemas/shopify_config_V1"
+          }
+        ]
+      },
+      "simplesat_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Simplesat API key.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "simplesat_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/simplesat_config_V1"
           }
         ]
       },
@@ -34366,6 +36115,52 @@
           }
         ]
       },
+      "tableau_source_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "site_name": {
+                "title": "",
+                "type": "string",
+                "description": "Your Tableau Source site name."
+              },
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "pat_name": {
+                "title": "",
+                "type": "string",
+                "description": "Your Tableau Source PAT Name."
+              },
+              "server_address": {
+                "title": "",
+                "type": "string",
+                "description": "Your Tableau Source server address."
+              },
+              "pat_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Tableau Source PAT Secret.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "tableau_source_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/tableau_source_config_V1"
+          }
+        ]
+      },
       "taboola_config_V1": {
         "properties": {
           "config": {
@@ -35157,6 +36952,53 @@
           }
         ]
       },
+      "upland_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "Your Upland Software Password.",
+                "format": "password"
+              },
+              "sub_domain": {
+                "title": "",
+                "type": "string",
+                "description": "Your Upland Software subDomain."
+              },
+              "company_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Upland Software Company Key.",
+                "format": "password"
+              },
+              "username": {
+                "title": "",
+                "type": "string",
+                "description": "Your Upland Software Username."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "upland_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/upland_config_V1"
+          }
+        ]
+      },
       "uservoice_config_V1": {
         "properties": {
           "config": {
@@ -35318,6 +37160,42 @@
           },
           {
             "$ref": "#/components/schemas/when_i_work_config_V1"
+          }
+        ]
+      },
+      "wherefour_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "Your Wherefour password.",
+                "format": "password"
+              },
+              "username": {
+                "title": "",
+                "type": "string",
+                "description": "Your Wherefour username."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "wherefour_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/wherefour_config_V1"
           }
         ]
       },
@@ -36756,6 +38634,16 @@
           }
         ]
       },
+      "dcl_logistics_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/dcl_logistics_config_V1"
+          }
+        ]
+      },
       "dear_ConnectorResponseV1": {
         "allOf": [
           {
@@ -36773,6 +38661,16 @@
           },
           {
             "$ref": "#/components/schemas/delighted_config_V1"
+          }
+        ]
+      },
+      "destini_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/destini_config_V1"
           }
         ]
       },
@@ -37686,6 +39584,16 @@
           }
         ]
       },
+      "luma_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/luma_config_V1"
+          }
+        ]
+      },
       "magento_mysql_ConnectorResponseV1": {
         "allOf": [
           {
@@ -38416,6 +40324,16 @@
           }
         ]
       },
+      "salsify_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/salsify_config_V1"
+          }
+        ]
+      },
       "samsara_ConnectorResponseV1": {
         "allOf": [
           {
@@ -38433,6 +40351,16 @@
           },
           {
             "$ref": "#/components/schemas/sap_business_by_design_config_V1"
+          }
+        ]
+      },
+      "sap_hana_db_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/sap_hana_db_config_V1"
           }
         ]
       },
@@ -38533,6 +40461,16 @@
           },
           {
             "$ref": "#/components/schemas/shopify_config_V1"
+          }
+        ]
+      },
+      "simplesat_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/simplesat_config_V1"
           }
         ]
       },
@@ -38726,6 +40664,16 @@
           }
         ]
       },
+      "tableau_source_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/tableau_source_config_V1"
+          }
+        ]
+      },
       "taboola_ConnectorResponseV1": {
         "allOf": [
           {
@@ -38836,6 +40784,16 @@
           }
         ]
       },
+      "upland_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/upland_config_V1"
+          }
+        ]
+      },
       "uservoice_ConnectorResponseV1": {
         "allOf": [
           {
@@ -38863,6 +40821,16 @@
           },
           {
             "$ref": "#/components/schemas/when_i_work_config_V1"
+          }
+        ]
+      },
+      "wherefour_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/wherefour_config_V1"
           }
         ]
       },

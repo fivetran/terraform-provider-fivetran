@@ -115,6 +115,7 @@
       "item_type": {},
       "description": {
          "gainsight_customer_success": "The access key for API authentication.",
+         "gongio": "Your Gongio Access key.",
          "retailnext": "Your RetailNext access key."
       },
       "api_field": ""
@@ -142,6 +143,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "gongio": "Your Gongio Access Key Secret.",
          "s3": "Access Key Secret"
       },
       "api_field": ""
@@ -745,6 +747,7 @@
          "oracle_sap_hva_netweaver": "Require TLS.",
          "postgres": "Require TLS through Tunnel",
          "postgres_rds": "Require TLS through Tunnel",
+         "sap_hana_db": "",
          "sql_server": "Require TLS.",
          "sql_server_hva": "Require TLS.",
          "sql_server_rds": "Require TLS."
@@ -802,7 +805,9 @@
          "clickup": "Your ClickUp API key.",
          "confluent_cloud": "API Key",
          "coupa": "Your Coupa API key.",
+         "dcl_logistics": "Your DCL Logistics API key.",
          "delighted": "API Key for your Delighted account",
+         "destini": "Your Destini API Key.",
          "easypost": "Your EasyPost API Key.",
          "everhour": "Your Everhour API Token.",
          "freshdesk": "Your Freshdesk API Key.",
@@ -817,6 +822,7 @@
          "iterable": "Your Iterable API key.",
          "klaviyo": "Your Klaviyo API key.",
          "lever": "Your Lever API key.",
+         "luma": "Your Luma API key.",
          "mailgun": "Your Mailgun API key.",
          "mandrill": "Your Mandrill API key.",
          "ortto": "Your Ortto API key.",
@@ -826,8 +832,10 @@
          "recurly": "The Recurly API key.",
          "rootly": "Your Rootly API key.",
          "sailthru": "The Sailthru API key.",
+         "salsify": "Your Salsify API Key.",
          "sendgrid": "The SendGrid API key.",
          "sendinblue": "Your Sendinblue API key.",
+         "simplesat": "Your Simplesat API key.",
          "sonarqube": "Your Sonarqube API key.",
          "squarespace": "Your Squarespace API key.",
          "stackadapt": "Your StackAdapt API key.",
@@ -1332,6 +1340,7 @@
       "item_type": {},
       "description": {
          "anaplan": "The Anaplan authentication method.",
+         "concur": "The Authentication Mode used by SAP Concur. It can be PasswordGrant or CompanyLevel auth mode",
          "github": "Authorization type."
       },
       "api_field": ""
@@ -1428,6 +1437,7 @@
       "description": {
          "brex": "Your Brex Base URL",
          "financial_force": "(Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.",
+         "gongio": "Your Gong API Base URL.",
          "ironclad": "Your Ironclad base url.",
          "mailgun": "Your Mailgun base URL.",
          "ortto": "Your Ortto base URL. Possible values: `api`, `api.au`, `api.eu`.",
@@ -1582,6 +1592,19 @@
       },
       "api_field": ""
    },
+   "client": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sap_hana_db": ""
+      },
+      "api_field": ""
+   },
    "client_cert": {
       "readonly": false,
       "sensitive": true,
@@ -1665,6 +1688,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "destini": "Your Destini Client Name.",
          "medallia": "Medallia company name"
       },
       "api_field": ""
@@ -1750,7 +1774,34 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "khoros_care": "Your Khoros Care companyKey."
+         "khoros_care": "Your Khoros Care companyKey.",
+         "upland": "Your Upland Software Company Key."
+      },
+      "api_field": ""
+   },
+   "company_request_token": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "concur": "The SAP Concur Company Request Token"
+      },
+      "api_field": ""
+   },
+   "company_uuid": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "concur": "The SAP Concur Company UUID"
       },
       "api_field": ""
    },
@@ -1930,6 +1981,7 @@
          "postgres": "Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
          "postgres_rds": "Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
          "s3": "Connection method. Default value: `Directly`.",
+         "sap_hana_db": "",
          "snowflake_db": "Directly or Private Link",
          "sql_server": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
          "sql_server_hva": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
@@ -2630,6 +2682,7 @@
          "oracle_sap_hva": "The database name.",
          "postgres": "The database name.",
          "postgres_rds": "The database name.",
+         "sap_hana_db": "",
          "snowflake_db": "The database name: Snowflake",
          "sql_server": "The database name.",
          "sql_server_hva": "The database name.",
@@ -3452,6 +3505,7 @@
          "oracle_sap_hva_netweaver": "DB instance host or IP address.",
          "postgres": "DB instance host or IP address.",
          "postgres_rds": "DB instance host or IP address.",
+         "sap_hana_db": "",
          "sftp": "SFTP host address.",
          "snowflake_db": "Host name",
          "splunk": "The Splunk service host address.",
@@ -4360,6 +4414,7 @@
          "salesforce": "",
          "salesforce_sandbox": "",
          "sap_business_by_design": "The SAP Business ByDesign password.",
+         "sap_hana_db": "",
          "scorm": "Your Scorm Secret Key.",
          "servicenow": "Your account password.",
          "sftp": "SFTP password.",
@@ -4373,7 +4428,9 @@
          "sql_server_rds": "The user's password.",
          "teamwork": "Your Teamwork password.",
          "the_trade_desk": "The Trade Desk password. It is a part of the login credentials.",
+         "upland": "Your Upland Software Password.",
          "when_i_work": "Your When I Work password.",
+         "wherefour": "Your Wherefour password.",
          "workday": "Workday password.",
          "workday_hcm": "Workday password."
       },
@@ -4389,6 +4446,32 @@
       "item_type": {},
       "description": {
          "github": "The `Personal Access Token` generated in Github."
+      },
+      "api_field": ""
+   },
+   "pat_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "tableau_source": "Your Tableau Source PAT Name."
+      },
+      "api_field": ""
+   },
+   "pat_secret": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "tableau_source": "Your Tableau Source PAT Secret."
       },
       "api_field": ""
    },
@@ -4587,6 +4670,7 @@
          "oracle_sap_hva": "The port number.",
          "postgres": "The port number.",
          "postgres_rds": "The port number.",
+         "sap_hana_db": "",
          "sftp": "SFTP port.",
          "snowflake_db": "The Snowflake optional port number.",
          "splunk": "The Splunk service host port.",
@@ -4845,6 +4929,7 @@
          "oracle_sap_hva": "Public Key",
          "postgres": "Public Key",
          "postgres_rds": "Public Key",
+         "sap_hana_db": "",
          "sftp": "Public Key",
          "sql_server": "Public Key.",
          "sql_server_hva": "Public Key.",
@@ -5791,8 +5876,10 @@
          "coupa": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "criteo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "crossbeam": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "dcl_logistics": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "dear": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "delighted": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "destini": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "dixa": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "docebo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "double_click_campaign_manager": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -5878,6 +5965,7 @@
          "linkedin_ads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "linkedin_company_pages": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "livechat": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "luma": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "mailchimp": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "mailgun": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "mandrill": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -5930,6 +6018,7 @@
          "salesforce_marketing_cloud": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "salesforce_sandbox": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "salesloft": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "salsify": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "samsara": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "sap_business_by_design": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "scorm": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -5942,6 +6031,7 @@
          "shiphero": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "shipstation": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "shopify": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "simplesat": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "skuvault": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "slack": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "snapchat_ads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -5957,6 +6047,7 @@
          "subscript": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "survey_monkey": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "survicate": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "tableau_source": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "taboola": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "talkdesk": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "teamwork": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -5968,9 +6059,11 @@
          "twitter": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "twitter_ads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "typeform": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "upland": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "uservoice": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "webhooks": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "when_i_work": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "wherefour": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "woocommerce": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "workable": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "workday": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -6034,6 +6127,7 @@
          "oracle_sap_hva": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
          "postgres": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
          "postgres_rds": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
+         "sap_hana_db": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
          "snowflake_db": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
          "sql_server": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
          "sql_server_hva": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
@@ -6271,6 +6365,19 @@
       "item_type": {},
       "description": {
          "sage_intacct": "Your Sender Password"
+      },
+      "api_field": ""
+   },
+   "server_address": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "tableau_source": "Your Tableau Source server address."
       },
       "api_field": ""
    },
@@ -6567,7 +6674,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "microsoft_lists": "The Name of the SharePoint site. The Site Name is the `name` field in the Graph API response for sites."
+         "microsoft_lists": "The Name of the SharePoint site. The Site Name is the `name` field in the Graph API response for sites.",
+         "tableau_source": "Your Tableau Source site name."
       },
       "api_field": ""
    },
@@ -6711,8 +6819,10 @@
          "posthog": "Your PostHog data region (`app` or `eu`).",
          "recurly": "Your company's Recurly subdomain.",
          "salesforce_marketing_cloud": "Your Salesforce Marketing Cloud subdomain.",
+         "salsify": "Your Salsify Organization ID.",
          "sonarqube": "Your Sonarqube subdomain.",
          "tempo": "Your Tempo subdomain.",
+         "upland": "Your Upland Software subDomain.",
          "workable": "Your Workable Subdomain.",
          "wrike": "Your Wrike Subdomain."
       },
@@ -6982,6 +7092,19 @@
          "confluent_cloud": "Kafka sync type.  Unpacked messages must be valid JSON.",
          "heroku_kafka": "Heroku Kafka sync type.  Unpacked messages must be valid JSON.",
          "segment": "The Segment connector sync type."
+      },
+      "api_field": ""
+   },
+   "sysnr": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sap_hana_db": ""
       },
       "api_field": ""
    },
@@ -7395,6 +7518,7 @@
          "oracle_sap_hva_netweaver": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
          "postgres": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
          "postgres_rds": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+         "sap_hana_db": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
          "sftp": "Tunnel host address, specify only to connect via SSH tunnel.",
          "sql_server": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
          "sql_server_hva": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -7446,6 +7570,7 @@
          "oracle_sap_hva_netweaver": "SSH port, specify only to connect via an SSH tunnel.",
          "postgres": "SSH port, specify only to connect via an SSH tunnel.",
          "postgres_rds": "SSH port, specify only to connect via an SSH tunnel.",
+         "sap_hana_db": "SSH port, specify only to connect via an SSH tunnel.",
          "sftp": "Tunnel port, specify only to connect via SSH tunnel.",
          "sql_server": "SSH port, specify only to connect via an SSH tunnel.",
          "sql_server_hva": "SSH port, specify only to connect via an SSH tunnel.",
@@ -7497,6 +7622,7 @@
          "oracle_sap_hva_netweaver": "SSH user, specify only to connect via an SSH tunnel.",
          "postgres": "SSH user, specify only to connect via an SSH tunnel.",
          "postgres_rds": "SSH user, specify only to connect via an SSH tunnel.",
+         "sap_hana_db": "SSH user, specify only to connect via an SSH tunnel.",
          "sftp": "Tunnel user, specify only to connect via SSH tunnel.",
          "sql_server": "SSH user, specify only to connect via an SSH tunnel.",
          "sql_server_hva": "SSH user, specify only to connect via an SSH tunnel.",
@@ -7740,6 +7866,7 @@
          "outbrain": "The username or email of the Outbrain user.",
          "postgres": "The user name.",
          "postgres_rds": "The user name.",
+         "sap_hana_db": "",
          "sftp": "SFTP user.",
          "snowflake_db": "The Snowflake username.",
          "splunk": "The Splunk username.",
@@ -7819,6 +7946,7 @@
          "cin7": "Your Cin7 API Username.",
          "collibra": "Your collibra username.",
          "concur": "The SAP Concur username.",
+         "dcl_logistics": "Your DCL Logistics username.",
          "financial_force": "",
          "github": "`Login` of your GitHub profile.",
          "gladly": "Your Gladly Username.",
@@ -7842,7 +7970,9 @@
          "shiphero": "Your ShipHero username.",
          "shipstation": "Your ShipStation username.",
          "teamwork": "Your Teamwork username.",
+         "upland": "Your Upland Software Username.",
          "when_i_work": "Your When I Work username.",
+         "wherefour": "Your Wherefour username.",
          "workday_hcm": "Username of your Workday Integration System User account"
       },
       "api_field": ""
