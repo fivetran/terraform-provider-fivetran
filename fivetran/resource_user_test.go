@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"testing"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
@@ -97,10 +98,10 @@ func testFivetranUserResourceDestroy(s *terraform.State) error {
 		}
 
 		response, err := client.NewUserDetails().UserID(rs.Primary.ID).Do(context.Background())
-		if err.Error() != "status code: 404; expected: 200" {
+		if !strings.HasPrefix(err.Error(), "status code: 404; expected: 200") {
 			return err
 		}
-		if response.Code != "NotFound" {
+		if !strings.HasPrefix(response.Code, "NotFound") {
 			return errors.New("User " + rs.Primary.ID + " still exists.")
 		}
 

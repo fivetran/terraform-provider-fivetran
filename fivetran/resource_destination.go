@@ -19,62 +19,7 @@ func resourceDestination() *schema.Resource {
 		UpdateWithoutTimeout: resourceDestinationUpdate,
 		DeleteContext:        resourceDestinationDelete,
 		Importer:             &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		Schema: map[string]*schema.Schema{
-			"id": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "The unique identifier for the destination within the Fivetran system.",
-			},
-			"group_id": {
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true,
-				Description: "The unique identifier for the Group within the Fivetran system.",
-			},
-			"service": {
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true,
-				Description: "The destination type name within the Fivetran system.",
-			},
-			"region": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "Data processing location. This is where Fivetran will operate and run computation on data.",
-			},
-			"time_zone_offset": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "Determines the time zone for the Fivetran sync schedule.",
-			},
-			"config": resourceDestinationSchemaConfig(),
-			"trust_certificates": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Description: "Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
-			},
-			"trust_fingerprints": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Description: "Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
-			},
-			"run_setup_tests": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Default:     false,
-				Description: "Specifies whether the setup tests should be run automatically. The default value is TRUE.",
-			},
-			"setup_status": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "Destination setup status",
-			},
-			"last_updated": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "",
-			}, // internal
-		},
+		Schema: 			  getDestinationSchema(false),
 		Timeouts: &schema.ResourceTimeout{
 			Create: schema.DefaultTimeout(30 * time.Minute),
 			Update: schema.DefaultTimeout(30 * time.Minute),
@@ -82,8 +27,82 @@ func resourceDestination() *schema.Resource {
 	}
 }
 
-func resourceDestinationSchemaConfig() *schema.Schema {
-	return &schema.Schema{Type: schema.TypeList, Required: true, MaxItems: 1,
+func getDestinationSchema(datasource bool) map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"id": {
+			Type:        schema.TypeString,
+			Computed:    !datasource,
+			Required:    datasource,
+			Description: "The unique identifier for the destination within the Fivetran system.",
+		},
+		"group_id": {
+			Type:        schema.TypeString,
+			Required:    !datasource,
+			ForceNew:    !datasource,
+			Computed:    datasource,
+			Description: "The unique identifier for the Group within the Fivetran system.",
+		},
+		"service": {
+			Type:        schema.TypeString,
+			Required:    !datasource,
+			ForceNew:    !datasource,
+			Computed:    datasource,
+			Description: "The destination type name within the Fivetran system.",
+		},
+		"region": {
+			Type:        schema.TypeString,
+			Required:    !datasource,
+			Computed:    datasource,
+			Description: "Data processing location. This is where Fivetran will operate and run computation on data.",
+		},
+		"time_zone_offset": {
+			Type:        schema.TypeString,
+			Required:    !datasource,
+			Computed:    datasource,
+			Description: "Determines the time zone for the Fivetran sync schedule.",
+		},
+		"config": getDestinationSchemaConfig(datasource),
+		"trust_certificates": {
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Description: "Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
+		},
+		"trust_fingerprints": {
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Description: "Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
+		},
+		"run_setup_tests": {
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Default:     datasource,
+			Description: "Specifies whether the setup tests should be run automatically. The default value is TRUE.",
+		},
+		"setup_status": {
+			Type:        schema.TypeString,
+			Computed:    true,
+			Description: "Destination setup status",
+		},
+		"last_updated": {
+			Type:        schema.TypeString,
+			Computed:    true,
+			Description: "",
+		},
+	}
+}
+
+func getDestinationSchemaConfig(datasource bool) *schema.Schema {
+	maxItems := 1
+	if datasource {
+		maxItems = 0
+	}
+
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		Required: !datasource,
+		Optional: datasource,
+		Computed: datasource,
+		MaxItems: maxItems,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"host": {
@@ -317,6 +336,7 @@ func resourceDestinationRead(ctx context.Context, d *schema.ResourceData, m inte
 	msi["service"] = resp.Data.Service
 	msi["region"] = resp.Data.Region
 	msi["time_zone_offset"] = resp.Data.TimeZoneOffset
+
 	config, err := resourceDestinationReadConfig(&resp, d.Get("config").([]interface{}))
 	if err != nil {
 		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
@@ -328,6 +348,8 @@ func resourceDestinationRead(ctx context.Context, d *schema.ResourceData, m inte
 			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 		}
 	}
+
+	d.SetId(resp.Data.ID)
 
 	return diags
 }
@@ -444,15 +466,22 @@ func resourceDestinationReadConfig(resp *destinations.DestinationDetailsResponse
 			// if `is_private_key_encrypted` is configured locally we should read upstream value
 			c["is_private_key_encrypted"] = resp.Data.Config.IsPrivateKeyEncrypted
 		}
+	} else {
+		c["password"] = resp.Data.Config.Password
+		c["personal_access_token"] = resp.Data.Config.PersonalAccessToken
+		c["role_arn"] = resp.Data.Config.RoleArn
+		c["secret_key"] = resp.Data.Config.SecretKey
+		c["private_key"] = resp.Data.Config.PrivateKey
+		c["passphrase"] = resp.Data.Config.Passphrase
+	
+		if strToBool(resp.Data.Config.IsPrivateKeyEncrypted) {
+			// we should ignore default `false` value if not configured to prevent data drifts
+			// we read it only if `true` to prevent false data drifts
+			c["is_private_key_encrypted"] = resp.Data.Config.IsPrivateKeyEncrypted
+		}
 	}
 
-	if strToBool(resp.Data.Config.IsPrivateKeyEncrypted) {
-		// we should ignore default `false` value if not configured to prevent data drifts
-		// we read it only if `true` to prevent false data drifts
-		c["is_private_key_encrypted"] = resp.Data.Config.IsPrivateKeyEncrypted
-	}
-
-	c["connection_type"] = dataSourceDestinationConfigNormalizeConnectionType(resp.Data.Config.ConnectionType)
+	c["connection_type"] = resourceDestinationConfigNormalizeConnectionType(resp.Data.Config.ConnectionType)
 	c["tunnel_host"] = resp.Data.Config.TunnelHost
 	c["tunnel_port"] = resp.Data.Config.TunnelPort
 	c["tunnel_user"] = resp.Data.Config.TunnelUser
@@ -624,4 +653,11 @@ func resourceDestinationCreateConfig(config []interface{}) (*destinations.Destin
 	}
 
 	return fivetranConfig, hasConfig
+}
+
+func resourceDestinationConfigNormalizeConnectionType(connectionType string) string {
+	if connectionType == "SshTunnel" {
+		return "SSHTunnel"
+	}
+	return connectionType
 }
