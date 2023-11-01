@@ -42,9 +42,11 @@ Optional:
 - `auth_type` (String) Authentication type. Default value: `PASSWORD`.
 - `bucket` (String) Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.
 - `catalog` (String) Catalog name
+- `client_id` (String) ClientId of your Azure Data Lake Storage
 - `cluster_id` (String) Cluster ID. Must be populated if `connection_type` is set to `SshTunnel` and `auth_type` is set to `IAM`.
 - `cluster_region` (String) Cluster region. Must be populated if `connection_type` is set to `SshTunnel` and `auth_type` is set to `IAM`.
 - `connection_type` (String) Connection method. Default value: `Directly`.
+- `container_name` (String) Container Name of your Azure Data Lake Storage
 - `create_external_tables` (String) Whether to create external tables
 - `data_set_location` (String) Data location. Datasets will reside in this location.
 - `database` (String) Database name
@@ -64,7 +66,10 @@ Optional:
 - `role` (String) The group role that you would like to assign this new user to. Supported group roles: ‘Destination Administrator‘, ‘Destination Reviewer‘, ‘Destination Analyst‘, ‘Connector Creator‘, or a custom destination role
 - `role_arn` (String, Sensitive) Role ARN with Redshift permissions. Required if authentication type is `IAM`.
 - `secret_key` (String, Sensitive) Private key of the customer service account. If specified, your service account will be used to process the data instead of the Fivetran-managed service account.
+- `secret_value` (String, Sensitive) Secret Value of your Azure Data Lake Storage
 - `server_host_name` (String) Server name
+- `storage_account_name` (String) Storage Account Name of your Azure Data Lake Storage
+- `tenant_id` (String) TenantId of your Azure Data Lake Storage
 - `tunnel_host` (String) SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
 - `tunnel_port` (String) SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
 - `tunnel_user` (String) SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.

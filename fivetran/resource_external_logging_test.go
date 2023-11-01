@@ -5,6 +5,7 @@ import (
 	"errors"
 	"testing"
 	"fmt"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
@@ -115,7 +116,7 @@ func testFivetranExternalLoggingResourceDestroy(s *terraform.State) error {
 		if err.Error() != "status code: 404; expected: 200" {
 			return err
 		}
-		if response.Code != "NotFound" {
+		if !strings.HasPrefix(response.Code, "NotFound") {
 			return errors.New("External Logging " + rs.Primary.ID + " still exists. Response code: " + response.Code)
 		}
 

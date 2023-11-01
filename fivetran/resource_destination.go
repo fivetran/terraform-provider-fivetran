@@ -253,6 +253,32 @@ func resourceDestinationSchemaConfig() *schema.Schema {
 					Optional:    true,
 					Description: "Region of your AWS S3 bucket",
 				},
+				"storage_account_name": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Storage Account Name of your Azure Data Lake Storage",
+				},
+				"container_name": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Container Name of your Azure Data Lake Storage",
+				},
+				"tenant_id": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "TenantId of your Azure Data Lake Storage",
+				},
+				"client_id": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "ClientId of your Azure Data Lake Storage",
+				},
+				"secret_value": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Sensitive:   true,
+					Description: "Secret Value of your Azure Data Lake Storage",
+				},
 			},
 		},
 	}
@@ -439,6 +465,7 @@ func resourceDestinationReadConfig(resp *destinations.DestinationDetailsResponse
 		c["personal_access_token"] = currentConfigMap["personal_access_token"].(string)
 		c["role_arn"] = currentConfigMap["role_arn"].(string)
 		c["passphrase"] = currentConfigMap["passphrase"].(string)
+		c["secret_value"] = currentConfigMap["secret_value"].(string)
 
 		if _, ok := currentConfigMap["is_private_key_encrypted"]; ok {
 			// if `is_private_key_encrypted` is configured locally we should read upstream value
@@ -479,6 +506,10 @@ func resourceDestinationReadConfig(resp *destinations.DestinationDetailsResponse
 	c["fivetran_role_arn"] = resp.Data.Config.FivetranRoleArn
 	c["prefix_path"] = resp.Data.Config.PrefixPath
 	c["region"] = resp.Data.Config.Region
+	c["storage_account_name"] = resp.Data.Config.StorageAccountName
+	c["container_name"] = resp.Data.Config.ContainerName
+	c["tenant_id"] = resp.Data.Config.TenantId
+	c["client_id"] = resp.Data.Config.ClientId
 
 	config = append(config, c)
 
@@ -620,6 +651,36 @@ func resourceDestinationCreateConfig(config []interface{}) (*destinations.Destin
 	}
 	if v := c["region"].(string); v != "" {
 		fivetranConfig.Region(v)
+		hasConfig = true
+	}
+
+	if v := c["region"].(string); v != "" {
+		fivetranConfig.Region(v)
+		hasConfig = true
+	}
+
+	if v := c["storage_account_name"].(string); v != "" {
+		fivetranConfig.StorageAccountName(v)
+		hasConfig = true
+	}
+
+	if v := c["container_name"].(string); v != "" {
+		fivetranConfig.ContainerName(v)
+		hasConfig = true
+	}
+
+	if v := c["tenant_id"].(string); v != "" {
+		fivetranConfig.TenantId(v)
+		hasConfig = true
+	}
+
+	if v := c["client_id"].(string); v != "" {
+		fivetranConfig.ClientId(v)
+		hasConfig = true
+	}
+
+	if v := c["secret_value"].(string); v != "" {
+		fivetranConfig.SecretValue(v)
 		hasConfig = true
 	}
 

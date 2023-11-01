@@ -81,7 +81,13 @@ const (
 			"catalog": 					"catalog",
 			"fivetran_role_arn": 		"fivetran_role_arn",
 			"prefix_path": 				"prefix_path",
-			"region": 					"region"
+			"region": 					"region",
+			"storage_account_name": 	"storage_account_name",
+			"container_name": 			"container_name",
+			"tenant_id": 				"tenant_id",
+			"client_id": 				"client_id",
+			"secret_value":				"******"
+
         }
 	}
 	`
@@ -136,6 +142,11 @@ func setupMockClientDestinationConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "fivetran_role_arn", "fivetran_role_arn")
 			assertKeyExistsAndHasValue(t, config, "prefix_path", "prefix_path")
 			assertKeyExistsAndHasValue(t, config, "region", "region")
+			assertKeyExistsAndHasValue(t, config, "storage_account_name", "storage_account_name")
+			assertKeyExistsAndHasValue(t, config, "container_name", "container_name")
+			assertKeyExistsAndHasValue(t, config, "tenant_id", "tenant_id")
+			assertKeyExistsAndHasValue(t, config, "client_id", "client_id")
+			assertKeyExistsAndHasValue(t, config, "secret_value", "secret_value")
 
 			assertKeyExistsAndHasValue(t, config, "tunnel_port", "123")
 
@@ -200,6 +211,11 @@ func TestResourceDestinationMappingMock(t *testing.T) {
 					fivetran_role_arn = "fivetran_role_arn"
 					prefix_path = "prefix_path"
 					region = "region"
+					storage_account_name = "storage_account_name"
+					container_name = "container_name"
+					tenant_id = "tenant_id"
+					client_id = "client_id"
+					secret_value = "secret_value"
 				}
 			}`,
 

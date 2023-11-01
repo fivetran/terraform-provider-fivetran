@@ -224,6 +224,32 @@ func dataSourceDestinationSchemaConfig() *schema.Schema {
 					Optional:    true,
 					Description: "Region of your AWS S3 bucket",
 				},
+				"storage_account_name": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Storage Account Name of your Azure Data Lake Storage",
+				},
+				"container_name": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Container Name of your Azure Data Lake Storage",
+				},
+				"tenant_id": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "TenantId of your Azure Data Lake Storage",
+				},
+				"client_id": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "ClientId of your Azure Data Lake Storage",
+				},
+				"secret_value": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Sensitive:   true,
+					Description: "Secret Value of your Azure Data Lake Storage",
+				},
 			},
 		},
 	}
@@ -314,7 +340,12 @@ func dataSourceDestinationConfig(resp *destinations.DestinationDetailsResponse) 
 	c["fivetran_role_arn"] = resp.Data.Config.FivetranRoleArn
 	c["prefix_path"] = resp.Data.Config.PrefixPath
 	c["region"] = resp.Data.Config.Region
-
+	c["storage_account_name"] = resp.Data.Config.StorageAccountName
+	c["container_name"] = resp.Data.Config.ContainerName
+	c["tenant_id"] = resp.Data.Config.TenantId
+	c["client_id"] = resp.Data.Config.ClientId
+	c["secret_value"] = resp.Data.Config.SecretValue
+	
 	config = append(config, c)
 
 	return config, nil
