@@ -6,6 +6,7 @@ import (
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/dbt"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -31,7 +32,7 @@ func dbtModelsSchema() *schema.Schema {
 		Computed:    true,
 		Description: "The collection of dbt Models.",
 		Set: func(v interface{}) int {
-			return stringInt32Hash(v.(map[string]interface{})["id"].(string))
+			return helpers.StringInt32Hash(v.(map[string]interface{})["id"].(string))
 		},
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
@@ -61,11 +62,11 @@ func dataSourceDbtModelsRead(ctx context.Context, d *schema.ResourceData, m inte
 
 	resp, err := getAllDbtModelsForProject(client, ctx, d.Get("project_id").(string))
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	if err := d.Set("models", flattenDbtModels(resp)); err != nil {
-		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+		return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
 
 	// Enforces ID

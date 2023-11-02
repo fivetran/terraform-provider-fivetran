@@ -7,6 +7,7 @@ import (
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/certificates"
 	"github.com/fivetran/go-fivetran/common"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -17,7 +18,7 @@ func dataSourceCertificates(resourceType ResourceType) *schema.Resource {
 			var diags diag.Diagnostics
 			err := resourceCertificatesRead(ctx, d, m, resourceType, "certificates")
 			if err != nil {
-				return newDiagAppend(diags, diag.Error, "read error", err.Error())
+				return helpers.NewDiagAppend(diags, diag.Error, "read error", err.Error())
 			}
 			return diags
 		},
@@ -31,7 +32,7 @@ func resourceCertificates(resourceType ResourceType) *schema.Resource {
 			var diags diag.Diagnostics
 			err := resourceCertificatesCreate(ctx, d, m, resourceType)
 			if err != nil {
-				return newDiagAppend(diags, diag.Error, "create error", err.Error())
+				return helpers.NewDiagAppend(diags, diag.Error, "create error", err.Error())
 			}
 			return diags
 		},
@@ -39,7 +40,7 @@ func resourceCertificates(resourceType ResourceType) *schema.Resource {
 			var diags diag.Diagnostics
 			err := resourceCertificatesRead(ctx, d, m, resourceType, "certificate")
 			if err != nil {
-				return newDiagAppend(diags, diag.Error, "read error", err.Error())
+				return helpers.NewDiagAppend(diags, diag.Error, "read error", err.Error())
 			}
 			return diags
 		},
@@ -47,7 +48,7 @@ func resourceCertificates(resourceType ResourceType) *schema.Resource {
 			var diags diag.Diagnostics
 			err := resourceCertificatesUpdate(ctx, d, m, resourceType)
 			if err != nil {
-				return newDiagAppend(diags, diag.Error, "update error", err.Error())
+				return helpers.NewDiagAppend(diags, diag.Error, "update error", err.Error())
 			}
 			return diags
 		},
@@ -55,7 +56,7 @@ func resourceCertificates(resourceType ResourceType) *schema.Resource {
 			var diags diag.Diagnostics
 			err := resourceCertificatesDelete(ctx, d, m, resourceType)
 			if err != nil {
-				return newDiagAppend(diags, diag.Error, "delete error", err.Error())
+				return helpers.NewDiagAppend(diags, diag.Error, "delete error", err.Error())
 			}
 			return diags
 		},
@@ -222,7 +223,7 @@ func syncCertificates(ctx context.Context, client *fivetran.Client, local []inte
 		for k := range localItems {
 			local = append(local, k)
 		}
-		revoke, _, approve := intersection(upstream, local)
+		revoke, _, approve := helpers.Intersection(upstream, local)
 
 		for _, r := range revoke {
 			resp, err := revokeCertificate(ctx, client, id, r, resourceType)

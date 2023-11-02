@@ -8,6 +8,7 @@ import (
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/destinations"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -306,12 +307,12 @@ func resourceDestinationCreate(ctx context.Context, d *schema.ResourceData, m in
 		svc.RunSetupTests(v.(bool))
 	}
 
-	ctx, cancel := setContextTimeout(ctx, d.Timeout(schema.TimeoutCreate))
+	ctx, cancel := helpers.SetContextTimeout(ctx, d.Timeout(schema.TimeoutCreate))
 	defer cancel()
 
 	resp, err := svc.Do(ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	d.SetId(resp.Data.ID)
@@ -333,7 +334,7 @@ func resourceDestinationRead(ctx context.Context, d *schema.ResourceData, m inte
 			d.SetId("")
 			return nil
 		}
-		return newDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	// msi stands for Map String Interface
@@ -345,13 +346,13 @@ func resourceDestinationRead(ctx context.Context, d *schema.ResourceData, m inte
 	msi["time_zone_offset"] = resp.Data.TimeZoneOffset
 	config, err := resourceDestinationReadConfig(&resp, d.Get("config").([]interface{}))
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+		return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
 	msi["config"] = config
 	msi["setup_status"] = resp.Data.SetupStatus
 	for k, v := range msi {
 		if err := d.Set(k, v); err != nil {
-			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+			return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 		}
 	}
 
@@ -385,7 +386,7 @@ func resourceDestinationUpdate(ctx context.Context, d *schema.ResourceData, m in
 			// only sets change if func resourceDestinationCreateConfig returns ok
 		}
 	}
-	ctx, cancel := setContextTimeout(ctx, d.Timeout(schema.TimeoutUpdate))
+	ctx, cancel := helpers.SetContextTimeout(ctx, d.Timeout(schema.TimeoutUpdate))
 	defer cancel()
 
 	if hasChanges {
@@ -397,11 +398,11 @@ func resourceDestinationUpdate(ctx context.Context, d *schema.ResourceData, m in
 		if err != nil {
 			// resourceDestinationRead here makes sure the state is updated after a NewDestinationModify error.
 			diags = resourceDestinationRead(ctx, d, m)
-			return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+			return helpers.NewDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 		}
 
 		if err := d.Set("last_updated", time.Now().Format(time.RFC850)); err != nil {
-			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+			return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 		}
 	} else {
 		// if only "run_setup_tests" updated to true - setup tests should be performed without update request
@@ -415,7 +416,7 @@ func resourceDestinationUpdate(ctx context.Context, d *schema.ResourceData, m in
 			}
 			resp, err := testsSvc.Do(ctx)
 			if err != nil {
-				return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+				return helpers.NewDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 			}
 		}
 	}
@@ -430,7 +431,7 @@ func resourceDestinationDelete(ctx context.Context, d *schema.ResourceData, m in
 
 	resp, err := svc.DestinationID(d.Get("id").(string)).Do(ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	d.SetId("")
@@ -473,7 +474,7 @@ func resourceDestinationReadConfig(resp *destinations.DestinationDetailsResponse
 		}
 	}
 
-	if strToBool(resp.Data.Config.IsPrivateKeyEncrypted) {
+	if helpers.StrToBool(resp.Data.Config.IsPrivateKeyEncrypted) {
 		// we should ignore default `false` value if not configured to prevent data drifts
 		// we read it only if `true` to prevent false data drifts
 		c["is_private_key_encrypted"] = resp.Data.Config.IsPrivateKeyEncrypted
@@ -530,7 +531,7 @@ func resourceDestinationCreateConfig(config []interface{}) (*destinations.Destin
 	c := config[0].(map[string]interface{})
 
 	if v := c["create_external_tables"].(string); v != "" {
-		fivetranConfig.CreateExternalTables(strToBool(v))
+		fivetranConfig.CreateExternalTables(helpers.StrToBool(v))
 		hasConfig = true
 	}
 	if v := c["host"].(string); v != "" {
@@ -630,7 +631,7 @@ func resourceDestinationCreateConfig(config []interface{}) (*destinations.Destin
 		hasConfig = true
 	}
 	if v := c["is_private_key_encrypted"].(string); v != "" {
-		fivetranConfig.IsPrivateKeyEncrypted(strToBool(v))
+		fivetranConfig.IsPrivateKeyEncrypted(helpers.StrToBool(v))
 		hasConfig = true
 	}
 	if v := c["passphrase"].(string); v != "" {

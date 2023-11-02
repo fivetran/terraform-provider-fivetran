@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -49,14 +50,14 @@ func resourceConnectorSchedule() *schema.Resource {
 				Optional:     true,
 				Computed:     true,
 				Description:  "Specifies whether the connector is paused",
-				ValidateFunc: validateStringBooleanValue,
+				ValidateFunc: helpers.ValidateStringBooleanValue,
 			}, // Default: false
 			"pause_after_trial": {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Computed:     true,
 				Description:  "Specifies whether the connector should be paused after the free trial period has ended",
-				ValidateFunc: validateStringBooleanValue,
+				ValidateFunc: helpers.ValidateStringBooleanValue,
 			}, // Default: false
 			"daily_sync_time": {
 				Type:         schema.TypeString,
@@ -131,21 +132,21 @@ func resourceConnectorScheduleCreate(ctx context.Context, d *schema.ResourceData
 	// Check if connector exists
 	resp, err := client.NewConnectorDetails().ConnectorID(connectorId).Do(ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "Connector with id ="+connectorId+" doesn't exist.", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "Connector with id ="+connectorId+" doesn't exist.", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	svc := client.NewConnectorModify().ConnectorID(connectorId)
 	if d.Get("sync_frequency").(string) != "" {
-		svc.SyncFrequency(strToInt(d.Get("sync_frequency").(string)))
+		svc.SyncFrequency(helpers.StrToInt(d.Get("sync_frequency").(string)))
 	}
 	if d.Get("schedule_type").(string) != "" {
 		svc.ScheduleType(d.Get("schedule_type").(string))
 	}
 	if d.Get("paused").(string) != "" {
-		svc.Paused(strToBool(d.Get("paused").(string)))
+		svc.Paused(helpers.StrToBool(d.Get("paused").(string)))
 	}
 	if d.Get("pause_after_trial").(string) != "" {
-		svc.PauseAfterTrial(strToBool(d.Get("pause_after_trial").(string)))
+		svc.PauseAfterTrial(helpers.StrToBool(d.Get("pause_after_trial").(string)))
 	}
 
 	if d.Get("sync_frequency") == "1440" && d.Get("daily_sync_time").(string) != "" {
@@ -154,7 +155,7 @@ func resourceConnectorScheduleCreate(ctx context.Context, d *schema.ResourceData
 
 	mResp, err := svc.Do(ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, mResp.Code, mResp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, mResp.Code, mResp.Message))
 	}
 
 	d.SetId(connectorId)
@@ -176,28 +177,28 @@ func resourceConnectorScheduleRead(ctx context.Context, d *schema.ResourceData, 
 			d.SetId("")
 			return nil
 		}
-		return newDiagAppend(diags, diag.Error, "Connector with id ="+connectorId+" doesn't exist.", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "Connector with id ="+connectorId+" doesn't exist.", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	msi := make(map[string]interface{})
 	msi[ID] = connectorId
 	msi[CONNECTOR_ID] = connectorId
 
-	mapAddStr(msi, "sync_frequency", intPointerToStr(resp.Data.SyncFrequency))
-	mapAddStr(msi, "schedule_type", resp.Data.ScheduleType)
-	mapAddStr(msi, "paused", boolPointerToStr(resp.Data.Paused))
-	mapAddStr(msi, "pause_after_trial", boolPointerToStr(resp.Data.PauseAfterTrial))
+	helpers.MapAddStr(msi, "sync_frequency", helpers.IntPointerToStr(resp.Data.SyncFrequency))
+	helpers.MapAddStr(msi, "schedule_type", resp.Data.ScheduleType)
+	helpers.MapAddStr(msi, "paused", helpers.BoolPointerToStr(resp.Data.Paused))
+	helpers.MapAddStr(msi, "pause_after_trial", helpers.BoolPointerToStr(resp.Data.PauseAfterTrial))
 
 	// Value for daily_sync_time won't be returned if sync_frequency < 1440 so we can get it from current config to avoid drifting change
 	if *resp.Data.SyncFrequency != 1440 {
-		mapAddStr(msi, "daily_sync_time", d.Get("daily_sync_time").(string))
+		helpers.MapAddStr(msi, "daily_sync_time", d.Get("daily_sync_time").(string))
 	} else {
-		mapAddStr(msi, "daily_sync_time", resp.Data.DailySyncTime)
+		helpers.MapAddStr(msi, "daily_sync_time", resp.Data.DailySyncTime)
 	}
 
 	for k, v := range msi {
 		if err := d.Set(k, v); err != nil {
-			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+			return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 		}
 	}
 
@@ -212,16 +213,16 @@ func resourceConnectorScheduleUpdate(ctx context.Context, d *schema.ResourceData
 	svc.ConnectorID(d.Get(ID).(string))
 
 	if d.HasChange("sync_frequency") {
-		svc.SyncFrequency(strToInt(d.Get("sync_frequency").(string)))
+		svc.SyncFrequency(helpers.StrToInt(d.Get("sync_frequency").(string)))
 	}
 	if d.HasChange("schedule_type") {
 		svc.ScheduleType(d.Get("schedule_type").(string))
 	}
 	if d.HasChange("paused") {
-		svc.Paused(strToBool(d.Get("paused").(string)))
+		svc.Paused(helpers.StrToBool(d.Get("paused").(string)))
 	}
 	if d.HasChange("pause_after_trial") {
-		svc.PauseAfterTrial(strToBool(d.Get("pause_after_trial").(string)))
+		svc.PauseAfterTrial(helpers.StrToBool(d.Get("pause_after_trial").(string)))
 	}
 	if d.Get("sync_frequency") == "1440" && d.HasChange("daily_sync_time") {
 		svc.DailySyncTime(d.Get("daily_sync_time").(string))
@@ -232,7 +233,7 @@ func resourceConnectorScheduleUpdate(ctx context.Context, d *schema.ResourceData
 	if err != nil {
 		// resourceConnectorScheduleRead here makes sure the state is updated after a NewConnectorModify error.
 		diags = resourceConnectorScheduleRead(ctx, d, m)
-		return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	return resourceConnectorScheduleRead(ctx, d, m)

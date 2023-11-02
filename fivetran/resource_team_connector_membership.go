@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	fivetran "github.com/fivetran/go-fivetran"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -41,7 +42,7 @@ func resourceTeamConnectorMembershipBaseConnectors(datasource bool) *schema.Sche
 		Type:     schema.TypeSet,
 		Optional: true,
 		Set: func(v interface{}) int {
-			return stringInt32Hash(v.(map[string]interface{})["connector_id"].(string) + v.(map[string]interface{})["role"].(string))
+			return helpers.StringInt32Hash(v.(map[string]interface{})["connector_id"].(string) + v.(map[string]interface{})["role"].(string))
 		},
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
@@ -73,7 +74,7 @@ func resourceTeamConnectorMembershipCreate(ctx context.Context, d *schema.Resour
 	teamId := d.Get("team_id").(string)
 
 	if err := resourceTeamConnectorMembershipSyncConnectors(client, d.Get("connector").(*schema.Set).List(), teamId, ctx); err != nil {
-		return newDiagAppend(diags, diag.Error, "create error: resourceTeamConnectorMembershipSyncConnectors", fmt.Sprint(err))
+		return helpers.NewDiagAppend(diags, diag.Error, "create error: resourceTeamConnectorMembershipSyncConnectors", fmt.Sprint(err))
 	}
 
 	d.SetId(teamId)
@@ -94,7 +95,7 @@ func resourceTeamConnectorMembershipRead(ctx context.Context, d *schema.Resource
 			d.SetId("")
 			return nil
 		}
-		return newDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v", err, resp.Code))
+		return helpers.NewDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v", err, resp.Code))
 	}
 
 	// msi stands for Map String Interface
@@ -117,7 +118,7 @@ func resourceTeamConnectorMembershipRead(ctx context.Context, d *schema.Resource
 
 	for k, v := range msi {
 		if err := d.Set(k, v); err != nil {
-			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+			return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 		}
 	}
 
@@ -133,7 +134,7 @@ func resourceTeamConnectorMembershipUpdate(ctx context.Context, d *schema.Resour
 
 	if d.HasChange("connector") {
 		if err := resourceTeamConnectorMembershipSyncConnectors(client, d.Get("connector").(*schema.Set).List(), teamId, ctx); err != nil {
-			return newDiagAppend(diags, diag.Error, "read error: resourceTeamConnectorMembershipSyncConnectors", fmt.Sprint(err))
+			return helpers.NewDiagAppend(diags, diag.Error, "read error: resourceTeamConnectorMembershipSyncConnectors", fmt.Sprint(err))
 		}
 	}
 
@@ -147,7 +148,7 @@ func resourceTeamConnectorMembershipDelete(ctx context.Context, d *schema.Resour
 
 	for _, v := range d.Get("connector").(*schema.Set).List() {
 		if resp, err := client.NewTeamConnectorMembershipDelete().TeamId(teamId).ConnectorId(v.(map[string]interface{})["connector_id"].(string)).Do(ctx); err != nil {
-			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+			return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 		}
 	}
 

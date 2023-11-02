@@ -7,6 +7,7 @@ import (
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/destinations"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -262,7 +263,7 @@ func dataSourceDestinationRead(ctx context.Context, d *schema.ResourceData, m in
 
 	resp, err := svc.DestinationID(d.Get("id").(string)).Do(ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	// msi stands for Map String Interface
@@ -274,13 +275,13 @@ func dataSourceDestinationRead(ctx context.Context, d *schema.ResourceData, m in
 	msi["time_zone_offset"] = resp.Data.TimeZoneOffset
 	config, err := dataSourceDestinationConfig(&resp)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+		return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
 	msi["config"] = config
 	msi["setup_status"] = resp.Data.SetupStatus
 	for k, v := range msi {
 		if err := d.Set(k, v); err != nil {
-			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+			return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 		}
 	}
 

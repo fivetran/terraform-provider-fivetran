@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -97,7 +98,7 @@ func getDbtTransformationSchema(datasource bool) map[string]*schema.Schema {
 func resourceDbtTransformationCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	ctx, cancel := setContextTimeout(ctx, d.Timeout(schema.TimeoutCreate))
+	ctx, cancel := helpers.SetContextTimeout(ctx, d.Timeout(schema.TimeoutCreate))
 	defer cancel()
 
 	client := m.(*fivetran.Client)
@@ -115,7 +116,7 @@ func resourceDbtTransformationCreate(ctx context.Context, d *schema.ResourceData
 	for filteredModelId == nil {
 		modelsResp, err := getAllDbtModelsForProject(client, ctx, projectId)
 		if err != nil {
-			return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, modelsResp.Code, modelsResp.Message))
+			return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, modelsResp.Code, modelsResp.Message))
 		}
 		for _, model := range modelsResp.Data.Items {
 			if model.ModelName == modelName {
@@ -127,9 +128,9 @@ func resourceDbtTransformationCreate(ctx context.Context, d *schema.ResourceData
 			break
 		}
 		if dl, ok := ctx.Deadline(); ok && time.Now().After(dl.Add(-20*time.Second)) {
-			return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("timed out: model with name %v not found in project %v.", modelName, projectId))
+			return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("timed out: model with name %v not found in project %v.", modelName, projectId))
 		}
-		contextDelay(ctx, 10*time.Second)
+		helpers.ContextDelay(ctx, 10*time.Second)
 	}
 
 	dbtModelId := filteredModelId.(string)
@@ -147,7 +148,7 @@ func resourceDbtTransformationCreate(ctx context.Context, d *schema.ResourceData
 	scheduleRequest.ScheduleType(schedule["schedule_type"].(string))
 
 	if v, ok := schedule["days_of_week"]; ok {
-		scheduleRequest.DaysOfWeek(xInterfaceStrXStr(v.(*schema.Set).List()))
+		scheduleRequest.DaysOfWeek(helpers.XInterfaceStrXStr(v.(*schema.Set).List()))
 	}
 
 	if v, ok := schedule["interval"].(int); ok && v > 0 {
@@ -165,7 +166,7 @@ func resourceDbtTransformationCreate(ctx context.Context, d *schema.ResourceData
 	resp, err := svc.Do(ctx)
 
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	d.SetId(resp.Data.ID)
@@ -184,24 +185,24 @@ func resourceDbtTransformationRead(ctx context.Context, d *schema.ResourceData, 
 			d.SetId("")
 			return nil
 		}
-		return newDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	modelResp, err := client.NewDbtModelDetails().ModelId(resp.Data.DbtModelId).Do(ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	mapStringInterface := make(map[string]interface{})
-	mapAddStr(mapStringInterface, "dbt_model_name", modelResp.Data.ModelName)
+	helpers.MapAddStr(mapStringInterface, "dbt_model_name", modelResp.Data.ModelName)
 
-	mapAddStr(mapStringInterface, "id", resp.Data.ID)
-	mapAddStr(mapStringInterface, "dbt_model_id", resp.Data.DbtModelId)
-	mapAddStr(mapStringInterface, "output_model_name", resp.Data.OutputModelName)
-	mapAddStr(mapStringInterface, "dbt_project_id", resp.Data.DbtProjectId)
-	mapAddStr(mapStringInterface, "created_at", resp.Data.CreatedAt)
-	mapAddXString(mapStringInterface, "connector_ids", resp.Data.ConnectorIds)
-	mapAddXString(mapStringInterface, "model_ids", resp.Data.ModelIds)
+	helpers.MapAddStr(mapStringInterface, "id", resp.Data.ID)
+	helpers.MapAddStr(mapStringInterface, "dbt_model_id", resp.Data.DbtModelId)
+	helpers.MapAddStr(mapStringInterface, "output_model_name", resp.Data.OutputModelName)
+	helpers.MapAddStr(mapStringInterface, "dbt_project_id", resp.Data.DbtProjectId)
+	helpers.MapAddStr(mapStringInterface, "created_at", resp.Data.CreatedAt)
+	helpers.MapAddXString(mapStringInterface, "connector_ids", resp.Data.ConnectorIds)
+	helpers.MapAddXString(mapStringInterface, "model_ids", resp.Data.ModelIds)
 
 	mapStringInterface["run_tests"] = resp.Data.RunTests
 	mapStringInterface["paused"] = resp.Data.Paused
@@ -217,7 +218,7 @@ func resourceDbtTransformationRead(ctx context.Context, d *schema.ResourceData, 
 
 	for k, v := range mapStringInterface {
 		if err := d.Set(k, v); err != nil {
-			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+			return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 		}
 	}
 
@@ -267,7 +268,7 @@ func resourceDbtTransformationUpdate(ctx context.Context, d *schema.ResourceData
 	if err != nil {
 		// make sure the state is updated after a newDbtTransformationModify error.
 		diags = resourceDbtTransformationRead(ctx, d, m)
-		return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	return resourceDbtTransformationRead(ctx, d, m)
@@ -280,7 +281,7 @@ func resourceDbtTransformationDelete(ctx context.Context, d *schema.ResourceData
 
 	resp, err := svc.TransformationId(d.Get("id").(string)).Do(ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	d.SetId("")
