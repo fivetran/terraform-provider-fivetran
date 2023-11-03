@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.1...HEAD)
 
+## Added
+- New fields have been added to the recourse `fivetran_destination.config` and datasource `fivetran_destination` to support Azure Data Lake Storage:
+    - Added field `storage_account_name`
+    - Added field `container_name`
+    - Added field `tenant_id`
+    - Added field `client_id`
+    - Added field `secret_value`
+
 ## [1.1.1](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.0...v1.1.1)
 
 ## Added

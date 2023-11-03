@@ -78,6 +78,11 @@ func TestDataSourceDestinationConfigMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("data.fivetran_destination.test_destintion", "config.0.fivetran_role_arn", "fivetran_role_arn"),
 			resource.TestCheckResourceAttr("data.fivetran_destination.test_destintion", "config.0.prefix_path", "prefix_path"),
 			resource.TestCheckResourceAttr("data.fivetran_destination.test_destintion", "config.0.region", "region"),
+			resource.TestCheckResourceAttr("data.fivetran_destination.test_destintion", "config.0.storage_account_name", "storage_account_name"),
+			resource.TestCheckResourceAttr("data.fivetran_destination.test_destintion", "config.0.container_name", "container_name"),
+			resource.TestCheckResourceAttr("data.fivetran_destination.test_destintion", "config.0.tenant_id", "tenant_id"),
+			resource.TestCheckResourceAttr("data.fivetran_destination.test_destintion", "config.0.client_id", "client_id"),
+			resource.TestCheckResourceAttr("data.fivetran_destination.test_destintion", "config.0.secret_value", "******"),
 		),
 	}
 
