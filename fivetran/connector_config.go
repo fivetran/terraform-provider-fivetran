@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 
 	"github.com/fivetran/go-fivetran/connectors"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -195,24 +196,24 @@ func readFieldValueCore(
 	switch field.FieldValueType {
 	case String:
 		if field.Sensitive {
-			copySensitiveStringValue(localConfig, c, upstream, fieldName, field.ApiField)
+			helpers.CopySensitiveStringValue(localConfig, c, upstream, fieldName, field.ApiField)
 		} else {
-			copyStringValue(c, upstream, fieldName, field.ApiField)
+			helpers.CopyStringValue(c, upstream, fieldName, field.ApiField)
 		}
 	case Integer:
-		copyIntegerValue(c, upstream, fieldName, field.ApiField)
+		helpers.CopyIntegerValue(c, upstream, fieldName, field.ApiField)
 	case Boolean:
-		copyBooleanValue(c, upstream, fieldName, field.ApiField)
+		helpers.CopyBooleanValue(c, upstream, fieldName, field.ApiField)
 	case StringList:
 		if field.Sensitive {
-			copySensitiveListValue(localConfig, c, upstream, fieldName, field.ApiField)
+			helpers.CopySensitiveListValue(localConfig, c, upstream, fieldName, field.ApiField)
 		} else {
 			if t, ok := field.ItemType[service]; ok && t != String {
 				if t == Integer {
-					copyIntegersList(c, upstream, fieldName, field.ApiField)
+					helpers.CopyIntegersList(c, upstream, fieldName, field.ApiField)
 				}
 			} else {
-				copyList(c, upstream, fieldName, field.ApiField)
+				helpers.CopyList(c, upstream, fieldName, field.ApiField)
 			}
 		}
 	case ObjectList:
@@ -220,9 +221,9 @@ func readFieldValueCore(
 		if field.ApiField != "" {
 			upstreamFieldName = field.ApiField
 		}
-		upstreamList := tryReadListValue(upstream, upstreamFieldName)
+		upstreamList := helpers.TryReadListValue(upstream, upstreamFieldName)
 		if upstreamList == nil || len(upstreamList) < 1 {
-			mapAddXInterface(c, fieldName, make([]interface{}, 0))
+			helpers.MapAddXInterface(c, fieldName, make([]interface{}, 0))
 		} else {
 			resultList := make([]interface{}, len(upstreamList))
 			for i, elem := range upstreamList {
@@ -234,7 +235,7 @@ func readFieldValueCore(
 				}
 				resultList[i] = resultElem
 			}
-			mapAddXInterface(c, fieldName, resultList)
+			helpers.MapAddXInterface(c, fieldName, resultList)
 		}
 	}
 }
@@ -244,7 +245,7 @@ func getCorrespondingLocalElem(upstreamElem map[string]interface{}, currentConfi
 		return nil
 	}
 
-	subKeyValue := tryReadValue(upstreamElem, v.ItemKeyField)
+	subKeyValue := helpers.TryReadValue(upstreamElem, v.ItemKeyField)
 
 	if currentConfig != nil && subKeyValue != nil {
 		targetList := (*currentConfig)[k].(*schema.Set).List()
@@ -252,7 +253,7 @@ func getCorrespondingLocalElem(upstreamElem map[string]interface{}, currentConfi
 		var filterFunc = func(elem interface{}) bool {
 			return elem.(map[string]interface{})[v.ItemKeyField].(string) == subKeyValue
 		}
-		found := filterList(targetList, filterFunc)
+		found := helpers.FilterList(targetList, filterFunc)
 		if found != nil {
 			foundAsMap := (*found).(map[string]interface{})
 			return &foundAsMap
@@ -287,23 +288,23 @@ func updateConfigFieldImpl(name string, field ConfigField, value interface{}, co
 	case Integer:
 		{
 			if value.(string) != "" {
-				configMap[upstreamFieldName] = strToInt(value.(string))
+				configMap[upstreamFieldName] = helpers.StrToInt(value.(string))
 			}
 		}
 	case StringList:
 		{
 			if t, ok := field.ItemType[service]; ok && t != String {
 				if t == Integer {
-					configMap[upstreamFieldName] = xInterfaceStrXIneger(value.(*schema.Set).List())
+					configMap[upstreamFieldName] = helpers.XInterfaceStrXIneger(value.(*schema.Set).List())
 				}
 			} else {
-				configMap[upstreamFieldName] = xInterfaceStrXStr(value.(*schema.Set).List())
+				configMap[upstreamFieldName] = helpers.XInterfaceStrXStr(value.(*schema.Set).List())
 			}
 		}
 	case Boolean:
 		{
 			if value.(string) != "" {
-				configMap[upstreamFieldName] = strToBool(value.(string))
+				configMap[upstreamFieldName] = helpers.StrToBool(value.(string))
 			}
 		}
 	case ObjectList:

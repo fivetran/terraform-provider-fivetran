@@ -6,6 +6,7 @@ import (
 
 	"github.com/fivetran/go-fivetran"
 	externallogging "github.com/fivetran/go-fivetran/external_logging"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -165,7 +166,7 @@ func resourceExternalLoggingCreate(ctx context.Context, d *schema.ResourceData, 
 
 	resp, err := svc.DoCustom(ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	d.SetId(resp.Data.Id)
@@ -187,24 +188,24 @@ func resourceExternalLoggingRead(ctx context.Context, d *schema.ResourceData, m 
 			d.SetId("")
 			return nil
 		}
-		return newDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	// msi stands for Map String Interface
 	mapStringInterface := make(map[string]interface{})
-	mapAddStr(mapStringInterface, "id", resp.Data.Id)
-	mapAddStr(mapStringInterface, "service", resp.Data.Service)
+	helpers.MapAddStr(mapStringInterface, "id", resp.Data.Id)
+	helpers.MapAddStr(mapStringInterface, "service", resp.Data.Service)
 	mapStringInterface["enabled"] = resp.Data.Enabled
 
 	config, err := resourceExternalLoggingReadConfig(&resp, d.Get("config").([]interface{}))
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+		return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
 	mapStringInterface["config"] = config
 
 	for k, v := range mapStringInterface {
 		if err := d.Set(k, v); err != nil {
-			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+			return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 		}
 	}
 
@@ -241,7 +242,7 @@ func resourceExternalLoggingUpdate(ctx context.Context, d *schema.ResourceData, 
 		if err != nil {
 			// resourceExternalLoggingRead here makes sure the state is updated after a NewExternalLoggingModify error.
 			diags = resourceExternalLoggingRead(ctx, d, m)
-			return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+			return helpers.NewDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 		}
 	} else {
 		// if only "run_setup_tests" updated to true - setup tests should be performed without update request
@@ -249,7 +250,7 @@ func resourceExternalLoggingUpdate(ctx context.Context, d *schema.ResourceData, 
 			testsSvc := client.NewExternalLoggingSetupTests().ExternalLoggingId(d.Get("id").(string))
 			resp, err := testsSvc.Do(ctx)
 			if err != nil {
-				return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+				return helpers.NewDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 			}
 		}
 	}
@@ -264,7 +265,7 @@ func resourceExternalLoggingDelete(ctx context.Context, d *schema.ResourceData, 
 
 	resp, err := svc.ExternalLoggingId(d.Get("id").(string)).Do(ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	d.SetId("")

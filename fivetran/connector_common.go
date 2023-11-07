@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/fivetran/go-fivetran/connectors"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -313,11 +314,11 @@ func getConnectorDestinationSchema(readonly bool) *schema.Schema {
 func connectorRead(currentConfig *[]interface{}, resp connectors.DetailsWithCustomConfigNoTestsResponse, version int) (map[string]interface{}, error) {
 	// msi stands for Map String Interface
 	msi := make(map[string]interface{})
-	mapAddStr(msi, "id", resp.Data.ID)
-	mapAddStr(msi, "group_id", resp.Data.GroupID)
-	mapAddStr(msi, "service", resp.Data.Service)
+	helpers.MapAddStr(msi, "id", resp.Data.ID)
+	helpers.MapAddStr(msi, "group_id", resp.Data.GroupID)
+	helpers.MapAddStr(msi, "service", resp.Data.Service)
 
-	mapAddStr(msi, "name", resp.Data.Schema)
+	helpers.MapAddStr(msi, "name", resp.Data.Schema)
 
 	ds, err := readDestinationSchema(resp.Data.Schema, resp.Data.Service)
 
@@ -325,26 +326,26 @@ func connectorRead(currentConfig *[]interface{}, resp connectors.DetailsWithCust
 		return nil, err
 	}
 
-	mapAddXInterface(msi, "destination_schema", ds)
-	mapAddStr(msi, "connected_by", resp.Data.ConnectedBy)
-	mapAddStr(msi, "created_at", resp.Data.CreatedAt.String())
+	helpers.MapAddXInterface(msi, "destination_schema", ds)
+	helpers.MapAddStr(msi, "connected_by", resp.Data.ConnectedBy)
+	helpers.MapAddStr(msi, "created_at", resp.Data.CreatedAt.String())
 
 	if version == 0 {
-		mapAddStr(msi, "service_version", intPointerToStr(resp.Data.ServiceVersion))
-		mapAddStr(msi, "succeeded_at", resp.Data.SucceededAt.String())
-		mapAddStr(msi, "failed_at", resp.Data.FailedAt.String())
-		mapAddStr(msi, "sync_frequency", intPointerToStr(resp.Data.SyncFrequency))
-		mapAddStr(msi, "daily_sync_time", resp.Data.DailySyncTime)
-		mapAddStr(msi, "schedule_type", resp.Data.ScheduleType)
-		mapAddStr(msi, "paused", boolPointerToStr(resp.Data.Paused))
-		mapAddStr(msi, "pause_after_trial", boolPointerToStr(resp.Data.PauseAfterTrial))
+		helpers.MapAddStr(msi, "service_version", helpers.IntPointerToStr(resp.Data.ServiceVersion))
+		helpers.MapAddStr(msi, "succeeded_at", resp.Data.SucceededAt.String())
+		helpers.MapAddStr(msi, "failed_at", resp.Data.FailedAt.String())
+		helpers.MapAddStr(msi, "sync_frequency", helpers.IntPointerToStr(resp.Data.SyncFrequency))
+		helpers.MapAddStr(msi, "daily_sync_time", resp.Data.DailySyncTime)
+		helpers.MapAddStr(msi, "schedule_type", resp.Data.ScheduleType)
+		helpers.MapAddStr(msi, "paused", helpers.BoolPointerToStr(resp.Data.Paused))
+		helpers.MapAddStr(msi, "pause_after_trial", helpers.BoolPointerToStr(resp.Data.PauseAfterTrial))
 
-		mapAddXInterface(msi, "status", connectorReadStatus(&resp))
+		helpers.MapAddXInterface(msi, "status", connectorReadStatus(&resp))
 	}
 	upstreamConfig := connectorReadCustomConfig(&resp, currentConfig, resp.Data.Service)
 
 	if len(upstreamConfig) > 0 {
-		mapAddXInterface(msi, "config", upstreamConfig)
+		helpers.MapAddXInterface(msi, "config", upstreamConfig)
 	}
 
 	return msi, nil
@@ -360,12 +361,12 @@ func readDestinationSchema(schema string, service string) ([]interface{}, error)
 	}
 
 	if destinationSchemaFields[service]["schema_prefix"] {
-		mapAddStr(ds, "prefix", schema)
+		helpers.MapAddStr(ds, "prefix", schema)
 	} else {
 		s := strings.Split(schema, ".")
-		mapAddStr(ds, "name", s[0])
+		helpers.MapAddStr(ds, "name", s[0])
 		if len(s) > 1 && destinationSchemaFields[service]["table"] {
-			mapAddStr(ds, "table", s[1])
+			helpers.MapAddStr(ds, "table", s[1])
 		}
 	}
 
@@ -379,12 +380,12 @@ func connectorReadStatus(resp *connectors.DetailsWithCustomConfigNoTestsResponse
 	status := make([]interface{}, 1)
 
 	s := make(map[string]interface{})
-	mapAddStr(s, "setup_state", resp.Data.Status.SetupState)
-	mapAddStr(s, "sync_state", resp.Data.Status.SyncState)
-	mapAddStr(s, "update_state", resp.Data.Status.UpdateState)
-	mapAddStr(s, "is_historical_sync", boolPointerToStr(resp.Data.Status.IsHistoricalSync))
-	mapAddXInterface(s, "tasks", connectorReadStatusFlattenTasks(resp))
-	mapAddXInterface(s, "warnings", connectorReadStatusFlattenWarnings(resp))
+	helpers.MapAddStr(s, "setup_state", resp.Data.Status.SetupState)
+	helpers.MapAddStr(s, "sync_state", resp.Data.Status.SyncState)
+	helpers.MapAddStr(s, "update_state", resp.Data.Status.UpdateState)
+	helpers.MapAddStr(s, "is_historical_sync", helpers.BoolPointerToStr(resp.Data.Status.IsHistoricalSync))
+	helpers.MapAddXInterface(s, "tasks", connectorReadStatusFlattenTasks(resp))
+	helpers.MapAddXInterface(s, "warnings", connectorReadStatusFlattenWarnings(resp))
 	status[0] = s
 
 	return status
@@ -398,8 +399,8 @@ func connectorReadStatusFlattenTasks(resp *connectors.DetailsWithCustomConfigNoT
 	tasks := make([]interface{}, len(resp.Data.Status.Tasks))
 	for i, v := range resp.Data.Status.Tasks {
 		task := make(map[string]interface{})
-		mapAddStr(task, "code", v.Code)
-		mapAddStr(task, "message", v.Message)
+		helpers.MapAddStr(task, "code", v.Code)
+		helpers.MapAddStr(task, "message", v.Message)
 
 		tasks[i] = task
 	}
@@ -415,8 +416,8 @@ func connectorReadStatusFlattenWarnings(resp *connectors.DetailsWithCustomConfig
 	warnings := make([]interface{}, len(resp.Data.Status.Warnings))
 	for i, v := range resp.Data.Status.Warnings {
 		warning := make(map[string]interface{})
-		mapAddStr(warning, "code", v.Code)
-		mapAddStr(warning, "message", v.Message)
+		helpers.MapAddStr(warning, "code", v.Code)
+		helpers.MapAddStr(warning, "message", v.Message)
 
 		warnings[i] = warning
 	}

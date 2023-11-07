@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -89,7 +90,7 @@ func resourceConnectorCreate(ctx context.Context, d *schema.ResourceData, m inte
 	currentService := d.Get("service").(string)
 
 	if currentService == "adwords" {
-		return newDiagAppend(diags, diag.Error, "create error", "service `adwords` has been deprecated, use `google_ads` instead")
+		return helpers.NewDiagAppend(diags, diag.Error, "create error", "service `adwords` has been deprecated, use `google_ads` instead")
 	}
 
 	svc.Service(currentService)
@@ -99,9 +100,9 @@ func resourceConnectorCreate(ctx context.Context, d *schema.ResourceData, m inte
 	svc.Paused(true)
 	svc.PauseAfterTrial(true)
 
-	svc.TrustCertificates(strToBool(d.Get("trust_certificates").(string)))
-	svc.TrustFingerprints(strToBool(d.Get("trust_fingerprints").(string)))
-	svc.RunSetupTests(strToBool(d.Get("run_setup_tests").(string)))
+	svc.TrustCertificates(helpers.StrToBool(d.Get("trust_certificates").(string)))
+	svc.TrustFingerprints(helpers.StrToBool(d.Get("trust_fingerprints").(string)))
+	svc.RunSetupTests(helpers.StrToBool(d.Get("run_setup_tests").(string)))
 
 	destination_schema := d.Get("destination_schema").([]interface{})[0].(map[string]interface{})
 
@@ -112,12 +113,12 @@ func resourceConnectorCreate(ctx context.Context, d *schema.ResourceData, m inte
 	svc.ConfigCustom(&config)
 	svc.AuthCustom(resourceConnectorUpdateCustomAuth(d))
 
-	ctx, cancel := setContextTimeout(ctx, d.Timeout(schema.TimeoutCreate))
+	ctx, cancel := helpers.SetContextTimeout(ctx, d.Timeout(schema.TimeoutCreate))
 	defer cancel()
 
 	resp, err := svc.DoCustom(ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	d.SetId(resp.Data.ID)
@@ -184,7 +185,7 @@ func resourceConnectorRead(ctx context.Context, d *schema.ResourceData, m interf
 			d.SetId("")
 			return nil
 		}
-		return newDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	// msi stands for Map String Interface
@@ -193,20 +194,20 @@ func resourceConnectorRead(ctx context.Context, d *schema.ResourceData, m interf
 	msi, err := connectorRead(&currentConfig, resp, 1)
 
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "read error", err.Error())
+		return helpers.NewDiagAppend(diags, diag.Error, "read error", err.Error())
 	}
 
 	currentService := d.Get("service").(string)
 
 	// Ignore service change for migrated `adwords` connectors
 	if currentService == "adwords" && resp.Data.Service == "google_ads" {
-		mapAddStr(msi, "service", "adwords")
-		diags = newDiagAppend(diags, diag.Warning, "Google Ads service migration detected", "service update supressed to prevent resource re-creation.")
+		helpers.MapAddStr(msi, "service", "adwords")
+		diags = helpers.NewDiagAppend(diags, diag.Warning, "Google Ads service migration detected", "service update supressed to prevent resource re-creation.")
 	}
 
 	for k, v := range msi {
 		if err := d.Set(k, v); err != nil {
-			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+			return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 		}
 	}
 
@@ -223,22 +224,22 @@ func resourceConnectorUpdate(ctx context.Context, d *schema.ResourceData, m inte
 	svc.ConnectorID(d.Get("id").(string))
 
 	if d.HasChange("sync_frequency") {
-		svc.SyncFrequency(strToInt(d.Get("sync_frequency").(string)))
+		svc.SyncFrequency(helpers.StrToInt(d.Get("sync_frequency").(string)))
 	}
 	if d.HasChange("trust_certificates") {
-		svc.TrustCertificates(strToBool(d.Get("trust_certificates").(string)))
+		svc.TrustCertificates(helpers.StrToBool(d.Get("trust_certificates").(string)))
 	}
 	if d.HasChange("trust_fingerprints") {
-		svc.TrustFingerprints(strToBool(d.Get("trust_fingerprints").(string)))
+		svc.TrustFingerprints(helpers.StrToBool(d.Get("trust_fingerprints").(string)))
 	}
 	if d.HasChange("run_setup_tests") {
-		svc.RunSetupTests(strToBool(d.Get("run_setup_tests").(string)))
+		svc.RunSetupTests(helpers.StrToBool(d.Get("run_setup_tests").(string)))
 	}
 	if d.HasChange("paused") {
-		svc.Paused(strToBool(d.Get("paused").(string)))
+		svc.Paused(helpers.StrToBool(d.Get("paused").(string)))
 	}
 	if d.HasChange("pause_after_trial") {
-		svc.PauseAfterTrial(strToBool(d.Get("pause_after_trial").(string)))
+		svc.PauseAfterTrial(helpers.StrToBool(d.Get("pause_after_trial").(string)))
 	}
 	if d.Get("sync_frequency") == "1440" && d.HasChange("daily_sync_time") {
 		svc.DailySyncTime(d.Get("daily_sync_time").(string))
@@ -249,18 +250,18 @@ func resourceConnectorUpdate(ctx context.Context, d *schema.ResourceData, m inte
 	svc.ConfigCustom(&config)
 	svc.AuthCustom(resourceConnectorUpdateCustomAuth(d))
 
-	ctx, cancel := setContextTimeout(ctx, d.Timeout(schema.TimeoutUpdate))
+	ctx, cancel := helpers.SetContextTimeout(ctx, d.Timeout(schema.TimeoutUpdate))
 	defer cancel()
 
 	resp, err := svc.DoCustom(ctx)
 	if err != nil {
 		// resourceConnectorRead here makes sure the state is updated after a NewConnectorModify error.
 		diags = resourceConnectorRead(ctx, d, m)
-		return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	if err := d.Set("last_updated", time.Now().Format(time.RFC850)); err != nil {
-		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+		return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
 
 	return resourceConnectorRead(ctx, d, m)
@@ -273,7 +274,7 @@ func resourceConnectorDelete(ctx context.Context, d *schema.ResourceData, m inte
 
 	resp, err := svc.ConnectorID(d.Get("id").(string)).Do(ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	d.SetId("")

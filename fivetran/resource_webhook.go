@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	fivetran "github.com/fivetran/go-fivetran"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -16,7 +17,7 @@ func resourceWebhook() *schema.Resource {
 		UpdateContext: resourceWebhookUpdate,
 		DeleteContext: resourceWebhookDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		Schema: 	   getWebhookSchema(false),
+		Schema:        getWebhookSchema(false),
 	}
 }
 
@@ -87,16 +88,15 @@ func getWebhookSchema(datasource bool) map[string]*schema.Schema {
 	}
 }
 
-
 func resourceWebhookCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	
+
 	if d.Get("type").(string) == "account" {
 		diags = resourceWebhookCreateAccount(ctx, d, m)
 	} else if d.Get("type").(string) == "group" && d.Get("group_id").(string) != "" {
 		diags = resourceWebhookCreateGroup(ctx, d, m)
 	} else {
-		return newDiagAppend(diags, diag.Error, "Incorrect webhook type", "Available values for type field is account or group. If you specify type = group, you need to set group_id")
+		return helpers.NewDiagAppend(diags, diag.Error, "Incorrect webhook type", "Available values for type field is account or group. If you specify type = group, you need to set group_id")
 	}
 
 	resourceWebhookRead(ctx, d, m)
@@ -114,12 +114,12 @@ func resourceWebhookCreateAccount(ctx context.Context, d *schema.ResourceData, m
 	svcAcc.Active(d.Get("active").(bool))
 
 	if v, ok := d.GetOk("events"); ok {
-		svcAcc.Events(xInterfaceStrXStr(v.(*schema.Set).List()))
+		svcAcc.Events(helpers.XInterfaceStrXStr(v.(*schema.Set).List()))
 	}
 
 	resp, err := svcAcc.Do(ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v", err, resp.Code))
+		return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v", err, resp.Code))
 	}
 
 	d.SetId(resp.Data.Id)
@@ -137,12 +137,12 @@ func resourceWebhookCreateGroup(ctx context.Context, d *schema.ResourceData, m i
 	svcGroup.Active(d.Get("active").(bool))
 
 	if v, ok := d.GetOk("events"); ok {
-		svcGroup.Events(xInterfaceStrXStr(v.(*schema.Set).List()))
+		svcGroup.Events(helpers.XInterfaceStrXStr(v.(*schema.Set).List()))
 	}
 
 	resp, err := svcGroup.Do(ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v", err, resp.Code))
+		return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v", err, resp.Code))
 	}
 
 	d.SetId(resp.Data.Id)
@@ -165,7 +165,7 @@ func resourceWebhookRead(ctx context.Context, d *schema.ResourceData, m interfac
 			d.SetId("")
 			return nil
 		}
-		return newDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v", err, resp.Code))
+		return helpers.NewDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v", err, resp.Code))
 	}
 
 	// msi stands for Map String Interface
@@ -176,17 +176,17 @@ func resourceWebhookRead(ctx context.Context, d *schema.ResourceData, m interfac
 	msi["url"] = resp.Data.Url
 	msi["events"] = resp.Data.Events
 	msi["active"] = resp.Data.Active
-	
+
 	msi["secret"] = resp.Data.Secret
 	if resp.Data.Secret == "******" && d.Get("secret") != "" {
-		msi["secret"] = d.Get("secret")				// sensitive field	
-	} 
+		msi["secret"] = d.Get("secret") // sensitive field
+	}
 
 	msi["created_at"] = resp.Data.CreatedAt
 	msi["created_by"] = resp.Data.CreatedBy
 	for k, v := range msi {
 		if err := d.Set(k, v); err != nil {
-			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+			return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 		}
 	}
 
@@ -236,17 +236,17 @@ func resourceWebhookUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	if hasChanges {
 		resp, err := svc.Do(ctx)
 		if err != nil {
-			return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v", err, resp.Code))
-		}		
+			return helpers.NewDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v", err, resp.Code))
+		}
 	}
-	
+
 	if v, ok := d.GetOk("run_tests"); ok && v.(bool) && d.HasChange("run_tests") {
 		testsSvc := m.(*fivetran.Client).NewWebhookTest().WebhookId(d.Get("id").(string))
 		for _, varValue := range d.Get("events").(*schema.Set).List() {
 			testsSvc.Event(varValue.(string))
 			resp, err := testsSvc.Do(ctx)
 			if err != nil {
-				return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v", err, resp.Code))
+				return helpers.NewDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v", err, resp.Code))
 			}
 		}
 	}
@@ -261,7 +261,7 @@ func resourceWebhookDelete(ctx context.Context, d *schema.ResourceData, m interf
 
 	resp, err := svc.WebhookId(d.Get("id").(string)).Do(ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	d.SetId("")

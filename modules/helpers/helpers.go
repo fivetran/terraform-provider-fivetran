@@ -1,4 +1,4 @@
-package fivetran
+package helpers
 
 import (
 	"context"
@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func setContextTimeout(ctx context.Context, timeout time.Duration) (context.Context, context.CancelFunc) {
+func SetContextTimeout(ctx context.Context, timeout time.Duration) (context.Context, context.CancelFunc) {
 	var cancel context.CancelFunc
 	if timeout > 0 {
 		ctx, cancel = context.WithTimeout(ctx, timeout)
@@ -21,7 +21,7 @@ func setContextTimeout(ctx context.Context, timeout time.Duration) (context.Cont
 	return ctx, func() {}
 }
 
-func validateStringBooleanValue(val any, key string) (warns []string, errs []error) {
+func ValidateStringBooleanValue(val any, key string) (warns []string, errs []error) {
 	v := val.(string)
 	if v == "" {
 		return
@@ -38,7 +38,7 @@ func validateStringBooleanValue(val any, key string) (warns []string, errs []err
 	return
 }
 
-func filterList(list []interface{}, filter func(elem interface{}) bool) *interface{} {
+func FilterList(list []interface{}, filter func(elem interface{}) bool) *interface{} {
 	for _, v := range list {
 		if filter(v) {
 			return &v
@@ -47,81 +47,81 @@ func filterList(list []interface{}, filter func(elem interface{}) bool) *interfa
 	return nil
 }
 
-func tryReadValue(source map[string]interface{}, key string) interface{} {
+func TryReadValue(source map[string]interface{}, key string) interface{} {
 	if v, ok := source[key]; ok {
 		return v
 	}
 	return nil
 }
 
-func tryReadListValue(source map[string]interface{}, key string) []interface{} {
+func TryReadListValue(source map[string]interface{}, key string) []interface{} {
 	if v, ok := source[key]; ok {
 		return v.([]interface{})
 	}
 	return nil
 }
 
-func copySensitiveStringValue(localConfig *map[string]interface{}, targetConfig, upstreamConfig map[string]interface{}, localKey, upstreamKey string) {
+func CopySensitiveStringValue(localConfig *map[string]interface{}, targetConfig, upstreamConfig map[string]interface{}, localKey, upstreamKey string) {
 	if upstreamKey == "" {
 		upstreamKey = localKey
 	}
 	if localConfig == nil {
 		// when using upstream value - use upstream key for source
-		copyStringValue(targetConfig, upstreamConfig, localKey, upstreamKey)
+		CopyStringValue(targetConfig, upstreamConfig, localKey, upstreamKey)
 	} else {
 		// when copying local value - use locak key for source
-		copyStringValue(targetConfig, *localConfig, localKey, "")
+		CopyStringValue(targetConfig, *localConfig, localKey, "")
 	}
 }
 
-func copySensitiveListValue(localConfig *map[string]interface{}, targetConfig, upstreamConfig map[string]interface{}, targetKey, sourceKey string) {
+func CopySensitiveListValue(localConfig *map[string]interface{}, targetConfig, upstreamConfig map[string]interface{}, targetKey, sourceKey string) {
 	if localConfig != nil {
 		if sourceKey == "" {
 			sourceKey = targetKey
 		}
-		mapAddXInterface(targetConfig, targetKey, (*localConfig)[sourceKey].(*schema.Set).List())
+		MapAddXInterface(targetConfig, targetKey, (*localConfig)[sourceKey].(*schema.Set).List())
 	} else {
-		copyList(targetConfig, upstreamConfig, targetKey, sourceKey)
+		CopyList(targetConfig, upstreamConfig, targetKey, sourceKey)
 	}
 }
 
-func copyStringValue(target, source map[string]interface{}, targetKey, sourceKey string) {
+func CopyStringValue(target, source map[string]interface{}, targetKey, sourceKey string) {
 	if sourceKey == "" {
 		sourceKey = targetKey
 	}
 	if v, ok := source[sourceKey].(string); ok {
-		mapAddStr(target, targetKey, v)
+		MapAddStr(target, targetKey, v)
 	}
 }
 
-func copyBooleanValue(target, source map[string]interface{}, targetKey, sourceKey string) {
+func CopyBooleanValue(target, source map[string]interface{}, targetKey, sourceKey string) {
 	if sourceKey == "" {
 		sourceKey = targetKey
 	}
 	if v, ok := source[sourceKey].(bool); ok {
-		mapAddStr(target, targetKey, boolToStr(v))
+		MapAddStr(target, targetKey, BoolToStr(v))
 	}
 }
 
-func copyIntegerValue(target, source map[string]interface{}, targetKey, sourceKey string) {
+func CopyIntegerValue(target, source map[string]interface{}, targetKey, sourceKey string) {
 	if sourceKey == "" {
 		sourceKey = targetKey
 	}
 	if v, ok := source[sourceKey].(float64); ok {
-		mapAddStr(target, targetKey, strconv.Itoa((int(v))))
+		MapAddStr(target, targetKey, strconv.Itoa((int(v))))
 	}
 }
 
-func copyList(target, source map[string]interface{}, targetKey, sourceKey string) {
+func CopyList(target, source map[string]interface{}, targetKey, sourceKey string) {
 	if sourceKey == "" {
 		sourceKey = targetKey
 	}
 	if v, ok := source[sourceKey].([]interface{}); ok {
-		mapAddXInterface(target, targetKey, v)
+		MapAddXInterface(target, targetKey, v)
 	}
 }
 
-func copyIntegersList(target, source map[string]interface{}, targetKey, sourceKey string) {
+func CopyIntegersList(target, source map[string]interface{}, targetKey, sourceKey string) {
 	if sourceKey == "" {
 		sourceKey = targetKey
 	}
@@ -130,17 +130,17 @@ func copyIntegersList(target, source map[string]interface{}, targetKey, sourceKe
 		for i, iv := range v {
 			result[i] = strconv.Itoa(int(iv.(float64)))
 		}
-		mapAddXInterface(target, targetKey, result)
+		MapAddXInterface(target, targetKey, result)
 	}
 }
 
 // strToBool receives a string and returns a boolean
-func strToBool(s string) bool {
+func StrToBool(s string) bool {
 	return strings.ToLower(s) == "true"
 }
 
 // boolToStr receives a boolean and returns a string
-func boolToStr(b bool) string {
+func BoolToStr(b bool) string {
 	if b {
 		return "true"
 	}
@@ -149,16 +149,16 @@ func boolToStr(b bool) string {
 
 // boolPointertoStr receives a bool pointer and returns a string.
 // An empty string is returned if the pointer is nil.
-func boolPointerToStr(b *bool) string {
+func BoolPointerToStr(b *bool) string {
 	if b == nil {
 		return ""
 	}
-	return boolToStr(*b)
+	return BoolToStr(*b)
 }
 
 // strToInt receives a string and returns an int. A zero is returned
 // if an error is found while converting the string to int.
-func strToInt(s string) int {
+func StrToInt(s string) int {
 	i, err := strconv.Atoi(s)
 	if err != nil {
 		return 0
@@ -167,13 +167,13 @@ func strToInt(s string) int {
 }
 
 // intToStr receives an int and returns a string.
-func intToStr(i int) string {
+func IntToStr(i int) string {
 	return strconv.Itoa(i)
 }
 
 // intPointerToStr receives an int pointer and returns a string.
 // An empty string is returned if the pointer is nil.
-func intPointerToStr(i *int) string {
+func IntPointerToStr(i *int) string {
 	if i == nil {
 		return ""
 	}
@@ -181,7 +181,7 @@ func intPointerToStr(i *int) string {
 }
 
 // xInterfaceStrXStr receives a []interface{} of type string and returns a []string
-func xInterfaceStrXStr(xi []interface{}) []string {
+func XInterfaceStrXStr(xi []interface{}) []string {
 	xs := make([]string, len(xi))
 	for i, v := range xi {
 		xs[i] = v.(string)
@@ -190,7 +190,7 @@ func xInterfaceStrXStr(xi []interface{}) []string {
 }
 
 // xInterfaceStrXStr receives a []interface{} of type string and returns a []string
-func xInterfaceStrXIneger(xi []interface{}) []int {
+func XInterfaceStrXIneger(xi []interface{}) []int {
 	xs := make([]int, len(xi))
 	for i, v := range xi {
 		integerValue, e := strconv.Atoi(v.(string))
@@ -203,28 +203,28 @@ func xInterfaceStrXIneger(xi []interface{}) []int {
 }
 
 // mapAddStr adds a non-empty string to a map[string]interface{}
-func mapAddStr(msi map[string]interface{}, k, v string) {
+func MapAddStr(msi map[string]interface{}, k, v string) {
 	if v != "" {
 		msi[k] = v
 	}
 }
 
 // mapAddXInterface adds a non-empty []interface{} to a map[string]interface{}
-func mapAddXInterface(msi map[string]interface{}, k string, v []interface{}) {
+func MapAddXInterface(msi map[string]interface{}, k string, v []interface{}) {
 	if len(v) > 0 {
 		msi[k] = v
 	}
 }
 
 // mapAddXInterface adds a non-empty []interface{} to a map[string]interface{}
-func mapAddXString(msi map[string]interface{}, k string, v []string) {
+func MapAddXString(msi map[string]interface{}, k string, v []string) {
 	if len(v) > 0 {
 		msi[k] = v
 	}
 }
 
 // newDiag receives a diag.Severity, a summary, a detail, and returns a diag.Diagnostic
-func newDiag(severity diag.Severity, summary, detail string) diag.Diagnostic {
+func NewDiag(severity diag.Severity, summary, detail string) diag.Diagnostic {
 	return diag.Diagnostic{
 		Severity: severity,
 		Summary:  summary,
@@ -234,12 +234,12 @@ func newDiag(severity diag.Severity, summary, detail string) diag.Diagnostic {
 
 // newAppendDiag receives diag.Diagnostics, a diag.Severity, a summary, and a detail. It makes a new
 // diag.Diagnostic, appends it to the diag.Diagnostics and returns the diag.Diagnostics.
-func newDiagAppend(diags diag.Diagnostics, severity diag.Severity, summary, detail string) diag.Diagnostics {
-	diags = append(diags, newDiag(severity, summary, detail))
+func NewDiagAppend(diags diag.Diagnostics, severity diag.Severity, summary, detail string) diag.Diagnostics {
+	diags = append(diags, NewDiag(severity, summary, detail))
 	return diags
 }
 
-func copyMap(source map[string]interface{}) map[string]interface{} {
+func CopyMap(source map[string]interface{}) map[string]interface{} {
 	result := make(map[string]interface{})
 	for k, v := range source {
 		result[k] = v
@@ -247,11 +247,11 @@ func copyMap(source map[string]interface{}) map[string]interface{} {
 	return result
 }
 
-func copyMapDeep(source map[string]interface{}) map[string]interface{} {
+func CopyMapDeep(source map[string]interface{}) map[string]interface{} {
 	result := make(map[string]interface{})
 	for k, v := range source {
 		if vmap, ok := v.(map[string]interface{}); ok {
-			result[k] = copyMapDeep(vmap)
+			result[k] = CopyMapDeep(vmap)
 		} else {
 			result[k] = v
 		}
@@ -259,7 +259,7 @@ func copyMapDeep(source map[string]interface{}) map[string]interface{} {
 	return result
 }
 
-func filterMap(
+func FilterMap(
 	source map[string]interface{},
 	filter func(interface{}) bool,
 	accept func(interface{}) interface{}) map[string]interface{} {
@@ -276,7 +276,7 @@ func filterMap(
 	return result
 }
 
-func contextDelay(ctx context.Context, d time.Duration) error {
+func ContextDelay(ctx context.Context, d time.Duration) error {
 	t := time.NewTimer(d)
 	select {
 	case <-ctx.Done():
@@ -290,7 +290,7 @@ func contextDelay(ctx context.Context, d time.Duration) error {
 // intersection accepts two slices of same type as arguments and returns three slices:
 // uniques for the first argument, intersection and uniques for second argument
 // results are collections of distinct elements (sets)
-func intersection[T comparable](a, b []T) (uniqueA, intersection, uniqueB []T) {
+func Intersection[T comparable](a, b []T) (uniqueA, intersection, uniqueB []T) {
 	hashA := make(map[T]bool)
 	hashB := make(map[T]bool)
 	for _, ai := range a {
@@ -314,7 +314,7 @@ func intersection[T comparable](a, b []T) (uniqueA, intersection, uniqueB []T) {
 	return uniqueA, intersection, uniqueB
 }
 
-func stringInt32Hash(s string) int {
+func StringInt32Hash(s string) int {
 	h := fnv.New32a()
 	var hashKey = []byte(s)
 	h.Write(hashKey)

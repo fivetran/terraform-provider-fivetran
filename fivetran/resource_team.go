@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	fivetran "github.com/fivetran/go-fivetran"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -16,7 +17,7 @@ func resourceTeam() *schema.Resource {
 		UpdateContext: resourceTeamUpdate,
 		DeleteContext: resourceTeamDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		Schema: 	   getTeamSchema(false),
+		Schema:        getTeamSchema(false),
 	}
 }
 
@@ -60,7 +61,7 @@ func resourceTeamCreate(ctx context.Context, d *schema.ResourceData, m interface
 
 	resp, err := svcAcc.Do(ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v", err, resp.Code))
+		return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v", err, resp.Code))
 	}
 
 	d.SetId(resp.Data.Id)
@@ -85,7 +86,7 @@ func resourceTeamRead(ctx context.Context, d *schema.ResourceData, m interface{}
 			d.SetId("")
 			return nil
 		}
-		return newDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v", err, resp.Code))
+		return helpers.NewDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v", err, resp.Code))
 	}
 
 	// msi stands for Map String Interface
@@ -97,7 +98,7 @@ func resourceTeamRead(ctx context.Context, d *schema.ResourceData, m interface{}
 
 	for k, v := range msi {
 		if err := d.Set(k, v); err != nil {
-			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+			return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 		}
 	}
 
@@ -128,9 +129,9 @@ func resourceTeamUpdate(ctx context.Context, d *schema.ResourceData, m interface
 
 	resp, err := svc.Do(ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v", err, resp.Code))
-	}		
-	
+		return helpers.NewDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v", err, resp.Code))
+	}
+
 	return resourceTeamRead(ctx, d, m)
 }
 
@@ -141,7 +142,7 @@ func resourceTeamDelete(ctx context.Context, d *schema.ResourceData, m interface
 
 	resp, err := svc.TeamId(d.Get("id").(string)).Do(ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	d.SetId("")

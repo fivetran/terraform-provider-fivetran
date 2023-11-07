@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -18,7 +19,7 @@ func dataSourceTeams() *schema.Resource {
 				Optional: true,
 				Computed: true,
 				Set: func(v interface{}) int {
-					return stringInt32Hash(v.(map[string]interface{})["id"].(string))
+					return helpers.StringInt32Hash(v.(map[string]interface{})["id"].(string))
 				},
 				Elem: &schema.Resource{
 					Schema: getTeamSchema(true),
@@ -34,11 +35,11 @@ func dataSourceTeamsRead(ctx context.Context, d *schema.ResourceData, m interfac
 
 	resp, err := dataSourceTeamsGetTeams(client, ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v", err, resp.Code))
+		return helpers.NewDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v", err, resp.Code))
 	}
 
 	if err := d.Set("teams", dataSourceTeamsFlattenTeams(&resp)); err != nil {
-		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+		return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
 
 	// Enforces ID, there can't be two account-wide datasources

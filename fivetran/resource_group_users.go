@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -79,14 +80,14 @@ func resourceGroupUsersCreate(ctx context.Context, d *schema.ResourceData, m int
 	resp, err := client.NewGroupDetails().GroupID(groupID).Do(ctx)
 
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	if err := resourceGroupUsersSyncUsers(client, d.Get("user").(*schema.Set).List(), groupID, ctx); err != nil {
 		if deleteErr := resourceGroupUsersDeleteUsersFromGroup(client, d.Get("user").(*schema.Set).List(), groupID, ctx, diags); deleteErr != nil {
-			return newDiagAppend(diags, diag.Error, "cleanup after failure error: resourceGroupUsersDeleteUsersFromGroup", fmt.Sprint(deleteErr))
+			return helpers.NewDiagAppend(diags, diag.Error, "cleanup after failure error: resourceGroupUsersDeleteUsersFromGroup", fmt.Sprint(deleteErr))
 		}
-		return newDiagAppend(diags, diag.Error, "create error: resourceGroupSyncUsers", fmt.Sprint(err))
+		return helpers.NewDiagAppend(diags, diag.Error, "create error: resourceGroupSyncUsers", fmt.Sprint(err))
 	}
 
 	d.SetId(resp.Data.ID)
@@ -102,7 +103,7 @@ func resourceGroupUsersRead(ctx context.Context, d *schema.ResourceData, m inter
 
 	respUsers, err := dataSourceGroupUsersGetUsers(client, groupID, ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "read error: dataSourceGroupUsersGetUsers", fmt.Sprintf("%v; code: %v; message: %v", err, respUsers.Code, respUsers.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "read error: dataSourceGroupUsersGetUsers", fmt.Sprintf("%v; code: %v; message: %v", err, respUsers.Code, respUsers.Message))
 	}
 
 	// msi stands for Map String Interface
@@ -111,7 +112,7 @@ func resourceGroupUsersRead(ctx context.Context, d *schema.ResourceData, m inter
 	msi["user"] = resourceGroupUsersFlattenGroupUsers(&respUsers)
 	for k, v := range msi {
 		if err := d.Set(k, v); err != nil {
-			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+			return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 		}
 	}
 
@@ -125,12 +126,12 @@ func resourceGroupUsersUpdate(ctx context.Context, d *schema.ResourceData, m int
 
 	if d.HasChange("user") {
 		if err := resourceGroupUsersSyncUsers(client, d.Get("user").(*schema.Set).List(), groupID, ctx); err != nil {
-			return newDiagAppend(diags, diag.Error, "read error: resourceGroupSyncUsers", fmt.Sprint(err))
+			return helpers.NewDiagAppend(diags, diag.Error, "read error: resourceGroupSyncUsers", fmt.Sprint(err))
 		}
 	}
 
 	if err := d.Set("last_updated", time.Now().Format(time.RFC850)); err != nil {
-		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+		return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
 
 	return resourceGroupUsersRead(ctx, d, m)

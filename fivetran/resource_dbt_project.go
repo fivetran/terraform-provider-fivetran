@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -133,7 +134,7 @@ func getDbtProjectSchema(datasource bool) map[string]*schema.Schema {
 func resourceDbtProjectCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	ctx, cancel := setContextTimeout(ctx, d.Timeout(schema.TimeoutCreate))
+	ctx, cancel := helpers.SetContextTimeout(ctx, d.Timeout(schema.TimeoutCreate))
 	defer cancel()
 
 	client := m.(*fivetran.Client)
@@ -152,7 +153,7 @@ func resourceDbtProjectCreate(ctx context.Context, d *schema.ResourceData, m int
 	}
 
 	if projectType != "GIT" {
-		return newDiagAppend(
+		return helpers.NewDiagAppend(
 			diags, diag.Error, "create error",
 			fmt.Sprintf("%v; code: %v; message: %v", "", "", "Able to create only a project of type GIT"))
 	}
@@ -160,7 +161,7 @@ func resourceDbtProjectCreate(ctx context.Context, d *schema.ResourceData, m int
 	svc.Type(projectType.(string))
 	// Currently git_remote_url is required: only GIT project could be managed via API
 	if !gitRemoteUrlDefined && projectType == "GIT" {
-		return newDiagAppend(
+		return helpers.NewDiagAppend(
 			diags, diag.Error, "create error",
 			fmt.Sprintf("%v; code: %v; message: %v", "", "", "git_remote_url is required for project of type GIT"))
 	}
@@ -177,7 +178,7 @@ func resourceDbtProjectCreate(ctx context.Context, d *schema.ResourceData, m int
 	svc.ProjectConfig(projectConfig)
 
 	if v, ok := d.GetOk("environment_vars"); ok {
-		svc.EnvironmentVars(xInterfaceStrXStr(v.(*schema.Set).List()))
+		svc.EnvironmentVars(helpers.XInterfaceStrXStr(v.(*schema.Set).List()))
 	}
 	if v, ok := d.GetOk("target_name"); ok {
 		svc.TargetName(v.(string))
@@ -188,7 +189,7 @@ func resourceDbtProjectCreate(ctx context.Context, d *schema.ResourceData, m int
 
 	resp, err := svc.Do(ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	if d.Get("ensure_readiness").(bool) && strings.ToLower(resp.Data.Status) != "ready" {
@@ -209,9 +210,9 @@ func pollingErrorCleanup(ctx context.Context, client *fivetran.Client, args ...i
 	pollError := args[1].(error)
 	deleteResp, err := client.NewDbtProjectDelete().DbtProjectID(projectId).Do(context.Background())
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("failed to cleanup after unsuccesful deletion; error: %v; code: %v; message: %v", err, deleteResp.Code, deleteResp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("failed to cleanup after unsuccesful deletion; error: %v; code: %v; message: %v", err, deleteResp.Code, deleteResp.Message))
 	}
-	return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("unable to get status for dbt project: %v error: %v", projectId, pollError))
+	return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("unable to get status for dbt project: %v error: %v", projectId, pollError))
 }
 
 func projectErrorCleanup(ctx context.Context, client *fivetran.Client, args ...interface{}) diag.Diagnostics {
@@ -220,9 +221,9 @@ func projectErrorCleanup(ctx context.Context, client *fivetran.Client, args ...i
 	errs := args[1]
 	deleteResp, err := client.NewDbtProjectDelete().DbtProjectID(projectId).Do(context.Background())
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("failed to cleanup after unsuccesful deletion; error: %v; code: %v; message: %v", err, deleteResp.Code, deleteResp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("failed to cleanup after unsuccesful deletion; error: %v; code: %v; message: %v", err, deleteResp.Code, deleteResp.Message))
 	}
-	return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("dbt project: %v has \"ERROR\" status after creation; errors: %v;", projectId, errs))
+	return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("dbt project: %v has \"ERROR\" status after creation; errors: %v;", projectId, errs))
 }
 
 func deadlineExceededCleanup(ctx context.Context, client *fivetran.Client, args ...interface{}) diag.Diagnostics {
@@ -230,9 +231,9 @@ func deadlineExceededCleanup(ctx context.Context, client *fivetran.Client, args 
 	projectId := args[0].(string)
 	deleteResp, err := client.NewDbtProjectDelete().DbtProjectID(projectId).Do(context.Background())
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("failed to cleanup after unsuccesful deletion; error: %v; code: %v; message: %v", err, deleteResp.Code, deleteResp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("failed to cleanup after unsuccesful deletion; error: %v; code: %v; message: %v", err, deleteResp.Code, deleteResp.Message))
 	}
-	return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("project %v is stuck in \"NOT_READY\" status", projectId))
+	return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("project %v is stuck in \"NOT_READY\" status", projectId))
 }
 
 func ensureProjectIsReady(
@@ -249,7 +250,7 @@ func ensureProjectIsReady(
 			if pollingErrorCleanupFunc != nil {
 				return pollingErrorCleanupFunc(context.Background(), client, projectId, e), false
 			} else {
-				return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("unable to get status for dbt project: %v error: %v", projectId, e)), false
+				return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("unable to get status for dbt project: %v error: %v", projectId, e)), false
 			}
 		}
 		if s != "not_ready" {
@@ -257,7 +258,7 @@ func ensureProjectIsReady(
 				if projectErrorCleanupFunc != nil {
 					return projectErrorCleanupFunc(context.Background(), client, projectId, projectErrors), false
 				} else {
-					return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("dbt project: %v has \"ERROR\" status after creation; errors: %v;", projectId, projectErrors)), false
+					return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("dbt project: %v has \"ERROR\" status after creation; errors: %v;", projectId, projectErrors)), false
 				}
 			}
 			break
@@ -267,10 +268,10 @@ func ensureProjectIsReady(
 			if deadlineExceededCleanupFunc != nil {
 				return deadlineExceededCleanupFunc(context.Background(), client, projectId), false
 			} else {
-				return newDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("project %v is stuck in \"NOT_READY\" status", projectId)), false
+				return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("project %v is stuck in \"NOT_READY\" status", projectId)), false
 			}
 		}
-		contextDelay(ctx, 10*time.Second)
+		helpers.ContextDelay(ctx, 10*time.Second)
 	}
 	return diags, true
 }
@@ -295,44 +296,44 @@ func resourceDbtProjectRead(ctx context.Context, d *schema.ResourceData, m inter
 			d.SetId("")
 			return nil
 		}
-		return newDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	mapStringInterface := make(map[string]interface{})
-	mapAddStr(mapStringInterface, "id", resp.Data.ID)
-	mapAddStr(mapStringInterface, "group_id", resp.Data.GroupId)
-	mapAddStr(mapStringInterface, "default_schema", resp.Data.DefaultSchema)
-	mapAddStr(mapStringInterface, "dbt_version", resp.Data.DbtVersion)
-	mapAddStr(mapStringInterface, "target_name", resp.Data.TargetName)
-	mapAddStr(mapStringInterface, "type", resp.Data.Type)
+	helpers.MapAddStr(mapStringInterface, "id", resp.Data.ID)
+	helpers.MapAddStr(mapStringInterface, "group_id", resp.Data.GroupId)
+	helpers.MapAddStr(mapStringInterface, "default_schema", resp.Data.DefaultSchema)
+	helpers.MapAddStr(mapStringInterface, "dbt_version", resp.Data.DbtVersion)
+	helpers.MapAddStr(mapStringInterface, "target_name", resp.Data.TargetName)
+	helpers.MapAddStr(mapStringInterface, "type", resp.Data.Type)
 
 	mapStringInterface["threads"] = resp.Data.Threads
 
-	mapAddXString(mapStringInterface, "environment_vars", resp.Data.EnvironmentVars)
+	helpers.MapAddXString(mapStringInterface, "environment_vars", resp.Data.EnvironmentVars)
 
 	upstreamConfig := make(map[string]interface{})
-	mapAddStr(upstreamConfig, "git_remote_url", resp.Data.ProjectConfig.GitRemoteUrl)
-	mapAddStr(upstreamConfig, "git_branch", resp.Data.ProjectConfig.GitBranch)
-	mapAddStr(upstreamConfig, "folder_path", resp.Data.ProjectConfig.FolderPath)
+	helpers.MapAddStr(upstreamConfig, "git_remote_url", resp.Data.ProjectConfig.GitRemoteUrl)
+	helpers.MapAddStr(upstreamConfig, "git_branch", resp.Data.ProjectConfig.GitBranch)
+	helpers.MapAddStr(upstreamConfig, "folder_path", resp.Data.ProjectConfig.FolderPath)
 	projectConfig := make([]interface{}, 0)
 	mapStringInterface["project_config"] = append(projectConfig, upstreamConfig)
 
-	mapAddStr(mapStringInterface, "created_at", resp.Data.CreatedAt)
-	mapAddStr(mapStringInterface, "created_by_id", resp.Data.CreatedById)
-	mapAddStr(mapStringInterface, "public_key", resp.Data.PublicKey)
-	mapAddStr(mapStringInterface, "status", resp.Data.Status)
+	helpers.MapAddStr(mapStringInterface, "created_at", resp.Data.CreatedAt)
+	helpers.MapAddStr(mapStringInterface, "created_by_id", resp.Data.CreatedById)
+	helpers.MapAddStr(mapStringInterface, "public_key", resp.Data.PublicKey)
+	helpers.MapAddStr(mapStringInterface, "status", resp.Data.Status)
 
 	if strings.ToLower(resp.Data.Status) == "ready" {
 		modelsResp, err := getAllDbtModelsForProject(client, ctx, resp.Data.ID)
 		if err != nil {
-			return newDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, modelsResp.Code, modelsResp.Message))
+			return helpers.NewDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v; message: %v", err, modelsResp.Code, modelsResp.Message))
 		}
-		mapAddXInterface(mapStringInterface, "models", flattenDbtModels(modelsResp))
+		helpers.MapAddXInterface(mapStringInterface, "models", flattenDbtModels(modelsResp))
 	}
 
 	for k, v := range mapStringInterface {
 		if err := d.Set(k, v); err != nil {
-			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+			return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 		}
 	}
 
@@ -380,7 +381,7 @@ func resourceDbtProjectUpdate(ctx context.Context, d *schema.ResourceData, m int
 	diags = resourceDbtProjectRead(ctx, d, m)
 
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "update error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 	return diags
 }
@@ -392,7 +393,7 @@ func resourceDbtProjectDelete(ctx context.Context, d *schema.ResourceData, m int
 	resp, err := client.NewDbtProjectDelete().DbtProjectID(d.Get("id").(string)).Do(ctx)
 
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "delete error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 	d.SetId("")
 	return diags

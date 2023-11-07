@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -23,13 +24,13 @@ func dataSourceTeamConnectorMembershipsRead(ctx context.Context, d *schema.Resou
 
 	connectors, err := dataSourceTeamConnectorMembershipsGet(client, ctx, teamId)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "team memberships service error", fmt.Sprintf("%v; code: %v", err, connectors.Code))
+		return helpers.NewDiagAppend(diags, diag.Error, "team memberships service error", fmt.Sprintf("%v; code: %v", err, connectors.Code))
 	}
 
 	if err := d.Set("connector", dataSourceTeamConnectorMembershipsFlatten(&connectors)); err != nil {
-		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+		return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
-	
+
 	d.SetId(teamId)
 
 	return diags

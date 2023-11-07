@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -33,7 +34,7 @@ func dataSourceGroupConnectorsSchemaConnectors() *schema.Schema {
 		Optional: true,
 		Computed: true,
 		Set: func(v interface{}) int {
-			return stringInt32Hash(v.(map[string]interface{})["id"].(string))
+			return helpers.StringInt32Hash(v.(map[string]interface{})["id"].(string))
 		},
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
@@ -180,13 +181,13 @@ func dataSourceGroupConnectorsRead(ctx context.Context, d *schema.ResourceData, 
 
 	resp, err := dataSourceGroupConnectorsGetConnectors(client, id, schema, ctx)
 	if err != nil {
-		return newDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+		return helpers.NewDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
 
 	flatConnectorsList := dataSourceGroupConnectorsFlattenConnectors(&resp)
 
 	if err := d.Set("connectors", flatConnectorsList); err != nil {
-		return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+		return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 	}
 
 	d.SetId(id)

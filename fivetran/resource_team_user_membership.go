@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	fivetran "github.com/fivetran/go-fivetran"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -41,7 +42,7 @@ func resourceTeamUserMembershipBaseUsers(datasource bool) *schema.Schema {
 		Type:     schema.TypeSet,
 		Optional: true,
 		Set: func(v interface{}) int {
-			return stringInt32Hash(v.(map[string]interface{})["user_id"].(string) + v.(map[string]interface{})["role"].(string))
+			return helpers.StringInt32Hash(v.(map[string]interface{})["user_id"].(string) + v.(map[string]interface{})["role"].(string))
 		},
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
@@ -68,7 +69,7 @@ func resourceTeamUserMembershipCreate(ctx context.Context, d *schema.ResourceDat
 	teamId := d.Get("team_id").(string)
 
 	if err := resourceTeamUserMembershipSyncUsers(client, d.Get("user").(*schema.Set).List(), teamId, ctx); err != nil {
-		return newDiagAppend(diags, diag.Error, "create error: resourceTeamUserMembershipSyncUsers", fmt.Sprint(err))
+		return helpers.NewDiagAppend(diags, diag.Error, "create error: resourceTeamUserMembershipSyncUsers", fmt.Sprint(err))
 	}
 
 	d.SetId(teamId)
@@ -89,7 +90,7 @@ func resourceTeamUserMembershipRead(ctx context.Context, d *schema.ResourceData,
 			d.SetId("")
 			return nil
 		}
-		return newDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v", err, resp.Code))
+		return helpers.NewDiagAppend(diags, diag.Error, "read error", fmt.Sprintf("%v; code: %v", err, resp.Code))
 	}
 
 	// msi stands for Map String Interface
@@ -111,7 +112,7 @@ func resourceTeamUserMembershipRead(ctx context.Context, d *schema.ResourceData,
 
 	for k, v := range msi {
 		if err := d.Set(k, v); err != nil {
-			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
+			return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
 		}
 	}
 
@@ -127,7 +128,7 @@ func resourceTeamUserMembershipUpdate(ctx context.Context, d *schema.ResourceDat
 
 	if d.HasChange("user") {
 		if err := resourceTeamUserMembershipSyncUsers(client, d.Get("user").(*schema.Set).List(), teamId, ctx); err != nil {
-			return newDiagAppend(diags, diag.Error, "read error: resourceTeamUserMembershipSyncUsers", fmt.Sprint(err))
+			return helpers.NewDiagAppend(diags, diag.Error, "read error: resourceTeamUserMembershipSyncUsers", fmt.Sprint(err))
 		}
 	}
 
@@ -141,7 +142,7 @@ func resourceTeamUserMembershipDelete(ctx context.Context, d *schema.ResourceDat
 
 	for _, v := range d.Get("user").(*schema.Set).List() {
 		if resp, err := client.NewTeamUserMembershipDelete().TeamId(teamId).UserId(v.(map[string]interface{})["user_id"].(string)).Do(ctx); err != nil {
-			return newDiagAppend(diags, diag.Error, "set error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
+			return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 		}
 	}
 
