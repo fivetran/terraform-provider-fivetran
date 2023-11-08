@@ -11,9 +11,10 @@ import (
 
 func TestResourceTeamUserMembershipE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() {},
-		Providers:    testProviders,
-		CheckDestroy: testFivetranTeamUserMembershipResourceDestroy,
+		PreCheck: func() {},
+		//Providers:    testProviders,
+		ProtoV5ProviderFactories: protoV5ProviderFactory,
+		CheckDestroy:             testFivetranTeamUserMembershipResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `
