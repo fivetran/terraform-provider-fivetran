@@ -8,7 +8,13 @@ import (
 
 	gofivetran "github.com/fivetran/go-fivetran"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework"
+	"github.com/hashicorp/terraform-plugin-framework/provider"
+	"github.com/hashicorp/terraform-plugin-framework/providerserver"
+	"github.com/hashicorp/terraform-plugin-go/tfprotov5"
+	"github.com/hashicorp/terraform-plugin-mux/tf5muxserver"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
@@ -23,16 +29,36 @@ const (
 	BqProjectId             = "dulcet-yew-246109"
 )
 
+var providerSdk *schema.Provider
+var testProvioderFramework provider.Provider
 var client *gofivetran.Client
 var testProviders map[string]*schema.Provider
 var providerFactory = make(map[string]func() (*schema.Provider, error))
 
+var protoV5ProviderFactory = map[string]func() (tfprotov5.ProviderServer, error){
+	"fivetran-provider": func() (tfprotov5.ProviderServer, error) {
+		ctx := context.Background()
+		providers := []func() tfprotov5.ProviderServer{
+			providerserver.NewProtocol5(testProvioderFramework), // Example terraform-plugin-framework provider
+			providerSdk.GRPCProvider,                            // Example terraform-plugin-sdk provider
+		}
+
+		muxServer, err := tf5muxserver.NewMuxServer(ctx, providers...)
+
+		if err != nil {
+			return nil, err
+		}
+
+		return muxServer.ProviderServer(), nil
+	},
+}
+
 func init() {
 	// uncomment for local testing
-	// os.Setenv("FIVETRAN_API_URL", "https://api-staging.fivetran.com/v1")
-	// os.Setenv("FIVETRAN_APIKEY", "apikey")
-	// os.Setenv("FIVETRAN_APISECRET", "apisecret")
-	// os.Setenv("TF_ACC", "True")
+	os.Setenv("FIVETRAN_API_URL", "https://api-staging.fivetran.com/v1")
+	os.Setenv("FIVETRAN_APIKEY", "IuQj5rR4iAYuJZUk")
+	os.Setenv("FIVETRAN_APISECRET", "VQrMY6Bi9wDCM7P8XUvfaAwgVLjoNouo")
+	os.Setenv("TF_ACC", "True")
 
 	var apiUrl, apiKey, apiSecret string
 	valuesToLoad := map[string]*string{
@@ -51,13 +77,15 @@ func init() {
 	client = gofivetran.New(apiKey, apiSecret)
 	client.BaseURL(apiUrl)
 
-	provider := fivetran.Provider()
-	provider.ConfigureContextFunc = func(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+	testProvioderFramework = framework.FivetranProvider()
+
+	providerSdk = fivetran.Provider()
+	providerSdk.ConfigureContextFunc = func(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 		return client, diag.Diagnostics{}
 	}
 
 	testProviders = map[string]*schema.Provider{
-		"fivetran-provider": provider,
+		"fivetran-provider": providerSdk,
 	}
 
 	for key, element := range testProviders {
@@ -71,6 +99,17 @@ func init() {
 	} else {
 		log.Fatalln("The predefined user doesn't belong to the Testing account. Make sure that credentials are using in the tests belong to the Testing account.")
 	}
+}
+
+func TestMuxServer(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: protoV5ProviderFactory,
+		Steps: []resource.TestStep{
+			{
+				Config: "... configuration including simplest data source or managed resource",
+			},
+		},
+	})
 }
 
 func GetResource(t *testing.T, s *terraform.State, resourceName string) *terraform.ResourceState {
@@ -159,7 +198,7 @@ func cleanupExternalLogging(nextCursor string) {
 		}
 	}
 	if groups.Data.NextCursor != "" {
-	   cleanupExternalLogging(groups.Data.NextCursor)
+		cleanupExternalLogging(groups.Data.NextCursor)
 	}
 }
 
@@ -243,7 +282,7 @@ func cleanupWebhooks() {
 	for _, webhook := range webhooks.Data.Items {
 		_, err := client.NewWebhookDelete().WebhookId(webhook.Id).Do(context.Background())
 		if err != nil {
-			log.Fatal(err)			
+			log.Fatal(err)
 		}
 	}
 }
@@ -256,7 +295,7 @@ func cleanupTeams() {
 	for _, team := range teams.Data.Items {
 		_, err := client.NewTeamsDelete().TeamId(team.Id).Do(context.Background())
 		if err != nil {
-			log.Fatal(err)			
+			log.Fatal(err)
 		}
 	}
 
