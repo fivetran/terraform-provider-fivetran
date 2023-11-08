@@ -55,10 +55,10 @@ var protoV5ProviderFactory = map[string]func() (tfprotov5.ProviderServer, error)
 
 func init() {
 	// uncomment for local testing
-	os.Setenv("FIVETRAN_API_URL", "https://api-staging.fivetran.com/v1")
-	os.Setenv("FIVETRAN_APIKEY", "IuQj5rR4iAYuJZUk")
-	os.Setenv("FIVETRAN_APISECRET", "VQrMY6Bi9wDCM7P8XUvfaAwgVLjoNouo")
-	os.Setenv("TF_ACC", "True")
+	// os.Setenv("FIVETRAN_API_URL", "https://api-staging.fivetran.com/v1")
+	// os.Setenv("FIVETRAN_APIKEY", "apiKey")
+	// os.Setenv("FIVETRAN_APISECRET", "apiSecret")
+	// os.Setenv("TF_ACC", "True")
 
 	var apiUrl, apiKey, apiSecret string
 	valuesToLoad := map[string]*string{
