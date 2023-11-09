@@ -35,7 +35,7 @@ func resourceConnectorSchedule() *schema.Resource {
 				Type:         schema.TypeString,
 				Optional:     true,
 				Computed:     true,
-				Description:  "The connector sync frequency in minutes. Supported values: 5, 15, 30, 60, 120, 180, 360, 480, 720, 1440.",
+				Description:  "The connector sync frequency in minutes. Supported values: 1, 5, 15, 30, 60, 120, 180, 360, 480, 720, 1440.",
 				ValidateFunc: validateConnectorScheduleSyncFrequency,
 			}, // Default: 360
 			"schedule_type": {
@@ -71,10 +71,11 @@ func resourceConnectorSchedule() *schema.Resource {
 
 func validateConnectorScheduleSyncFrequency(val any, key string) (warns []string, errs []error) {
 	v := val.(string)
-	// Allowed values 5, 15, 30, 60, 120, 180, 360, 480, 720, 1440
+	// Allowed values 1, 5, 15, 30, 60, 120, 180, 360, 480, 720, 1440
 	var stub struct{}
 	set := make(map[string]struct{})
 	set[""] = stub
+	set["1"] = stub
 	set["5"] = stub
 	set["15"] = stub
 	set["30"] = stub
@@ -86,7 +87,7 @@ func validateConnectorScheduleSyncFrequency(val any, key string) (warns []string
 	set["720"] = stub
 	set["1440"] = stub
 	if _, ok := set[v]; !ok {
-		errs = append(errs, fmt.Errorf("%q must be one of allowed values (5, 15, 30, 60, 120, 180, 360, 480, 720, 1440); got: %s", key, v))
+		errs = append(errs, fmt.Errorf("%q must be one of allowed values (1, 5, 15, 30, 60, 120, 180, 360, 480, 720, 1440); got: %s", key, v))
 	}
 	return
 }
