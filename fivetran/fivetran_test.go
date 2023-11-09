@@ -14,7 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-go/tfprotov5"
 	"github.com/hashicorp/terraform-plugin-mux/tf5muxserver"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
@@ -99,17 +98,6 @@ func init() {
 	} else {
 		log.Fatalln("The predefined user doesn't belong to the Testing account. Make sure that credentials are using in the tests belong to the Testing account.")
 	}
-}
-
-func TestMuxServer(t *testing.T) {
-	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: protoV5ProviderFactory,
-		Steps: []resource.TestStep{
-			{
-				Config: "... configuration including simplest data source or managed resource",
-			},
-		},
-	})
 }
 
 func GetResource(t *testing.T, s *terraform.State, resourceName string) *terraform.ResourceState {
