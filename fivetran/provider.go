@@ -14,12 +14,13 @@ const Version = "1.1.1" // Current provider version
 
 func Provider() *schema.Provider {
 	var resourceMap = map[string]*schema.Resource{
-		"fivetran_group":                     resourceGroup(),
-		"fivetran_group_users":               resourceGroupUsers(),
-		"fivetran_destination":               resourceDestination(),
-		"fivetran_connector":                 resourceConnector(),
-		"fivetran_connector_schedule":        resourceConnectorSchedule(),
-		"fivetran_connector_schema_config":   connector_schema.ResourceSchemaConfig(),
+		"fivetran_group":              resourceGroup(),
+		"fivetran_group_users":        resourceGroupUsers(),
+		"fivetran_destination":        resourceDestination(),
+		"fivetran_connector":          resourceConnector(),
+		"fivetran_connector_schedule": resourceConnectorSchedule(),
+		//"fivetran_connector_schema_config":     connector_schema.ResourceSchemaConfig(),
+		"fivetran_connector_schema_config":   connector_schema.ResourceSchemaConfigNew(),
 		"fivetran_dbt_transformation":        resourceDbtTransformation(),
 		"fivetran_dbt_project":               resourceDbtProject(),
 		"fivetran_webhook":                   resourceWebhook(),
