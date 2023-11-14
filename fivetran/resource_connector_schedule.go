@@ -131,7 +131,7 @@ func resourceConnectorScheduleCreate(ctx context.Context, d *schema.ResourceData
 	client := m.(*fivetran.Client)
 
 	// Check if connector exists
-	resp, err := client.NewConnectorDetails().ConnectorID(connectorId).Do(ctx)
+	resp, err := client.NewConnectorDetails().ConnectorID(connectorId).DoCustom(ctx)
 	if err != nil {
 		return helpers.NewDiagAppend(diags, diag.Error, "Connector with id ="+connectorId+" doesn't exist.", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
 	}
@@ -154,7 +154,7 @@ func resourceConnectorScheduleCreate(ctx context.Context, d *schema.ResourceData
 		svc.DailySyncTime(d.Get("daily_sync_time").(string))
 	}
 
-	mResp, err := svc.Do(ctx)
+	mResp, err := svc.DoCustom(ctx)
 	if err != nil {
 		return helpers.NewDiagAppend(diags, diag.Error, "create error", fmt.Sprintf("%v; code: %v; message: %v", err, mResp.Code, mResp.Message))
 	}
@@ -172,7 +172,7 @@ func resourceConnectorScheduleRead(ctx context.Context, d *schema.ResourceData, 
 	client := m.(*fivetran.Client)
 
 	// Fetch connector
-	resp, err := client.NewConnectorDetails().ConnectorID(connectorId).Do(ctx)
+	resp, err := client.NewConnectorDetails().ConnectorID(connectorId).DoCustom(ctx)
 	if err != nil {
 		if resp.Code == "404" {
 			d.SetId("")
@@ -229,7 +229,7 @@ func resourceConnectorScheduleUpdate(ctx context.Context, d *schema.ResourceData
 		svc.DailySyncTime(d.Get("daily_sync_time").(string))
 	}
 
-	resp, err := svc.Do(ctx)
+	resp, err := svc.DoCustom(ctx)
 
 	if err != nil {
 		// resourceConnectorScheduleRead here makes sure the state is updated after a NewConnectorModify error.
