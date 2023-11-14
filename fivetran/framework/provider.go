@@ -42,8 +42,8 @@ func (p *fivetranProvider) Metadata(ctx context.Context, req provider.MetadataRe
 func (p *fivetranProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
-			"api_key":    schema.StringAttribute{Optional: true},
-			"api_secret": schema.StringAttribute{Optional: true, Sensitive: true},
+			"api_key":    schema.StringAttribute{Required: true},
+			"api_secret": schema.StringAttribute{Required: true, Sensitive: true},
 			"api_url":    schema.StringAttribute{Optional: true},
 		},
 	}
@@ -81,7 +81,7 @@ func (p *fivetranProvider) Configure(ctx context.Context, req provider.Configure
 		fivetranClient.SetHttpClient(p.mockClient)
 	}
 
-	fivetranClient.CustomUserAgent("terraform-provider-fivetran/" + "1.2.0")
+	fivetranClient.CustomUserAgent("terraform-provider-fivetran/" + "1.1.2")
 	resp.DataSourceData = fivetranClient
 	resp.ResourceData = fivetranClient
 }

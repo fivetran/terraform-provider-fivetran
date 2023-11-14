@@ -5,16 +5,75 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.1...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.2...HEAD)
+
+## [1.1.2](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.1...v1.1.2)
 
 ## Added
-- Supports setting connector synchronization every minute. Added possible value 1 for the field `fivetran_connector_schedule.sync_frequency`. 
-- New fields have been added to the recourse `fivetran_destination.config` and datasource `fivetran_destination` to support Azure Data Lake Storage:
-    - Added field `storage_account_name`
-    - Added field `container_name`
-    - Added field `tenant_id`
-    - Added field `client_id`
-    - Added field `secret_value`
+New connector service types supported:
+- Supported service: `15five`
+- Supported service: `appcues`
+- Supported service: `attentive`
+- Supported service: `awin`
+- Supported service: `ballotready`
+- Supported service: `brevo`
+- Supported service: `buzzsprout`
+- Supported service: `canny`
+- Supported service: `care_quality_commission`
+- Supported service: `circleci`
+- Supported service: `customerio`
+- Supported service: `dbt_cloud`
+- Supported service: `deputy`
+- Supported service: `flexport`
+- Supported service: `forj_community`
+- Supported service: `hopin`
+- Supported service: `insightly`
+- Supported service: `integral_ad_science`
+- Supported service: `justcall`
+- Supported service: `katana`
+- Supported service: `launchdarkly`
+- Supported service: `looker_source`
+- Supported service: `loop`
+- Supported service: `loopio`
+- Supported service: `mention`
+- Supported service: `mixmax`
+- Supported service: `mountain`
+- Supported service: `namely`
+- Supported service: `navan`
+- Supported service: `ometria`
+- Supported service: `pagerduty`
+- Supported service: `partnerstack_vendor`
+- Supported service: `playvox`
+- Supported service: `revel`
+- Supported service: `rippling`
+- Supported service: `security_journey`
+- Supported service: `skilljar`
+- Supported service: `smadex`
+- Supported service: `stylight`
+- Supported service: `toggl_track`
+- Supported service: `trisolute`
+- Supported service: `zoho_campaigns`
+
+New connector config fields supported:
+- Added field `fivetran_connector.config.limit_for_api_calls_to_external_activities_endpoint` for services: `pardot`.
+- Added field `fivetran_connector.config.is_external_activities_endpoint_selected` for services: `pardot`.
+- Added field `fivetran_connector.config.distributed_connector_cluster_size` for services: `cosmos`.
+- Added field `fivetran_connector.config.custom_reports.granularity` for services: `snapchat_ads`.
+- Added field `fivetran_connector.config.custom_reports.breakdown` for services: `snapchat_ads`.
+- Added field `fivetran_connector.config.custom_reports.dimension` for services: `snapchat_ads`.
+- Added field `fivetran_connector.config.custom_reports.sk_ad_metrics_fields` for services: `snapchat_ads`.
+- Added field `fivetran_connector.config.custom_reports.breakout` for services: `snapchat_ads`.
+- Added field `fivetran_connector.config.partner_code` for services: `care_quality_commission`.
+- Added field `fivetran_connector.config.reports.filter_type` for services: `google_analytics_4`.
+- Added field `fivetran_connector.config.app_key` for services: `loopio`.
+- Added field `fivetran_connector.config.enable_data_extensions_syncing` for services: `salesforce_marketing_cloud`.
+- Added field `fivetran_connector.config.reports.rollback_window` for services: `google_analytics_4`.
+- Added field `fivetran_connector.config.api_utilization_percentage` for services: `kustomer`.
+- Added field `fivetran_connector.config.api_key:api_secret` for services: `revel`.
+- Added field `fivetran_connector.config.custom_reports.base_metrics_fields` for services: `snapchat_ads`.
+- Added field `fivetran_connector.config.tenant` for services: `workday_hcm`.
+- Added field `fivetran_connector.config.enable_distributed_connector_mode` for services: `cosmos`.
+
 
 ## [1.1.1](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.0...v1.1.1)
 
