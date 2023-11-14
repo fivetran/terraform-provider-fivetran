@@ -537,8 +537,8 @@ func TestResourceEmptyDefaultSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaEmptyDefaultReloadHandler.Interactions, 1) // 1 reload on create
-				assertEqual(t, schemaEmptyDefaultGetHandler.Interactions, 2)    // 1 read attempt before reload, 1 read after create
+				assertEqual(t, schemaEmptyDefaultReloadHandler.Interactions, 1)
+				assertEqual(t, schemaEmptyDefaultGetHandler.Interactions, 1)
 				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 0)
 				assertNotEmpty(t, schemaEmptyDefaultData) // schema initialised
 				return nil
@@ -561,6 +561,7 @@ func TestResourceEmptyDefaultSchemaMock(t *testing.T) {
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
+			resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0"),
 		),
 	}
 
@@ -749,7 +750,7 @@ func setupMockClientHashedAlignmentSchemaResource(t *testing.T) {
 				tablesMap := schema1["tables"].(map[string]interface{})
 				table1 := tablesMap["table_1"].(map[string]interface{})
 
-				assertEqual(t, len(table1), 2)
+				assertEqual(t, len(table1), 1)
 
 				assertNotEmpty(t, table1["columns"])
 
@@ -767,66 +768,217 @@ func setupMockClientHashedAlignmentSchemaResource(t *testing.T) {
 	)
 }
 
-func setupMockClientConsistentWithUpstreamResource(t *testing.T) {
-	mockClient.Reset()
-	schemaConsistentWithUpstreamData = nil
-
-	schemaConsistentWithUpstreamGetHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
-		func(req *http.Request) (*http.Response, error) {
-			if nil == schemaHashedAlignmentData {
-				schemaConsistentWithUpstreamData = createMapFromJsonString(t, `
-				{
-					"enable_new_by_default": true,
-					"schema_change_handling": "BLOCK_ALL",
-					"schemas": {
-						"schema_1": {
-							"name_in_destination": "schema_1",
-							"enabled": true,
-							"tables": {
-								"table_1": {
-									"name_in_destination": "table_1",
-									"enabled": true,
-									"sync_mode": "SOFT_DELETE",
-									"enabled_patch_settings": {
-										"allowed": true
-									}
-								},
-								"table_2": {
-									"name_in_destination": "table_2",
-									"enabled": true,
-									"sync_mode": "LIVE",
-									"enabled_patch_settings": {
-										"allowed": true
-									}
-								},
-								"table_3": {
-									"name_in_destination": "table_3",
-									"enabled": false,
-									"sync_mode": "LIVE",
-									"enabled_patch_settings": {
-										"allowed": true
+func TestSyncModeMock(t *testing.T) {
+	setupMockClientConsistentWithUpstreamResource := func(t *testing.T) {
+		mockClient.Reset()
+		schemaConsistentWithUpstreamData = createMapFromJsonString(t, `
+					{
+						"enable_new_by_default": true,
+						"schema_change_handling": "BLOCK_ALL",
+						"schemas": {
+							"schema_1": {
+								"name_in_destination": "schema_1",
+								"enabled": true,
+								"tables": {
+									"table_1": {
+										"name_in_destination": "table_1",
+										"enabled": true,
+										"sync_mode": "SOFT_DELETE",
+										"enabled_patch_settings": {
+											"allowed": true
+										}
+									},
+									"table_2": {
+										"name_in_destination": "table_2",
+										"enabled": true,
+										"sync_mode": "LIVE",
+										"enabled_patch_settings": {
+											"allowed": true
+										}
+									},
+									"table_3": {
+										"name_in_destination": "table_3",
+										"enabled": false,
+										"sync_mode": "LIVE",
+										"enabled_patch_settings": {
+											"allowed": true
+										}
 									}
 								}
 							}
 						}
 					}
-				}
-				`)
-			}
-			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaConsistentWithUpstreamData), nil
-		},
-	)
+					`)
 
-	schemaConsistentWithUpstreamPathchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas/").ThenCall(
-		func(req *http.Request) (*http.Response, error) {
-			body := requestBodyToJson(t, req)
-			fmt.Print(body)
-			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaConsistentWithUpstreamData), nil
+		schemaConsistentWithUpstreamGetHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaConsistentWithUpstreamData), nil
+			},
+		)
+
+		schemaConsistentWithUpstreamPathchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas/").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				body := requestBodyToJson(t, req)
+				fmt.Print(body)
+				syncMode := body["schemas"].(map[string]interface{})["schema_1"].(map[string]interface{})["tables"].(map[string]interface{})["table_1"].(map[string]interface{})["sync_mode"].(string)
+				assertEqual(t, syncMode, "HISTORY")
+
+				schemaConsistentWithUpstreamData = createMapFromJsonString(t, `
+					{
+						"enable_new_by_default": true,
+						"schema_change_handling": "BLOCK_ALL",
+						"schemas": {
+							"schema_1": {
+								"name_in_destination": "schema_1",
+								"enabled": true,
+								"tables": {
+									"table_1": {
+										"name_in_destination": "table_1",
+										"enabled": true,
+										"sync_mode": "HISTORY",
+										"enabled_patch_settings": {
+											"allowed": true
+										}
+									},
+									"table_2": {
+										"name_in_destination": "table_2",
+										"enabled": true,
+										"sync_mode": "LIVE",
+										"enabled_patch_settings": {
+											"allowed": true
+										}
+									},
+									"table_3": {
+										"name_in_destination": "table_3",
+										"enabled": false,
+										"sync_mode": "LIVE",
+										"enabled_patch_settings": {
+											"allowed": true
+										}
+									}
+								}
+							}
+						}
+					}
+					`)
+
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaConsistentWithUpstreamData), nil
+			},
+		)
+	}
+
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "BLOCK_ALL"
+				schema {
+					name = "schema_1"
+					enabled = true
+					table {
+						name = "table_1"
+						enabled = true
+						sync_mode = "HISTORY"
+					}
+					table {
+						name = "table_2"
+						enabled = true
+					}
+				}
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 1) // 1 read attempt before reload, 1 read after create
+				assertNotEmpty(t, schemaConsistentWithUpstreamData)                    // schema initialised
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.0.sync_mode", "HISTORY"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.1.sync_mode", ""),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientConsistentWithUpstreamResource(t)
+			},
+			Providers: testProviders,
+			CheckDestroy: func(s *terraform.State) error {
+				// there is no possibility to destroy schema config - it alsways exists within the connector
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
+			},
 		},
 	)
 }
 
 func TestConsistentWithUpstreamSchemaMock(t *testing.T) {
+	setupMockClientConsistentWithUpstreamResource := func(t *testing.T) {
+		mockClient.Reset()
+		schemaConsistentWithUpstreamData = nil
+
+		schemaConsistentWithUpstreamGetHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				if nil == schemaHashedAlignmentData {
+					schemaConsistentWithUpstreamData = createMapFromJsonString(t, `
+					{
+						"enable_new_by_default": true,
+						"schema_change_handling": "BLOCK_ALL",
+						"schemas": {
+							"schema_1": {
+								"name_in_destination": "schema_1",
+								"enabled": true,
+								"tables": {
+									"table_1": {
+										"name_in_destination": "table_1",
+										"enabled": true,
+										"sync_mode": "SOFT_DELETE",
+										"enabled_patch_settings": {
+											"allowed": true
+										}
+									},
+									"table_2": {
+										"name_in_destination": "table_2",
+										"enabled": true,
+										"sync_mode": "LIVE",
+										"enabled_patch_settings": {
+											"allowed": true
+										}
+									},
+									"table_3": {
+										"name_in_destination": "table_3",
+										"enabled": false,
+										"sync_mode": "LIVE",
+										"enabled_patch_settings": {
+											"allowed": true
+										}
+									}
+								}
+							}
+						}
+					}
+					`)
+				}
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaConsistentWithUpstreamData), nil
+			},
+		)
+
+		schemaConsistentWithUpstreamPathchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas/").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				body := requestBodyToJson(t, req)
+				fmt.Print(body)
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaConsistentWithUpstreamData), nil
+			},
+		)
+	}
+
 	step1 := resource.TestStep{
 		Config: `
 			resource "fivetran_connector_schema_config" "test_schema" {
@@ -850,8 +1002,8 @@ func TestConsistentWithUpstreamSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 2) // 1 read attempt before reload, 1 read after create
-				assertNotEmpty(t, schemaConsistentWithUpstreamData)                    // schema initialised
+				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 1)
+				assertNotEmpty(t, schemaConsistentWithUpstreamData)
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
@@ -861,6 +1013,34 @@ func TestConsistentWithUpstreamSchemaMock(t *testing.T) {
 	}
 
 	step2 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "BLOCK_ALL"
+				schema {
+					name = "schema_1"
+					enabled = true
+					table {
+						name = "table_1"
+						enabled = true
+					}
+					table {
+						name = "table_2"
+						enabled = true
+						sync_mode = "LIVE"
+					}
+				}
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.0.sync_mode", ""),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.1.sync_mode", "LIVE"),
+		),
+	}
+
+	step3 := resource.TestStep{
 		Config: `
 			resource "fivetran_connector_schema_config" "test_schema" {
 				provider = fivetran-provider
@@ -903,6 +1083,7 @@ func TestConsistentWithUpstreamSchemaMock(t *testing.T) {
 			Steps: []resource.TestStep{
 				step1,
 				step2,
+				step3,
 			},
 		},
 	)
@@ -919,7 +1100,7 @@ func TestResourceHashedAlignmentSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaHashedAlignmentGetHandler.Interactions, 2)   // 1 read attempt before reload, 1 read after create
+				assertEqual(t, schemaHashedAlignmentGetHandler.Interactions, 1)   // 1 read attempt before reload, 1 read after create
 				assertEqual(t, schemaHashedAlignmentPatchHandler.Interactions, 1) // Update hashed for column
 				assertNotEmpty(t, schemaHashedAlignmentData)                      // schema initialised
 				return nil
