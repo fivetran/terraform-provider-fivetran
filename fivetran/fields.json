@@ -871,7 +871,7 @@
       },
       "api_field": ""
    },
-   "api_key:api_secret": {
+   "api_key_api_secret": {
       "readonly": false,
       "sensitive": true,
       "nullable": true,
