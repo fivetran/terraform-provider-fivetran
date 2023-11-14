@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.2](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.1...v1.1.2)
 
+## Fixed
+- Issue with `fivetran_connector_schema_config` resource when table `sync_mode` field doesn't affect upstream. 
+
 ## Added
 New connector service types supported:
 - Supported service: `15five`
