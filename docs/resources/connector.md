@@ -99,9 +99,22 @@ Optional:
 Optional:
 
 - `access_token` (String, Sensitive) The `Access Token` carries the information necessary for API resources to fetch data.
+- `aws_access_key` (String, Sensitive) `AWS Access Key` of your AWS Account User.
+- `aws_secret_key` (String, Sensitive) `AWS Secret Key` of your AWS Account User.
 - `client_access` (Block List, Max: 1) Your application client access fields. (see [below for nested schema](#nestedblock--auth--client_access))
+- `client_id` (String, Sensitive) `Client ID` of your Amazon Seller/Vendor Central client application.
+- `client_secret` (String, Sensitive) `Client Secret` of your Amazon Seller/Vendor Central client application.
+- `consumer_key` (String, Sensitive) Consumer key of your application.
+- `consumer_secret` (String, Sensitive) Consumer secret of your application.
+- `key_id` (String, Sensitive) Apple Search Ads REST API Key ID. Must be populated if `is_auth2_enabled` is set to `true`.
+- `oauth_token` (String, Sensitive) OAuth token of your application.
+- `oauth_token_secret` (String, Sensitive) OAuth token secret of your application.
+- `previous_refresh_token` (String, Sensitive) Previous `Refresh token` of your application.
 - `realm_id` (String, Sensitive) `Realm ID` of your application.
 - `refresh_token` (String, Sensitive) The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
+- `role_arn` (String, Sensitive) `IAM Role ARN` of your AWS Account.
+- `team_id` (String, Sensitive) Apple Search Ads REST API Team ID. Must be populated if `is_auth2_enabled` is set to `true`.
+- `user_access_token` (String, Sensitive) Access Token
 
 <a id="nestedblock--auth--client_access"></a>
 ### Nested Schema for `auth.client_access`
@@ -376,7 +389,7 @@ Optional:
 	- Service `subscript`: Your Subscript API key.
 	- Service `survicate`: 
 	- Service `trello`: Your TRELLO api key.
-- `api_key:api_secret` (String, Sensitive) Field usage depends on `service` value: 
+- `api_key_api_secret` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `revel`: Your Revel Systems API Key and API Secret.
 - `api_keys` (Set of String, Sensitive) Field usage depends on `service` value: 
 	- Service `mandrill`: Comma-separated list of API keys.  Required if `use_api_keys` is set to `true`.

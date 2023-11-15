@@ -5,7 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.3...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.4...HEAD)
+
+## [1.1.4](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.3...v1.1.4)
+
+## Added
+- Connector `fivetran_connector.auth` fields support:
+  - Added field `fivetran_connector.auth.custom_field_ids`.
+  - Added field `fivetran_connector.auth.previous_refresh_token`.
+  - Added field `fivetran_connector.auth.user_access_token`.
+  - Added field `fivetran_connector.auth.consumer_secret`.
+  - Added field `fivetran_connector.auth.consumer_key`.
+  - Added field `fivetran_connector.auth.oauth_token`.
+  - Added field `fivetran_connector.auth.oauth_token_secret`.
+  - Added field `fivetran_connector.auth.role_arn`.
+  - Added field `fivetran_connector.auth.aws_access_key`.
+  - Added field `fivetran_connector.auth.aws_secret_key`.
+  - Added field `fivetran_connector.auth.client_id`.
+  - Added field `fivetran_connector.auth.key_id`.
+  - Added field `fivetran_connector.auth.team_id`.
+  - Added field `fivetran_connector.auth.client_secret`.
 
 ## [1.1.3](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.2...1.1.3)
 
@@ -86,6 +105,7 @@ New connector config fields supported:
 ## [1.1.1](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.0...v1.1.1)
 
 ## Added
+- Supports setting connector synchronization every minute. Added possible value 1 for the field `fivetran_connector_schedule.sync_frequency`. 
 - New resource `fivetran_connector_certificates` that allows to manage the list of certificates approved for connector.
 - New resource `fivetran_connector_fingerprints` that allows to manage the list of SSH fingerprints approved for connector.
 - New resource `fivetran_destination_certificates` that allows to manage the list of certificates approved for destination.
