@@ -28,18 +28,17 @@ resource "fivetran_user" "user" {
 
 ### Optional
 
+- `invited` (Boolean) The field indicates whether the user has been invited to your account.
 - `phone` (String) The phone number of the user.
 - `picture` (String) The user's avatar as a URL link (for example, 'http://mycompany.com/avatars/john_white.png') or base64 data URI (for example, 'data:image/png;base64,aHR0cDovL215Y29tcGFueS5jb20vYXZhdGFycy9qb2huX3doaXRlLnBuZw==')
-- `role` (String) The role that you would like to assign to the user
+- `role` (String) The role that you would like to assign to the user.
+- `verified` (Boolean) The field indicates whether the user has verified their email address in the account creation process.
 
 ### Read-Only
 
-- `created_at` (String) The timestamp that the user created their Fivetran account
+- `created_at` (String) The timestamp that the user created their Fivetran account.
 - `id` (String) The unique identifier for the user within the Fivetran system.
-- `invited` (Boolean) The field indicates whether the user has been invited to your account.
-- `last_updated` (String)
 - `logged_in_at` (String) The last time that the user has logged into their Fivetran account.
-- `verified` (Boolean) The field indicates whether the user has verified their email address in the account creation process.
 
 ## Import
 

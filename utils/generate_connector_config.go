@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -51,7 +52,7 @@ func main() {
 			for k := range f.Description {
 				services = append(services, "`"+k+"`")
 			}
-			changeLog = append(changeLog, "- Added field `fivetran_connector.config."+fn+"` for services: "+strings.Join(services, ", ")+".")
+			changeLog = append(changeLog, fmt.Sprintf("- Added field `fivetran_connector.config.%s` for services: %s.", fn, strings.Join(services, ", ")))
 		}
 	}
 
@@ -78,10 +79,54 @@ func main() {
 	fmt.Println("Done")
 }
 
+func readLines(fileName string) (map[string]bool, error) {
+	result := make(map[string]bool)
+	file, err := os.Open(fileName)
+	if err != nil {
+		return result, err
+	}
+	defer file.Close()
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		result[scanner.Text()] = true
+	}
+	if err := scanner.Err(); err != nil {
+		return result, err
+	}
+	return result, nil
+}
+
 func loadFieldsFromOAS(existingFields map[string]fivetran.ConfigField) (bool, map[string]fivetran.ConfigField) {
 	schemaContainer := getSchemaJson()
 
+	servicesOld, err := readLines("services.txt")
+
+	if err != nil {
+		fmt.Println("Failed to read existing services...")
+		log.Fatal(err)
+	}
+
 	services := getAvailableServiceIds(schemaContainer)
+
+	newServices := make([]string, 0)
+
+	for _, s := range services {
+		if _, ok := servicesOld[s]; !ok {
+			newServices = append(newServices, fmt.Sprintf("- Supported service: `%s`", s))
+		}
+	}
+
+	err = os.WriteFile("services-changelog.txt", []byte(strings.Join(newServices, "\n")), 0644)
+	if err != nil {
+		fmt.Println("Failed to save services changelog...")
+		log.Fatal(err)
+	}
+
+	err = os.WriteFile("services-new.txt", []byte(strings.Join(services, "\n")), 0644)
+	if err != nil {
+		fmt.Println("Failed to save services list...")
+		log.Fatal(err)
+	}
 
 	updated := false
 	changeLog := make(map[string]fivetran.ConfigField)
