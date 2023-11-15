@@ -14,6 +14,7 @@ const Version = "1.1.2" // Current provider version
 
 func Provider() *schema.Provider {
 	var resourceMap = map[string]*schema.Resource{
+		"fivetran_user":                      resourceUser(),
 		"fivetran_group":                     resourceGroup(),
 		"fivetran_group_users":               resourceGroupUsers(),
 		"fivetran_destination":               resourceDestination(),
@@ -35,6 +36,7 @@ func Provider() *schema.Provider {
 	}
 
 	var dataSourceMap = map[string]*schema.Resource{
+		"fivetran_user":                       dataSourceUser(),
 		"fivetran_users":                      dataSourceUsers(),
 		"fivetran_group":                      dataSourceGroup(),
 		"fivetran_groups":                     dataSourceGroups(),

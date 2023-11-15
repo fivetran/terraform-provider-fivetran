@@ -77,8 +77,7 @@ func TestDataSourceUserMappingMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientUserDataSourceConfigMapping(t)
 			},
-			//Providers: testProviders,
-			ProtoV5ProviderFactories: protoV5ProviderFactory,
+			Providers: testProviders,
 			CheckDestroy: func(s *terraform.State) error {
 				return nil
 			},

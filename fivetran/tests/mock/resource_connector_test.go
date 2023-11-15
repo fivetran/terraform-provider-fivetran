@@ -512,8 +512,7 @@ func TestResourceConnectorEmptyConfigMock(t *testing.T) {
 				assertNotEmpty(t, connectorMockData)
 				return nil
 			},
-			// With the latest version of sdk this check doesn't work, but the test works as expected.
-			//resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "config"),
+			resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "config"),
 		),
 	}
 
@@ -548,8 +547,7 @@ func TestResourceConnectorListsConfigMock(t *testing.T) {
 				assertNotEmpty(t, connectorMockData)
 				return nil
 			},
-			// With the latest version of sdk this check doesn't work, but the test works as expected.
-			//resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "config"),
+			resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "config"),
 		),
 	}
 
