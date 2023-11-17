@@ -280,6 +280,18 @@ func resourceDestinationSchemaConfig() *schema.Schema {
 					Sensitive:   true,
 					Description: "Secret Value of your Azure Data Lake Storage",
 				},
+				"workspace_name": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Sensitive:   true,
+					Description: "OneLake workspace name",
+				},
+				"lakehouse_name": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Sensitive:   true,
+					Description: "OneLake lakehouse name",
+				},
 			},
 		},
 	}
@@ -511,6 +523,8 @@ func resourceDestinationReadConfig(resp *destinations.DestinationDetailsResponse
 	c["container_name"] = resp.Data.Config.ContainerName
 	c["tenant_id"] = resp.Data.Config.TenantId
 	c["client_id"] = resp.Data.Config.ClientId
+	c["workspace_name"] = resp.Data.Config.WorkspaceName
+	c["lakehouse_name"] = resp.Data.Config.LakehouseName
 
 	config = append(config, c)
 
@@ -682,6 +696,16 @@ func resourceDestinationCreateConfig(config []interface{}) (*destinations.Destin
 
 	if v := c["secret_value"].(string); v != "" {
 		fivetranConfig.SecretValue(v)
+		hasConfig = true
+	}
+
+	if v := c["workspace_name"].(string); v != "" {
+		fivetranConfig.WorkspaceName(v)
+		hasConfig = true
+	}
+
+	if v := c["lakehouse_name"].(string); v != "" {
+		fivetranConfig.LakehouseName(v)
 		hasConfig = true
 	}
 
