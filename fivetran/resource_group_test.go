@@ -12,33 +12,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
-// func TestNewDatasourceE2E(t *testing.T) {
-// 	resource.Test(t, resource.TestCase{
-// 		PreCheck: func() {},
-// 		//ProviderFactories: providerFactory,
-// 		ProtoV5ProviderFactories: protoV5ProviderFactory,
-// 		CheckDestroy:             testFivetranGroupResourceDestroy,
-// 		Steps: []resource.TestStep{
-// 			{
-// 				Config: `
-// 					data "fivetran_api_version" "api_version" {
-// 						provider = fivetran-provider
-// 						id = "someId"
-// 					}
-// 				`,
-// 				Check: resource.ComposeAggregateTestCheckFunc(
-// 					resource.TestCheckResourceAttr("data.fivetran_api_version.api_version", "id", "someId"),
-// 					resource.TestCheckResourceAttr("data.fivetran_api_version.api_version", "version", "someVersion"),
-// 				),
-// 			},
-// 		},
-// 	})
-// }
-
 func TestResourceGroupE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck: func() {},
-		//ProviderFactories: providerFactory,
+		PreCheck:                 func() {},
 		ProtoV5ProviderFactories: protoV5ProviderFactory,
 		CheckDestroy:             testFivetranGroupResourceDestroy,
 		Steps: []resource.TestStep{

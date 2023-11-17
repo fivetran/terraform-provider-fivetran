@@ -106,26 +106,26 @@ func testFivetranTeamGroupMembershipResourceCreate(t *testing.T, resourceName st
 	}
 }
 
-func testFivetranTeamGroupMembershipResourceUpdate(t *testing.T, resourceName string) resource.TestCheckFunc {
-	return func(s *terraform.State) error {
-		rs := GetResource(t, s, resourceName)
-		response, err := client.NewTeamGroupMembershipsList().
-			TeamId(rs.Primary.ID).
-			Do(context.Background())
+// func testFivetranTeamGroupMembershipResourceUpdate(t *testing.T, resourceName string) resource.TestCheckFunc {
+// 	return func(s *terraform.State) error {
+// 		rs := GetResource(t, s, resourceName)
+// 		response, err := client.NewTeamGroupMembershipsList().
+// 			TeamId(rs.Primary.ID).
+// 			Do(context.Background())
 
-		if err != nil {
-			return err
-		}
+// 		if err != nil {
+// 			return err
+// 		}
 
-		for _, value := range response.Data.Items {
-			if value.Role == "Destination Administrator" {
-				return nil
-			}
-		}
+// 		for _, value := range response.Data.Items {
+// 			if value.Role == "Destination Administrator" {
+// 				return nil
+// 			}
+// 		}
 
-		return errors.New("Team group membership " + rs.Primary.ID + " didn't updated.")
-	}
-}
+// 		return errors.New("Team group membership " + rs.Primary.ID + " didn't updated.")
+// 	}
+// }
 
 func testFivetranTeamGroupMembershipResourceDestroy(s *terraform.State) error {
 	for _, rs := range s.RootModule().Resources {

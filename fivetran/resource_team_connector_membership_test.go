@@ -140,26 +140,26 @@ func testFivetranTeamConnectorMembershipResourceCreate(t *testing.T, resourceNam
 	}
 }
 
-func testFivetranTeamConnectorMembershipResourceUpdate(t *testing.T, resourceName string) resource.TestCheckFunc {
-	return func(s *terraform.State) error {
-		rs := GetResource(t, s, resourceName)
-		response, err := client.NewTeamConnectorMembershipsList().
-			TeamId(rs.Primary.ID).
-			Do(context.Background())
+// func testFivetranTeamConnectorMembershipResourceUpdate(t *testing.T, resourceName string) resource.TestCheckFunc {
+// 	return func(s *terraform.State) error {
+// 		rs := GetResource(t, s, resourceName)
+// 		response, err := client.NewTeamConnectorMembershipsList().
+// 			TeamId(rs.Primary.ID).
+// 			Do(context.Background())
 
-		if err != nil {
-			return err
-		}
+// 		if err != nil {
+// 			return err
+// 		}
 
-		for _, value := range response.Data.Items {
-			if value.Role == "Connector Reviewer" {
-				return nil
-			}
-		}
+// 		for _, value := range response.Data.Items {
+// 			if value.Role == "Connector Reviewer" {
+// 				return nil
+// 			}
+// 		}
 
-		return errors.New("Team connector membership " + rs.Primary.ID + " didn't updated.")
-	}
-}
+// 		return errors.New("Team connector membership " + rs.Primary.ID + " didn't updated.")
+// 	}
+// }
 
 func testFivetranTeamConnectorMembershipResourceDestroy(s *terraform.State) error {
 	for _, rs := range s.RootModule().Resources {

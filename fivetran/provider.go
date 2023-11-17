@@ -67,9 +67,9 @@ func Provider() *schema.Provider {
 
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
-			"api_key":    {Type: schema.TypeString, Required: true, DefaultFunc: schema.EnvDefaultFunc("FIVETRAN_APIKEY", nil)},
-			"api_secret": {Type: schema.TypeString, Required: true, Sensitive: true, DefaultFunc: schema.EnvDefaultFunc("FIVETRAN_APISECRET", nil)},
-			"api_url":    {Type: schema.TypeString, Optional: true, DefaultFunc: schema.EnvDefaultFunc("FIVETRAN_APIURL", nil)},
+			"api_key":    {Type: schema.TypeString, Optional: true},
+			"api_secret": {Type: schema.TypeString, Optional: true, Sensitive: true},
+			"api_url":    {Type: schema.TypeString, Optional: true},
 		},
 		ResourcesMap:         resourceMap,
 		DataSourcesMap:       dataSourceMap,
@@ -78,10 +78,24 @@ func Provider() *schema.Provider {
 }
 
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+	if d.Get("api_key") == "" {
+		apiKey, _ := schema.EnvDefaultFunc("FIVETRAN_APIKEY", nil)()
+		d.Set("api_key", apiKey)
+	}
+	if d.Get("api_secret") == "" {
+		apiSecret, _ := schema.EnvDefaultFunc("FIVETRAN_APISECRET", nil)()
+		d.Set("api_secret", apiSecret)
+	}
+	if d.Get("api_url") == "" {
+		apiUrl, _ := schema.EnvDefaultFunc("FIVETRAN_APIURL", nil)()
+		d.Set("api_url", apiUrl)
+	}
+
 	fivetranClient := fivetran.New(d.Get("api_key").(string), d.Get("api_secret").(string))
 	if d.Get("api_url") != "" {
 		fivetranClient.BaseURL(d.Get("api_url").(string))
 	}
+
 	fivetranClient.CustomUserAgent("terraform-provider-fivetran/" + Version)
 	return fivetranClient, diag.Diagnostics{}
 }
