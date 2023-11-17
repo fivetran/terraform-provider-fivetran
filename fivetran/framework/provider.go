@@ -81,7 +81,7 @@ func (p *fivetranProvider) Configure(ctx context.Context, req provider.Configure
 		fivetranClient.SetHttpClient(p.mockClient)
 	}
 
-	fivetranClient.CustomUserAgent("terraform-provider-fivetran/" + "1.1.2")
+	fivetranClient.CustomUserAgent("terraform-provider-fivetran/" + "1.1.4")
 	resp.DataSourceData = fivetranClient
 	resp.ResourceData = fivetranClient
 }
