@@ -30,7 +30,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Added field `fivetran_destination.config.lakehouse_name` for OneLake.
 
 ## [1.1.3](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.2...1.1.3)
+## [1.1.3](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.2...1.1.3)
 
+## Fixed
 ## Fixed
 - Issue `Invalid Provider Server Combination`.
 
