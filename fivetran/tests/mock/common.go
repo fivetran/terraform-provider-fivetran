@@ -13,8 +13,13 @@ import (
 
 	fivetranSdk "github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/tests/mock"
-	"github.com/fivetran/terraform-provider-fivetran/fivetran"
 
+	"github.com/fivetran/terraform-provider-fivetran/fivetran"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework"
+	"github.com/hashicorp/terraform-plugin-framework/provider"
+	"github.com/hashicorp/terraform-plugin-framework/providerserver"
+	"github.com/hashicorp/terraform-plugin-go/tfprotov5"
+	"github.com/hashicorp/terraform-plugin-mux/tf5muxserver"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -22,11 +27,30 @@ import (
 var client *fivetranSdk.Client
 var mockClient *mock.HttpClient
 var testProviders map[string]*schema.Provider
+var testProvioderFramework provider.Provider
 
 var (
 	TEST_KEY    = "test_key"
 	TEST_SECRET = "test_secret"
 )
+
+var protoV5ProviderFactory = map[string]func() (tfprotov5.ProviderServer, error){
+	"fivetran-provider": func() (tfprotov5.ProviderServer, error) {
+		ctx := context.Background()
+		providers := []func() tfprotov5.ProviderServer{
+			providerserver.NewProtocol5(testProvioderFramework),
+			testProviders["fivetran-provider"].GRPCProvider,
+		}
+
+		muxServer, err := tf5muxserver.NewMuxServer(ctx, providers...)
+
+		if err != nil {
+			return nil, err
+		}
+
+		return muxServer.ProviderServer(), nil
+	},
+}
 
 func init() {
 	client = fivetranSdk.New(TEST_KEY, TEST_SECRET)
@@ -38,6 +62,8 @@ func init() {
 	provider.ConfigureContextFunc = func(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 		return client, diag.Diagnostics{}
 	}
+
+	testProvioderFramework = framework.FivetranProviderMock(mockClient)
 
 	testProviders = map[string]*schema.Provider{
 		"fivetran-provider": provider,
