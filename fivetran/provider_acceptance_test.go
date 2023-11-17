@@ -11,7 +11,6 @@ func TestNewDatasourceE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
 		ProtoV5ProviderFactories: protoV5ProviderFactory,
-		CheckDestroy:             testFivetranGroupResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: fmt.Sprintf(`
