@@ -75,6 +75,7 @@ Optional:
 - `host` (String) Server name
 - `http_path` (String) HTTP path
 - `is_private_key_encrypted` (String) Indicates that a private key is encrypted. The default value: `false`. The field can be specified if authentication type is `KEY_PAIR`.
+- `lakehouse_name` (String, Sensitive) OneLake lakehouse name
 - `passphrase` (String, Sensitive) In case private key is encrypted, you are required to enter passphrase that was used to encrypt the private key. The field can be specified if authentication type is `KEY_PAIR`.
 - `password` (String, Sensitive) Database user password
 - `personal_access_token` (String, Sensitive) Personal access token
@@ -94,6 +95,7 @@ Optional:
 - `tunnel_port` (String) SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
 - `tunnel_user` (String) SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
 - `user` (String) Database user name
+- `workspace_name` (String, Sensitive) OneLake workspace name
 
 Read-Only:
 
