@@ -36,7 +36,21 @@ const (
 		auth {
 			refresh_token = "refresh_token"
 			access_token = "access_token"
+			previous_refresh_token = "previous_refresh_token"
 			realm_id = "realm_id"
+			user_access_token = "user_access_token"
+			consumer_secret = "consumer_secret"
+			consumer_key = "consumer_key"
+			oauth_token = "oauth_token"
+			oauth_token_secret = "oauth_token_secret"
+			role_arn = "role_arn"
+			aws_access_key = "aws_access_key"
+			aws_secret_key = "aws_secret_key"
+			client_id = "client_id"
+			key_id = "key_id"
+			team_id = "team_id"
+			client_secret = "client_secret"
+
 			client_access {
 				client_id = "client_id"
 				client_secret = "client_secret"
@@ -105,6 +119,19 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, auth, "refresh_token", "refresh_token")
 			assertKeyExistsAndHasValue(t, auth, "access_token", "access_token")
 			assertKeyExistsAndHasValue(t, auth, "realm_id", "realm_id")
+			assertKeyExistsAndHasValue(t, auth, "previous_refresh_token", "previous_refresh_token")
+			assertKeyExistsAndHasValue(t, auth, "user_access_token", "user_access_token")
+			assertKeyExistsAndHasValue(t, auth, "consumer_secret", "consumer_secret")
+			assertKeyExistsAndHasValue(t, auth, "consumer_key", "consumer_key")
+			assertKeyExistsAndHasValue(t, auth, "oauth_token", "oauth_token")
+			assertKeyExistsAndHasValue(t, auth, "oauth_token_secret", "oauth_token_secret")
+			assertKeyExistsAndHasValue(t, auth, "role_arn", "role_arn")
+			assertKeyExistsAndHasValue(t, auth, "aws_access_key", "aws_access_key")
+			assertKeyExistsAndHasValue(t, auth, "aws_secret_key", "aws_secret_key")
+			assertKeyExistsAndHasValue(t, auth, "client_id", "client_id")
+			assertKeyExistsAndHasValue(t, auth, "key_id", "key_id")
+			assertKeyExistsAndHasValue(t, auth, "team_id", "team_id")
+			assertKeyExistsAndHasValue(t, auth, "client_secret", "client_secret")
 
 			assertKeyExists(t, auth, "client_access")
 
@@ -143,6 +170,19 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.refresh_token", "refresh_token"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.access_token", "access_token"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.realm_id", "realm_id"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.previous_refresh_token", "previous_refresh_token"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.user_access_token", "user_access_token"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.consumer_secret", "consumer_secret"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.consumer_key", "consumer_key"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.oauth_token", "oauth_token"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.oauth_token_secret", "oauth_token_secret"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.role_arn", "role_arn"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.aws_access_key", "aws_access_key"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.aws_secret_key", "aws_secret_key"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.client_id", "client_id"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.key_id", "key_id"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.team_id", "team_id"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.client_secret", "client_secret"),
 
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.client_access.0.client_id", "client_id"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.0.client_access.0.client_secret", "client_secret"),

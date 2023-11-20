@@ -341,5 +341,57 @@ func resourceConnectorUpdateCustomAuth(resourceData *schema.ResourceData) *map[s
 		authMap["realm_id"] = v
 	}
 
+	if v := a["previous_refresh_token"].(string); v != "" {
+		authMap["previous_refresh_token"] = v
+	}
+
+	if v := a["user_access_token"].(string); v != "" {
+		authMap["user_access_token"] = v
+	}
+
+	if v := a["consumer_secret"].(string); v != "" {
+		authMap["consumer_secret"] = v
+	}
+
+	if v := a["consumer_key"].(string); v != "" {
+		authMap["consumer_key"] = v
+	}
+
+	if v := a["oauth_token"].(string); v != "" {
+		authMap["oauth_token"] = v
+	}
+
+	if v := a["oauth_token_secret"].(string); v != "" {
+		authMap["oauth_token_secret"] = v
+	}
+
+	if v := a["role_arn"].(string); v != "" {
+		authMap["role_arn"] = v
+	}
+
+	if v := a["aws_access_key"].(string); v != "" {
+		authMap["aws_access_key"] = v
+	}
+
+	if v := a["aws_secret_key"].(string); v != "" {
+		authMap["aws_secret_key"] = v
+	}
+
+	if v := a["client_id"].(string); v != "" {
+		authMap["client_id"] = v
+	}
+
+	if v := a["key_id"].(string); v != "" {
+		authMap["key_id"] = v
+	}
+
+	if v := a["team_id"].(string); v != "" {
+		authMap["team_id"] = v
+	}
+
+	if v := a["client_secret"].(string); v != "" {
+		authMap["client_secret"] = v
+	}
+
 	return &authMap
 }
