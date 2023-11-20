@@ -251,6 +251,18 @@ func dataSourceDestinationSchemaConfig() *schema.Schema {
 					Sensitive:   true,
 					Description: "Secret Value of your Azure Data Lake Storage",
 				},
+				"workspace_name": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Sensitive:   true,
+					Description: "OneLake workspace name",
+				},
+				"lakehouse_name": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Sensitive:   true,
+					Description: "OneLake lakehouse name",
+				},
 			},
 		},
 	}
@@ -346,6 +358,8 @@ func dataSourceDestinationConfig(resp *destinations.DestinationDetailsResponse) 
 	c["tenant_id"] = resp.Data.Config.TenantId
 	c["client_id"] = resp.Data.Config.ClientId
 	c["secret_value"] = resp.Data.Config.SecretValue
+	c["workspace_name"] = resp.Data.Config.WorkspaceName
+	c["lakehouse_name"] = resp.Data.Config.LakehouseName
 	
 	config = append(config, c)
 

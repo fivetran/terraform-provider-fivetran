@@ -86,8 +86,9 @@ const (
 			"container_name": 			"container_name",
 			"tenant_id": 				"tenant_id",
 			"client_id": 				"client_id",
-			"secret_value":				"******"
-
+			"secret_value":				"******",
+			"workspace_name": 			"workspace_name",
+			"lakehouse_name": 			"lakehouse_name"
         }
 	}
 	`
@@ -147,6 +148,8 @@ func setupMockClientDestinationConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "tenant_id", "tenant_id")
 			assertKeyExistsAndHasValue(t, config, "client_id", "client_id")
 			assertKeyExistsAndHasValue(t, config, "secret_value", "secret_value")
+			assertKeyExistsAndHasValue(t, config, "workspace_name", "workspace_name")
+			assertKeyExistsAndHasValue(t, config, "lakehouse_name", "lakehouse_name")
 
 			assertKeyExistsAndHasValue(t, config, "tunnel_port", "123")
 
@@ -216,6 +219,8 @@ func TestResourceDestinationMappingMock(t *testing.T) {
 					tenant_id = "tenant_id"
 					client_id = "client_id"
 					secret_value = "secret_value"
+					workspace_name = "workspace_name"
+					lakehouse_name = "lakehouse_name"
 				}
 			}`,
 
