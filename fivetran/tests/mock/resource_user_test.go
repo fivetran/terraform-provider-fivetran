@@ -198,8 +198,8 @@ func TestResourceUserMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_user.userjohn", "role", "Account Administrator"),
 			resource.TestCheckResourceAttr("fivetran_user.userjohn", "family_name", "Connor"),
 			resource.TestCheckResourceAttr("fivetran_user.userjohn", "given_name", "Jane"),
-			resource.TestCheckResourceAttr("fivetran_user.userjohn", "phone", ""),
-			resource.TestCheckResourceAttr("fivetran_user.userjohn", "picture", ""),
+			resource.TestCheckNoResourceAttr("fivetran_user.userjohn", "phone"),
+			resource.TestCheckNoResourceAttr("fivetran_user.userjohn", "picture"),
 		),
 	}
 
@@ -209,7 +209,8 @@ func TestResourceUserMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientUserResource(t)
 			},
-			Providers: testProviders,
+			//Providers: testProviders,
+			ProtoV5ProviderFactories: protoV5ProviderFactory,
 			CheckDestroy: func(s *terraform.State) error {
 				assertEqual(t, userDeleteHandler.Interactions, 1)
 				assertEmpty(t, userData)
