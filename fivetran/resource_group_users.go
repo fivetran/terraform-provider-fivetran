@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/go-fivetran/groups"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -268,7 +269,7 @@ func resourceGroupUsersDeleteUsersFromGroup(client *fivetran.Client, users []int
 	return nil
 }
 
-func resourceGroupUsersMapUsersWithRolesByEmails(resp fivetran.GroupListUsersResponse) map[string]userType {
+func resourceGroupUsersMapUsersWithRolesByEmails(resp groups.GroupListUsersResponse) map[string]userType {
 	// Make a map of remoteUsers ommiting the group creator
 	remoteUsers := make(map[string]userType)
 	for _, v := range resp.Data.Items {
@@ -285,7 +286,7 @@ func resourceGroupUsersMapUsersWithRolesByEmails(resp fivetran.GroupListUsersRes
 
 // resourceGroupFlattenGroupUsers receives a *fivetran.GroupListUsersResponse and returns a []interface{}
 // containing the data type accepted by the "user" set. The group creator is ommited from the return
-func resourceGroupUsersFlattenGroupUsers(resp *fivetran.GroupListUsersResponse) []interface{} {
+func resourceGroupUsersFlattenGroupUsers(resp *groups.GroupListUsersResponse) []interface{} {
 	if resp.Data.Items == nil {
 		return make([]interface{}, 0)
 	}
