@@ -210,7 +210,7 @@ func TestResourceUserMock(t *testing.T) {
 				setupMockClientUserResource(t)
 			},
 			//Providers: testProviders,
-			ProtoV5ProviderFactories: protoV5ProviderFactory,
+			ProtoV5ProviderFactories: ProtoV5ProviderFactory,
 			CheckDestroy: func(s *terraform.State) error {
 				assertEqual(t, userDeleteHandler.Interactions, 1)
 				assertEmpty(t, userData)

@@ -29,12 +29,16 @@ var mockClient *mock.HttpClient
 var testProviders map[string]*schema.Provider
 var testProvioderFramework provider.Provider
 
+func MockClient() *mock.HttpClient {
+	return mockClient
+}
+
 var (
 	TEST_KEY    = "test_key"
 	TEST_SECRET = "test_secret"
 )
 
-var protoV5ProviderFactory = map[string]func() (tfprotov5.ProviderServer, error){
+var ProtoV5ProviderFactory = map[string]func() (tfprotov5.ProviderServer, error){
 	"fivetran-provider": func() (tfprotov5.ProviderServer, error) {
 		ctx := context.Background()
 		providers := []func() tfprotov5.ProviderServer{
@@ -125,6 +129,11 @@ func fivetranResponse(t *testing.T, req *http.Request, statusCode string, code i
 	return response
 }
 
+func FivetranSuccessResponse(t *testing.T, req *http.Request, code int, message string,
+	data map[string]interface{}) *http.Response {
+	return fivetranSuccessResponse(t, req, code, message, data)
+}
+
 func fivetranSuccessResponse(t *testing.T, req *http.Request, code int, message string,
 	data map[string]interface{}) *http.Response {
 
@@ -186,6 +195,10 @@ func assertEmpty(t *testing.T, actual interface{}) {
 	}
 }
 
+func AssertNotEmpty(t *testing.T, actual interface{}) {
+	assertNotEmpty(t, actual)
+}
+
 func assertNotEmpty(t *testing.T, actual interface{}) {
 	t.Helper()
 
@@ -239,6 +252,10 @@ func assertKeyExistsAndHasValue(t *testing.T, source map[string]interface{}, key
 			printError(t, v, value)
 		}
 	}
+}
+
+func CreateMapFromJsonString(t *testing.T, schemaJson string) map[string]interface{} {
+	return createMapFromJsonString(t, schemaJson)
 }
 
 func createMapFromJsonString(t *testing.T, schemaJson string) map[string]interface{} {

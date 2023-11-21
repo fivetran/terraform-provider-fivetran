@@ -95,5 +95,7 @@ func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Reso
 func (p *fivetranProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		datasources.User,
+		datasources.GroupSshKey,
+		datasources.GroupServiceAccount,
 	}
 }

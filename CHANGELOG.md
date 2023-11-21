@@ -10,29 +10,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.4](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.3...v1.1.4)
 
 ## Added
+- New datasource `fivetran_group_ssh_key` that provides public key from SSH key pair associated with the group.
+- New datasource `fivetran_group_service_account` that provides Fivetran service account associated with the group.
 - Connector `fivetran_connector.auth` fields support:
-  - Added field `fivetran_connector.auth.custom_field_ids`.
-  - Added field `fivetran_connector.auth.previous_refresh_token`.
-  - Added field `fivetran_connector.auth.user_access_token`.
-  - Added field `fivetran_connector.auth.consumer_secret`.
-  - Added field `fivetran_connector.auth.consumer_key`.
-  - Added field `fivetran_connector.auth.oauth_token`.
-  - Added field `fivetran_connector.auth.oauth_token_secret`.
-  - Added field `fivetran_connector.auth.role_arn`.
-  - Added field `fivetran_connector.auth.aws_access_key`.
-  - Added field `fivetran_connector.auth.aws_secret_key`.
-  - Added field `fivetran_connector.auth.client_id`.
-  - Added field `fivetran_connector.auth.key_id`.
-  - Added field `fivetran_connector.auth.team_id`.
-  - Added field `fivetran_connector.auth.client_secret`.
+    - Added field `fivetran_connector.auth.custom_field_ids`.
+    - Added field `fivetran_connector.auth.previous_refresh_token`.
+    - Added field `fivetran_connector.auth.user_access_token`.
+    - Added field `fivetran_connector.auth.consumer_secret`.
+    - Added field `fivetran_connector.auth.consumer_key`.
+    - Added field `fivetran_connector.auth.oauth_token`.
+    - Added field `fivetran_connector.auth.oauth_token_secret`.
+    - Added field `fivetran_connector.auth.role_arn`.
+    - Added field `fivetran_connector.auth.aws_access_key`.
+    - Added field `fivetran_connector.auth.aws_secret_key`.
+    - Added field `fivetran_connector.auth.client_id`.
+    - Added field `fivetran_connector.auth.key_id`.
+    - Added field `fivetran_connector.auth.team_id`.
+    - Added field `fivetran_connector.auth.client_secret`.
 - Resource `fivetran_destination` updates:
     - Added field `fivetran_destination.config.workspace_name` for OneLake.
     - Added field `fivetran_destination.config.lakehouse_name` for OneLake.
 
 ## [1.1.3](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.2...1.1.3)
-## [1.1.3](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.2...1.1.3)
 
-## Fixed
 ## Fixed
 - Issue `Invalid Provider Server Combination`.
 

@@ -1,10 +1,11 @@
-package mock
+package datasources_test
 
 import (
 	"net/http"
 	"testing"
 
 	"github.com/fivetran/go-fivetran/tests/mock"
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
@@ -34,12 +35,12 @@ const (
 )
 
 func setupMockClientUserDataSourceConfigMapping(t *testing.T) {
-	mockClient.Reset()
+	tfmock.MockClient().Reset()
 
-	userDataSourceMockGetHandler = mockClient.When(http.MethodGet, "/v1/users/user_id").ThenCall(
+	userDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/users/user_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			userDataSourceMockData = createMapFromJsonString(t, userMappingResponse)
-			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", userDataSourceMockData), nil
+			userDataSourceMockData = tfmock.CreateMapFromJsonString(t, userMappingResponse)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", userDataSourceMockData), nil
 		},
 	)
 }
@@ -55,8 +56,8 @@ func TestDataSourceUserMappingMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, userDataSourceMockGetHandler.Interactions, 2)
-				assertNotEmpty(t, userDataSourceMockData)
+				tfmock.AssertEqual(t, userDataSourceMockGetHandler.Interactions, 2)
+				tfmock.AssertNotEmpty(t, userDataSourceMockData)
 				return nil
 			},
 			resource.TestCheckResourceAttr("data.fivetran_user.test_user", "email", "john@mycompany.com"),
@@ -78,7 +79,7 @@ func TestDataSourceUserMappingMock(t *testing.T) {
 				setupMockClientUserDataSourceConfigMapping(t)
 			},
 			//Providers: testProviders,
-			ProtoV5ProviderFactories: protoV5ProviderFactory,
+			ProtoV5ProviderFactories: tfmock.ProtoV5ProviderFactory,
 			CheckDestroy: func(s *terraform.State) error {
 				return nil
 			},

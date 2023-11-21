@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/go-fivetran/groups"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -124,7 +125,7 @@ func dataSourceGroupUsersRead(ctx context.Context, d *schema.ResourceData, m int
 
 // dataSourceGroupUsersFlattenUsers receives a *fivetran.GroupListUsersResponse and returns a []interface{}
 // containing the data type accepted by the "users" set.
-func dataSourceGroupUsersFlattenUsers(resp *fivetran.GroupListUsersResponse) []interface{} {
+func dataSourceGroupUsersFlattenUsers(resp *groups.GroupListUsersResponse) []interface{} {
 	if resp.Data.Items == nil {
 		return make([]interface{}, 0)
 	}
@@ -151,13 +152,13 @@ func dataSourceGroupUsersFlattenUsers(resp *fivetran.GroupListUsersResponse) []i
 }
 
 // dataSourceGroupUsersGetUsers gets the users list of a group. It handles limits and cursors.
-func dataSourceGroupUsersGetUsers(client *fivetran.Client, id string, ctx context.Context) (fivetran.GroupListUsersResponse, error) {
-	var resp fivetran.GroupListUsersResponse
+func dataSourceGroupUsersGetUsers(client *fivetran.Client, id string, ctx context.Context) (groups.GroupListUsersResponse, error) {
+	var resp groups.GroupListUsersResponse
 	var respNextCursor string
 
 	for {
 		var err error
-		var respInner fivetran.GroupListUsersResponse
+		var respInner groups.GroupListUsersResponse
 		svc := client.NewGroupListUsers()
 		if respNextCursor == "" {
 			respInner, err = svc.GroupID(id).Limit(limit).Do(ctx)
@@ -166,7 +167,7 @@ func dataSourceGroupUsersGetUsers(client *fivetran.Client, id string, ctx contex
 			respInner, err = svc.GroupID(id).Limit(limit).Cursor(respNextCursor).Do(ctx)
 		}
 		if err != nil {
-			return fivetran.GroupListUsersResponse{}, err
+			return groups.GroupListUsersResponse{}, err
 		}
 
 		resp.Data.Items = append(resp.Data.Items, respInner.Data.Items...)

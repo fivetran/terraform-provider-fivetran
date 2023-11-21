@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/go-fivetran/groups"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -197,7 +198,7 @@ func dataSourceGroupConnectorsRead(ctx context.Context, d *schema.ResourceData, 
 
 // dataSourceGroupConnectorsFlattenConnectors receives a *fivetran.GroupListConnectorsResponse and returns a []interface{}
 // containing the data type accepted by the "connectors" set.
-func dataSourceGroupConnectorsFlattenConnectors(resp *fivetran.GroupListConnectorsResponse) []interface{} {
+func dataSourceGroupConnectorsFlattenConnectors(resp *groups.GroupListConnectorsResponse) []interface{} {
 	if resp.Data.Items == nil {
 		return make([]interface{}, 0)
 	}
@@ -251,13 +252,13 @@ func dataSourceGroupConnectorsFlattenConnectors(resp *fivetran.GroupListConnecto
 }
 
 // dataSourceGroupConnectorsGetConnectors gets the connectors list of a group. It handles limits and cursors.
-func dataSourceGroupConnectorsGetConnectors(client *fivetran.Client, id, schema string, ctx context.Context) (fivetran.GroupListConnectorsResponse, error) {
-	var resp fivetran.GroupListConnectorsResponse
+func dataSourceGroupConnectorsGetConnectors(client *fivetran.Client, id, schema string, ctx context.Context) (groups.GroupListConnectorsResponse, error) {
+	var resp groups.GroupListConnectorsResponse
 	var respNextCursor string
 
 	for {
 		var err error
-		var respInner fivetran.GroupListConnectorsResponse
+		var respInner groups.GroupListConnectorsResponse
 		svc := client.NewGroupListConnectors()
 		if schema != "" {
 			svc.Schema(schema)
@@ -269,7 +270,7 @@ func dataSourceGroupConnectorsGetConnectors(client *fivetran.Client, id, schema 
 			respInner, err = svc.GroupID(id).Limit(limit).Cursor(respNextCursor).Do(ctx)
 		}
 		if err != nil {
-			return fivetran.GroupListConnectorsResponse{}, err
+			return groups.GroupListConnectorsResponse{}, err
 		}
 
 		resp.Data.Items = append(resp.Data.Items, respInner.Data.Items...)
