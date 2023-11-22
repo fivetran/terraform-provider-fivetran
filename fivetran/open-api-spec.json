@@ -9011,6 +9011,7 @@
             "brevo": "#/components/schemas/brevo_NewConnectorRequestV1",
             "brex": "#/components/schemas/brex_NewConnectorRequestV1",
             "buzzsprout": "#/components/schemas/buzzsprout_NewConnectorRequestV1",
+            "calabrio": "#/components/schemas/calabrio_NewConnectorRequestV1",
             "calendly": "#/components/schemas/calendly_NewConnectorRequestV1",
             "canny": "#/components/schemas/canny_NewConnectorRequestV1",
             "care_quality_commission": "#/components/schemas/care_quality_commission_NewConnectorRequestV1",
@@ -9065,6 +9066,7 @@
             "firebase": "#/components/schemas/firebase_NewConnectorRequestV1",
             "fivetran_log": "#/components/schemas/fivetran_log_NewConnectorRequestV1",
             "flexport": "#/components/schemas/flexport_NewConnectorRequestV1",
+            "float": "#/components/schemas/float_NewConnectorRequestV1",
             "forj_community": "#/components/schemas/forj_community_NewConnectorRequestV1",
             "fountain": "#/components/schemas/fountain_NewConnectorRequestV1",
             "freshbooks": "#/components/schemas/freshbooks_NewConnectorRequestV1",
@@ -9081,6 +9083,7 @@
             "gem": "#/components/schemas/gem_NewConnectorRequestV1",
             "github": "#/components/schemas/github_NewConnectorRequestV1",
             "gladly": "#/components/schemas/gladly_NewConnectorRequestV1",
+            "globalmeet": "#/components/schemas/globalmeet_NewConnectorRequestV1",
             "gocardless": "#/components/schemas/gocardless_NewConnectorRequestV1",
             "gongio": "#/components/schemas/gongio_NewConnectorRequestV1",
             "google_ads": "#/components/schemas/google_ads_NewConnectorRequestV1",
@@ -9134,6 +9137,7 @@
             "lessonly": "#/components/schemas/lessonly_NewConnectorRequestV1",
             "lever": "#/components/schemas/lever_NewConnectorRequestV1",
             "light_speed_retail": "#/components/schemas/light_speed_retail_NewConnectorRequestV1",
+            "linear": "#/components/schemas/linear_NewConnectorRequestV1",
             "linkedin_ads": "#/components/schemas/linkedin_ads_NewConnectorRequestV1",
             "linkedin_company_pages": "#/components/schemas/linkedin_company_pages_NewConnectorRequestV1",
             "livechat": "#/components/schemas/livechat_NewConnectorRequestV1",
@@ -9203,6 +9207,7 @@
             "postgres": "#/components/schemas/postgres_NewConnectorRequestV1",
             "postgres_rds": "#/components/schemas/postgres_rds_NewConnectorRequestV1",
             "posthog": "#/components/schemas/posthog_NewConnectorRequestV1",
+            "power_reviews_enterprise": "#/components/schemas/power_reviews_enterprise_NewConnectorRequestV1",
             "productboard": "#/components/schemas/productboard_NewConnectorRequestV1",
             "qualaroo": "#/components/schemas/qualaroo_NewConnectorRequestV1",
             "qualtrics": "#/components/schemas/qualtrics_NewConnectorRequestV1",
@@ -9244,6 +9249,7 @@
             "skuvault": "#/components/schemas/skuvault_NewConnectorRequestV1",
             "slack": "#/components/schemas/slack_NewConnectorRequestV1",
             "smadex": "#/components/schemas/smadex_NewConnectorRequestV1",
+            "smartwaiver": "#/components/schemas/smartwaiver_NewConnectorRequestV1",
             "snapchat_ads": "#/components/schemas/snapchat_ads_NewConnectorRequestV1",
             "snowflake_db": "#/components/schemas/snowflake_db_NewConnectorRequestV1",
             "snowplow": "#/components/schemas/snowplow_NewConnectorRequestV1",
@@ -9277,6 +9283,7 @@
             "twitter_ads": "#/components/schemas/twitter_ads_NewConnectorRequestV1",
             "typeform": "#/components/schemas/typeform_NewConnectorRequestV1",
             "upland": "#/components/schemas/upland_NewConnectorRequestV1",
+            "uppromote": "#/components/schemas/uppromote_NewConnectorRequestV1",
             "uservoice": "#/components/schemas/uservoice_NewConnectorRequestV1",
             "webhooks": "#/components/schemas/webhooks_NewConnectorRequestV1",
             "when_i_work": "#/components/schemas/when_i_work_NewConnectorRequestV1",
@@ -9293,6 +9300,7 @@
             "zendesk_chat": "#/components/schemas/zendesk_chat_NewConnectorRequestV1",
             "zendesk_sell": "#/components/schemas/zendesk_sell_NewConnectorRequestV1",
             "zendesk_sunshine": "#/components/schemas/zendesk_sunshine_NewConnectorRequestV1",
+            "zenefits": "#/components/schemas/zenefits_NewConnectorRequestV1",
             "zoho_campaigns": "#/components/schemas/zoho_campaigns_NewConnectorRequestV1",
             "zoho_crm": "#/components/schemas/zoho_crm_NewConnectorRequestV1",
             "zuora": "#/components/schemas/zuora_NewConnectorRequestV1",
@@ -9632,6 +9640,7 @@
             "brevo": "#/components/schemas/brevo_ConnectorResponseV1",
             "brex": "#/components/schemas/brex_ConnectorResponseV1",
             "buzzsprout": "#/components/schemas/buzzsprout_ConnectorResponseV1",
+            "calabrio": "#/components/schemas/calabrio_ConnectorResponseV1",
             "calendly": "#/components/schemas/calendly_ConnectorResponseV1",
             "canny": "#/components/schemas/canny_ConnectorResponseV1",
             "care_quality_commission": "#/components/schemas/care_quality_commission_ConnectorResponseV1",
@@ -9686,6 +9695,7 @@
             "firebase": "#/components/schemas/firebase_ConnectorResponseV1",
             "fivetran_log": "#/components/schemas/fivetran_log_ConnectorResponseV1",
             "flexport": "#/components/schemas/flexport_ConnectorResponseV1",
+            "float": "#/components/schemas/float_ConnectorResponseV1",
             "forj_community": "#/components/schemas/forj_community_ConnectorResponseV1",
             "fountain": "#/components/schemas/fountain_ConnectorResponseV1",
             "freshbooks": "#/components/schemas/freshbooks_ConnectorResponseV1",
@@ -9702,6 +9712,7 @@
             "gem": "#/components/schemas/gem_ConnectorResponseV1",
             "github": "#/components/schemas/github_ConnectorResponseV1",
             "gladly": "#/components/schemas/gladly_ConnectorResponseV1",
+            "globalmeet": "#/components/schemas/globalmeet_ConnectorResponseV1",
             "gocardless": "#/components/schemas/gocardless_ConnectorResponseV1",
             "gongio": "#/components/schemas/gongio_ConnectorResponseV1",
             "google_ads": "#/components/schemas/google_ads_ConnectorResponseV1",
@@ -9755,6 +9766,7 @@
             "lessonly": "#/components/schemas/lessonly_ConnectorResponseV1",
             "lever": "#/components/schemas/lever_ConnectorResponseV1",
             "light_speed_retail": "#/components/schemas/light_speed_retail_ConnectorResponseV1",
+            "linear": "#/components/schemas/linear_ConnectorResponseV1",
             "linkedin_ads": "#/components/schemas/linkedin_ads_ConnectorResponseV1",
             "linkedin_company_pages": "#/components/schemas/linkedin_company_pages_ConnectorResponseV1",
             "livechat": "#/components/schemas/livechat_ConnectorResponseV1",
@@ -9824,6 +9836,7 @@
             "postgres": "#/components/schemas/postgres_ConnectorResponseV1",
             "postgres_rds": "#/components/schemas/postgres_rds_ConnectorResponseV1",
             "posthog": "#/components/schemas/posthog_ConnectorResponseV1",
+            "power_reviews_enterprise": "#/components/schemas/power_reviews_enterprise_ConnectorResponseV1",
             "productboard": "#/components/schemas/productboard_ConnectorResponseV1",
             "qualaroo": "#/components/schemas/qualaroo_ConnectorResponseV1",
             "qualtrics": "#/components/schemas/qualtrics_ConnectorResponseV1",
@@ -9865,6 +9878,7 @@
             "skuvault": "#/components/schemas/skuvault_ConnectorResponseV1",
             "slack": "#/components/schemas/slack_ConnectorResponseV1",
             "smadex": "#/components/schemas/smadex_ConnectorResponseV1",
+            "smartwaiver": "#/components/schemas/smartwaiver_ConnectorResponseV1",
             "snapchat_ads": "#/components/schemas/snapchat_ads_ConnectorResponseV1",
             "snowflake_db": "#/components/schemas/snowflake_db_ConnectorResponseV1",
             "snowplow": "#/components/schemas/snowplow_ConnectorResponseV1",
@@ -9898,6 +9912,7 @@
             "twitter_ads": "#/components/schemas/twitter_ads_ConnectorResponseV1",
             "typeform": "#/components/schemas/typeform_ConnectorResponseV1",
             "upland": "#/components/schemas/upland_ConnectorResponseV1",
+            "uppromote": "#/components/schemas/uppromote_ConnectorResponseV1",
             "uservoice": "#/components/schemas/uservoice_ConnectorResponseV1",
             "webhooks": "#/components/schemas/webhooks_ConnectorResponseV1",
             "when_i_work": "#/components/schemas/when_i_work_ConnectorResponseV1",
@@ -9914,6 +9929,7 @@
             "zendesk_chat": "#/components/schemas/zendesk_chat_ConnectorResponseV1",
             "zendesk_sell": "#/components/schemas/zendesk_sell_ConnectorResponseV1",
             "zendesk_sunshine": "#/components/schemas/zendesk_sunshine_ConnectorResponseV1",
+            "zenefits": "#/components/schemas/zenefits_ConnectorResponseV1",
             "zoho_campaigns": "#/components/schemas/zoho_campaigns_ConnectorResponseV1",
             "zoho_crm": "#/components/schemas/zoho_crm_ConnectorResponseV1",
             "zuora": "#/components/schemas/zuora_ConnectorResponseV1",
@@ -10855,7 +10871,6 @@
           "region": {
             "type": "string",
             "description": "Data processing location. This is where Fivetran will operate and run computation on data.",
-            "example": ">- optional_US_by_default: US, EU, APAC (Australia), UK, CANADA, SINGAPORE",
             "enum": [
               "GCP_US_EAST4",
               "GCP_US_WEST1",
@@ -10936,7 +10951,6 @@
           "region": {
             "type": "string",
             "description": "Data processing location. This is where Fivetran will operate and run computation on data.",
-            "example": ">- optional_US_by_default: US, EU, APAC (Australia), UK, CANADA, SINGAPORE",
             "enum": [
               "GCP_US_EAST4",
               "GCP_US_WEST1",
@@ -11003,7 +11017,6 @@
           "region": {
             "type": "string",
             "description": "Data processing location. This is where Fivetran will operate and run computation on data.",
-            "example": ">- optional_US_by_default: US, EU, APAC (Australia), UK, CANADA, SINGAPORE",
             "enum": [
               "GCP_US_EAST4",
               "GCP_US_WEST1",
@@ -19063,6 +19076,42 @@
           }
         ]
       },
+      "calabrio_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your Calabrio access token.",
+                "format": "password"
+              },
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "domain_name": {
+                "title": "",
+                "type": "string",
+                "description": "Your Calabrio domain name"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "calabrio_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/calabrio_config_V1"
+          }
+        ]
+      },
       "calendly_config_V1": {
         "properties": {
           "config": {
@@ -21969,11 +22018,6 @@
           "auth": {
             "type": "object",
             "properties": {
-              "previous_refresh_token": {
-                "title": "",
-                "type": "string",
-                "description": ""
-              },
               "refresh_token": {
                 "title": "",
                 "type": "string",
@@ -23340,6 +23384,37 @@
           }
         ]
       },
+      "float_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Float API key.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "float_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/float_config_V1"
+          }
+        ]
+      },
       "forj_community_config_V1": {
         "properties": {
           "config": {
@@ -24239,6 +24314,42 @@
           },
           {
             "$ref": "#/components/schemas/gladly_config_V1"
+          }
+        ]
+      },
+      "globalmeet_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "Your GlobalMeet Password.",
+                "format": "password"
+              },
+              "username": {
+                "title": "",
+                "type": "string",
+                "description": "Your GlobalMeet Username."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "globalmeet_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/globalmeet_config_V1"
           }
         ]
       },
@@ -28685,6 +28796,37 @@
           },
           {
             "$ref": "#/components/schemas/light_speed_retail_config_V1"
+          }
+        ]
+      },
+      "linear_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Linear API key.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "linear_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/linear_config_V1"
           }
         ]
       },
@@ -33554,6 +33696,42 @@
           }
         ]
       },
+      "power_reviews_enterprise_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your PowerReviews Enterprise Client Secret.",
+                "format": "password"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your PowerReviews Enterprise Client ID."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "power_reviews_enterprise_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/power_reviews_enterprise_config_V1"
+          }
+        ]
+      },
       "productboard_config_V1": {
         "properties": {
           "config": {
@@ -34604,10 +34782,25 @@
           "config": {
             "type": "object",
             "properties": {
+              "ocapi_client_id": {
+                "title": "",
+                "type": "string",
+                "description": "The Salesforce Commerce Cloud OCAPI Client ID."
+              },
               "schema": {
                 "title": "Destination schema",
                 "type": "string",
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "include_ocapi_endpoints": {
+                "title": "",
+                "type": "boolean",
+                "description": "Whether to sync data through OCAPI endpoints."
+              },
+              "ocapi_hostname": {
+                "title": "",
+                "type": "string",
+                "description": "The Salesforce Commerce Cloud OCAPI hostname."
               },
               "organization_id": {
                 "title": "",
@@ -34624,6 +34817,11 @@
                 "type": "string",
                 "description": "The parameter to retrieve customer details."
               },
+              "ocapi_custom_object_types": {
+                "title": "",
+                "type": "string",
+                "description": "The Salesforce Commerce Cloud OCAPI custom object types."
+              },
               "client_secret": {
                 "title": "",
                 "type": "string",
@@ -34635,11 +34833,33 @@
                 "type": "string",
                 "description": "The Salesforce Commerce Cloud Client ID."
               },
+              "ocapi_client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "The Salesforce Commerce Cloud OCAPI Client secret.",
+                "format": "password"
+              },
               "short_code": {
                 "title": "",
                 "type": "string",
                 "description": "The Salesforce eight-character string assigned to a realm for routing purposes.",
                 "format": "password"
+              }
+            },
+            "description": ""
+          },
+          "auth": {
+            "type": "object",
+            "properties": {
+              "ocapi_refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": ""
+              },
+              "ocapi_access_token": {
+                "title": "",
+                "type": "string",
+                "description": ""
               }
             },
             "description": ""
@@ -36021,6 +36241,37 @@
           },
           {
             "$ref": "#/components/schemas/smadex_config_V1"
+          }
+        ]
+      },
+      "smartwaiver_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Smartwaiver API key.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "smartwaiver_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/smartwaiver_config_V1"
           }
         ]
       },
@@ -38368,6 +38619,37 @@
           }
         ]
       },
+      "uppromote_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your UpPromote API key.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "uppromote_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/uppromote_config_V1"
+          }
+        ]
+      },
       "uservoice_config_V1": {
         "properties": {
           "config": {
@@ -39197,6 +39479,37 @@
           }
         ]
       },
+      "zenefits_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "bearer_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your Zenefits bearer token.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "zenefits_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/zenefits_config_V1"
+          }
+        ]
+      },
       "zoho_campaigns_config_V1": {
         "properties": {
           "config": {
@@ -39936,6 +40249,16 @@
           }
         ]
       },
+      "calabrio_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/calabrio_config_V1"
+          }
+        ]
+      },
       "calendly_ConnectorResponseV1": {
         "allOf": [
           {
@@ -40476,6 +40799,16 @@
           }
         ]
       },
+      "float_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/float_config_V1"
+          }
+        ]
+      },
       "forj_community_ConnectorResponseV1": {
         "allOf": [
           {
@@ -40633,6 +40966,16 @@
           },
           {
             "$ref": "#/components/schemas/gladly_config_V1"
+          }
+        ]
+      },
+      "globalmeet_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/globalmeet_config_V1"
           }
         ]
       },
@@ -41163,6 +41506,16 @@
           },
           {
             "$ref": "#/components/schemas/light_speed_retail_config_V1"
+          }
+        ]
+      },
+      "linear_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/linear_config_V1"
           }
         ]
       },
@@ -41856,6 +42209,16 @@
           }
         ]
       },
+      "power_reviews_enterprise_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/power_reviews_enterprise_config_V1"
+          }
+        ]
+      },
       "productboard_ConnectorResponseV1": {
         "allOf": [
           {
@@ -42266,6 +42629,16 @@
           }
         ]
       },
+      "smartwaiver_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/smartwaiver_config_V1"
+          }
+        ]
+      },
       "snapchat_ads_ConnectorResponseV1": {
         "allOf": [
           {
@@ -42596,6 +42969,16 @@
           }
         ]
       },
+      "uppromote_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/uppromote_config_V1"
+          }
+        ]
+      },
       "uservoice_ConnectorResponseV1": {
         "allOf": [
           {
@@ -42753,6 +43136,16 @@
           },
           {
             "$ref": "#/components/schemas/zendesk_sunshine_config_V1"
+          }
+        ]
+      },
+      "zenefits_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/zenefits_config_V1"
           }
         ]
       },

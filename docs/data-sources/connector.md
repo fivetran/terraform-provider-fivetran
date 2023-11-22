@@ -75,6 +75,7 @@ Read-Only:
 	- Service `s3`: Access Key Secret
 - `access_token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `big_commerce`: API access token of your store.
+	- Service `calabrio`: Your Calabrio access token.
 	- Service `coupa`: Your Coupa access token fetched using client_id and client_secret
 	- Service `deputy`: Your Deputy API access token.
 	- Service `gocardless`: Your GoCardless API token.
@@ -255,6 +256,7 @@ Read-Only:
 	- Service `destini`: Your Destini API Key.
 	- Service `easypost`: Your EasyPost API Key.
 	- Service `everhour`: Your Everhour API Token.
+	- Service `float`: Your Float API key.
 	- Service `forj_community`: Your Forj Community API key.
 	- Service `freshdesk`: Your Freshdesk API Key.
 	- Service `freshservice`: Your Freshservice API Key.
@@ -271,6 +273,7 @@ Read-Only:
 	- Service `katana`: Your Katana API key.
 	- Service `klaviyo`: Your Klaviyo API key.
 	- Service `lever`: Your Lever API key.
+	- Service `linear`: Your Linear API key.
 	- Service `loop`: Your Loop API key.
 	- Service `luma`: Your Luma API key.
 	- Service `mailgun`: Your Mailgun API key.
@@ -293,6 +296,7 @@ Read-Only:
 	- Service `sendinblue`: Your Sendinblue API key.
 	- Service `simplesat`: Your Simplesat API key.
 	- Service `skilljar`: 
+	- Service `smartwaiver`: Your Smartwaiver API key.
 	- Service `sonarqube`: Your Sonarqube API key.
 	- Service `squarespace`: Your Squarespace API key.
 	- Service `stackadapt`: Your StackAdapt API key.
@@ -301,6 +305,9 @@ Read-Only:
 	- Service `subscript`: Your Subscript API key.
 	- Service `survicate`: 
 	- Service `trello`: Your TRELLO api key.
+	- Service `uppromote`: Your UpPromote API key.
+- `api_key:api_secret` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `revel`: Your Revel Systems API Key and API Secret.
 - `api_key_api_secret` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `revel`: Your Revel Systems API Key and API Secret.
 - `api_keys` (Set of String, Sensitive) Field usage depends on `service` value: 
@@ -462,6 +469,7 @@ Read-Only:
 	- Service `hopin`: Your Hopin API key.
 	- Service `orbit`: Your Orbit API Token.
 	- Service `productboard`: Your Productboard API key.
+	- Service `zenefits`: Your Zenefits bearer token.
 - `blob_sas_url` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `webhooks`: The blob SAS URL of your Azure container. Required if `bucket_service` is set to `AZURE`.
 - `breakdowns` (Set of String) Field usage depends on `service` value: 
@@ -516,6 +524,7 @@ Read-Only:
 	- Service `oracle_sap_hva_netweaver`: Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.
 	- Service `paypal`: `Client ID` of your PayPal client application.
 	- Service `paypal_sandbox`: `Client ID` of your PayPal client application.
+	- Service `power_reviews_enterprise`: Your PowerReviews Enterprise Client ID.
 	- Service `salesforce_commerce_cloud`: The Salesforce Commerce Cloud Client ID.
 	- Service `salesforce_marketing_cloud`: The Salesforce Marketing Cloud client ID.
 	- Service `salesloft`: `Client ID` of your Salesloft client application.
@@ -545,6 +554,7 @@ Read-Only:
 	- Service `marketo`: Marketo REST API Client Secret.
 	- Service `medallia`: Medallia Client Secret key
 	- Service `navan`: Your Navan client secret.
+	- Service `power_reviews_enterprise`: Your PowerReviews Enterprise Client Secret.
 	- Service `salesforce_commerce_cloud`: The Salesforce Commerce Cloud Client secret.
 	- Service `salesforce_marketing_cloud`: The Salesforce Marketing Cloud client secret.
 	- Service `salesloft`: `Client Secret` of your Salesloft client application.
@@ -793,6 +803,7 @@ Read-Only:
 - `domain_host_name` (String) Field usage depends on `service` value: 
 	- Service `workday_hcm`: Workday host name.
 - `domain_name` (String) Field usage depends on `service` value: 
+	- Service `calabrio`: Your Calabrio domain name
 	- Service `dynamics_365`: The custom domain name associated with Dynamics 365.
 - `domain_type` (String) Field usage depends on `service` value: 
 	- Service `medallia`: Domain type of your Medallia URL
@@ -995,6 +1006,8 @@ Read-Only:
 	- Service `mongo_sharded`: A list of host addresses of the primary node and all replicas. Each list item is either: a DB instance host/IP address with a port number, or SRV host record.
 - `identity` (String) Field usage depends on `service` value: 
 	- Service `marketo`: Marketo REST API identity url.
+- `include_ocapi_endpoints` (String) Field usage depends on `service` value: 
+	- Service `salesforce_commerce_cloud`: Whether to sync data through OCAPI endpoints.
 - `instance` (String) Field usage depends on `service` value: 
 	- Service `coupa`: The instance name of your Coupa account in the URL.
 	- Service `salesforce_marketing_cloud`: The Salesforce Marketing Cloud instance ID
@@ -1131,6 +1144,14 @@ Read-Only:
 	- Service `share_point`: If your CSVs use a special value indicating null, you can specify it here.
 - `oauth_token` (String, Sensitive) Field usage depends on `service` value:
 - `oauth_token_secret` (String, Sensitive) Field usage depends on `service` value:
+- `ocapi_client_id` (String) Field usage depends on `service` value: 
+	- Service `salesforce_commerce_cloud`: The Salesforce Commerce Cloud OCAPI Client ID.
+- `ocapi_client_secret` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `salesforce_commerce_cloud`: The Salesforce Commerce Cloud OCAPI Client secret.
+- `ocapi_custom_object_types` (String) Field usage depends on `service` value: 
+	- Service `salesforce_commerce_cloud`: The Salesforce Commerce Cloud OCAPI custom object types.
+- `ocapi_hostname` (String) Field usage depends on `service` value: 
+	- Service `salesforce_commerce_cloud`: The Salesforce Commerce Cloud OCAPI hostname.
 - `on_error` (String) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.
 	- Service `box`: If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.
@@ -1191,6 +1212,7 @@ Read-Only:
 	- Service `es_self_hosted`: 
 	- Service `financial_force`: 
 	- Service `ftp`: FTP password.
+	- Service `globalmeet`: Your GlobalMeet Password.
 	- Service `gongio`: Your Gongio Access Key Secret.
 	- Service `google_cloud_mysql`: The user's password.
 	- Service `google_cloud_postgresql`: The user's password.
@@ -2167,6 +2189,7 @@ Read-Only:
 	- Service `financial_force`: 
 	- Service `github`: `Login` of your GitHub profile.
 	- Service `gladly`: Your Gladly Username.
+	- Service `globalmeet`: Your GlobalMeet Username.
 	- Service `gongio`: Your Gongio Access key.
 	- Service `gorgias`: Your Gorgias username.
 	- Service `guru`: Your Guru username.
