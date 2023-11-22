@@ -34216,7 +34216,7 @@
                 "type": "string",
                 "description": "Your Revel Systems subDomain."
               },
-              "api_key:api_secret": {
+              "api_key_api_secret": {
                 "title": "",
                 "type": "string",
                 "description": "Your Revel Systems API Key and API Secret.",

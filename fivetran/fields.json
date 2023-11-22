@@ -876,19 +876,6 @@
       },
       "api_field": ""
    },
-   "api_key:api_secret": {
-      "readonly": false,
-      "sensitive": true,
-      "nullable": true,
-      "type": "string",
-      "fields": null,
-      "key_field": "",
-      "item_type": {},
-      "description": {
-         "revel": "Your Revel Systems API Key and API Secret."
-      },
-      "api_field": ""
-   },
    "api_key_api_secret": {
       "readonly": false,
       "sensitive": true,
