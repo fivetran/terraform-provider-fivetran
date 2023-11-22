@@ -159,10 +159,12 @@
       "description": {
          "big_commerce": "API access token of your store.",
          "coupa": "Your Coupa access token fetched using client_id and client_secret",
+         "deputy": "Your Deputy API access token.",
          "gocardless": "Your GoCardless API token.",
          "ironclad": "Your Ironclad access token.",
          "kustomer": "Your Kustomer API key.",
          "lattice": "Your Lattice API access token.",
+         "launchdarkly": "Your LaunchDarkly access token.",
          "rollbar": "Your Rollbar Access Token.",
          "samsara": "Your Samsara API token.",
          "workable": "Your Workable Access Token."
@@ -204,6 +206,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "appcues": "Your Appcues Account ID.",
          "dear": "Your Dear Account ID.",
          "harvest": "Your Harvest Account ID.",
          "optimizely": "Your Optimizely account ID."
@@ -234,7 +237,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "cosmos": "The read-only primary or secondary account key for the database account. Required for the `ACCOUNT_KEY` data access method."
+         "cosmos": "The read-only primary or secondary account key for the database account. Required for the `ACCOUNT_KEY` data access method.",
+         "simplesat": "Your Simplesat account key."
       },
       "api_field": ""
    },
@@ -790,26 +794,35 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "15five": "Your 15five API key.",
          "360learning": "Your 360Learning API Key.",
          "activecampaign": "Your ActiveCampaign API key.",
          "airtable": "API key of the Airtable account.",
+         "appcues": "Your Appcues API key.",
          "assembled": "Your Assembled API key.",
          "atlassian_jira_align": "Your Jira Align API key.",
          "atlassian_ops_genie": "Your Opsgenie API key",
+         "attentive": "Your Attentive API key.",
+         "ballotready": "Your BallotReady API token.",
          "bamboohr": "Your API Key.",
          "braze": "Your Braze API Key.",
+         "brevo": "Your Brevo API key.",
+         "canny": "Your Canny API key.",
          "chargebee_product_catalog_1": "Your Chargebee Product Catalog 1 API key.",
          "chargebee_product_catalog_2": "",
          "churnkey": "Your Churnkey API Key.",
          "churnzero": "Your ChurnZero API key.",
+         "circleci": "Your CircleCI API Key.",
          "clickup": "Your ClickUp API key.",
          "confluent_cloud": "API Key",
          "coupa": "Your Coupa API key.",
+         "dbt_cloud": "Your dbt Cloud service token.",
          "dcl_logistics": "Your DCL Logistics API key.",
          "delighted": "API Key for your Delighted account",
          "destini": "Your Destini API Key.",
          "easypost": "Your EasyPost API Key.",
          "everhour": "Your Everhour API Token.",
+         "forj_community": "Your Forj Community API key.",
          "freshdesk": "Your Freshdesk API Key.",
          "freshservice": "Your Freshservice API Key.",
          "freshteam": "Your Freshteam API key.",
@@ -819,31 +832,55 @@
          "gorgias": "Your Gorgias API key.",
          "greenhouse": "Your Greenhouse API key.",
          "height": "Your Height API key.",
+         "insightly": "Your Insightly API key.",
          "iterable": "Your Iterable API key.",
+         "justcall": "Your JustCall API key.",
+         "katana": "Your Katana API key.",
          "klaviyo": "Your Klaviyo API key.",
          "lever": "Your Lever API key.",
+         "loop": "Your Loop API key.",
          "luma": "Your Luma API key.",
          "mailgun": "Your Mailgun API key.",
          "mandrill": "Your Mandrill API key.",
+         "mountain": "Your MNTN API key.",
+         "ometria": "Your Ometria API Key.",
          "ortto": "Your Ortto API key.",
+         "pagerduty": "Your PagerDuty API key.",
          "papershift": "Your Papershift API Key",
+         "playvox": "Your Playvox API Key.",
          "posthog": "Your PostHog API key.",
          "qualaroo": "Your Qualaroo API Key.",
          "recurly": "The Recurly API key.",
+         "rippling": "Your Rippling API key.",
          "rootly": "Your Rootly API key.",
          "sailthru": "The Sailthru API key.",
          "salsify": "Your Salsify API Key.",
+         "security_journey": "Your Security Journey API key.",
          "sendgrid": "The SendGrid API key.",
          "sendinblue": "Your Sendinblue API key.",
          "simplesat": "Your Simplesat API key.",
+         "skilljar": "",
          "sonarqube": "Your Sonarqube API key.",
          "squarespace": "Your Squarespace API key.",
          "stackadapt": "Your StackAdapt API key.",
          "stripe": "Restricted API key",
          "stripe_test": "Restricted API key",
          "subscript": "Your Subscript API key.",
-         "survicate": "Your Survicate API Key.",
+         "survicate": "",
          "trello": "Your TRELLO api key."
+      },
+      "api_field": ""
+   },
+   "api_key_api_secret": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "revel": "Your Revel Systems API Key and API Secret."
       },
       "api_field": ""
    },
@@ -898,7 +935,9 @@
       "item_type": {},
       "description": {
          "confluent_cloud": "API Secret",
+         "forj_community": "Your Forj Community API secret.",
          "friendbuy": "Your Friendbuy API secret.",
+         "justcall": "Your JustCall API Secret.",
          "mixpanel": "Mixpanel API Secret.",
          "qualaroo": "Your Qualaroo API Secret.",
          "sailthru": "The Sailthru API secret."
@@ -929,7 +968,9 @@
       "description": {
          "aircall": "Your Aircall API Token.",
          "appsflyer": "API Token for AppsFlyer's PULL API.",
+         "awin": "Your Awin API Token.",
          "brex": "Your Brex API token",
+         "buzzsprout": "Your Buzzsprout API token.",
          "clari": "Your Clari API token.",
          "dixa": "Your Dixa API token.",
          "drip": "Your Drip API Token.",
@@ -938,12 +979,15 @@
          "hibob": "Your Hibob API token.",
          "kandji": "Your Kandji API token.",
          "livechat": "Your Livechat Access token.",
+         "mixmax": "Mixmax API token.",
          "okta": "Your Okta API token.",
          "pipedrive": "(Optional)Your Pipedrive personal API token",
          "qualtrics": "API token of the Qualtrics account.",
          "recharge": "The Recharge API token.",
          "retently": "Your Retently API token.",
+         "toggl_track": "Your Toggl Track API token",
          "trello": "Your TRELLO api token.",
+         "trisolute": "Your Trisolute API token.",
          "zendesk": "Zendesk API tokens are auto-generated passwords in the Support admin interface.",
          "zendesk_sunshine": "Zendesk API tokens are auto-generated passwords in the Support admin interface."
       },
@@ -983,6 +1027,19 @@
       "item_type": {},
       "description": {
          "zendesk": "Maximum Zendesk Api Usage allowed"
+      },
+      "api_field": ""
+   },
+   "api_utilization_percentage": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "kustomer": "Api Utilization Percentage"
       },
       "api_field": ""
    },
@@ -1054,6 +1111,19 @@
          "appsflyer": "*  App ID(s)"
       },
       "api_field": "app_ids"
+   },
+   "app_key": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "loopio": "Your Loopio App Key."
+      },
+      "api_field": ""
    },
    "app_specific_password": {
       "readonly": false,
@@ -1456,7 +1526,9 @@
       "item_type": {},
       "description": {
          "ada": "Your Ada API Access Token.",
+         "customerio": "Your Customer.io App API Key.",
          "freshchat": "Your Freshchat API Token.",
+         "hopin": "Your Hopin API key.",
          "orbit": "Your Orbit API Token.",
          "productboard": "Your Productboard API key."
       },
@@ -1647,8 +1719,12 @@
          "concur": "The SAP Concur Client ID.",
          "coupa": "Your Coupa client_id",
          "criteo": "Your Criteo Client ID.",
+         "flexport": "The Flexport API Key.",
+         "integral_ad_science": "Your integral_ad_science client id.",
+         "looker_source": "Your Looker Client ID.",
          "marketo": "Marketo REST API Client Id.",
          "medallia": "Medallia Client ID",
+         "navan": "Your Navan client ID.",
          "oracle_sap_hva_netweaver": "Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.",
          "paypal": "`Client ID` of your PayPal client application.",
          "paypal_sandbox": "`Client ID` of your PayPal client application.",
@@ -1661,6 +1737,7 @@
          "talkdesk": "The Client ID of your OAuth Client",
          "xero": "your clientId",
          "zendesk_chat": "Your Zendesk client ID.",
+         "zoho_campaigns": "Your Zoho Campaigns Client ID.",
          "zuora": "Zuora Client ID.",
          "zuora_sandbox": "Zuora Client ID."
       },
@@ -1707,8 +1784,12 @@
          "concur": "The SAP Concur Client secret.",
          "coupa": "Your Coupa client_id",
          "criteo": "Your Criteo client secret key.",
+         "flexport": "The Flexport API Secret.",
+         "integral_ad_science": "Your integral_ad_science client secret.",
+         "looker_source": "Your Looker Client Secret.",
          "marketo": "Marketo REST API Client Secret.",
          "medallia": "Medallia Client Secret key",
+         "navan": "Your Navan client secret.",
          "salesforce_commerce_cloud": "The Salesforce Commerce Cloud Client secret.",
          "salesforce_marketing_cloud": "The Salesforce Marketing Cloud client secret.",
          "salesloft": "`Client Secret` of your Salesloft client application.",
@@ -1718,6 +1799,7 @@
          "talkdesk": "The Client Secret of your OAuth Client",
          "xero": "your clientSecret",
          "zendesk_chat": "Your Zendesk client secret.",
+         "zoho_campaigns": "Your Zoho Campaigns Client Secret.",
          "zuora": "Zuora Client Secret.",
          "zuora_sandbox": "Zuora Client Secret."
       },
@@ -2235,6 +2317,45 @@
             },
             "api_field": ""
          },
+         "base_metrics_fields": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "snapchat_ads": "[List of Core, Additional and Conversion Metrics Stats Fields](https://fivetran.com/docs/applications/snapchat-ads/custom-reports#basemetricsfields)."
+            },
+            "api_field": ""
+         },
+         "breakdown": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "snapchat_ads": "[Sets Breakdown on custom report](https://fivetran.com/docs/applications/snapchat-ads/custom-reports#breakdown)."
+            },
+            "api_field": ""
+         },
+         "breakout": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "snapchat_ads": "[Sets Breakout on custom report](https://fivetran.com/docs/applications/snapchat-ads/custom-reports#breakout)."
+            },
+            "api_field": ""
+         },
          "conversions_report_included": {
             "readonly": false,
             "sensitive": false,
@@ -2258,6 +2379,19 @@
             "item_type": {},
             "description": {
                "reddit_ads": "The boolean value specifying whether the custom events are included in event conversions report. Default value: `false`"
+            },
+            "api_field": ""
+         },
+         "dimension": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "snapchat_ads": "[Sets Dimension on custom report](https://fivetran.com/docs/applications/snapchat-ads/custom-reports#dimension)."
             },
             "api_field": ""
          },
@@ -2288,6 +2422,19 @@
             },
             "description": {
                "reddit_ads": "The list of events the conversion data will be synchronised for"
+            },
+            "api_field": ""
+         },
+         "granularity": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "snapchat_ads": "[Sets Granularity on custom report](https://fivetran.com/docs/applications/snapchat-ads/customr-reports#granularity)."
             },
             "api_field": ""
          },
@@ -2343,7 +2490,8 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "reddit_ads": "The table name within the schema to which connector syncs the data of the specific report."
+               "reddit_ads": "The table name within the schema to which connector syncs the data of the specific report.",
+               "snapchat_ads": "Custom report name (must be unique)"
             },
             "api_field": ""
          },
@@ -2373,6 +2521,19 @@
             },
             "api_field": ""
          },
+         "sk_ad_metrics_fields": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "snapchat_ads": "[List of SKAd  Metrics fields in custom report](https://fivetran.com/docs/applications/snapchat-ads/custom-reports#skadmetricsfields)."
+            },
+            "api_field": ""
+         },
          "table_name": {
             "readonly": false,
             "sensitive": false,
@@ -2391,6 +2552,7 @@
       "item_type": {},
       "description": {
          "reddit_ads": "The list of custom report configurations. Each report corresponds to a table within the schema to which connector will sync the data.",
+         "snapchat_ads": "[Custom reports for Snapchat Ads connector](https://fivetran.com/docs/applications/snapchat-ads/custom-reports).",
          "tiktok_ads": "Title of Custom Report"
       },
       "api_field": ""
@@ -2791,6 +2953,19 @@
       },
       "api_field": ""
    },
+   "distributed_connector_cluster_size": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "cosmos": "Specifies the total number of connectors in the Distributed Connector Cluster running in parallel."
+      },
+      "api_field": ""
+   },
    "domain": {
       "readonly": false,
       "sensitive": false,
@@ -2868,10 +3043,12 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "appcues": "Your Appcues Email.",
          "email": "Send your emails to this address.",
          "netsuite_suiteanalytics": "The NetSuite user's email address.",
          "pardot": "The email of the Pardot user.",
          "skuvault": "Your SkuVault Email.",
+         "smadex": "",
          "zendesk": "Zendesk email.",
          "zendesk_sunshine": "Zendesk email."
       },
@@ -2923,6 +3100,32 @@
       "item_type": {},
       "description": {
          "sql_server_hva": "Use archive log only mode"
+      },
+      "api_field": ""
+   },
+   "enable_data_extensions_syncing": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "salesforce_marketing_cloud": ""
+      },
+      "api_field": ""
+   },
+   "enable_distributed_connector_mode": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "cosmos": "Enable to allow the connector to join a cluster of connectors forming a Distributed Connector Cluster. This cluster allows parallel syncs from the same source to the same destination using multiple connectors."
       },
       "api_field": ""
    },
@@ -3137,6 +3340,7 @@
          "appsflyer": "The external ID is a string that designates who can assume the role. For more information, click a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html\"here/a",
          "aws_cloudtrail": "This is the same as your `group_id`, used for authentication along with the `role_arn`.",
          "aws_lambda": "The external ID is a string that designates who can assume the role.",
+         "aws_msk": "This is the same as your `group_id`. This is required when `sasl_mechanism` is set to `IAM`.",
          "azure_function": "External ID.",
          "cloudfront": "This is the same as your `group_id`, used for authentication along with the `role_arn`.",
          "dynamodb": "This is the same as your `group_id`, used for authentication along with the `role_arn`.",
@@ -3666,6 +3870,19 @@
       },
       "api_field": ""
    },
+   "is_external_activities_endpoint_selected": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "pardot": ""
+      },
+      "api_field": ""
+   },
    "is_ftps": {
       "readonly": false,
       "sensitive": false,
@@ -3922,6 +4139,19 @@
       "key_field": "",
       "item_type": null,
       "description": {},
+      "api_field": ""
+   },
+   "limit_for_api_calls_to_external_activities_endpoint": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "pardot": ""
+      },
       "api_field": ""
    },
    "line_separator": {
@@ -4316,6 +4546,19 @@
       },
       "api_field": ""
    },
+   "partner_code": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "care_quality_commission": "Your Care Quality Commission partner code."
+      },
+      "api_field": ""
+   },
    "partners": {
       "readonly": false,
       "sensitive": false,
@@ -4378,6 +4621,7 @@
          "guru": "Your Guru password.",
          "heroku_postgres": "The user's password.",
          "impact": "Your Impact Account Token",
+         "integral_ad_science": "Your integral_ad_science password.",
          "itunes_connect": "Your password",
          "jira": "The Jira user's password.",
          "khoros_care": "Your Khoros Care password.",
@@ -4421,13 +4665,16 @@
          "shiphero": "Your ShipHero password.",
          "shipstation": "Your ShipStation password.",
          "skuvault": "Your SkuVault Password.",
+         "smadex": "Your Smadex Password.",
          "snowflake_db": "The Snowflake user's password.",
          "splunk": "The Splunk user's password.",
          "sql_server": "The user's password.",
          "sql_server_hva": "The user's password.",
          "sql_server_rds": "The user's password.",
+         "stylight": "Your Stylight Password.",
          "teamwork": "Your Teamwork password.",
          "the_trade_desk": "The Trade Desk password. It is a part of the login credentials.",
+         "toggl_track": "Your Toggl Track Password",
          "upland": "Your Upland Software Password.",
          "when_i_work": "Your When I Work password.",
          "wherefour": "Your Wherefour password.",
@@ -4927,6 +5174,7 @@
          "oracle_rac": "Public Key",
          "oracle_rds": "Public Key",
          "oracle_sap_hva": "Public Key",
+         "partnerstack_vendor": "Your PartnerStack Vendor Public key.",
          "postgres": "Public Key",
          "postgres_rds": "Public Key",
          "sap_hana_db": "",
@@ -5006,12 +5254,16 @@
       "description": {
          "amazon_ads": "The region used by the Amazon Ads profile.",
          "amazon_selling_partner": "The region used by the Amazon Selling Partner profile.",
+         "anaplan": "Your Anaplan account region",
          "atlassian_ops_genie": "Your company's Osgenie region (usually **company**.opsgenie.com)",
+         "awin": "Your Awin Region.",
          "aws_lambda": "The AWS region code for the DynamoDB instance.",
          "concur": "The region.",
          "mixpanel": "Data Region",
+         "navan": "Your Navan region.",
          "pendo": "The Pendo account region.",
-         "talkdesk": "Your Talkdesk region (\".com\",\".eu\",\"ca.com\")"
+         "talkdesk": "Your Talkdesk region (\".com\",\".eu\",\"ca.com\")",
+         "zoho_campaigns": "Your Zoho Campaigns application host region."
       },
       "api_field": ""
    },
@@ -5241,6 +5493,19 @@
             },
             "api_field": ""
          },
+         "filter_type": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_analytics_4": "Filter type for reports request. Possible values are INCLUDE and EXCLUDE"
+            },
+            "api_field": ""
+         },
          "filter_value": {
             "readonly": false,
             "sensitive": false,
@@ -5298,6 +5563,19 @@
                "google_ads": "The name of the Google Ads report from which the connector will sync the data. [Possible report_type values](https://developers.google.com/adwords/api/docs/appendix/reports#report-types).",
                "google_search_ads_360": "The type of report",
                "google_search_console": "The type of report"
+            },
+            "api_field": ""
+         },
+         "rollback_window": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "integer",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_analytics_4": "The custom window size for rollback syncs."
             },
             "api_field": ""
          },
@@ -5482,6 +5760,7 @@
          "aws_cloudtrail": "The Role ARN required for authentication.",
          "aws_inventory": "The Role ARN required for authentication.",
          "aws_lambda": "The Role ARN required for authentication.",
+         "aws_msk": "If `sasl_mechanism` is set to `IAM`, enter your Role ARN",
          "cloudfront": "The Role ARN required for authentication.",
          "dynamodb": "Role ARN",
          "heap": "The Role ARN required for authentication.",
@@ -5726,7 +6005,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "apache_kafka": "SASL Mechanism"
+         "apache_kafka": "SASL Mechanism",
+         "aws_msk": "If `security_protocol` is set to `SASL`, enter the SASL Mechanism"
       },
       "api_field": ""
    },
@@ -5792,7 +6072,7 @@
       "item_type": {},
       "description": {
          "apache_kafka": "API Key",
-         "aws_msk": "If `security_protocol` is set to `SASL`, enter your secret's `saslScram512Key`."
+         "aws_msk": "If `sasl_mechanism` is set to `SCRAM_SHA_512`, enter your secret's `saslScram512Key`."
       },
       "api_field": ""
    },
@@ -5806,7 +6086,7 @@
       "item_type": {},
       "description": {
          "apache_kafka": "API Secret",
-         "aws_msk": "If `security_protocol` is set to `SASL`, enter your secret's `saslScram512Key`."
+         "aws_msk": "If `sasl_mechanism` is set to `SCRAM_SHA_512`, enter your secret's `saslScram512Key`."
       },
       "api_field": ""
    },
@@ -5819,6 +6099,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "15five": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "360learning": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "activecampaign": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "ada": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -5834,6 +6115,7 @@
          "amplitude": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "anaplan": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "apache_kafka": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "appcues": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "appfigures": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "apple_search_ads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "appsflyer": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -5841,6 +6123,8 @@
          "assembled": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "atlassian_jira_align": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "atlassian_ops_genie": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "attentive": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "awin": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "aws_cloudtrail": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "aws_inventory": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "aws_lambda": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -5849,6 +6133,7 @@
          "azure_event_hub": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "azure_function": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "azure_service_bus": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "ballotready": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "bamboohr": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "big_commerce": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "bingads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -5858,8 +6143,12 @@
          "braintree_sandbox": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "branch": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "braze": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "brevo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "brex": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "buzzsprout": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "calendly": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "canny": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "care_quality_commission": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "channel_advisor": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "chargebee_product_catalog_1": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "chargebee_product_catalog_2": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -5867,6 +6156,7 @@
          "churnkey": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "churnzero": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "cin7": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "circleci": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "clari": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "clickup": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "cloudfront": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -5876,9 +6166,12 @@
          "coupa": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "criteo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "crossbeam": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "customerio": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "dbt_cloud": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "dcl_logistics": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "dear": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "delighted": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "deputy": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "destini": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "dixa": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "docebo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -5904,6 +6197,8 @@
          "financial_force": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "firebase": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "fivetran_log": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "flexport": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "forj_community": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "fountain": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "freshbooks": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "freshchat": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -5944,27 +6239,36 @@
          "helpscout": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "heroku_kafka": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "hibob": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "hopin": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "hubspot": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "impact": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "insightly": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "instagram_business": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "integral_ad_science": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "intercom": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "ironclad": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "iterable": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "itunes_connect": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "jira": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "justcall": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "kandji": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "katana": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "khoros_care": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "kinesis": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "kissmetrics": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "klaviyo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "kustomer": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "lattice": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "launchdarkly": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "lessonly": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "lever": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "light_speed_retail": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "linkedin_ads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "linkedin_company_pages": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "livechat": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "looker_source": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "loop": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "loopio": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "luma": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "mailchimp": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "mailgun": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -5973,13 +6277,19 @@
          "marketo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "mavenlink": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "medallia": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "mention": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "microsoft_dynamics_365_fo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "microsoft_lists": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "mixmax": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "mixpanel": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "mountain": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "mux": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "namely": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "navan": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "netsuite_suiteanalytics": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "notion": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "okta": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "ometria": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "one_drive": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "open_exchange_rates": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "opendistro": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -5990,13 +6300,16 @@
          "ortto": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "outbrain": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "outreach": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "pagerduty": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "papershift": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "pardot": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "partnerstack_vendor": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "paypal": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "paypal_sandbox": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "pendo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "pinterest_ads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "pipedrive": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "playvox": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "posthog": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "productboard": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "qualaroo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -6007,7 +6320,9 @@
          "reddit_ads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "retailnext": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "retently": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "revel": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "ringcentral": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "rippling": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "rollbar": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "rootly": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "s3": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -6022,6 +6337,7 @@
          "samsara": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "sap_business_by_design": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "scorm": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "security_journey": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "segment": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "sendgrid": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "sendinblue": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -6032,8 +6348,10 @@
          "shipstation": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "shopify": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "simplesat": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "skilljar": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "skuvault": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "slack": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "smadex": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "snapchat_ads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "snowplow": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "sonarqube": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -6044,6 +6362,7 @@
          "stackadapt": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "stripe": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "stripe_test": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "stylight": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "subscript": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "survey_monkey": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "survicate": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -6054,7 +6373,9 @@
          "tempo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "the_trade_desk": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "tiktok_ads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "toggl_track": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "trello": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "trisolute": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "twilio": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "twitter": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "twitter_ads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -6076,6 +6397,7 @@
          "zendesk_chat": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "zendesk_sell": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "zendesk_sunshine": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "zoho_campaigns": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "zoho_crm": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "zuora": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "zuora_sandbox": "Destination schema. Schema is permanent and cannot be changed after connection creation"
@@ -6212,6 +6534,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "appcues": "Your Appcues Secret.",
+         "loopio": "Your Loopio Secret.",
          "twilio": "The Twilio API secret",
          "uservoice": "The UserVoice API secret."
       },
@@ -6229,6 +6553,7 @@
          "appsflyer": "Your AWS secret key.",
          "bigquery_db": "Private key of the customer service account. If specified, your service account will be used to process the data instead of the Fivetran-managed service account.",
          "gcs": "Your JSON Private Key. Used to authorize service account. Required if you use a Custom Service Account to authenticate the storage bucket.",
+         "partnerstack_vendor": "Your PartnerStack Vendor Secret key.",
          "paypal": "`Client Secret` of your PayPal client application.",
          "paypal_sandbox": "`Client Secret` of your PayPal client application.",
          "retailnext": "Your RetailNext secret key."
@@ -6476,7 +6801,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "adobe_analytics_data_feed": "SFTP host."
+         "adobe_analytics_data_feed": "SFTP host.",
+         "salesforce_marketing_cloud": ""
       },
       "api_field": ""
    },
@@ -6489,7 +6815,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "adobe_analytics_data_feed": "Log in with key pair or password"
+         "adobe_analytics_data_feed": "Log in with key pair or password",
+         "salesforce_marketing_cloud": ""
       },
       "api_field": ""
    },
@@ -6502,7 +6829,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "adobe_analytics_data_feed": "SFTP password required if sftp_is_key_pair is false"
+         "adobe_analytics_data_feed": "SFTP password required if sftp_is_key_pair is false",
+         "salesforce_marketing_cloud": ""
       },
       "api_field": ""
    },
@@ -6515,7 +6843,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "adobe_analytics_data_feed": "SFTP port."
+         "adobe_analytics_data_feed": "SFTP port.",
+         "salesforce_marketing_cloud": ""
       },
       "api_field": ""
    },
@@ -6528,7 +6857,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "adobe_analytics_data_feed": "Public Key"
+         "adobe_analytics_data_feed": "Public Key",
+         "salesforce_marketing_cloud": ""
       },
       "api_field": ""
    },
@@ -6541,7 +6871,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "adobe_analytics_data_feed": "SFTP user."
+         "adobe_analytics_data_feed": "SFTP user.",
+         "salesforce_marketing_cloud": ""
       },
       "api_field": ""
    },
@@ -6809,15 +7140,23 @@
          "chargebee_product_catalog_2": "",
          "churnzero": "",
          "collibra": "Your collibra subdomain.",
+         "customerio": "Your Customer.io region-specific Subdomain.",
+         "dbt_cloud": "Your dbt Cloud API server region.",
+         "deputy": "Your Deputy subdomain.",
          "docebo": "Your Docebo subdomain.",
          "fountain": "Your Fountain subdomain.",
          "freshchat": "Your Freshchat Sub Domain",
          "gainsight_customer_success": "The subdomain of your Gainsight account.",
+         "insightly": "Your company's Insightly subdomain name.",
          "kandji": "Your Kandji Subdomain.",
          "khoros_care": "Your Khoros Care subDomain.",
+         "looker_source": "Your looker SubDomain name.",
+         "namely": "Your Namely subdomain.",
          "okta": "Your Okta subdomain.",
+         "playvox": "Your Playvox Subdomain.",
          "posthog": "Your PostHog data region (`app` or `eu`).",
          "recurly": "Your company's Recurly subdomain.",
+         "revel": "Your Revel Systems subDomain.",
          "salesforce_marketing_cloud": "Your Salesforce Marketing Cloud subdomain.",
          "salsify": "Your Salsify Organization ID.",
          "sonarqube": "Your Sonarqube subdomain.",
@@ -7247,6 +7586,19 @@
       },
       "api_field": ""
    },
+   "tenant": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "workday_hcm": "Workday tenant name"
+      },
+      "api_field": ""
+   },
    "tenant_id": {
       "readonly": false,
       "sensitive": true,
@@ -7300,16 +7652,16 @@
          "bingads": "Number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `SIX`.",
          "criteo": "The number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created.   NOTE: The greater number of months means the initial sync will take more time.",
          "double_click_campaign_manager": "Number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `TWELVE`.",
-         "double_click_publishers": "Number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once connection is created.",
+         "double_click_publishers": "Number of months' worth of reporting data you'd like to include in your initial sync. A change of this value will trigger a re-sync for enabled reports during the next connector sync.",
          "facebook": "Number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `THREE`.",
          "facebook_ads": "Number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `THREE`.",
-         "google_ads": "The number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `TWELVE`.",
-         "google_analytics": "Number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once connection is created. The default value: `TWELVE`.",
-         "google_analytics_4": "The number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. The default value: `TWELVE`.",
-         "google_analytics_mcf": "Number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `TWELVE`.",
-         "google_display_and_video_360": "Number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once connection is created.  NOTE: The more months of reporting data you sync, the longer your initial sync will take.",
-         "google_search_ads_360": "Number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once connection is created.",
-         "google_search_console": "Number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once connection is created.",
+         "google_ads": "The number of months' worth of reporting data you'd like to include in your initial sync. A change of this value will trigger a re-sync for enabled custom and prebuilt reports during the next connector sync. Default value: `TWELVE`.",
+         "google_analytics": "Number of months' worth of reporting data you'd like to include in your initial sync. A change of this value will trigger a re-sync for enabled reports during the next connector sync. The default value: `TWELVE`.",
+         "google_analytics_4": "The number of months' worth of reporting data you'd like to include in your initial sync. A change of this value will trigger a re-sync for enabled reports during the next connector sync. The default value: `TWELVE`.",
+         "google_analytics_mcf": "Number of months' worth of reporting data you'd like to include in your initial sync. A change of this value will trigger a re-sync for enabled reports during the next connector sync. Default value: `TWELVE`.",
+         "google_display_and_video_360": "Number of months' worth of reporting data you'd like to include in your initial sync. A change of this value will trigger a re-sync for enabled reports during the next connector sync.  NOTE: The more months of reporting data you sync, the longer your initial sync will take.",
+         "google_search_ads_360": "Number of months' worth of reporting data you'd like to include in your initial sync. A change of this value will trigger a re-sync for enabled reports during the next connector sync. ",
+         "google_search_console": "Number of months' worth of reporting data you'd like to include in your initial sync. A change of this value will trigger a re-sync for enabled reports during the next connector sync.",
          "instagram_business": "Number of months' worth of data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `SIX`.",
          "itunes_connect": "Historical sync time frame in months.",
          "linkedin_ads": "Number of months for which to query reporting data included in the initial sync. This number cannot be modified once the connector is created. Default value: `ALL_TIME`.",
@@ -7886,6 +8238,7 @@
       "item_type": {},
       "description": {
          "marketo": "Marketo SOAP API User Id.",
+         "playvox": "Your Playvox User ID.",
          "sage_intacct": "User ID"
       },
       "api_field": ""
@@ -7954,6 +8307,7 @@
          "gorgias": "Your Gorgias username.",
          "guru": "Your Guru username.",
          "impact": "Your Impact Account SID",
+         "integral_ad_science": "Your integral_ad_science username.",
          "itunes_connect": "Your Apple ID",
          "khoros_care": "Your Khoros Care username.",
          "kissmetrics": "Your Kissmetrics API Username.",
@@ -7969,6 +8323,7 @@
          "servicenow": "Your ServiceNow User ID (username).",
          "shiphero": "Your ShipHero username.",
          "shipstation": "Your ShipStation username.",
+         "stylight": "Your Stylight Username.",
          "teamwork": "Your Teamwork username.",
          "upland": "Your Upland Software Username.",
          "when_i_work": "Your When I Work username.",

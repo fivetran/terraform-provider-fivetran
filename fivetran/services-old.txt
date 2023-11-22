@@ -52,7 +52,6 @@ braze
 brevo
 brex
 buzzsprout
-calabrio
 calendly
 canny
 care_quality_commission
@@ -107,7 +106,6 @@ financial_force
 firebase
 fivetran_log
 flexport
-float
 forj_community
 fountain
 freshbooks
@@ -124,7 +122,6 @@ gcs
 gem
 github
 gladly
-globalmeet
 gocardless
 gongio
 google_ads
@@ -178,7 +175,6 @@ launchdarkly
 lessonly
 lever
 light_speed_retail
-linear
 linkedin_ads
 linkedin_company_pages
 livechat
@@ -248,7 +244,6 @@ playvox
 postgres
 postgres_rds
 posthog
-power_reviews_enterprise
 productboard
 qualaroo
 qualtrics
@@ -290,7 +285,6 @@ skilljar
 skuvault
 slack
 smadex
-smartwaiver
 snapchat_ads
 snowflake_db
 snowplow
@@ -324,7 +318,6 @@ twitter
 twitter_ads
 typeform
 upland
-uppromote
 uservoice
 webhooks
 when_i_work
@@ -341,7 +334,6 @@ zendesk
 zendesk_chat
 zendesk_sell
 zendesk_sunshine
-zenefits
 zoho_campaigns
 zoho_crm
 zuora
