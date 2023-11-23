@@ -51,6 +51,7 @@ func (t *_table) override(local *_table, sch string) error {
 		}
 
 		t.setSyncMode(local.syncMode)
+		// Handle columns that are managed in upstream and saved into standard config
 		for cName, c := range t.columns {
 			if lColumn, ok := local.columns[cName]; ok {
 				err := c.override(lColumn, sch)
@@ -66,9 +67,23 @@ func (t *_table) override(local *_table, sch string) error {
 				t.updated = t.updated || c.updated
 			}
 		}
+		// Api returns only columns that were previosly managed by user
+		// or columns that aren't aligned with the current schema chenge handling policy
+		// So when we are applying current schema config we should keep it in mind
+
+		// Handle columns that are not repesented in unsptream config
+		for lcName, lc := range local.columns {
+			if _, ok := t.columns[lcName]; !ok {
+				t.columns[lcName] = lc
+				t.columns[lcName].updated = true
+				t.columns[lcName].enabledPatched = true
+				t.updated = true
+			}
+		}
 	} else {
 		t.setEnabled(sch == ALLOW_ALL)
 		t.setSyncMode(nil)
+		// Handle columns that are managed in upstream and saved into standard config
 		for _, c := range t.columns {
 			err := c.override(nil, sch)
 			if err != nil {
