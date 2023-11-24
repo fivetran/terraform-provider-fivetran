@@ -394,8 +394,6 @@ Optional:
 	- Service `survicate`: 
 	- Service `trello`: Your TRELLO api key.
 	- Service `uppromote`: Your UpPromote API key.
-- `api_key:api_secret` (String, Sensitive) Field usage depends on `service` value: 
-	- Service `revel`: Your Revel Systems API Key and API Secret.
 - `api_key_api_secret` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `revel`: Your Revel Systems API Key and API Secret.
 - `api_keys` (Set of String, Sensitive) Field usage depends on `service` value: 
