@@ -17,7 +17,7 @@ func TestResourceConnectorMock(t *testing.T) {
 	// NOTE: the config is totally inconsistent and contains all possible values for mapping test
 	step1 := resource.TestStep{
 		Config: `
-		resource "fivetran_connector_new" "test_connector" {
+		resource "fivetran_connector" "test_connector" {
 			provider = fivetran-provider
 
 			service = "google_ads"
@@ -50,30 +50,30 @@ func TestResourceConnectorMock(t *testing.T) {
 				tfmock.AssertEqual(t, postHandler.Interactions, 1)
 				return nil
 			},
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "id", "connector_id"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "name", "adwords_schema"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "group_id", "group_id"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "service", "google_ads"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "destination_schema.name", "adwords_schema"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "config.user", "user_name"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "config.password", "password"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "config.port", "5432"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "config.always_encrypted", "true"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "config.account_ids.0", "id1"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "config.account_ids.1", "id2"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "config.account_ids.2", "id3"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "config.reports.0.report_type", "report_1"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "config.reports.0.metrics.0", "metric1"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "config.reports.0.metrics.1", "metric2"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "config.reports.1.report_type", "report_2"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "config.reports.1.metrics.0", "metric2"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "config.reports.1.metrics.1", "metric3"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "adwords_schema"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "group_id", "group_id"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "google_ads"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "destination_schema.name", "adwords_schema"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.user", "user_name"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.password", "password"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.port", "5432"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.always_encrypted", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.account_ids.0", "id1"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.account_ids.1", "id2"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.account_ids.2", "id3"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.reports.0.report_type", "report_1"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.reports.0.metrics.0", "metric1"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.reports.0.metrics.1", "metric2"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.reports.1.report_type", "report_2"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.reports.1.metrics.0", "metric2"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.reports.1.metrics.1", "metric3"),
 		),
 	}
 
 	step2 := resource.TestStep{
 		Config: `
-		resource "fivetran_connector_new" "test_connector" {
+		resource "fivetran_connector" "test_connector" {
 			provider = fivetran-provider
 
 			service = "google_ads"
@@ -105,18 +105,18 @@ func TestResourceConnectorMock(t *testing.T) {
 				tfmock.AssertEqual(t, postHandler.Interactions, 1)
 				return nil
 			},
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "id", "connector_id"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "name", "adwords_schema"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "group_id", "group_id"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "service", "google_ads"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "destination_schema.name", "adwords_schema"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "config.user", "user_name_1"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "config.password", "password_1"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "config.port", "2345"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "config.always_encrypted", "false"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "config.reports.0.report_type", "report_1"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "config.reports.0.metrics.0", "metric1"),
-			resource.TestCheckResourceAttr("fivetran_connector_new.test_connector", "config.reports.0.metrics.1", "metric2"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "adwords_schema"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "group_id", "group_id"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "google_ads"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "destination_schema.name", "adwords_schema"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.user", "user_name_1"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.password", "password_1"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.port", "2345"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.always_encrypted", "false"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.reports.0.report_type", "report_1"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.reports.0.metrics.0", "metric1"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.reports.0.metrics.1", "metric2"),
 		),
 	}
 

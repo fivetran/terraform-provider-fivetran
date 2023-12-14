@@ -58,7 +58,7 @@ func TestResourceConnectorE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "false"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
 
-					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.0.is_account_level_connector", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.is_account_level_connector", "false"),
 
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "schedule_type", "auto"),
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "sync_frequency", "5"),
