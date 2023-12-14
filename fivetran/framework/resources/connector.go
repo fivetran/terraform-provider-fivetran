@@ -24,6 +24,7 @@ type connector struct {
 
 // Ensure the implementation satisfies the desired interfaces.
 var _ resource.ResourceWithConfigure = &connector{}
+var _ resource.ResourceWithUpgradeState = &connector{}
 
 func (r *connector) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_connector"
@@ -85,7 +86,7 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 		return
 	}
 
-	configMap, err := data.GetConfigMap()
+	configMap, err := data.GetConfigMap(true)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Create Connector Resource.",
@@ -94,7 +95,8 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 
 		return
 	}
-	authMap, err := data.GetAuthMap()
+	noConfig := configMap == nil
+	authMap, err := data.GetAuthMap(true)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -104,6 +106,7 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 
 		return
 	}
+	noAuth := authMap == nil
 
 	destinationSchema, err := data.GetDestinatonSchemaForConfig()
 
@@ -116,6 +119,9 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 		return
 	}
 
+	if noConfig {
+		configMap = make(map[string]interface{})
+	}
 	for k, v := range destinationSchema {
 		configMap[k] = v
 	}
@@ -124,14 +130,20 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 	trustCertificatesPlan := core.GetBoolOrDefault(data.TrustCertificates, false)
 	trustFingerprintsPlan := core.GetBoolOrDefault(data.TrustFingerprints, false)
 
-	response, err := r.GetClient().NewConnectorCreate().
+	svc := r.GetClient().NewConnectorCreate().
 		Service(data.Service.ValueString()).
 		GroupID(data.GroupId.ValueString()).
 		RunSetupTests(runSetupTestsPlan).
 		TrustCertificates(trustCertificatesPlan).
 		TrustFingerprints(trustFingerprintsPlan).
-		AuthCustom(&authMap).
-		ConfigCustom(&configMap).DoCustom(ctx)
+		ConfigCustom(&configMap) // on creation we have config always with schema params
+
+	if !noAuth {
+		svc.AuthCustom(&authMap)
+	}
+
+	response, err := svc.
+		DoCustom(ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -203,7 +215,7 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 	trustCertificatesState := core.GetBoolOrDefault(state.TrustCertificates, false)
 	trustFingerprintsState := core.GetBoolOrDefault(state.TrustFingerprints, false)
 
-	stateConfigMap, err := state.GetConfigMap()
+	stateConfigMap, err := state.GetConfigMap(false)
 	// this is not expected - state should contain only known fields relative to service
 	// but we have to check error just in case
 	if err != nil {
@@ -213,7 +225,7 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 		)
 	}
 
-	stateAuthMap, err := state.GetAuthMap()
+	stateAuthMap, err := state.GetAuthMap(false)
 
 	// this is not expected - state should contain only known fields relative to service
 	// but we have to check error just in case
@@ -224,7 +236,7 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 		)
 	}
 
-	planConfigMap, err := plan.GetConfigMap()
+	planConfigMap, err := plan.GetConfigMap(false)
 
 	if err != nil {
 		if err != nil {
@@ -235,7 +247,7 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 		}
 	}
 
-	planAuthMap, err := plan.GetAuthMap()
+	planAuthMap, err := plan.GetAuthMap(false)
 
 	if err != nil {
 		if err != nil {

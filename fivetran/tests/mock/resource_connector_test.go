@@ -207,7 +207,14 @@ const (
 			"hosts": ["value_2", "value_1"],
 			"advertisers": ["value_2", "value_1"],
 			"organizations": ["value_2", "value_1"],
-			"account_ids": ["value_2", "value_1"]
+			"account_ids": ["value_2", "value_1"],
+			"segments": ["value_2", "value_1"],
+			"schema_registry_urls": ["value_2", "value_1"],
+			"per_interaction_dimensions": ["value_2", "value_1"],
+			"partners": ["value_2", "value_1"],
+			"custom_floodlight_variables": ["value_2", "value_1"],
+			"conversion_dimensions": ["value_2", "value_1"],
+			"app_ids": ["value_2", "value_1"]
 		}
 	}
 	`
@@ -233,13 +240,13 @@ const (
 			properties = ["property_1", "property_2"]
 			primary_keys = ["primary_key_1", "primary_key_2"]
 
-			# app_ids = ["value_1", "value_2"]
-			# conversion_dimensions = ["value_1", "value_2"]
-			# custom_floodlight_variables = ["value_1", "value_2"]
-			# partners = ["value_1", "value_2"]
-			# per_interaction_dimensions = ["value_1", "value_2"]
-			# schema_registry_urls = ["value_1", "value_2"]
-			# segments = ["value_1", "value_2"]
+			app_ids = ["value_1", "value_2"]
+			conversion_dimensions = ["value_1", "value_2"]
+			custom_floodlight_variables = ["value_1", "value_2"]
+			partners = ["value_1", "value_2"]
+			per_interaction_dimensions = ["value_1", "value_2"]
+			schema_registry_urls = ["value_1", "value_2"]
+		    segments = ["value_1", "value_2"]
 
 			metrics = ["value_1", "value_2"]
 			advertisables = ["value_1", "value_2"]
@@ -502,18 +509,16 @@ func TestResourceConnectorEmptyConfigMock(t *testing.T) {
 			timeouts {
 				create = "0"
 			}
-			#config {}
 		}`,
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 				assertEqual(t, connectorEmptyMockPostHandler.Interactions, 1)
-				assertEqual(t, connectorEmptyMockGetHandler.Interactions, 1)
+				assertEqual(t, connectorEmptyMockGetHandler.Interactions, 0)
 				assertNotEmpty(t, connectorMockData)
 				return nil
 			},
-			// With the latest version of sdk this check doesn't work, but the test works as expected.
-			//resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "config"),
+			resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "config"),
 		),
 	}
 
@@ -544,12 +549,10 @@ func TestResourceConnectorListsConfigMock(t *testing.T) {
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 				assertEqual(t, connectorListsMockPostHandler.Interactions, 1)
-				assertEqual(t, connectorListsMockGetHandler.Interactions, 1)
+				assertEqual(t, connectorListsMockGetHandler.Interactions, 0)
 				assertNotEmpty(t, connectorMockData)
 				return nil
 			},
-			// With the latest version of sdk this check doesn't work, but the test works as expected.
-			//resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "config"),
 		),
 	}
 

@@ -138,7 +138,10 @@ func (d *ConnectorResourceModel) ReadFromCreateResponse(resp connectors.DetailsW
 	d.ReadFromContainer(responseContainer)
 }
 
-func (d *ConnectorResourceModel) GetConfigMap() (map[string]interface{}, error) {
+func (d *ConnectorResourceModel) GetConfigMap(nullOnNull bool) (map[string]interface{}, error) {
+	if d.Config.IsNull() && nullOnNull {
+		return nil, nil
+	}
 	result := getValueFromAttrValue(d.Config, common.GetConfigFieldsMap(), nil, d.Service.ValueString()).(map[string]interface{})
 	serviceName := d.Service.ValueString()
 	serviceFields := common.GetFieldsForService(serviceName)
@@ -147,7 +150,10 @@ func (d *ConnectorResourceModel) GetConfigMap() (map[string]interface{}, error) 
 	return result, err
 }
 
-func (d *ConnectorResourceModel) GetAuthMap() (map[string]interface{}, error) {
+func (d *ConnectorResourceModel) GetAuthMap(nullOnNull bool) (map[string]interface{}, error) {
+	if d.Auth.IsNull() && nullOnNull {
+		return nil, nil
+	}
 	serviceName := d.Service.ValueString()
 	serviceFields := common.GetAuthFieldsForService(serviceName)
 	allFields := common.GetAuthFieldsMap()
@@ -222,11 +228,14 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer) {
 
 	d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
 
-	d.Config = getValue(
-		types.ObjectType{AttrTypes: getAttrTypes(common.GetConfigFieldsMap())},
-		c.Config,
-		getValueFromAttrValue(d.Config, common.GetConfigFieldsMap(), nil, c.Service).(map[string]interface{}),
-		common.GetConfigFieldsMap(), nil, c.Service).(basetypes.ObjectValue)
+	// if no config specified - we do not read it to state
+	if !d.Config.IsNull() {
+		d.Config = getValue(
+			types.ObjectType{AttrTypes: getAttrTypes(common.GetConfigFieldsMap())},
+			c.Config,
+			getValueFromAttrValue(d.Config, common.GetConfigFieldsMap(), nil, c.Service).(map[string]interface{}),
+			common.GetConfigFieldsMap(), nil, c.Service).(basetypes.ObjectValue)
+	}
 }
 
 func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) {
