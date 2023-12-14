@@ -81,7 +81,7 @@ resource "fivetran_connector" "test_connector" {
 	}
 }
 	`
-	debug = true
+	debug = false
 )
 
 func getTfConfigForConflictingFields(service, destinationSchema, configTf string) string {
@@ -218,61 +218,39 @@ func getJsonSchemaValue(service string) string {
 	return service
 }
 
-func getAllServiceSpecificFields(service string) map[string]bool {
-	fieldsMap := common.GetConfigFieldsMap()
-
-	result := make(map[string]bool)
-
-	for k, v := range fieldsMap {
-		if !v.Readonly {
-			if _, ok := v.Description[service]; ok {
-				result[k] = true
-			}
-		}
-	}
-
-	return result
-}
-
-func excludeKeysFromStringList(list []string, keys map[string]bool) []string {
-	result := make([]string, 0)
-	for _, s := range list {
-		if _, ok := keys[s]; !ok {
-			result = append(result, s)
-		}
-	}
-	return result
-}
-
 func fetchFieldsBatchByService(fields []string) ([]string, []string, string) {
 	if len(fields) > 0 {
 		f := fields[0]
 		if field, ok := common.GetConfigFieldsMap()[f]; ok {
 			var service string
-			for s := range field.Description {
-				service = s
-				break
-			}
-			serviceFields := getAllServiceSpecificFields(service)
-
-			if len(serviceFields) == 0 && debug {
-				fmt.Printf("No found for service %v for field %v", service, f)
-			}
-			result := make([]string, 0, len(serviceFields))
-
-			if len(serviceFields) == 0 {
-				if debug {
-					fmt.Printf("SKIP: field %v not in use by any service", f)
-				}
+			if len(field.Description) == 0 {
+				fmt.Printf("SKIP: field %v doesn't have definitions\n", f)
 				return make([]string, 0), fields[1:], ""
 			}
-
-			for k := range serviceFields {
-				result = append(result, k)
+			fieldsCount := 0
+			for s := range field.Description {
+				if len(common.GetFieldsForService(s)) > fieldsCount {
+					service = s
+					fieldsCount = len(common.GetFieldsForService(s))
+				}
 			}
-
-			return result, excludeKeysFromStringList(fields, serviceFields), service
+			fieldsToTest := []string{}
+			restFields := []string{}
+			serviceFields := common.GetFieldsForService(service)
+			for _, fName := range fields {
+				if sf, ok := serviceFields[fName]; ok {
+					if !sf.Readonly {
+						fieldsToTest = append(fieldsToTest, fName)
+					} else {
+						fmt.Printf("SKIP: field %v - readonly", f)
+					}
+				} else {
+					restFields = append(restFields, fName)
+				}
+			}
+			return fieldsToTest, restFields, service
 		} else {
+			fmt.Printf("SKIP: field %v not defined in schema", f)
 			return make([]string, 0), fields[1:], ""
 		}
 	}
@@ -336,7 +314,7 @@ func TestResourceConnectorDynamicMapping(t *testing.T) {
 	for len(*restFields) > 0 {
 		stepFields, rest, service := fetchFieldsBatchByService(*restFields)
 
-		fmt.Printf("Fields left to test: %v\n", len(rest))
+		fmt.Printf("Fields left to test: %v | Step fields count: %v | Fields rest %v \n", len(rest)+len(stepFields), len(stepFields), len(rest))
 
 		if debug {
 			fmt.Printf("Testing fields for service %v : [\t\n%v]\n", service, strings.Join(stepFields, "\t\n "))
