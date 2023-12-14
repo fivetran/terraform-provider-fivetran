@@ -8,9 +8,10 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
-	"github.com/hashicorp/terraform-plugin-go/tfprotov5"
-	"github.com/hashicorp/terraform-plugin-go/tfprotov5/tf5server"
-	"github.com/hashicorp/terraform-plugin-mux/tf5muxserver"
+	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
+	"github.com/hashicorp/terraform-plugin-go/tfprotov6/tf6server"
+	"github.com/hashicorp/terraform-plugin-mux/tf5to6server"
+	"github.com/hashicorp/terraform-plugin-mux/tf6muxserver"
 )
 
 func main() {
@@ -22,25 +23,36 @@ func main() {
 	flag.BoolVar(&debug, "debug", false, "set to true to run the provider with support for debuggers like delve")
 	flag.Parse()
 
-	providers := []func() tfprotov5.ProviderServer{
-		providerserver.NewProtocol5(framework.FivetranProvider()), // Example terraform-plugin-framework provider
-		fivetran.Provider().GRPCProvider,                          // Example terraform-plugin-sdk provider
-	}
-
-	muxServer, err := tf5muxserver.NewMuxServer(ctx, providers...)
+	upgradedSdkServer, err := tf5to6server.UpgradeServer(
+		ctx,
+		fivetran.Provider().GRPCProvider, // Example terraform-plugin-sdk provider
+	)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var serveOpts []tf5server.ServeOpt
-
-	if debug {
-		serveOpts = append(serveOpts, tf5server.WithManagedDebug())
+	providers := []func() tfprotov6.ProviderServer{
+		providerserver.NewProtocol6(framework.FivetranProvider()), // Example terraform-plugin-framework provider
+		func() tfprotov6.ProviderServer {
+			return upgradedSdkServer
+		},
 	}
 
-	err = tf5server.Serve(
-		"registry.terraform.io/<namespace>/<provider_name>",
+	muxServer, err := tf6muxserver.NewMuxServer(ctx, providers...)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var serveOpts []tf6server.ServeOpt
+
+	if debug {
+		serveOpts = append(serveOpts, tf6server.WithManagedDebug())
+	}
+
+	err = tf6server.Serve(
+		"registry.terraform.io/providers/fivetran/fivetran",
 		muxServer.ProviderServer,
 		serveOpts...,
 	)
@@ -48,9 +60,4 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// plugin.Serve(&plugin.ServeOpts{
-	// 	ProviderFunc: func() *schema.Provider {
-	// 		return fivetran.Provider()
-	// 	},
-	// })
 }

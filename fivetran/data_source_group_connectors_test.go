@@ -11,7 +11,7 @@ func TestDataSourceGroupConnectorsMappingMock(t *testing.T) {
 	resource.Test(
 		t,
 		resource.TestCase{
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			Steps: []resource.TestStep{
 				{
 					Config: `

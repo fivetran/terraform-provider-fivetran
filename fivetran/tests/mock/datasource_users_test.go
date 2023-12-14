@@ -80,7 +80,7 @@ func TestDataSourceUsersMappingMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientUsersDataSourceConfigMapping(t)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				return nil
 			},

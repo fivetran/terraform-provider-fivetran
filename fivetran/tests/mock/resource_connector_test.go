@@ -407,7 +407,7 @@ func TestResourceConnectorUpdateMock(t *testing.T) {
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 				assertEqual(t, connectorMockUpdatePostHandler.Interactions, 1)
-				assertEqual(t, connectorMockUpdateGetHandler.Interactions, 3)
+				assertEqual(t, connectorMockUpdateGetHandler.Interactions, 2)
 				assertNotEmpty(t, connectorMockData)
 				return nil
 			},
@@ -453,7 +453,7 @@ func TestResourceConnectorUpdateMock(t *testing.T) {
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 				assertEqual(t, connectorMockUpdatePostHandler.Interactions, 1)
-				assertEqual(t, connectorMockUpdateGetHandler.Interactions, 9)
+				assertEqual(t, connectorMockUpdateGetHandler.Interactions, 7)
 				assertNotEmpty(t, connectorMockData)
 				return nil
 			},
@@ -467,7 +467,7 @@ func TestResourceConnectorUpdateMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientConnectorResourceUpdate(t)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				assertEqual(t, connectorMockUpdateDelete.Interactions, 1)
 				assertEmpty(t, connectorMockData)
@@ -523,7 +523,7 @@ func TestResourceConnectorEmptyConfigMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientConnectorResourceEmptyConfig(t)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				assertEqual(t, connectorEmptyMockDelete.Interactions, 1)
 				assertEmpty(t, connectorMockData)
@@ -559,7 +559,7 @@ func TestResourceConnectorListsConfigMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientConnectorResourceListMappingConfig(t)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				assertEqual(t, connectorListsMockDelete.Interactions, 1)
 				assertEmpty(t, connectorMockData)

@@ -20,12 +20,12 @@ func resourceConnectorSchedule() *schema.Resource {
 		DeleteContext: resourceConnectorScheduleDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
 		Schema: map[string]*schema.Schema{
-			ID: {
+			"id": {
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The unique resource identifier (equals to `connector_id`).",
 			},
-			CONNECTOR_ID: {
+			"connector_id": {
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    true,
@@ -127,7 +127,7 @@ func validateConnectorScheduleType(val any, key string) (warns []string, errs []
 
 func resourceConnectorScheduleCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	connectorId := d.Get(CONNECTOR_ID).(string)
+	connectorId := d.Get("connector_id").(string)
 	client := m.(*fivetran.Client)
 
 	// Check if connector exists
@@ -168,7 +168,7 @@ func resourceConnectorScheduleCreate(ctx context.Context, d *schema.ResourceData
 func resourceConnectorScheduleRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	connectorId := d.Get(ID).(string)
+	connectorId := d.Get("id").(string)
 	client := m.(*fivetran.Client)
 
 	// Fetch connector
@@ -182,8 +182,8 @@ func resourceConnectorScheduleRead(ctx context.Context, d *schema.ResourceData, 
 	}
 
 	msi := make(map[string]interface{})
-	msi[ID] = connectorId
-	msi[CONNECTOR_ID] = connectorId
+	msi["id"] = connectorId
+	msi["connector_id"] = connectorId
 
 	helpers.MapAddStr(msi, "sync_frequency", helpers.IntPointerToStr(resp.Data.SyncFrequency))
 	helpers.MapAddStr(msi, "schedule_type", resp.Data.ScheduleType)
@@ -211,7 +211,7 @@ func resourceConnectorScheduleUpdate(ctx context.Context, d *schema.ResourceData
 	client := m.(*fivetran.Client)
 	svc := client.NewConnectorModify()
 
-	svc.ConnectorID(d.Get(ID).(string))
+	svc.ConnectorID(d.Get("id").(string))
 
 	if d.HasChange("sync_frequency") {
 		svc.SyncFrequency(helpers.StrToInt(d.Get("sync_frequency").(string)))

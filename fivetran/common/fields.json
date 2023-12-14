@@ -158,6 +158,7 @@
       "item_type": {},
       "description": {
          "big_commerce": "API access token of your store.",
+         "calabrio": "Your Calabrio access token.",
          "coupa": "Your Coupa access token fetched using client_id and client_secret",
          "deputy": "Your Deputy API access token.",
          "gocardless": "Your GoCardless API token.",
@@ -822,6 +823,7 @@
          "destini": "Your Destini API Key.",
          "easypost": "Your EasyPost API Key.",
          "everhour": "Your Everhour API Token.",
+         "float": "Your Float API key.",
          "forj_community": "Your Forj Community API key.",
          "freshdesk": "Your Freshdesk API Key.",
          "freshservice": "Your Freshservice API Key.",
@@ -838,6 +840,7 @@
          "katana": "Your Katana API key.",
          "klaviyo": "Your Klaviyo API key.",
          "lever": "Your Lever API key.",
+         "linear": "Your Linear API key.",
          "loop": "Your Loop API key.",
          "luma": "Your Luma API key.",
          "mailgun": "Your Mailgun API key.",
@@ -860,6 +863,7 @@
          "sendinblue": "Your Sendinblue API key.",
          "simplesat": "Your Simplesat API key.",
          "skilljar": "",
+         "smartwaiver": "Your Smartwaiver API key.",
          "sonarqube": "Your Sonarqube API key.",
          "squarespace": "Your Squarespace API key.",
          "stackadapt": "Your StackAdapt API key.",
@@ -867,7 +871,8 @@
          "stripe_test": "Restricted API key",
          "subscript": "Your Subscript API key.",
          "survicate": "",
-         "trello": "Your TRELLO api key."
+         "trello": "Your TRELLO api key.",
+         "uppromote": "Your UpPromote API key."
       },
       "api_field": ""
    },
@@ -1530,7 +1535,8 @@
          "freshchat": "Your Freshchat API Token.",
          "hopin": "Your Hopin API key.",
          "orbit": "Your Orbit API Token.",
-         "productboard": "Your Productboard API key."
+         "productboard": "Your Productboard API key.",
+         "zenefits": "Your Zenefits bearer token."
       },
       "api_field": ""
    },
@@ -1728,6 +1734,7 @@
          "oracle_sap_hva_netweaver": "Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.",
          "paypal": "`Client ID` of your PayPal client application.",
          "paypal_sandbox": "`Client ID` of your PayPal client application.",
+         "power_reviews_enterprise": "Your PowerReviews Enterprise Client ID.",
          "salesforce_commerce_cloud": "The Salesforce Commerce Cloud Client ID.",
          "salesforce_marketing_cloud": "The Salesforce Marketing Cloud client ID.",
          "salesloft": "`Client ID` of your Salesloft client application.",
@@ -1790,6 +1797,7 @@
          "marketo": "Marketo REST API Client Secret.",
          "medallia": "Medallia Client Secret key",
          "navan": "Your Navan client secret.",
+         "power_reviews_enterprise": "Your PowerReviews Enterprise Client Secret.",
          "salesforce_commerce_cloud": "The Salesforce Commerce Cloud Client secret.",
          "salesforce_marketing_cloud": "The Salesforce Marketing Cloud client secret.",
          "salesloft": "`Client Secret` of your Salesloft client application.",
@@ -3006,6 +3014,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "calabrio": "Your Calabrio domain name",
          "dynamics_365": "The custom domain name associated with Dynamics 365."
       },
       "api_field": ""
@@ -3777,6 +3786,19 @@
       },
       "api_field": ""
    },
+   "include_ocapi_endpoints": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "salesforce_commerce_cloud": "Whether to sync data through OCAPI endpoints."
+      },
+      "api_field": ""
+   },
    "instance": {
       "readonly": false,
       "sensitive": false,
@@ -4412,6 +4434,58 @@
       "description": {},
       "api_field": ""
    },
+   "ocapi_client_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "salesforce_commerce_cloud": "The Salesforce Commerce Cloud OCAPI Client ID."
+      },
+      "api_field": ""
+   },
+   "ocapi_client_secret": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "salesforce_commerce_cloud": "The Salesforce Commerce Cloud OCAPI Client secret."
+      },
+      "api_field": ""
+   },
+   "ocapi_custom_object_types": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "salesforce_commerce_cloud": "The Salesforce Commerce Cloud OCAPI custom object types."
+      },
+      "api_field": ""
+   },
+   "ocapi_hostname": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "salesforce_commerce_cloud": "The Salesforce Commerce Cloud OCAPI hostname."
+      },
+      "api_field": ""
+   },
    "on_error": {
       "readonly": false,
       "sensitive": false,
@@ -4614,6 +4688,7 @@
          "es_self_hosted": "",
          "financial_force": "",
          "ftp": "FTP password.",
+         "globalmeet": "Your GlobalMeet Password.",
          "gongio": "Your Gongio Access Key Secret.",
          "google_cloud_mysql": "The user's password.",
          "google_cloud_postgresql": "The user's password.",
@@ -6146,6 +6221,7 @@
          "brevo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "brex": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "buzzsprout": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "calabrio": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "calendly": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "canny": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "care_quality_commission": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -6198,6 +6274,7 @@
          "firebase": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "fivetran_log": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "flexport": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "float": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "forj_community": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "fountain": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "freshbooks": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -6214,6 +6291,7 @@
          "gem": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "github": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "gladly": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "globalmeet": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "gocardless": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "gongio": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "google_ads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -6263,6 +6341,7 @@
          "lessonly": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "lever": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "light_speed_retail": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "linear": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "linkedin_ads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "linkedin_company_pages": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "livechat": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -6311,6 +6390,7 @@
          "pipedrive": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "playvox": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "posthog": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "power_reviews_enterprise": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "productboard": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "qualaroo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "qualtrics": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -6352,6 +6432,7 @@
          "skuvault": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "slack": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "smadex": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "smartwaiver": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "snapchat_ads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "snowplow": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "sonarqube": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -6381,6 +6462,7 @@
          "twitter_ads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "typeform": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "upland": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "uppromote": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "uservoice": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "webhooks": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "when_i_work": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -6397,6 +6479,7 @@
          "zendesk_chat": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "zendesk_sell": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "zendesk_sunshine": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "zenefits": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "zoho_campaigns": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "zoho_crm": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "zuora": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -7186,7 +7269,7 @@
       "api_field": ""
    },
    "subscriber_name": {
-      "readonly": false,
+      "readonly": true,
       "sensitive": false,
       "nullable": true,
       "type": "string",
@@ -8303,6 +8386,7 @@
          "financial_force": "",
          "github": "`Login` of your GitHub profile.",
          "gladly": "Your Gladly Username.",
+         "globalmeet": "Your GlobalMeet Username.",
          "gongio": "Your Gongio Access key.",
          "gorgias": "Your Gorgias username.",
          "guru": "Your Guru username.",

@@ -12,9 +12,9 @@ import (
 
 func TestResourceConnectorE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() {},
-		ProviderFactories: providerFactory,
-		CheckDestroy:      testFivetranConnectorResourceDestroy,
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectorResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `

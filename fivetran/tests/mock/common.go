@@ -18,15 +18,18 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
-	"github.com/hashicorp/terraform-plugin-go/tfprotov5"
-	"github.com/hashicorp/terraform-plugin-mux/tf5muxserver"
+	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
+	"github.com/hashicorp/terraform-plugin-mux/tf5to6server"
+	"github.com/hashicorp/terraform-plugin-mux/tf6muxserver"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 var client *fivetranSdk.Client
 var mockClient *mock.HttpClient
-var testProviders map[string]*schema.Provider
+
+// var testProviders map[string]*schema.Provider
+var testProviderSdk *schema.Provider
 var testProvioderFramework provider.Provider
 
 func MockClient() *mock.HttpClient {
@@ -38,15 +41,27 @@ var (
 	TEST_SECRET = "test_secret"
 )
 
-var ProtoV5ProviderFactory = map[string]func() (tfprotov5.ProviderServer, error){
-	"fivetran-provider": func() (tfprotov5.ProviderServer, error) {
+var ProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServer, error){
+	"fivetran-provider": func() (tfprotov6.ProviderServer, error) {
 		ctx := context.Background()
-		providers := []func() tfprotov5.ProviderServer{
-			providerserver.NewProtocol5(testProvioderFramework),
-			testProviders["fivetran-provider"].GRPCProvider,
+
+		upgradedSdkServer, err := tf5to6server.UpgradeServer(
+			ctx,
+			testProviderSdk.GRPCProvider, // Example terraform-plugin-sdk provider
+		)
+
+		if err != nil {
+			return nil, err
 		}
 
-		muxServer, err := tf5muxserver.NewMuxServer(ctx, providers...)
+		providers := []func() tfprotov6.ProviderServer{
+			providerserver.NewProtocol6(testProvioderFramework),
+			func() tfprotov6.ProviderServer {
+				return upgradedSdkServer
+			},
+		}
+
+		muxServer, err := tf6muxserver.NewMuxServer(ctx, providers...)
 
 		if err != nil {
 			return nil, err
@@ -62,16 +77,12 @@ func init() {
 	client.BaseURL("https://api.fivetran.com/v1")
 	client.SetHttpClient(mockClient)
 
-	provider := fivetran.Provider()
-	provider.ConfigureContextFunc = func(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+	testProviderSdk = fivetran.Provider()
+	testProviderSdk.ConfigureContextFunc = func(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 		return client, diag.Diagnostics{}
 	}
 
 	testProvioderFramework = framework.FivetranProviderMock(mockClient)
-
-	testProviders = map[string]*schema.Provider{
-		"fivetran-provider": provider,
-	}
 
 	if os.Getenv("TF_ACC") == "" {
 		// These are the mock tests, so we can freely set the TF_ACC environment variable
@@ -101,6 +112,10 @@ func requestBodyToJson(t *testing.T, req *http.Request) map[string]interface{} {
 	}
 
 	return result
+}
+
+func RequestBodyToJson(t *testing.T, req *http.Request) map[string]interface{} {
+	return requestBodyToJson(t, req)
 }
 
 func fivetranResponse(t *testing.T, req *http.Request, statusCode string, code int, message string,
@@ -218,6 +233,10 @@ func assertKeyExists(t *testing.T, source map[string]interface{}, key string) in
 	}
 }
 
+func AssertKeyExists(t *testing.T, source map[string]interface{}, key string) interface{} {
+	return assertKeyExists(t, source, key)
+}
+
 func assertArrayItems(t *testing.T, source []interface{}, expected []interface{}) {
 	t.Helper()
 
@@ -252,6 +271,9 @@ func assertKeyExistsAndHasValue(t *testing.T, source map[string]interface{}, key
 			printError(t, v, value)
 		}
 	}
+}
+func AssertKeyExistsAndHasValue(t *testing.T, source map[string]interface{}, key string, value interface{}) {
+	assertKeyExistsAndHasValue(t, source, key, value)
 }
 
 func CreateMapFromJsonString(t *testing.T, schemaJson string) map[string]interface{} {

@@ -1,21 +1,21 @@
 package mock
 
 import (
-    "net/http"
-    "testing"
+	"net/http"
+	"testing"
 
-    "github.com/fivetran/go-fivetran/tests/mock"
-    "github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-    "github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/fivetran/go-fivetran/tests/mock"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 var (
-    metadataTablesDataSourceMockGetHandler *mock.Handler
-    metadataTablesDataSourceMockData       map[string]interface{}
+	metadataTablesDataSourceMockGetHandler *mock.Handler
+	metadataTablesDataSourceMockData       map[string]interface{}
 )
 
 const (
-    metadataTablesMappingResponse = `
+	metadataTablesMappingResponse = `
     {
         "items": [
         {
@@ -29,50 +29,50 @@ const (
 )
 
 func setupMockClientMetadataTablesDataSourceConfigMapping(t *testing.T) {
-    mockClient.Reset()
+	mockClient.Reset()
 
-    metadataTablesDataSourceMockGetHandler = mockClient.When(http.MethodGet, "/v1/metadata/connectors/connector_id/tables").ThenCall(
-        func(req *http.Request) (*http.Response, error) {
-            metadataTablesDataSourceMockData = createMapFromJsonString(t, metadataTablesMappingResponse)
-            return fivetranSuccessResponse(t, req, http.StatusOK, "Success", metadataTablesDataSourceMockData), nil
-        },
-    )
+	metadataTablesDataSourceMockGetHandler = mockClient.When(http.MethodGet, "/v1/metadata/connectors/connector_id/tables").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			metadataTablesDataSourceMockData = createMapFromJsonString(t, metadataTablesMappingResponse)
+			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", metadataTablesDataSourceMockData), nil
+		},
+	)
 }
 
 func TestDataSourceMetadataTablesMappingMock(t *testing.T) {
-    step1 := resource.TestStep{
-        Config: `
+	step1 := resource.TestStep{
+		Config: `
         data "fivetran_metadata_tables" "test_metadata_tables" {
             id = "connector_id"
             provider = fivetran-provider
         }`,
 
-        Check: resource.ComposeAggregateTestCheckFunc(
-            func(s *terraform.State) error {
-                assertEqual(t, metadataTablesDataSourceMockGetHandler.Interactions, 2)
-                assertNotEmpty(t, metadataTablesDataSourceMockData)
-                return nil
-            },
-            resource.TestCheckResourceAttr("data.fivetran_metadata_tables.test_metadata_tables", "metadata_tables.0.id", "NjUwMTU"),
-            resource.TestCheckResourceAttr("data.fivetran_metadata_tables.test_metadata_tables", "metadata_tables.0.parent_id", "bWFpbl9wdWJsaWM"),
-            resource.TestCheckResourceAttr("data.fivetran_metadata_tables.test_metadata_tables", "metadata_tables.0.name_in_source", "User Accounts"),
-            resource.TestCheckResourceAttr("data.fivetran_metadata_tables.test_metadata_tables", "metadata_tables.0.name_in_destination", "user_accounts"),
-        ),
-    }
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				assertEqual(t, metadataTablesDataSourceMockGetHandler.Interactions, 2)
+				assertNotEmpty(t, metadataTablesDataSourceMockData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("data.fivetran_metadata_tables.test_metadata_tables", "metadata_tables.0.id", "NjUwMTU"),
+			resource.TestCheckResourceAttr("data.fivetran_metadata_tables.test_metadata_tables", "metadata_tables.0.parent_id", "bWFpbl9wdWJsaWM"),
+			resource.TestCheckResourceAttr("data.fivetran_metadata_tables.test_metadata_tables", "metadata_tables.0.name_in_source", "User Accounts"),
+			resource.TestCheckResourceAttr("data.fivetran_metadata_tables.test_metadata_tables", "metadata_tables.0.name_in_destination", "user_accounts"),
+		),
+	}
 
-    resource.Test(
-        t,
-        resource.TestCase{
-            PreCheck: func() {
-                setupMockClientMetadataTablesDataSourceConfigMapping(t)
-            },
-            Providers: testProviders,
-            CheckDestroy: func(s *terraform.State) error {
-                return nil
-            },
-            Steps: []resource.TestStep{
-                step1,
-            },
-        },
-    )
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientMetadataTablesDataSourceConfigMapping(t)
+			},
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
+			},
+		},
+	)
 }

@@ -178,7 +178,7 @@ func TestResourceDbtProjectCreateMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientDbtProjectResourceCreateTest(t)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				assertEqual(t, dbtProjectResourceCreateMockDeleteHandler.Interactions, 1)
 				assertEmpty(t, dbtProjectResourceCreateMockData)

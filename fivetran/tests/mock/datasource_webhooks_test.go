@@ -103,7 +103,7 @@ func TestDataSourceWebhooksMappingMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientWebhooksDataSourceConfigMapping(t)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				return nil
 			},

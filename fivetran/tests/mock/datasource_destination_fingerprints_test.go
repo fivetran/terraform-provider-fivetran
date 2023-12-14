@@ -66,8 +66,8 @@ func TestDataSourceDestinationFingerprintsMock(t *testing.T) {
 	resource.Test(
 		t,
 		resource.TestCase{
-			PreCheck:  setupConnectorFingerprintsDatasourceMock,
-			Providers: testProviders,
+			PreCheck:                 setupConnectorFingerprintsDatasourceMock,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			Steps: []resource.TestStep{
 				{
 					Config: `

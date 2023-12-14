@@ -10,7 +10,7 @@ import (
 func TestNewDatasourceE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
-		ProtoV5ProviderFactories: protoV5ProviderFactory,
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: fmt.Sprintf(`

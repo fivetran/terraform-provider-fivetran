@@ -3,9 +3,9 @@ package fivetran_test
 import (
 	"context"
 	"errors"
-	"testing"
 	"fmt"
 	"strings"
+	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
@@ -13,9 +13,9 @@ import (
 
 func TestResourceExternalLoggingE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() {},
-		ProviderFactories: providerFactory,
-		CheckDestroy:      testFivetranExternalLoggingResourceDestroy,
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranExternalLoggingResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `

@@ -82,8 +82,8 @@ func TestDataSourceDestinationCertificatesMock(t *testing.T) {
 	resource.Test(
 		t,
 		resource.TestCase{
-			PreCheck:  setup,
-			Providers: testProviders,
+			PreCheck:                 setup,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			Steps: []resource.TestStep{
 				{
 					Config: `

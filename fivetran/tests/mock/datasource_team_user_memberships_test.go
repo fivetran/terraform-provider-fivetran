@@ -1,21 +1,21 @@
 package mock
 
 import (
-    "net/http"
-    "testing"
+	"net/http"
+	"testing"
 
-    "github.com/fivetran/go-fivetran/tests/mock"
-    "github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-    "github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/fivetran/go-fivetran/tests/mock"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 var (
-    teamUserMembershipsDataSourceMockGetHandler *mock.Handler
-    teamUserMembershipsDataSourceMockData       map[string]interface{}
+	teamUserMembershipsDataSourceMockGetHandler *mock.Handler
+	teamUserMembershipsDataSourceMockData       map[string]interface{}
 )
 
 const (
-    teamUserMembershipsMappingResponse = `
+	teamUserMembershipsMappingResponse = `
     {
       "items": [
         {
@@ -32,53 +32,53 @@ const (
 )
 
 func setupMockClientTeamUserMembershipsDataSourceConfigMapping(t *testing.T) {
-    mockClient.Reset()
+	mockClient.Reset()
 
-    teamsDataSourceMockGetHandler = mockClient.When(http.MethodGet, "/v1/teams").ThenCall(
-        func(req *http.Request) (*http.Response, error) {
-            teamsDataSourceMockData = createMapFromJsonString(t, teamsMappingResponse)
-            return fivetranSuccessResponse(t, req, http.StatusOK, "Success", teamsDataSourceMockData), nil
-        },
-    )
+	teamsDataSourceMockGetHandler = mockClient.When(http.MethodGet, "/v1/teams").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			teamsDataSourceMockData = createMapFromJsonString(t, teamsMappingResponse)
+			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", teamsDataSourceMockData), nil
+		},
+	)
 
-    teamUserMembershipsDataSourceMockGetHandler = mockClient.When(http.MethodGet, "/v1/teams/team_id/users").ThenCall(
-        func(req *http.Request) (*http.Response, error) {
-            teamUserMembershipsDataSourceMockData = createMapFromJsonString(t, teamUserMembershipsMappingResponse)
-            return fivetranSuccessResponse(t, req, http.StatusOK, "Success", teamUserMembershipsDataSourceMockData), nil
-        },
-    )
+	teamUserMembershipsDataSourceMockGetHandler = mockClient.When(http.MethodGet, "/v1/teams/team_id/users").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			teamUserMembershipsDataSourceMockData = createMapFromJsonString(t, teamUserMembershipsMappingResponse)
+			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", teamUserMembershipsDataSourceMockData), nil
+		},
+	)
 }
 
 func TestDataSourceTeamUserMembershipsMappingMock(t *testing.T) {
-    step1 := resource.TestStep{
-        Config: `
+	step1 := resource.TestStep{
+		Config: `
         data "fivetran_team_user_memberships" "test_team_user_memberships" {
             provider     = fivetran-provider
             team_id      = "team_id"
         }`,
 
-        Check: resource.ComposeAggregateTestCheckFunc(
-            func(s *terraform.State) error {
-                assertEqual(t, teamUserMembershipsDataSourceMockGetHandler.Interactions, 2)
-                assertNotEmpty(t, teamUserMembershipsDataSourceMockData)
-                return nil
-            },
-        ),
-    }
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				assertEqual(t, teamUserMembershipsDataSourceMockGetHandler.Interactions, 2)
+				assertNotEmpty(t, teamUserMembershipsDataSourceMockData)
+				return nil
+			},
+		),
+	}
 
-    resource.Test(
-        t,
-        resource.TestCase{
-            PreCheck: func() {
-                setupMockClientTeamUserMembershipsDataSourceConfigMapping(t)
-            },
-            Providers: testProviders,
-            CheckDestroy: func(s *terraform.State) error {
-                return nil
-            },
-            Steps: []resource.TestStep{
-                step1,
-            },
-        },
-    )
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientTeamUserMembershipsDataSourceConfigMapping(t)
+			},
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
+			},
+		},
+	)
 }
