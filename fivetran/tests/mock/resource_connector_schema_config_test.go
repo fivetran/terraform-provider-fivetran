@@ -627,7 +627,7 @@ func TestResourceEmptyDefaultSchemaMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientEmptyDefaultSchemaResource(t)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				// there is no possibility to destroy schema config - it alsways exists within the connector
 				return nil
@@ -906,7 +906,7 @@ func TestSyncModeMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientConsistentWithUpstreamResource(t)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				// there is no possibility to destroy schema config - it alsways exists within the connector
 				return nil
@@ -1074,7 +1074,7 @@ func TestConsistentWithUpstreamSchemaMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientConsistentWithUpstreamResource(t)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				// there is no possibility to destroy schema config - it alsways exists within the connector
 				return nil
@@ -1115,7 +1115,7 @@ func TestResourceHashedAlignmentSchemaMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientHashedAlignmentSchemaResource(t)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				// there is no possibility to destroy schema config - it alsways exists within the connector
 				return nil
@@ -1154,7 +1154,7 @@ func TestResourceLockedSchemaMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientLockedPartsSchemaResource(t)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				// there is no possibility to destroy schema config - it alsways exists within the connector
 				return nil

@@ -180,7 +180,7 @@ func TestResourceSchemaDisableColumnMissingInSchemaResponseMock(t *testing.T) {
 					},
 				)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				// there is no possibility to destroy schema config - it alsways exists within the connector
 				return nil

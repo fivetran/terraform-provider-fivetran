@@ -110,7 +110,7 @@ func TestResourceGroupUsersCleanupGroupOnCreate(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientGroupUsersResource(t, initialUsers)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				assertEqual(t, groupDeleteUserHandler.Interactions, 1)
 				assertEmpty(t, groupUsersData)
@@ -224,7 +224,7 @@ func TestResourceGroupUsersMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientGroupUsersResource(t, nil)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				assertEqual(t, groupDeleteUserHandler.Interactions, 3)
 				assertEmpty(t, groupUsersData)

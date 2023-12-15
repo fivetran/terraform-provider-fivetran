@@ -40,9 +40,9 @@ func TestResourceDbtTransformationE2E(t *testing.T) {
 	`
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() {},
-		ProviderFactories: providerFactory,
-		CheckDestroy:      testFivetranDbtTransformationResourceDestroy,
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranDbtTransformationResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: destinationConfig + projectConfig + `

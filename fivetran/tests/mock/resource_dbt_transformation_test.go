@@ -317,7 +317,7 @@ func TestResourceTransformationMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientTransformationResource(t)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				assertEqual(t, transformationDeleteHandler.Interactions, 1)
 				assertEmpty(t, transformationData)

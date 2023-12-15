@@ -11,9 +11,9 @@ import (
 
 func TestResourceDestinationE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() {},
-		ProviderFactories: providerFactory,
-		CheckDestroy:      testFivetranDestinationResourceDestroy,
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranDestinationResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `

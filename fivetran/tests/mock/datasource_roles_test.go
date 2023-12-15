@@ -65,7 +65,7 @@ func TestDataSourceRolesMappingMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientRolesDataSourceConfigMapping(t)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				return nil
 			},

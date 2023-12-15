@@ -42,20 +42,20 @@ func TestDataSourceConnectorConfigMappingMock(t *testing.T) {
 				return nil
 			},
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "service", "google_sheets"),
-			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "service", "google_sheets"),
+
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "service_version", "1"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "schedule_type", "auto"),
 
-			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "status.0.is_historical_sync", "true"),
-			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "status.0.update_state", "on_schedule"),
-			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "status.0.setup_state", "incomplete"),
-			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "status.0.sync_state", "paused"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "status.is_historical_sync", "true"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "status.update_state", "on_schedule"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "status.setup_state", "incomplete"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "status.sync_state", "paused"),
 
-			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "status.0.tasks.0.code", "task_code"),
-			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "status.0.tasks.0.message", "task_message"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "status.tasks.0.code", "task_code"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "status.tasks.0.message", "task_message"),
 
-			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "status.0.warnings.0.code", "warning_code"),
-			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "status.0.warnings.0.message", "warning_message"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "status.warnings.0.code", "warning_code"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "status.warnings.0.message", "warning_message"),
 
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "name", "schema.table"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "sync_frequency", "5"),
@@ -70,7 +70,7 @@ func TestDataSourceConnectorConfigMappingMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientConnectorDataSourceConfigMapping(t)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				return nil
 			},

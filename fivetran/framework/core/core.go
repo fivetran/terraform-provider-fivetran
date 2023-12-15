@@ -12,6 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	datasourceSchema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -72,9 +73,11 @@ const (
 type SchemaField struct {
 	ValueType FieldValueType
 
-	IsId     bool
-	Required bool
-	ForceNew bool
+	IsId           bool
+	Required       bool
+	ForceNew       bool
+	DatasourceOnly bool
+	ResourceOnly   bool
 
 	Readonly    bool
 	Description string
@@ -85,9 +88,11 @@ type Schema struct {
 }
 
 func (s Schema) GetDatasourceSchema() map[string]datasourceSchema.Attribute {
-	result := make(map[string]datasourceSchema.Attribute)
+	result := map[string]datasourceSchema.Attribute{}
 	for k, v := range s.Fields {
-		result[k] = v.getDatasourceSchemaAttribute()
+		if !v.ResourceOnly {
+			result[k] = v.getDatasourceSchemaAttribute()
+		}
 	}
 	return result
 }
@@ -95,7 +100,9 @@ func (s Schema) GetDatasourceSchema() map[string]datasourceSchema.Attribute {
 func (s Schema) GetResourceSchema() map[string]resourceSchema.Attribute {
 	result := make(map[string]resourceSchema.Attribute)
 	for k, v := range s.Fields {
-		result[k] = v.getResourceSchemaAttribute()
+		if !v.DatasourceOnly {
+			result[k] = v.getResourceSchemaAttribute()
+		}
 	}
 	return result
 }
@@ -171,4 +178,11 @@ func (s SchemaField) getResourceSchemaAttribute() resourceSchema.Attribute {
 		result = stringAttribute
 	}
 	return result
+}
+
+func GetBoolOrDefault(value basetypes.BoolValue, fallback bool) bool {
+	if value.IsNull() || value.IsUnknown() {
+		return fallback
+	}
+	return value.ValueBool()
 }

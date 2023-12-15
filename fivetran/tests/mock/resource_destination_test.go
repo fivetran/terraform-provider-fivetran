@@ -240,7 +240,7 @@ func TestResourceDestinationMappingMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientDestinationConfigMapping(t)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				assertEqual(t, destinationMappingDeleteHandler.Interactions, 1)
 				assertEmpty(t, testDestinationData)
@@ -490,7 +490,7 @@ func TestResourceDestinationMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientForDestination(t)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				assertEqual(t, destinationDeleteHandler.Interactions, 1)
 				assertEmpty(t, testDestinationData)

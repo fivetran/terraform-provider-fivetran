@@ -1,4 +1,4 @@
-package fivetran
+package common
 
 import (
 	"bytes"
@@ -13,6 +13,7 @@ const (
 	Boolean
 	StringList
 	ObjectList
+	Object
 
 	Unknown
 )
@@ -23,6 +24,7 @@ var typeMap = map[string]FieldValueType{
 	"boolean":     Boolean,
 	"string_list": StringList,
 	"object_list": ObjectList,
+	"object":      Object,
 }
 
 func (lang FieldValueType) String() string {
@@ -32,6 +34,7 @@ func (lang FieldValueType) String() string {
 		"boolean",
 		"string_list",
 		"object_list",
+		"object",
 	}[lang]
 }
 

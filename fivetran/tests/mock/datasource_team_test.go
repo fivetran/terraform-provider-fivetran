@@ -49,9 +49,9 @@ func TestDataSourceTeamMappingMock(t *testing.T) {
 				assertNotEmpty(t, teamDataSourceMockData)
 				return nil
 			},
-            resource.TestCheckResourceAttr("data.fivetran_team.test_team", "name", "test_team"),
-            resource.TestCheckResourceAttr("data.fivetran_team.test_team", "description", "test_description"),
-            resource.TestCheckResourceAttr("data.fivetran_team.test_team", "role", "Account Reviewer"),
+			resource.TestCheckResourceAttr("data.fivetran_team.test_team", "name", "test_team"),
+			resource.TestCheckResourceAttr("data.fivetran_team.test_team", "description", "test_description"),
+			resource.TestCheckResourceAttr("data.fivetran_team.test_team", "role", "Account Reviewer"),
 		),
 	}
 
@@ -61,7 +61,7 @@ func TestDataSourceTeamMappingMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientTeamDataSourceConfigMapping(t)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				return nil
 			},

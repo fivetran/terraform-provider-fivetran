@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/fivetran/go-fivetran/tests/mock"
-	"github.com/fivetran/terraform-provider-fivetran/fivetran"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/common"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
@@ -124,26 +124,26 @@ func setupMockClientConnectorResourceConfigConflictingFieldsMapping(t *testing.T
 }
 
 func getTfConfigForField(fieldName, service string) string {
-	if f, ok := fivetran.GetConfigFieldsMap()[fieldName]; ok {
+	if f, ok := common.GetConfigFieldsMap()[fieldName]; ok {
 		return getTfConfigForFieldImpl(fieldName, service, f)
 	}
 	return ""
 }
 
-func getTfConfigForFieldImpl(fieldName, service string, field fivetran.ConfigField) string {
+func getTfConfigForFieldImpl(fieldName, service string, field common.ConfigField) string {
 	switch field.FieldValueType {
-	case fivetran.String:
+	case common.String:
 		return fmt.Sprintf(`%v = "%v"`, fieldName, fieldName)
-	case fivetran.Boolean:
+	case common.Boolean:
 		return fmt.Sprintf(`%v = "%v"`, fieldName, "true")
-	case fivetran.Integer:
+	case common.Integer:
 		return fmt.Sprintf(`%v = "%v"`, fieldName, "123")
-	case fivetran.StringList:
-		if field.ItemType[service] == fivetran.Integer {
+	case common.StringList:
+		if field.ItemType[service] == common.Integer {
 			return fmt.Sprintf("%v = [%v]", fieldName, "1")
 		}
 		return fmt.Sprintf(`%v = ["%v"]`, fieldName, fieldName)
-	case fivetran.ObjectList:
+	case common.ObjectList:
 		if len(field.ItemFields) > 0 {
 			subFields := make([]string, 0)
 			for n, f := range field.ItemFields {
@@ -159,30 +159,30 @@ func getTfConfigForFieldImpl(fieldName, service string, field fivetran.ConfigFie
 }
 
 func getJsonConfigForField(fieldName, service string) string {
-	if f, ok := fivetran.GetConfigFieldsMap()[fieldName]; ok {
+	if f, ok := common.GetConfigFieldsMap()[fieldName]; ok {
 		return getJsonConfigForFieldImpl(fieldName, service, f)
 	}
 	return ""
 }
 
-func getJsonConfigForFieldImpl(fieldName, service string, field fivetran.ConfigField) string {
+func getJsonConfigForFieldImpl(fieldName, service string, field common.ConfigField) string {
 	apiFieldName := fieldName
 	if field.ApiField != "" {
 		apiFieldName = field.ApiField
 	}
 	switch field.FieldValueType {
-	case fivetran.String:
+	case common.String:
 		return fmt.Sprintf(`"%v": "%v"`, apiFieldName, fieldName)
-	case fivetran.Boolean:
+	case common.Boolean:
 		return fmt.Sprintf(`"%v": %v`, apiFieldName, "true")
-	case fivetran.Integer:
+	case common.Integer:
 		return fmt.Sprintf(`"%v": %v`, apiFieldName, "123")
-	case fivetran.StringList:
-		if field.ItemType[service] == fivetran.Integer {
+	case common.StringList:
+		if field.ItemType[service] == common.Integer {
 			return fmt.Sprintf(`"%v": [%v]`, apiFieldName, "1")
 		}
 		return fmt.Sprintf(`"%v": ["%v"]`, apiFieldName, fieldName)
-	case fivetran.ObjectList:
+	case common.ObjectList:
 		if len(field.ItemFields) > 0 {
 			subFields := make([]string, 0)
 			for n, f := range field.ItemFields {
@@ -198,8 +198,9 @@ func getJsonConfigForFieldImpl(fieldName, service string, field fivetran.ConfigF
 }
 
 func getTfDestinationSchema(service string) string {
-	if fivetran.GetDestinationSchemaFields()[service]["schema"] {
-		if fivetran.GetDestinationSchemaFields()[service]["table"] {
+	schemaFields := common.GetDestinationSchemaFields()
+	if schemaFields[service]["schema"] {
+		if schemaFields[service]["table"] {
 			return fmt.Sprintf("\n\tname = \"%v\"\n\ttable = \"table\"\n", service)
 		}
 	} else {
@@ -209,67 +210,47 @@ func getTfDestinationSchema(service string) string {
 }
 
 func getJsonSchemaValue(service string) string {
-	if fivetran.GetDestinationSchemaFields()[service]["schema"] {
-		if fivetran.GetDestinationSchemaFields()[service]["table"] {
+	if common.GetDestinationSchemaFields()[service]["schema"] {
+		if common.GetDestinationSchemaFields()[service]["table"] {
 			return fmt.Sprintf("%v.table", service)
 		}
 	}
 	return service
 }
 
-func getAllServiceSpecificFields(service string) map[string]bool {
-	fieldsMap := fivetran.GetConfigFieldsMap()
-
-	result := make(map[string]bool)
-
-	for k, v := range fieldsMap {
-		if _, ok := v.Description[service]; ok {
-			result[k] = true
-		}
-	}
-
-	return result
-}
-
-func excludeKeysFromStringList(list []string, keys map[string]bool) []string {
-	result := make([]string, 0)
-	for _, s := range list {
-		if _, ok := keys[s]; !ok {
-			result = append(result, s)
-		}
-	}
-	return result
-}
-
 func fetchFieldsBatchByService(fields []string) ([]string, []string, string) {
 	if len(fields) > 0 {
 		f := fields[0]
-		if field, ok := fivetran.GetConfigFieldsMap()[f]; ok {
+		if field, ok := common.GetConfigFieldsMap()[f]; ok {
 			var service string
-			for s := range field.Description {
-				service = s
-				break
-			}
-			serviceFields := getAllServiceSpecificFields(service)
-
-			if len(serviceFields) == 0 && debug {
-				fmt.Printf("No found for service %v for field %v", service, f)
-			}
-			result := make([]string, 0, len(serviceFields))
-
-			if len(serviceFields) == 0 {
-				if debug {
-					fmt.Printf("SKIP: field %v not in use by any service", f)	
-				}
+			if len(field.Description) == 0 {
+				fmt.Printf("SKIP: field %v doesn't have definitions\n", f)
 				return make([]string, 0), fields[1:], ""
 			}
-
-			for k := range serviceFields {
-				result = append(result, k)
+			fieldsCount := 0
+			for s := range field.Description {
+				if len(common.GetFieldsForService(s)) > fieldsCount {
+					service = s
+					fieldsCount = len(common.GetFieldsForService(s))
+				}
 			}
-
-			return result, excludeKeysFromStringList(fields, serviceFields), service
+			fieldsToTest := []string{}
+			restFields := []string{}
+			serviceFields := common.GetFieldsForService(service)
+			for _, fName := range fields {
+				if sf, ok := serviceFields[fName]; ok {
+					if !sf.Readonly {
+						fieldsToTest = append(fieldsToTest, fName)
+					} else {
+						fmt.Printf("SKIP: field %v - readonly", f)
+					}
+				} else {
+					restFields = append(restFields, fName)
+				}
+			}
+			return fieldsToTest, restFields, service
 		} else {
+			fmt.Printf("SKIP: field %v not defined in schema", f)
 			return make([]string, 0), fields[1:], ""
 		}
 	}
@@ -278,11 +259,13 @@ func fetchFieldsBatchByService(fields []string) ([]string, []string, string) {
 
 func getSortedFields() *[]string {
 	if fields == nil || len(*fields) == 0 {
-		fieldsMap := fivetran.GetConfigFieldsMap()
+		fieldsMap := common.GetConfigFieldsMap()
 		// Extract keys from map
 		result := make([]string, 0, len(fieldsMap))
-		for k := range fieldsMap {
-			result = append(result, k)
+		for k, v := range fieldsMap {
+			if !v.Readonly {
+				result = append(result, k)
+			}
 		}
 
 		// Sort keys
@@ -296,40 +279,33 @@ var fields *[]string
 
 func TestResourceConnectorDynamicByServiceMapping(t *testing.T) {
 	t.Skip("This test is for manual testing & debug for particular field")
-	rf := make([]string, 0)
-	rf = append(rf, "custom_tables")
+	rf := []string{"account_key"}
 
-	restFields := &rf
+	//restFields := &rf
 
-	for len(*restFields) > 0 {
-		stepFields, rest, service := fetchFieldsBatchByService(*restFields)
-		if debug {
-			fmt.Printf("Fields left to test: %v", len(rest))
-			fmt.Printf("Testing fields for service %v : [%v]", service, strings.Join(stepFields, ", "))
-		}
-		if len(stepFields) > 0 {
-			tfConfig := make([]string, 0)
-			jsonConfig := make([]string, 0)
-			for _, fname := range stepFields {
-				tfConfig = append(tfConfig, getTfConfigForField(fname, service))
-				jsonConfig = append(jsonConfig, getJsonConfigForField(fname, service))
-			}
-			tfc := strings.Join(tfConfig, "\n\t\t")
-			jsonc := strings.Join(jsonConfig, ",\n\t\t")
+	//_, _, service := fetchFieldsBatchByService(*restFields)
 
-			testResourceConnectorConfigConflictingFieldsMappingMock(t,
-				service,
-				getTfDestinationSchema(service),
-				getJsonSchemaValue(service),
-				tfc,
-				jsonc,
-			)
+	service := "cosmos"
+
+	if len(rf) > 0 {
+		tfConfig := make([]string, 0)
+		jsonConfig := make([]string, 0)
+		for _, fname := range rf {
+			tfConfig = append(tfConfig, getTfConfigForField(fname, service))
+			jsonConfig = append(jsonConfig, getJsonConfigForField(fname, service))
 		}
-		if debug {
-			fmt.Printf("Fields left to test: %v", len(rest))
-		}
-		restFields = &rest
+		tfc := strings.Join(tfConfig, "\n\t\t")
+		jsonc := strings.Join(jsonConfig, ",\n\t\t")
+
+		testResourceConnectorConfigConflictingFieldsMappingMock(t,
+			service,
+			getTfDestinationSchema(service),
+			getJsonSchemaValue(service),
+			tfc,
+			jsonc,
+		)
 	}
+
 }
 
 func TestResourceConnectorDynamicMapping(t *testing.T) {
@@ -337,9 +313,11 @@ func TestResourceConnectorDynamicMapping(t *testing.T) {
 
 	for len(*restFields) > 0 {
 		stepFields, rest, service := fetchFieldsBatchByService(*restFields)
+
+		fmt.Printf("Fields left to test: %v | Step fields count: %v | Fields rest %v \n", len(rest)+len(stepFields), len(stepFields), len(rest))
+
 		if debug {
-			fmt.Printf("Fields left to test: %v", len(rest))
-			fmt.Printf("Testing fields for service %v : [%v]", service, strings.Join(stepFields, ", "))
+			fmt.Printf("Testing fields for service %v : [\t\n%v]\n", service, strings.Join(stepFields, "\t\n "))
 		}
 		if len(stepFields) > 0 {
 			tfConfig := make([]string, 0)
@@ -360,7 +338,7 @@ func TestResourceConnectorDynamicMapping(t *testing.T) {
 			)
 		}
 		if debug {
-			fmt.Printf("Fields left to test: %v", len(rest))
+			fmt.Printf("Fields left to test: %v \n", len(rest))
 		}
 		restFields = &rest
 	}
@@ -368,7 +346,9 @@ func TestResourceConnectorDynamicMapping(t *testing.T) {
 
 func testResourceConnectorConfigConflictingFieldsMappingMock(t *testing.T, service, destinationSchema, schema, tfConfig, jsonConfig string) {
 	config := getTfConfigForConflictingFields(service, destinationSchema, tfConfig)
+
 	if debug {
+		fmt.Println("Final config: ")
 		fmt.Println(config)
 	}
 
@@ -377,7 +357,7 @@ func testResourceConnectorConfigConflictingFieldsMappingMock(t *testing.T, servi
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 				assertEqual(t, connectorConflictingMockPostHandler.Interactions, 1)
-				assertEqual(t, connectorConflictingMockGetHandler.Interactions, 1)
+				assertEqual(t, connectorConflictingMockGetHandler.Interactions, 0)
 				assertNotEmpty(t, connectorConflictingMappingMockData)
 				return nil
 			},
@@ -390,7 +370,7 @@ func testResourceConnectorConfigConflictingFieldsMappingMock(t *testing.T, servi
 			PreCheck: func() {
 				setupMockClientConnectorResourceConfigConflictingFieldsMapping(t, service, schema, jsonConfig)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				assertEqual(t, connectorConflictingMockDelete.Interactions, 1)
 				assertEmpty(t, connectorConflictingMappingMockData)

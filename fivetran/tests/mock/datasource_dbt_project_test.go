@@ -83,7 +83,7 @@ func TestDataSourceDbtProjectMappingMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientDbtProjectDataSourceMappingTest(t)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				return nil
 			},

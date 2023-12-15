@@ -150,8 +150,8 @@ func TestResourceDestinationFingerprintsMock(t *testing.T) {
 	resource.Test(
 		t,
 		resource.TestCase{
-			PreCheck:  setupConnectorFingerprintsDatasourceMock,
-			Providers: testProviders,
+			PreCheck:                 setupConnectorFingerprintsDatasourceMock,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				assertEqual(t, deleteHandlers[0].Interactions, 1)
 				assertEqual(t, deleteHandlers[1].Interactions, 1)

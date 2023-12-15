@@ -15,7 +15,7 @@ import (
 func TestResourceGroupE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
-		ProtoV5ProviderFactories: protoV5ProviderFactory,
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 		CheckDestroy:             testFivetranGroupResourceDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -53,7 +53,7 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 	//t.Skip("Endpoint to add user to group doesn't support new RBAC role names. It will be fixed soon")
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
-		ProtoV5ProviderFactories: protoV5ProviderFactory,
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 		CheckDestroy:             testFivetranGroupResourceDestroy,
 		Steps: []resource.TestStep{
 			{

@@ -43,20 +43,20 @@ func TestDataSourceExternalLoggingConfigMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "service", "azure_monitor_log"),
 			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "enabled", "false"),
 
-            resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.workspace_id", "workspace_id"),
-            resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.primary_key", "primary_key"),
-            resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.log_group_name", "log_group_name"),
-            resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.sub_domain", "sub_domain"),
-            resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.enable_ssl", "true"),
-            resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.port", "443"),           
-            resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.role_arn", "role_arn"),
-            resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.channel", "channel"),
-            resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.token", "token"),
-            resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.region", "region"),
-            resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.external_id", "external_id"),
-            resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.api_key", "api_key"),
-            resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.host", "host"),
-            resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.hostname", "hostname"),
+			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.workspace_id", "workspace_id"),
+			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.primary_key", "primary_key"),
+			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.log_group_name", "log_group_name"),
+			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.sub_domain", "sub_domain"),
+			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.enable_ssl", "true"),
+			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.port", "443"),
+			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.role_arn", "role_arn"),
+			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.channel", "channel"),
+			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.token", "token"),
+			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.region", "region"),
+			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.external_id", "external_id"),
+			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.api_key", "api_key"),
+			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.host", "host"),
+			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.hostname", "hostname"),
 		),
 	}
 
@@ -66,7 +66,7 @@ func TestDataSourceExternalLoggingConfigMappingMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientExternalLoggingDataSourceConfigMapping(t)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				return nil
 			},

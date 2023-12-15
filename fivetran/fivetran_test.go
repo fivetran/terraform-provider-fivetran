@@ -11,8 +11,9 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
-	"github.com/hashicorp/terraform-plugin-go/tfprotov5"
-	"github.com/hashicorp/terraform-plugin-mux/tf5muxserver"
+	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
+	"github.com/hashicorp/terraform-plugin-mux/tf5to6server"
+	"github.com/hashicorp/terraform-plugin-mux/tf6muxserver"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
@@ -31,18 +32,28 @@ const (
 var providerSdk *schema.Provider
 var testProvioderFramework provider.Provider
 var client *gofivetran.Client
-var testProviders map[string]*schema.Provider
-var providerFactory = make(map[string]func() (*schema.Provider, error))
 
-var protoV5ProviderFactory = map[string]func() (tfprotov5.ProviderServer, error){
-	"fivetran-provider": func() (tfprotov5.ProviderServer, error) {
+var ProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServer, error){
+	"fivetran-provider": func() (tfprotov6.ProviderServer, error) {
 		ctx := context.Background()
-		providers := []func() tfprotov5.ProviderServer{
-			providerserver.NewProtocol5(testProvioderFramework), // Example terraform-plugin-framework provider
-			providerSdk.GRPCProvider,                            // Example terraform-plugin-sdk provider
+
+		upgradedSdkServer, err := tf5to6server.UpgradeServer(
+			ctx,
+			providerSdk.GRPCProvider, // Example terraform-plugin-sdk provider
+		)
+
+		if err != nil {
+			return nil, err
 		}
 
-		muxServer, err := tf5muxserver.NewMuxServer(ctx, providers...)
+		providers := []func() tfprotov6.ProviderServer{
+			providerserver.NewProtocol6(testProvioderFramework),
+			func() tfprotov6.ProviderServer {
+				return upgradedSdkServer
+			},
+		}
+
+		muxServer, err := tf6muxserver.NewMuxServer(ctx, providers...)
 
 		if err != nil {
 			return nil, err
@@ -81,16 +92,6 @@ func init() {
 	providerSdk = fivetran.Provider()
 	providerSdk.ConfigureContextFunc = func(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 		return client, diag.Diagnostics{}
-	}
-
-	testProviders = map[string]*schema.Provider{
-		"fivetran-provider": providerSdk,
-	}
-
-	for key, element := range testProviders {
-		providerFactory[key] = func() (*schema.Provider, error) {
-			return element, nil
-		}
 	}
 
 	if isPredefinedUserExist() && isPredefinedGroupExist() {

@@ -129,7 +129,7 @@ func TestResourceGroupMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientGroupResource(t)
 			},
-			Providers: testProviders,
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				assertEqual(t, groupDeleteHandler.Interactions, 1)
 				assertEmpty(t, groupData)

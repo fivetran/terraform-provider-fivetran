@@ -89,6 +89,7 @@ func (p *fivetranProvider) Configure(ctx context.Context, req provider.Configure
 func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		resources.User,
+		resources.Connector,
 	}
 }
 
@@ -97,5 +98,6 @@ func (p *fivetranProvider) DataSources(ctx context.Context) []func() datasource.
 		datasources.User,
 		datasources.GroupSshKey,
 		datasources.GroupServiceAccount,
+		datasources.Connector,
 	}
 }
