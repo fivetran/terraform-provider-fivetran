@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/go-fivetran/connectors"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -88,9 +89,9 @@ func dataSourceConnectorsMetadataRead(ctx context.Context, d *schema.ResourceDat
 	return diags
 }
 
-// dataSourceConnectorsMetadataFlattenMetadata receives a *fivetran.ConnectorsSourceMetadataResponse and returns a []interface{}
+// dataSourceConnectorsMetadataFlattenMetadata receives a *connectors.ConnectorsSourceMetadataResponse and returns a []interface{}
 // containing the data type accepted by the "sources" set.
-func dataSourceConnectorsMetadataFlattenMetadata(resp *fivetran.ConnectorsSourceMetadataResponse) []interface{} {
+func dataSourceConnectorsMetadataFlattenMetadata(resp *connectors.ConnectorsSourceMetadataResponse) []interface{} {
 	if resp.Data.Items == nil {
 		return make([]interface{}, 0)
 	}
@@ -113,13 +114,13 @@ func dataSourceConnectorsMetadataFlattenMetadata(resp *fivetran.ConnectorsSource
 }
 
 // dataSourceConnectorsMetadataGetMetadata gets the connectors source metadata. It handles limits and cursors.
-func dataSourceConnectorsMetadataGetMetadata(client *fivetran.Client, ctx context.Context) (fivetran.ConnectorsSourceMetadataResponse, error) {
-	var resp fivetran.ConnectorsSourceMetadataResponse
+func dataSourceConnectorsMetadataGetMetadata(client *fivetran.Client, ctx context.Context) (connectors.ConnectorsSourceMetadataResponse, error) {
+	var resp connectors.ConnectorsSourceMetadataResponse
 	var respNextCursor string
 
 	for {
 		var err error
-		var respInner fivetran.ConnectorsSourceMetadataResponse
+		var respInner connectors.ConnectorsSourceMetadataResponse
 		svc := client.NewConnectorsSourceMetadata()
 		if respNextCursor == "" {
 			respInner, err = svc.Limit(limit).Do(ctx)
@@ -128,7 +129,7 @@ func dataSourceConnectorsMetadataGetMetadata(client *fivetran.Client, ctx contex
 			respInner, err = svc.Limit(limit).Cursor(respNextCursor).Do(ctx)
 		}
 		if err != nil {
-			return fivetran.ConnectorsSourceMetadataResponse{}, err
+			return connectors.ConnectorsSourceMetadataResponse{}, err
 		}
 
 		resp.Data.Items = append(resp.Data.Items, respInner.Data.Items...)

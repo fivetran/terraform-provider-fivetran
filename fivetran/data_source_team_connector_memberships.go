@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/go-fivetran/teams"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -36,9 +37,9 @@ func dataSourceTeamConnectorMembershipsRead(ctx context.Context, d *schema.Resou
 	return diags
 }
 
-// dataSourceTeamConnectorMembershipsFlatten receives a *fivetran.TeamConnectorMembershipsListResponse and returns a []interface{}
+// dataSourceTeamConnectorMembershipsFlatten receives a *teams.TeamConnectorMembershipsListResponse and returns a []interface{}
 // containing the data type accepted by the "TeamConnectorMemberships" set.
-func dataSourceTeamConnectorMembershipsFlatten(resp *fivetran.TeamConnectorMembershipsListResponse) []interface{} {
+func dataSourceTeamConnectorMembershipsFlatten(resp *teams.TeamConnectorMembershipsListResponse) []interface{} {
 	if resp.Data.Items == nil {
 		return make([]interface{}, 0)
 	}
@@ -57,13 +58,13 @@ func dataSourceTeamConnectorMembershipsFlatten(resp *fivetran.TeamConnectorMembe
 }
 
 // dataSourceTeamConnectorMembershipsGetTeamConnectorMemberships gets the memberships list of a group. It handles limits and cursors.
-func dataSourceTeamConnectorMembershipsGet(client *fivetran.Client, ctx context.Context, teamId string) (fivetran.TeamConnectorMembershipsListResponse, error) {
-	var resp fivetran.TeamConnectorMembershipsListResponse
+func dataSourceTeamConnectorMembershipsGet(client *fivetran.Client, ctx context.Context, teamId string) (teams.TeamConnectorMembershipsListResponse, error) {
+	var resp teams.TeamConnectorMembershipsListResponse
 	var respNextCursor string
 
 	for {
 		var err error
-		var respInner fivetran.TeamConnectorMembershipsListResponse
+		var respInner teams.TeamConnectorMembershipsListResponse
 		svc := client.NewTeamConnectorMembershipsList().TeamId(teamId)
 		if respNextCursor == "" {
 			respInner, err = svc.Limit(limit).Do(ctx)
@@ -72,7 +73,7 @@ func dataSourceTeamConnectorMembershipsGet(client *fivetran.Client, ctx context.
 			respInner, err = svc.Limit(limit).Cursor(respNextCursor).Do(ctx)
 		}
 		if err != nil {
-			return fivetran.TeamConnectorMembershipsListResponse{}, err
+			return teams.TeamConnectorMembershipsListResponse{}, err
 		}
 
 		resp.Data.Items = append(resp.Data.Items, respInner.Data.Items...)

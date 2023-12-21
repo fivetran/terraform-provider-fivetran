@@ -43,7 +43,8 @@ const (
             "api_key":        "api_key",
             "host":           "host",
             "hostname":       "hostname",
-            "port":           443
+            "port":           443,
+            "project_id":     "project_id"
         }
     }
     `
@@ -81,6 +82,7 @@ func setupMockClientExternalLoggingConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "api_key", "api_key")
 			assertKeyExistsAndHasValue(t, config, "host", "host")
 			assertKeyExistsAndHasValue(t, config, "hostname", "hostname")
+			assertKeyExistsAndHasValue(t, config, "project_id", "project_id")
 
 			testExternalLoggingData = createMapFromJsonString(t, externalLoggingMappingResponse)
 			return fivetranSuccessResponse(t, req, http.StatusCreated, "Success", testExternalLoggingData), nil
@@ -123,6 +125,7 @@ func TestResourceExternalLoggingMappingMock(t *testing.T) {
                     host = "host"
                     hostname = "hostname"
                     port = 443
+                    project_id = "project_id"
                 }
             }`,
 
@@ -271,6 +274,7 @@ func TestResourceExternalLoggingMock(t *testing.T) {
                     host = "host"
                     hostname = "hostname"
                     port = 443
+                    project_id = "project_id"
                 }
             }`,
 
@@ -298,6 +302,7 @@ func TestResourceExternalLoggingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.0.api_key", "api_key"),
 			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.0.host", "host"),
 			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.0.hostname", "hostname"),
+			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.0.project_id", "project_id"),
 		),
 	}
 
@@ -326,6 +331,7 @@ func TestResourceExternalLoggingMock(t *testing.T) {
                     host = "host"
                     hostname = "hostname"
                     port = 443
+                    project_id = "project_id"
                 }
             }`,
 		Check: resource.ComposeAggregateTestCheckFunc(
@@ -352,6 +358,7 @@ func TestResourceExternalLoggingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.0.api_key", "api_key"),
 			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.0.host", "host"),
 			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.0.hostname", "hostname"),
+			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.0.project_id", "project_id"),
 		),
 	}
 
@@ -380,6 +387,7 @@ func TestResourceExternalLoggingMock(t *testing.T) {
                     host = "host"
                     hostname = "hostname"
                     port = 443
+                    project_id = "project_id"
                 }
             }`,
 		Check: resource.ComposeAggregateTestCheckFunc(

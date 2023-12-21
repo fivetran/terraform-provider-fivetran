@@ -139,7 +139,7 @@ func TestResourceSchemaDisableColumnMissingInSchemaResponseMock(t *testing.T) {
 					},
 				)
 
-				patchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas/").ThenCall(
+				patchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 						body := requestBodyToJson(t, req)
 						if updateIteration == 0 {
