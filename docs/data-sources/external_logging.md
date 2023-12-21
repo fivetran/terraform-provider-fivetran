@@ -46,6 +46,7 @@ Optional:
 - `log_group_name` (String) Log Group Name
 - `port` (Number) Port
 - `primary_key` (String, Sensitive) Primary Key
+- `project_id` (String) Project Id for Google Cloud Logging
 - `region` (String) Region
 - `role_arn` (String) Role Arn
 - `sub_domain` (String) Sub Domain

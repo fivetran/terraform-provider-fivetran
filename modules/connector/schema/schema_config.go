@@ -1,7 +1,6 @@
 package schema
 
 import (
-	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/connectors"
 )
 

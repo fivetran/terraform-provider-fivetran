@@ -57,6 +57,7 @@ func TestDataSourceExternalLoggingConfigMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.api_key", "api_key"),
 			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.host", "host"),
 			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.hostname", "hostname"),
+			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.0.project_id", "project_id"),
 		),
 	}
 

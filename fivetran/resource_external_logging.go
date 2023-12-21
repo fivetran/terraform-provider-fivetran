@@ -147,6 +147,11 @@ func resourceExternalLoggingSchemaConfig(datasource bool) *schema.Schema {
 					Sensitive:   true,
 					Description: "Token",
 				},
+				"project_id": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Project Id for Google Cloud Logging",
+				},
 			},
 		},
 	}
@@ -297,7 +302,6 @@ func resourceExternalLoggingReadConfig(resp *externallogging.ExternalLoggingCust
 
 	// we can set here only known fields that are definied in schema
 	c := make(map[string]interface{})
-	c["workspace_id"] = resp.Data.Config["workspace_id"]
 	c["port"] = resp.Data.Config["port"]
 	c["log_group_name"] = resp.Data.Config["log_group_name"]
 	c["role_arn"] = resp.Data.Config["role_arn"]
@@ -308,6 +312,7 @@ func resourceExternalLoggingReadConfig(resp *externallogging.ExternalLoggingCust
 	c["hostname"] = resp.Data.Config["hostname"]
 	c["enable_ssl"] = resp.Data.Config["enable_ssl"]
 	c["channel"] = resp.Data.Config["channel"]
+	c["project_id"] = resp.Data.Config["project_id"]
 
 	if len(currentConfig) > 0 {
 		// The REST API sends the password field masked. We use the state stored password here if possible.

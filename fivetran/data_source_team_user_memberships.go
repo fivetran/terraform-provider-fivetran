@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/go-fivetran/teams"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -36,9 +37,9 @@ func dataSourceTeamUserMembershipsRead(ctx context.Context, d *schema.ResourceDa
 	return diags
 }
 
-// dataSourceTeamUserMembershipsFlatten receives a *fivetran.TeamUserMembershipsListResponse and returns a []interface{}
+// dataSourceTeamUserMembershipsFlatten receives a *teams.TeamUserMembershipsListResponse and returns a []interface{}
 // containing the data type accepted by the "TeamUserMemberships" set.
-func dataSourceTeamUserMembershipsFlatten(resp *fivetran.TeamUserMembershipsListResponse) []interface{} {
+func dataSourceTeamUserMembershipsFlatten(resp *teams.TeamUserMembershipsListResponse) []interface{} {
 	if resp.Data.Items == nil {
 		return make([]interface{}, 0)
 	}
@@ -56,13 +57,13 @@ func dataSourceTeamUserMembershipsFlatten(resp *fivetran.TeamUserMembershipsList
 }
 
 // dataSourceTeamUserMembershipsGetTeamUserMemberships gets the memberships list of a user. It handles limits and cursors.
-func dataSourceTeamUserMembershipsGet(client *fivetran.Client, ctx context.Context, teamId string) (fivetran.TeamUserMembershipsListResponse, error) {
-	var resp fivetran.TeamUserMembershipsListResponse
+func dataSourceTeamUserMembershipsGet(client *fivetran.Client, ctx context.Context, teamId string) (teams.TeamUserMembershipsListResponse, error) {
+	var resp teams.TeamUserMembershipsListResponse
 	var respNextCursor string
 
 	for {
 		var err error
-		var respInner fivetran.TeamUserMembershipsListResponse
+		var respInner teams.TeamUserMembershipsListResponse
 		svc := client.NewTeamUserMembershipsList().TeamId(teamId)
 		if respNextCursor == "" {
 			respInner, err = svc.Limit(limit).Do(ctx)
@@ -71,7 +72,7 @@ func dataSourceTeamUserMembershipsGet(client *fivetran.Client, ctx context.Conte
 			respInner, err = svc.Limit(limit).Cursor(respNextCursor).Do(ctx)
 		}
 		if err != nil {
-			return fivetran.TeamUserMembershipsListResponse{}, err
+			return teams.TeamUserMembershipsListResponse{}, err
 		}
 
 		resp.Data.Items = append(resp.Data.Items, respInner.Data.Items...)
