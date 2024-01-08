@@ -4,9 +4,11 @@ require (
 	github.com/fivetran/go-fivetran v0.7.15
 	github.com/hashicorp/terraform-plugin-framework v1.4.2
 	github.com/hashicorp/terraform-plugin-framework-timeouts v0.4.1
+	github.com/hashicorp/terraform-plugin-framework-validators v0.12.0
 	github.com/hashicorp/terraform-plugin-mux v0.12.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.29.0
 	github.com/hashicorp/terraform-plugin-testing v1.5.1
+
 )
 
 require (

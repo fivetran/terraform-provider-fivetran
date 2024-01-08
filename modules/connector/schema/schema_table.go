@@ -6,7 +6,6 @@ import (
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/connectors"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 type _table struct {
@@ -94,23 +93,39 @@ func (t *_table) override(local *_table, sch string) error {
 	}
 	return nil
 }
-func (t *_table) readFromResourceData(source map[string]interface{}) {
-	t.enabled = helpers.StrToBool(source[ENABLED].(string))
+func (t *_table) readFromResourceData(source map[string]interface{}, sch string) {
+
 	t.name = source[NAME].(string)
 	t.columns = make(map[string]*_column)
-
 	// Set sync_mode only in case if it is configured locally
 	if sm, ok := source[SYNC_MODE].(string); ok && sm != "" {
 		t.syncMode = &sm
 	}
+	columns := getColumns(source)
+	if len(columns) > 0 {
+		t.readColumns(columns, sch)
+	}
 
-	if columns, ok := source[COLUMN].(*schema.Set); ok && columns.Len() > 0 {
-		for _, column := range columns.List() {
-			cMap := column.(map[string]interface{})
-			c := &_column{}
-			c.readFromResourceData(cMap)
-			t.columns[cMap[NAME].(string)] = c
-		}
+	if enabled, ok := source[ENABLED]; ok {
+		t.enabled = getBoolValue(enabled)
+	} else {
+		t.enabled = len(columns) > 0 || sch == ALLOW_ALL || t.syncMode != nil
+	}
+}
+
+func getColumns(source map[string]interface{}) []interface{} {
+	if columns, ok := source[COLUMN].([]interface{}); ok {
+		return columns
+	}
+	return []interface{}{}
+}
+
+func (t *_table) readColumns(columns []interface{}, sch string) {
+	for _, column := range columns {
+		cMap := column.(map[string]interface{})
+		c := &_column{}
+		c.readFromResourceData(cMap, sch)
+		t.columns[cMap[NAME].(string)] = c
 	}
 }
 

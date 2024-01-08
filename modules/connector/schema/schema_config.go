@@ -3,14 +3,13 @@ package schema
 import (
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/connectors"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-type _config struct {
+type SchemaConfig struct {
 	schemas map[string]*_schema
 }
 
-func (c _config) hasUpdates() bool {
+func (c SchemaConfig) HasUpdates() bool {
 	result := false
 	for _, v := range c.schemas {
 		result = result || v.updated
@@ -18,7 +17,7 @@ func (c _config) hasUpdates() bool {
 	return result
 }
 
-func (c _config) prepareRequest(svc *fivetran.ConnectorSchemaConfigUpdateService) *fivetran.ConnectorSchemaConfigUpdateService {
+func (c SchemaConfig) PrepareRequest(svc *fivetran.ConnectorSchemaConfigUpdateService) *fivetran.ConnectorSchemaConfigUpdateService {
 	for k, v := range c.schemas {
 		if v.updated {
 			svc.Schema(k, v.prepareRequest())
@@ -27,7 +26,7 @@ func (c _config) prepareRequest(svc *fivetran.ConnectorSchemaConfigUpdateService
 	return svc
 }
 
-func (c *_config) override(local *_config, sch string) error {
+func (c *SchemaConfig) Override(local *SchemaConfig, sch string) error {
 	if local != nil {
 		for sName, s := range c.schemas {
 			if lSchema, ok := local.schemas[sName]; ok {
@@ -55,20 +54,18 @@ func (c *_config) override(local *_config, sch string) error {
 	return nil
 }
 
-func (c *_config) readFromResourceData(d *schema.ResourceData) {
+func (c *SchemaConfig) ReadFromRawSourceData(d []interface{}, sch string) {
 	c.schemas = make(map[string]*_schema)
-	if lsc, ok := d.GetOk(SCHEMA); ok {
-		localSchemas := lsc.(*schema.Set).List()
-		for _, schema := range localSchemas {
-			sMap := schema.(map[string]interface{})
+	for _, schema := range d {
+		if sMap, ok := schema.(map[string]interface{}); ok {
 			s := &_schema{}
-			s.readFromResourceData(sMap)
+			s.readFromResourceData(sMap, sch)
 			c.schemas[sMap[NAME].(string)] = s
 		}
 	}
 }
 
-func (c *_config) readFromResponse(response connectors.ConnectorSchemaDetailsResponse) {
+func (c *SchemaConfig) ReadFromResponse(response connectors.ConnectorSchemaDetailsResponse) {
 	c.schemas = make(map[string]*_schema)
 	for k, v := range response.Data.Schemas {
 		s := &_schema{}
@@ -77,9 +74,7 @@ func (c *_config) readFromResponse(response connectors.ConnectorSchemaDetailsRes
 	}
 }
 
-func (c _config) toStateObject(sch string, local _config) map[string]interface{} {
-	result := make(map[string]interface{})
-	result[SCHEMA_CHANGE_HANDLING] = sch
+func (c SchemaConfig) GetSchemas(sch string, local SchemaConfig) []interface{} {
 	schemas := make([]interface{}, 0)
 
 	for k, v := range c.schemas {
@@ -94,6 +89,13 @@ func (c _config) toStateObject(sch string, local _config) map[string]interface{}
 			schemas = append(schemas, schemaState)
 		}
 	}
-	result[SCHEMA] = schemas
+
+	return schemas
+}
+
+func (c SchemaConfig) ToStateObject(sch string, local SchemaConfig) map[string]interface{} {
+	result := make(map[string]interface{})
+	result[SCHEMA_CHANGE_HANDLING] = sch
+	result[SCHEMA] = c.GetSchemas(sch, local)
 	return result
 }

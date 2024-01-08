@@ -100,6 +100,7 @@ func TestResourceSchemaDisableColumnMissingInSchemaResponseMock(t *testing.T) {
 					name = "schema_1"
 					table {
 						name = "table_1"
+						enabled = true
 						column {
 							name = "column_1"
 							enabled = false
@@ -157,6 +158,7 @@ func TestResourceSchemaDisableColumnMissingInSchemaResponseMock(t *testing.T) {
 							assertKeyExists(t, schemas, "schema_1")
 							schema := schemas["schema_1"].(map[string]interface{})
 
+							AssertKeyDoesNotExist(t, schema, "enabled")
 							assertKeyExists(t, schema, "tables")
 							tables := schema["tables"].(map[string]interface{})
 
@@ -164,6 +166,7 @@ func TestResourceSchemaDisableColumnMissingInSchemaResponseMock(t *testing.T) {
 							table := tables["table_1"].(map[string]interface{})
 
 							assertKeyExists(t, table, "columns")
+							AssertKeyDoesNotExist(t, table, "enabled")
 							columns := table["columns"].(map[string]interface{})
 
 							assertKeyExists(t, columns, "column_1")

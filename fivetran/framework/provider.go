@@ -90,6 +90,7 @@ func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Reso
 	return []func() resource.Resource{
 		resources.User,
 		resources.Connector,
+		resources.ConnectorSchema,
 	}
 }
 
