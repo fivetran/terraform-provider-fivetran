@@ -9,6 +9,7 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
 	configSchema "github.com/fivetran/terraform-provider-fivetran/modules/connector/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 func ConnectorSchema() resource.Resource {
@@ -134,11 +135,11 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 			)
 			return
 		}
-		// read data from response and merge with existing config
-		data.ReadFromResponse(schemaResponse)
 	}
+	// read data from response and merge with existing config
+	data.ReadFromResponse(schemaResponse)
 
-	data.Id = data.ConnectorId
+	data.Id = types.StringValue(connectorID)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
@@ -250,6 +251,7 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 	}
 	// read data from response and merge with existing config
 	plan.ReadFromResponse(schemaResponse)
+	plan.Id = types.StringValue(connectorID)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 

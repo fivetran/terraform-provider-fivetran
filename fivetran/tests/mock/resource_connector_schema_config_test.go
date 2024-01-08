@@ -743,7 +743,7 @@ func setupMockClientHashedAlignmentSchemaResource(t *testing.T) {
 				schemasMap := body["schemas"].(map[string]interface{})
 				schema1 := schemasMap["schema_1"].(map[string]interface{})
 
-				assertEqual(t, len(schema1), 2)
+				assertEqual(t, len(schema1), 1)
 
 				assertNotEmpty(t, schema1["tables"])
 
@@ -896,7 +896,7 @@ func TestSyncModeMock(t *testing.T) {
 			},
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.0.sync_mode", "HISTORY"),
-			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.1.sync_mode", ""),
+			resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.1.sync_mode"),
 		),
 	}
 
@@ -1008,7 +1008,7 @@ func TestConsistentWithUpstreamSchemaMock(t *testing.T) {
 			},
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.0.sync_mode", "SOFT_DELETE"),
-			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.1.sync_mode", ""),
+			resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.1.sync_mode"),
 		),
 	}
 
@@ -1035,7 +1035,7 @@ func TestConsistentWithUpstreamSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
-			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.0.sync_mode", ""),
+			resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.0.sync_mode"),
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.1.sync_mode", "LIVE"),
 		),
 	}
@@ -1063,7 +1063,7 @@ func TestConsistentWithUpstreamSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
-			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.0.sync_mode", ""),
+			resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.0.sync_mode"),
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.1.sync_mode", "LIVE"),
 		),
 	}
