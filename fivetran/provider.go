@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/fivetran/go-fivetran"
-	connector_schema "github.com/fivetran/terraform-provider-fivetran/modules/connector/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -18,7 +17,6 @@ func Provider() *schema.Provider {
 		"fivetran_group_users":               resourceGroupUsers(),
 		"fivetran_destination":               resourceDestination(),
 		"fivetran_connector_schedule":        resourceConnectorSchedule(),
-		"fivetran_connector_schema_config":   connector_schema.ResourceSchemaConfigNew(),
 		"fivetran_dbt_transformation":        resourceDbtTransformation(),
 		"fivetran_dbt_project":               resourceDbtProject(),
 		"fivetran_webhook":                   resourceWebhook(),

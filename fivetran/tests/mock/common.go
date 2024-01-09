@@ -222,11 +222,19 @@ func assertNotEmpty(t *testing.T, actual interface{}) {
 	}
 }
 
+func AssertKeyDoesNotExist(t *testing.T, source map[string]interface{}, key string) {
+	t.Helper()
+
+	if _, ok := source[key]; ok {
+		printError(t, key, "no such key in given map")
+	}
+}
+
 func assertKeyExists(t *testing.T, source map[string]interface{}, key string) interface{} {
 	t.Helper()
 
 	if v, ok := source[key]; !ok {
-		printError(t, key, "key not found in source")
+		printError(t, key, "key represented in given map")
 		return nil
 	} else {
 		return v

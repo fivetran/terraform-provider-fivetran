@@ -6,7 +6,6 @@ import (
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/connectors"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 type _schema struct {
@@ -16,7 +15,9 @@ type _schema struct {
 
 func (s _schema) prepareRequest() *connectors.ConnectorSchemaConfigSchema {
 	result := fivetran.NewConnectorSchemaConfigSchema()
-	result.Enabled(s.enabled)
+	if s.enabledPatched {
+		result.Enabled(s.enabled)
+	}
 	for k, v := range s.tables {
 		if v.updated {
 			result.Table(k, v.prepareRequest())
@@ -26,7 +27,9 @@ func (s _schema) prepareRequest() *connectors.ConnectorSchemaConfigSchema {
 }
 func (s *_schema) override(local *_schema, sch string) error {
 	if local != nil {
-		s.setEnabled(local.enabled)
+		if local.enabled != s.enabled {
+			s.setEnabled(local.enabled)
+		}
 		for tName, t := range s.tables {
 			if lTable, ok := local.tables[tName]; ok {
 				err := t.override(lTable, sch)
@@ -70,17 +73,44 @@ func (s *_schema) readFromResponse(name string, response *connectors.ConnectorSc
 	}
 }
 
-func (s *_schema) readFromResourceData(source map[string]interface{}) {
-	s.enabled = helpers.StrToBool(source[ENABLED].(string))
+func getBoolValue(value interface{}) bool {
+	if result, ok := value.(bool); ok {
+		return result
+	}
+	if str, ok := value.(string); ok {
+		return helpers.StrToBool(str)
+	}
+	return false
+}
+
+func (s *_schema) readFromResourceData(source map[string]interface{}, sch string) {
 	s.name = source[NAME].(string)
 	s.tables = make(map[string]*_table)
-	if tables, ok := source[TABLE].(*schema.Set); ok && tables.Len() > 0 {
-		for _, table := range tables.List() {
-			tMap := table.(map[string]interface{})
-			t := &_table{}
-			t.readFromResourceData(tMap)
-			s.tables[tMap[NAME].(string)] = t
-		}
+	tables := getTables(source)
+	if len(tables) > 0 {
+		s.readTables(tables, sch)
+	}
+	if enabled, ok := source[ENABLED]; ok {
+		s.enabled = getBoolValue(enabled)
+	} else {
+		s.enabled = len(tables) > 0 || sch == ALLOW_ALL
+	}
+}
+
+func getTables(source map[string]interface{}) []interface{} {
+	tablesArray := []interface{}{}
+	if tables, ok := source[TABLE].([]interface{}); ok {
+		tablesArray = tables
+	}
+	return tablesArray
+}
+
+func (s *_schema) readTables(tables []interface{}, sch string) {
+	for _, table := range tables {
+		tMap := table.(map[string]interface{})
+		t := &_table{}
+		t.readFromResourceData(tMap, sch)
+		s.tables[tMap[NAME].(string)] = t
 	}
 }
 

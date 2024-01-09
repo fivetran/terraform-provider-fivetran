@@ -58,12 +58,16 @@ func (c *_column) override(local *_column, sch string) error {
 	return nil
 }
 
-func (c *_column) readFromResourceData(source map[string]interface{}) {
-	c.enabled = helpers.StrToBool(source[ENABLED].(string))
+func (c *_column) readFromResourceData(source map[string]interface{}, sch string) {
 	// Set hashed only if it is configured
-	if hashed, ok := source[HASHED].(string); ok && hashed != "" {
-		value := helpers.StrToBool(hashed)
+	if hashed, ok := source[HASHED]; ok {
+		value := getBoolValue(hashed)
 		c.hashed = &value
+	}
+	if enabled, ok := source[ENABLED]; ok {
+		c.enabled = getBoolValue(enabled)
+	} else {
+		c.enabled = (c.hashed != nil) || sch != BLOCK_ALL
 	}
 	c.name = source[NAME].(string)
 }
