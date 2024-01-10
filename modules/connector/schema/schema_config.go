@@ -16,7 +16,7 @@ func (c SchemaConfig) HasUpdates() bool {
 	return result
 }
 
-func (c SchemaConfig) PrepareRequest(svc *fivetran.ConnectorSchemaConfigUpdateService) *fivetran.ConnectorSchemaConfigUpdateService {
+func (c SchemaConfig) PrepareRequest(svc *connectors.ConnectorSchemaConfigUpdateService) *connectors.ConnectorSchemaConfigUpdateService {
 	for k, v := range c.schemas {
 		if v.updated {
 			svc.Schema(k, v.prepareRequest())
