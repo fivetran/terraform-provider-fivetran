@@ -16,6 +16,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+const Version = "1.1.6" // Current provider version
+
 type fivetranProvider struct {
 	mockClient httputils.HttpClient
 }
@@ -81,7 +83,7 @@ func (p *fivetranProvider) Configure(ctx context.Context, req provider.Configure
 		fivetranClient.SetHttpClient(p.mockClient)
 	}
 
-	fivetranClient.CustomUserAgent("terraform-provider-fivetran/" + "1.1.4")
+	fivetranClient.CustomUserAgent("terraform-provider-fivetran/" + Version)
 	resp.DataSourceData = fivetranClient
 	resp.ResourceData = fivetranClient
 }
