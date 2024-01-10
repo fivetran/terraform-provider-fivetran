@@ -186,9 +186,7 @@ Read-Only:
 - `custom_floodlight_variables` (Set of String)
 - `custom_payloads` (Attributes Set) (see [below for nested schema](#nestedatt--config--custom_payloads))
 - `custom_reports` (Attributes Set) (see [below for nested schema](#nestedatt--config--custom_reports))
-- `custom_reports_snapchat_ads` (Attributes Set) (see [below for nested schema](#nestedatt--config--custom_reports_snapchat_ads))
 - `custom_tables` (Attributes Set) (see [below for nested schema](#nestedatt--config--custom_tables))
-- `custom_tables_facebook_ads` (Attributes Set) (see [below for nested schema](#nestedatt--config--custom_tables_facebook_ads))
 - `customer_id` (String)
 - `customer_list_id` (String)
 - `daily_api_call_limit` (Number)
@@ -363,8 +361,6 @@ Read-Only:
 - `report_type` (String)
 - `report_url` (String)
 - `reports` (Attributes Set) (see [below for nested schema](#nestedatt--config--reports))
-- `reports_google_search_ads_360` (Attributes Set) (see [below for nested schema](#nestedatt--config--reports_google_search_ads_360))
-- `reports_google_search_console` (Attributes Set) (see [below for nested schema](#nestedatt--config--reports_google_search_console))
 - `reports_linkedin_ads` (Set of String)
 - `repositories` (Set of String)
 - `resource_token` (String, Sensitive)
@@ -580,20 +576,6 @@ Read-Only:
 - `table_name` (String)
 
 
-<a id="nestedatt--config--custom_reports_snapchat_ads"></a>
-### Nested Schema for `config.custom_reports_snapchat_ads`
-
-Read-Only:
-
-- `base_metrics_fields` (String)
-- `breakdown` (String)
-- `breakout` (String)
-- `dimension` (String)
-- `granularity` (String)
-- `report_name` (String)
-- `sk_ad_metrics_fields` (String)
-
-
 <a id="nestedatt--config--custom_tables"></a>
 ### Nested Schema for `config.custom_tables`
 
@@ -606,25 +588,6 @@ Read-Only:
 - `click_attribution_window` (String)
 - `config_type` (String)
 - `fields` (Set of String)
-- `level` (String)
-- `prebuilt_report_name` (String)
-- `table_name` (String)
-- `use_unified_attribution_setting` (Boolean)
-- `view_attribution_window` (String)
-
-
-<a id="nestedatt--config--custom_tables_facebook_ads"></a>
-### Nested Schema for `config.custom_tables_facebook_ads`
-
-Read-Only:
-
-- `action_breakdowns` (String)
-- `action_report_time` (String)
-- `aggregation` (String)
-- `breakdowns` (String)
-- `click_attribution_window` (String)
-- `config_type` (String)
-- `fields` (String)
 - `level` (String)
 - `prebuilt_report_name` (String)
 - `table_name` (String)
@@ -665,29 +628,6 @@ Read-Only:
 - `segments` (Set of String)
 - `table` (String)
 - `time_aggregation_granularity` (String)
-
-
-<a id="nestedatt--config--reports_google_search_ads_360"></a>
-### Nested Schema for `config.reports_google_search_ads_360`
-
-Read-Only:
-
-- `attributes` (String)
-- `metrics` (String)
-- `report_type` (String)
-- `table` (String)
-
-
-<a id="nestedatt--config--reports_google_search_console"></a>
-### Nested Schema for `config.reports_google_search_console`
-
-Read-Only:
-
-- `aggregation` (String)
-- `dimensions` (String)
-- `report_type` (String)
-- `search_types` (String)
-- `table` (String)
 
 
 <a id="nestedatt--config--secrets_list"></a>

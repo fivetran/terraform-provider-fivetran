@@ -28,8 +28,8 @@ temp/
 tfplugindocs 
 
 # Ignore temporary files
-fivetran/auth-changes.txt
-fivetran/config-changes.txt
+auth-changes.txt
+config-changes.txt
 fivetran/services-changelog.txt
 fivetran/services-new.txt
 fivetran/services-old.txt

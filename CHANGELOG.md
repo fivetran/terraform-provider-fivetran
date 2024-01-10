@@ -17,8 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Added field `fivetran_connector.config.business_accounts` for services: `reddit_ads`.
     - Added field `fivetran_connector.config.region_api_url` for services: `amazon_attribution`.
     - Added field `fivetran_connector.config.custom_payloads` for services: `google_cloud_function`, `aws_lambda`, `azure_function`.
-    - Added field `fivetran_connector.config.custom_tables_facebook_ads` for services: `facebook_ads`.
-    - Added field `fivetran_connector.config.reports_google_search_ads_360` for services: `google_search_ads_360`.
     - Added field `fivetran_connector.config.reports.time_aggregation_granularity` for services: `google_analytics_4`.
     - Added field `fivetran_connector.config.refresh_token` for services: `ironsource`.
     - Added field `fivetran_connector.config.academy_id` for services: `workramp`.
@@ -28,9 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Added field `fivetran_connector.config.database_name` for services: `firebase`.
     - Added field `fivetran_connector.config.connection_name` for services: `appsflyer`.
     - Added field `fivetran_connector.config.server` for services: `castor_edc`.
-    - Added field `fivetran_connector.config.reports_google_search_console` for services: `google_search_console`.
     - Added field `fivetran_connector.config.auth_code` for services: `happyfox`.
-    - Added field `fivetran_connector.config.custom_reports_snapchat_ads` for services: `snapchat_ads`.
+- Connector `fivetran_connector.auth` fields support:
+    - Added field `fivetran_connector.config.client_access.user_agent` for services: `google_ads`.
+    - Added field `fivetran_connector.config.client_access.developer_token` for services: `google_ads`.
 
 ## [1.1.5](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.4...v1.1.5)
 
