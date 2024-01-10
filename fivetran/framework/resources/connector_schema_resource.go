@@ -46,6 +46,10 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	connectorID := data.ConnectorId.ValueString()
 	schemaChangeHandling := data.SchemaChangeHandling.ValueString()
 

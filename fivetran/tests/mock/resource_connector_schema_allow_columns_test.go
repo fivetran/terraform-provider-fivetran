@@ -94,6 +94,7 @@ func TestResourceSchemaDisableColumnMissingInSchemaResponseMock(t *testing.T) {
 		Config: `
 			resource "fivetran_connector_schema_config" "test_schema" {
 				provider = fivetran-provider
+				
 				connector_id = "connector_id"
 				schema_change_handling = "ALLOW_COLUMNS"
 				schema {

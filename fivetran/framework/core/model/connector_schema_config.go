@@ -4,16 +4,18 @@ import (
 	"github.com/fivetran/go-fivetran/connectors"
 	configSchema "github.com/fivetran/terraform-provider-fivetran/modules/connector/schema"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
 type ConnectorSchemaResourceModel struct {
-	Id                   types.String `tfsdk:"id"`
-	ConnectorId          types.String `tfsdk:"connector_id"`
-	SchemaChangeHandling types.String `tfsdk:"schema_change_handling"`
-	Schema               types.Set    `tfsdk:"schema"`
+	Id                   types.String   `tfsdk:"id"`
+	ConnectorId          types.String   `tfsdk:"connector_id"`
+	SchemaChangeHandling types.String   `tfsdk:"schema_change_handling"`
+	Schema               types.Set      `tfsdk:"schema"`
+	Timeouts             timeouts.Value `tfsdk:"timeouts"`
 }
 
 func mapSchemas(schemas []interface{}) map[string]interface{} {
