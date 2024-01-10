@@ -32,18 +32,18 @@ func main() {
 	fmt.Println("Updating config fields")
 
 	updateFields(services, schemaContainer,
-		"common/fields.json",
+		"fivetran/common/fields.json",
 		PROPERTIES_PATH,
-		"common/fields-updated.json",
+		"fivetran/common/fields-updated.json",
 		"config-changes.txt",
 	)
 
 	fmt.Println("Updating auth fields")
 
 	updateFields(services, schemaContainer,
-		"common/auth-fields.json",
+		"fivetran/common/auth-fields.json",
 		AUTH_PROPERTIES_PATH,
-		"common/auth-fields-updated.json",
+		"fivetran/common/auth-fields-updated.json",
 		"auth-changes.txt",
 	)
 
@@ -118,7 +118,6 @@ func writeFields(fieldsExisting map[string]common.ConfigField, fileName string) 
 	if err != nil {
 		fmt.Println(err)
 	}
-	//"common/fields-updated.json"
 	err = os.WriteFile(fileName, jsonResult, 0644)
 	if err != nil {
 		log.Fatal(err)
@@ -371,8 +370,7 @@ func createFields(nodesMap map[string]*gabs.Container, service string) map[strin
 		case ARRAY_FIELD:
 			fieldInfo = getArrayFieldSchema(node, fieldInfo, service)
 		case OBJECT_FIELD:
-			fieldInfo = getObjectField(node.Path("properties").ChildrenMap(), service, node.Path("enum").Data())
-			fieldInfo.FieldValueType = common.Object
+			fieldInfo = getObjectField(node.Path("properties").ChildrenMap(), service, node.Path("enum").Data(), false)
 		}
 
 		nodeDescription := node.Search("description").Data()
@@ -400,7 +398,7 @@ func getArrayFieldSchema(node *gabs.Container, field common.ConfigField, service
 		field.FieldValueType = common.StringList
 		field.ItemType[service] = common.String
 	} else if itemType == OBJECT_FIELD {
-		return getObjectField(node.Path("items.properties").ChildrenMap(), service, node.Path("items.enum").Data())
+		return getObjectField(node.Path("items.properties").ChildrenMap(), service, node.Path("items.enum").Data(), true)
 	} else if itemType == INT_FIELD {
 		field.FieldValueType = common.StringList
 		field.ItemType[service] = common.Integer
@@ -409,10 +407,14 @@ func getArrayFieldSchema(node *gabs.Container, field common.ConfigField, service
 	return field
 }
 
-func getObjectField(childrenMap map[string]*gabs.Container, service string, enumElements interface{}) common.ConfigField {
+func getObjectField(childrenMap map[string]*gabs.Container, service string, enumElements interface{}, isArray bool) common.ConfigField {
 	field := common.NewconfigField()
 	if len(childrenMap) > 0 {
-		field.FieldValueType = common.ObjectList
+		if isArray {
+			field.FieldValueType = common.ObjectList
+		} else {
+			field.FieldValueType = common.Object
+		}
 
 		needItemKey := false
 		possibleItemKeys := make([]string, 0)
@@ -441,11 +443,17 @@ func getObjectField(childrenMap map[string]*gabs.Container, service string, enum
 	} else {
 		if enumElements != nil {
 			fmt.Println("ENUM-object: Object field without sub-fields but with enum.")
-			field.FieldValueType = common.StringList
+			field.FieldValueType = common.String
+			if isArray {
+				field.FieldValueType = common.StringList
+			}
 			field.Nullable = false
 		} else {
 			fmt.Println("WARNING: Object field without sub-fields.")
-			field.FieldValueType = common.ObjectList
+			field.FieldValueType = common.Object
+			if isArray {
+				field.FieldValueType = common.ObjectList
+			}
 		}
 	}
 	return field

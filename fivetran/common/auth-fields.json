@@ -28,6 +28,7 @@
          "survey_monkey": "The long-lived `Access token` carries the information necessary to access API resources.",
          "tiktok_ads": "The long-lived `Access token` carries the information necessary to access API resources.",
          "typeform": "The Typeform API access token.",
+         "wordpress": "",
          "zendesk": "The long-lived `Access token` carries the information necessary to access API resources.",
          "zendesk_chat": "The long-lived `Access token` carries the information necessary to access API resources.",
          "zendesk_sell": "The long-lived `Access token` carries the information necessary to access API resources."
@@ -134,6 +135,7 @@
                "twitter": "",
                "twitter_ads": "",
                "typeform": "",
+               "wordpress": "",
                "wrike": "",
                "yahoo_gemini": "",
                "youtube_analytics": "",
@@ -209,6 +211,7 @@
                "twitter": "",
                "twitter_ads": "",
                "typeform": "",
+               "wordpress": "",
                "wrike": "",
                "yahoo_gemini": "",
                "youtube_analytics": "",
@@ -305,9 +308,10 @@
          "twitter": "Your application client access fields",
          "twitter_ads": "Your application client access fields.",
          "typeform": "",
+         "wordpress": "",
          "wrike": "",
          "yahoo_gemini": "Your application client access fields",
-         "youtube_analytics": "External client credentials to access the connector source",
+         "youtube_analytics": "External client credentials to access the connector source.",
          "zoho_crm": ""
       },
       "api_field": ""
@@ -322,7 +326,8 @@
       "item_type": {},
       "description": {
          "amazon_selling_partner": "`Client ID` of your Amazon Seller/Vendor Central client application.",
-         "apple_search_ads": "Apple Search Ads REST API Client ID. Must be populated if `is_auth2_enabled` is set to `true`."
+         "apple_search_ads": "Apple Search Ads REST API Client ID. Must be populated if `is_auth2_enabled` is set to `true`.",
+         "workday_hcm": ""
       },
       "api_field": ""
    },
@@ -335,7 +340,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "amazon_selling_partner": "`Client Secret` of your Amazon Seller/Vendor Central client application."
+         "amazon_selling_partner": "`Client Secret` of your Amazon Seller/Vendor Central client application.",
+         "workday_hcm": ""
       },
       "api_field": ""
    },
@@ -348,7 +354,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "twitter": "",
+         "twitter": "API Key of your app",
          "twitter_ads": "The Twitter App consumer key."
       },
       "api_field": ""
@@ -362,7 +368,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "twitter": "",
+         "twitter": "API Secret of your app",
          "twitter_ads": "The Twitter App consumer secret."
       },
       "api_field": ""
@@ -434,7 +440,7 @@
       },
       "api_field": ""
    },
-   "previous_refresh_token" : {
+   "previous_refresh_token": {
       "readonly": false,
       "sensitive": true,
       "nullable": true,
@@ -514,7 +520,8 @@
          "share_point": "The long-lived Refresh token carries the information necessary to get a new access token for API resources.",
          "slack": "Your Slack refresh token.",
          "snapchat_ads": "The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.",
-         "typeform": "The Typeform API refresh token."
+         "typeform": "The Typeform API refresh token.",
+         "workday_hcm": ""
       },
       "api_field": ""
    },

@@ -192,7 +192,7 @@ Required:
 
 Optional:
 
-- `enabled` (String) The boolean value specifying whether the sync for the schema into the destination is enabled.
+- `enabled` (Boolean) The boolean value specifying whether the sync for the schema into the destination is enabled.
 - `table` (Block Set) (see [below for nested schema](#nestedblock--schema--table))
 
 <a id="nestedblock--schema--table"></a>
@@ -205,7 +205,7 @@ Required:
 Optional:
 
 - `column` (Block Set) (see [below for nested schema](#nestedblock--schema--table--column))
-- `enabled` (String) The boolean value specifying whether the sync of table into the destination is enabled.
+- `enabled` (Boolean) The boolean value specifying whether the sync of table into the destination is enabled.
 - `sync_mode` (String) This field appears in the response if the connector supports switching sync modes for tables.
 
 <a id="nestedblock--schema--table--column"></a>
@@ -217,8 +217,8 @@ Required:
 
 Optional:
 
-- `enabled` (String) The boolean value specifying whether the sync of the column into the destination is enabled.
-- `hashed` (String) The boolean value specifying whether a column should be hashed
+- `enabled` (Boolean) The boolean value specifying whether the sync of the column into the destination is enabled.
+- `hashed` (Boolean) The boolean value specifying whether a column should be hashed.
 
 
 
@@ -228,9 +228,9 @@ Optional:
 
 Optional:
 
-- `create` (String)
-- `read` (String)
-- `update` (String)
+- `create` (String) A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+- `read` (String) A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+- `update` (String) A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
 
 ## Import
 

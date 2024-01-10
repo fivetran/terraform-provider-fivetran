@@ -1,6 +1,9 @@
 package schema
 
 import (
+	"context"
+
+	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -8,7 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
-func GetConnectorSchemaResourceSchema() schema.Schema {
+func GetConnectorSchemaResourceSchema(ctx context.Context) schema.Schema {
 	return schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -29,6 +32,11 @@ func GetConnectorSchemaResourceSchema() schema.Schema {
 		},
 		Blocks: map[string]schema.Block{
 			"schema": getSchemaBlock(),
+			"timeouts": timeouts.Block(ctx, timeouts.Opts{
+				Read:   true,
+				Create: true,
+				Update: true,
+			}),
 		},
 	}
 }

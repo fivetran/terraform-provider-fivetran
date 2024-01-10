@@ -1,2 +1,0 @@
-- Added field `fivetran_connector.config.client_access.user_agent` for services: `google_ads`.
-- Added field `fivetran_connector.config.client_access.developer_token` for services: `google_ads`.

@@ -5,7 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.5...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.6...HEAD)
+
+## [1.1.6](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.5...v1.1.6)
+
+## Updated
+- Internal refactoring (we are migrating from Terraform SDK to Terraform Plugin Framework)
+
+## Added
+- Following new `fivetran_connector.config` fields support:
+    - Added field `fivetran_connector.config.business_accounts` for services: `reddit_ads`.
+    - Added field `fivetran_connector.config.region_api_url` for services: `amazon_attribution`.
+    - Added field `fivetran_connector.config.custom_payloads` for services: `google_cloud_function`, `aws_lambda`, `azure_function`.
+    - Added field `fivetran_connector.config.reports.time_aggregation_granularity` for services: `google_analytics_4`.
+    - Added field `fivetran_connector.config.refresh_token` for services: `ironsource`.
+    - Added field `fivetran_connector.config.academy_id` for services: `workramp`.
+    - Added field `fivetran_connector.config.api_environment` for services: `afterpay`.
+    - Added field `fivetran_connector.config.region_token_url` for services: `amazon_attribution`.
+    - Added field `fivetran_connector.config.region_auth_url` for services: `amazon_attribution`.
+    - Added field `fivetran_connector.config.database_name` for services: `firebase`.
+    - Added field `fivetran_connector.config.connection_name` for services: `appsflyer`.
+    - Added field `fivetran_connector.config.server` for services: `castor_edc`.
+    - Added field `fivetran_connector.config.auth_code` for services: `happyfox`.
+- Connector `fivetran_connector.auth` fields support:
+    - Added field `fivetran_connector.config.client_access.user_agent` for services: `google_ads`.
+    - Added field `fivetran_connector.config.client_access.developer_token` for services: `google_ads`.
 
 ## [1.1.5](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.4...v1.1.5)
 

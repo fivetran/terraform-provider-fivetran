@@ -28,9 +28,12 @@ temp/
 tfplugindocs 
 
 # Ignore temporary files
-fivetran/config-changes.txt
+auth-changes.txt
+config-changes.txt
 fivetran/services-changelog.txt
 fivetran/services-new.txt
 fivetran/services-old.txt
+fivetran/common/auth-fields-old.json
+fivetran/common/fields-old.json
 .DS_Store
 */.DS_Store

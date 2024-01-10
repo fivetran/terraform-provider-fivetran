@@ -14,6 +14,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-mux/tf6muxserver"
 )
 
+//go:generate go run utils/generate_connector_config.go
+
 func main() {
 
 	ctx := context.Background()

@@ -1,6 +1,10 @@
 package schema
 
 import (
+	"fmt"
+	"sort"
+	"strings"
+
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/common"
 	datasourceSchema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -82,28 +86,51 @@ func schemaBlockFromConfigField(cf common.ConfigField) resourceSchema.Block {
 	return nil
 }
 
+func buildDescription(fieldDescription map[string]string) string {
+	var result []string
+
+	keys := make([]string, 0, len(fieldDescription))
+	for k := range fieldDescription {
+		keys = append(keys, k)
+	}
+
+	sort.Strings(keys)
+
+	for _, service := range keys {
+		if fieldDescription[service] != "" {
+			result = append(result, fmt.Sprintf("\t- Service `%v`: %v", service, fieldDescription[service]))
+		}
+	}
+	if len(result) > 0 {
+		return "Field usage depends on `service` value: \n" + strings.Join(result, "\n")
+	} else {
+		return ""
+	}
+}
+
 func schemaAttributeFromConfigField(cf common.ConfigField, datasource bool) interface{} {
 	switch cf.FieldValueType {
 	case common.Boolean:
 		if datasource {
-			return datasourceSchema.BoolAttribute{Computed: true}
+			return datasourceSchema.BoolAttribute{Computed: true, Description: buildDescription(cf.Description)}
 		} else {
-			return resourceSchema.BoolAttribute{Optional: !cf.Readonly, Computed: true}
+			return resourceSchema.BoolAttribute{Optional: !cf.Readonly, Computed: true, Description: buildDescription(cf.Description)}
 		}
 	case common.Integer:
 		if datasource {
-			return datasourceSchema.Int64Attribute{Computed: true}
+			return datasourceSchema.Int64Attribute{Computed: true, Description: buildDescription(cf.Description)}
 		} else {
-			return resourceSchema.Int64Attribute{Optional: !cf.Readonly, Computed: true}
+			return resourceSchema.Int64Attribute{Optional: !cf.Readonly, Computed: true, Description: buildDescription(cf.Description)}
 		}
 	case common.String:
 		if datasource {
-			return datasourceSchema.StringAttribute{Computed: true, Sensitive: cf.Sensitive}
+			return datasourceSchema.StringAttribute{Computed: true, Sensitive: cf.Sensitive, Description: buildDescription(cf.Description)}
 		} else {
 			return resourceSchema.StringAttribute{
-				Optional:  !cf.Readonly,
-				Computed:  cf.Readonly || !cf.Nullable,
-				Sensitive: cf.Sensitive,
+				Optional:    !cf.Readonly,
+				Computed:    cf.Readonly || !cf.Nullable,
+				Sensitive:   cf.Sensitive,
+				Description: buildDescription(cf.Description),
 			}
 		}
 	case common.StringList:
@@ -112,6 +139,7 @@ func schemaAttributeFromConfigField(cf common.ConfigField, datasource bool) inte
 			return datasourceSchema.SetAttribute{
 				ElementType: elemType,
 				Computed:    true,
+				Description: buildDescription(cf.Description),
 			}
 		} else {
 			return resourceSchema.SetAttribute{
@@ -119,6 +147,7 @@ func schemaAttributeFromConfigField(cf common.ConfigField, datasource bool) inte
 				Optional:    !cf.Readonly,
 				Computed:    cf.Readonly,
 				Sensitive:   cf.Sensitive,
+				Description: buildDescription(cf.Description),
 			}
 		}
 	case common.ObjectList:
@@ -132,6 +161,7 @@ func schemaAttributeFromConfigField(cf common.ConfigField, datasource bool) inte
 				NestedObject: datasourceSchema.NestedAttributeObject{
 					Attributes: toDatasourceAttr(subFields),
 				},
+				Description: buildDescription(cf.Description),
 			}
 		} else {
 			return resourceSchema.SetNestedAttribute{
@@ -140,6 +170,7 @@ func schemaAttributeFromConfigField(cf common.ConfigField, datasource bool) inte
 				NestedObject: resourceSchema.NestedAttributeObject{
 					Attributes: toResourceAttr(subFields),
 				},
+				Description: buildDescription(cf.Description),
 			}
 		}
 	case common.Object:
@@ -149,14 +180,16 @@ func schemaAttributeFromConfigField(cf common.ConfigField, datasource bool) inte
 		}
 		if datasource {
 			return datasourceSchema.SingleNestedAttribute{
-				Computed:   true,
-				Attributes: toDatasourceAttr(subFields),
+				Computed:    true,
+				Attributes:  toDatasourceAttr(subFields),
+				Description: buildDescription(cf.Description),
 			}
 		} else {
 			return resourceSchema.SingleNestedAttribute{
-				Optional:   !cf.Readonly,
-				Computed:   cf.Readonly,
-				Attributes: toResourceAttr(subFields),
+				Optional:    !cf.Readonly,
+				Computed:    cf.Readonly,
+				Attributes:  toResourceAttr(subFields),
+				Description: buildDescription(cf.Description),
 			}
 		}
 	}

@@ -355,7 +355,7 @@
                 "schema": {
                   "required": [
                     "code",
-                    "message"
+                    "data"
                   ],
                   "properties": {
                     "code": {
@@ -365,6 +365,9 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/TeamMembershipResponse"
                     }
                   }
                 }
@@ -678,6 +681,98 @@
           },
           "404": {
             "description": "Connector not found"
+          }
+        }
+      }
+    },
+    "/v1/groups/{groupId}/private-links": {
+      "get": {
+        "tags": [
+          "Private Link Management"
+        ],
+        "summary": "List All Private Links",
+        "description": "Returns a list of all private links.",
+        "operationId": "get_private_links",
+        "parameters": [
+          {
+            "name": "groupId",
+            "in": "path",
+            "description": "The unique identifier for the group within the Fivetran system",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Paging cursor, [read more about pagination](https://fivetran.com/docs/rest-api/pagination)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    },
+                    "data": {
+                      "required": [
+                        "items"
+                      ],
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "description": "The collection of return items",
+                          "items": {
+                            "$ref": "#/components/schemas/PrivateLinkInfo"
+                          }
+                        },
+                        "nextCursor": {
+                          "type": "string",
+                          "description": "The value of the cursor parameter for the next page"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1672,6 +1767,95 @@
       }
     },
     "/v1/connectors/{connectorId}/schemas/{schemaName}/tables/{tableName}/columns/{columnName}": {
+      "delete": {
+        "tags": [
+          "Connector Schema Management"
+        ],
+        "summary": "Drop a blocked column from the destination",
+        "description": "Marks for deletion a blocked column from your table in the destination of an existing connector within your Fivetran account. The column is dropped from the destination on the next sync.",
+        "operationId": "delete_column_connector_config",
+        "parameters": [
+          {
+            "name": "connectorId",
+            "in": "path",
+            "description": "The unique identifier for the connector within the Fivetran system",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "schemaName",
+            "in": "path",
+            "description": "The database schema name within your destination (different from the connector schema)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tableName",
+            "in": "path",
+            "description": "The table name within your database schema",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "columnName",
+            "in": "path",
+            "description": "The column name within your table",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found error"
+          },
+          "409": {
+            "description": "Column not in blocked state error"
+          }
+        }
+      },
       "patch": {
         "tags": [
           "Connector Schema Management"
@@ -3123,7 +3307,7 @@
                 "schema": {
                   "required": [
                     "code",
-                    "message"
+                    "data"
                   ],
                   "properties": {
                     "code": {
@@ -3133,6 +3317,9 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/MembershipResponse"
                     }
                   }
                 }
@@ -4036,7 +4223,7 @@
           "Connector Management"
         ],
         "summary": "Retrieve source metadata",
-        "description": "Returns all available source types within your Fivetran account. This endpoint makes it easier to display Fivetran connectors within your application because it provides metadata including the proper source name (‘Facebook Ad Account’ instead of facebook_ad_account), the source icon, and links to Fivetran resources. As we update source names and icons, that metadata will automatically update within this endpoint",
+        "description": "Returns all available source types within your Fivetran account. This endpoint makes it easier to display Fivetran connectors within your application because it provides metadata including the proper source name ('Facebook Ads' instead of 'facebook_ads'), the source icon, and links to Fivetran resources. As we update source names and icons, that metadata will automatically update within this endpoint",
         "operationId": "metadata_connectors",
         "parameters": [
           {
@@ -4390,6 +4577,64 @@
                     },
                     "data": {
                       "$ref": "#/components/schemas/TransformationDetailsResponse"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/private-links": {
+      "post": {
+        "tags": [
+          "Private Link Management"
+        ],
+        "summary": "Create a Private Link",
+        "description": "Creates a new private link within a specified group in your Fivetran account.",
+        "operationId": "create_private_link",
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrivateLinkCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/PrivateLinkInfo"
                     }
                   }
                 }
@@ -7194,7 +7439,7 @@
                 "schema": {
                   "required": [
                     "code",
-                    "message"
+                    "data"
                   ],
                   "properties": {
                     "code": {
@@ -7204,6 +7449,9 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/MembershipResponse"
                     }
                   }
                 }
@@ -7449,6 +7697,79 @@
           },
           "404": {
             "description": "Webhook not found"
+          }
+        }
+      }
+    },
+    "/v1/connectors/{connectorId}/schemas/drop-columns": {
+      "post": {
+        "tags": [
+          "Connector Schema Management"
+        ],
+        "summary": "Drop a blocked columns from the destination",
+        "description": "Marks for deletion multiple blocked column from your tables in schemas in the destination of an existing connector within your Fivetran account. The columns are dropped from the destination on the next sync.",
+        "operationId": "delete_multiple_columns_connector_config",
+        "parameters": [
+          {
+            "name": "connectorId",
+            "in": "path",
+            "description": "The unique identifier for the connector within the Fivetran system",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DropColumnsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found error"
+          },
+          "409": {
+            "description": "Column not in blocked state error"
           }
         }
       }
@@ -7881,6 +8202,185 @@
           },
           "404": {
             "description": "Not found error"
+          }
+        }
+      }
+    },
+    "/v1/private-links/{privateLinkId}": {
+      "get": {
+        "tags": [
+          "Private Link Management"
+        ],
+        "summary": "Retrieve Private Link Details",
+        "description": "Returns a private link object if a valid identifier was provided.",
+        "operationId": "get_private_link_details",
+        "parameters": [
+          {
+            "name": "privateLinkId",
+            "in": "path",
+            "description": "The unique identifier for the private link within the Fivetran system",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/PrivateLinkInfo"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Private Link Management"
+        ],
+        "summary": "Delete a Private Link",
+        "description": "Deletes a private link from your Fivetran account.",
+        "operationId": "delete_private_link",
+        "parameters": [
+          {
+            "name": "privateLinkId",
+            "in": "path",
+            "description": "The unique identifier for the private link within the Fivetran system",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Private Link Management"
+        ],
+        "summary": "Update a Private Link",
+        "description": "Updates information for an existing private link within your Fivetran account.",
+        "operationId": "modify_private_link",
+        "parameters": [
+          {
+            "name": "privateLinkId",
+            "in": "path",
+            "description": "The unique identifier for the private link within the Fivetran system",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrivateLinkUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/PrivateLinkInfo"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -8966,10 +9466,13 @@
             "adobe_analytics_data_feed": "#/components/schemas/adobe_analytics_data_feed_NewConnectorRequestV1",
             "adp_workforce_now": "#/components/schemas/adp_workforce_now_NewConnectorRequestV1",
             "adroll": "#/components/schemas/adroll_NewConnectorRequestV1",
+            "afterpay": "#/components/schemas/afterpay_NewConnectorRequestV1",
+            "aha": "#/components/schemas/aha_NewConnectorRequestV1",
             "aircall": "#/components/schemas/aircall_NewConnectorRequestV1",
             "airtable": "#/components/schemas/airtable_NewConnectorRequestV1",
             "alchemer": "#/components/schemas/alchemer_NewConnectorRequestV1",
             "amazon_ads": "#/components/schemas/amazon_ads_NewConnectorRequestV1",
+            "amazon_attribution": "#/components/schemas/amazon_attribution_NewConnectorRequestV1",
             "amazon_selling_partner": "#/components/schemas/amazon_selling_partner_NewConnectorRequestV1",
             "amplitude": "#/components/schemas/amplitude_NewConnectorRequestV1",
             "anaplan": "#/components/schemas/anaplan_NewConnectorRequestV1",
@@ -9015,6 +9518,7 @@
             "calendly": "#/components/schemas/calendly_NewConnectorRequestV1",
             "canny": "#/components/schemas/canny_NewConnectorRequestV1",
             "care_quality_commission": "#/components/schemas/care_quality_commission_NewConnectorRequestV1",
+            "castor_edc": "#/components/schemas/castor_edc_NewConnectorRequestV1",
             "channel_advisor": "#/components/schemas/channel_advisor_NewConnectorRequestV1",
             "chargebee_product_catalog_1": "#/components/schemas/chargebee_product_catalog_1_NewConnectorRequestV1",
             "chargebee_product_catalog_2": "#/components/schemas/chargebee_product_catalog_2_NewConnectorRequestV1",
@@ -9026,6 +9530,7 @@
             "clari": "#/components/schemas/clari_NewConnectorRequestV1",
             "clickup": "#/components/schemas/clickup_NewConnectorRequestV1",
             "cloudfront": "#/components/schemas/cloudfront_NewConnectorRequestV1",
+            "codefresh": "#/components/schemas/codefresh_NewConnectorRequestV1",
             "collibra": "#/components/schemas/collibra_NewConnectorRequestV1",
             "concur": "#/components/schemas/concur_NewConnectorRequestV1",
             "confluent_cloud": "#/components/schemas/confluent_cloud_NewConnectorRequestV1",
@@ -9033,6 +9538,7 @@
             "coupa": "#/components/schemas/coupa_NewConnectorRequestV1",
             "criteo": "#/components/schemas/criteo_NewConnectorRequestV1",
             "crossbeam": "#/components/schemas/crossbeam_NewConnectorRequestV1",
+            "crowddev": "#/components/schemas/crowddev_NewConnectorRequestV1",
             "customerio": "#/components/schemas/customerio_NewConnectorRequestV1",
             "db2i_hva": "#/components/schemas/db2i_hva_NewConnectorRequestV1",
             "dbt_cloud": "#/components/schemas/dbt_cloud_NewConnectorRequestV1",
@@ -9060,6 +9566,7 @@
             "es_self_hosted": "#/components/schemas/es_self_hosted_NewConnectorRequestV1",
             "eventbrite": "#/components/schemas/eventbrite_NewConnectorRequestV1",
             "everhour": "#/components/schemas/everhour_NewConnectorRequestV1",
+            "ezofficeinventory": "#/components/schemas/ezofficeinventory_NewConnectorRequestV1",
             "facebook_ads": "#/components/schemas/facebook_ads_NewConnectorRequestV1",
             "facebook_pages": "#/components/schemas/facebook_pages_NewConnectorRequestV1",
             "financial_force": "#/components/schemas/financial_force_NewConnectorRequestV1",
@@ -9081,6 +9588,7 @@
             "gainsight_customer_success": "#/components/schemas/gainsight_customer_success_NewConnectorRequestV1",
             "gcs": "#/components/schemas/gcs_NewConnectorRequestV1",
             "gem": "#/components/schemas/gem_NewConnectorRequestV1",
+            "getfeedback": "#/components/schemas/getfeedback_NewConnectorRequestV1",
             "github": "#/components/schemas/github_NewConnectorRequestV1",
             "gladly": "#/components/schemas/gladly_NewConnectorRequestV1",
             "globalmeet": "#/components/schemas/globalmeet_NewConnectorRequestV1",
@@ -9106,27 +9614,34 @@
             "gorgias": "#/components/schemas/gorgias_NewConnectorRequestV1",
             "greenhouse": "#/components/schemas/greenhouse_NewConnectorRequestV1",
             "guru": "#/components/schemas/guru_NewConnectorRequestV1",
+            "happyfox": "#/components/schemas/happyfox_NewConnectorRequestV1",
             "harvest": "#/components/schemas/harvest_NewConnectorRequestV1",
             "heap": "#/components/schemas/heap_NewConnectorRequestV1",
             "height": "#/components/schemas/height_NewConnectorRequestV1",
             "helpscout": "#/components/schemas/helpscout_NewConnectorRequestV1",
+            "helpshift": "#/components/schemas/helpshift_NewConnectorRequestV1",
             "heroku_kafka": "#/components/schemas/heroku_kafka_NewConnectorRequestV1",
             "heroku_postgres": "#/components/schemas/heroku_postgres_NewConnectorRequestV1",
             "hibob": "#/components/schemas/hibob_NewConnectorRequestV1",
             "hopin": "#/components/schemas/hopin_NewConnectorRequestV1",
             "hubspot": "#/components/schemas/hubspot_NewConnectorRequestV1",
+            "ilevel": "#/components/schemas/ilevel_NewConnectorRequestV1",
             "impact": "#/components/schemas/impact_NewConnectorRequestV1",
+            "incidentio": "#/components/schemas/incidentio_NewConnectorRequestV1",
             "insightly": "#/components/schemas/insightly_NewConnectorRequestV1",
             "instagram_business": "#/components/schemas/instagram_business_NewConnectorRequestV1",
             "integral_ad_science": "#/components/schemas/integral_ad_science_NewConnectorRequestV1",
             "intercom": "#/components/schemas/intercom_NewConnectorRequestV1",
             "ironclad": "#/components/schemas/ironclad_NewConnectorRequestV1",
+            "ironsource": "#/components/schemas/ironsource_NewConnectorRequestV1",
             "iterable": "#/components/schemas/iterable_NewConnectorRequestV1",
             "itunes_connect": "#/components/schemas/itunes_connect_NewConnectorRequestV1",
             "jira": "#/components/schemas/jira_NewConnectorRequestV1",
+            "jotform": "#/components/schemas/jotform_NewConnectorRequestV1",
             "justcall": "#/components/schemas/justcall_NewConnectorRequestV1",
             "kandji": "#/components/schemas/kandji_NewConnectorRequestV1",
             "katana": "#/components/schemas/katana_NewConnectorRequestV1",
+            "keypay": "#/components/schemas/keypay_NewConnectorRequestV1",
             "khoros_care": "#/components/schemas/khoros_care_NewConnectorRequestV1",
             "kinesis": "#/components/schemas/kinesis_NewConnectorRequestV1",
             "kissmetrics": "#/components/schemas/kissmetrics_NewConnectorRequestV1",
@@ -9134,6 +9649,7 @@
             "kustomer": "#/components/schemas/kustomer_NewConnectorRequestV1",
             "lattice": "#/components/schemas/lattice_NewConnectorRequestV1",
             "launchdarkly": "#/components/schemas/launchdarkly_NewConnectorRequestV1",
+            "learnupon": "#/components/schemas/learnupon_NewConnectorRequestV1",
             "lessonly": "#/components/schemas/lessonly_NewConnectorRequestV1",
             "lever": "#/components/schemas/lever_NewConnectorRequestV1",
             "light_speed_retail": "#/components/schemas/light_speed_retail_NewConnectorRequestV1",
@@ -9156,6 +9672,7 @@
             "marin": "#/components/schemas/marin_NewConnectorRequestV1",
             "marketo": "#/components/schemas/marketo_NewConnectorRequestV1",
             "mavenlink": "#/components/schemas/mavenlink_NewConnectorRequestV1",
+            "maxio_chargify": "#/components/schemas/maxio_chargify_NewConnectorRequestV1",
             "medallia": "#/components/schemas/medallia_NewConnectorRequestV1",
             "mention": "#/components/schemas/mention_NewConnectorRequestV1",
             "microsoft_dynamics_365_fo": "#/components/schemas/microsoft_dynamics_365_fo_NewConnectorRequestV1",
@@ -9201,6 +9718,9 @@
             "paypal": "#/components/schemas/paypal_NewConnectorRequestV1",
             "paypal_sandbox": "#/components/schemas/paypal_sandbox_NewConnectorRequestV1",
             "pendo": "#/components/schemas/pendo_NewConnectorRequestV1",
+            "persona": "#/components/schemas/persona_NewConnectorRequestV1",
+            "personio": "#/components/schemas/personio_NewConnectorRequestV1",
+            "pinpoint": "#/components/schemas/pinpoint_NewConnectorRequestV1",
             "pinterest_ads": "#/components/schemas/pinterest_ads_NewConnectorRequestV1",
             "pipedrive": "#/components/schemas/pipedrive_NewConnectorRequestV1",
             "playvox": "#/components/schemas/playvox_NewConnectorRequestV1",
@@ -9208,6 +9728,7 @@
             "postgres_rds": "#/components/schemas/postgres_rds_NewConnectorRequestV1",
             "posthog": "#/components/schemas/posthog_NewConnectorRequestV1",
             "power_reviews_enterprise": "#/components/schemas/power_reviews_enterprise_NewConnectorRequestV1",
+            "prive": "#/components/schemas/prive_NewConnectorRequestV1",
             "productboard": "#/components/schemas/productboard_NewConnectorRequestV1",
             "qualaroo": "#/components/schemas/qualaroo_NewConnectorRequestV1",
             "qualtrics": "#/components/schemas/qualtrics_NewConnectorRequestV1",
@@ -9215,6 +9736,7 @@
             "recharge": "#/components/schemas/recharge_NewConnectorRequestV1",
             "recurly": "#/components/schemas/recurly_NewConnectorRequestV1",
             "reddit_ads": "#/components/schemas/reddit_ads_NewConnectorRequestV1",
+            "replyio": "#/components/schemas/replyio_NewConnectorRequestV1",
             "retailnext": "#/components/schemas/retailnext_NewConnectorRequestV1",
             "retently": "#/components/schemas/retently_NewConnectorRequestV1",
             "revel": "#/components/schemas/revel_NewConnectorRequestV1",
@@ -9262,12 +9784,14 @@
             "square": "#/components/schemas/square_NewConnectorRequestV1",
             "squarespace": "#/components/schemas/squarespace_NewConnectorRequestV1",
             "stackadapt": "#/components/schemas/stackadapt_NewConnectorRequestV1",
+            "statuspage": "#/components/schemas/statuspage_NewConnectorRequestV1",
             "stripe": "#/components/schemas/stripe_NewConnectorRequestV1",
             "stripe_test": "#/components/schemas/stripe_test_NewConnectorRequestV1",
             "stylight": "#/components/schemas/stylight_NewConnectorRequestV1",
             "subscript": "#/components/schemas/subscript_NewConnectorRequestV1",
             "survey_monkey": "#/components/schemas/survey_monkey_NewConnectorRequestV1",
             "survicate": "#/components/schemas/survicate_NewConnectorRequestV1",
+            "swoogo": "#/components/schemas/swoogo_NewConnectorRequestV1",
             "tableau_source": "#/components/schemas/tableau_source_NewConnectorRequestV1",
             "taboola": "#/components/schemas/taboola_NewConnectorRequestV1",
             "talkdesk": "#/components/schemas/talkdesk_NewConnectorRequestV1",
@@ -9285,15 +9809,19 @@
             "upland": "#/components/schemas/upland_NewConnectorRequestV1",
             "uppromote": "#/components/schemas/uppromote_NewConnectorRequestV1",
             "uservoice": "#/components/schemas/uservoice_NewConnectorRequestV1",
+            "vitally": "#/components/schemas/vitally_NewConnectorRequestV1",
             "webhooks": "#/components/schemas/webhooks_NewConnectorRequestV1",
             "when_i_work": "#/components/schemas/when_i_work_NewConnectorRequestV1",
             "wherefour": "#/components/schemas/wherefour_NewConnectorRequestV1",
             "woocommerce": "#/components/schemas/woocommerce_NewConnectorRequestV1",
+            "wordpress": "#/components/schemas/wordpress_NewConnectorRequestV1",
             "workable": "#/components/schemas/workable_NewConnectorRequestV1",
             "workday": "#/components/schemas/workday_NewConnectorRequestV1",
             "workday_hcm": "#/components/schemas/workday_hcm_NewConnectorRequestV1",
+            "workramp": "#/components/schemas/workramp_NewConnectorRequestV1",
             "wrike": "#/components/schemas/wrike_NewConnectorRequestV1",
             "xero": "#/components/schemas/xero_NewConnectorRequestV1",
+            "xray": "#/components/schemas/xray_NewConnectorRequestV1",
             "yahoo_gemini": "#/components/schemas/yahoo_gemini_NewConnectorRequestV1",
             "youtube_analytics": "#/components/schemas/youtube_analytics_NewConnectorRequestV1",
             "zendesk": "#/components/schemas/zendesk_NewConnectorRequestV1",
@@ -9303,6 +9831,7 @@
             "zenefits": "#/components/schemas/zenefits_NewConnectorRequestV1",
             "zoho_campaigns": "#/components/schemas/zoho_campaigns_NewConnectorRequestV1",
             "zoho_crm": "#/components/schemas/zoho_crm_NewConnectorRequestV1",
+            "zoho_desk": "#/components/schemas/zoho_desk_NewConnectorRequestV1",
             "zuora": "#/components/schemas/zuora_NewConnectorRequestV1",
             "zuora_sandbox": "#/components/schemas/zuora_sandbox_NewConnectorRequestV1"
           }
@@ -9453,6 +9982,9 @@
           "message": {
             "type": "string",
             "description": "Setup test message"
+          },
+          "details": {
+            "type": "string"
           }
         }
       },
@@ -9595,10 +10127,13 @@
             "adobe_analytics_data_feed": "#/components/schemas/adobe_analytics_data_feed_ConnectorResponseV1",
             "adp_workforce_now": "#/components/schemas/adp_workforce_now_ConnectorResponseV1",
             "adroll": "#/components/schemas/adroll_ConnectorResponseV1",
+            "afterpay": "#/components/schemas/afterpay_ConnectorResponseV1",
+            "aha": "#/components/schemas/aha_ConnectorResponseV1",
             "aircall": "#/components/schemas/aircall_ConnectorResponseV1",
             "airtable": "#/components/schemas/airtable_ConnectorResponseV1",
             "alchemer": "#/components/schemas/alchemer_ConnectorResponseV1",
             "amazon_ads": "#/components/schemas/amazon_ads_ConnectorResponseV1",
+            "amazon_attribution": "#/components/schemas/amazon_attribution_ConnectorResponseV1",
             "amazon_selling_partner": "#/components/schemas/amazon_selling_partner_ConnectorResponseV1",
             "amplitude": "#/components/schemas/amplitude_ConnectorResponseV1",
             "anaplan": "#/components/schemas/anaplan_ConnectorResponseV1",
@@ -9644,6 +10179,7 @@
             "calendly": "#/components/schemas/calendly_ConnectorResponseV1",
             "canny": "#/components/schemas/canny_ConnectorResponseV1",
             "care_quality_commission": "#/components/schemas/care_quality_commission_ConnectorResponseV1",
+            "castor_edc": "#/components/schemas/castor_edc_ConnectorResponseV1",
             "channel_advisor": "#/components/schemas/channel_advisor_ConnectorResponseV1",
             "chargebee_product_catalog_1": "#/components/schemas/chargebee_product_catalog_1_ConnectorResponseV1",
             "chargebee_product_catalog_2": "#/components/schemas/chargebee_product_catalog_2_ConnectorResponseV1",
@@ -9655,6 +10191,7 @@
             "clari": "#/components/schemas/clari_ConnectorResponseV1",
             "clickup": "#/components/schemas/clickup_ConnectorResponseV1",
             "cloudfront": "#/components/schemas/cloudfront_ConnectorResponseV1",
+            "codefresh": "#/components/schemas/codefresh_ConnectorResponseV1",
             "collibra": "#/components/schemas/collibra_ConnectorResponseV1",
             "concur": "#/components/schemas/concur_ConnectorResponseV1",
             "confluent_cloud": "#/components/schemas/confluent_cloud_ConnectorResponseV1",
@@ -9662,6 +10199,7 @@
             "coupa": "#/components/schemas/coupa_ConnectorResponseV1",
             "criteo": "#/components/schemas/criteo_ConnectorResponseV1",
             "crossbeam": "#/components/schemas/crossbeam_ConnectorResponseV1",
+            "crowddev": "#/components/schemas/crowddev_ConnectorResponseV1",
             "customerio": "#/components/schemas/customerio_ConnectorResponseV1",
             "db2i_hva": "#/components/schemas/db2i_hva_ConnectorResponseV1",
             "dbt_cloud": "#/components/schemas/dbt_cloud_ConnectorResponseV1",
@@ -9689,6 +10227,7 @@
             "es_self_hosted": "#/components/schemas/es_self_hosted_ConnectorResponseV1",
             "eventbrite": "#/components/schemas/eventbrite_ConnectorResponseV1",
             "everhour": "#/components/schemas/everhour_ConnectorResponseV1",
+            "ezofficeinventory": "#/components/schemas/ezofficeinventory_ConnectorResponseV1",
             "facebook_ads": "#/components/schemas/facebook_ads_ConnectorResponseV1",
             "facebook_pages": "#/components/schemas/facebook_pages_ConnectorResponseV1",
             "financial_force": "#/components/schemas/financial_force_ConnectorResponseV1",
@@ -9710,6 +10249,7 @@
             "gainsight_customer_success": "#/components/schemas/gainsight_customer_success_ConnectorResponseV1",
             "gcs": "#/components/schemas/gcs_ConnectorResponseV1",
             "gem": "#/components/schemas/gem_ConnectorResponseV1",
+            "getfeedback": "#/components/schemas/getfeedback_ConnectorResponseV1",
             "github": "#/components/schemas/github_ConnectorResponseV1",
             "gladly": "#/components/schemas/gladly_ConnectorResponseV1",
             "globalmeet": "#/components/schemas/globalmeet_ConnectorResponseV1",
@@ -9735,27 +10275,34 @@
             "gorgias": "#/components/schemas/gorgias_ConnectorResponseV1",
             "greenhouse": "#/components/schemas/greenhouse_ConnectorResponseV1",
             "guru": "#/components/schemas/guru_ConnectorResponseV1",
+            "happyfox": "#/components/schemas/happyfox_ConnectorResponseV1",
             "harvest": "#/components/schemas/harvest_ConnectorResponseV1",
             "heap": "#/components/schemas/heap_ConnectorResponseV1",
             "height": "#/components/schemas/height_ConnectorResponseV1",
             "helpscout": "#/components/schemas/helpscout_ConnectorResponseV1",
+            "helpshift": "#/components/schemas/helpshift_ConnectorResponseV1",
             "heroku_kafka": "#/components/schemas/heroku_kafka_ConnectorResponseV1",
             "heroku_postgres": "#/components/schemas/heroku_postgres_ConnectorResponseV1",
             "hibob": "#/components/schemas/hibob_ConnectorResponseV1",
             "hopin": "#/components/schemas/hopin_ConnectorResponseV1",
             "hubspot": "#/components/schemas/hubspot_ConnectorResponseV1",
+            "ilevel": "#/components/schemas/ilevel_ConnectorResponseV1",
             "impact": "#/components/schemas/impact_ConnectorResponseV1",
+            "incidentio": "#/components/schemas/incidentio_ConnectorResponseV1",
             "insightly": "#/components/schemas/insightly_ConnectorResponseV1",
             "instagram_business": "#/components/schemas/instagram_business_ConnectorResponseV1",
             "integral_ad_science": "#/components/schemas/integral_ad_science_ConnectorResponseV1",
             "intercom": "#/components/schemas/intercom_ConnectorResponseV1",
             "ironclad": "#/components/schemas/ironclad_ConnectorResponseV1",
+            "ironsource": "#/components/schemas/ironsource_ConnectorResponseV1",
             "iterable": "#/components/schemas/iterable_ConnectorResponseV1",
             "itunes_connect": "#/components/schemas/itunes_connect_ConnectorResponseV1",
             "jira": "#/components/schemas/jira_ConnectorResponseV1",
+            "jotform": "#/components/schemas/jotform_ConnectorResponseV1",
             "justcall": "#/components/schemas/justcall_ConnectorResponseV1",
             "kandji": "#/components/schemas/kandji_ConnectorResponseV1",
             "katana": "#/components/schemas/katana_ConnectorResponseV1",
+            "keypay": "#/components/schemas/keypay_ConnectorResponseV1",
             "khoros_care": "#/components/schemas/khoros_care_ConnectorResponseV1",
             "kinesis": "#/components/schemas/kinesis_ConnectorResponseV1",
             "kissmetrics": "#/components/schemas/kissmetrics_ConnectorResponseV1",
@@ -9763,6 +10310,7 @@
             "kustomer": "#/components/schemas/kustomer_ConnectorResponseV1",
             "lattice": "#/components/schemas/lattice_ConnectorResponseV1",
             "launchdarkly": "#/components/schemas/launchdarkly_ConnectorResponseV1",
+            "learnupon": "#/components/schemas/learnupon_ConnectorResponseV1",
             "lessonly": "#/components/schemas/lessonly_ConnectorResponseV1",
             "lever": "#/components/schemas/lever_ConnectorResponseV1",
             "light_speed_retail": "#/components/schemas/light_speed_retail_ConnectorResponseV1",
@@ -9785,6 +10333,7 @@
             "marin": "#/components/schemas/marin_ConnectorResponseV1",
             "marketo": "#/components/schemas/marketo_ConnectorResponseV1",
             "mavenlink": "#/components/schemas/mavenlink_ConnectorResponseV1",
+            "maxio_chargify": "#/components/schemas/maxio_chargify_ConnectorResponseV1",
             "medallia": "#/components/schemas/medallia_ConnectorResponseV1",
             "mention": "#/components/schemas/mention_ConnectorResponseV1",
             "microsoft_dynamics_365_fo": "#/components/schemas/microsoft_dynamics_365_fo_ConnectorResponseV1",
@@ -9830,6 +10379,9 @@
             "paypal": "#/components/schemas/paypal_ConnectorResponseV1",
             "paypal_sandbox": "#/components/schemas/paypal_sandbox_ConnectorResponseV1",
             "pendo": "#/components/schemas/pendo_ConnectorResponseV1",
+            "persona": "#/components/schemas/persona_ConnectorResponseV1",
+            "personio": "#/components/schemas/personio_ConnectorResponseV1",
+            "pinpoint": "#/components/schemas/pinpoint_ConnectorResponseV1",
             "pinterest_ads": "#/components/schemas/pinterest_ads_ConnectorResponseV1",
             "pipedrive": "#/components/schemas/pipedrive_ConnectorResponseV1",
             "playvox": "#/components/schemas/playvox_ConnectorResponseV1",
@@ -9837,6 +10389,7 @@
             "postgres_rds": "#/components/schemas/postgres_rds_ConnectorResponseV1",
             "posthog": "#/components/schemas/posthog_ConnectorResponseV1",
             "power_reviews_enterprise": "#/components/schemas/power_reviews_enterprise_ConnectorResponseV1",
+            "prive": "#/components/schemas/prive_ConnectorResponseV1",
             "productboard": "#/components/schemas/productboard_ConnectorResponseV1",
             "qualaroo": "#/components/schemas/qualaroo_ConnectorResponseV1",
             "qualtrics": "#/components/schemas/qualtrics_ConnectorResponseV1",
@@ -9844,6 +10397,7 @@
             "recharge": "#/components/schemas/recharge_ConnectorResponseV1",
             "recurly": "#/components/schemas/recurly_ConnectorResponseV1",
             "reddit_ads": "#/components/schemas/reddit_ads_ConnectorResponseV1",
+            "replyio": "#/components/schemas/replyio_ConnectorResponseV1",
             "retailnext": "#/components/schemas/retailnext_ConnectorResponseV1",
             "retently": "#/components/schemas/retently_ConnectorResponseV1",
             "revel": "#/components/schemas/revel_ConnectorResponseV1",
@@ -9891,12 +10445,14 @@
             "square": "#/components/schemas/square_ConnectorResponseV1",
             "squarespace": "#/components/schemas/squarespace_ConnectorResponseV1",
             "stackadapt": "#/components/schemas/stackadapt_ConnectorResponseV1",
+            "statuspage": "#/components/schemas/statuspage_ConnectorResponseV1",
             "stripe": "#/components/schemas/stripe_ConnectorResponseV1",
             "stripe_test": "#/components/schemas/stripe_test_ConnectorResponseV1",
             "stylight": "#/components/schemas/stylight_ConnectorResponseV1",
             "subscript": "#/components/schemas/subscript_ConnectorResponseV1",
             "survey_monkey": "#/components/schemas/survey_monkey_ConnectorResponseV1",
             "survicate": "#/components/schemas/survicate_ConnectorResponseV1",
+            "swoogo": "#/components/schemas/swoogo_ConnectorResponseV1",
             "tableau_source": "#/components/schemas/tableau_source_ConnectorResponseV1",
             "taboola": "#/components/schemas/taboola_ConnectorResponseV1",
             "talkdesk": "#/components/schemas/talkdesk_ConnectorResponseV1",
@@ -9914,15 +10470,19 @@
             "upland": "#/components/schemas/upland_ConnectorResponseV1",
             "uppromote": "#/components/schemas/uppromote_ConnectorResponseV1",
             "uservoice": "#/components/schemas/uservoice_ConnectorResponseV1",
+            "vitally": "#/components/schemas/vitally_ConnectorResponseV1",
             "webhooks": "#/components/schemas/webhooks_ConnectorResponseV1",
             "when_i_work": "#/components/schemas/when_i_work_ConnectorResponseV1",
             "wherefour": "#/components/schemas/wherefour_ConnectorResponseV1",
             "woocommerce": "#/components/schemas/woocommerce_ConnectorResponseV1",
+            "wordpress": "#/components/schemas/wordpress_ConnectorResponseV1",
             "workable": "#/components/schemas/workable_ConnectorResponseV1",
             "workday": "#/components/schemas/workday_ConnectorResponseV1",
             "workday_hcm": "#/components/schemas/workday_hcm_ConnectorResponseV1",
+            "workramp": "#/components/schemas/workramp_ConnectorResponseV1",
             "wrike": "#/components/schemas/wrike_ConnectorResponseV1",
             "xero": "#/components/schemas/xero_ConnectorResponseV1",
+            "xray": "#/components/schemas/xray_ConnectorResponseV1",
             "yahoo_gemini": "#/components/schemas/yahoo_gemini_ConnectorResponseV1",
             "youtube_analytics": "#/components/schemas/youtube_analytics_ConnectorResponseV1",
             "zendesk": "#/components/schemas/zendesk_ConnectorResponseV1",
@@ -9932,6 +10492,7 @@
             "zenefits": "#/components/schemas/zenefits_ConnectorResponseV1",
             "zoho_campaigns": "#/components/schemas/zoho_campaigns_ConnectorResponseV1",
             "zoho_crm": "#/components/schemas/zoho_crm_ConnectorResponseV1",
+            "zoho_desk": "#/components/schemas/zoho_desk_ConnectorResponseV1",
             "zuora": "#/components/schemas/zuora_ConnectorResponseV1",
             "zuora_sandbox": "#/components/schemas/zuora_sandbox_ConnectorResponseV1"
           }
@@ -10027,6 +10588,42 @@
           },
           "connect_card_config": {
             "$ref": "#/components/schemas/ConnectCardConfig"
+          }
+        }
+      },
+      "DropColumnSchemaRequest": {
+        "type": "object",
+        "properties": {
+          "tables": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DropColumnsTableRequest"
+            },
+            "description": "The set of tables within your database schema config that are synced into the destination"
+          }
+        }
+      },
+      "DropColumnsRequest": {
+        "type": "object",
+        "properties": {
+          "schemas": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DropColumnSchemaRequest"
+            },
+            "description": "The set of schemas within your connector schema config that are synced into the destination"
+          }
+        }
+      },
+      "DropColumnsTableRequest": {
+        "type": "object",
+        "properties": {
+          "columns": {
+            "type": "array",
+            "description": "The set of columns within your table schema config that are synced into the destination",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
@@ -11434,7 +12031,7 @@
           },
           "service": {
             "type": "string",
-            "description": "The name for the log service type within the Fivetran system. We support the following log services: `azure_monitor_log`, `cloudwatch`, `datadog_log`, `splunkLog`."
+            "description": "The name of the log service type within the Fivetran system. We support the following log services: `azure_monitor_log`, `cloudwatch`, `datadog_log`, `splunkLog`, `new_relic_log`, `stackdriver` (Google Cloud Logging)."
           },
           "enabled": {
             "type": "boolean",
@@ -11479,7 +12076,7 @@
           },
           "service": {
             "type": "string",
-            "description": "The name for the log service type within the Fivetran system. We support the following log services: `azure_monitor_log`, `cloudwatch`, `datadog_log`, `splunkLog`."
+            "description": "The name of the log service type within the Fivetran system. We support the following log services: `azure_monitor_log`, `cloudwatch`, `datadog_log`, `splunkLog`, `new_relic_log`, `stackdriver` (Google Cloud Logging)."
           },
           "enabled": {
             "type": "boolean",
@@ -11506,6 +12103,139 @@
             "items": {
               "$ref": "#/components/schemas/SetupTestResultResponse"
             }
+          }
+        }
+      },
+      "PrivateLinkCreateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Private link name"
+          },
+          "service": {
+            "type": "string",
+            "description": "The name for the service type within the Fivetran system."
+          },
+          "config": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            },
+            "description": "Private link configuration"
+          },
+          "group_id": {
+            "type": "string",
+            "description": "The unique identifier for the group within the Fivetran system"
+          }
+        }
+      },
+      "PrivateLinkUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "config": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            },
+            "description": "Private link configuration"
+          }
+        }
+      },
+      "PrivateLinkInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier for the private link within the Fivetran system."
+          },
+          "name": {
+            "type": "string",
+            "description": "Private link name"
+          },
+          "service": {
+            "type": "string",
+            "description": "The name for the service type within the Fivetran system."
+          },
+          "state": {
+            "type": "string",
+            "description": "Private link state",
+            "enum": [
+              "CREATING",
+              "UPDATING",
+              "DESTROYING",
+              "OK",
+              "FAIL"
+            ]
+          },
+          "config": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            },
+            "description": "Private link configuration"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "The timestamp of the time the private link was created in your account",
+            "format": "date-time"
+          },
+          "created_by": {
+            "type": "string",
+            "description": "The actor who created the private link"
+          },
+          "group_id": {
+            "type": "string",
+            "description": "The unique identifier for the group within the Fivetran system"
+          },
+          "cloud_provider": {
+            "type": "string",
+            "description": "Private link cloud provider",
+            "enum": [
+              "AWS",
+              "GCP",
+              "AZURE"
+            ]
+          },
+          "group_region": {
+            "type": "string",
+            "description": "Private link group region",
+            "enum": [
+              "GCP_US_EAST4",
+              "GCP_US_WEST1",
+              "GCP_EUROPE_WEST3",
+              "GCP_AUSTRALIA_SOUTHEAST1",
+              "GCP_NORTHAMERICA_NORTHEAST1",
+              "GCP_EUROPE_WEST2",
+              "GCP_ASIA_SOUTHEAST1",
+              "GCP_ASIA_SOUTHEAST2",
+              "GCP_ASIA_SOUTH1",
+              "GCP_ASIA_NORTHEAST1",
+              "AWS_US_EAST_1",
+              "AWS_US_EAST_2",
+              "AWS_US_WEST_2",
+              "AWS_AP_NORTHEAST_1",
+              "AWS_AP_SOUTHEAST_1",
+              "AWS_AP_SOUTHEAST_2",
+              "AWS_EU_CENTRAL_1",
+              "AWS_EU_WEST_1",
+              "AWS_EU_WEST_2",
+              "AWS_AP_SOUTH_1",
+              "AWS_CA_CENTRAL_1",
+              "AWS_US_GOV_WEST_1",
+              "AZURE_EASTUS2",
+              "AZURE_AUSTRALIAEAST",
+              "AZURE_UKSOUTH",
+              "AZURE_WESTEUROPE",
+              "AZURE_CENTRALUS",
+              "AZURE_CANADACENTRAL",
+              "AZURE_UAENORTH",
+              "AZURE_SOUTHEASTASIA"
+            ]
+          },
+          "state_summary": {
+            "type": "string",
+            "description": "Private link state summary"
           }
         }
       },
@@ -11642,6 +12372,7 @@
       },
       "TeamMembershipResponse": {
         "required": [
+          "created_at",
           "role",
           "user_id"
         ],
@@ -11654,6 +12385,11 @@
           "role": {
             "type": "string",
             "description": "The user's role within the team"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "The date and time the membership was created",
+            "format": "date-time"
           }
         }
       },
@@ -13607,6 +14343,11 @@
                 "type": "string",
                 "description": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`."
               },
+              "resource_id": {
+                "title": "",
+                "type": "string",
+                "description": "This field is currently being introduced to test the Self-serve Private Link functionality"
+              },
               "user": {
                 "title": "",
                 "type": "string",
@@ -13719,6 +14460,11 @@
                 "title": "",
                 "type": "string",
                 "description": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`."
+              },
+              "resource_id": {
+                "title": "",
+                "type": "string",
+                "description": "This field is currently being introduced to test the Self-serve Private Link functionality"
               },
               "user": {
                 "title": "",
@@ -14095,6 +14841,11 @@
                 "title": "",
                 "type": "string",
                 "description": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`."
+              },
+              "resource_id": {
+                "title": "",
+                "type": "string",
+                "description": "This field is currently being introduced to test the Self-serve Private Link functionality"
               },
               "is_redshift_serverless": {
                 "title": "",
@@ -15640,6 +16391,86 @@
           }
         ]
       },
+      "afterpay_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "secret_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Afterpay Secret Key.",
+                "format": "password"
+              },
+              "api_environment": {
+                "type": "object",
+                "description": "Your Afterpay API environment.",
+                "enum": [
+                  "global-api-sandbox",
+                  "global-api"
+                ]
+              },
+              "merchant_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Afterpay Merchant ID."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "afterpay_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/afterpay_config_V1"
+          }
+        ]
+      },
+      "aha_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your Aha! API key.",
+                "format": "password"
+              },
+              "base_url": {
+                "title": "",
+                "type": "string",
+                "description": "Your Aha! subdomain."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "aha_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/aha_config_V1"
+          }
+        ]
+      },
       "aircall_config_V1": {
         "properties": {
           "config": {
@@ -15880,6 +16711,58 @@
           },
           {
             "$ref": "#/components/schemas/amazon_ads_config_V1"
+          }
+        ]
+      },
+      "amazon_attribution_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "region_api_url": {
+                "type": "object",
+                "description": "Your Amazon Attribution API URL region.",
+                "enum": [
+                  "api-fe",
+                  "api-eu",
+                  "api"
+                ]
+              },
+              "region_auth_url": {
+                "type": "object",
+                "description": "Your Amazon Attribution auth URL region.",
+                "enum": [
+                  "apac.account",
+                  "www",
+                  "eu.account"
+                ]
+              },
+              "region_token_url": {
+                "type": "object",
+                "description": "Your Amazon Attribution token URL region.",
+                "enum": [
+                  "com",
+                  "co.uk",
+                  "co.jp"
+                ]
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "amazon_attribution_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/amazon_attribution_config_V1"
           }
         ]
       },
@@ -16495,20 +17378,25 @@
                 "type": "boolean",
                 "description": "Sync AppsFlyer Data Locker. Default value is `true`, set it to `false` to sync AppsFlyer data using only webhooks."
               },
-              "use_customer_bucket": {
-                "title": "",
-                "type": "boolean",
-                "description": "Use Custom Bucket. Set it to 'true' if the data is being synced to your S3 bucket instead of an AppsFlyer-managed bucket."
-              },
               "sync_pull_api": {
                 "title": "",
                 "type": "boolean",
                 "description": "These options are for Appsflyer's Pull API, and are only necessary for syncing events from Pull API."
               },
+              "use_customer_bucket": {
+                "title": "",
+                "type": "boolean",
+                "description": "Use Custom Bucket. Set it to 'true' if the data is being synced to your S3 bucket instead of an AppsFlyer-managed bucket."
+              },
               "bucket": {
                 "title": "",
                 "type": "string",
                 "description": "Customer S3 Bucket"
+              },
+              "connection_name": {
+                "title": "",
+                "type": "string",
+                "description": "Your Data Locker Connection Name. Default value: `data-locker-hourly/"
               },
               "secret_key": {
                 "title": "",
@@ -17148,6 +18036,28 @@
                   "ProxyAgent"
                 ]
               },
+              "custom_payloads": {
+                "title": "",
+                "type": "array",
+                "description": "The list of key-value pairs that can be used to specify custom information to the function at runtime.",
+                "items": {
+                  "title": "",
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "title": "",
+                      "type": "string",
+                      "description": "Payload Value"
+                    },
+                    "key": {
+                      "title": "",
+                      "type": "string",
+                      "description": "Payload Key"
+                    }
+                  },
+                  "description": "The list of key-value pairs that can be used to specify custom information to the function at runtime."
+                }
+              },
               "secrets_list": {
                 "title": "",
                 "type": "array",
@@ -17186,12 +18096,16 @@
                 "type": "object",
                 "description": "The AWS region code for the DynamoDB instance.",
                 "enum": [
+                  "ap-south-2",
                   "ap-south-1",
                   "eu-south-1",
+                  "eu-south-2",
                   "us-gov-east-1",
+                  "me-central-1",
                   "ca-central-1",
                   "eu-central-1",
                   "us-iso-west-1",
+                  "eu-central-2",
                   "us-west-1",
                   "us-west-2",
                   "af-south-1",
@@ -17211,6 +18125,7 @@
                   "ap-southeast-2",
                   "us-iso-east-1",
                   "ap-southeast-3",
+                  "ap-southeast-4",
                   "us-east-1",
                   "us-east-2",
                   "cn-northwest-1",
@@ -17226,7 +18141,7 @@
               "is_private_link_required": {
                 "title": "",
                 "type": "boolean",
-                "description": "We use PrivateLink by default if your AWS Lambda is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to AWS lambda over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/databases/connection-options#awsprivatelinkbeta)."
+                "description": "We use PrivateLink by default if your AWS Lambda is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to AWS lambda over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/databases/connection-options#awsprivatelink)."
               }
             },
             "description": ""
@@ -17688,6 +18603,28 @@
                 "title": "",
                 "type": "string",
                 "description": "Function app name in Azure portal."
+              },
+              "custom_payloads": {
+                "title": "",
+                "type": "array",
+                "description": "The list of key-value pairs that can be used to specify custom information to the function at runtime.",
+                "items": {
+                  "title": "",
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "title": "",
+                      "type": "string",
+                      "description": "Payload Value"
+                    },
+                    "key": {
+                      "title": "",
+                      "type": "string",
+                      "description": "Payload Key"
+                    }
+                  },
+                  "description": "The list of key-value pairs that can be used to specify custom information to the function at runtime."
+                }
               },
               "function_key": {
                 "title": "",
@@ -19233,6 +20170,52 @@
           }
         ]
       },
+      "castor_edc_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "server": {
+                "type": "object",
+                "description": "Your Castor EDC Server.",
+                "enum": [
+                  "data",
+                  "au",
+                  "uk",
+                  "us"
+                ]
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Castor EDC Client Secret.",
+                "format": "password"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Castor EDC client Id."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "castor_edc_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/castor_edc_config_V1"
+          }
+        ]
+      },
       "channel_advisor_config_V1": {
         "properties": {
           "config": {
@@ -19636,6 +20619,37 @@
           },
           {
             "$ref": "#/components/schemas/cloudfront_config_V1"
+          }
+        ]
+      },
+      "codefresh_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Codefresh API Key.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "codefresh_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/codefresh_config_V1"
           }
         ]
       },
@@ -20863,6 +21877,43 @@
           }
         ]
       },
+      "crowddev_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "tenant_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your  crowd.dev Tenant ID.",
+                "format": "password"
+              },
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "bearer_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your crowd.dev Auth Token.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "crowddev_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/crowddev_config_V1"
+          }
+        ]
+      },
       "customerio_config_V1": {
         "properties": {
           "config": {
@@ -21511,7 +22562,7 @@
               "timeframe_months": {
                 "title": "",
                 "type": "object",
-                "description": "Number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `TWELVE`.",
+                "description": "Number of months' worth of reporting data you'd like to include in your initial sync. A change of this value will trigger a re-sync for enabled reports during the next connector sync. Default value: `TWELVE`.",
                 "enum": [
                   "TWENTY_FOUR",
                   "SIX",
@@ -22181,11 +23232,22 @@
                   "description": "List of tables to be synced in packed mode."
                 }
               },
+              "enable_distributed_connector_mode": {
+                "title": "",
+                "type": "boolean",
+                "description": "Enable to allow the connector to join a cluster of connectors forming a Distributed Connector Cluster. This cluster allows parallel syncs from the same source to the same destination using multiple connectors."
+              },
               "role_arn": {
                 "title": "",
                 "type": "string",
                 "description": "Role ARN",
                 "format": "password"
+              },
+              "distributed_connector_cluster_size": {
+                "title": "",
+                "type": "integer",
+                "description": "Specifies the total number of connectors in the Distributed Connector Cluster running in parallel.",
+                "format": "int32"
               },
               "external_id": {
                 "title": "",
@@ -22712,6 +23774,42 @@
           },
           {
             "$ref": "#/components/schemas/everhour_config_V1"
+          }
+        ]
+      },
+      "ezofficeinventory_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "secret_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your EZOfficeInventory API secret key.",
+                "format": "password"
+              },
+              "sub_domain": {
+                "title": "",
+                "type": "string",
+                "description": "Your EZOfficeInventory Subdomain."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "ezofficeinventory_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/ezofficeinventory_config_V1"
           }
         ]
       },
@@ -23297,6 +24395,11 @@
                 "type": "string",
                 "description": "The contents of your service account key file. Required for authentication.",
                 "format": "password"
+              },
+              "database_name": {
+                "title": "",
+                "type": "string",
+                "description": "Database Name"
               }
             },
             "description": ""
@@ -24207,6 +25310,45 @@
           }
         ]
       },
+      "getfeedback_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your GetFeedback Access token.",
+                "format": "password"
+              },
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "region": {
+                "type": "object",
+                "description": "Your GetFeedback region.",
+                "enum": [
+                  "api.eu",
+                  "api"
+                ]
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "getfeedback_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/getfeedback_config_V1"
+          }
+        ]
+      },
       "github_config_V1": {
         "properties": {
           "config": {
@@ -24993,6 +26135,17 @@
                         "PREBUILT"
                       ]
                     },
+                    "time_aggregation_granularity": {
+                      "title": "",
+                      "type": "object",
+                      "description": "The report data aggregation time granularity.",
+                      "enum": [
+                        "YEARLY",
+                        "WEEKLY",
+                        "DAILY",
+                        "MONTHLY"
+                      ]
+                    },
                     "table": {
                       "title": "",
                       "type": "string",
@@ -25298,6 +26451,28 @@
                 "title": "Destination schema",
                 "type": "string",
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "custom_payloads": {
+                "title": "",
+                "type": "array",
+                "description": "The list of key-value pairs that can be used to specify custom information to the function at runtime.",
+                "items": {
+                  "title": "",
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "title": "",
+                      "type": "string",
+                      "description": "Payload Value"
+                    },
+                    "key": {
+                      "title": "",
+                      "type": "string",
+                      "description": "Payload Key"
+                    }
+                  },
+                  "description": "The list of key-value pairs that can be used to specify custom information to the function at runtime."
+                }
               },
               "secrets_list": {
                 "title": "",
@@ -27178,6 +28353,55 @@
           }
         ]
       },
+      "happyfox_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your HappyFox API key."
+              },
+              "account_name": {
+                "title": "",
+                "type": "string",
+                "description": "Your HappyFox account name."
+              },
+              "region": {
+                "type": "object",
+                "description": "Your HappyFox region.",
+                "enum": [
+                  "happyfox.net",
+                  "happyfox.com"
+                ]
+              },
+              "auth_code": {
+                "title": "",
+                "type": "string",
+                "description": "Your HappyFox auth code.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "happyfox_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/happyfox_config_V1"
+          }
+        ]
+      },
       "harvest_config_V1": {
         "properties": {
           "config": {
@@ -27335,6 +28559,42 @@
           },
           {
             "$ref": "#/components/schemas/helpscout_config_V1"
+          }
+        ]
+      },
+      "helpshift_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "domain_name": {
+                "title": "",
+                "type": "string",
+                "description": "Your Helpshift domain name."
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Helpshift API Key.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "helpshift_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/helpshift_config_V1"
           }
         ]
       },
@@ -27654,6 +28914,52 @@
           }
         ]
       },
+      "ilevel_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "sub_domain": {
+                "type": "object",
+                "description": "",
+                "enum": [
+                  "api.ilevelsolutions.com",
+                  "sandapi.ilevelsolutions.com",
+                  "sandapi.ilevelsolutions.eu",
+                  "api.ilevelsolutions.eu"
+                ]
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "ilevel_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/ilevel_config_V1"
+          }
+        ]
+      },
       "impact_config_V1": {
         "properties": {
           "config": {
@@ -27687,6 +28993,37 @@
           },
           {
             "$ref": "#/components/schemas/impact_config_V1"
+          }
+        ]
+      },
+      "incidentio_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your incident.io API key.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "incidentio_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/incidentio_config_V1"
           }
         ]
       },
@@ -27908,6 +29245,43 @@
           },
           {
             "$ref": "#/components/schemas/ironclad_config_V1"
+          }
+        ]
+      },
+      "ironsource_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "secret_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Ironsource `Client ID`.",
+                "format": "password"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your Ironsource `Client Secret`.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "ironsource_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/ironsource_config_V1"
           }
         ]
       },
@@ -28197,6 +29571,45 @@
           }
         ]
       },
+      "jotform_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Jotform API key.",
+                "format": "password"
+              },
+              "base_url": {
+                "type": "object",
+                "description": "Your Jotform Base URL.",
+                "enum": [
+                  "hipaa-api",
+                  "api"
+                ]
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "jotform_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/jotform_config_V1"
+          }
+        ]
+      },
       "justcall_config_V1": {
         "properties": {
           "config": {
@@ -28301,6 +29714,48 @@
           }
         ]
       },
+      "keypay_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your KeyPay API key.",
+                "format": "password"
+              },
+              "region": {
+                "type": "object",
+                "description": "Your KeyPay region.",
+                "enum": [
+                  "au",
+                  "sg",
+                  "uk",
+                  "nz",
+                  "my"
+                ]
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "keypay_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/keypay_config_V1"
+          }
+        ]
+      },
       "khoros_care_config_V1": {
         "properties": {
           "config": {
@@ -28357,16 +29812,6 @@
                 "title": "Destination schema",
                 "type": "string",
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
-              },
-              "append_file_option": {
-                "title": "",
-                "type": "object",
-                "description": "If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
-                "enum": [
-                  "upsert_file_with_primary_keys",
-                  "upsert_file",
-                  "append_file"
-                ]
               },
               "connection_type": {
                 "title": "",
@@ -28454,23 +29899,6 @@
                 "type": "string",
                 "description": "The Role ARN required for authentication.",
                 "format": "password"
-              },
-              "file_type": {
-                "title": "",
-                "type": "object",
-                "description": "If your files are saved with improper extensions, you can force them to by synced as the selected filetype. Leave the value as <strong>infer</strong> if your files have the correct extensions",
-                "enum": [
-                  "log",
-                  "infer",
-                  "xls/xlsx/xlsm/Google Sheet",
-                  "tsv",
-                  "xml",
-                  "csv",
-                  "json",
-                  "jsonl",
-                  "avro",
-                  "parquet"
-                ]
               },
               "delimiter": {
                 "title": "",
@@ -28707,6 +30135,47 @@
           }
         ]
       },
+      "learnupon_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Learnupon API key.",
+                "format": "password"
+              },
+              "subdomain": {
+                "title": "",
+                "type": "string",
+                "description": "Your Learnupon subdomain."
+              },
+              "username": {
+                "title": "",
+                "type": "string",
+                "description": "Your Learnupon username."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "learnupon_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/learnupon_config_V1"
+          }
+        ]
+      },
       "lessonly_config_V1": {
         "properties": {
           "config": {
@@ -28812,7 +30281,7 @@
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Linear API key.",
+                "description": "",
                 "format": "password"
               }
             },
@@ -29433,10 +30902,10 @@
                 "description": "Your Mailgun API key.",
                 "format": "password"
               },
-              "base_url": {
+              "sub_domain": {
                 "title": "",
                 "type": "string",
-                "description": "Your Mailgun base URL."
+                "description": "Your Mailgun subdomain."
               },
               "username": {
                 "title": "",
@@ -29970,6 +31439,42 @@
           },
           {
             "$ref": "#/components/schemas/mavenlink_config_V1"
+          }
+        ]
+      },
+      "maxio_chargify_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Enter Your API Key.",
+                "format": "password"
+              },
+              "sub_domain": {
+                "title": "",
+                "type": "string",
+                "description": "Enter Your Subdomain."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "maxio_chargify_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/maxio_chargify_config_V1"
           }
         ]
       },
@@ -33195,6 +34700,108 @@
           }
         ]
       },
+      "persona_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Persona API key.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "persona_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/persona_config_V1"
+          }
+        ]
+      },
+      "personio_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Personio secret."
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Personio Client ID."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "personio_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/personio_config_V1"
+          }
+        ]
+      },
+      "pinpoint_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Pinpoint API key.",
+                "format": "password"
+              },
+              "sub_domain": {
+                "title": "",
+                "type": "string",
+                "description": "Your Pinpoint sub domain name."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "pinpoint_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/pinpoint_config_V1"
+          }
+        ]
+      },
       "pinterest_ads_config_V1": {
         "properties": {
           "config": {
@@ -33732,6 +35339,37 @@
           }
         ]
       },
+      "prive_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Prive API key.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "prive_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/prive_config_V1"
+          }
+        ]
+      },
       "productboard_config_V1": {
         "properties": {
           "config": {
@@ -33975,6 +35613,15 @@
           "config": {
             "type": "object",
             "properties": {
+              "sync_mode": {
+                "title": "",
+                "type": "object",
+                "description": "Whether to sync all accounts or specific accounts.",
+                "enum": [
+                  "AllAccounts",
+                  "SpecificAccounts"
+                ]
+              },
               "schema": {
                 "title": "Destination schema",
                 "type": "string",
@@ -34012,6 +35659,16 @@
                     }
                   },
                   "description": "Accounts"
+                }
+              },
+              "business_accounts": {
+                "title": "",
+                "type": "array",
+                "description": "Specific Accounts to sync.  Must be populated if `sync_mode` is set to `SpecificAccounts`.",
+                "items": {
+                  "title": "",
+                  "type": "string",
+                  "description": "Specific Accounts to sync.  Must be populated if `sync_mode` is set to `SpecificAccounts`."
                 }
               },
               "custom_reports": {
@@ -34129,6 +35786,37 @@
           }
         ]
       },
+      "replyio_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Reply API key.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "replyio_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/replyio_config_V1"
+          }
+        ]
+      },
       "retailnext_config_V1": {
         "properties": {
           "config": {
@@ -34211,16 +35899,16 @@
                 "type": "string",
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
               },
-              "sub_domain": {
-                "title": "",
-                "type": "string",
-                "description": "Your Revel Systems subDomain."
-              },
               "api_key_api_secret": {
                 "title": "",
                 "type": "string",
                 "description": "Your Revel Systems API Key and API Secret.",
                 "format": "password"
+              },
+              "sub_domain": {
+                "title": "",
+                "type": "string",
+                "description": "Your Revel Systems subDomain."
               }
             },
             "description": ""
@@ -35161,6 +36849,14 @@
                 "title": "Destination schema",
                 "type": "string",
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "region": {
+                "type": "object",
+                "description": "The region of your Samsara account. For instance, if your region is `EUROPE`, provide `eu.samsara` in the `Region` field. If your region is not in Europe, provide `samsara`.",
+                "enum": [
+                  "eu.samsara",
+                  "samsara"
+                ]
               }
             },
             "description": ""
@@ -37417,6 +39113,42 @@
           }
         ]
       },
+      "statuspage_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Statuspage API Key.",
+                "format": "password"
+              },
+              "organization": {
+                "title": "",
+                "type": "string",
+                "description": "Your Statuspage Organization ID."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "statuspage_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/statuspage_config_V1"
+          }
+        ]
+      },
       "stripe_config_V1": {
         "properties": {
           "config": {
@@ -37663,6 +39395,42 @@
           },
           {
             "$ref": "#/components/schemas/survicate_config_V1"
+          }
+        ]
+      },
+      "swoogo_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Swoogo Client Secret.",
+                "format": "password"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Swoogo client Id."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "swoogo_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/swoogo_config_V1"
           }
         ]
       },
@@ -38309,7 +40077,8 @@
               "consumer_key": {
                 "title": "",
                 "type": "string",
-                "description": ""
+                "description": "API Key of your app",
+                "format": "password"
               },
               "schema": {
                 "title": "Destination schema",
@@ -38319,7 +40088,7 @@
               "consumer_secret": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "API Secret of your app",
                 "format": "password"
               },
               "timeframe_months": {
@@ -38353,12 +40122,12 @@
               "consumer_key": {
                 "title": "",
                 "type": "string",
-                "description": ""
+                "description": "API Key of your app"
               },
               "consumer_secret": {
                 "title": "",
                 "type": "string",
-                "description": ""
+                "description": "API Secret of your app"
               },
               "client_access": {
                 "type": "object",
@@ -38691,6 +40460,37 @@
           }
         ]
       },
+      "vitally_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Vitally API key.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "vitally_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/vitally_config_V1"
+          }
+        ]
+      },
       "webhooks_config_V1": {
         "properties": {
           "config": {
@@ -38891,6 +40691,64 @@
           }
         ]
       },
+      "wordpress_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "sub_domain": {
+                "title": "",
+                "type": "string",
+                "description": "Your WordPress subdomain."
+              }
+            },
+            "description": ""
+          },
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "format": "password"
+              },
+              "client_access": {
+                "title": "",
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": ""
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "wordpress_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/wordpress_config_V1"
+          }
+        ]
+      },
       "workable_config_V1": {
         "properties": {
           "config": {
@@ -39030,6 +40888,27 @@
               }
             },
             "description": ""
+          },
+          "auth": {
+            "type": "object",
+            "properties": {
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": ""
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": ""
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": ""
+              }
+            },
+            "description": ""
           }
         }
       },
@@ -39040,6 +40919,42 @@
           },
           {
             "$ref": "#/components/schemas/workday_hcm_config_V1"
+          }
+        ]
+      },
+      "workramp_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your WorkRamp access token.",
+                "format": "password"
+              },
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "academy_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your WorkRamp academy ID."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "workramp_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/workramp_config_V1"
           }
         ]
       },
@@ -39148,6 +41063,42 @@
           },
           {
             "$ref": "#/components/schemas/xero_config_V1"
+          }
+        ]
+      },
+      "xray_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Xray Client Secret.",
+                "format": "password"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Xray Client ID."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "xray_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/xray_config_V1"
           }
         ]
       },
@@ -39275,7 +41226,7 @@
                     "description": ""
                   }
                 },
-                "description": "External client credentials to access the connector source"
+                "description": "External client credentials to access the connector source."
               }
             },
             "description": ""
@@ -39617,6 +41568,53 @@
           }
         ]
       },
+      "zoho_desk_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Zoho Desk Client secret.",
+                "format": "password"
+              },
+              "region": {
+                "type": "object",
+                "description": "Your Zoho Desk domain.",
+                "enum": [
+                  "com",
+                  "eu",
+                  "in",
+                  "jp",
+                  "com.au"
+                ]
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Zoho Desk Client Id."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "zoho_desk_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/zoho_desk_config_V1"
+          }
+        ]
+      },
       "zuora_config_V1": {
         "properties": {
           "config": {
@@ -39799,6 +41797,26 @@
           }
         ]
       },
+      "afterpay_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/afterpay_config_V1"
+          }
+        ]
+      },
+      "aha_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/aha_config_V1"
+          }
+        ]
+      },
       "aircall_ConnectorResponseV1": {
         "allOf": [
           {
@@ -39836,6 +41854,16 @@
           },
           {
             "$ref": "#/components/schemas/amazon_ads_config_V1"
+          }
+        ]
+      },
+      "amazon_attribution_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/amazon_attribution_config_V1"
           }
         ]
       },
@@ -40289,6 +42317,16 @@
           }
         ]
       },
+      "castor_edc_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/castor_edc_config_V1"
+          }
+        ]
+      },
       "channel_advisor_ConnectorResponseV1": {
         "allOf": [
           {
@@ -40399,6 +42437,16 @@
           }
         ]
       },
+      "codefresh_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/codefresh_config_V1"
+          }
+        ]
+      },
       "collibra_ConnectorResponseV1": {
         "allOf": [
           {
@@ -40466,6 +42514,16 @@
           },
           {
             "$ref": "#/components/schemas/crossbeam_config_V1"
+          }
+        ]
+      },
+      "crowddev_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/crowddev_config_V1"
           }
         ]
       },
@@ -40739,6 +42797,16 @@
           }
         ]
       },
+      "ezofficeinventory_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/ezofficeinventory_config_V1"
+          }
+        ]
+      },
       "facebook_ads_ConnectorResponseV1": {
         "allOf": [
           {
@@ -40946,6 +43014,16 @@
           },
           {
             "$ref": "#/components/schemas/gem_config_V1"
+          }
+        ]
+      },
+      "getfeedback_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/getfeedback_config_V1"
           }
         ]
       },
@@ -41199,6 +43277,16 @@
           }
         ]
       },
+      "happyfox_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/happyfox_config_V1"
+          }
+        ]
+      },
       "harvest_ConnectorResponseV1": {
         "allOf": [
           {
@@ -41236,6 +43324,16 @@
           },
           {
             "$ref": "#/components/schemas/helpscout_config_V1"
+          }
+        ]
+      },
+      "helpshift_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/helpshift_config_V1"
           }
         ]
       },
@@ -41289,6 +43387,16 @@
           }
         ]
       },
+      "ilevel_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/ilevel_config_V1"
+          }
+        ]
+      },
       "impact_ConnectorResponseV1": {
         "allOf": [
           {
@@ -41296,6 +43404,16 @@
           },
           {
             "$ref": "#/components/schemas/impact_config_V1"
+          }
+        ]
+      },
+      "incidentio_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/incidentio_config_V1"
           }
         ]
       },
@@ -41349,6 +43467,16 @@
           }
         ]
       },
+      "ironsource_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/ironsource_config_V1"
+          }
+        ]
+      },
       "iterable_ConnectorResponseV1": {
         "allOf": [
           {
@@ -41379,6 +43507,16 @@
           }
         ]
       },
+      "jotform_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/jotform_config_V1"
+          }
+        ]
+      },
       "justcall_ConnectorResponseV1": {
         "allOf": [
           {
@@ -41406,6 +43544,16 @@
           },
           {
             "$ref": "#/components/schemas/katana_config_V1"
+          }
+        ]
+      },
+      "keypay_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/keypay_config_V1"
           }
         ]
       },
@@ -41476,6 +43624,16 @@
           },
           {
             "$ref": "#/components/schemas/launchdarkly_config_V1"
+          }
+        ]
+      },
+      "learnupon_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/learnupon_config_V1"
           }
         ]
       },
@@ -41696,6 +43854,16 @@
           },
           {
             "$ref": "#/components/schemas/mavenlink_config_V1"
+          }
+        ]
+      },
+      "maxio_chargify_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/maxio_chargify_config_V1"
           }
         ]
       },
@@ -42149,6 +44317,36 @@
           }
         ]
       },
+      "persona_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/persona_config_V1"
+          }
+        ]
+      },
+      "personio_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/personio_config_V1"
+          }
+        ]
+      },
+      "pinpoint_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/pinpoint_config_V1"
+          }
+        ]
+      },
       "pinterest_ads_ConnectorResponseV1": {
         "allOf": [
           {
@@ -42219,6 +44417,16 @@
           }
         ]
       },
+      "prive_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/prive_config_V1"
+          }
+        ]
+      },
       "productboard_ConnectorResponseV1": {
         "allOf": [
           {
@@ -42286,6 +44494,16 @@
           },
           {
             "$ref": "#/components/schemas/reddit_ads_config_V1"
+          }
+        ]
+      },
+      "replyio_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/replyio_config_V1"
           }
         ]
       },
@@ -42759,6 +44977,16 @@
           }
         ]
       },
+      "statuspage_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/statuspage_config_V1"
+          }
+        ]
+      },
       "stripe_ConnectorResponseV1": {
         "allOf": [
           {
@@ -42816,6 +45044,16 @@
           },
           {
             "$ref": "#/components/schemas/survicate_config_V1"
+          }
+        ]
+      },
+      "swoogo_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/swoogo_config_V1"
           }
         ]
       },
@@ -42989,6 +45227,16 @@
           }
         ]
       },
+      "vitally_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/vitally_config_V1"
+          }
+        ]
+      },
       "webhooks_ConnectorResponseV1": {
         "allOf": [
           {
@@ -43029,6 +45277,16 @@
           }
         ]
       },
+      "wordpress_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/wordpress_config_V1"
+          }
+        ]
+      },
       "workable_ConnectorResponseV1": {
         "allOf": [
           {
@@ -43059,6 +45317,16 @@
           }
         ]
       },
+      "workramp_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/workramp_config_V1"
+          }
+        ]
+      },
       "wrike_ConnectorResponseV1": {
         "allOf": [
           {
@@ -43076,6 +45344,16 @@
           },
           {
             "$ref": "#/components/schemas/xero_config_V1"
+          }
+        ]
+      },
+      "xray_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/xray_config_V1"
           }
         ]
       },
@@ -43166,6 +45444,16 @@
           },
           {
             "$ref": "#/components/schemas/zoho_crm_config_V1"
+          }
+        ]
+      },
+      "zoho_desk_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/zoho_desk_config_V1"
           }
         ]
       },

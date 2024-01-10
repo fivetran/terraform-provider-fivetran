@@ -27,15 +27,15 @@ resource "fivetran_connector_schedule" "my_connector_schedule" {
 
 ### Required
 
-- `connector_id` (String) The unique identifier for the connector
+- `connector_id` (String) The unique identifier for the connector within the Fivetran system.
+- `sync_frequency` (String) The connector sync frequency in minutes. Supported values: 1, 5, 15, 30, 60, 120, 180, 360, 480, 720, 1440.
 
 ### Optional
 
-- `daily_sync_time` (String) The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use [the baseline sync start time](https://fivetran.com/docs/getting-started/syncoverview#syncfrequencyandscheduling). This parameter has no effect on the [0 to 60 minutes offset](https://fivetran.com/docs/getting-started/syncoverview#syncstarttimesandoffsets) used to determine the actual sync start time
-- `pause_after_trial` (String) Specifies whether the connector should be paused after the free trial period has ended
-- `paused` (String) Specifies whether the connector is paused
-- `schedule_type` (String) The connector schedule configuration type. Supported values: auto, manual
-- `sync_frequency` (String) The connector sync frequency in minutes. Supported values: 1, 5, 15, 30, 60, 120, 180, 360, 480, 720, 1440.
+- `daily_sync_time` (String) The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use [the baseline sync start time](https://fivetran.com/docs/getting-started/syncoverview#syncfrequencyandscheduling). This parameter has no effect on the [0 to 60 minutes offset](https://fivetran.com/docs/getting-started/syncoverview#syncstarttimesandoffsets) used to determine the actual sync start time.
+- `pause_after_trial` (String) Specifies whether the connector should be paused after the free trial period has ended.
+- `paused` (String) Specifies whether the connector is paused.
+- `schedule_type` (String) The connector schedule configuration type. Supported values: auto, manual.
 
 ### Read-Only
 
