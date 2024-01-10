@@ -185,7 +185,7 @@ func resourceExternalLoggingRead(ctx context.Context, d *schema.ResourceData, m 
 	client := m.(*fivetran.Client)
 	svc := client.NewExternalLoggingDetails()
 
-	resp, err := svc.ExternalLoggingId(d.Get("id").(string)).DoCustom(ctx)
+	resp, err := svc.ExternalLoggingId(d.Get("id").(string)).Do(ctx)
 	if err != nil {
 		// If the resource does not exist (404), inform Terraform. We want to immediately
 		// return here to prevent further processing.
@@ -297,22 +297,22 @@ func resourceExternalLoggingCreateConfig(d *schema.ResourceData) map[string]inte
 	return configMap
 }
 
-func resourceExternalLoggingReadConfig(resp *externallogging.ExternalLoggingCustomResponse, currentConfig []interface{}) ([]interface{}, error) {
+func resourceExternalLoggingReadConfig(resp *externallogging.ExternalLoggingResponse, currentConfig []interface{}) ([]interface{}, error) {
 	var config []interface{}
 
 	// we can set here only known fields that are definied in schema
 	c := make(map[string]interface{})
-	c["port"] = resp.Data.Config["port"]
-	c["log_group_name"] = resp.Data.Config["log_group_name"]
-	c["role_arn"] = resp.Data.Config["role_arn"]
-	c["external_id"] = resp.Data.Config["external_id"]
-	c["region"] = resp.Data.Config["region"]
-	c["sub_domain"] = resp.Data.Config["sub_domain"]
-	c["host"] = resp.Data.Config["host"]
-	c["hostname"] = resp.Data.Config["hostname"]
-	c["enable_ssl"] = resp.Data.Config["enable_ssl"]
-	c["channel"] = resp.Data.Config["channel"]
-	c["project_id"] = resp.Data.Config["project_id"]
+	c["port"] = resp.Data.Config.Port
+	c["log_group_name"] = resp.Data.Config.LogGroupName
+	c["role_arn"] = resp.Data.Config.RoleArn
+	c["external_id"] = resp.Data.Config.ExternalId
+	c["region"] = resp.Data.Config.Region
+	c["sub_domain"] = resp.Data.Config.SubDomain
+	c["host"] = resp.Data.Config.Host
+	c["hostname"] = resp.Data.Config.Hostname
+	c["enable_ssl"] = resp.Data.Config.EnableSsl
+	c["channel"] = resp.Data.Config.Channel
+	c["project_id"] = resp.Data.Config.ProjectId
 
 	if len(currentConfig) > 0 {
 		// The REST API sends the password field masked. We use the state stored password here if possible.
@@ -321,9 +321,9 @@ func resourceExternalLoggingReadConfig(resp *externallogging.ExternalLoggingCust
 		c["api_key"] = currentConfigMap["api_key"]
 		c["token"] = currentConfigMap["token"]
 	} else {
-		c["primary_key"] = resp.Data.Config["primary_key"]
-		c["api_key"] = resp.Data.Config["api_key"]
-		c["token"] = resp.Data.Config["token"]
+		c["primary_key"] = resp.Data.Config.PrimaryKey
+		c["api_key"] = resp.Data.Config.ApiKey
+		c["token"] = resp.Data.Config.Token
 	}
 
 	config = append(config, c)
