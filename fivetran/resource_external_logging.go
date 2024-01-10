@@ -302,6 +302,7 @@ func resourceExternalLoggingReadConfig(resp *externallogging.ExternalLoggingResp
 
 	// we can set here only known fields that are definied in schema
 	c := make(map[string]interface{})
+	c["workspace_id"] = resp.Data.Config.WorkspaceId
 	c["port"] = resp.Data.Config.Port
 	c["log_group_name"] = resp.Data.Config.LogGroupName
 	c["role_arn"] = resp.Data.Config.RoleArn

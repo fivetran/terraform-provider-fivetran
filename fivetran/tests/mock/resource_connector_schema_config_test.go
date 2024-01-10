@@ -438,7 +438,7 @@ func setupMockClientEmptyDefaultSchemaResource(t *testing.T) {
 		},
 	)
 
-	schemaEmptyDefaultPatchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas/").ThenCall(
+	schemaEmptyDefaultPatchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			body := requestBodyToJson(t, req)
 
