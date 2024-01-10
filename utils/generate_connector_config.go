@@ -32,18 +32,18 @@ func main() {
 	fmt.Println("Updating config fields")
 
 	updateFields(services, schemaContainer,
-		"common/fields.json",
+		"fivetran/common/fields.json",
 		PROPERTIES_PATH,
-		"common/fields-updated.json",
+		"fivetran/common/fields-updated.json",
 		"config-changes.txt",
 	)
 
 	fmt.Println("Updating auth fields")
 
 	updateFields(services, schemaContainer,
-		"common/auth-fields.json",
+		"fivetran/common/auth-fields.json",
 		AUTH_PROPERTIES_PATH,
-		"common/auth-fields-updated.json",
+		"fivetran/common/auth-fields-updated.json",
 		"auth-changes.txt",
 	)
 
@@ -118,7 +118,6 @@ func writeFields(fieldsExisting map[string]common.ConfigField, fileName string) 
 	if err != nil {
 		fmt.Println(err)
 	}
-	//"common/fields-updated.json"
 	err = os.WriteFile(fileName, jsonResult, 0644)
 	if err != nil {
 		log.Fatal(err)
@@ -372,7 +371,7 @@ func createFields(nodesMap map[string]*gabs.Container, service string) map[strin
 			fieldInfo = getArrayFieldSchema(node, fieldInfo, service)
 		case OBJECT_FIELD:
 			fieldInfo = getObjectField(node.Path("properties").ChildrenMap(), service, node.Path("enum").Data())
-			fieldInfo.FieldValueType = common.Object
+			//fieldInfo.FieldValueType = common.Object
 		}
 
 		nodeDescription := node.Search("description").Data()
@@ -441,11 +440,11 @@ func getObjectField(childrenMap map[string]*gabs.Container, service string, enum
 	} else {
 		if enumElements != nil {
 			fmt.Println("ENUM-object: Object field without sub-fields but with enum.")
-			field.FieldValueType = common.StringList
+			field.FieldValueType = common.String
 			field.Nullable = false
 		} else {
 			fmt.Println("WARNING: Object field without sub-fields.")
-			field.FieldValueType = common.ObjectList
+			field.FieldValueType = common.Object
 		}
 	}
 	return field

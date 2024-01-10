@@ -28,6 +28,7 @@
          "survey_monkey": "The long-lived `Access token` carries the information necessary to access API resources.",
          "tiktok_ads": "The long-lived `Access token` carries the information necessary to access API resources.",
          "typeform": "The Typeform API access token.",
+         "wordpress": "",
          "zendesk": "The long-lived `Access token` carries the information necessary to access API resources.",
          "zendesk_chat": "The long-lived `Access token` carries the information necessary to access API resources.",
          "zendesk_sell": "The long-lived `Access token` carries the information necessary to access API resources."
@@ -312,6 +313,2592 @@
       },
       "api_field": ""
    },
+   "client_access_adroll": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "adroll": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "adroll": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "adroll": "Your application client access fields"
+      },
+      "api_field": "client_access"
+   },
+   "client_access_airtable": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "airtable": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "airtable": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "airtable": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_amazon_ads": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "amazon_ads": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "amazon_ads": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "amazon_ads": "Your application client access fields"
+      },
+      "api_field": "client_access"
+   },
+   "client_access_asana": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "asana": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "asana": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "asana": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_azure_service_bus": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "azure_service_bus": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "azure_service_bus": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "azure_service_bus": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_bingads": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "bingads": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "bingads": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "bingads": "Your application client access fields."
+      },
+      "api_field": "client_access"
+   },
+   "client_access_calendly": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "calendly": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": true,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "calendly": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "client_id",
+      "item_type": {},
+      "description": {
+         "calendly": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_channel_advisor": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "channel_advisor": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": true,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "channel_advisor": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "client_id",
+      "item_type": {},
+      "description": {
+         "channel_advisor": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_crossbeam": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "crossbeam": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": true,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "crossbeam": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "client_id",
+      "item_type": {},
+      "description": {
+         "crossbeam": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_docebo": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "docebo": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": true,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "docebo": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "client_id",
+      "item_type": {},
+      "description": {
+         "docebo": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_double_click_campaign_manager": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "double_click_campaign_manager": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "double_click_campaign_manager": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "double_click_campaign_manager": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_double_click_publishers": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "double_click_publishers": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "double_click_publishers": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "double_click_publishers": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_drift": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "drift": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": true,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "drift": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "client_id",
+      "item_type": {},
+      "description": {
+         "drift": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_dropbox": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "dropbox": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "dropbox": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "dropbox": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_dynamics_365": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "dynamics_365": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "dynamics_365": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "dynamics_365": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_employment_hero": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "employment_hero": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": true,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "employment_hero": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "client_id",
+      "item_type": {},
+      "description": {
+         "employment_hero": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_eventbrite": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "eventbrite": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": true,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "eventbrite": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "client_id",
+      "item_type": {},
+      "description": {
+         "eventbrite": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_facebook_ads": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "facebook_ads": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "facebook_ads": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "facebook_ads": "Your application client access fields.``"
+      },
+      "api_field": "client_access"
+   },
+   "client_access_facebook_pages": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "facebook_pages": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "facebook_pages": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "facebook_pages": "Your application client access fields"
+      },
+      "api_field": "client_access"
+   },
+   "client_access_financial_force": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "financial_force": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "financial_force": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "financial_force": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_freshbooks": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "freshbooks": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": true,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "freshbooks": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "client_id",
+      "item_type": {},
+      "description": {
+         "freshbooks": "Your FreshBooks application client access."
+      },
+      "api_field": "client_access"
+   },
+   "client_access_front": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "front": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "front": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "front": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_google_ads": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_ads": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_ads": ""
+            },
+            "api_field": ""
+         },
+         "developer_token": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_ads": ""
+            },
+            "api_field": ""
+         },
+         "user_agent": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_ads": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "google_ads": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_google_analytics": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_analytics": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_analytics": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "google_analytics": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_google_analytics_4": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_analytics_4": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_analytics_4": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "google_analytics_4": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_google_analytics_mcf": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_analytics_mcf": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_analytics_mcf": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "google_analytics_mcf": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_google_calendar": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_calendar": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": true,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_calendar": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "client_id",
+      "item_type": {},
+      "description": {
+         "google_calendar": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_google_display_and_video_360": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_display_and_video_360": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_display_and_video_360": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "google_display_and_video_360": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_google_play": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_play": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_play": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "google_play": "Your application client access fields."
+      },
+      "api_field": "client_access"
+   },
+   "client_access_google_search_ads_360": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_search_ads_360": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_search_ads_360": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "google_search_ads_360": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_google_search_console": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_search_console": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_search_console": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "google_search_console": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_google_sheets": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_sheets": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_sheets": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "google_sheets": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_helpscout": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "helpscout": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "helpscout": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "helpscout": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_hubspot": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "hubspot": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "hubspot": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "hubspot": "Your application client access fields"
+      },
+      "api_field": "client_access"
+   },
+   "client_access_instagram_business": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "instagram_business": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "instagram_business": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "instagram_business": "Your application client access fields."
+      },
+      "api_field": "client_access"
+   },
+   "client_access_linkedin_ads": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "linkedin_ads": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "linkedin_ads": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "linkedin_ads": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_linkedin_company_pages": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "linkedin_company_pages": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "linkedin_company_pages": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "linkedin_company_pages": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_mention": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "mention": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": true,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "mention": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "client_id",
+      "item_type": {},
+      "description": {
+         "mention": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_microsoft_lists": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "microsoft_lists": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "microsoft_lists": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "microsoft_lists": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_namely": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "namely": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": true,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "namely": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "client_id",
+      "item_type": {},
+      "description": {
+         "namely": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_notion": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "notion": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": true,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "notion": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "client_id",
+      "item_type": {},
+      "description": {
+         "notion": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_optimizely": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "optimizely": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "optimizely": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "optimizely": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_outreach": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "outreach": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "outreach": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "outreach": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_pardot": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "pardot": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "pardot": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "pardot": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_pinterest_ads": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "pinterest_ads": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "pinterest_ads": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "pinterest_ads": "Your application client access fields."
+      },
+      "api_field": "client_access"
+   },
+   "client_access_pipedrive": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "pipedrive": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "pipedrive": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "pipedrive": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_quickbooks": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "quickbooks": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "quickbooks": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "quickbooks": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_reddit_ads": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "reddit_ads": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "reddit_ads": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "reddit_ads": "Your application client access fields"
+      },
+      "api_field": "client_access"
+   },
+   "client_access_salesforce": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "salesforce": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "salesforce": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "salesforce": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_salesforce_sandbox": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "salesforce_sandbox": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "salesforce_sandbox": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "salesforce_sandbox": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_share_point": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "share_point": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "share_point": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "share_point": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_slack": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "slack": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": true,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "slack": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "client_id",
+      "item_type": {},
+      "description": {
+         "slack": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_snapchat_ads": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "snapchat_ads": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "snapchat_ads": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "snapchat_ads": "Your application client access fields."
+      },
+      "api_field": "client_access"
+   },
+   "client_access_survey_monkey": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "survey_monkey": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "survey_monkey": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "survey_monkey": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_tempo": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "tempo": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": true,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "tempo": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "client_id",
+      "item_type": {},
+      "description": {
+         "tempo": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_tiktok_ads": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "tiktok_ads": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "tiktok_ads": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "tiktok_ads": "Your application client access fields"
+      },
+      "api_field": "client_access"
+   },
+   "client_access_twitter": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "twitter": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "twitter": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "twitter": "Your application client access fields"
+      },
+      "api_field": "client_access"
+   },
+   "client_access_twitter_ads": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "twitter_ads": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "twitter_ads": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "twitter_ads": "Your application client access fields."
+      },
+      "api_field": "client_access"
+   },
+   "client_access_typeform": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "typeform": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "typeform": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "typeform": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_wordpress": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "wordpress": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": true,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "wordpress": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "client_id",
+      "item_type": {},
+      "description": {
+         "wordpress": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_wrike": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "wrike": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": true,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "wrike": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "client_id",
+      "item_type": {},
+      "description": {
+         "wrike": ""
+      },
+      "api_field": "client_access"
+   },
+   "client_access_yahoo_gemini": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "yahoo_gemini": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "yahoo_gemini": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "yahoo_gemini": "Your application client access fields"
+      },
+      "api_field": "client_access"
+   },
+   "client_access_youtube_analytics": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "youtube_analytics": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "youtube_analytics": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "youtube_analytics": "External client credentials to access the connector source."
+      },
+      "api_field": "client_access"
+   },
+   "client_access_zoho_crm": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object_list",
+      "fields": {
+         "client_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "zoho_crm": ""
+            },
+            "api_field": ""
+         },
+         "client_secret": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "zoho_crm": ""
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "zoho_crm": ""
+      },
+      "api_field": "client_access"
+   },
    "client_id": {
       "readonly": false,
       "sensitive": false,
@@ -322,7 +2909,8 @@
       "item_type": {},
       "description": {
          "amazon_selling_partner": "`Client ID` of your Amazon Seller/Vendor Central client application.",
-         "apple_search_ads": "Apple Search Ads REST API Client ID. Must be populated if `is_auth2_enabled` is set to `true`."
+         "apple_search_ads": "Apple Search Ads REST API Client ID. Must be populated if `is_auth2_enabled` is set to `true`.",
+         "workday_hcm": ""
       },
       "api_field": ""
    },
@@ -335,7 +2923,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "amazon_selling_partner": "`Client Secret` of your Amazon Seller/Vendor Central client application."
+         "amazon_selling_partner": "`Client Secret` of your Amazon Seller/Vendor Central client application.",
+         "workday_hcm": ""
       },
       "api_field": ""
    },
@@ -348,7 +2937,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "twitter": "",
+         "twitter": "API Key of your app",
          "twitter_ads": "The Twitter App consumer key."
       },
       "api_field": ""
@@ -362,7 +2951,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "twitter": "",
+         "twitter": "API Secret of your app",
          "twitter_ads": "The Twitter App consumer secret."
       },
       "api_field": ""
@@ -434,7 +3023,7 @@
       },
       "api_field": ""
    },
-   "previous_refresh_token" : {
+   "previous_refresh_token": {
       "readonly": false,
       "sensitive": true,
       "nullable": true,
@@ -514,7 +3103,8 @@
          "share_point": "The long-lived Refresh token carries the information necessary to get a new access token for API resources.",
          "slack": "Your Slack refresh token.",
          "snapchat_ads": "The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.",
-         "typeform": "The Typeform API refresh token."
+         "typeform": "The Typeform API refresh token.",
+         "workday_hcm": ""
       },
       "api_field": ""
    },
