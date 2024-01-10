@@ -28,7 +28,7 @@ func (r *connectorSchema) Metadata(ctx context.Context, req resource.MetadataReq
 }
 
 func (r *connectorSchema) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = schema.GetConnectorSchemaResourceSchema()
+	resp.Schema = schema.GetConnectorSchemaResourceSchema(ctx)
 }
 
 func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
