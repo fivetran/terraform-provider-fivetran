@@ -91,6 +91,7 @@ func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Reso
 		resources.User,
 		resources.Connector,
 		resources.ConnectorSchema,
+		resources.ConnectorSchedule,
 	}
 }
 

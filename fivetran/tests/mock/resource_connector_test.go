@@ -414,7 +414,8 @@ func TestResourceConnectorUpdateMock(t *testing.T) {
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 				assertEqual(t, connectorMockUpdatePostHandler.Interactions, 1)
-				assertEqual(t, connectorMockUpdateGetHandler.Interactions, 2)
+				assertEqual(t, connectorMockUpdateGetHandler.Interactions, 0)
+				assertEqual(t, connectorMockUpdatePatchHandler.Interactions, 1)
 				assertNotEmpty(t, connectorMockData)
 				return nil
 			},
@@ -460,7 +461,8 @@ func TestResourceConnectorUpdateMock(t *testing.T) {
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 				assertEqual(t, connectorMockUpdatePostHandler.Interactions, 1)
-				assertEqual(t, connectorMockUpdateGetHandler.Interactions, 7)
+				assertEqual(t, connectorMockUpdateGetHandler.Interactions, 4)
+				assertEqual(t, connectorMockUpdatePatchHandler.Interactions, 3)
 				assertNotEmpty(t, connectorMockData)
 				return nil
 			},
