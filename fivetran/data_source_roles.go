@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/go-fivetran/roles"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -70,9 +71,9 @@ func dataSourceRolesRead(ctx context.Context, d *schema.ResourceData, m interfac
 	return diags
 }
 
-// dataSourceRolesFlat receives a *fivetran.RolesListResponse and returns a []interface{}
+// dataSourceRolesFlat receives a *roles.RolesListResponse and returns a []interface{}
 // containing the data type accepted by the "roles" set.
-func dataSourceRolesFlat(resp *fivetran.RolesListResponse) []interface{} {
+func dataSourceRolesFlat(resp *roles.RolesListResponse) []interface{} {
 	if resp.Data.Items == nil {
 		return make([]interface{}, 0)
 	}
@@ -92,13 +93,13 @@ func dataSourceRolesFlat(resp *fivetran.RolesListResponse) []interface{} {
 }
 
 // dataSourceRolesGet gets the list of a roles. It handles limits and cursors.
-func dataSourceRolesGet(client *fivetran.Client, ctx context.Context) (fivetran.RolesListResponse, error) {
-	var resp fivetran.RolesListResponse
+func dataSourceRolesGet(client *fivetran.Client, ctx context.Context) (roles.RolesListResponse, error) {
+	var resp roles.RolesListResponse
 	var respNextCursor string
 
 	for {
 		var err error
-		var respInner fivetran.RolesListResponse
+		var respInner roles.RolesListResponse
 		svc := client.NewRolesList()
 		if respNextCursor == "" {
 			respInner, err = svc.Limit(limit).Do(ctx)
@@ -107,7 +108,7 @@ func dataSourceRolesGet(client *fivetran.Client, ctx context.Context) (fivetran.
 			respInner, err = svc.Limit(limit).Cursor(respNextCursor).Do(ctx)
 		}
 		if err != nil {
-			return fivetran.RolesListResponse{}, err
+			return roles.RolesListResponse{}, err
 		}
 
 		resp.Data.Items = append(resp.Data.Items, respInner.Data.Items...)

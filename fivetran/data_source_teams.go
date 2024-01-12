@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/go-fivetran/teams"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -48,9 +49,9 @@ func dataSourceTeamsRead(ctx context.Context, d *schema.ResourceData, m interfac
 	return diags
 }
 
-// dataSourceTeamsFlattenTeams receives a *fivetran.TeamsListResponse and returns a []interface{}
+// dataSourceTeamsFlattenTeams receives a *teams.TeamsListResponse and returns a []interface{}
 // containing the data type accepted by the "teams" set.
-func dataSourceTeamsFlattenTeams(resp *fivetran.TeamsListResponse) []interface{} {
+func dataSourceTeamsFlattenTeams(resp *teams.TeamsListResponse) []interface{} {
 	if resp.Data.Items == nil {
 		return make([]interface{}, 0)
 	}
@@ -70,13 +71,13 @@ func dataSourceTeamsFlattenTeams(resp *fivetran.TeamsListResponse) []interface{}
 }
 
 // dataSourceTeamsGetTeams gets the teams list of a group. It handles limits and cursors.
-func dataSourceTeamsGetTeams(client *fivetran.Client, ctx context.Context) (fivetran.TeamsListResponse, error) {
-	var resp fivetran.TeamsListResponse
+func dataSourceTeamsGetTeams(client *fivetran.Client, ctx context.Context) (teams.TeamsListResponse, error) {
+	var resp teams.TeamsListResponse
 	var respNextCursor string
 
 	for {
 		var err error
-		var respInner fivetran.TeamsListResponse
+		var respInner teams.TeamsListResponse
 		svc := client.NewTeamsList()
 		if respNextCursor == "" {
 			respInner, err = svc.Limit(limit).Do(ctx)
@@ -85,7 +86,7 @@ func dataSourceTeamsGetTeams(client *fivetran.Client, ctx context.Context) (five
 			respInner, err = svc.Limit(limit).Cursor(respNextCursor).Do(ctx)
 		}
 		if err != nil {
-			return fivetran.TeamsListResponse{}, err
+			return teams.TeamsListResponse{}, err
 		}
 
 		resp.Data.Items = append(resp.Data.Items, respInner.Data.Items...)
