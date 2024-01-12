@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Resource `fivetran_external_logging` fields support:
     - Added field `fivetran_external_logging.config.project_id`.
+- Deprecated data sources `fivetran_metadata_schemas`, `fivetran_metadata_tables`, `fivetran_metadata_columns` removed.
 
 ## [1.1.6](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.5...v1.1.6)
 
