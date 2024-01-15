@@ -30,11 +30,15 @@ type fivetranProviderModel struct {
 }
 
 func FivetranProvider() provider.Provider {
+	common.LoadConfigFieldsMap()
+	common.LoadAuthFieldsMap()
 	return &fivetranProvider{mockClient: nil}
 }
 
 // For mocked tests
 func FivetranProviderMock(client httputils.HttpClient) provider.Provider {
+	common.LoadConfigFieldsMap()
+	common.LoadAuthFieldsMap()
 	return &fivetranProvider{mockClient: client}
 }
 
@@ -87,8 +91,6 @@ func (p *fivetranProvider) Configure(ctx context.Context, req provider.Configure
 	fivetranClient.CustomUserAgent("terraform-provider-fivetran/" + Version)
 	resp.DataSourceData = fivetranClient
 	resp.ResourceData = fivetranClient
-	common.LoadConfigFieldsMap()
-	common.LoadAuthFieldsMap()
 }
 
 func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Resource {
