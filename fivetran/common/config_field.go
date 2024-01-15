@@ -47,7 +47,7 @@ var destinationSchemaFields = make(map[string]map[string]bool)
 
 func GetFieldsForService(service string) map[string]ConfigField {
 	if len(configFieldsByService) == 0 {
-		readFieldsFromJson(&configFields)
+		panic("Fields for config are not loaded")
 	}
 	if r, ok := configFieldsByService[service]; ok {
 		return r
@@ -56,6 +56,9 @@ func GetFieldsForService(service string) map[string]ConfigField {
 }
 
 func GetAuthFieldsForService(service string) map[string]ConfigField {
+	if len(authFieldsByService) == 0 {
+		panic("Fields for auth are not loaded")
+	}
 	if r, ok := authFieldsByService[service]; ok {
 		return r
 	}
@@ -63,6 +66,9 @@ func GetAuthFieldsForService(service string) map[string]ConfigField {
 }
 
 func GetDestinationSchemaFields() map[string]map[string]bool {
+	if len(destinationSchemaFields) == 0 {
+		panic("Fields for config are not loaded")
+	}
 	return destinationSchemaFields
 }
 
@@ -71,6 +77,13 @@ func GetAuthFieldsMap() map[string]ConfigField {
 		panic("Fields for auth are not loaded")
 	}
 	return authFields
+}
+
+func GetConfigFieldsMap() map[string]ConfigField {
+	if len(configFields) == 0 {
+		panic("Fields for config are not loaded")
+	}
+	return configFields
 }
 
 func LoadAuthFieldsMap() {
@@ -85,13 +98,6 @@ func LoadConfigFieldsMap() {
 		readFieldsFromJson(&configFields)
 	}
 	fillFieldsByService()
-}
-
-func GetConfigFieldsMap() map[string]ConfigField {
-	if len(configFields) == 0 {
-		panic("Fields for config are not loaded")
-	}
-	return configFields
 }
 
 func readAuthFieldsFromJson(target *map[string]ConfigField) {
