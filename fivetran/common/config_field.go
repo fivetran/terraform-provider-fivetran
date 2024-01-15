@@ -68,8 +68,7 @@ func GetDestinationSchemaFields() map[string]map[string]bool {
 
 func GetAuthFieldsMap() map[string]ConfigField {
 	if len(authFields) == 0 {
-		//panic("Fields for auth are not loaded")
-		LoadAuthFieldsMap()
+		panic("Fields for auth are not loaded")
 	}
 	return authFields
 }
@@ -90,8 +89,7 @@ func LoadConfigFieldsMap() {
 
 func GetConfigFieldsMap() map[string]ConfigField {
 	if len(configFields) == 0 {
-		//panic("Fields for config are not loaded")
-		LoadConfigFieldsMap()
+		panic("Fields for config are not loaded")
 	}
 	return configFields
 }
