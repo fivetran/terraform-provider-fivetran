@@ -10,6 +10,37 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
+func getMultipleConnectorsConfig(count int) string {
+	config := `
+	resource "fivetran_group" "test_group" {
+		provider = fivetran-provider
+		name = "test_group_name"
+	}
+	`
+	for i := 0; i < count; i++ {
+		config = config + fmt.Sprintf(`
+		resource "fivetran_connector" "test_connector_%v" {
+			provider = fivetran-provider
+			group_id = fivetran_group.test_group.id
+			service = "fivetran_log"
+			destination_schema {
+				name = "fivetran_log_schema_%v"
+			}
+			
+			trust_certificates = false
+			trust_fingerprints = false
+			run_setup_tests = false
+	
+			config {
+				group_name = fivetran_group.test_group.name
+			}
+		}
+
+		`, i, i)
+	}
+	return config
+}
+
 func TestResourceConnectorMultithreadingE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
@@ -17,49 +48,8 @@ func TestResourceConnectorMultithreadingE2E(t *testing.T) {
 		CheckDestroy:             testFivetranConnectorResourceDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: `
-				resource "fivetran_group" "test_group" {
-					provider = fivetran-provider
-					name = "test_group_name"
-			    }
-
-			    resource "fivetran_connector" "test_connector" {
-					provider = fivetran-provider
-					group_id = fivetran_group.test_group.id
-					service = "fivetran_log"
-					destination_schema {
-						name = "fivetran_log_schema"
-					}
-					
-					trust_certificates = false
-					trust_fingerprints = false
-					run_setup_tests = false
-			
-					config {
-						group_name = fivetran_group.test_group.name
-					}
-				}
-
-				resource "fivetran_connector" "test_connector_2" {
-					provider = fivetran-provider
-					group_id = fivetran_group.test_group.id
-					service = "fivetran_log"
-					
-					destination_schema {
-						name = "fivetran_log_schema_2"
-					}
-					
-					trust_certificates = false
-					trust_fingerprints = false
-					run_setup_tests = false
-			
-					config {
-						group_name = fivetran_group.test_group.name
-					}
-				}
-
-		  `,
-				Check: resource.ComposeAggregateTestCheckFunc(),
+				Config: getMultipleConnectorsConfig(10),
+				Check:  resource.ComposeAggregateTestCheckFunc(),
 			},
 		},
 	})
