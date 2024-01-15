@@ -56,9 +56,6 @@ func GetFieldsForService(service string) map[string]ConfigField {
 }
 
 func GetAuthFieldsForService(service string) map[string]ConfigField {
-	if len(authFieldsByService) == 0 {
-		GetAuthFieldsMap()
-	}
 	if r, ok := authFieldsByService[service]; ok {
 		return r
 	}
@@ -66,33 +63,28 @@ func GetAuthFieldsForService(service string) map[string]ConfigField {
 }
 
 func GetDestinationSchemaFields() map[string]map[string]bool {
-	if len(destinationSchemaFields) == 0 {
-		readFieldsFromJson(&configFields)
-	}
 	return destinationSchemaFields
 }
 
 func GetAuthFieldsMap() map[string]ConfigField {
-	if len(authFields) == 0 {
-		readAuthFieldsFromJson(&authFields)
-	}
-
-	authFieldsByService = make(map[string]map[string]ConfigField)
-	for k, v := range authFields {
-		for service := range v.Description {
-			if _, ok := authFieldsByService[service]; !ok {
-				authFieldsByService[service] = make(map[string]ConfigField)
-			}
-			authFieldsByService[service][k] = v
-		}
-	}
 	return authFields
 }
 
-func GetConfigFieldsMap() map[string]ConfigField {
+func LoadAuthFieldsMap() {
+	if len(authFields) == 0 {
+		readAuthFieldsFromJson(&authFields)
+	}
+	fillAuthFieldsByService()
+}
+
+func LoadConfigFieldsMap() {
 	if len(configFields) == 0 {
 		readFieldsFromJson(&configFields)
 	}
+	fillFieldsByService()
+}
+
+func GetConfigFieldsMap() map[string]ConfigField {
 	return configFields
 }
 
@@ -111,9 +103,6 @@ func readFieldsFromJson(target *map[string]ConfigField) {
 	handleDestinationSchemaField("schema")
 	handleDestinationSchemaField("table")
 	handleDestinationSchemaField("schema_prefix")
-
-	// sort rest fields by service
-	fillFieldsByService()
 }
 
 func handleDestinationSchemaField(fieldName string) {
@@ -136,6 +125,18 @@ func fillFieldsByService() {
 				configFieldsByService[service] = make(map[string]ConfigField)
 			}
 			configFieldsByService[service][k] = v
+		}
+	}
+}
+
+func fillAuthFieldsByService() {
+	authFieldsByService = make(map[string]map[string]ConfigField)
+	for k, v := range authFields {
+		for service := range v.Description {
+			if _, ok := authFieldsByService[service]; !ok {
+				authFieldsByService[service] = make(map[string]ConfigField)
+			}
+			authFieldsByService[service][k] = v
 		}
 	}
 }

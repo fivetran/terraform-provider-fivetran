@@ -7,6 +7,7 @@ import (
 
 	"github.com/fivetran/go-fivetran"
 	httputils "github.com/fivetran/go-fivetran/http_utils"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/common"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/datasources"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/resources"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -86,6 +87,8 @@ func (p *fivetranProvider) Configure(ctx context.Context, req provider.Configure
 	fivetranClient.CustomUserAgent("terraform-provider-fivetran/" + Version)
 	resp.DataSourceData = fivetranClient
 	resp.ResourceData = fivetranClient
+	common.LoadConfigFieldsMap()
+	common.LoadAuthFieldsMap()
 }
 
 func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Resource {
