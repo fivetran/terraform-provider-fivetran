@@ -21,7 +21,8 @@ func GetConnectorScheduleResourceSchema() schema.Schema {
 				Description:   "The unique identifier for the connector within the Fivetran system.",
 			},
 			"sync_frequency": schema.StringAttribute{
-				Required: true,
+				Optional: true,
+				Computed: true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("1", "5", "15", "30", "60", "120", "180", "360", "480", "720", "1440"),
 				},
