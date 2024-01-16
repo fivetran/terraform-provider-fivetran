@@ -7,6 +7,7 @@ import (
 
 	"github.com/fivetran/go-fivetran"
 	httputils "github.com/fivetran/go-fivetran/http_utils"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/common"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/datasources"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/resources"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -16,7 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-const Version = "1.1.6" // Current provider version
+const Version = "1.1.8" // Current provider version
 
 type fivetranProvider struct {
 	mockClient httputils.HttpClient
@@ -29,11 +30,15 @@ type fivetranProviderModel struct {
 }
 
 func FivetranProvider() provider.Provider {
+	common.LoadConfigFieldsMap()
+	common.LoadAuthFieldsMap()
 	return &fivetranProvider{mockClient: nil}
 }
 
 // For mocked tests
 func FivetranProviderMock(client httputils.HttpClient) provider.Provider {
+	common.LoadConfigFieldsMap()
+	common.LoadAuthFieldsMap()
 	return &fivetranProvider{mockClient: client}
 }
 
