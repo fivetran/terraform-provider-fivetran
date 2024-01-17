@@ -7,6 +7,7 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
@@ -21,6 +22,7 @@ type user struct {
 
 // Ensure the implementation satisfies the desired interfaces.
 var _ resource.ResourceWithConfigure = &user{}
+var _ resource.ResourceWithImportState = &user{}
 
 func (r *user) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_user"
@@ -30,6 +32,10 @@ func (r *user) Schema(ctx context.Context, req resource.SchemaRequest, resp *res
 	resp.Schema = schema.Schema{
 		Attributes: fivetranSchema.User().GetResourceSchema(),
 	}
+}
+
+func (r *user) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
 func (r *user) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

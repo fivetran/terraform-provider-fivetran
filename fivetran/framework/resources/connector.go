@@ -8,6 +8,7 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -25,6 +26,7 @@ type connector struct {
 // Ensure the implementation satisfies the desired interfaces.
 var _ resource.ResourceWithConfigure = &connector{}
 var _ resource.ResourceWithUpgradeState = &connector{}
+var _ resource.ResourceWithImportState = &connector{}
 
 func (r *connector) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_connector"
@@ -36,6 +38,10 @@ func (r *connector) Schema(ctx context.Context, req resource.SchemaRequest, resp
 		Blocks:     fivetranSchema.ConnectorResourceBlocks(ctx),
 		Version:    3,
 	}
+}
+
+func (r *connector) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
 func (r *connector) UpgradeState(ctx context.Context) map[int64]resource.StateUpgrader {
