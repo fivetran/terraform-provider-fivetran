@@ -8,6 +8,7 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
 	configSchema "github.com/fivetran/terraform-provider-fivetran/modules/connector/schema"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -22,6 +23,7 @@ type connectorSchema struct {
 
 // Ensure the implementation satisfies the desired interfaces.
 var _ resource.ResourceWithConfigure = &connectorSchema{}
+var _ resource.ResourceWithImportState = &connectorSchema{}
 
 func (r *connectorSchema) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_connector_schema_config"
@@ -29,6 +31,10 @@ func (r *connectorSchema) Metadata(ctx context.Context, req resource.MetadataReq
 
 func (r *connectorSchema) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.GetConnectorSchemaResourceSchema(ctx)
+}
+
+func (r *connectorSchema) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
 func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

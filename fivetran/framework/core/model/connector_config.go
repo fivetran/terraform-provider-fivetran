@@ -126,7 +126,19 @@ func getValue(fieldType attr.Type, value, local interface{}, fieldsMap map[strin
 			return types.Int64Null()
 		}
 		// value in json decoded response is always float64 for any kind of numbers
-		return types.Int64Value(int64(value.(float64)))
+		if fValue, ok := value.(float64); ok {
+			return types.Int64Value(int64(fValue))
+		}
+		if sValue, ok := value.(string); ok {
+			if sValue == "" {
+				return types.Int64Null()
+			}
+			i, err := strconv.Atoi(sValue)
+			if err == nil {
+				return types.Int64Value(int64(i))
+			}
+		}
+		panic(fmt.Sprintf("Can't convert upstream value %v to types.Int64Type", value))
 	}
 	if complexType, ok := fieldType.(attr.TypeWithAttributeTypes); ok {
 		if value == nil {
