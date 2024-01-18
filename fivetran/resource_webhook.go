@@ -177,10 +177,7 @@ func resourceWebhookRead(ctx context.Context, d *schema.ResourceData, m interfac
 	msi["events"] = resp.Data.Events
 	msi["active"] = resp.Data.Active
 
-	msi["secret"] = resp.Data.Secret
-	if resp.Data.Secret == "******" && d.Get("secret") != "" {
-		msi["secret"] = d.Get("secret") // sensitive field
-	}
+	msi["secret"] = d.Get("secret").(string) // sensitive field
 
 	msi["created_at"] = resp.Data.CreatedAt
 	msi["created_by"] = resp.Data.CreatedBy

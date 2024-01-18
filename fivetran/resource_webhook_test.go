@@ -45,20 +45,21 @@ func TestResourceWebhookE2E(t *testing.T) {
 
                  type = "account"
                  url = "https://your-host.your-domain/webhook_1"
-                 secret = "password"
+                 secret = "password_2"
                  active = "false"
                  run_tests = "false"
-                 events = ["sync_start","sync_end"]
+                 events = ["sync_start","sync_end", "connection_failure"]
             }
           `,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranWebhookResourceUpdate(t, "fivetran_webhook.test_webhook"),
 					resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "type", "account"),
 					resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "url", "https://your-host.your-domain/webhook_1"),
-					resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "secret", "password"),
+					resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "secret", "password_2"),
 					resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "active", "false"),
 					resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.0", "sync_end"),
 					resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.1", "sync_start"),
+					resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.2", "connection_failure"),
 				),
 			},
 		},
