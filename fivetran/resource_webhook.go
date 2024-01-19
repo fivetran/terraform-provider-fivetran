@@ -187,6 +187,8 @@ func resourceWebhookRead(ctx context.Context, d *schema.ResourceData, m interfac
 
 	if secret, ok := d.GetOk("secret"); ok && secret != "" {
 		msi["secret"] = d.Get("secret").(string) // sensitive field
+	} else {
+		msi["secret"] = resp.Data.Secret
 	}
 
 	msi["created_at"] = resp.Data.CreatedAt
