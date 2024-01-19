@@ -47,7 +47,7 @@ func setupMockClientWebhookResource(t *testing.T) {
             "sync_end"
         ],
         "active": false,
-        "secret": "password",
+        "secret": "******",
         "created_at": "2022-04-29T10:45:00.000Z",
         "created_by": "_airworthy"
     }`
@@ -60,10 +60,11 @@ func setupMockClientWebhookResource(t *testing.T) {
         "url": "https://your-host.your-domain/webhook_1",
         "events": [
             "sync_start",
-            "sync_end"
+            "sync_end",
+			"connection_failure"
         ],
         "active": false,
-        "secret": "password",
+        "secret": "******",
         "created_at": "2022-04-29T10:45:00.000Z",
         "created_by": "_airworthy"
     }`
@@ -139,10 +140,10 @@ func TestResourceWebhookMock(t *testing.T) {
                  type = "account"
                  group_id = "_moonbeam"
                  url = "https://your-host.your-domain/webhook_1"
-                 secret = "password"
+                 secret = "password_2"
                  active = false
                  run_tests = false
-                 events = ["sync_start","sync_end"]
+                 events = ["sync_start","sync_end", "connection_failure"]
             }`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
@@ -152,10 +153,11 @@ func TestResourceWebhookMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "type", "account"),
 			resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "group_id", "_moonbeam"),
 			resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "url", "https://your-host.your-domain/webhook_1"),
-			resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "secret", "password"),
+			resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "secret", "password_2"),
 			resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "active", "false"),
-			resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.0", "sync_end"),
-			resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.1", "sync_start"),
+			resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.0", "connection_failure"),
+			resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.1", "sync_end"),
+			resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.2", "sync_start"),
 		),
 	}
 
@@ -167,14 +169,14 @@ func TestResourceWebhookMock(t *testing.T) {
                  type = "account"
                  group_id = "_moonbeam"
                  url = "https://your-host.your-domain/webhook_1"
-                 secret = "password"
+                 secret = "password_2"
                  active = false
                  run_tests = true
-                 events = ["sync_start","sync_end"]
+                 events = ["sync_start","sync_end", "connection_failure"]
             }`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, webhookTestHandler.Interactions, 2)
+				assertEqual(t, webhookTestHandler.Interactions, 3)
 				return nil
 			},
 		),
