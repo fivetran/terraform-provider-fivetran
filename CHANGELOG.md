@@ -5,7 +5,233 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.10...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.11...HEAD)
+
+## [1.1.11](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.10...v1.1.11)
+
+## Added
+New supported connector services
+- Supported service: `6sense`
+- Supported service: `acumatica`
+- Supported service: `adobe_commerce`
+- Supported service: `affinity`
+- Supported service: `afterpay`
+- Supported service: `aha`
+- Supported service: `algolia`
+- Supported service: `amazon_attribution`
+- Supported service: `attio`
+- Supported service: `aumni`
+- Supported service: `auth0`
+- Supported service: `autodesk_bim_360`
+- Supported service: `avantlink`
+- Supported service: `aws_cost`
+- Supported service: `azure_boards`
+- Supported service: `azure_devops`
+- Supported service: `billing_platform`
+- Supported service: `bitly`
+- Supported service: `buildkite`
+- Supported service: `business_central`
+- Supported service: `campaignmonitor`
+- Supported service: `castor_edc`
+- Supported service: `ceridian_dayforce`
+- Supported service: `chartmogul`
+- Supported service: `checkout`
+- Supported service: `checkr`
+- Supported service: `chorusai`
+- Supported service: `cimis`
+- Supported service: `cj_commission_detail`
+- Supported service: `close`
+- Supported service: `coassemble`
+- Supported service: `codefresh`
+- Supported service: `column`
+- Supported service: `concord`
+- Supported service: `confluence`
+- Supported service: `contrast_security`
+- Supported service: `convex`
+- Supported service: `copper`
+- Supported service: `crowddev`
+- Supported service: `cvent`
+- Supported service: `d2l_brightspace`
+- Supported service: `db2`
+- Supported service: `db2i_sap_hva`
+- Supported service: `drata`
+- Supported service: `dropbox_sign`
+- Supported service: `dsv`
+- Supported service: `economic`
+- Supported service: `expensify`
+- Supported service: `ezofficeinventory`
+- Supported service: `factorial`
+- Supported service: `fone_dynamics`
+- Supported service: `freightview`
+- Supported service: `getfeedback`
+- Supported service: `gitlab`
+- Supported service: `google_business_profile`
+- Supported service: `green_power_monitor`
+- Supported service: `grepsr`
+- Supported service: `grin`
+- Supported service: `hana_sap_hva_b1`
+- Supported service: `hana_sap_hva_ecc`
+- Supported service: `hana_sap_hva_ecc_netweaver`
+- Supported service: `hana_sap_hva_s4`
+- Supported service: `hana_sap_hva_s4_netweaver`
+- Supported service: `happyfox`
+- Supported service: `helpshift`
+- Supported service: `ilevel`
+- Supported service: `incidentio`
+- Supported service: `infobip`
+- Supported service: `integrate`
+- Supported service: `ironsource`
+- Supported service: `ivanti`
+- Supported service: `jotform`
+- Supported service: `keypay`
+- Supported service: `klarna`
+- Supported service: `konnect_insights`
+- Supported service: `learnupon`
+- Supported service: `liftoff`
+- Supported service: `linksquares`
+- Supported service: `lob`
+- Supported service: `maxio_chargify`
+- Supported service: `maxio_saasoptics`
+- Supported service: `megaphone`
+- Supported service: `meltwater`
+- Supported service: `microsoft_teams`
+- Supported service: `mode`
+- Supported service: `moloco`
+- Supported service: `monday`
+- Supported service: `nylas`
+- Supported service: `oracle_business_intelligence_publisher`
+- Supported service: `oracle_moat_analytics`
+- Supported service: `ordway`
+- Supported service: `paychex`
+- Supported service: `persona`
+- Supported service: `personio`
+- Supported service: `pingdom`
+- Supported service: `pinpoint`
+- Supported service: `pinterest_organic`
+- Supported service: `pipe17`
+- Supported service: `pivotal_tracker`
+- Supported service: `piwik_pro`
+- Supported service: `planetscale`
+- Supported service: `postmark`
+- Supported service: `prive`
+- Supported service: `rakutenadvertising`
+- Supported service: `ramp`
+- Supported service: `rarible`
+- Supported service: `redshift_db`
+- Supported service: `reltio`
+- Supported service: `replyio`
+- Supported service: `resource_management_by_smartsheet`
+- Supported service: `revops`
+- Supported service: `revx`
+- Supported service: `ringover`
+- Supported service: `rocketlane`
+- Supported service: `rtb_house`
+- Supported service: `safetyculture`
+- Supported service: `sage_hr`
+- Supported service: `sap_hana`
+- Supported service: `sap_s4hana`
+- Supported service: `sensor_tower`
+- Supported service: `servicetitan`
+- Supported service: `shopware`
+- Supported service: `shortcut`
+- Supported service: `shortio`
+- Supported service: `simplecast`
+- Supported service: `slab`
+- Supported service: `spotify_ads`
+- Supported service: `sprout`
+- Supported service: `sql_server_sap_ecc_hva`
+- Supported service: `standard_metrics`
+- Supported service: `statsig`
+- Supported service: `statuspage`
+- Supported service: `swoogo`
+- Supported service: `talkwalker`
+- Supported service: `thinkific`
+- Supported service: `transcend`
+- Supported service: `ukg_pro`
+- Supported service: `unicommerce`
+- Supported service: `vitally`
+- Supported service: `vonage`
+- Supported service: `vts`
+- Supported service: `vwo`
+- Supported service: `wasabi_cloud_storage`
+- Supported service: `wordpress`
+- Supported service: `workday_financial_management`
+- Supported service: `workday_strategic_sourcing`
+- Supported service: `workflowmax`
+- Supported service: `workramp`
+- Supported service: `xray`
+- Supported service: `xsolla`
+- Supported service: `yahoo_dsp`
+- Supported service: `yahoo_search_ads_yahoo_japan`
+- Supported service: `yotpo`
+- Supported service: `zoho_books`
+- Supported service: `zoho_desk`
+- Supported service: `zoom`
+
+New connector config fields supported:
+- Added field `fivetran_connector.config.client_host` for services: `ceridian_dayforce`.
+- Added field `fivetran_connector.config.report_configs` for services: `yahoo_dsp`.
+- Added field `fivetran_connector.config.personal_api_token` for services: `monday`.
+- Added field `fivetran_connector.config.host_url` for services: `adobe_commerce`.
+- Added field `fivetran_connector.config.organization_name` for services: `confluence`.
+- Added field `fivetran_connector.config.agent_config_method` for services: `hana_sap_hva_s4_netweaver`, `hana_sap_hva_b1`, `hana_sap_hva_ecc`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`.
+- Added field `fivetran_connector.config.system_id` for services: `hana_sap_hva_b1`, `hana_sap_hva_ecc`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`.
+- Added field `fivetran_connector.config.tenant_url` for services: `ivanti`, `reltio`.
+- Added field `fivetran_connector.config.collection_address` for services: `rarible`.
+- Added field `fivetran_connector.config.selected_event_types` for services: `salesforce_marketing_cloud`.
+- Added field `fivetran_connector.config.customer_api_key` for services: `ukg_pro`.
+- Added field `fivetran_connector.config.companies` for services: `business_central`.
+- Added field `fivetran_connector.config.partner_user_secret` for services: `expensify`.
+- Added field `fivetran_connector.config.sap_source_schema` for services: `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`, `hana_sap_hva_b1`, `hana_sap_hva_ecc`.
+- Added field `fivetran_connector.config.hana_mode` for services: `hana_sap_hva_b1`, `hana_sap_hva_ecc`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`.
+- Added field `fivetran_connector.config.token` for services: `mode`, `oracle_moat_analytics`.
+- Added field `fivetran_connector.config.email_id` for services: `ordway`.
+- Added field `fivetran_connector.config.sync_mode_advertiser` for services: `yahoo_dsp`.
+- Added field `fivetran_connector.config.list_of_company_ids` for services: `cj_commission_detail`.
+- Added field `fivetran_connector.config.dsv_service_auth` for services: `dsv`.
+- Added field `fivetran_connector.config.workspace` for services: `mode`.
+- Added field `fivetran_connector.config.project_access_token` for services: `rollbar`.
+- Added field `fivetran_connector.config.x_user_email` for services: `workday_strategic_sourcing`.
+- Added field `fivetran_connector.config.seats` for services: `yahoo_dsp`.
+- Added field `fivetran_connector.config.agreement_grant_token` for services: `economic`.
+- Added field `fivetran_connector.config.odbc_sys_ini_path` for services: `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`, `hana_sap_hva_b1`, `hana_sap_hva_ecc`.
+- Added field `fivetran_connector.config.company` for services: `ordway`.
+- Added field `fivetran_connector.config.facility_codes` for services: `unicommerce`.
+- Added field `fivetran_connector.config.workplace_id` for services: `moloco`.
+- Added field `fivetran_connector.config.custom_reports.add_metric_variants` for services: `snapchat_ads`.
+- Added field `fivetran_connector.config.app_secret_token` for services: `economic`.
+- Added field `fivetran_connector.config.account_access_token` for services: `rollbar`.
+- Added field `fivetran_connector.config.hostname` for services: `ukg_pro`.
+- Added field `fivetran_connector.config.sync_mode_seat` for services: `yahoo_dsp`.
+- Added field `fivetran_connector.config.dsv_subscription_key` for services: `dsv`.
+- Added field `fivetran_connector.config.log_on_group` for services: `hana_sap_hva_b1`, `hana_sap_hva_ecc`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`.
+- Added field `fivetran_connector.config.snc_name` for services: `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`, `hana_sap_hva_b1`, `hana_sap_hva_ecc`.
+- Added field `fivetran_connector.config.brand_id` for services: `oracle_moat_analytics`.
+- Added field `fivetran_connector.config.report_list` for services: `spotify_ads`.
+- Added field `fivetran_connector.config.environment_name` for services: `business_central`.
+- Added field `fivetran_connector.config.account_type` for services: `freightview`.
+- Added field `fivetran_connector.config.snc_library_path` for services: `hana_sap_hva_ecc`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`, `hana_sap_hva_b1`.
+- Added field `fivetran_connector.config.service_name` for services: `hana_sap_hva_b1`, `hana_sap_hva_ecc`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`.
+- Added field `fivetran_connector.config.ecommerce_stores` for services: `mailchimp`.
+- Added field `fivetran_connector.config.audience` for services: `auth0`.
+- Added field `fivetran_connector.config.target_host` for services: `d2l_brightspace`.
+- Added field `fivetran_connector.config.account_sid` for services: `fone_dynamics`.
+- Added field `fivetran_connector.config.snc_partner_name` for services: `hana_sap_hva_ecc`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`, `hana_sap_hva_b1`.
+- Added field `fivetran_connector.config.backint_configuration_path` for services: `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`, `hana_sap_hva_b1`, `hana_sap_hva_ecc`.
+- Added field `fivetran_connector.config.advertisers_with_seat` for services: `yahoo_dsp`.
+- Added field `fivetran_connector.config.x_api_key` for services: `workday_strategic_sourcing`.
+- Added field `fivetran_connector.config.application_id` for services: `algolia`.
+- Added field `fivetran_connector.config.partner_user_id` for services: `expensify`.
+- Added field `fivetran_connector.config.backint_executable_path` for services: `hana_sap_hva_b1`, `hana_sap_hva_ecc`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`.
+- Added field `fivetran_connector.config.odbc_driver_manager_library_path` for services: `hana_sap_hva_s4_netweaver`, `hana_sap_hva_b1`, `hana_sap_hva_ecc`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`.
+- Added field `fivetran_connector.config.user_token` for services: `konnect_insights`.
+- Added field `fivetran_connector.config.report_keys` for services: `rakutenadvertising`.
+- Added field `fivetran_connector.config.client_namespace` for services: `ceridian_dayforce`.
+- Added field `fivetran_connector.config.blockchain` for services: `rarible`.
+- Added field `fivetran_connector.config.x_user_token` for services: `workday_strategic_sourcing`.
+- Added field `fivetran_connector.config.host_name` for services: `coassemble`.
+- Added field `fivetran_connector.config.hana_backup_password` for services: `hana_sap_hva_ecc`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`, `hana_sap_hva_b1`.
+- Added field `fivetran_connector.config.account_token` for services: `konnect_insights`.
 
 ## [1.1.10](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.9...v1.1.10)
 
