@@ -28,7 +28,6 @@ resource "fivetran_connector_schedule" "my_connector_schedule" {
 ### Required
 
 - `connector_id` (String) The unique identifier for the connector within the Fivetran system.
-- `sync_frequency` (String) The connector sync frequency in minutes. Supported values: 1, 5, 15, 30, 60, 120, 180, 360, 480, 720, 1440.
 
 ### Optional
 
@@ -36,6 +35,7 @@ resource "fivetran_connector_schedule" "my_connector_schedule" {
 - `pause_after_trial` (String) Specifies whether the connector should be paused after the free trial period has ended.
 - `paused` (String) Specifies whether the connector is paused.
 - `schedule_type` (String) The connector schedule configuration type. Supported values: auto, manual.
+- `sync_frequency` (String) The connector sync frequency in minutes. Supported values: 1, 5, 15, 30, 60, 120, 180, 360, 480, 720, 1440.
 
 ### Read-Only
 
