@@ -96,6 +96,7 @@ func (p *fivetranProvider) Configure(ctx context.Context, req provider.Configure
 func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		resources.User,
+		resources.Webhook,
 		resources.Connector,
 		resources.ConnectorSchema,
 		resources.ConnectorSchedule,
@@ -105,6 +106,8 @@ func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Reso
 func (p *fivetranProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		datasources.User,
+		datasources.Webhook,
+		datasources.Webhooks,
 		datasources.GroupSshKey,
 		datasources.GroupServiceAccount,
 		datasources.Connector,

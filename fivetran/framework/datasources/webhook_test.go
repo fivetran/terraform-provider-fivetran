@@ -1,12 +1,13 @@
-package mock
+package datasources_test
 
 import (
 	"net/http"
 	"testing"
 
 	"github.com/fivetran/go-fivetran/tests/mock"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 var (
@@ -17,7 +18,7 @@ var (
 const (
 	webhookMappingResponse = `
 	{
-    	"id": "recur_readable",
+    	"id": "webhook_id",
     	"type": "group",
     	"group_id": "_moonbeam",
     	"url": "https://your-host.your-domain/webhook",
@@ -34,12 +35,12 @@ const (
 )
 
 func setupMockClientWebhookDataSourceConfigMapping(t *testing.T) {
-	mockClient.Reset()
+	tfmock.MockClient().Reset()
 
-	webhookDataSourceMockGetHandler = mockClient.When(http.MethodGet, "/v1/webhooks/webhook_id").ThenCall(
+	webhookDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/webhooks/webhook_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			webhookDataSourceMockData = createMapFromJsonString(t, webhookMappingResponse)
-			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", webhookDataSourceMockData), nil
+			webhookDataSourceMockData = tfmock.CreateMapFromJsonString(t, webhookMappingResponse)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", webhookDataSourceMockData), nil
 		},
 	)
 }
@@ -55,18 +56,17 @@ func TestDataSourceWebhookMappingMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, webhookDataSourceMockGetHandler.Interactions, 4)
-				assertNotEmpty(t, webhookDataSourceMockData)
+				tfmock.AssertEqual(t, webhookDataSourceMockGetHandler.Interactions, 2)
+				tfmock.AssertNotEmpty(t, webhookDataSourceMockData)
 				return nil
 			},
-			resource.TestCheckResourceAttr("data.fivetran_webhook.test_webhook", "id", "recur_readable"),
+			resource.TestCheckResourceAttr("data.fivetran_webhook.test_webhook", "id", "webhook_id"),
 			resource.TestCheckResourceAttr("data.fivetran_webhook.test_webhook", "type", "group"),
 			resource.TestCheckResourceAttr("data.fivetran_webhook.test_webhook", "group_id", "_moonbeam"),
 			resource.TestCheckResourceAttr("data.fivetran_webhook.test_webhook", "url", "https://your-host.your-domain/webhook"),
 			resource.TestCheckResourceAttr("data.fivetran_webhook.test_webhook", "events.0", "sync_end"),
 			resource.TestCheckResourceAttr("data.fivetran_webhook.test_webhook", "events.1", "sync_start"),
 			resource.TestCheckResourceAttr("data.fivetran_webhook.test_webhook", "active", "true"),
-			resource.TestCheckResourceAttr("data.fivetran_webhook.test_webhook", "secret", "******"),
 			resource.TestCheckResourceAttr("data.fivetran_webhook.test_webhook", "created_at", "2022-04-29T10:45:00.000Z"),
 			resource.TestCheckResourceAttr("data.fivetran_webhook.test_webhook", "created_by", "_airworthy"),
 		),
@@ -78,7 +78,7 @@ func TestDataSourceWebhookMappingMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientWebhookDataSourceConfigMapping(t)
 			},
-			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				return nil
 			},

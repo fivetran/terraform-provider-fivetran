@@ -1,13 +1,14 @@
-package mock
+package resources_test
 
 import (
 	"net/http"
 	"testing"
 	"time"
-
+	
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
 	"github.com/fivetran/go-fivetran/tests/mock"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 var (
@@ -18,18 +19,18 @@ var (
 )
 
 func onPostUsers(t *testing.T, req *http.Request) (*http.Response, error) {
-	assertEmpty(t, userData)
+	tfmock.AssertEmpty(t, userData)
 
-	body := requestBodyToJson(t, req)
+	body := tfmock.RequestBodyToJson(t, req)
 
 	// Check the request
-	assertEqual(t, len(body), 6)
-	assertEqual(t, body["email"], "john.fox@testmail.com")
-	assertEqual(t, body["given_name"], "John")
-	assertEqual(t, body["family_name"], "Fox")
-	assertEqual(t, body["phone"], "+19876543210")
-	assertEqual(t, body["picture"], "https://myPicturecom")
-	assertEqual(t, body["role"], "Account Reviewer")
+	tfmock.AssertEqual(t, len(body), 6)
+	tfmock.AssertEqual(t, body["email"], "john.fox@testmail.com")
+	tfmock.AssertEqual(t, body["given_name"], "John")
+	tfmock.AssertEqual(t, body["family_name"], "Fox")
+	tfmock.AssertEqual(t, body["phone"], "+19876543210")
+	tfmock.AssertEqual(t, body["picture"], "https://myPicturecom")
+	tfmock.AssertEqual(t, body["role"], "Account Reviewer")
 
 	// Add response fields
 	body["id"] = "john_fox_id"
@@ -39,47 +40,47 @@ func onPostUsers(t *testing.T, req *http.Request) (*http.Response, error) {
 	body["created_at"] = time.Now().Format("2006-01-02T15:04:05.000000Z")
 	userData = body
 
-	response := fivetranSuccessResponse(t, req, http.StatusCreated,
+	response := tfmock.FivetranSuccessResponse(t, req, http.StatusCreated,
 		"User has been invited to the account", body)
 
 	return response, nil
 }
 
 func onPatchUser(t *testing.T, req *http.Request, updateIteration int) (*http.Response, error) {
-	assertNotEmpty(t, userData)
+	tfmock.AssertNotEmpty(t, userData)
 
-	body := requestBodyToJson(t, req)
+	body := tfmock.RequestBodyToJson(t, req)
 
 	if updateIteration == 0 {
 		// Check the request
-		assertEqual(t, len(body), 5)
-		assertEqual(t, body["given_name"], "Jane")
-		assertEqual(t, body["family_name"], "Connor")
-		assertEqual(t, body["phone"], "+19876543219")
-		assertEqual(t, body["picture"], "https://yourPicturecom")
-		assertEqual(t, body["role"], "Account Administrator")
+		tfmock.AssertEqual(t, len(body), 5)
+		tfmock.AssertEqual(t, body["given_name"], "Jane")
+		tfmock.AssertEqual(t, body["family_name"], "Connor")
+		tfmock.AssertEqual(t, body["phone"], "+19876543219")
+		tfmock.AssertEqual(t, body["picture"], "https://yourPicturecom")
+		tfmock.AssertEqual(t, body["role"], "Account Administrator")
 
 		// Update saved values
 		for k, v := range body {
 			userData[k] = v
 		}
 
-		response := fivetranSuccessResponse(t, req, http.StatusOK, "User has been updated", userData)
+		response := tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "User has been updated", userData)
 		return response, nil
 	}
 
 	if updateIteration == 1 {
 		// Check the request
-		assertEqual(t, len(body), 2)
-		assertEqual(t, body["phone"], nil)
-		assertEqual(t, body["picture"], nil)
+		tfmock.AssertEqual(t, len(body), 2)
+		tfmock.AssertEqual(t, body["phone"], nil)
+		tfmock.AssertEqual(t, body["picture"], nil)
 
 		// Update saved values
 		for k, v := range body {
 			userData[k] = v
 		}
 
-		response := fivetranSuccessResponse(t, req, http.StatusOK, "User has been updated", userData)
+		response := tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "User has been updated", userData)
 		return response, nil
 	}
 
@@ -87,25 +88,25 @@ func onPatchUser(t *testing.T, req *http.Request, updateIteration int) (*http.Re
 }
 
 func setupMockClientUserResource(t *testing.T) {
-	mockClient.Reset()
+	tfmock.MockClient().Reset()
 	userData = nil
 	updateCounter := 0
 
-	userPostHandler = mockClient.When(http.MethodPost, "/v1/users").ThenCall(
+	userPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/users").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			return onPostUsers(t, req)
 		},
 	)
 
-	mockClient.When(http.MethodGet, "/v1/users/john_fox_id").ThenCall(
+	tfmock.MockClient().When(http.MethodGet, "/v1/users/john_fox_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			assertNotEmpty(t, userData)
-			response := fivetranSuccessResponse(t, req, http.StatusOK, "", userData)
+			tfmock.AssertNotEmpty(t, userData)
+			response := tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "", userData)
 			return response, nil
 		},
 	)
 
-	userPatchHandler = mockClient.When(http.MethodPatch, "/v1/users/john_fox_id").ThenCall(
+	userPatchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/users/john_fox_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			response, err := onPatchUser(t, req, updateCounter)
 			updateCounter++
@@ -113,11 +114,11 @@ func setupMockClientUserResource(t *testing.T) {
 		},
 	)
 
-	userDeleteHandler = mockClient.When(http.MethodDelete, "/v1/users/john_fox_id").ThenCall(
+	userDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/users/john_fox_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			assertNotEmpty(t, userData)
+			tfmock.AssertNotEmpty(t, userData)
 			userData = nil
-			response := fivetranSuccessResponse(t, req, 200,
+			response := tfmock.FivetranSuccessResponse(t, req, 200,
 				"User with id 'john_fox_id' has been deleted", nil)
 			return response, nil
 		},
@@ -140,8 +141,8 @@ func TestResourceUserMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, userPostHandler.Interactions, 1)
-				assertNotEmpty(t, userData)
+				tfmock.AssertEqual(t, userPostHandler.Interactions, 1)
+				tfmock.AssertNotEmpty(t, userData)
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_user.userjohn", "email", "john.fox@testmail.com"),
@@ -167,7 +168,7 @@ func TestResourceUserMock(t *testing.T) {
 		`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, userPatchHandler.Interactions, 1)
+				tfmock.AssertEqual(t, userPatchHandler.Interactions, 1)
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_user.userjohn", "email", "john.fox@testmail.com"),
@@ -191,7 +192,7 @@ func TestResourceUserMock(t *testing.T) {
 		`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, userPatchHandler.Interactions, 2)
+				tfmock.AssertEqual(t, userPatchHandler.Interactions, 2)
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_user.userjohn", "email", "john.fox@testmail.com"),
@@ -209,10 +210,10 @@ func TestResourceUserMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientUserResource(t)
 			},
-			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
-				assertEqual(t, userDeleteHandler.Interactions, 1)
-				assertEmpty(t, userData)
+				tfmock.AssertEqual(t, userDeleteHandler.Interactions, 1)
+				tfmock.AssertEmpty(t, userData)
 				return nil
 			},
 
