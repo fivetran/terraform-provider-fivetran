@@ -111,8 +111,8 @@ func ConnectorResourceBlocks(ctx context.Context) map[string]resourceSchema.Bloc
 			Attributes: destinationSchemaAttributes().GetResourceSchema(),
 		},
 		"config": resourceSchema.SingleNestedBlock{
-			Attributes: GetResourceConfigSchemaAttributes(),
-			Blocks:     GetResourceConfigSchemaBlocks(),
+			Attributes: GetResourceConnectorConfigSchemaAttributes(),
+			Blocks:     GetResourceConnectorConfigSchemaBlocks(),
 		},
 		"auth": resourceSchema.SingleNestedBlock{
 			Attributes: GetResourceAuthSchemaAttributes(),
@@ -131,7 +131,7 @@ func ConnectorDatasourceBlocks() map[string]datasourceSchema.Block {
 			Attributes: destinationSchemaAttributes().GetDatasourceSchema(),
 		},
 		"config": datasourceSchema.SingleNestedBlock{
-			Attributes: GetDatasourceConfigSchemaAttributes(),
+			Attributes: GetDatasourceConnectorConfigSchemaAttributes(),
 		},
 		"status": datasourceSchema.SingleNestedBlock{
 			Attributes: map[string]datasourceSchema.Attribute{

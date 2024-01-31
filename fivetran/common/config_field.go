@@ -30,20 +30,26 @@ func NewconfigField() ConfigField {
 	return field
 }
 
-//go:embed fields.json
-var configFieldsJson []byte
+var (
+	//go:embed fields.json
+	configFieldsJson []byte
 
-//go:embed auth-fields.json
-var authFieldsJson []byte
+	//go:embed auth-fields.json
+	authFieldsJson []byte
 
-var configFields = make(map[string]ConfigField)
+	//go:embed destination-fields.json
+	destinationFieldsJson []byte
 
-var authFields = make(map[string]ConfigField)
+	configFields      = make(map[string]ConfigField)
+	authFields        = make(map[string]ConfigField)
+	destinationFields = make(map[string]ConfigField)
 
-var configFieldsByService = make(map[string]map[string]ConfigField)
-var authFieldsByService = make(map[string]map[string]ConfigField)
+	configFieldsByService      = make(map[string]map[string]ConfigField)
+	authFieldsByService        = make(map[string]map[string]ConfigField)
+	destinationFieldsByService = make(map[string]map[string]ConfigField)
 
-var destinationSchemaFields = make(map[string]map[string]bool)
+	destinationSchemaFields = make(map[string]map[string]bool)
+)
 
 func GetFieldsForService(service string) map[string]ConfigField {
 	if len(configFieldsByService) == 0 {
@@ -60,6 +66,16 @@ func GetAuthFieldsForService(service string) map[string]ConfigField {
 		panic("Fields for auth are not loaded")
 	}
 	if r, ok := authFieldsByService[service]; ok {
+		return r
+	}
+	return map[string]ConfigField{}
+}
+
+func GetDestinationFieldsForService(service string) map[string]ConfigField {
+	if len(destinationFieldsByService) == 0 {
+		panic("Fields for destination config are not loaded")
+	}
+	if r, ok := destinationFieldsByService[service]; ok {
 		return r
 	}
 	return map[string]ConfigField{}
@@ -86,6 +102,13 @@ func GetConfigFieldsMap() map[string]ConfigField {
 	return configFields
 }
 
+func GetDestinationFieldsMap() map[string]ConfigField {
+	if len(destinationFields) == 0 {
+		panic("Fields for destination config are not loaded")
+	}
+	return destinationFields
+}
+
 func LoadAuthFieldsMap() {
 	if len(authFields) == 0 {
 		readAuthFieldsFromJson(&authFields)
@@ -98,6 +121,13 @@ func LoadConfigFieldsMap() {
 		readFieldsFromJson(&configFields)
 	}
 	fillFieldsByService()
+}
+
+func LocaDestinationFieldsMap() {
+	if len(destinationFields) == 0 {
+		readDestinationFieldsFromJson(&destinationFields)
+	}
+	fillDestinationFieldsByService()
 }
 
 func readAuthFieldsFromJson(target *map[string]ConfigField) {
@@ -117,6 +147,13 @@ func readFieldsFromJson(target *map[string]ConfigField) {
 	handleDestinationSchemaField("schema_prefix")
 }
 
+func readDestinationFieldsFromJson(target *map[string]ConfigField) {
+	err := json.Unmarshal(destinationFieldsJson, target)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func handleDestinationSchemaField(fieldName string) {
 	if schema, ok := configFields[fieldName]; ok {
 		for k := range schema.Description {
@@ -129,26 +166,27 @@ func handleDestinationSchemaField(fieldName string) {
 	}
 }
 
+func fillDestinationFieldsByService() {
+	destinationFieldsByService = breakByService(destinationFields)
+}
+
 func fillFieldsByService() {
-	configFieldsByService = make(map[string]map[string]ConfigField)
-	for k, v := range configFields {
-		for service := range v.Description {
-			if _, ok := configFieldsByService[service]; !ok {
-				configFieldsByService[service] = make(map[string]ConfigField)
-			}
-			configFieldsByService[service][k] = v
-		}
-	}
+	configFieldsByService = breakByService(configFields)
 }
 
 func fillAuthFieldsByService() {
-	authFieldsByService = make(map[string]map[string]ConfigField)
-	for k, v := range authFields {
+	authFieldsByService = breakByService(authFields)
+}
+
+func breakByService(source map[string]ConfigField) map[string]map[string]ConfigField {
+	result := make(map[string]map[string]ConfigField)
+	for k, v := range source {
 		for service := range v.Description {
-			if _, ok := authFieldsByService[service]; !ok {
-				authFieldsByService[service] = make(map[string]ConfigField)
+			if _, ok := result[service]; !ok {
+				result[service] = make(map[string]ConfigField)
 			}
-			authFieldsByService[service][k] = v
+			result[service][k] = v
 		}
 	}
+	return result
 }
