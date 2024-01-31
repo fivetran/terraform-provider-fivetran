@@ -305,7 +305,7 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 				)
 				return
 			}
-			// nothing to read
+			plan.ReadFromCreateResponse(response)
 		}
 	}
 
