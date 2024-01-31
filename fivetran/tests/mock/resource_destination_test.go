@@ -151,7 +151,7 @@ func setupMockClientDestinationConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "workspace_name", "workspace_name")
 			assertKeyExistsAndHasValue(t, config, "lakehouse_name", "lakehouse_name")
 
-			assertKeyExistsAndHasValue(t, config, "tunnel_port", "123")
+			assertKeyExistsAndHasValue(t, config, "tunnel_port", float64(123))
 
 			testDestinationData = createMapFromJsonString(t, destinationMappingResponse)
 			return fivetranSuccessResponse(t, req, http.StatusCreated, "Success", testDestinationData), nil
@@ -226,7 +226,7 @@ func TestResourceDestinationMappingMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, destinationMappingGetHandler.Interactions, 1)
+				assertEqual(t, destinationMappingGetHandler.Interactions, 0)
 				assertEqual(t, destinationMappingPostHandler.Interactions, 1)
 				assertNotEmpty(t, testDestinationData)
 				return nil

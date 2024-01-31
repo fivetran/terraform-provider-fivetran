@@ -781,7 +781,7 @@
    },
    "role_arn": {
       "readonly": false,
-      "sensitive": false,
+      "sensitive": true,
       "nullable": true,
       "type": "string",
       "fields": null,

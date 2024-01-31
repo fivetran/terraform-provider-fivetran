@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/common"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
@@ -160,7 +161,15 @@ func getValue(fieldType attr.Type, value, local interface{}, fieldsMap map[strin
 		if value == nil {
 			return types.BoolNull()
 		}
-		return types.BoolValue(value.(bool))
+		if fValue, ok := value.(bool); ok {
+			return types.BoolValue(fValue)
+		}
+		if sValue, ok := value.(string); ok {
+			if sValue == "" {
+				return types.BoolNull()
+			}
+			return types.BoolValue(helpers.StrToBool(sValue))
+		}
 	}
 	if fieldType.Equal(types.Int64Type) {
 		if value == nil {
