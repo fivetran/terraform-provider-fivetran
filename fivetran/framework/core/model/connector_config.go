@@ -14,10 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
-var (
-	configAttrTypes map[string]attr.Type
-)
-
 func PrepareConfigAuthPatch(state, plan map[string]interface{}, service string, allFields map[string]common.ConfigField) map[string]interface{} {
 	result := map[string]interface{}{}
 
@@ -51,13 +47,11 @@ func PrepareConfigAuthPatch(state, plan map[string]interface{}, service string, 
 }
 
 func getAttrTypes(configFieldsMap map[string]common.ConfigField) map[string]attr.Type {
-	if len(configAttrTypes) == 0 {
-		configAttrTypes = make(map[string]attr.Type)
-		for fn, f := range configFieldsMap {
-			configAttrTypes[fn] = attrTypeFromConfigField(f)
-		}
+	result := make(map[string]attr.Type)
+	for fn, f := range configFieldsMap {
+		result[fn] = attrTypeFromConfigField(f)
 	}
-	return configAttrTypes
+	return result
 }
 
 func GetTfTypes(configFieldsMap map[string]common.ConfigField, version int) map[string]tftypes.Type {
