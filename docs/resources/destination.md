@@ -34,14 +34,14 @@ resource "fivetran_destination" "dest" {
 
 ### Required
 
-- `config` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--config))
 - `group_id` (String) The unique identifier for the Group within the Fivetran system.
 - `region` (String) Data processing location. This is where Fivetran will operate and run computation on data.
-- `service` (String) The destination type name within the Fivetran system.
+- `service` (String) The destination type id within the Fivetran system.
 - `time_zone_offset` (String) Determines the time zone for the Fivetran sync schedule.
 
 ### Optional
 
+- `config` (Block, Optional) (see [below for nested schema](#nestedblock--config))
 - `run_setup_tests` (Boolean) Specifies whether the setup tests should be run automatically. The default value is TRUE.
 - `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 - `trust_certificates` (Boolean) Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).
@@ -50,56 +50,360 @@ resource "fivetran_destination" "dest" {
 ### Read-Only
 
 - `id` (String) The unique identifier for the destination within the Fivetran system.
-- `last_updated` (String)
-- `setup_status` (String) Destination setup status
+- `setup_status` (String) Destination setup status.
 
 <a id="nestedblock--config"></a>
 ### Nested Schema for `config`
 
 Optional:
 
-- `auth` (String) The connector authorization settings. Check possible config formats in [create method](/openapi/reference/v1/operation/create_connector/)
-- `auth_type` (String) Authentication type. Default value: `PASSWORD`.
-- `bucket` (String) Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.
-- `catalog` (String) Catalog name
-- `client_id` (String) ClientId of your Azure Data Lake Storage
-- `cluster_id` (String) Cluster ID. Must be populated if `connection_type` is set to `SshTunnel` and `auth_type` is set to `IAM`.
-- `cluster_region` (String) Cluster region. Must be populated if `connection_type` is set to `SshTunnel` and `auth_type` is set to `IAM`.
-- `connection_type` (String) Connection method. Default value: `Directly`.
-- `container_name` (String) Container Name of your Azure Data Lake Storage
-- `create_external_tables` (String) Whether to create external tables
-- `data_set_location` (String) Data location. Datasets will reside in this location.
-- `database` (String) Database name
-- `external_location` (String) External location to store Delta tables. Default value: `""`  (null). By default, the external tables will reside in the `/{schema}/{table}` path, and if you specify an external location in the `{externalLocation}/{schema}/{table}` path.
-- `fivetran_role_arn` (String) ARN of the role which you created with different required policy mentioned in our setup guide
-- `host` (String) Server name
-- `http_path` (String) HTTP path
-- `is_private_key_encrypted` (String) Indicates that a private key is encrypted. The default value: `false`. The field can be specified if authentication type is `KEY_PAIR`.
-- `lakehouse_name` (String, Sensitive) OneLake lakehouse name
-- `passphrase` (String, Sensitive) In case private key is encrypted, you are required to enter passphrase that was used to encrypt the private key. The field can be specified if authentication type is `KEY_PAIR`.
-- `password` (String, Sensitive) Database user password
-- `personal_access_token` (String, Sensitive) Personal access token
-- `port` (Number) Server port number
-- `prefix_path` (String) Prefix path of the bucket for which you have configured access policy. It is not required if access has been granted to entire Bucket in the access policy
-- `private_key` (String, Sensitive) Private access key.  The field should be specified if authentication type is `KEY_PAIR`.
-- `project_id` (String) BigQuery project ID
-- `region` (String) Region of your AWS S3 bucket
-- `role` (String) The group role that you would like to assign this new user to. Supported group roles: ‘Destination Administrator‘, ‘Destination Reviewer‘, ‘Destination Analyst‘, ‘Connector Creator‘, or a custom destination role
-- `role_arn` (String, Sensitive) Role ARN with Redshift permissions. Required if authentication type is `IAM`.
-- `secret_key` (String, Sensitive) Private key of the customer service account. If specified, your service account will be used to process the data instead of the Fivetran-managed service account.
-- `secret_value` (String, Sensitive) Secret Value of your Azure Data Lake Storage
-- `server_host_name` (String) Server name
-- `storage_account_name` (String) Storage Account Name of your Azure Data Lake Storage
-- `tenant_id` (String) TenantId of your Azure Data Lake Storage
-- `tunnel_host` (String) SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
-- `tunnel_port` (String) SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
-- `tunnel_user` (String) SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
-- `user` (String) Database user name
-- `workspace_name` (String, Sensitive) OneLake workspace name
+- `always_encrypted` (Boolean) Field usage depends on `service` value: 
+	- Service `aurora_postgres_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `aurora_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_postgres_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_sql_data_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_sql_database`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_sql_managed_db_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `maria_rds_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `maria_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `mysql_rds_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `mysql_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `panoply`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `periscope_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `postgres_gcp_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `postgres_rds_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `postgres_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `redshift`: Require TLS through Tunnel
+	- Service `sql_server_rds_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `sql_server_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+- `auth` (String) Field usage depends on `service` value: 
+	- Service `snowflake`: Password-based or key-based authentication type
+- `auth_type` (String) Field usage depends on `service` value: 
+	- Service `redshift`: Authentication type. Default value: `PASSWORD`.
+- `bootstrap_servers` (Set of String)
+- `bucket` (String) Field usage depends on `service` value: 
+	- Service `big_query`: Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.
+	- Service `big_query_dts`: Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.
+	- Service `managed_big_query`: Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.
+	- Service `new_s3_datalake`: The name of the bucket to be used as destination
+- `catalog` (String) Field usage depends on `service` value: 
+	- Service `databricks`: Catalog name
+- `client_id` (String) Field usage depends on `service` value: 
+	- Service `adls`: Client id of service principal
+	- Service `onelake`: Client ID of service principal
+- `cloud_provider` (String) Field usage depends on `service` value: 
+	- Service `databricks`: Databricks deployment cloud
+- `cluster_id` (String) Field usage depends on `service` value: 
+	- Service `panoply`: Cluster ID.
+	- Service `periscope_warehouse`: Cluster ID.
+	- Service `redshift`: Cluster ID. Must be populated if `connection_type` is set to `SshTunnel` and `auth_type` is set to `IAM`.
+- `cluster_region` (String) Field usage depends on `service` value: 
+	- Service `panoply`: Cluster region.
+	- Service `periscope_warehouse`: Cluster region.
+	- Service `redshift`: Cluster region. Must be populated if `connection_type` is set to `SshTunnel` and `auth_type` is set to `IAM`.
+- `connection_method` (String)
+- `connection_type` (String) Field usage depends on `service` value: 
+	- Service `adls`: Connection method. Default value: `Directly`.
+	- Service `aurora_postgres_warehouse`: Connection method. Default value: `Directly`.
+	- Service `aurora_warehouse`: Connection method. Default value: `Directly`.
+	- Service `azure_postgres_warehouse`: Connection method. Default value: `Directly`.
+	- Service `azure_sql_data_warehouse`: Connection method. Default value: `Directly`.
+	- Service `azure_sql_database`: Connection method. Default value: `Directly`.
+	- Service `azure_sql_managed_db_warehouse`: Connection method. Default value: `Directly`.
+	- Service `databricks`: Connection method. Default value: `Directly`.
+	- Service `maria_rds_warehouse`: Connection method. Default value: `Directly`.
+	- Service `maria_warehouse`: Connection method. Default value: `Directly`.
+	- Service `mysql_rds_warehouse`: Connection method. Default value: `Directly`.
+	- Service `mysql_warehouse`: Connection method. Default value: `Directly`.
+	- Service `panoply`: Connection method. Default value: `Directly`.
+	- Service `periscope_warehouse`: Connection method. Default value: `Directly`.
+	- Service `postgres_gcp_warehouse`: Connection method. Default value: `Directly`.
+	- Service `postgres_rds_warehouse`: Connection method. Default value: `Directly`.
+	- Service `postgres_warehouse`: Connection method. Default value: `Directly`.
+	- Service `redshift`: Connection method. Default value: `Directly`.
+	- Service `snowflake`: Connection method. Default value: `Directly`.
+	- Service `sql_server_rds_warehouse`: Connection method. Default value: `Directly`.
+	- Service `sql_server_warehouse`: Connection method. Default value: `Directly`.
+- `container_name` (String) Field usage depends on `service` value: 
+	- Service `adls`: Container to store delta table files
+	- Service `onelake`: Workspace name to store delta table files
+- `controller_id` (String)
+- `create_external_tables` (Boolean) Field usage depends on `service` value: 
+	- Service `databricks`: Whether to create external tables
+- `data_format` (String)
+- `data_set_location` (String) Field usage depends on `service` value: 
+	- Service `big_query`: Data location. Datasets will reside in this location.
+	- Service `big_query_dts`: Data location. Datasets will reside in this location.
+	- Service `managed_big_query`: Data location. Datasets will reside in this location.
+- `database` (String) Field usage depends on `service` value: 
+	- Service `aurora_postgres_warehouse`: Database name
+	- Service `aurora_warehouse`: Database name
+	- Service `azure_postgres_warehouse`: Database name
+	- Service `azure_sql_data_warehouse`: Database name
+	- Service `azure_sql_database`: Database name
+	- Service `azure_sql_managed_db_warehouse`: Database name
+	- Service `maria_rds_warehouse`: Database name
+	- Service `maria_warehouse`: Database name
+	- Service `mysql_rds_warehouse`: Database name
+	- Service `mysql_warehouse`: Database name
+	- Service `panoply`: Database name
+	- Service `periscope_warehouse`: Database name
+	- Service `postgres_gcp_warehouse`: Database name
+	- Service `postgres_rds_warehouse`: Database name
+	- Service `postgres_warehouse`: Database name
+	- Service `redshift`: Database name
+	- Service `snowflake`: Database name
+	- Service `sql_server_rds_warehouse`: Database name
+	- Service `sql_server_warehouse`: Database name
+- `enable_remote_execution` (Boolean)
+- `external_location` (String) Field usage depends on `service` value: 
+	- Service `databricks`: External location to store Delta tables. Default value: `""`  (null). By default, the external tables will reside in the `/{schema}/{table}` path, and if you specify an external location in the `{externalLocation}/{schema}/{table}` path.
+- `fivetran_glue_role_arn` (String)
+- `fivetran_msk_role_arn` (String)
+- `fivetran_role_arn` (String) Field usage depends on `service` value: 
+	- Service `new_s3_datalake`: ARN of the role which you created with different required policy mentioned in our setup guide
+- `host` (String) Field usage depends on `service` value: 
+	- Service `aurora_postgres_warehouse`: Server name
+	- Service `aurora_warehouse`: Server name
+	- Service `azure_postgres_warehouse`: Server name
+	- Service `azure_sql_data_warehouse`: Server name
+	- Service `azure_sql_database`: Server name
+	- Service `azure_sql_managed_db_warehouse`: Server name
+	- Service `maria_rds_warehouse`: Server name
+	- Service `maria_warehouse`: Server name
+	- Service `mysql_rds_warehouse`: Server name
+	- Service `mysql_warehouse`: Server name
+	- Service `panoply`: Server name
+	- Service `periscope_warehouse`: Server name
+	- Service `postgres_gcp_warehouse`: Server name
+	- Service `postgres_rds_warehouse`: Server name
+	- Service `postgres_warehouse`: Server name
+	- Service `redshift`: Server name
+	- Service `snowflake`: Server name
+	- Service `sql_server_rds_warehouse`: Server name
+	- Service `sql_server_warehouse`: Server name
+- `http_path` (String) Field usage depends on `service` value: 
+	- Service `databricks`: HTTP path
+- `is_private_key_encrypted` (Boolean) Field usage depends on `service` value: 
+	- Service `snowflake`: Indicates that a private key is encrypted. The default value: `false`. The field can be specified if authentication type is `KEY_PAIR`.
+- `is_private_link_required` (Boolean) Field usage depends on `service` value: 
+	- Service `new_s3_datalake`: We use PrivateLink by default if your s3 bucket is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to s3 bucket over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/databases/connection-options#awsprivatelinkbeta).
+- `is_redshift_serverless` (Boolean) Field usage depends on `service` value: 
+	- Service `redshift`: Is your destination Redshift Serverless
+- `lakehouse_name` (String) Field usage depends on `service` value: 
+	- Service `onelake`: Name of your lakehouse
+- `msk_sts_region` (String)
+- `num_of_partitions` (Number)
+- `passphrase` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `snowflake`: In case private key is encrypted, you are required to enter passphrase that was used to encrypt the private key. The field can be specified if authentication type is `KEY_PAIR`.
+- `password` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `aurora_postgres_warehouse`: Database user password
+	- Service `aurora_warehouse`: Database user password
+	- Service `azure_postgres_warehouse`: Database user password
+	- Service `azure_sql_data_warehouse`: Database user password
+	- Service `azure_sql_database`: Database user password
+	- Service `azure_sql_managed_db_warehouse`: Database user password
+	- Service `maria_rds_warehouse`: Database user password
+	- Service `maria_warehouse`: Database user password
+	- Service `mysql_rds_warehouse`: Database user password
+	- Service `mysql_warehouse`: Database user password
+	- Service `panoply`: Database user password
+	- Service `periscope_warehouse`: Database user password
+	- Service `postgres_gcp_warehouse`: Database user password
+	- Service `postgres_rds_warehouse`: Database user password
+	- Service `postgres_warehouse`: Database user password
+	- Service `redshift`: Database user password. Required if authentication type is `PASSWORD`.
+	- Service `snowflake`: Database user password. The field should be specified if authentication type is `PASSWORD`.
+	- Service `sql_server_rds_warehouse`: Database user password
+	- Service `sql_server_warehouse`: Database user password
+- `personal_access_token` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `databricks`: Personal access token
+- `port` (Number) Field usage depends on `service` value: 
+	- Service `aurora_postgres_warehouse`: Server port number
+	- Service `aurora_warehouse`: Server port number
+	- Service `azure_postgres_warehouse`: Server port number
+	- Service `azure_sql_data_warehouse`: Server port number
+	- Service `azure_sql_database`: Server port number
+	- Service `azure_sql_managed_db_warehouse`: Server port number
+	- Service `databricks`: Server port number
+	- Service `maria_rds_warehouse`: Server port number
+	- Service `maria_warehouse`: Server port number
+	- Service `mysql_rds_warehouse`: Server port number
+	- Service `mysql_warehouse`: Server port number
+	- Service `panoply`: Server port number
+	- Service `periscope_warehouse`: Server port number
+	- Service `postgres_gcp_warehouse`: Server port number
+	- Service `postgres_rds_warehouse`: Server port number
+	- Service `postgres_warehouse`: Server port number
+	- Service `redshift`: Server port number
+	- Service `snowflake`: Server port number
+	- Service `sql_server_rds_warehouse`: Server port number
+	- Service `sql_server_warehouse`: Server port number
+- `prefix_path` (String) Field usage depends on `service` value: 
+	- Service `adls`: path/to/data within the container
+	- Service `new_s3_datalake`: Prefix path of the bucket for which you have configured access policy. It is not required if access has been granted to entire Bucket in the access policy
+	- Service `onelake`: path/to/data within your lakehouse inside the Files directory
+- `private_key` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `snowflake`: Private access key.  The field should be specified if authentication type is `KEY_PAIR`.
+- `project_id` (String) Field usage depends on `service` value: 
+	- Service `big_query`: BigQuery project ID
+- `region` (String) Field usage depends on `service` value: 
+	- Service `new_s3_datalake`: Region of your AWS S3 bucket
+- `registry_name` (String)
+- `registry_sts_region` (String)
+- `replication_factor` (Number)
+- `resource_id` (String) Field usage depends on `service` value: 
+	- Service `aurora_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
+	- Service `azure_sql_data_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
+	- Service `azure_sql_database`: Field to test Self serve Private Link
+	- Service `azure_sql_managed_db_warehouse`: Field to test Self serve Private Link
+	- Service `databricks`: This field is currently being introduced to test the Self-serve Private Link functionality
+	- Service `maria_rds_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
+	- Service `maria_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
+	- Service `mysql_rds_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
+	- Service `mysql_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
+	- Service `panoply`: This field is currently being introduced to test the Self-serve Private Link functionality
+	- Service `periscope_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
+	- Service `redshift`: This field is currently being introduced to test the Self-serve Private Link functionality
+	- Service `snowflake`: This field is currently being introduced to test the Self-serve Private Link functionality
+	- Service `sql_server_rds_warehouse`: Field to test Self serve Private Link
+	- Service `sql_server_warehouse`: Field to test Self serve Private Link
+- `role` (String) Field usage depends on `service` value: 
+	- Service `snowflake`: If not specified, Fivetran will use the user's default role
+- `role_arn` (String) Field usage depends on `service` value: 
+	- Service `redshift`: Role ARN with Redshift permissions. Required if authentication type is `IAM`.
+- `sasl_mechanism` (String)
+- `sasl_plain_key` (String, Sensitive)
+- `sasl_plain_secret` (String, Sensitive)
+- `schema_compatibility` (String)
+- `schema_registry` (String)
+- `schema_registry_api_key` (String, Sensitive)
+- `schema_registry_api_secret` (String, Sensitive)
+- `schema_registry_url` (String)
+- `secret_key` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `big_query`: Private key of the customer service account. If specified, your service account will be used to process the data instead of the Fivetran-managed service account.
+	- Service `big_query_dts`: Private key of the customer service account. If specified, your service account will be used to process the data instead of the Fivetran-managed service account.
+	- Service `managed_big_query`: Private key of the customer service account. If specified, your service account will be used to process the data instead of the Fivetran-managed service account.
+- `secret_value` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `adls`: Secret value for service principal
+	- Service `onelake`: Secret value for service principal
+- `security_protocol` (String)
+- `server_host_name` (String) Field usage depends on `service` value: 
+	- Service `databricks`: Server name
+- `snowflake_cloud` (String)
+- `snowflake_region` (String)
+- `storage_account_name` (String) Field usage depends on `service` value: 
+	- Service `adls`: Storage account for Azure Data Lake Storage Gen2 name
+	- Service `onelake`: Storage account for Azure Data Lake Storage Gen2 name
+- `tenant_id` (String) Field usage depends on `service` value: 
+	- Service `adls`: Tenant ID of service principal
+	- Service `onelake`: Tenant ID of service principal
+- `tunnel_host` (String) Field usage depends on `service` value: 
+	- Service `aurora_postgres_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `aurora_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_postgres_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_sql_data_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_sql_database`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_sql_managed_db_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `maria_rds_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `maria_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `mysql_rds_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `mysql_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `panoply`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `periscope_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `postgres_gcp_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `postgres_rds_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `postgres_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `redshift`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `sql_server_rds_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `sql_server_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+- `tunnel_port` (Number) Field usage depends on `service` value: 
+	- Service `aurora_postgres_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `aurora_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_postgres_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_sql_data_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_sql_database`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_sql_managed_db_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `maria_rds_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `maria_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `mysql_rds_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `mysql_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `panoply`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `periscope_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `postgres_gcp_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `postgres_rds_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `postgres_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `redshift`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `sql_server_rds_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `sql_server_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+- `tunnel_user` (String) Field usage depends on `service` value: 
+	- Service `aurora_postgres_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `aurora_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_postgres_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_sql_data_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_sql_database`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_sql_managed_db_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `maria_rds_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `maria_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `mysql_rds_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `mysql_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `panoply`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `periscope_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `postgres_gcp_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `postgres_rds_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `postgres_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `redshift`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `sql_server_rds_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `sql_server_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+- `user` (String) Field usage depends on `service` value: 
+	- Service `aurora_postgres_warehouse`: Database user name
+	- Service `aurora_warehouse`: Database user name
+	- Service `azure_postgres_warehouse`: Database user name
+	- Service `azure_sql_data_warehouse`: Database user name
+	- Service `azure_sql_database`: Database user name
+	- Service `azure_sql_managed_db_warehouse`: Database user name
+	- Service `maria_rds_warehouse`: Database user name
+	- Service `maria_warehouse`: Database user name
+	- Service `mysql_rds_warehouse`: Database user name
+	- Service `mysql_warehouse`: Database user name
+	- Service `panoply`: Database user name
+	- Service `periscope_warehouse`: Database user name
+	- Service `postgres_gcp_warehouse`: Database user name
+	- Service `postgres_rds_warehouse`: Database user name
+	- Service `postgres_warehouse`: Database user name
+	- Service `redshift`: Database user name
+	- Service `snowflake`: Database user name
+	- Service `sql_server_rds_warehouse`: Database user name
+	- Service `sql_server_warehouse`: Database user name
+- `workspace_name` (String) Field usage depends on `service` value: 
+	- Service `onelake`: Workspace name to store delta table files
 
 Read-Only:
 
-- `public_key` (String) Public key to grant Fivetran SSH access to git repository.
+- `external_id` (String) Field usage depends on `service` value: 
+	- Service `aws_msk_wh`: Fivetran generated External ID
+	- Service `panoply`: Fivetran generated External ID
+	- Service `periscope_warehouse`: Fivetran generated External ID
+	- Service `redshift`: Fivetran generated External ID
+- `public_key` (String) Field usage depends on `service` value: 
+	- Service `aurora_postgres_warehouse`: Public Key
+	- Service `aurora_warehouse`: Public Key
+	- Service `azure_postgres_warehouse`: Public Key
+	- Service `azure_sql_data_warehouse`: Public Key
+	- Service `azure_sql_database`: Public Key
+	- Service `azure_sql_managed_db_warehouse`: Public Key
+	- Service `maria_rds_warehouse`: Public Key
+	- Service `maria_warehouse`: Public Key
+	- Service `mysql_rds_warehouse`: Public Key
+	- Service `mysql_warehouse`: Public Key
+	- Service `panoply`: Public Key
+	- Service `periscope_warehouse`: Public Key
+	- Service `postgres_gcp_warehouse`: Public Key
+	- Service `postgres_rds_warehouse`: Public Key
+	- Service `postgres_warehouse`: Public Key
+	- Service `redshift`: Public Key
+	- Service `sql_server_rds_warehouse`: Public Key
+	- Service `sql_server_warehouse`: Public Key
 
 
 <a id="nestedblock--timeouts"></a>
@@ -107,8 +411,8 @@ Read-Only:
 
 Optional:
 
-- `create` (String)
-- `update` (String)
+- `create` (String) A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+- `update` (String) A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
 
 ## Setup tests
 

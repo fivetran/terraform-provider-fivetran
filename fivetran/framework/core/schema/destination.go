@@ -15,7 +15,7 @@ func DestinationAttributesSchema() core.Schema {
 			"id": {
 				IsId:        true,
 				ValueType:   core.String,
-				Description: "The unique identifier for the connector within the Fivetran system.",
+				Description: "The unique identifier for the destination within the Fivetran system.",
 			},
 			"group_id": {
 				Required:    true,

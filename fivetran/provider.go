@@ -13,9 +13,8 @@ var limit = 1000 // REST API response objects limit per HTTP request
 
 func Provider() *schema.Provider {
 	var resourceMap = map[string]*schema.Resource{
-		"fivetran_group":       resourceGroup(),
-		"fivetran_group_users": resourceGroupUsers(),
-		//"fivetran_destination":               resourceDestination(),
+		"fivetran_group":                     resourceGroup(),
+		"fivetran_group_users":               resourceGroupUsers(),
 		"fivetran_dbt_transformation":        resourceDbtTransformation(),
 		"fivetran_dbt_project":               resourceDbtProject(),
 		"fivetran_webhook":                   resourceWebhook(),
@@ -31,12 +30,11 @@ func Provider() *schema.Provider {
 	}
 
 	var dataSourceMap = map[string]*schema.Resource{
-		"fivetran_users":            dataSourceUsers(),
-		"fivetran_group":            dataSourceGroup(),
-		"fivetran_groups":           dataSourceGroups(),
-		"fivetran_group_connectors": dataSourceGroupConnectors(),
-		"fivetran_group_users":      dataSourceGroupUsers(),
-		//"fivetran_destination":                dataSourceDestination(),
+		"fivetran_users":                      dataSourceUsers(),
+		"fivetran_group":                      dataSourceGroup(),
+		"fivetran_groups":                     dataSourceGroups(),
+		"fivetran_group_connectors":           dataSourceGroupConnectors(),
+		"fivetran_group_users":                dataSourceGroupUsers(),
 		"fivetran_connectors_metadata":        dataSourceConnectorsMetadata(),
 		"fivetran_dbt_transformation":         dataSourceDbtTransformation(),
 		"fivetran_dbt_project":                dataSourceDbtProject(),
