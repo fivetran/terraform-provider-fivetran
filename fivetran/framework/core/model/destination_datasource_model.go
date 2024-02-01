@@ -42,6 +42,10 @@ func (d *DestinationDatasourceModel) SetConfig(value map[string]interface{}) {
 	if d.Service.IsNull() || d.Service.IsUnknown() {
 		panic("Service type is null. Can't handle config without service type.")
 	}
+	// WA for inconsistent BQ response - it returns just "location" instead of "data_set_location"
+	if l, ok := value["location"]; ok {
+		value["data_set_location"] = l
+	}
 	service := d.Service.ValueString()
 	config := d.Config
 	d.Config = getValue(

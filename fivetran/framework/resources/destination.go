@@ -83,7 +83,7 @@ func (r *destination) Create(ctx context.Context, req resource.CreateRequest, re
 		return
 	}
 
-	runSetupTestsPlan := core.GetBoolOrDefault(data.RunSetupTests, false)
+	runSetupTestsPlan := core.GetBoolOrDefault(data.RunSetupTests, true)
 	trustCertificatesPlan := core.GetBoolOrDefault(data.TrustCertificates, false)
 	trustFingerprintsPlan := core.GetBoolOrDefault(data.TrustFingerprints, false)
 
@@ -164,7 +164,7 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
-	runSetupTestsPlan := core.GetBoolOrDefault(plan.RunSetupTests, false)
+	runSetupTestsPlan := core.GetBoolOrDefault(plan.RunSetupTests, true)
 	trustCertificatesPlan := core.GetBoolOrDefault(plan.TrustCertificates, false)
 	trustFingerprintsPlan := core.GetBoolOrDefault(plan.TrustFingerprints, false)
 
