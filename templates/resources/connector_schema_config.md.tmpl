@@ -170,27 +170,4 @@ resource "fivetran_connector_schema_config" "schema" {
 
 ## Import
 
-1. To import an existing `fivetran_connector_schema_config` resource into your Terraform state, you need to get **Fivetran Connector ID** on the **Setup** tab of the connector page in your Fivetran dashboard.
-
-2. Retrieve all connectors in a particular group using the [fivetran_group_connectors data source](/docs/data-sources/group_connectors). To retrieve existing groups, use the [fivetran_groups data source](/docs/data-sources/groups).
-
-3. Define an empty resource in your `.tf` configuration:
-
-```hcl
-resource "fivetran_connector_schema_config" "my_imported_connector_schema_config" {
-
-}
-```
-
-4. Run the `terraform import` command:
-
-```
-terraform import fivetran_connector_schema_config.my_imported_connector_schema_config {your Fivetran Connector ID}
-```
-
-5.  Use the `terraform state show` command to get the values from the state:
-
-```
-terraform state show 'fivetran_connector_schema_config.my_imported_connector_schema_config'
-```
-6. Copy the values and paste them to your `.tf` configuration.
+You don't need to import this resource as it is synthetic (doesn't create new instances in upstream).

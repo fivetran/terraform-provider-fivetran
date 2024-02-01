@@ -12,68 +12,50 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
-func Connector() resource.Resource {
-	return &connector{}
+func Destination() resource.Resource {
+	return &destination{}
 }
 
-type connector struct {
+type destination struct {
 	core.ProviderResource
 }
 
 // Ensure the implementation satisfies the desired interfaces.
-var _ resource.ResourceWithConfigure = &connector{}
-var _ resource.ResourceWithUpgradeState = &connector{}
-var _ resource.ResourceWithImportState = &connector{}
+var _ resource.ResourceWithConfigure = &destination{}
+var _ resource.ResourceWithImportState = &destination{}
+var _ resource.ResourceWithUpgradeState = &destination{}
 
-func (r *connector) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_connector"
+func (r *destination) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_destination"
 }
 
-func (r *connector) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *destination) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Attributes: fivetranSchema.ConnectorAttributesSchema().GetResourceSchema(),
-		Blocks:     fivetranSchema.ConnectorResourceBlocks(ctx),
-		Version:    3,
+		Attributes: fivetranSchema.DestinationAttributesSchema().GetResourceSchema(),
+		Blocks:     fivetranSchema.DestinationResourceBlocks(ctx),
+		Version:    1,
 	}
 }
 
-func (r *connector) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
-}
-
-func (r *connector) UpgradeState(ctx context.Context) map[int64]resource.StateUpgrader {
-
-	v0ConfigTfTypes := model.GetTfTypes(common.GetConfigFieldsMap(), 1)
-
-	v0ConfigTfTypes["servers"] = tftypes.String
-
+func (r *destination) UpgradeState(ctx context.Context) map[int64]resource.StateUpgrader {
 	return map[int64]resource.StateUpgrader{
 		// State upgrade implementation from 0 (prior state version) to 3 (Schema.Version)
 		0: {
 			// Optionally, the PriorSchema field can be defined.
 			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
-				upgradeConnectorState(ctx, req, resp, 0)
-			},
-		},
-		// State upgrade implementation from 1 (prior state version) to 3 (Schema.Version)
-		1: {
-			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
-				upgradeConnectorState(ctx, req, resp, 1)
-			},
-		},
-		// State upgrade implementation from 2 (prior state version) to 3 (Schema.Version)
-		2: {
-			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
-				upgradeConnectorState(ctx, req, resp, 2)
+				upgradeDestinationState(ctx, req, resp, 0)
 			},
 		},
 	}
 }
 
-func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (r *destination) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+}
+
+func (r *destination) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -82,8 +64,7 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 
 		return
 	}
-
-	var data model.ConnectorResourceModel
+	var data model.DestinationResourceModel
 
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
@@ -95,73 +76,39 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 	configMap, err := data.GetConfigMap(true)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Unable to Create Connector Resource.",
-			fmt.Sprintf("%v;", err),
-		)
-
-		return
-	}
-	noConfig := configMap == nil
-	authMap, err := data.GetAuthMap(true)
-
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Unable to Create Connector Resource.",
-			fmt.Sprintf("%v;", err),
-		)
-
-		return
-	}
-	noAuth := authMap == nil
-
-	destinationSchema, err := data.GetDestinatonSchemaForConfig()
-
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Unable to Create Connector Resource.",
+			"Unable to Create Destination Resource.",
 			fmt.Sprintf("%v;", err),
 		)
 
 		return
 	}
 
-	if noConfig {
-		configMap = make(map[string]interface{})
-	}
-	for k, v := range destinationSchema {
-		configMap[k] = v
-	}
-
-	runSetupTestsPlan := core.GetBoolOrDefault(data.RunSetupTests, false)
+	runSetupTestsPlan := core.GetBoolOrDefault(data.RunSetupTests, true)
 	trustCertificatesPlan := core.GetBoolOrDefault(data.TrustCertificates, false)
 	trustFingerprintsPlan := core.GetBoolOrDefault(data.TrustFingerprints, false)
 
-	svc := r.GetClient().NewConnectorCreate().
+	svc := r.GetClient().NewDestinationCreate().
 		Service(data.Service.ValueString()).
 		GroupID(data.GroupId.ValueString()).
+		Region(data.Region.ValueString()).
+		TimeZoneOffset(data.TimeZoneOffset.ValueString()).
 		RunSetupTests(runSetupTestsPlan).
 		TrustCertificates(trustCertificatesPlan).
 		TrustFingerprints(trustFingerprintsPlan).
-		ConfigCustom(&configMap) // on creation we have config always with schema params
-
-	if !noAuth {
-		svc.AuthCustom(&authMap)
-	}
+		ConfigCustom(&configMap)
 
 	response, err := svc.
 		DoCustom(ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Unable to Create Connector Resource.",
+			"Unable to Create Destination Resource.",
 			fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
 		)
 
 		return
 	}
-
-	data.ReadFromCreateResponse(response)
-
+	data.ReadFromResponseWithTests(response)
 	data.RunSetupTests = types.BoolValue(runSetupTestsPlan)
 	data.TrustCertificates = types.BoolValue(trustCertificatesPlan)
 	data.TrustFingerprints = types.BoolValue(trustFingerprintsPlan)
@@ -169,7 +116,7 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *connector) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+func (r *destination) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -179,12 +126,15 @@ func (r *connector) Read(ctx context.Context, req resource.ReadRequest, resp *re
 		return
 	}
 
-	var data model.ConnectorResourceModel
+	var data model.DestinationResourceModel
 
 	// Read Terraform prior state data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
-	response, err := r.GetClient().NewConnectorDetails().ConnectorID(data.Id.ValueString()).DoCustom(ctx)
+	response, err := r.GetClient().
+		NewDestinationDetails().
+		DestinationID(data.Id.ValueString()).
+		DoCustom(ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -196,9 +146,10 @@ func (r *connector) Read(ctx context.Context, req resource.ReadRequest, resp *re
 
 	data.ReadFromResponse(response)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+
 }
 
-func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -208,12 +159,12 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 		return
 	}
 
-	var plan, state model.ConnectorResourceModel
+	var plan, state model.DestinationResourceModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
-	runSetupTestsPlan := core.GetBoolOrDefault(plan.RunSetupTests, false)
+	runSetupTestsPlan := core.GetBoolOrDefault(plan.RunSetupTests, true)
 	trustCertificatesPlan := core.GetBoolOrDefault(plan.TrustCertificates, false)
 	trustFingerprintsPlan := core.GetBoolOrDefault(plan.TrustFingerprints, false)
 
@@ -226,18 +177,7 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 	// but we have to check error just in case
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Unable to Update Connector Resource.",
-			fmt.Sprintf("%v; ", err),
-		)
-	}
-
-	stateAuthMap, err := state.GetAuthMap(false)
-
-	// this is not expected - state should contain only known fields relative to service
-	// but we have to check error just in case
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Unable to Update Connector Resource.",
+			"Unable to Update Destination Resource.",
 			fmt.Sprintf("%v; ", err),
 		)
 	}
@@ -247,72 +187,65 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 	if err != nil {
 		if err != nil {
 			resp.Diagnostics.AddError(
-				"Unable to Update Connector Resource.",
+				"Unable to Update Destination Resource.",
 				fmt.Sprintf("%v; ", err),
 			)
 		}
 	}
 
-	planAuthMap, err := plan.GetAuthMap(false)
+	timeZoneHasChange := !plan.TimeZoneOffset.Equal(state.TimeZoneOffset)
+	regionHasChange := !plan.Region.Equal(state.Region)
 
-	if err != nil {
-		if err != nil {
-			resp.Diagnostics.AddError(
-				"Unable to Update Connector Resource.",
-				fmt.Sprintf("%v; ", err),
-			)
-		}
-	}
+	patch := model.PrepareConfigAuthPatch(stateConfigMap, planConfigMap, plan.Service.ValueString(), common.GetDestinationFieldsMap())
 
-	patch := model.PrepareConfigAuthPatch(stateConfigMap, planConfigMap, plan.Service.ValueString(), common.GetConfigFieldsMap())
-	authPatch := model.PrepareConfigAuthPatch(stateAuthMap, planAuthMap, plan.Service.ValueString(), common.GetAuthFieldsMap())
-
-	if len(patch) > 0 || len(authPatch) > 0 {
-		svc := r.GetClient().NewConnectorModify().
+	if len(patch) > 0 || timeZoneHasChange || regionHasChange {
+		svc := r.GetClient().NewDestinationModify().
 			RunSetupTests(runSetupTestsPlan).
 			TrustCertificates(trustCertificatesPlan).
 			TrustFingerprints(trustFingerprintsPlan).
-			ConnectorID(state.Id.ValueString())
+			TimeZoneOffset(plan.TimeZoneOffset.ValueString()).
+			Region(plan.Region.ValueString()).
+			DestinationID(state.Id.ValueString())
 
 		if len(patch) > 0 {
 			svc.ConfigCustom(&patch)
-		}
-		if len(authPatch) > 0 {
-			svc.AuthCustom(&authPatch)
 		}
 
 		response, err := svc.DoCustom(ctx)
 
 		if err != nil {
 			resp.Diagnostics.AddError(
-				"Unable to Update Connector Resource.",
+				"Unable to Update Destination Resource.",
 				fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
 			)
 			return
 		}
-		plan.ReadFromCreateResponse(response)
+		plan.ReadFromResponseWithTests(response)
 	} else {
 		// If values of testing fields changed we should run tests
 		if runSetupTestsPlan && runSetupTestsPlan != runSetupTestsState ||
 			trustCertificatesPlan && trustCertificatesPlan != trustCertificatesState ||
 			trustFingerprintsPlan && trustFingerprintsPlan != trustFingerprintsState {
 
-			response, err := r.GetClient().NewConnectorSetupTests().ConnectorID(state.Id.ValueString()).DoCustom(ctx)
+			response, err := r.GetClient().NewDestinationSetupTests().DestinationID(state.Id.ValueString()).Do(ctx)
 			if err != nil {
 				resp.Diagnostics.AddError(
-					"Unable to Update Connector Resource.",
+					"Unable to Update Destination Resource.",
 					fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
 				)
 				return
 			}
-			plan.ReadFromCreateResponse(response)
+
+			plan.ReadFromLegacyResponse(response)
+			// there were no changes in config so we can just copy it from state
+			plan.Config = state.Config
 		}
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
-func (r *connector) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (r *destination) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -322,14 +255,14 @@ func (r *connector) Delete(ctx context.Context, req resource.DeleteRequest, resp
 		return
 	}
 
-	var data model.ConnectorResourceModel
+	var data model.DestinationResourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
-	deleteResponse, err := r.GetClient().NewConnectorDelete().ConnectorID(data.Id.ValueString()).Do(ctx)
+	deleteResponse, err := r.GetClient().NewDestinationDelete().DestinationID(data.Id.ValueString()).Do(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Unable to Delete Connector Resource.",
+			"Unable to Delete Destination Resource.",
 			fmt.Sprintf("%v; code: %v; message: %v", err, deleteResponse.Code, deleteResponse.Message),
 		)
 		return

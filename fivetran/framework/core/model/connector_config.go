@@ -2,28 +2,56 @@ package model
 
 import (
 	"fmt"
+	"reflect"
 	"strconv"
 	"strings"
 
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/common"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
-var (
-	configAttrTypes map[string]attr.Type
-)
+func PrepareConfigAuthPatch(state, plan map[string]interface{}, service string, allFields map[string]common.ConfigField) map[string]interface{} {
+	result := map[string]interface{}{}
 
-func getAttrTypes(configFieldsMap map[string]common.ConfigField) map[string]attr.Type {
-	if len(configAttrTypes) == 0 {
-		configAttrTypes = make(map[string]attr.Type)
-		for fn, f := range configFieldsMap {
-			configAttrTypes[fn] = attrTypeFromConfigField(f)
+	for k, v := range plan {
+		// Include ALL fields from plan even if they have the same value as in state just for simplicity
+		result[k] = v
+	}
+
+	// Filter out non nullable fields
+	for k := range state {
+		if _, ok := plan[k]; !ok {
+			if f, ok := allFields[k]; ok {
+				if f.Nullable || f.FieldValueType == common.ObjectList || f.FieldValueType == common.StringList {
+					// If the field is not represented in plan (deleted from config)
+					// And the field is nullable - it should be set to null explicitly
+					result[k] = nil
+				}
+			}
 		}
 	}
-	return configAttrTypes
+
+	for k, pv := range plan {
+		if sv, ok := state[k]; ok {
+			if reflect.DeepEqual(pv, sv) {
+				delete(result, k)
+			}
+		}
+	}
+
+	return result
+}
+
+func getAttrTypes(configFieldsMap map[string]common.ConfigField) map[string]attr.Type {
+	result := make(map[string]attr.Type)
+	for fn, f := range configFieldsMap {
+		result[fn] = attrTypeFromConfigField(f)
+	}
+	return result
 }
 
 func GetTfTypes(configFieldsMap map[string]common.ConfigField, version int) map[string]tftypes.Type {
@@ -32,22 +60,30 @@ func GetTfTypes(configFieldsMap map[string]common.ConfigField, version int) map[
 		if version < 2 && fn == "servers" {
 			newRes[fn] = tftypes.String
 		} else {
-			newRes[fn] = tfTypeFromConfigField(f, version)
+			newRes[fn] = tfTypeFromConfigField(f, version < 3)
 		}
 	}
 	return newRes
 }
 
-func tfTypeFromConfigField(cf common.ConfigField, version int) tftypes.Type {
+func GetTfTypesDestination(configFieldsMap map[string]common.ConfigField, version int) map[string]tftypes.Type {
+	newRes := map[string]tftypes.Type{}
+	for fn, f := range configFieldsMap {
+		newRes[fn] = tfTypeFromConfigField(f, version < 1)
+	}
+	return newRes
+}
+
+func tfTypeFromConfigField(cf common.ConfigField, primitivesAsString bool) tftypes.Type {
 	switch cf.FieldValueType {
 	case common.Boolean:
-		if version < 3 {
+		if primitivesAsString {
 			return tftypes.String
 		} else {
 			return tftypes.Bool
 		}
 	case common.Integer:
-		if version < 3 {
+		if primitivesAsString {
 			return tftypes.String
 		} else {
 			return tftypes.Number
@@ -59,16 +95,16 @@ func tfTypeFromConfigField(cf common.ConfigField, version int) tftypes.Type {
 	case common.Object:
 		subFields := map[string]tftypes.Type{}
 		for fn, f := range cf.ItemFields {
-			subFields[fn] = tfTypeFromConfigField(f, version)
+			subFields[fn] = tfTypeFromConfigField(f, primitivesAsString)
 		}
-		if version < 3 {
+		if primitivesAsString {
 			return tftypes.Set{ElementType: tftypes.Object{AttributeTypes: subFields}}
 		}
 		return tftypes.Object{AttributeTypes: subFields}
 	case common.ObjectList:
 		subFields := map[string]tftypes.Type{}
 		for fn, f := range cf.ItemFields {
-			subFields[fn] = tfTypeFromConfigField(f, version)
+			subFields[fn] = tfTypeFromConfigField(f, primitivesAsString)
 		}
 		return tftypes.Set{ElementType: tftypes.Object{AttributeTypes: subFields}}
 	}
@@ -119,7 +155,15 @@ func getValue(fieldType attr.Type, value, local interface{}, fieldsMap map[strin
 		if value == nil {
 			return types.BoolNull()
 		}
-		return types.BoolValue(value.(bool))
+		if fValue, ok := value.(bool); ok {
+			return types.BoolValue(fValue)
+		}
+		if sValue, ok := value.(string); ok {
+			if sValue == "" {
+				return types.BoolNull()
+			}
+			return types.BoolValue(helpers.StrToBool(sValue))
+		}
 	}
 	if fieldType.Equal(types.Int64Type) {
 		if value == nil {
@@ -250,6 +294,37 @@ func getValueFromAttrValue(av attr.Value, fieldsMap map[string]common.ConfigFiel
 			result = append(result, getValueFromAttrValue(ev, fieldsMap, currentField, service))
 		}
 		return result
+	}
+	return nil
+}
+
+func patchServiceSpecificFields(
+	result map[string]interface{},
+	serviceName string,
+	serviceFields map[string]common.ConfigField,
+	allFields map[string]common.ConfigField) error {
+	replacements := map[string]interface{}{}
+	for rf := range result {
+		if _, ok := serviceFields[rf]; !ok {
+			// should lookup for service_field_name pattern
+			serviceSpecificName := rf + "_" + serviceName
+			if _, ok := serviceFields[serviceSpecificName]; ok {
+				// field service_field_name found: prompt this field to user
+				return fmt.Errorf("field `%v` isn't expected for service `%v`, try use `%v` instead", rf, serviceName, serviceSpecificName)
+			}
+		}
+		if field, ok := allFields[rf]; ok {
+			value := result[rf]
+			if field.ApiField != "" && field.ApiField != rf {
+				delete(result, rf)
+				replacements[field.ApiField] = value
+			}
+		}
+	}
+	if len(replacements) > 0 {
+		for k, v := range replacements {
+			result[k] = v
+		}
 	}
 	return nil
 }

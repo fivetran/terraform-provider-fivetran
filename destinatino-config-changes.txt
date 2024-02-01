@@ -1,0 +1,67 @@
+- Added field `fivetran_connector.config.private_key` for services: `snowflake`.
+- Added field `fivetran_connector.config.client_id` for services: `adls`, `onelake`.
+- Added field `fivetran_connector.config.schema_registry_api_secret` for services: `aiven_kafka_wh`, `aws_msk_wh`, `confluent_cloud_wh`.
+- Added field `fivetran_connector.config.registry_name` for services: `aws_msk_wh`.
+- Added field `fivetran_connector.config.controller_id` for services: `databricks`, `snowflake`.
+- Added field `fivetran_connector.config.project_id` for services: `big_query`, `big_query_dts`, `managed_big_query`.
+- Added field `fivetran_connector.config.data_set_location` for services: `big_query`, `big_query_dts`, `managed_big_query`.
+- Added field `fivetran_connector.config.is_private_link_required` for services: `new_s3_datalake`.
+- Added field `fivetran_connector.config.schema_registry_api_key` for services: `aiven_kafka_wh`, `aws_msk_wh`, `confluent_cloud_wh`.
+- Added field `fivetran_connector.config.sasl_plain_key` for services: `aws_msk_wh`, `confluent_cloud_wh`, `aiven_kafka_wh`.
+- Added field `fivetran_connector.config.password` for services: `maria_rds_warehouse`, `maria_warehouse`, `mysql_warehouse`, `postgres_warehouse`, `redshift`, `sql_server_warehouse`, `azure_postgres_warehouse`, `azure_sql_database`, `azure_sql_managed_db_warehouse`, `panoply`, `periscope_warehouse`, `postgres_rds_warehouse`, `aurora_warehouse`, `mysql_rds_warehouse`, `snowflake`, `aurora_postgres_warehouse`, `azure_sql_data_warehouse`, `postgres_gcp_warehouse`, `sql_server_rds_warehouse`.
+- Added field `fivetran_connector.config.port` for services: `aurora_warehouse`, `azure_sql_data_warehouse`, `postgres_gcp_warehouse`, `redshift`, `aurora_postgres_warehouse`, `databricks`, `postgres_rds_warehouse`, `postgres_warehouse`, `snowflake`, `sql_server_rds_warehouse`, `sql_server_warehouse`, `azure_postgres_warehouse`, `azure_sql_managed_db_warehouse`, `mysql_warehouse`, `panoply`, `periscope_warehouse`, `azure_sql_database`, `maria_rds_warehouse`, `maria_warehouse`, `mysql_rds_warehouse`.
+- Added field `fivetran_connector.config.tunnel_host` for services: `mysql_rds_warehouse`, `mysql_warehouse`, `periscope_warehouse`, `redshift`, `azure_sql_data_warehouse`, `azure_sql_database`, `maria_rds_warehouse`, `maria_warehouse`, `sql_server_warehouse`, `panoply`, `postgres_gcp_warehouse`, `postgres_rds_warehouse`, `sql_server_rds_warehouse`, `aurora_postgres_warehouse`, `aurora_warehouse`, `azure_postgres_warehouse`, `azure_sql_managed_db_warehouse`, `postgres_warehouse`.
+- Added field `fivetran_connector.config.create_external_tables` for services: `databricks`.
+- Added field `fivetran_connector.config.container_name` for services: `adls`, `onelake`.
+- Added field `fivetran_connector.config.schema_compatibility` for services: `aws_msk_wh`.
+- Added field `fivetran_connector.config.passphrase` for services: `snowflake`.
+- Added field `fivetran_connector.config.auth` for services: `snowflake`.
+- Added field `fivetran_connector.config.msk_sts_region` for services: `aws_msk_wh`.
+- Added field `fivetran_connector.config.connection_type` for services: `postgres_rds_warehouse`, `snowflake`, `sql_server_warehouse`, `aurora_warehouse`, `azure_postgres_warehouse`, `databricks`, `postgres_gcp_warehouse`, `postgres_warehouse`, `azure_sql_data_warehouse`, `azure_sql_database`, `mysql_rds_warehouse`, `panoply`, `redshift`, `adls`, `aurora_postgres_warehouse`, `maria_warehouse`, `periscope_warehouse`, `sql_server_rds_warehouse`, `azure_sql_managed_db_warehouse`, `maria_rds_warehouse`, `mysql_warehouse`.
+- Added field `fivetran_connector.config.tenant_id` for services: `adls`, `onelake`.
+- Added field `fivetran_connector.config.schema_registry` for services: `aiven_kafka_wh`, `aws_msk_wh`, `confluent_cloud_wh`.
+- Added field `fivetran_connector.config.tunnel_port` for services: `azure_postgres_warehouse`, `azure_sql_database`, `maria_rds_warehouse`, `mysql_rds_warehouse`, `postgres_gcp_warehouse`, `aurora_postgres_warehouse`, `aurora_warehouse`, `mysql_warehouse`, `periscope_warehouse`, `postgres_warehouse`, `azure_sql_managed_db_warehouse`, `panoply`, `sql_server_warehouse`, `azure_sql_data_warehouse`, `maria_warehouse`, `postgres_rds_warehouse`, `redshift`, `sql_server_rds_warehouse`.
+- Added field `fivetran_connector.config.database` for services: `maria_rds_warehouse`, `mysql_rds_warehouse`, `sql_server_rds_warehouse`, `azure_sql_database`, `azure_sql_managed_db_warehouse`, `maria_warehouse`, `mysql_warehouse`, `periscope_warehouse`, `redshift`, `aurora_postgres_warehouse`, `azure_postgres_warehouse`, `panoply`, `postgres_gcp_warehouse`, `snowflake`, `sql_server_warehouse`, `aurora_warehouse`, `azure_sql_data_warehouse`, `postgres_rds_warehouse`, `postgres_warehouse`.
+- Added field `fivetran_connector.config.registry_sts_region` for services: `aws_msk_wh`.
+- Added field `fivetran_connector.config.bucket` for services: `big_query`, `big_query_dts`, `managed_big_query`, `new_s3_datalake`.
+- Added field `fivetran_connector.config.cloud_provider` for services: `databricks`.
+- Added field `fivetran_connector.config.role` for services: `snowflake`.
+- Added field `fivetran_connector.config.snowflake_cloud` for services: `snowflake`.
+- Added field `fivetran_connector.config.storage_account_name` for services: `onelake`, `adls`.
+- Added field `fivetran_connector.config.sasl_mechanism` for services: `aiven_kafka_wh`, `aws_msk_wh`, `confluent_cloud_wh`.
+- Added field `fivetran_connector.config.schema_registry_url` for services: `confluent_cloud_wh`, `aiven_kafka_wh`, `aws_msk_wh`.
+- Added field `fivetran_connector.config.lakehouse_name` for services: `onelake`.
+- Added field `fivetran_connector.config.secret_value` for services: `adls`, `onelake`.
+- Added field `fivetran_connector.config.tunnel_user` for services: `mysql_warehouse`, `periscope_warehouse`, `azure_sql_database`, `maria_rds_warehouse`, `azure_sql_managed_db_warehouse`, `mysql_rds_warehouse`, `postgres_warehouse`, `aurora_warehouse`, `azure_sql_data_warehouse`, `sql_server_warehouse`, `maria_warehouse`, `postgres_gcp_warehouse`, `panoply`, `postgres_rds_warehouse`, `redshift`, `sql_server_rds_warehouse`, `aurora_postgres_warehouse`, `azure_postgres_warehouse`.
+- Added field `fivetran_connector.config.external_id` for services: `aws_msk_wh`, `panoply`, `periscope_warehouse`, `redshift`.
+- Added field `fivetran_connector.config.num_of_partitions` for services: `aiven_kafka_wh`, `aws_msk_wh`, `confluent_cloud_wh`.
+- Added field `fivetran_connector.config.user` for services: `aurora_warehouse`, `azure_sql_managed_db_warehouse`, `postgres_warehouse`, `redshift`, `sql_server_rds_warehouse`, `azure_postgres_warehouse`, `azure_sql_data_warehouse`, `maria_rds_warehouse`, `periscope_warehouse`, `panoply`, `mysql_warehouse`, `postgres_gcp_warehouse`, `postgres_rds_warehouse`, `snowflake`, `aurora_postgres_warehouse`, `azure_sql_database`, `maria_warehouse`, `mysql_rds_warehouse`, `sql_server_warehouse`.
+- Added field `fivetran_connector.config.public_key` for services: `sql_server_rds_warehouse`, `aurora_warehouse`, `mysql_warehouse`, `redshift`, `panoply`, `postgres_gcp_warehouse`, `postgres_warehouse`, `azure_sql_data_warehouse`, `azure_sql_managed_db_warehouse`, `maria_warehouse`, `sql_server_warehouse`, `aurora_postgres_warehouse`, `azure_sql_database`, `maria_rds_warehouse`, `postgres_rds_warehouse`, `azure_postgres_warehouse`, `mysql_rds_warehouse`, `periscope_warehouse`.
+- Added field `fivetran_connector.config.fivetran_msk_role_arn` for services: `aws_msk_wh`.
+- Added field `fivetran_connector.config.role_arn` for services: `panoply`, `periscope_warehouse`, `redshift`.
+- Added field `fivetran_connector.config.is_redshift_serverless` for services: `redshift`.
+- Added field `fivetran_connector.config.snowflake_region` for services: `snowflake`.
+- Added field `fivetran_connector.config.region` for services: `new_s3_datalake`.
+- Added field `fivetran_connector.config.connection_method` for services: `aiven_kafka_wh`, `aws_msk_wh`, `confluent_cloud_wh`.
+- Added field `fivetran_connector.config.security_protocol` for services: `aiven_kafka_wh`, `aws_msk_wh`, `confluent_cloud_wh`.
+- Added field `fivetran_connector.config.server_host_name` for services: `databricks`.
+- Added field `fivetran_connector.config.enable_remote_execution` for services: `databricks`, `snowflake`.
+- Added field `fivetran_connector.config.cluster_region` for services: `periscope_warehouse`, `redshift`, `panoply`.
+- Added field `fivetran_connector.config.data_format` for services: `aiven_kafka_wh`, `aws_msk_wh`, `confluent_cloud_wh`.
+- Added field `fivetran_connector.config.catalog` for services: `databricks`.
+- Added field `fivetran_connector.config.external_location` for services: `databricks`.
+- Added field `fivetran_connector.config.cluster_id` for services: `panoply`, `periscope_warehouse`, `redshift`.
+- Added field `fivetran_connector.config.bootstrap_servers` for services: `aiven_kafka_wh`, `aws_msk_wh`, `confluent_cloud_wh`.
+- Added field `fivetran_connector.config.always_encrypted` for services: `postgres_gcp_warehouse`, `redshift`, `azure_postgres_warehouse`, `azure_sql_database`, `maria_rds_warehouse`, `maria_warehouse`, `panoply`, `sql_server_rds_warehouse`, `sql_server_warehouse`, `aurora_postgres_warehouse`, `aurora_warehouse`, `azure_sql_data_warehouse`, `azure_sql_managed_db_warehouse`, `mysql_rds_warehouse`, `mysql_warehouse`, `postgres_rds_warehouse`, `postgres_warehouse`, `periscope_warehouse`.
+- Added field `fivetran_connector.config.personal_access_token` for services: `databricks`.
+- Added field `fivetran_connector.config.fivetran_role_arn` for services: `new_s3_datalake`.
+- Added field `fivetran_connector.config.is_private_key_encrypted` for services: `snowflake`.
+- Added field `fivetran_connector.config.replication_factor` for services: `confluent_cloud_wh`, `aiven_kafka_wh`, `aws_msk_wh`.
+- Added field `fivetran_connector.config.sasl_plain_secret` for services: `confluent_cloud_wh`, `aiven_kafka_wh`, `aws_msk_wh`.
+- Added field `fivetran_connector.config.resource_id` for services: `azure_sql_managed_db_warehouse`, `maria_rds_warehouse`, `mysql_rds_warehouse`, `postgres_gcp_warehouse`, `postgres_rds_warehouse`, `aurora_warehouse`, `azure_postgres_warehouse`, `azure_sql_data_warehouse`, `redshift`, `snowflake`, `aurora_postgres_warehouse`, `panoply`, `periscope_warehouse`, `azure_sql_database`, `postgres_warehouse`, `sql_server_warehouse`, `sql_server_rds_warehouse`, `databricks`, `maria_warehouse`, `mysql_warehouse`.
+- Added field `fivetran_connector.config.secret_key` for services: `big_query`, `big_query_dts`, `managed_big_query`.
+- Added field `fivetran_connector.config.auth_type` for services: `panoply`, `periscope_warehouse`, `redshift`.
+- Added field `fivetran_connector.config.prefix_path` for services: `onelake`, `adls`, `new_s3_datalake`.
+- Added field `fivetran_connector.config.host` for services: `panoply`, `sql_server_warehouse`, `periscope_warehouse`, `redshift`, `aurora_warehouse`, `azure_sql_data_warehouse`, `azure_sql_managed_db_warehouse`, `maria_warehouse`, `mysql_rds_warehouse`, `postgres_warehouse`, `snowflake`, `sql_server_rds_warehouse`, `azure_postgres_warehouse`, `azure_sql_database`, `maria_rds_warehouse`, `postgres_gcp_warehouse`, `postgres_rds_warehouse`, `aurora_postgres_warehouse`, `mysql_warehouse`.
+- Added field `fivetran_connector.config.fivetran_glue_role_arn` for services: `aws_msk_wh`.
+- Added field `fivetran_connector.config.http_path` for services: `databricks`.

@@ -17,7 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-const Version = "1.1.11" // Current provider version
+const Version = "1.1.12" // Current provider version
 
 type fivetranProvider struct {
 	mockClient httputils.HttpClient
@@ -32,6 +32,7 @@ type fivetranProviderModel struct {
 func FivetranProvider() provider.Provider {
 	common.LoadConfigFieldsMap()
 	common.LoadAuthFieldsMap()
+	common.LocaDestinationFieldsMap()
 	return &fivetranProvider{mockClient: nil}
 }
 
@@ -39,6 +40,7 @@ func FivetranProvider() provider.Provider {
 func FivetranProviderMock(client httputils.HttpClient) provider.Provider {
 	common.LoadConfigFieldsMap()
 	common.LoadAuthFieldsMap()
+	common.LocaDestinationFieldsMap()
 	return &fivetranProvider{mockClient: client}
 }
 
@@ -99,6 +101,7 @@ func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Reso
 		resources.Connector,
 		resources.ConnectorSchema,
 		resources.ConnectorSchedule,
+		resources.Destination,
 	}
 }
 
@@ -108,5 +111,6 @@ func (p *fivetranProvider) DataSources(ctx context.Context) []func() datasource.
 		datasources.GroupSshKey,
 		datasources.GroupServiceAccount,
 		datasources.Connector,
+		datasources.Destination,
 	}
 }

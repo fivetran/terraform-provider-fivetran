@@ -151,7 +151,7 @@ func setupMockClientDestinationConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, config, "workspace_name", "workspace_name")
 			assertKeyExistsAndHasValue(t, config, "lakehouse_name", "lakehouse_name")
 
-			assertKeyExistsAndHasValue(t, config, "tunnel_port", "123")
+			assertKeyExistsAndHasValue(t, config, "tunnel_port", float64(123))
 
 			testDestinationData = createMapFromJsonString(t, destinationMappingResponse)
 			return fivetranSuccessResponse(t, req, http.StatusCreated, "Success", testDestinationData), nil
@@ -226,7 +226,7 @@ func TestResourceDestinationMappingMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, destinationMappingGetHandler.Interactions, 1)
+				assertEqual(t, destinationMappingGetHandler.Interactions, 0)
 				assertEqual(t, destinationMappingPostHandler.Interactions, 1)
 				assertNotEmpty(t, testDestinationData)
 				return nil
@@ -403,12 +403,12 @@ func TestResourceDestinationMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_certificates", "true"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_fingerprints", "true"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "run_setup_tests", "false"),
-			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.0.host", "terraform-test.us-east-1.rds.amazonaws.com"),
-			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.0.port", "5432"),
-			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.0.user", "postgres"),
-			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.0.password", "password"),
-			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.0.database", "fivetran"),
-			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.0.connection_type", "Directly"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.host", "terraform-test.us-east-1.rds.amazonaws.com"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.port", "5432"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.user", "postgres"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.password", "password"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.database", "fivetran"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.connection_type", "Directly"),
 		),
 	}
 
@@ -444,12 +444,12 @@ func TestResourceDestinationMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_certificates", "true"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_fingerprints", "true"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "run_setup_tests", "false"),
-			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.0.host", "test.host"),
-			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.0.port", "5434"),
-			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.0.user", "postgres"),
-			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.0.password", "password123"),
-			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.0.database", "fivetran"),
-			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.0.connection_type", "Directly"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.host", "test.host"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.port", "5434"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.user", "postgres"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.password", "password123"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.database", "fivetran"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.connection_type", "Directly"),
 		),
 	}
 

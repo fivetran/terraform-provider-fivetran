@@ -20,20 +20,30 @@ const ARRAY_FIELD = "array"
 const STRING_FIELD = "string"
 
 const SCHEMAS_PATH = "components.schemas."
-const PROPERTIES_PATH = "_config_V1.properties.config.properties"
-const AUTH_PROPERTIES_PATH = "_config_V1.properties.auth.properties"
-const SERVICES_PATH = "components.schemas.NewConnectorRequestV1.discriminator.mapping"
 
 func main() {
 	fmt.Println("Reading OAS...")
 	schemaContainer := getSchemaJson()
-	services := updateServices(schemaContainer)
+
+	services := updateServices(
+		schemaContainer,
+		"components.schemas.NewConnectorRequestV1.discriminator.mapping",
+		"services.txt",
+		"services-changelog.txt",
+		"services-new.txt")
+
+	destinationServices := updateServices(
+		schemaContainer,
+		"components.schemas.NewDestinationRequest.discriminator.mapping",
+		"destination-services.txt",
+		"destination-services-changelog.txt",
+		"destination-services-new.txt")
 
 	fmt.Println("Updating config fields")
 
 	updateFields(services, schemaContainer,
 		"fivetran/common/fields.json",
-		PROPERTIES_PATH,
+		"_config_V1.properties.config.properties",
 		"fivetran/common/fields-updated.json",
 		"config-changes.txt",
 	)
@@ -42,10 +52,18 @@ func main() {
 
 	updateFields(services, schemaContainer,
 		"fivetran/common/auth-fields.json",
-		AUTH_PROPERTIES_PATH,
+		"_config_V1.properties.auth.properties",
 		"fivetran/common/auth-fields-updated.json",
 		"auth-changes.txt",
 	)
+
+	fmt.Println("Updating Destinations config fields")
+
+	updateFields(destinationServices, schemaContainer,
+		"fivetran/common/destination-fields.json",
+		"_config_V1.properties.config.properties",
+		"fivetran/common/destination-fields-updated.json",
+		"destinatino-config-changes.txt")
 
 	fmt.Println("Done!")
 }
@@ -142,15 +160,15 @@ func readLines(fileName string) (map[string]bool, error) {
 	return result, nil
 }
 
-func updateServices(schemaContainer *gabs.Container) []string {
-	servicesOld, err := readLines("services.txt")
+func updateServices(schemaContainer *gabs.Container, servicesPath, servicesFile, changelogFile, newServicesFile string) []string {
+	servicesOld, err := readLines(servicesFile)
 
 	if err != nil {
 		fmt.Println("Failed to read existing services...")
 		log.Fatal(err)
 	}
 
-	services := getAvailableServiceIds(schemaContainer)
+	services := getAvailableServiceIds(schemaContainer, servicesPath)
 
 	newServices := make([]string, 0)
 
@@ -160,13 +178,13 @@ func updateServices(schemaContainer *gabs.Container) []string {
 		}
 	}
 
-	err = os.WriteFile("services-changelog.txt", []byte(strings.Join(newServices, "\n")), 0644)
+	err = os.WriteFile(changelogFile, []byte(strings.Join(newServices, "\n")), 0644)
 	if err != nil {
 		fmt.Println("Failed to save services changelog...")
 		log.Fatal(err)
 	}
 
-	err = os.WriteFile("services-new.txt", []byte(strings.Join(services, "\n")), 0644)
+	err = os.WriteFile(newServicesFile, []byte(strings.Join(services, "\n")), 0644)
 	if err != nil {
 		fmt.Println("Failed to save services list...")
 		log.Fatal(err)
@@ -479,10 +497,10 @@ func getSchemaJson() *gabs.Container {
 	return shemaJson
 }
 
-func getAvailableServiceIds(schemaContainer *gabs.Container) []string {
+func getAvailableServiceIds(schemaContainer *gabs.Container, servicesPath string) []string {
 	services := []string{}
 
-	fileMap := schemaContainer.Path(SERVICES_PATH).ChildrenMap()
+	fileMap := schemaContainer.Path(servicesPath).ChildrenMap()
 
 	for serviceKey := range fileMap {
 		services = append(services, serviceKey)

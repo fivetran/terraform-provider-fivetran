@@ -163,59 +163,12 @@ func (d *ConnectorResourceModel) GetAuthMap(nullOnNull bool) (map[string]interfa
 	return result, err
 }
 
-func patchServiceSpecificFields(
-	result map[string]interface{},
-	serviceName string,
-	serviceFields map[string]common.ConfigField,
-	allFields map[string]common.ConfigField) error {
-	replacements := map[string]interface{}{}
-	for rf := range result {
-		if _, ok := serviceFields[rf]; !ok {
-			// should lookup for service_field_name pattern
-			serviceSpecificName := rf + "_" + serviceName
-			if _, ok := serviceFields[serviceSpecificName]; ok {
-				// field service_field_name found: prompt this field to user
-				return fmt.Errorf("field `%v` isn't expected for service `%v`, try use `%v` instead", rf, serviceName, serviceSpecificName)
-			}
-		}
-		if field, ok := allFields[rf]; ok {
-			value := result[rf]
-			if field.ApiField != "" && field.ApiField != rf {
-				delete(result, rf)
-				replacements[field.ApiField] = value
-			}
-		}
-	}
-	if len(replacements) > 0 {
-		for k, v := range replacements {
-			result[k] = v
-		}
-	}
-	return nil
-}
-
 func (d *ConnectorResourceModel) GetDestinatonSchemaForConfig() (map[string]interface{}, error) {
 	return getDestinatonSchemaForConfig(d.Service,
 		d.DestinationSchema.Attributes()["name"],
 		d.DestinationSchema.Attributes()["table"],
 		d.DestinationSchema.Attributes()["prefix"],
 	)
-}
-
-type ConnectorModelContainer struct {
-	Id          string
-	Name        string
-	ConnectedBy string
-	CreatedAt   string
-	GroupId     string
-	Service     string
-	Schema      string
-
-	Config map[string]interface{}
-
-	RunSetupTests     bool
-	TrustCertificates bool
-	TrustFingerprints bool
 }
 
 func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer) {
@@ -255,6 +208,22 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
 		common.GetConfigFieldsMap(),
 		nil,
 		c.Service).(basetypes.ObjectValue)
+}
+
+type ConnectorModelContainer struct {
+	Id          string
+	Name        string
+	ConnectedBy string
+	CreatedAt   string
+	GroupId     string
+	Service     string
+	Schema      string
+
+	Config map[string]interface{}
+
+	RunSetupTests     bool
+	TrustCertificates bool
+	TrustFingerprints bool
 }
 
 func (c *ConnectorModelContainer) ReadFromResponseData(data connectors.DetailsResponseDataCommon, config map[string]interface{}) {
@@ -302,29 +271,6 @@ func getDestinatonSchemaForConfig(serviceId, nameAttr, tableAttr, prefixAttr att
 		}
 		return result, nil
 	}
-}
-
-func PrepareConfigAuthPatch(state, plan map[string]interface{}, service string, allFields map[string]common.ConfigField) map[string]interface{} {
-	result := map[string]interface{}{}
-
-	for k, v := range plan {
-		// Include ALL fields from plan even if they have the same value as in state just for simplicity
-		result[k] = v
-	}
-
-	// Filter out non nullable fields
-	for k := range state {
-		if _, ok := plan[k]; !ok {
-			if f, ok := allFields[k]; ok {
-				if f.Nullable || f.FieldValueType == common.ObjectList || f.FieldValueType == common.StringList {
-					// If the field is not represented in plan (deleted from config)
-					// And the field is nullable - it should be set to null explicitly
-					result[k] = nil
-				}
-			}
-		}
-	}
-	return result
 }
 
 func getDestinationSchemaValue(service, schema string) types.Object {
