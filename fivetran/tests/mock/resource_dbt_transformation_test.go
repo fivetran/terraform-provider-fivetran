@@ -18,7 +18,7 @@ var (
 )
 
 func onPostTranformation(t *testing.T, req *http.Request) (*http.Response, error) {
-	assertEmpty(t, userData)
+	assertEmpty(t, transformationData)
 
 	body := requestBodyToJson(t, req)
 

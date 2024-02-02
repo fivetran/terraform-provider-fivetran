@@ -1,12 +1,13 @@
-package mock
+package resources_test
 
 import (
 	"net/http"
 	"testing"
 
 	"github.com/fivetran/go-fivetran/tests/mock"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 var (
@@ -30,12 +31,12 @@ func onTestWebhook(t *testing.T, req *http.Request) (*http.Response, error) {
 
 	webhookData["data"] = setupTests
 
-	response := fivetranSuccessResponse(t, req, http.StatusOK, "Setup tests have been completed", webhookData)
+	response := tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Setup tests have been completed", webhookData)
 	return response, nil
 }
 
 func setupMockClientWebhookResource(t *testing.T) {
-	mockClient.Reset()
+	tfmock.MockClient().Reset()
 	webhookResponse :=
 		`{
         "id": "webhook_id",
@@ -69,33 +70,33 @@ func setupMockClientWebhookResource(t *testing.T) {
         "created_by": "_airworthy"
     }`
 
-	webhookPostHandler = mockClient.When(http.MethodPost, "/v1/webhooks/account").ThenCall(
+	webhookPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/webhooks/account").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			webhookData = createMapFromJsonString(t, webhookResponse)
-			return fivetranSuccessResponse(t, req, http.StatusOK, "Account webhook has been created", webhookData), nil
+			webhookData = tfmock.CreateMapFromJsonString(t, webhookResponse)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Account webhook has been created", webhookData), nil
 		},
 	)
 
-	mockClient.When(http.MethodGet, "/v1/webhooks/webhook_id").ThenCall(
+	tfmock.MockClient().When(http.MethodGet, "/v1/webhooks/webhook_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			return fivetranSuccessResponse(t, req, http.StatusOK, "", webhookData), nil
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "", webhookData), nil
 		},
 	)
 
-	webhookPatchHandler = mockClient.When(http.MethodPatch, "/v1/webhooks/webhook_id").ThenCall(
+	webhookPatchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/webhooks/webhook_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			webhookData = createMapFromJsonString(t, webhookUpdatedResponse)
-			return fivetranSuccessResponse(t, req, http.StatusOK, "Webhook has been updated", webhookData), nil
+			webhookData = tfmock.CreateMapFromJsonString(t, webhookUpdatedResponse)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Webhook has been updated", webhookData), nil
 		},
 	)
 
-	webhookDeleteHandler = mockClient.When(http.MethodDelete, "/v1/webhooks/webhook_id").ThenCall(
+	webhookDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/webhooks/webhook_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			return fivetranSuccessResponse(t, req, 200, "Webhook with id 'webhook_id' has been deleted", nil), nil
+			return tfmock.FivetranSuccessResponse(t, req, 200, "Webhook with id 'webhook_id' has been deleted", nil), nil
 		},
 	)
 
-	webhookTestHandler = mockClient.When(http.MethodPost, "/v1/webhooks/webhook_id/test").ThenCall(
+	webhookTestHandler = tfmock.MockClient().When(http.MethodPost, "/v1/webhooks/webhook_id/test").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			return onTestWebhook(t, req)
 		},
@@ -119,7 +120,7 @@ func TestResourceWebhookMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, webhookPostHandler.Interactions, 1)
+				tfmock.AssertEqual(t, webhookPostHandler.Interactions, 1)
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "type", "account"),
@@ -147,7 +148,7 @@ func TestResourceWebhookMock(t *testing.T) {
             }`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, webhookPatchHandler.Interactions, 1)
+				tfmock.AssertEqual(t, webhookPatchHandler.Interactions, 1)
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "type", "account"),
@@ -176,7 +177,7 @@ func TestResourceWebhookMock(t *testing.T) {
             }`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, webhookTestHandler.Interactions, 3)
+				tfmock.AssertEqual(t, webhookTestHandler.Interactions, 3)
 				return nil
 			},
 		),
@@ -188,9 +189,9 @@ func TestResourceWebhookMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientWebhookResource(t)
 			},
-			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
-				assertEqual(t, webhookDeleteHandler.Interactions, 1)
+				tfmock.AssertEqual(t, webhookDeleteHandler.Interactions, 1)
 				return nil
 			},
 
