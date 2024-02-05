@@ -19,19 +19,26 @@ type ConnectorSchedule struct {
 func (d *ConnectorSchedule) ReadFromResponse(response connectors.DetailsWithCustomConfigNoTestsResponse) {
 	d.Id = types.StringValue(response.Data.ID)
 	d.ConnectorId = types.StringValue(response.Data.ID)
-	d.DailySyncTime = types.StringValue(response.Data.DailySyncTime)
+	d.SyncFrequency = types.StringValue(helpers.IntPointerToStr(response.Data.SyncFrequency))
 	d.PauseAfterTrial = types.StringValue(helpers.BoolPointerToStr(response.Data.PauseAfterTrial))
 	d.Paused = types.StringValue(helpers.BoolPointerToStr(response.Data.Paused))
-	d.SyncFrequency = types.StringValue(helpers.IntPointerToStr(response.Data.SyncFrequency))
 	d.ScheduleType = types.StringValue(response.Data.ScheduleType)
+
+	if response.Data.SyncFrequency != nil && *response.Data.SyncFrequency == 1440 {
+		d.DailySyncTime = types.StringValue(response.Data.DailySyncTime)
+	}
 }
 
 func (d *ConnectorSchedule) ReadFromUpdateResponse(response connectors.DetailsWithCustomConfigResponse) {
 	d.Id = types.StringValue(response.Data.ID)
 	d.ConnectorId = types.StringValue(response.Data.ID)
-	d.DailySyncTime = types.StringValue(response.Data.DailySyncTime)
+
 	d.PauseAfterTrial = types.StringValue(helpers.BoolPointerToStr(response.Data.PauseAfterTrial))
 	d.Paused = types.StringValue(helpers.BoolPointerToStr(response.Data.Paused))
 	d.SyncFrequency = types.StringValue(helpers.IntPointerToStr(response.Data.SyncFrequency))
 	d.ScheduleType = types.StringValue(response.Data.ScheduleType)
+
+	if response.Data.SyncFrequency != nil && *response.Data.SyncFrequency == 1440 {
+		d.DailySyncTime = types.StringValue(response.Data.DailySyncTime)
+	}
 }

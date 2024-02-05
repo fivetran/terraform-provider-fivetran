@@ -143,6 +143,9 @@ func (r *connectorSchedule) Update(ctx context.Context, req resource.UpdateReque
 
 	if !plan.SyncFrequency.Equal(state.SyncFrequency) {
 		svc.SyncFrequency(helpers.StrToInt(plan.SyncFrequency.ValueString()))
+		if !plan.DailySyncTime.IsUnknown() && plan.SyncFrequency.ValueString() == "1440" {
+			svc.DailySyncTime(plan.DailySyncTime.ValueString())
+		}
 	}
 
 	if !plan.DailySyncTime.IsUnknown() && !plan.DailySyncTime.Equal(state.DailySyncTime) && plan.SyncFrequency.ValueString() == "1440" {
