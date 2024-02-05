@@ -233,7 +233,26 @@ func getValue(fieldType attr.Type, value, local interface{}, fieldsMap map[strin
 		}
 		items := []attr.Value{}
 		for _, v := range value.([]interface{}) {
-			items = append(items, getValue(collectionType.ElementType(), v, nil, fieldsMap, currentField, service))
+			if currentField.ItemKeyField != "" && local != nil {
+				localCollection := local.([]interface{})
+				vMap := v.(map[string]interface{})
+				for _, li := range localCollection {
+					liMap := li.(map[string]interface{})
+					if keyL, ok := liMap[currentField.ItemKeyField]; ok {
+						if keyV, ok := vMap[currentField.ItemKeyField]; ok {
+							if keyL == keyV {
+								items = append(items,
+									getValue(collectionType.ElementType(), v, li, fieldsMap, currentField, service),
+								)
+							}
+						}
+					}
+				}
+			} else {
+				items = append(items,
+					getValue(collectionType.ElementType(), v, nil, fieldsMap, currentField, service),
+				)
+			}
 		}
 		if _, ok := collectionType.(basetypes.SetTypable); ok {
 			setValue, _ := types.SetValue(collectionType.ElementType(), items)

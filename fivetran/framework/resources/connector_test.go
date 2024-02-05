@@ -1,6 +1,7 @@
 package resources_test
 
 import (
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -10,6 +11,45 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
+
+func createConnectorTestResponseJsonMock(id, groupId, service, schema, config string) string {
+	template := `
+	{
+		"id": "%v",
+		"group_id": "%v",
+		"service": "%v",
+		"service_version": 0,
+		"schema": "%v",
+		"paused": true,
+		"pause_after_trial": true,
+		"connected_by": "monitoring_assuring",
+		"created_at": "2020-03-11T15:03:55.743708Z",
+		"succeeded_at": "2020-03-17T12:31:40.870504Z",
+		"failed_at": "2021-01-15T10:55:00.056497Z",
+		"sync_frequency": 360,
+		"data_delay_sensitivity": "NORMAL",
+		"data_delay_threshold": 0,
+		"schedule_type": "auto",
+		"status": {
+			"setup_state": "incomplete",
+			"schema_status": "ready",
+			"sync_state": "scheduled",
+			"update_state": "delayed",
+			"is_historical_sync": false,
+			"tasks": [
+				{
+					"code": "reconnect",
+					"message": "Reconnect"
+				}
+			],
+			"warnings": []
+		},
+		"config": 
+		%v
+	}
+	`
+	return fmt.Sprintf(template, id, groupId, service, schema, config)
+}
 
 func TestResourceConnectorMock(t *testing.T) {
 	var postHandler *mock.Handler
@@ -169,39 +209,12 @@ func TestResourceConnectorMock(t *testing.T) {
 							}
 						}
 
-						responseData = tfmock.CreateMapFromJsonString(t,
-							`
-						{
-							"id": "connector_id",
-							"group_id": "group_id",
-							"service": "google_ads",
-							"service_version": 4,
-							"schema": "adwords_schema",
-							"paused": true,
-							"pause_after_trial": true,
-							"connected_by": "monitoring_assuring",
-							"created_at": "2020-03-11T15:03:55.743708Z",
-							"succeeded_at": "2020-03-17T12:31:40.870504Z",
-							"failed_at": "2021-01-15T10:55:00.056497Z",
-							"sync_frequency": 360,
-							"data_delay_sensitivity": "NORMAL",
-							"data_delay_threshold": 0,
-							"schedule_type": "auto",
-							"status": {
-								"setup_state": "incomplete",
-								"schema_status": "ready",
-								"sync_state": "scheduled",
-								"update_state": "delayed",
-								"is_historical_sync": false,
-								"tasks": [
-									{
-										"code": "reconnect",
-										"message": "Reconnect"
-									}
-								],
-								"warnings": []
-							},
-							"config": {
+						responseJson := createConnectorTestResponseJsonMock(
+							"connector_id",
+							"group_id",
+							"google_ads",
+							"adwords_schema",
+							`{
 								"user": "user_name",
 								"password": "******",
 								"port": 5432,
@@ -217,9 +230,10 @@ func TestResourceConnectorMock(t *testing.T) {
 										"metrics": ["metric2", "metric3"]
 									}
 								]
-							}
-						}
-						`)
+							}`,
+						)
+
+						responseData = tfmock.CreateMapFromJsonString(t, responseJson)
 						return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", responseData), nil
 					},
 				)
@@ -246,39 +260,12 @@ func TestResourceConnectorMock(t *testing.T) {
 							}
 						}
 
-						responseData = tfmock.CreateMapFromJsonString(t,
-							`
-						{
-							"id": "connector_id",
-							"group_id": "group_id",
-							"service": "google_ads",
-							"service_version": 4,
-							"schema": "adwords_schema",
-							"paused": true,
-							"pause_after_trial": true,
-							"connected_by": "monitoring_assuring",
-							"created_at": "2020-03-11T15:03:55.743708Z",
-							"succeeded_at": "2020-03-17T12:31:40.870504Z",
-							"failed_at": "2021-01-15T10:55:00.056497Z",
-							"sync_frequency": 360,
-							"data_delay_sensitivity": "NORMAL",
-							"data_delay_threshold": 0,
-							"schedule_type": "auto",
-							"status": {
-								"setup_state": "connected",
-								"schema_status": "ready",
-								"sync_state": "scheduled",
-								"update_state": "delayed",
-								"is_historical_sync": false,
-								"tasks": [
-									{
-										"code": "reconnect",
-										"message": "Reconnect"
-									}
-								],
-								"warnings": []
-							},
-							"config": {
+						responseJson := createConnectorTestResponseJsonMock(
+							"connector_id",
+							"group_id",
+							"google_ads",
+							"adwords_schema",
+							`{
 								"user": "user_name_1",
 								"password": "******",
 								"port": 2345,
@@ -289,9 +276,10 @@ func TestResourceConnectorMock(t *testing.T) {
 										"metrics": ["metric1", "metric2"]
 									}
 								]
-							}
-						}
-						`)
+							}`,
+						)
+
+						responseData = tfmock.CreateMapFromJsonString(t, responseJson)
 						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
 					},
 				)
@@ -303,6 +291,119 @@ func TestResourceConnectorMock(t *testing.T) {
 			Steps: []resource.TestStep{
 				step1,
 				step2,
+			},
+		},
+	)
+}
+
+func TestConnectorSubFieldsSensitiveMock(t *testing.T) {
+	step1 :=
+		resource.TestStep{Config: `
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+
+			group_id           = "group_id"
+			service            = "amplitude"
+			run_setup_tests    = true
+			trust_fingerprints = true
+			trust_certificates = true
+		  
+			destination_schema {
+			  name = "schema_name"
+			}
+		  
+			config {
+			  project_credentials {
+				project    = "project_name"
+				api_key    = "api_key"
+				secret_key = "secret_key"
+			  }
+			}
+		  }`,
+
+			Check: resource.ComposeAggregateTestCheckFunc(
+				resource.TestCheckResourceAttr("fivetran_connector.test_connector", "id", "connector_id"),
+			),
+		}
+
+	var responseData map[string]interface{}
+
+	preCheck := func() {
+		tfmock.MockClient().Reset()
+
+		//getHandler =
+		tfmock.MockClient().When(http.MethodGet, "/v1/connectors/connector_id").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				if responseData == nil {
+					return tfmock.FivetranSuccessResponse(t, req, http.StatusNotFound, "NotFound", nil), nil
+				}
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
+			},
+		)
+
+		tfmock.MockClient().When(http.MethodDelete, "/v1/connectors/connector_id").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", nil), nil
+			},
+		)
+
+		tfmock.MockClient().When(http.MethodPost, "/v1/connectors").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+
+				// body := tfmock.RequestBodyToJson(t, req)
+
+				// // Check the request
+				// tfmock.AssertKeyExistsAndHasValue(t, body, "service", "google_ads")
+				// tfmock.AssertKeyExistsAndHasValue(t, body, "group_id", "group_id")
+				// tfmock.AssertKeyExistsAndHasValue(t, body, "run_setup_tests", false)
+				// tfmock.AssertKeyExistsAndHasValue(t, body, "trust_certificates", false)
+				// tfmock.AssertKeyExistsAndHasValue(t, body, "trust_fingerprints", false)
+
+				// if config, ok := tfmock.AssertKeyExists(t, body, "config").(map[string]interface{}); ok {
+				// 	tfmock.AssertKeyExistsAndHasValue(t, config, "schema", "adwords_schema")
+				// 	tfmock.AssertKeyExistsAndHasValue(t, config, "user", "user_name")
+				// 	tfmock.AssertKeyExistsAndHasValue(t, config, "password", "password")
+				// 	tfmock.AssertKeyExistsAndHasValue(t, config, "port", float64(5432))
+				// 	if reports, ok := tfmock.AssertKeyExists(t, config, "reports").([]interface{}); ok {
+				// 		tfmock.AssertEqual(t, len(reports), 2)
+				// 	}
+				// 	if accountIds, ok := tfmock.AssertKeyExists(t, config, "account_ids").([]interface{}); ok {
+				// 		tfmock.AssertEqual(t, len(accountIds), 3)
+				// 	}
+				// }
+
+				responseJson := createConnectorTestResponseJsonMock(
+					"connector_id",
+					"group_id",
+					"amplitude",
+					"schema_name",
+					`{
+						"project_credentials": [
+							{
+								"project": "project_name",
+								"api_key": "******",
+								"secret_key": "******"
+							}
+						]
+					}`,
+				)
+
+				responseData = tfmock.CreateMapFromJsonString(t, responseJson)
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", responseData), nil
+			},
+		)
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck:                 preCheck,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
 			},
 		},
 	)
