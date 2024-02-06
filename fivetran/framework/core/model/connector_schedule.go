@@ -26,6 +26,8 @@ func (d *ConnectorSchedule) ReadFromResponse(response connectors.DetailsWithCust
 
 	if response.Data.SyncFrequency != nil && *response.Data.SyncFrequency == 1440 {
 		d.DailySyncTime = types.StringValue(response.Data.DailySyncTime)
+	} else if d.DailySyncTime.IsUnknown() {
+		d.DailySyncTime = types.StringNull()
 	}
 }
 
@@ -40,5 +42,7 @@ func (d *ConnectorSchedule) ReadFromUpdateResponse(response connectors.DetailsWi
 
 	if response.Data.SyncFrequency != nil && *response.Data.SyncFrequency == 1440 {
 		d.DailySyncTime = types.StringValue(response.Data.DailySyncTime)
+	} else if d.DailySyncTime.IsUnknown() {
+		d.DailySyncTime = types.StringNull()
 	}
 }

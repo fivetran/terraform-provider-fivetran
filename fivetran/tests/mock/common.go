@@ -296,3 +296,21 @@ func createMapFromJsonString(t *testing.T, schemaJson string) map[string]interfa
 	}
 	return result
 }
+
+func updateMapDeep(source map[string]interface{}, target map[string]interface{}) {
+	for sk, sv := range source {
+		if tv, ok := target[sk]; ok {
+			if svmap, ok := sv.(map[string]interface{}); ok {
+				if tvmap, ok := tv.(map[string]interface{}); ok {
+					updateMapDeep(svmap, tvmap)
+					continue
+				}
+			}
+		}
+		target[sk] = sv
+	}
+}
+
+func UpdateMapDeep(source map[string]interface{}, target map[string]interface{}) {
+	updateMapDeep(source, target)
+}
