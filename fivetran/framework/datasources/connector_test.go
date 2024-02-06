@@ -33,12 +33,16 @@ func TestDataSourceConnectorMock(t *testing.T) {
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.password", "******"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.port", "5432"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.always_encrypted", "true"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.accounts_reddit_ads.0.name", "acc1"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.accounts_reddit_ads.1.name", "acc2"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.account_ids.0", "id1"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.account_ids.1", "id2"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.account_ids.2", "id3"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.reports.0.table", "table1"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.reports.0.report_type", "report_1"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.reports.0.metrics.0", "metric1"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.reports.0.metrics.1", "metric2"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.reports.1.table", "table2"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.reports.1.report_type", "report_2"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.reports.1.metrics.0", "metric2"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.reports.1.metrics.1", "metric3"),
@@ -57,7 +61,7 @@ func TestDataSourceConnectorMock(t *testing.T) {
 						{
 							"id": "connector_id",
 							"group_id": "group_id",
-							"service": "google_ads",
+							"service": "reddit_ads",
 							"service_version": 4,
 							"schema": "adwords_schema",
 							"paused": true,
@@ -97,12 +101,22 @@ func TestDataSourceConnectorMock(t *testing.T) {
 								"account_ids": ["id1", "id2", "id3"],
 								"reports": [
 									{
+										"table": "table1",
 										"report_type": "report_1",
 										"metrics": ["metric1", "metric2"]
 									},
 									{
+										"table": "table2",
 										"report_type": "report_2",
 										"metrics": ["metric2", "metric3"]
+									}
+								],
+								"accounts": [
+									{
+										"name": "acc1"
+									},
+									{
+										"name": "acc2"
 									}
 								]
 							}
@@ -112,8 +126,6 @@ func TestDataSourceConnectorMock(t *testing.T) {
 					},
 				)
 			},
-			//Providers: testProviders,
-			//ProtoV5ProviderFactories: tfmock.ProtoV5ProviderFactory,
 			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				return nil
