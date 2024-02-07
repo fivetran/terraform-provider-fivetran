@@ -140,7 +140,7 @@ func getStringValue(value, local interface{}, currentField *common.ConfigField, 
 	if value == nil {
 		return types.StringNull()
 	}
-	if local == nil { // we should not set non-nullable value to the state if it's not configured by tf, we just ignore it
+	if local == nil && !currentField.Readonly { // we should not set non-nullable value to the state if it's not configured by tf, we just ignore it
 		return types.StringNull()
 	}
 	if currentField != nil && currentField.Sensitive && local != nil {
@@ -154,8 +154,8 @@ func getStringValue(value, local interface{}, currentField *common.ConfigField, 
 	return types.StringValue(value.(string))
 }
 
-func getBoolValue(value, local interface{}) types.Bool {
-	if value == nil || local == nil { // we should not set value to the state if it's not configured by tf
+func getBoolValue(value, local interface{}, currentField *common.ConfigField) types.Bool {
+	if value == nil || (local == nil && !currentField.Readonly) { // we should not set value to the state if it's not configured by tf
 		return types.BoolNull()
 	}
 	if fValue, ok := value.(bool); ok {
@@ -170,8 +170,8 @@ func getBoolValue(value, local interface{}) types.Bool {
 	panic(fmt.Sprintf("Unable to read boolean value from %v", value))
 }
 
-func getIntValue(value, local interface{}) types.Int64 {
-	if value == nil || local == nil { // we should not set value to the state if it's not configured by tf
+func getIntValue(value, local interface{}, currentField *common.ConfigField) types.Int64 {
+	if value == nil || (local == nil && !currentField.Readonly) { // we should not set value to the state if it's not configured by tf
 		return types.Int64Null()
 	}
 	// value in json decoded response is always float64 for any kind of numbers
@@ -200,10 +200,10 @@ func getValue(
 		return getStringValue(value, local, currentField, service)
 	}
 	if fieldType.Equal(types.BoolType) {
-		return getBoolValue(value, local)
+		return getBoolValue(value, local, currentField)
 	}
 	if fieldType.Equal(types.Int64Type) {
-		return getIntValue(value, local)
+		return getIntValue(value, local, currentField)
 	}
 	if complexType, ok := fieldType.(attr.TypeWithAttributeTypes); ok {
 		if value == nil {
