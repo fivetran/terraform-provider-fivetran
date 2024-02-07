@@ -270,7 +270,7 @@ Optional:
 	- Service `sql_server_warehouse`: Field to test Self serve Private Link
 - `role` (String) Field usage depends on `service` value: 
 	- Service `snowflake`: If not specified, Fivetran will use the user's default role
-- `role_arn` (String) Field usage depends on `service` value: 
+- `role_arn` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `redshift`: Role ARN with Redshift permissions. Required if authentication type is `IAM`.
 - `sasl_mechanism` (String)
 - `sasl_plain_key` (String, Sensitive)
