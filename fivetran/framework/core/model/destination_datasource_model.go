@@ -47,11 +47,10 @@ func (d *DestinationDatasourceModel) SetConfig(value map[string]interface{}) {
 		value["data_set_location"] = l
 	}
 	service := d.Service.ValueString()
-	config := d.Config
 	d.Config = getValue(
 		types.ObjectType{AttrTypes: getAttrTypes(common.GetDestinationFieldsMap())},
 		value,
-		getValueFromAttrValue(config, common.GetDestinationFieldsMap(), nil, service).(map[string]interface{}),
+		value,
 		common.GetDestinationFieldsMap(),
 		nil,
 		service).(basetypes.ObjectValue)

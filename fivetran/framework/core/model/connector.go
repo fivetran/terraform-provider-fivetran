@@ -204,7 +204,7 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
 	d.Config = getValue(
 		types.ObjectType{AttrTypes: getAttrTypes(common.GetConfigFieldsMap())},
 		c.Config,
-		getValueFromAttrValue(d.Config, common.GetConfigFieldsMap(), nil, c.Service).(map[string]interface{}),
+		c.Config,
 		common.GetConfigFieldsMap(),
 		nil,
 		c.Service).(basetypes.ObjectValue)

@@ -20,7 +20,74 @@ func setupMockClientDestinationDataSourceConfigMapping(t *testing.T) {
 
 	destinationDataSourceMockGetHandler = mockClient.When(http.MethodGet, "/v1/destinations/destination_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			destinationDataSourceMockData = createMapFromJsonString(t, destinationMappingResponse)
+			destinationDataSourceMockData = createMapFromJsonString(t, `
+			{
+				"id":"destination_id",
+				"group_id":"group_id",
+				"service":"snowflake",
+				"region":"GCP_US_EAST4",
+				"time_zone_offset":"0",
+				"setup_status":"connected",
+				"setup_tests":[
+					{
+						"title":"Host Connection",
+						"status":"PASSED",
+						"message":""
+					},
+					{
+						"title":"Database Connection",
+						"status":"PASSED",
+						"message":""
+					},
+					{
+						"title":"Permission Test",
+						"status":"PASSED",
+						"message":""
+					}
+				],
+				"config":{
+					"host":                     "host",
+					"port":                     "123",
+					"database":                 "database",
+					"auth":                     "auth",
+					"user":                     "user",
+					"password":                 "******",
+					"connection_type":          "connection_type",
+					"tunnel_host":              "tunnel_host",
+					"tunnel_port":              "123",
+					"tunnel_user":              "tunnel_user",
+					"project_id":               "project_id",
+					"data_set_location":        "data_set_location",
+					"bucket":                   "bucket",
+					"server_host_name":         "server_host_name",
+					"http_path":                "http_path",
+					"personal_access_token":    "******",
+					"create_external_tables":   "false",
+					"external_location":        "external_location",
+					"auth_type":                "auth_type",
+					"role_arn":                 "******",
+					"secret_key":               "******",
+					"private_key":              "******",
+					"public_key":               "public_key",
+					"cluster_id":               "cluster_id",
+					"cluster_region":           "cluster_region",
+					"role":                     "role",
+					"is_private_key_encrypted": "false",
+					"passphrase":               "******",
+					"catalog": 					"catalog",
+					"fivetran_role_arn": 		"fivetran_role_arn",
+					"prefix_path": 				"prefix_path",
+					"region": 					"region",
+					"storage_account_name": 	"storage_account_name",
+					"container_name": 			"container_name",
+					"tenant_id": 				"tenant_id",
+					"client_id": 				"client_id",
+					"secret_value":				"******",
+					"workspace_name": 			"workspace_name",
+					"lakehouse_name": 			"lakehouse_name"
+				}
+			}
+			`)
 			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", destinationDataSourceMockData), nil
 		},
 	)

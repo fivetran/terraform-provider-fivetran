@@ -21,10 +21,6 @@ data "fivetran_webhook" "webhook" {
 
 - `id` (String) The webhook ID
 
-### Optional
-
-- `run_tests` (Boolean) Specifies whether the setup tests should be run
-
 ### Read-Only
 
 - `active` (Boolean) Boolean, if set to true, webhooks are immediately sent in response to events
@@ -32,6 +28,7 @@ data "fivetran_webhook" "webhook" {
 - `created_by` (String) The ID of the user who created the webhook.
 - `events` (Set of String) The array of event types
 - `group_id` (String) The group ID
+- `run_tests` (Boolean) Specifies whether the setup tests should be run
 - `secret` (String) The secret string used for payload signing and masked in the response.
 - `type` (String) The webhook type (group, account)
 - `url` (String) Your webhooks URL endpoint for your application

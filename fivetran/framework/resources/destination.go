@@ -3,6 +3,7 @@ package resources
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/common"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
@@ -108,7 +109,53 @@ func (r *destination) Create(ctx context.Context, req resource.CreateRequest, re
 
 		return
 	}
-	data.ReadFromResponseWithTests(response)
+
+	// For some reason tests may fail on first run, but succeed on second
+	if runSetupTestsPlan && strings.ToLower(response.Data.SetupStatus) != "connected" {
+		resp.Diagnostics.AddWarning(
+			"Setup Tests for destination failed on creation. Running post-creation attempt.",
+			fmt.Sprintf("%v", response.Data.SetupTests),
+		)
+
+		rsts := r.GetClient().NewDestinationSetupTests().
+			DestinationID(response.Data.ID).
+			TrustCertificates(trustCertificatesPlan).
+			TrustFingerprints(trustFingerprintsPlan)
+
+		stResponse, err := rsts.Do(ctx)
+
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to Create Destination Resource.",
+				fmt.Sprintf("%v; code: %v; message: %v", err, stResponse.Code, stResponse.Message),
+			)
+
+			return
+		}
+
+		if strings.ToLower(stResponse.Data.SetupStatus) != "connected" {
+			resp.Diagnostics.AddWarning(
+				"Setup Tests for destination failed.",
+				fmt.Sprintf("%v", stResponse.Data.SetupTests),
+			)
+		}
+
+		detailsResponse, err := r.GetClient().NewDestinationDetails().DestinationID(response.Data.ID).DoCustom(ctx)
+
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to Create Destination Resource.",
+				fmt.Sprintf("%v; code: %v; message: %v", err, detailsResponse.Code, detailsResponse.Message),
+			)
+
+			return
+		}
+
+		// re-read destination details after setup-tests finished
+		data.ReadFromResponse(detailsResponse)
+	} else {
+		data.ReadFromResponseWithTests(response)
+	}
 	data.RunSetupTests = types.BoolValue(runSetupTestsPlan)
 	data.TrustCertificates = types.BoolValue(trustCertificatesPlan)
 	data.TrustFingerprints = types.BoolValue(trustFingerprintsPlan)

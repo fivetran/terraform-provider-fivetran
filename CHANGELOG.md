@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Destination Resource migrated on `terraform-plugin-framework`
 - Destination Datasource migrated on `terraform-plugin-framework`
 
+## Fixed
+- Issue with `daily_sync_time` in `connector_schedule` resource
+- Issue with fields in connector config that are not managed by configuration, but returned from upstream (non-nullable)
+- Issue with object collection fields with sensitive sub-fields
+
 ## [1.1.11](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.10...v1.1.11)
 
 ## Added

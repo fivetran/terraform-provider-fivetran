@@ -608,7 +608,7 @@
             "api_field": ""
          }
       },
-      "key_field": "",
+      "key_field": "table",
       "item_type": {},
       "description": {
          "adobe_analytics": "The list of configurations of tables you want to sync. The number of tables and their configurations is limited to 5. Required for connector creation."
@@ -2885,7 +2885,7 @@
             "api_field": ""
          }
       },
-      "key_field": "",
+      "key_field": "key",
       "item_type": {},
       "description": {
          "aws_lambda": "The list of key-value pairs that can be used to specify custom information to the function at runtime.",
@@ -3157,7 +3157,7 @@
             "api_field": ""
          }
       },
-      "key_field": "",
+      "key_field": "report_name|table_name",
       "item_type": {},
       "description": {
          "reddit_ads": "The list of custom report configurations. Each report corresponds to a table within the schema to which connector will sync the data.",
@@ -3329,7 +3329,7 @@
             "api_field": ""
          }
       },
-      "key_field": "",
+      "key_field": "table_name",
       "item_type": {},
       "description": {
          "facebook_ads": "List of custom tables. Each custom table corresponds to a table within the schema to which connector will sync the data."
@@ -6590,7 +6590,7 @@
             "api_field": ""
          }
       },
-      "key_field": "",
+      "key_field": "report_name",
       "item_type": {},
       "description": {
          "yahoo_dsp": "Specify the reports you want to sync. This is optional."
@@ -6697,7 +6697,7 @@
             "api_field": ""
          }
       },
-      "key_field": "",
+      "key_field": "table",
       "item_type": {},
       "description": {
          "spotify_ads": "The list of reports. Each report corresponds to a table within the schema to which connector will sync the data."
@@ -7022,7 +7022,7 @@
             "api_field": ""
          }
       },
-      "key_field": "",
+      "key_field": "table",
       "item_type": {},
       "description": {
          "google_ads": "The list of reports. Each report corresponds to a table within the schema to which connector will sync the data.",
