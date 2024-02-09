@@ -4945,6 +4945,58 @@
         }
       }
     },
+    "/v1/account/info": {
+      "get": {
+        "tags": [
+          "Account Manage"
+        ],
+        "summary": "Get account info from API key",
+        "description": "Returns information about current account from API key.",
+        "operationId": "get_account_info",
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/AccountInfoResponse"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid authorization credentials"
+          }
+        }
+      }
+    },
     "/v1/dbt/transformations/{transformationId}/cancel": {
       "post": {
         "tags": [
@@ -7516,6 +7568,64 @@
         }
       }
     },
+    "/v1/hvr/register-hub": {
+      "post": {
+        "tags": [
+          "HVR Registrations Management"
+        ],
+        "summary": "Register Hub",
+        "description": "Register a new hub within your Fivetran account.",
+        "operationId": "hvr_register_hub",
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HvrHubRegistrationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/HvrHubRegistrationResponse"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/webhooks/{webhookId}": {
       "get": {
         "tags": [
@@ -9501,6 +9611,7 @@
             "awin": "#/components/schemas/awin_NewConnectorRequestV1",
             "aws_cloudtrail": "#/components/schemas/aws_cloudtrail_NewConnectorRequestV1",
             "aws_cost": "#/components/schemas/aws_cost_NewConnectorRequestV1",
+            "aws_cost_report": "#/components/schemas/aws_cost_report_NewConnectorRequestV1",
             "aws_inventory": "#/components/schemas/aws_inventory_NewConnectorRequestV1",
             "aws_lambda": "#/components/schemas/aws_lambda_NewConnectorRequestV1",
             "aws_msk": "#/components/schemas/aws_msk_NewConnectorRequestV1",
@@ -9528,6 +9639,7 @@
             "braze": "#/components/schemas/braze_NewConnectorRequestV1",
             "brevo": "#/components/schemas/brevo_NewConnectorRequestV1",
             "brex": "#/components/schemas/brex_NewConnectorRequestV1",
+            "brightcove": "#/components/schemas/brightcove_NewConnectorRequestV1",
             "buildkite": "#/components/schemas/buildkite_NewConnectorRequestV1",
             "business_central": "#/components/schemas/business_central_NewConnectorRequestV1",
             "buzzsprout": "#/components/schemas/buzzsprout_NewConnectorRequestV1",
@@ -9572,6 +9684,7 @@
             "criteo": "#/components/schemas/criteo_NewConnectorRequestV1",
             "crossbeam": "#/components/schemas/crossbeam_NewConnectorRequestV1",
             "crowddev": "#/components/schemas/crowddev_NewConnectorRequestV1",
+            "culture_amp": "#/components/schemas/culture_amp_NewConnectorRequestV1",
             "customerio": "#/components/schemas/customerio_NewConnectorRequestV1",
             "cvent": "#/components/schemas/cvent_NewConnectorRequestV1",
             "d2l_brightspace": "#/components/schemas/d2l_brightspace_NewConnectorRequestV1",
@@ -9702,6 +9815,7 @@
             "keypay": "#/components/schemas/keypay_NewConnectorRequestV1",
             "khoros_care": "#/components/schemas/khoros_care_NewConnectorRequestV1",
             "kinesis": "#/components/schemas/kinesis_NewConnectorRequestV1",
+            "kisi": "#/components/schemas/kisi_NewConnectorRequestV1",
             "kissmetrics": "#/components/schemas/kissmetrics_NewConnectorRequestV1",
             "klarna": "#/components/schemas/klarna_NewConnectorRequestV1",
             "klaviyo": "#/components/schemas/klaviyo_NewConnectorRequestV1",
@@ -9741,9 +9855,11 @@
             "megaphone": "#/components/schemas/megaphone_NewConnectorRequestV1",
             "meltwater": "#/components/schemas/meltwater_NewConnectorRequestV1",
             "mention": "#/components/schemas/mention_NewConnectorRequestV1",
+            "messagebird": "#/components/schemas/messagebird_NewConnectorRequestV1",
             "microsoft_dynamics_365_fo": "#/components/schemas/microsoft_dynamics_365_fo_NewConnectorRequestV1",
+            "microsoft_entra_id": "#/components/schemas/microsoft_entra_id_NewConnectorRequestV1",
             "microsoft_lists": "#/components/schemas/microsoft_lists_NewConnectorRequestV1",
-            "microsoft_teams": "#/components/schemas/microsoft_teams_NewConnectorRequestV1",
+            "missive": "#/components/schemas/missive_NewConnectorRequestV1",
             "mixmax": "#/components/schemas/mixmax_NewConnectorRequestV1",
             "mixpanel": "#/components/schemas/mixpanel_NewConnectorRequestV1",
             "mode": "#/components/schemas/mode_NewConnectorRequestV1",
@@ -9763,6 +9879,7 @@
             "nylas": "#/components/schemas/nylas_NewConnectorRequestV1",
             "okta": "#/components/schemas/okta_NewConnectorRequestV1",
             "ometria": "#/components/schemas/ometria_NewConnectorRequestV1",
+            "on24": "#/components/schemas/on24_NewConnectorRequestV1",
             "one_drive": "#/components/schemas/one_drive_NewConnectorRequestV1",
             "open_exchange_rates": "#/components/schemas/open_exchange_rates_NewConnectorRequestV1",
             "opendistro": "#/components/schemas/opendistro_NewConnectorRequestV1",
@@ -9828,6 +9945,7 @@
             "retailnext": "#/components/schemas/retailnext_NewConnectorRequestV1",
             "retently": "#/components/schemas/retently_NewConnectorRequestV1",
             "revel": "#/components/schemas/revel_NewConnectorRequestV1",
+            "reviewsio": "#/components/schemas/reviewsio_NewConnectorRequestV1",
             "revops": "#/components/schemas/revops_NewConnectorRequestV1",
             "revx": "#/components/schemas/revx_NewConnectorRequestV1",
             "ringcentral": "#/components/schemas/ringcentral_NewConnectorRequestV1",
@@ -9879,6 +9997,7 @@
             "snapchat_ads": "#/components/schemas/snapchat_ads_NewConnectorRequestV1",
             "snowflake_db": "#/components/schemas/snowflake_db_NewConnectorRequestV1",
             "snowplow": "#/components/schemas/snowplow_NewConnectorRequestV1",
+            "snyk": "#/components/schemas/snyk_NewConnectorRequestV1",
             "sonarqube": "#/components/schemas/sonarqube_NewConnectorRequestV1",
             "splitio": "#/components/schemas/splitio_NewConnectorRequestV1",
             "splunk": "#/components/schemas/splunk_NewConnectorRequestV1",
@@ -9912,12 +10031,14 @@
             "tiktok_ads": "#/components/schemas/tiktok_ads_NewConnectorRequestV1",
             "toggl_track": "#/components/schemas/toggl_track_NewConnectorRequestV1",
             "transcend": "#/components/schemas/transcend_NewConnectorRequestV1",
+            "trelica": "#/components/schemas/trelica_NewConnectorRequestV1",
             "trello": "#/components/schemas/trello_NewConnectorRequestV1",
             "trisolute": "#/components/schemas/trisolute_NewConnectorRequestV1",
             "twilio": "#/components/schemas/twilio_NewConnectorRequestV1",
             "twitter": "#/components/schemas/twitter_NewConnectorRequestV1",
             "twitter_ads": "#/components/schemas/twitter_ads_NewConnectorRequestV1",
             "typeform": "#/components/schemas/typeform_NewConnectorRequestV1",
+            "udemy_business": "#/components/schemas/udemy_business_NewConnectorRequestV1",
             "ukg_pro": "#/components/schemas/ukg_pro_NewConnectorRequestV1",
             "unicommerce": "#/components/schemas/unicommerce_NewConnectorRequestV1",
             "upland": "#/components/schemas/upland_NewConnectorRequestV1",
@@ -9928,6 +10049,7 @@
             "vts": "#/components/schemas/vts_NewConnectorRequestV1",
             "vwo": "#/components/schemas/vwo_NewConnectorRequestV1",
             "wasabi_cloud_storage": "#/components/schemas/wasabi_cloud_storage_NewConnectorRequestV1",
+            "webconnex": "#/components/schemas/webconnex_NewConnectorRequestV1",
             "webhooks": "#/components/schemas/webhooks_NewConnectorRequestV1",
             "when_i_work": "#/components/schemas/when_i_work_NewConnectorRequestV1",
             "wherefour": "#/components/schemas/wherefour_NewConnectorRequestV1",
@@ -9938,7 +10060,6 @@
             "workday_financial_management": "#/components/schemas/workday_financial_management_NewConnectorRequestV1",
             "workday_hcm": "#/components/schemas/workday_hcm_NewConnectorRequestV1",
             "workday_strategic_sourcing": "#/components/schemas/workday_strategic_sourcing_NewConnectorRequestV1",
-            "workflowmax": "#/components/schemas/workflowmax_NewConnectorRequestV1",
             "workramp": "#/components/schemas/workramp_NewConnectorRequestV1",
             "wrike": "#/components/schemas/wrike_NewConnectorRequestV1",
             "xero": "#/components/schemas/xero_NewConnectorRequestV1",
@@ -9948,12 +10069,14 @@
             "yahoo_gemini": "#/components/schemas/yahoo_gemini_NewConnectorRequestV1",
             "yahoo_search_ads_yahoo_japan": "#/components/schemas/yahoo_search_ads_yahoo_japan_NewConnectorRequestV1",
             "yotpo": "#/components/schemas/yotpo_NewConnectorRequestV1",
+            "younium": "#/components/schemas/younium_NewConnectorRequestV1",
             "youtube_analytics": "#/components/schemas/youtube_analytics_NewConnectorRequestV1",
             "zendesk": "#/components/schemas/zendesk_NewConnectorRequestV1",
             "zendesk_chat": "#/components/schemas/zendesk_chat_NewConnectorRequestV1",
             "zendesk_sell": "#/components/schemas/zendesk_sell_NewConnectorRequestV1",
             "zendesk_sunshine": "#/components/schemas/zendesk_sunshine_NewConnectorRequestV1",
             "zenefits": "#/components/schemas/zenefits_NewConnectorRequestV1",
+            "zingtree": "#/components/schemas/zingtree_NewConnectorRequestV1",
             "zoho_books": "#/components/schemas/zoho_books_NewConnectorRequestV1",
             "zoho_campaigns": "#/components/schemas/zoho_campaigns_NewConnectorRequestV1",
             "zoho_crm": "#/components/schemas/zoho_crm_NewConnectorRequestV1",
@@ -10289,6 +10412,7 @@
             "awin": "#/components/schemas/awin_ConnectorResponseV1",
             "aws_cloudtrail": "#/components/schemas/aws_cloudtrail_ConnectorResponseV1",
             "aws_cost": "#/components/schemas/aws_cost_ConnectorResponseV1",
+            "aws_cost_report": "#/components/schemas/aws_cost_report_ConnectorResponseV1",
             "aws_inventory": "#/components/schemas/aws_inventory_ConnectorResponseV1",
             "aws_lambda": "#/components/schemas/aws_lambda_ConnectorResponseV1",
             "aws_msk": "#/components/schemas/aws_msk_ConnectorResponseV1",
@@ -10316,6 +10440,7 @@
             "braze": "#/components/schemas/braze_ConnectorResponseV1",
             "brevo": "#/components/schemas/brevo_ConnectorResponseV1",
             "brex": "#/components/schemas/brex_ConnectorResponseV1",
+            "brightcove": "#/components/schemas/brightcove_ConnectorResponseV1",
             "buildkite": "#/components/schemas/buildkite_ConnectorResponseV1",
             "business_central": "#/components/schemas/business_central_ConnectorResponseV1",
             "buzzsprout": "#/components/schemas/buzzsprout_ConnectorResponseV1",
@@ -10360,6 +10485,7 @@
             "criteo": "#/components/schemas/criteo_ConnectorResponseV1",
             "crossbeam": "#/components/schemas/crossbeam_ConnectorResponseV1",
             "crowddev": "#/components/schemas/crowddev_ConnectorResponseV1",
+            "culture_amp": "#/components/schemas/culture_amp_ConnectorResponseV1",
             "customerio": "#/components/schemas/customerio_ConnectorResponseV1",
             "cvent": "#/components/schemas/cvent_ConnectorResponseV1",
             "d2l_brightspace": "#/components/schemas/d2l_brightspace_ConnectorResponseV1",
@@ -10490,6 +10616,7 @@
             "keypay": "#/components/schemas/keypay_ConnectorResponseV1",
             "khoros_care": "#/components/schemas/khoros_care_ConnectorResponseV1",
             "kinesis": "#/components/schemas/kinesis_ConnectorResponseV1",
+            "kisi": "#/components/schemas/kisi_ConnectorResponseV1",
             "kissmetrics": "#/components/schemas/kissmetrics_ConnectorResponseV1",
             "klarna": "#/components/schemas/klarna_ConnectorResponseV1",
             "klaviyo": "#/components/schemas/klaviyo_ConnectorResponseV1",
@@ -10529,9 +10656,11 @@
             "megaphone": "#/components/schemas/megaphone_ConnectorResponseV1",
             "meltwater": "#/components/schemas/meltwater_ConnectorResponseV1",
             "mention": "#/components/schemas/mention_ConnectorResponseV1",
+            "messagebird": "#/components/schemas/messagebird_ConnectorResponseV1",
             "microsoft_dynamics_365_fo": "#/components/schemas/microsoft_dynamics_365_fo_ConnectorResponseV1",
+            "microsoft_entra_id": "#/components/schemas/microsoft_entra_id_ConnectorResponseV1",
             "microsoft_lists": "#/components/schemas/microsoft_lists_ConnectorResponseV1",
-            "microsoft_teams": "#/components/schemas/microsoft_teams_ConnectorResponseV1",
+            "missive": "#/components/schemas/missive_ConnectorResponseV1",
             "mixmax": "#/components/schemas/mixmax_ConnectorResponseV1",
             "mixpanel": "#/components/schemas/mixpanel_ConnectorResponseV1",
             "mode": "#/components/schemas/mode_ConnectorResponseV1",
@@ -10551,6 +10680,7 @@
             "nylas": "#/components/schemas/nylas_ConnectorResponseV1",
             "okta": "#/components/schemas/okta_ConnectorResponseV1",
             "ometria": "#/components/schemas/ometria_ConnectorResponseV1",
+            "on24": "#/components/schemas/on24_ConnectorResponseV1",
             "one_drive": "#/components/schemas/one_drive_ConnectorResponseV1",
             "open_exchange_rates": "#/components/schemas/open_exchange_rates_ConnectorResponseV1",
             "opendistro": "#/components/schemas/opendistro_ConnectorResponseV1",
@@ -10616,6 +10746,7 @@
             "retailnext": "#/components/schemas/retailnext_ConnectorResponseV1",
             "retently": "#/components/schemas/retently_ConnectorResponseV1",
             "revel": "#/components/schemas/revel_ConnectorResponseV1",
+            "reviewsio": "#/components/schemas/reviewsio_ConnectorResponseV1",
             "revops": "#/components/schemas/revops_ConnectorResponseV1",
             "revx": "#/components/schemas/revx_ConnectorResponseV1",
             "ringcentral": "#/components/schemas/ringcentral_ConnectorResponseV1",
@@ -10667,6 +10798,7 @@
             "snapchat_ads": "#/components/schemas/snapchat_ads_ConnectorResponseV1",
             "snowflake_db": "#/components/schemas/snowflake_db_ConnectorResponseV1",
             "snowplow": "#/components/schemas/snowplow_ConnectorResponseV1",
+            "snyk": "#/components/schemas/snyk_ConnectorResponseV1",
             "sonarqube": "#/components/schemas/sonarqube_ConnectorResponseV1",
             "splitio": "#/components/schemas/splitio_ConnectorResponseV1",
             "splunk": "#/components/schemas/splunk_ConnectorResponseV1",
@@ -10700,12 +10832,14 @@
             "tiktok_ads": "#/components/schemas/tiktok_ads_ConnectorResponseV1",
             "toggl_track": "#/components/schemas/toggl_track_ConnectorResponseV1",
             "transcend": "#/components/schemas/transcend_ConnectorResponseV1",
+            "trelica": "#/components/schemas/trelica_ConnectorResponseV1",
             "trello": "#/components/schemas/trello_ConnectorResponseV1",
             "trisolute": "#/components/schemas/trisolute_ConnectorResponseV1",
             "twilio": "#/components/schemas/twilio_ConnectorResponseV1",
             "twitter": "#/components/schemas/twitter_ConnectorResponseV1",
             "twitter_ads": "#/components/schemas/twitter_ads_ConnectorResponseV1",
             "typeform": "#/components/schemas/typeform_ConnectorResponseV1",
+            "udemy_business": "#/components/schemas/udemy_business_ConnectorResponseV1",
             "ukg_pro": "#/components/schemas/ukg_pro_ConnectorResponseV1",
             "unicommerce": "#/components/schemas/unicommerce_ConnectorResponseV1",
             "upland": "#/components/schemas/upland_ConnectorResponseV1",
@@ -10716,6 +10850,7 @@
             "vts": "#/components/schemas/vts_ConnectorResponseV1",
             "vwo": "#/components/schemas/vwo_ConnectorResponseV1",
             "wasabi_cloud_storage": "#/components/schemas/wasabi_cloud_storage_ConnectorResponseV1",
+            "webconnex": "#/components/schemas/webconnex_ConnectorResponseV1",
             "webhooks": "#/components/schemas/webhooks_ConnectorResponseV1",
             "when_i_work": "#/components/schemas/when_i_work_ConnectorResponseV1",
             "wherefour": "#/components/schemas/wherefour_ConnectorResponseV1",
@@ -10726,7 +10861,6 @@
             "workday_financial_management": "#/components/schemas/workday_financial_management_ConnectorResponseV1",
             "workday_hcm": "#/components/schemas/workday_hcm_ConnectorResponseV1",
             "workday_strategic_sourcing": "#/components/schemas/workday_strategic_sourcing_ConnectorResponseV1",
-            "workflowmax": "#/components/schemas/workflowmax_ConnectorResponseV1",
             "workramp": "#/components/schemas/workramp_ConnectorResponseV1",
             "wrike": "#/components/schemas/wrike_ConnectorResponseV1",
             "xero": "#/components/schemas/xero_ConnectorResponseV1",
@@ -10736,12 +10870,14 @@
             "yahoo_gemini": "#/components/schemas/yahoo_gemini_ConnectorResponseV1",
             "yahoo_search_ads_yahoo_japan": "#/components/schemas/yahoo_search_ads_yahoo_japan_ConnectorResponseV1",
             "yotpo": "#/components/schemas/yotpo_ConnectorResponseV1",
+            "younium": "#/components/schemas/younium_ConnectorResponseV1",
             "youtube_analytics": "#/components/schemas/youtube_analytics_ConnectorResponseV1",
             "zendesk": "#/components/schemas/zendesk_ConnectorResponseV1",
             "zendesk_chat": "#/components/schemas/zendesk_chat_ConnectorResponseV1",
             "zendesk_sell": "#/components/schemas/zendesk_sell_ConnectorResponseV1",
             "zendesk_sunshine": "#/components/schemas/zendesk_sunshine_ConnectorResponseV1",
             "zenefits": "#/components/schemas/zenefits_ConnectorResponseV1",
+            "zingtree": "#/components/schemas/zingtree_ConnectorResponseV1",
             "zoho_books": "#/components/schemas/zoho_books_ConnectorResponseV1",
             "zoho_campaigns": "#/components/schemas/zoho_campaigns_ConnectorResponseV1",
             "zoho_crm": "#/components/schemas/zoho_crm_ConnectorResponseV1",
@@ -12288,6 +12424,37 @@
           }
         }
       },
+      "HvrHubRegistrationRequest": {
+        "type": "object",
+        "properties": {
+          "fingerprint": {
+            "type": "string",
+            "description": "Installation fingerprint."
+          },
+          "port": {
+            "type": "integer",
+            "description": "Installation port.",
+            "format": "int32"
+          },
+          "hub_server_url": {
+            "type": "string",
+            "description": "URL of Hub server."
+          }
+        }
+      },
+      "HvrHubRegistrationResponse": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "Access token."
+          },
+          "registration_id": {
+            "type": "string",
+            "description": "Registration identifier."
+          }
+        }
+      },
       "AddLogRequest": {
         "type": "object",
         "properties": {
@@ -12369,6 +12536,26 @@
             "items": {
               "$ref": "#/components/schemas/SetupTestResultResponse"
             }
+          }
+        }
+      },
+      "AccountInfoResponse": {
+        "required": [
+          "account_id"
+        ],
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "description": "Fivetran Account ID."
+          },
+          "system_key_id": {
+            "type": "string",
+            "description": "System Key ID."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User ID."
           }
         }
       },
@@ -12780,6 +12967,9 @@
           "secret": {
             "type": "string",
             "description": "The secret string used for payload signing."
+          },
+          "secret_value": {
+            "type": "string"
           }
         }
       },
@@ -14485,11 +14675,6 @@
                 "type": "string",
                 "description": "Tenant ID of service principal"
               },
-              "container_name": {
-                "title": "",
-                "type": "string",
-                "description": "Workspace name to store delta table files"
-              },
               "storage_account_name": {
                 "title": "",
                 "type": "string",
@@ -14510,6 +14695,11 @@
                 "title": "",
                 "type": "string",
                 "description": "Client ID of service principal"
+              },
+              "workspace_name": {
+                "title": "",
+                "type": "string",
+                "description": "OneLake workspace name"
               },
               "prefix_path": {
                 "title": "",
@@ -18664,6 +18854,210 @@
           }
         ]
       },
+      "aws_cost_report_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "access_key_id": {
+                "title": "",
+                "type": "string",
+                "description": "Access Key ID"
+              },
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "prefix": {
+                "title": "",
+                "type": "string",
+                "description": "Folder path to the aws_cost_report files within the bucket."
+              },
+              "pattern": {
+                "title": "",
+                "type": "string",
+                "description": "<strong>Optional.</strong> All files in your search path matching this regular expression will be synced. This parameter is optional."
+              },
+              "external_id": {
+                "title": "",
+                "type": "string",
+                "description": "The external ID is a string that designates who can assume the role. For more information, click <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html\">here</a>"
+              },
+              "json_delivery_mode": {
+                "title": "",
+                "type": "object",
+                "description": "Control how your JSON data is delivered into your destination",
+                "enum": [
+                  "Packed",
+                  "Unpacked"
+                ]
+              },
+              "skip_after": {
+                "title": "",
+                "type": "integer",
+                "description": "Enter 1 or greater",
+                "format": "int32"
+              },
+              "empty_header": {
+                "title": "",
+                "type": "boolean",
+                "description": "<strong>Optional.</strong> If your CSV generating software doesn't provide header line for the documents, Fivetran can generate the generic column names and sync data rows with them."
+              },
+              "skip_before": {
+                "title": "",
+                "type": "integer",
+                "description": "Enter 1 or greater",
+                "format": "int32"
+              },
+              "delimiter": {
+                "title": "",
+                "type": "string",
+                "description": "<strong>Optional.</strong> You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible. If your files sync with the wrong number of columns, consider setting this value"
+              },
+              "file_type": {
+                "title": "",
+                "type": "object",
+                "description": "If your files are saved with improper extensions, you can force them to by synced as the selected filetype. Leave the value as <strong>infer</strong> if your files have the correct extensions",
+                "enum": [
+                  "log",
+                  "infer",
+                  "tsv",
+                  "xml",
+                  "csv",
+                  "json",
+                  "xls/xlsx/xlsm",
+                  "jsonl",
+                  "avro",
+                  "parquet"
+                ]
+              },
+              "on_error": {
+                "title": "",
+                "type": "object",
+                "description": "If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as <strong>fail</strong> unless you are certain that you have undesirable, malformed data.",
+                "enum": [
+                  "fail",
+                  "skip"
+                ]
+              },
+              "table": {
+                "title": "Destination table",
+                "type": "string",
+                "description": "Destination table. Table is permanent and cannot be changed after connection creation"
+              },
+              "archive_pattern": {
+                "title": "",
+                "type": "string",
+                "description": "<strong>Optional.</strong> Files inside of compressed archives with filenames matching this regular expression will be synced."
+              },
+              "auth_type": {
+                "title": "",
+                "type": "object",
+                "description": "Access approach",
+                "enum": [
+                  "IAM_ROLE",
+                  "ACCESS_KEY"
+                ]
+              },
+              "append_file_option": {
+                "title": "",
+                "type": "object",
+                "description": "If you know that the source completely overwrites the same file with new data, you can append the changes instead of upserting based on filename and line number.",
+                "enum": [
+                  "upsert_file_with_primary_keys",
+                  "upsert_file",
+                  "append_file"
+                ]
+              },
+              "connection_type": {
+                "title": "",
+                "type": "object",
+                "description": "Connection method. Default value: `Directly`.",
+                "enum": [
+                  "Directly",
+                  "PrivateLink",
+                  "SshTunnel",
+                  "ProxyAgent"
+                ]
+              },
+              "escape_char": {
+                "title": "",
+                "type": "string",
+                "description": "<strong>Optional.</strong> If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here."
+              },
+              "list_strategy": {
+                "title": "",
+                "type": "object",
+                "description": "<strong>Optional.</strong> If you have a file structure where new files are always named in lexicographically increasing order such as files being named in increasing order of time, you can select <code>time_based_pattern_listing</code>.",
+                "enum": [
+                  "complete_listing",
+                  "time_based_pattern_listing"
+                ]
+              },
+              "bucket": {
+                "title": "",
+                "type": "string",
+                "description": "The S3 bucket name with the AWS Cost and Usage Report "
+              },
+              "line_separator": {
+                "title": "",
+                "type": "string",
+                "description": "You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next."
+              },
+              "null_sequence": {
+                "title": "",
+                "type": "string",
+                "description": "<strong>Optional.</strong> If your CSVs use a special value indicating null, you can specify it here."
+              },
+              "role_arn": {
+                "title": "",
+                "type": "string",
+                "description": "The Role ARN required for authentication.",
+                "format": "password"
+              },
+              "access_key_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Access Key Secret",
+                "format": "password"
+              },
+              "is_public": {
+                "title": "",
+                "type": "boolean",
+                "description": "Whether you are syncing from a public bucket. Default value: `false`."
+              },
+              "compression": {
+                "title": "",
+                "type": "object",
+                "description": "If your files are compressed, but do not have extensions indicating the compression method, you can force them to be uncompressed according to the selected compression algorithm. Leave the value as <strong>infer</strong> if your files are saved with the correct compression extensions.",
+                "enum": [
+                  "zip",
+                  "gz",
+                  "tar_gz",
+                  "tar",
+                  "infer",
+                  "gzip",
+                  "uncompressed",
+                  "bz2",
+                  "tar_bz2"
+                ]
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "aws_cost_report_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/aws_cost_report_config_V1"
+          }
+        ]
+      },
       "aws_inventory_config_V1": {
         "properties": {
           "config": {
@@ -20519,6 +20913,7 @@
                   "tsv",
                   "xml",
                   "csv",
+                  "spreadsheet",
                   "json",
                   "jsonl",
                   "avro",
@@ -20885,6 +21280,47 @@
           },
           {
             "$ref": "#/components/schemas/brex_config_V1"
+          }
+        ]
+      },
+      "brightcove_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "account_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your brightcove accountID."
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your brightcove clientSecret.",
+                "format": "password"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your brightcove clientId."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "brightcove_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/brightcove_config_V1"
           }
         ]
       },
@@ -21540,12 +21976,12 @@
               "secret_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Checkr Secret key.",
+                "description": "Your Checkr secret key.",
                 "format": "password"
               },
               "sub_domain": {
                 "type": "object",
-                "description": "Your Checkr Subdomain.",
+                "description": "Your Checkr subdomain.",
                 "enum": [
                   "checkr-staging.com",
                   "checkr.com"
@@ -21781,10 +22217,10 @@
                 "type": "string",
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
               },
-              "list_of_company_ids": {
+              "company_ids": {
                 "title": "",
                 "type": "string",
-                "description": "Your CJ Commission Detail list of company IDs."
+                "description": "Your CJ Commission Detail company IDs."
               },
               "personal_access_token": {
                 "title": "",
@@ -22105,19 +22541,19 @@
                 "type": "string",
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
               },
-              "api_key": {
-                "title": "",
-                "type": "string",
-                "description": "Your Concord API Key.",
-                "format": "password"
-              },
-              "sub_domain": {
+              "environment": {
                 "type": "object",
-                "description": "Your Concord Sub Domain.",
+                "description": "Your Concord environment.",
                 "enum": [
                   "uat",
                   "api"
                 ]
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Concord API key.",
+                "format": "password"
               }
             },
             "description": ""
@@ -23500,6 +23936,58 @@
           },
           {
             "$ref": "#/components/schemas/crowddev_config_V1"
+          }
+        ]
+      },
+      "culture_amp_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "target_entity_id": {
+                "type": "object",
+                "description": "Your Culture Amp Target Entity ID.",
+                "enum": [
+                  "79040b4d-3e2b-4480-a061-2e230eeb83b2",
+                  "8ed17dce-9eca-4383-a9e1-54f82c362b6d"
+                ]
+              },
+              "base_url": {
+                "type": "object",
+                "description": "Your Culture Amp Base URL.",
+                "enum": [
+                  "sandbox.public-api.development.cultureamp.net",
+                  "api.cultureamp.com"
+                ]
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Culture Amp client Secret.",
+                "format": "password"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Culture Amp client ID."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "culture_amp_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/culture_amp_config_V1"
           }
         ]
       },
@@ -25015,16 +25503,16 @@
                 "type": "string",
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
               },
-              "dsv_subscription_key": {
+              "subscription_key": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Your DSV subscription key.",
                 "format": "password"
               },
-              "dsv_service_auth": {
+              "service_authentication": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "A base64 encoded variant of your `username:password` string. Required for authentication.",
                 "format": "password"
               }
             },
@@ -25890,15 +26378,6 @@
           "config": {
             "type": "object",
             "properties": {
-              "sync_mode": {
-                "title": "",
-                "type": "object",
-                "description": "Option to select connector should sync all accounts or specific accounts. [Possible sync_mode values](/docs/applications/facebook-ads-insights/api-config#syncmode).",
-                "enum": [
-                  "AllAccounts",
-                  "SpecificAccounts"
-                ]
-              },
               "custom_tables": {
                 "title": "",
                 "type": "array",
@@ -26193,6 +26672,15 @@
                   },
                   "description": "List of custom tables. Each custom table corresponds to a table within the schema to which connector will sync the data."
                 }
+              },
+              "sync_mode": {
+                "title": "",
+                "type": "object",
+                "description": "Option to select connector should sync all accounts or specific accounts. [Possible sync_mode values](/docs/applications/facebook-ads-insights/api-config#syncmode).",
+                "enum": [
+                  "AllAccounts",
+                  "SpecificAccounts"
+                ]
               },
               "schema": {
                 "title": "Destination schema",
@@ -26713,6 +27201,14 @@
                 "title": "",
                 "type": "string",
                 "description": "Your Fountain subdomain."
+              },
+              "url_format": {
+                "type": "object",
+                "description": "Your Fountain URL format.",
+                "enum": [
+                  "api/v2",
+                  "v2"
+                ]
               }
             },
             "description": ""
@@ -32703,17 +33199,6 @@
                 "description": "Your integral_ad_science password.",
                 "format": "password"
               },
-              "client_secret": {
-                "title": "",
-                "type": "string",
-                "description": "Your integral_ad_science client secret.",
-                "format": "password"
-              },
-              "client_id": {
-                "title": "",
-                "type": "string",
-                "description": "Your integral_ad_science client id."
-              },
               "username": {
                 "title": "",
                 "type": "string",
@@ -33579,6 +34064,37 @@
           }
         ]
       },
+      "kisi_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Kisi API key.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "kisi_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/kisi_config_V1"
+          }
+        ]
+      },
       "kissmetrics_config_V1": {
         "properties": {
           "config": {
@@ -33675,6 +34191,11 @@
                 "type": "string",
                 "description": "Your Klaviyo API key.",
                 "format": "password"
+              },
+              "should_sync_events_with_deleted_profiles": {
+                "title": "",
+                "type": "boolean",
+                "description": "Sync events linked to deleted profiles"
               }
             },
             "description": ""
@@ -35507,6 +36028,42 @@
           }
         ]
       },
+      "messagebird_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your MessageBird API key.",
+                "format": "password"
+              },
+              "region": {
+                "title": "",
+                "type": "string",
+                "description": "Your MessageBird Account region."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "messagebird_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/messagebird_config_V1"
+          }
+        ]
+      },
       "microsoft_dynamics_365_fo_config_V1": {
         "properties": {
           "config": {
@@ -35545,6 +36102,47 @@
           },
           {
             "$ref": "#/components/schemas/microsoft_dynamics_365_fo_config_V1"
+          }
+        ]
+      },
+      "microsoft_entra_id_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Microsoft Entra ID Client Secret.",
+                "format": "password"
+              },
+              "tenant": {
+                "title": "",
+                "type": "string",
+                "description": "Your Microsoft Entra ID Tenant."
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Microsoft Entra ID Client ID."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "microsoft_entra_id_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/microsoft_entra_id_config_V1"
           }
         ]
       },
@@ -35605,7 +36203,7 @@
           }
         ]
       },
-      "microsoft_teams_config_V1": {
+      "missive_config_V1": {
         "properties": {
           "config": {
             "type": "object",
@@ -35615,34 +36213,24 @@
                 "type": "string",
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
               },
-              "client_secret": {
+              "api_token": {
                 "title": "",
                 "type": "string",
-                "description": "Your Microsoft Teams Client Secret.",
+                "description": "Your Missive API token.",
                 "format": "password"
-              },
-              "tenant": {
-                "title": "",
-                "type": "string",
-                "description": "Your Microsoft Teams Tenant."
-              },
-              "client_id": {
-                "title": "",
-                "type": "string",
-                "description": "Your Microsoft Teams Client ID."
               }
             },
             "description": ""
           }
         }
       },
-      "microsoft_teams_NewConnectorRequestV1": {
+      "missive_NewConnectorRequestV1": {
         "allOf": [
           {
             "$ref": "#/components/schemas/NewConnectorRequestV1"
           },
           {
-            "$ref": "#/components/schemas/microsoft_teams_config_V1"
+            "$ref": "#/components/schemas/missive_config_V1"
           }
         ]
       },
@@ -36759,6 +37347,55 @@
           },
           {
             "$ref": "#/components/schemas/ometria_config_V1"
+          }
+        ]
+      },
+      "on24_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "token_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your ON24 token secret.",
+                "format": "password"
+              },
+              "token_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your ON24 token key."
+              },
+              "region": {
+                "type": "object",
+                "description": "Your ON24 region.",
+                "enum": [
+                  "api.eu",
+                  "api"
+                ]
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your ON24 client ID."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "on24_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/on24_config_V1"
           }
         ]
       },
@@ -38481,6 +39118,11 @@
                 "type": "string",
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
               },
+              "pull_archived_campaigns": {
+                "title": "",
+                "type": "boolean",
+                "description": "Include or ignore results from archived campaigns"
+              },
               "password": {
                 "title": "",
                 "type": "string",
@@ -39273,13 +39915,13 @@
               "access_token": {
                 "title": "",
                 "type": "string",
-                "description": "Your Pinterest Organic access token.",
+                "description": "Your Pinterest access token.",
                 "format": "password"
               },
               "refresh_token": {
                 "title": "",
                 "type": "string",
-                "description": "Your Pinterest Organic refresh token.",
+                "description": "Your Pinterest refresh token.",
                 "format": "password"
               },
               "client_access": {
@@ -39298,7 +39940,7 @@
                     "description": ""
                   }
                 },
-                "description": "Your Pinterest Organic client access."
+                "description": "Your Pinterest client access."
               }
             },
             "description": ""
@@ -39820,7 +40462,7 @@
               "api_token": {
                 "title": "",
                 "type": "string",
-                "description": "Your Postmark API token.",
+                "description": "Your Postmark account API token.",
                 "format": "password"
               }
             },
@@ -40089,7 +40731,7 @@
               "report_keys": {
                 "title": "",
                 "type": "string",
-                "description": "Your Rakuten Advertising Report keys."
+                "description": "Your Rakuten Advertising report keys."
               },
               "api_token": {
                 "title": "",
@@ -40783,6 +41425,42 @@
           }
         ]
       },
+      "reviewsio_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "store_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Reviews.io Store ID"
+              },
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Reviews.io API key.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "reviewsio_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/reviewsio_config_V1"
+          }
+        ]
+      },
       "revops_config_V1": {
         "properties": {
           "config": {
@@ -40969,7 +41647,7 @@
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Rocketlane API Key.",
+                "description": "Your Rocketlane API key.",
                 "format": "password"
               }
             },
@@ -41068,13 +41746,13 @@
               "password": {
                 "title": "",
                 "type": "string",
-                "description": "Your RTB House Password.",
+                "description": "Your RTB House password.",
                 "format": "password"
               },
               "username": {
                 "title": "",
                 "type": "string",
-                "description": "Your RTB House Username."
+                "description": "Your RTB House username."
               }
             },
             "description": ""
@@ -41110,6 +41788,11 @@
                 "title": "",
                 "type": "string",
                 "description": "All files and folders under this folder path will be searched for files to sync."
+              },
+              "non_standard_escape_char": {
+                "title": "",
+                "type": "boolean",
+                "description": "Use this if your CSV generator uses non-standard ways of escaping characters. Default value: `false`."
               },
               "pattern": {
                 "title": "",
@@ -41231,6 +41914,15 @@
                   "PrivateLink",
                   "SshTunnel",
                   "ProxyAgent"
+                ]
+              },
+              "escape_char_options": {
+                "title": "",
+                "type": "object",
+                "description": "Approach used by CSV parser. Default  value: `CUSTOM_ESCAPE_CHAR`. required for CSV parsing when `non_standard_escape_char` is `true`.",
+                "enum": [
+                  "DELIMITED_ONLY",
+                  "CUSTOM_ESCAPE_CHAR"
                 ]
               },
               "escape_char": {
@@ -44096,7 +44788,7 @@
           }
         ]
       },
-      "sonarqube_config_V1": {
+      "snyk_config_V1": {
         "properties": {
           "config": {
             "type": "object",
@@ -44109,13 +44801,53 @@
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Sonarqube API key.",
+                "description": "Your Snyk API key.",
                 "format": "password"
+              },
+              "region": {
+                "type": "object",
+                "description": "Your Snyk region.",
+                "enum": [
+                  "",
+                  ".au",
+                  ".eu"
+                ]
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "snyk_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/snyk_config_V1"
+          }
+        ]
+      },
+      "sonarqube_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
               },
               "sub_domain": {
                 "title": "",
                 "type": "string",
                 "description": "Your Sonarqube subdomain."
+              },
+              "user_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your Sonarqube user token.",
+                "format": "password"
               }
             },
             "description": ""
@@ -46033,6 +46765,50 @@
           }
         ]
       },
+      "trelica_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "environment": {
+                "type": "object",
+                "description": "Your Trelica environment.",
+                "enum": [
+                  "app",
+                  "eu"
+                ]
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Trelica client secret.",
+                "format": "password"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Trelica client ID."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "trelica_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/trelica_config_V1"
+          }
+        ]
+      },
       "trello_config_V1": {
         "properties": {
           "config": {
@@ -46437,6 +47213,52 @@
           }
         ]
       },
+      "udemy_business_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "account_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Udemy Business account ID."
+              },
+              "account_name": {
+                "title": "",
+                "type": "string",
+                "description": "Your Udemy Business account name."
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Udemy Business client secret.",
+                "format": "password"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Udemy Business client ID."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "udemy_business_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/udemy_business_config_V1"
+          }
+        ]
+      },
       "ukg_pro_config_V1": {
         "properties": {
           "config": {
@@ -46461,7 +47283,7 @@
               "customer_api_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your UKG Pro customer api key.",
+                "description": "Your UKG Pro Customer API key.",
                 "format": "password"
               },
               "username": {
@@ -46996,6 +47818,47 @@
           },
           {
             "$ref": "#/components/schemas/wasabi_cloud_storage_config_V1"
+          }
+        ]
+      },
+      "webconnex_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "product": {
+                "type": "object",
+                "description": "Your Webconnex Product.",
+                "enum": [
+                  "ticketspice.com",
+                  "redpodium.com",
+                  "givingfuel.com",
+                  "regfox.com"
+                ]
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Webconnex API key.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "webconnex_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/webconnex_config_V1"
           }
         ]
       },
@@ -47548,64 +48411,6 @@
           }
         ]
       },
-      "workflowmax_config_V1": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "properties": {
-              "schema": {
-                "title": "Destination schema",
-                "type": "string",
-                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
-              }
-            },
-            "description": ""
-          },
-          "auth": {
-            "type": "object",
-            "properties": {
-              "access_token": {
-                "title": "",
-                "type": "string",
-                "format": "password"
-              },
-              "refresh_token": {
-                "title": "",
-                "type": "string",
-                "format": "password"
-              },
-              "client_access": {
-                "title": "",
-                "type": "object",
-                "properties": {
-                  "client_secret": {
-                    "title": "",
-                    "type": "string",
-                    "description": "",
-                    "format": "password"
-                  },
-                  "client_id": {
-                    "title": "",
-                    "type": "string",
-                    "description": ""
-                  }
-                }
-              }
-            },
-            "description": ""
-          }
-        }
-      },
-      "workflowmax_NewConnectorRequestV1": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NewConnectorRequestV1"
-          },
-          {
-            "$ref": "#/components/schemas/workflowmax_config_V1"
-          }
-        ]
-      },
       "workramp_config_V1": {
         "properties": {
           "config": {
@@ -47805,7 +48610,7 @@
               "merchant_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Xsolla merchant id."
+                "description": "Your Xsolla Merchant ID."
               }
             },
             "description": ""
@@ -48448,6 +49253,60 @@
           }
         ]
       },
+      "younium_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "environment": {
+                "type": "object",
+                "description": "Your Younium Environment.",
+                "enum": [
+                  "apisanbox",
+                  "api.us",
+                  "api.sandbox.us",
+                  "api"
+                ]
+              },
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "Your Younium Password.",
+                "format": "password"
+              },
+              "auth_environment": {
+                "type": "object",
+                "description": "Your Younium Auth Environment.",
+                "enum": [
+                  "younium-identity-server-sandbox.azurewebsites.net",
+                  "younium-identity-server.azurewebsites.net"
+                ]
+              },
+              "username": {
+                "title": "",
+                "type": "string",
+                "description": "Your Younium Username."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "younium_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/younium_config_V1"
+          }
+        ]
+      },
       "youtube_analytics_config_V1": {
         "properties": {
           "config": {
@@ -48725,6 +49584,37 @@
           },
           {
             "$ref": "#/components/schemas/zenefits_config_V1"
+          }
+        ]
+      },
+      "zingtree_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Zingtree API key.",
+                "format": "password"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "zingtree_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/zingtree_config_V1"
           }
         ]
       },
@@ -49527,6 +50417,16 @@
           }
         ]
       },
+      "aws_cost_report_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/aws_cost_report_config_V1"
+          }
+        ]
+      },
       "aws_inventory_ConnectorResponseV1": {
         "allOf": [
           {
@@ -49794,6 +50694,16 @@
           },
           {
             "$ref": "#/components/schemas/brex_config_V1"
+          }
+        ]
+      },
+      "brightcove_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/brightcove_config_V1"
           }
         ]
       },
@@ -50234,6 +51144,16 @@
           },
           {
             "$ref": "#/components/schemas/crowddev_config_V1"
+          }
+        ]
+      },
+      "culture_amp_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/culture_amp_config_V1"
           }
         ]
       },
@@ -51537,6 +52457,16 @@
           }
         ]
       },
+      "kisi_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/kisi_config_V1"
+          }
+        ]
+      },
       "kissmetrics_ConnectorResponseV1": {
         "allOf": [
           {
@@ -51927,6 +52857,16 @@
           }
         ]
       },
+      "messagebird_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/messagebird_config_V1"
+          }
+        ]
+      },
       "microsoft_dynamics_365_fo_ConnectorResponseV1": {
         "allOf": [
           {
@@ -51934,6 +52874,16 @@
           },
           {
             "$ref": "#/components/schemas/microsoft_dynamics_365_fo_config_V1"
+          }
+        ]
+      },
+      "microsoft_entra_id_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/microsoft_entra_id_config_V1"
           }
         ]
       },
@@ -51947,13 +52897,13 @@
           }
         ]
       },
-      "microsoft_teams_ConnectorResponseV1": {
+      "missive_ConnectorResponseV1": {
         "allOf": [
           {
             "$ref": "#/components/schemas/ConnectorResponseV1"
           },
           {
-            "$ref": "#/components/schemas/microsoft_teams_config_V1"
+            "$ref": "#/components/schemas/missive_config_V1"
           }
         ]
       },
@@ -52144,6 +53094,16 @@
           },
           {
             "$ref": "#/components/schemas/ometria_config_V1"
+          }
+        ]
+      },
+      "on24_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/on24_config_V1"
           }
         ]
       },
@@ -52797,6 +53757,16 @@
           }
         ]
       },
+      "reviewsio_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/reviewsio_config_V1"
+          }
+        ]
+      },
       "revops_ConnectorResponseV1": {
         "allOf": [
           {
@@ -53307,6 +54277,16 @@
           }
         ]
       },
+      "snyk_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/snyk_config_V1"
+          }
+        ]
+      },
       "sonarqube_ConnectorResponseV1": {
         "allOf": [
           {
@@ -53637,6 +54617,16 @@
           }
         ]
       },
+      "trelica_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/trelica_config_V1"
+          }
+        ]
+      },
       "trello_ConnectorResponseV1": {
         "allOf": [
           {
@@ -53694,6 +54684,16 @@
           },
           {
             "$ref": "#/components/schemas/typeform_config_V1"
+          }
+        ]
+      },
+      "udemy_business_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/udemy_business_config_V1"
           }
         ]
       },
@@ -53797,6 +54797,16 @@
           }
         ]
       },
+      "webconnex_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/webconnex_config_V1"
+          }
+        ]
+      },
       "webhooks_ConnectorResponseV1": {
         "allOf": [
           {
@@ -53897,16 +54907,6 @@
           }
         ]
       },
-      "workflowmax_ConnectorResponseV1": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ConnectorResponseV1"
-          },
-          {
-            "$ref": "#/components/schemas/workflowmax_config_V1"
-          }
-        ]
-      },
       "workramp_ConnectorResponseV1": {
         "allOf": [
           {
@@ -53997,6 +54997,16 @@
           }
         ]
       },
+      "younium_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/younium_config_V1"
+          }
+        ]
+      },
       "youtube_analytics_ConnectorResponseV1": {
         "allOf": [
           {
@@ -54054,6 +55064,16 @@
           },
           {
             "$ref": "#/components/schemas/zenefits_config_V1"
+          }
+        ]
+      },
+      "zingtree_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/zingtree_config_V1"
           }
         ]
       },

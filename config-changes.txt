@@ -1,63 +1,12 @@
-- Added field `fivetran_connector.config.client_host` for services: `ceridian_dayforce`.
-- Added field `fivetran_connector.config.report_configs` for services: `yahoo_dsp`.
-- Added field `fivetran_connector.config.personal_api_token` for services: `monday`.
-- Added field `fivetran_connector.config.host_url` for services: `adobe_commerce`.
-- Added field `fivetran_connector.config.organization_name` for services: `confluence`.
-- Added field `fivetran_connector.config.agent_config_method` for services: `hana_sap_hva_s4_netweaver`, `hana_sap_hva_b1`, `hana_sap_hva_ecc`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`.
-- Added field `fivetran_connector.config.system_id` for services: `hana_sap_hva_b1`, `hana_sap_hva_ecc`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`.
-- Added field `fivetran_connector.config.tenant_url` for services: `ivanti`, `reltio`.
-- Added field `fivetran_connector.config.collection_address` for services: `rarible`.
-- Added field `fivetran_connector.config.selected_event_types` for services: `salesforce_marketing_cloud`.
-- Added field `fivetran_connector.config.customer_api_key` for services: `ukg_pro`.
-- Added field `fivetran_connector.config.companies` for services: `business_central`.
-- Added field `fivetran_connector.config.partner_user_secret` for services: `expensify`.
-- Added field `fivetran_connector.config.sap_source_schema` for services: `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`, `hana_sap_hva_b1`, `hana_sap_hva_ecc`.
-- Added field `fivetran_connector.config.hana_mode` for services: `hana_sap_hva_b1`, `hana_sap_hva_ecc`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`.
-- Added field `fivetran_connector.config.token` for services: `mode`, `oracle_moat_analytics`.
-- Added field `fivetran_connector.config.email_id` for services: `ordway`.
-- Added field `fivetran_connector.config.sync_mode_advertiser` for services: `yahoo_dsp`.
-- Added field `fivetran_connector.config.list_of_company_ids` for services: `cj_commission_detail`.
-- Added field `fivetran_connector.config.dsv_service_auth` for services: `dsv`.
-- Added field `fivetran_connector.config.workspace` for services: `mode`.
-- Added field `fivetran_connector.config.project_access_token` for services: `rollbar`.
-- Added field `fivetran_connector.config.x_user_email` for services: `workday_strategic_sourcing`.
-- Added field `fivetran_connector.config.seats` for services: `yahoo_dsp`.
-- Added field `fivetran_connector.config.agreement_grant_token` for services: `economic`.
-- Added field `fivetran_connector.config.odbc_sys_ini_path` for services: `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`, `hana_sap_hva_b1`, `hana_sap_hva_ecc`.
-- Added field `fivetran_connector.config.company` for services: `ordway`.
-- Added field `fivetran_connector.config.facility_codes` for services: `unicommerce`.
-- Added field `fivetran_connector.config.workplace_id` for services: `moloco`.
-- Added field `fivetran_connector.config.custom_reports.add_metric_variants` for services: `snapchat_ads`.
-- Added field `fivetran_connector.config.app_secret_token` for services: `economic`.
-- Added field `fivetran_connector.config.account_access_token` for services: `rollbar`.
-- Added field `fivetran_connector.config.hostname` for services: `ukg_pro`.
-- Added field `fivetran_connector.config.sync_mode_seat` for services: `yahoo_dsp`.
-- Added field `fivetran_connector.config.dsv_subscription_key` for services: `dsv`.
-- Added field `fivetran_connector.config.log_on_group` for services: `hana_sap_hva_b1`, `hana_sap_hva_ecc`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`.
-- Added field `fivetran_connector.config.snc_name` for services: `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`, `hana_sap_hva_b1`, `hana_sap_hva_ecc`.
-- Added field `fivetran_connector.config.brand_id` for services: `oracle_moat_analytics`.
-- Added field `fivetran_connector.config.report_list` for services: `spotify_ads`.
-- Added field `fivetran_connector.config.environment_name` for services: `business_central`.
-- Added field `fivetran_connector.config.account_type` for services: `freightview`.
-- Added field `fivetran_connector.config.snc_library_path` for services: `hana_sap_hva_ecc`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`, `hana_sap_hva_b1`.
-- Added field `fivetran_connector.config.service_name` for services: `hana_sap_hva_b1`, `hana_sap_hva_ecc`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`.
-- Added field `fivetran_connector.config.ecommerce_stores` for services: `mailchimp`.
-- Added field `fivetran_connector.config.audience` for services: `auth0`.
-- Added field `fivetran_connector.config.target_host` for services: `d2l_brightspace`.
-- Added field `fivetran_connector.config.account_sid` for services: `fone_dynamics`.
-- Added field `fivetran_connector.config.snc_partner_name` for services: `hana_sap_hva_ecc`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`, `hana_sap_hva_b1`.
-- Added field `fivetran_connector.config.backint_configuration_path` for services: `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`, `hana_sap_hva_b1`, `hana_sap_hva_ecc`.
-- Added field `fivetran_connector.config.advertisers_with_seat` for services: `yahoo_dsp`.
-- Added field `fivetran_connector.config.x_api_key` for services: `workday_strategic_sourcing`.
-- Added field `fivetran_connector.config.application_id` for services: `algolia`.
-- Added field `fivetran_connector.config.partner_user_id` for services: `expensify`.
-- Added field `fivetran_connector.config.backint_executable_path` for services: `hana_sap_hva_b1`, `hana_sap_hva_ecc`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`.
-- Added field `fivetran_connector.config.odbc_driver_manager_library_path` for services: `hana_sap_hva_s4_netweaver`, `hana_sap_hva_b1`, `hana_sap_hva_ecc`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`.
-- Added field `fivetran_connector.config.user_token` for services: `konnect_insights`.
-- Added field `fivetran_connector.config.report_keys` for services: `rakutenadvertising`.
-- Added field `fivetran_connector.config.client_namespace` for services: `ceridian_dayforce`.
-- Added field `fivetran_connector.config.blockchain` for services: `rarible`.
-- Added field `fivetran_connector.config.x_user_token` for services: `workday_strategic_sourcing`.
-- Added field `fivetran_connector.config.host_name` for services: `coassemble`.
-- Added field `fivetran_connector.config.hana_backup_password` for services: `hana_sap_hva_ecc`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4`, `hana_sap_hva_s4_netweaver`, `hana_sap_hva_b1`.
-- Added field `fivetran_connector.config.account_token` for services: `konnect_insights`.
+- Added field `fivetran_connector.config.company_ids` for services: `cj_commission_detail`.
+- Added field `fivetran_connector.config.target_entity_id` for services: `culture_amp`.
+- Added field `fivetran_connector.config.url_format` for services: `fountain`.
+- Added field `fivetran_connector.config.should_sync_events_with_deleted_profiles` for services: `klaviyo`.
+- Added field `fivetran_connector.config.pull_archived_campaigns` for services: `outbrain`.
+- Added field `fivetran_connector.config.store_id` for services: `reviewsio`.
+- Added field `fivetran_connector.config.non_standard_escape_char` for services: `s3`.
+- Added field `fivetran_connector.config.product` for services: `webconnex`.
+- Added field `fivetran_connector.config.auth_environment` for services: `younium`.
+- Added field `fivetran_connector.config.service_authentication` for services: `dsv`.
+- Added field `fivetran_connector.config.subscription_key` for services: `dsv`.
+- Added field `fivetran_connector.config.escape_char_options` for services: `s3`.
