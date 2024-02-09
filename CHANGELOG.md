@@ -5,9 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.12...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.13...HEAD)
 
-## [1.1.12](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.10...v1.1.11)
+## [1.1.13](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.12...v1.1.13)
+
+## Updated `config` schema for connector resource
+- Added field `fivetran_connector.config.company_ids` for services: `cj_commission_detail`.
+- Added field `fivetran_connector.config.target_entity_id` for services: `culture_amp`.
+- Added field `fivetran_connector.config.url_format` for services: `fountain`.
+- Added field `fivetran_connector.config.should_sync_events_with_deleted_profiles` for services: `klaviyo`.
+- Added field `fivetran_connector.config.pull_archived_campaigns` for services: `outbrain`.
+- Added field `fivetran_connector.config.store_id` for services: `reviewsio`.
+- Added field `fivetran_connector.config.non_standard_escape_char` for services: `s3`.
+- Added field `fivetran_connector.config.product` for services: `webconnex`.
+- Added field `fivetran_connector.config.auth_environment` for services: `younium`.
+- Added field `fivetran_connector.config.service_authentication` for services: `dsv`.
+- Added field `fivetran_connector.config.subscription_key` for services: `dsv`.
+- Added field `fivetran_connector.config.escape_char_options` for services: `s3`.
+
+## [1.1.12](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.11...v1.1.12)
 
 ## Updated
 - Destination Resource migrated on `terraform-plugin-framework`
