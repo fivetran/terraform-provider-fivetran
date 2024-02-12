@@ -1,24 +1,24 @@
-package mock
+package resources_test
 
 import (
 	"net/http"
 	"testing"
-
+	
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
 	"github.com/fivetran/go-fivetran/tests/mock"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 var (
 	teamPostHandler   *mock.Handler
 	teamPatchHandler  *mock.Handler
 	teamDeleteHandler *mock.Handler
-	//teamTestHandler   *mock.Handler
 	teamData map[string]interface{}
 )
 
 func setupMockClientTeamResource(t *testing.T) {
-	mockClient.Reset()
+	tfmock.MockClient().Reset()
 	teamResponse :=
 		`{
       "id": "team_id",
@@ -35,29 +35,29 @@ func setupMockClientTeamResource(t *testing.T) {
       "role": "Account Reviewer"
     }`
 
-	teamPostHandler = mockClient.When(http.MethodPost, "/v1/teams").ThenCall(
+	teamPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/teams").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			teamData = createMapFromJsonString(t, teamResponse)
-			return fivetranSuccessResponse(t, req, http.StatusCreated, "Team has been created", teamData), nil
+			teamData = tfmock.CreateMapFromJsonString(t, teamResponse)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Team has been created", teamData), nil
 		},
 	)
 
-	mockClient.When(http.MethodGet, "/v1/teams/team_id").ThenCall(
+	tfmock.MockClient().When(http.MethodGet, "/v1/teams/team_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			return fivetranSuccessResponse(t, req, http.StatusOK, "", teamData), nil
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "", teamData), nil
 		},
 	)
 
-	teamPatchHandler = mockClient.When(http.MethodPatch, "/v1/teams/team_id").ThenCall(
+	teamPatchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/teams/team_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			teamData = createMapFromJsonString(t, teamUpdatedResponse)
-			return fivetranSuccessResponse(t, req, http.StatusOK, "Team has been updated", teamData), nil
+			teamData = tfmock.CreateMapFromJsonString(t, teamUpdatedResponse)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Team has been updated", teamData), nil
 		},
 	)
 
-	teamDeleteHandler = mockClient.When(http.MethodDelete, "/v1/teams/team_id").ThenCall(
+	teamDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/teams/team_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			return fivetranSuccessResponse(t, req, 200, "Team has been deleted", nil), nil
+			return tfmock.FivetranSuccessResponse(t, req, 200, "Team has been deleted", nil), nil
 		},
 	)
 }
@@ -75,7 +75,7 @@ func TestResourceTeamMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, teamPostHandler.Interactions, 1)
+				tfmock.AssertEqual(t, teamPostHandler.Interactions, 1)
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_team.test_team", "name", "test_team"),
@@ -95,7 +95,7 @@ func TestResourceTeamMock(t *testing.T) {
             }`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, teamPatchHandler.Interactions, 1)
+				tfmock.AssertEqual(t, teamPatchHandler.Interactions, 1)
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_team.test_team", "name", "test_team_2"),
@@ -110,9 +110,9 @@ func TestResourceTeamMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientTeamResource(t)
 			},
-			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
-				assertEqual(t, teamDeleteHandler.Interactions, 1)
+				tfmock.AssertEqual(t, teamDeleteHandler.Interactions, 1)
 				return nil
 			},
 

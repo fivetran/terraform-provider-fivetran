@@ -1,12 +1,13 @@
-package mock
+package datasources_test
 
 import (
 	"net/http"
 	"testing"
 
 	"github.com/fivetran/go-fivetran/tests/mock"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 var (
@@ -32,19 +33,19 @@ const (
 )
 
 func setupMockClientTeamUserMembershipsDataSourceConfigMapping(t *testing.T) {
-	mockClient.Reset()
+	tfmock.MockClient().Reset()
 
-	teamsDataSourceMockGetHandler = mockClient.When(http.MethodGet, "/v1/teams").ThenCall(
+	teamsDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/teams").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			teamsDataSourceMockData = createMapFromJsonString(t, teamsMappingResponse)
-			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", teamsDataSourceMockData), nil
+			teamsDataSourceMockData = tfmock.CreateMapFromJsonString(t, teamsMappingResponse)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", teamsDataSourceMockData), nil
 		},
 	)
 
-	teamUserMembershipsDataSourceMockGetHandler = mockClient.When(http.MethodGet, "/v1/teams/team_id/users").ThenCall(
+	teamUserMembershipsDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/teams/team_id/users").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			teamUserMembershipsDataSourceMockData = createMapFromJsonString(t, teamUserMembershipsMappingResponse)
-			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", teamUserMembershipsDataSourceMockData), nil
+			teamUserMembershipsDataSourceMockData = tfmock.CreateMapFromJsonString(t, teamUserMembershipsMappingResponse)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", teamUserMembershipsDataSourceMockData), nil
 		},
 	)
 }
@@ -59,8 +60,8 @@ func TestDataSourceTeamUserMembershipsMappingMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, teamUserMembershipsDataSourceMockGetHandler.Interactions, 2)
-				assertNotEmpty(t, teamUserMembershipsDataSourceMockData)
+				tfmock.AssertEqual(t, teamUserMembershipsDataSourceMockGetHandler.Interactions, 2)
+				tfmock.AssertNotEmpty(t, teamUserMembershipsDataSourceMockData)
 				return nil
 			},
 		),
@@ -72,7 +73,7 @@ func TestDataSourceTeamUserMembershipsMappingMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientTeamUserMembershipsDataSourceConfigMapping(t)
 			},
-			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				return nil
 			},

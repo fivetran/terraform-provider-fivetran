@@ -20,7 +20,7 @@ func TestResourceTeamUserMembershipE2E(t *testing.T) {
             resource "fivetran_team" "testteam" {
                 provider = fivetran-provider
                 name = "test_team"
-                description = "test_team"
+                description = "test_team_5"
                 role = "Account Analyst"
             }
 
@@ -58,7 +58,7 @@ func TestResourceTeamUserMembershipE2E(t *testing.T) {
             resource "fivetran_team" "testteam" {
                 provider = fivetran-provider
                 name = "test_team"
-                description = "test_team"
+                description = "test_team_6"
                 role = "Account Analyst"
             }
 

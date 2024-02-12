@@ -103,6 +103,11 @@ func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Reso
 		resources.ConnectorSchema,
 		resources.ConnectorSchedule,
 		resources.Destination,
+		resources.Team,
+		resources.TeamConnectorMembership,
+		resources.TeamGroupMembership,
+		resources.TeamUserMembership,
+		resources.ExternalLogging,
 	}
 }
 
@@ -115,5 +120,11 @@ func (p *fivetranProvider) DataSources(ctx context.Context) []func() datasource.
 		datasources.GroupServiceAccount,
 		datasources.Connector,
 		datasources.Destination,
+		datasources.Team,
+		datasources.Teams,
+		datasources.TeamConnectorMemberships,
+		datasources.TeamGroupMemberships,
+		datasources.TeamUserMemberships,
+		datasources.ExternalLogging,
 	}
 }

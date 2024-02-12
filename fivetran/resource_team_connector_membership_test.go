@@ -19,7 +19,7 @@ func TestResourceTeamConnectorMembershipE2E(t *testing.T) {
 				Config: `
             resource "fivetran_team" "testteam" {
                 provider = fivetran-provider
-                name = "test_team"
+                name = "test_team_1"
                 description = "test_team"
                 role = "Account Analyst"
             }
@@ -69,7 +69,7 @@ func TestResourceTeamConnectorMembershipE2E(t *testing.T) {
 				Config: `
             resource "fivetran_team" "testteam" {
                 provider = fivetran-provider
-                name = "test_team"
+                name = "test_team_2"
                 description = "test_team"
                 role = "Account Analyst"
             }
