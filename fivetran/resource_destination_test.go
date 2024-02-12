@@ -28,6 +28,7 @@ func TestResourceDestinationE2E(t *testing.T) {
 					service = "postgres_rds_warehouse"
 					time_zone_offset = "0"
 					region = "GCP_US_EAST4"
+					daylight_saving_time_enabled = "true"
 					trust_certificates = "true"
 					trust_fingerprints = "true"
 					run_setup_tests = "false"
@@ -49,6 +50,7 @@ func TestResourceDestinationE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "region", "GCP_US_EAST4"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "trust_certificates", "true"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "trust_fingerprints", "true"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "daylight_saving_time_enabled", "true"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "run_setup_tests", "false"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "config.host", "terraform-test.us-east-1.rds.amazonaws.com"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "config.port", "5432"),
@@ -71,6 +73,7 @@ func TestResourceDestinationE2E(t *testing.T) {
 					service = "postgres_rds_warehouse"
 					time_zone_offset = "+4"
 					region = "GCP_EUROPE_WEST2"
+					daylight_saving_time_enabled = "false"
 					trust_certificates = "false"
 					trust_fingerprints = "false"
 					run_setup_tests = "false"
@@ -92,6 +95,7 @@ func TestResourceDestinationE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "region", "GCP_EUROPE_WEST2"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "trust_certificates", "false"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "trust_fingerprints", "false"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "daylight_saving_time_enabled", "false"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "run_setup_tests", "false"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "config.host", "terraform-test-updated.us-east-1.rds.amazonaws.com"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "config.port", "5434"),

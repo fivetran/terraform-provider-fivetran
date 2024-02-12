@@ -58,7 +58,7 @@ Read-Only:
 - `sync_state` (String) The current sync state of the connector. The available values are: <br /> - scheduled - the sync is waiting to be run <br /> - syncing - the sync is currently running <br /> - paused - the sync is currently paused <br /> - rescheduled - the sync is waiting until more API calls are available in the source service.
 - `tasks` (Block Set) The collection of tasks for the connector (see [below for nested schema](#nestedblock--connectors--status--tasks))
 - `update_state` (String) The current data update state of the connector. The available values are: <br /> - on_schedule - the sync is running smoothly, no delays <br /> - delayed - the data is delayed for a longer time than expected for the update.
-- `warnings` (Block Set) (see [below for nested schema](#nestedblock--connectors--status--warnings))
+- `warnings` (Block Set) The collection of warnings for the connector. (see [below for nested schema](#nestedblock--connectors--status--warnings))
 
 <a id="nestedblock--connectors--status--tasks"></a>
 ### Nested Schema for `connectors.status.tasks`

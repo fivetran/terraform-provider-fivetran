@@ -28,6 +28,7 @@ func setupMockClientDestinationDataSourceConfigMapping(t *testing.T) {
 				"region":"GCP_US_EAST4",
 				"time_zone_offset":"0",
 				"setup_status":"connected",
+				"daylight_saving_time_enabled":true,
 				"setup_tests":[
 					{
 						"title":"Host Connection",
@@ -113,6 +114,7 @@ func TestDataSourceDestinationConfigMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("data.fivetran_destination.test_destintion", "region", "GCP_US_EAST4"),
 			resource.TestCheckResourceAttr("data.fivetran_destination.test_destintion", "time_zone_offset", "0"),
 			resource.TestCheckResourceAttr("data.fivetran_destination.test_destintion", "setup_status", "connected"),
+			resource.TestCheckResourceAttr("data.fivetran_destination.test_destintion", "daylight_saving_time_enabled", "true"),
 			resource.TestCheckResourceAttr("data.fivetran_destination.test_destintion", "config.host", "host"),
 			resource.TestCheckResourceAttr("data.fivetran_destination.test_destintion", "config.port", "123"),
 			resource.TestCheckResourceAttr("data.fivetran_destination.test_destintion", "config.database", "database"),
