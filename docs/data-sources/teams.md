@@ -18,11 +18,8 @@ data "fivetran_teams" "teams" {
 
 ### Optional
 
-- `teams` (Block Set) (see [below for nested schema](#nestedblock--teams))
-
-### Read-Only
-
 - `id` (String) The ID of this resource.
+- `teams` (Block Set) (see [below for nested schema](#nestedblock--teams))
 
 <a id="nestedblock--teams"></a>
 ### Nested Schema for `teams`

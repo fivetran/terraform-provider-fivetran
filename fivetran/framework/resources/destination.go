@@ -87,6 +87,7 @@ func (r *destination) Create(ctx context.Context, req resource.CreateRequest, re
 	runSetupTestsPlan := core.GetBoolOrDefault(data.RunSetupTests, true)
 	trustCertificatesPlan := core.GetBoolOrDefault(data.TrustCertificates, false)
 	trustFingerprintsPlan := core.GetBoolOrDefault(data.TrustFingerprints, false)
+	daylightSavingTimeEnabledPlan := core.GetBoolOrDefault(data.DaylightSavingTimeEnabled, false)
 
 	svc := r.GetClient().NewDestinationCreate().
 		Service(data.Service.ValueString()).
@@ -96,6 +97,7 @@ func (r *destination) Create(ctx context.Context, req resource.CreateRequest, re
 		RunSetupTests(runSetupTestsPlan).
 		TrustCertificates(trustCertificatesPlan).
 		TrustFingerprints(trustFingerprintsPlan).
+		DaylightSavingTimeEnabled(daylightSavingTimeEnabledPlan).
 		ConfigCustom(&configMap)
 
 	response, err := svc.
@@ -222,10 +224,12 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 	runSetupTestsPlan := core.GetBoolOrDefault(plan.RunSetupTests, true)
 	trustCertificatesPlan := core.GetBoolOrDefault(plan.TrustCertificates, false)
 	trustFingerprintsPlan := core.GetBoolOrDefault(plan.TrustFingerprints, false)
+	daylightSavingTimeEnabledPlan := core.GetBoolOrDefault(plan.DaylightSavingTimeEnabled, false)
 
 	runSetupTestsState := core.GetBoolOrDefault(state.RunSetupTests, false)
 	trustCertificatesState := core.GetBoolOrDefault(state.TrustCertificates, false)
 	trustFingerprintsState := core.GetBoolOrDefault(state.TrustFingerprints, false)
+	daylightSavingTimeEnabledState := core.GetBoolOrDefault(state.DaylightSavingTimeEnabled, false)
 
 	stateConfigMap, err := state.GetConfigMap(false)
 	// this is not expected - state should contain only known fields relative to service
@@ -254,11 +258,12 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 	patch := model.PrepareConfigAuthPatch(stateConfigMap, planConfigMap, plan.Service.ValueString(), common.GetDestinationFieldsMap())
 
 	updatePerformed := false
-	if len(patch) > 0 || timeZoneHasChange || regionHasChange {
+	if len(patch) > 0 || timeZoneHasChange || regionHasChange || daylightSavingTimeEnabledPlan != daylightSavingTimeEnabledState {
 		svc := r.GetClient().NewDestinationModify().
 			RunSetupTests(runSetupTestsPlan).
 			TrustCertificates(trustCertificatesPlan).
 			TrustFingerprints(trustFingerprintsPlan).
+			DaylightSavingTimeEnabled(daylightSavingTimeEnabledPlan).
 			TimeZoneOffset(plan.TimeZoneOffset.ValueString()).
 			Region(plan.Region.ValueString()).
 			DestinationID(state.Id.ValueString())

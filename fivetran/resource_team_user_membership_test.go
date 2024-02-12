@@ -19,15 +19,15 @@ func TestResourceTeamUserMembershipE2E(t *testing.T) {
 				Config: `
             resource "fivetran_team" "testteam" {
                 provider = fivetran-provider
-                name = "test_team"
-                description = "test_team"
+                name = "TestResourceTeamUserMembershipE2E"
+                description = "test_team_5"
                 role = "Account Analyst"
             }
 
             resource "fivetran_user" "test_user" {
                 provider = fivetran-provider
                 role = "Account Administrator"
-                email = "john.fox@testmail.com"
+                email = "TestResourceTeamUserMembershipE2E@testmail.com"
                 family_name = "Connor"
                 given_name = "Jane"
                 phone = "+19876543219"
@@ -57,15 +57,15 @@ func TestResourceTeamUserMembershipE2E(t *testing.T) {
 				Config: `
             resource "fivetran_team" "testteam" {
                 provider = fivetran-provider
-                name = "test_team"
-                description = "test_team"
+                name = "TestResourceTeamUserMembershipE2E"
+                description = "test_team_6"
                 role = "Account Analyst"
             }
 
             resource "fivetran_user" "test_user" {
                 provider = fivetran-provider
                 role = "Account Administrator"
-                email = "john.fox@testmail.com"
+                email = "TestResourceTeamUserMembershipE2E@testmail.com"
                 family_name = "Connor"
                 given_name = "Jane"
                 phone = "+19876543219"
@@ -115,27 +115,6 @@ func testFivetranTeamUserMembershipResourceCreate(t *testing.T, resourceName str
 		return nil
 	}
 }
-
-// func testFivetranTeamUserMembershipResourceUpdate(t *testing.T, resourceName string) resource.TestCheckFunc {
-// 	return func(s *terraform.State) error {
-// 		rs := GetResource(t, s, resourceName)
-// 		response, err := client.NewTeamUserMembershipsList().
-// 			TeamId(rs.Primary.ID).
-// 			Do(context.Background())
-
-// 		if err != nil {
-// 			return err
-// 		}
-
-// 		for _, value := range response.Data.Items {
-// 			if value.Role == "Team Manager" {
-// 				return nil
-// 			}
-// 		}
-
-// 		return errors.New("Team user membership " + rs.Primary.ID + " didn't updated.")
-// 	}
-// }
 
 func testFivetranTeamUserMembershipResourceDestroy(s *terraform.State) error {
 	for _, rs := range s.RootModule().Resources {

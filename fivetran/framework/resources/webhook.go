@@ -95,6 +95,24 @@ func (r *webhook) createAccount(ctx context.Context, data model.Webhook, resp *r
 
     data.ReadFromResponse(ctx, webhookResponse)
 
+    runTests := core.GetBoolOrDefault(data.RunTests, false)
+
+    if runTests {
+        testsSvc := r.GetClient().NewWebhookTest().WebhookId(data.Id.ValueString())
+        for _, varValue := range data.Events.Elements() {
+            testsSvc.Event(varValue.String())
+            response, err := testsSvc.Do(ctx)
+            if err != nil {
+                resp.Diagnostics.AddError(
+                    "Unable to Start Webhook Tests.",
+                    fmt.Sprintf("%v; code: %v", err, response.Code),
+                )
+            }
+        }
+
+        // nothing to read
+    }
+
     resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
@@ -126,6 +144,24 @@ func (r *webhook) createGroup(ctx context.Context, data model.Webhook, resp *res
     }
 
     data.ReadFromResponse(ctx, webhookResponse)
+
+    runTests := core.GetBoolOrDefault(data.RunTests, false)
+
+    if runTests {
+        testsSvc := r.GetClient().NewWebhookTest().WebhookId(data.Id.ValueString())
+        for _, varValue := range data.Events.Elements() {
+            testsSvc.Event(varValue.String())
+            response, err := testsSvc.Do(ctx)
+            if err != nil {
+                resp.Diagnostics.AddError(
+                    "Unable to Start Webhook Tests.",
+                    fmt.Sprintf("%v; code: %v", err, response.Code),
+                )
+            }
+        }
+
+        // nothing to read
+    }
 
     resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -171,6 +207,7 @@ func (r *webhook) Update(ctx context.Context, req resource.UpdateRequest, resp *
     }
 
     var plan, state model.Webhook
+    hasChanges := false
 
     resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
     resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -184,15 +221,18 @@ func (r *webhook) Update(ctx context.Context, req resource.UpdateRequest, resp *
 
     if !plan.Url.Equal(state.Url) {
         svc.Url(plan.Url.ValueString())
+        hasChanges = true
     }
 
     if !plan.Secret.Equal(state.Secret) {
         svc.Secret(plan.Secret.ValueString())
         state.Secret = plan.Secret
+        hasChanges = true
     }
 
     if active != activeState {
         svc.Active(active)
+        hasChanges = true
     }
 
     if !plan.Events.Equal(state.Events) {
@@ -205,19 +245,21 @@ func (r *webhook) Update(ctx context.Context, req resource.UpdateRequest, resp *
         }
     
         svc.Events(elements)
+        hasChanges = true
     }
 
-    webhookResponse, err := svc.Do(ctx)
+    if hasChanges {
+        webhookResponse, err := svc.Do(ctx)        
+        if err != nil {
+            resp.Diagnostics.AddError(
+                "Unable to Update Webhook Resource.",
+                fmt.Sprintf("%v; code: %v; message: %v", err, webhookResponse.Code, webhookResponse.Message),
+            )
+            return
+        }
 
-    if err != nil {
-        resp.Diagnostics.AddError(
-            "Unable to Update Webhook Resource.",
-            fmt.Sprintf("%v; code: %v; message: %v", err, webhookResponse.Code, webhookResponse.Message),
-        )
-        return
+        state.ReadFromResponse(ctx, webhookResponse)
     }
-
-    state.ReadFromResponse(ctx, webhookResponse)
 
     if runTests && runTests != runTestsState {
         testsSvc := r.GetClient().NewWebhookTest().WebhookId(state.Id.ValueString())
