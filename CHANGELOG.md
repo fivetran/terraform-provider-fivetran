@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.13...HEAD)
 
+## Updated
+- Team Resource migrated on `terraform-plugin-framework`
+- Team User memberships Resource migrated on `terraform-plugin-framework`
+- Team Connector memberships Resource migrated on `terraform-plugin-framework`
+- Team Group memberships Resource migrated on `terraform-plugin-framework`
+- Log Resource migrated on `terraform-plugin-framework`
+- Webhook Resource migrated on `terraform-plugin-framework`
+
+- Teams Datasource migrated on `terraform-plugin-framework`
+- Team User memberships Datasource migrated on `terraform-plugin-framework`
+- Team Connector memberships Datasource migrated on `terraform-plugin-framework`
+- Team Group memberships Datasource migrated on `terraform-plugin-framework`
+- Webhook Datasource migrated on `terraform-plugin-framework`
+- Webhooks Datasource migrated on `terraform-plugin-framework`
+- Log Datasource migrated on `terraform-plugin-framework`
+
 ## [1.1.13](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.12...v1.1.13)
 
 ## Updated `config` schema for connector resource
