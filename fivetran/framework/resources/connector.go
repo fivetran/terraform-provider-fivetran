@@ -309,6 +309,10 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 		}
 	}
 
+	data.RunSetupTests = types.BoolValue(runSetupTestsPlan)
+	data.TrustCertificates = types.BoolValue(trustCertificatesPlan)
+	data.TrustFingerprints = types.BoolValue(trustFingerprintsPlan)
+	
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
