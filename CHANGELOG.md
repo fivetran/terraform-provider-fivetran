@@ -5,7 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.13...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.14...HEAD)
+
+## [1.1.14](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.13...v1.1.14)
+
+## Fixed
+- Issue with `trust_certificates` and `trust_fingerprints` in `connector` resource
+
+## Added
+New supported connector services
+- Supported service: `adobe_workfront`
+- Supported service: `azure_cosmos_for_mongo`
+- Supported service: `callrail`
+- Supported service: `datadog`
+- Supported service: `electronic_tenant_solutions`
+- Supported service: `firehydrant`
+- Supported service: `genesys`
+- Supported service: `gmail`
+- Supported service: `livechat_partner`
+- Supported service: `mambu`
+- Supported service: `revenuecat`
+- Supported service: `ricochet360`
+- Supported service: `rithum`
+- Supported service: `sharetribe`
+- Supported service: `sparkpost`
+- Supported service: `starrez`
+- Supported service: `teads`
+- Supported service: `visit_by_ges`
+- Supported service: `walmart_marketplace`
+
+## Updated
+- Added field `fivetran_connector.config.organization_domain` for services: `adobe_workfront`.
+- Added field `fivetran_connector.config.custom_url` for services: `dbt_cloud`.
+- Added field `fivetran_connector.config.tenant_name` for services: `mambu`.
+- Added field `fivetran_connector.config.is_sftp_creds_available` for services: `salesforce_marketing_cloud`.
+- Added field `fivetran_connector.config.legal_entity_id` for services: `younium`.
 
 ## [1.1.13](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.12...v1.1.13)
 
