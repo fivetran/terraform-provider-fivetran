@@ -310,9 +310,15 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 	}
 
 	/* for cases when customer missed these params */
-	plan.RunSetupTests = types.BoolValue(runSetupTestsPlan)
-	plan.TrustCertificates = types.BoolValue(trustCertificatesPlan)
-	plan.TrustFingerprints = types.BoolValue(trustFingerprintsPlan)
+	if plan.RunSetupTests.IsUnknown() {
+		plan.RunSetupTests = state.RunSetupTests
+	}
+	if plan.TrustCertificates.IsUnknown() {
+		plan.TrustCertificates = state.TrustCertificates
+	}
+	if plan.TrustFingerprints.IsUnknown() {
+		plan.TrustFingerprints = state.TrustFingerprints
+	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
