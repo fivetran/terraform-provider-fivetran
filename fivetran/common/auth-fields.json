@@ -35,6 +35,8 @@
          "tiktok_ads": "The long-lived `Access token` carries the information necessary to access API resources.",
          "typeform": "The Typeform API access token.",
          "wordpress": "",
+         "workday_financial_management": "",
+         "workday_hcm": "",
          "workflowmax": "",
          "yahoo_search_ads_yahoo_japan": "Your Yahoo Search Ads Access Token.",
          "zendesk": "The long-lived `Access token` carries the information necessary to access API resources.",
@@ -141,6 +143,7 @@
                "quickbooks": "",
                "ramp": "",
                "reddit_ads": "",
+               "rithum": "",
                "salesforce": "",
                "salesforce_sandbox": "",
                "share_point": "",
@@ -229,6 +232,7 @@
                "quickbooks": "",
                "ramp": "",
                "reddit_ads": "",
+               "rithum": "",
                "salesforce": "",
                "salesforce_sandbox": "",
                "share_point": "",
@@ -338,6 +342,7 @@
          "quickbooks": "",
          "ramp": "",
          "reddit_ads": "Your application client access fields",
+         "rithum": "",
          "salesforce": "",
          "salesforce_sandbox": "",
          "share_point": "",
@@ -511,7 +516,9 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "quickbooks": "`Realm ID` of your QuickBooks application."
+         "quickbooks": "`Realm ID` of your QuickBooks application.",
+         "workday_financial_management": "",
+         "workday_hcm": ""
       },
       "api_field": ""
    },

@@ -14,12 +14,11 @@ databricks
 managed_big_query
 maria_rds_warehouse
 maria_warehouse
+motherduck
 mysql_rds_warehouse
 mysql_warehouse
 new_s3_datalake
 onelake
-panoply
-periscope_warehouse
 postgres_gcp_warehouse
 postgres_rds_warehouse
 postgres_warehouse

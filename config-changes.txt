@@ -1,12 +1,8 @@
-- Added field `fivetran_connector.config.company_ids` for services: `cj_commission_detail`.
-- Added field `fivetran_connector.config.target_entity_id` for services: `culture_amp`.
-- Added field `fivetran_connector.config.url_format` for services: `fountain`.
-- Added field `fivetran_connector.config.should_sync_events_with_deleted_profiles` for services: `klaviyo`.
-- Added field `fivetran_connector.config.pull_archived_campaigns` for services: `outbrain`.
-- Added field `fivetran_connector.config.store_id` for services: `reviewsio`.
-- Added field `fivetran_connector.config.non_standard_escape_char` for services: `s3`.
-- Added field `fivetran_connector.config.product` for services: `webconnex`.
-- Added field `fivetran_connector.config.auth_environment` for services: `younium`.
-- Added field `fivetran_connector.config.service_authentication` for services: `dsv`.
-- Added field `fivetran_connector.config.subscription_key` for services: `dsv`.
-- Added field `fivetran_connector.config.escape_char_options` for services: `s3`.
+- Added field `fivetran_connector.config.account_region` for services: `iterable`.
+- Added field `fivetran_connector.config.tenant_name` for services: `mambu`.
+- Added field `fivetran_connector.config.direct_capture_method` for services: `oracle_hva`, `oracle_sap_hva`.
+- Added field `fivetran_connector.config.is_sftp_creds_available` for services: `salesforce_marketing_cloud`.
+- Added field `fivetran_connector.config.legal_entity_id` for services: `younium`.
+- Added field `fivetran_connector.config.organization_domain` for services: `adobe_workfront`.
+- Added field `fivetran_connector.config.custom_url` for services: `dbt_cloud`.
+- Added field `fivetran_connector.config.pats` for services: `github`.
