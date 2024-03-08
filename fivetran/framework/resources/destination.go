@@ -214,7 +214,7 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 		return
 	}
 
-	var plan, state, result model.DestinationResourceModel
+	var plan, state model.DestinationResourceModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -253,6 +253,7 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 
 	patch := model.PrepareConfigAuthPatch(stateConfigMap, planConfigMap, plan.Service.ValueString(), common.GetDestinationFieldsMap())
 
+	updatePerformed := false
 	if len(patch) > 0 || timeZoneHasChange || regionHasChange {
 		svc := r.GetClient().NewDestinationModify().
 			RunSetupTests(runSetupTestsPlan).
@@ -275,7 +276,8 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 			)
 			return
 		}
-		result.ReadFromResponseWithTests(response)
+		updatePerformed = true
+		plan.ReadFromResponseWithTests(response)
 	} else {
 		// If values of testing fields changed we should run tests
 		if runSetupTestsPlan && runSetupTestsPlan != runSetupTestsState ||
@@ -291,13 +293,14 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 				return
 			}
 
-			result.ReadFromLegacyResponse(response)
+			plan.ReadFromLegacyResponse(response)
 			// there were no changes in config so we can just copy it from state
-			result.Config = state.Config
+			plan.Config = state.Config
+			updatePerformed = true
 		}
 	}
 
-	if result.Id.IsNull() || result.Id.IsUnknown() {
+	if !updatePerformed {
 		// re-read connector upstream with an additional request after update
 		response, err := r.GetClient().NewDestinationDetails().DestinationID(state.Id.ValueString()).DoCustom(ctx)
 		if err != nil {
@@ -307,29 +310,21 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 			)
 			return
 		}
-		result.ReadFromResponse(response)
+		plan.ReadFromResponse(response)
 	}
 
 	// Set up synthetic values
 	if plan.RunSetupTests.IsUnknown() {
-		result.RunSetupTests = state.RunSetupTests
-	} else {
-		result.RunSetupTests = plan.RunSetupTests
+		plan.RunSetupTests = state.RunSetupTests
 	}
-
 	if plan.TrustCertificates.IsUnknown() {
-		result.TrustCertificates = state.TrustCertificates
-	} else {
-		result.TrustCertificates = plan.TrustCertificates
+		plan.TrustCertificates = state.TrustCertificates
 	}
-
 	if plan.TrustFingerprints.IsUnknown() {
-		result.TrustFingerprints = state.TrustFingerprints
-	} else {
-		result.TrustFingerprints = plan.TrustFingerprints
+		plan.TrustFingerprints = state.TrustFingerprints
 	}
 
-	resp.Diagnostics.Append(resp.State.Set(ctx, &result)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
 func (r *destination) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
