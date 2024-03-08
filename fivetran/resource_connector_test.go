@@ -102,6 +102,8 @@ func TestResourceConnectorE2E(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranConnectorResourceUpdate(t, "fivetran_connector.test_connector"),
 
+					resource.TestCheckResourceAttrSet("fivetran_connector.test_connector", "id"),
+
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "fivetran_log"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "fivetran_log_schema"),
 

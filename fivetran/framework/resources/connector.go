@@ -137,6 +137,7 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 	trustFingerprintsPlan := core.GetBoolOrDefault(data.TrustFingerprints, false)
 
 	svc := r.GetClient().NewConnectorCreate().
+		Paused(true). // on creation we always create paused connector
 		Service(data.Service.ValueString()).
 		GroupID(data.GroupId.ValueString()).
 		RunSetupTests(runSetupTestsPlan).
@@ -184,7 +185,22 @@ func (r *connector) Read(ctx context.Context, req resource.ReadRequest, resp *re
 	// Read Terraform prior state data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
-	response, err := r.GetClient().NewConnectorDetails().ConnectorID(data.Id.ValueString()).DoCustom(ctx)
+	id := data.Id.ValueString()
+
+	// Recovery from 1.1.13 bug
+	if data.Id.IsNull() || data.Id.IsUnknown() {
+		recoveredId, log := r.recoverId(ctx, data)
+		if recoveredId == "" {
+			resp.Diagnostics.AddError(
+				"Read error.",
+				"Unable to recover resource id from state.\n"+log,
+			)
+			return
+		}
+		id = recoveredId
+	}
+
+	response, err := r.GetClient().NewConnectorDetails().ConnectorID(id).DoCustom(ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -267,6 +283,7 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 	patch := model.PrepareConfigAuthPatch(stateConfigMap, planConfigMap, plan.Service.ValueString(), common.GetConfigFieldsMap())
 	authPatch := model.PrepareConfigAuthPatch(stateAuthMap, planAuthMap, plan.Service.ValueString(), common.GetAuthFieldsMap())
 
+	updatePerformed := false
 	if len(patch) > 0 || len(authPatch) > 0 {
 		svc := r.GetClient().NewConnectorModify().
 			RunSetupTests(runSetupTestsPlan).
@@ -291,6 +308,7 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 			return
 		}
 		plan.ReadFromCreateResponse(response)
+		updatePerformed = true
 	} else {
 		// If values of testing fields changed we should run tests
 		if runSetupTestsPlan && runSetupTestsPlan != runSetupTestsState ||
@@ -306,9 +324,35 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 				return
 			}
 			plan.ReadFromCreateResponse(response)
+			updatePerformed = true
 		}
 	}
 
+	if !updatePerformed {
+		// re-read connector upstream with an additional request after update
+		response, err := r.GetClient().NewConnectorDetails().ConnectorID(state.Id.ValueString()).DoCustom(ctx)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to Read after Update Connector Resource.",
+				fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
+			)
+			return
+		}
+		plan.ReadFromResponse(response)
+	}
+
+	// Set up synthetic values
+	if plan.RunSetupTests.IsUnknown() {
+		plan.RunSetupTests = state.RunSetupTests
+	}
+	if plan.TrustCertificates.IsUnknown() {
+		plan.TrustCertificates = state.TrustCertificates
+	}
+	if plan.TrustFingerprints.IsUnknown() {
+		plan.TrustFingerprints = state.TrustFingerprints
+	}
+
+	// Save state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
@@ -334,4 +378,79 @@ func (r *connector) Delete(ctx context.Context, req resource.DeleteRequest, resp
 		)
 		return
 	}
+}
+
+// in case if state was corrupted and computable values wasn't saved we could recover resource id using group_id and schema
+func (r *connector) recoverId(ctx context.Context, data model.ConnectorResourceModel) (string, string) {
+	id := ""
+	log := ""
+	if !(data.GroupId.IsNull() || data.GroupId.IsUnknown()) {
+		groupId := data.GroupId.ValueString()
+		schemaName := ""
+		if !data.DestinationSchema.IsNull() && !data.DestinationSchema.IsUnknown() {
+			destinationSchema, err := data.GetDestinatonSchemaForConfig()
+			if err == nil {
+				log = log + "\n" + fmt.Sprintf("Destination schema: \n %v", destinationSchema)
+				if prefix, ok := destinationSchema["schema_prefix"]; ok && prefix != "" {
+					schemaName = prefix.(string)
+				} else {
+					if name, ok := destinationSchema["schema"]; ok && name != "" {
+						schemaName = name.(string)
+						if table, ok := destinationSchema["table"]; ok && table != "" {
+							schemaName = schemaName + "." + table.(string)
+						}
+					}
+				}
+			} else {
+				log = log + "\n" + err.Error()
+			}
+		}
+		log = log + "\n" + fmt.Sprintf("Schema `%s`, group `%s", schemaName, groupId)
+		if schemaName != "" && groupId != "" {
+			connectorsList, err := r.
+				GetClient().
+				NewGroupListConnectors().
+				GroupID(groupId).
+				Limit(1000).
+				Do(ctx)
+			found := false
+			if err == nil {
+				for _, c := range connectorsList.Data.Items {
+					if c.Schema == schemaName {
+						id = c.ID
+						found = true
+						break
+					}
+				}
+				for !found && connectorsList.Data.NextCursor != "" {
+					connectorsList, err = r.GetClient().
+						NewGroupListConnectors().
+						GroupID(groupId).
+						Limit(1000).
+						Cursor(connectorsList.Data.NextCursor).
+						Do(ctx)
+					if err != nil {
+						log = log + "\n" + err.Error()
+						break
+					} else {
+						for _, c := range connectorsList.Data.Items {
+							if c.Schema == schemaName {
+								id = c.ID
+								found = true
+								break
+							}
+						}
+					}
+				}
+			} else {
+				log = log + "\n" + err.Error()
+			}
+			if !found {
+				log = log + "\n" + fmt.Sprintf("Can't find connector with schema = `%s` in group with id = `%s", schemaName, groupId)
+			}
+		} else {
+			log = log + "\n" + " not enough data in state for recovery: " + fmt.Sprintf("schema:`%s`, group:`%s", schemaName, groupId)
+		}
+	}
+	return id, log
 }
