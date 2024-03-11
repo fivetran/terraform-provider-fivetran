@@ -15,7 +15,7 @@ type _table struct {
 }
 
 func (t *_table) setSyncMode(value *string) {
-	if value != nil && *value != *t.syncMode {
+	if value != nil && (t.syncMode == nil || *value != *t.syncMode) {
 		t.syncMode = value
 		t.updated = true
 	} else {
