@@ -112,8 +112,8 @@ func TestResourceSchemaDisableColumnMissingInSchemaResponseMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 2)   // 1 read attempt before reload, 1 read after create
-				assertEqual(t, patchHandler.Interactions, 2) // Update SCM and align schema
+				assertEqual(t, getHandler.Interactions, 1)   // 1 read attempt before reload, 1 read after create
+				assertEqual(t, patchHandler.Interactions, 1) // Update SCM and align schema
 				assertNotEmpty(t, schemaData)                // schema initialised
 				return nil
 			},
@@ -142,7 +142,7 @@ func TestResourceSchemaDisableColumnMissingInSchemaResponseMock(t *testing.T) {
 				patchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 						body := requestBodyToJson(t, req)
-						if updateIteration == 0 {
+						if updateIteration == 1 {
 							// Check the request
 							assertEqual(t, len(body), 1)
 							assertEqual(t, body["schema_change_handling"], "ALLOW_COLUMNS")
@@ -151,7 +151,7 @@ func TestResourceSchemaDisableColumnMissingInSchemaResponseMock(t *testing.T) {
 							schemaData = createMapFromJsonString(t, fmt.Sprintf(schemasWoColumnsJsonResponse, "ALLOW_ALL"))
 						}
 
-						if updateIteration == 1 {
+						if updateIteration == 0 {
 
 							assertKeyExists(t, body, "schemas")
 							schemas := body["schemas"].(map[string]interface{})
