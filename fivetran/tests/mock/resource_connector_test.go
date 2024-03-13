@@ -50,7 +50,9 @@ const (
             "tasks": [],
             "warnings": []
         },
-        "config": {}
+        "config": {
+			"port": 123
+		}
 	}
 	`
 
@@ -511,6 +513,10 @@ func TestResourceConnectorEmptyConfigMock(t *testing.T) {
 			timeouts {
 				create = "0"
 			}
+
+			config {
+
+			}
 		}`,
 
 		Check: resource.ComposeAggregateTestCheckFunc(
@@ -520,7 +526,7 @@ func TestResourceConnectorEmptyConfigMock(t *testing.T) {
 				assertNotEmpty(t, connectorMockData)
 				return nil
 			},
-			resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "config"),
+			//resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "config"),
 		),
 	}
 

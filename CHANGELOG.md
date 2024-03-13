@@ -5,9 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.14...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.16...HEAD)
 
-## [1.1.14](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.13...v1.1.14)
+## [1.1.16](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.15...v1.1.16)
+
+## Fixed 
+- Issue with panic in case if connector doesn't return `sync_mode` in schema response.
+- Fix issue with connector import: config not imported into state.
+
+## [1.1.15](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.13...v1.1.15)
 
 ## Fixed
 - Issue with `run_setup_tests`, `trust_certificates` and `trust_fingerprints` fields
@@ -45,6 +51,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added field `fivetran_connector.config.organization_domain` for services: `adobe_workfront`.
 - Added field `fivetran_connector.config.custom_url` for services: `dbt_cloud`.
 - Added field `fivetran_connector.config.pats` for services: `github`.
+
+## [1.1.14](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.13...v1.1.14)
+
+## Skipped due to issues with publishing new versions to terraform registry
 
 ## [1.1.13](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.12...v1.1.13)
 
