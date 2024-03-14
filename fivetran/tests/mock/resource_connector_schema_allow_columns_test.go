@@ -128,7 +128,6 @@ func TestResourceSchemaDisableColumnMissingInSchemaResponseMock(t *testing.T) {
 			PreCheck: func() {
 				mockClient.Reset()
 				schemaData = nil
-				updateIteration := 0
 
 				getHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
@@ -142,44 +141,35 @@ func TestResourceSchemaDisableColumnMissingInSchemaResponseMock(t *testing.T) {
 				patchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 						body := requestBodyToJson(t, req)
-						if updateIteration == 1 {
-							// Check the request
-							assertEqual(t, len(body), 1)
-							assertEqual(t, body["schema_change_handling"], "ALLOW_COLUMNS")
 
-							// create schema structure
-							schemaData = createMapFromJsonString(t, fmt.Sprintf(schemasWoColumnsJsonResponse, "ALLOW_ALL"))
-						}
+						assertEqual(t, len(body), 2)
+						assertEqual(t, body["schema_change_handling"], "ALLOW_COLUMNS")
 
-						if updateIteration == 0 {
+						assertKeyExists(t, body, "schemas")
+						schemas := body["schemas"].(map[string]interface{})
 
-							assertKeyExists(t, body, "schemas")
-							schemas := body["schemas"].(map[string]interface{})
+						assertKeyExists(t, schemas, "schema_1")
+						schema := schemas["schema_1"].(map[string]interface{})
 
-							assertKeyExists(t, schemas, "schema_1")
-							schema := schemas["schema_1"].(map[string]interface{})
+						AssertKeyDoesNotExist(t, schema, "enabled")
+						assertKeyExists(t, schema, "tables")
+						tables := schema["tables"].(map[string]interface{})
 
-							AssertKeyDoesNotExist(t, schema, "enabled")
-							assertKeyExists(t, schema, "tables")
-							tables := schema["tables"].(map[string]interface{})
+						assertKeyExists(t, tables, "table_1")
+						table := tables["table_1"].(map[string]interface{})
 
-							assertKeyExists(t, tables, "table_1")
-							table := tables["table_1"].(map[string]interface{})
+						assertKeyExists(t, table, "columns")
+						AssertKeyDoesNotExist(t, table, "enabled")
+						columns := table["columns"].(map[string]interface{})
 
-							assertKeyExists(t, table, "columns")
-							AssertKeyDoesNotExist(t, table, "enabled")
-							columns := table["columns"].(map[string]interface{})
+						assertKeyExists(t, columns, "column_1")
+						column := columns["column_1"].(map[string]interface{})
 
-							assertKeyExists(t, columns, "column_1")
-							column := columns["column_1"].(map[string]interface{})
+						assertKeyExistsAndHasValue(t, column, "enabled", false)
 
-							assertKeyExistsAndHasValue(t, column, "enabled", false)
+						// create schema structure
+						schemaData = createMapFromJsonString(t, schemaWithColumnJsonResponse)
 
-							// create schema structure
-							schemaData = createMapFromJsonString(t, schemaWithColumnJsonResponse)
-						}
-
-						updateIteration++
 						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaData), nil
 					},
 				)

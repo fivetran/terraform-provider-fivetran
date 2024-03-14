@@ -442,17 +442,19 @@ func setupMockClientEmptyDefaultSchemaResource(t *testing.T) {
 		func(req *http.Request) (*http.Response, error) {
 			body := requestBodyToJson(t, req)
 
+			// if updateIteration == 1 {
+			// 	// Check the request
+			// 	assertEqual(t, len(body), 1)
+			// 	assertEqual(t, body["schema_change_handling"], "BLOCK_ALL")
+
+			// 	// create schema structure
+			// 	schemaEmptyDefaultData = createMapFromJsonString(t, schemaEmptyDefaultJsonBlockedSchema2)
+			// }
 			if updateIteration == 0 {
 				// Check the request
-				assertEqual(t, len(body), 1)
-				assertEqual(t, body["schema_change_handling"], "BLOCK_ALL")
+				assertEqual(t, len(body), 2)
 
-				// create schema structure
-				schemaEmptyDefaultData = createMapFromJsonString(t, schemaEmptyDefaultJsonBlockedSchema1)
-			}
-			if updateIteration == 1 {
-				// Check the request
-				assertEqual(t, len(body), 1)
+				assertEqual(t, body["schema_change_handling"], "BLOCK_ALL")
 				assertNotEmpty(t, body["schemas"])
 
 				schemasMap := body["schemas"].(map[string]interface{})
@@ -482,7 +484,7 @@ func setupMockClientEmptyDefaultSchemaResource(t *testing.T) {
 				// create schema structure
 				schemaEmptyDefaultData = createMapFromJsonString(t, schemaEmptyDefaultJsonBlockedSchema2)
 			}
-			if updateIteration == 2 {
+			if updateIteration == 1 {
 				// Check the request
 				assertEqual(t, len(body), 1)
 				assertNotEmpty(t, body["schemas"])
@@ -557,7 +559,7 @@ func TestResourceEmptyDefaultSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 2)
+				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 1)
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
@@ -587,7 +589,7 @@ func TestResourceEmptyDefaultSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 2)
+				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 1)
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
@@ -614,7 +616,7 @@ func TestResourceEmptyDefaultSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 3)
+				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 2)
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
@@ -660,17 +662,17 @@ func setupMockClientLockedPartsSchemaResource(t *testing.T) {
 	schemaLockedPatchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			body := requestBodyToJson(t, req)
+			// if updateIteration == 0 {
+			// 	// Check the request
+			// 	assertEqual(t, len(body), 1)
+
+			// 	// create schema structure
+			// 	schemaLockedData = createMapFromJsonString(t, schemaWithLockedTableAndColumn_blocked0)
+			// }
 			if updateIteration == 0 {
 				// Check the request
-				assertEqual(t, len(body), 1)
+				assertEqual(t, len(body), 2)
 				assertEqual(t, body["schema_change_handling"], "BLOCK_ALL")
-
-				// create schema structure
-				schemaLockedData = createMapFromJsonString(t, schemaWithLockedTableAndColumn_blocked0)
-			}
-			if updateIteration == 1 {
-				// Check the request
-				assertEqual(t, len(body), 1)
 				assertNotEmpty(t, body["schemas"])
 
 				schemasMap := body["schemas"].(map[string]interface{})
@@ -1138,8 +1140,8 @@ func TestResourceLockedSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaLockedGetHandler.Interactions, 2)   // 1 read attempt before reload, 1 read after create
-				assertEqual(t, schemaLockedPatchHandler.Interactions, 2) // Update SCM and align schema
+				assertEqual(t, schemaLockedGetHandler.Interactions, 1)   // 1 read attempt before reload, 1 read after create
+				assertEqual(t, schemaLockedPatchHandler.Interactions, 1) // Update SCM and align schema
 				assertNotEmpty(t, schemaLockedData)                      // schema initialised
 				return nil
 			},
