@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New resource `fivetran_user_group_membership` that allows to manage User Group memberships.
 - New data source `fivetran_user_connector_memberships` that allows to retrieve details of the existing user connector memebrships for a given identifier.
 - New data source `fivetran_user_group_memberships` that allows to retrieve the list of existing user group memberships available for the current account.
+- Added field `fivetran_destination.daylight_saving_time_enabled` for shifting UTC offset with daylight savings time (US Only.
 
 ## Updated
 Resources:

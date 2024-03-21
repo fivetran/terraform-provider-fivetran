@@ -154,7 +154,7 @@ func TestResourceGroupUsersMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, groupGetUsersHandler.Interactions, 2)
+				assertEqual(t, groupGetUsersHandler.Interactions, 1)
 				assertEqual(t, groupPostUserHandler.Interactions, 1)
 				assertEqual(t, groupDeleteUserHandler.Interactions, 0)
 				assertNotEmpty(t, groupUsersData)
