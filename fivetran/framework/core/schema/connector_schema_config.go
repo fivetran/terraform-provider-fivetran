@@ -29,6 +29,58 @@ func GetConnectorSchemaResourceSchema(ctx context.Context) schema.Schema {
 					stringvalidator.OneOf("ALLOW_ALL", "ALLOW_COLUMNS", "BLOCK_ALL"),
 				},
 			},
+			"schemas": schema.MapNestedAttribute{
+				Optional:    true,
+				Description: "Map of schema configurations.",
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"enabled": schema.BoolAttribute{
+							Optional:    true,
+							Computed:    true,
+							Description: "The boolean value specifying whether the sync for the schema into the destination is enabled.",
+						},
+						"tables": schema.MapNestedAttribute{
+							Description: "Map of table configurations.",
+							Optional:    true,
+							NestedObject: schema.NestedAttributeObject{
+								Attributes: map[string]schema.Attribute{
+									"enabled": schema.BoolAttribute{
+										Optional:    true,
+										Computed:    true,
+										Description: "The boolean value specifying whether the sync for the table into the destination is enabled.",
+									},
+									"sync_mode": schema.StringAttribute{
+										Optional:    true,
+										Computed:    true,
+										Description: "This field appears in the response if the connector supports switching sync modes for tables.",
+										Validators: []validator.String{
+											stringvalidator.OneOf("HISTORY", "SOFT_DELETE", "LIVE"),
+										},
+									},
+									"columns": schema.MapNestedAttribute{
+										Description: "Map of table configurations.",
+										Optional:    true,
+										NestedObject: schema.NestedAttributeObject{
+											Attributes: map[string]schema.Attribute{
+												"enabled": schema.BoolAttribute{
+													Optional:    true,
+													Computed:    true,
+													Description: "The boolean value specifying whether the sync of the column into the destination is enabled.",
+												},
+												"hashed": schema.BoolAttribute{
+													Optional:    true,
+													Computed:    true,
+													Description: "The boolean value specifying whether a column should be hashed.",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
 		},
 		Blocks: map[string]schema.Block{
 			"schema": getSchemaBlock(),
@@ -43,6 +95,7 @@ func GetConnectorSchemaResourceSchema(ctx context.Context) schema.Schema {
 
 func getSchemaBlock() schema.SetNestedBlock {
 	return schema.SetNestedBlock{
+		DeprecationMessage: "Configure `schemas` instead. This attribute will be removed in the next major version of the provider.",
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
 				"name": schema.StringAttribute{

@@ -47,10 +47,14 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 
+	fmt.Println("Creation started")
+
 	var data model.ConnectorSchemaResourceModel
 
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+
+	fmt.Println("Plan loaded")
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -90,6 +94,8 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		}
 	}
 
+	fmt.Println("Handling started")
+
 	// read upstream config
 	config := configSchema.SchemaConfig{}
 	config.ReadFromResponse(schemaResponse)
@@ -107,6 +113,8 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		)
 		return
 	}
+
+	fmt.Println("Preparing request started")
 
 	if config.HasUpdates() {
 		// applying patch
@@ -152,11 +160,18 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		}
 	}
 
+	fmt.Println("Reading results...")
+
 	// read data from response and merge with existing config
 	data.ReadFromResponse(schemaResponse)
 
 	data.Id = types.StringValue(connectorID)
+
+	fmt.Println("Reading results done! Updating state...")
+
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+
+	fmt.Println("State Updated")
 }
 
 func (r *connectorSchema) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {

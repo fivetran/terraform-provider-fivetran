@@ -1167,3 +1167,146 @@ func TestResourceLockedSchemaMock(t *testing.T) {
 		},
 	)
 }
+
+func TestConsistentWithUpstreamSchemaMappedMock(t *testing.T) {
+	setupMockClientConsistentWithUpstreamResource := func(t *testing.T) {
+		mockClient.Reset()
+		schemaConsistentWithUpstreamData = nil
+
+		schemaConsistentWithUpstreamGetHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				if nil == schemaHashedAlignmentData {
+					schemaConsistentWithUpstreamData = createMapFromJsonString(t, `
+					{
+						"enable_new_by_default": true,
+						"schema_change_handling": "BLOCK_ALL",
+						"schemas": {
+							"schema_1": {
+								"name_in_destination": "schema_1",
+								"enabled": true,
+								"tables": {
+									"table_1": {
+										"name_in_destination": "table_1",
+										"enabled": true,
+										"sync_mode": "SOFT_DELETE",
+										"enabled_patch_settings": {
+											"allowed": true
+										}
+									},
+									"table_2": {
+										"name_in_destination": "table_2",
+										"enabled": true,
+										"sync_mode": "LIVE",
+										"enabled_patch_settings": {
+											"allowed": true
+										}
+									},
+									"table_3": {
+										"name_in_destination": "table_3",
+										"enabled": false,
+										"sync_mode": "LIVE",
+										"enabled_patch_settings": {
+											"allowed": true
+										}
+									}
+								}
+							}
+						}
+					}
+					`)
+				}
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaConsistentWithUpstreamData), nil
+			},
+		)
+
+		schemaConsistentWithUpstreamPathchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				body := requestBodyToJson(t, req)
+				fmt.Print(body)
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaConsistentWithUpstreamData), nil
+			},
+		)
+	}
+
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "BLOCK_ALL"
+				schemas = {
+					"schema_1" = {
+						enabled = true
+						tables = {
+							"table_1" = {
+								enabled = true
+								sync_mode = "SOFT_DELETE"
+							}
+							"table_2" = {
+								enabled = true
+							}
+						}
+					}
+				}
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 1)
+				assertNotEmpty(t, schemaConsistentWithUpstreamData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.table_1.sync_mode", "SOFT_DELETE"),
+			resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.table_2.sync_mode"),
+		),
+	}
+
+	step2 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "BLOCK_ALL"
+				schemas = {
+					"schema_1" = {
+						enabled = true
+						tables = {
+							"table_1" = {
+								enabled = true
+							}
+							"table_2" = {
+								enabled = true
+								sync_mode = "LIVE"
+							}
+						}
+					}
+				}
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
+			resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.table_1.sync_mode"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.table_2.sync_mode", "LIVE"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientConsistentWithUpstreamResource(t)
+			},
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				// there is no possibility to destroy schema config - it alsways exists within the connector
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
+				step2,
+			},
+		},
+	)
+}
