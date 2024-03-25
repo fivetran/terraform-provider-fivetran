@@ -24,6 +24,7 @@ data "fivetran_destination" "dest" {
 ### Read-Only
 
 - `config` (Block, Read-only) (see [below for nested schema](#nestedblock--config))
+- `daylight_saving_time_enabled` (Boolean) Shift my UTC offset with daylight savings time (US Only)
 - `group_id` (String) The unique identifier for the Group within the Fivetran system.
 - `region` (String) Data processing location. This is where Fivetran will operate and run computation on data.
 - `service` (String) The destination type id within the Fivetran system.
