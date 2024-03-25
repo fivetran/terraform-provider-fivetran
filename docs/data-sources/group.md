@@ -24,4 +24,5 @@ data "fivetran_group" "my_group" {
 ### Read-Only
 
 - `created_at` (String) The timestamp of when the group was created in your account.
+- `last_updated` (String) The timestamp of when the group was updated in your account.
 - `name` (String) The name of the group within your account.

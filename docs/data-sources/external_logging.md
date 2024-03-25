@@ -23,7 +23,7 @@ data "fivetran_external_logging" "extlog" {
 
 ### Optional
 
-- `config` (Block List) (see [below for nested schema](#nestedblock--config))
+- `config` (Block, Optional) (see [below for nested schema](#nestedblock--config))
 - `run_setup_tests` (Boolean) Specifies whether the setup tests should be run automatically. The default value is TRUE.
 
 ### Read-Only

@@ -64,6 +64,7 @@ resource "fivetran_destination" "destination" {
     region = "GCP_US_EAST4"
     trust_certificates = "true"
     trust_fingerprints = "true"
+    daylight_saving_time_enabled = "true"
     run_setup_tests = "true"
 
     config {

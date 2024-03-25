@@ -11,6 +11,7 @@ type destinationModel interface {
 	SetRegion(string)
 	SetTimeZonOffset(string)
 	SetSetupStatus(string)
+	SetDaylightSavingTimeEnabled(bool)
 	SetConfig(map[string]interface{})
 }
 
@@ -21,5 +22,6 @@ func readFromResponse(d destinationModel, resp destinations.DestinationDetailsBa
 	d.SetRegion(resp.Region)
 	d.SetSetupStatus(resp.SetupStatus)
 	d.SetTimeZonOffset(resp.TimeZoneOffset)
+	d.SetDaylightSavingTimeEnabled(resp.DaylightSavingTimeEnabled)
 	d.SetConfig(config)
 }

@@ -13,15 +13,8 @@ var limit = 1000 // REST API response objects limit per HTTP request
 
 func Provider() *schema.Provider {
 	var resourceMap = map[string]*schema.Resource{
-		"fivetran_group":                     resourceGroup(),
-		"fivetran_group_users":               resourceGroupUsers(),
 		"fivetran_dbt_transformation":        resourceDbtTransformation(),
 		"fivetran_dbt_project":               resourceDbtProject(),
-		"fivetran_external_logging":          resourceExternalLogging(),
-		"fivetran_team":                      resourceTeam(),
-		"fivetran_team_connector_membership": resourceTeamConnectorMembership(),
-		"fivetran_team_group_membership":     resourceTeamGroupMembership(),
-		"fivetran_team_user_membership":      resourceTeamUserMembership(),
 		"fivetran_connector_fingerprints":    resourceFingerprints(Connector),
 		"fivetran_destination_fingerprints":  resourceFingerprints(Destination),
 		"fivetran_connector_certificates":    resourceCertificates(Connector),
@@ -30,22 +23,10 @@ func Provider() *schema.Provider {
 
 	var dataSourceMap = map[string]*schema.Resource{
 		"fivetran_users":                      dataSourceUsers(),
-		"fivetran_group":                      dataSourceGroup(),
-		"fivetran_groups":                     dataSourceGroups(),
-		"fivetran_group_connectors":           dataSourceGroupConnectors(),
-		"fivetran_group_users":                dataSourceGroupUsers(),
-		"fivetran_connectors_metadata":        dataSourceConnectorsMetadata(),
 		"fivetran_dbt_transformation":         dataSourceDbtTransformation(),
 		"fivetran_dbt_project":                dataSourceDbtProject(),
 		"fivetran_dbt_projects":               dataSourceDbtProjects(),
 		"fivetran_dbt_models":                 dataSourceDbtModels(),
-		"fivetran_external_logging":           dataSourceExternalLogging(),
-		"fivetran_roles":                      dataSourceRoles(),
-		"fivetran_team":                       dataSourceTeam(),
-		"fivetran_teams":                      dataSourceTeams(),
-		"fivetran_team_connector_memberships": dataSourceTeamConnectorMemberships(),
-		"fivetran_team_group_memberships":     dataSourceTeamGroupMemberships(),
-		"fivetran_team_user_memberships":      dataSourceTeamUserMemberships(),
 		"fivetran_connector_fingerprints":     dataSourceFingerprints(Connector),
 		"fivetran_destination_fingerprints":   dataSourceFingerprints(Destination),
 		"fivetran_connector_certificates":     dataSourceCertificates(Connector),

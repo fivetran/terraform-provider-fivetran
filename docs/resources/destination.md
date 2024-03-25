@@ -16,6 +16,7 @@ resource "fivetran_destination" "dest" {
     region = "GCP_US_EAST4"
     trust_certificates = "true"
     trust_fingerprints = "true"
+    daylight_saving_time_enabled = "true"
     run_setup_tests = "true"
 
     config {
@@ -42,6 +43,7 @@ resource "fivetran_destination" "dest" {
 ### Optional
 
 - `config` (Block, Optional) (see [below for nested schema](#nestedblock--config))
+- `daylight_saving_time_enabled` (Boolean) Shift my UTC offset with daylight savings time (US Only)
 - `run_setup_tests` (Boolean) Specifies whether the setup tests should be run automatically. The default value is TRUE.
 - `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 - `trust_certificates` (Boolean) Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).

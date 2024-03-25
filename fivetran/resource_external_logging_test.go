@@ -21,7 +21,7 @@ func TestResourceExternalLoggingE2E(t *testing.T) {
 				Config: `
 				resource "fivetran_group" "testgroup" {
 					provider = fivetran-provider
-					name = "test_group_name"
+					name = "TestResourceExternalLoggingE2E"
 			    }
 
 				resource "fivetran_external_logging" "test_extlog" {
@@ -42,15 +42,15 @@ func TestResourceExternalLoggingE2E(t *testing.T) {
 					testFivetranExternalLoggingResourceCreate(t, "fivetran_external_logging.test_extlog"),
 					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "service", "azure_monitor_log"),
 					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "enabled", "true"),
-					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.0.workspace_id", "workspace_id"),
-					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.0.primary_key", "PASSWORD"),
+					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.workspace_id", "workspace_id"),
+					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.primary_key", "PASSWORD"),
 				),
 			},
 			{
 				Config: `
 				resource "fivetran_group" "testgroup" {
 					provider = fivetran-provider
-					name = "test_group_name"
+					name = "TestResourceExternalLoggingE2E"
 			    }
 
 				resource "fivetran_external_logging" "test_extlog" {
@@ -71,8 +71,8 @@ func TestResourceExternalLoggingE2E(t *testing.T) {
 					testFivetranExternalLoggingResourceUpdate(t, "fivetran_external_logging.test_extlog"),
 					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "service", "azure_monitor_log"),
 					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "enabled", "true"),
-					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.0.workspace_id", "workspace_id_1"),
-					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.0.primary_key", "PASSWORD"),
+					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.workspace_id", "workspace_id_1"),
+					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.primary_key", "PASSWORD"),
 				),
 			},
 		},

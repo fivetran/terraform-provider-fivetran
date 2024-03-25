@@ -59,6 +59,10 @@ func DestinationAttributesSchema() core.Schema {
 				ValueType:   core.String,
 				Description: "Destination setup status.",
 			},
+			"daylight_saving_time_enabled": {
+				ValueType:    core.Boolean,
+				Description:  "Shift my UTC offset with daylight savings time (US Only)",
+			},
 		},
 	}
 }

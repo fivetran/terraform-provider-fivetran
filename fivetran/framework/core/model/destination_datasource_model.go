@@ -8,13 +8,14 @@ import (
 )
 
 type DestinationDatasourceModel struct {
-	Id             types.String `tfsdk:"id"`
-	GroupId        types.String `tfsdk:"group_id"`
-	Service        types.String `tfsdk:"service"`
-	Region         types.String `tfsdk:"region"`
-	TimeZoneOffset types.String `tfsdk:"time_zone_offset"`
-	SetupStatus    types.String `tfsdk:"setup_status"`
-	Config         types.Object `tfsdk:"config"`
+	Id            				 types.String `tfsdk:"id"`
+	GroupId       				 types.String `tfsdk:"group_id"`
+	Service       				 types.String `tfsdk:"service"`
+	Region        				 types.String `tfsdk:"region"`
+	TimeZoneOffset				 types.String `tfsdk:"time_zone_offset"`
+	SetupStatus    				 types.String `tfsdk:"setup_status"`
+	DaylightSavingTimeEnabled	 types.Bool   `tfsdk:"daylight_saving_time_enabled"`
+	Config        				 types.Object `tfsdk:"config"`
 }
 
 var _ destinationModel = &DestinationDatasourceModel{}
@@ -36,6 +37,9 @@ func (d *DestinationDatasourceModel) SetTimeZonOffset(value string) {
 }
 func (d *DestinationDatasourceModel) SetSetupStatus(value string) {
 	d.SetupStatus = types.StringValue(value)
+}
+func (d *DestinationDatasourceModel) SetDaylightSavingTimeEnabled(value bool) {
+	d.DaylightSavingTimeEnabled = types.BoolValue(value)
 }
 
 func (d *DestinationDatasourceModel) SetConfig(value map[string]interface{}) {

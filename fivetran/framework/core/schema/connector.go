@@ -125,6 +125,61 @@ func ConnectorResourceBlocks(ctx context.Context) map[string]resourceSchema.Bloc
 	}
 }
 
+func connectorStatusBlock() datasourceSchema.SingleNestedBlock {
+	return datasourceSchema.SingleNestedBlock{
+		Attributes: map[string]datasourceSchema.Attribute{
+			"setup_state": datasourceSchema.StringAttribute{
+				Computed:    true,
+				Description: "The current setup state of the connector. The available values are: <br /> - incomplete - the setup config is incomplete, the setup tests never succeeded  `connected` - the connector is properly set up, `broken` - the connector setup config is broken.",
+			},
+			"is_historical_sync": datasourceSchema.BoolAttribute{
+				Computed:    true,
+				Description: "The boolean specifying whether the connector should be triggered to re-sync all historical data. If you set this parameter to TRUE, the next scheduled sync will be historical. If the value is FALSE or not specified, the connector will not re-sync historical data. NOTE: When the value is TRUE, only the next scheduled sync will be historical, all subsequent ones will be incremental. This parameter is set to FALSE once the historical sync is completed.",
+			},
+			"sync_state": datasourceSchema.StringAttribute{
+				Computed:    true,
+				Description: "The current sync state of the connector. The available values are: `scheduled` - the sync is waiting to be run, `syncing` - the sync is currently running, `paused` - the sync is currently paused, `rescheduled` - the sync is waiting until more API calls are available in the source service.",
+			},
+			"update_state": datasourceSchema.StringAttribute{
+				Computed:    true,
+				Description: "The current data update state of the connector. The available values are: `on_schedule` - the sync is running smoothly, no delays, `delayed` - the data is delayed for a longer time than expected for the update.",
+			},
+			"tasks": datasourceSchema.SetNestedAttribute{
+				Computed:    true,
+				Description: "The collection of tasks for the connector.",
+				NestedObject: datasourceSchema.NestedAttributeObject{
+					Attributes: map[string]datasourceSchema.Attribute{
+						"code": datasourceSchema.StringAttribute{
+							Computed:    true,
+							Description: "Task code.",
+						},
+						"message": datasourceSchema.StringAttribute{
+							Computed:    true,
+							Description: "Task message.",
+						},
+					},
+				},
+			},
+			"warnings": datasourceSchema.SetNestedAttribute{
+				Computed:    true,
+				Description: "The collection of warnings for the connector.",
+				NestedObject: datasourceSchema.NestedAttributeObject{
+					Attributes: map[string]datasourceSchema.Attribute{
+						"code": datasourceSchema.StringAttribute{
+							Computed:    true,
+							Description: "Warning code.",
+						},
+						"message": datasourceSchema.StringAttribute{
+							Computed:    true,
+							Description: "Warning message.",
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
 func ConnectorDatasourceBlocks() map[string]datasourceSchema.Block {
 	return map[string]datasourceSchema.Block{
 		"destination_schema": datasourceSchema.SingleNestedBlock{
@@ -133,58 +188,7 @@ func ConnectorDatasourceBlocks() map[string]datasourceSchema.Block {
 		"config": datasourceSchema.SingleNestedBlock{
 			Attributes: GetDatasourceConnectorConfigSchemaAttributes(),
 		},
-		"status": datasourceSchema.SingleNestedBlock{
-			Attributes: map[string]datasourceSchema.Attribute{
-				"setup_state": datasourceSchema.StringAttribute{
-					Computed:    true,
-					Description: "The current setup state of the connector. The available values are: <br /> - incomplete - the setup config is incomplete, the setup tests never succeeded  `connected` - the connector is properly set up, `broken` - the connector setup config is broken.",
-				},
-				"is_historical_sync": datasourceSchema.BoolAttribute{
-					Computed:    true,
-					Description: "The boolean specifying whether the connector should be triggered to re-sync all historical data. If you set this parameter to TRUE, the next scheduled sync will be historical. If the value is FALSE or not specified, the connector will not re-sync historical data. NOTE: When the value is TRUE, only the next scheduled sync will be historical, all subsequent ones will be incremental. This parameter is set to FALSE once the historical sync is completed.",
-				},
-				"sync_state": datasourceSchema.StringAttribute{
-					Computed:    true,
-					Description: "The current sync state of the connector. The available values are: `scheduled` - the sync is waiting to be run, `syncing` - the sync is currently running, `paused` - the sync is currently paused, `rescheduled` - the sync is waiting until more API calls are available in the source service.",
-				},
-				"update_state": datasourceSchema.StringAttribute{
-					Computed:    true,
-					Description: "The current data update state of the connector. The available values are: `on_schedule` - the sync is running smoothly, no delays, `delayed` - the data is delayed for a longer time than expected for the update.",
-				},
-				"tasks": datasourceSchema.SetNestedAttribute{
-					Computed:    true,
-					Description: "The collection of tasks for the connector.",
-					NestedObject: datasourceSchema.NestedAttributeObject{
-						Attributes: map[string]datasourceSchema.Attribute{
-							"code": datasourceSchema.StringAttribute{
-								Computed:    true,
-								Description: "Task code.",
-							},
-							"message": datasourceSchema.StringAttribute{
-								Computed:    true,
-								Description: "Task message.",
-							},
-						},
-					},
-				},
-				"warnings": datasourceSchema.SetNestedAttribute{
-					Computed:    true,
-					Description: "The collection of warnings for the connector.",
-					NestedObject: datasourceSchema.NestedAttributeObject{
-						Attributes: map[string]datasourceSchema.Attribute{
-							"code": datasourceSchema.StringAttribute{
-								Computed:    true,
-								Description: "Warning code.",
-							},
-							"message": datasourceSchema.StringAttribute{
-								Computed:    true,
-								Description: "Warning message.",
-							},
-						},
-					},
-				},
-			},
-		},
+		"status": connectorStatusBlock(),
 	}
 }
 

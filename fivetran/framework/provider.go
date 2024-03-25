@@ -98,22 +98,45 @@ func (p *fivetranProvider) Configure(ctx context.Context, req provider.Configure
 func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		resources.User,
+		resources.UserConnectorMembership,
+		resources.UserGroupMembership,
 		resources.Webhook,
 		resources.Connector,
 		resources.ConnectorSchema,
 		resources.ConnectorSchedule,
 		resources.Destination,
+		resources.Team,
+		resources.TeamConnectorMembership,
+		resources.TeamGroupMembership,
+		resources.TeamUserMembership,
+		resources.ExternalLogging,
+		resources.Group,
+		resources.GroupUser,
 	}
 }
 
 func (p *fivetranProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		datasources.User,
+		datasources.UserConnectorMemberships,
+		datasources.UserGroupMemberships,
 		datasources.Webhook,
 		datasources.Webhooks,
 		datasources.GroupSshKey,
 		datasources.GroupServiceAccount,
 		datasources.Connector,
 		datasources.Destination,
+		datasources.Team,
+		datasources.Teams,
+		datasources.TeamConnectorMemberships,
+		datasources.TeamGroupMemberships,
+		datasources.TeamUserMemberships,
+		datasources.ExternalLogging,
+		datasources.Roles,
+		datasources.Group,
+		datasources.Groups,
+		datasources.GroupConnectors,
+		datasources.GroupUsers,
+		datasources.ConnectorsMetadata,
 	}
 }
