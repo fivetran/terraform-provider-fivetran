@@ -1,7 +1,10 @@
 package model
 
 import (
+	"encoding/json"
+
 	"github.com/fivetran/go-fivetran/connectors"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/fivetrantypes"
 	configSchema "github.com/fivetran/terraform-provider-fivetran/modules/connector/schema"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
@@ -11,12 +14,21 @@ import (
 )
 
 type ConnectorSchemaResourceModel struct {
-	Id                   types.String   `tfsdk:"id"`
-	ConnectorId          types.String   `tfsdk:"connector_id"`
-	SchemaChangeHandling types.String   `tfsdk:"schema_change_handling"`
-	Schemas              types.Map      `tfsdk:"schemas"`
-	Schema               types.Set      `tfsdk:"schema"`
-	Timeouts             timeouts.Value `tfsdk:"timeouts"`
+	Id                   types.String                  `tfsdk:"id"`
+	ConnectorId          types.String                  `tfsdk:"connector_id"`
+	SchemaChangeHandling types.String                  `tfsdk:"schema_change_handling"`
+	Schemas              types.Map                     `tfsdk:"schemas"`
+	Schema               types.Set                     `tfsdk:"schema"`
+	Timeouts             timeouts.Value                `tfsdk:"timeouts"`
+	SchemasRaw           fivetrantypes.JsonSchemaValue `tfsdk:"schemas_json"`
+}
+
+func (d *ConnectorSchemaResourceModel) IsValid() bool {
+	return (d.IsRawSchemaDefined() != d.IsMappedSchemaDefined()) != d.IsLegacySchemaDefined()
+}
+
+func (d *ConnectorSchemaResourceModel) IsRawSchemaDefined() bool {
+	return !d.SchemasRaw.IsUnknown() && !d.SchemasRaw.IsNull() && len(d.SchemasRaw.ValueString()) > 0
 }
 
 func (d *ConnectorSchemaResourceModel) IsLegacySchemaDefined() bool {
@@ -35,10 +47,18 @@ func (d *ConnectorSchemaResourceModel) ReadFromResponse(response connectors.Conn
 	if d.IsLegacySchemaDefined() {
 		d.Schema = d.getLegacySchemaItems(schemas)
 		d.Schemas = d.getNullSchemas()
+		d.SchemasRaw = fivetrantypes.NewJsonSchemaNull()
 	}
 	if d.IsMappedSchemaDefined() {
 		d.Schema = d.getNullSchema()
 		d.Schemas = d.getSchemasMap(schemas)
+		d.SchemasRaw = fivetrantypes.NewJsonSchemaNull()
+	}
+	if d.IsRawSchemaDefined() {
+		d.Schemas = d.getNullSchemas()
+		d.Schema = d.getNullSchema()
+		schemasJson := d.getSchemasRawValue(schemas)
+		d.SchemasRaw = fivetrantypes.NewJsonSchemaValue(schemasJson)
 	}
 
 	d.SchemaChangeHandling = types.StringValue(response.Data.SchemaChangeHandling)
@@ -101,15 +121,24 @@ func (d *ConnectorSchemaResourceModel) getNullSchemas() basetypes.MapValue {
 // Get raw flat schema config from model
 func (d *ConnectorSchemaResourceModel) GetSchemaConfig() configSchema.SchemaConfig {
 	result := configSchema.SchemaConfig{}
-	schemas := []interface{}{}
+
 	if d.IsLegacySchemaDefined() {
-		schemas = d.getLegacySchemas()
+		result.ReadFromRawSourceData(d.getLegacySchemas(), d.SchemaChangeHandling.ValueString())
 	}
 	if d.IsMappedSchemaDefined() {
-		schemas = d.getSchemas()
+		result.ReadFromRawSourceData(d.getSchemas(), d.SchemaChangeHandling.ValueString())
 	}
-	result.ReadFromRawSourceData(schemas, d.SchemaChangeHandling.ValueString())
+	if d.IsRawSchemaDefined() {
+		result.ReadFromRawSourceData(d.getSchemasRaw(), d.SchemaChangeHandling.ValueString())
+	}
+
 	return result
+}
+
+func (d *ConnectorSchemaResourceModel) getSchemasRawValue(schemas []interface{}) string {
+	result := mapRawSchemas(schemas)
+	resultRawString, _ := json.Marshal(result)
+	return string(resultRawString)
 }
 
 func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}) basetypes.MapValue {
@@ -213,7 +242,6 @@ func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}) base
 	result, _ := types.MapValue(types.ObjectType{AttrTypes: schemasAttrTypes}, schemasMap)
 	return result
 }
-
 func (d *ConnectorSchemaResourceModel) tryGetLocalSchema(mappedSchemas map[string]interface{}, schema string) map[string]interface{} {
 	if v, ok := mappedSchemas[schema]; ok {
 		return v.(map[string]interface{})
@@ -236,7 +264,6 @@ func (d *ConnectorSchemaResourceModel) tryGetLocalColumn(mappedTable map[string]
 	}
 	return map[string]interface{}{}
 }
-
 func (d *ConnectorSchemaResourceModel) getLegacySchemaItems(schemas []interface{}) basetypes.SetValue {
 	schemaItems := []attr.Value{}
 	localSchemas := d.mapLocalSchemas()
@@ -337,7 +364,6 @@ func (d *ConnectorSchemaResourceModel) getLegacySchemaItems(schemas []interface{
 	result, _ := types.SetValue(types.ObjectType{AttrTypes: schemaElemAttrTypes}, schemaItems)
 	return result
 }
-
 func (d *ConnectorSchemaResourceModel) getLegacySchemas() []interface{} {
 	schemas := []interface{}{}
 	for _, se := range d.Schema.Elements() {
@@ -397,6 +423,69 @@ func (d *ConnectorSchemaResourceModel) getLegacySchemas() []interface{} {
 	return schemas
 }
 
+func (d *ConnectorSchemaResourceModel) getSchemasRaw() []interface{} {
+	schemas := []interface{}{}
+	rawSchemas := map[string]interface{}{}
+	if e := json.Unmarshal([]byte(d.SchemasRaw.ValueString()), &rawSchemas); e == nil {
+		for sName, si := range rawSchemas {
+			schema := map[string]interface{}{
+				"name": sName,
+			}
+			if sMap, ok := si.(map[string]interface{}); ok {
+				if e, ok := sMap["enabled"].(bool); ok {
+					schema["enabled"] = e
+				}
+				if t, ok := sMap["tables"]; ok {
+					tables := []interface{}{}
+					if rawTables, ok := t.(map[string]interface{}); ok {
+						for tName, ti := range rawTables {
+							table := map[string]interface{}{
+								"name": tName,
+							}
+							if tMap, ok := ti.(map[string]interface{}); ok {
+								if e, ok := tMap["enabled"].(bool); ok {
+									table["enabled"] = e
+								}
+								if sm, ok := tMap["sync_mode"]; ok {
+									table["sync_mode"] = sm
+								}
+								if c, ok := tMap["tables"]; ok {
+									columns := []interface{}{}
+									if rawColumns, ok := c.(map[string]interface{}); ok {
+										for cName, ci := range rawColumns {
+											column := map[string]interface{}{
+												"name": cName,
+											}
+											if cMap, ok := ci.(map[string]interface{}); ok {
+												if e, ok := cMap["enabled"].(bool); ok {
+													column["enabled"] = e
+												}
+												if h, ok := cMap["hashed"].(bool); ok {
+													column["hashed"] = h
+												}
+												columns = append(columns, column)
+											}
+										}
+									}
+									if len(columns) > 0 {
+										table["column"] = columns
+									}
+								}
+								tables = append(tables, table)
+							}
+						}
+					}
+					if len(tables) > 0 {
+						schema["table"] = tables
+					}
+				}
+				schemas = append(schemas, schema)
+			}
+		}
+	}
+	return schemas
+}
+
 func (d *ConnectorSchemaResourceModel) getSchemas() []interface{} {
 	schemas := []interface{}{}
 	for sName, se := range d.Schemas.Elements() {
@@ -442,18 +531,18 @@ func (d *ConnectorSchemaResourceModel) getSchemas() []interface{} {
 	return schemas
 }
 
-func (d *ConnectorSchemaResourceModel) mapLocalSchemas() map[string]interface{} {
-	schemas := d.getLegacySchemas()
-	if len(schemas) == 0 {
-		schemas = d.getSchemas()
-	}
+func mapRawSchemas(schemas []interface{}) map[string]interface{} {
+	columnKey := "columns"
+	tableKey := "tables"
 	mapColumns := func(columns []interface{}) map[string]interface{} {
 		mappedColumns := map[string]interface{}{}
 		for _, lc := range columns {
 			lcMap := lc.(map[string]interface{})
 			mappedColumn := map[string]interface{}{}
 			for k, v := range lcMap {
-				mappedColumn[k] = v
+				if k != "name" {
+					mappedColumn[k] = v
+				}
 			}
 			mappedColumns[lcMap["name"].(string)] = mappedColumn
 		}
@@ -465,16 +554,17 @@ func (d *ConnectorSchemaResourceModel) mapLocalSchemas() map[string]interface{} 
 			ltMap := lt.(map[string]interface{})
 			mappedTable := map[string]interface{}{}
 			for k, v := range ltMap {
-				mappedTable[k] = v
-			}
-			if columns, ok := ltMap["column"].([]interface{}); ok {
-				mappedTable["column"] = mapColumns(columns)
-			} else {
-				if columns, ok = ltMap["columns"].([]interface{}); ok {
-					mappedTable["column"] = mapColumns(columns)
+				if k != "name" && k != "column" && k != "columns" {
+					mappedTable[k] = v
 				}
 			}
-
+			if columns, ok := ltMap["column"].([]interface{}); ok {
+				mappedTable[columnKey] = mapColumns(columns)
+			} else {
+				if columns, ok = ltMap["columns"].([]interface{}); ok {
+					mappedTable[columnKey] = mapColumns(columns)
+				}
+			}
 			mappedTables[ltMap["name"].(string)] = mappedTable
 		}
 		return mappedTables
@@ -484,17 +574,86 @@ func (d *ConnectorSchemaResourceModel) mapLocalSchemas() map[string]interface{} 
 		lsMap := ls.(map[string]interface{})
 		mappedSchema := map[string]interface{}{}
 		for k, v := range lsMap {
-			mappedSchema[k] = v
-		}
-		if tables, ok := lsMap["table"].([]interface{}); ok {
-			mappedSchema["table"] = mapTables(tables)
-		} else {
-			if tables, ok = lsMap["tables"].([]interface{}); ok {
-				mappedSchema["table"] = mapTables(tables)
+			if k != "name" && k != "table" && k != "tables" {
+				mappedSchema[k] = v
 			}
 		}
-
+		if tables, ok := lsMap["table"].([]interface{}); ok {
+			mappedSchema[tableKey] = mapTables(tables)
+		} else {
+			if tables, ok = lsMap["tables"].([]interface{}); ok {
+				mappedSchema[tableKey] = mapTables(tables)
+			}
+		}
+		delete(mappedSchema, "table")
 		mappedSchemas[lsMap["name"].(string)] = mappedSchema
 	}
 	return mappedSchemas
+}
+
+func mapLocalSchemas(schemas []interface{}) map[string]interface{} {
+	columnKey := "column"
+	tableKey := "table"
+	mapColumns := func(columns []interface{}) map[string]interface{} {
+		mappedColumns := map[string]interface{}{}
+		for _, lc := range columns {
+			lcMap := lc.(map[string]interface{})
+			mappedColumn := map[string]interface{}{}
+			for k, v := range lcMap {
+				if k != "name" {
+					mappedColumn[k] = v
+				}
+			}
+			mappedColumns[lcMap["name"].(string)] = mappedColumn
+		}
+		return mappedColumns
+	}
+	mapTables := func(tables []interface{}) map[string]interface{} {
+		mappedTables := map[string]interface{}{}
+		for _, lt := range tables {
+			ltMap := lt.(map[string]interface{})
+			mappedTable := map[string]interface{}{}
+			for k, v := range ltMap {
+				if k != "name" {
+					mappedTable[k] = v
+				}
+			}
+			if columns, ok := ltMap["column"].([]interface{}); ok {
+				mappedTable[columnKey] = mapColumns(columns)
+			} else {
+				if columns, ok = ltMap["columns"].([]interface{}); ok {
+					mappedTable[columnKey] = mapColumns(columns)
+				}
+			}
+			mappedTables[ltMap["name"].(string)] = mappedTable
+		}
+		return mappedTables
+	}
+	mappedSchemas := map[string]interface{}{}
+	for _, ls := range schemas {
+		lsMap := ls.(map[string]interface{})
+		mappedSchema := map[string]interface{}{}
+		for k, v := range lsMap {
+			if k != "name" {
+				mappedSchema[k] = v
+			}
+		}
+		if tables, ok := lsMap["table"].([]interface{}); ok {
+			mappedSchema[tableKey] = mapTables(tables)
+		} else {
+			if tables, ok = lsMap["tables"].([]interface{}); ok {
+				mappedSchema[tableKey] = mapTables(tables)
+			}
+		}
+		mappedSchemas[lsMap["name"].(string)] = mappedSchema
+	}
+	return mappedSchemas
+}
+
+func (d *ConnectorSchemaResourceModel) mapLocalSchemas() map[string]interface{} {
+	schemas := d.getLegacySchemas()
+	if len(schemas) == 0 {
+		schemas = d.getSchemas()
+	}
+	return mapLocalSchemas(schemas)
 }

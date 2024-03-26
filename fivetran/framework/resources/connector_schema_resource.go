@@ -54,6 +54,14 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 
+	if !data.IsValid() {
+		resp.Diagnostics.AddError(
+			"Unable to Create Connector Schema Resource.",
+			"You can use solely one field to define schema settings.",
+		)
+		return
+	}
+
 	fmt.Println("Plan loaded")
 
 	if resp.Diagnostics.HasError() {
@@ -223,6 +231,15 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+
+	if !plan.IsValid() || !state.IsValid() {
+		resp.Diagnostics.AddError(
+			"Unable to Update Connector Schema Resource.",
+			"You can use solely one field to define schema settings.",
+		)
+		return
+	}
+
 	connectorID := state.ConnectorId.ValueString()
 
 	schemaResponse, err := client.NewConnectorSchemaDetails().ConnectorID(connectorID).Do(ctx)

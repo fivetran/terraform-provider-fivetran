@@ -3,6 +3,7 @@ package schema
 import (
 	"context"
 
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/fivetrantypes"
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -80,6 +81,11 @@ func GetConnectorSchemaResourceSchema(ctx context.Context) schema.Schema {
 						},
 					},
 				},
+			},
+			"schemas_json": schema.StringAttribute{
+				Optional:    true,
+				CustomType:  fivetrantypes.JsonSchemaType{},
+				Description: "Schema settings in Json format, following Fivetran API endpoint contract for `schemas` field (a map of schemas).",
 			},
 		},
 		Blocks: map[string]schema.Block{
