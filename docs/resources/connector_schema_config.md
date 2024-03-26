@@ -185,6 +185,7 @@ resource "fivetran_connector_schema_config" "schema" {
 
 - `schema` (Block Set, Deprecated) (see [below for nested schema](#nestedblock--schema))
 - `schemas` (Attributes Map) Map of schema configurations. (see [below for nested schema](#nestedatt--schemas))
+- `schemas_json` (String) Schema settings in Json format, following Fivetran API endpoint contract for `schemas` field (a map of schemas).
 - `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 
 ### Read-Only
