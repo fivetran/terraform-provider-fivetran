@@ -24,7 +24,8 @@ type ConnectorSchemaResourceModel struct {
 }
 
 func (d *ConnectorSchemaResourceModel) IsValid() bool {
-	return (d.IsRawSchemaDefined() != d.IsMappedSchemaDefined()) != d.IsLegacySchemaDefined()
+	noSchemaDefined := !(d.IsRawSchemaDefined() || d.IsMappedSchemaDefined() || d.IsLegacySchemaDefined())
+	return noSchemaDefined || ((d.IsRawSchemaDefined() != d.IsMappedSchemaDefined()) != d.IsLegacySchemaDefined())
 }
 
 func (d *ConnectorSchemaResourceModel) IsRawSchemaDefined() bool {
