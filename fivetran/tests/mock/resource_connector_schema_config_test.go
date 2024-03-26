@@ -1175,7 +1175,7 @@ func TestConsistentWithUpstreamSchemaMappedMock(t *testing.T) {
 
 		schemaConsistentWithUpstreamGetHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
-				if nil == schemaHashedAlignmentData {
+				if nil == schemaConsistentWithUpstreamData {
 					schemaConsistentWithUpstreamData = createMapFromJsonString(t, `
 					{
 						"enable_new_by_default": true,
