@@ -47,8 +47,6 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 
-	fmt.Println("Creation started")
-
 	var data model.ConnectorSchemaResourceModel
 
 	// Read Terraform plan data into the model
@@ -61,8 +59,6 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		)
 		return
 	}
-
-	fmt.Println("Plan loaded")
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -102,8 +98,6 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		}
 	}
 
-	fmt.Println("Handling started")
-
 	// read upstream config
 	config := configSchema.SchemaConfig{}
 	config.ReadFromResponse(schemaResponse)
@@ -121,8 +115,6 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		)
 		return
 	}
-
-	fmt.Println("Preparing request started")
 
 	if config.HasUpdates() {
 		// applying patch
@@ -168,18 +160,43 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		}
 	}
 
-	fmt.Println("Reading results...")
+	// after applying changes it may come that solumns weren't saved in table configs, but after switching schema_change_handling - new columns apper in enabled tables.
+	// we have to additionally disable them if table has non empty columns configuration
+
+	configAfterApply := configSchema.SchemaConfig{}
+	configAfterApply.ReadFromResponse(schemaResponse)
+
+	// apply local config, managing upstream config according to schema change handling policy
+	err = configAfterApply.Override(&localConfig, schemaChangeHandling)
+
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to Create Connector Schema Resource.",
+			fmt.Sprintf("Error wile applying schema config patch. %v; Please report this issue to the provider developers.", err),
+		)
+		return
+	}
+	if configAfterApply.HasUpdates() {
+		svc := configAfterApply.PrepareRequest(client.NewConnectorSchemaUpdateService())
+		svc.ConnectorID(connectorID)
+		// we should not parse response here because it will contain only applied diffs, not the whole configuration
+		schemaResponse, err = svc.Do(ctx)
+
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to Create Connector Schema Resource.",
+				fmt.Sprintf("Error wile applying schema config patch. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
+			)
+			return
+		}
+	}
 
 	// read data from response and merge with existing config
 	data.ReadFromResponse(schemaResponse)
 
 	data.Id = types.StringValue(connectorID)
 
-	fmt.Println("Reading results done! Updating state...")
-
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
-
-	fmt.Println("State Updated")
 }
 
 func (r *connectorSchema) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -303,6 +320,34 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 		}
 	}
 	// read data from response and merge with existing config
+
+	configAfterApply := configSchema.SchemaConfig{}
+	configAfterApply.ReadFromResponse(schemaResponse)
+
+	// apply local config, managing upstream config according to schema change handling policy
+	err = configAfterApply.Override(&localConfig, plan.SchemaChangeHandling.ValueString())
+
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to Update Connector Schema Resource.",
+			fmt.Sprintf("Error wile applying schema config patch. %v; Please report this issue to the provider developers.", err),
+		)
+		return
+	}
+
+	if configAfterApply.HasUpdates() {
+		svc := configAfterApply.PrepareRequest(client.NewConnectorSchemaUpdateService())
+		svc.ConnectorID(connectorID)
+		schemaResponse, err = svc.Do(ctx)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to Create Connector Schema Resource.",
+				fmt.Sprintf("Error wile applying schema config patch. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
+			)
+			return
+		}
+	}
+
 	plan.ReadFromResponse(schemaResponse)
 	plan.Id = types.StringValue(connectorID)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)

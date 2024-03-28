@@ -523,7 +523,10 @@ func (d *ConnectorSchemaResourceModel) getSchemas() []interface{} {
 									column := map[string]interface{}{
 										"name":    cName,
 										"enabled": columnElement.Attributes()["enabled"].(basetypes.BoolValue).ValueBool(),
-										"hashed":  columnElement.Attributes()["hashed"].(basetypes.BoolValue).ValueBool(),
+										//"hashed":  columnElement.Attributes()["hashed"].(basetypes.BoolValue).ValueBool(),
+									}
+									if !columnElement.Attributes()["hashed"].(basetypes.BoolValue).IsUnknown() {
+										column["hashed"] = columnElement.Attributes()["hashed"].(basetypes.BoolValue).ValueBool()
 									}
 									columns = append(columns, column)
 								}
