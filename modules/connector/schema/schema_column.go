@@ -14,7 +14,7 @@ type _column struct {
 }
 
 func (c *_column) setHashed(value *bool) {
-	if value != nil && *value != *c.hashed {
+	if value != nil && (c.hashed == nil || *value != *c.hashed) {
 		c.hashed = value
 		c.updated = true
 	} else {
@@ -51,8 +51,14 @@ func (c *_column) override(local *_column, sch string) error {
 	} else {
 		// patch silently if possible
 		c.setEnabled(sch != BLOCK_ALL)
-		if *c.hashed {
-			c.setHashedToDefault()
+		// do not manage hashed for disabled columns - it doesn't make any sense
+		if c.enabled {
+			if c.hashed != nil && *(c.hashed) {
+				c.setHashedToDefault()
+			}
+		} else {
+			// don't pass it in request
+			c.setHashed(nil)
 		}
 	}
 	return nil

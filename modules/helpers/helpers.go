@@ -320,3 +320,23 @@ func StringInt32Hash(s string) int {
 	h.Write(hashKey)
 	return int(h.Sum32())
 }
+
+func GetBoolOk(v interface{}) (bool, bool) {
+	if vBool, ok := v.(bool); ok {
+		return vBool, ok
+	} else if vString, ok := v.(string); ok {
+		return strToBoolSafe(vString)
+	}
+	return false, false
+}
+
+func strToBoolSafe(v string) (bool, bool) {
+	vLow := strings.ToLower(v)
+	if vLow == "true" {
+		return true, true
+	}
+	if vLow == "false" {
+		return false, true
+	}
+	return false, false
+}

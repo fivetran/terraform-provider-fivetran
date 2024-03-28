@@ -30,29 +30,35 @@ func (s *_schema) override(local *_schema, sch string) error {
 		if local.enabled != s.enabled {
 			s.setEnabled(local.enabled)
 		}
-		for tName, t := range s.tables {
-			if lTable, ok := local.tables[tName]; ok {
-				err := t.override(lTable, sch)
-				if err != nil {
-					return fmt.Errorf("error while patching schema %s: \n\t%s", s.name, err.Error())
+		// change table configuration only in case if schema is enabled
+		if len(local.tables) > 0 {
+			for tName, t := range s.tables {
+				if lTable, ok := local.tables[tName]; ok {
+					err := t.override(lTable, sch)
+					if err != nil {
+						return fmt.Errorf("error while patching schema %s: \n\t%s", s.name, err.Error())
+					}
+					s.updated = s.updated || t.updated
+				} else {
+					err := t.override(nil, sch)
+					if err != nil {
+						return fmt.Errorf("error while patching schema %s: \n\t%s", s.name, err.Error())
+					}
+					s.updated = s.updated || t.updated
 				}
-				s.updated = s.updated || t.updated
-			} else {
+			}
+		}
+	} else {
+		s.setEnabled(sch == ALLOW_ALL)
+		// change table configuration only in case if schema is enabled
+		if s.enabled {
+			for _, t := range s.tables {
 				err := t.override(nil, sch)
 				if err != nil {
 					return fmt.Errorf("error while patching schema %s: \n\t%s", s.name, err.Error())
 				}
 				s.updated = s.updated || t.updated
 			}
-		}
-	} else {
-		s.setEnabled(sch == ALLOW_ALL)
-		for _, t := range s.tables {
-			err := t.override(nil, sch)
-			if err != nil {
-				return fmt.Errorf("error while patching schema %s: \n\t%s", s.name, err.Error())
-			}
-			s.updated = s.updated || t.updated
 		}
 	}
 	return nil
@@ -119,7 +125,6 @@ func (s _schema) toStateObject(sch string, local *_schema) (map[string]interface
 	result[ENABLED] = helpers.BoolToStr(s.enabled)
 	result[NAME] = s.name
 	tables := make([]interface{}, 0)
-
 	for k, v := range s.tables {
 		var tableState map[string]interface{}
 		var include bool
@@ -136,9 +141,7 @@ func (s _schema) toStateObject(sch string, local *_schema) (map[string]interface
 			tables = append(tables, tableState)
 		}
 	}
-
 	result[TABLE] = tables
-
 	// schema has been configured locally OR has tables to include OR schema inconsistent by policy
 	include := local != nil || len(tables) > 0 || s.enabled != (sch == ALLOW_ALL)
 	return result, include
