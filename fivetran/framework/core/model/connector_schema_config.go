@@ -181,55 +181,59 @@ func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}) base
 
 		tables := map[string]attr.Value{}
 
-		for _, t := range schemaMap["table"].([]interface{}) {
-			tableMap := t.(map[string]interface{})
-			tableName := tableMap["name"].(string)
-			localTable := d.tryGetLocalTable(localSchema, tableName)
+		if tableList, ok := schemaMap["table"]; ok {
+			for _, t := range tableList.([]interface{}) {
+				tableMap := t.(map[string]interface{})
+				tableName := tableMap["name"].(string)
+				localTable := d.tryGetLocalTable(localSchema, tableName)
 
-			tableElements := map[string]attr.Value{}
-			tableElements["sync_mode"] = types.StringNull()
+				tableElements := map[string]attr.Value{}
+				tableElements["sync_mode"] = types.StringNull()
 
-			if _, ok := localTable["sync_mode"]; ok {
-				if sm, ok := tableMap["sync_mode"].(string); ok {
-					tableElements["sync_mode"] = types.StringValue(sm)
+				if _, ok := localTable["sync_mode"]; ok {
+					if sm, ok := tableMap["sync_mode"].(string); ok {
+						tableElements["sync_mode"] = types.StringValue(sm)
+					}
 				}
-			}
 
-			if _, ok := localTable["enabled"]; ok {
-				tableElements["enabled"] = types.BoolValue(helpers.StrToBool(tableMap["enabled"].(string)))
-			} else {
-				tableElements["enabled"] = types.BoolNull()
-			}
-			columns := map[string]attr.Value{}
-			for _, c := range tableMap["column"].([]interface{}) {
-				columnMap := c.(map[string]interface{})
-				columnName := columnMap["name"].(string)
-
-				localColumn := d.tryGetLocalColumn(localTable, columnName)
-
-				columnElements := map[string]attr.Value{}
-
-				if _, ok := localColumn["enabled"]; ok {
-					columnElements["enabled"] = types.BoolValue(helpers.StrToBool(columnMap["enabled"].(string)))
+				if _, ok := localTable["enabled"]; ok {
+					tableElements["enabled"] = types.BoolValue(helpers.StrToBool(tableMap["enabled"].(string)))
 				} else {
-					columnElements["enabled"] = types.BoolNull()
+					tableElements["enabled"] = types.BoolNull()
 				}
+				columns := map[string]attr.Value{}
+				if columnList, ok := tableMap["column"]; ok {
+					for _, c := range columnList.([]interface{}) {
+						columnMap := c.(map[string]interface{})
+						columnName := columnMap["name"].(string)
 
-				if _, ok := localColumn["hashed"]; ok {
-					columnElements["hashed"] = types.BoolValue(helpers.StrToBool(columnMap["hashed"].(string)))
-				} else {
-					columnElements["hashed"] = types.BoolNull()
+						localColumn := d.tryGetLocalColumn(localTable, columnName)
+
+						columnElements := map[string]attr.Value{}
+
+						if _, ok := localColumn["enabled"]; ok {
+							columnElements["enabled"] = types.BoolValue(helpers.StrToBool(columnMap["enabled"].(string)))
+						} else {
+							columnElements["enabled"] = types.BoolNull()
+						}
+
+						if _, ok := localColumn["hashed"]; ok {
+							columnElements["hashed"] = types.BoolValue(helpers.StrToBool(columnMap["hashed"].(string)))
+						} else {
+							columnElements["hashed"] = types.BoolNull()
+						}
+						columnValue, _ := types.ObjectValue(columnsAttrTypes, columnElements)
+						columns[columnName] = columnValue
+					}
 				}
-				columnValue, _ := types.ObjectValue(columnsAttrTypes, columnElements)
-				columns[columnName] = columnValue
+				if len(columns) > 0 {
+					tableElements["columns"], _ = types.MapValue(types.ObjectType{AttrTypes: columnsAttrTypes}, columns)
+				} else {
+					tableElements["columns"] = types.MapNull(types.ObjectType{AttrTypes: columnsAttrTypes})
+				}
+				tableValue, _ := types.ObjectValue(tablesAttrTypes, tableElements)
+				tables[tableName] = tableValue
 			}
-			if len(columns) > 0 {
-				tableElements["columns"], _ = types.MapValue(types.ObjectType{AttrTypes: columnsAttrTypes}, columns)
-			} else {
-				tableElements["columns"] = types.MapNull(types.ObjectType{AttrTypes: columnsAttrTypes})
-			}
-			tableValue, _ := types.ObjectValue(tablesAttrTypes, tableElements)
-			tables[tableName] = tableValue
 		}
 		if len(tables) > 0 {
 			schemaElements["tables"], _ = types.MapValue(types.ObjectType{AttrTypes: tablesAttrTypes}, tables)
@@ -301,55 +305,59 @@ func (d *ConnectorSchemaResourceModel) getLegacySchemaItems(schemas []interface{
 		localSchema := d.tryGetLocalSchema(localSchemas, schemaName)
 
 		tables := []attr.Value{}
-		for _, t := range schemaMap["table"].([]interface{}) {
-			tableMap := t.(map[string]interface{})
-			tableName := tableMap["name"].(string)
+		if tableList, ok := schemaMap["table"]; ok {
+			for _, t := range tableList.([]interface{}) {
+				tableMap := t.(map[string]interface{})
+				tableName := tableMap["name"].(string)
 
-			localTable := d.tryGetLocalTable(localSchema, tableName)
+				localTable := d.tryGetLocalTable(localSchema, tableName)
 
-			columns := []attr.Value{}
-			for _, c := range tableMap["column"].([]interface{}) {
-				columnMap := c.(map[string]interface{})
-				columnName := columnMap["name"].(string)
+				columns := []attr.Value{}
+				if columnList, ok := tableMap["column"]; ok {
+					for _, c := range columnList.([]interface{}) {
+						columnMap := c.(map[string]interface{})
+						columnName := columnMap["name"].(string)
 
-				localColumn := d.tryGetLocalColumn(localTable, columnName)
+						localColumn := d.tryGetLocalColumn(localTable, columnName)
 
-				columnElements := map[string]attr.Value{}
-				columnElements["name"] = types.StringValue(columnName)
+						columnElements := map[string]attr.Value{}
+						columnElements["name"] = types.StringValue(columnName)
 
-				if _, ok := localColumn["enabled"]; ok {
-					columnElements["enabled"] = types.BoolValue(helpers.StrToBool(columnMap["enabled"].(string)))
+						if _, ok := localColumn["enabled"]; ok {
+							columnElements["enabled"] = types.BoolValue(helpers.StrToBool(columnMap["enabled"].(string)))
+						} else {
+							columnElements["enabled"] = types.BoolNull()
+						}
+
+						if _, ok := localColumn["hashed"]; ok {
+							columnElements["hashed"] = types.BoolValue(helpers.StrToBool(columnMap["hashed"].(string)))
+						} else {
+							columnElements["hashed"] = types.BoolNull()
+						}
+						columnValue, _ := types.ObjectValue(columnAttrTypes, columnElements)
+						columns = append(columns, columnValue)
+					}
+				}
+				tableElements := map[string]attr.Value{}
+				tableElements["name"] = types.StringValue(tableName)
+
+				tableElements["sync_mode"] = types.StringNull()
+
+				if _, ok := localTable["sync_mode"]; ok {
+					if sm, ok := tableMap["sync_mode"].(string); ok {
+						tableElements["sync_mode"] = types.StringValue(sm)
+					}
+				}
+
+				if _, ok := localTable["enabled"]; ok {
+					tableElements["enabled"] = types.BoolValue(helpers.StrToBool(tableMap["enabled"].(string)))
 				} else {
-					columnElements["enabled"] = types.BoolNull()
+					tableElements["enabled"] = types.BoolNull()
 				}
-
-				if _, ok := localColumn["hashed"]; ok {
-					columnElements["hashed"] = types.BoolValue(helpers.StrToBool(columnMap["hashed"].(string)))
-				} else {
-					columnElements["hashed"] = types.BoolNull()
-				}
-				columnValue, _ := types.ObjectValue(columnAttrTypes, columnElements)
-				columns = append(columns, columnValue)
+				tableElements["column"], _ = types.SetValue(types.ObjectType{AttrTypes: columnAttrTypes}, columns)
+				tableValue, _ := types.ObjectValue(tableAttrTypes, tableElements)
+				tables = append(tables, tableValue)
 			}
-			tableElements := map[string]attr.Value{}
-			tableElements["name"] = types.StringValue(tableName)
-
-			tableElements["sync_mode"] = types.StringNull()
-
-			if _, ok := localTable["sync_mode"]; ok {
-				if sm, ok := tableMap["sync_mode"].(string); ok {
-					tableElements["sync_mode"] = types.StringValue(sm)
-				}
-			}
-
-			if _, ok := localTable["enabled"]; ok {
-				tableElements["enabled"] = types.BoolValue(helpers.StrToBool(tableMap["enabled"].(string)))
-			} else {
-				tableElements["enabled"] = types.BoolNull()
-			}
-			tableElements["column"], _ = types.SetValue(types.ObjectType{AttrTypes: columnAttrTypes}, columns)
-			tableValue, _ := types.ObjectValue(tableAttrTypes, tableElements)
-			tables = append(tables, tableValue)
 		}
 		schemaElements := map[string]attr.Value{}
 		schemaElements["name"] = types.StringValue(schemaName)
