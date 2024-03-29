@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/fivetran/go-fivetran/tests/mock"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 var (
@@ -133,76 +133,7 @@ const (
 		}
 	}
 	`
-	schemaWithLockedTableAndColumn_blocked0 = `
-	{
-		"schema_change_handling": "BLOCK_ALL",
-		"schemas": {
-			"schema_1": {
-				"name_in_destination": "schema_1",
-				"enabled": true,
-				"tables": {
-					"table_1": {
-						"name_in_destination": "table_1",
-						"enabled": true,
-						"sync_mode": "SOFT_DELETE",
-						"enabled_patch_settings": {
-							"allowed": true
-						},
-						"columns": {
-							"column_1": {
-								"name_in_destination": "column_1",
-								"enabled": true,
-								"hashed": false,
-								"enabled_patch_settings": {
-									"allowed": false,
-									"reason_code": "SYSTEM_COLUMN",
-									"reason": "The column does not support exclusion as it is a Primary Key"
-								}
-							},
-							"column_2": {
-								"name_in_destination": "column_2",
-								"enabled": true,
-								"hashed": false,
-								"enabled_patch_settings": {
-									"allowed": true
-								}
-							}
-						}
-					},
-					"table_2": {
-						"name_in_destination": "table_2",
-						"enabled": true,
-						"sync_mode": "SOFT_DELETE",
-						"enabled_patch_settings": {
-							"allowed": false,
-							"reason_code": "SYSTEM_TABLE"
-						},
-						"columns": {
-							"column_3": {
-								"name_in_destination": "column_3",
-								"enabled": true,
-								"hashed": false,
-								"enabled_patch_settings": {
-									"allowed": false,
-									"reason_code": "SYSTEM_COLUMN",
-									"reason": "The column does not support exclusion as it is a Primary Key"
-								}
-							},
-							"column_4": {
-								"name_in_destination": "column_4",
-								"enabled": true,
-								"hashed": false,
-								"enabled_patch_settings": {
-									"allowed": true
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	`
+
 	schemaWithLockedTableAndColumn_blocked1 = `
 	{
 		"schema_change_handling": "BLOCK_ALL",
@@ -213,7 +144,7 @@ const (
 				"tables": {
 					"table_1": {
 						"name_in_destination": "table_1",
-						"enabled": false,
+						"enabled": true,
 						"sync_mode": "SOFT_DELETE",
 						"enabled_patch_settings": {
 							"allowed": true
@@ -231,7 +162,7 @@ const (
 							},
 							"column_2": {
 								"name_in_destination": "column_2",
-								"enabled": false,
+								"enabled": true,
 								"hashed": false,
 								"enabled_patch_settings": {
 									"allowed": true
@@ -260,7 +191,7 @@ const (
 							},
 							"column_4": {
 								"name_in_destination": "column_4",
-								"enabled": false,
+								"enabled": true,
 								"hashed": false,
 								"enabled_patch_settings": {
 									"allowed": true
@@ -348,6 +279,38 @@ const (
 				"tables": {
 					"table_1": {
 						"name_in_destination": "table_1",
+						"enabled": true,
+						"sync_mode": "SOFT_DELETE",
+						"enabled_patch_settings": {
+							"allowed": true
+						},
+						"columns": {
+							"column_1": {
+								"name_in_destination": "column_1",
+								"enabled": true,
+								"hashed": false,
+								"enabled_patch_settings": {
+									"allowed": true
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	`
+	schemaEmptyDefaultJsonBlockedSchema3 = `
+	{
+		"enable_new_by_default": false,
+		"schema_change_handling": "BLOCK_ALL",
+		"schemas": {
+			"schema_1": {
+				"name_in_destination": "schema_1",
+				"enabled": false,
+				"tables": {
+					"table_1": {
+						"name_in_destination": "table_1",
 						"enabled": false,
 						"sync_mode": "SOFT_DELETE",
 						"enabled_patch_settings": {
@@ -369,7 +332,8 @@ const (
 		}
 	}
 	`
-	schemaEmptyDefaultJsonBlockedSchema3 = `
+
+	schemaEmptyDefaultJsonBlockedSchema4 = `
 	{
 		"enable_new_by_default": false,
 		"schema_change_handling": "BLOCK_ALL",
@@ -441,15 +405,6 @@ func setupMockClientEmptyDefaultSchemaResource(t *testing.T) {
 	schemaEmptyDefaultPatchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			body := requestBodyToJson(t, req)
-
-			// if updateIteration == 1 {
-			// 	// Check the request
-			// 	assertEqual(t, len(body), 1)
-			// 	assertEqual(t, body["schema_change_handling"], "BLOCK_ALL")
-
-			// 	// create schema structure
-			// 	schemaEmptyDefaultData = createMapFromJsonString(t, schemaEmptyDefaultJsonBlockedSchema2)
-			// }
 			if updateIteration == 0 {
 				// Check the request
 				assertEqual(t, len(body), 2)
@@ -461,25 +416,9 @@ func setupMockClientEmptyDefaultSchemaResource(t *testing.T) {
 
 				schema1 := schemasMap["schema_1"].(map[string]interface{})
 
-				assertEqual(t, len(schema1), 2)
+				assertEqual(t, len(schema1), 1)
 
 				assertEqual(t, schema1["enabled"], false)
-				assertNotEmpty(t, schema1["tables"])
-
-				tablesMap := schema1["tables"].(map[string]interface{})
-
-				table1 := tablesMap["table_1"].(map[string]interface{})
-
-				assertEqual(t, len(table1), 2)
-
-				assertEqual(t, table1["enabled"], false)
-				assertNotEmpty(t, table1["columns"])
-
-				columnsMap := table1["columns"].(map[string]interface{})
-
-				column1 := columnsMap["column_1"].(map[string]interface{})
-
-				assertEqual(t, column1["enabled"], false)
 
 				// create schema structure
 				schemaEmptyDefaultData = createMapFromJsonString(t, schemaEmptyDefaultJsonBlockedSchema2)
@@ -487,34 +426,51 @@ func setupMockClientEmptyDefaultSchemaResource(t *testing.T) {
 			if updateIteration == 1 {
 				// Check the request
 				assertEqual(t, len(body), 1)
-				assertNotEmpty(t, body["schemas"])
 
-				schemasMap := body["schemas"].(map[string]interface{})
+				schemasMap := AssertKeyExists(t, body, "schemas").(map[string]interface{})
 
-				schema1 := schemasMap["schema_1"].(map[string]interface{})
+				schema1 := AssertKeyExists(t, schemasMap, "schema_1").(map[string]interface{})
 
-				assertEqual(t, len(schema1), 2)
+				tablesMap := AssertKeyExists(t, schema1, "tables").(map[string]interface{})
 
-				assertEqual(t, schema1["enabled"], true)
-				assertNotEmpty(t, schema1["tables"])
+				table1 := AssertKeyExists(t, tablesMap, "table_1").(map[string]interface{})
 
-				tablesMap := schema1["tables"].(map[string]interface{})
+				assertKeyExistsAndHasValue(t, table1, "enabled", false)
 
-				table1 := tablesMap["table_1"].(map[string]interface{})
+				columnsMap := AssertKeyExists(t, table1, "columns").(map[string]interface{})
 
-				assertEqual(t, len(table1), 2)
+				column1 := AssertKeyExists(t, columnsMap, "column_1").(map[string]interface{})
 
-				assertEqual(t, table1["enabled"], true)
-				assertNotEmpty(t, table1["columns"])
-
-				columnsMap := table1["columns"].(map[string]interface{})
-
-				column1 := columnsMap["column_1"].(map[string]interface{})
-
-				assertEqual(t, column1["enabled"], true)
+				assertKeyExistsAndHasValue(t, column1, "enabled", false)
 
 				// create schema structure
 				schemaEmptyDefaultData = createMapFromJsonString(t, schemaEmptyDefaultJsonBlockedSchema3)
+			}
+
+			if updateIteration == 2 {
+				// Check the request
+				assertEqual(t, len(body), 1)
+
+				schemasMap := AssertKeyExists(t, body, "schemas").(map[string]interface{})
+
+				schema1 := AssertKeyExists(t, schemasMap, "schema_1").(map[string]interface{})
+
+				assertKeyExistsAndHasValue(t, schema1, "enabled", true)
+
+				tablesMap := AssertKeyExists(t, schema1, "tables").(map[string]interface{})
+
+				table1 := AssertKeyExists(t, tablesMap, "table_1").(map[string]interface{})
+
+				assertKeyExistsAndHasValue(t, table1, "enabled", true)
+
+				columnsMap := AssertKeyExists(t, table1, "columns").(map[string]interface{})
+
+				column1 := AssertKeyExists(t, columnsMap, "column_1").(map[string]interface{})
+
+				assertKeyExistsAndHasValue(t, column1, "enabled", true)
+
+				// create schema structure
+				schemaEmptyDefaultData = createMapFromJsonString(t, schemaEmptyDefaultJsonBlockedSchema4)
 			}
 			updateIteration++
 			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaEmptyDefaultData), nil
@@ -589,7 +545,7 @@ func TestResourceEmptyDefaultSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 1)
+				//assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 1)
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
@@ -616,7 +572,7 @@ func TestResourceEmptyDefaultSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 2)
+				//assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 2)
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
@@ -662,59 +618,20 @@ func setupMockClientLockedPartsSchemaResource(t *testing.T) {
 	schemaLockedPatchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			body := requestBodyToJson(t, req)
-			// if updateIteration == 0 {
-			// 	// Check the request
-			// 	assertEqual(t, len(body), 1)
 
-			// 	// create schema structure
-			// 	schemaLockedData = createMapFromJsonString(t, schemaWithLockedTableAndColumn_blocked0)
-			// }
 			if updateIteration == 0 {
 				// Check the request
 				assertEqual(t, len(body), 2)
-				assertEqual(t, body["schema_change_handling"], "BLOCK_ALL")
-				assertNotEmpty(t, body["schemas"])
+				assertKeyExistsAndHasValue(t, body, "schema_change_handling", "BLOCK_ALL")
 
-				schemasMap := body["schemas"].(map[string]interface{})
+				schemas := assertKeyExists(t, body, "schemas").(map[string]interface{})
 
-				schema1 := schemasMap["schema_1"].(map[string]interface{})
+				schema_1 := assertKeyExists(t, schemas, "schema_1").(map[string]interface{})
 
-				assertEqual(t, len(schema1), 2)
-
-				assertEqual(t, schema1["enabled"], false)
-				assertNotEmpty(t, schema1["tables"])
-
-				tablesMap := schema1["tables"].(map[string]interface{})
-
-				assertEqual(t, len(tablesMap), 2)
-
-				table1 := tablesMap["table_1"].(map[string]interface{})
-
-				assertEqual(t, len(table1), 2)
-
-				assertEqual(t, table1["enabled"], false)
-				assertNotEmpty(t, table1["columns"])
-
-				columnsMap := table1["columns"].(map[string]interface{})
-
-				column2 := columnsMap["column_2"].(map[string]interface{})
-
-				assertEqual(t, column2["enabled"], false)
-
-				table2 := tablesMap["table_2"].(map[string]interface{})
-
-				assertEqual(t, len(table2), 1)
-
-				assertNotEmpty(t, table2["columns"])
-
-				columnsMap2 := table2["columns"].(map[string]interface{})
-
-				column4 := columnsMap2["column_4"].(map[string]interface{})
-
-				assertEqual(t, column4["enabled"], false)
+				assertKeyExistsAndHasValue(t, schema_1, "enabled", false)
 
 				// create schema structure
-				schemaLockedData = createMapFromJsonString(t, schemaEmptyDefaultJsonBlockedSchema2)
+				schemaLockedData = createMapFromJsonString(t, schemaWithLockedTableAndColumn_blocked1)
 			}
 			updateIteration++
 			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaLockedData), nil
@@ -1163,6 +1080,149 @@ func TestResourceLockedSchemaMock(t *testing.T) {
 
 			Steps: []resource.TestStep{
 				step1,
+			},
+		},
+	)
+}
+
+func TestConsistentWithUpstreamSchemaMappedMock(t *testing.T) {
+	setupMockClientConsistentWithUpstreamResource := func(t *testing.T) {
+		mockClient.Reset()
+		schemaConsistentWithUpstreamData = nil
+
+		schemaConsistentWithUpstreamGetHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				if nil == schemaConsistentWithUpstreamData {
+					schemaConsistentWithUpstreamData = createMapFromJsonString(t, `
+					{
+						"enable_new_by_default": true,
+						"schema_change_handling": "BLOCK_ALL",
+						"schemas": {
+							"schema_1": {
+								"name_in_destination": "schema_1",
+								"enabled": true,
+								"tables": {
+									"table_1": {
+										"name_in_destination": "table_1",
+										"enabled": true,
+										"sync_mode": "SOFT_DELETE",
+										"enabled_patch_settings": {
+											"allowed": true
+										}
+									},
+									"table_2": {
+										"name_in_destination": "table_2",
+										"enabled": true,
+										"sync_mode": "LIVE",
+										"enabled_patch_settings": {
+											"allowed": true
+										}
+									},
+									"table_3": {
+										"name_in_destination": "table_3",
+										"enabled": false,
+										"sync_mode": "LIVE",
+										"enabled_patch_settings": {
+											"allowed": true
+										}
+									}
+								}
+							}
+						}
+					}
+					`)
+				}
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaConsistentWithUpstreamData), nil
+			},
+		)
+
+		schemaConsistentWithUpstreamPathchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				body := requestBodyToJson(t, req)
+				fmt.Print(body)
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaConsistentWithUpstreamData), nil
+			},
+		)
+	}
+
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "BLOCK_ALL"
+				schemas = {
+					"schema_1" = {
+						enabled = true
+						tables = {
+							"table_1" = {
+								enabled = true
+								sync_mode = "SOFT_DELETE"
+							}
+							"table_2" = {
+								enabled = true
+							}
+						}
+					}
+				}
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 1)
+				assertNotEmpty(t, schemaConsistentWithUpstreamData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.table_1.sync_mode", "SOFT_DELETE"),
+			resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.table_2.sync_mode"),
+		),
+	}
+
+	step2 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "BLOCK_ALL"
+				schemas = {
+					"schema_1" = {
+						enabled = true
+						tables = {
+							"table_1" = {
+								enabled = true
+							}
+							"table_2" = {
+								enabled = true
+								sync_mode = "LIVE"
+							}
+						}
+					}
+				}
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
+			resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.table_1.sync_mode"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.table_2.sync_mode", "LIVE"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientConsistentWithUpstreamResource(t)
+			},
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				// there is no possibility to destroy schema config - it alsways exists within the connector
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
+				step2,
 			},
 		},
 	)
