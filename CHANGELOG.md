@@ -7,13 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.18...HEAD)
 
-## [1.1.18](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.17...v1.1.18)
-
 ## Added
 - New resource `fivetran_user_connector_membership` that allows to manage User Connector memberships.
 - New resource `fivetran_user_group_membership` that allows to manage User Group memberships.
 - New data source `fivetran_user_connector_memberships` that allows to retrieve details of the existing user connector memebrships for a given identifier.
 - New data source `fivetran_user_group_memberships` that allows to retrieve the list of existing user group memberships available for the current account.
+
+## [1.1.18](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.17...v1.1.18)
 
 ## Updated
 - Schema updated for resource `fivetran_connector_schema_config`:
