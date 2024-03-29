@@ -4482,6 +4482,168 @@
         }
       }
     },
+    "/v1/proxy": {
+      "get": {
+        "tags": [
+          "Proxy Agent Management"
+        ],
+        "summary": "List All Proxy Agents",
+        "description": "Returns a list of all proxy agents.",
+        "operationId": "get_proxy_agent",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Paging cursor, [read more about pagination](https://fivetran.com/docs/rest-api/pagination)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "example": null
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code",
+                      "example": null
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text",
+                      "example": null
+                    },
+                    "data": {
+                      "required": [
+                        "items"
+                      ],
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "description": "The collection of return items",
+                          "example": null,
+                          "items": {
+                            "$ref": "#/components/schemas/ProxyAgentResponse"
+                          }
+                        },
+                        "nextCursor": {
+                          "type": "string",
+                          "description": "The value of the cursor parameter for the next page",
+                          "example": null
+                        }
+                      },
+                      "example": null
+                    }
+                  },
+                  "example": null
+                },
+                "example": null
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Proxy Agent Management"
+        ],
+        "summary": "Register new proxy agent.",
+        "description": "Register new proxy agent.",
+        "operationId": "create_proxy_agent",
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProxyParamRequest"
+              },
+              "example": null
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code",
+                      "example": null
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text",
+                      "example": null
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/ProxyAgentCreatedResponse"
+                    }
+                  },
+                  "example": null
+                },
+                "example": null
+              }
+            }
+          },
+          "400": {
+            "description": "Group region not supported"
+          },
+          "404": {
+            "description": "Group not found."
+          },
+          "409": {
+            "description": "Proxy agent with same name already exists."
+          }
+        }
+      }
+    },
     "/v1/destinations/{destinationId}/test": {
       "post": {
         "tags": [
@@ -5066,6 +5228,9 @@
                 "example": null
               }
             }
+          },
+          "404": {
+            "description": "Group not found"
           }
         }
       }
@@ -6399,6 +6564,184 @@
           },
           "400": {
             "description": "Bad request"
+          }
+        }
+      }
+    },
+    "/v1/proxy/{agentId}/connections": {
+      "get": {
+        "tags": [
+          "Proxy Agent Management"
+        ],
+        "summary": "Returns all connections attached to the proxy agent.",
+        "description": "Returns all connections attached to the proxy agent.",
+        "operationId": "get_proxy_agent_connections",
+        "parameters": [
+          {
+            "name": "agentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Paging cursor, [read more about pagination](https://fivetran.com/docs/rest-api/pagination)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "example": null
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code",
+                      "example": null
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text",
+                      "example": null
+                    },
+                    "data": {
+                      "required": [
+                        "items"
+                      ],
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "description": "The collection of return items",
+                          "example": null,
+                          "items": {
+                            "$ref": "#/components/schemas/ProxyIntegrationResponse"
+                          }
+                        },
+                        "nextCursor": {
+                          "type": "string",
+                          "description": "The value of the cursor parameter for the next page",
+                          "example": null
+                        }
+                      },
+                      "example": null
+                    }
+                  },
+                  "example": null
+                },
+                "example": null
+              }
+            }
+          },
+          "404": {
+            "description": "Proxy Agent not found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Proxy Agent Management"
+        ],
+        "summary": "Attach connection to proxy agent.",
+        "description": "Attach connection to proxy agent.",
+        "operationId": "add_proxy_integration",
+        "parameters": [
+          {
+            "name": "agentId",
+            "in": "path",
+            "description": "The unique identifier for the proxy agent.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProxyIntegrationRequest"
+              },
+              "example": null
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code",
+                      "example": null
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text",
+                      "example": null
+                    }
+                  },
+                  "example": null
+                },
+                "example": null
+              }
+            }
+          },
+          "400": {
+            "description": "Proxy agent region and connection region mismatch."
+          },
+          "404": {
+            "description": "Connection not found."
           }
         }
       }
@@ -8331,6 +8674,190 @@
         }
       }
     },
+    "/v1/proxy/{agentId}": {
+      "get": {
+        "tags": [
+          "Proxy Agent Management"
+        ],
+        "summary": "Retrieve Proxy Agents Details",
+        "description": "Returns a proxy agent object if a valid identifier was provided.",
+        "operationId": "get_proxy_agent_details",
+        "parameters": [
+          {
+            "name": "agentId",
+            "in": "path",
+            "description": "The unique identifier for the proxy agent.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProxyAgentResponse"
+                },
+                "example": null
+              }
+            }
+          },
+          "404": {
+            "description": "Proxy Agent not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Proxy Agent Management"
+        ],
+        "summary": "Delete a proxy agent",
+        "description": "Deletes a proxy agent from your Fivetran account.",
+        "operationId": "delete_proxy_agent",
+        "parameters": [
+          {
+            "name": "agentId",
+            "in": "path",
+            "description": "The unique identifier for the proxy agent.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code",
+                      "example": null
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text",
+                      "example": null
+                    }
+                  },
+                  "example": null
+                },
+                "example": null
+              }
+            }
+          },
+          "404": {
+            "description": "Proxy agent not found."
+          },
+          "409": {
+            "description": "Proxy agent have attached connections."
+          }
+        }
+      }
+    },
+    "/v1/proxy/{agentId}/connections/{connectionId}": {
+      "delete": {
+        "tags": [
+          "Proxy Agent Management"
+        ],
+        "summary": "Detach connections from the proxy agent.",
+        "description": "Detach connections from the proxy agent.",
+        "operationId": "remove_proxy_integration",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "The unique identifier for the connection.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "agentId",
+            "in": "path",
+            "description": "The unique identifier for the proxy agent.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code",
+                      "example": null
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text",
+                      "example": null
+                    }
+                  },
+                  "example": null
+                },
+                "example": null
+              }
+            }
+          },
+          "404": {
+            "description": "Proxy agent or connection not found."
+          }
+        }
+      }
+    },
     "/v1/webhooks/{webhookId}": {
       "get": {
         "tags": [
@@ -9135,6 +9662,9 @@
                 "example": null
               }
             }
+          },
+          "404": {
+            "description": "Private Link not found"
           }
         }
       },
@@ -9194,6 +9724,9 @@
                 "example": null
               }
             }
+          },
+          "404": {
+            "description": "Private Link not found"
           }
         }
       },
@@ -9266,6 +9799,9 @@
                 "example": null
               }
             }
+          },
+          "404": {
+            "description": "Private Link not found"
           }
         }
       }
@@ -10450,6 +10986,11 @@
             "type": "string",
             "example": null
           },
+          "local_processing_agent_id": {
+            "type": "string",
+            "writeOnly": true,
+            "example": null
+          },
           "connect_card_config": {
             "$ref": "#/components/schemas/ConnectCardConfig"
           }
@@ -10461,6 +11002,7 @@
             "15five": "#/components/schemas/15five_NewConnectorRequestV1",
             "360learning": "#/components/schemas/360learning_NewConnectorRequestV1",
             "6sense": "#/components/schemas/6sense_NewConnectorRequestV1",
+            "absorb_lms": "#/components/schemas/absorb_lms_NewConnectorRequestV1",
             "activecampaign": "#/components/schemas/activecampaign_NewConnectorRequestV1",
             "acumatica": "#/components/schemas/acumatica_NewConnectorRequestV1",
             "ada": "#/components/schemas/ada_NewConnectorRequestV1",
@@ -10544,6 +11086,7 @@
             "care_quality_commission": "#/components/schemas/care_quality_commission_NewConnectorRequestV1",
             "castor_edc": "#/components/schemas/castor_edc_NewConnectorRequestV1",
             "ceridian_dayforce": "#/components/schemas/ceridian_dayforce_NewConnectorRequestV1",
+            "chameleon": "#/components/schemas/chameleon_NewConnectorRequestV1",
             "chargebee_product_catalog_1": "#/components/schemas/chargebee_product_catalog_1_NewConnectorRequestV1",
             "chargebee_product_catalog_2": "#/components/schemas/chargebee_product_catalog_2_NewConnectorRequestV1",
             "chargedesk": "#/components/schemas/chargedesk_NewConnectorRequestV1",
@@ -10595,6 +11138,7 @@
             "dixa": "#/components/schemas/dixa_NewConnectorRequestV1",
             "docebo": "#/components/schemas/docebo_NewConnectorRequestV1",
             "documentdb": "#/components/schemas/documentdb_NewConnectorRequestV1",
+            "donus": "#/components/schemas/donus_NewConnectorRequestV1",
             "double_click_campaign_manager": "#/components/schemas/double_click_campaign_manager_NewConnectorRequestV1",
             "double_click_publishers": "#/components/schemas/double_click_publishers_NewConnectorRequestV1",
             "drata": "#/components/schemas/drata_NewConnectorRequestV1",
@@ -10603,8 +11147,8 @@
             "dropbox": "#/components/schemas/dropbox_NewConnectorRequestV1",
             "dropbox_sign": "#/components/schemas/dropbox_sign_NewConnectorRequestV1",
             "dsv": "#/components/schemas/dsv_NewConnectorRequestV1",
+            "duoplane": "#/components/schemas/duoplane_NewConnectorRequestV1",
             "dynamics_365": "#/components/schemas/dynamics_365_NewConnectorRequestV1",
-            "dynamics_365_fo": "#/components/schemas/dynamics_365_fo_NewConnectorRequestV1",
             "dynamodb": "#/components/schemas/dynamodb_NewConnectorRequestV1",
             "easypost": "#/components/schemas/easypost_NewConnectorRequestV1",
             "economic": "#/components/schemas/economic_NewConnectorRequestV1",
@@ -10615,6 +11159,7 @@
             "employment_hero": "#/components/schemas/employment_hero_NewConnectorRequestV1",
             "es_self_hosted": "#/components/schemas/es_self_hosted_NewConnectorRequestV1",
             "eventbrite": "#/components/schemas/eventbrite_NewConnectorRequestV1",
+            "eventsforce": "#/components/schemas/eventsforce_NewConnectorRequestV1",
             "everhour": "#/components/schemas/everhour_NewConnectorRequestV1",
             "expensify": "#/components/schemas/expensify_NewConnectorRequestV1",
             "ezofficeinventory": "#/components/schemas/ezofficeinventory_NewConnectorRequestV1",
@@ -10635,12 +11180,14 @@
             "freshbooks": "#/components/schemas/freshbooks_NewConnectorRequestV1",
             "freshchat": "#/components/schemas/freshchat_NewConnectorRequestV1",
             "freshdesk": "#/components/schemas/freshdesk_NewConnectorRequestV1",
+            "freshdesk_contact_center": "#/components/schemas/freshdesk_contact_center_NewConnectorRequestV1",
             "freshservice": "#/components/schemas/freshservice_NewConnectorRequestV1",
             "freshteam": "#/components/schemas/freshteam_NewConnectorRequestV1",
             "friendbuy": "#/components/schemas/friendbuy_NewConnectorRequestV1",
             "front": "#/components/schemas/front_NewConnectorRequestV1",
             "ftp": "#/components/schemas/ftp_NewConnectorRequestV1",
             "fullstory": "#/components/schemas/fullstory_NewConnectorRequestV1",
+            "g2": "#/components/schemas/g2_NewConnectorRequestV1",
             "gainsight_customer_success": "#/components/schemas/gainsight_customer_success_NewConnectorRequestV1",
             "gcs": "#/components/schemas/gcs_NewConnectorRequestV1",
             "gem": "#/components/schemas/gem_NewConnectorRequestV1",
@@ -10671,6 +11218,7 @@
             "google_search_ads_360": "#/components/schemas/google_search_ads_360_NewConnectorRequestV1",
             "google_search_console": "#/components/schemas/google_search_console_NewConnectorRequestV1",
             "google_sheets": "#/components/schemas/google_sheets_NewConnectorRequestV1",
+            "google_tasks": "#/components/schemas/google_tasks_NewConnectorRequestV1",
             "gorgias": "#/components/schemas/gorgias_NewConnectorRequestV1",
             "green_power_monitor": "#/components/schemas/green_power_monitor_NewConnectorRequestV1",
             "greenhouse": "#/components/schemas/greenhouse_NewConnectorRequestV1",
@@ -10699,6 +11247,7 @@
             "infobip": "#/components/schemas/infobip_NewConnectorRequestV1",
             "insightly": "#/components/schemas/insightly_NewConnectorRequestV1",
             "instagram_business": "#/components/schemas/instagram_business_NewConnectorRequestV1",
+            "instructure": "#/components/schemas/instructure_NewConnectorRequestV1",
             "integral_ad_science": "#/components/schemas/integral_ad_science_NewConnectorRequestV1",
             "integrate": "#/components/schemas/integrate_NewConnectorRequestV1",
             "intercom": "#/components/schemas/intercom_NewConnectorRequestV1",
@@ -10805,6 +11354,7 @@
             "pagerduty": "#/components/schemas/pagerduty_NewConnectorRequestV1",
             "papershift": "#/components/schemas/papershift_NewConnectorRequestV1",
             "pardot": "#/components/schemas/pardot_NewConnectorRequestV1",
+            "partnerize": "#/components/schemas/partnerize_NewConnectorRequestV1",
             "partnerstack_vendor": "#/components/schemas/partnerstack_vendor_NewConnectorRequestV1",
             "paychex": "#/components/schemas/paychex_NewConnectorRequestV1",
             "paypal": "#/components/schemas/paypal_NewConnectorRequestV1",
@@ -10832,6 +11382,8 @@
             "qualaroo": "#/components/schemas/qualaroo_NewConnectorRequestV1",
             "qualtrics": "#/components/schemas/qualtrics_NewConnectorRequestV1",
             "quickbooks": "#/components/schemas/quickbooks_NewConnectorRequestV1",
+            "quora_ads": "#/components/schemas/quora_ads_NewConnectorRequestV1",
+            "quorum": "#/components/schemas/quorum_NewConnectorRequestV1",
             "rakutenadvertising": "#/components/schemas/rakutenadvertising_NewConnectorRequestV1",
             "ramp": "#/components/schemas/ramp_NewConnectorRequestV1",
             "rarible": "#/components/schemas/rarible_NewConnectorRequestV1",
@@ -10839,6 +11391,7 @@
             "recurly": "#/components/schemas/recurly_NewConnectorRequestV1",
             "reddit_ads": "#/components/schemas/reddit_ads_NewConnectorRequestV1",
             "redshift_db": "#/components/schemas/redshift_db_NewConnectorRequestV1",
+            "referralhero": "#/components/schemas/referralhero_NewConnectorRequestV1",
             "reltio": "#/components/schemas/reltio_NewConnectorRequestV1",
             "replyio": "#/components/schemas/replyio_NewConnectorRequestV1",
             "resource_management_by_smartsheet": "#/components/schemas/resource_management_by_smartsheet_NewConnectorRequestV1",
@@ -10874,6 +11427,7 @@
             "sap_hana": "#/components/schemas/sap_hana_NewConnectorRequestV1",
             "sap_hana_db": "#/components/schemas/sap_hana_db_NewConnectorRequestV1",
             "sap_s4hana": "#/components/schemas/sap_s4hana_NewConnectorRequestV1",
+            "sap_success_factors": "#/components/schemas/sap_success_factors_NewConnectorRequestV1",
             "scorm": "#/components/schemas/scorm_NewConnectorRequestV1",
             "security_journey": "#/components/schemas/security_journey_NewConnectorRequestV1",
             "segment": "#/components/schemas/segment_NewConnectorRequestV1",
@@ -10892,6 +11446,7 @@
             "shortio": "#/components/schemas/shortio_NewConnectorRequestV1",
             "simplecast": "#/components/schemas/simplecast_NewConnectorRequestV1",
             "simplesat": "#/components/schemas/simplesat_NewConnectorRequestV1",
+            "sistrix": "#/components/schemas/sistrix_NewConnectorRequestV1",
             "skilljar": "#/components/schemas/skilljar_NewConnectorRequestV1",
             "skuvault": "#/components/schemas/skuvault_NewConnectorRequestV1",
             "slab": "#/components/schemas/slab_NewConnectorRequestV1",
@@ -10958,6 +11513,7 @@
             "vwo": "#/components/schemas/vwo_NewConnectorRequestV1",
             "walmart_marketplace": "#/components/schemas/walmart_marketplace_NewConnectorRequestV1",
             "wasabi_cloud_storage": "#/components/schemas/wasabi_cloud_storage_NewConnectorRequestV1",
+            "web_scraper": "#/components/schemas/web_scraper_NewConnectorRequestV1",
             "webconnex": "#/components/schemas/webconnex_NewConnectorRequestV1",
             "webhooks": "#/components/schemas/webhooks_NewConnectorRequestV1",
             "when_i_work": "#/components/schemas/when_i_work_NewConnectorRequestV1",
@@ -11332,6 +11888,7 @@
             "15five": "#/components/schemas/15five_ConnectorResponseV1",
             "360learning": "#/components/schemas/360learning_ConnectorResponseV1",
             "6sense": "#/components/schemas/6sense_ConnectorResponseV1",
+            "absorb_lms": "#/components/schemas/absorb_lms_ConnectorResponseV1",
             "activecampaign": "#/components/schemas/activecampaign_ConnectorResponseV1",
             "acumatica": "#/components/schemas/acumatica_ConnectorResponseV1",
             "ada": "#/components/schemas/ada_ConnectorResponseV1",
@@ -11415,6 +11972,7 @@
             "care_quality_commission": "#/components/schemas/care_quality_commission_ConnectorResponseV1",
             "castor_edc": "#/components/schemas/castor_edc_ConnectorResponseV1",
             "ceridian_dayforce": "#/components/schemas/ceridian_dayforce_ConnectorResponseV1",
+            "chameleon": "#/components/schemas/chameleon_ConnectorResponseV1",
             "chargebee_product_catalog_1": "#/components/schemas/chargebee_product_catalog_1_ConnectorResponseV1",
             "chargebee_product_catalog_2": "#/components/schemas/chargebee_product_catalog_2_ConnectorResponseV1",
             "chargedesk": "#/components/schemas/chargedesk_ConnectorResponseV1",
@@ -11466,6 +12024,7 @@
             "dixa": "#/components/schemas/dixa_ConnectorResponseV1",
             "docebo": "#/components/schemas/docebo_ConnectorResponseV1",
             "documentdb": "#/components/schemas/documentdb_ConnectorResponseV1",
+            "donus": "#/components/schemas/donus_ConnectorResponseV1",
             "double_click_campaign_manager": "#/components/schemas/double_click_campaign_manager_ConnectorResponseV1",
             "double_click_publishers": "#/components/schemas/double_click_publishers_ConnectorResponseV1",
             "drata": "#/components/schemas/drata_ConnectorResponseV1",
@@ -11474,8 +12033,8 @@
             "dropbox": "#/components/schemas/dropbox_ConnectorResponseV1",
             "dropbox_sign": "#/components/schemas/dropbox_sign_ConnectorResponseV1",
             "dsv": "#/components/schemas/dsv_ConnectorResponseV1",
+            "duoplane": "#/components/schemas/duoplane_ConnectorResponseV1",
             "dynamics_365": "#/components/schemas/dynamics_365_ConnectorResponseV1",
-            "dynamics_365_fo": "#/components/schemas/dynamics_365_fo_ConnectorResponseV1",
             "dynamodb": "#/components/schemas/dynamodb_ConnectorResponseV1",
             "easypost": "#/components/schemas/easypost_ConnectorResponseV1",
             "economic": "#/components/schemas/economic_ConnectorResponseV1",
@@ -11486,6 +12045,7 @@
             "employment_hero": "#/components/schemas/employment_hero_ConnectorResponseV1",
             "es_self_hosted": "#/components/schemas/es_self_hosted_ConnectorResponseV1",
             "eventbrite": "#/components/schemas/eventbrite_ConnectorResponseV1",
+            "eventsforce": "#/components/schemas/eventsforce_ConnectorResponseV1",
             "everhour": "#/components/schemas/everhour_ConnectorResponseV1",
             "expensify": "#/components/schemas/expensify_ConnectorResponseV1",
             "ezofficeinventory": "#/components/schemas/ezofficeinventory_ConnectorResponseV1",
@@ -11506,12 +12066,14 @@
             "freshbooks": "#/components/schemas/freshbooks_ConnectorResponseV1",
             "freshchat": "#/components/schemas/freshchat_ConnectorResponseV1",
             "freshdesk": "#/components/schemas/freshdesk_ConnectorResponseV1",
+            "freshdesk_contact_center": "#/components/schemas/freshdesk_contact_center_ConnectorResponseV1",
             "freshservice": "#/components/schemas/freshservice_ConnectorResponseV1",
             "freshteam": "#/components/schemas/freshteam_ConnectorResponseV1",
             "friendbuy": "#/components/schemas/friendbuy_ConnectorResponseV1",
             "front": "#/components/schemas/front_ConnectorResponseV1",
             "ftp": "#/components/schemas/ftp_ConnectorResponseV1",
             "fullstory": "#/components/schemas/fullstory_ConnectorResponseV1",
+            "g2": "#/components/schemas/g2_ConnectorResponseV1",
             "gainsight_customer_success": "#/components/schemas/gainsight_customer_success_ConnectorResponseV1",
             "gcs": "#/components/schemas/gcs_ConnectorResponseV1",
             "gem": "#/components/schemas/gem_ConnectorResponseV1",
@@ -11542,6 +12104,7 @@
             "google_search_ads_360": "#/components/schemas/google_search_ads_360_ConnectorResponseV1",
             "google_search_console": "#/components/schemas/google_search_console_ConnectorResponseV1",
             "google_sheets": "#/components/schemas/google_sheets_ConnectorResponseV1",
+            "google_tasks": "#/components/schemas/google_tasks_ConnectorResponseV1",
             "gorgias": "#/components/schemas/gorgias_ConnectorResponseV1",
             "green_power_monitor": "#/components/schemas/green_power_monitor_ConnectorResponseV1",
             "greenhouse": "#/components/schemas/greenhouse_ConnectorResponseV1",
@@ -11570,6 +12133,7 @@
             "infobip": "#/components/schemas/infobip_ConnectorResponseV1",
             "insightly": "#/components/schemas/insightly_ConnectorResponseV1",
             "instagram_business": "#/components/schemas/instagram_business_ConnectorResponseV1",
+            "instructure": "#/components/schemas/instructure_ConnectorResponseV1",
             "integral_ad_science": "#/components/schemas/integral_ad_science_ConnectorResponseV1",
             "integrate": "#/components/schemas/integrate_ConnectorResponseV1",
             "intercom": "#/components/schemas/intercom_ConnectorResponseV1",
@@ -11676,6 +12240,7 @@
             "pagerduty": "#/components/schemas/pagerduty_ConnectorResponseV1",
             "papershift": "#/components/schemas/papershift_ConnectorResponseV1",
             "pardot": "#/components/schemas/pardot_ConnectorResponseV1",
+            "partnerize": "#/components/schemas/partnerize_ConnectorResponseV1",
             "partnerstack_vendor": "#/components/schemas/partnerstack_vendor_ConnectorResponseV1",
             "paychex": "#/components/schemas/paychex_ConnectorResponseV1",
             "paypal": "#/components/schemas/paypal_ConnectorResponseV1",
@@ -11703,6 +12268,8 @@
             "qualaroo": "#/components/schemas/qualaroo_ConnectorResponseV1",
             "qualtrics": "#/components/schemas/qualtrics_ConnectorResponseV1",
             "quickbooks": "#/components/schemas/quickbooks_ConnectorResponseV1",
+            "quora_ads": "#/components/schemas/quora_ads_ConnectorResponseV1",
+            "quorum": "#/components/schemas/quorum_ConnectorResponseV1",
             "rakutenadvertising": "#/components/schemas/rakutenadvertising_ConnectorResponseV1",
             "ramp": "#/components/schemas/ramp_ConnectorResponseV1",
             "rarible": "#/components/schemas/rarible_ConnectorResponseV1",
@@ -11710,6 +12277,7 @@
             "recurly": "#/components/schemas/recurly_ConnectorResponseV1",
             "reddit_ads": "#/components/schemas/reddit_ads_ConnectorResponseV1",
             "redshift_db": "#/components/schemas/redshift_db_ConnectorResponseV1",
+            "referralhero": "#/components/schemas/referralhero_ConnectorResponseV1",
             "reltio": "#/components/schemas/reltio_ConnectorResponseV1",
             "replyio": "#/components/schemas/replyio_ConnectorResponseV1",
             "resource_management_by_smartsheet": "#/components/schemas/resource_management_by_smartsheet_ConnectorResponseV1",
@@ -11745,6 +12313,7 @@
             "sap_hana": "#/components/schemas/sap_hana_ConnectorResponseV1",
             "sap_hana_db": "#/components/schemas/sap_hana_db_ConnectorResponseV1",
             "sap_s4hana": "#/components/schemas/sap_s4hana_ConnectorResponseV1",
+            "sap_success_factors": "#/components/schemas/sap_success_factors_ConnectorResponseV1",
             "scorm": "#/components/schemas/scorm_ConnectorResponseV1",
             "security_journey": "#/components/schemas/security_journey_ConnectorResponseV1",
             "segment": "#/components/schemas/segment_ConnectorResponseV1",
@@ -11763,6 +12332,7 @@
             "shortio": "#/components/schemas/shortio_ConnectorResponseV1",
             "simplecast": "#/components/schemas/simplecast_ConnectorResponseV1",
             "simplesat": "#/components/schemas/simplesat_ConnectorResponseV1",
+            "sistrix": "#/components/schemas/sistrix_ConnectorResponseV1",
             "skilljar": "#/components/schemas/skilljar_ConnectorResponseV1",
             "skuvault": "#/components/schemas/skuvault_ConnectorResponseV1",
             "slab": "#/components/schemas/slab_ConnectorResponseV1",
@@ -11829,6 +12399,7 @@
             "vwo": "#/components/schemas/vwo_ConnectorResponseV1",
             "walmart_marketplace": "#/components/schemas/walmart_marketplace_ConnectorResponseV1",
             "wasabi_cloud_storage": "#/components/schemas/wasabi_cloud_storage_ConnectorResponseV1",
+            "web_scraper": "#/components/schemas/web_scraper_ConnectorResponseV1",
             "webconnex": "#/components/schemas/webconnex_ConnectorResponseV1",
             "webhooks": "#/components/schemas/webhooks_ConnectorResponseV1",
             "when_i_work": "#/components/schemas/when_i_work_ConnectorResponseV1",
@@ -13057,6 +13628,16 @@
             "type": "boolean",
             "description": "Specifies whether setup tests should be run automatically.",
             "example": true
+          },
+          "daylight_saving_time_enabled": {
+            "type": "boolean",
+            "description": "Shift my UTC offset with daylight savings time (US Only)",
+            "example": null
+          },
+          "local_processing_agent_id": {
+            "type": "string",
+            "writeOnly": true,
+            "example": null
           }
         },
         "example": null,
@@ -13079,6 +13660,7 @@
             "managed_big_query": "#/components/schemas/managed_big_query_NewDestinationRequest",
             "maria_rds_warehouse": "#/components/schemas/maria_rds_warehouse_NewDestinationRequest",
             "maria_warehouse": "#/components/schemas/maria_warehouse_NewDestinationRequest",
+            "materialize": "#/components/schemas/materialize_NewDestinationRequest",
             "motherduck": "#/components/schemas/motherduck_NewDestinationRequest",
             "mysql_rds_warehouse": "#/components/schemas/mysql_rds_warehouse_NewDestinationRequest",
             "mysql_warehouse": "#/components/schemas/mysql_warehouse_NewDestinationRequest",
@@ -13087,7 +13669,9 @@
             "postgres_gcp_warehouse": "#/components/schemas/postgres_gcp_warehouse_NewDestinationRequest",
             "postgres_rds_warehouse": "#/components/schemas/postgres_rds_warehouse_NewDestinationRequest",
             "postgres_warehouse": "#/components/schemas/postgres_warehouse_NewDestinationRequest",
+            "propel": "#/components/schemas/propel_NewDestinationRequest",
             "redshift": "#/components/schemas/redshift_NewDestinationRequest",
+            "singlestore": "#/components/schemas/singlestore_NewDestinationRequest",
             "snowflake": "#/components/schemas/snowflake_NewDestinationRequest",
             "sql_server_rds_warehouse": "#/components/schemas/sql_server_rds_warehouse_NewDestinationRequest",
             "sql_server_warehouse": "#/components/schemas/sql_server_warehouse_NewDestinationRequest"
@@ -13139,6 +13723,11 @@
             "type": "boolean",
             "description": "Specifies whether setup tests should be run automatically.",
             "example": true
+          },
+          "daylight_saving_time_enabled": {
+            "type": "boolean",
+            "description": "Shift my UTC offset with daylight savings time (US Only)",
+            "example": null
           },
           "time_zone_offset": {
             "type": "string",
@@ -13198,6 +13787,11 @@
             "description": "Destination setup status",
             "example": null
           },
+          "daylight_saving_time_enabled": {
+            "type": "boolean",
+            "description": "Shift my UTC offset with daylight savings time (US Only)",
+            "example": null
+          },
           "group_id": {
             "type": "string",
             "description": "The unique identifier for the group within the Fivetran system.",
@@ -13237,6 +13831,7 @@
             "managed_big_query": "#/components/schemas/managed_big_query_DestinationResponse",
             "maria_rds_warehouse": "#/components/schemas/maria_rds_warehouse_DestinationResponse",
             "maria_warehouse": "#/components/schemas/maria_warehouse_DestinationResponse",
+            "materialize": "#/components/schemas/materialize_DestinationResponse",
             "motherduck": "#/components/schemas/motherduck_DestinationResponse",
             "mysql_rds_warehouse": "#/components/schemas/mysql_rds_warehouse_DestinationResponse",
             "mysql_warehouse": "#/components/schemas/mysql_warehouse_DestinationResponse",
@@ -13245,7 +13840,9 @@
             "postgres_gcp_warehouse": "#/components/schemas/postgres_gcp_warehouse_DestinationResponse",
             "postgres_rds_warehouse": "#/components/schemas/postgres_rds_warehouse_DestinationResponse",
             "postgres_warehouse": "#/components/schemas/postgres_warehouse_DestinationResponse",
+            "propel": "#/components/schemas/propel_DestinationResponse",
             "redshift": "#/components/schemas/redshift_DestinationResponse",
+            "singlestore": "#/components/schemas/singlestore_DestinationResponse",
             "snowflake": "#/components/schemas/snowflake_DestinationResponse",
             "sql_server_rds_warehouse": "#/components/schemas/sql_server_rds_warehouse_DestinationResponse",
             "sql_server_warehouse": "#/components/schemas/sql_server_warehouse_DestinationResponse"
@@ -13459,22 +14056,9 @@
             "format": "date-time",
             "example": null
           },
-          "connect_card": {
-            "$ref": "#/components/schemas/ConnectCardResponse"
-          },
           "sync_frequency": {
             "type": "integer",
             "description": "The connector sync frequency in minutes",
-            "format": "int32",
-            "example": null
-          },
-          "pause_after_trial": {
-            "type": "boolean",
-            "description": "Specifies whether the connector should be paused after the free trial period has ended.",
-            "example": null
-          },
-          "data_delay_threshold": {
-            "type": "integer",
             "format": "int32",
             "example": null
           },
@@ -13501,16 +14085,6 @@
             "description": "The additional information about the connector's state. The format of this parameter is specific for each connector type.",
             "example": null
           },
-          "data_delay_sensitivity": {
-            "type": "string",
-            "example": null,
-            "enum": [
-              "LOW",
-              "NORMAL",
-              "HIGH",
-              "CUSTOM"
-            ]
-          },
           "service_version": {
             "type": "integer",
             "description": "The connector type version within the Fivetran system.",
@@ -13529,9 +14103,40 @@
             "format": "date-time",
             "example": null
           },
+          "connect_card": {
+            "$ref": "#/components/schemas/ConnectCardResponse"
+          },
+          "pause_after_trial": {
+            "type": "boolean",
+            "description": "Specifies whether the connector should be paused after the free trial period has ended.",
+            "example": null
+          },
+          "data_delay_threshold": {
+            "type": "integer",
+            "format": "int32",
+            "example": null
+          },
+          "data_delay_sensitivity": {
+            "type": "string",
+            "example": null,
+            "enum": [
+              "LOW",
+              "NORMAL",
+              "HIGH",
+              "CUSTOM"
+            ]
+          },
+          "enable_remote_execution": {
+            "type": "boolean",
+            "example": null
+          },
           "schedule_type": {
             "type": "string",
             "description": "The connector schedule config type. Supported values: auto, manual. Lets you disable or enable an automatic data sync on a schedule.",
+            "example": null
+          },
+          "local_processing_agent_id": {
+            "type": "string",
             "example": null
           },
           "connect_card_config": {
@@ -13947,6 +14552,146 @@
           "state_summary": {
             "type": "string",
             "description": "Private link state summary",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "ProxyIntegrationRequest": {
+        "type": "object",
+        "properties": {
+          "connection_id": {
+            "type": "string",
+            "description": "The unique identifier for the connection within the Fivetran system.",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "ProxyParamRequest": {
+        "type": "object",
+        "properties": {
+          "display_name": {
+            "type": "string",
+            "description": "Proxy agent name.",
+            "example": null
+          },
+          "group_id": {
+            "type": "string",
+            "description": "The unique identifier for the group within the Fivetran system.",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "ProxyAgentCreatedResponse": {
+        "type": "object",
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "example": null
+          },
+          "proxy_server_uri": {
+            "type": "string",
+            "description": "The proxy server URI",
+            "example": null
+          },
+          "auth_token": {
+            "type": "string",
+            "description": "The auth token",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "ProxyAgentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier for the proxy agent within the Fivetran system.",
+            "example": null
+          },
+          "account_id": {
+            "type": "string",
+            "description": "Fivetran Account ID.",
+            "example": null
+          },
+          "registered_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": null
+          },
+          "region": {
+            "type": "string",
+            "description": "Data processing location. This is where Fivetran will operate and run computation on data.",
+            "example": null,
+            "enum": [
+              "GCP_US_EAST4",
+              "GCP_US_WEST1",
+              "GCP_US_CENTRAL1",
+              "GCP_EUROPE_WEST3",
+              "GCP_AUSTRALIA_SOUTHEAST1",
+              "GCP_NORTHAMERICA_NORTHEAST1",
+              "GCP_EUROPE_WEST2",
+              "GCP_ASIA_SOUTHEAST1",
+              "GCP_ASIA_SOUTHEAST2",
+              "GCP_ASIA_SOUTH1",
+              "GCP_ASIA_NORTHEAST1",
+              "AWS_US_EAST_1",
+              "AWS_US_EAST_2",
+              "AWS_US_WEST_2",
+              "AWS_AP_NORTHEAST_1",
+              "AWS_AP_SOUTHEAST_1",
+              "AWS_AP_SOUTHEAST_2",
+              "AWS_EU_CENTRAL_1",
+              "AWS_EU_WEST_1",
+              "AWS_EU_WEST_2",
+              "AWS_AP_SOUTH_1",
+              "AWS_CA_CENTRAL_1",
+              "AWS_US_GOV_WEST_1",
+              "AZURE_EASTUS2",
+              "AZURE_AUSTRALIAEAST",
+              "AZURE_UKSOUTH",
+              "AZURE_WESTEUROPE",
+              "AZURE_CENTRALUS",
+              "AZURE_CANADACENTRAL",
+              "AZURE_UAENORTH",
+              "AZURE_SOUTHEASTASIA",
+              "AZURE_EASTUS",
+              "AZURE_JAPANEAST",
+              "AZURE_CENTRALINDIA"
+            ]
+          },
+          "token": {
+            "type": "string",
+            "description": "The auth token",
+            "example": null
+          },
+          "salt": {
+            "type": "string",
+            "description": "The salt",
+            "example": null
+          },
+          "created_by": {
+            "type": "string",
+            "description": "The actor who created the proxy agent",
+            "example": null
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Proxy agent name.",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "ProxyIntegrationResponse": {
+        "type": "object",
+        "properties": {
+          "connection_id": {
+            "type": "string",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "example": null
           }
         },
@@ -14625,7 +15370,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "port": {
@@ -15016,7 +15762,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "port": {
@@ -15639,14 +16386,10 @@
                 "example": null,
                 "enum": [
                   "Directly",
-                  "PrivateLink"
+                  "PrivateLink",
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
-              },
-              "controller_id": {
-                "title": "",
-                "type": "string",
-                "description": "",
-                "example": null
               },
               "port": {
                 "title": "",
@@ -15665,12 +16408,6 @@
                 "title": "",
                 "type": "string",
                 "description": "This field is currently being introduced to test the Self-serve Private Link functionality",
-                "example": null
-              },
-              "enable_remote_execution": {
-                "title": "",
-                "type": "boolean",
-                "description": "",
                 "example": null
               },
               "http_path": {
@@ -15984,6 +16721,27 @@
           },
           {
             "$ref": "#/components/schemas/maria_warehouse_config_V1"
+          }
+        ]
+      },
+      "materialize_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "materialize_NewDestinationRequest": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewDestinationRequest"
+          },
+          {
+            "$ref": "#/components/schemas/materialize_config_V1"
           }
         ]
       },
@@ -16372,7 +17130,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "port": {
@@ -16475,7 +17234,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "port": {
@@ -16578,7 +17338,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "port": {
@@ -16642,6 +17403,27 @@
           }
         ]
       },
+      "propel_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "propel_NewDestinationRequest": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewDestinationRequest"
+          },
+          {
+            "$ref": "#/components/schemas/propel_config_V1"
+          }
+        ]
+      },
       "redshift_config_V1": {
         "properties": {
           "config": {
@@ -16698,17 +17480,17 @@
                 "description": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
                 "example": null
               },
+              "cluster_id": {
+                "title": "",
+                "type": "string",
+                "description": "Cluster ID. Must be populated if `connection_type` is set to `SshTunnel` and `auth_type` is set to `IAM`.",
+                "example": null
+              },
               "tunnel_port": {
                 "title": "",
                 "type": "integer",
                 "description": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
                 "format": "int32",
-                "example": null
-              },
-              "cluster_id": {
-                "title": "",
-                "type": "string",
-                "description": "Cluster ID. Must be populated if `connection_type` is set to `SshTunnel` and `auth_type` is set to `IAM`.",
                 "example": null
               },
               "database": {
@@ -16785,6 +17567,27 @@
           }
         ]
       },
+      "singlestore_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "singlestore_NewDestinationRequest": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewDestinationRequest"
+          },
+          {
+            "$ref": "#/components/schemas/singlestore_config_V1"
+          }
+        ]
+      },
       "snowflake_config_V1": {
         "properties": {
           "config": {
@@ -16808,7 +17611,9 @@
                 "example": null,
                 "enum": [
                   "Directly",
-                  "PrivateLink"
+                  "PrivateLink",
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "auth": {
@@ -16854,12 +17659,6 @@
                 "format": "int32",
                 "example": null
               },
-              "controller_id": {
-                "title": "",
-                "type": "string",
-                "description": "",
-                "example": null
-              },
               "snowflake_cloud": {
                 "title": "",
                 "type": "object",
@@ -16887,12 +17686,6 @@
                 "type": "string",
                 "description": "In case private key is encrypted, you are required to enter passphrase that was used to encrypt the private key. The field can be specified if authentication type is `KEY_PAIR`.",
                 "format": "password",
-                "example": null
-              },
-              "enable_remote_execution": {
-                "title": "",
-                "type": "boolean",
-                "description": "",
                 "example": null
               },
               "user": {
@@ -17301,6 +18094,17 @@
           }
         ]
       },
+      "materialize_DestinationResponse": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/DestinationResponse"
+          },
+          {
+            "$ref": "#/components/schemas/materialize_config_V1"
+          }
+        ]
+      },
       "motherduck_DestinationResponse": {
         "example": null,
         "allOf": [
@@ -17389,6 +18193,17 @@
           }
         ]
       },
+      "propel_DestinationResponse": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/DestinationResponse"
+          },
+          {
+            "$ref": "#/components/schemas/propel_config_V1"
+          }
+        ]
+      },
       "redshift_DestinationResponse": {
         "example": null,
         "allOf": [
@@ -17397,6 +18212,17 @@
           },
           {
             "$ref": "#/components/schemas/redshift_config_V1"
+          }
+        ]
+      },
+      "singlestore_DestinationResponse": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/DestinationResponse"
+          },
+          {
+            "$ref": "#/components/schemas/singlestore_config_V1"
           }
         ]
       },
@@ -17869,6 +18695,70 @@
           }
         ]
       },
+      "absorb_lms_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "Your Absorb LMS password.",
+                "format": "password",
+                "example": null
+              },
+              "sub_domain": {
+                "type": "object",
+                "description": "Your Absorb LMS subdomain.",
+                "example": null,
+                "enum": [
+                  "rest.sandbox.myabsorb.eu",
+                  "rest.sandbox.myabsorb.com.au",
+                  "rest.sandbox.myabsorb.ca",
+                  "rest.sandbox.myabsorb.com",
+                  "rest.myabsorb.com.au",
+                  "rest.myabsorb.com",
+                  "rest.myabsorb.ca",
+                  "rest.myabsorb.eu"
+                ]
+              },
+              "private_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Absorb LMS Private Key.",
+                "format": "password",
+                "example": null
+              },
+              "username": {
+                "title": "",
+                "type": "string",
+                "description": "Your Absorb LMS username.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "absorb_lms_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/absorb_lms_config_V1"
+          }
+        ]
+      },
       "activecampaign_config_V1": {
         "properties": {
           "config": {
@@ -18069,6 +18959,16 @@
           "config": {
             "type": "object",
             "properties": {
+              "authentication_method": {
+                "title": "",
+                "type": "object",
+                "description": "Authentication Method",
+                "example": null,
+                "enum": [
+                  "OAUTH2",
+                  "JWT_TOKEN"
+                ]
+              },
               "schema": {
                 "title": "Destination schema",
                 "type": "string",
@@ -18090,7 +18990,7 @@
               "timeframe_months": {
                 "title": "",
                 "type": "object",
-                "description": "Number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `TWELVE` .",
+                "description": "Number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once the connector has been created. Default value: `TWELVE` .",
                 "example": null,
                 "enum": [
                   "TWENTY_FOUR",
@@ -18110,14 +19010,14 @@
               "client_secret": {
                 "title": "",
                 "type": "string",
-                "description": "Client Secret from the Service Account (JWT) credentials of your Adobe Project.",
+                "description": "Client Secret from the OAuth Server-to-Server or Service Account (JWT) credentials of your Adobe Project.",
                 "format": "password",
                 "example": null
               },
               "client_id": {
                 "title": "",
                 "type": "string",
-                "description": "Client ID from the Service Account (JWT) credentials of your Adobe Project.",
+                "description": "Client ID from the OAuth Server-to-Server or Service Account (JWT) credentials of your Adobe Project.",
                 "example": null
               },
               "date_granularity": {
@@ -18475,7 +19375,7 @@
               "organization_domain": {
                 "title": "",
                 "type": "string",
-                "description": "Your Adobe Workfront Organization Domain.",
+                "description": "Your Adobe Workfront organization domain.",
                 "example": null
               },
               "client_secret": {
@@ -20318,7 +21218,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "replica_id": {
@@ -20444,7 +21345,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "update_method": {
@@ -20453,6 +21355,7 @@
                 "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.<br>`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.<br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
                 "example": null,
                 "enum": [
+                  "WAL",
                   "XMIN",
                   "TELEPORT",
                   "WAL_PGOUTPUT"
@@ -20468,6 +21371,12 @@
                 "title": "",
                 "type": "string",
                 "description": "SSH user, specify only to connect via an SSH tunnel.",
+                "example": null
+              },
+              "client_public_certificate": {
+                "title": "",
+                "type": "string",
+                "description": "Client Certificate in .pem format.",
                 "example": null
               },
               "tunnel_port": {
@@ -20488,6 +21397,12 @@
                 "type": "string",
                 "description": "The user's password.",
                 "format": "password",
+                "example": null
+              },
+              "client_private_key": {
+                "title": "",
+                "type": "string",
+                "description": "Client Private Key in .pem format.",
                 "example": null
               },
               "port": {
@@ -22217,7 +23132,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "update_method": {
@@ -22226,6 +23142,7 @@
                 "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.<br>`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.<br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
                 "example": null,
                 "enum": [
+                  "WAL",
                   "XMIN",
                   "TELEPORT",
                   "WAL_PGOUTPUT"
@@ -22241,6 +23158,12 @@
                 "title": "",
                 "type": "string",
                 "description": "SSH user, specify only to connect via an SSH tunnel.",
+                "example": null
+              },
+              "client_public_certificate": {
+                "title": "",
+                "type": "string",
+                "description": "Client Certificate in .pem format.",
                 "example": null
               },
               "tunnel_port": {
@@ -22261,6 +23184,12 @@
                 "type": "string",
                 "description": "The user's password.",
                 "format": "password",
+                "example": null
+              },
+              "client_private_key": {
+                "title": "",
+                "type": "string",
+                "description": "Client Private Key in .pem format.",
                 "example": null
               },
               "port": {
@@ -22404,9 +23333,9 @@
                 "description": "The connection method",
                 "example": null,
                 "enum": [
-                  "privatelink",
-                  "sshtunnel",
-                  "direct"
+                  "SSH_TUNNEL",
+                  "DIRECT",
+                  "PRIVATE_LINK"
                 ]
               },
               "namespace": {
@@ -22534,7 +23463,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "update_method": {
@@ -22544,7 +23474,8 @@
                 "example": null,
                 "enum": [
                   "NATIVE_UPDATE",
-                  "TELEPORT"
+                  "TELEPORT",
+                  "DIRECT"
                 ]
               },
               "always_encrypted": {
@@ -22572,6 +23503,7 @@
                 "description": "Authentication Method.",
                 "example": null,
                 "enum": [
+                  "WindowsAuth",
                   "ActiveDirectory",
                   "Password"
                 ]
@@ -22683,7 +23615,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "update_method": {
@@ -22693,7 +23626,8 @@
                 "example": null,
                 "enum": [
                   "NATIVE_UPDATE",
-                  "TELEPORT"
+                  "TELEPORT",
+                  "DIRECT"
                 ]
               },
               "always_encrypted": {
@@ -22721,6 +23655,7 @@
                 "description": "Authentication Method.",
                 "example": null,
                 "enum": [
+                  "WindowsAuth",
                   "ActiveDirectory",
                   "Password"
                 ]
@@ -24355,6 +25290,42 @@
           }
         ]
       },
+      "chameleon_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your Chameleon API token.",
+                "format": "password",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "chameleon_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/chameleon_config_V1"
+          }
+        ]
+      },
       "chargebee_product_catalog_1_config_V1": {
         "properties": {
           "config": {
@@ -24826,10 +25797,10 @@
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
                 "example": null
               },
-              "api_key": {
+              "personal_api_token": {
                 "title": "",
                 "type": "string",
-                "description": "Your CircleCI API Key.",
+                "description": "Your CircleCI Personal API token.",
                 "format": "password",
                 "example": null
               }
@@ -27169,7 +28140,8 @@
                 "example": null,
                 "enum": [
                   "Directly",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "agent_password": {
@@ -27321,7 +28293,8 @@
                 "example": null,
                 "enum": [
                   "Directly",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "agent_password": {
@@ -27921,6 +28894,42 @@
           },
           {
             "$ref": "#/components/schemas/documentdb_config_V1"
+          }
+        ]
+      },
+      "donus_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Donus API key.",
+                "format": "password",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "donus_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/donus_config_V1"
           }
         ]
       },
@@ -28698,6 +29707,48 @@
           }
         ]
       },
+      "duoplane_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Duoplane API key.",
+                "example": null
+              },
+              "api_password": {
+                "title": "",
+                "type": "string",
+                "description": "Your Duoplane API password.",
+                "format": "password",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "duoplane_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/duoplane_config_V1"
+          }
+        ]
+      },
       "dynamics_365_config_V1": {
         "properties": {
           "config": {
@@ -28768,119 +29819,6 @@
           },
           {
             "$ref": "#/components/schemas/dynamics_365_config_V1"
-          }
-        ]
-      },
-      "dynamics_365_fo_config_V1": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "properties": {
-              "public_key": {
-                "title": "",
-                "type": "string",
-                "description": "Public Key.",
-                "example": null
-              },
-              "connection_type": {
-                "title": "",
-                "type": "object",
-                "description": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-                "example": null,
-                "enum": [
-                  "Directly",
-                  "PrivateLink",
-                  "SshTunnel"
-                ]
-              },
-              "update_method": {
-                "title": "",
-                "type": "object",
-                "description": "Update Method",
-                "example": null,
-                "enum": [
-                  "NATIVE_UPDATE",
-                  "TELEPORT"
-                ]
-              },
-              "always_encrypted": {
-                "title": "",
-                "type": "boolean",
-                "description": "Require TLS through Tunnel.",
-                "example": null
-              },
-              "tunnel_user": {
-                "title": "",
-                "type": "string",
-                "description": "SSH user, specify only to connect via an SSH tunnel.",
-                "example": null
-              },
-              "tunnel_port": {
-                "title": "",
-                "type": "integer",
-                "description": "SSH port, specify only to connect via an SSH tunnel.",
-                "format": "int32",
-                "example": null
-              },
-              "database": {
-                "title": "",
-                "type": "string",
-                "description": "The database name.",
-                "example": null
-              },
-              "password": {
-                "title": "",
-                "type": "string",
-                "description": "The user's password.",
-                "format": "password",
-                "example": null
-              },
-              "port": {
-                "title": "",
-                "type": "integer",
-                "description": "The port number.",
-                "format": "int32",
-                "example": null
-              },
-              "host": {
-                "title": "",
-                "type": "string",
-                "description": "DB instance host or IP address.",
-                "example": null
-              },
-              "tunnel_host": {
-                "title": "",
-                "type": "string",
-                "description": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
-                "example": null
-              },
-              "schema_prefix": {
-                "title": "Destination schema prefix",
-                "type": "string",
-                "description": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-                "example": null
-              },
-              "user": {
-                "title": "",
-                "type": "string",
-                "description": "The user name. The format must be `user@domain`.",
-                "example": null
-              }
-            },
-            "description": "",
-            "example": null
-          }
-        },
-        "example": null
-      },
-      "dynamics_365_fo_NewConnectorRequestV1": {
-        "example": null,
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NewConnectorRequestV1"
-          },
-          {
-            "$ref": "#/components/schemas/dynamics_365_fo_config_V1"
           }
         ]
       },
@@ -29592,6 +30530,48 @@
           },
           {
             "$ref": "#/components/schemas/eventbrite_config_V1"
+          }
+        ]
+      },
+      "eventsforce_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Eventsforce API secret key.",
+                "format": "password",
+                "example": null
+              },
+              "sub_domain": {
+                "title": "",
+                "type": "string",
+                "description": "Your Eventsforce subdomain.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "eventsforce_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/eventsforce_config_V1"
           }
         ]
       },
@@ -30727,7 +31707,7 @@
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your FourKites API Key.",
+                "description": "Your FourKites API key.",
                 "format": "password",
                 "example": null
               }
@@ -30946,6 +31926,48 @@
           },
           {
             "$ref": "#/components/schemas/freshdesk_config_V1"
+          }
+        ]
+      },
+      "freshdesk_contact_center_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Freshdesk Contact Center API key.",
+                "format": "password",
+                "example": null
+              },
+              "account_name": {
+                "title": "",
+                "type": "string",
+                "description": "Your Freshdesk Contact Center account name.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "freshdesk_contact_center_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/freshdesk_contact_center_config_V1"
           }
         ]
       },
@@ -31365,6 +32387,42 @@
           }
         ]
       },
+      "g2_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your G2 API token.",
+                "format": "password",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "g2_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/g2_config_V1"
+          }
+        ]
+      },
       "gainsight_customer_success_config_V1": {
         "properties": {
           "config": {
@@ -31442,6 +32500,22 @@
                 "title": "",
                 "type": "string",
                 "description": "All files and folders under this folder path will be searched for files to sync.",
+                "example": null
+              },
+              "escape_char_options": {
+                "title": "",
+                "type": "object",
+                "description": "Approach used by CSV parser. Default  value: `CUSTOM_ESCAPE_CHAR`. required for CSV parsing when `non_standard_escape_char` is `true`.",
+                "example": null,
+                "enum": [
+                  "DELIMITED_ONLY",
+                  "CUSTOM_ESCAPE_CHAR"
+                ]
+              },
+              "non_standard_escape_char": {
+                "title": "",
+                "type": "boolean",
+                "description": "Use this if your CSV generator uses non-standard ways of escaping characters. Default value: `false`.",
                 "example": null
               },
               "pattern": {
@@ -33286,7 +34360,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "replica_id": {
@@ -33412,7 +34487,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "update_method": {
@@ -33421,6 +34497,7 @@
                 "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.<br>`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.<br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
                 "example": null,
                 "enum": [
+                  "WAL",
                   "XMIN",
                   "TELEPORT",
                   "WAL_PGOUTPUT"
@@ -33436,6 +34513,12 @@
                 "title": "",
                 "type": "string",
                 "description": "SSH user, specify only to connect via an SSH tunnel.",
+                "example": null
+              },
+              "client_public_certificate": {
+                "title": "",
+                "type": "string",
+                "description": "Client Certificate in .pem format.",
                 "example": null
               },
               "tunnel_port": {
@@ -33456,6 +34539,12 @@
                 "type": "string",
                 "description": "The user's password.",
                 "format": "password",
+                "example": null
+              },
+              "client_private_key": {
+                "title": "",
+                "type": "string",
+                "description": "Client Private Key in .pem format.",
                 "example": null
               },
               "port": {
@@ -33532,7 +34621,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "update_method": {
@@ -33542,7 +34632,8 @@
                 "example": null,
                 "enum": [
                   "NATIVE_UPDATE",
-                  "TELEPORT"
+                  "TELEPORT",
+                  "DIRECT"
                 ]
               },
               "always_encrypted": {
@@ -34488,6 +35579,76 @@
           }
         ]
       },
+      "google_tasks_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          },
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "The access token that carries the information necessary for API resources to your Google Tasks fetch data.",
+                "format": "password",
+                "example": null
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "The long-lived refresh token of your Google Tasks client application.",
+                "format": "password",
+                "example": null
+              },
+              "client_access": {
+                "title": "",
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": null
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": null
+                  }
+                },
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "google_tasks_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/google_tasks_config_V1"
+          }
+        ]
+      },
       "gorgias_config_V1": {
         "properties": {
           "config": {
@@ -34881,7 +36042,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "rfc_library_path": {
@@ -35142,7 +36304,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "rfc_library_path": {
@@ -35403,7 +36566,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "rfc_library_path": {
@@ -35664,7 +36828,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "rfc_library_path": {
@@ -35925,7 +37090,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "rfc_library_path": {
@@ -36459,7 +37625,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "update_method": {
@@ -36468,8 +37635,10 @@
                 "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.<br>`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.<br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
                 "example": null,
                 "enum": [
+                  "WAL",
                   "XMIN",
-                  "TELEPORT"
+                  "TELEPORT",
+                  "WAL_PGOUTPUT"
                 ]
               },
               "always_encrypted": {
@@ -36482,6 +37651,12 @@
                 "title": "",
                 "type": "string",
                 "description": "SSH user, specify only to connect via an SSH tunnel.",
+                "example": null
+              },
+              "client_public_certificate": {
+                "title": "",
+                "type": "string",
+                "description": "Client Certificate in .pem format.",
                 "example": null
               },
               "tunnel_port": {
@@ -36502,6 +37677,12 @@
                 "type": "string",
                 "description": "The user's password.",
                 "format": "password",
+                "example": null
+              },
+              "client_private_key": {
+                "title": "",
+                "type": "string",
+                "description": "Client Private Key in .pem format.",
                 "example": null
               },
               "port": {
@@ -36993,6 +38174,54 @@
           },
           {
             "$ref": "#/components/schemas/instagram_business_config_V1"
+          }
+        ]
+      },
+      "instructure_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "sub_domain": {
+                "title": "",
+                "type": "string",
+                "description": "The Sub domain in which your Instructure account is hosted.",
+                "example": null
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Instructure client secret.",
+                "format": "password",
+                "example": null
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Instructure client ID.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "instructure_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/instructure_config_V1"
           }
         ]
       },
@@ -37597,12 +38826,19 @@
               },
               "base_url": {
                 "type": "object",
-                "description": "Your Jotform Base URL.",
+                "description": "Your Jotform base URL.",
                 "example": null,
                 "enum": [
+                  "",
                   "hipaa-api",
                   "api"
                 ]
+              },
+              "custom_url": {
+                "title": "",
+                "type": "string",
+                "description": "Your Jotform custom base URL.",
+                "example": null
               }
             },
             "description": "",
@@ -39105,7 +40341,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "replica_id": {
@@ -39225,7 +40462,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "replica_id": {
@@ -39549,7 +40787,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "replica_id": {
@@ -39669,7 +40908,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "replica_id": {
@@ -39789,7 +41029,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "replica_id": {
@@ -41106,7 +42347,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "replica_id": {
@@ -41226,7 +42468,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "replica_id": {
@@ -41346,7 +42589,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "replica_id": {
@@ -42491,7 +43735,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "update_method": {
@@ -42501,7 +43746,8 @@
                 "example": null,
                 "enum": [
                   "LOGMINER",
-                  "TELEPORT"
+                  "TELEPORT",
+                  "DIRECT_CAPTURE"
                 ]
               },
               "pdb_name": {
@@ -42664,7 +43910,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "update_method": {
@@ -42674,7 +43921,8 @@
                 "example": null,
                 "enum": [
                   "LOGMINER",
-                  "TELEPORT"
+                  "TELEPORT",
+                  "DIRECT_CAPTURE"
                 ]
               },
               "pdb_name": {
@@ -43026,7 +44274,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "pdb_name": {
@@ -43182,7 +44431,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "update_method": {
@@ -43192,7 +44442,8 @@
                 "example": null,
                 "enum": [
                   "LOGMINER",
-                  "TELEPORT"
+                  "TELEPORT",
+                  "DIRECT_CAPTURE"
                 ]
               },
               "pdb_name": {
@@ -43301,7 +44552,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "update_method": {
@@ -43311,7 +44563,8 @@
                 "example": null,
                 "enum": [
                   "LOGMINER",
-                  "TELEPORT"
+                  "TELEPORT",
+                  "DIRECT_CAPTURE"
                 ]
               },
               "pdb_name": {
@@ -43519,7 +44772,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "pdb_name": {
@@ -43651,7 +44905,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "rfc_library_path": {
@@ -44269,6 +45524,48 @@
           },
           {
             "$ref": "#/components/schemas/pardot_config_V1"
+          }
+        ]
+      },
+      "partnerize_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "Your Partnerize account's password.",
+                "format": "password",
+                "example": null
+              },
+              "username": {
+                "title": "",
+                "type": "string",
+                "description": "Your Partnerize account's username.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "partnerize_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/partnerize_config_V1"
           }
         ]
       },
@@ -45191,7 +46488,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "update_method": {
@@ -45200,6 +46498,7 @@
                 "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.<br>`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.<br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
                 "example": null,
                 "enum": [
+                  "WAL",
                   "XMIN",
                   "TELEPORT",
                   "WAL_PGOUTPUT"
@@ -45215,6 +46514,12 @@
                 "title": "",
                 "type": "string",
                 "description": "SSH user, specify only to connect via an SSH tunnel.",
+                "example": null
+              },
+              "client_public_certificate": {
+                "title": "",
+                "type": "string",
+                "description": "Client Certificate in .pem format.",
                 "example": null
               },
               "tunnel_port": {
@@ -45235,6 +46540,12 @@
                 "type": "string",
                 "description": "The user's password.",
                 "format": "password",
+                "example": null
+              },
+              "client_private_key": {
+                "title": "",
+                "type": "string",
+                "description": "Client Private Key in .pem format.",
                 "example": null
               },
               "port": {
@@ -45317,7 +46628,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "update_method": {
@@ -45326,6 +46638,7 @@
                 "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.<br>`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.<br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
                 "example": null,
                 "enum": [
+                  "WAL",
                   "XMIN",
                   "TELEPORT",
                   "WAL_PGOUTPUT"
@@ -45341,6 +46654,12 @@
                 "title": "",
                 "type": "string",
                 "description": "SSH user, specify only to connect via an SSH tunnel.",
+                "example": null
+              },
+              "client_public_certificate": {
+                "title": "",
+                "type": "string",
+                "description": "Client Certificate in .pem format.",
                 "example": null
               },
               "tunnel_port": {
@@ -45361,6 +46680,12 @@
                 "type": "string",
                 "description": "The user's password.",
                 "format": "password",
+                "example": null
+              },
+              "client_private_key": {
+                "title": "",
+                "type": "string",
+                "description": "Client Private Key in .pem format.",
                 "example": null
               },
               "port": {
@@ -45774,6 +47099,90 @@
           },
           {
             "$ref": "#/components/schemas/quickbooks_config_V1"
+          }
+        ]
+      },
+      "quora_ads_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Quora Ads client secret.",
+                "format": "password",
+                "example": null
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Quora Ads client ID.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "quora_ads_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/quora_ads_config_V1"
+          }
+        ]
+      },
+      "quorum_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Quorum API key.",
+                "format": "password",
+                "example": null
+              },
+              "username": {
+                "title": "",
+                "type": "string",
+                "description": "Your Quorum username .",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "quorum_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/quorum_config_V1"
           }
         ]
       },
@@ -46338,6 +47747,42 @@
           },
           {
             "$ref": "#/components/schemas/redshift_db_config_V1"
+          }
+        ]
+      },
+      "referralhero_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your Referralhero API Token.",
+                "format": "password",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "referralhero_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/referralhero_config_V1"
           }
         ]
       },
@@ -48575,6 +50020,60 @@
           }
         ]
       },
+      "sap_success_factors_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "company_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your SAP SuccessFactors Company ID.",
+                "example": null
+              },
+              "sub_domain": {
+                "title": "",
+                "type": "string",
+                "description": "Your SAP SuccessFactors Subdomain.",
+                "example": null
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your SAP SuccessFactors Client Secret that you generated through SAML Assertion.",
+                "format": "password",
+                "example": null
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your SAP SuccessFactors Client ID.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "sap_success_factors_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/sap_success_factors_config_V1"
+          }
+        ]
+      },
       "scorm_config_V1": {
         "properties": {
           "config": {
@@ -49085,8 +50584,8 @@
                 "description": "The connection method used to connect to SFTP Server.",
                 "example": null,
                 "enum": [
-                  "sshtunnel",
-                  "direct"
+                  "SSH_TUNNEL",
+                  "DIRECT"
                 ]
               },
               "tunnel_user": {
@@ -49759,6 +51258,48 @@
           },
           {
             "$ref": "#/components/schemas/simplesat_config_V1"
+          }
+        ]
+      },
+      "sistrix_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Sistrix api key.",
+                "format": "password",
+                "example": null
+              },
+              "domain": {
+                "title": "",
+                "type": "string",
+                "description": "Your domain for which you want to fetch data.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "sistrix_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/sistrix_config_V1"
           }
         ]
       },
@@ -51099,7 +52640,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "update_method": {
@@ -51109,7 +52651,8 @@
                 "example": null,
                 "enum": [
                   "NATIVE_UPDATE",
-                  "TELEPORT"
+                  "TELEPORT",
+                  "DIRECT"
                 ]
               },
               "always_encrypted": {
@@ -51294,7 +52837,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "enable_tde": {
@@ -51409,7 +52953,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "update_method": {
@@ -51419,7 +52964,8 @@
                 "example": null,
                 "enum": [
                   "NATIVE_UPDATE",
-                  "TELEPORT"
+                  "TELEPORT",
+                  "DIRECT"
                 ]
               },
               "always_encrypted": {
@@ -51610,7 +53156,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "enable_tde": {
@@ -54107,20 +55654,20 @@
               "service_name": {
                 "title": "",
                 "type": "string",
-                "description": "Your Walmart Marketplace Service Name.",
+                "description": "Your Walmart Marketplace service name.",
                 "example": null
               },
               "client_secret": {
                 "title": "",
                 "type": "string",
-                "description": "Your Walmart Marketplace Client Secret.",
+                "description": "Your Walmart Marketplace client secret.",
                 "format": "password",
                 "example": null
               },
               "client_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Walmart Marketplace Client ID.",
+                "description": "Your Walmart Marketplace client ID.",
                 "example": null
               }
             },
@@ -54375,6 +55922,42 @@
           },
           {
             "$ref": "#/components/schemas/wasabi_cloud_storage_config_V1"
+          }
+        ]
+      },
+      "web_scraper_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your Web Scraper API token.",
+                "format": "password",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "web_scraper_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/web_scraper_config_V1"
           }
         ]
       },
@@ -55057,12 +56640,12 @@
               },
               "region": {
                 "type": "object",
-                "description": "Your Workday Strategic Sourcing Region.",
+                "description": "",
                 "example": null,
                 "enum": [
-                  "ca.workdayspend",
-                  "eu.workdayspend",
-                  "scoutrfp"
+                  "eu",
+                  "us",
+                  "ca"
                 ]
               },
               "x_user_token": {
@@ -56904,6 +58487,17 @@
           }
         ]
       },
+      "absorb_lms_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/absorb_lms_config_V1"
+          }
+        ]
+      },
       "activecampaign_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -57817,6 +59411,17 @@
           }
         ]
       },
+      "chameleon_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/chameleon_config_V1"
+          }
+        ]
+      },
       "chargebee_product_catalog_1_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -58378,6 +59983,17 @@
           }
         ]
       },
+      "donus_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/donus_config_V1"
+          }
+        ]
+      },
       "double_click_campaign_manager_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -58466,6 +60082,17 @@
           }
         ]
       },
+      "duoplane_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/duoplane_config_V1"
+          }
+        ]
+      },
       "dynamics_365_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -58474,17 +60101,6 @@
           },
           {
             "$ref": "#/components/schemas/dynamics_365_config_V1"
-          }
-        ]
-      },
-      "dynamics_365_fo_ConnectorResponseV1": {
-        "example": null,
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ConnectorResponseV1"
-          },
-          {
-            "$ref": "#/components/schemas/dynamics_365_fo_config_V1"
           }
         ]
       },
@@ -58595,6 +60211,17 @@
           },
           {
             "$ref": "#/components/schemas/eventbrite_config_V1"
+          }
+        ]
+      },
+      "eventsforce_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/eventsforce_config_V1"
           }
         ]
       },
@@ -58818,6 +60445,17 @@
           }
         ]
       },
+      "freshdesk_contact_center_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/freshdesk_contact_center_config_V1"
+          }
+        ]
+      },
       "freshservice_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -58881,6 +60519,17 @@
           },
           {
             "$ref": "#/components/schemas/fullstory_config_V1"
+          }
+        ]
+      },
+      "g2_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/g2_config_V1"
           }
         ]
       },
@@ -59214,6 +60863,17 @@
           }
         ]
       },
+      "google_tasks_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/google_tasks_config_V1"
+          }
+        ]
+      },
       "gorgias_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -59519,6 +61179,17 @@
           },
           {
             "$ref": "#/components/schemas/instagram_business_config_V1"
+          }
+        ]
+      },
+      "instructure_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/instructure_config_V1"
           }
         ]
       },
@@ -60688,6 +62359,17 @@
           }
         ]
       },
+      "partnerize_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/partnerize_config_V1"
+          }
+        ]
+      },
       "partnerstack_vendor_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -60985,6 +62667,28 @@
           }
         ]
       },
+      "quora_ads_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/quora_ads_config_V1"
+          }
+        ]
+      },
+      "quorum_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/quorum_config_V1"
+          }
+        ]
+      },
       "rakutenadvertising_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -61059,6 +62763,17 @@
           },
           {
             "$ref": "#/components/schemas/redshift_db_config_V1"
+          }
+        ]
+      },
+      "referralhero_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/referralhero_config_V1"
           }
         ]
       },
@@ -61447,6 +63162,17 @@
           }
         ]
       },
+      "sap_success_factors_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/sap_success_factors_config_V1"
+          }
+        ]
+      },
       "scorm_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -61642,6 +63368,17 @@
           },
           {
             "$ref": "#/components/schemas/simplesat_config_V1"
+          }
+        ]
+      },
+      "sistrix_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/sistrix_config_V1"
           }
         ]
       },
@@ -62368,6 +64105,17 @@
           },
           {
             "$ref": "#/components/schemas/wasabi_cloud_storage_config_V1"
+          }
+        ]
+      },
+      "web_scraper_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/web_scraper_config_V1"
           }
         ]
       },

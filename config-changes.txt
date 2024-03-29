@@ -1,8 +1,4 @@
-- Added field `fivetran_connector.config.account_region` for services: `iterable`.
-- Added field `fivetran_connector.config.tenant_name` for services: `mambu`.
-- Added field `fivetran_connector.config.direct_capture_method` for services: `oracle_hva`, `oracle_sap_hva`.
-- Added field `fivetran_connector.config.is_sftp_creds_available` for services: `salesforce_marketing_cloud`.
-- Added field `fivetran_connector.config.legal_entity_id` for services: `younium`.
-- Added field `fivetran_connector.config.organization_domain` for services: `adobe_workfront`.
-- Added field `fivetran_connector.config.custom_url` for services: `dbt_cloud`.
-- Added field `fivetran_connector.config.pats` for services: `github`.
+- Added field `fivetran_connector.config.authentication_method` for services: `adobe_analytics`.
+- Added field `fivetran_connector.config.client_public_certificate` for services: `aurora_postgres`, `azure_postgres`, `google_cloud_postgresql`, `heroku_postgres`, `postgres`, `postgres_rds`.
+- Added field `fivetran_connector.config.client_private_key` for services: `postgres_rds`, `aurora_postgres`, `azure_postgres`, `google_cloud_postgresql`, `heroku_postgres`, `postgres`.
+- Added field `fivetran_connector.config.api_password` for services: `duoplane`.

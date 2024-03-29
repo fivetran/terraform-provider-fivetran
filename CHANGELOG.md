@@ -10,10 +10,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.18](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.17...v1.1.18)
 
 ## Updated
-- Schema updated resource `resource_connector_schema_config`:
-    - Field `schema` deprecated dues to issue with Set type performance
+- Schema updated for resource `fivetran_connector_schema_config`:
+    - Field `schema` deprecated due to issue with types.SetTypable performance.
     - Field `schemas` of Map type added instead.
-    - Field `schemas_json` added to apply settings directly from `.json` resource file
+    - Field `schemas_json` added to apply settings directly from `.json` resource file.
+- Resource `fivetran_connector_schema_config` behavior changed:
+    - If no columns settings specified in `table.columns` no settings will be applied. If table enabled - columns won't be blocked automatically by BLOCK_ALL policy.
+    - Settings for sub-elements won't be managed if root element disabled: for BLOCK_ALL policy for disabled schema no settings for tables/columns will be applied.
+- Resource `fivetran_connector` schema updated:
+    - Added field `fivetran_connector.config.authentication_method` for services: `adobe_analytics`.
+    - Added field `fivetran_connector.config.client_public_certificate` for services: `aurora_postgres`, `azure_postgres`, `google_cloud_postgresql`, `heroku_postgres`, `postgres`, `postgres_rds`.
+    - Added field `fivetran_connector.config.client_private_key` for services: `postgres_rds`, `aurora_postgres`, `azure_postgres`, `google_cloud_postgresql`, `heroku_postgres`, `postgres`.
+    - Added field `fivetran_connector.config.api_password` for services: `duoplane`.
+- Following new connector types supported:
+    - Supported service: `absorb_lms`
+    - Supported service: `chameleon`
+    - Supported service: `donus`
+    - Supported service: `duoplane`
+    - Supported service: `eventsforce`
+    - Supported service: `freshdesk_contact_center`
+    - Supported service: `g2`
+    - Supported service: `google_tasks`
+    - Supported service: `instructure`
+    - Supported service: `partnerize`
+    - Supported service: `quora_ads`
+    - Supported service: `quorum`
+    - Supported service: `referralhero`
+    - Supported service: `sap_success_factors`
+    - Supported service: `sistrix`
+    - Supported service: `web_scraper`
+
 
 ## [1.1.17](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.16...v1.1.17)
 
