@@ -60,7 +60,12 @@ Optional:
 - `always_encrypted` (Boolean) Field usage depends on `service` value: 
 	- Service `aurora_postgres_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `aurora_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_postgres_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `azure_sql_data_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_sql_database`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_sql_managed_db_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `maria_rds_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `maria_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `mysql_rds_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `mysql_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `panoply`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
@@ -99,7 +104,13 @@ Optional:
 	- Service `adls`: Connection method. Default value: `Directly`.
 	- Service `aurora_postgres_warehouse`: Connection method. Default value: `Directly`.
 	- Service `aurora_warehouse`: Connection method. Default value: `Directly`.
+	- Service `azure_postgres_warehouse`: Connection method. Default value: `Directly`.
 	- Service `azure_sql_data_warehouse`: Connection method. Default value: `Directly`.
+	- Service `azure_sql_database`: Connection method. Default value: `Directly`.
+	- Service `azure_sql_managed_db_warehouse`: Connection method. Default value: `Directly`.
+	- Service `databricks`: Connection method. Default value: `Directly`.
+	- Service `maria_rds_warehouse`: Connection method. Default value: `Directly`.
+	- Service `maria_warehouse`: Connection method. Default value: `Directly`.
 	- Service `mysql_rds_warehouse`: Connection method. Default value: `Directly`.
 	- Service `mysql_warehouse`: Connection method. Default value: `Directly`.
 	- Service `panoply`: Connection method. Default value: `Directly`.
@@ -123,7 +134,12 @@ Optional:
 - `database` (String) Field usage depends on `service` value: 
 	- Service `aurora_postgres_warehouse`: Database name
 	- Service `aurora_warehouse`: Database name
+	- Service `azure_postgres_warehouse`: Database name
 	- Service `azure_sql_data_warehouse`: Database name
+	- Service `azure_sql_database`: Database name
+	- Service `azure_sql_managed_db_warehouse`: Database name
+	- Service `maria_rds_warehouse`: Database name
+	- Service `maria_warehouse`: Database name
 	- Service `mysql_rds_warehouse`: Database name
 	- Service `mysql_warehouse`: Database name
 	- Service `panoply`: Database name
@@ -145,7 +161,12 @@ Optional:
 - `host` (String) Field usage depends on `service` value: 
 	- Service `aurora_postgres_warehouse`: Server name
 	- Service `aurora_warehouse`: Server name
+	- Service `azure_postgres_warehouse`: Server name
 	- Service `azure_sql_data_warehouse`: Server name
+	- Service `azure_sql_database`: Server name
+	- Service `azure_sql_managed_db_warehouse`: Server name
+	- Service `maria_rds_warehouse`: Server name
+	- Service `maria_warehouse`: Server name
 	- Service `mysql_rds_warehouse`: Server name
 	- Service `mysql_warehouse`: Server name
 	- Service `panoply`: Server name
@@ -174,7 +195,12 @@ Optional:
 - `password` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `aurora_postgres_warehouse`: Database user password
 	- Service `aurora_warehouse`: Database user password
+	- Service `azure_postgres_warehouse`: Database user password
 	- Service `azure_sql_data_warehouse`: Database user password
+	- Service `azure_sql_database`: Database user password
+	- Service `azure_sql_managed_db_warehouse`: Database user password
+	- Service `maria_rds_warehouse`: Database user password
+	- Service `maria_warehouse`: Database user password
 	- Service `mysql_rds_warehouse`: Database user password
 	- Service `mysql_warehouse`: Database user password
 	- Service `panoply`: Database user password
@@ -191,8 +217,13 @@ Optional:
 - `port` (Number) Field usage depends on `service` value: 
 	- Service `aurora_postgres_warehouse`: Server port number
 	- Service `aurora_warehouse`: Server port number
+	- Service `azure_postgres_warehouse`: Server port number
 	- Service `azure_sql_data_warehouse`: Server port number
+	- Service `azure_sql_database`: Server port number
+	- Service `azure_sql_managed_db_warehouse`: Server port number
 	- Service `databricks`: Server port number
+	- Service `maria_rds_warehouse`: Server port number
+	- Service `maria_warehouse`: Server port number
 	- Service `mysql_rds_warehouse`: Server port number
 	- Service `mysql_warehouse`: Server port number
 	- Service `panoply`: Server port number
@@ -218,7 +249,9 @@ Optional:
 - `registry_sts_region` (String)
 - `replication_factor` (Number)
 - `resource_id` (String) Field usage depends on `service` value: 
+	- Service `aurora_postgres_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
 	- Service `aurora_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
+	- Service `azure_postgres_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
 	- Service `azure_sql_data_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
 	- Service `azure_sql_database`: Field to test Self serve Private Link
 	- Service `azure_sql_managed_db_warehouse`: Field to test Self serve Private Link
@@ -229,6 +262,9 @@ Optional:
 	- Service `mysql_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
 	- Service `panoply`: This field is currently being introduced to test the Self-serve Private Link functionality
 	- Service `periscope_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
+	- Service `postgres_gcp_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
+	- Service `postgres_rds_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
+	- Service `postgres_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
 	- Service `redshift`: This field is currently being introduced to test the Self-serve Private Link functionality
 	- Service `snowflake`: This field is currently being introduced to test the Self-serve Private Link functionality
 	- Service `sql_server_rds_warehouse`: Field to test Self serve Private Link
@@ -247,6 +283,8 @@ Optional:
 - `schema_registry_url` (String)
 - `secret_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `big_query`: Private key of the customer service account. If specified, your service account will be used to process the data instead of the Fivetran-managed service account.
+	- Service `big_query_dts`: Private key of the customer service account. If specified, your service account will be used to process the data instead of the Fivetran-managed service account.
+	- Service `managed_big_query`: Private key of the customer service account. If specified, your service account will be used to process the data instead of the Fivetran-managed service account.
 - `secret_value` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `adls`: Secret value for service principal
 	- Service `onelake`: Secret value for service principal
@@ -264,7 +302,12 @@ Optional:
 - `tunnel_host` (String) Field usage depends on `service` value: 
 	- Service `aurora_postgres_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `aurora_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_postgres_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `azure_sql_data_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_sql_database`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_sql_managed_db_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `maria_rds_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `maria_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `mysql_rds_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `mysql_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `panoply`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
@@ -278,7 +321,12 @@ Optional:
 - `tunnel_port` (Number) Field usage depends on `service` value: 
 	- Service `aurora_postgres_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `aurora_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_postgres_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `azure_sql_data_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_sql_database`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_sql_managed_db_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `maria_rds_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `maria_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `mysql_rds_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `mysql_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `panoply`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
@@ -292,7 +340,12 @@ Optional:
 - `tunnel_user` (String) Field usage depends on `service` value: 
 	- Service `aurora_postgres_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `aurora_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_postgres_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `azure_sql_data_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_sql_database`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `azure_sql_managed_db_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `maria_rds_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `maria_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `mysql_rds_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `mysql_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `panoply`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
@@ -306,7 +359,12 @@ Optional:
 - `user` (String) Field usage depends on `service` value: 
 	- Service `aurora_postgres_warehouse`: Database user name
 	- Service `aurora_warehouse`: Database user name
+	- Service `azure_postgres_warehouse`: Database user name
 	- Service `azure_sql_data_warehouse`: Database user name
+	- Service `azure_sql_database`: Database user name
+	- Service `azure_sql_managed_db_warehouse`: Database user name
+	- Service `maria_rds_warehouse`: Database user name
+	- Service `maria_warehouse`: Database user name
 	- Service `mysql_rds_warehouse`: Database user name
 	- Service `mysql_warehouse`: Database user name
 	- Service `panoply`: Database user name
@@ -330,7 +388,12 @@ Read-Only:
 - `public_key` (String) Field usage depends on `service` value: 
 	- Service `aurora_postgres_warehouse`: Public Key
 	- Service `aurora_warehouse`: Public Key
+	- Service `azure_postgres_warehouse`: Public Key
 	- Service `azure_sql_data_warehouse`: Public Key
+	- Service `azure_sql_database`: Public Key
+	- Service `azure_sql_managed_db_warehouse`: Public Key
+	- Service `maria_rds_warehouse`: Public Key
+	- Service `maria_warehouse`: Public Key
 	- Service `mysql_rds_warehouse`: Public Key
 	- Service `mysql_warehouse`: Public Key
 	- Service `panoply`: Public Key
