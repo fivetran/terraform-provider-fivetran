@@ -4,11 +4,11 @@ import (
 	"net/http"
 	"testing"
 	"time"
-	
-	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
+
 	"github.com/fivetran/go-fivetran/tests/mock"
-	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 var (
