@@ -86,8 +86,8 @@
       "item_type": {},
       "description": {
          "big_query": "Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
-         "big_query_dts": "",
-         "managed_big_query": "",
+         "big_query_dts": "Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
+         "managed_big_query": "Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
          "new_s3_datalake": "The name of the bucket to be used as destination"
       },
       "api_field": ""
@@ -276,8 +276,8 @@
       "item_type": {},
       "description": {
          "big_query": "Data location. Datasets will reside in this location.",
-         "big_query_dts": "",
-         "managed_big_query": ""
+         "big_query_dts": "Data location. Datasets will reside in this location.",
+         "managed_big_query": "Data location. Datasets will reside in this location."
       },
       "api_field": ""
    },
@@ -335,7 +335,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "aws_msk_wh": "",
+         "aws_msk_wh": "Fivetran generated External ID",
          "panoply": "Fivetran generated External ID",
          "periscope_warehouse": "Fivetran generated External ID",
          "redshift": "Fivetran generated External ID"

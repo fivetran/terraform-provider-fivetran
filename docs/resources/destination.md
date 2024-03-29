@@ -83,6 +83,8 @@ Optional:
 - `bootstrap_servers` (Set of String)
 - `bucket` (String) Field usage depends on `service` value: 
 	- Service `big_query`: Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.
+	- Service `big_query_dts`: Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.
+	- Service `managed_big_query`: Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.
 	- Service `new_s3_datalake`: The name of the bucket to be used as destination
 - `catalog` (String) Field usage depends on `service` value: 
 	- Service `databricks`: Catalog name
@@ -131,6 +133,8 @@ Optional:
 - `data_format` (String)
 - `data_set_location` (String) Field usage depends on `service` value: 
 	- Service `big_query`: Data location. Datasets will reside in this location.
+	- Service `big_query_dts`: Data location. Datasets will reside in this location.
+	- Service `managed_big_query`: Data location. Datasets will reside in this location.
 - `database` (String) Field usage depends on `service` value: 
 	- Service `aurora_postgres_warehouse`: Database name
 	- Service `aurora_warehouse`: Database name
@@ -382,6 +386,7 @@ Optional:
 Read-Only:
 
 - `external_id` (String) Field usage depends on `service` value: 
+	- Service `aws_msk_wh`: Fivetran generated External ID
 	- Service `panoply`: Fivetran generated External ID
 	- Service `periscope_warehouse`: Fivetran generated External ID
 	- Service `redshift`: Fivetran generated External ID
