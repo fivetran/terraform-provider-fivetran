@@ -255,7 +255,9 @@ Optional:
 - `registry_sts_region` (String)
 - `replication_factor` (Number)
 - `resource_id` (String) Field usage depends on `service` value: 
+	- Service `aurora_postgres_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
 	- Service `aurora_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
+	- Service `azure_postgres_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
 	- Service `azure_sql_data_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
 	- Service `azure_sql_database`: Field to test Self serve Private Link
 	- Service `azure_sql_managed_db_warehouse`: Field to test Self serve Private Link
@@ -266,6 +268,9 @@ Optional:
 	- Service `mysql_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
 	- Service `panoply`: This field is currently being introduced to test the Self-serve Private Link functionality
 	- Service `periscope_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
+	- Service `postgres_gcp_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
+	- Service `postgres_rds_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
+	- Service `postgres_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
 	- Service `redshift`: This field is currently being introduced to test the Self-serve Private Link functionality
 	- Service `snowflake`: This field is currently being introduced to test the Self-serve Private Link functionality
 	- Service `sql_server_rds_warehouse`: Field to test Self serve Private Link
@@ -298,7 +303,7 @@ Optional:
 	- Service `adls`: Storage account for Azure Data Lake Storage Gen2 name
 	- Service `onelake`: Storage account for Azure Data Lake Storage Gen2 name
 - `tenant_id` (String) Field usage depends on `service` value: 
-	- Service `adls`: Tenant ID of service principal
+	- Service `adls`: Tenant id of service principal
 	- Service `onelake`: Tenant ID of service principal
 - `tunnel_host` (String) Field usage depends on `service` value: 
 	- Service `aurora_postgres_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
@@ -378,7 +383,7 @@ Optional:
 	- Service `sql_server_rds_warehouse`: Database user name
 	- Service `sql_server_warehouse`: Database user name
 - `workspace_name` (String) Field usage depends on `service` value: 
-	- Service `onelake`: Workspace name to store delta table files
+	- Service `onelake`: OneLake workspace name
 
 Read-Only:
 

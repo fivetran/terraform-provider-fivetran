@@ -743,9 +743,9 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "aurora_postgres_warehouse": "",
+         "aurora_postgres_warehouse": "This field is currently being introduced to test the Self-serve Private Link functionality",
          "aurora_warehouse": "This field is currently being introduced to test the Self-serve Private Link functionality",
-         "azure_postgres_warehouse": "",
+         "azure_postgres_warehouse": "This field is currently being introduced to test the Self-serve Private Link functionality",
          "azure_sql_data_warehouse": "This field is currently being introduced to test the Self-serve Private Link functionality",
          "azure_sql_database": "Field to test Self serve Private Link",
          "azure_sql_managed_db_warehouse": "Field to test Self serve Private Link",
@@ -756,9 +756,9 @@
          "mysql_warehouse": "This field is currently being introduced to test the Self-serve Private Link functionality",
          "panoply": "This field is currently being introduced to test the Self-serve Private Link functionality",
          "periscope_warehouse": "This field is currently being introduced to test the Self-serve Private Link functionality",
-         "postgres_gcp_warehouse": "",
-         "postgres_rds_warehouse": "",
-         "postgres_warehouse": "",
+         "postgres_gcp_warehouse": "This field is currently being introduced to test the Self-serve Private Link functionality",
+         "postgres_rds_warehouse": "This field is currently being introduced to test the Self-serve Private Link functionality",
+         "postgres_warehouse": "This field is currently being introduced to test the Self-serve Private Link functionality",
          "redshift": "This field is currently being introduced to test the Self-serve Private Link functionality",
          "snowflake": "This field is currently being introduced to test the Self-serve Private Link functionality",
          "sql_server_rds_warehouse": "Field to test Self serve Private Link",
@@ -1018,7 +1018,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "adls": "Tenant ID of service principal",
+         "adls": "Tenant id of service principal",
          "onelake": "Tenant ID of service principal"
       },
       "api_field": ""
@@ -1153,7 +1153,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "onelake": "Workspace name to store delta table files"
-      }
+         "onelake": "OneLake workspace name"
+      },
+      "api_field": ""
    }
 }

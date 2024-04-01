@@ -30,25 +30,27 @@ Let's define what exactly we want to sync by using the `fivetran_connector_schem
 resource "fivetran_connector_schema_config" "connector_schema" {
   connector_id = fivetran_connector.connector.id
   schema_change_handling = "BLOCK_ALL"
-  schema {
-    name = "my_fivetran_log_connector"
-    table {
-      name = "log"
-      column {
-        name = "event"
-        enabled = "true"
-      }
-      column {
-        name = "message_data"
-        enabled = "true"
-      }
-      column {
-        name = "message_event"
-        enabled = "true"
-      }
-      column {
-        name = "sync_id"
-        enabled = "true"
+  schemas = {
+    "my_fivetran_log_connector" = {
+      enabled = true
+      tables = {
+        "log" = {
+          enabled = true
+          columns = {
+            "event" = {
+              enabled = true
+            }
+            "message_data" = {
+              enabled = true
+            }
+            "message_event" = {
+              enabled = true
+            }
+            "sync_id" = {
+              enabled = true
+            }
+          }
+        }
       }
     }
   }
