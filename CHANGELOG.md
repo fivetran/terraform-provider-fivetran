@@ -5,9 +5,49 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.18...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.19...HEAD)
+
+## [1.1.18](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.18...v1.1.19)
+
+## Added
+- New resource `fivetran_user_connector_membership` that allows to manage User Connector memberships.
+- New resource `fivetran_user_group_membership` that allows to manage User Group memberships.
+- New data source `fivetran_user_connector_memberships` that allows to retrieve details of the existing user connector memebrships for a given identifier.
+- New data source `fivetran_user_group_memberships` that allows to retrieve the list of existing user group memberships available for the current account.
+
+## Updated
+Resources:
+- `fivetran_team`
+- `fivetran_team_user_membership`
+- `fivetran_team_connector_membership`
+- `fivetran_team_group_membership`
+- `fivetran_webhook`
+- `fivetran_external_logging`
+- `fivetran_group`
+- `fivetran_group_users`
+  migrated on `terraform-plugin-framework`
+
+Datasources:
+- `fivetran_team`
+- `fivetran_teams`
+- `fivetran_team_group_memberships`
+- `fivetran_team_connector_memberships`
+- `fivetran_team_group_memberships`
+- `fivetran_webhook`
+- `fivetran_webhooks`
+- `fivetran_external_logging`
+- `fivetran_connectors_metadata`
+- `fivetran_roles`
+- `fivetran_group`
+- `fivetran_groups`
+- `fivetran_group_connectors`
+- `fivetran_group_users`
+  migrated on `terraform-plugin-framework`
 
 ## [1.1.18](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.17...v1.1.18)
+
+## Added
+- Added field `fivetran_destination.daylight_saving_time_enabled` for shifting UTC offset with daylight savings time (US Only).
 
 ## Updated
 - Schema updated for resource `fivetran_connector_schema_config`:
@@ -39,7 +79,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Supported service: `sap_success_factors`
     - Supported service: `sistrix`
     - Supported service: `web_scraper`
-
 
 ## [1.1.17](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.16...v1.1.17)
 

@@ -80,10 +80,10 @@ func TestDataSourceGroupConnectorsMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("data.fivetran_group_connectors.test_group_connectors", "connectors.0.succeeded_at", "2018-12-26 17:58:18.245 +0000 UTC"),
 			resource.TestCheckResourceAttr("data.fivetran_group_connectors.test_group_connectors", "connectors.0.failed_at", "2018-08-24 15:24:58.872491 +0000 UTC"),
 			resource.TestCheckResourceAttr("data.fivetran_group_connectors.test_group_connectors", "connectors.0.sync_frequency", "60"),
-			resource.TestCheckResourceAttr("data.fivetran_group_connectors.test_group_connectors", "connectors.0.status.0.setup_state", "connected"),
-			resource.TestCheckResourceAttr("data.fivetran_group_connectors.test_group_connectors", "connectors.0.status.0.sync_state", "paused"),
-			resource.TestCheckResourceAttr("data.fivetran_group_connectors.test_group_connectors", "connectors.0.status.0.update_state", "delayed"),
-			resource.TestCheckResourceAttr("data.fivetran_group_connectors.test_group_connectors", "connectors.0.status.0.is_historical_sync", "false"),
+			resource.TestCheckResourceAttr("data.fivetran_group_connectors.test_group_connectors", "connectors.0.status.setup_state", "connected"),
+			resource.TestCheckResourceAttr("data.fivetran_group_connectors.test_group_connectors", "connectors.0.status.sync_state", "paused"),
+			resource.TestCheckResourceAttr("data.fivetran_group_connectors.test_group_connectors", "connectors.0.status.update_state", "delayed"),
+			resource.TestCheckResourceAttr("data.fivetran_group_connectors.test_group_connectors", "connectors.0.status.is_historical_sync", "false"),
 		),
 	}
 

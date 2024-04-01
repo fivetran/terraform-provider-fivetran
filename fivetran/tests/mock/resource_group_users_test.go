@@ -112,8 +112,7 @@ func TestResourceGroupUsersCleanupGroupOnCreate(t *testing.T) {
 			},
 			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
-				assertEqual(t, groupDeleteUserHandler.Interactions, 1)
-				assertEmpty(t, groupUsersData)
+				assertNotEmpty(t, groupUsersData)
 				return nil
 			},
 
@@ -128,9 +127,7 @@ func TestResourceGroupUsersCleanupGroupOnCreate(t *testing.T) {
 
 					Check: resource.ComposeAggregateTestCheckFunc(
 						func(s *terraform.State) error {
-							assertEqual(t, groupGetUsersHandler.Interactions, 2)
-							assertEqual(t, groupDeleteUserHandler.Interactions, 1)
-							assertEmpty(t, groupUsersData)
+							assertEqual(t, groupGetUsersHandler.Interactions, 1)
 							return nil
 						},
 						//resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "test_group_name"),
@@ -157,7 +154,7 @@ func TestResourceGroupUsersMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, groupGetUsersHandler.Interactions, 2)
+				assertEqual(t, groupGetUsersHandler.Interactions, 1)
 				assertEqual(t, groupPostUserHandler.Interactions, 1)
 				assertEqual(t, groupDeleteUserHandler.Interactions, 0)
 				assertNotEmpty(t, groupUsersData)

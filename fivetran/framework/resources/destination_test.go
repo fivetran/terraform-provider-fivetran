@@ -29,6 +29,7 @@ func TestResourceDestinationMappingMock(t *testing.T) {
 				region = "GCP_US_EAST4"
 				trust_certificates = "true"
 				trust_fingerprints = "true"
+				daylight_saving_time_enabled = "true"
 				run_setup_tests = "false"
 
 				config {
@@ -153,6 +154,7 @@ func TestResourceDestinationMappingMock(t *testing.T) {
 							"region":"GCP_US_EAST4",
 							"time_zone_offset":"0",
 							"setup_status":"connected",
+							"daylight_saving_time_enabled":true,
 							"setup_tests":[
 								{
 									"title":"Host Connection",
@@ -253,6 +255,7 @@ func TestResourceDestinationSetupTests(t *testing.T) {
 				trust_certificates = "true"
 				trust_fingerprints = "true"
 				run_setup_tests = "true"
+				daylight_saving_time_enabled = "true"
 
 				config {
 					host = "terraform-test.us-east-1.rds.amazonaws.com"
@@ -271,6 +274,7 @@ func TestResourceDestinationSetupTests(t *testing.T) {
 		"service":"snowflake",
 		"region":"GCP_US_EAST4",
 		"time_zone_offset":"0",
+		"daylight_saving_time_enabled":true,
 		"setup_status":"incomplete",
 		"setup_tests":[
 			{
@@ -376,6 +380,7 @@ func TestResourceDestinationMock(t *testing.T) {
 				region = "GCP_US_EAST4"
 				trust_certificates = "true"
 				trust_fingerprints = "true"
+				daylight_saving_time_enabled = "true"
 				run_setup_tests = "false"
 
 				config {
@@ -399,6 +404,7 @@ func TestResourceDestinationMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "region", "GCP_US_EAST4"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_certificates", "true"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_fingerprints", "true"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "daylight_saving_time_enabled", "true"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "run_setup_tests", "false"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.host", "terraform-test.us-east-1.rds.amazonaws.com"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.port", "5432"),
@@ -420,6 +426,7 @@ func TestResourceDestinationMock(t *testing.T) {
 				region = "GCP_US_EAST4"
 				trust_certificates = "true"
 				trust_fingerprints = "true"
+				daylight_saving_time_enabled = "true"
 				run_setup_tests = "false"
 
 				config {
@@ -440,6 +447,7 @@ func TestResourceDestinationMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "region", "GCP_US_EAST4"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_certificates", "true"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_fingerprints", "true"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "daylight_saving_time_enabled", "true"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "run_setup_tests", "false"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.host", "test.host"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.port", "5434"),
@@ -461,6 +469,7 @@ func TestResourceDestinationMock(t *testing.T) {
 				region = "GCP_US_EAST4"
 				trust_certificates = "true"
 				trust_fingerprints = "true"
+				daylight_saving_time_enabled = "true"
 				run_setup_tests = "true"
 
 				config {

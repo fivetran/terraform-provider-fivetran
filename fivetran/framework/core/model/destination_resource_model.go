@@ -9,19 +9,19 @@ import (
 )
 
 type DestinationResourceModel struct {
-	Id             types.String `tfsdk:"id"`
-	GroupId        types.String `tfsdk:"group_id"`
-	Service        types.String `tfsdk:"service"`
-	Region         types.String `tfsdk:"region"`
-	TimeZoneOffset types.String `tfsdk:"time_zone_offset"`
-	SetupStatus    types.String `tfsdk:"setup_status"`
+	Id            				 types.String 	`tfsdk:"id"`
+	GroupId       				 types.String 	`tfsdk:"group_id"`
+	Service       				 types.String 	`tfsdk:"service"`
+	Region        				 types.String 	`tfsdk:"region"`
+	TimeZoneOffset				 types.String 	`tfsdk:"time_zone_offset"`
+	SetupStatus    				 types.String 	`tfsdk:"setup_status"`
+	DaylightSavingTimeEnabled	 types.Bool   	`tfsdk:"daylight_saving_time_enabled"`
+	Config  					 types.Object   `tfsdk:"config"`
+	Timeouts					 timeouts.Value `tfsdk:"timeouts"`
 
-	Config   types.Object   `tfsdk:"config"`
-	Timeouts timeouts.Value `tfsdk:"timeouts"`
-
-	RunSetupTests     types.Bool `tfsdk:"run_setup_tests"`
-	TrustCertificates types.Bool `tfsdk:"trust_certificates"`
-	TrustFingerprints types.Bool `tfsdk:"trust_fingerprints"`
+	RunSetupTests    			 types.Bool 	`tfsdk:"run_setup_tests"`
+	TrustCertificates			 types.Bool 	`tfsdk:"trust_certificates"`
+	TrustFingerprints			 types.Bool 	`tfsdk:"trust_fingerprints"`
 }
 
 var _ destinationModel = &DestinationResourceModel{}
@@ -44,7 +44,9 @@ func (d *DestinationResourceModel) SetTimeZonOffset(value string) {
 func (d *DestinationResourceModel) SetSetupStatus(value string) {
 	d.SetupStatus = types.StringValue(value)
 }
-
+func (d *DestinationResourceModel) SetDaylightSavingTimeEnabled(value bool) {
+	d.DaylightSavingTimeEnabled = types.BoolValue(value)
+}
 func (d *DestinationResourceModel) SetConfig(value map[string]interface{}) {
 	if d.Service.IsNull() || d.Service.IsUnknown() {
 		panic("Service type is null. Can't handle config without service type.")

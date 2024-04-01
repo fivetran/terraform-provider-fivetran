@@ -27,12 +27,12 @@ resource "fivetran_external_logging" "extlog" {
 
 ### Required
 
-- `config` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--config))
 - `group_id` (String) The unique identifier for the log service within the Fivetran system.
 - `service` (String) The name for the log service type within the Fivetran system. We support the following log services: azure_monitor_log, cloudwatch, datadog_log, new_relic_log, splunkLog, stackdriver.
 
 ### Optional
 
+- `config` (Block, Optional) (see [below for nested schema](#nestedblock--config))
 - `enabled` (Boolean) The boolean value specifying whether the log service is enabled.
 - `run_setup_tests` (Boolean) Specifies whether the setup tests should be run automatically. The default value is TRUE.
 
