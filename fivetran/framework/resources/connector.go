@@ -185,6 +185,9 @@ func (r *connector) Read(ctx context.Context, req resource.ReadRequest, resp *re
 	// Read Terraform prior state data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
+	// The only case when state of existing resource doesn't contain required fields - import operation
+	isImportOperation := data.GroupId.IsNull() || data.GroupId.IsUnknown() || data.Service.IsNull() || data.Service.IsUnknown()
+
 	id := data.Id.ValueString()
 
 	// Recovery from 1.1.13 bug
@@ -210,7 +213,7 @@ func (r *connector) Read(ctx context.Context, req resource.ReadRequest, resp *re
 		return
 	}
 
-	data.ReadFromResponse(response)
+	data.ReadFromResponse(response, isImportOperation)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
@@ -338,7 +341,7 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 			)
 			return
 		}
-		plan.ReadFromResponse(response)
+		plan.ReadFromResponse(response, false)
 	}
 
 	// Set up synthetic values

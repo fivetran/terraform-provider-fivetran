@@ -9,6 +9,7 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/common"
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
@@ -126,16 +127,18 @@ type ConnectorResourceModel struct {
 	TrustFingerprints types.Bool `tfsdk:"trust_fingerprints"`
 }
 
-func (d *ConnectorResourceModel) ReadFromResponse(resp connectors.DetailsWithCustomConfigNoTestsResponse) {
+func (d *ConnectorResourceModel) ReadFromResponse(resp connectors.DetailsWithCustomConfigNoTestsResponse, forceReadConfig bool) diag.Diagnostics {
 	responseContainer := ConnectorModelContainer{}
 	responseContainer.ReadFromResponseData(resp.Data.DetailsResponseDataCommon, resp.Data.Config)
-	d.ReadFromContainer(responseContainer)
+	d.ReadFromContainer(responseContainer, forceReadConfig)
+	return nil
 }
 
-func (d *ConnectorResourceModel) ReadFromCreateResponse(resp connectors.DetailsWithCustomConfigResponse) {
+func (d *ConnectorResourceModel) ReadFromCreateResponse(resp connectors.DetailsWithCustomConfigResponse) diag.Diagnostics {
 	responseContainer := ConnectorModelContainer{}
 	responseContainer.ReadFromResponseData(resp.Data.DetailsResponseDataCommon, resp.Data.Config)
-	d.ReadFromContainer(responseContainer)
+	d.ReadFromContainer(responseContainer, false)
+	return nil
 }
 
 func (d *ConnectorResourceModel) GetConfigMap(nullOnNull bool) (map[string]interface{}, error) {
@@ -171,7 +174,7 @@ func (d *ConnectorResourceModel) GetDestinatonSchemaForConfig() (map[string]inte
 	)
 }
 
-func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer) {
+func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, forceReadConfig bool) {
 	d.Id = types.StringValue(c.Id)
 	d.Name = types.StringValue(c.Schema)
 	d.ConnectedBy = types.StringValue(c.ConnectedBy)
@@ -181,11 +184,13 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer) {
 
 	d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
 
-	d.Config = getValue(
-		types.ObjectType{AttrTypes: getAttrTypes(common.GetConfigFieldsMap())},
-		c.Config,
-		getValueFromAttrValue(d.Config, common.GetConfigFieldsMap(), nil, c.Service).(map[string]interface{}),
-		common.GetConfigFieldsMap(), nil, c.Service).(basetypes.ObjectValue)
+	if forceReadConfig || (!d.Config.IsNull() && !d.Config.IsUnknown()) {
+		d.Config = getValue(
+			types.ObjectType{AttrTypes: getAttrTypes(common.GetConfigFieldsMap())},
+			c.Config,
+			getValueFromAttrValue(d.Config, common.GetConfigFieldsMap(), nil, c.Service).(map[string]interface{}),
+			common.GetConfigFieldsMap(), nil, c.Service).(basetypes.ObjectValue)
+	}
 }
 
 func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) {
