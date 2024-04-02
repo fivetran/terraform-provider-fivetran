@@ -147,9 +147,12 @@ func (d *ConnectorResourceModel) GetConfigMap(nullOnNull bool) (map[string]inter
 	}
 	result := getValueFromAttrValue(d.Config, common.GetConfigFieldsMap(), nil, d.Service.ValueString()).(map[string]interface{})
 	serviceName := d.Service.ValueString()
-	serviceFields := common.GetFieldsForService(serviceName)
+	serviceFields, err := common.GetFieldsForService(serviceName)
+	if err != nil {
+		return result, err
+	}
 	allFields := common.GetConfigFieldsMap()
-	err := patchServiceSpecificFields(result, serviceName, serviceFields, allFields)
+	err = patchServiceSpecificFields(result, serviceName, serviceFields, allFields)
 	return result, err
 }
 
@@ -167,6 +170,9 @@ func (d *ConnectorResourceModel) GetAuthMap(nullOnNull bool) (map[string]interfa
 }
 
 func (d *ConnectorResourceModel) GetDestinatonSchemaForConfig() (map[string]interface{}, error) {
+	if d.DestinationSchema.IsNull() || d.DestinationSchema.IsUnknown() {
+		return nil, fmt.Errorf("Field `destination_schema` is required.")
+	}
 	return getDestinatonSchemaForConfig(d.Service,
 		d.DestinationSchema.Attributes()["name"],
 		d.DestinationSchema.Attributes()["table"],

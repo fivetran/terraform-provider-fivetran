@@ -3,6 +3,7 @@ package resources_test
 import (
 	"fmt"
 	"net/http"
+	"regexp"
 	"testing"
 
 	"github.com/fivetran/go-fivetran/tests/mock"
@@ -49,6 +50,65 @@ func createConnectorTestResponseJsonMock(id, groupId, service, schema, config st
 	}
 	`
 	return fmt.Sprintf(template, id, groupId, service, schema, config)
+}
+
+func TestResourceConnectorNoDestinationSchemaMock(t *testing.T) {
+	step1 :=
+		resource.TestStep{Config: `
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+
+			group_id           = "group_id"
+			service            = "amplitude"
+		}`,
+			ExpectError: regexp.MustCompile("Unable to Create Connector Resource."),
+		}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
+			},
+		},
+	)
+}
+
+func TestResourceConnectorUnknownServiceMock(t *testing.T) {
+	step1 :=
+		resource.TestStep{Config: `
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+
+			group_id           = "group_id"
+			service            = "unknown-service-name"
+
+			destination_schema {
+				name = "schema"
+			}
+			config {}
+		}`,
+			ExpectError: regexp.MustCompile("Unable to Create Connector Resource."),
+		}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
+			},
+		},
+	)
 }
 
 func TestResourceConnectorMock(t *testing.T) {
