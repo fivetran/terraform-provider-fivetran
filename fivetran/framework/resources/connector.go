@@ -167,6 +167,17 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 	data.TrustCertificates = types.BoolValue(trustCertificatesPlan)
 	data.TrustFingerprints = types.BoolValue(trustFingerprintsPlan)
 
+	if runSetupTestsPlan && response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
+		for _, tr := range response.Data.SetupTests {
+			if tr.Status != "PASSED" && tr.Status != "SKIPPED" {
+				resp.Diagnostics.AddWarning(
+					fmt.Sprintf("Connector setup test `%v` has status `%v`", tr.Title, tr.Status),
+					tr.Message,
+				)
+			}
+		}
+	}
+
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
@@ -311,6 +322,18 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 			return
 		}
 		plan.ReadFromCreateResponse(response)
+
+		if runSetupTestsPlan && response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
+			for _, tr := range response.Data.SetupTests {
+				if tr.Status != "PASSED" && tr.Status != "SKIPPED" {
+					resp.Diagnostics.AddWarning(
+						fmt.Sprintf("Connector setup test `%v` has status `%v`", tr.Title, tr.Status),
+						tr.Message,
+					)
+				}
+			}
+		}
+
 		updatePerformed = true
 	} else {
 		// If values of testing fields changed we should run tests
@@ -327,6 +350,16 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 				return
 			}
 			plan.ReadFromCreateResponse(response)
+			if response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
+				for _, tr := range response.Data.SetupTests {
+					if tr.Status != "PASSED" && tr.Status != "SKIPPED" {
+						resp.Diagnostics.AddWarning(
+							fmt.Sprintf("Connector setup test `%v` has status `%v`", tr.Title, tr.Status),
+							tr.Message,
+						)
+					}
+				}
+			}
 			updatePerformed = true
 		}
 	}
