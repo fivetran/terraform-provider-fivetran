@@ -5,9 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.19...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.20...HEAD)
 
-## [1.1.18](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.18...v1.1.19)
+## [1.1.20](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.19...v1.1.20)
+
+## Fixed
+- Issue with unknown services: no more panic.
+- Issue with panic on omited `destination_schema` field for connector resource.
+- Issue with missing or empty `config` field for connector resource.
+- Issue with `fivetran_connector` resource import.
+
+## Docs
+- Added a guide about configuring dbt Project with a private repo.
+
+## [1.1.19](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.18...v1.1.19)
 
 ## Added
 - New resource `fivetran_user_connector_membership` that allows to manage User Connector memberships.

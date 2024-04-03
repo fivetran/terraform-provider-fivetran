@@ -59,6 +59,9 @@ func GetFieldsForService(service string) (map[string]ConfigField, error) {
 	if r, ok := configFieldsByService[service]; ok {
 		return r, nil
 	}
+	if _, ok := destinationSchemaFields[service]; ok {
+		return map[string]ConfigField{}, nil
+	}
 	return nil, fmt.Errorf("Unknown service: %v\n It seems like `%v` service is not yet supported in this provider version. \nPlease update to latest or wait for next release (if you are using latest already).", service, service)
 }
 
