@@ -229,14 +229,15 @@ func fetchFieldsBatchByService(fields []string) ([]string, []string, string) {
 			}
 			fieldsCount := 0
 			for s := range field.Description {
-				if len(common.GetFieldsForService(s)) > fieldsCount {
+				fields, _ := common.GetFieldsForService(s)
+				if len(fields) > fieldsCount {
 					service = s
-					fieldsCount = len(common.GetFieldsForService(s))
+					fieldsCount = len(fields)
 				}
 			}
 			fieldsToTest := []string{}
 			restFields := []string{}
-			serviceFields := common.GetFieldsForService(service)
+			serviceFields, _ := common.GetFieldsForService(service)
 			for _, fName := range fields {
 				if sf, ok := serviceFields[fName]; ok {
 					if !sf.Readonly {

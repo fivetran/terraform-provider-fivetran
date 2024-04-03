@@ -3,6 +3,7 @@ package common
 import (
 	_ "embed"
 	"encoding/json"
+	"fmt"
 )
 
 type ConfigField struct {
@@ -51,14 +52,14 @@ var (
 	destinationSchemaFields = make(map[string]map[string]bool)
 )
 
-func GetFieldsForService(service string) map[string]ConfigField {
+func GetFieldsForService(service string) (map[string]ConfigField, error) {
 	if len(configFieldsByService) == 0 {
 		panic("Fields for config are not loaded")
 	}
 	if r, ok := configFieldsByService[service]; ok {
-		return r
+		return r, nil
 	}
-	panic("Unknown service" + service)
+	return nil, fmt.Errorf("Unknown service: %v\n It seems like `%v` service is not yet supported in this provider version. \nPlease update to latest or wait for next release (if you are using latest already).", service, service)
 }
 
 func GetAuthFieldsForService(service string) map[string]ConfigField {
