@@ -136,10 +136,16 @@ func (r *destination) Create(ctx context.Context, req resource.CreateRequest, re
 		}
 
 		if strings.ToLower(stResponse.Data.SetupStatus) != "connected" {
-			resp.Diagnostics.AddWarning(
-				"Setup Tests for destination failed.",
-				fmt.Sprintf("%v", stResponse.Data.SetupTests),
-			)
+			if stResponse.Data.SetupTests != nil && len(stResponse.Data.SetupTests) > 0 {
+				for _, tr := range stResponse.Data.SetupTests {
+					if tr.Status != "PASSED" && tr.Status != "SKIPPED" {
+						resp.Diagnostics.AddWarning(
+							fmt.Sprintf("Destination setup test `%v` has status `%v`", tr.Title, tr.Status),
+							tr.Message,
+						)
+					}
+				}
+			}
 		}
 
 		detailsResponse, err := r.GetClient().NewDestinationDetails().DestinationID(response.Data.ID).DoCustom(ctx)
@@ -283,6 +289,17 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 		}
 		updatePerformed = true
 		plan.ReadFromResponseWithTests(response)
+
+		if runSetupTestsPlan && response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
+			for _, tr := range response.Data.SetupTests {
+				if tr.Status != "PASSED" && tr.Status != "SKIPPED" {
+					resp.Diagnostics.AddWarning(
+						fmt.Sprintf("Destination setup test `%v` has status `%v`", tr.Title, tr.Status),
+						tr.Message,
+					)
+				}
+			}
+		}
 	} else {
 		// If values of testing fields changed we should run tests
 		if runSetupTestsPlan && runSetupTestsPlan != runSetupTestsState ||
@@ -299,6 +316,16 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 			}
 
 			plan.ReadFromLegacyResponse(response)
+			if response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
+				for _, tr := range response.Data.SetupTests {
+					if tr.Status != "PASSED" && tr.Status != "SKIPPED" {
+						resp.Diagnostics.AddWarning(
+							fmt.Sprintf("Destination setup test `%v` has status `%v`", tr.Title, tr.Status),
+							tr.Message,
+						)
+					}
+				}
+			}
 			// there were no changes in config so we can just copy it from state
 			plan.Config = state.Config
 			updatePerformed = true

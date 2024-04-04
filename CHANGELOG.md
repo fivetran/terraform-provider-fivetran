@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.20...HEAD)
 
+## Added
+- Output warnings with test details in case if setup tests for instance (connector, destination or external_logger) are failing.
+
 ## [1.1.20](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.19...v1.1.20)
 
 ## Fixed
