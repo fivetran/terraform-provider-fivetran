@@ -1,26 +1,28 @@
-package mock
+package datasources_test
 
 import (
 	"net/http"
 	"testing"
 
 	"github.com/fivetran/go-fivetran/tests/mock"
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
-func TestDataSourceConnectorCertificatesMock(t *testing.T) {
+func TestDataSourceDestinationCertificatesMock(t *testing.T) {
 
 	var getHandler *mock.Handler
 	var data map[string]interface{}
 
-	setupConnectorFingerprintsDatasourceMock := func() {
-		mockClient.Reset()
-		getHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id/certificates").ThenCall(
+	setup := func() {
+		tfmock.MockClient().Reset()
+
+		getHandler = tfmock.MockClient().When(http.MethodGet, "/v1/destinations/destination_id/certificates").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				cursor := req.URL.Query().Get("cursor")
 				if cursor == "" {
-					data = createMapFromJsonString(t, `
+					data = tfmock.CreateMapFromJsonString(t, `
 					{
 						"items":[
 							{
@@ -48,7 +50,7 @@ func TestDataSourceConnectorCertificatesMock(t *testing.T) {
 					}
 					`)
 				} else if cursor == "next_cursor" {
-					data = createMapFromJsonString(t, `
+					data = tfmock.CreateMapFromJsonString(t, `
 					{
 						"items":[
 							{
@@ -75,36 +77,36 @@ func TestDataSourceConnectorCertificatesMock(t *testing.T) {
 					}
 					`)
 				}
-				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", data), nil
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", data), nil
 			},
 		)
 	}
 	resource.Test(
 		t,
 		resource.TestCase{
-			PreCheck:                 setupConnectorFingerprintsDatasourceMock,
-			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			PreCheck:                 setup,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			Steps: []resource.TestStep{
 				{
 					Config: `
-					data "fivetran_connector_certificates" "test" {
+					data "fivetran_destination_certificates" "test" {
 						provider = fivetran-provider
-						id = "connector_id"
+						id = "destination_id"
 					}`,
 					Check: resource.ComposeAggregateTestCheckFunc(
 						func(s *terraform.State) error {
-							assertEqual(t, getHandler.Interactions, 4)
+							tfmock.AssertEqual(t, getHandler.Interactions, 4)
 							return nil
 						},
-						resource.TestCheckResourceAttr("data.fivetran_connector_certificates.test", "certificates.#", "4"),
-						resource.TestCheckResourceAttr("data.fivetran_connector_certificates.test", "certificates.0.hash", "hash0"),
-						resource.TestCheckResourceAttr("data.fivetran_connector_certificates.test", "certificates.0.name", "name0"),
-						resource.TestCheckResourceAttr("data.fivetran_connector_certificates.test", "certificates.0.type", "type0"),
-						resource.TestCheckResourceAttr("data.fivetran_connector_certificates.test", "certificates.0.sha1", "sha10"),
-						resource.TestCheckResourceAttr("data.fivetran_connector_certificates.test", "certificates.0.sha256", "sha2560"),
-						resource.TestCheckResourceAttr("data.fivetran_connector_certificates.test", "certificates.0.public_key", "public_key0"),
-						resource.TestCheckResourceAttr("data.fivetran_connector_certificates.test", "certificates.0.validated_by", "validated_by0"),
-						resource.TestCheckResourceAttr("data.fivetran_connector_certificates.test", "certificates.0.validated_date", "validated_date0"),
+						resource.TestCheckResourceAttr("data.fivetran_destination_certificates.test", "certificates.#", "4"),
+						resource.TestCheckResourceAttr("data.fivetran_destination_certificates.test", "certificates.0.hash", "hash0"),
+						resource.TestCheckResourceAttr("data.fivetran_destination_certificates.test", "certificates.0.name", "name0"),
+						resource.TestCheckResourceAttr("data.fivetran_destination_certificates.test", "certificates.0.type", "type0"),
+						resource.TestCheckResourceAttr("data.fivetran_destination_certificates.test", "certificates.0.sha1", "sha10"),
+						resource.TestCheckResourceAttr("data.fivetran_destination_certificates.test", "certificates.0.sha256", "sha2560"),
+						resource.TestCheckResourceAttr("data.fivetran_destination_certificates.test", "certificates.0.public_key", "public_key0"),
+						resource.TestCheckResourceAttr("data.fivetran_destination_certificates.test", "certificates.0.validated_by", "validated_by0"),
+						resource.TestCheckResourceAttr("data.fivetran_destination_certificates.test", "certificates.0.validated_date", "validated_date0"),
 					),
 				},
 			},

@@ -15,22 +15,13 @@ func Provider() *schema.Provider {
 	var resourceMap = map[string]*schema.Resource{
 		"fivetran_dbt_transformation":        resourceDbtTransformation(),
 		"fivetran_dbt_project":               resourceDbtProject(),
-		"fivetran_connector_fingerprints":    resourceFingerprints(Connector),
-		"fivetran_destination_fingerprints":  resourceFingerprints(Destination),
-		"fivetran_connector_certificates":    resourceCertificates(Connector),
-		"fivetran_destination_certificates":  resourceCertificates(Destination),
 	}
 
 	var dataSourceMap = map[string]*schema.Resource{
-		"fivetran_users":                      dataSourceUsers(),
 		"fivetran_dbt_transformation":         dataSourceDbtTransformation(),
 		"fivetran_dbt_project":                dataSourceDbtProject(),
 		"fivetran_dbt_projects":               dataSourceDbtProjects(),
 		"fivetran_dbt_models":                 dataSourceDbtModels(),
-		"fivetran_connector_fingerprints":     dataSourceFingerprints(Connector),
-		"fivetran_destination_fingerprints":   dataSourceFingerprints(Destination),
-		"fivetran_connector_certificates":     dataSourceCertificates(Connector),
-		"fivetran_destination_certificates":   dataSourceCertificates(Destination),
 	}
 
 	return &schema.Provider{

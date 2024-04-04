@@ -1,13 +1,15 @@
-package mock
+package datasources_test
 
 import (
 	"net/http"
 	"testing"
 
 	"github.com/fivetran/go-fivetran/tests/mock"
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
+
 
 var (
 	destinationDataSourceMockGetHandler *mock.Handler
@@ -16,11 +18,11 @@ var (
 )
 
 func setupMockClientDestinationDataSourceConfigMapping(t *testing.T) {
-	mockClient.Reset()
+	tfmock.MockClient().Reset()
 
-	destinationDataSourceMockGetHandler = mockClient.When(http.MethodGet, "/v1/destinations/destination_id").ThenCall(
+	destinationDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/destinations/destination_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			destinationDataSourceMockData = createMapFromJsonString(t, `
+			destinationDataSourceMockData = tfmock.CreateMapFromJsonString(t, `
 			{
 				"id":"destination_id",
 				"group_id":"group_id",
@@ -89,7 +91,7 @@ func setupMockClientDestinationDataSourceConfigMapping(t *testing.T) {
 				}
 			}
 			`)
-			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", destinationDataSourceMockData), nil
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", destinationDataSourceMockData), nil
 		},
 	)
 }
@@ -105,8 +107,8 @@ func TestDataSourceDestinationConfigMappingMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, destinationDataSourceMockGetHandler.Interactions, 2)
-				assertNotEmpty(t, destinationDataSourceMockData)
+				tfmock.AssertEqual(t, destinationDataSourceMockGetHandler.Interactions, 2)
+				tfmock.AssertNotEmpty(t, destinationDataSourceMockData)
 				return nil
 			},
 			resource.TestCheckResourceAttr("data.fivetran_destination.test_destintion", "service", "snowflake"),
@@ -163,7 +165,7 @@ func TestDataSourceDestinationConfigMappingMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientDestinationDataSourceConfigMapping(t)
 			},
-			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				return nil
 			},

@@ -1,10 +1,11 @@
-package mock
+package datasources_test
 
 import (
 	"net/http"
 	"testing"
 
 	"github.com/fivetran/go-fivetran/tests/mock"
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
@@ -39,12 +40,12 @@ const (
 )
 
 func setupMockClientGroupUsersDataSourceConfigMapping(t *testing.T) {
-	mockClient.Reset()
+	tfmock.MockClient().Reset()
 
-	groupUsersDataSourceMockGetHandler = mockClient.When(http.MethodGet, "/v1/groups/group_id/users").ThenCall(
+	groupUsersDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/groups/group_id/users").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			groupUsersDataSourceMockData = createMapFromJsonString(t, groupUsersMappingResponse)
-			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", groupUsersDataSourceMockData), nil
+			groupUsersDataSourceMockData = tfmock.CreateMapFromJsonString(t, groupUsersMappingResponse)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", groupUsersDataSourceMockData), nil
 		},
 	)
 }
@@ -59,8 +60,8 @@ func TestDataSourceGroupUsersMappingMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, groupUsersDataSourceMockGetHandler.Interactions, 2)
-				assertNotEmpty(t, groupUsersDataSourceMockData)
+				tfmock.AssertEqual(t, groupUsersDataSourceMockGetHandler.Interactions, 2)
+				tfmock.AssertNotEmpty(t, groupUsersDataSourceMockData)
 				return nil
 			},
 			resource.TestCheckResourceAttr("data.fivetran_group_users.test_users", "users.0.id", "user_id"),
@@ -83,7 +84,7 @@ func TestDataSourceGroupUsersMappingMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientGroupUsersDataSourceConfigMapping(t)
 			},
-			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				return nil
 			},
