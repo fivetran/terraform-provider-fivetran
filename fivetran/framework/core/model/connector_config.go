@@ -143,7 +143,7 @@ func getStringValue(value, local interface{}, currentField *common.ConfigField, 
 	if local == nil && !currentField.Readonly { // we should not set non-nullable value to the state if it's not configured by tf, we just ignore it
 		return types.StringNull()
 	}
-	if currentField != nil && currentField.Sensitive && local != nil {
+	if currentField != nil && currentField.GetIsSensitive(service) && local != nil {
 		return types.StringValue(local.(string))
 	}
 	if t, ok := currentField.ItemType[service]; ok {

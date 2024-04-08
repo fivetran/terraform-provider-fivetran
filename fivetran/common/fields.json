@@ -24,6 +24,9 @@
          "adobe_analytics_data_feed": "Azure Blob Storage connection string.",
          "braze": "Connection String"
       },
+      "sensitive_exclusions": {
+         "braze": true
+      },
       "api_field": ""
    },
    "abs_container_address": {
@@ -120,7 +123,7 @@
    },
    "access_key": {
       "readonly": false,
-      "sensitive": false,
+      "sensitive": true,
       "nullable": false,
       "type": "string",
       "fields": null,
@@ -147,6 +150,9 @@
          "checkout": "Your Checkout.com access key ID.",
          "s3": "Access Key ID",
          "wasabi_cloud_storage": "Access Key ID"
+      },
+      "sensitive_exclusions": {
+         "appsflyer": true
       },
       "api_field": ""
    },
@@ -1450,6 +1456,9 @@
          "servicetitan": "Your ServiceTitan app key.",
          "yotpo": "Your Yotpo App Key"
       },
+      "sensitive_exclusions": {
+         "servicetitan": true
+      },
       "api_field": ""
    },
    "app_secret_token": {
@@ -2149,7 +2158,7 @@
    },
    "certificate": {
       "readonly": false,
-      "sensitive": false,
+      "sensitive": true,
       "nullable": false,
       "type": "string",
       "fields": null,
@@ -2301,6 +2310,10 @@
          "zuora": "Zuora Client ID.",
          "zuora_sandbox": "Zuora Client ID."
       },
+      "sensitive_exclusions": {
+         "medallia": true,
+         "zendesk_chat": true
+      },
       "api_field": ""
    },
    "client_key": {
@@ -2328,6 +2341,9 @@
       "description": {
          "destini": "Your Destini Client Name.",
          "medallia": "Medallia company name"
+      },
+      "sensitive_exclusions": {
+         "medallia": true
       },
       "api_field": ""
    },
@@ -2711,7 +2727,7 @@
    },
    "connection_string": {
       "readonly": false,
-      "sensitive": false,
+      "sensitive": true,
       "nullable": false,
       "type": "string",
       "fields": null,
@@ -4534,7 +4550,7 @@
    },
    "function_key": {
       "readonly": false,
-      "sensitive": false,
+      "sensitive": true,
       "nullable": false,
       "type": "string",
       "fields": null,
@@ -4901,7 +4917,7 @@
    },
    "integration_key": {
       "readonly": false,
-      "sensitive": false,
+      "sensitive": true,
       "nullable": false,
       "type": "string",
       "fields": null,
@@ -5933,7 +5949,6 @@
          "financial_force": "",
          "ftp": "FTP password.",
          "globalmeet": "Your GlobalMeet Password.",
-         "gongio": "Your Gongio Access Key Secret.",
          "google_cloud_mysql": "The user's password.",
          "google_cloud_postgresql": "The user's password.",
          "google_cloud_sqlserver": "The user's password.",
@@ -10006,6 +10021,9 @@
          "mode": "Your Mode Token.",
          "oracle_moat_analytics": "Your Oracle Moat Analytics Token."
       },
+      "sensitive_exclusions": {
+         "oracle_moat_analytics": true
+      },
       "api_field": ""
    },
    "token_authenticated_container": {
@@ -10629,7 +10647,7 @@
    },
    "user_key": {
       "readonly": false,
-      "sensitive": false,
+      "sensitive": true,
       "nullable": false,
       "type": "string",
       "fields": null,
@@ -10707,7 +10725,6 @@
          "github": "`Login` of your GitHub profile.",
          "gladly": "Your Gladly Username.",
          "globalmeet": "Your GlobalMeet Username.",
-         "gongio": "Your Gongio Access key.",
          "gorgias": "Your Gorgias username.",
          "green_power_monitor": "Your GreenPowerMonitor username.",
          "guru": "Your Guru username.",

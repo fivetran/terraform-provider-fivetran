@@ -1,7 +1,7 @@
 {
    "access_token": {
       "readonly": false,
-      "sensitive": false,
+      "sensitive": true,
       "nullable": true,
       "type": "string",
       "fields": null,
@@ -171,7 +171,7 @@
          },
          "client_secret": {
             "readonly": false,
-            "sensitive": false,
+            "sensitive": true,
             "nullable": true,
             "type": "string",
             "fields": null,
@@ -528,7 +528,7 @@
    },
    "refresh_token": {
       "readonly": false,
-      "sensitive": false,
+      "sensitive": true,
       "nullable": true,
       "type": "string",
       "fields": null,

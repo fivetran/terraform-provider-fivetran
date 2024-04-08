@@ -77,12 +77,16 @@ func schemaAttributeFromConfigField(cf common.ConfigField, datasource bool) inte
 		}
 	case common.String:
 		if datasource {
-			return datasourceSchema.StringAttribute{Computed: true, Sensitive: cf.Sensitive, Description: buildDescription(cf.Description)}
+			return datasourceSchema.StringAttribute{
+				Computed:    true,
+				Sensitive:   cf.GetIsSensitiveForSchema(),
+				Description: buildDescription(cf.Description),
+			}
 		} else {
 			return resourceSchema.StringAttribute{
 				Optional:    !cf.Readonly,
 				Computed:    cf.Readonly || !cf.Nullable,
-				Sensitive:   cf.Sensitive,
+				Sensitive:   cf.GetIsSensitiveForSchema(),
 				Description: buildDescription(cf.Description),
 			}
 		}
@@ -99,7 +103,7 @@ func schemaAttributeFromConfigField(cf common.ConfigField, datasource bool) inte
 				ElementType: elemType,
 				Optional:    !cf.Readonly,
 				Computed:    cf.Readonly,
-				Sensitive:   cf.Sensitive,
+				Sensitive:   cf.GetIsSensitiveForSchema(),
 				Description: buildDescription(cf.Description),
 			}
 		}
