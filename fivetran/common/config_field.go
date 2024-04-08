@@ -7,15 +7,31 @@ import (
 )
 
 type ConfigField struct {
-	Readonly       bool                      `json:"readonly"`
-	Sensitive      bool                      `json:"sensitive"`
-	Nullable       bool                      `json:"nullable"`
-	FieldValueType FieldValueType            `json:"type"`
-	ItemFields     map[string]ConfigField    `json:"fields"`
-	ItemKeyField   string                    `json:"key_field"`
-	ItemType       map[string]FieldValueType `json:"item_type"`
-	Description    map[string]string         `json:"description"`
-	ApiField       string                    `json:"api_field"`
+	Readonly            bool                      `json:"readonly"`
+	Sensitive           bool                      `json:"sensitive"`
+	Nullable            bool                      `json:"nullable"`
+	FieldValueType      FieldValueType            `json:"type"`
+	ItemFields          map[string]ConfigField    `json:"fields"`
+	ItemKeyField        string                    `json:"key_field"`
+	ItemType            map[string]FieldValueType `json:"item_type"`
+	Description         map[string]string         `json:"description"`
+	SensitiveExclusions map[string]bool           `json:"sensitive_exclusions,omitempty"`
+	ApiField            string                    `json:"api_field"`
+}
+
+func (c ConfigField) GetIsSensitiveForSchema() bool {
+	return c.Sensitive || (c.SensitiveExclusions != nil && len(c.SensitiveExclusions) > 0)
+}
+
+func (c ConfigField) GetIsSensitive(service string) bool {
+	if !c.Sensitive {
+		if c.SensitiveExclusions != nil {
+			_, ok := c.SensitiveExclusions[service]
+			return ok
+		}
+		return false
+	}
+	return true
 }
 
 func NewconfigField() ConfigField {
@@ -28,6 +44,7 @@ func NewconfigField() ConfigField {
 	field.ApiField = ""
 	field.ItemKeyField = ""
 	field.ItemType = make(map[string]FieldValueType)
+	field.SensitiveExclusions = nil
 	return field
 }
 

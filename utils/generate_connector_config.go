@@ -209,7 +209,6 @@ func importFields(
 		for name, field := range serviceFieldsMap {
 			fmt.Println("INFO: processing field " + name + " (service " + service + ")")
 			if existingField, ok := existingFields[name]; ok {
-				fmt.Println("INFO: conflict detected - field " + name + " already exists in resouce schema.")
 				if ableToMergeFields(field, existingField) {
 					fmt.Println("INFO: field " + name + " will be merged.")
 					m, u := mergeFields(field, existingField, service, changeLog, name)
@@ -279,7 +278,7 @@ func appendFieldDescription(newField, existingField *common.ConfigField, service
 		// check if new field has description
 		if nd, ok := newField.Description[service]; ok {
 			// check if description updated in new field
-			if ed != nd {
+			if ed != nd && nd != "" {
 				existingField.Description[service] = nd
 				return true
 			}
@@ -311,6 +310,17 @@ func appendItemType(newField, existingField *common.ConfigField, service string)
 	return false
 }
 
+func appendSensitiveExclusion(newField, existingField *common.ConfigField, service string) bool {
+	if newField.Sensitive == existingField.Sensitive || !newField.Sensitive {
+		return false
+	}
+	if existingField.SensitiveExclusions == nil {
+		existingField.SensitiveExclusions = map[string]bool{}
+	}
+	existingField.SensitiveExclusions[service] = newField.Sensitive
+	return true
+}
+
 func ableToMergeFields(a, b common.ConfigField) bool {
 	if a.FieldValueType != b.FieldValueType {
 		// can't merge fields of different types
@@ -338,9 +348,11 @@ func ableToMergeFields(a, b common.ConfigField) bool {
 func mergeFields(newField, existingField common.ConfigField, service string, changeLog map[string]common.ConfigField, parentName string) (common.ConfigField, bool) {
 	if existingField.FieldValueType != common.ObjectList && existingField.FieldValueType != common.Object {
 		// there's nothing to merge for primitive types, there won't be any updates in schema
-		updatedDescriptoion := appendFieldDescription(&newField, &existingField, service)
+		updatedDescription := appendFieldDescription(&newField, &existingField, service)
 		updatedItemType := appendItemType(&newField, &existingField, service)
-		return existingField, updatedDescriptoion || updatedItemType
+		updatedSensitive := appendSensitiveExclusion(&newField, &existingField, service)
+
+		return existingField, updatedDescription || updatedItemType || updatedSensitive
 	}
 
 	updated := false
