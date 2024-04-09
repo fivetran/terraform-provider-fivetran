@@ -34,14 +34,14 @@ func upgradeDestinationState(ctx context.Context, req resource.UpgradeStateReque
 	dynamicValue, err := tfprotov6.NewDynamicValue(
 		getDestinationStateModel(1),
 		tftypes.NewValue(getDestinationStateModel(1), map[string]tftypes.Value{
-			"id":               				rawState["id"],
-			"group_id":         				rawState["group_id"],
-			"service":          				rawState["service"],
-			"region":           				rawState["region"],
-			"timeouts":         				rawState["timeouts"],
-			"time_zone_offset": 				rawState["time_zone_offset"],
-			"setup_status":     				rawState["setup_status"],
-			"daylight_saving_time_enabled": 	rawState["daylight_saving_time_enabled"],
+			"id":                           rawState["id"],
+			"group_id":                     rawState["group_id"],
+			"service":                      rawState["service"],
+			"region":                       rawState["region"],
+			"timeouts":                     rawState["timeouts"],
+			"time_zone_offset":             rawState["time_zone_offset"],
+			"setup_status":                 rawState["setup_status"],
+			"daylight_saving_time_enabled": tftypes.NewValue(tftypes.Bool, nil),
 
 			"run_setup_tests":    convertStringStateValueToBool("run_setup_tests", rawState["run_setup_tests"], resp.Diagnostics),
 			"trust_fingerprints": convertStringStateValueToBool("trust_fingerprints", rawState["trust_fingerprints"], resp.Diagnostics),
@@ -59,12 +59,12 @@ func upgradeDestinationState(ctx context.Context, req resource.UpgradeStateReque
 }
 func getDestinationStateModel(version int) tftypes.Type {
 	base := map[string]tftypes.Type{
-		"id":               				tftypes.String,
-		"group_id":         				tftypes.String,
-		"service":          				tftypes.String,
-		"region":           				tftypes.String,
-		"time_zone_offset": 				tftypes.String,
-		"setup_status":     				tftypes.String,
+		"id":               tftypes.String,
+		"group_id":         tftypes.String,
+		"service":          tftypes.String,
+		"region":           tftypes.String,
+		"time_zone_offset": tftypes.String,
+		"setup_status":     tftypes.String,
 
 		"timeouts": tftypes.Object{
 			AttributeTypes: map[string]tftypes.Type{
@@ -81,12 +81,10 @@ func getDestinationStateModel(version int) tftypes.Type {
 
 		base["config"] = tftypes.Object{AttributeTypes: model.GetTfTypesDestination(common.GetDestinationFieldsMap(), 1)}
 	} else {
-
 		base["run_setup_tests"] = tftypes.String
 		base["trust_certificates"] = tftypes.String
 		base["trust_fingerprints"] = tftypes.String
 		base["last_updated"] = tftypes.String
-		base["daylight_saving_time_enabled"] = tftypes.String
 
 		base["config"] = tftypes.Set{ElementType: tftypes.Object{AttributeTypes: model.GetTfTypesDestination(common.GetDestinationFieldsMap(), 0)}}
 	}
