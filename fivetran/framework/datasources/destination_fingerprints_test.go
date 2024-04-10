@@ -82,6 +82,8 @@ func TestDataSourceDestinationFingerprintsMock(t *testing.T) {
 							tfmock.AssertEqual(t, getHandler.Interactions, 4)
 							return nil
 						},
+						resource.TestCheckResourceAttr("data.fivetran_destination_fingerprints.test", "id", "destination_id"),
+						resource.TestCheckResourceAttr("data.fivetran_destination_fingerprints.test", "destination_id", "destination_id"),
 						resource.TestCheckResourceAttr("data.fivetran_destination_fingerprints.test", "fingerprints.#", "4"),
 						resource.TestCheckResourceAttr("data.fivetran_destination_fingerprints.test", "fingerprints.0.hash", "hash0"),
 						resource.TestCheckResourceAttr("data.fivetran_destination_fingerprints.test", "fingerprints.0.public_key", "public_key0"),

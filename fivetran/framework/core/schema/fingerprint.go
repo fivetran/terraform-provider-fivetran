@@ -1,44 +1,78 @@
 package schema
 
 import (
-	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	datasourceSchema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-func FingerprintConnectorResource() resourceSchema.Schema {
-	return resourceSchema.Schema {
-		Attributes: map[string]resourceSchema.Attribute{
-			"id": resourceSchema.StringAttribute{
-				Computed:    true,
+func fingerprintCertificateConnectorSchema() core.Schema {
+	return core.Schema{
+		Fields: map[string]core.SchemaField{
+			"id": {
+				IsId:        true,
+				ValueType:   core.String,
 				Description: "The unique identifier for the resource. Equal to target connection id.",
 			},
-			"connector_id": resourceSchema.StringAttribute{
+			"connector_id": {
 				Required:    true,
-				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
+				ForceNew:    true,
+				ValueType:   core.String,
 				Description: "The unique identifier for the target connection within the Fivetran system.",
 			},
-		},
-		Blocks: map[string]resourceSchema.Block{
-			"fingerprint": fingerprintResourceItem(),
 		},
 	}
 }
 
-func FingerprintDestinationResource() resourceSchema.Schema {
-	return resourceSchema.Schema {
-		Attributes: map[string]resourceSchema.Attribute{
-			"id": resourceSchema.StringAttribute{
-				Computed:    true,
+func fingerprintCertificateDestinationSchema() core.Schema {
+	return core.Schema{
+		Fields: map[string]core.SchemaField{
+			"id": {
+				IsId:        true,
+				ValueType:   core.String,
 				Description: "The unique identifier for the resource. Equal to target destination id.",
 			},
-			"destination_id": resourceSchema.StringAttribute{
+			"destination_id": {
 				Required:    true,
-				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
+				ForceNew:    true,
+				ValueType:   core.String,
 				Description: "The unique identifier for the target destination within the Fivetran system.",
 			},
 		},
+	}
+}
+
+func fingerprintItemSchema() core.Schema {
+	return core.Schema{
+		Fields: map[string]core.SchemaField{
+			"hash": {
+				IsId:        true,
+				Required:    true,
+				ValueType:   core.String,
+				Description: "Hash of the fingerprint.",
+			},
+			"public_key": {
+				Required:    true,
+				ValueType:   core.String,
+				Description: "The SSH public key.",
+			},
+			"validated_by": {
+				ValueType:   core.String,
+				Readonly:    true,
+				Description: "User name who validated the fingerprint.",
+			},
+			"validated_date": {
+				ValueType:   core.String,
+				Readonly:    true,
+				Description: "The date when fingerprint was approved.",
+			},
+		},
+	}
+}
+
+func FingerprintConnectorResource() resourceSchema.Schema {
+	return resourceSchema.Schema{
+		Attributes: fingerprintCertificateConnectorSchema().GetResourceSchema(),
 		Blocks: map[string]resourceSchema.Block{
 			"fingerprint": fingerprintResourceItem(),
 		},
@@ -46,36 +80,26 @@ func FingerprintDestinationResource() resourceSchema.Schema {
 }
 
 func FingerprintConnectorDatasource() datasourceSchema.Schema {
-	return datasourceSchema.Schema {
-		Attributes: map[string]datasourceSchema.Attribute{
-			"id": datasourceSchema.StringAttribute{
-				Required:    true,
-				Description: "The unique identifier for the resource. Equal to target connection id.",
-			},
-			"connector_id": datasourceSchema.StringAttribute{
-				Computed:    true,
-				Description: "The unique identifier for the target connection within the Fivetran system.",
-			},
-		},
+	return datasourceSchema.Schema{
+		Attributes: fingerprintCertificateConnectorSchema().GetDatasourceSchema(),
 		Blocks: map[string]datasourceSchema.Block{
 			"fingerprints": fingerprintDatasourceItem(),
 		},
 	}
 }
 
+func FingerprintDestinationResource() resourceSchema.Schema {
+	return resourceSchema.Schema{
+		Attributes: fingerprintCertificateDestinationSchema().GetResourceSchema(),
+		Blocks: map[string]resourceSchema.Block{
+			"fingerprint": fingerprintResourceItem(),
+		},
+	}
+}
 
 func FingerprintDestinationDatasource() datasourceSchema.Schema {
-	return datasourceSchema.Schema {
-		Attributes: map[string]datasourceSchema.Attribute{
-			"id": datasourceSchema.StringAttribute{
-				Required:    true,
-				Description: "The unique identifier for the resource. Equal to target destination id.",
-			},
-			"destination_id": datasourceSchema.StringAttribute{
-				Computed:    true,
-				Description: "The unique identifier for the target destination within the Fivetran system.",
-			},
-		},
+	return datasourceSchema.Schema{
+		Attributes: fingerprintCertificateDestinationSchema().GetDatasourceSchema(),
 		Blocks: map[string]datasourceSchema.Block{
 			"fingerprints": fingerprintDatasourceItem(),
 		},
@@ -85,24 +109,7 @@ func FingerprintDestinationDatasource() datasourceSchema.Schema {
 func fingerprintDatasourceItem() datasourceSchema.SetNestedBlock {
 	return datasourceSchema.SetNestedBlock{
 		NestedObject: datasourceSchema.NestedBlockObject{
-			Attributes: map[string]datasourceSchema.Attribute{
-				"hash": datasourceSchema.StringAttribute{
-					Computed:    true,
-					Description: "Hash of the fingerprint.",
-				},
-				"public_key": datasourceSchema.StringAttribute{
-					Computed:    true,
-					Description: "The SSH public key.",
-				},
-				"validated_by": datasourceSchema.StringAttribute{
-					Computed:    true,
-					Description: "User name who validated the fingerprint.",
-				},
-				"validated_date": datasourceSchema.StringAttribute{
-					Computed:    true,
-					Description: "The date when SSH fingerprint was approved.",
-				},
-			},
+			Attributes: fingerprintItemSchema().GetDatasourceSchema(),
 		},
 	}
 }
@@ -110,24 +117,7 @@ func fingerprintDatasourceItem() datasourceSchema.SetNestedBlock {
 func fingerprintResourceItem() resourceSchema.SetNestedBlock {
 	return resourceSchema.SetNestedBlock{
 		NestedObject: resourceSchema.NestedBlockObject{
-			Attributes: map[string]resourceSchema.Attribute{
-				"hash": resourceSchema.StringAttribute{
-					Required:    true,
-					Description: "Hash of the fingerprint.",
-				},
-				"public_key": resourceSchema.StringAttribute{
-					Required:    true,
-					Description: "The SSH public key.",
-				},
-				"validated_by": resourceSchema.StringAttribute{
-					Computed:    true,
-					Description: "User name who validated the fingerprint.",
-				},
-				"validated_date": resourceSchema.StringAttribute{
-					Computed:    true,
-					Description: "The date when SSH fingerprint was approved.",
-				},
-			},
+			Attributes: fingerprintItemSchema().GetResourceSchema(),
 		},
 	}
 }

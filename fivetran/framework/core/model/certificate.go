@@ -112,29 +112,29 @@ func (d *CertificateConnector) ReadFromResponse(ctx context.Context, resp certif
 	d.Certificate = readCertificateItemsFromResponse(resp, d.getEncodedCertsMap(), true)
 }
 
-func (d *CertificateConnector) getEncodedCertsMap() map[string]string {
-	return getEncodedCertsMapImpl(d.Certificate.Elements())
-}
-
-func (d *CertificateDestination) getEncodedCertsMap() map[string]string {
-	return getEncodedCertsMapImpl(d.Certificate.Elements())
-}
-
 func (d *CertificateDestination) ReadFromResponse(ctx context.Context, resp certificates.CertificatesListResponse) {
 	d.Id = d.DestinationId
 	d.Certificate = readCertificateItemsFromResponse(resp, d.getEncodedCertsMap(), true)
 }
 
 func (d *CertificatesConnector) ReadFromResponse(ctx context.Context, resp certificates.CertificatesListResponse) {
-	d.Id = d.ConnectorId
+	d.ConnectorId = d.Id
 	emptyMap := make(map[string]string)
 	d.Certificates = readCertificateItemsFromResponse(resp, emptyMap, false)
 }
 
 func (d *CertificatesDestination) ReadFromResponse(ctx context.Context, resp certificates.CertificatesListResponse) {
-	d.Id = d.DestinationId
+	d.DestinationId = d.Id
 	emptyMap := make(map[string]string)
 	d.Certificates = readCertificateItemsFromResponse(resp, emptyMap, false)
+}
+
+func (d *CertificateConnector) getEncodedCertsMap() map[string]string {
+	return getEncodedCertsMapImpl(d.Certificate.Elements())
+}
+
+func (d *CertificateDestination) getEncodedCertsMap() map[string]string {
+	return getEncodedCertsMapImpl(d.Certificate.Elements())
 }
 
 func getEncodedCertsMapImpl(elements []attr.Value) map[string]string {

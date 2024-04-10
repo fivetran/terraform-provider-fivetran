@@ -4,23 +4,11 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	datasourceSchema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 )
 
 func CertificateConnectorResource() resourceSchema.Schema {
 	return resourceSchema.Schema{
-		Attributes: map[string]resourceSchema.Attribute{
-			"id": resourceSchema.StringAttribute{
-				Computed:    true,
-				Description: "The unique identifier for the resource. Equal to target connection id.",
-			},
-			"connector_id": resourceSchema.StringAttribute{
-				Required:      true,
-				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
-				Description:   "The unique identifier for the target connection within the Fivetran system.",
-			},
-		},
+		Attributes: fingerprintCertificateConnectorSchema().GetResourceSchema(),
 		Blocks: map[string]resourceSchema.Block{
 			"certificate": certificateResourceItem(),
 		},
@@ -29,17 +17,7 @@ func CertificateConnectorResource() resourceSchema.Schema {
 
 func CertificateDestinationResource() resourceSchema.Schema {
 	return resourceSchema.Schema{
-		Attributes: map[string]resourceSchema.Attribute{
-			"id": resourceSchema.StringAttribute{
-				Computed:    true,
-				Description: "The unique identifier for the resource. Equal to target destination id.",
-			},
-			"destination_id": resourceSchema.StringAttribute{
-				Required:      true,
-				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
-				Description:   "The unique identifier for the target destination within the Fivetran system.",
-			},
-		},
+		Attributes: fingerprintCertificateDestinationSchema().GetResourceSchema(),
 		Blocks: map[string]resourceSchema.Block{
 			"certificate": certificateResourceItem(),
 		},
@@ -48,16 +26,7 @@ func CertificateDestinationResource() resourceSchema.Schema {
 
 func CertificateConnectorDatasource() datasourceSchema.Schema {
 	return datasourceSchema.Schema{
-		Attributes: map[string]datasourceSchema.Attribute{
-			"id": datasourceSchema.StringAttribute{
-				Required:    true,
-				Description: "The unique identifier for the resource. Equal to target connection id.",
-			},
-			"connector_id": datasourceSchema.StringAttribute{
-				Computed:    true,
-				Description: "The unique identifier for the target connection within the Fivetran system.",
-			},
-		},
+		Attributes: fingerprintCertificateConnectorSchema().GetDatasourceSchema(),
 		Blocks: map[string]datasourceSchema.Block{
 			"certificates": certificateDatasourceItem(),
 		},
@@ -66,16 +35,7 @@ func CertificateConnectorDatasource() datasourceSchema.Schema {
 
 func CertificateDestinationDatasource() datasourceSchema.Schema {
 	return datasourceSchema.Schema{
-		Attributes: map[string]datasourceSchema.Attribute{
-			"id": datasourceSchema.StringAttribute{
-				Required:    true,
-				Description: "The unique identifier for the resource. Equal to target destination id.",
-			},
-			"destination_id": datasourceSchema.StringAttribute{
-				Computed:    true,
-				Description: "The unique identifier for the target destination within the Fivetran system.",
-			},
-		},
+		Attributes: fingerprintCertificateDestinationSchema().GetDatasourceSchema(),
 		Blocks: map[string]datasourceSchema.Block{
 			"certificates": certificateDatasourceItem(),
 		},

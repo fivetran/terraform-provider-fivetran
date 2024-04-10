@@ -98,6 +98,8 @@ func TestDataSourceDestinationCertificatesMock(t *testing.T) {
 							tfmock.AssertEqual(t, getHandler.Interactions, 4)
 							return nil
 						},
+						resource.TestCheckResourceAttr("data.fivetran_destination_certificates.test", "id", "destination_id"),
+						resource.TestCheckResourceAttr("data.fivetran_destination_certificates.test", "destination_id", "destination_id"),
 						resource.TestCheckResourceAttr("data.fivetran_destination_certificates.test", "certificates.#", "4"),
 						resource.TestCheckResourceAttr("data.fivetran_destination_certificates.test", "certificates.0.hash", "hash0"),
 						resource.TestCheckResourceAttr("data.fivetran_destination_certificates.test", "certificates.0.name", "name0"),
