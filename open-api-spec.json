@@ -11002,6 +11002,7 @@
             "15five": "#/components/schemas/15five_NewConnectorRequestV1",
             "360learning": "#/components/schemas/360learning_NewConnectorRequestV1",
             "6sense": "#/components/schemas/6sense_NewConnectorRequestV1",
+            "7shifts": "#/components/schemas/7shifts_NewConnectorRequestV1",
             "absorb_lms": "#/components/schemas/absorb_lms_NewConnectorRequestV1",
             "activecampaign": "#/components/schemas/activecampaign_NewConnectorRequestV1",
             "acumatica": "#/components/schemas/acumatica_NewConnectorRequestV1",
@@ -11109,6 +11110,7 @@
             "codefresh": "#/components/schemas/codefresh_NewConnectorRequestV1",
             "collibra": "#/components/schemas/collibra_NewConnectorRequestV1",
             "column": "#/components/schemas/column_NewConnectorRequestV1",
+            "commercetools": "#/components/schemas/commercetools_NewConnectorRequestV1",
             "concord": "#/components/schemas/concord_NewConnectorRequestV1",
             "concur": "#/components/schemas/concur_NewConnectorRequestV1",
             "confluence": "#/components/schemas/confluence_NewConnectorRequestV1",
@@ -11189,6 +11191,7 @@
             "fullstory": "#/components/schemas/fullstory_NewConnectorRequestV1",
             "g2": "#/components/schemas/g2_NewConnectorRequestV1",
             "gainsight_customer_success": "#/components/schemas/gainsight_customer_success_NewConnectorRequestV1",
+            "gainsight_product_experience": "#/components/schemas/gainsight_product_experience_NewConnectorRequestV1",
             "gcs": "#/components/schemas/gcs_NewConnectorRequestV1",
             "gem": "#/components/schemas/gem_NewConnectorRequestV1",
             "genesys": "#/components/schemas/genesys_NewConnectorRequestV1",
@@ -11330,6 +11333,7 @@
             "ometria": "#/components/schemas/ometria_NewConnectorRequestV1",
             "on24": "#/components/schemas/on24_NewConnectorRequestV1",
             "one_drive": "#/components/schemas/one_drive_NewConnectorRequestV1",
+            "open_data_dc": "#/components/schemas/open_data_dc_NewConnectorRequestV1",
             "open_exchange_rates": "#/components/schemas/open_exchange_rates_NewConnectorRequestV1",
             "opendistro": "#/components/schemas/opendistro_NewConnectorRequestV1",
             "opensearch": "#/components/schemas/opensearch_NewConnectorRequestV1",
@@ -11488,10 +11492,12 @@
             "teads": "#/components/schemas/teads_NewConnectorRequestV1",
             "teamwork": "#/components/schemas/teamwork_NewConnectorRequestV1",
             "tempo": "#/components/schemas/tempo_NewConnectorRequestV1",
+            "testrail": "#/components/schemas/testrail_NewConnectorRequestV1",
             "the_trade_desk": "#/components/schemas/the_trade_desk_NewConnectorRequestV1",
             "thinkific": "#/components/schemas/thinkific_NewConnectorRequestV1",
             "tiktok_ads": "#/components/schemas/tiktok_ads_NewConnectorRequestV1",
             "toggl_track": "#/components/schemas/toggl_track_NewConnectorRequestV1",
+            "totango": "#/components/schemas/totango_NewConnectorRequestV1",
             "transcend": "#/components/schemas/transcend_NewConnectorRequestV1",
             "trelica": "#/components/schemas/trelica_NewConnectorRequestV1",
             "trello": "#/components/schemas/trello_NewConnectorRequestV1",
@@ -11888,6 +11894,7 @@
             "15five": "#/components/schemas/15five_ConnectorResponseV1",
             "360learning": "#/components/schemas/360learning_ConnectorResponseV1",
             "6sense": "#/components/schemas/6sense_ConnectorResponseV1",
+            "7shifts": "#/components/schemas/7shifts_ConnectorResponseV1",
             "absorb_lms": "#/components/schemas/absorb_lms_ConnectorResponseV1",
             "activecampaign": "#/components/schemas/activecampaign_ConnectorResponseV1",
             "acumatica": "#/components/schemas/acumatica_ConnectorResponseV1",
@@ -11995,6 +12002,7 @@
             "codefresh": "#/components/schemas/codefresh_ConnectorResponseV1",
             "collibra": "#/components/schemas/collibra_ConnectorResponseV1",
             "column": "#/components/schemas/column_ConnectorResponseV1",
+            "commercetools": "#/components/schemas/commercetools_ConnectorResponseV1",
             "concord": "#/components/schemas/concord_ConnectorResponseV1",
             "concur": "#/components/schemas/concur_ConnectorResponseV1",
             "confluence": "#/components/schemas/confluence_ConnectorResponseV1",
@@ -12075,6 +12083,7 @@
             "fullstory": "#/components/schemas/fullstory_ConnectorResponseV1",
             "g2": "#/components/schemas/g2_ConnectorResponseV1",
             "gainsight_customer_success": "#/components/schemas/gainsight_customer_success_ConnectorResponseV1",
+            "gainsight_product_experience": "#/components/schemas/gainsight_product_experience_ConnectorResponseV1",
             "gcs": "#/components/schemas/gcs_ConnectorResponseV1",
             "gem": "#/components/schemas/gem_ConnectorResponseV1",
             "genesys": "#/components/schemas/genesys_ConnectorResponseV1",
@@ -12216,6 +12225,7 @@
             "ometria": "#/components/schemas/ometria_ConnectorResponseV1",
             "on24": "#/components/schemas/on24_ConnectorResponseV1",
             "one_drive": "#/components/schemas/one_drive_ConnectorResponseV1",
+            "open_data_dc": "#/components/schemas/open_data_dc_ConnectorResponseV1",
             "open_exchange_rates": "#/components/schemas/open_exchange_rates_ConnectorResponseV1",
             "opendistro": "#/components/schemas/opendistro_ConnectorResponseV1",
             "opensearch": "#/components/schemas/opensearch_ConnectorResponseV1",
@@ -12374,10 +12384,12 @@
             "teads": "#/components/schemas/teads_ConnectorResponseV1",
             "teamwork": "#/components/schemas/teamwork_ConnectorResponseV1",
             "tempo": "#/components/schemas/tempo_ConnectorResponseV1",
+            "testrail": "#/components/schemas/testrail_ConnectorResponseV1",
             "the_trade_desk": "#/components/schemas/the_trade_desk_ConnectorResponseV1",
             "thinkific": "#/components/schemas/thinkific_ConnectorResponseV1",
             "tiktok_ads": "#/components/schemas/tiktok_ads_ConnectorResponseV1",
             "toggl_track": "#/components/schemas/toggl_track_ConnectorResponseV1",
+            "totango": "#/components/schemas/totango_ConnectorResponseV1",
             "transcend": "#/components/schemas/transcend_ConnectorResponseV1",
             "trelica": "#/components/schemas/trelica_ConnectorResponseV1",
             "trello": "#/components/schemas/trello_ConnectorResponseV1",
@@ -13147,7 +13159,7 @@
           },
           "time_of_day": {
             "type": "string",
-            "description": "Time of day",
+            "description": "The time of the day the transformation should be launched at. The following values are supported: '00:00', '00:30', '01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30'",
             "example": null
           }
         },
@@ -15370,8 +15382,7 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel",
-                  "ProxyAgent"
+                  "SshTunnel"
                 ]
               },
               "port": {
@@ -15762,8 +15773,7 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel",
-                  "ProxyAgent"
+                  "SshTunnel"
                 ]
               },
               "port": {
@@ -17130,8 +17140,7 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel",
-                  "ProxyAgent"
+                  "SshTunnel"
                 ]
               },
               "port": {
@@ -18692,6 +18701,42 @@
           },
           {
             "$ref": "#/components/schemas/6sense_config_V1"
+          }
+        ]
+      },
+      "7shifts_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your 7shifts access token.",
+                "format": "password",
+                "example": null
+              },
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "7shifts_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/7shifts_config_V1"
           }
         ]
       },
@@ -26242,6 +26287,60 @@
           }
         ]
       },
+      "commercetools_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "project_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your commercetools project key.",
+                "example": null
+              },
+              "host": {
+                "title": "",
+                "type": "string",
+                "description": "Your commercetools host.",
+                "example": null
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your commercetools client secret.",
+                "format": "password",
+                "example": null
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your commercetools client ID.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "commercetools_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/commercetools_config_V1"
+          }
+        ]
+      },
       "concord_config_V1": {
         "properties": {
           "config": {
@@ -27983,12 +28082,12 @@
               "application_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Datadog Application key.",
+                "description": "Your Datadog application key.",
                 "example": null
               },
               "host_name": {
                 "type": "object",
-                "description": "Your Datadog Host name.",
+                "description": "Your Datadog host name.",
                 "example": null,
                 "enum": [
                   "com",
@@ -32169,16 +32268,6 @@
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
                 "example": null
               },
-              "append_file_option": {
-                "title": "",
-                "type": "object",
-                "description": "If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
-                "example": null,
-                "enum": [
-                  "upsert_file",
-                  "append_file"
-                ]
-              },
               "prefix": {
                 "title": "",
                 "type": "string",
@@ -32195,12 +32284,6 @@
                 "title": "",
                 "type": "boolean",
                 "description": "Whether the server supports FTPS.",
-                "example": null
-              },
-              "escape_char": {
-                "title": "",
-                "type": "string",
-                "description": "If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
                 "example": null
               },
               "json_delivery_mode": {
@@ -32220,23 +32303,16 @@
                 "format": "int32",
                 "example": null
               },
-              "line_separator": {
-                "title": "",
-                "type": "string",
-                "description": "You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.",
-                "example": null
-              },
-              "password": {
-                "title": "",
-                "type": "string",
-                "description": "FTP password.",
-                "format": "password",
-                "example": null
-              },
               "empty_header": {
                 "title": "",
                 "type": "boolean",
                 "description": "<strong>Optional.</strong> If your CSV generating software doesn't provide header line for the documents, Fivetran can generate the generic column names and sync data rows with them.",
+                "example": null
+              },
+              "use_pgp_encryption_options": {
+                "title": "",
+                "type": "boolean",
+                "description": "Set to `true` if files are encrypted using PGP in the S3 bucket. Default value: `false`.",
                 "example": null
               },
               "skip_before": {
@@ -32246,17 +32322,23 @@
                 "format": "int32",
                 "example": null
               },
-              "null_sequence": {
+              "password": {
                 "title": "",
                 "type": "string",
-                "description": "If your CSVs use a special value indicating null, you can specify it here.",
+                "description": "FTP password.",
+                "format": "password",
                 "example": null
               },
-              "port": {
+              "signer_public_key": {
                 "title": "",
-                "type": "integer",
-                "description": "FTP port.",
-                "format": "int32",
+                "type": "string",
+                "description": "The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.",
+                "example": null
+              },
+              "delimiter": {
+                "title": "",
+                "type": "string",
+                "description": "You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.",
                 "example": null
               },
               "file_type": {
@@ -32276,12 +32358,6 @@
                   "parquet"
                 ]
               },
-              "delimiter": {
-                "title": "",
-                "type": "string",
-                "description": "You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.",
-                "example": null
-              },
               "host": {
                 "title": "",
                 "type": "string",
@@ -32297,6 +32373,60 @@
                   "fail",
                   "skip"
                 ]
+              },
+              "table": {
+                "title": "Destination table",
+                "type": "string",
+                "description": "Destination table. Table is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "archive_pattern": {
+                "title": "",
+                "type": "string",
+                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
+                "example": null
+              },
+              "pgp_secret_key": {
+                "title": "",
+                "type": "string",
+                "description": "The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.",
+                "format": "password",
+                "example": null
+              },
+              "append_file_option": {
+                "title": "",
+                "type": "object",
+                "description": "If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
+                "example": null,
+                "enum": [
+                  "upsert_file",
+                  "append_file"
+                ]
+              },
+              "escape_char": {
+                "title": "",
+                "type": "string",
+                "description": "If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
+                "example": null
+              },
+              "line_separator": {
+                "title": "",
+                "type": "string",
+                "description": "You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.",
+                "example": null
+              },
+              "null_sequence": {
+                "title": "",
+                "type": "string",
+                "description": "If your CSVs use a special value indicating null, you can specify it here.",
+                "example": null
+              },
+              "port": {
+                "title": "",
+                "type": "integer",
+                "description": "FTP port.",
+                "format": "int32",
+                "example": null
               },
               "compression": {
                 "title": "",
@@ -32321,16 +32451,11 @@
                 "description": "FTP user.",
                 "example": null
               },
-              "table": {
-                "title": "Destination table",
-                "type": "string",
-                "description": "Destination table. Table is permanent and cannot be changed after connection creation",
-                "example": null
-              },
-              "archive_pattern": {
+              "pgp_pass_phrase": {
                 "title": "",
                 "type": "string",
-                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
+                "description": "The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.",
+                "format": "password",
                 "example": null
               }
             },
@@ -32462,6 +32587,52 @@
           },
           {
             "$ref": "#/components/schemas/gainsight_customer_success_config_V1"
+          }
+        ]
+      },
+      "gainsight_product_experience_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Gainsight Product Experience API Key.",
+                "format": "password",
+                "example": null
+              },
+              "sub_domain": {
+                "type": "object",
+                "description": "Your Gainsight Product Experience subdomain.",
+                "example": null,
+                "enum": [
+                  "https://api-us2.aptrinsic.com",
+                  "https://api-eu.aptrinsic.com",
+                  "https://api.aptrinsic.com"
+                ]
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "gainsight_product_experience_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/gainsight_product_experience_config_V1"
           }
         ]
       },
@@ -35151,24 +35322,24 @@
                     "attributes": {
                       "title": "",
                       "type": "array",
-                      "description": "The report dimensions included to sync.",
+                      "description": "The report attributes included to sync.",
                       "example": null,
                       "items": {
                         "title": "",
                         "type": "string",
-                        "description": "The report dimensions included to sync.",
+                        "description": "The report attributes included to sync.",
                         "example": null
                       }
                     },
                     "metrics": {
                       "title": "",
                       "type": "array",
-                      "description": "The report dimensions included to sync.",
+                      "description": "The report metrics included to sync.",
                       "example": null,
                       "items": {
                         "title": "",
                         "type": "string",
-                        "description": "The report dimensions included to sync.",
+                        "description": "The report metrics included to sync.",
                         "example": null
                       }
                     },
@@ -43204,6 +43375,35 @@
           }
         ]
       },
+      "open_data_dc_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "open_data_dc_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/open_data_dc_config_V1"
+          }
+        ]
+      },
       "open_exchange_rates_config_V1": {
         "properties": {
           "config": {
@@ -51090,7 +51290,7 @@
               "domain": {
                 "title": "",
                 "type": "string",
-                "description": "Your Shopware Domain.",
+                "description": "Your Shopware domain.",
                 "example": null
               },
               "username": {
@@ -54246,6 +54446,53 @@
           }
         ]
       },
+      "testrail_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your TestRail API key.",
+                "format": "password",
+                "example": null
+              },
+              "sub_domain": {
+                "title": "",
+                "type": "string",
+                "example": null
+              },
+              "username": {
+                "title": "",
+                "type": "string",
+                "description": "Your TestRail API username.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "testrail_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/testrail_config_V1"
+          }
+        ]
+      },
       "the_trade_desk_config_V1": {
         "properties": {
           "config": {
@@ -54576,6 +54823,51 @@
           },
           {
             "$ref": "#/components/schemas/toggl_track_config_V1"
+          }
+        ]
+      },
+      "totango_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "sub_domain": {
+                "type": "object",
+                "description": "Your Totango Subdomain.",
+                "example": null,
+                "enum": [
+                  "api-eu1",
+                  "api"
+                ]
+              },
+              "personal_access_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your Totango Personal Access token.",
+                "format": "password",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "totango_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/totango_config_V1"
           }
         ]
       },
@@ -58487,6 +58779,17 @@
           }
         ]
       },
+      "7shifts_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/7shifts_config_V1"
+          }
+        ]
+      },
       "absorb_lms_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -59664,6 +59967,17 @@
           }
         ]
       },
+      "commercetools_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/commercetools_config_V1"
+          }
+        ]
+      },
       "concord_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -60541,6 +60855,17 @@
           },
           {
             "$ref": "#/components/schemas/gainsight_customer_success_config_V1"
+          }
+        ]
+      },
+      "gainsight_product_experience_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/gainsight_product_experience_config_V1"
           }
         ]
       },
@@ -62092,6 +62417,17 @@
           },
           {
             "$ref": "#/components/schemas/one_drive_config_V1"
+          }
+        ]
+      },
+      "open_data_dc_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/open_data_dc_config_V1"
           }
         ]
       },
@@ -63833,6 +64169,17 @@
           }
         ]
       },
+      "testrail_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/testrail_config_V1"
+          }
+        ]
+      },
       "the_trade_desk_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -63874,6 +64221,17 @@
           },
           {
             "$ref": "#/components/schemas/toggl_track_config_V1"
+          }
+        ]
+      },
+      "totango_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/totango_config_V1"
           }
         ]
       },

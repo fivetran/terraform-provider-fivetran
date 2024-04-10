@@ -5,10 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.20...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.21...HEAD)
+
+## [1.1.21](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.20...v1.1.21)
 
 ## Added
 - Output warnings with test details in case if setup tests for instance (connector, destination or external_logger) are failing.
+- New connector types supported:
+    - Supported service: `7shifts`
+    - Supported service: `commercetools`
+    - Supported service: `gainsight_product_experience`
+    - Supported service: `open_data_dc`
+    - Supported service: `testrail`
+    - Supported service: `totango`
+- New connector config fields supported:
+    - Added field `fivetran_connector.config.project_key` for services: `commercetools`.
+    
+## Fixed
+- Issue with sensitive fields for different connectors (same field might be sensitive or not for different connector types)
+- Issue with sensitive collections (`pats` for `github` connector)
 
 ## [1.1.20](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.19...v1.1.20)
 
