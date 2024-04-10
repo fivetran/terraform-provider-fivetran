@@ -3,9 +3,9 @@ package resources_test
 import (
 	"net/http"
 	"testing"
-	
-	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
+
 	"github.com/fivetran/go-fivetran/tests/mock"
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
@@ -134,7 +134,6 @@ func TestResourceDestinationCertificatesMock(t *testing.T) {
 			},
 		)
 
-		deleteHandlers = append(deleteHandlers, createDeleteHandler("hash0"))
 		deleteHandlers = append(deleteHandlers, createDeleteHandler("hash1"))
 		deleteHandlers = append(deleteHandlers, createDeleteHandler("hash2"))
 		deleteHandlers = append(deleteHandlers, createDeleteHandler("hash3"))
@@ -145,9 +144,9 @@ func TestResourceDestinationCertificatesMock(t *testing.T) {
 			PreCheck:                 setup,
 			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, deleteHandlers[0].Interactions, 1)
 				tfmock.AssertEqual(t, deleteHandlers[1].Interactions, 1)
 				tfmock.AssertEqual(t, deleteHandlers[2].Interactions, 1)
-				tfmock.AssertEqual(t, deleteHandlers[3].Interactions, 1)
 				return nil
 			},
 			Steps: []resource.TestStep{
@@ -215,7 +214,7 @@ func TestResourceDestinationCertificatesMock(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						func(s *terraform.State) error {
 							tfmock.AssertEqual(t, postHandler.Interactions, 3)
-							tfmock.AssertEqual(t, deleteHandlers[2].Interactions, 1)
+							tfmock.AssertEqual(t, deleteHandlers[1].Interactions, 1)
 							tfmock.AssertEqual(t, getHandler.Interactions, 4)
 							return nil
 						},

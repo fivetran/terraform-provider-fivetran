@@ -43,15 +43,15 @@ func (d *connectorCertificates) Read(ctx context.Context, req datasource.ReadReq
 	var data model.CertificatesConnector
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
-    listResponse, err := data.ReadFromSource(ctx, d.GetClient(), data.Id.ValueString())
-    if err != nil {
-        resp.Diagnostics.AddError(
-            "Unable to Read Connector Certificates DataSource.",
-            fmt.Sprintf("%v; code: %v", err, listResponse.Code),
-        )
+	listResponse, err := core.ReadCertificatesFromUpstream(ctx, d.GetClient(), data.Id.ValueString(), "connector")
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to Read Connector Certificates DataSource.",
+			fmt.Sprintf("%v; code: %v", err, listResponse.Code),
+		)
 
-        return
-    }
+		return
+	}
 
 	data.ReadFromResponse(ctx, listResponse)
 

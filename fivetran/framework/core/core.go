@@ -78,6 +78,7 @@ type SchemaField struct {
 	ForceNew       bool
 	DatasourceOnly bool
 	ResourceOnly   bool
+	Sensitive      bool
 
 	Readonly    bool
 	Description string
@@ -115,6 +116,7 @@ func (s SchemaField) getDatasourceSchemaAttribute() datasourceSchema.Attribute {
 		result = datasourceSchema.StringAttribute{
 			Required:    s.IsId,
 			Computed:    !s.IsId,
+			Sensitive:   s.Sensitive,
 			Description: s.Description,
 		}
 	case Boolean:
@@ -140,9 +142,10 @@ func (s SchemaField) getResourceSchemaAttribute() resourceSchema.Attribute {
 	case String:
 		var stringAttribute = resourceSchema.StringAttribute{
 			Required:    s.Required,
-			Computed:    (s.ValueType == StringEnum && !s.Required) || s.Readonly || s.IsId,
+			Computed:    (s.ValueType == StringEnum && !s.Required) || s.Readonly || (s.IsId && !s.Required),
 			Optional:    !s.Required && !s.Readonly && !s.IsId,
 			Description: s.Description,
+			Sensitive:   s.Sensitive,
 		}
 		if s.ForceNew {
 			stringAttribute.PlanModifiers = []planmodifier.String{
