@@ -6093,7 +6093,7 @@
    },
    "pats": {
       "readonly": false,
-      "sensitive": false,
+      "sensitive": true,
       "nullable": true,
       "type": "string_list",
       "fields": null,

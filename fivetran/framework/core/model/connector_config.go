@@ -245,6 +245,21 @@ func getValue(
 	}
 
 	if collectionType, ok := fieldType.(attr.TypeWithElementType); ok {
+		if currentField.GetIsSensitive(service) && local != nil {
+			items := []attr.Value{}
+			for _, v := range local.([]interface{}) {
+				items = append(items,
+					getValue(collectionType.ElementType(), v, v, fieldsMap, currentField, service),
+				)
+			}
+			if _, ok := collectionType.(basetypes.SetTypable); ok {
+				setValue, _ := types.SetValue(collectionType.ElementType(), items)
+				return setValue
+			} else {
+				listValue, _ := types.ListValue(collectionType.ElementType(), items)
+				return listValue
+			}
+		}
 		if value == nil {
 			if _, ok := collectionType.(basetypes.SetTypable); ok {
 				return types.SetNull(collectionType.ElementType())

@@ -568,6 +568,86 @@ func TestConnectorSubFieldsSensitiveMock(t *testing.T) {
 	)
 }
 
+func TestConnectorCollectionSensitiveMock(t *testing.T) {
+	step1 :=
+		resource.TestStep{Config: `
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+
+			group_id           = "group_id"
+			service            = "github"
+			run_setup_tests    = true
+			trust_fingerprints = true
+			trust_certificates = true
+		  
+			destination_schema {
+			  name = "schema_name"
+			}
+		  
+			config {
+			  pats = ["a", "b"]
+			}
+		  }`,
+
+			Check: resource.ComposeAggregateTestCheckFunc(
+				resource.TestCheckResourceAttr("fivetran_connector.test_connector", "id", "connector_id"),
+			),
+		}
+
+	var responseData map[string]interface{}
+
+	preCheck := func() {
+		tfmock.MockClient().Reset()
+
+		//getHandler =
+		tfmock.MockClient().When(http.MethodGet, "/v1/connectors/connector_id").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				if responseData == nil {
+					return tfmock.FivetranSuccessResponse(t, req, http.StatusNotFound, "NotFound", nil), nil
+				}
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
+			},
+		)
+
+		tfmock.MockClient().When(http.MethodDelete, "/v1/connectors/connector_id").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", nil), nil
+			},
+		)
+
+		tfmock.MockClient().When(http.MethodPost, "/v1/connectors").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				responseJson := createConnectorTestResponseJsonMock(
+					"connector_id",
+					"group_id",
+					"github",
+					"schema_name",
+					`{
+						"pats": ["******", "******"]
+					}`,
+				)
+
+				responseData = tfmock.CreateMapFromJsonString(t, responseJson)
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", responseData), nil
+			},
+		)
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck:                 preCheck,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
+			},
+		},
+	)
+}
+
 func TestConnectorNonNullableFieldNotConfiguredMock(t *testing.T) {
 	step1 :=
 		resource.TestStep{Config: `
