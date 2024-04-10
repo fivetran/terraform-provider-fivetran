@@ -1,4 +1,1 @@
-- Added field `fivetran_connector.config.authentication_method` for services: `adobe_analytics`.
-- Added field `fivetran_connector.config.client_public_certificate` for services: `aurora_postgres`, `azure_postgres`, `google_cloud_postgresql`, `heroku_postgres`, `postgres`, `postgres_rds`.
-- Added field `fivetran_connector.config.client_private_key` for services: `postgres_rds`, `aurora_postgres`, `azure_postgres`, `google_cloud_postgresql`, `heroku_postgres`, `postgres`.
-- Added field `fivetran_connector.config.api_password` for services: `duoplane`.
+- Added field `fivetran_connector.config.project_key` for services: `commercetools`.

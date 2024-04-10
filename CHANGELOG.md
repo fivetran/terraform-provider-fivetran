@@ -11,7 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Added
 - Output warnings with test details in case if setup tests for instance (connector, destination or external_logger) are failing.
-
+- New connector types supported:
+    - Supported service: `7shifts`
+    - Supported service: `commercetools`
+    - Supported service: `gainsight_product_experience`
+    - Supported service: `open_data_dc`
+    - Supported service: `testrail`
+    - Supported service: `totango`
+- New connector config fields supported:
+    - Added field `fivetran_connector.config.project_key` for services: `commercetools`.
+    
 ## Fixed
 - Issue with sensitive fields for different connectors (same field might be sensitive or not for different connector types)
 - Issue with sensitive collections (`pats` for `github` connector)

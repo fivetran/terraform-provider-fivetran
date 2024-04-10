@@ -1,6 +1,7 @@
 15five
 360learning
 6sense
+7shifts
 absorb_lms
 activecampaign
 acumatica
@@ -108,6 +109,7 @@ coassemble
 codefresh
 collibra
 column
+commercetools
 concord
 concur
 confluence
@@ -188,6 +190,7 @@ ftp
 fullstory
 g2
 gainsight_customer_success
+gainsight_product_experience
 gcs
 gem
 genesys
@@ -329,6 +332,7 @@ okta
 ometria
 on24
 one_drive
+open_data_dc
 open_exchange_rates
 opendistro
 opensearch
@@ -487,10 +491,12 @@ talkwalker
 teads
 teamwork
 tempo
+testrail
 the_trade_desk
 thinkific
 tiktok_ads
 toggl_track
+totango
 transcend
 trelica
 trello

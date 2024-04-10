@@ -182,6 +182,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "7shifts": "Your 7shifts access token.",
          "attio": "Your Attio bearer token",
          "big_commerce": "API access token of your store.",
          "bitly": "Your Bitly access token.",
@@ -1071,6 +1072,7 @@
          "freshteam": "Your Freshteam API key.",
          "friendbuy": "Your Friendbuy API key.",
          "fullstory": "Your Fullstory API key.",
+         "gainsight_product_experience": "Your Gainsight Product Experience API Key.",
          "gem": "Your Gem API key.",
          "gorgias": "Your Gorgias API key.",
          "greenhouse": "Your Greenhouse API key.",
@@ -1151,6 +1153,7 @@
          "subscript": "Your Subscript API key.",
          "survicate": "",
          "teads": "Your Teads API key.",
+         "testrail": "Your TestRail API key.",
          "transcend": "Your Transcend API Key.",
          "trello": "Your TRELLO api key.",
          "uppromote": "Your UpPromote API key.",
@@ -1546,7 +1549,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "datadog": "Your Datadog Application key.",
+         "datadog": "Your Datadog application key.",
          "dear": "Your Dear Application key."
       },
       "api_field": ""
@@ -2254,6 +2257,7 @@
          "billing_platform": "Your BillingPlatform client ID.",
          "brightcove": "Your Brightcove client ID.",
          "castor_edc": "Your Castor EDC client Id.",
+         "commercetools": "Your commercetools client ID.",
          "concur": "The SAP Concur Client ID.",
          "coupa": "Your Coupa client_id",
          "criteo": "Your Criteo Client ID.",
@@ -2413,6 +2417,7 @@
          "billing_platform": "Your BillingPlatform client secret.",
          "brightcove": "Your Brightcove client secret.",
          "castor_edc": "Your Castor EDC Client Secret.",
+         "commercetools": "Your commercetools client secret.",
          "concur": "The SAP Concur Client secret.",
          "coupa": "Your Coupa client_id",
          "criteo": "Your Criteo client secret key.",
@@ -3847,7 +3852,7 @@
          "kustomer": "Domain is the beginning of your kustomer URL going before .kustomerapp.com, e.g. for yourcompany.kustomerapp.com the domain name is yourcompany",
          "okta": "Your Okta domain.",
          "pipedrive": "Your Pipedrive domain.",
-         "shopware": "Your Shopware Domain.",
+         "shopware": "Your Shopware domain.",
          "sistrix": "Your domain for which you want to fetch data.",
          "uservoice": "Domain of your UserVoice site. If it ends with \".uservoice.com\", you can specify just the subdomain (\"mydomain.uservoice.com\" - \"mydomain\")",
          "zendesk": "Zendesk domain.",
@@ -4701,6 +4706,7 @@
          "azure_postgres": "DB instance host or IP address.",
          "azure_sql_db": "DB instance host or IP address.",
          "azure_sql_managed_db": "DB instance host or IP address.",
+         "commercetools": "Your commercetools host.",
          "db2": "",
          "db2i_hva": "A host address of the primary node. It should be a DB instance host/IP address with a port number.",
          "db2i_sap_hva": "DB instance host or IP address.",
@@ -4778,7 +4784,7 @@
       "item_type": {},
       "description": {
          "coassemble": "Your Coassemble Hostname.",
-         "datadog": "Your Datadog Host name."
+         "datadog": "Your Datadog host name."
       },
       "api_field": ""
    },
@@ -6200,7 +6206,8 @@
       "item_type": {},
       "description": {
          "cj_commission_detail": "Your CJ Commission Detail personal access token.",
-         "harvest": "Your Harvest Personal Access Token."
+         "harvest": "Your Harvest Personal Access Token.",
+         "totango": "Your Totango Personal Access token."
       },
       "api_field": ""
    },
@@ -6228,6 +6235,7 @@
       "item_type": {},
       "description": {
          "azure_blob_storage": "The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.",
+         "ftp": "The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.",
          "s3": "The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.",
          "sftp": "The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.",
          "wasabi_cloud_storage": "The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`."
@@ -6244,6 +6252,7 @@
       "item_type": {},
       "description": {
          "azure_blob_storage": "The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.",
+         "ftp": "The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.",
          "s3": "The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.",
          "sftp": "The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.",
          "wasabi_cloud_storage": "The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`."
@@ -6530,6 +6539,19 @@
          "bigquery_db": "BigQuery project ID",
          "google_analytics_360": "The project ID.",
          "google_analytics_4_export": "The Project ID."
+      },
+      "api_field": ""
+   },
+   "project_key": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "commercetools": "Your commercetools project key."
       },
       "api_field": ""
    },
@@ -7149,7 +7171,7 @@
                "google_search_ads_360": "string"
             },
             "description": {
-               "google_search_ads_360": "The report dimensions included to sync."
+               "google_search_ads_360": "The report attributes included to sync."
             },
             "api_field": ""
          },
@@ -7267,7 +7289,7 @@
             "description": {
                "google_analytics": "The report metrics to include into a sync.",
                "google_analytics_4": "The report metrics to include into a sync.",
-               "google_search_ads_360": "The report dimensions included to sync."
+               "google_search_ads_360": "The report metrics included to sync."
             },
             "api_field": ""
          },
@@ -7875,6 +7897,7 @@
          "15five": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "360learning": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "6sense": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "7shifts": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "absorb_lms": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "activecampaign": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "acumatica": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -7975,6 +7998,7 @@
          "codefresh": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "collibra": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "column": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "commercetools": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "concord": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "concur": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "confluence": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8052,6 +8076,7 @@
          "fullstory": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "g2": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "gainsight_customer_success": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "gainsight_product_experience": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "gcs": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "gem": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "genesys": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8179,6 +8204,7 @@
          "ometria": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "on24": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "one_drive": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "open_data_dc": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "open_exchange_rates": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "opendistro": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "opensearch": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8319,10 +8345,12 @@
          "teads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "teamwork": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "tempo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "testrail": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "the_trade_desk": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "thinkific": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "tiktok_ads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "toggl_track": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "totango": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "transcend": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "trelica": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "trello": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -9049,6 +9077,7 @@
       "item_type": {},
       "description": {
          "azure_blob_storage": "The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.",
+         "ftp": "The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.",
          "s3": "The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.",
          "sftp": "The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.",
          "wasabi_cloud_storage": "The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed."
@@ -9312,6 +9341,7 @@
          "fountain": "Your Fountain subdomain.",
          "freshchat": "Your Freshchat Sub Domain",
          "gainsight_customer_success": "The subdomain of your Gainsight account.",
+         "gainsight_product_experience": "Your Gainsight Product Experience subdomain.",
          "genesys": "Your Genesys subdomain.",
          "green_power_monitor": "Your GreenPowerMonitor subdomain.",
          "ilevel": "",
@@ -9340,7 +9370,9 @@
          "sonarqube": "Your Sonarqube subdomain.",
          "starrez": "Your StarRez subdomain",
          "tempo": "Your Tempo subdomain.",
+         "testrail": "",
          "thinkific": "Your Thinkific subdomain.",
+         "totango": "Your Totango Subdomain.",
          "upland": "Your Upland Software subDomain.",
          "wordpress": "Your WordPress subdomain.",
          "workable": "Your Workable Subdomain.",
@@ -10498,6 +10530,7 @@
       "item_type": {},
       "description": {
          "azure_blob_storage": "Set to `true` if files present in the Azure Blob Storage container are encrypted using PGP. Default value: `false`.",
+         "ftp": "Set to `true` if files are encrypted using PGP in the S3 bucket. Default value: `false`.",
          "s3": "Set to `true` if files are encrypted using PGP in the S3 bucket. Default value: `false`.",
          "sftp": "Set to `true` if files present in SFTP server are encrypted using PGP. Default value: `false`.",
          "wasabi_cloud_storage": "Set to `true` if files are encrypted using PGP in the Wasabi Cloud Storage bucket. Default value: `false`."
@@ -10757,6 +10790,7 @@
          "starrez": "Your StarRez API username",
          "stylight": "Your Stylight Username.",
          "teamwork": "Your Teamwork username.",
+         "testrail": "Your TestRail API username.",
          "ukg_pro": "Your UKG Pro username.",
          "unicommerce": "Your uniware login username.",
          "upland": "Your Upland Software Username.",

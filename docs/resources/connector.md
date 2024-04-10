@@ -87,7 +87,7 @@ resource "fivetran_connector" "amplitude" {
 
 Optional:
 
-- `access_token` (String) Field usage depends on `service` value: 
+- `access_token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `autodesk_bim_360`: Your Autodesk BIM 360 Access Token.
 	- Service `azure_sql_db`: The long-lived Access token carries the information necessary to access API resources.
 	- Service `azure_sql_managed_db`: The long-lived Access token carries the information necessary to access API resources.
@@ -151,7 +151,7 @@ Optional:
 	- Service `dynamics_365`: Previous `Refresh token` of your application.
 - `realm_id` (String) Field usage depends on `service` value: 
 	- Service `quickbooks`: `Realm ID` of your QuickBooks application.
-- `refresh_token` (String) Field usage depends on `service` value: 
+- `refresh_token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `adroll`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `amazon_ads`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `amazon_selling_partner`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
@@ -220,7 +220,7 @@ Optional:
 Optional:
 
 - `client_id` (String)
-- `client_secret` (String)
+- `client_secret` (String, Sensitive)
 - `developer_token` (String)
 - `user_agent` (String)
 
@@ -233,7 +233,7 @@ Optional:
 
 - `abs_connection_method` (String) Field usage depends on `service` value: 
 	- Service `adobe_analytics_data_feed`: Azure Blob Storage connection method
-- `abs_connection_string` (String) Field usage depends on `service` value: 
+- `abs_connection_string` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `adobe_analytics_data_feed`: Azure Blob Storage connection string.
 	- Service `braze`: Connection String
 - `abs_container_address` (String) Field usage depends on `service` value: 
@@ -251,11 +251,11 @@ Optional:
 	- Service `adobe_analytics_data_feed`: Azure Blob Storage public key
 - `academy_id` (String) Field usage depends on `service` value: 
 	- Service `workramp`: Your WorkRamp academy ID.
-- `access_key` (String) Field usage depends on `service` value: 
+- `access_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `gainsight_customer_success`: The access key for API authentication.
 	- Service `gongio`: Your Gongio Access key.
 	- Service `retailnext`: Your RetailNext access key.
-- `access_key_id` (String) Field usage depends on `service` value: 
+- `access_key_id` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `appsflyer`: Your AWS access key ID.
 	- Service `aws_cost_report`: Access Key ID
 	- Service `checkout`: Your Checkout.com access key ID.
@@ -268,6 +268,7 @@ Optional:
 	- Service `s3`: Access Key Secret
 	- Service `wasabi_cloud_storage`: Access Key Secret
 - `access_token` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `7shifts`: Your 7shifts access token.
 	- Service `attio`: Your Attio bearer token
 	- Service `big_commerce`: API access token of your store.
 	- Service `bitly`: Your Bitly access token.
@@ -548,6 +549,7 @@ Optional:
 	- Service `freshteam`: Your Freshteam API key.
 	- Service `friendbuy`: Your Friendbuy API key.
 	- Service `fullstory`: Your Fullstory API key.
+	- Service `gainsight_product_experience`: Your Gainsight Product Experience API Key.
 	- Service `gem`: Your Gem API key.
 	- Service `gorgias`: Your Gorgias API key.
 	- Service `greenhouse`: Your Greenhouse API key.
@@ -625,6 +627,7 @@ Optional:
 	- Service `stripe_test`: Restricted API key
 	- Service `subscript`: Your Subscript API key.
 	- Service `teads`: Your Teads API key.
+	- Service `testrail`: Your TestRail API key.
 	- Service `transcend`: Your Transcend API Key.
 	- Service `trello`: Your TRELLO api key.
 	- Service `uppromote`: Your UpPromote API key.
@@ -719,7 +722,7 @@ Optional:
 - `app_ids` (Set of String) Field usage depends on `service` value: 
 	- Service `pendo`: Specific App IDs to sync. Must be populated if `sync_mode` is set to `SpecificAppIds`.
 - `app_ids_appsflyer` (Block Set) (see [below for nested schema](#nestedblock--config--app_ids_appsflyer))
-- `app_key` (String) Field usage depends on `service` value: 
+- `app_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `loopio`: Your Loopio App Key.
 	- Service `servicetitan`: Your ServiceTitan app key.
 	- Service `yotpo`: Your Yotpo App Key
@@ -744,7 +747,7 @@ Optional:
 - `application_id` (String) Field usage depends on `service` value: 
 	- Service `algolia`: Your Algolia application ID.
 - `application_key` (String, Sensitive) Field usage depends on `service` value: 
-	- Service `datadog`: Your Datadog Application key.
+	- Service `datadog`: Your Datadog application key.
 	- Service `dear`: Your Dear Application key.
 - `apps` (Set of String) Field usage depends on `service` value: 
 	- Service `itunes_connect`: Specific apps to sync. Must be populated if `app_sync_mode` is set to `SpecificApps`.
@@ -887,7 +890,7 @@ Optional:
 	- Service `birdeye`: Your Birdeye Business ID.
 - `business_unit_id` (String) Field usage depends on `service` value: 
 	- Service `pardot`: Business Unit Id
-- `certificate` (String) Field usage depends on `service` value: 
+- `certificate` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `anaplan`: The contents of your PEM certificate file. Must be populated if `auth_mode` is set to `Certificate`.
 - `click_attribution_window` (String) Field usage depends on `service` value: 
 	- Service `facebook`: Time period to attribute conversions based on clicks. [Possible click_attribution_window values](https://fivetran.com/docs/applications/facebook-ad-insights/api-config#clickattributionwindow).
@@ -901,7 +904,7 @@ Optional:
 	- Service `heroku_kafka`: Heroku Kafka client certificate key.  Required for `TLS` security protocol.
 - `client_host` (String) Field usage depends on `service` value: 
 	- Service `ceridian_dayforce`: Your Ceridian Dayforce Client Host.
-- `client_id` (String) Field usage depends on `service` value: 
+- `client_id` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `acumatica`: Your Acumatica client ID.
 	- Service `adobe_analytics`: Client ID from the OAuth Server-to-Server or Service Account (JWT) credentials of your Adobe Project.
 	- Service `adobe_workfront`: Your Adobe Workfront client ID.
@@ -910,6 +913,7 @@ Optional:
 	- Service `billing_platform`: Your BillingPlatform client ID.
 	- Service `brightcove`: Your Brightcove client ID.
 	- Service `castor_edc`: Your Castor EDC client Id.
+	- Service `commercetools`: Your commercetools client ID.
 	- Service `concur`: The SAP Concur Client ID.
 	- Service `coupa`: Your Coupa client_id
 	- Service `criteo`: Your Criteo Client ID.
@@ -964,7 +968,7 @@ Optional:
 - `client_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `appfigures`: Your Appfigures Client Key.
 	- Service `thinkific`: Your Thinkific client key.
-- `client_name` (String) Field usage depends on `service` value: 
+- `client_name` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `destini`: Your Destini Client Name.
 	- Service `medallia`: Medallia company name
 - `client_namespace` (String) Field usage depends on `service` value: 
@@ -992,6 +996,7 @@ Optional:
 	- Service `billing_platform`: Your BillingPlatform client secret.
 	- Service `brightcove`: Your Brightcove client secret.
 	- Service `castor_edc`: Your Castor EDC Client Secret.
+	- Service `commercetools`: Your commercetools client secret.
 	- Service `concur`: The SAP Concur Client secret.
 	- Service `coupa`: Your Coupa client_id
 	- Service `criteo`: Your Criteo client secret key.
@@ -1091,7 +1096,7 @@ Optional:
 	- Service `sftp`: The connection method used to connect to SFTP Server.
 - `connection_name` (String) Field usage depends on `service` value: 
 	- Service `appsflyer`: Your Data Locker Connection Name. Default value: `data-locker-hourly/
-- `connection_string` (String) Field usage depends on `service` value: 
+- `connection_string` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: The blob storage container connection string.
 	- Service `azure_event_hub`: Connection string of the Event Hub Namespace you want to sync.
 	- Service `azure_service_bus`: The connection string used for authentication. Required if the authentication type is `ConnectionString` 
@@ -1297,7 +1302,7 @@ Optional:
 	- Service `kustomer`: Domain is the beginning of your kustomer URL going before .kustomerapp.com, e.g. for yourcompany.kustomerapp.com the domain name is yourcompany
 	- Service `okta`: Your Okta domain.
 	- Service `pipedrive`: Your Pipedrive domain.
-	- Service `shopware`: Your Shopware Domain.
+	- Service `shopware`: Your Shopware domain.
 	- Service `sistrix`: Your domain for which you want to fetch data.
 	- Service `uservoice`: Domain of your UserVoice site. If it ends with ".uservoice.com", you can specify just the subdomain ("mydomain.uservoice.com" - "mydomain")
 	- Service `zendesk`: Zendesk domain.
@@ -1468,7 +1473,7 @@ Optional:
 	- Service `aws_lambda`: The name of your AWS Lambda Function.
 - `function_app` (String) Field usage depends on `service` value: 
 	- Service `azure_function`: Function app name in Azure portal.
-- `function_key` (String) Field usage depends on `service` value: 
+- `function_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `azure_function`: Function key used for authorization.
 - `function_name` (String) Field usage depends on `service` value: 
 	- Service `azure_function`: Name of the function to be triggered.
@@ -1498,6 +1503,7 @@ Optional:
 	- Service `azure_postgres`: DB instance host or IP address.
 	- Service `azure_sql_db`: DB instance host or IP address.
 	- Service `azure_sql_managed_db`: DB instance host or IP address.
+	- Service `commercetools`: Your commercetools host.
 	- Service `db2i_hva`: A host address of the primary node. It should be a DB instance host/IP address with a port number.
 	- Service `db2i_sap_hva`: DB instance host or IP address.
 	- Service `documentdb`: Host IP address of the primary node. Ignored if `hosts` value is provided.
@@ -1547,7 +1553,7 @@ Optional:
 	- Service `azure_service_bus`: The IP address of the host machine which we use to connect to ASB via ssh
 - `host_name` (String) Field usage depends on `service` value: 
 	- Service `coassemble`: Your Coassemble Hostname.
-	- Service `datadog`: Your Datadog Host name.
+	- Service `datadog`: Your Datadog host name.
 - `host_url` (String) Field usage depends on `service` value: 
 	- Service `adobe_commerce`: Your Adobe Commerce host url.
 	- Service `sparkpost`: Your SparkPost host URL.
@@ -1578,7 +1584,7 @@ Optional:
 	- Service `oracle_sap_hva_netweaver`: Two-digit number (00-97) of the SAP instance within its host.
 - `instance_url` (String) Field usage depends on `service` value: 
 	- Service `sap_business_by_design`: The SAP Business ByDesign instance URL.
-- `integration_key` (String) Field usage depends on `service` value: 
+- `integration_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `pendo`: The integration key of the Pendo account.
 - `is_account_level_connector` (Boolean) Field usage depends on `service` value: 
 	- Service `fivetran_log`: (Optional) Retrieve account-level logs.
@@ -1819,7 +1825,6 @@ Optional:
 	- Service `dynamics_365_fo`: The user's password.
 	- Service `ftp`: FTP password.
 	- Service `globalmeet`: Your GlobalMeet Password.
-	- Service `gongio`: Your Gongio Access Key Secret.
 	- Service `google_cloud_mysql`: The user's password.
 	- Service `google_cloud_postgresql`: The user's password.
 	- Service `google_cloud_sqlserver`: The user's password.
@@ -1910,7 +1915,7 @@ Optional:
 	- Service `tableau_source`: Your Tableau Source PAT Secret.
 - `path` (String) Field usage depends on `service` value: 
 	- Service `jira`: A URL subdirectory where the Jira instance is working.
-- `pats` (Set of String) Field usage depends on `service` value: 
+- `pats` (Set of String, Sensitive) Field usage depends on `service` value: 
 	- Service `github`: The `Personal Access Tokens`.
 - `pattern` (String) Field usage depends on `service` value: 
 	- Service `aws_cost_report`: Optional. All files in your search path matching this regular expression will be synced. This parameter is optional.
@@ -1942,16 +1947,19 @@ Optional:
 - `personal_access_token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `cj_commission_detail`: Your CJ Commission Detail personal access token.
 	- Service `harvest`: Your Harvest Personal Access Token.
+	- Service `totango`: Your Totango Personal Access token.
 - `personal_api_token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `circleci`: Your CircleCI Personal API token.
 	- Service `monday`: Your Monday.com Personal API Token.
 - `pgp_pass_phrase` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.
+	- Service `ftp`: The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `s3`: The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `sftp`: The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `wasabi_cloud_storage`: The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.
 - `pgp_secret_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.
+	- Service `ftp`: The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `s3`: The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `sftp`: The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `wasabi_cloud_storage`: The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.
@@ -2053,6 +2061,8 @@ Optional:
 	- Service `bigquery_db`: BigQuery project ID
 	- Service `google_analytics_360`: The project ID.
 	- Service `google_analytics_4_export`: The Project ID.
+- `project_key` (String) Field usage depends on `service` value: 
+	- Service `commercetools`: Your commercetools project key.
 - `projects` (Set of String) Field usage depends on `service` value: 
 	- Service `asana`: Specific Project IDs to sync. Must be populated if `syncMode` is set to `SpecificProjects`.
 - `properties` (Set of String) Field usage depends on `service` value: 
@@ -2403,6 +2413,7 @@ Optional:
 	- Service `twilio`: The Twilio API key SID
 - `signer_public_key` (String) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.
+	- Service `ftp`: The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.
 	- Service `s3`: The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.
 	- Service `sftp`: The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.
 	- Service `wasabi_cloud_storage`: The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.
@@ -2488,6 +2499,7 @@ Optional:
 	- Service `fountain`: Your Fountain subdomain.
 	- Service `freshchat`: Your Freshchat Sub Domain
 	- Service `gainsight_customer_success`: The subdomain of your Gainsight account.
+	- Service `gainsight_product_experience`: Your Gainsight Product Experience subdomain.
 	- Service `genesys`: Your Genesys subdomain.
 	- Service `green_power_monitor`: Your GreenPowerMonitor subdomain.
 	- Service `infobip`: Your Infobip sub_domain.
@@ -2516,6 +2528,7 @@ Optional:
 	- Service `starrez`: Your StarRez subdomain
 	- Service `tempo`: Your Tempo subdomain.
 	- Service `thinkific`: Your Thinkific subdomain.
+	- Service `totango`: Your Totango Subdomain.
 	- Service `upland`: Your Upland Software subDomain.
 	- Service `wordpress`: Your WordPress subdomain.
 	- Service `workable`: Your Workable Subdomain.
@@ -2696,7 +2709,7 @@ Optional:
 - `tns` (String) Field usage depends on `service` value: 
 	- Service `oracle_hva`: Single-tenant database: The database's SID.  Multi-tenant database: The database's TNS.
 	- Service `oracle_sap_hva`: Single-tenant database: The database SID.  Multi-tenant database: The database TNS.
-- `token` (String) Field usage depends on `service` value: 
+- `token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `mode`: Your Mode Token.
 	- Service `oracle_moat_analytics`: Your Oracle Moat Analytics Token.
 - `token_authenticated_container` (String) Field usage depends on `service` value: 
@@ -2913,6 +2926,7 @@ Optional:
 	- Service `oracle_sap_hva`: Default value: `false`. Set to `true` if you're using a RAC instance.
 - `use_pgp_encryption_options` (Boolean) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: Set to `true` if files present in the Azure Blob Storage container are encrypted using PGP. Default value: `false`.
+	- Service `ftp`: Set to `true` if files are encrypted using PGP in the S3 bucket. Default value: `false`.
 	- Service `s3`: Set to `true` if files are encrypted using PGP in the S3 bucket. Default value: `false`.
 	- Service `sftp`: Set to `true` if files present in SFTP server are encrypted using PGP. Default value: `false`.
 	- Service `wasabi_cloud_storage`: Set to `true` if files are encrypted using PGP in the Wasabi Cloud Storage bucket. Default value: `false`.
@@ -2985,7 +2999,7 @@ Optional:
 	- Service `marketo`: Marketo SOAP API User Id.
 	- Service `playvox`: Your Playvox User ID.
 	- Service `sage_intacct`: User ID
-- `user_key` (String)
+- `user_key` (String, Sensitive)
 - `user_name` (String) Field usage depends on `service` value: 
 	- Service `workday`: Workday username.
 - `user_profiles` (Set of String) Field usage depends on `service` value: 
@@ -3009,7 +3023,6 @@ Optional:
 	- Service `github`: `Login` of your GitHub profile.
 	- Service `gladly`: Your Gladly Username.
 	- Service `globalmeet`: Your GlobalMeet Username.
-	- Service `gongio`: Your Gongio Access key.
 	- Service `gorgias`: Your Gorgias username.
 	- Service `green_power_monitor`: Your GreenPowerMonitor username.
 	- Service `guru`: Your Guru username.
@@ -3040,6 +3053,7 @@ Optional:
 	- Service `starrez`: Your StarRez API username
 	- Service `stylight`: Your Stylight Username.
 	- Service `teamwork`: Your Teamwork username.
+	- Service `testrail`: Your TestRail API username.
 	- Service `ukg_pro`: Your UKG Pro username.
 	- Service `unicommerce`: Your uniware login username.
 	- Service `upland`: Your Upland Software Username.
@@ -3284,7 +3298,7 @@ Optional:
 - `aggregation` (String) Field usage depends on `service` value: 
 	- Service `google_search_console`: (Optional) Aggregation type. Supported only for the `SEARCH_RESULTS` report type
 - `attributes` (Set of String) Field usage depends on `service` value: 
-	- Service `google_search_ads_360`: The report dimensions included to sync.
+	- Service `google_search_ads_360`: The report attributes included to sync.
 - `config_type` (String) Field usage depends on `service` value: 
 	- Service `google_analytics`: Whether to use the [Prebuilt Reports or Custom Reports](https://fivetran.com/docs/applications/google-analytics#schemainformation).
 	- Service `google_analytics_4`: Whether to use the Prebuilt Reports or Custom Reports.
@@ -3304,7 +3318,7 @@ Optional:
 - `metrics` (Set of String) Field usage depends on `service` value: 
 	- Service `google_analytics`: The report metrics to include into a sync.
 	- Service `google_analytics_4`: The report metrics to include into a sync.
-	- Service `google_search_ads_360`: The report dimensions included to sync.
+	- Service `google_search_ads_360`: The report metrics included to sync.
 - `prebuilt_report` (String) Field usage depends on `service` value: 
 	- Service `google_analytics`: The name of the Prebuilt Report from which the connector will sync the data.
 	- Service `google_analytics_4`: The name of the Prebuilt Report from which the connector will sync the data.
