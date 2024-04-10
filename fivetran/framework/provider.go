@@ -112,12 +112,17 @@ func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Reso
 		resources.ExternalLogging,
 		resources.Group,
 		resources.GroupUser,
+		resources.ConnectorFingerprint,
+		resources.ConnectorCertificate,
+		resources.DestinationFingerprint,
+		resources.DestinationCertificate,
 	}
 }
 
 func (p *fivetranProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		datasources.User,
+		datasources.Users,
 		datasources.UserConnectorMemberships,
 		datasources.UserGroupMemberships,
 		datasources.Webhook,
@@ -138,5 +143,9 @@ func (p *fivetranProvider) DataSources(ctx context.Context) []func() datasource.
 		datasources.GroupConnectors,
 		datasources.GroupUsers,
 		datasources.ConnectorsMetadata,
+		datasources.ConnectorFingerprints,
+		datasources.ConnectorCertificates,
+		datasources.DestinationFingerprints,
+		datasources.DestinationCertificates,
 	}
 }

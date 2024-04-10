@@ -1,10 +1,11 @@
-package mock
+package datasources_test
 
 import (
 	"net/http"
 	"testing"
 
 	"github.com/fivetran/go-fivetran/tests/mock"
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
@@ -15,12 +16,13 @@ func TestDataSourceDestinationCertificatesMock(t *testing.T) {
 	var data map[string]interface{}
 
 	setup := func() {
-		mockClient.Reset()
-		getHandler = mockClient.When(http.MethodGet, "/v1/destinations/destination_id/certificates").ThenCall(
+		tfmock.MockClient().Reset()
+
+		getHandler = tfmock.MockClient().When(http.MethodGet, "/v1/destinations/destination_id/certificates").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				cursor := req.URL.Query().Get("cursor")
 				if cursor == "" {
-					data = createMapFromJsonString(t, `
+					data = tfmock.CreateMapFromJsonString(t, `
 					{
 						"items":[
 							{
@@ -48,7 +50,7 @@ func TestDataSourceDestinationCertificatesMock(t *testing.T) {
 					}
 					`)
 				} else if cursor == "next_cursor" {
-					data = createMapFromJsonString(t, `
+					data = tfmock.CreateMapFromJsonString(t, `
 					{
 						"items":[
 							{
@@ -75,7 +77,7 @@ func TestDataSourceDestinationCertificatesMock(t *testing.T) {
 					}
 					`)
 				}
-				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", data), nil
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", data), nil
 			},
 		)
 	}
@@ -83,7 +85,7 @@ func TestDataSourceDestinationCertificatesMock(t *testing.T) {
 		t,
 		resource.TestCase{
 			PreCheck:                 setup,
-			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			Steps: []resource.TestStep{
 				{
 					Config: `
@@ -93,9 +95,11 @@ func TestDataSourceDestinationCertificatesMock(t *testing.T) {
 					}`,
 					Check: resource.ComposeAggregateTestCheckFunc(
 						func(s *terraform.State) error {
-							assertEqual(t, getHandler.Interactions, 4)
+							tfmock.AssertEqual(t, getHandler.Interactions, 4)
 							return nil
 						},
+						resource.TestCheckResourceAttr("data.fivetran_destination_certificates.test", "id", "destination_id"),
+						resource.TestCheckResourceAttr("data.fivetran_destination_certificates.test", "destination_id", "destination_id"),
 						resource.TestCheckResourceAttr("data.fivetran_destination_certificates.test", "certificates.#", "4"),
 						resource.TestCheckResourceAttr("data.fivetran_destination_certificates.test", "certificates.0.hash", "hash0"),
 						resource.TestCheckResourceAttr("data.fivetran_destination_certificates.test", "certificates.0.name", "name0"),

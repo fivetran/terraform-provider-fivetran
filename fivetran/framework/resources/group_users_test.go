@@ -1,19 +1,20 @@
-package mock
+package resources_test
 
 import (
-	"fmt"
 	"net/http"
-	"strconv"
-	"strings"
 	"testing"
-
+	"strings"
+	"strconv"
+	"fmt"
+	
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
 	"github.com/fivetran/go-fivetran/tests/mock"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 var (
-	groupGetHandler        *mock.Handler
+	groupUserGetHandler    *mock.Handler
 	groupPostUserHandler   *mock.Handler
 	groupDeleteUserHandler *mock.Handler
 	groupGetUsersHandler   *mock.Handler
@@ -21,7 +22,7 @@ var (
 )
 
 func setupMockClientGroupUsersResource(t *testing.T, initialUsers []interface{}) {
-	mockClient.Reset()
+	tfmock.MockClient().Reset()
 
 	groupUsersData = make([]interface{}, 0)
 
@@ -35,28 +36,28 @@ func setupMockClientGroupUsersResource(t *testing.T, initialUsers []interface{})
 		return strings.Split(uri, "/users/")[1]
 	}
 
-	groupGetHandler = mockClient.When(http.MethodGet, "/v1/groups/group_id").ThenCall(
+	groupUserGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/groups/group_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			var groupResponse = `{
 				"id": "group_id",
 				"name": "Group",
 				"created_at": "2018-12-20T11:59:35.089589Z"
 			}`
-			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", createMapFromJsonString(t, groupResponse)), nil
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", tfmock.CreateMapFromJsonString(t, groupResponse)), nil
 		},
 	)
 
-	groupGetUsersHandler = mockClient.When(http.MethodGet, "/v1/groups/group_id/users").ThenCall(
+	groupGetUsersHandler = tfmock.MockClient().When(http.MethodGet, "/v1/groups/group_id/users").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			body := make(map[string]interface{})
 			body["items"] = groupUsersData
-			response := fivetranSuccessResponse(t, req, http.StatusOK,
+			response := tfmock.FivetranSuccessResponse(t, req, http.StatusOK,
 				"", body)
 			return response, nil
 		},
 	)
 
-	groupDeleteUserHandler = mockClient.WhenWc(http.MethodDelete, "/v1/groups/group_id/users/*").ThenCall(
+	groupDeleteUserHandler = tfmock.MockClient().WhenWc(http.MethodDelete, "/v1/groups/group_id/users/*").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			userId := fetchUserIdFromURI(req.URL.Path)
 			newGroupUsersData := make([]interface{}, 0)
@@ -70,16 +71,16 @@ func setupMockClientGroupUsersResource(t *testing.T, initialUsers []interface{})
 				}
 			}
 			groupUsersData = newGroupUsersData
-			return fivetranSuccessResponse(t, req, http.StatusOK,
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK,
 				fmt.Sprintf("User with id '%s' has been removed from the group", userId), nil), nil
 		},
 	)
 
-	groupPostUserHandler = mockClient.When(http.MethodPost, "/v1/groups/group_id/users").ThenCall(
+	groupPostUserHandler = tfmock.MockClient().When(http.MethodPost, "/v1/groups/group_id/users").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			body := requestBodyToJson(t, req)
-			assertKeyExists(t, body, "email")
-			assertKeyExists(t, body, "role")
+			body := tfmock.RequestBodyToJson(t, req)
+			tfmock.AssertKeyExists(t, body, "email")
+			tfmock.AssertKeyExists(t, body, "role")
 
 			// assign user id
 			body["id"] = "user_" + strconv.Itoa(addedUserId)
@@ -87,7 +88,7 @@ func setupMockClientGroupUsersResource(t *testing.T, initialUsers []interface{})
 			groupUsersData = append(groupUsersData, body)
 
 			addedUserId++
-			return fivetranSuccessResponse(t, req, http.StatusOK,
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK,
 				"User has been added to the group", nil), nil
 		},
 	)
@@ -110,9 +111,9 @@ func TestResourceGroupUsersCleanupGroupOnCreate(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientGroupUsersResource(t, initialUsers)
 			},
-			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
-				assertNotEmpty(t, groupUsersData)
+				tfmock.AssertNotEmpty(t, groupUsersData)
 				return nil
 			},
 
@@ -127,7 +128,7 @@ func TestResourceGroupUsersCleanupGroupOnCreate(t *testing.T) {
 
 					Check: resource.ComposeAggregateTestCheckFunc(
 						func(s *terraform.State) error {
-							assertEqual(t, groupGetUsersHandler.Interactions, 1)
+							tfmock.AssertEqual(t, groupGetUsersHandler.Interactions, 1)
 							return nil
 						},
 						//resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "test_group_name"),
@@ -154,10 +155,10 @@ func TestResourceGroupUsersMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, groupGetUsersHandler.Interactions, 1)
-				assertEqual(t, groupPostUserHandler.Interactions, 1)
-				assertEqual(t, groupDeleteUserHandler.Interactions, 0)
-				assertNotEmpty(t, groupUsersData)
+				tfmock.AssertEqual(t, groupGetUsersHandler.Interactions, 1)
+				tfmock.AssertEqual(t, groupPostUserHandler.Interactions, 1)
+				tfmock.AssertEqual(t, groupDeleteUserHandler.Interactions, 0)
+				tfmock.AssertNotEmpty(t, groupUsersData)
 				return nil
 			},
 			//resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "test_group_name"),
@@ -183,7 +184,7 @@ func TestResourceGroupUsersMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertNotEmpty(t, groupUsersData)
+				tfmock.AssertNotEmpty(t, groupUsersData)
 				return nil
 			},
 			//resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "test_group_name"),
@@ -209,7 +210,7 @@ func TestResourceGroupUsersMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertNotEmpty(t, groupUsersData)
+				tfmock.AssertNotEmpty(t, groupUsersData)
 				return nil
 			},
 			//resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "test_group_name"),
@@ -221,10 +222,10 @@ func TestResourceGroupUsersMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientGroupUsersResource(t, nil)
 			},
-			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
-				assertEqual(t, groupDeleteUserHandler.Interactions, 3)
-				assertEmpty(t, groupUsersData)
+				tfmock.AssertEqual(t, groupDeleteUserHandler.Interactions, 3)
+				tfmock.AssertEmpty(t, groupUsersData)
 				return nil
 			},
 

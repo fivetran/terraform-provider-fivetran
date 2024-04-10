@@ -1,17 +1,17 @@
-package mock
+package resources_test
 
 import (
 	"net/http"
 	"testing"
 
 	"github.com/fivetran/go-fivetran/tests/mock"
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestResourceDestinationCertificatesMock(t *testing.T) {
 
-	var getDestinationHandler *mock.Handler
 	var getHandler *mock.Handler
 	var postHandler *mock.Handler
 	var deleteHandlers []*mock.Handler
@@ -19,90 +19,50 @@ func TestResourceDestinationCertificatesMock(t *testing.T) {
 	var data map[string]interface{}
 
 	createDeleteHandler := func(id string) *mock.Handler {
-		return mockClient.When(http.MethodDelete, "/v1/destinations/destination_id/certificates/"+id).ThenCall(
+		return tfmock.MockClient().When(http.MethodDelete, "/v1/destinations/destination_id/certificates/"+id).ThenCall(
 			func(req *http.Request) (*http.Response, error) {
-				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", nil), nil
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", nil), nil
 			},
 		)
 	}
 
 	setup := func() {
-		mockClient.Reset()
+		tfmock.MockClient().Reset()
 
 		getInteraction := 0
 		postInteraction := 0
 
-		getDestinationHandler = mockClient.When(http.MethodGet, "/v1/destinations/destination_id").ThenCall(
+		getHandler = tfmock.MockClient().When(http.MethodGet, "/v1/destinations/destination_id/certificates").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
-				data = createMapFromJsonString(t, `
-					{
-						"id": "destination_id"
-					}
-					`)
-				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", data), nil
-			},
-		)
+				data = tfmock.CreateMapFromJsonString(t, `
+				{
+					"items":[
+						{
+							"hash": "hash1",
+							"public_key": "public_key1",
+							"name": "name1",
+							"type": "type1",
+							"sha1": "sha11",
+							"sha256": "sha2561",
+							"validated_by": "validated_by1",
+							"validated_date": "validated_date1"
+						},
+						{
+							"hash": "hash2",
+							"public_key": "public_key2",
+							"name": "name2",
+							"type": "type2",
+							"sha1": "sha12",
+							"sha256": "sha2562",
+							"validated_by": "validated_by2",
+							"validated_date": "validated_date2"
+						}
+					]	
+				}
+				`)
 
-		getHandler = mockClient.When(http.MethodGet, "/v1/destinations/destination_id/certificates").ThenCall(
-			func(req *http.Request) (*http.Response, error) {
-				if getInteraction == 0 {
-					data = createMapFromJsonString(t, `
-					{
-						"items":[
-							{
-								"hash": "hash0",
-								"public_key": "public_key0",
-								"name": "name0",
-								"type": "type0",
-								"sha1": "sha10",
-								"sha256": "sha2560",
-								"validated_by": "validated_by0",
-								"validated_date": "validated_date0"
-							},
-							{
-								"hash": "hash1",
-								"public_key": "public_key1",
-								"name": "name1",
-								"type": "type1",
-								"sha1": "sha11",
-								"sha256": "sha2561",
-								"validated_by": "validated_by1",
-								"validated_date": "validated_date1"
-							}
-						]	
-					}
-					`)
-				}
-				if getInteraction >= 1 && getInteraction < 5 {
-					data = createMapFromJsonString(t, `
-					{
-						"items":[
-							{
-								"hash": "hash1",
-								"public_key": "public_key1",
-								"name": "name1",
-								"type": "type1",
-								"sha1": "sha11",
-								"sha256": "sha2561",
-								"validated_by": "validated_by1",
-								"validated_date": "validated_date1"
-							},
-							{
-								"hash": "hash2",
-								"public_key": "public_key2",
-								"name": "name2",
-								"type": "type2",
-								"sha1": "sha12",
-								"sha256": "sha2562",
-								"validated_by": "validated_by2",
-								"validated_date": "validated_date2"
-							}
-						]	
-					}
-					`)
-				}
-				if getInteraction >= 5 {
-					data = createMapFromJsonString(t, `
+				if getInteraction >= 3 {
+					data = tfmock.CreateMapFromJsonString(t, `
 					{
 						"items":[
 							{
@@ -130,17 +90,33 @@ func TestResourceDestinationCertificatesMock(t *testing.T) {
 					`)
 				}
 				getInteraction = getInteraction + 1
-				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", data), nil
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", data), nil
 			},
 		)
 
-		postHandler = mockClient.When(http.MethodPost, "/v1/destinations/destination_id/certificates").ThenCall(
+		postHandler = tfmock.MockClient().When(http.MethodPost, "/v1/destinations/destination_id/certificates").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
-				body := requestBodyToJson(t, req)
+				body := tfmock.RequestBodyToJson(t, req)
 				if postInteraction == 0 {
-					assertKeyExistsAndHasValue(t, body, "hash", "hash2")
-					assertKeyExistsAndHasValue(t, body, "encoded_cert", "cert2")
-					data = createMapFromJsonString(t, `
+					tfmock.AssertKeyExistsAndHasValue(t, body, "hash", "hash1")
+					tfmock.AssertKeyExistsAndHasValue(t, body, "encoded_cert", "cert1")
+					data = tfmock.CreateMapFromJsonString(t, `
+						{
+							"hash": "hash1",
+							"public_key": "public_key1",
+							"name": "name1",
+							"type": "type1",
+							"sha1": "sha11",
+							"sha256": "sha2561",
+							"validated_by": "validated_by1",
+							"validated_date": "validated_date1"
+						}
+						`)
+				}
+				if postInteraction == 1 {
+					tfmock.AssertKeyExistsAndHasValue(t, body, "hash", "hash2")
+					tfmock.AssertKeyExistsAndHasValue(t, body, "encoded_cert", "cert2")
+					data = tfmock.CreateMapFromJsonString(t, `
 						{
 							"hash": "hash2",
 							"public_key": "public_key2",
@@ -153,28 +129,11 @@ func TestResourceDestinationCertificatesMock(t *testing.T) {
 						}
 						`)
 				}
-				if postInteraction == 1 {
-					assertKeyExistsAndHasValue(t, body, "hash", "hash3")
-					assertKeyExistsAndHasValue(t, body, "encoded_cert", "cert3")
-					data = createMapFromJsonString(t, `
-						{
-							"hash": "hash3",
-							"public_key": "public_key3",
-							"name": "name3",
-							"type": "type3",
-							"sha1": "sha13",
-							"sha256": "sha2563",
-							"validated_by": "validated_by3",
-							"validated_date": "validated_date3"
-						}
-						`)
-				}
 				postInteraction = postInteraction + 1
-				return fivetranSuccessResponse(t, req, http.StatusCreated, "Success", data), nil
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", data), nil
 			},
 		)
 
-		deleteHandlers = append(deleteHandlers, createDeleteHandler("hash0"))
 		deleteHandlers = append(deleteHandlers, createDeleteHandler("hash1"))
 		deleteHandlers = append(deleteHandlers, createDeleteHandler("hash2"))
 		deleteHandlers = append(deleteHandlers, createDeleteHandler("hash3"))
@@ -183,12 +142,11 @@ func TestResourceDestinationCertificatesMock(t *testing.T) {
 		t,
 		resource.TestCase{
 			PreCheck:                 setup,
-			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
-				assertEqual(t, deleteHandlers[0].Interactions, 1)
-				assertEqual(t, deleteHandlers[1].Interactions, 1)
-				assertEqual(t, deleteHandlers[2].Interactions, 1)
-				assertEqual(t, deleteHandlers[3].Interactions, 1)
+				tfmock.AssertEqual(t, deleteHandlers[0].Interactions, 1)
+				tfmock.AssertEqual(t, deleteHandlers[1].Interactions, 1)
+				tfmock.AssertEqual(t, deleteHandlers[2].Interactions, 1)
 				return nil
 			},
 			Steps: []resource.TestStep{
@@ -208,10 +166,8 @@ func TestResourceDestinationCertificatesMock(t *testing.T) {
 					}`,
 					Check: resource.ComposeAggregateTestCheckFunc(
 						func(s *terraform.State) error {
-							assertEqual(t, getDestinationHandler.Interactions, 1)
-							assertEqual(t, postHandler.Interactions, 1)
-							assertEqual(t, deleteHandlers[0].Interactions, 1)
-							assertEqual(t, getHandler.Interactions, 2)
+							tfmock.AssertEqual(t, postHandler.Interactions, 2)
+							tfmock.AssertEqual(t, getHandler.Interactions, 1)
 							return nil
 						},
 						resource.TestCheckResourceAttr("fivetran_destination_certificates.test", "certificate.#", "2"),
@@ -257,10 +213,9 @@ func TestResourceDestinationCertificatesMock(t *testing.T) {
 					}`,
 					Check: resource.ComposeAggregateTestCheckFunc(
 						func(s *terraform.State) error {
-							assertEqual(t, getDestinationHandler.Interactions, 1)
-							assertEqual(t, postHandler.Interactions, 2)
-							assertEqual(t, deleteHandlers[2].Interactions, 1)
-							assertEqual(t, getHandler.Interactions, 6)
+							tfmock.AssertEqual(t, postHandler.Interactions, 3)
+							tfmock.AssertEqual(t, deleteHandlers[1].Interactions, 1)
+							tfmock.AssertEqual(t, getHandler.Interactions, 4)
 							return nil
 						},
 						resource.TestCheckResourceAttr("fivetran_destination_certificates.test", "certificate.#", "2"),

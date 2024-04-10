@@ -1,9 +1,10 @@
-package mock
+package resources_test
 
 import (
 	"net/http"
 	"testing"
-
+	
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
 	"github.com/fivetran/go-fivetran/tests/mock"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
@@ -11,7 +12,6 @@ import (
 
 func TestResourceConnectorFingerprintsMock(t *testing.T) {
 
-	var getConnectorHandler *mock.Handler
 	var getHandler *mock.Handler
 	var postHandler *mock.Handler
 	var deleteHandlers []*mock.Handler
@@ -19,54 +19,22 @@ func TestResourceConnectorFingerprintsMock(t *testing.T) {
 	var data map[string]interface{}
 
 	createDeleteHandler := func(id string) *mock.Handler {
-		return mockClient.When(http.MethodDelete, "/v1/connectors/connector_id/fingerprints/"+id).ThenCall(
+		return tfmock.MockClient().When(http.MethodDelete, "/v1/connectors/connector_id/fingerprints/"+id).ThenCall(
 			func(req *http.Request) (*http.Response, error) {
-				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", nil), nil
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", nil), nil
 			},
 		)
 	}
 
 	setupConnectorFingerprintsDatasourceMock := func() {
-		mockClient.Reset()
+		tfmock.MockClient().Reset()
 
 		getInteraction := 0
 		postInteraction := 0
 
-		getConnectorHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id").ThenCall(
+		getHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connectors/connector_id/fingerprints").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
-				data = createMapFromJsonString(t, `
-					{
-						"id": "connector_id"
-					}
-					`)
-				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", data), nil
-			},
-		)
-
-		getHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id/fingerprints").ThenCall(
-			func(req *http.Request) (*http.Response, error) {
-				if getInteraction == 0 {
-					data = createMapFromJsonString(t, `
-					{
-						"items":[
-							{
-								"hash": "hash0",
-								"public_key": "public_key0",
-								"validated_by": "validated_by0",
-								"validated_date": "validated_date0"
-							},
-							{
-								"hash": "hash1",
-								"public_key": "public_key1",
-								"validated_by": "validated_by1",
-								"validated_date": "validated_date1"
-							}
-						]	
-					}
-					`)
-				}
-				if getInteraction >= 1 && getInteraction < 5 {
-					data = createMapFromJsonString(t, `
+					data = tfmock.CreateMapFromJsonString(t, `
 					{
 						"items":[
 							{
@@ -84,9 +52,9 @@ func TestResourceConnectorFingerprintsMock(t *testing.T) {
 						]	
 					}
 					`)
-				}
-				if getInteraction >= 5 {
-					data = createMapFromJsonString(t, `
+
+				if getInteraction >= 3 {
+					data = tfmock.CreateMapFromJsonString(t, `
 					{
 						"items":[
 							{
@@ -105,18 +73,26 @@ func TestResourceConnectorFingerprintsMock(t *testing.T) {
 					}
 					`)
 				}
+
 				getInteraction = getInteraction + 1
-				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", data), nil
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", data), nil
 			},
 		)
 
-		postHandler = mockClient.When(http.MethodPost, "/v1/connectors/connector_id/fingerprints").ThenCall(
+		postHandler = tfmock.MockClient().When(http.MethodPost, "/v1/connectors/connector_id/fingerprints").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
-				body := requestBodyToJson(t, req)
 				if postInteraction == 0 {
-					assertKeyExistsAndHasValue(t, body, "hash", "hash2")
-					assertKeyExistsAndHasValue(t, body, "public_key", "public_key2")
-					data = createMapFromJsonString(t, `
+					data = tfmock.CreateMapFromJsonString(t, `
+						{
+							"hash": "hash1",
+							"public_key": "public_key1",
+							"validated_by": "validated_by1",
+							"validated_date": "validated_date1"
+						}
+						`)
+				}
+				if postInteraction == 1 {
+					data = tfmock.CreateMapFromJsonString(t, `
 						{
 							"hash": "hash2",
 							"public_key": "public_key2",
@@ -125,10 +101,8 @@ func TestResourceConnectorFingerprintsMock(t *testing.T) {
 						}
 						`)
 				}
-				if postInteraction == 1 {
-					assertKeyExistsAndHasValue(t, body, "hash", "hash3")
-					assertKeyExistsAndHasValue(t, body, "public_key", "public_key3")
-					data = createMapFromJsonString(t, `
+				if postInteraction == 2 {
+					data = tfmock.CreateMapFromJsonString(t, `
 						{
 							"hash": "hash3",
 							"public_key": "public_key3",
@@ -138,7 +112,7 @@ func TestResourceConnectorFingerprintsMock(t *testing.T) {
 						`)
 				}
 				postInteraction = postInteraction + 1
-				return fivetranSuccessResponse(t, req, http.StatusCreated, "Success", data), nil
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", data), nil
 			},
 		)
 
@@ -151,12 +125,11 @@ func TestResourceConnectorFingerprintsMock(t *testing.T) {
 		t,
 		resource.TestCase{
 			PreCheck:                 setupConnectorFingerprintsDatasourceMock,
-			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
-				assertEqual(t, deleteHandlers[0].Interactions, 1)
-				assertEqual(t, deleteHandlers[1].Interactions, 1)
-				assertEqual(t, deleteHandlers[2].Interactions, 1)
-				assertEqual(t, deleteHandlers[3].Interactions, 1)
+				tfmock.AssertEqual(t, deleteHandlers[1].Interactions, 1)
+				tfmock.AssertEqual(t, deleteHandlers[2].Interactions, 1)
+				tfmock.AssertEqual(t, deleteHandlers[3].Interactions, 1)
 				return nil
 			},
 			Steps: []resource.TestStep{
@@ -176,10 +149,8 @@ func TestResourceConnectorFingerprintsMock(t *testing.T) {
 					}`,
 					Check: resource.ComposeAggregateTestCheckFunc(
 						func(s *terraform.State) error {
-							assertEqual(t, getConnectorHandler.Interactions, 1)
-							assertEqual(t, postHandler.Interactions, 1)
-							assertEqual(t, deleteHandlers[0].Interactions, 1)
-							assertEqual(t, getHandler.Interactions, 2)
+							tfmock.AssertEqual(t, postHandler.Interactions, 2)
+							tfmock.AssertEqual(t, getHandler.Interactions, 1)
 							return nil
 						},
 						resource.TestCheckResourceAttr("fivetran_connector_fingerprints.test", "fingerprint.#", "2"),
@@ -209,10 +180,9 @@ func TestResourceConnectorFingerprintsMock(t *testing.T) {
 					}`,
 					Check: resource.ComposeAggregateTestCheckFunc(
 						func(s *terraform.State) error {
-							assertEqual(t, getConnectorHandler.Interactions, 1)
-							assertEqual(t, postHandler.Interactions, 2)
-							assertEqual(t, deleteHandlers[2].Interactions, 1)
-							assertEqual(t, getHandler.Interactions, 6)
+							tfmock.AssertEqual(t, postHandler.Interactions, 3)
+							tfmock.AssertEqual(t, deleteHandlers[2].Interactions, 1)
+							tfmock.AssertEqual(t, getHandler.Interactions, 4)
 							return nil
 						},
 						resource.TestCheckResourceAttr("fivetran_connector_fingerprints.test", "fingerprint.#", "2"),

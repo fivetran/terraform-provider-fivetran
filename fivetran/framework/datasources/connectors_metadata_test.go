@@ -1,10 +1,11 @@
-package mock
+package datasources_test
 
 import (
 	"net/http"
 	"testing"
 
 	"github.com/fivetran/go-fivetran/tests/mock"
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
@@ -38,12 +39,12 @@ const (
 )
 
 func setupMockClientConnectorsMetadataSourceConfigMapping(t *testing.T) {
-	mockClient.Reset()
+	tfmock.MockClient().Reset()
 
-	connectorsMetadataDataSourceMockGetHandler = mockClient.When(http.MethodGet, "/v1/metadata/connectors").ThenCall(
+	connectorsMetadataDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/metadata/connectors").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			connectorsMetadataDataSourceMockData = createMapFromJsonString(t, connectorsMetadataMappingResponse)
-			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorsMetadataDataSourceMockData), nil
+			connectorsMetadataDataSourceMockData = tfmock.CreateMapFromJsonString(t, connectorsMetadataMappingResponse)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorsMetadataDataSourceMockData), nil
 		},
 	)
 }
@@ -57,8 +58,8 @@ func TestDataSourceConnectorsMetadataMappingMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, connectorsMetadataDataSourceMockGetHandler.Interactions, 2)
-				assertNotEmpty(t, connectorsMetadataDataSourceMockData)
+				tfmock.AssertEqual(t, connectorsMetadataDataSourceMockGetHandler.Interactions, 2)
+				tfmock.AssertNotEmpty(t, connectorsMetadataDataSourceMockData)
 				return nil
 			},
 			resource.TestCheckResourceAttr("data.fivetran_connectors_metadata.test_metadata", "sources.0.id", "facebook_ad_account"),
@@ -77,7 +78,7 @@ func TestDataSourceConnectorsMetadataMappingMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientConnectorsMetadataSourceConfigMapping(t)
 			},
-			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				return nil
 			},
