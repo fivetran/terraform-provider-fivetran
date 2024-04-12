@@ -138,6 +138,9 @@ func attrTypeFromConfigField(cf common.ConfigField) attr.Type {
 
 func getStringValue(value, local interface{}, currentField *common.ConfigField, service string) types.String {
 	if value == nil {
+		if local != nil && local.(string) == "" {
+			return types.StringValue("")
+		}
 		return types.StringNull()
 	}
 	if local == nil && !currentField.Readonly { // we should not set non-nullable value to the state if it's not configured by tf, we just ignore it
@@ -237,7 +240,8 @@ func getValue(
 				lValue := lMap[fn]
 				elements[fn] = getValue(et, value, lValue, cf.ItemFields, &cf, service)
 			} else {
-				elements[fn] = getValue(et, nil, nil, cf.ItemFields, &cf, service)
+				lValue := lMap[fn]
+				elements[fn] = getValue(et, nil, lValue, cf.ItemFields, &cf, service)
 			}
 		}
 		objectValue, _ := types.ObjectValue(complexType.AttributeTypes(), elements)
