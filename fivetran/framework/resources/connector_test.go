@@ -1,13 +1,13 @@
 package resources_test
 
 import (
+	"fmt"
 	"net/http"
 	"regexp"
 	"testing"
-	"fmt"
-	
-	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
+
 	"github.com/fivetran/go-fivetran/tests/mock"
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
@@ -586,7 +586,6 @@ func TestResourceConnectorListsConfigMock(t *testing.T) {
 		},
 	)
 }
-
 
 func createConnectorTestResponseJsonMock(id, groupId, service, schema, config string) string {
 	template := `
@@ -1422,6 +1421,30 @@ func TestConnectorConfigCollectionSingleFieldObjectsMock(t *testing.T) {
 					"name": "acc3"
 				}
 			]
+		}`,
+		nil, nil,
+		resource.ComposeAggregateTestCheckFunc(
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "id", "connector_id"),
+		),
+		nil,
+	)
+}
+
+func TestConnectorConfigemptyStringToNullConversionMock(t *testing.T) {
+	testConnectorCreateUpdate(t,
+		"google_play",
+		`name = "schema_name"`,
+		`
+		bucket = ""
+		`,
+		`
+		bucket = "bucket_name"
+		`,
+		"schema_name",
+		`{
+		}`,
+		`{
+			"bucket": "bucket_name"
 		}`,
 		nil, nil,
 		resource.ComposeAggregateTestCheckFunc(
