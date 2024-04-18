@@ -142,7 +142,7 @@ func (s _schema) toStateObject(sch string, local *_schema) (map[string]interface
 		}
 	}
 	result[TABLE] = tables
-	// schema has been configured locally OR has tables to include OR schema inconsistent by policy
-	include := local != nil || len(tables) > 0 || s.enabled != (sch == ALLOW_ALL)
+	// schema has been configured locally OR has tables to include (only if schema is enabled) OR schema inconsistent by policy
+	include := local != nil || (len(tables) > 0 && s.enabled) || s.enabled != (sch == ALLOW_ALL)
 	return result, include
 }
