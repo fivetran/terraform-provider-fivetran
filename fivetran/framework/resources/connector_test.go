@@ -1453,3 +1453,27 @@ func TestConnectorConfigemptyStringToNullConversionMock(t *testing.T) {
 		nil,
 	)
 }
+
+func TestConnectorConfigEmptyListConversionMock(t *testing.T) {
+	testConnectorCreateUpdate(t,
+		"dynamodb",
+		`name = "schema_name"`,
+		`
+		packed_mode_tables = []
+		`,
+		`
+		packed_mode_tables = ["table"]
+		`,
+		"schema_name",
+		`{
+		}`,
+		`{
+			"packed_mode_tables": ["table"]
+		}`,
+		nil, nil,
+		resource.ComposeAggregateTestCheckFunc(
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "id", "connector_id"),
+		),
+		nil,
+	)
+}
