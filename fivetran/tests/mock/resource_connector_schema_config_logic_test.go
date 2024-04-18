@@ -316,22 +316,24 @@ func TestIgnoreNoPatchAllowedColumnsMock(t *testing.T) {
 
 func TestConsistentWithUpstreamSchemaNoPatchMock(t *testing.T) {
 	upstreamConfig := schemaConfigTestData{
-		schemaChangeHandling: "BLOCK_ALL",
+		schemaChangeHandling: "ALLOW_COLUMNS",
 	}
 	schema_1 := upstreamConfig.newSchema("schema_1", true)
 	schema_1.newTable("table_1", true, stringPtr("SOFT_DELETE"))
 	schema_1.newTable("table_2", true, stringPtr("LIVE"))
 	schema_1.newTable("table_3", false, stringPtr("LIVE"))
+	disabled_schema := upstreamConfig.newSchema("disabled_schema", false)
+	disabled_schema.newTable("table_1", true, stringPtr("SOFT_DELETE"))
 
 	step1Config := schemaConfigTestData{
-		schemaChangeHandling: "BLOCK_ALL",
+		schemaChangeHandling: "ALLOW_COLUMNS",
 	}
 	step1Config_schema_1 := step1Config.newSchema("schema_1", true)
 	step1Config_schema_1.newTable("table_1", true, stringPtr("SOFT_DELETE"))
 	step1Config_schema_1.newTable("table_2", true, nil)
 
 	step2Config := schemaConfigTestData{
-		schemaChangeHandling: "BLOCK_ALL",
+		schemaChangeHandling: "ALLOW_COLUMNS",
 	}
 	step2Config_schema_1 := step2Config.newSchema("schema_1", true)
 	step2Config_schema_1.newTable("table_1", true, nil)

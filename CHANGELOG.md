@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Fixed 
 - Issue with empty string values in config. API doesn't return empty values in response, so we had inconsistent state after apply.
+- Issue with disabled schemas: disabled schemas were added to state because of configured tables in upstream.
 
 ## [1.1.21](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.20...v1.1.21)
 
