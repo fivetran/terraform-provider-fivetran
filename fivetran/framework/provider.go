@@ -147,5 +147,6 @@ func (p *fivetranProvider) DataSources(ctx context.Context) []func() datasource.
 		datasources.ConnectorCertificates,
 		datasources.DestinationFingerprints,
 		datasources.DestinationCertificates,
+		datasources.DbtModels,
 	}
 }

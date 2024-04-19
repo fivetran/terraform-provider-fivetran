@@ -14,11 +14,41 @@ var (
 	dbtProjectResourceCreateMockGetModelsHandler *mock.Handler
 	dbtProjectResourceCreateMockPostHandler      *mock.Handler
 	dbtProjectResourceCreateMockDeleteHandler    *mock.Handler
+	dbtModelsDataSourceMockGetHandler            *mock.Handler
 
+	dbtModelsDataSourceMockData      map[string]interface{}
 	dbtProjectResourceCreateMockData map[string]interface{}
 )
 
 func setupMockClientDbtProjectResourceCreateTest(t *testing.T) {
+
+	const (
+		dbtModelsMappingResponseWithCursor = `
+		{
+			"items":[
+				{
+					"id": "model_id",
+					"model_name": "model_name",
+					"scheduled": true
+				}
+			],
+			"next_cursor": "next_cursor"	
+		}
+		`
+
+		dbtModelsMappingResponse = `
+		{
+			"items":[
+				{
+					"id": "model_id_2",
+					"model_name": "model_name_2",
+					"scheduled": false
+				}
+			],
+			"next_cursor": null	
+		}
+		`
+	)
 	dbtProjectResponse := `
 	{
 		"id": "project_id",

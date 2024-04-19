@@ -13,15 +13,14 @@ var limit = 1000 // REST API response objects limit per HTTP request
 
 func Provider() *schema.Provider {
 	var resourceMap = map[string]*schema.Resource{
-		"fivetran_dbt_transformation":        resourceDbtTransformation(),
-		"fivetran_dbt_project":               resourceDbtProject(),
+		"fivetran_dbt_transformation": resourceDbtTransformation(),
+		"fivetran_dbt_project":        resourceDbtProject(),
 	}
 
 	var dataSourceMap = map[string]*schema.Resource{
-		"fivetran_dbt_transformation":         dataSourceDbtTransformation(),
-		"fivetran_dbt_project":                dataSourceDbtProject(),
-		"fivetran_dbt_projects":               dataSourceDbtProjects(),
-		"fivetran_dbt_models":                 dataSourceDbtModels(),
+		"fivetran_dbt_transformation": dataSourceDbtTransformation(),
+		"fivetran_dbt_project":        dataSourceDbtProject(),
+		"fivetran_dbt_projects":       dataSourceDbtProjects(),
 	}
 
 	return &schema.Provider{
