@@ -6,6 +6,7 @@ import (
 	"github.com/fivetran/go-fivetran/dbt"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
 type DbtModels struct {
@@ -15,14 +16,16 @@ type DbtModels struct {
 }
 
 func (d *DbtModels) ReadFromResponse(ctx context.Context, resp dbt.DbtModelsListResponse) {
-	elementType := map[string]attr.Type{
-		"id":         types.StringType,
-		"model_name": types.StringType,
-		"scheduled":  types.BoolType,
-	}
+	d.Models = GetModelsSetFromResponse(resp)
+	d.Id = d.ProjectId
+
+}
+
+func GetModelsSetFromResponse(resp dbt.DbtModelsListResponse) basetypes.SetValue {
+	elementType := ModelElementType()
 
 	if resp.Data.Items == nil {
-		d.Models = types.SetNull(types.ObjectType{AttrTypes: elementType})
+		return types.SetNull(types.ObjectType{AttrTypes: elementType})
 	}
 
 	items := []attr.Value{}
@@ -36,7 +39,14 @@ func (d *DbtModels) ReadFromResponse(ctx context.Context, resp dbt.DbtModelsList
 		objectValue, _ := types.ObjectValue(elementType, item)
 		items = append(items, objectValue)
 	}
+	result, _ := types.SetValue(types.ObjectType{AttrTypes: elementType}, items)
+	return result
+}
 
-	d.Id = d.ProjectId
-	d.Models, _ = types.SetValue(types.ObjectType{AttrTypes: elementType}, items)
+func ModelElementType() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id":         types.StringType,
+		"model_name": types.StringType,
+		"scheduled":  types.BoolType,
+	}
 }

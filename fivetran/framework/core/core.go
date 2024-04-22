@@ -10,7 +10,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
@@ -68,6 +70,8 @@ const (
 	Integer
 	Boolean
 	StringEnum
+	StringsList
+	StringsSet
 )
 
 type SchemaField struct {
@@ -131,7 +135,24 @@ func (s SchemaField) getDatasourceSchemaAttribute() datasourceSchema.Attribute {
 			Computed:    !s.IsId,
 			Description: s.Description,
 		}
+	case StringsList:
+		result = datasourceSchema.ListAttribute{
+			Required:    s.IsId,
+			Computed:    !s.IsId,
+			Sensitive:   s.Sensitive,
+			Description: s.Description,
+			ElementType: basetypes.StringType{},
+		}
+	case StringsSet:
+		result = datasourceSchema.SetAttribute{
+			Required:    s.IsId,
+			Computed:    !s.IsId,
+			Sensitive:   s.Sensitive,
+			Description: s.Description,
+			ElementType: basetypes.StringType{},
+		}
 	}
+
 	return result
 }
 
@@ -176,6 +197,34 @@ func (s SchemaField) getResourceSchemaAttribute() resourceSchema.Attribute {
 		if s.ForceNew {
 			stringAttribute.PlanModifiers = []planmodifier.Int64{
 				int64planmodifier.RequiresReplace(),
+			}
+		}
+		result = stringAttribute
+	case StringsList:
+		var stringAttribute = resourceSchema.ListAttribute{
+			Required:    s.Required,
+			Computed:    (s.ValueType == StringEnum && !s.Required) || s.Readonly || (s.IsId && !s.Required),
+			Optional:    !s.Required && !s.Readonly && !s.IsId,
+			Description: s.Description,
+			ElementType: basetypes.StringType{},
+		}
+		if s.ForceNew {
+			stringAttribute.PlanModifiers = []planmodifier.List{
+				listplanmodifier.RequiresReplace(),
+			}
+		}
+		result = stringAttribute
+	case StringsSet:
+		var stringAttribute = resourceSchema.SetAttribute{
+			Required:    s.Required,
+			Computed:    (s.ValueType == StringEnum && !s.Required) || s.Readonly || (s.IsId && !s.Required),
+			Optional:    !s.Required && !s.Readonly && !s.IsId,
+			Description: s.Description,
+			ElementType: basetypes.StringType{},
+		}
+		if s.ForceNew {
+			stringAttribute.PlanModifiers = []planmodifier.Set{
+				setplanmodifier.RequiresReplace(),
 			}
 		}
 		result = stringAttribute

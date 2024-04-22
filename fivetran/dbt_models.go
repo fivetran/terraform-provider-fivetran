@@ -2,28 +2,12 @@ package fivetran
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/dbt"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
-
-func dataSourceDbtModels() *schema.Resource {
-	return &schema.Resource{
-		ReadContext: dataSourceDbtModelsRead,
-		Schema: map[string]*schema.Schema{
-			"project_id": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The unique identifier for the dbt project within the Fivetran system.",
-			},
-			"models": dbtModelsSchema(),
-		},
-	}
-}
 
 func dbtModelsSchema() *schema.Schema {
 	return &schema.Schema{
@@ -54,25 +38,6 @@ func dbtModelsSchema() *schema.Schema {
 			},
 		},
 	}
-}
-
-func dataSourceDbtModelsRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
-	client := m.(*fivetran.Client)
-
-	resp, err := getAllDbtModelsForProject(client, ctx, d.Get("project_id").(string))
-	if err != nil {
-		return helpers.NewDiagAppend(diags, diag.Error, "service error", fmt.Sprintf("%v; code: %v; message: %v", err, resp.Code, resp.Message))
-	}
-
-	if err := d.Set("models", flattenDbtModels(resp)); err != nil {
-		return helpers.NewDiagAppend(diags, diag.Error, "set error", fmt.Sprint(err))
-	}
-
-	// Enforces ID
-	d.SetId("0")
-
-	return diags
 }
 
 // dataSourceGroupsGetGroups gets the groups list. It handles limits and cursors.

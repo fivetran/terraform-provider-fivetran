@@ -1,10 +1,11 @@
-package mock
+package datasources_test
 
 import (
 	"net/http"
 	"testing"
 
 	"github.com/fivetran/go-fivetran/tests/mock"
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
@@ -42,7 +43,7 @@ var (
 )
 
 func setupMockClientDbtTransformationDataSourceMappingTest(t *testing.T) {
-	mockClient.Reset()
+	tfmock.MockClient().Reset()
 
 	dbtModelResponse := `
 	{
@@ -52,15 +53,15 @@ func setupMockClientDbtTransformationDataSourceMappingTest(t *testing.T) {
     }
 	`
 
-	dbtTransformationDataSourceMockGetHandler = mockClient.When(http.MethodGet, "/v1/dbt/transformations/transformation_id").ThenCall(
+	dbtTransformationDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/dbt/transformations/transformation_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			dbtTransformationDataSourceMockData = createMapFromJsonString(t, dbtTransformationResponse)
-			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", dbtTransformationDataSourceMockData), nil
+			dbtTransformationDataSourceMockData = tfmock.CreateMapFromJsonString(t, dbtTransformationResponse)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", dbtTransformationDataSourceMockData), nil
 		},
 	)
-	dbtModelDataSourceMockGetHandler = mockClient.When(http.MethodGet, "/v1/dbt/models/dbt_model_id").ThenCall(
+	dbtModelDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/dbt/models/dbt_model_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", createMapFromJsonString(t, dbtModelResponse)), nil
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", tfmock.CreateMapFromJsonString(t, dbtModelResponse)), nil
 		},
 	)
 }
@@ -76,18 +77,18 @@ func TestDataSourceDbtTranformationMappingMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, dbtTransformationDataSourceMockGetHandler.Interactions, 2)
-				assertNotEmpty(t, dbtTransformationDataSourceMockData)
+				tfmock.AssertEqual(t, dbtTransformationDataSourceMockGetHandler.Interactions, 2)
+				tfmock.AssertNotEmpty(t, dbtTransformationDataSourceMockData)
 				return nil
 			},
 			resource.TestCheckResourceAttr("data.fivetran_dbt_transformation.transformation", "dbt_model_id", "dbt_model_id"),
 			resource.TestCheckResourceAttr("data.fivetran_dbt_transformation.transformation", "dbt_model_name", "dbt_model_name"),
 			resource.TestCheckResourceAttr("data.fivetran_dbt_transformation.transformation", "run_tests", "true"),
 			resource.TestCheckResourceAttr("data.fivetran_dbt_transformation.transformation", "paused", "false"),
-			resource.TestCheckResourceAttr("data.fivetran_dbt_transformation.transformation", "schedule.0.schedule_type", "TIME_OF_DAY"),
-			resource.TestCheckResourceAttr("data.fivetran_dbt_transformation.transformation", "schedule.0.days_of_week.0", "MONDAY"),
-			resource.TestCheckResourceAttr("data.fivetran_dbt_transformation.transformation", "schedule.0.interval", "15"),
-			resource.TestCheckResourceAttr("data.fivetran_dbt_transformation.transformation", "schedule.0.time_of_day", "12:00"),
+			resource.TestCheckResourceAttr("data.fivetran_dbt_transformation.transformation", "schedule.schedule_type", "TIME_OF_DAY"),
+			resource.TestCheckResourceAttr("data.fivetran_dbt_transformation.transformation", "schedule.days_of_week.0", "MONDAY"),
+			resource.TestCheckResourceAttr("data.fivetran_dbt_transformation.transformation", "schedule.interval", "15"),
+			resource.TestCheckResourceAttr("data.fivetran_dbt_transformation.transformation", "schedule.time_of_day", "12:00"),
 			resource.TestCheckResourceAttr("data.fivetran_dbt_transformation.transformation", "dbt_project_id", "dbt_project_id"),
 			resource.TestCheckResourceAttr("data.fivetran_dbt_transformation.transformation", "output_model_name", "output_model_name"),
 			resource.TestCheckResourceAttr("data.fivetran_dbt_transformation.transformation", "created_at", "2023-01-02T00:00:00.743708Z"),
@@ -102,7 +103,7 @@ func TestDataSourceDbtTranformationMappingMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientDbtTransformationDataSourceMappingTest(t)
 			},
-			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				return nil
 			},

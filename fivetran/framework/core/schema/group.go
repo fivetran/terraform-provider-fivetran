@@ -1,62 +1,53 @@
 package schema
 
 import (
-	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	datasourceSchema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-
-func GroupResource() resourceSchema.Schema {
-	return resourceSchema.Schema {
-		Attributes: map[string]resourceSchema.Attribute{
-			"id": resourceSchema.StringAttribute{
-				Computed:      true,
-				Description:   "The unique identifier for the group within the Fivetran system.",
+func GroupSchema() core.Schema {
+	return core.Schema{
+		Fields: map[string]core.SchemaField{
+			"id": {
+				IsId:        true,
+				ValueType:   core.String,
+				Description: "The unique identifier for the group within the Fivetran system.",
 			},
-			"name": resourceSchema.StringAttribute{
-				Required:      true,
-				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
-				Description:   "The name of the group within your account.",
+			"name": {
+				Required:    true,
+				ForceNew:    true,
+				ValueType:   core.String,
+				Description: "The name of the group within your account.",
 			},
-			"created_at": resourceSchema.StringAttribute{
-				Computed:      true,
-				Description:   "The timestamp of when the group was created in your account.",
+			"created_at": {
+				Readonly:    true,
+				ValueType:   core.String,
+				Description: "The timestamp of when the group was created in your account.",
 			},
-			"last_updated": resourceSchema.StringAttribute{
-				Computed:      true,
-				Description:   "The timestamp of when the group was updated in your account.",
+			"last_updated": {
+				Readonly:    true,
+				ValueType:   core.String,
+				Description: "The timestamp of when the resource/datasource was updated last time.",
 			},
 		},
+	}
+}
+
+func GroupResource() resourceSchema.Schema {
+	return resourceSchema.Schema{
+		Attributes: GroupSchema().GetResourceSchema(),
 	}
 }
 
 func GroupDatasource() datasourceSchema.Schema {
-	return datasourceSchema.Schema {
-		Attributes: map[string]datasourceSchema.Attribute{
-			"id": datasourceSchema.StringAttribute{
-				Required:      true,
-				Description:   "The unique identifier for the group within the Fivetran system.",
-			},
-			"name": datasourceSchema.StringAttribute{
-				Computed:      true,
-				Description:   "The name of the group within your account.",
-			},
-			"created_at": datasourceSchema.StringAttribute{
-				Computed:      true,
-				Description:   "The timestamp of when the group was created in your account.",
-			},
-			"last_updated": resourceSchema.StringAttribute{
-				Computed:      true,
-				Description:   "The timestamp of when the group was updated in your account.",
-			},
-		},
+	return datasourceSchema.Schema{
+		Attributes: GroupSchema().GetDatasourceSchema(),
 	}
 }
 
 func GroupsDatasource() datasourceSchema.Schema {
-	return datasourceSchema.Schema {
+	return datasourceSchema.Schema{
 		Attributes: map[string]datasourceSchema.Attribute{
 			"id": datasourceSchema.StringAttribute{
 				Computed:    true,
@@ -66,24 +57,7 @@ func GroupsDatasource() datasourceSchema.Schema {
 		Blocks: map[string]datasourceSchema.Block{
 			"groups": datasourceSchema.SetNestedBlock{
 				NestedObject: datasourceSchema.NestedBlockObject{
-					Attributes: map[string]datasourceSchema.Attribute{
-						"id": datasourceSchema.StringAttribute{
-							Computed:      true,
-							Description:   "The unique identifier for the group within the Fivetran system.",
-						},
-						"name": datasourceSchema.StringAttribute{
-							Computed:      true,
-							Description:   "The name of the group within your account.",
-						},
-						"created_at": datasourceSchema.StringAttribute{
-							Computed:      true,
-							Description:   "The timestamp of when the group was created in your account.",
-						},
-						"last_updated": datasourceSchema.StringAttribute{
-							Optional:      true,
-							Description:   "The timestamp of when the group was updated in your account.",
-						},
-					},
+					Attributes: GroupSchema().GetDatasourceSchema(),
 				},
 			},
 		},

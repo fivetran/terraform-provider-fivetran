@@ -1,10 +1,11 @@
-package mock
+package datasources_test
 
 import (
 	"net/http"
 	"testing"
 
 	"github.com/fivetran/go-fivetran/tests/mock"
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
@@ -35,12 +36,12 @@ func setupMockClientDbtProjectDataSourceMappingTest(t *testing.T) {
 		},
 		"status":"NOT_READY"
 	}`
-	mockClient.Reset()
+	tfmock.MockClient().Reset()
 
-	dbtProjectDataSourceMockGetHandler = mockClient.When(http.MethodGet, "/v1/dbt/projects/project_id").ThenCall(
+	dbtProjectDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/dbt/projects/project_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			dbtProjectDataSourceMockData = createMapFromJsonString(t, dbtProjectResponse)
-			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", dbtProjectDataSourceMockData), nil
+			dbtProjectDataSourceMockData = tfmock.CreateMapFromJsonString(t, dbtProjectResponse)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", dbtProjectDataSourceMockData), nil
 		},
 	)
 }
@@ -56,8 +57,8 @@ func TestDataSourceDbtProjectMappingMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, dbtProjectDataSourceMockGetHandler.Interactions, 2)
-				assertNotEmpty(t, dbtProjectDataSourceMockData)
+				tfmock.AssertEqual(t, dbtProjectDataSourceMockGetHandler.Interactions, 2)
+				tfmock.AssertNotEmpty(t, dbtProjectDataSourceMockData)
 				return nil
 			},
 			resource.TestCheckResourceAttr("data.fivetran_dbt_project.project", "id", "project_id"),
@@ -71,9 +72,9 @@ func TestDataSourceDbtProjectMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("data.fivetran_dbt_project.project", "environment_vars.0", "DBT_VARIABLE_1=VALUE"),
 			resource.TestCheckResourceAttr("data.fivetran_dbt_project.project", "threads", "1"),
 			resource.TestCheckResourceAttr("data.fivetran_dbt_project.project", "type", "GIT"),
-			resource.TestCheckResourceAttr("data.fivetran_dbt_project.project", "project_config.0.git_remote_url", "git_remote_url"),
-			resource.TestCheckResourceAttr("data.fivetran_dbt_project.project", "project_config.0.git_branch", "git_branch"),
-			resource.TestCheckResourceAttr("data.fivetran_dbt_project.project", "project_config.0.folder_path", "folder_path"),
+			resource.TestCheckResourceAttr("data.fivetran_dbt_project.project", "project_config.git_remote_url", "git_remote_url"),
+			resource.TestCheckResourceAttr("data.fivetran_dbt_project.project", "project_config.git_branch", "git_branch"),
+			resource.TestCheckResourceAttr("data.fivetran_dbt_project.project", "project_config.folder_path", "folder_path"),
 		),
 	}
 
@@ -83,7 +84,7 @@ func TestDataSourceDbtProjectMappingMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientDbtProjectDataSourceMappingTest(t)
 			},
-			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				return nil
 			},
