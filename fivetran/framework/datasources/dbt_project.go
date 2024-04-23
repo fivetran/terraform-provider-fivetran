@@ -59,7 +59,7 @@ func (d *dbtProject) Read(ctx context.Context, req datasource.ReadRequest, resp 
 	data.ReadFromResponse(ctx, projectResponse, nil)
 
 	if strings.ToLower(projectResponse.Data.Status) == "ready" {
-		modelsResp, err := getAllDbtModelsForProject(d.GetClient(), ctx, projectResponse.Data.ID, 1000)
+		modelsResp, err := GetAllDbtModelsForProject(d.GetClient(), ctx, projectResponse.Data.ID, 1000)
 		if err != nil {
 			resp.Diagnostics.AddWarning(
 				"DbtProject Models Read Error.",
@@ -73,7 +73,7 @@ func (d *dbtProject) Read(ctx context.Context, req datasource.ReadRequest, resp 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func getAllDbtModelsForProject(client *fivetran.Client, ctx context.Context, projectId string, limit int) (dbt.DbtModelsListResponse, error) {
+func GetAllDbtModelsForProject(client *fivetran.Client, ctx context.Context, projectId string, limit int) (dbt.DbtModelsListResponse, error) {
 	var resp dbt.DbtModelsListResponse
 	var respNextCursor string
 

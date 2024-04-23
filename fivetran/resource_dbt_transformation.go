@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/go-fivetran/dbt"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -105,11 +106,11 @@ func resourceDbtTransformationCreate(ctx context.Context, d *schema.ResourceData
 	projectId := d.Get("dbt_project_id").(string)
 	modelName := d.Get("dbt_model_name").(string)
 
-	diags, ok := ensureProjectIsReady(ctx, client, projectId, nil, nil, nil)
+	// diags, ok := ensureProjectIsReady(ctx, client, projectId, nil, nil, nil)
 
-	if !ok {
-		return diags
-	}
+	// if !ok {
+	// 	return diags
+	// }
 
 	var filteredModelId interface{} = nil
 
@@ -287,4 +288,35 @@ func resourceDbtTransformationDelete(ctx context.Context, d *schema.ResourceData
 	d.SetId("")
 
 	return diags
+}
+
+// dataSourceGroupsGetGroups gets the groups list. It handles limits and cursors.
+func getAllDbtModelsForProject(client *fivetran.Client, ctx context.Context, projectId string) (dbt.DbtModelsListResponse, error) {
+	var resp dbt.DbtModelsListResponse
+	var respNextCursor string
+
+	for {
+		var err error
+		var respInner dbt.DbtModelsListResponse
+		svc := client.NewDbtModelsList().ProjectId(projectId)
+		if respNextCursor == "" {
+			respInner, err = svc.Limit(limit).Do(ctx)
+		}
+		if respNextCursor != "" {
+			respInner, err = svc.Limit(limit).Cursor(respNextCursor).Do(ctx)
+		}
+		if err != nil {
+			return dbt.DbtModelsListResponse{}, err
+		}
+
+		resp.Data.Items = append(resp.Data.Items, respInner.Data.Items...)
+
+		if respInner.Data.NextCursor == "" {
+			break
+		}
+
+		respNextCursor = respInner.Data.NextCursor
+	}
+
+	return resp, nil
 }

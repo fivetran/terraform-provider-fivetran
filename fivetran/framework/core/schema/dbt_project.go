@@ -1,21 +1,38 @@
 package schema
 
 import (
+	"context"
+
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
+	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	datasourceSchema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-func DbtProjectResource() resourceSchema.Schema {
+func DbtProjectResource(ctx context.Context) resourceSchema.Schema {
+	attributes := dbtProjectSchema().GetResourceSchema()
+	attributes["models"] = resourceSchema.SetNestedAttribute{
+		Computed: true,
+		NestedObject: resourceSchema.NestedAttributeObject{
+			Attributes: DbtModelSchema().GetResourceSchema(),
+		},
+	}
 	return resourceSchema.Schema{
-		Attributes: dbtProjectSchema().GetResourceSchema(),
-		Blocks:     dbtProjectResourceBlocks(),
+		Attributes: attributes,
+		Blocks:     dbtProjectResourceBlocks(ctx),
 	}
 }
 
 func DbtProjectDatasource() datasourceSchema.Schema {
+	attributes := dbtProjectSchema().GetDatasourceSchema()
+	attributes["models"] = datasourceSchema.SetNestedAttribute{
+		Computed: true,
+		NestedObject: datasourceSchema.NestedAttributeObject{
+			Attributes: DbtModelSchema().GetDatasourceSchema(),
+		},
+	}
 	return datasourceSchema.Schema{
-		Attributes: dbtProjectSchema().GetDatasourceSchema(),
+		Attributes: attributes,
 		Blocks:     dbtProjectDatasourceBlocks(),
 	}
 }
@@ -110,12 +127,12 @@ func dbtProjectResourceSchema() resourceSchema.Schema {
 	}
 }
 
-func dbtProjectResourceBlocks() map[string]resourceSchema.Block {
+func dbtProjectResourceBlocks(ctx context.Context) map[string]resourceSchema.Block {
 	return map[string]resourceSchema.Block{
 		"project_config": resourceSchema.SingleNestedBlock{
 			Attributes: dbtProjectConfigSchema().GetResourceSchema(),
 		},
-		"models": dbtModelsNestedResourceBlock(),
+		"timeouts": timeouts.Block(ctx, timeouts.Opts{Create: true}),
 	}
 }
 
@@ -123,15 +140,6 @@ func dbtProjectDatasourceBlocks() map[string]datasourceSchema.Block {
 	return map[string]datasourceSchema.Block{
 		"project_config": datasourceSchema.SingleNestedBlock{
 			Attributes: dbtProjectConfigSchema().GetDatasourceSchema(),
-		},
-		"models": DbtModelsNestedDatasourceBlock(),
-	}
-}
-
-func dbtModelsNestedResourceBlock() resourceSchema.SetNestedBlock {
-	return resourceSchema.SetNestedBlock{
-		NestedObject: resourceSchema.NestedBlockObject{
-			Attributes: DbtModelSchema().GetResourceSchema(),
 		},
 	}
 }

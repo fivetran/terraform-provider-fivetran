@@ -116,6 +116,7 @@ func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Reso
 		resources.ConnectorCertificate,
 		resources.DestinationFingerprint,
 		resources.DestinationCertificate,
+		resources.DbtProject,
 	}
 }
 
