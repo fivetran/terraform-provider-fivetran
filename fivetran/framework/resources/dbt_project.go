@@ -161,7 +161,7 @@ func (r *dbtProject) Create(ctx context.Context, req resource.CreateRequest, res
 		if err != nil {
 			resp.Diagnostics.AddWarning(
 				"DbtProject Models Read Error.",
-				fmt.Sprintf("%v; code: %v; message: %v", err, projectResponse.Code, projectResponse.Message),
+				fmt.Sprintf("%v; code: %v; message: %v", err, modelsResp.Code, modelsResp.Message),
 			)
 		} else {
 			data.ReadFromResponse(ctx, projectResponse, &modelsResp)

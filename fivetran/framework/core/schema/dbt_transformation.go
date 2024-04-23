@@ -1,15 +1,18 @@
 package schema
 
 import (
+	"context"
+
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
+	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	datasourceSchema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-func DbtTransformationResourceSchema() resourceSchema.Schema {
+func DbtTransformationResourceSchema(ctx context.Context) resourceSchema.Schema {
 	return resourceSchema.Schema{
 		Attributes: dbtTransformationSchema().GetResourceSchema(),
-		Blocks:     dbtTransformationResourceBlocks(),
+		Blocks:     dbtTransformationResourceBlocks(ctx),
 	}
 }
 
@@ -100,11 +103,12 @@ func dbtTransformationScheduleSchema() core.Schema {
 	}
 }
 
-func dbtTransformationResourceBlocks() map[string]resourceSchema.Block {
+func dbtTransformationResourceBlocks(ctx context.Context) map[string]resourceSchema.Block {
 	return map[string]resourceSchema.Block{
 		"schedule": resourceSchema.SingleNestedBlock{
 			Attributes: dbtTransformationScheduleSchema().GetResourceSchema(),
 		},
+		"timeouts": timeouts.Block(ctx, timeouts.Opts{Create: true}),
 	}
 }
 

@@ -1,10 +1,10 @@
-package fivetran_test
+package e2e_test
 
 import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
 func TestNewDatasourceE2E(t *testing.T) {

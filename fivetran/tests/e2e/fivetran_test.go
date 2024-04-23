@@ -1,4 +1,4 @@
-package fivetran_test
+package e2e_test
 
 import (
 	"context"
@@ -7,16 +7,11 @@ import (
 	"testing"
 
 	gofivetran "github.com/fivetran/go-fivetran"
-	"github.com/fivetran/terraform-provider-fivetran/fivetran"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
-	"github.com/hashicorp/terraform-plugin-mux/tf5to6server"
-	"github.com/hashicorp/terraform-plugin-mux/tf6muxserver"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 const (
@@ -29,37 +24,12 @@ const (
 	BqProjectId             = "dulcet-yew-246109"
 )
 
-var providerSdk *schema.Provider
 var testProvioderFramework provider.Provider
 var client *gofivetran.Client
 
 var ProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServer, error){
 	"fivetran-provider": func() (tfprotov6.ProviderServer, error) {
-		ctx := context.Background()
-
-		upgradedSdkServer, err := tf5to6server.UpgradeServer(
-			ctx,
-			providerSdk.GRPCProvider, // Example terraform-plugin-sdk provider
-		)
-
-		if err != nil {
-			return nil, err
-		}
-
-		providers := []func() tfprotov6.ProviderServer{
-			providerserver.NewProtocol6(testProvioderFramework),
-			func() tfprotov6.ProviderServer {
-				return upgradedSdkServer
-			},
-		}
-
-		muxServer, err := tf6muxserver.NewMuxServer(ctx, providers...)
-
-		if err != nil {
-			return nil, err
-		}
-
-		return muxServer.ProviderServer(), nil
+		return providerserver.NewProtocol6(testProvioderFramework)(), nil
 	},
 }
 
@@ -88,11 +58,6 @@ func init() {
 	client.BaseURL(apiUrl)
 
 	testProvioderFramework = framework.FivetranProvider()
-
-	providerSdk = fivetran.Provider()
-	providerSdk.ConfigureContextFunc = func(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-		return client, diag.Diagnostics{}
-	}
 
 	if isPredefinedUserExist() && isPredefinedGroupExist() {
 		cleanupAccount()
