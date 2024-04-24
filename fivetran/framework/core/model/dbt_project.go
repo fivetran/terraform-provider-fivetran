@@ -56,9 +56,19 @@ func (d *DbtProjectResourceModel) ReadFromResponse(ctx context.Context, resp dbt
 	for _, envVar := range resp.Data.EnvironmentVars {
 		elements = append(elements, types.StringValue(envVar))
 	}
-	d.EnvironmentVars, _ = types.SetValue(types.StringType, elements)
+	if len(elements) > 0 {
+		d.EnvironmentVars = types.SetValueMust(types.StringType, elements)
+	} else {
+		if d.EnvironmentVars.IsUnknown() {
+			d.EnvironmentVars = types.SetNull(types.StringType)
+		}
+	}
 
-	d.TargetName = types.StringValue(resp.Data.TargetName)
+	if resp.Data.TargetName != "" {
+		d.TargetName = types.StringValue(resp.Data.TargetName)
+	} else {
+		d.TargetName = types.StringNull()
+	}
 	d.Threads = types.Int64Value(int64(resp.Data.Threads))
 	d.Type = types.StringValue(resp.Data.Type)
 	d.Status = types.StringValue(resp.Data.Status)
@@ -73,8 +83,20 @@ func (d *DbtProjectResourceModel) ReadFromResponse(ctx context.Context, resp dbt
 	}
 	projectConfigItems := map[string]attr.Value{
 		"git_remote_url": types.StringValue(resp.Data.ProjectConfig.GitRemoteUrl),
-		"git_branch":     types.StringValue(resp.Data.ProjectConfig.GitBranch),
-		"folder_path":    types.StringValue(resp.Data.ProjectConfig.FolderPath),
+		// "git_branch":     types.StringValue(resp.Data.ProjectConfig.GitBranch),
+		// "folder_path":    types.StringValue(resp.Data.ProjectConfig.FolderPath),
+	}
+
+	if resp.Data.ProjectConfig.GitBranch != "" {
+		projectConfigItems["git_branch"] = types.StringValue(resp.Data.ProjectConfig.GitBranch)
+	} else {
+		projectConfigItems["git_branch"] = types.StringNull()
+	}
+
+	if resp.Data.ProjectConfig.FolderPath != "" {
+		projectConfigItems["folder_path"] = types.StringValue(resp.Data.ProjectConfig.FolderPath)
+	} else {
+		projectConfigItems["folder_path"] = types.StringNull()
 	}
 
 	d.ProjectConfig, _ = types.ObjectValue(projectConfigTypes, projectConfigItems)

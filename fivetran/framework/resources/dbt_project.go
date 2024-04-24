@@ -164,6 +164,7 @@ func (r *dbtProject) Create(ctx context.Context, req resource.CreateRequest, res
 				fmt.Sprintf("%v; code: %v; message: %v", err, modelsResp.Code, modelsResp.Message),
 			)
 		} else {
+			projectResponse.Data.Status = "READY"
 			data.ReadFromResponse(ctx, projectResponse, &modelsResp)
 		}
 	}
