@@ -62,7 +62,7 @@ func TestDataSourceUserGroupMembershipsMappingMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				tfmock.AssertEqual(t, userGroupMembershipsDataSourceMockGetHandler.Interactions, 2)
+				tfmock.AssertEqual(t, userGroupMembershipsDataSourceMockGetHandler.Interactions, 1)
 				tfmock.AssertNotEmpty(t, userGroupMembershipsDataSourceMockData)
 				return nil
 			},

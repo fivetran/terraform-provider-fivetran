@@ -77,7 +77,7 @@ func TestDataSourceConnectorConfigMappingMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				tfmock.AssertEqual(t, connectorDataSourceMockGetHandler.Interactions, 2)
+				tfmock.AssertEqual(t, connectorDataSourceMockGetHandler.Interactions, 1)
 				tfmock.AssertNotEmpty(t, connectorDataSourceMockData)
 				return nil
 			},
@@ -134,7 +134,7 @@ func TestDataSourceConnectorMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				tfmock.AssertEqual(t, getHandler.Interactions, 2)
+				tfmock.AssertEqual(t, getHandler.Interactions, 1)
 				return nil
 			},
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "id", "connector_id"),

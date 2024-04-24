@@ -71,7 +71,7 @@ func TestDataSourceDbtModelsMappingMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				tfmock.AssertEqual(t, dbtModelsDataSourceMockGetHandler.Interactions, 4)
+				tfmock.AssertEqual(t, dbtModelsDataSourceMockGetHandler.Interactions, 2)
 				return nil
 			},
 			resource.TestCheckResourceAttr("data.fivetran_dbt_models.test_models", "models.0.id", "model_id"),

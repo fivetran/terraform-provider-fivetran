@@ -56,7 +56,7 @@ func TestDataSourceWebhookMappingMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				tfmock.AssertEqual(t, webhookDataSourceMockGetHandler.Interactions, 2)
+				tfmock.AssertEqual(t, webhookDataSourceMockGetHandler.Interactions, 1)
 				tfmock.AssertNotEmpty(t, webhookDataSourceMockData)
 				return nil
 			},

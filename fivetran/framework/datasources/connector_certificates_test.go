@@ -95,7 +95,7 @@ func TestDataSourceConnectorCertificatesMock(t *testing.T) {
 					}`,
 					Check: resource.ComposeAggregateTestCheckFunc(
 						func(s *terraform.State) error {
-							tfmock.AssertEqual(t, getHandler.Interactions, 4)
+							tfmock.AssertEqual(t, getHandler.Interactions, 2)
 							return nil
 						},
 						resource.TestCheckResourceAttr("data.fivetran_connector_certificates.test", "id", "connector_id"),
