@@ -7,9 +7,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func SetContextTimeout(ctx context.Context, timeout time.Duration) (context.Context, context.CancelFunc) {
@@ -71,17 +68,6 @@ func CopySensitiveStringValue(localConfig *map[string]interface{}, targetConfig,
 	} else {
 		// when copying local value - use locak key for source
 		CopyStringValue(targetConfig, *localConfig, localKey, "")
-	}
-}
-
-func CopySensitiveListValue(localConfig *map[string]interface{}, targetConfig, upstreamConfig map[string]interface{}, targetKey, sourceKey string) {
-	if localConfig != nil {
-		if sourceKey == "" {
-			sourceKey = targetKey
-		}
-		MapAddXInterface(targetConfig, targetKey, (*localConfig)[sourceKey].(*schema.Set).List())
-	} else {
-		CopyList(targetConfig, upstreamConfig, targetKey, sourceKey)
 	}
 }
 
@@ -221,22 +207,6 @@ func MapAddXString(msi map[string]interface{}, k string, v []string) {
 	if len(v) > 0 {
 		msi[k] = v
 	}
-}
-
-// newDiag receives a diag.Severity, a summary, a detail, and returns a diag.Diagnostic
-func NewDiag(severity diag.Severity, summary, detail string) diag.Diagnostic {
-	return diag.Diagnostic{
-		Severity: severity,
-		Summary:  summary,
-		Detail:   detail,
-	}
-}
-
-// newAppendDiag receives diag.Diagnostics, a diag.Severity, a summary, and a detail. It makes a new
-// diag.Diagnostic, appends it to the diag.Diagnostics and returns the diag.Diagnostics.
-func NewDiagAppend(diags diag.Diagnostics, severity diag.Severity, summary, detail string) diag.Diagnostics {
-	diags = append(diags, NewDiag(severity, summary, detail))
-	return diags
 }
 
 func CopyMap(source map[string]interface{}) map[string]interface{} {

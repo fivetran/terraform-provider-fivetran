@@ -2,7 +2,6 @@ package mock
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -14,22 +13,15 @@ import (
 	fivetranSdk "github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/tests/mock"
 
-	"github.com/fivetran/terraform-provider-fivetran/fivetran"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
-	"github.com/hashicorp/terraform-plugin-mux/tf5to6server"
-	"github.com/hashicorp/terraform-plugin-mux/tf6muxserver"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 var client *fivetranSdk.Client
 var mockClient *mock.HttpClient
 
-// var testProviders map[string]*schema.Provider
-var testProviderSdk *schema.Provider
 var testProvioderFramework provider.Provider
 
 func MockClient() *mock.HttpClient {
@@ -43,31 +35,7 @@ var (
 
 var ProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServer, error){
 	"fivetran-provider": func() (tfprotov6.ProviderServer, error) {
-		ctx := context.Background()
-
-		upgradedSdkServer, err := tf5to6server.UpgradeServer(
-			ctx,
-			testProviderSdk.GRPCProvider, // Example terraform-plugin-sdk provider
-		)
-
-		if err != nil {
-			return nil, err
-		}
-
-		providers := []func() tfprotov6.ProviderServer{
-			providerserver.NewProtocol6(testProvioderFramework),
-			func() tfprotov6.ProviderServer {
-				return upgradedSdkServer
-			},
-		}
-
-		muxServer, err := tf6muxserver.NewMuxServer(ctx, providers...)
-
-		if err != nil {
-			return nil, err
-		}
-
-		return muxServer.ProviderServer(), nil
+		return providerserver.NewProtocol6(testProvioderFramework)(), nil
 	},
 }
 
@@ -76,11 +44,6 @@ func init() {
 	mockClient = mock.NewHttpClient()
 	client.BaseURL("https://api.fivetran.com/v1")
 	client.SetHttpClient(mockClient)
-
-	testProviderSdk = fivetran.Provider()
-	testProviderSdk.ConfigureContextFunc = func(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-		return client, diag.Diagnostics{}
-	}
 
 	testProvioderFramework = framework.FivetranProviderMock(mockClient)
 
@@ -243,6 +206,10 @@ func assertKeyExists(t *testing.T, source map[string]interface{}, key string) in
 
 func AssertKeyExists(t *testing.T, source map[string]interface{}, key string) interface{} {
 	return assertKeyExists(t, source, key)
+}
+
+func AssertArrayItems(t *testing.T, source []interface{}, expected []interface{}) {
+	assertArrayItems(t, source, expected)
 }
 
 func assertArrayItems(t *testing.T, source []interface{}, expected []interface{}) {

@@ -1,22 +1,24 @@
-package fivetran_test
+package e2e_test
 
 import (
 	"context"
 	"errors"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestResourceWebhookE2E(t *testing.T) {
-	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() {},
-		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
-		CheckDestroy:             testFivetranWebhookResourceDestroy,
-		Steps: []resource.TestStep{
-			{
-				Config: `
+
+	resource.Test(t,
+		resource.TestCase{
+			PreCheck:                 func() {},
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			CheckDestroy:             testFivetranWebhookResourceDestroy,
+			Steps: []resource.TestStep{
+				{
+					Config: `
             resource "fivetran_webhook" "test_webhook" {
                  provider = fivetran-provider
 
@@ -28,18 +30,18 @@ func TestResourceWebhookE2E(t *testing.T) {
                  events = ["sync_start","sync_end"]
             }
           `,
-				Check: resource.ComposeAggregateTestCheckFunc(
-					testFivetranWebhookResourceCreate(t, "fivetran_webhook.test_webhook"),
-					resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "type", "account"),
-					resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "url", "https://your-host.your-domain/webhook"),
-					resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "secret", "password"),
-					resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "active", "false"),
-					resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.0", "sync_end"),
-					resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.1", "sync_start"),
-				),
-			},
-			{
-				Config: `
+					Check: resource.ComposeAggregateTestCheckFunc(
+						testFivetranWebhookResourceCreate(t, "fivetran_webhook.test_webhook"),
+						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "type", "account"),
+						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "url", "https://your-host.your-domain/webhook"),
+						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "secret", "password"),
+						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "active", "false"),
+						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.0", "sync_end"),
+						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.1", "sync_start"),
+					),
+				},
+				{
+					Config: `
             resource "fivetran_webhook" "test_webhook" {
                  provider = fivetran-provider
 
@@ -51,19 +53,19 @@ func TestResourceWebhookE2E(t *testing.T) {
                  events = ["sync_start","sync_end", "connection_failure"]
             }
           `,
-				Check: resource.ComposeAggregateTestCheckFunc(
-					testFivetranWebhookResourceUpdate(t, "fivetran_webhook.test_webhook"),
-					resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "type", "account"),
-					resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "url", "https://your-host.your-domain/webhook_1"),
-					resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "secret", "password_2"),
-					resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "active", "false"),
-					resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.0", "connection_failure"),
-					resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.1", "sync_end"),
-					resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.2", "sync_start"),
-				),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						testFivetranWebhookResourceUpdate(t, "fivetran_webhook.test_webhook"),
+						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "type", "account"),
+						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "url", "https://your-host.your-domain/webhook_1"),
+						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "secret", "password_2"),
+						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "active", "false"),
+						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.0", "connection_failure"),
+						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.1", "sync_end"),
+						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.2", "sync_start"),
+					),
+				},
 			},
-		},
-	})
+		})
 }
 
 func testFivetranWebhookResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {

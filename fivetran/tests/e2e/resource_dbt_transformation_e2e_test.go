@@ -1,4 +1,4 @@
-package fivetran_test
+package e2e_test
 
 import (
 	"context"
@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestResourceDbtTransformationE2E(t *testing.T) {
@@ -63,9 +63,9 @@ func TestResourceDbtTransformationE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "status", "READY"),
 					resource.TestCheckResourceAttr("fivetran_dbt_transformation.test_transformation", "paused", "true"),
 					resource.TestCheckResourceAttr("fivetran_dbt_transformation.test_transformation", "run_tests", "false"),
-					resource.TestCheckResourceAttr("fivetran_dbt_transformation.test_transformation", "schedule.0.schedule_type", "INTERVAL"),
-					resource.TestCheckResourceAttr("fivetran_dbt_transformation.test_transformation", "schedule.0.interval", "60"),
-					resource.TestCheckResourceAttr("fivetran_dbt_transformation.test_transformation", "schedule.0.days_of_week.0", "MONDAY"),
+					resource.TestCheckResourceAttr("fivetran_dbt_transformation.test_transformation", "schedule.schedule_type", "INTERVAL"),
+					resource.TestCheckResourceAttr("fivetran_dbt_transformation.test_transformation", "schedule.interval", "60"),
+					resource.TestCheckResourceAttr("fivetran_dbt_transformation.test_transformation", "schedule.days_of_week.0", "MONDAY"),
 				),
 			},
 		},

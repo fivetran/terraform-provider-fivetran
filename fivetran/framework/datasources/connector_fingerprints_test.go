@@ -79,7 +79,7 @@ func TestDataSourceConnectorFingerprintsMock(t *testing.T) {
 					}`,
 					Check: resource.ComposeAggregateTestCheckFunc(
 						func(s *terraform.State) error {
-							tfmock.AssertEqual(t, connectorFingerprintsGetHandler.Interactions, 4)
+							tfmock.AssertEqual(t, connectorFingerprintsGetHandler.Interactions, 2)
 							return nil
 						},
 						resource.TestCheckResourceAttr("data.fivetran_connector_fingerprints.test", "connector_id", "connector_id"),

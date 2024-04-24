@@ -22,7 +22,7 @@ func TestDataSourceGroupSSHKeyMappingMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				tfmock.AssertEqual(t, groupSshKeyGetHandler.Interactions, 2)
+				tfmock.AssertEqual(t, groupSshKeyGetHandler.Interactions, 1)
 				return nil
 			},
 			resource.TestCheckResourceAttr("data.fivetran_group_ssh_key.test_data", "public_key", "public_key"),

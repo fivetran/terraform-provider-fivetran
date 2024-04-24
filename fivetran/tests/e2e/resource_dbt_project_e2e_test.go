@@ -1,4 +1,4 @@
-package fivetran_test
+package e2e_test
 
 import (
 	"context"
@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestResourceDbtProjectE2E(t *testing.T) {
@@ -55,9 +55,9 @@ func TestResourceDbtProjectE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "threads", "1"),
 					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "default_schema", "dbt_demo_test_e2e_terraform"),
 					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "type", "GIT"),
-					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "project_config.0.git_remote_url", "git@github.com:fivetran/dbt_demo.git"),
-					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "project_config.0.git_branch", "main"),
-					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "project_config.0.folder_path", "/folder/path"),
+					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "project_config.git_remote_url", "git@github.com:fivetran/dbt_demo.git"),
+					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "project_config.git_branch", "main"),
+					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "project_config.folder_path", "/folder/path"),
 				),
 			},
 			{
@@ -84,8 +84,8 @@ func TestResourceDbtProjectE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "dbt_version", "1.0.0"),
 					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "target_name", "target_name"),
 					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "threads", "2"),
-					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "project_config.0.git_branch", "not_main"),
-					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "project_config.0.folder_path", "/folder/path_1"),
+					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "project_config.git_branch", "not_main"),
+					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "project_config.folder_path", "/folder/path_1"),
 				),
 			},
 		},

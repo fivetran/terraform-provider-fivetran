@@ -116,6 +116,8 @@ func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Reso
 		resources.ConnectorCertificate,
 		resources.DestinationFingerprint,
 		resources.DestinationCertificate,
+		resources.DbtProject,
+		resources.DbtTransformation,
 	}
 }
 
@@ -147,5 +149,9 @@ func (p *fivetranProvider) DataSources(ctx context.Context) []func() datasource.
 		datasources.ConnectorCertificates,
 		datasources.DestinationFingerprints,
 		datasources.DestinationCertificates,
+		datasources.DbtModels,
+		datasources.DbtProject,
+		datasources.DbtProjects,
+		datasources.DbtTransformation,
 	}
 }

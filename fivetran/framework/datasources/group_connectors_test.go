@@ -23,7 +23,7 @@ func TestDataSourceGroupConnectorsMappingMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				tfmock.AssertEqual(t, getHandler.Interactions, 2)
+				tfmock.AssertEqual(t, getHandler.Interactions, 1)
 				return nil
 			},
 			resource.TestCheckResourceAttr("data.fivetran_group_connectors.test_group_connectors", "id", "group"),
@@ -130,4 +130,3 @@ func TestDataSourceGroupConnectorsMappingMock(t *testing.T) {
 		},
 	)
 }
-

@@ -1,10 +1,11 @@
-package mock
+package datasources_test
 
 import (
 	"net/http"
 	"testing"
 
 	"github.com/fivetran/go-fivetran/tests/mock"
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
@@ -45,19 +46,19 @@ const (
 )
 
 func setupMockClientdbtProjectsDataSourceConfigMapping(t *testing.T) {
-	mockClient.Reset()
+	tfmock.MockClient().Reset()
 	getIteration := 0
-	dbtProjectsDataSourceMockGetHandler = mockClient.When(http.MethodGet, "/v1/dbt/projects").ThenCall(
+	dbtProjectsDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/dbt/projects").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			cursor := req.URL.Query().Get("cursor")
 			if cursor == "" {
-				dbtProjectsDataSourceMockData = createMapFromJsonString(t, dbtProjectsMappingResponseWithCursor)
+				dbtProjectsDataSourceMockData = tfmock.CreateMapFromJsonString(t, dbtProjectsMappingResponseWithCursor)
 			} else {
-				assertEqual(t, cursor, "next_cursor")
-				dbtProjectsDataSourceMockData = createMapFromJsonString(t, dbtProjectsMappingResponse)
+				tfmock.AssertEqual(t, cursor, "next_cursor")
+				dbtProjectsDataSourceMockData = tfmock.CreateMapFromJsonString(t, dbtProjectsMappingResponse)
 			}
 			getIteration = getIteration + 1
-			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", dbtProjectsDataSourceMockData), nil
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", dbtProjectsDataSourceMockData), nil
 		},
 	)
 }
@@ -71,7 +72,7 @@ func TestDataSourceDbtProjectsMappingMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, dbtProjectsDataSourceMockGetHandler.Interactions, 4)
+				tfmock.AssertEqual(t, dbtProjectsDataSourceMockGetHandler.Interactions, 2)
 				return nil
 			},
 			resource.TestCheckResourceAttr("data.fivetran_dbt_projects.test_projects", "projects.0.id", "project_id"),
@@ -92,7 +93,7 @@ func TestDataSourceDbtProjectsMappingMock(t *testing.T) {
 			PreCheck: func() {
 				setupMockClientdbtProjectsDataSourceConfigMapping(t)
 			},
-			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				return nil
 			},

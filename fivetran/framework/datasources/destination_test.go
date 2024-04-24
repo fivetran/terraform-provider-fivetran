@@ -10,7 +10,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
-
 var (
 	destinationDataSourceMockGetHandler *mock.Handler
 
@@ -107,7 +106,7 @@ func TestDataSourceDestinationConfigMappingMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				tfmock.AssertEqual(t, destinationDataSourceMockGetHandler.Interactions, 2)
+				tfmock.AssertEqual(t, destinationDataSourceMockGetHandler.Interactions, 1)
 				tfmock.AssertNotEmpty(t, destinationDataSourceMockData)
 				return nil
 			},
