@@ -149,12 +149,9 @@ func getStringValue(value, local interface{}, currentField *common.ConfigField, 
 	if currentField != nil && currentField.GetIsSensitive(service) && local != nil {
 		return types.StringValue(local.(string))
 	}
-	if t, ok := currentField.ItemType[service]; ok {
-		if t == common.Integer {
-			return types.StringValue(fmt.Sprintf("%v", value))
-		}
-	}
-	return types.StringValue(value.(string))
+
+	// print any value as a string
+	return types.StringValue(fmt.Sprintf("%v", value))
 }
 
 func getBoolValue(value, local interface{}, currentField *common.ConfigField) types.Bool {
