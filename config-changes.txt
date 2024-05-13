@@ -1,1 +1,10 @@
-- Added field `fivetran_connector.config.project_key` for services: `commercetools`.
+- Added field `fivetran_connector.config.api` for services: `freshsuccess`.
+- Added field `fivetran_connector.config.db` for services: `myosh`.
+- Added field `fivetran_connector.config.snc_certificate` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.snc_mode` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.snc_my_name` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.toast_id` for services: `toast`.
+- Added field `fivetran_connector.config.account_plan` for services: `tymeshift`.
+- Added field `fivetran_connector.config.primary_key` for services: `care_quality_commission`.
+- Added field `fivetran_connector.config.scope` for services: `ebay`.
+- Added field `fivetran_connector.config.convert_dats_type_to_date` for services: `sap_hana_db`.

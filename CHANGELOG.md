@@ -5,10 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.22...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.23...HEAD)
+
+## [1.1.23](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.22...v1.1.23)
 
 ## Updated
 - Migration to terraform-provider-framework finished.
+
+## Added
+New connection services supported:
+- Supported service: `bizzabo`
+- Supported service: `ebay`
+- Supported service: `freshsuccess`
+- Supported service: `lemlist`
+- Supported service: `microsoft_dynamics_365_fno`
+- Supported service: `myosh`
+- Supported service: `picqer`
+- Supported service: `proofpoint_security_awareness`
+- Supported service: `solarwinds_service_desk`
+- Supported service: `toast`
+- Supported service: `tymeshift`
+- Supported service: `veeqo`
+- Supported service: `veevavault`
+- Supported service: `vonage_contact_center`
+- Supported service: `yougov_sport`
+
+New connector config fields supported:
+- Added field `fivetran_connector.config.api` for services: `freshsuccess`.
+- Added field `fivetran_connector.config.db` for services: `myosh`.
+- Added field `fivetran_connector.config.snc_certificate` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.snc_mode` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.snc_my_name` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.toast_id` for services: `toast`.
+- Added field `fivetran_connector.config.account_plan` for services: `tymeshift`.
+- Added field `fivetran_connector.config.primary_key` for services: `care_quality_commission`.
+- Added field `fivetran_connector.config.scope` for services: `ebay`.
+- Added field `fivetran_connector.config.convert_dats_type_to_date` for services: `sap_hana_db`.
+
+New destination config fields supported:
+- Added field `fivetran_destination.config.oauth2_client_id` for services: `databricks`.
+- Added field `fivetran_destination.config.oauth2_secret` for services: `databricks`.
 
 ## [1.1.22](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.21...v1.1.22)
 

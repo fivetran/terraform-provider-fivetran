@@ -9,6 +9,7 @@ azure_sql_database
 azure_sql_managed_db_warehouse
 big_query
 big_query_dts
+clickhouse
 confluent_cloud_wh
 databricks
 managed_big_query

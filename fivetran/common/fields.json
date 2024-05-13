@@ -301,11 +301,25 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "eventsforce": "Your Eventsforce account name.",
          "freshdesk_contact_center": "Your Freshdesk Contact Center account name.",
          "happyfox": "Your HappyFox account name.",
          "maxio_saasoptics": "Your Maxio SaaSOptics account name.",
          "talkdesk": "Your Talkdesk Account Name.",
          "udemy_business": "Your Udemy Business account name."
+      },
+      "api_field": ""
+   },
+   "account_plan": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "tymeshift": "Your Tymeshift account plan."
       },
       "api_field": ""
    },
@@ -958,6 +972,19 @@
       },
       "api_field": ""
    },
+   "api": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "freshsuccess": "Set this parameter to `api`."
+      },
+      "api_field": ""
+   },
    "api_access_token": {
       "readonly": false,
       "sensitive": true,
@@ -1023,6 +1050,7 @@
          "avantlink": "Your AvantLink API key.",
          "ballotready": "Your BallotReady API token.",
          "bamboohr": "Your API Key.",
+         "bizzabo": "Your Bizzabo API key.",
          "braze": "Your Braze API Key.",
          "brevo": "Your Brevo API key.",
          "callrail": "Your CallRail API key.",
@@ -1069,6 +1097,7 @@
          "freshdesk": "Your Freshdesk API Key.",
          "freshdesk_contact_center": "Your Freshdesk Contact Center API key.",
          "freshservice": "Your Freshservice API Key.",
+         "freshsuccess": "Your Freshsuccess API key.",
          "freshteam": "Your Freshteam API key.",
          "friendbuy": "Your Friendbuy API key.",
          "fullstory": "Your Fullstory API key.",
@@ -1094,6 +1123,7 @@
          "kisi": "Your Kisi API key.",
          "klaviyo": "Your Klaviyo API key.",
          "learnupon": "Your Learnupon API key.",
+         "lemlist": "Your Lemlist API key.",
          "lever": "Your Lever API key.",
          "liftoff": "Your Liftoff API key.",
          "linear": "",
@@ -1107,12 +1137,15 @@
          "maxio_chargify": "Enter Your API Key.",
          "messagebird": "Your MessageBird API key.",
          "mountain": "Your MNTN API key.",
+         "myosh": "Your Myosh API Key.",
          "ometria": "Your Ometria API Key.",
          "ordway": "Your Ordway API key.",
          "ortto": "Your Ortto API key.",
          "pagerduty": "Your PagerDuty API key.",
          "papershift": "Your Papershift API Key",
+         "partnerize": "Your Partnerize user API key.",
          "persona": "Your Persona API key.",
+         "picqer": "Your Picqer API key.",
          "pinpoint": "Your Pinpoint API key.",
          "pipe17": "The Pipe17 API key.",
          "playvox": "Your Playvox API Key.",
@@ -1139,7 +1172,7 @@
          "shortcut": "Your Shortcut API token.",
          "shortio": "Your Short.io API key.",
          "simplesat": "Your Simplesat API key.",
-         "sistrix": "Your Sistrix api key.",
+         "sistrix": "Your SISTRIX API key.",
          "skilljar": "",
          "smartwaiver": "Your Smartwaiver API key.",
          "snyk": "Your Snyk API key.",
@@ -1157,12 +1190,14 @@
          "transcend": "Your Transcend API Key.",
          "trello": "Your TRELLO api key.",
          "uppromote": "Your UpPromote API key.",
+         "veeqo": "Your Veeqo API key.",
          "visit_by_ges": "Your Visit by GES API key.",
          "vitally": "Your Vitally API key.",
          "vonage": "Your Vonage API Key.",
          "vts": "Your VTS API key.",
          "webconnex": "Your Webconnex API key.",
          "xsolla": "Your Xsolla API key.",
+         "yougov_sport": "Your Yougov Sport API key.",
          "zingtree": "Your Zingtree API key."
       },
       "api_field": ""
@@ -1310,7 +1345,7 @@
          "qualtrics": "API token of the Qualtrics account.",
          "rakutenadvertising": "Your Rakuten Advertising API token.",
          "recharge": "The Recharge API token.",
-         "referralhero": "Your Referralhero API Token.",
+         "referralhero": "Your Referralhero API token.",
          "resource_management_by_smartsheet": "Your Resource Management by Smartsheet API token.",
          "retently": "Your Retently API token.",
          "safetyculture": "Your SafetyCulture API token.",
@@ -1550,7 +1585,8 @@
       "item_type": {},
       "description": {
          "datadog": "Your Datadog application key.",
-         "dear": "Your Dear Application key."
+         "dear": "Your Dear Application key.",
+         "partnerize": "Your Partnerize user application key."
       },
       "api_field": ""
    },
@@ -1988,7 +2024,8 @@
          "mailgun": "Your Mailgun base URL.",
          "ortto": "Your Ortto base URL. Possible values: `api`, `api.au`, `api.eu`.",
          "salesforce": "(Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.",
-         "salesforce_sandbox": "(Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`."
+         "salesforce_sandbox": "(Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.",
+         "veevavault": "Your Veeva Vault base URL."
       },
       "api_field": ""
    },
@@ -2264,6 +2301,7 @@
          "culture_amp": "Your Culture Amp client ID.",
          "cvent": "Your Cvent client ID.",
          "d2l_brightspace": "Your D2L Brightspace client ID.",
+         "ebay": "Your eBay client ID.",
          "flexport": "The Flexport API Key.",
          "genesys": "Your Genesys client ID.",
          "hana_sap_hva_b1": "",
@@ -2302,11 +2340,15 @@
          "swoogo": "Your Swoogo client Id.",
          "taboola": "The Taboola client ID.",
          "talkdesk": "The Client ID of your OAuth Client",
+         "toast": "Your Toast client ID.",
          "trelica": "Your Trelica client ID.",
+         "tymeshift": "Your Tymeshift client ID.",
          "udemy_business": "Your Udemy Business client ID.",
+         "vonage_contact_center": "Your Vonage Contact Center client ID.",
          "walmart_marketplace": "Your Walmart Marketplace client ID.",
          "xero": "your clientId",
          "xray": "Your Xray Client ID.",
+         "yougov_sport": "Your Yougov Sport client ID.",
          "zendesk_chat": "Your Zendesk client ID.",
          "zoho_books": "Your Zoho Books Client ID.",
          "zoho_campaigns": "Your Zoho Campaigns Client ID.",
@@ -2330,7 +2372,8 @@
       "item_type": {},
       "description": {
          "appfigures": "Your Appfigures Client Key.",
-         "thinkific": "Your Thinkific client key."
+         "thinkific": "Your Thinkific client key.",
+         "yougov_sport": "Your Yougov Sport client key."
       },
       "api_field": ""
    },
@@ -2424,6 +2467,7 @@
          "culture_amp": "Your Culture Amp client secret.",
          "cvent": "Your Cvent client secret.",
          "d2l_brightspace": "Your D2L Brightspace client secret.",
+         "ebay": "Your eBay client secret.",
          "flexport": "The Flexport API Secret.",
          "genesys": "Your Genesys client secret.",
          "ilevel": "",
@@ -2454,8 +2498,11 @@
          "taboola": "The Taboola client secret.",
          "talkdesk": "The Client Secret of your OAuth Client",
          "thinkific": "Your Thinkific client secret.",
+         "toast": "Your Toast client secret.",
          "trelica": "Your Trelica client secret.",
+         "tymeshift": "Your Tymeshift client secret.",
          "udemy_business": "Your Udemy Business client secret.",
+         "vonage_contact_center": "Your Vonage Contact Center client secret.",
          "walmart_marketplace": "Your Walmart Marketplace client secret.",
          "xero": "your clientSecret",
          "xray": "Your Xray Client Secret.",
@@ -2666,7 +2713,7 @@
       "item_type": {},
       "description": {
          "facebook": "Option to select Prebuilt Reports or Custom Reports. [Possible config_type values](https://fivetran.com/docs/applications/facebook-ad-insights/api-config#configtype).",
-         "google_analytics": "Whether to use the [Prebuilt Reports or Custom Reports](https://fivetran.com/docs/applications/google-analytics#schemainformation)."
+         "google_analytics": "Whether to use the [Prebuilt Reports or Custom Reports](https://fivetran.com/docs/connectors/applications/google-analytics#schemainformation)."
       },
       "api_field": ""
    },
@@ -2742,6 +2789,7 @@
          "azure_blob_storage": "The blob storage container connection string.",
          "azure_event_hub": "Connection string of the Event Hub Namespace you want to sync.",
          "azure_service_bus": "The connection string used for authentication. Required if the authentication type is `ConnectionString` ",
+         "microsoft_dynamics_365_fno": "The blob storage container's connection string.",
          "microsoft_dynamics_365_fo": "The blob storage container connection string."
       },
       "api_field": ""
@@ -2889,6 +2937,7 @@
       "item_type": {},
       "description": {
          "azure_blob_storage": "The name of the blob container.",
+         "microsoft_dynamics_365_fno": "The name of the blob container.",
          "microsoft_dynamics_365_fo": "The name of the blob container."
       },
       "api_field": ""
@@ -2957,6 +3006,19 @@
       "item_type": {},
       "description": {
          "google_ads": "A period of time in days during which a conversion is recorded."
+      },
+      "api_field": ""
+   },
+   "convert_dats_type_to_date": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sap_hana_db": ""
       },
       "api_field": ""
    },
@@ -3131,7 +3193,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "snapchat_ads": "[List of Core, Additional and Conversion Metrics Stats Fields](https://fivetran.com/docs/applications/snapchat-ads/custom-reports#basemetricsfields)."
+               "snapchat_ads": "[List of Core, Additional and Conversion Metrics Stats Fields](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports#basemetricsfields)."
             },
             "api_field": ""
          },
@@ -3144,7 +3206,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "snapchat_ads": "[Sets Breakdown on custom report](https://fivetran.com/docs/applications/snapchat-ads/custom-reports#breakdown)."
+               "snapchat_ads": "[Sets Breakdown on custom report](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports#breakdown)."
             },
             "api_field": ""
          },
@@ -3157,7 +3219,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "snapchat_ads": "[Sets Breakout on custom report](https://fivetran.com/docs/applications/snapchat-ads/custom-reports#breakout)."
+               "snapchat_ads": "[Sets Breakout on custom report](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports#breakout)."
             },
             "api_field": ""
          },
@@ -3196,7 +3258,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "snapchat_ads": "[Sets Dimension on custom report](https://fivetran.com/docs/applications/snapchat-ads/custom-reports#dimension)."
+               "snapchat_ads": "[Sets Dimension on custom report](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports#dimension)."
             },
             "api_field": ""
          },
@@ -3239,7 +3301,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "snapchat_ads": "[Sets Granularity on custom report](https://fivetran.com/docs/applications/snapchat-ads/customr-reports#granularity)."
+               "snapchat_ads": "[Sets Granularity on custom report](https://fivetran.com/docs/connectors/applications/snapchat-ads/customr-reports#granularity)."
             },
             "api_field": ""
          },
@@ -3335,7 +3397,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "snapchat_ads": "[List of SKAd  Metrics fields in custom report](https://fivetran.com/docs/applications/snapchat-ads/custom-reports#skadmetricsfields)."
+               "snapchat_ads": "[List of SKAd  Metrics fields in custom report](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports#skadmetricsfields)."
             },
             "api_field": ""
          },
@@ -3357,7 +3419,7 @@
       "item_type": {},
       "description": {
          "reddit_ads": "The list of custom report configurations. Each report corresponds to a table within the schema to which connector will sync the data.",
-         "snapchat_ads": "[Custom reports for Snapchat Ads connector](https://fivetran.com/docs/applications/snapchat-ads/custom-reports).",
+         "snapchat_ads": "[Custom reports for Snapchat Ads connector](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports).",
          "tiktok_ads": "Title of Custom Report"
       },
       "api_field": ""
@@ -3377,7 +3439,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "facebook_ads": "List of action_breakdowns which connector will sync. [Possible action_breakdowns values](https://fivetran.com/docs/applications/facebook-ads-insights/api-config#actionbreakdowns)."
+               "facebook_ads": "List of action_breakdowns which connector will sync. [Possible action_breakdowns values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#actionbreakdowns)."
             },
             "api_field": ""
          },
@@ -3390,7 +3452,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "facebook_ads": "The report time of action stats. [Possible action_report time values](https://fivetran.com/docs/applications/facebook-ads-insights/api-config#actionreporttime)."
+               "facebook_ads": "The report time of action stats. [Possible action_report time values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#actionreporttime)."
             },
             "api_field": ""
          },
@@ -3403,7 +3465,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "facebook_ads": "Options to select aggregation duration. [Possible aggregation values](https://fivetran.com/docs/applications/facebook-ads-insights/api-config#aggregation)."
+               "facebook_ads": "Options to select aggregation duration. [Possible aggregation values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#aggregation)."
             },
             "api_field": ""
          },
@@ -3416,7 +3478,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "facebook_ads": "List of breakdowns which connector will sync. [Possible breakdowns values](https://fivetran.com/docs/applications/facebook-ads-insights/api-config#breakdowns)."
+               "facebook_ads": "List of breakdowns which connector will sync. [Possible breakdowns values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#breakdowns)."
             },
             "api_field": ""
          },
@@ -3429,7 +3491,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "facebook_ads": "Time period to attribute conversions based on clicks. [Possible click_attribution_window values](https://fivetran.com/docs/applications/facebook-ads-insights/api-config#clickattributionwindow)."
+               "facebook_ads": "Time period to attribute conversions based on clicks. [Possible click_attribution_window values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#clickattributionwindow)."
             },
             "api_field": ""
          },
@@ -3442,7 +3504,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "facebook_ads": "Option to select Prebuilt Reports or Custom Reports. [Possible config_type values](https://fivetran.com/docs/applications/facebook-ads-insights/api-config#configtype)."
+               "facebook_ads": "Option to select Prebuilt Reports or Custom Reports. [Possible config_type values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#configtype)."
             },
             "api_field": ""
          },
@@ -3455,7 +3517,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "facebook_ads": "List of fields which connector will sync. [Possible field values](https://fivetran.com/docs/applications/facebook-ads-insights/api-config#fields)."
+               "facebook_ads": "List of fields which connector will sync. [Possible field values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#fields)."
             },
             "api_field": ""
          },
@@ -3481,7 +3543,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "facebook_ads": "The report name to which connector will sync the data. [Possible prebuilt_report values](https://fivetran.com/docs/applications/facebook-ads-insights/api-config#prebuiltreport)."
+               "facebook_ads": "The report name to which connector will sync the data. [Possible prebuilt_report values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#prebuiltreport)."
             },
             "api_field": ""
          },
@@ -3520,7 +3582,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "facebook_ads": "Time period to attribute conversions based on views. [Possible view_attribution_window values](https://fivetran.com/docs/applications/facebook-ads-insights/api-config#viewattributionwindow)."
+               "facebook_ads": "Time period to attribute conversions based on views. [Possible view_attribution_window values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#viewattributionwindow)."
             },
             "api_field": ""
          }
@@ -3605,7 +3667,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "cosmos": "The source data access method. Supported values:`ACCOUNT_KEY`- Data access method that uses account keys to authenticate to the source database. It comes in both read-write and read-only variants.`RESOURCE_TOKEN`- Fine-grained permission model based on native Azure Cosmos DB users and permissions. Learn more in our [Cosmos DB Data Access Methods documentation](https://fivetran.com/docs/databases/cosmos#dataaccessmethods)."
+         "cosmos": "The source data access method. Supported values:`ACCOUNT_KEY`- Data access method that uses account keys to authenticate to the source database. It comes in both read-write and read-only variants.`RESOURCE_TOKEN`- Fine-grained permission model based on native Azure Cosmos DB users and permissions. Learn more in our [Cosmos DB Data Access Methods documentation](https://fivetran.com/docs/connectors/databases/cosmos#dataaccessmethods)."
       },
       "api_field": ""
    },
@@ -3748,6 +3810,19 @@
       },
       "api_field": ""
    },
+   "db": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "myosh": "Your Myosh Server variables/db ."
+      },
+      "api_field": ""
+   },
    "delimiter": {
       "readonly": false,
       "sensitive": false,
@@ -3853,7 +3928,8 @@
          "okta": "Your Okta domain.",
          "pipedrive": "Your Pipedrive domain.",
          "shopware": "Your Shopware domain.",
-         "sistrix": "Your domain for which you want to fetch data.",
+         "sistrix": "Your SISTRIX domain.",
+         "solarwinds_service_desk": "Your SolarWinds Service Desk domain.",
          "uservoice": "Domain of your UserVoice site. If it ends with \".uservoice.com\", you can specify just the subdomain (\"mydomain.uservoice.com\" - \"mydomain\")",
          "zendesk": "Zendesk domain.",
          "zendesk_sunshine": "Zendesk domain."
@@ -5061,7 +5137,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "aws_lambda": "We use PrivateLink by default if your AWS Lambda is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to AWS lambda over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/databases/connection-options#awsprivatelink)."
+         "aws_lambda": "We use PrivateLink by default if your AWS Lambda is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to AWS lambda over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options#awsprivatelink)."
       },
       "api_field": ""
    },
@@ -5777,7 +5853,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "confluence": "Your Confluence Organization name."
+         "confluence": "Your Confluence organization name."
       },
       "api_field": ""
    },
@@ -5983,6 +6059,7 @@
          "moloco": "Your Moloco account password.",
          "mongo": "The user's password.",
          "mongo_sharded": "The user's password.",
+         "myosh": "Your Myosh Password .",
          "mysql": "The user's password.",
          "mysql_azure": "The user's password.",
          "mysql_rds": "The user's password.",
@@ -6036,6 +6113,7 @@
          "ukg_pro": "Your UKG Pro password.",
          "unicommerce": "Your uniware login password.",
          "upland": "Your Upland Software Password.",
+         "veevavault": "Your Veeva Vault password.",
          "when_i_work": "Your When I Work password.",
          "wherefour": "Your Wherefour password.",
          "workday": "Workday password.",
@@ -6236,6 +6314,7 @@
       "description": {
          "azure_blob_storage": "The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.",
          "ftp": "The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.",
+         "gcs": "The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.",
          "s3": "The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.",
          "sftp": "The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.",
          "wasabi_cloud_storage": "The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`."
@@ -6253,6 +6332,7 @@
       "description": {
          "azure_blob_storage": "The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.",
          "ftp": "The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.",
+         "gcs": "The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.",
          "s3": "The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.",
          "sftp": "The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.",
          "wasabi_cloud_storage": "The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`."
@@ -6394,6 +6474,19 @@
       },
       "api_field": ""
    },
+   "primary_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "care_quality_commission": ""
+      },
+      "api_field": ""
+   },
    "primary_keys": {
       "readonly": false,
       "sensitive": false,
@@ -6418,7 +6511,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "absorb_lms": "Your Absorb LMS Private Key.",
+         "absorb_lms": "Your Absorb LMS REST API private key.",
          "adobe_analytics": "The complete contents of your private key file including the start and end tags (`----BEGIN PRIVATE KEY----` to `----END PRIVATE KEY----`).",
          "adp_workforce_now": "Private Key.",
          "anaplan": "The contents of your private key file. Must be populated if `auth_mode` is set to `Certificate`.",
@@ -6759,10 +6852,12 @@
          "navan": "Your Navan region.",
          "on24": "Your ON24 region.",
          "pendo": "The Pendo account region.",
+         "proofpoint_security_awareness": "Your Proofpoint Security Awareness Region.",
          "ringover": "Your Ringover region.",
          "samsara": "The region of your Samsara account. For instance, if your region is `EUROPE`, provide `eu.samsara` in the `Region` field. If your region is not in Europe, provide `samsara`.",
          "snyk": "Your Snyk region.",
          "talkdesk": "Your Talkdesk region (\".com\",\".eu\",\"ca.com\")",
+         "vonage_contact_center": "Your Vonage Contact Center region.",
          "wasabi_cloud_storage": "The Wasabi Cloud Storage bucket region. Required for connector creation. Default value: `US_EAST_1`.",
          "workday_strategic_sourcing": "",
          "zoho_books": "Your Zoho Books application host region.",
@@ -7184,7 +7279,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "google_analytics": "Whether to use the [Prebuilt Reports or Custom Reports](https://fivetran.com/docs/applications/google-analytics#schemainformation).",
+               "google_analytics": "Whether to use the [Prebuilt Reports or Custom Reports](https://fivetran.com/docs/connectors/applications/google-analytics#schemainformation).",
                "google_analytics_4": "Whether to use the Prebuilt Reports or Custom Reports."
             },
             "api_field": ""
@@ -7955,6 +8050,7 @@
          "bingads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "birdeye": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "bitly": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "bizzabo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "box": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "braintree": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "braintree_sandbox": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8036,6 +8132,7 @@
          "dynamics_365": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "dynamodb": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "easypost": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "ebay": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "economic": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "elastic_cloud": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "electronic_tenant_solutions": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8069,6 +8166,7 @@
          "freshdesk": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "freshdesk_contact_center": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "freshservice": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "freshsuccess": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "freshteam": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "friendbuy": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "front": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8154,6 +8252,7 @@
          "lattice": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "launchdarkly": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "learnupon": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "lemlist": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "lessonly": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "lever": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "liftoff": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8183,6 +8282,7 @@
          "meltwater": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "mention": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "messagebird": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "microsoft_dynamics_365_fno": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "microsoft_dynamics_365_fo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "microsoft_entra_id": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "microsoft_lists": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8195,6 +8295,7 @@
          "monday": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "mountain": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "mux": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "myosh": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "namely": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "navan": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "netsuite_suiteanalytics": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8227,6 +8328,7 @@
          "pendo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "persona": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "personio": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "picqer": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "pingdom": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "pinpoint": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "pinterest_ads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8242,6 +8344,7 @@
          "power_reviews_enterprise": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "prive": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "productboard": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "proofpoint_security_awareness": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "qualaroo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "qualtrics": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "quickbooks": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8318,6 +8421,7 @@
          "snapchat_ads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "snowplow": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "snyk": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "solarwinds_service_desk": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "sonarqube": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "sparkpost": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "splitio": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8349,6 +8453,7 @@
          "the_trade_desk": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "thinkific": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "tiktok_ads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "toast": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "toggl_track": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "totango": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "transcend": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8358,6 +8463,7 @@
          "twilio": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "twitter": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "twitter_ads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "tymeshift": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "typeform": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "udemy_business": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "ukg_pro": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8365,9 +8471,12 @@
          "upland": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "uppromote": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "uservoice": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "veeqo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "veevavault": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "visit_by_ges": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "vitally": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "vonage": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "vonage_contact_center": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "vts": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "vwo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "walmart_marketplace": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8394,6 +8503,7 @@
          "yahoo_gemini": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "yahoo_search_ads_yahoo_japan": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "yotpo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "yougov_sport": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "younium": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "youtube_analytics": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "zendesk": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8539,6 +8649,19 @@
          "aws_msk": "Your schema registry URLs",
          "azure_service_bus": "The comma-separated list of schema registry servers in the `server:port` format",
          "confluent_cloud": "Your schema registry URLs"
+      },
+      "api_field": ""
+   },
+   "scope": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "ebay": "Your eBay Scopes."
       },
       "api_field": ""
    },
@@ -8985,7 +9108,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "share_point": "Your SharePoint folder URL. You can find the folder URL by following the steps mentioned [here](https://fivetran.com/docs/files/share-point/setup-guide)."
+         "share_point": "Your SharePoint folder URL. You can find the folder URL by following the steps mentioned [here](https://fivetran.com/docs/connectors/files/share-point/setup-guide)."
       },
       "api_field": ""
    },
@@ -9078,6 +9201,7 @@
       "description": {
          "azure_blob_storage": "The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.",
          "ftp": "The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.",
+         "gcs": "The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.",
          "s3": "The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.",
          "sftp": "The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.",
          "wasabi_cloud_storage": "The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed."
@@ -9190,6 +9314,19 @@
       },
       "api_field": ""
    },
+   "snc_certificate": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sap_hana_db": ""
+      },
+      "api_field": ""
+   },
    "snc_library_path": {
       "readonly": false,
       "sensitive": false,
@@ -9204,6 +9341,32 @@
          "hana_sap_hva_ecc_netweaver": "Path to the external security product's library.",
          "hana_sap_hva_s4": "",
          "hana_sap_hva_s4_netweaver": "Path to the external security product's library."
+      },
+      "api_field": ""
+   },
+   "snc_mode": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sap_hana_db": ""
+      },
+      "api_field": ""
+   },
+   "snc_my_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sap_hana_db": ""
       },
       "api_field": ""
    },
@@ -9237,7 +9400,8 @@
          "hana_sap_hva_ecc": "",
          "hana_sap_hva_ecc_netweaver": "Communication partner's SNC name.",
          "hana_sap_hva_s4": "",
-         "hana_sap_hva_s4_netweaver": "Communication partner's SNC name."
+         "hana_sap_hva_s4_netweaver": "Communication partner's SNC name.",
+         "sap_hana_db": ""
       },
       "api_field": ""
    },
@@ -9353,9 +9517,11 @@
          "looker_source": "Your looker SubDomain name.",
          "mailgun": "Your Mailgun subdomain.",
          "maxio_chargify": "Enter Your Subdomain.",
+         "myosh": "Your Myosh Subdomain .",
          "namely": "Your Namely subdomain.",
          "nylas": "Your Nylas subdomain.",
          "okta": "Your Okta subdomain.",
+         "picqer": "Your Picqer sub domain name.",
          "pinpoint": "Your Pinpoint sub domain name.",
          "piwik_pro": "Your Piwik PRO subdomain.",
          "playvox": "Your Playvox Subdomain.",
@@ -9369,10 +9535,12 @@
          "sap_success_factors": "Your SAP SuccessFactors Subdomain.",
          "sonarqube": "Your Sonarqube subdomain.",
          "starrez": "Your StarRez subdomain",
+         "tableau_source": "Your Tableau Source subdomain.",
          "tempo": "Your Tempo subdomain.",
          "testrail": "",
          "thinkific": "Your Thinkific subdomain.",
          "totango": "Your Totango Subdomain.",
+         "tymeshift": "Your Tymeshift subdomain.",
          "upland": "Your Upland Software subDomain.",
          "wordpress": "Your WordPress subdomain.",
          "workable": "Your Workable Subdomain.",
@@ -9390,14 +9558,17 @@
       "item_type": {},
       "description": {
          "bamboohr": "The subdomain used to access your account. If you access BambooHR at 'https://mycompany.bamboohr.com', then the subdomain is 'mycompany'.",
+         "ebay": "Your eBay Environment.",
          "freshdesk": "Your company's freshdesk subdomain (usually **company**.freshdesk.com).",
          "freshservice": "Your company's freshservice subdomain (usually **company**.freshservice.com).",
+         "freshsuccess": "Your Freshsuccess subdomain.",
          "gorgias": "Your Gorgias subdomain.",
          "klarna": "Your Klarna subdomain.",
          "learnupon": "Your Learnupon subdomain.",
          "maxio_saasoptics": "Your Maxio SaaSOptics subdomain.",
          "medallia": "Medallia subdomain",
          "sonarqube": "Your Sonarqube subdomain.",
+         "toast": "Your Toast Domain.",
          "vts": "Your VTS Subdomain.",
          "zendesk_chat": "Your Zendesk domain."
       },
@@ -9581,7 +9752,7 @@
          "dynamodb": "Whether to sync all tables in unpacked mode only or specific tables in packed mode. Default value: `UseUnpackedModeOnly`.",
          "facebook": "Option to select connector should sync all accounts or specific accounts. [Possible sync_mode values](https://fivetran.com/docs/applications/facebook-ad-insights/api-config#syncmode).",
          "facebook_ad_account": "Whether to sync all accounts or specific accounts. Default value: `AllAccounts`.",
-         "facebook_ads": "Option to select connector should sync all accounts or specific accounts. [Possible sync_mode values](https://fivetran.com/docs/applications/facebook-ads-insights/api-config#syncmode).",
+         "facebook_ads": "Option to select connector should sync all accounts or specific accounts. [Possible sync_mode values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#syncmode).",
          "facebook_pages": "Whether to sync all accounts or specific accounts. Default value: `AllPages`.",
          "github": "Whether to sync all repositories or specific repositories.",
          "google_ads": "Whether to sync all accounts or specific accounts.",
@@ -9605,7 +9776,9 @@
          "twilio": "Whether to sync all accounts or specific accounts.",
          "twitter": "Whether to sync all accounts or specific accounts. Default value: `AllAccounts`.",
          "twitter_ads": "Whether to sync all accounts or specific accounts.",
-         "yahoo_gemini": "Whether to sync all accounts or specific accounts. Default value: `SpecificAccounts`."
+         "yahoo_gemini": "Whether to sync all accounts or specific accounts. Default value: `SpecificAccounts`.",
+         "zuora": "Select `Zuora Billing` to sync exclusively Zuora Billing related records. Choose `Zuora Revenue` for syncing only Zuora Revenue reports. If both Zuora Billing records and Zuora Revenue reports are to be synced, opt for `Both`.",
+         "zuora_sandbox": "Select `Zuora Billing` to sync exclusively Zuora Billing related records. Choose `Zuora Revenue` for syncing only Zuora Revenue reports. If both Zuora Billing records and Zuora Revenue reports are to be synced, opt for `Both`."
       },
       "api_field": ""
    },
@@ -9657,7 +9830,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "cosmos": "The packing mode type. Supported values:`STANDARD_UNPACKED_MODE`- Unpacks _one_ layer of nested fields and infers types.`PACKED_MODE`- Delivers packed data as a single destination column value.Learn more in our [Cosmos DB Sync Pack Mode Options documentation](https://fivetran.com/docs/databases/cosmos#packmodeoptions).",
+         "cosmos": "The packing mode type. Supported values:`STANDARD_UNPACKED_MODE`- Unpacks _one_ layer of nested fields and infers types.`PACKED_MODE`- Delivers packed data as a single destination column value.Learn more in our [Cosmos DB Sync Pack Mode Options documentation](https://fivetran.com/docs/connectors/databases/cosmos#packmodeoptions).",
          "documentdb": "Indicates whether synced data will be packed into a single entry(column), or unpacked with one layer of nested fields."
       },
       "api_field": ""
@@ -10041,6 +10214,19 @@
       },
       "api_field": ""
    },
+   "toast_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "toast": "Your Toast Restaurant External ID."
+      },
+      "api_field": ""
+   },
    "token": {
       "readonly": false,
       "sensitive": false,
@@ -10051,10 +10237,12 @@
       "item_type": {},
       "description": {
          "mode": "Your Mode Token.",
-         "oracle_moat_analytics": "Your Oracle Moat Analytics Token."
+         "oracle_moat_analytics": "Your Oracle Moat Analytics Token.",
+         "solarwinds_service_desk": "Your SolarWinds Service Desk token."
       },
       "sensitive_exclusions": {
-         "oracle_moat_analytics": true
+         "oracle_moat_analytics": true,
+         "solarwinds_service_desk": true
       },
       "api_field": ""
    },
@@ -10108,7 +10296,8 @@
       "item_type": {},
       "description": {
          "netsuite_suiteanalytics": "Token ID",
-         "on24": "Your ON24 token key."
+         "on24": "Your ON24 token key.",
+         "proofpoint_security_awareness": "Your Proofpoint Security Awareness Token Key."
       },
       "api_field": ""
    },
@@ -10531,6 +10720,7 @@
       "description": {
          "azure_blob_storage": "Set to `true` if files present in the Azure Blob Storage container are encrypted using PGP. Default value: `false`.",
          "ftp": "Set to `true` if files are encrypted using PGP in the S3 bucket. Default value: `false`.",
+         "gcs": "Set to `true` if files are encrypted using PGP in the GCS bucket. Default value: `false`.",
          "s3": "Set to `true` if files are encrypted using PGP in the S3 bucket. Default value: `false`.",
          "sftp": "Set to `true` if files present in SFTP server are encrypted using PGP. Default value: `false`.",
          "wasabi_cloud_storage": "Set to `true` if files are encrypted using PGP in the Wasabi Cloud Storage bucket. Default value: `false`."
@@ -10672,6 +10862,7 @@
       "description": {
          "coassemble": "Your Coassemble user ID.",
          "gmail": "Your Gmail user ID.",
+         "hibob": "Your HiBob Service User Token.",
          "marketo": "Marketo SOAP API User Id.",
          "playvox": "Your Playvox User ID.",
          "sage_intacct": "User ID"
@@ -10728,6 +10919,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "hibob": "Your HiBob Service User ID.",
          "konnect_insights": "Your Konnect Insights User Token.",
          "sonarqube": "Your Sonarqube user token."
       },
@@ -10751,7 +10943,7 @@
          "cin7": "Your Cin7 API Username.",
          "collibra": "Your collibra username.",
          "concur": "The SAP Concur username.",
-         "confluence": "Your Confluence email address.",
+         "confluence": "Your Confluence username.",
          "contrast_security": "Your Contrast Security API Username.",
          "dcl_logistics": "Your DCL Logistics username.",
          "financial_force": "",
@@ -10770,6 +10962,7 @@
          "learnupon": "Your Learnupon username.",
          "lessonly": "Your Lessonly username.",
          "mailgun": "Your Mailgun API username.",
+         "myosh": "Your Myosh  Username.",
          "oracle_business_intelligence_publisher": "The Oracle Business Intelligence username.",
          "oracle_fusion_cloud_apps_crm": "The Oracle Fusion Cloud username.",
          "oracle_fusion_cloud_apps_fscm": "The Oracle Fusion Cloud username.",
@@ -10790,10 +10983,11 @@
          "starrez": "Your StarRez API username",
          "stylight": "Your Stylight Username.",
          "teamwork": "Your Teamwork username.",
-         "testrail": "Your TestRail API username.",
+         "testrail": "Your TestRail username.",
          "ukg_pro": "Your UKG Pro username.",
          "unicommerce": "Your uniware login username.",
          "upland": "Your Upland Software Username.",
+         "veevavault": "Your Veeva Vault username.",
          "when_i_work": "Your When I Work username.",
          "wherefour": "Your Wherefour username.",
          "workday_financial_management": "Workday username.",

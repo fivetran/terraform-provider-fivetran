@@ -17,7 +17,7 @@ description: |-
 
 ### Required
 
-- `connector_id` (String) The unique identifier for the target connector within the Fivetran system.
+- `connector_id` (String) The unique identifier for the target connection within the Fivetran system.
 
 ### Optional
 
@@ -25,7 +25,7 @@ description: |-
 
 ### Read-Only
 
-- `id` (String) The unique identifier for the resource. Equal to target connector id.
+- `id` (String) The unique identifier for the resource. Equal to target connection id.
 
 <a id="nestedblock--certificate"></a>
 ### Nested Schema for `certificate`
@@ -33,14 +33,14 @@ description: |-
 Required:
 
 - `encoded_cert` (String, Sensitive) Base64 encoded certificate.
-- `hash` (String) Hash of the fingerprint.
+- `hash` (String) Hash of the certificate.
 
 Read-Only:
 
 - `name` (String) Certificate name.
-- `public_key` (String) Certificate public key.
+- `public_key` (String) The SSH public key.
 - `sha1` (String) Certificate sha1.
 - `sha256` (String) Certificate sha256.
-- `type` (String) Certificate type.
+- `type` (String) Type of the certificate.
 - `validated_by` (String) User name who validated the certificate.
-- `validated_date` (String) The date when the certificate was approved.
+- `validated_date` (String) The date when certificate was approved.

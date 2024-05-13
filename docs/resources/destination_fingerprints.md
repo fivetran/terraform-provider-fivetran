@@ -48,7 +48,7 @@ Required:
 Read-Only:
 
 - `validated_by` (String) User name who validated the fingerprint.
-- `validated_date` (String) The date when SSH fingerprint was approved.
+- `validated_date` (String) The date when fingerprint was approved.
 
 ## Import
 

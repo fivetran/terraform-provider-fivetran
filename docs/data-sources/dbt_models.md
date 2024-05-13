@@ -19,12 +19,12 @@ data "fivetran_dbt_models" "my_models" {
 
 ### Required
 
-- `project_id` (String) The unique identifier for the dbt project within the Fivetran system.
+- `project_id` (String) The unique identifier for the dbt Project within the Fivetran system.
 
 ### Read-Only
 
-- `id` (String) The ID of this resource.
-- `models` (Block Set) The collection of dbt Models. (see [below for nested schema](#nestedblock--models))
+- `id` (String) The ID of this datasource (equals to `project_id`).
+- `models` (Block Set) (see [below for nested schema](#nestedblock--models))
 
 <a id="nestedblock--models"></a>
 ### Nested Schema for `models`
@@ -33,4 +33,4 @@ Read-Only:
 
 - `id` (String) The unique identifier for the dbt Model within the Fivetran system.
 - `model_name` (String) The dbt Model name.
-- `scheduled` (Boolean) Boolean specifying whether the model is selected for execution.
+- `scheduled` (Boolean) Boolean specifying whether the model is selected for execution in the dashboard.

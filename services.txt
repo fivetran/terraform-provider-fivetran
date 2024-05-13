@@ -67,6 +67,7 @@ billing_platform
 bingads
 birdeye
 bitly
+bizzabo
 box
 braintree
 braintree_sandbox
@@ -152,6 +153,7 @@ duoplane
 dynamics_365
 dynamodb
 easypost
+ebay
 economic
 elastic_cloud
 electronic_tenant_solutions
@@ -183,6 +185,7 @@ freshchat
 freshdesk
 freshdesk_contact_center
 freshservice
+freshsuccess
 freshteam
 friendbuy
 front
@@ -275,6 +278,7 @@ kustomer
 lattice
 launchdarkly
 learnupon
+lemlist
 lessonly
 lever
 liftoff
@@ -305,8 +309,8 @@ maxio_chargify
 maxio_saasoptics
 medallia
 megaphone
-meltwater
 mention
+microsoft_dynamics_365_fno
 microsoft_dynamics_365_fo
 microsoft_entra_id
 microsoft_lists
@@ -320,6 +324,7 @@ mongo
 mongo_sharded
 mountain
 mux
+myosh
 mysql
 mysql_azure
 mysql_rds
@@ -365,6 +370,7 @@ paypal_sandbox
 pendo
 persona
 personio
+picqer
 pingdom
 pinpoint
 pinterest_ads
@@ -382,6 +388,7 @@ postmark
 power_reviews_enterprise
 prive
 productboard
+proofpoint_security_awareness
 qualaroo
 qualtrics
 quickbooks
@@ -460,6 +467,7 @@ snapchat_ads
 snowflake_db
 snowplow
 snyk
+solarwinds_service_desk
 sonarqube
 sparkpost
 splitio
@@ -495,6 +503,7 @@ testrail
 the_trade_desk
 thinkific
 tiktok_ads
+toast
 toggl_track
 totango
 transcend
@@ -504,6 +513,7 @@ trisolute
 twilio
 twitter
 twitter_ads
+tymeshift
 typeform
 udemy_business
 ukg_pro
@@ -511,9 +521,12 @@ unicommerce
 upland
 uppromote
 uservoice
+veeqo
+veevavault
 visit_by_ges
 vitally
 vonage
+vonage_contact_center
 vts
 vwo
 walmart_marketplace
@@ -539,6 +552,7 @@ yahoo_dsp
 yahoo_gemini
 yahoo_search_ads_yahoo_japan
 yotpo
+yougov_sport
 younium
 youtube_analytics
 zendesk

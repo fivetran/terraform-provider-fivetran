@@ -750,43 +750,22 @@
         }
       }
     },
-    "/v1/groups/{groupId}/private-links": {
+    "/v1/local-processing-agents/{agentId}": {
       "get": {
         "tags": [
-          "Private Link Management"
+          "Local Processing Agent Management"
         ],
-        "summary": "List All Private Links",
-        "description": "Returns a list of all private links.",
-        "operationId": "get_private_links",
+        "summary": "Returns Local Processing Agent Details",
+        "description": "Returns Local Processing Agent Details.",
+        "operationId": "get_local_processing_agent",
         "parameters": [
           {
-            "name": "groupId",
+            "name": "agentId",
             "in": "path",
-            "description": "The unique identifier for the group within the Fivetran system",
+            "description": "",
             "required": true,
             "schema": {
               "type": "string",
-              "example": null
-            }
-          },
-          {
-            "name": "cursor",
-            "in": "query",
-            "description": "Paging cursor, [read more about pagination](https://fivetran.com/docs/rest-api/pagination)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": null
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
               "example": null
             }
           },
@@ -822,24 +801,64 @@
                       "example": null
                     },
                     "data": {
-                      "required": [
-                        "items"
-                      ],
-                      "properties": {
-                        "items": {
-                          "type": "array",
-                          "description": "The collection of return items",
-                          "example": null,
-                          "items": {
-                            "$ref": "#/components/schemas/PrivateLinkInfo"
-                          }
-                        },
-                        "nextCursor": {
-                          "type": "string",
-                          "description": "The value of the cursor parameter for the next page",
-                          "example": null
-                        }
-                      },
+                      "$ref": "#/components/schemas/LocalProcessingAgentWithUsageResponse"
+                    }
+                  },
+                  "example": null
+                },
+                "example": null
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Local Processing Agent Management"
+        ],
+        "summary": "Delete a Local Processing Agent",
+        "description": "Delete a Local Processing Agent.",
+        "operationId": "delete_local_processing_agent",
+        "parameters": [
+          {
+            "name": "agentId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code",
+                      "example": null
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text",
                       "example": null
                     }
                   },
@@ -848,6 +867,75 @@
                 "example": null
               }
             }
+          },
+          "404": {
+            "description": "Local Processing Agent not found."
+          }
+        }
+      }
+    },
+    "/v1/local-processing-agents/{agentId}/re-auth": {
+      "patch": {
+        "tags": [
+          "Local Processing Agent Management"
+        ],
+        "summary": "Regenerate authentication keys",
+        "description": "Regenerate authentication keys for a Local Processing Agent.",
+        "operationId": "regenerate_certificate_local_processing_agent",
+        "parameters": [
+          {
+            "name": "agentId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code",
+                      "example": null
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text",
+                      "example": null
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/LocalProcessingAgentCreateResponse"
+                    }
+                  },
+                  "example": null
+                },
+                "example": null
+              }
+            }
+          },
+          "404": {
+            "description": "Local Processing Agent not found in group."
           }
         }
       }
@@ -1704,7 +1792,7 @@
           "Destination Management"
         ],
         "summary": "Create destination",
-        "description": "Creates a new destination within a specified group in your Fivetran account.",
+        "description": "Creates a new destination within a specified group in your Fivetran account. IMPORTANT: Groups and destinations are mapped 1:1 to each other. We do this mapping using the group's `id` value that we automatically generate when you create a group, and the destination's `group_id` value that you specify when you create a destination. This means that you must create a group in your Fivetran account before you can create a destination in it.",
         "operationId": "create_destination",
         "parameters": [
           {
@@ -2891,12 +2979,83 @@
           }
         }
       },
+      "post": {
+        "tags": [
+          "Connector Schema Management"
+        ],
+        "summary": "Setup a Connector Schema Config for a connector that doesn't have schema settings yet.",
+        "description": "Allows to set up a Connector Schema Config for a new connector.",
+        "operationId": "pre_create_connector_schema_config",
+        "parameters": [
+          {
+            "name": "connectorId",
+            "in": "path",
+            "description": "The unique identifier for the connector within the Fivetran system",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StandardConfigUpdateRequest"
+              },
+              "example": null
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code",
+                      "example": null
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text",
+                      "example": null
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/StandardConfigResponse"
+                    }
+                  },
+                  "example": null
+                },
+                "example": null
+              }
+            }
+          }
+        }
+      },
       "patch": {
         "tags": [
           "Connector Schema Management"
         ],
         "summary": "Modify a Connector Schema Config",
-        "description": "Updates the schema config for an existing connector within your Fivetran account (for a single schema for a connector with multiple schemas)",
+        "description": "Updates the schema config for an existing connector within your Fivetran account.",
         "operationId": "modify_connector_schema_config",
         "parameters": [
           {
@@ -4402,6 +4561,171 @@
         }
       }
     },
+    "/v1/local-processing-agents": {
+      "get": {
+        "tags": [
+          "Local Processing Agent Management"
+        ],
+        "summary": "List Local Processing Agents",
+        "description": "Returns list of all Local Processing Agents within your Fivetran account, along with usage. Optionally filtered to a single group.",
+        "operationId": "get_local_processing_agent_list",
+        "parameters": [
+          {
+            "name": "groupId",
+            "in": "query",
+            "description": "group id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "example": null
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code",
+                      "example": null
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text",
+                      "example": null
+                    },
+                    "data": {
+                      "required": [
+                        "items"
+                      ],
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "description": "The collection of return items",
+                          "example": null,
+                          "items": {
+                            "$ref": "#/components/schemas/LocalProcessingAgentWithUsageResponse"
+                          }
+                        },
+                        "nextCursor": {
+                          "type": "string",
+                          "description": "The value of the cursor parameter for the next page",
+                          "example": null
+                        }
+                      },
+                      "example": null
+                    }
+                  },
+                  "example": null
+                },
+                "example": null
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Local Processing Agent Management"
+        ],
+        "summary": "Create a Local Processing Agent",
+        "description": "Creates a new Local Processing Agent in a group.",
+        "operationId": "create_local_processing_agent",
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocalProcessingAgentCreateRequest"
+              },
+              "example": null
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code",
+                      "example": null
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text",
+                      "example": null
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/LocalProcessingAgentCreateResponse"
+                    }
+                  },
+                  "example": null
+                },
+                "example": null
+              }
+            }
+          },
+          "400": {
+            "description": "Missing name or license not accepted in the payload."
+          },
+          "404": {
+            "description": "Group not found."
+          }
+        }
+      }
+    },
     "/v1/connectors/{connectorId}/schemas/tables/resync": {
       "post": {
         "tags": [
@@ -4571,7 +4895,8 @@
               }
             }
           }
-        }
+        },
+        "deprecated": true
       },
       "post": {
         "tags": [
@@ -5170,12 +5495,102 @@
       }
     },
     "/v1/private-links": {
+      "get": {
+        "tags": [
+          "Private Link Management"
+        ],
+        "summary": "List All Private Links",
+        "description": "Returns a list of all private links.",
+        "operationId": "get_private_links",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Paging cursor, [read more about pagination](https://fivetran.com/docs/rest-api/pagination)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "example": null
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code",
+                      "example": null
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text",
+                      "example": null
+                    },
+                    "data": {
+                      "required": [
+                        "items"
+                      ],
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "description": "The collection of return items",
+                          "example": null,
+                          "items": {
+                            "$ref": "#/components/schemas/PrivateLinkResponse"
+                          }
+                        },
+                        "nextCursor": {
+                          "type": "string",
+                          "description": "The value of the cursor parameter for the next page",
+                          "example": null
+                        }
+                      },
+                      "example": null
+                    }
+                  },
+                  "example": null
+                },
+                "example": null
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": [
           "Private Link Management"
         ],
         "summary": "Create a Private Link",
-        "description": "Creates a new private link within a specified group in your Fivetran account.",
+        "description": "Creates a new private link in your Fivetran account.",
         "operationId": "create_private_link",
         "parameters": [
           {
@@ -5220,7 +5635,7 @@
                       "example": null
                     },
                     "data": {
-                      "$ref": "#/components/schemas/PrivateLinkInfo"
+                      "$ref": "#/components/schemas/PrivateLinkResponse"
                     }
                   },
                   "example": null
@@ -5228,9 +5643,6 @@
                 "example": null
               }
             }
-          },
-          "404": {
-            "description": "Group not found"
           }
         }
       }
@@ -5567,7 +5979,7 @@
     "/v1/account/info": {
       "get": {
         "tags": [
-          "Account Manage"
+          "Account Management"
         ],
         "summary": "Get account info from API key",
         "description": "Returns information about current account from API key.",
@@ -5839,7 +6251,7 @@
           "Group Management"
         ],
         "summary": "Create a Group",
-        "description": "Creates a new group in your Fivetran account.",
+        "description": "Creates a new group in your Fivetran account. IMPORTANT: Groups and destinations are mapped 1:1 to each other. We do this mapping using the group's `id` value that we automatically generate when you create a group, and the destination's `group_id` value that you specify when you create a destination. This means that you must create a group in your Fivetran account before you can create a destination in it.",
         "operationId": "create_group",
         "parameters": [
           {
@@ -8855,7 +9267,8 @@
           "404": {
             "description": "Proxy agent or connection not found."
           }
-        }
+        },
+        "deprecated": true
       }
     },
     "/v1/webhooks/{webhookId}": {
@@ -9654,7 +10067,7 @@
                       "example": null
                     },
                     "data": {
-                      "$ref": "#/components/schemas/PrivateLinkInfo"
+                      "$ref": "#/components/schemas/PrivateLinkResponse"
                     }
                   },
                   "example": null
@@ -9791,7 +10204,7 @@
                       "example": null
                     },
                     "data": {
-                      "$ref": "#/components/schemas/PrivateLinkInfo"
+                      "$ref": "#/components/schemas/PrivateLinkResponse"
                     }
                   },
                   "example": null
@@ -10988,11 +11401,16 @@
           },
           "local_processing_agent_id": {
             "type": "string",
-            "writeOnly": true,
+            "description": "The unique identifier for the local processing agent within the Fivetran system",
             "example": null
           },
           "connect_card_config": {
             "$ref": "#/components/schemas/ConnectCardConfig"
+          },
+          "proxy_agent_id": {
+            "type": "string",
+            "description": "The proxy agent ID",
+            "example": null
           }
         },
         "example": null,
@@ -11068,6 +11486,7 @@
             "bingads": "#/components/schemas/bingads_NewConnectorRequestV1",
             "birdeye": "#/components/schemas/birdeye_NewConnectorRequestV1",
             "bitly": "#/components/schemas/bitly_NewConnectorRequestV1",
+            "bizzabo": "#/components/schemas/bizzabo_NewConnectorRequestV1",
             "box": "#/components/schemas/box_NewConnectorRequestV1",
             "braintree": "#/components/schemas/braintree_NewConnectorRequestV1",
             "braintree_sandbox": "#/components/schemas/braintree_sandbox_NewConnectorRequestV1",
@@ -11153,6 +11572,7 @@
             "dynamics_365": "#/components/schemas/dynamics_365_NewConnectorRequestV1",
             "dynamodb": "#/components/schemas/dynamodb_NewConnectorRequestV1",
             "easypost": "#/components/schemas/easypost_NewConnectorRequestV1",
+            "ebay": "#/components/schemas/ebay_NewConnectorRequestV1",
             "economic": "#/components/schemas/economic_NewConnectorRequestV1",
             "elastic_cloud": "#/components/schemas/elastic_cloud_NewConnectorRequestV1",
             "electronic_tenant_solutions": "#/components/schemas/electronic_tenant_solutions_NewConnectorRequestV1",
@@ -11184,6 +11604,7 @@
             "freshdesk": "#/components/schemas/freshdesk_NewConnectorRequestV1",
             "freshdesk_contact_center": "#/components/schemas/freshdesk_contact_center_NewConnectorRequestV1",
             "freshservice": "#/components/schemas/freshservice_NewConnectorRequestV1",
+            "freshsuccess": "#/components/schemas/freshsuccess_NewConnectorRequestV1",
             "freshteam": "#/components/schemas/freshteam_NewConnectorRequestV1",
             "friendbuy": "#/components/schemas/friendbuy_NewConnectorRequestV1",
             "front": "#/components/schemas/front_NewConnectorRequestV1",
@@ -11276,6 +11697,7 @@
             "lattice": "#/components/schemas/lattice_NewConnectorRequestV1",
             "launchdarkly": "#/components/schemas/launchdarkly_NewConnectorRequestV1",
             "learnupon": "#/components/schemas/learnupon_NewConnectorRequestV1",
+            "lemlist": "#/components/schemas/lemlist_NewConnectorRequestV1",
             "lessonly": "#/components/schemas/lessonly_NewConnectorRequestV1",
             "lever": "#/components/schemas/lever_NewConnectorRequestV1",
             "liftoff": "#/components/schemas/liftoff_NewConnectorRequestV1",
@@ -11306,8 +11728,8 @@
             "maxio_saasoptics": "#/components/schemas/maxio_saasoptics_NewConnectorRequestV1",
             "medallia": "#/components/schemas/medallia_NewConnectorRequestV1",
             "megaphone": "#/components/schemas/megaphone_NewConnectorRequestV1",
-            "meltwater": "#/components/schemas/meltwater_NewConnectorRequestV1",
             "mention": "#/components/schemas/mention_NewConnectorRequestV1",
+            "microsoft_dynamics_365_fno": "#/components/schemas/microsoft_dynamics_365_fno_NewConnectorRequestV1",
             "microsoft_dynamics_365_fo": "#/components/schemas/microsoft_dynamics_365_fo_NewConnectorRequestV1",
             "microsoft_entra_id": "#/components/schemas/microsoft_entra_id_NewConnectorRequestV1",
             "microsoft_lists": "#/components/schemas/microsoft_lists_NewConnectorRequestV1",
@@ -11321,6 +11743,7 @@
             "mongo_sharded": "#/components/schemas/mongo_sharded_NewConnectorRequestV1",
             "mountain": "#/components/schemas/mountain_NewConnectorRequestV1",
             "mux": "#/components/schemas/mux_NewConnectorRequestV1",
+            "myosh": "#/components/schemas/myosh_NewConnectorRequestV1",
             "mysql": "#/components/schemas/mysql_NewConnectorRequestV1",
             "mysql_azure": "#/components/schemas/mysql_azure_NewConnectorRequestV1",
             "mysql_rds": "#/components/schemas/mysql_rds_NewConnectorRequestV1",
@@ -11366,6 +11789,7 @@
             "pendo": "#/components/schemas/pendo_NewConnectorRequestV1",
             "persona": "#/components/schemas/persona_NewConnectorRequestV1",
             "personio": "#/components/schemas/personio_NewConnectorRequestV1",
+            "picqer": "#/components/schemas/picqer_NewConnectorRequestV1",
             "pingdom": "#/components/schemas/pingdom_NewConnectorRequestV1",
             "pinpoint": "#/components/schemas/pinpoint_NewConnectorRequestV1",
             "pinterest_ads": "#/components/schemas/pinterest_ads_NewConnectorRequestV1",
@@ -11383,6 +11807,7 @@
             "power_reviews_enterprise": "#/components/schemas/power_reviews_enterprise_NewConnectorRequestV1",
             "prive": "#/components/schemas/prive_NewConnectorRequestV1",
             "productboard": "#/components/schemas/productboard_NewConnectorRequestV1",
+            "proofpoint_security_awareness": "#/components/schemas/proofpoint_security_awareness_NewConnectorRequestV1",
             "qualaroo": "#/components/schemas/qualaroo_NewConnectorRequestV1",
             "qualtrics": "#/components/schemas/qualtrics_NewConnectorRequestV1",
             "quickbooks": "#/components/schemas/quickbooks_NewConnectorRequestV1",
@@ -11461,6 +11886,7 @@
             "snowflake_db": "#/components/schemas/snowflake_db_NewConnectorRequestV1",
             "snowplow": "#/components/schemas/snowplow_NewConnectorRequestV1",
             "snyk": "#/components/schemas/snyk_NewConnectorRequestV1",
+            "solarwinds_service_desk": "#/components/schemas/solarwinds_service_desk_NewConnectorRequestV1",
             "sonarqube": "#/components/schemas/sonarqube_NewConnectorRequestV1",
             "sparkpost": "#/components/schemas/sparkpost_NewConnectorRequestV1",
             "splitio": "#/components/schemas/splitio_NewConnectorRequestV1",
@@ -11496,6 +11922,7 @@
             "the_trade_desk": "#/components/schemas/the_trade_desk_NewConnectorRequestV1",
             "thinkific": "#/components/schemas/thinkific_NewConnectorRequestV1",
             "tiktok_ads": "#/components/schemas/tiktok_ads_NewConnectorRequestV1",
+            "toast": "#/components/schemas/toast_NewConnectorRequestV1",
             "toggl_track": "#/components/schemas/toggl_track_NewConnectorRequestV1",
             "totango": "#/components/schemas/totango_NewConnectorRequestV1",
             "transcend": "#/components/schemas/transcend_NewConnectorRequestV1",
@@ -11505,6 +11932,7 @@
             "twilio": "#/components/schemas/twilio_NewConnectorRequestV1",
             "twitter": "#/components/schemas/twitter_NewConnectorRequestV1",
             "twitter_ads": "#/components/schemas/twitter_ads_NewConnectorRequestV1",
+            "tymeshift": "#/components/schemas/tymeshift_NewConnectorRequestV1",
             "typeform": "#/components/schemas/typeform_NewConnectorRequestV1",
             "udemy_business": "#/components/schemas/udemy_business_NewConnectorRequestV1",
             "ukg_pro": "#/components/schemas/ukg_pro_NewConnectorRequestV1",
@@ -11512,9 +11940,12 @@
             "upland": "#/components/schemas/upland_NewConnectorRequestV1",
             "uppromote": "#/components/schemas/uppromote_NewConnectorRequestV1",
             "uservoice": "#/components/schemas/uservoice_NewConnectorRequestV1",
+            "veeqo": "#/components/schemas/veeqo_NewConnectorRequestV1",
+            "veevavault": "#/components/schemas/veevavault_NewConnectorRequestV1",
             "visit_by_ges": "#/components/schemas/visit_by_ges_NewConnectorRequestV1",
             "vitally": "#/components/schemas/vitally_NewConnectorRequestV1",
             "vonage": "#/components/schemas/vonage_NewConnectorRequestV1",
+            "vonage_contact_center": "#/components/schemas/vonage_contact_center_NewConnectorRequestV1",
             "vts": "#/components/schemas/vts_NewConnectorRequestV1",
             "vwo": "#/components/schemas/vwo_NewConnectorRequestV1",
             "walmart_marketplace": "#/components/schemas/walmart_marketplace_NewConnectorRequestV1",
@@ -11540,6 +11971,7 @@
             "yahoo_gemini": "#/components/schemas/yahoo_gemini_NewConnectorRequestV1",
             "yahoo_search_ads_yahoo_japan": "#/components/schemas/yahoo_search_ads_yahoo_japan_NewConnectorRequestV1",
             "yotpo": "#/components/schemas/yotpo_NewConnectorRequestV1",
+            "yougov_sport": "#/components/schemas/yougov_sport_NewConnectorRequestV1",
             "younium": "#/components/schemas/younium_NewConnectorRequestV1",
             "youtube_analytics": "#/components/schemas/youtube_analytics_NewConnectorRequestV1",
             "zendesk": "#/components/schemas/zendesk_NewConnectorRequestV1",
@@ -11706,6 +12138,16 @@
               "auto",
               "manual"
             ]
+          },
+          "local_processing_agent_id": {
+            "type": "string",
+            "description": "The unique identifier for the local processing agent within the Fivetran system",
+            "example": null
+          },
+          "proxy_agent_id": {
+            "type": "string",
+            "description": "The proxy agent ID",
+            "example": null
           }
         },
         "example": null
@@ -11883,6 +12325,11 @@
             "description": "The connector schedule configuration type. Supported values: auto, manual",
             "example": null
           },
+          "local_processing_agent_id": {
+            "type": "string",
+            "description": "The unique identifier for the local processing agent within the Fivetran system",
+            "example": null
+          },
           "connect_card_config": {
             "$ref": "#/components/schemas/ConnectCardConfig"
           }
@@ -11960,6 +12407,7 @@
             "bingads": "#/components/schemas/bingads_ConnectorResponseV1",
             "birdeye": "#/components/schemas/birdeye_ConnectorResponseV1",
             "bitly": "#/components/schemas/bitly_ConnectorResponseV1",
+            "bizzabo": "#/components/schemas/bizzabo_ConnectorResponseV1",
             "box": "#/components/schemas/box_ConnectorResponseV1",
             "braintree": "#/components/schemas/braintree_ConnectorResponseV1",
             "braintree_sandbox": "#/components/schemas/braintree_sandbox_ConnectorResponseV1",
@@ -12045,6 +12493,7 @@
             "dynamics_365": "#/components/schemas/dynamics_365_ConnectorResponseV1",
             "dynamodb": "#/components/schemas/dynamodb_ConnectorResponseV1",
             "easypost": "#/components/schemas/easypost_ConnectorResponseV1",
+            "ebay": "#/components/schemas/ebay_ConnectorResponseV1",
             "economic": "#/components/schemas/economic_ConnectorResponseV1",
             "elastic_cloud": "#/components/schemas/elastic_cloud_ConnectorResponseV1",
             "electronic_tenant_solutions": "#/components/schemas/electronic_tenant_solutions_ConnectorResponseV1",
@@ -12076,6 +12525,7 @@
             "freshdesk": "#/components/schemas/freshdesk_ConnectorResponseV1",
             "freshdesk_contact_center": "#/components/schemas/freshdesk_contact_center_ConnectorResponseV1",
             "freshservice": "#/components/schemas/freshservice_ConnectorResponseV1",
+            "freshsuccess": "#/components/schemas/freshsuccess_ConnectorResponseV1",
             "freshteam": "#/components/schemas/freshteam_ConnectorResponseV1",
             "friendbuy": "#/components/schemas/friendbuy_ConnectorResponseV1",
             "front": "#/components/schemas/front_ConnectorResponseV1",
@@ -12168,6 +12618,7 @@
             "lattice": "#/components/schemas/lattice_ConnectorResponseV1",
             "launchdarkly": "#/components/schemas/launchdarkly_ConnectorResponseV1",
             "learnupon": "#/components/schemas/learnupon_ConnectorResponseV1",
+            "lemlist": "#/components/schemas/lemlist_ConnectorResponseV1",
             "lessonly": "#/components/schemas/lessonly_ConnectorResponseV1",
             "lever": "#/components/schemas/lever_ConnectorResponseV1",
             "liftoff": "#/components/schemas/liftoff_ConnectorResponseV1",
@@ -12198,8 +12649,8 @@
             "maxio_saasoptics": "#/components/schemas/maxio_saasoptics_ConnectorResponseV1",
             "medallia": "#/components/schemas/medallia_ConnectorResponseV1",
             "megaphone": "#/components/schemas/megaphone_ConnectorResponseV1",
-            "meltwater": "#/components/schemas/meltwater_ConnectorResponseV1",
             "mention": "#/components/schemas/mention_ConnectorResponseV1",
+            "microsoft_dynamics_365_fno": "#/components/schemas/microsoft_dynamics_365_fno_ConnectorResponseV1",
             "microsoft_dynamics_365_fo": "#/components/schemas/microsoft_dynamics_365_fo_ConnectorResponseV1",
             "microsoft_entra_id": "#/components/schemas/microsoft_entra_id_ConnectorResponseV1",
             "microsoft_lists": "#/components/schemas/microsoft_lists_ConnectorResponseV1",
@@ -12213,6 +12664,7 @@
             "mongo_sharded": "#/components/schemas/mongo_sharded_ConnectorResponseV1",
             "mountain": "#/components/schemas/mountain_ConnectorResponseV1",
             "mux": "#/components/schemas/mux_ConnectorResponseV1",
+            "myosh": "#/components/schemas/myosh_ConnectorResponseV1",
             "mysql": "#/components/schemas/mysql_ConnectorResponseV1",
             "mysql_azure": "#/components/schemas/mysql_azure_ConnectorResponseV1",
             "mysql_rds": "#/components/schemas/mysql_rds_ConnectorResponseV1",
@@ -12258,6 +12710,7 @@
             "pendo": "#/components/schemas/pendo_ConnectorResponseV1",
             "persona": "#/components/schemas/persona_ConnectorResponseV1",
             "personio": "#/components/schemas/personio_ConnectorResponseV1",
+            "picqer": "#/components/schemas/picqer_ConnectorResponseV1",
             "pingdom": "#/components/schemas/pingdom_ConnectorResponseV1",
             "pinpoint": "#/components/schemas/pinpoint_ConnectorResponseV1",
             "pinterest_ads": "#/components/schemas/pinterest_ads_ConnectorResponseV1",
@@ -12275,6 +12728,7 @@
             "power_reviews_enterprise": "#/components/schemas/power_reviews_enterprise_ConnectorResponseV1",
             "prive": "#/components/schemas/prive_ConnectorResponseV1",
             "productboard": "#/components/schemas/productboard_ConnectorResponseV1",
+            "proofpoint_security_awareness": "#/components/schemas/proofpoint_security_awareness_ConnectorResponseV1",
             "qualaroo": "#/components/schemas/qualaroo_ConnectorResponseV1",
             "qualtrics": "#/components/schemas/qualtrics_ConnectorResponseV1",
             "quickbooks": "#/components/schemas/quickbooks_ConnectorResponseV1",
@@ -12353,6 +12807,7 @@
             "snowflake_db": "#/components/schemas/snowflake_db_ConnectorResponseV1",
             "snowplow": "#/components/schemas/snowplow_ConnectorResponseV1",
             "snyk": "#/components/schemas/snyk_ConnectorResponseV1",
+            "solarwinds_service_desk": "#/components/schemas/solarwinds_service_desk_ConnectorResponseV1",
             "sonarqube": "#/components/schemas/sonarqube_ConnectorResponseV1",
             "sparkpost": "#/components/schemas/sparkpost_ConnectorResponseV1",
             "splitio": "#/components/schemas/splitio_ConnectorResponseV1",
@@ -12388,6 +12843,7 @@
             "the_trade_desk": "#/components/schemas/the_trade_desk_ConnectorResponseV1",
             "thinkific": "#/components/schemas/thinkific_ConnectorResponseV1",
             "tiktok_ads": "#/components/schemas/tiktok_ads_ConnectorResponseV1",
+            "toast": "#/components/schemas/toast_ConnectorResponseV1",
             "toggl_track": "#/components/schemas/toggl_track_ConnectorResponseV1",
             "totango": "#/components/schemas/totango_ConnectorResponseV1",
             "transcend": "#/components/schemas/transcend_ConnectorResponseV1",
@@ -12397,6 +12853,7 @@
             "twilio": "#/components/schemas/twilio_ConnectorResponseV1",
             "twitter": "#/components/schemas/twitter_ConnectorResponseV1",
             "twitter_ads": "#/components/schemas/twitter_ads_ConnectorResponseV1",
+            "tymeshift": "#/components/schemas/tymeshift_ConnectorResponseV1",
             "typeform": "#/components/schemas/typeform_ConnectorResponseV1",
             "udemy_business": "#/components/schemas/udemy_business_ConnectorResponseV1",
             "ukg_pro": "#/components/schemas/ukg_pro_ConnectorResponseV1",
@@ -12404,9 +12861,12 @@
             "upland": "#/components/schemas/upland_ConnectorResponseV1",
             "uppromote": "#/components/schemas/uppromote_ConnectorResponseV1",
             "uservoice": "#/components/schemas/uservoice_ConnectorResponseV1",
+            "veeqo": "#/components/schemas/veeqo_ConnectorResponseV1",
+            "veevavault": "#/components/schemas/veevavault_ConnectorResponseV1",
             "visit_by_ges": "#/components/schemas/visit_by_ges_ConnectorResponseV1",
             "vitally": "#/components/schemas/vitally_ConnectorResponseV1",
             "vonage": "#/components/schemas/vonage_ConnectorResponseV1",
+            "vonage_contact_center": "#/components/schemas/vonage_contact_center_ConnectorResponseV1",
             "vts": "#/components/schemas/vts_ConnectorResponseV1",
             "vwo": "#/components/schemas/vwo_ConnectorResponseV1",
             "walmart_marketplace": "#/components/schemas/walmart_marketplace_ConnectorResponseV1",
@@ -12432,6 +12892,7 @@
             "yahoo_gemini": "#/components/schemas/yahoo_gemini_ConnectorResponseV1",
             "yahoo_search_ads_yahoo_japan": "#/components/schemas/yahoo_search_ads_yahoo_japan_ConnectorResponseV1",
             "yotpo": "#/components/schemas/yotpo_ConnectorResponseV1",
+            "yougov_sport": "#/components/schemas/yougov_sport_ConnectorResponseV1",
             "younium": "#/components/schemas/younium_ConnectorResponseV1",
             "youtube_analytics": "#/components/schemas/youtube_analytics_ConnectorResponseV1",
             "zendesk": "#/components/schemas/zendesk_ConnectorResponseV1",
@@ -12602,18 +13063,10 @@
         },
         "example": null
       },
-      "ReloadStandardConfigRequest": {
-        "type": "object",
-        "properties": {
-          "exclude_mode": {
-            "type": "string",
-            "description": "Specifies whether all schemas and tables will be enabled or disabled in the standard config",
-            "example": null
-          }
-        },
-        "example": null
-      },
       "ColumnUpdateRequest": {
+        "required": [
+          "enabled"
+        ],
         "type": "object",
         "properties": {
           "enabled": {
@@ -12634,6 +13087,9 @@
         "example": null
       },
       "SchemaUpdateRequest": {
+        "required": [
+          "enabled"
+        ],
         "type": "object",
         "properties": {
           "enabled": {
@@ -12652,7 +13108,34 @@
         },
         "example": null
       },
+      "StandardConfigUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "schemas": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/SchemaUpdateRequest"
+            },
+            "description": "The set of schemas within your connector schema config that are synced into the destination",
+            "example": null
+          },
+          "schema_change_handling": {
+            "type": "string",
+            "description": "The possible values for the schema_change_handling parameter are as follows: <br /> ALLOW_ALL - all new schemas, tables, and columns which appear in the source after the initial setup are included in syncs <br /> ALLOW_COLUMNS - all new schemas and tables which appear in the source after the initial setup are excluded from syncs, but new columns are included <br /> BLOCK_ALL - all new schemas, tables, and columns which appear in the source after the initial setup are excluded from syncs",
+            "example": null,
+            "enum": [
+              "ALLOW_ALL",
+              "ALLOW_COLUMNS",
+              "BLOCK_ALL"
+            ]
+          }
+        },
+        "example": null
+      },
       "TableUpdateRequest": {
+        "required": [
+          "enabled"
+        ],
         "type": "object",
         "properties": {
           "enabled": {
@@ -12681,26 +13164,13 @@
         },
         "example": null
       },
-      "StandardConfigUpdateRequest": {
+      "ReloadStandardConfigRequest": {
         "type": "object",
         "properties": {
-          "schemas": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/components/schemas/SchemaUpdateRequest"
-            },
-            "description": "The set of schemas within your connector schema config that are synced into the destination",
-            "example": null
-          },
-          "schema_change_handling": {
+          "exclude_mode": {
             "type": "string",
-            "description": "The possible values for the schema_change_handling parameter are as follows: <br /> ALLOW_ALL - all new schemas, tables, and columns which appear in the source after the initial setup are included in syncs <br /> ALLOW_COLUMNS - all new schemas and tables which appear in the source after the initial setup are excluded from syncs, but new columns are included <br /> BLOCK_ALL - all new schemas, tables, and columns which appear in the source after the initial setup are excluded from syncs",
-            "example": null,
-            "enum": [
-              "ALLOW_ALL",
-              "ALLOW_COLUMNS",
-              "BLOCK_ALL"
-            ]
+            "description": "Specifies whether all schemas and tables will be enabled or disabled in the standard config",
+            "example": null
           }
         },
         "example": null
@@ -13604,21 +14074,38 @@
             "enum": [
               "GCP_US_EAST4",
               "GCP_US_WEST1",
+              "GCP_US_CENTRAL1",
               "GCP_EUROPE_WEST3",
               "GCP_AUSTRALIA_SOUTHEAST1",
               "GCP_NORTHAMERICA_NORTHEAST1",
               "GCP_EUROPE_WEST2",
               "GCP_ASIA_SOUTHEAST1",
+              "GCP_ASIA_SOUTHEAST2",
+              "GCP_ASIA_SOUTH1",
+              "GCP_ASIA_NORTHEAST1",
               "AWS_US_EAST_1",
               "AWS_US_EAST_2",
               "AWS_US_WEST_2",
+              "AWS_AP_NORTHEAST_1",
+              "AWS_AP_SOUTHEAST_1",
               "AWS_AP_SOUTHEAST_2",
               "AWS_EU_CENTRAL_1",
               "AWS_EU_WEST_1",
               "AWS_EU_WEST_2",
+              "AWS_AP_SOUTH_1",
+              "AWS_CA_CENTRAL_1",
+              "AWS_US_GOV_WEST_1",
               "AZURE_EASTUS2",
               "AZURE_AUSTRALIAEAST",
-              "GCP_ASIA_SOUTH1"
+              "AZURE_UKSOUTH",
+              "AZURE_WESTEUROPE",
+              "AZURE_CENTRALUS",
+              "AZURE_CANADACENTRAL",
+              "AZURE_UAENORTH",
+              "AZURE_SOUTHEASTASIA",
+              "AZURE_EASTUS",
+              "AZURE_JAPANEAST",
+              "AZURE_CENTRALINDIA"
             ]
           },
           "time_zone_offset": {
@@ -13648,7 +14135,6 @@
           },
           "local_processing_agent_id": {
             "type": "string",
-            "writeOnly": true,
             "example": null
           }
         },
@@ -13667,6 +14153,7 @@
             "azure_sql_managed_db_warehouse": "#/components/schemas/azure_sql_managed_db_warehouse_NewDestinationRequest",
             "big_query": "#/components/schemas/big_query_NewDestinationRequest",
             "big_query_dts": "#/components/schemas/big_query_dts_NewDestinationRequest",
+            "clickhouse": "#/components/schemas/clickhouse_NewDestinationRequest",
             "confluent_cloud_wh": "#/components/schemas/confluent_cloud_wh_NewDestinationRequest",
             "databricks": "#/components/schemas/databricks_NewDestinationRequest",
             "managed_big_query": "#/components/schemas/managed_big_query_NewDestinationRequest",
@@ -13700,21 +14187,38 @@
             "enum": [
               "GCP_US_EAST4",
               "GCP_US_WEST1",
+              "GCP_US_CENTRAL1",
               "GCP_EUROPE_WEST3",
               "GCP_AUSTRALIA_SOUTHEAST1",
               "GCP_NORTHAMERICA_NORTHEAST1",
               "GCP_EUROPE_WEST2",
               "GCP_ASIA_SOUTHEAST1",
+              "GCP_ASIA_SOUTHEAST2",
+              "GCP_ASIA_SOUTH1",
+              "GCP_ASIA_NORTHEAST1",
               "AWS_US_EAST_1",
               "AWS_US_EAST_2",
               "AWS_US_WEST_2",
+              "AWS_AP_NORTHEAST_1",
+              "AWS_AP_SOUTHEAST_1",
               "AWS_AP_SOUTHEAST_2",
               "AWS_EU_CENTRAL_1",
               "AWS_EU_WEST_1",
               "AWS_EU_WEST_2",
+              "AWS_AP_SOUTH_1",
+              "AWS_CA_CENTRAL_1",
+              "AWS_US_GOV_WEST_1",
               "AZURE_EASTUS2",
               "AZURE_AUSTRALIAEAST",
-              "GCP_ASIA_SOUTH1"
+              "AZURE_UKSOUTH",
+              "AZURE_WESTEUROPE",
+              "AZURE_CENTRALUS",
+              "AZURE_CANADACENTRAL",
+              "AZURE_UAENORTH",
+              "AZURE_SOUTHEASTASIA",
+              "AZURE_EASTUS",
+              "AZURE_JAPANEAST",
+              "AZURE_CENTRALINDIA"
             ]
           },
           "config": {
@@ -13739,6 +14243,10 @@
           "daylight_saving_time_enabled": {
             "type": "boolean",
             "description": "Shift my UTC offset with daylight savings time (US Only)",
+            "example": null
+          },
+          "local_processing_agent_id": {
+            "type": "string",
             "example": null
           },
           "time_zone_offset": {
@@ -13777,21 +14285,38 @@
             "enum": [
               "GCP_US_EAST4",
               "GCP_US_WEST1",
+              "GCP_US_CENTRAL1",
               "GCP_EUROPE_WEST3",
               "GCP_AUSTRALIA_SOUTHEAST1",
               "GCP_NORTHAMERICA_NORTHEAST1",
               "GCP_EUROPE_WEST2",
               "GCP_ASIA_SOUTHEAST1",
+              "GCP_ASIA_SOUTHEAST2",
+              "GCP_ASIA_SOUTH1",
+              "GCP_ASIA_NORTHEAST1",
               "AWS_US_EAST_1",
               "AWS_US_EAST_2",
               "AWS_US_WEST_2",
+              "AWS_AP_NORTHEAST_1",
+              "AWS_AP_SOUTHEAST_1",
               "AWS_AP_SOUTHEAST_2",
               "AWS_EU_CENTRAL_1",
               "AWS_EU_WEST_1",
               "AWS_EU_WEST_2",
+              "AWS_AP_SOUTH_1",
+              "AWS_CA_CENTRAL_1",
+              "AWS_US_GOV_WEST_1",
               "AZURE_EASTUS2",
               "AZURE_AUSTRALIAEAST",
-              "GCP_ASIA_SOUTH1"
+              "AZURE_UKSOUTH",
+              "AZURE_WESTEUROPE",
+              "AZURE_CENTRALUS",
+              "AZURE_CANADACENTRAL",
+              "AZURE_UAENORTH",
+              "AZURE_SOUTHEASTASIA",
+              "AZURE_EASTUS",
+              "AZURE_JAPANEAST",
+              "AZURE_CENTRALINDIA"
             ]
           },
           "setup_status": {
@@ -13802,6 +14327,11 @@
           "daylight_saving_time_enabled": {
             "type": "boolean",
             "description": "Shift my UTC offset with daylight savings time (US Only)",
+            "example": null
+          },
+          "local_processing_agent_id": {
+            "type": "string",
+            "description": "The unique identifier for the local processing agent within the Fivetran system",
             "example": null
           },
           "group_id": {
@@ -13838,6 +14368,7 @@
             "azure_sql_managed_db_warehouse": "#/components/schemas/azure_sql_managed_db_warehouse_DestinationResponse",
             "big_query": "#/components/schemas/big_query_DestinationResponse",
             "big_query_dts": "#/components/schemas/big_query_dts_DestinationResponse",
+            "clickhouse": "#/components/schemas/clickhouse_DestinationResponse",
             "confluent_cloud_wh": "#/components/schemas/confluent_cloud_wh_DestinationResponse",
             "databricks": "#/components/schemas/databricks_DestinationResponse",
             "managed_big_query": "#/components/schemas/managed_big_query_DestinationResponse",
@@ -14068,9 +14599,22 @@
             "format": "date-time",
             "example": null
           },
+          "connect_card": {
+            "$ref": "#/components/schemas/ConnectCardResponse"
+          },
           "sync_frequency": {
             "type": "integer",
             "description": "The connector sync frequency in minutes",
+            "format": "int32",
+            "example": null
+          },
+          "pause_after_trial": {
+            "type": "boolean",
+            "description": "Specifies whether the connector should be paused after the free trial period has ended.",
+            "example": null
+          },
+          "data_delay_threshold": {
+            "type": "integer",
             "format": "int32",
             "example": null
           },
@@ -14097,6 +14641,16 @@
             "description": "The additional information about the connector's state. The format of this parameter is specific for each connector type.",
             "example": null
           },
+          "data_delay_sensitivity": {
+            "type": "string",
+            "example": null,
+            "enum": [
+              "LOW",
+              "NORMAL",
+              "HIGH",
+              "CUSTOM"
+            ]
+          },
           "service_version": {
             "type": "integer",
             "description": "The connector type version within the Fivetran system.",
@@ -14113,33 +14667,6 @@
             "type": "string",
             "description": "The timestamp of the time the connector sync failed last time.",
             "format": "date-time",
-            "example": null
-          },
-          "connect_card": {
-            "$ref": "#/components/schemas/ConnectCardResponse"
-          },
-          "pause_after_trial": {
-            "type": "boolean",
-            "description": "Specifies whether the connector should be paused after the free trial period has ended.",
-            "example": null
-          },
-          "data_delay_threshold": {
-            "type": "integer",
-            "format": "int32",
-            "example": null
-          },
-          "data_delay_sensitivity": {
-            "type": "string",
-            "example": null,
-            "enum": [
-              "LOW",
-              "NORMAL",
-              "HIGH",
-              "CUSTOM"
-            ]
-          },
-          "enable_remote_execution": {
-            "type": "boolean",
             "example": null
           },
           "schedule_type": {
@@ -14298,6 +14825,155 @@
         },
         "example": null
       },
+      "LocalProcessingAgentCreateRequest": {
+        "type": "object",
+        "properties": {
+          "accept_terms": {
+            "type": "boolean",
+            "description": "Boolean, must be true to indicate that the caller accepts the Fivetran On-Prem Software License Addendum.",
+            "example": null
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Local Processing Agent display name.",
+            "example": null
+          },
+          "env_type": {
+            "type": "string",
+            "description": "Environment type. (docker)",
+            "example": null,
+            "enum": [
+              "DOCKER"
+            ]
+          },
+          "group_id": {
+            "type": "string",
+            "description": "The unique identifier for the group within your Fivetran account.",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "LocalProcessingAgentCreateResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique ID of a Local Processing Agent.",
+            "example": null
+          },
+          "files": {
+            "$ref": "#/components/schemas/LocalProcessingAgentFilesResponse"
+          },
+          "registered_at": {
+            "type": "string",
+            "description": "Time when this Local Processing Agent was created.",
+            "format": "date-time",
+            "example": null
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Local Processing Agent display name.",
+            "example": null
+          },
+          "group_id": {
+            "type": "string",
+            "description": "The unique identifier for the group within your Fivetran account.",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "LocalProcessingAgentFilesResponse": {
+        "type": "object",
+        "properties": {
+          "config_json": {
+            "type": "array",
+            "description": "Base64 encoded content of the config.json",
+            "example": null,
+            "items": {
+              "type": "string",
+              "format": "byte",
+              "example": null
+            }
+          },
+          "docker_compose_yaml": {
+            "type": "array",
+            "description": "Base64 encoded content of the docker-compose.yaml",
+            "example": null,
+            "items": {
+              "type": "string",
+              "format": "byte",
+              "example": null
+            }
+          },
+          "auth_json": {
+            "type": "array",
+            "description": "Base64 encoded content of the auth.json",
+            "example": null,
+            "items": {
+              "type": "string",
+              "format": "byte",
+              "example": null
+            }
+          }
+        },
+        "example": null
+      },
+      "LocalProcessingAgentUsageResponse": {
+        "type": "object",
+        "properties": {
+          "schema": {
+            "type": "string",
+            "description": "The name used both as the connector's name within the Fivetran system and as the source schema's name within your group.",
+            "example": null
+          },
+          "service": {
+            "type": "string",
+            "description": "The connector type name within the Fivetran system.",
+            "example": null
+          },
+          "connection_id": {
+            "type": "string",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "LocalProcessingAgentWithUsageResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique ID of a Local Processing Agent.",
+            "example": null
+          },
+          "usage": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/LocalProcessingAgentUsageResponse"
+            }
+          },
+          "registered_at": {
+            "type": "string",
+            "description": "Time when this Local Processing Agent was created.",
+            "format": "date-time",
+            "example": null
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Local Processing Agent display name.",
+            "example": null
+          },
+          "group_id": {
+            "type": "string",
+            "description": "The unique identifier for the group within your Fivetran account.",
+            "example": null
+          }
+        },
+        "example": null
+      },
       "AddLogRequest": {
         "type": "object",
         "properties": {
@@ -14403,17 +15079,21 @@
         "properties": {
           "account_id": {
             "type": "string",
-            "description": "Fivetran Account ID.",
+            "description": "The unique identifier for the account within the Fivetran system.",
             "example": null
           },
           "system_key_id": {
             "type": "string",
-            "description": "System Key ID.",
+            "description": "The system ID from the API key. Returned if the system API key is used to authenticate the request.",
+            "example": null
+          },
+          "account_name": {
+            "type": "string",
             "example": null
           },
           "user_id": {
             "type": "string",
-            "description": "User ID.",
+            "description": "The user ID from the API key. Returned if the user API key is used to authenticate the request.",
             "example": null
           }
         },
@@ -14427,6 +15107,62 @@
             "description": "Private link name",
             "example": null
           },
+          "region": {
+            "type": "string",
+            "description": "Data processing location. This is where Fivetran will operate and run computation on data.",
+            "example": null,
+            "enum": [
+              "GCP_US_EAST4",
+              "GCP_US_WEST1",
+              "GCP_US_CENTRAL1",
+              "GCP_EUROPE_WEST3",
+              "GCP_AUSTRALIA_SOUTHEAST1",
+              "GCP_NORTHAMERICA_NORTHEAST1",
+              "GCP_EUROPE_WEST2",
+              "GCP_ASIA_SOUTHEAST1",
+              "GCP_ASIA_SOUTHEAST2",
+              "GCP_ASIA_SOUTH1",
+              "GCP_ASIA_NORTHEAST1",
+              "AWS_US_EAST_1",
+              "AWS_US_EAST_2",
+              "AWS_US_WEST_2",
+              "AWS_AP_NORTHEAST_1",
+              "AWS_AP_SOUTHEAST_1",
+              "AWS_AP_SOUTHEAST_2",
+              "AWS_EU_CENTRAL_1",
+              "AWS_EU_WEST_1",
+              "AWS_EU_WEST_2",
+              "AWS_AP_SOUTH_1",
+              "AWS_CA_CENTRAL_1",
+              "AWS_US_GOV_WEST_1",
+              "AZURE_EASTUS2",
+              "AZURE_AUSTRALIAEAST",
+              "AZURE_UKSOUTH",
+              "AZURE_WESTEUROPE",
+              "AZURE_CENTRALUS",
+              "AZURE_CANADACENTRAL",
+              "AZURE_UAENORTH",
+              "AZURE_SOUTHEASTASIA",
+              "AZURE_EASTUS",
+              "AZURE_JAPANEAST",
+              "AZURE_CENTRALINDIA"
+            ]
+          },
+          "service": {
+            "type": "string",
+            "description": "The name for the service type within the Fivetran system.",
+            "example": null,
+            "enum": [
+              "DATABRICKS",
+              "SNOWFLAKE",
+              "ONELAKE",
+              "SYNAPSE",
+              "AZURE_POSTGRES_WAREHOUSE",
+              "AZURE_SQL_DATA_WAREHOUSE",
+              "SOURCE",
+              "REDSHIFT"
+            ]
+          },
           "config": {
             "type": "object",
             "additionalProperties": {
@@ -14434,11 +15170,6 @@
               "example": null
             },
             "description": "Private link configuration",
-            "example": null
-          },
-          "group_id": {
-            "type": "string",
-            "description": "The unique identifier for the group within the Fivetran system",
             "example": null
           }
         },
@@ -14459,7 +15190,7 @@
         },
         "example": null
       },
-      "PrivateLinkInfo": {
+      "PrivateLinkResponse": {
         "type": "object",
         "properties": {
           "id": {
@@ -14472,61 +15203,9 @@
             "description": "Private link name",
             "example": null
           },
-          "service": {
+          "region": {
             "type": "string",
-            "description": "The name for the service type within the Fivetran system.",
-            "example": null
-          },
-          "state": {
-            "type": "string",
-            "description": "Private link state",
-            "example": null,
-            "enum": [
-              "CREATING",
-              "UPDATING",
-              "DESTROYING",
-              "OK",
-              "FAIL"
-            ]
-          },
-          "config": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "object",
-              "example": null
-            },
-            "description": "Private link configuration",
-            "example": null
-          },
-          "created_at": {
-            "type": "string",
-            "description": "The timestamp of the time the private link was created in your account",
-            "format": "date-time",
-            "example": null
-          },
-          "created_by": {
-            "type": "string",
-            "description": "The actor who created the private link",
-            "example": null
-          },
-          "group_id": {
-            "type": "string",
-            "description": "The unique identifier for the group within the Fivetran system",
-            "example": null
-          },
-          "cloud_provider": {
-            "type": "string",
-            "description": "Private link cloud provider",
-            "example": null,
-            "enum": [
-              "AWS",
-              "GCP",
-              "AZURE"
-            ]
-          },
-          "group_region": {
-            "type": "string",
-            "description": "Private link group region",
+            "description": "Data processing location. This is where Fivetran will operate and run computation on data.",
             "example": null,
             "enum": [
               "GCP_US_EAST4",
@@ -14559,6 +15238,67 @@
               "AZURE_CANADACENTRAL",
               "AZURE_UAENORTH",
               "AZURE_SOUTHEASTASIA"
+            ]
+          },
+          "service": {
+            "type": "string",
+            "description": "The name for the service type within the Fivetran system.",
+            "example": null,
+            "enum": [
+              "DATABRICKS",
+              "SNOWFLAKE",
+              "ONELAKE",
+              "SYNAPSE",
+              "AZURE_POSTGRES_WAREHOUSE",
+              "AZURE_SQL_DATA_WAREHOUSE",
+              "SOURCE",
+              "REDSHIFT"
+            ]
+          },
+          "state": {
+            "type": "string",
+            "description": "Private link state",
+            "example": null,
+            "enum": [
+              "CREATING",
+              "UPDATING",
+              "DESTROYING",
+              "OK",
+              "FAIL"
+            ]
+          },
+          "config": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "example": null
+            },
+            "description": "Private link configuration",
+            "example": null
+          },
+          "account_id": {
+            "type": "string",
+            "example": null
+          },
+          "created_at": {
+            "type": "string",
+            "description": "The timestamp of the time the private link was created in your account",
+            "format": "date-time",
+            "example": null
+          },
+          "created_by": {
+            "type": "string",
+            "description": "The actor who created the private link",
+            "example": null
+          },
+          "cloud_provider": {
+            "type": "string",
+            "description": "Private link cloud provider",
+            "example": null,
+            "enum": [
+              "AWS",
+              "GCP",
+              "AZURE"
             ]
           },
           "state_summary": {
@@ -16242,6 +16982,27 @@
           }
         ]
       },
+      "clickhouse_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "clickhouse_NewDestinationRequest": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewDestinationRequest"
+          },
+          {
+            "$ref": "#/components/schemas/clickhouse_config_V1"
+          }
+        ]
+      },
       "confluent_cloud_wh_config_V1": {
         "properties": {
           "config": {
@@ -17008,7 +17769,7 @@
               "is_private_link_required": {
                 "title": "",
                 "type": "boolean",
-                "description": "We use PrivateLink by default if your s3 bucket is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to s3 bucket over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/databases/connection-options#awsprivatelinkbeta).",
+                "description": "We use PrivateLink by default if your s3 bucket is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to s3 bucket over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options#awsprivatelinkbeta).",
                 "example": null
               },
               "prefix_path": {
@@ -17462,7 +18223,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "cluster_region": {
@@ -18045,6 +18807,17 @@
           },
           {
             "$ref": "#/components/schemas/big_query_dts_config_V1"
+          }
+        ]
+      },
+      "clickhouse_DestinationResponse": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/DestinationResponse"
+          },
+          {
+            "$ref": "#/components/schemas/clickhouse_config_V1"
           }
         ]
       },
@@ -18776,7 +19549,7 @@
               "private_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Absorb LMS Private Key.",
+                "description": "Your Absorb LMS REST API private key.",
                 "format": "password",
                 "example": null
               },
@@ -22270,7 +23043,7 @@
               "is_private_link_required": {
                 "title": "",
                 "type": "boolean",
-                "description": "We use PrivateLink by default if your AWS Lambda is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to AWS lambda over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/databases/connection-options#awsprivatelink).",
+                "description": "We use PrivateLink by default if your AWS Lambda is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to AWS lambda over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options#awsprivatelink).",
                 "example": null
               }
             },
@@ -24241,6 +25014,42 @@
           }
         ]
       },
+      "bizzabo_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Bizzabo API key.",
+                "format": "password",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "bizzabo_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/bizzabo_config_V1"
+          }
+        ]
+      },
       "box_config_V1": {
         "properties": {
           "config": {
@@ -25204,10 +26013,11 @@
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
                 "example": null
               },
-              "partner_code": {
+              "primary_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Care Quality Commission partner code.",
+                "description": "",
+                "format": "password",
                 "example": null
               }
             },
@@ -26491,13 +27301,13 @@
               "organization_name": {
                 "title": "",
                 "type": "string",
-                "description": "Your Confluence Organization name.",
+                "description": "Your Confluence organization name.",
                 "example": null
               },
               "username": {
                 "title": "",
                 "type": "string",
-                "description": "Your Confluence email address.",
+                "description": "Your Confluence username.",
                 "example": null
               }
             },
@@ -26783,7 +27593,7 @@
               "sync_pack_mode": {
                 "title": "",
                 "type": "object",
-                "description": "The packing mode type. Supported values:<br>`STANDARD_UNPACKED_MODE`- Unpacks _one_ layer of nested fields and infers types.<br>`PACKED_MODE`- Delivers packed data as a single destination column value.<br>Learn more in our [Cosmos DB Sync Pack Mode Options documentation](/docs/databases/cosmos#packmodeoptions).",
+                "description": "The packing mode type. Supported values:<br>`STANDARD_UNPACKED_MODE`- Unpacks _one_ layer of nested fields and infers types.<br>`PACKED_MODE`- Delivers packed data as a single destination column value.<br>Learn more in our [Cosmos DB Sync Pack Mode Options documentation](/docs/connectors/databases/cosmos#packmodeoptions).",
                 "example": null,
                 "enum": [
                   "STANDARD_UNPACKED_MODE",
@@ -26793,7 +27603,7 @@
               "data_access_method": {
                 "title": "",
                 "type": "object",
-                "description": "The source data access method. Supported values:<br>`ACCOUNT_KEY`- Data access method that uses account keys to authenticate to the source database. It comes in both read-write and read-only variants.<br>`RESOURCE_TOKEN`- Fine-grained permission model based on native Azure Cosmos DB users and permissions.<br> Learn more in our [Cosmos DB Data Access Methods documentation](/docs/databases/cosmos#dataaccessmethods).",
+                "description": "The source data access method. Supported values:<br>`ACCOUNT_KEY`- Data access method that uses account keys to authenticate to the source database. It comes in both read-write and read-only variants.<br>`RESOURCE_TOKEN`- Fine-grained permission model based on native Azure Cosmos DB users and permissions.<br> Learn more in our [Cosmos DB Data Access Methods documentation](/docs/connectors/databases/cosmos#dataaccessmethods).",
                 "example": null,
                 "enum": [
                   "ACCOUNT_KEY",
@@ -28672,7 +29482,7 @@
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "API Key for your Delighted account",
+                "description": "",
                 "format": "password",
                 "example": null
               }
@@ -29632,6 +30442,7 @@
                   "tsv",
                   "xml",
                   "csv",
+                  "spreadsheet",
                   "json",
                   "jsonl",
                   "avro",
@@ -30038,6 +30849,63 @@
           },
           {
             "$ref": "#/components/schemas/easypost_config_V1"
+          }
+        ]
+      },
+      "ebay_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "scope": {
+                "title": "",
+                "type": "string",
+                "description": "Your eBay Scopes.",
+                "example": null
+              },
+              "subdomain": {
+                "type": "object",
+                "description": "Your eBay Environment.",
+                "example": null,
+                "enum": [
+                  "ebay",
+                  "sandbox.ebay"
+                ]
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your eBay client secret.",
+                "format": "password",
+                "example": null
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your eBay client ID.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "ebay_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/ebay_config_V1"
           }
         ]
       },
@@ -30650,10 +31518,10 @@
                 "format": "password",
                 "example": null
               },
-              "sub_domain": {
+              "account_name": {
                 "title": "",
                 "type": "string",
-                "description": "Your Eventsforce subdomain.",
+                "description": "Your Eventsforce account name.",
                 "example": null
               }
             },
@@ -30811,7 +31679,7 @@
                     "prebuilt_report_name": {
                       "title": "",
                       "type": "object",
-                      "description": "The report name to which connector will sync the data. [Possible prebuilt_report values](/docs/applications/facebook-ads-insights/api-config#prebuiltreport).",
+                      "description": "The report name to which connector will sync the data. [Possible prebuilt_report values](/docs/connectors/applications/facebook-ads-insights/api-config#prebuiltreport).",
                       "example": null,
                       "enum": [
                         "DELIVERY_PLATFORM_AND_DEVICE",
@@ -30840,7 +31708,7 @@
                     "view_attribution_window": {
                       "title": "",
                       "type": "object",
-                      "description": "Time period to attribute conversions based on views. [Possible view_attribution_window values](/docs/applications/facebook-ads-insights/api-config#viewattributionwindow).",
+                      "description": "Time period to attribute conversions based on views. [Possible view_attribution_window values](/docs/connectors/applications/facebook-ads-insights/api-config#viewattributionwindow).",
                       "example": null,
                       "enum": [
                         "DAY_1",
@@ -30869,12 +31737,12 @@
                     "breakdowns": {
                       "title": "",
                       "type": "array",
-                      "description": "List of breakdowns which connector will sync. [Possible breakdowns values](/docs/applications/facebook-ads-insights/api-config#breakdowns).",
+                      "description": "List of breakdowns which connector will sync. [Possible breakdowns values](/docs/connectors/applications/facebook-ads-insights/api-config#breakdowns).",
                       "example": null,
                       "items": {
                         "title": "",
                         "type": "object",
-                        "description": "List of breakdowns which connector will sync. [Possible breakdowns values](/docs/applications/facebook-ads-insights/api-config#breakdowns).",
+                        "description": "List of breakdowns which connector will sync. [Possible breakdowns values](/docs/connectors/applications/facebook-ads-insights/api-config#breakdowns).",
                         "example": null,
                         "enum": [
                           "country",
@@ -30908,12 +31776,12 @@
                     "action_breakdowns": {
                       "title": "",
                       "type": "array",
-                      "description": "List of action_breakdowns which connector will sync. [Possible action_breakdowns values](/docs/applications/facebook-ads-insights/api-config#actionbreakdowns).",
+                      "description": "List of action_breakdowns which connector will sync. [Possible action_breakdowns values](/docs/connectors/applications/facebook-ads-insights/api-config#actionbreakdowns).",
                       "example": null,
                       "items": {
                         "title": "",
                         "type": "object",
-                        "description": "List of action_breakdowns which connector will sync. [Possible action_breakdowns values](/docs/applications/facebook-ads-insights/api-config#actionbreakdowns).",
+                        "description": "List of action_breakdowns which connector will sync. [Possible action_breakdowns values](/docs/connectors/applications/facebook-ads-insights/api-config#actionbreakdowns).",
                         "example": null,
                         "enum": [
                           "action_canvas_component_name",
@@ -30933,7 +31801,7 @@
                     "click_attribution_window": {
                       "title": "",
                       "type": "object",
-                      "description": "Time period to attribute conversions based on clicks. [Possible click_attribution_window values](/docs/applications/facebook-ads-insights/api-config#clickattributionwindow).",
+                      "description": "Time period to attribute conversions based on clicks. [Possible click_attribution_window values](/docs/connectors/applications/facebook-ads-insights/api-config#clickattributionwindow).",
                       "example": null,
                       "enum": [
                         "DAY_1",
@@ -30945,7 +31813,7 @@
                     "aggregation": {
                       "title": "",
                       "type": "object",
-                      "description": "Options to select aggregation duration. [Possible aggregation values](/docs/applications/facebook-ads-insights/api-config#aggregation).",
+                      "description": "Options to select aggregation duration. [Possible aggregation values](/docs/connectors/applications/facebook-ads-insights/api-config#aggregation).",
                       "example": null,
                       "enum": [
                         "Month",
@@ -30957,7 +31825,7 @@
                     "config_type": {
                       "title": "",
                       "type": "object",
-                      "description": "Option to select Prebuilt Reports or Custom Reports. [Possible config_type values](/docs/applications/facebook-ads-insights/api-config#configtype).",
+                      "description": "Option to select Prebuilt Reports or Custom Reports. [Possible config_type values](/docs/connectors/applications/facebook-ads-insights/api-config#configtype).",
                       "example": null,
                       "enum": [
                         "Prebuilt",
@@ -30967,12 +31835,12 @@
                     "fields": {
                       "title": "",
                       "type": "array",
-                      "description": "List of fields which connector will sync. [Possible field values](/docs/applications/facebook-ads-insights/api-config#fields).",
+                      "description": "List of fields which connector will sync. [Possible field values](/docs/connectors/applications/facebook-ads-insights/api-config#fields).",
                       "example": null,
                       "items": {
                         "title": "",
                         "type": "object",
-                        "description": "List of fields which connector will sync. [Possible field values](/docs/applications/facebook-ads-insights/api-config#fields).",
+                        "description": "List of fields which connector will sync. [Possible field values](/docs/connectors/applications/facebook-ads-insights/api-config#fields).",
                         "example": null,
                         "enum": [
                           "cost_per_estimated_ad_recallers",
@@ -31098,7 +31966,7 @@
                     "action_report_time": {
                       "title": "",
                       "type": "object",
-                      "description": "The report time of action stats. [Possible action_report time values](/docs/applications/facebook-ads-insights/api-config#actionreporttime).",
+                      "description": "The report time of action stats. [Possible action_report time values](/docs/connectors/applications/facebook-ads-insights/api-config#actionreporttime).",
                       "example": null,
                       "enum": [
                         "impression",
@@ -31114,7 +31982,7 @@
               "sync_mode": {
                 "title": "",
                 "type": "object",
-                "description": "Option to select connector should sync all accounts or specific accounts. [Possible sync_mode values](/docs/applications/facebook-ads-insights/api-config#syncmode).",
+                "description": "Option to select connector should sync all accounts or specific accounts. [Possible sync_mode values](/docs/connectors/applications/facebook-ads-insights/api-config#syncmode).",
                 "example": null,
                 "enum": [
                   "AllAccounts",
@@ -32112,6 +32980,54 @@
           }
         ]
       },
+      "freshsuccess_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Freshsuccess API key.",
+                "format": "password",
+                "example": null
+              },
+              "subdomain": {
+                "title": "",
+                "type": "string",
+                "description": "Your Freshsuccess subdomain.",
+                "example": null
+              },
+              "api": {
+                "title": "",
+                "type": "string",
+                "description": "Set this parameter to `api`.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "freshsuccess_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/freshsuccess_config_V1"
+          }
+        ]
+      },
       "freshteam_config_V1": {
         "properties": {
           "config": {
@@ -32647,6 +33563,125 @@
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
                 "example": null
               },
+              "prefix": {
+                "title": "",
+                "type": "string",
+                "description": "All files and folders under this folder path will be searched for files to sync.",
+                "example": null
+              },
+              "non_standard_escape_char": {
+                "title": "",
+                "type": "boolean",
+                "description": "Use this if your CSV generator uses non-standard ways of escaping characters. Default value: `false`.",
+                "example": null
+              },
+              "pattern": {
+                "title": "",
+                "type": "string",
+                "description": "All files in your search path matching this regular expression will be synced.",
+                "example": null
+              },
+              "json_delivery_mode": {
+                "title": "",
+                "type": "object",
+                "description": "Control how your JSON data is delivered into your destination",
+                "example": null,
+                "enum": [
+                  "Packed",
+                  "Unpacked"
+                ]
+              },
+              "skip_after": {
+                "title": "",
+                "type": "integer",
+                "description": "We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.",
+                "format": "int32",
+                "example": null
+              },
+              "secret_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your JSON Private Key. Used to authorize service account. Required if you use a Custom Service Account to authenticate the storage bucket.",
+                "format": "password",
+                "example": null
+              },
+              "empty_header": {
+                "title": "",
+                "type": "boolean",
+                "description": "<strong>Optional.</strong> If your CSV generating software doesn't provide header line for the documents, Fivetran can generate the generic column names and sync data rows with them.",
+                "example": null
+              },
+              "use_pgp_encryption_options": {
+                "title": "",
+                "type": "boolean",
+                "description": "Set to `true` if files are encrypted using PGP in the GCS bucket. Default value: `false`.",
+                "example": null
+              },
+              "skip_before": {
+                "title": "",
+                "type": "integer",
+                "description": "We will skip over the number of lines specified before syncing data.",
+                "format": "int32",
+                "example": null
+              },
+              "signer_public_key": {
+                "title": "",
+                "type": "string",
+                "description": "The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.",
+                "example": null
+              },
+              "delimiter": {
+                "title": "",
+                "type": "string",
+                "description": "You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.",
+                "example": null
+              },
+              "file_type": {
+                "title": "",
+                "type": "object",
+                "description": "If your files are saved with improper extensions, you can force them to by synced as the selected file type.",
+                "example": null,
+                "enum": [
+                  "log",
+                  "infer",
+                  "tsv",
+                  "xml",
+                  "csv",
+                  "json",
+                  "jsonl",
+                  "avro",
+                  "parquet"
+                ]
+              },
+              "on_error": {
+                "title": "",
+                "type": "object",
+                "description": "If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.",
+                "example": null,
+                "enum": [
+                  "fail",
+                  "skip"
+                ]
+              },
+              "table": {
+                "title": "Destination table",
+                "type": "string",
+                "description": "Destination table. Table is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "archive_pattern": {
+                "title": "",
+                "type": "string",
+                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
+                "example": null
+              },
+              "pgp_secret_key": {
+                "title": "",
+                "type": "string",
+                "description": "The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.",
+                "format": "password",
+                "example": null
+              },
               "auth_type": {
                 "title": "",
                 "type": "object",
@@ -32667,12 +33702,6 @@
                   "append_file"
                 ]
               },
-              "prefix": {
-                "title": "",
-                "type": "string",
-                "description": "All files and folders under this folder path will be searched for files to sync.",
-                "example": null
-              },
               "escape_char_options": {
                 "title": "",
                 "type": "object",
@@ -32683,39 +33712,10 @@
                   "CUSTOM_ESCAPE_CHAR"
                 ]
               },
-              "non_standard_escape_char": {
-                "title": "",
-                "type": "boolean",
-                "description": "Use this if your CSV generator uses non-standard ways of escaping characters. Default value: `false`.",
-                "example": null
-              },
-              "pattern": {
-                "title": "",
-                "type": "string",
-                "description": "All files in your search path matching this regular expression will be synced.",
-                "example": null
-              },
               "escape_char": {
                 "title": "",
                 "type": "string",
                 "description": "If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
-                "example": null
-              },
-              "json_delivery_mode": {
-                "title": "",
-                "type": "object",
-                "description": "Control how your JSON data is delivered into your destination",
-                "example": null,
-                "enum": [
-                  "Packed",
-                  "Unpacked"
-                ]
-              },
-              "skip_after": {
-                "title": "",
-                "type": "integer",
-                "description": "We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.",
-                "format": "int32",
                 "example": null
               },
               "bucket": {
@@ -32724,30 +33724,10 @@
                 "description": "The name of the GCS bucket.",
                 "example": null
               },
-              "secret_key": {
-                "title": "",
-                "type": "string",
-                "description": "Your JSON Private Key. Used to authorize service account. Required if you use a Custom Service Account to authenticate the storage bucket.",
-                "format": "password",
-                "example": null
-              },
               "line_separator": {
                 "title": "",
                 "type": "string",
                 "description": "You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.",
-                "example": null
-              },
-              "empty_header": {
-                "title": "",
-                "type": "boolean",
-                "description": "<strong>Optional.</strong> If your CSV generating software doesn't provide header line for the documents, Fivetran can generate the generic column names and sync data rows with them.",
-                "example": null
-              },
-              "skip_before": {
-                "title": "",
-                "type": "integer",
-                "description": "We will skip over the number of lines specified before syncing data.",
-                "format": "int32",
                 "example": null
               },
               "null_sequence": {
@@ -32755,39 +33735,6 @@
                 "type": "string",
                 "description": "If your CSVs use a special value indicating null, you can specify it here.",
                 "example": null
-              },
-              "file_type": {
-                "title": "",
-                "type": "object",
-                "description": "If your files are saved with improper extensions, you can force them to by synced as the selected file type.",
-                "example": null,
-                "enum": [
-                  "log",
-                  "infer",
-                  "tsv",
-                  "xml",
-                  "csv",
-                  "json",
-                  "jsonl",
-                  "avro",
-                  "parquet"
-                ]
-              },
-              "delimiter": {
-                "title": "",
-                "type": "string",
-                "description": "You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.",
-                "example": null
-              },
-              "on_error": {
-                "title": "",
-                "type": "object",
-                "description": "If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.",
-                "example": null,
-                "enum": [
-                  "fail",
-                  "skip"
-                ]
               },
               "compression": {
                 "title": "",
@@ -32806,16 +33753,11 @@
                   "tar_bz2"
                 ]
               },
-              "table": {
-                "title": "Destination table",
-                "type": "string",
-                "description": "Destination table. Table is permanent and cannot be changed after connection creation",
-                "example": null
-              },
-              "archive_pattern": {
+              "pgp_pass_phrase": {
                 "title": "",
                 "type": "string",
-                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
+                "description": "The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.",
+                "format": "password",
                 "example": null
               }
             },
@@ -33582,7 +34524,7 @@
                     "config_type": {
                       "title": "",
                       "type": "object",
-                      "description": "Whether to use the [Prebuilt Reports or Custom Reports](/docs/applications/google-analytics#schemainformation).",
+                      "description": "Whether to use the [Prebuilt Reports or Custom Reports](/docs/connectors/applications/google-analytics#schemainformation).",
                       "example": null,
                       "enum": [
                         "Prebuilt",
@@ -33722,7 +34664,7 @@
               "config_type": {
                 "title": "",
                 "type": "object",
-                "description": "Whether to use the [Prebuilt Reports or Custom Reports](/docs/applications/google-analytics#schemainformation).",
+                "description": "Whether to use the [Prebuilt Reports or Custom Reports](/docs/connectors/applications/google-analytics#schemainformation).",
                 "example": null,
                 "enum": [
                   "Prebuilt",
@@ -37922,10 +38864,16 @@
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
                 "example": null
               },
-              "api_token": {
+              "user_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Hibob API token.",
+                "description": "Your HiBob Service User Token.",
+                "example": null
+              },
+              "user_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your HiBob Service User ID.",
                 "format": "password",
                 "example": null
               }
@@ -39001,8 +39949,8 @@
                 "example": null,
                 "enum": [
                   "",
-                  "hipaa-api",
-                  "api"
+                  "hipaa-api.jotform.com",
+                  "api.jotform.com"
                 ]
               },
               "custom_url": {
@@ -39820,6 +40768,42 @@
           },
           {
             "$ref": "#/components/schemas/learnupon_config_V1"
+          }
+        ]
+      },
+      "lemlist_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Lemlist API key.",
+                "format": "password",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "lemlist_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/lemlist_config_V1"
           }
         ]
       },
@@ -41678,41 +42662,6 @@
           }
         ]
       },
-      "meltwater_config_V1": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "properties": {
-              "schema": {
-                "title": "Destination schema",
-                "type": "string",
-                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
-                "example": null
-              },
-              "api_token": {
-                "title": "",
-                "type": "string",
-                "format": "password",
-                "example": null
-              }
-            },
-            "description": "",
-            "example": null
-          }
-        },
-        "example": null
-      },
-      "meltwater_NewConnectorRequestV1": {
-        "example": null,
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NewConnectorRequestV1"
-          },
-          {
-            "$ref": "#/components/schemas/meltwater_config_V1"
-          }
-        ]
-      },
       "mention_config_V1": {
         "properties": {
           "config": {
@@ -41766,6 +42715,48 @@
           },
           {
             "$ref": "#/components/schemas/mention_config_V1"
+          }
+        ]
+      },
+      "microsoft_dynamics_365_fno_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "container_name": {
+                "title": "",
+                "type": "string",
+                "description": "The name of the blob container.",
+                "example": null
+              },
+              "connection_string": {
+                "title": "",
+                "type": "string",
+                "description": "The blob storage container's connection string.",
+                "format": "password",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "microsoft_dynamics_365_fno_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/microsoft_dynamics_365_fno_config_V1"
           }
         ]
       },
@@ -42496,6 +43487,71 @@
           },
           {
             "$ref": "#/components/schemas/mux_config_V1"
+          }
+        ]
+      },
+      "myosh_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "Your Myosh Password .",
+                "format": "password",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Myosh API Key.",
+                "format": "password",
+                "example": null
+              },
+              "sub_domain": {
+                "type": "object",
+                "description": "Your Myosh Subdomain .",
+                "example": null,
+                "enum": [
+                  "oteapi",
+                  "api",
+                  "testapi"
+                ]
+              },
+              "db": {
+                "title": "",
+                "type": "string",
+                "description": "Your Myosh Server variables/db .",
+                "example": null
+              },
+              "username": {
+                "title": "",
+                "type": "string",
+                "description": "Your Myosh  Username.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "myosh_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/myosh_config_V1"
           }
         ]
       },
@@ -43946,8 +45002,7 @@
                 "example": null,
                 "enum": [
                   "LOGMINER",
-                  "TELEPORT",
-                  "DIRECT_CAPTURE"
+                  "TELEPORT"
                 ]
               },
               "pdb_name": {
@@ -44121,8 +45176,7 @@
                 "example": null,
                 "enum": [
                   "LOGMINER",
-                  "TELEPORT",
-                  "DIRECT_CAPTURE"
+                  "TELEPORT"
                 ]
               },
               "pdb_name": {
@@ -44642,8 +45696,7 @@
                 "example": null,
                 "enum": [
                   "LOGMINER",
-                  "TELEPORT",
-                  "DIRECT_CAPTURE"
+                  "TELEPORT"
                 ]
               },
               "pdb_name": {
@@ -44763,8 +45816,7 @@
                 "example": null,
                 "enum": [
                   "LOGMINER",
-                  "TELEPORT",
-                  "DIRECT_CAPTURE"
+                  "TELEPORT"
                 ]
               },
               "pdb_name": {
@@ -45738,17 +46790,17 @@
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
                 "example": null
               },
-              "password": {
+              "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Partnerize account's password.",
+                "description": "Your Partnerize user API key.",
                 "format": "password",
                 "example": null
               },
-              "username": {
+              "application_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Partnerize account's username.",
+                "description": "Your Partnerize user application key.",
                 "example": null
               }
             },
@@ -46080,6 +47132,48 @@
           },
           {
             "$ref": "#/components/schemas/personio_config_V1"
+          }
+        ]
+      },
+      "picqer_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Picqer API key.",
+                "format": "password",
+                "example": null
+              },
+              "sub_domain": {
+                "title": "",
+                "type": "string",
+                "description": "Your Picqer sub domain name.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "picqer_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/picqer_config_V1"
           }
         ]
       },
@@ -47138,6 +48232,52 @@
           }
         ]
       },
+      "proofpoint_security_awareness_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "token_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Proofpoint Security Awareness Token Key.",
+                "format": "password",
+                "example": null
+              },
+              "region": {
+                "type": "object",
+                "description": "Your Proofpoint Security Awareness Region.",
+                "example": null,
+                "enum": [
+                  "results.ap.securityeducation.com",
+                  "results.us.securityeducation.com",
+                  "results.eu.securityeducation.com"
+                ]
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "proofpoint_security_awareness_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/proofpoint_security_awareness_config_V1"
+          }
+        ]
+      },
       "qualaroo_config_V1": {
         "properties": {
           "config": {
@@ -47964,7 +49104,7 @@
               "api_token": {
                 "title": "",
                 "type": "string",
-                "description": "Your Referralhero API Token.",
+                "description": "Your Referralhero API token.",
                 "format": "password",
                 "example": null
               }
@@ -50019,7 +51159,30 @@
                   "SshTunnel"
                 ]
               },
+              "snc_my_name": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": null
+              },
+              "snc_mode": {
+                "title": "",
+                "type": "object",
+                "description": "",
+                "example": null,
+                "enum": [
+                  "SncUserPass",
+                  "NoSnc",
+                  "SncCertificate"
+                ]
+              },
               "always_encrypted": {
+                "title": "",
+                "type": "boolean",
+                "description": "",
+                "example": null
+              },
+              "convert_dats_type_to_date": {
                 "title": "",
                 "type": "boolean",
                 "description": "",
@@ -50029,6 +51192,12 @@
                 "title": "",
                 "type": "string",
                 "description": "SSH user, specify only to connect via an SSH tunnel.",
+                "example": null
+              },
+              "snc_partner_name": {
+                "title": "",
+                "type": "string",
+                "description": "",
                 "example": null
               },
               "tunnel_port": {
@@ -50045,6 +51214,13 @@
                 "example": null
               },
               "password": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": null
+              },
+              "snc_certificate": {
                 "title": "",
                 "type": "string",
                 "description": "",
@@ -50973,7 +52149,7 @@
               "share_url": {
                 "title": "",
                 "type": "string",
-                "description": "Your SharePoint folder URL. You can find the folder URL by following the steps mentioned [here](/docs/files/share-point/setup-guide).",
+                "description": "Your SharePoint folder URL. You can find the folder URL by following the steps mentioned [here](/docs/connectors/files/share-point/setup-guide).",
                 "example": null
               },
               "delimiter": {
@@ -50993,6 +52169,7 @@
                   "tsv",
                   "xml",
                   "csv",
+                  "spreadsheet",
                   "json",
                   "jsonl",
                   "avro",
@@ -51475,14 +52652,14 @@
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Sistrix api key.",
+                "description": "Your SISTRIX API key.",
                 "format": "password",
                 "example": null
               },
               "domain": {
                 "title": "",
                 "type": "string",
-                "description": "Your domain for which you want to fetch data.",
+                "description": "Your SISTRIX domain.",
                 "example": null
               }
             },
@@ -51840,7 +53017,7 @@
               "custom_reports": {
                 "title": "",
                 "type": "array",
-                "description": "[Custom reports for Snapchat Ads connector](/docs/applications/snapchat-ads/custom-reports).",
+                "description": "[Custom reports for Snapchat Ads connector](/docs/connectors/applications/snapchat-ads/custom-reports).",
                 "example": null,
                 "items": {
                   "title": "",
@@ -51849,12 +53026,12 @@
                     "sk_ad_metrics_fields": {
                       "title": "",
                       "type": "array",
-                      "description": "[List of SKAd  Metrics fields in custom report](/docs/applications/snapchat-ads/custom-reports#skadmetricsfields).",
+                      "description": "[List of SKAd  Metrics fields in custom report](/docs/connectors/applications/snapchat-ads/custom-reports#skadmetricsfields).",
                       "example": null,
                       "items": {
                         "title": "",
                         "type": "object",
-                        "description": "[List of SKAd  Metrics fields in custom report](/docs/applications/snapchat-ads/custom-reports#skadmetricsfields).",
+                        "description": "[List of SKAd  Metrics fields in custom report](/docs/connectors/applications/snapchat-ads/custom-reports#skadmetricsfields).",
                         "example": null,
                         "enum": [
                           "custom_event_2_sk_ad_network_view",
@@ -51974,12 +53151,12 @@
                     "base_metrics_fields": {
                       "title": "",
                       "type": "array",
-                      "description": "[List of Core, Additional and Conversion Metrics Stats Fields](/docs/applications/snapchat-ads/custom-reports#basemetricsfields).",
+                      "description": "[List of Core, Additional and Conversion Metrics Stats Fields](/docs/connectors/applications/snapchat-ads/custom-reports#basemetricsfields).",
                       "example": null,
                       "items": {
                         "title": "",
                         "type": "object",
-                        "description": "[List of Core, Additional and Conversion Metrics Stats Fields](/docs/applications/snapchat-ads/custom-reports#basemetricsfields).",
+                        "description": "[List of Core, Additional and Conversion Metrics Stats Fields](/docs/connectors/applications/snapchat-ads/custom-reports#basemetricsfields).",
                         "example": null,
                         "enum": [
                           "quartile_2",
@@ -52095,7 +53272,7 @@
                     "breakout": {
                       "title": "",
                       "type": "object",
-                      "description": "[Sets Breakout on custom report](/docs/applications/snapchat-ads/custom-reports#breakout).",
+                      "description": "[Sets Breakout on custom report](/docs/connectors/applications/snapchat-ads/custom-reports#breakout).",
                       "example": null,
                       "enum": [
                         "app",
@@ -52109,7 +53286,7 @@
                     "granularity": {
                       "title": "",
                       "type": "object",
-                      "description": "[Sets Granularity on custom report](/docs/applications/snapchat-ads/customr-reports#granularity).",
+                      "description": "[Sets Granularity on custom report](/docs/connectors/applications/snapchat-ads/customr-reports#granularity).",
                       "example": null,
                       "enum": [
                         "HOUR",
@@ -52119,7 +53296,7 @@
                     "breakdown": {
                       "title": "",
                       "type": "object",
-                      "description": "[Sets Breakdown on custom report](/docs/applications/snapchat-ads/custom-reports#breakdown).",
+                      "description": "[Sets Breakdown on custom report](/docs/connectors/applications/snapchat-ads/custom-reports#breakdown).",
                       "example": null,
                       "enum": [
                         "AD",
@@ -52136,7 +53313,7 @@
                     "dimension": {
                       "title": "",
                       "type": "object",
-                      "description": "[Sets Dimension on custom report](/docs/applications/snapchat-ads/custom-reports#dimension).",
+                      "description": "[Sets Dimension on custom report](/docs/connectors/applications/snapchat-ads/custom-reports#dimension).",
                       "example": null,
                       "enum": [
                         "COUNTRY",
@@ -52149,7 +53326,7 @@
                       ]
                     }
                   },
-                  "description": "[Custom reports for Snapchat Ads connector](/docs/applications/snapchat-ads/custom-reports).",
+                  "description": "[Custom reports for Snapchat Ads connector](/docs/connectors/applications/snapchat-ads/custom-reports).",
                   "example": null
                 }
               }
@@ -52428,6 +53605,51 @@
           },
           {
             "$ref": "#/components/schemas/snyk_config_V1"
+          }
+        ]
+      },
+      "solarwinds_service_desk_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "domain": {
+                "type": "object",
+                "description": "Your SolarWinds Service Desk domain.",
+                "example": null,
+                "enum": [
+                  "https://api.samanage.com",
+                  "https://apieu.samanage.com"
+                ]
+              },
+              "token": {
+                "title": "",
+                "type": "string",
+                "description": "Your SolarWinds Service Desk token.",
+                "format": "password",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "solarwinds_service_desk_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/solarwinds_service_desk_config_V1"
           }
         ]
       },
@@ -54098,10 +55320,10 @@
                 "description": "Your Tableau Source PAT Name.",
                 "example": null
               },
-              "server_address": {
+              "sub_domain": {
                 "title": "",
                 "type": "string",
-                "description": "Your Tableau Source server address.",
+                "description": "Your Tableau Source subdomain.",
                 "example": null
               },
               "pat_secret": {
@@ -54472,7 +55694,7 @@
               "username": {
                 "title": "",
                 "type": "string",
-                "description": "Your TestRail API username.",
+                "description": "Your TestRail username.",
                 "example": null
               }
             },
@@ -54779,6 +56001,60 @@
           },
           {
             "$ref": "#/components/schemas/tiktok_ads_config_V1"
+          }
+        ]
+      },
+      "toast_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "subdomain": {
+                "title": "",
+                "type": "string",
+                "description": "Your Toast Domain.",
+                "example": null
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Toast client secret.",
+                "format": "password",
+                "example": null
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Toast client ID.",
+                "example": null
+              },
+              "toast_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Toast Restaurant External ID.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "toast_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/toast_config_V1"
           }
         ]
       },
@@ -55362,6 +56638,60 @@
           }
         ]
       },
+      "tymeshift_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "account_plan": {
+                "title": "",
+                "type": "string",
+                "description": "Your Tymeshift account plan.",
+                "example": null
+              },
+              "sub_domain": {
+                "title": "",
+                "type": "string",
+                "description": "Your Tymeshift subdomain.",
+                "example": null
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Tymeshift client secret.",
+                "format": "password",
+                "example": null
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Tymeshift client ID.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "tymeshift_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/tymeshift_config_V1"
+          }
+        ]
+      },
       "typeform_config_V1": {
         "properties": {
           "config": {
@@ -55731,6 +57061,90 @@
           }
         ]
       },
+      "veeqo_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Veeqo API key.",
+                "format": "password",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "veeqo_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/veeqo_config_V1"
+          }
+        ]
+      },
+      "veevavault_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "Your Veeva Vault password.",
+                "format": "password",
+                "example": null
+              },
+              "base_url": {
+                "title": "",
+                "type": "string",
+                "description": "Your Veeva Vault base URL.",
+                "example": null
+              },
+              "username": {
+                "title": "",
+                "type": "string",
+                "description": "Your Veeva Vault username.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "veevavault_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/veevavault_config_V1"
+          }
+        ]
+      },
       "visit_by_ges_config_V1": {
         "properties": {
           "config": {
@@ -55842,6 +57256,58 @@
           },
           {
             "$ref": "#/components/schemas/vonage_config_V1"
+          }
+        ]
+      },
+      "vonage_contact_center_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Vonage Contact Center client secret.",
+                "format": "password",
+                "example": null
+              },
+              "region": {
+                "type": "object",
+                "description": "Your Vonage Contact Center region.",
+                "example": null,
+                "enum": [
+                  "emea",
+                  "nam",
+                  "apac"
+                ]
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Vonage Contact Center client ID.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "vonage_contact_center_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/vonage_contact_center_config_V1"
           }
         ]
       },
@@ -57898,6 +59364,54 @@
           }
         ]
       },
+      "yougov_sport_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "client_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Yougov Sport client key.",
+                "format": "password",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Yougov Sport API key.",
+                "example": null
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Yougov Sport client ID.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "yougov_sport_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/yougov_sport_config_V1"
+          }
+        ]
+      },
       "younium_config_V1": {
         "properties": {
           "config": {
@@ -58643,6 +60157,17 @@
           "config": {
             "type": "object",
             "properties": {
+              "sync_mode": {
+                "title": "",
+                "type": "object",
+                "description": "Select `Zuora Billing` to sync exclusively Zuora Billing related records. Choose `Zuora Revenue` for syncing only Zuora Revenue reports. If both Zuora Billing records and Zuora Revenue reports are to be synced, opt for `Both`.",
+                "example": null,
+                "enum": [
+                  "ZuoraBilling",
+                  "ZuoraRevenue",
+                  "Both"
+                ]
+              },
               "schema": {
                 "title": "Destination schema",
                 "type": "string",
@@ -58697,6 +60222,17 @@
           "config": {
             "type": "object",
             "properties": {
+              "sync_mode": {
+                "title": "",
+                "type": "object",
+                "description": "Select `Zuora Billing` to sync exclusively Zuora Billing related records. Choose `Zuora Revenue` for syncing only Zuora Revenue reports. If both Zuora Billing records and Zuora Revenue reports are to be synced, opt for `Both`.",
+                "example": null,
+                "enum": [
+                  "ZuoraBilling",
+                  "ZuoraRevenue",
+                  "Both"
+                ]
+              },
               "schema": {
                 "title": "Destination schema",
                 "type": "string",
@@ -59502,6 +61038,17 @@
           },
           {
             "$ref": "#/components/schemas/bitly_config_V1"
+          }
+        ]
+      },
+      "bizzabo_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/bizzabo_config_V1"
           }
         ]
       },
@@ -60440,6 +61987,17 @@
           }
         ]
       },
+      "ebay_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/ebay_config_V1"
+          }
+        ]
+      },
       "economic_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -60778,6 +62336,17 @@
           },
           {
             "$ref": "#/components/schemas/freshservice_config_V1"
+          }
+        ]
+      },
+      "freshsuccess_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/freshsuccess_config_V1"
           }
         ]
       },
@@ -61793,6 +63362,17 @@
           }
         ]
       },
+      "lemlist_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/lemlist_config_V1"
+          }
+        ]
+      },
       "lessonly_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -62123,17 +63703,6 @@
           }
         ]
       },
-      "meltwater_ConnectorResponseV1": {
-        "example": null,
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ConnectorResponseV1"
-          },
-          {
-            "$ref": "#/components/schemas/meltwater_config_V1"
-          }
-        ]
-      },
       "mention_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -62142,6 +63711,17 @@
           },
           {
             "$ref": "#/components/schemas/mention_config_V1"
+          }
+        ]
+      },
+      "microsoft_dynamics_365_fno_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/microsoft_dynamics_365_fno_config_V1"
           }
         ]
       },
@@ -62285,6 +63865,17 @@
           },
           {
             "$ref": "#/components/schemas/mux_config_V1"
+          }
+        ]
+      },
+      "myosh_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/myosh_config_V1"
           }
         ]
       },
@@ -62783,6 +64374,17 @@
           }
         ]
       },
+      "picqer_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/picqer_config_V1"
+          }
+        ]
+      },
       "pingdom_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -62967,6 +64569,17 @@
           },
           {
             "$ref": "#/components/schemas/productboard_config_V1"
+          }
+        ]
+      },
+      "proofpoint_security_awareness_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/proofpoint_security_awareness_config_V1"
           }
         ]
       },
@@ -63828,6 +65441,17 @@
           }
         ]
       },
+      "solarwinds_service_desk_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/solarwinds_service_desk_config_V1"
+          }
+        ]
+      },
       "sonarqube_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -64213,6 +65837,17 @@
           }
         ]
       },
+      "toast_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/toast_config_V1"
+          }
+        ]
+      },
       "toggl_track_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -64312,6 +65947,17 @@
           }
         ]
       },
+      "tymeshift_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/tymeshift_config_V1"
+          }
+        ]
+      },
       "typeform_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -64389,6 +66035,28 @@
           }
         ]
       },
+      "veeqo_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/veeqo_config_V1"
+          }
+        ]
+      },
+      "veevavault_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/veevavault_config_V1"
+          }
+        ]
+      },
       "visit_by_ges_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -64419,6 +66087,17 @@
           },
           {
             "$ref": "#/components/schemas/vonage_config_V1"
+          }
+        ]
+      },
+      "vonage_contact_center_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/vonage_contact_center_config_V1"
           }
         ]
       },
@@ -64694,6 +66373,17 @@
           },
           {
             "$ref": "#/components/schemas/yotpo_config_V1"
+          }
+        ]
+      },
+      "yougov_sport_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/yougov_sport_config_V1"
           }
         ]
       },
