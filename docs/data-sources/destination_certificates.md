@@ -19,21 +19,27 @@ description: |-
 
 - `id` (String) The unique identifier for the resource. Equal to target destination id.
 
-### Read-Only
+### Optional
 
 - `certificates` (Block Set) (see [below for nested schema](#nestedblock--certificates))
+
+### Read-Only
+
 - `destination_id` (String) The unique identifier for the target destination within the Fivetran system.
 
 <a id="nestedblock--certificates"></a>
 ### Nested Schema for `certificates`
 
+Required:
+
+- `hash` (String) Hash of the certificate.
+
 Read-Only:
 
-- `hash` (String) Hash of the fingerprint.
 - `name` (String) Certificate name.
-- `public_key` (String) Certificate public key.
+- `public_key` (String) The SSH public key.
 - `sha1` (String) Certificate sha1.
 - `sha256` (String) Certificate sha256.
-- `type` (String) Certificate type.
+- `type` (String) Type of the certificate.
 - `validated_by` (String) User name who validated the certificate.
-- `validated_date` (String) The date when the certificate was approved.
+- `validated_date` (String) The date when certificate was approved.

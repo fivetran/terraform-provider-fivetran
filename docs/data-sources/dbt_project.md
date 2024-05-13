@@ -27,31 +27,32 @@ data "fivetran_dbt_project" "project" {
 - `created_by_id` (String) The unique identifier for the User within the Fivetran system who created the dbt Project.
 - `dbt_version` (String) The version of dbt that should run the project. We support the following versions: 0.18.0 - 0.18.2, 0.19.0 - 0.19.2, 0.20.0 - 0.20.2, 0.21.0 - 0.21.1, 1.0.0, 1.0.1, 1.0.3 - 1.0.9, 1.1.0 - 1.1.3, 1.2.0 - 1.2.4, 1.3.0 - 1.3.2, 1.4.1.
 - `default_schema` (String) Default schema in destination. This production schema will contain your transformed data.
-- `environment_vars` (Set of String)
+- `ensure_readiness` (Boolean) Should resource wait for project to finish initialization. Default value: true.
+- `environment_vars` (Set of String) List of environment variables defined as key-value pairs in the raw string format using = as a separator. The variable name should have the DBT_ prefix and can contain A-Z, 0-9, dash, underscore, or dot characters. Example: "DBT_VARIABLE=variable_value"
 - `group_id` (String) The unique identifier for the group within the Fivetran system.
-- `models` (Block Set) The collection of dbt Models. (see [below for nested schema](#nestedblock--models))
-- `project_config` (List of Object) Type specific dbt Project configuration parameters. (see [below for nested schema](#nestedatt--project_config))
+- `models` (Attributes Set) (see [below for nested schema](#nestedatt--models))
+- `project_config` (Block, Read-only) (see [below for nested schema](#nestedblock--project_config))
 - `public_key` (String) Public key to grant Fivetran SSH access to git repository.
 - `status` (String) Status of dbt Project (NOT_READY, READY, ERROR).
 - `target_name` (String) Target name to set or override the value from the deployment.yaml
 - `threads` (Number) The number of threads dbt will use (from 1 to 32). Make sure this value is compatible with your destination type. For example, Snowflake supports only 8 concurrent queries on an X-Small warehouse.
 - `type` (String) Type of dbt Project. Currently only `GIT` supported. Empty value will be considered as default (GIT).
 
-<a id="nestedblock--models"></a>
+<a id="nestedatt--models"></a>
 ### Nested Schema for `models`
 
 Read-Only:
 
 - `id` (String) The unique identifier for the dbt Model within the Fivetran system.
 - `model_name` (String) The dbt Model name.
-- `scheduled` (Boolean) Boolean specifying whether the model is selected for execution.
+- `scheduled` (Boolean) Boolean specifying whether the model is selected for execution in the dashboard.
 
 
-<a id="nestedatt--project_config"></a>
+<a id="nestedblock--project_config"></a>
 ### Nested Schema for `project_config`
 
 Read-Only:
 
-- `folder_path` (String)
-- `git_branch` (String)
-- `git_remote_url` (String)
+- `folder_path` (String) Folder in Git repo with your dbt project.
+- `git_branch` (String) Git branch.
+- `git_remote_url` (String) Git remote URL with your dbt project.

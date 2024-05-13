@@ -25,7 +25,7 @@ resource "fivetran_group" "group" {
 
 - `created_at` (String) The timestamp of when the group was created in your account.
 - `id` (String) The unique identifier for the group within the Fivetran system.
-- `last_updated` (String) The timestamp of when the group was updated in your account.
+- `last_updated` (String) The timestamp of when the resource/datasource was updated last time.
 
 ## Import
 

@@ -27,7 +27,7 @@ resource "fivetran_connector_fingerprints" "my_connector_approved_fingerprints" 
 
 ### Required
 
-- `connector_id` (String) The unique identifier for the target connector within the Fivetran system.
+- `connector_id` (String) The unique identifier for the target connection within the Fivetran system.
 
 ### Optional
 
@@ -35,7 +35,7 @@ resource "fivetran_connector_fingerprints" "my_connector_approved_fingerprints" 
 
 ### Read-Only
 
-- `id` (String) The unique identifier for the resource. Equal to target connector id.
+- `id` (String) The unique identifier for the resource. Equal to target connection id.
 
 <a id="nestedblock--fingerprint"></a>
 ### Nested Schema for `fingerprint`
@@ -48,7 +48,7 @@ Required:
 Read-Only:
 
 - `validated_by` (String) User name who validated the fingerprint.
-- `validated_date` (String) The date when SSH fingerprint was approved.
+- `validated_date` (String) The date when fingerprint was approved.
 
 ## Import
 

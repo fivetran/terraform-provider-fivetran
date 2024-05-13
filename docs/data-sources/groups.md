@@ -27,12 +27,12 @@ data "fivetran_groups" "all" {
 <a id="nestedblock--groups"></a>
 ### Nested Schema for `groups`
 
-Optional:
+Required:
 
-- `last_updated` (String) The timestamp of when the group was updated in your account.
+- `id` (String) The unique identifier for the group within the Fivetran system.
 
 Read-Only:
 
 - `created_at` (String) The timestamp of when the group was created in your account.
-- `id` (String) The unique identifier for the group within the Fivetran system.
+- `last_updated` (String) The timestamp of when the resource/datasource was updated last time.
 - `name` (String) The name of the group within your account.

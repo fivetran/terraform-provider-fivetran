@@ -119,6 +119,32 @@
       },
       "api_field": ""
    },
+   "oauth2_client_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "databricks": "OAuth 2.0 client ID. Required if auth_type is set to OAUTH2."
+      },
+      "api_field": ""
+   },
+   "oauth2_secret": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "databricks": "OAuth 2.0 secret. Required if auth_type is set to OAUTH2."
+      },
+      "api_field": ""
+   },
    "cloud_provider": {
       "readonly": false,
       "sensitive": false,
@@ -460,7 +486,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "new_s3_datalake": "We use PrivateLink by default if your s3 bucket is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to s3 bucket over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/databases/connection-options#awsprivatelinkbeta)."
+         "new_s3_datalake": "We use PrivateLink by default if your s3 bucket is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to s3 bucket over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options#awsprivatelinkbeta)."
       },
       "api_field": ""
    },

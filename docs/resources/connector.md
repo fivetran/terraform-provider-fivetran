@@ -308,11 +308,14 @@ Optional:
 	- Service `cosmos`: The read-only primary or secondary account key for the database account. Required for the `ACCOUNT_KEY` data access method.
 	- Service `simplesat`: Your Simplesat account key.
 - `account_name` (String) Field usage depends on `service` value: 
+	- Service `eventsforce`: Your Eventsforce account name.
 	- Service `freshdesk_contact_center`: Your Freshdesk Contact Center account name.
 	- Service `happyfox`: Your HappyFox account name.
 	- Service `maxio_saasoptics`: Your Maxio SaaSOptics account name.
 	- Service `talkdesk`: Your Talkdesk Account Name.
 	- Service `udemy_business`: Your Udemy Business account name.
+- `account_plan` (String) Field usage depends on `service` value: 
+	- Service `tymeshift`: Your Tymeshift account plan.
 - `account_region` (String) Field usage depends on `service` value: 
 	- Service `iterable`: If your Iterable account URL starts with `https://app.eu.iterable.com` then provide `EU` else `US`
 - `account_sid` (String) Field usage depends on `service` value: 
@@ -478,6 +481,8 @@ Optional:
 	- Service `sql_server_hva`: Require TLS.
 	- Service `sql_server_rds`: Require TLS.
 	- Service `sql_server_sap_ecc_hva`: Require TLS.
+- `api` (String) Field usage depends on `service` value: 
+	- Service `freshsuccess`: Set this parameter to `api`.
 - `api_access_token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `shopify`: API access token of your custom app.
 	- Service `square`: The Square API access token of your application.
@@ -501,6 +506,7 @@ Optional:
 	- Service `avantlink`: Your AvantLink API key.
 	- Service `ballotready`: Your BallotReady API token.
 	- Service `bamboohr`: Your API Key.
+	- Service `bizzabo`: Your Bizzabo API key.
 	- Service `braze`: Your Braze API Key.
 	- Service `brevo`: Your Brevo API key.
 	- Service `callrail`: Your CallRail API key.
@@ -546,6 +552,7 @@ Optional:
 	- Service `freshdesk`: Your Freshdesk API Key.
 	- Service `freshdesk_contact_center`: Your Freshdesk Contact Center API key.
 	- Service `freshservice`: Your Freshservice API Key.
+	- Service `freshsuccess`: Your Freshsuccess API key.
 	- Service `freshteam`: Your Freshteam API key.
 	- Service `friendbuy`: Your Friendbuy API key.
 	- Service `fullstory`: Your Fullstory API key.
@@ -571,6 +578,7 @@ Optional:
 	- Service `kisi`: Your Kisi API key.
 	- Service `klaviyo`: Your Klaviyo API key.
 	- Service `learnupon`: Your Learnupon API key.
+	- Service `lemlist`: Your Lemlist API key.
 	- Service `lever`: Your Lever API key.
 	- Service `liftoff`: Your Liftoff API key.
 	- Service `linksquares`: Your LinkSquares API key.
@@ -583,12 +591,15 @@ Optional:
 	- Service `maxio_chargify`: Enter Your API Key.
 	- Service `messagebird`: Your MessageBird API key.
 	- Service `mountain`: Your MNTN API key.
+	- Service `myosh`: Your Myosh API Key.
 	- Service `ometria`: Your Ometria API Key.
 	- Service `ordway`: Your Ordway API key.
 	- Service `ortto`: Your Ortto API key.
 	- Service `pagerduty`: Your PagerDuty API key.
 	- Service `papershift`: Your Papershift API Key
+	- Service `partnerize`: Your Partnerize user API key.
 	- Service `persona`: Your Persona API key.
+	- Service `picqer`: Your Picqer API key.
 	- Service `pinpoint`: Your Pinpoint API key.
 	- Service `pipe17`: The Pipe17 API key.
 	- Service `playvox`: Your Playvox API Key.
@@ -615,7 +626,7 @@ Optional:
 	- Service `shortcut`: Your Shortcut API token.
 	- Service `shortio`: Your Short.io API key.
 	- Service `simplesat`: Your Simplesat API key.
-	- Service `sistrix`: Your Sistrix api key.
+	- Service `sistrix`: Your SISTRIX API key.
 	- Service `smartwaiver`: Your Smartwaiver API key.
 	- Service `snyk`: Your Snyk API key.
 	- Service `sonarqube`: Your Sonarqube API key.
@@ -631,12 +642,14 @@ Optional:
 	- Service `transcend`: Your Transcend API Key.
 	- Service `trello`: Your TRELLO api key.
 	- Service `uppromote`: Your UpPromote API key.
+	- Service `veeqo`: Your Veeqo API key.
 	- Service `visit_by_ges`: Your Visit by GES API key.
 	- Service `vitally`: Your Vitally API key.
 	- Service `vonage`: Your Vonage API Key.
 	- Service `vts`: Your VTS API key.
 	- Service `webconnex`: Your Webconnex API key.
 	- Service `xsolla`: Your Xsolla API key.
+	- Service `yougov_sport`: Your Yougov Sport API key.
 	- Service `zingtree`: Your Zingtree API key.
 - `api_key_api_secret` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `revel`: Your Revel Systems API Key and API Secret.
@@ -693,7 +706,7 @@ Optional:
 	- Service `qualtrics`: API token of the Qualtrics account.
 	- Service `rakutenadvertising`: Your Rakuten Advertising API token.
 	- Service `recharge`: The Recharge API token.
-	- Service `referralhero`: Your Referralhero API Token.
+	- Service `referralhero`: Your Referralhero API token.
 	- Service `resource_management_by_smartsheet`: Your Resource Management by Smartsheet API token.
 	- Service `retently`: Your Retently API token.
 	- Service `safetyculture`: Your SafetyCulture API token.
@@ -749,6 +762,7 @@ Optional:
 - `application_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `datadog`: Your Datadog application key.
 	- Service `dear`: Your Dear Application key.
+	- Service `partnerize`: Your Partnerize user application key.
 - `apps` (Set of String) Field usage depends on `service` value: 
 	- Service `itunes_connect`: Specific apps to sync. Must be populated if `app_sync_mode` is set to `SpecificApps`.
 - `archive_log_format` (String) Field usage depends on `service` value: 
@@ -846,6 +860,7 @@ Optional:
 	- Service `ortto`: Your Ortto base URL. Possible values: `api`, `api.au`, `api.eu`.
 	- Service `salesforce`: (Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.
 	- Service `salesforce_sandbox`: (Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.
+	- Service `veevavault`: Your Veeva Vault base URL.
 - `bearer_token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `ada`: Your Ada API Access Token.
 	- Service `crowddev`: Your crowd.dev Auth Token.
@@ -920,6 +935,7 @@ Optional:
 	- Service `culture_amp`: Your Culture Amp client ID.
 	- Service `cvent`: Your Cvent client ID.
 	- Service `d2l_brightspace`: Your D2L Brightspace client ID.
+	- Service `ebay`: Your eBay client ID.
 	- Service `flexport`: The Flexport API Key.
 	- Service `genesys`: Your Genesys client ID.
 	- Service `hana_sap_hva_ecc_netweaver`: Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.
@@ -954,11 +970,15 @@ Optional:
 	- Service `swoogo`: Your Swoogo client Id.
 	- Service `taboola`: The Taboola client ID.
 	- Service `talkdesk`: The Client ID of your OAuth Client
+	- Service `toast`: Your Toast client ID.
 	- Service `trelica`: Your Trelica client ID.
+	- Service `tymeshift`: Your Tymeshift client ID.
 	- Service `udemy_business`: Your Udemy Business client ID.
+	- Service `vonage_contact_center`: Your Vonage Contact Center client ID.
 	- Service `walmart_marketplace`: Your Walmart Marketplace client ID.
 	- Service `xero`: your clientId
 	- Service `xray`: Your Xray Client ID.
+	- Service `yougov_sport`: Your Yougov Sport client ID.
 	- Service `zendesk_chat`: Your Zendesk client ID.
 	- Service `zoho_books`: Your Zoho Books Client ID.
 	- Service `zoho_campaigns`: Your Zoho Campaigns Client ID.
@@ -968,6 +988,7 @@ Optional:
 - `client_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `appfigures`: Your Appfigures Client Key.
 	- Service `thinkific`: Your Thinkific client key.
+	- Service `yougov_sport`: Your Yougov Sport client key.
 - `client_name` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `destini`: Your Destini Client Name.
 	- Service `medallia`: Medallia company name
@@ -1003,6 +1024,7 @@ Optional:
 	- Service `culture_amp`: Your Culture Amp client secret.
 	- Service `cvent`: Your Cvent client secret.
 	- Service `d2l_brightspace`: Your D2L Brightspace client secret.
+	- Service `ebay`: Your eBay client secret.
 	- Service `flexport`: The Flexport API Secret.
 	- Service `genesys`: Your Genesys client secret.
 	- Service `instructure`: Your Instructure client secret.
@@ -1032,8 +1054,11 @@ Optional:
 	- Service `taboola`: The Taboola client secret.
 	- Service `talkdesk`: The Client Secret of your OAuth Client
 	- Service `thinkific`: Your Thinkific client secret.
+	- Service `toast`: Your Toast client secret.
 	- Service `trelica`: Your Trelica client secret.
+	- Service `tymeshift`: Your Tymeshift client secret.
 	- Service `udemy_business`: Your Udemy Business client secret.
+	- Service `vonage_contact_center`: Your Vonage Contact Center client secret.
 	- Service `walmart_marketplace`: Your Walmart Marketplace client secret.
 	- Service `xero`: your clientSecret
 	- Service `xray`: Your Xray Client Secret.
@@ -1085,7 +1110,7 @@ Optional:
 	- Service `snowplow`: Public repository URL containing JSON configuration files.
 - `config_type` (String) Field usage depends on `service` value: 
 	- Service `facebook`: Option to select Prebuilt Reports or Custom Reports. [Possible config_type values](https://fivetran.com/docs/applications/facebook-ad-insights/api-config#configtype).
-	- Service `google_analytics`: Whether to use the [Prebuilt Reports or Custom Reports](https://fivetran.com/docs/applications/google-analytics#schemainformation).
+	- Service `google_analytics`: Whether to use the [Prebuilt Reports or Custom Reports](https://fivetran.com/docs/connectors/applications/google-analytics#schemainformation).
 - `connecting_user` (String)
 - `connecting_user_email` (String)
 - `connection_method` (String) Field usage depends on `service` value: 
@@ -1100,6 +1125,7 @@ Optional:
 	- Service `azure_blob_storage`: The blob storage container connection string.
 	- Service `azure_event_hub`: Connection string of the Event Hub Namespace you want to sync.
 	- Service `azure_service_bus`: The connection string used for authentication. Required if the authentication type is `ConnectionString` 
+	- Service `microsoft_dynamics_365_fno`: The blob storage container's connection string.
 	- Service `microsoft_dynamics_365_fo`: The blob storage container connection string.
 - `connection_type` (String) Field usage depends on `service` value: 
 	- Service `aurora`: Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
@@ -1175,6 +1201,7 @@ Optional:
 	- Service `azure_blob_storage`: IP address of the Azure Storage Container which is accessible from host machine.
 - `container_name` (String) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: The name of the blob container.
+	- Service `microsoft_dynamics_365_fno`: The name of the blob container.
 	- Service `microsoft_dynamics_365_fo`: The name of the blob container.
 - `content_owner_id` (String) Field usage depends on `service` value: 
 	- Service `youtube_analytics`: Used only for Content Owner reports. The ID of the content owner for whom the API request is being made.
@@ -1186,6 +1213,7 @@ Optional:
 	- Service `pinterest_ads`: The date that the user interacted with the ad OR completed a conversion event.
 - `conversion_window_size` (Number) Field usage depends on `service` value: 
 	- Service `google_ads`: A period of time in days during which a conversion is recorded.
+- `convert_dats_type_to_date` (Boolean)
 - `csv_definition` (String) Field usage depends on `service` value: 
 	- Service `adjust`: CSV definition for the CSV export (https://help.adjust.com/en/article/csv-uploads#how-do-i-format-my-csv-definition).
 - `currency` (String) Field usage depends on `service` value: 
@@ -1212,7 +1240,7 @@ Optional:
 	- Service `salesforce_commerce_cloud`: The parameter to retrieve customer details.
 - `daily_api_call_limit` (Number)
 - `data_access_method` (String) Field usage depends on `service` value: 
-	- Service `cosmos`: The source data access method. Supported values:`ACCOUNT_KEY`- Data access method that uses account keys to authenticate to the source database. It comes in both read-write and read-only variants.`RESOURCE_TOKEN`- Fine-grained permission model based on native Azure Cosmos DB users and permissions. Learn more in our [Cosmos DB Data Access Methods documentation](https://fivetran.com/docs/databases/cosmos#dataaccessmethods).
+	- Service `cosmos`: The source data access method. Supported values:`ACCOUNT_KEY`- Data access method that uses account keys to authenticate to the source database. It comes in both read-write and read-only variants.`RESOURCE_TOKEN`- Fine-grained permission model based on native Azure Cosmos DB users and permissions. Learn more in our [Cosmos DB Data Access Methods documentation](https://fivetran.com/docs/connectors/databases/cosmos#dataaccessmethods).
 - `data_center` (String) Field usage depends on `service` value: 
 	- Service `qualtrics`: Data center ID of the Qualtrics account. Can be found in the URL before `qualtrics.com`. (For example, if your URL is `youraccount.ca1.qualtrics.com`, then the data center is `ca1`.)
 	- Service `zoho_crm`: Data Center
@@ -1269,6 +1297,8 @@ Optional:
 	- Service `netsuite_suiteanalytics`: The NetSuite data source value: `NetSuite.com`.
 - `date_granularity` (String) Field usage depends on `service` value: 
 	- Service `adobe_analytics`: The aggregation duration you want. Default value: `HOUR` .
+- `db` (String) Field usage depends on `service` value: 
+	- Service `myosh`: Your Myosh Server variables/db .
 - `delimiter` (String) Field usage depends on `service` value: 
 	- Service `aws_cost_report`: Optional. You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible. If your files sync with the wrong number of columns, consider setting this value
 	- Service `azure_blob_storage`: You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.
@@ -1303,7 +1333,8 @@ Optional:
 	- Service `okta`: Your Okta domain.
 	- Service `pipedrive`: Your Pipedrive domain.
 	- Service `shopware`: Your Shopware domain.
-	- Service `sistrix`: Your domain for which you want to fetch data.
+	- Service `sistrix`: Your SISTRIX domain.
+	- Service `solarwinds_service_desk`: Your SolarWinds Service Desk domain.
 	- Service `uservoice`: Domain of your UserVoice site. If it ends with ".uservoice.com", you can specify just the subdomain ("mydomain.uservoice.com" - "mydomain")
 	- Service `zendesk`: Zendesk domain.
 	- Service `zendesk_sunshine`: Zendesk domain.
@@ -1605,7 +1636,7 @@ Optional:
 - `is_private_key_encrypted` (Boolean) Field usage depends on `service` value: 
 	- Service `snowflake_db`: Indicates that a private key is encrypted. The default value: `false`. The field can be specified if authentication type is `KEY_PAIR`.
 - `is_private_link_required` (Boolean) Field usage depends on `service` value: 
-	- Service `aws_lambda`: We use PrivateLink by default if your AWS Lambda is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to AWS lambda over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/databases/connection-options#awsprivatelink).
+	- Service `aws_lambda`: We use PrivateLink by default if your AWS Lambda is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to AWS lambda over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options#awsprivatelink).
 - `is_public` (Boolean) Field usage depends on `service` value: 
 	- Service `aws_cost_report`: Whether you are syncing from a public bucket. Default value: `false`.
 	- Service `kinesis`: Is the bucket public? (you don't need an AWS account for syncing public buckets!)
@@ -1775,7 +1806,7 @@ Optional:
 	- Service `salesforce_commerce_cloud`: The organization ID from Salesforce Commerce Cloud account.
 	- Service `zoho_books`: Your Zoho Books Organization ID.
 - `organization_name` (String) Field usage depends on `service` value: 
-	- Service `confluence`: Your Confluence Organization name.
+	- Service `confluence`: Your Confluence organization name.
 - `organizations` (Set of String) Field usage depends on `service` value: 
 	- Service `apple_search_ads`: Organizations
 	- Service `snapchat_ads`: Specific organizations IDs to sync. Must be populated if `syncMode` is set to `SpecificOrganizations`.
@@ -1853,6 +1884,7 @@ Optional:
 	- Service `moloco`: Your Moloco account password.
 	- Service `mongo`: The user's password.
 	- Service `mongo_sharded`: The user's password.
+	- Service `myosh`: Your Myosh Password .
 	- Service `mysql`: The user's password.
 	- Service `mysql_azure`: The user's password.
 	- Service `mysql_rds`: The user's password.
@@ -1901,6 +1933,7 @@ Optional:
 	- Service `ukg_pro`: Your UKG Pro password.
 	- Service `unicommerce`: Your uniware login password.
 	- Service `upland`: Your Upland Software Password.
+	- Service `veevavault`: Your Veeva Vault password.
 	- Service `when_i_work`: Your When I Work password.
 	- Service `wherefour`: Your Wherefour password.
 	- Service `workday`: Workday password.
@@ -1954,12 +1987,14 @@ Optional:
 - `pgp_pass_phrase` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `ftp`: The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.
+	- Service `gcs`: The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `s3`: The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `sftp`: The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `wasabi_cloud_storage`: The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.
 - `pgp_secret_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `ftp`: The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.
+	- Service `gcs`: The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `s3`: The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `sftp`: The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `wasabi_cloud_storage`: The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.
@@ -2037,10 +2072,11 @@ Optional:
 	- Service `sftp`: All files and folders under this folder path will be searched for files to sync.
 	- Service `share_point`: All files and folders under this folder path link will be searched for files to sync. This can be any shared folder link.
 	- Service `wasabi_cloud_storage`: All files and folders under this folder path will be searched for files to sync.
+- `primary_key` (String, Sensitive)
 - `primary_keys` (Set of String) Field usage depends on `service` value: 
 	- Service `workday`: Primary Keys
 - `private_key` (String, Sensitive) Field usage depends on `service` value: 
-	- Service `absorb_lms`: Your Absorb LMS Private Key.
+	- Service `absorb_lms`: Your Absorb LMS REST API private key.
 	- Service `adobe_analytics`: The complete contents of your private key file including the start and end tags (`----BEGIN PRIVATE KEY----` to `----END PRIVATE KEY----`).
 	- Service `adp_workforce_now`: Private Key.
 	- Service `anaplan`: The contents of your private key file. Must be populated if `auth_mode` is set to `Certificate`.
@@ -2153,10 +2189,12 @@ Optional:
 	- Service `navan`: Your Navan region.
 	- Service `on24`: Your ON24 region.
 	- Service `pendo`: The Pendo account region.
+	- Service `proofpoint_security_awareness`: Your Proofpoint Security Awareness Region.
 	- Service `ringover`: Your Ringover region.
 	- Service `samsara`: The region of your Samsara account. For instance, if your region is `EUROPE`, provide `eu.samsara` in the `Region` field. If your region is not in Europe, provide `samsara`.
 	- Service `snyk`: Your Snyk region.
 	- Service `talkdesk`: Your Talkdesk region (".com",".eu","ca.com")
+	- Service `vonage_contact_center`: Your Vonage Contact Center region.
 	- Service `wasabi_cloud_storage`: The Wasabi Cloud Storage bucket region. Required for connector creation. Default value: `US_EAST_1`.
 	- Service `zoho_books`: Your Zoho Books application host region.
 	- Service `zoho_campaigns`: Your Zoho Campaigns application host region.
@@ -2316,6 +2354,8 @@ Optional:
 	- Service `aws_msk`: Your schema registry URLs
 	- Service `azure_service_bus`: The comma-separated list of schema registry servers in the `server:port` format
 	- Service `confluent_cloud`: Your schema registry URLs
+- `scope` (String) Field usage depends on `service` value: 
+	- Service `ebay`: Your eBay Scopes.
 - `seats` (Set of String) Field usage depends on `service` value: 
 	- Service `yahoo_dsp`: Specific Seats to sync. Must be populated if `sync_mode_seat` is set to `SPECIFIC_SEATS`.
 - `secret` (String, Sensitive) Field usage depends on `service` value: 
@@ -2398,7 +2438,7 @@ Optional:
 - `sftp_user` (String) Field usage depends on `service` value: 
 	- Service `adobe_analytics_data_feed`: SFTP user.
 - `share_url` (String) Field usage depends on `service` value: 
-	- Service `share_point`: Your SharePoint folder URL. You can find the folder URL by following the steps mentioned [here](https://fivetran.com/docs/files/share-point/setup-guide).
+	- Service `share_point`: Your SharePoint folder URL. You can find the folder URL by following the steps mentioned [here](https://fivetran.com/docs/connectors/files/share-point/setup-guide).
 - `sheet_id` (String) Field usage depends on `service` value: 
 	- Service `google_sheets`: The URL of the sheet that can be copied from the browser address bar, or the ID of the sheet that can be found in the sheet's URL between **/d/** and **/edit**.
 - `shop` (String) Field usage depends on `service` value: 
@@ -2414,6 +2454,7 @@ Optional:
 - `signer_public_key` (String) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.
 	- Service `ftp`: The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.
+	- Service `gcs`: The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.
 	- Service `s3`: The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.
 	- Service `sftp`: The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.
 	- Service `wasabi_cloud_storage`: The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.
@@ -2455,9 +2496,12 @@ Optional:
 	- Service `sftp`: We will skip over the number of lines specified before syncing data.
 	- Service `share_point`: We will skip over the number of lines specified before syncing data.
 	- Service `wasabi_cloud_storage`: We will skip over the number of lines specified before syncing data.
+- `snc_certificate` (String, Sensitive)
 - `snc_library_path` (String) Field usage depends on `service` value: 
 	- Service `hana_sap_hva_ecc_netweaver`: Path to the external security product's library.
 	- Service `hana_sap_hva_s4_netweaver`: Path to the external security product's library.
+- `snc_mode` (String)
+- `snc_my_name` (String)
 - `snc_name` (String) Field usage depends on `service` value: 
 	- Service `hana_sap_hva_ecc_netweaver`: Client SNC name.
 	- Service `hana_sap_hva_s4_netweaver`: Client SNC name.
@@ -2510,9 +2554,11 @@ Optional:
 	- Service `looker_source`: Your looker SubDomain name.
 	- Service `mailgun`: Your Mailgun subdomain.
 	- Service `maxio_chargify`: Enter Your Subdomain.
+	- Service `myosh`: Your Myosh Subdomain .
 	- Service `namely`: Your Namely subdomain.
 	- Service `nylas`: Your Nylas subdomain.
 	- Service `okta`: Your Okta subdomain.
+	- Service `picqer`: Your Picqer sub domain name.
 	- Service `pinpoint`: Your Pinpoint sub domain name.
 	- Service `piwik_pro`: Your Piwik PRO subdomain.
 	- Service `playvox`: Your Playvox Subdomain.
@@ -2526,23 +2572,28 @@ Optional:
 	- Service `sap_success_factors`: Your SAP SuccessFactors Subdomain.
 	- Service `sonarqube`: Your Sonarqube subdomain.
 	- Service `starrez`: Your StarRez subdomain
+	- Service `tableau_source`: Your Tableau Source subdomain.
 	- Service `tempo`: Your Tempo subdomain.
 	- Service `thinkific`: Your Thinkific subdomain.
 	- Service `totango`: Your Totango Subdomain.
+	- Service `tymeshift`: Your Tymeshift subdomain.
 	- Service `upland`: Your Upland Software subDomain.
 	- Service `wordpress`: Your WordPress subdomain.
 	- Service `workable`: Your Workable Subdomain.
 	- Service `wrike`: Your Wrike Subdomain.
 - `subdomain` (String) Field usage depends on `service` value: 
 	- Service `bamboohr`: The subdomain used to access your account. If you access BambooHR at 'https://mycompany.bamboohr.com', then the subdomain is 'mycompany'.
+	- Service `ebay`: Your eBay Environment.
 	- Service `freshdesk`: Your company's freshdesk subdomain (usually **company**.freshdesk.com).
 	- Service `freshservice`: Your company's freshservice subdomain (usually **company**.freshservice.com).
+	- Service `freshsuccess`: Your Freshsuccess subdomain.
 	- Service `gorgias`: Your Gorgias subdomain.
 	- Service `klarna`: Your Klarna subdomain.
 	- Service `learnupon`: Your Learnupon subdomain.
 	- Service `maxio_saasoptics`: Your Maxio SaaSOptics subdomain.
 	- Service `medallia`: Medallia subdomain
 	- Service `sonarqube`: Your Sonarqube subdomain.
+	- Service `toast`: Your Toast Domain.
 	- Service `vts`: Your VTS Subdomain.
 	- Service `zendesk_chat`: Your Zendesk domain.
 - `subscription` (String) Field usage depends on `service` value: 
@@ -2580,7 +2631,7 @@ Optional:
 	- Service `dynamodb`: Whether to sync all tables in unpacked mode only or specific tables in packed mode. Default value: `UseUnpackedModeOnly`.
 	- Service `facebook`: Option to select connector should sync all accounts or specific accounts. [Possible sync_mode values](https://fivetran.com/docs/applications/facebook-ad-insights/api-config#syncmode).
 	- Service `facebook_ad_account`: Whether to sync all accounts or specific accounts. Default value: `AllAccounts`.
-	- Service `facebook_ads`: Option to select connector should sync all accounts or specific accounts. [Possible sync_mode values](https://fivetran.com/docs/applications/facebook-ads-insights/api-config#syncmode).
+	- Service `facebook_ads`: Option to select connector should sync all accounts or specific accounts. [Possible sync_mode values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#syncmode).
 	- Service `facebook_pages`: Whether to sync all accounts or specific accounts. Default value: `AllPages`.
 	- Service `github`: Whether to sync all repositories or specific repositories.
 	- Service `google_ads`: Whether to sync all accounts or specific accounts.
@@ -2605,6 +2656,8 @@ Optional:
 	- Service `twitter`: Whether to sync all accounts or specific accounts. Default value: `AllAccounts`.
 	- Service `twitter_ads`: Whether to sync all accounts or specific accounts.
 	- Service `yahoo_gemini`: Whether to sync all accounts or specific accounts. Default value: `SpecificAccounts`.
+	- Service `zuora`: Select `Zuora Billing` to sync exclusively Zuora Billing related records. Choose `Zuora Revenue` for syncing only Zuora Revenue reports. If both Zuora Billing records and Zuora Revenue reports are to be synced, opt for `Both`.
+	- Service `zuora_sandbox`: Select `Zuora Billing` to sync exclusively Zuora Billing related records. Choose `Zuora Revenue` for syncing only Zuora Revenue reports. If both Zuora Billing records and Zuora Revenue reports are to be synced, opt for `Both`.
 - `sync_mode_advertiser` (String) Field usage depends on `service` value: 
 	- Service `yahoo_dsp`: Whether to sync all advertisers or specific advertisers. Default value: `ALL_ADVERTISERS`.
 - `sync_mode_seat` (String) Field usage depends on `service` value: 
@@ -2612,7 +2665,7 @@ Optional:
 - `sync_multiple_accounts` (Boolean) Field usage depends on `service` value: 
 	- Service `reddit_ads`: When this parameter is set to `true`, we sync the data of the additional linked accounts. When this parameter is set to `false`, we sync only the data from the main account that was used for authorization
 - `sync_pack_mode` (String) Field usage depends on `service` value: 
-	- Service `cosmos`: The packing mode type. Supported values:`STANDARD_UNPACKED_MODE`- Unpacks _one_ layer of nested fields and infers types.`PACKED_MODE`- Delivers packed data as a single destination column value.Learn more in our [Cosmos DB Sync Pack Mode Options documentation](https://fivetran.com/docs/databases/cosmos#packmodeoptions).
+	- Service `cosmos`: The packing mode type. Supported values:`STANDARD_UNPACKED_MODE`- Unpacks _one_ layer of nested fields and infers types.`PACKED_MODE`- Delivers packed data as a single destination column value.Learn more in our [Cosmos DB Sync Pack Mode Options documentation](https://fivetran.com/docs/connectors/databases/cosmos#packmodeoptions).
 	- Service `documentdb`: Indicates whether synced data will be packed into a single entry(column), or unpacked with one layer of nested fields.
 - `sync_pull_api` (Boolean) Field usage depends on `service` value: 
 	- Service `appsflyer`: These options are for Appsflyer's Pull API, and are only necessary for syncing events from Pull API.
@@ -2709,9 +2762,12 @@ Optional:
 - `tns` (String) Field usage depends on `service` value: 
 	- Service `oracle_hva`: Single-tenant database: The database's SID.  Multi-tenant database: The database's TNS.
 	- Service `oracle_sap_hva`: Single-tenant database: The database SID.  Multi-tenant database: The database TNS.
+- `toast_id` (String) Field usage depends on `service` value: 
+	- Service `toast`: Your Toast Restaurant External ID.
 - `token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `mode`: Your Mode Token.
 	- Service `oracle_moat_analytics`: Your Oracle Moat Analytics Token.
+	- Service `solarwinds_service_desk`: Your SolarWinds Service Desk token.
 - `token_authenticated_container` (String) Field usage depends on `service` value: 
 	- Service `cosmos`: The container name. Required for the `RESOURCE_TOKEN` data access method.
 - `token_authenticated_database` (String) Field usage depends on `service` value: 
@@ -2722,6 +2778,7 @@ Optional:
 - `token_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `netsuite_suiteanalytics`: Token ID
 	- Service `on24`: Your ON24 token key.
+	- Service `proofpoint_security_awareness`: Your Proofpoint Security Awareness Token Key.
 - `token_secret` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `netsuite_suiteanalytics`: Token Secret
 	- Service `on24`: Your ON24 token secret.
@@ -2927,6 +2984,7 @@ Optional:
 - `use_pgp_encryption_options` (Boolean) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: Set to `true` if files present in the Azure Blob Storage container are encrypted using PGP. Default value: `false`.
 	- Service `ftp`: Set to `true` if files are encrypted using PGP in the S3 bucket. Default value: `false`.
+	- Service `gcs`: Set to `true` if files are encrypted using PGP in the GCS bucket. Default value: `false`.
 	- Service `s3`: Set to `true` if files are encrypted using PGP in the S3 bucket. Default value: `false`.
 	- Service `sftp`: Set to `true` if files present in SFTP server are encrypted using PGP. Default value: `false`.
 	- Service `wasabi_cloud_storage`: Set to `true` if files are encrypted using PGP in the Wasabi Cloud Storage bucket. Default value: `false`.
@@ -2996,6 +3054,7 @@ Optional:
 - `user_id` (String) Field usage depends on `service` value: 
 	- Service `coassemble`: Your Coassemble user ID.
 	- Service `gmail`: Your Gmail user ID.
+	- Service `hibob`: Your HiBob Service User Token.
 	- Service `marketo`: Marketo SOAP API User Id.
 	- Service `playvox`: Your Playvox User ID.
 	- Service `sage_intacct`: User ID
@@ -3005,6 +3064,7 @@ Optional:
 - `user_profiles` (Set of String) Field usage depends on `service` value: 
 	- Service `double_click_campaign_manager`: IDs of specific User Profiles to sync. Must be populated if `sync_mode` is set to `SpecificAccounts`.
 - `user_token` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `hibob`: Your HiBob Service User ID.
 	- Service `konnect_insights`: Your Konnect Insights User Token.
 	- Service `sonarqube`: Your Sonarqube user token.
 - `username` (String) Field usage depends on `service` value: 
@@ -3017,7 +3077,7 @@ Optional:
 	- Service `cin7`: Your Cin7 API Username.
 	- Service `collibra`: Your collibra username.
 	- Service `concur`: The SAP Concur username.
-	- Service `confluence`: Your Confluence email address.
+	- Service `confluence`: Your Confluence username.
 	- Service `contrast_security`: Your Contrast Security API Username.
 	- Service `dcl_logistics`: Your DCL Logistics username.
 	- Service `github`: `Login` of your GitHub profile.
@@ -3035,6 +3095,7 @@ Optional:
 	- Service `learnupon`: Your Learnupon username.
 	- Service `lessonly`: Your Lessonly username.
 	- Service `mailgun`: Your Mailgun API username.
+	- Service `myosh`: Your Myosh  Username.
 	- Service `oracle_business_intelligence_publisher`: The Oracle Business Intelligence username.
 	- Service `oracle_fusion_cloud_apps_crm`: The Oracle Fusion Cloud username.
 	- Service `oracle_fusion_cloud_apps_fscm`: The Oracle Fusion Cloud username.
@@ -3053,10 +3114,11 @@ Optional:
 	- Service `starrez`: Your StarRez API username
 	- Service `stylight`: Your Stylight Username.
 	- Service `teamwork`: Your Teamwork username.
-	- Service `testrail`: Your TestRail API username.
+	- Service `testrail`: Your TestRail username.
 	- Service `ukg_pro`: Your UKG Pro username.
 	- Service `unicommerce`: Your uniware login username.
 	- Service `upland`: Your Upland Software Username.
+	- Service `veevavault`: Your Veeva Vault username.
 	- Service `when_i_work`: Your When I Work username.
 	- Service `wherefour`: Your Wherefour username.
 	- Service `workday_financial_management`: Workday username.
@@ -3172,23 +3234,23 @@ Optional:
 - `aggregate` (String) Field usage depends on `service` value: 
 	- Service `tiktok_ads`: Time aggregation of report
 - `base_metrics_fields` (Set of String) Field usage depends on `service` value: 
-	- Service `snapchat_ads`: [List of Core, Additional and Conversion Metrics Stats Fields](https://fivetran.com/docs/applications/snapchat-ads/custom-reports#basemetricsfields).
+	- Service `snapchat_ads`: [List of Core, Additional and Conversion Metrics Stats Fields](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports#basemetricsfields).
 - `breakdown` (String) Field usage depends on `service` value: 
-	- Service `snapchat_ads`: [Sets Breakdown on custom report](https://fivetran.com/docs/applications/snapchat-ads/custom-reports#breakdown).
+	- Service `snapchat_ads`: [Sets Breakdown on custom report](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports#breakdown).
 - `breakout` (String) Field usage depends on `service` value: 
-	- Service `snapchat_ads`: [Sets Breakout on custom report](https://fivetran.com/docs/applications/snapchat-ads/custom-reports#breakout).
+	- Service `snapchat_ads`: [Sets Breakout on custom report](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports#breakout).
 - `conversions_report_included` (Boolean) Field usage depends on `service` value: 
 	- Service `reddit_ads`: The boolean value specifying whether to enable or disable event conversions data synchronisation. Default value: `false`
 - `custom_events_included` (Boolean) Field usage depends on `service` value: 
 	- Service `reddit_ads`: The boolean value specifying whether the custom events are included in event conversions report. Default value: `false`
 - `dimension` (String) Field usage depends on `service` value: 
-	- Service `snapchat_ads`: [Sets Dimension on custom report](https://fivetran.com/docs/applications/snapchat-ads/custom-reports#dimension).
+	- Service `snapchat_ads`: [Sets Dimension on custom report](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports#dimension).
 - `dimensions` (Set of String) Field usage depends on `service` value: 
 	- Service `tiktok_ads`: Dimensions to synced
 - `event_names` (Set of String) Field usage depends on `service` value: 
 	- Service `reddit_ads`: The list of events the conversion data will be synchronised for
 - `granularity` (String) Field usage depends on `service` value: 
-	- Service `snapchat_ads`: [Sets Granularity on custom report](https://fivetran.com/docs/applications/snapchat-ads/customr-reports#granularity).
+	- Service `snapchat_ads`: [Sets Granularity on custom report](https://fivetran.com/docs/connectors/applications/snapchat-ads/customr-reports#granularity).
 - `level` (String) Field usage depends on `service` value: 
 	- Service `reddit_ads`: Level of custom report.
 - `metrics` (Set of String) Field usage depends on `service` value: 
@@ -3203,7 +3265,7 @@ Optional:
 - `segmentation` (String) Field usage depends on `service` value: 
 	- Service `reddit_ads`: Level of custom report.
 - `sk_ad_metrics_fields` (Set of String) Field usage depends on `service` value: 
-	- Service `snapchat_ads`: [List of SKAd  Metrics fields in custom report](https://fivetran.com/docs/applications/snapchat-ads/custom-reports#skadmetricsfields).
+	- Service `snapchat_ads`: [List of SKAd  Metrics fields in custom report](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports#skadmetricsfields).
 - `table_name` (String) Field usage depends on `service` value: 
 	- Service `tiktok_ads`: Destination Table name of report
 
@@ -3214,27 +3276,27 @@ Optional:
 Optional:
 
 - `action_breakdowns` (Set of String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: List of action_breakdowns which connector will sync. [Possible action_breakdowns values](https://fivetran.com/docs/applications/facebook-ads-insights/api-config#actionbreakdowns).
+	- Service `facebook_ads`: List of action_breakdowns which connector will sync. [Possible action_breakdowns values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#actionbreakdowns).
 - `action_report_time` (String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: The report time of action stats. [Possible action_report time values](https://fivetran.com/docs/applications/facebook-ads-insights/api-config#actionreporttime).
+	- Service `facebook_ads`: The report time of action stats. [Possible action_report time values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#actionreporttime).
 - `aggregation` (String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: Options to select aggregation duration. [Possible aggregation values](https://fivetran.com/docs/applications/facebook-ads-insights/api-config#aggregation).
+	- Service `facebook_ads`: Options to select aggregation duration. [Possible aggregation values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#aggregation).
 - `breakdowns` (Set of String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: List of breakdowns which connector will sync. [Possible breakdowns values](https://fivetran.com/docs/applications/facebook-ads-insights/api-config#breakdowns).
+	- Service `facebook_ads`: List of breakdowns which connector will sync. [Possible breakdowns values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#breakdowns).
 - `click_attribution_window` (String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: Time period to attribute conversions based on clicks. [Possible click_attribution_window values](https://fivetran.com/docs/applications/facebook-ads-insights/api-config#clickattributionwindow).
+	- Service `facebook_ads`: Time period to attribute conversions based on clicks. [Possible click_attribution_window values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#clickattributionwindow).
 - `config_type` (String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: Option to select Prebuilt Reports or Custom Reports. [Possible config_type values](https://fivetran.com/docs/applications/facebook-ads-insights/api-config#configtype).
+	- Service `facebook_ads`: Option to select Prebuilt Reports or Custom Reports. [Possible config_type values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#configtype).
 - `fields` (Set of String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: List of fields which connector will sync. [Possible field values](https://fivetran.com/docs/applications/facebook-ads-insights/api-config#fields).
+	- Service `facebook_ads`: List of fields which connector will sync. [Possible field values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#fields).
 - `level` (String)
 - `prebuilt_report_name` (String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: The report name to which connector will sync the data. [Possible prebuilt_report values](https://fivetran.com/docs/applications/facebook-ads-insights/api-config#prebuiltreport).
+	- Service `facebook_ads`: The report name to which connector will sync the data. [Possible prebuilt_report values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#prebuiltreport).
 - `table_name` (String) Field usage depends on `service` value: 
 	- Service `facebook_ads`: The table name within the schema to which the connector will sync the data. It must be unique within the connector and must comply with [Fivetran's naming conventions](https://fivetran.com/docs/getting-started/core-concepts#namingconventions).
 - `use_unified_attribution_setting` (Boolean)
 - `view_attribution_window` (String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: Time period to attribute conversions based on views. [Possible view_attribution_window values](https://fivetran.com/docs/applications/facebook-ads-insights/api-config#viewattributionwindow).
+	- Service `facebook_ads`: Time period to attribute conversions based on views. [Possible view_attribution_window values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#viewattributionwindow).
 
 
 <a id="nestedblock--config--project_credentials"></a>
@@ -3300,7 +3362,7 @@ Optional:
 - `attributes` (Set of String) Field usage depends on `service` value: 
 	- Service `google_search_ads_360`: The report attributes included to sync.
 - `config_type` (String) Field usage depends on `service` value: 
-	- Service `google_analytics`: Whether to use the [Prebuilt Reports or Custom Reports](https://fivetran.com/docs/applications/google-analytics#schemainformation).
+	- Service `google_analytics`: Whether to use the [Prebuilt Reports or Custom Reports](https://fivetran.com/docs/connectors/applications/google-analytics#schemainformation).
 	- Service `google_analytics_4`: Whether to use the Prebuilt Reports or Custom Reports.
 - `dimensions` (Set of String) Field usage depends on `service` value: 
 	- Service `google_analytics`: The report dimensions to include into a sync. The `date` dimension is mandatory for all the report types.

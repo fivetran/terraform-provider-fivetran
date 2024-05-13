@@ -32,12 +32,12 @@ resource "fivetran_dbt_transformation" "transformation" {
 
 - `dbt_model_name` (String) Target dbt Model name.
 - `dbt_project_id` (String) The unique identifier for the dbt Project within the Fivetran system.
-- `paused` (Boolean) The field indicating whether the transformation will be created in paused state. By default, the value is false.
-- `run_tests` (Boolean) The field indicating whether the tests have been configured for dbt Transformation. By default, the value is false.
-- `schedule` (Block List, Min: 1, Max: 1) dbt Transformation schedule parameters. (see [below for nested schema](#nestedblock--schedule))
 
 ### Optional
 
+- `paused` (Boolean) The field indicating whether the transformation will be set into the paused state. By default, the value is false.
+- `run_tests` (Boolean) The field indicating whether the tests have been configured for dbt Transformation. By default, the value is false.
+- `schedule` (Block, Optional) (see [below for nested schema](#nestedblock--schedule))
 - `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 
 ### Read-Only
@@ -45,21 +45,18 @@ resource "fivetran_dbt_transformation" "transformation" {
 - `connector_ids` (Set of String) Identifiers of related connectors.
 - `created_at` (String) The timestamp of the dbt Transformation creation.
 - `dbt_model_id` (String) The unique identifier for the dbt Model within the Fivetran system.
-- `id` (String) The ID of this resource.
+- `id` (String) The unique identifier for the dbt Transformation within the Fivetran system.
 - `model_ids` (Set of String) Identifiers of related models.
 - `output_model_name` (String) The dbt Model name.
 
 <a id="nestedblock--schedule"></a>
 ### Nested Schema for `schedule`
 
-Required:
-
-- `schedule_type` (String) The type of the schedule to run the dbt Transformation on. The following values are supported: INTEGRATED, TIME_OF_DAY, INTERVAL. For INTEGRATED schedule type, interval and time_of_day values are ignored and only the days_of_week parameter values are taken into account (but may be empty or null). For TIME_OF_DAY schedule type, the interval parameter value is ignored and the time_of_day values is taken into account along with days_of_week value. For INTERVAL schedule type, time_of_day value is ignored and the interval parameter value is taken into account along with days_of_week value.
-
 Optional:
 
 - `days_of_week` (Set of String) The set of the days of the week the transformation should be launched on. The following values are supported: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY.
 - `interval` (Number) The time interval in minutes between subsequent transformation runs.
+- `schedule_type` (String) The type of the schedule to run the dbt Transformation on. The following values are supported: INTEGRATED, TIME_OF_DAY, INTERVAL. For INTEGRATED schedule type, interval and time_of_day values are ignored and only the days_of_week parameter values are taken into account (but may be empty or null). For TIME_OF_DAY schedule type, the interval parameter value is ignored and the time_of_day values is taken into account along with days_of_week value. For INTERVAL schedule type, time_of_day value is ignored and the interval parameter value is taken into account along with days_of_week value.
 - `time_of_day` (String) The time of the day the transformation should be launched at. Supported values are: "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"
 
 
@@ -68,7 +65,7 @@ Optional:
 
 Optional:
 
-- `create` (String)
+- `create` (String) A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
 
 ## Import
 

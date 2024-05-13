@@ -21,17 +21,23 @@ data "fivetran_destination_fingerprints" "destination_fingerprints" {
 
 - `id` (String) The unique identifier for the resource. Equal to target destination id.
 
+### Optional
+
+- `fingerprints` (Block Set) (see [below for nested schema](#nestedblock--fingerprints))
+
 ### Read-Only
 
 - `destination_id` (String) The unique identifier for the target destination within the Fivetran system.
-- `fingerprints` (Block Set) (see [below for nested schema](#nestedblock--fingerprints))
 
 <a id="nestedblock--fingerprints"></a>
 ### Nested Schema for `fingerprints`
 
-Read-Only:
+Required:
 
 - `hash` (String) Hash of the fingerprint.
+
+Read-Only:
+
 - `public_key` (String) The SSH public key.
 - `validated_by` (String) User name who validated the fingerprint.
-- `validated_date` (String) The date when SSH fingerprint was approved.
+- `validated_date` (String) The date when fingerprint was approved.

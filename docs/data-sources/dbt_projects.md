@@ -18,10 +18,9 @@ data "fivetran_dbt_projects" "my_projects" {
 
 ### Read-Only
 
-- `id` (String) The ID of this resource.
-- `projects` (Block Set) (see [below for nested schema](#nestedblock--projects))
+- `projects` (Attributes List) (see [below for nested schema](#nestedatt--projects))
 
-<a id="nestedblock--projects"></a>
+<a id="nestedatt--projects"></a>
 ### Nested Schema for `projects`
 
 Read-Only:

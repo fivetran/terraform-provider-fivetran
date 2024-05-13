@@ -171,13 +171,17 @@ Read-Only:
 - `is_private_key_encrypted` (Boolean) Field usage depends on `service` value: 
 	- Service `snowflake`: Indicates that a private key is encrypted. The default value: `false`. The field can be specified if authentication type is `KEY_PAIR`.
 - `is_private_link_required` (Boolean) Field usage depends on `service` value: 
-	- Service `new_s3_datalake`: We use PrivateLink by default if your s3 bucket is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to s3 bucket over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/databases/connection-options#awsprivatelinkbeta).
+	- Service `new_s3_datalake`: We use PrivateLink by default if your s3 bucket is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to s3 bucket over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options#awsprivatelinkbeta).
 - `is_redshift_serverless` (Boolean) Field usage depends on `service` value: 
 	- Service `redshift`: Is your destination Redshift Serverless
 - `lakehouse_name` (String) Field usage depends on `service` value: 
 	- Service `onelake`: Name of your lakehouse
 - `msk_sts_region` (String)
 - `num_of_partitions` (Number)
+- `oauth2_client_id` (String) Field usage depends on `service` value: 
+	- Service `databricks`: OAuth 2.0 client ID. Required if auth_type is set to OAUTH2.
+- `oauth2_secret` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `databricks`: OAuth 2.0 secret. Required if auth_type is set to OAUTH2.
 - `passphrase` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `snowflake`: In case private key is encrypted, you are required to enter passphrase that was used to encrypt the private key. The field can be specified if authentication type is `KEY_PAIR`.
 - `password` (String, Sensitive) Field usage depends on `service` value: 
