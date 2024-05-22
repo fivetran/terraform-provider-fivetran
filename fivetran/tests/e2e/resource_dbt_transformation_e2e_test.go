@@ -11,6 +11,7 @@ import (
 )
 
 func TestResourceDbtTransformationE2E(t *testing.T) {
+	t.Skip("Reason: T-705448 (issues with Github auth for project)")
 	destinationConfig := `
 	resource "fivetran_destination" "test_destination" {
 		provider = fivetran-provider
