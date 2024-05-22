@@ -337,6 +337,13 @@ func getValueFromAttrValue(av attr.Value, fieldsMap map[string]common.ConfigFiel
 					}
 					return res
 				}
+				if t == common.Float {
+					res, err := strconv.ParseFloat(v.ValueString(), 64)
+					if err != nil {
+						panic(fmt.Sprintf("Can't convert value %v to int", v.ValueString()))
+					}
+					return res
+				}
 			}
 		}
 		return v.ValueString()

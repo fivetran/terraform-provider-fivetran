@@ -133,11 +133,21 @@ func getTfConfigForField(fieldName, service string) string {
 func getTfConfigForFieldImpl(fieldName, service string, field common.ConfigField) string {
 	switch field.FieldValueType {
 	case common.String:
+		if field.ItemType != nil {
+			if t, ok := field.ItemType[service]; ok {
+				switch t {
+				case common.Integer:
+					return fmt.Sprintf(`%v = %v`, fieldName, "123")
+				case common.Float:
+					return fmt.Sprintf(`%v = %v`, fieldName, "123.4")
+				}
+			}
+		}
 		return fmt.Sprintf(`%v = "%v"`, fieldName, fieldName)
 	case common.Boolean:
 		return fmt.Sprintf(`%v = "%v"`, fieldName, "true")
 	case common.Integer:
-		return fmt.Sprintf(`%v = "%v"`, fieldName, "123")
+		return fmt.Sprintf(`%v = %v`, fieldName, "123")
 	case common.StringList:
 		if field.ItemType[service] == common.Integer {
 			return fmt.Sprintf("%v = [%v]", fieldName, "1")
@@ -172,6 +182,16 @@ func getJsonConfigForFieldImpl(fieldName, service string, field common.ConfigFie
 	}
 	switch field.FieldValueType {
 	case common.String:
+		if field.ItemType != nil {
+			if t, ok := field.ItemType[service]; ok {
+				switch t {
+				case common.Integer:
+					return fmt.Sprintf(`"%v": %v`, apiFieldName, "123")
+				case common.Float:
+					return fmt.Sprintf(`"%v": %v`, apiFieldName, "123.4")
+				}
+			}
+		}
 		return fmt.Sprintf(`"%v": "%v"`, apiFieldName, fieldName)
 	case common.Boolean:
 		return fmt.Sprintf(`"%v": %v`, apiFieldName, "true")

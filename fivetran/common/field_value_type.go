@@ -10,6 +10,7 @@ type FieldValueType int64
 const (
 	String FieldValueType = iota
 	Integer
+	Float
 	Boolean
 	StringList
 	ObjectList
@@ -21,6 +22,7 @@ const (
 var typeMap = map[string]FieldValueType{
 	"string":      String,
 	"integer":     Integer,
+	"float":       Float, // can't be used as root field type (only ItemType)
 	"boolean":     Boolean,
 	"string_list": StringList,
 	"object_list": ObjectList,
@@ -31,6 +33,7 @@ func (lang FieldValueType) String() string {
 	return [...]string{
 		"string",
 		"integer",
+		"float",
 		"boolean",
 		"string_list",
 		"object_list",
