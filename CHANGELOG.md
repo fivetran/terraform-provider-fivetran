@@ -5,7 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.24...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.25...HEAD)
+
+## [1.1.25](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.24...v1.1.25)
+
+## Added
+- New resource `fivetran_team` that allows to manage Teams.
+- New resource `fivetran_proxy` that allows to manage Teams.
+- New resource `fivetran_local_processing_agent` that allows to manage Teams.
+
+
+- New data source `fivetran_private_link` that allows to retrieve details of the existing team for a given identifier.
+- New data source `fivetran_private_links` that allows to retrieve the list of existing teams available for the current account.
+- New data source `fivetran_proxy` that allows to retrieve the list of certificates approved for connector.
+- New data source `fivetran_proxies` that allows to retrieve the list of SSH fingerprints approved for connector.
+- New data source `fivetran_local_processing_agent` that allows to retrieve the list of certificates approved for connector.
+- New data source `fivetran_local_processing_agents` that allows to retrieve the list of SSH fingerprints approved for connector.
+
+
+
+- New data source `fivetran_private_link` that allows to retrieve the list of certificates approved for connector.
+- New data source `fivetran_private_links` that allows to retrieve the list of SSH fingerprints approved for connector.
+- New data source `fivetran_destination_certificates` that allows to retrieve the list of certificates approved for destination.
+- New data source `fivetran_destination_fingerprints` that allows to retrieve the list of SSH fingerprints approved for destination.
+
+
+- New resource `fivetran_team_connector_membership` that allows to manage Team Management Connector memberships.
+- New resource `fivetran_team_group_membership` that allows to manage Team Management Group memberships.
+- New resource `fivetran_team_user_membership` that allows to manage Team Management User memberships.
+
+- New data source `fivetran_team_connector_memberships` that allows to retrieve the list of existing connector memberships available for team.
+- New data source `fivetran_team_group_memberships` that allows to retrieve the list of existing group memberships available for team.
+- New data source `fivetran_team_user_memberships` that allows to retrieve the list of existing user memberships available for team.
+- Resource `fivetran_connector` updates:
+    - Added field `fivetran_connector.config.company_request_token` for services: `concur`.
+    - Added field `fivetran_connector.config.company_uuid` for services: `concur`.
+    - Added field `fivetran_connector.config.client` for services: `sap_hana_db`.
+    - Added field `fivetran_connector.config.sysnr` for services: `sap_hana_db`.
+    - Added field `fivetran_connector.config.pat_name` for services: `tableau_source`.
+    - Added field `fivetran_connector.config.server_address` for services: `tableau_source`.
+    - Added field `fivetran_connector.config.pat_secret` for services: `tableau_source`.
 
 ## [1.1.24](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.23...v1.1.24)
 
