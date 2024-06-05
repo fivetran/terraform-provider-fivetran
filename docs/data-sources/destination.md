@@ -26,6 +26,9 @@ data "fivetran_destination" "dest" {
 - `config` (Block, Read-only) (see [below for nested schema](#nestedblock--config))
 - `daylight_saving_time_enabled` (Boolean) Shift my UTC offset with daylight savings time (US Only)
 - `group_id` (String) The unique identifier for the Group within the Fivetran system.
+- `local_processing_agent_id` (String) The local processing agent ID that refers to the controller created for the group the connection belongs to. If the value is specified, the system will try to associate the connection with an existing agent.
+- `networking_method` (String) Possible values: Directly, PrivateLink, SshTunnel, ProxyAgent.
+- `private_link_id` (String) The private link ID.
 - `region` (String) Data processing location. This is where Fivetran will operate and run computation on data.
 - `service` (String) The destination type id within the Fivetran system.
 - `setup_status` (String) Destination setup status.
