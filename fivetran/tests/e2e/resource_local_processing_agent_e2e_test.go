@@ -11,79 +11,39 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
-func TestResourceExternalLoggingE2E(t *testing.T) {
+func TestResourceLocalProcessingAgentE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
 		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
-		CheckDestroy:             testFivetranExternalLoggingResourceDestroy,
+		CheckDestroy:             testFivetranLocalProcessingAgentResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `
 				resource "fivetran_group" "testgroup" {
 					provider = fivetran-provider
-					name = "TestResourceExternalLoggingE2E"
+					name = "TestResourceLocalProcessingAgentE2E"
 			    }
 
-				resource "fivetran_external_logging" "test_extlog" {
-					provider = fivetran-provider
+            	resource "fivetran_local_processing_agent" "test_lpa" {
+                	provider = fivetran-provider
 
-    				group_id = fivetran_group.testgroup.id
-    				service = "azure_monitor_log"
-    				enabled = "true"
-    				run_setup_tests = "false"
-
-				    config {
-        				workspace_id = "workspace_id"
-        				primary_key = "PASSWORD"
-    				}
-				}
-		  `,
+                 	display_name = "TestResourceLocalProcessingAgentE2E"
+                 	group_id = fivetran_group.testgroup.id
+            	}`,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					testFivetranExternalLoggingResourceCreate(t, "fivetran_external_logging.test_extlog"),
-					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "service", "azure_monitor_log"),
-					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "enabled", "true"),
-					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.workspace_id", "workspace_id"),
-					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.primary_key", "PASSWORD"),
-				),
-			},
-			{
-				Config: `
-				resource "fivetran_group" "testgroup" {
-					provider = fivetran-provider
-					name = "TestResourceExternalLoggingE2E"
-			    }
-
-				resource "fivetran_external_logging" "test_extlog" {
-					provider = fivetran-provider
-
-    				group_id = fivetran_group.testgroup.id
-    				service = "azure_monitor_log"
-    				enabled = "true"
-    				run_setup_tests = "false"
-
-				    config {
-        				workspace_id = "workspace_id_1"
-        				primary_key = "PASSWORD"
-    				}
-				}
-		  `,
-				Check: resource.ComposeAggregateTestCheckFunc(
-					testFivetranExternalLoggingResourceUpdate(t, "fivetran_external_logging.test_extlog"),
-					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "service", "azure_monitor_log"),
-					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "enabled", "true"),
-					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.workspace_id", "workspace_id_1"),
-					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.primary_key", "PASSWORD"),
+					testFivetranLocalProcessingAgentResourceCreate(t, "fivetran_local_processing_agent.test_lpa"),
+					resource.TestCheckResourceAttr("fivetran_local_processing_agent.test_lpa", "display_name", "TestResourceLocalProcessingAgentE2E"),
 				),
 			},
 		},
 	})
 }
 
-func testFivetranExternalLoggingResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {
+func testFivetranLocalProcessingAgentResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
 
-		_, err := client.NewExternalLoggingDetails().ExternalLoggingId(rs.Primary.ID).Do(context.Background())
+		_, err := client.NewLocalProcessingAgentDetails().AgentId(rs.Primary.ID).Do(context.Background())
 		if err != nil {
 			fmt.Println(err)
 			return err
@@ -93,31 +53,18 @@ func testFivetranExternalLoggingResourceCreate(t *testing.T, resourceName string
 	}
 }
 
-func testFivetranExternalLoggingResourceUpdate(t *testing.T, resourceName string) resource.TestCheckFunc {
-	return func(s *terraform.State) error {
-		rs := GetResource(t, s, resourceName)
-
-		_, err := client.NewExternalLoggingDetails().ExternalLoggingId(rs.Primary.ID).Do(context.Background())
-		if err != nil {
-			return err
-		}
-		//todo: check response _  fields if needed
-		return nil
-	}
-}
-
-func testFivetranExternalLoggingResourceDestroy(s *terraform.State) error {
+func testFivetranLocalProcessingAgentResourceDestroy(s *terraform.State) error {
 	for _, rs := range s.RootModule().Resources {
-		if rs.Type != "fivetran_external_logging" {
+		if rs.Type != "fivetran_local_processing_agent" {
 			continue
 		}
 
-		response, err := client.NewExternalLoggingDetails().ExternalLoggingId(rs.Primary.ID).Do(context.Background())
+		response, err := client.NewLocalProcessingAgentDetails().AgentId(rs.Primary.ID).Do(context.Background())
 		if err.Error() != "status code: 404; expected: 200" {
 			return err
 		}
 		if !strings.HasPrefix(response.Code, "NotFound") {
-			return errors.New("External Logging " + rs.Primary.ID + " still exists. Response code: " + response.Code)
+			return errors.New("Local Processing Agent " + rs.Primary.ID + " still exists. Response code: " + response.Code)
 		}
 
 	}

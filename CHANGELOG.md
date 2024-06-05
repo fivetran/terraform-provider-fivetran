@@ -10,41 +10,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.25](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.24...v1.1.25)
 
 ## Added
-- New resource `fivetran_team` that allows to manage Teams.
-- New resource `fivetran_proxy` that allows to manage Teams.
-- New resource `fivetran_local_processing_agent` that allows to manage Teams.
+- New resource `fivetran_proxy` that allows to manage Proxies.
+- New resource `fivetran_private_link` that allows to manage Private Links.
+- New resource `fivetran_local_processing_agent` that allows to manage Local Processing Agents.
 
 
-- New data source `fivetran_private_link` that allows to retrieve details of the existing team for a given identifier.
-- New data source `fivetran_private_links` that allows to retrieve the list of existing teams available for the current account.
-- New data source `fivetran_proxy` that allows to retrieve the list of certificates approved for connector.
-- New data source `fivetran_proxies` that allows to retrieve the list of SSH fingerprints approved for connector.
-- New data source `fivetran_local_processing_agent` that allows to retrieve the list of certificates approved for connector.
-- New data source `fivetran_local_processing_agents` that allows to retrieve the list of SSH fingerprints approved for connector.
+- New data source `fivetran_private_link` that allows to retrieve details of the existing Private Link for a given identifier.
+- New data source `fivetran_private_links` that allows to retrieve the list of existing Private Links available for the current account.
+- New data source `fivetran_proxy` that allows to retrieve details of the existing Proxy for a given identifier.
+- New data source `fivetran_proxies` that allows to retrieve the list of existing Proxies available for the current account.
+- New data source `fivetran_local_processing_agent` that allows to retrieve details of the existing Local Processing Agent for a given identifier.
+- New data source `fivetran_local_processing_agents` that allows to retrieve the list of existing Local Processing Agents available for the current account.
 
-
-
-- New data source `fivetran_private_link` that allows to retrieve the list of certificates approved for connector.
-- New data source `fivetran_private_links` that allows to retrieve the list of SSH fingerprints approved for connector.
-- New data source `fivetran_destination_certificates` that allows to retrieve the list of certificates approved for destination.
-- New data source `fivetran_destination_fingerprints` that allows to retrieve the list of SSH fingerprints approved for destination.
-
-
-- New resource `fivetran_team_connector_membership` that allows to manage Team Management Connector memberships.
-- New resource `fivetran_team_group_membership` that allows to manage Team Management Group memberships.
-- New resource `fivetran_team_user_membership` that allows to manage Team Management User memberships.
-
-- New data source `fivetran_team_connector_memberships` that allows to retrieve the list of existing connector memberships available for team.
-- New data source `fivetran_team_group_memberships` that allows to retrieve the list of existing group memberships available for team.
-- New data source `fivetran_team_user_memberships` that allows to retrieve the list of existing user memberships available for team.
+Updates to support management of private links, proxies and local processing agents:
 - Resource `fivetran_connector` updates:
-    - Added field `fivetran_connector.config.company_request_token` for services: `concur`.
-    - Added field `fivetran_connector.config.company_uuid` for services: `concur`.
-    - Added field `fivetran_connector.config.client` for services: `sap_hana_db`.
-    - Added field `fivetran_connector.config.sysnr` for services: `sap_hana_db`.
-    - Added field `fivetran_connector.config.pat_name` for services: `tableau_source`.
-    - Added field `fivetran_connector.config.server_address` for services: `tableau_source`.
-    - Added field `fivetran_connector.config.pat_secret` for services: `tableau_source`.
+    - Added field `fivetran_connector.local_processing_agent_id`.
+    - Added field `fivetran_connector.private_link_id`.
+    - Added field `fivetran_connector.proxy_agent_id`.
+    - Added field `fivetran_connector.networking_method`.
+
+- Resource `fivetran_destination` updates:
+    - Added field `fivetran_connector.local_processing_agent_id`.
+    - Added field `fivetran_connector.private_link_id`.
+    - Added field `fivetran_connector.networking_method`.
+
+- Datasource `fivetran_connector` updates:
+    - Added field `fivetran_connector.local_processing_agent_id`.
+    - Added field `fivetran_connector.private_link_id`.
+    - Added field `fivetran_connector.proxy_agent_id`.
+    - Added field `fivetran_connector.networking_method`.
+
+- Datasource `fivetran_destination` updates:
+    - Added field `fivetran_connector.local_processing_agent_id`.
+    - Added field `fivetran_connector.private_link_id`.
+    - Added field `fivetran_connector.networking_method`.
 
 ## [1.1.24](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.23...v1.1.24)
 
