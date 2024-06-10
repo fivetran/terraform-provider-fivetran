@@ -72,8 +72,9 @@ func DestinationAttributesSchema() core.Schema {
 				Description: "The private link ID.",
 			},
 			"networking_method": {
-				ValueType:   core.String,
-				Description: "Possible values: Directly, PrivateLink, SshTunnel, ProxyAgent.",
+				ValueType:   	core.String,
+				DefaultString:  "Directly",
+				Description: 	"Possible values: Directly, PrivateLink, SshTunnel, ProxyAgent.",
 			},
 		},
 	}

@@ -23,12 +23,12 @@ func TestResourceProxyE2E(t *testing.T) {
                 	provider = fivetran-provider
 
                  	display_name = "display_name"
-                 	group_region = "group_region"
+                 	group_region = "GCP_US_EAST4"
             	}`,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranProxyResourceCreate(t, "fivetran_proxy.test_proxy"),
 					resource.TestCheckResourceAttr("fivetran_proxy.test_proxy", "display_name", "display_name"),
-					resource.TestCheckResourceAttr("fivetran_proxy.test_proxy", "group_region", "group_region"),
+					resource.TestCheckResourceAttr("fivetran_proxy.test_proxy", "group_region", "GCP_US_EAST4"),
 				),
 			},
 		},

@@ -22,7 +22,7 @@ func TestResourcePrivateLinkE2E(t *testing.T) {
             	resource "fivetran_private_link" "test_pl" {
                 	provider = fivetran-provider
 
-                	name = "TestResourcePrivateLinkE2E"
+                	name = "test_pl_tf"
                 	region = "GCP_US_EAST4"
                 	service = "SOURCE"
 
@@ -32,7 +32,7 @@ func TestResourcePrivateLinkE2E(t *testing.T) {
             	}`,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranPrivateLinkResourceCreate(t, "fivetran_private_link.test_pl"),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "name", "TestResourcePrivateLinkE2E"),
+					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "name", "test_pl_tf"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "region", "GCP_US_EAST4"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "service", "SOURCE"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.connection_service_name", "connection_service_name1"),
@@ -43,7 +43,7 @@ func TestResourcePrivateLinkE2E(t *testing.T) {
             	resource "fivetran_private_link" "test_pl" {
                 	provider = fivetran-provider
 
-                	name = "TestResourcePrivateLinkE2E"
+                	name = "test_pl_tf"
                 	region = "GCP_US_EAST4"
                 	service = "SOURCE"
 
@@ -53,7 +53,7 @@ func TestResourcePrivateLinkE2E(t *testing.T) {
             	}`,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranPrivateLinkResourceCreate(t, "fivetran_private_link.test_pl"),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "name", "TestResourcePrivateLinkE2E"),
+					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "name", "test_pl_tf"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "region", "GCP_US_EAST4"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "service", "SOURCE"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.connection_service_name", "connection_service_name2"),
