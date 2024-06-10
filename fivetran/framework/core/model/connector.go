@@ -227,7 +227,7 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
     d.GroupId = types.StringValue(c.GroupId)
     d.Service = types.StringValue(c.Service)
 
-    if c.NetworkingMethod != "" {
+    if c.PrivateLinkId != "" {
         d.PrivateLinkId = types.StringValue(c.PrivateLinkId)
     } else {
         d.PrivateLinkId = types.StringNull()
@@ -270,7 +270,7 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
     d.GroupId = types.StringValue(c.GroupId)
     d.Service = types.StringValue(c.Service)
 
-    if c.NetworkingMethod != "" {
+    if c.PrivateLinkId != "" {
         d.PrivateLinkId = types.StringValue(c.PrivateLinkId)
     } else {
         d.PrivateLinkId = types.StringNull()
