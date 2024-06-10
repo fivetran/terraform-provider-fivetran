@@ -13,6 +13,138 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
+func TestReadonlyFieldSetMock(t *testing.T) {
+	var testDestinationData map[string]interface{}
+	var destinationMappingDeleteHandler *mock.Handler
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_destination" "mydestination" {
+				provider = fivetran-provider
+				group_id = "group_id"
+				service = "new_s3_datalake"
+				time_zone_offset = "0"
+				region = "GCP_US_EAST4"
+				run_setup_tests = "false"
+
+				config {
+					bucket = "bucket"
+        			fivetran_role_arn = "fivetran_role_arn"
+        			region = "region"
+				}
+			}`,
+	}
+
+	step2 := resource.TestStep{
+		Config: `
+			resource "fivetran_destination" "mydestination" {
+				provider = fivetran-provider
+				group_id = "group_id"
+				service = "new_s3_datalake"
+				time_zone_offset = "0"
+				region = "GCP_US_EAST4"
+				run_setup_tests = "false"
+
+				config {
+					bucket = "bucket1"
+        			fivetran_role_arn = "fivetran_role_arn"
+        			region = "region"
+				}
+			}`,
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				tfmock.MockClient().Reset()
+
+				tfmock.MockClient().When(http.MethodGet, "/v1/destinations/group_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", testDestinationData), nil
+					},
+				)
+
+				tfmock.MockClient().When(http.MethodPost, "/v1/destinations").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						testDestinationData = tfmock.CreateMapFromJsonString(t, `
+						{
+							"id":"group_id",
+							"group_id":"group_id",
+							"service":"new_s3_datalake",
+							"region":"GCP_US_EAST4",
+							"time_zone_offset":"0",
+							"setup_status":"connected",
+							"daylight_saving_time_enabled":true,
+							
+							"config":{
+								"external_id": "group_id",
+								"bucket": "bucket",
+								"fivetran_role_arn": "fivetran_role_arn",
+								"region": "region"
+							}
+						}
+						`)
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", testDestinationData), nil
+					},
+				)
+
+				tfmock.MockClient().When(http.MethodPatch, "/v1/destinations/group_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						body := tfmock.RequestBodyToJson(t, req)
+
+						tfmock.AssertKeyExists(t, body, "config")
+
+						config := body["config"].(map[string]interface{})
+						tfmock.AssertKeyExistsAndHasValue(t, config, "bucket", "bucket1")
+
+						tfmock.AssertKeyDoesNotExist(t, config, "external_id")
+
+						testDestinationData = tfmock.CreateMapFromJsonString(t, `
+						{
+							"id":"group_id",
+							"group_id":"group_id",
+							"service":"new_s3_datalake",
+							"region":"GCP_US_EAST4",
+							"time_zone_offset":"0",
+							"setup_status":"connected",
+							"daylight_saving_time_enabled":true,
+							
+							"config":{
+								"external_id": "",
+								"bucket": "bucket1",
+								"fivetran_role_arn": "fivetran_role_arn",
+								"region": "region"
+							}
+						}
+						`)
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", testDestinationData), nil
+					},
+				)
+
+				destinationMappingDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/destinations/group_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						testDestinationData = nil
+						response := tfmock.FivetranSuccessResponse(t, req, 200,
+							"Destination with id 'destionation_id' has been deleted", nil)
+						return response, nil
+					},
+				)
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, destinationMappingDeleteHandler.Interactions, 1)
+				tfmock.AssertEmpty(t, testDestinationData)
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
+				step2,
+			},
+		},
+	)
+}
+
 func TestResourceDestinationMappingMock(t *testing.T) {
 	var testDestinationData map[string]interface{}
 	var destinationMappingGetHandler *mock.Handler
