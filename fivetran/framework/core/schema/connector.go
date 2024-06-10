@@ -115,7 +115,7 @@ func ConnectorAttributesSchema() core.Schema {
 			},
 			"networking_method": {
 				ValueType:   	core.String,
-				Computed:    	true,
+				IsId:        	false,
 				DefaultString: 	"Directly",
 				Description: 	"Possible values: Directly, PrivateLink, SshTunnel, ProxyAgent.",
 			},
