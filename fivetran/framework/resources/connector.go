@@ -41,11 +41,12 @@ func (r *connector) Schema(ctx context.Context, req resource.SchemaRequest, resp
 }
 
 func (r *connector) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	fmt.Printf("ImportState\n")
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
 func (r *connector) UpgradeState(ctx context.Context) map[int64]resource.StateUpgrader {
-
+	fmt.Printf("UpgradeState\n")
 	v0ConfigTfTypes := model.GetTfTypes(common.GetConfigFieldsMap(), 1)
 
 	v0ConfigTfTypes["servers"] = tftypes.String
@@ -74,6 +75,7 @@ func (r *connector) UpgradeState(ctx context.Context) map[int64]resource.StateUp
 }
 
 func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	fmt.Printf("Create\n")
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -145,6 +147,26 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 		TrustFingerprints(trustFingerprintsPlan).
 		ConfigCustom(&configMap) // on creation we have config always with schema params
 
+	if data.PrivateLinkId.ValueString() != "" {
+		svc.PrivateLinkId(data.PrivateLinkId.ValueString())
+	}
+
+	if data.ProxyAgentId.ValueString() != "" {
+		svc.ProxyAgentId(data.ProxyAgentId.ValueString())
+	}
+
+	if data.LocalProcessingAgentId.ValueString() != "" {
+		svc.LocalProcessingAgentId(data.LocalProcessingAgentId.ValueString())
+	}
+
+	fmt.Printf("Create data.NetworkingMethod %v\n", data.NetworkingMethod)
+
+	if data.NetworkingMethod.ValueString() != "" {
+		svc.NetworkingMethod(data.NetworkingMethod.ValueString())
+	} else {
+		data.NetworkingMethod = types.StringValue("Directly")
+	}
+
 	if !noAuth {
 		svc.AuthCustom(&authMap)
 	}
@@ -182,6 +204,7 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 }
 
 func (r *connector) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	fmt.Printf("Read\n")
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -229,6 +252,7 @@ func (r *connector) Read(ctx context.Context, req resource.ReadRequest, resp *re
 }
 
 func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+		fmt.Printf("Update\n")
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -304,6 +328,22 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 			TrustCertificates(trustCertificatesPlan).
 			TrustFingerprints(trustFingerprintsPlan).
 			ConnectorID(state.Id.ValueString())
+
+		if plan.PrivateLinkId.ValueString() != "" {
+			svc.PrivateLinkId(plan.PrivateLinkId.ValueString())
+		}
+
+		if plan.ProxyAgentId.ValueString() != "" {
+			svc.ProxyAgentId(plan.ProxyAgentId.ValueString())
+		}
+
+		if plan.LocalProcessingAgentId.ValueString() != "" {
+			svc.LocalProcessingAgentId(plan.LocalProcessingAgentId.ValueString())
+		}
+
+		if plan.NetworkingMethod.ValueString() != "" {
+			svc.NetworkingMethod(plan.NetworkingMethod.ValueString())
+		}
 
 		if len(patch) > 0 {
 			svc.ConfigCustom(&patch)

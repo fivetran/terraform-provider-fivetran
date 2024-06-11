@@ -36,7 +36,7 @@ type ConnectorDatasourceModel struct {
     LocalProcessingAgentId  types.String `tfsdk:"local_processing_agent_id"`
     ProxyAgentId            types.String `tfsdk:"proxy_agent_id"`
     PrivateLinkId           types.String `tfsdk:"private_link_id"`
-    NetworkingMethod        types.String `tfsdk:"networking_method"`
+    NetworkingMethod        *types.String `tfsdk:"networking_method"`
 
     Status types.Object `tfsdk:"status"`
 
@@ -60,36 +60,8 @@ func (d *ConnectorDatasourceModel) ReadFromResponse(resp connectors.DetailsWithC
     d.ServiceVersion = types.StringValue(fmt.Sprintf("%v", *resp.Data.ServiceVersion))
     d.SyncFrequency = types.Int64Value(int64(*resp.Data.SyncFrequency))
     d.ScheduleType = types.StringValue(resp.Data.ScheduleType)
-    d.LocalProcessingAgentId = types.StringValue(resp.Data.LocalProcessingAgentId)
-    d.ProxyAgentId = types.StringValue(resp.Data.ProxyAgentId)
-    d.PrivateLinkId = types.StringValue(resp.Data.PrivateLinkId)
-    d.NetworkingMethod = types.StringValue(resp.Data.NetworkingMethod)
     d.Paused = types.BoolValue(*resp.Data.Paused)
     d.PauseAfterTrial = types.BoolValue(*resp.Data.PauseAfterTrial)
-
-    if resp.Data.PrivateLinkId != "" {
-        d.PrivateLinkId = types.StringValue(resp.Data.PrivateLinkId)
-    } else {
-        d.PrivateLinkId = types.StringNull()
-    }
-
-    if resp.Data.ProxyAgentId != "" {
-        d.ProxyAgentId = types.StringValue(resp.Data.ProxyAgentId)
-    } else {
-        d.ProxyAgentId = types.StringNull()
-    }
-
-    if resp.Data.LocalProcessingAgentId != "" {
-        d.LocalProcessingAgentId = types.StringValue(resp.Data.LocalProcessingAgentId)
-    } else {
-        d.LocalProcessingAgentId = types.StringNull()
-    }
-
-    if resp.Data.NetworkingMethod != "" {
-        d.NetworkingMethod = types.StringValue(resp.Data.NetworkingMethod)
-    } else {
-        d.NetworkingMethod = types.StringNull()
-    }
 
     if resp.Data.DailySyncTime != "" {
         d.DailySyncTime = types.StringValue(resp.Data.DailySyncTime)
@@ -245,10 +217,11 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
         d.ProxyAgentId = types.StringNull()
     }
 
+    fmt.Printf("NetworkingMethod ReadFromContainer %v", c.NetworkingMethod)
     if c.NetworkingMethod != "" {
         d.NetworkingMethod = types.StringValue(c.NetworkingMethod)
     } else {
-        d.NetworkingMethod = types.StringNull()
+        d.NetworkingMethod = types.StringValue("Directly")
     }
 
     d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
@@ -288,10 +261,11 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
         d.ProxyAgentId = types.StringNull()
     }
 
+    fmt.Printf("NetworkingMethod ReadFromContainer %v\n", c.NetworkingMethod)
+
     if c.NetworkingMethod != "" {
-        d.NetworkingMethod = types.StringValue(c.NetworkingMethod)
-    } else {
-        d.NetworkingMethod = types.StringNull()
+        e := types.StringValue(c.NetworkingMethod)
+        d.NetworkingMethod = &e
     }
 
     d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
@@ -334,10 +308,27 @@ func (c *ConnectorModelContainer) ReadFromResponseData(data connectors.DetailsRe
     c.GroupId = data.GroupID
     c.Service = data.Service
     c.Schema = data.Schema
-    c.LocalProcessingAgentId = data.LocalProcessingAgentId
-    c.ProxyAgentId = data.ProxyAgentId
-    c.PrivateLinkId = data.PrivateLinkId
-    c.NetworkingMethod = data.NetworkingMethod
+    
+    if data.PrivateLinkId != "" {
+        c.PrivateLinkId = data.PrivateLinkId
+    }
+
+    if data.ProxyAgentId != "" {
+        c.ProxyAgentId = data.ProxyAgentId
+    }
+
+    if data.LocalProcessingAgentId != "" {
+        c.LocalProcessingAgentId = data.LocalProcessingAgentId
+    }
+
+    fmt.Printf("NetworkingMethod ReadFromResponseData %v\n", data.NetworkingMethod)
+
+    if data.NetworkingMethod != "" {
+        c.NetworkingMethod = data.NetworkingMethod
+    } else {
+        c.NetworkingMethod = "Directly"
+    }
+
     c.Config = config
 }
 

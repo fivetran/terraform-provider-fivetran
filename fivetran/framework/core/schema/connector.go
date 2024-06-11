@@ -114,9 +114,7 @@ func ConnectorAttributesSchema() core.Schema {
 				Description: "The private link ID.",
 			},
 			"networking_method": {
-				ValueType:   	core.String,
-				IsId:        	false,
-				DefaultString: 	"Directly",
+				ValueType:   	core.StringEnum,
 				Description: 	"Possible values: Directly, PrivateLink, SshTunnel, ProxyAgent.",
 			},
 		},

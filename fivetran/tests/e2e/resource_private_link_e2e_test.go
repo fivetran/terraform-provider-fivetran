@@ -27,7 +27,7 @@ func TestResourcePrivateLinkE2E(t *testing.T) {
                 	service = "SOURCE"
 
                 	config {
-                 		connection_service_name = "connection_service_name"
+                 		private_connection_service_id = "private_connection_service_id"
                  	}
             	}`,
 				Check: resource.ComposeAggregateTestCheckFunc(
@@ -35,7 +35,7 @@ func TestResourcePrivateLinkE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "name", "test_pl_tf"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "region", "GCP_US_EAST4"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "service", "SOURCE"),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.connection_service_name", "connection_service_name1"),
+					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.private_connection_service_id", "private_connection_service_id1"),
 				),
 			},
 			{
@@ -48,7 +48,7 @@ func TestResourcePrivateLinkE2E(t *testing.T) {
                 	service = "SOURCE"
 
                 	config {
-                 		connection_service_name = "connection_service_name2"
+                 		private_connection_service_id = "private_connection_service_id2"
                  	}
             	}`,
 				Check: resource.ComposeAggregateTestCheckFunc(
@@ -56,7 +56,7 @@ func TestResourcePrivateLinkE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "name", "test_pl_tf"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "region", "GCP_US_EAST4"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "service", "SOURCE"),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.connection_service_name", "connection_service_name2"),
+					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.private_connection_service_id", "private_connection_service_id2"),
 				),
 			},
 		},
