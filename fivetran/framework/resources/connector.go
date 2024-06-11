@@ -159,12 +159,8 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 		svc.LocalProcessingAgentId(data.LocalProcessingAgentId.ValueString())
 	}
 
-	fmt.Printf("Create data.NetworkingMethod %v\n", data.NetworkingMethod)
-
 	if data.NetworkingMethod.ValueString() != "" {
 		svc.NetworkingMethod(data.NetworkingMethod.ValueString())
-	} else {
-		data.NetworkingMethod = types.StringValue("Directly")
 	}
 
 	if !noAuth {

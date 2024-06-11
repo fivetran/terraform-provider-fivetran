@@ -217,11 +217,8 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
         d.ProxyAgentId = types.StringNull()
     }
 
-    fmt.Printf("NetworkingMethod ReadFromContainer %v", c.NetworkingMethod)
     if c.NetworkingMethod != "" {
         d.NetworkingMethod = types.StringValue(c.NetworkingMethod)
-    } else {
-        d.NetworkingMethod = types.StringValue("Directly")
     }
 
     d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
@@ -260,8 +257,6 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
     } else {
         d.ProxyAgentId = types.StringNull()
     }
-
-    fmt.Printf("NetworkingMethod ReadFromContainer %v\n", c.NetworkingMethod)
 
     if c.NetworkingMethod != "" {
         d.NetworkingMethod = types.StringValue(c.NetworkingMethod)
@@ -320,12 +315,8 @@ func (c *ConnectorModelContainer) ReadFromResponseData(data connectors.DetailsRe
         c.LocalProcessingAgentId = data.LocalProcessingAgentId
     }
 
-    fmt.Printf("NetworkingMethod ReadFromResponseData %v\n", data.NetworkingMethod)
-
     if data.NetworkingMethod != "" {
         c.NetworkingMethod = data.NetworkingMethod
-    } else {
-        c.NetworkingMethod = "Directly"
     }
 
     c.Config = config
