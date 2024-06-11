@@ -118,6 +118,12 @@ func (s SchemaField) getDatasourceSchemaAttribute() datasourceSchema.Attribute {
 	var result datasourceSchema.Attribute
 	switch s.ValueType {
 	case StringEnum:
+		result = datasourceSchema.StringAttribute{
+			Required:    s.IsId,
+			Computed:    !s.IsId,
+			Sensitive:   s.Sensitive,
+			Description: s.Description,
+		}
 	case String:
 		result = datasourceSchema.StringAttribute{
 			Required:    s.IsId,
@@ -162,10 +168,26 @@ func (s SchemaField) getResourceSchemaAttribute() resourceSchema.Attribute {
 	var result resourceSchema.Attribute
 	switch s.ValueType {
 	case StringEnum:
+		var stringAttribute = resourceSchema.StringAttribute{
+			Required:    s.Required,
+			Computed:    !s.Required || s.Readonly || (s.IsId && !s.Required),
+			Optional:    !s.Required && !s.Readonly && !s.IsId,
+			Description: s.Description,
+			Sensitive:   s.Sensitive,
+		}
+		if s.ForceNew {
+			stringAttribute.PlanModifiers = []planmodifier.String{
+				stringplanmodifier.RequiresReplace(),
+			}
+		}
+		if s.DefaultString != "" {
+			stringAttribute.Default = stringdefault.StaticString(s.DefaultString)
+		}
+		result = stringAttribute
 	case String:
 		var stringAttribute = resourceSchema.StringAttribute{
 			Required:    s.Required,
-			Computed:    (s.ValueType == StringEnum && !s.Required) || s.Readonly || (s.IsId && !s.Required),
+			Computed:    s.Readonly || (s.IsId && !s.Required),
 			Optional:    !s.Required && !s.Readonly && !s.IsId,
 			Description: s.Description,
 			Sensitive:   s.Sensitive,
