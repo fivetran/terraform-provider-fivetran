@@ -26,7 +26,7 @@ func PrepareConfigAuthPatch(state, plan map[string]interface{}, service string, 
 	for k := range state {
 		if _, ok := plan[k]; !ok {
 			if f, ok := allFields[k]; ok {
-				if f.Nullable || f.FieldValueType == common.ObjectList || f.FieldValueType == common.StringList {
+				if (f.Nullable || f.FieldValueType == common.ObjectList || f.FieldValueType == common.StringList) && !f.Readonly {
 					// If the field is not represented in plan (deleted from config)
 					// And the field is nullable - it should be set to null explicitly
 					result[k] = nil

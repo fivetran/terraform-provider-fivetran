@@ -5,9 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.25...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.26...HEAD)
 
-## [1.1.25](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.24...v1.1.25)
+## [1.1.26](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.25...v1.1.26)
 
 ## Added
 - New resource `fivetran_proxy` that allows to manage Proxies.
@@ -44,6 +44,12 @@ Updates to support management of private links, proxies and local processing age
     - Added field `fivetran_connector.local_processing_agent_id`.
     - Added field `fivetran_connector.private_link_id`.
     - Added field `fivetran_connector.networking_method`.
+
+## [1.1.25](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.24...v1.1.25)
+
+## Fixed
+
+- Fix issue when provider tries to set readonly config fields to `null` on update for connector/destination.
 
 ## [1.1.24](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.23...v1.1.24)
 
