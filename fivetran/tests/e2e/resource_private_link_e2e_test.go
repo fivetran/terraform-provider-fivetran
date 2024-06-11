@@ -23,19 +23,19 @@ func TestResourcePrivateLinkE2E(t *testing.T) {
                 	provider = fivetran-provider
 
                 	name = "test_pl_tf"
-                	region = "GCP_US_EAST4"
+                	region = "AWS_US_EAST_1"
                 	service = "SOURCE"
 
                 	config {
-                 		private_connection_service_id = "private_connection_service_id"
+                 		connection_service_name = "test_pl_tf"
                  	}
             	}`,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranPrivateLinkResourceCreate(t, "fivetran_private_link.test_pl"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "name", "test_pl_tf"),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "region", "GCP_US_EAST4"),
+					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "region", "AWS_US_EAST_1"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "service", "SOURCE"),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.private_connection_service_id", "private_connection_service_id1"),
+					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.connection_service_name", "test_pl_tf"),
 				),
 			},
 			{
@@ -44,19 +44,19 @@ func TestResourcePrivateLinkE2E(t *testing.T) {
                 	provider = fivetran-provider
 
                 	name = "test_pl_tf"
-                	region = "GCP_US_EAST4"
+                	region = "AWS_US_EAST_1"
                 	service = "SOURCE"
 
                 	config {
-                 		private_connection_service_id = "private_connection_service_id2"
+                 		connection_service_name = "test_pl_tf2"
                  	}
             	}`,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranPrivateLinkResourceCreate(t, "fivetran_private_link.test_pl"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "name", "test_pl_tf"),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "region", "GCP_US_EAST4"),
+					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "region", "AWS_US_EAST_1"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "service", "SOURCE"),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.private_connection_service_id", "private_connection_service_id2"),
+					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.connection_service_name", "test_pl_tf2"),
 				),
 			},
 		},

@@ -45,13 +45,23 @@ func (d *DestinationDatasourceModel) SetDaylightSavingTimeEnabled(value bool) {
     d.DaylightSavingTimeEnabled = types.BoolValue(value)
 }
 func (d *DestinationDatasourceModel) SetLocalProcessingAgentId(value string) {
-    d.LocalProcessingAgentId = types.StringValue(value)
+    if value != "" {
+        d.LocalProcessingAgentId = types.StringValue(value)
+    } else {
+        d.LocalProcessingAgentId = types.StringNull()
+    }
 }
 func (d *DestinationDatasourceModel) SetPrivateLinkId(value string) {
-    d.PrivateLinkId = types.StringValue(value)
+    if value != "" {
+        d.PrivateLinkId = types.StringValue(value)
+    } else {
+        d.PrivateLinkId = types.StringNull()
+    }
 }
 func (d *DestinationDatasourceModel) SetNetworkingMethod(value string) {
-    d.NetworkingMethod = types.StringValue(value)
+    if value != "" {
+        d.NetworkingMethod = types.StringValue(value)
+    }
 }
 
 func (d *DestinationDatasourceModel) SetConfig(value map[string]interface{}) {

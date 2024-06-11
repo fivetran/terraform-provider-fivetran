@@ -41,12 +41,10 @@ func (r *connector) Schema(ctx context.Context, req resource.SchemaRequest, resp
 }
 
 func (r *connector) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	fmt.Printf("ImportState\n")
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
 func (r *connector) UpgradeState(ctx context.Context) map[int64]resource.StateUpgrader {
-	fmt.Printf("UpgradeState\n")
 	v0ConfigTfTypes := model.GetTfTypes(common.GetConfigFieldsMap(), 1)
 
 	v0ConfigTfTypes["servers"] = tftypes.String
@@ -75,7 +73,6 @@ func (r *connector) UpgradeState(ctx context.Context) map[int64]resource.StateUp
 }
 
 func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	fmt.Printf("Create\n")
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -200,7 +197,6 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 }
 
 func (r *connector) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	fmt.Printf("Read\n")
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -248,7 +244,6 @@ func (r *connector) Read(ctx context.Context, req resource.ReadRequest, resp *re
 }
 
 func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-		fmt.Printf("Update\n")
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
