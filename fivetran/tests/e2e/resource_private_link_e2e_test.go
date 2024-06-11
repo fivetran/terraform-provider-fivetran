@@ -12,6 +12,8 @@ import (
 )
 
 func TestResourcePrivateLinkE2E(t *testing.T) {
+	t.Skip("Private links have a strict limit on the number of requests per hour; to test changes in these modules, this Skip must be removed")
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
 		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
