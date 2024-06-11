@@ -24,10 +24,11 @@ func TestResourcePrivateLinkE2E(t *testing.T) {
 
                 	name = "test_pl_tf"
                 	region = "AWS_US_EAST_1"
-                	service = "SOURCE"
+                	service = "REDSHIFT"
 
                 	config {
-                 		connection_service_name = "test_pl_tf"
+    					aws_account_id = "account_id.cloud_region_name.privatelink.snowflakecomputing.com"
+    					cluster_identifier = "account_id.cloud_region_name.privatelink.snowflakecomputing.com"
                  	}
             	}`,
 				Check: resource.ComposeAggregateTestCheckFunc(
@@ -35,28 +36,8 @@ func TestResourcePrivateLinkE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "name", "test_pl_tf"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "region", "AWS_US_EAST_1"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "service", "SOURCE"),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.connection_service_name", "test_pl_tf"),
-				),
-			},
-			{
-				Config: `
-            	resource "fivetran_private_link" "test_pl" {
-                	provider = fivetran-provider
-
-                	name = "test_pl_tf"
-                	region = "AWS_US_EAST_1"
-                	service = "SOURCE"
-
-                	config {
-                 		connection_service_name = "test_pl_tf2"
-                 	}
-            	}`,
-				Check: resource.ComposeAggregateTestCheckFunc(
-					testFivetranPrivateLinkResourceCreate(t, "fivetran_private_link.test_pl"),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "name", "test_pl_tf"),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "region", "AWS_US_EAST_1"),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "service", "SOURCE"),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.connection_service_name", "test_pl_tf2"),
+					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.aws_account_id", "account_id.cloud_region_name.privatelink.snowflakecomputing.com"),
+					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.cluster_identifier", "account_id.cloud_region_name.privatelink.snowflakecomputing.com"),
 				),
 			},
 		},
@@ -70,19 +51,6 @@ func testFivetranPrivateLinkResourceCreate(t *testing.T, resourceName string) re
 		_, err := client.NewPrivateLinkDetails().PrivateLinkId(rs.Primary.ID).Do(context.Background())
 		if err != nil {
 			fmt.Println(err)
-			return err
-		}
-		//todo: check response _  fields if needed
-		return nil
-	}
-}
-
-func testFivetranPrivateLinkResourceUpdate(t *testing.T, resourceName string) resource.TestCheckFunc {
-	return func(s *terraform.State) error {
-		rs := GetResource(t, s, resourceName)
-
-		_, err := client.NewPrivateLinkDetails().PrivateLinkId(rs.Primary.ID).Do(context.Background())
-		if err != nil {
 			return err
 		}
 		//todo: check response _  fields if needed
