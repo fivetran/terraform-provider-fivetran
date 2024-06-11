@@ -36,7 +36,7 @@ type ConnectorDatasourceModel struct {
     LocalProcessingAgentId  types.String `tfsdk:"local_processing_agent_id"`
     ProxyAgentId            types.String `tfsdk:"proxy_agent_id"`
     PrivateLinkId           types.String `tfsdk:"private_link_id"`
-    NetworkingMethod        *types.String `tfsdk:"networking_method"`
+    NetworkingMethod        types.String `tfsdk:"networking_method"`
 
     Status types.Object `tfsdk:"status"`
 
@@ -264,8 +264,7 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
     fmt.Printf("NetworkingMethod ReadFromContainer %v\n", c.NetworkingMethod)
 
     if c.NetworkingMethod != "" {
-        e := types.StringValue(c.NetworkingMethod)
-        d.NetworkingMethod = &e
+        d.NetworkingMethod = types.StringValue(c.NetworkingMethod)
     }
 
     d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)

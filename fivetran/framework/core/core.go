@@ -13,8 +13,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	datasourceSchema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -85,9 +85,9 @@ type SchemaField struct {
 	ResourceOnly   bool
 	Sensitive      bool
 
-	DefaultString  string
-	Readonly       bool
-	Description    string
+	DefaultString string
+	Readonly      bool
+	Description   string
 }
 
 type Schema struct {
@@ -162,22 +162,6 @@ func (s SchemaField) getResourceSchemaAttribute() resourceSchema.Attribute {
 	var result resourceSchema.Attribute
 	switch s.ValueType {
 	case StringEnum:
-		var stringAttribute = resourceSchema.StringAttribute{
-			Required:    s.Required,
-			Computed:    (s.ValueType == StringEnum && !s.Required) || s.Readonly || (s.IsId && !s.Required),
-			Optional:    !s.Required && !s.Readonly && !s.IsId,
-			Description: s.Description,
-			Sensitive:   s.Sensitive,
-		}
-		if s.ForceNew {
-			stringAttribute.PlanModifiers = []planmodifier.String{
-				stringplanmodifier.RequiresReplace(),
-			}
-		}
-		if s.DefaultString != "" {
-			stringAttribute.Default = stringdefault.StaticString(s.DefaultString)
-		}
-		result = stringAttribute
 	case String:
 		var stringAttribute = resourceSchema.StringAttribute{
 			Required:    s.Required,
