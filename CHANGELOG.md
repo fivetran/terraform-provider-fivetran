@@ -23,6 +23,32 @@ Updates to support management of proxies:
     - Added field `fivetran_connector.proxy_agent_id`.
     - Added field `fivetran_connector.networking_method`.
 
+New connection services supported:
+- Supported service: `akamai`
+- Supported service: `brave_ads`
+- Supported service: `bubbleio`
+- Supported service: `canvas_by_instructure`
+- Supported service: `cin7core`
+- Supported service: `clarity`
+- Supported service: `cockroachdb`
+- Supported service: `doorloop`
+- Supported service: `freshsales`
+- Supported service: `kevel`
+- Supported service: `planful`
+- Supported service: `rebound_returns`
+- Supported service: `skillstx`
+- Supported service: `smarthr`
+- Supported service: `ticket_tailor`
+
+New connector config fields supported:
+- Added field `fivetran_connector.config.snc_certificate_source` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.type_name` for services: `akamai`, `bubbleio`.
+- Added field `fivetran_connector.config.rollback_window` for services: `appsflyer`.
+- Added field `fivetran_connector.config.custom_tables.engaged_view_attribution_window` for services: `facebook_ads`.
+- Added field `fivetran_connector.config.server_variable` for services: `myosh`.
+- Added field `fivetran_connector.config.snc_source_name` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.snc_fivetran_name` for services: `sap_hana_db`.
+
 ## [1.1.25](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.24...v1.1.25)
 
 ## Fixed
