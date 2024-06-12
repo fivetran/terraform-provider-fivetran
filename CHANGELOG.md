@@ -5,7 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.25...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.26...HEAD)
+
+## [1.1.26](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.25...v1.1.26)
+
+## Added
+- New resource `fivetran_proxy_agent` that allows to manage Proxy Agents.
+- New data source `fivetran_proxy_agent` that allows to retrieve details of the existing Proxy Agent for a given identifier.
+- New data source `fivetran_proxy_agents` that allows to retrieve the list of existing Proxy Agents available for the current account.
+
+Updates to support management of proxies:
+- Resource `fivetran_connector` updates:
+    - Added field `fivetran_connector.proxy_agent_id`.
+    - Added field `fivetran_connector.networking_method`.
+
+- Datasource `fivetran_connector` updates:
+    - Added field `fivetran_connector.proxy_agent_id`.
+    - Added field `fivetran_connector.networking_method`.
 
 ## [1.1.25](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.24...v1.1.25)
 

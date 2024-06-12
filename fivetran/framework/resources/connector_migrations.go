@@ -99,6 +99,9 @@ func getConnectorStateModel(version int) tftypes.Type {
 		base["trust_certificates"] = tftypes.Bool
 		base["trust_fingerprints"] = tftypes.Bool
 
+		base["proxy_agent_id"] = tftypes.String
+		base["networking_method"] = tftypes.String
+		
 		base["config"] = tftypes.Object{AttributeTypes: model.GetTfTypes(common.GetConfigFieldsMap(), 3)}
 		base["auth"] = tftypes.Object{AttributeTypes: model.GetTfTypes(common.GetAuthFieldsMap(), 3)}
 	} else {

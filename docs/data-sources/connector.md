@@ -31,8 +31,10 @@ data "fivetran_connector" "connector" {
 - `failed_at` (String) The timestamp of the time the connector sync failed last time.
 - `group_id` (String) The unique identifier for the Group (Destination) within the Fivetran system.
 - `name` (String) The name used both as the connector's name within the Fivetran system and as the source schema's name within your destination.
+- `networking_method` (String) Possible values: Directly, PrivateLink, SshTunnel, ProxyAgent.
 - `pause_after_trial` (Boolean) Specifies whether the connector should be paused after the free trial period has ended.
 - `paused` (Boolean) Specifies whether the connector is paused.
+- `proxy_agent_id` (String) The proxy agent ID.
 - `schedule_type` (String) The connector schedule configuration type. Supported values: auto, manual.
 - `service` (String) The connector type id within the Fivetran system.
 - `service_version` (String) The connector type version within the Fivetran system.
