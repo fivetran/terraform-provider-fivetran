@@ -100,6 +100,14 @@ func (r *destination) Create(ctx context.Context, req resource.CreateRequest, re
 		DaylightSavingTimeEnabled(daylightSavingTimeEnabledPlan).
 		ConfigCustom(&configMap)
 
+	if data.LocalProcessingAgentId.ValueString() != "" {
+		svc.LocalProcessingAgentId(data.LocalProcessingAgentId.ValueString())
+	}
+
+	if data.NetworkingMethod.ValueString() != "" {
+		svc.NetworkingMethod(data.NetworkingMethod.ValueString())
+	}
+
 	response, err := svc.
 		DoCustom(ctx)
 
@@ -273,6 +281,14 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 			TimeZoneOffset(plan.TimeZoneOffset.ValueString()).
 			Region(plan.Region.ValueString()).
 			DestinationID(state.Id.ValueString())
+
+		if plan.LocalProcessingAgentId.ValueString() != "" {
+			svc.LocalProcessingAgentId(plan.LocalProcessingAgentId.ValueString())
+		}
+
+		if plan.NetworkingMethod.ValueString() != "" {
+			svc.NetworkingMethod(plan.NetworkingMethod.ValueString())
+		}
 
 		if len(patch) > 0 {
 			svc.ConfigCustom(&patch)
