@@ -1,0 +1,20 @@
+---
+page_title: "Resource: fivetran_proxy_agent"
+---
+
+# Resource: fivetran_proxy_agent
+
+This resource allows you to create, update, and delete proxy agent.
+
+## Example Usage
+
+```hcl
+resource "fivetran_proxy_agent" "test_proxy_agent" {
+    provider = fivetran-provider
+
+    display_name = "display_name"
+    group_region = "group_region"
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}
