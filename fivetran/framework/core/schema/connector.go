@@ -101,6 +101,10 @@ func ConnectorAttributesSchema() core.Schema {
 				ValueType:      core.String,
 				Description:    "The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use [the baseline sync start time](https://fivetran.com/docs/getting-started/syncoverview#syncfrequencyandscheduling). This parameter has no effect on the [0 to 60 minutes offset](https://fivetran.com/docs/getting-started/syncoverview#syncstarttimesandoffsets) used to determine the actual sync start time.",
 			},
+			"local_processing_agent_id": {
+				ValueType:   core.String,
+				Description: "The local processing agent ID that refers to the controller created for the group the connection belongs to. If the value is specified, the system will try to associate the connection with an existing agent.",
+			},
 		},
 	}
 }

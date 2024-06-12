@@ -33,6 +33,8 @@ type ConnectorDatasourceModel struct {
 	PauseAfterTrial types.Bool   `tfsdk:"pause_after_trial"`
 	DailySyncTime   types.String `tfsdk:"daily_sync_time"`
 
+    LocalProcessingAgentId  types.String `tfsdk:"local_processing_agent_id"`
+
 	Status types.Object `tfsdk:"status"`
 
 	Config types.Object `tfsdk:"config"`
@@ -118,6 +120,8 @@ type ConnectorResourceModel struct {
 	Service           types.String `tfsdk:"service"`
 	DestinationSchema types.Object `tfsdk:"destination_schema"`
 
+    LocalProcessingAgentId  types.String `tfsdk:"local_processing_agent_id"`
+
 	Config   types.Object   `tfsdk:"config"`
 	Auth     types.Object   `tfsdk:"auth"`
 	Timeouts timeouts.Value `tfsdk:"timeouts"`
@@ -187,6 +191,12 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
 	d.CreatedAt = types.StringValue(c.CreatedAt)
 	d.GroupId = types.StringValue(c.GroupId)
 	d.Service = types.StringValue(c.Service)
+    
+    if c.LocalProcessingAgentId != "" {
+        d.LocalProcessingAgentId = types.StringValue(c.LocalProcessingAgentId)
+    } else {
+        d.LocalProcessingAgentId = types.StringNull()
+    }
 
 	d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
 
@@ -206,6 +216,12 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
 	d.CreatedAt = types.StringValue(c.CreatedAt)
 	d.GroupId = types.StringValue(c.GroupId)
 	d.Service = types.StringValue(c.Service)
+    
+    if c.LocalProcessingAgentId != "" {
+        d.LocalProcessingAgentId = types.StringValue(c.LocalProcessingAgentId)
+    } else {
+        d.LocalProcessingAgentId = types.StringNull()
+    }
 
 	d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
 
@@ -227,6 +243,8 @@ type ConnectorModelContainer struct {
 	Service     string
 	Schema      string
 
+    LocalProcessingAgentId  string
+
 	Config map[string]interface{}
 
 	RunSetupTests     bool
@@ -243,6 +261,10 @@ func (c *ConnectorModelContainer) ReadFromResponseData(data connectors.DetailsRe
 	c.Service = data.Service
 	c.Schema = data.Schema
 	c.Config = config
+
+    if data.LocalProcessingAgentId != "" {
+        c.LocalProcessingAgentId = data.LocalProcessingAgentId
+    }
 }
 
 func getDestinatonSchemaForConfig(serviceId, nameAttr, tableAttr, prefixAttr attr.Value) (map[string]interface{}, error) {

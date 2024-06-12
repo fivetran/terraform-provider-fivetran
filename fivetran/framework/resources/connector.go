@@ -145,6 +145,10 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 		TrustFingerprints(trustFingerprintsPlan).
 		ConfigCustom(&configMap) // on creation we have config always with schema params
 
+	if data.LocalProcessingAgentId.ValueString() != "" {
+		svc.LocalProcessingAgentId(data.LocalProcessingAgentId.ValueString())
+	}
+
 	if !noAuth {
 		svc.AuthCustom(&authMap)
 	}
@@ -304,6 +308,10 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 			TrustCertificates(trustCertificatesPlan).
 			TrustFingerprints(trustFingerprintsPlan).
 			ConnectorID(state.Id.ValueString())
+
+		if plan.LocalProcessingAgentId.ValueString() != "" {
+			svc.LocalProcessingAgentId(plan.LocalProcessingAgentId.ValueString())
+		}
 
 		if len(patch) > 0 {
 			svc.ConfigCustom(&patch)

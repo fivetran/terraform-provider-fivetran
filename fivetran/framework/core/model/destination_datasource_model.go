@@ -15,6 +15,8 @@ type DestinationDatasourceModel struct {
 	TimeZoneOffset				 types.String `tfsdk:"time_zone_offset"`
 	SetupStatus    				 types.String `tfsdk:"setup_status"`
 	DaylightSavingTimeEnabled	 types.Bool   `tfsdk:"daylight_saving_time_enabled"`
+    LocalProcessingAgentId       types.String `tfsdk:"local_processing_agent_id"`
+    NetworkingMethod             types.String `tfsdk:"networking_method"`
 	Config        				 types.Object `tfsdk:"config"`
 }
 
@@ -41,7 +43,18 @@ func (d *DestinationDatasourceModel) SetSetupStatus(value string) {
 func (d *DestinationDatasourceModel) SetDaylightSavingTimeEnabled(value bool) {
 	d.DaylightSavingTimeEnabled = types.BoolValue(value)
 }
-
+func (d *DestinationDatasourceModel) SetLocalProcessingAgentId(value string) {
+    if value != "" {
+        d.LocalProcessingAgentId = types.StringValue(value)
+    } else {
+        d.LocalProcessingAgentId = types.StringNull()
+    }
+}
+func (d *DestinationDatasourceModel) SetNetworkingMethod(value string) {
+    if value != "" {
+        d.NetworkingMethod = types.StringValue(value)
+    }
+}
 func (d *DestinationDatasourceModel) SetConfig(value map[string]interface{}) {
 	if d.Service.IsNull() || d.Service.IsUnknown() {
 		panic("Service type is null. Can't handle config without service type.")
