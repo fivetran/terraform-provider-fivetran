@@ -11,30 +11,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Added
 - New resource `fivetran_private_link` that allows to manage Private Links.
-- New resource `fivetran_local_processing_agent` that allows to manage Local Processing Agents.
 - New data source `fivetran_private_link` that allows to retrieve details of the existing Private Link for a given identifier.
 - New data source `fivetran_private_links` that allows to retrieve the list of existing Private Links available for the current account.
-- New data source `fivetran_local_processing_agent` that allows to retrieve details of the existing Local Processing Agent for a given identifier.
-- New data source `fivetran_local_processing_agents` that allows to retrieve the list of existing Local Processing Agents available for the current account.
 
-Updates to support management of private links, proxies and local processing agents:
+Updates to support management of private links:
 - Resource `fivetran_connector` updates:
-    - Added field `fivetran_connector.local_processing_agent_id`.
     - Added field `fivetran_connector.private_link_id`.
 
 - Resource `fivetran_destination` updates:
-    - Added field `fivetran_connector.local_processing_agent_id`.
     - Added field `fivetran_connector.private_link_id`.
-    - Added field `fivetran_connector.networking_method`.
 
 - Datasource `fivetran_connector` updates:
-    - Added field `fivetran_connector.local_processing_agent_id`.
     - Added field `fivetran_connector.private_link_id`.
 
 - Datasource `fivetran_destination` updates:
-    - Added field `fivetran_connector.local_processing_agent_id`.
     - Added field `fivetran_connector.private_link_id`.
-    - Added field `fivetran_connector.networking_method`.
 
 ## [1.1.25](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.24...v1.1.25)
 

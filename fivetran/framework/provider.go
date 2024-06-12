@@ -119,7 +119,6 @@ func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Reso
 		resources.DbtProject,
 		resources.DbtTransformation,
 		resources.PrivateLink,
-		resources.LocalProcessingAgent,
 	}
 }
 
@@ -157,7 +156,5 @@ func (p *fivetranProvider) DataSources(ctx context.Context) []func() datasource.
 		datasources.DbtTransformation,
 		datasources.PrivateLink,
 		datasources.PrivateLinks,
-		datasources.LocalProcessingAgent,
-		datasources.LocalProcessingAgents,
 	}
 }

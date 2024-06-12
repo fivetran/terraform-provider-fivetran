@@ -18,9 +18,7 @@ type DestinationResourceModel struct {
 	DaylightSavingTimeEnabled	 types.Bool   	`tfsdk:"daylight_saving_time_enabled"`
 	Config  					 types.Object   `tfsdk:"config"`
 	Timeouts					 timeouts.Value `tfsdk:"timeouts"`
-    LocalProcessingAgentId       types.String `tfsdk:"local_processing_agent_id"`
-    PrivateLinkId                types.String `tfsdk:"private_link_id"`
-    NetworkingMethod             types.String `tfsdk:"networking_method"`
+    PrivateLinkId                types.String   `tfsdk:"private_link_id"`
 
 	RunSetupTests    			 types.Bool 	`tfsdk:"run_setup_tests"`
 	TrustCertificates			 types.Bool 	`tfsdk:"trust_certificates"`
@@ -50,23 +48,11 @@ func (d *DestinationResourceModel) SetSetupStatus(value string) {
 func (d *DestinationResourceModel) SetDaylightSavingTimeEnabled(value bool) {
 	d.DaylightSavingTimeEnabled = types.BoolValue(value)
 }
-func (d *DestinationResourceModel) SetLocalProcessingAgentId(value string) {
-    if value != "" {
-        d.LocalProcessingAgentId = types.StringValue(value)
-    } else {
-        d.LocalProcessingAgentId = types.StringNull()
-    }
-}
 func (d *DestinationResourceModel) SetPrivateLinkId(value string) {
     if value != "" {
         d.PrivateLinkId = types.StringValue(value)
     } else {
         d.PrivateLinkId = types.StringNull()
-    }
-}
-func (d *DestinationResourceModel) SetNetworkingMethod(value string) {
-    if value != "" {
-        d.NetworkingMethod = types.StringValue(value)
     }
 }
 

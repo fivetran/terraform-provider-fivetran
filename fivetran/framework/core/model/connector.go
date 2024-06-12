@@ -33,7 +33,6 @@ type ConnectorDatasourceModel struct {
     PauseAfterTrial types.Bool   `tfsdk:"pause_after_trial"`
     DailySyncTime   types.String `tfsdk:"daily_sync_time"`
 
-    LocalProcessingAgentId  types.String `tfsdk:"local_processing_agent_id"`
     PrivateLinkId           types.String `tfsdk:"private_link_id"`
 
     Status types.Object `tfsdk:"status"`
@@ -122,7 +121,6 @@ type ConnectorResourceModel struct {
     Service           types.String `tfsdk:"service"`
     DestinationSchema types.Object `tfsdk:"destination_schema"`
 
-    LocalProcessingAgentId  types.String `tfsdk:"local_processing_agent_id"`
     PrivateLinkId           types.String `tfsdk:"private_link_id"`
 
     Config   types.Object   `tfsdk:"config"`
@@ -200,12 +198,6 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
     } else {
         d.PrivateLinkId = types.StringNull()
     }
-    
-    if c.LocalProcessingAgentId != "" {
-        d.LocalProcessingAgentId = types.StringValue(c.LocalProcessingAgentId)
-    } else {
-        d.LocalProcessingAgentId = types.StringNull()
-    }
 
     d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
 
@@ -231,12 +223,6 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
     } else {
         d.PrivateLinkId = types.StringNull()
     }
-    
-    if c.LocalProcessingAgentId != "" {
-        d.LocalProcessingAgentId = types.StringValue(c.LocalProcessingAgentId)
-    } else {
-        d.LocalProcessingAgentId = types.StringNull()
-    }
 
     d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
 
@@ -258,7 +244,6 @@ type ConnectorModelContainer struct {
     Service     string
     Schema      string
 
-    LocalProcessingAgentId  string
     PrivateLinkId           string
 
     Config map[string]interface{}
@@ -279,10 +264,6 @@ func (c *ConnectorModelContainer) ReadFromResponseData(data connectors.DetailsRe
     
     if data.PrivateLinkId != "" {
         c.PrivateLinkId = data.PrivateLinkId
-    }
-
-    if data.LocalProcessingAgentId != "" {
-        c.LocalProcessingAgentId = data.LocalProcessingAgentId
     }
 
     c.Config = config

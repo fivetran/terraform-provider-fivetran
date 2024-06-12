@@ -148,10 +148,6 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 		svc.PrivateLinkId(data.PrivateLinkId.ValueString())
 	}
 
-	if data.LocalProcessingAgentId.ValueString() != "" {
-		svc.LocalProcessingAgentId(data.LocalProcessingAgentId.ValueString())
-	}
-
 	if !noAuth {
 		svc.AuthCustom(&authMap)
 	}
@@ -314,10 +310,6 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 
 		if plan.PrivateLinkId.ValueString() != "" {
 			svc.PrivateLinkId(plan.PrivateLinkId.ValueString())
-		}
-
-		if plan.LocalProcessingAgentId.ValueString() != "" {
-			svc.LocalProcessingAgentId(plan.LocalProcessingAgentId.ValueString())
 		}
 
 		if len(patch) > 0 {

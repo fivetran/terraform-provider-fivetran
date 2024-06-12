@@ -44,8 +44,6 @@ resource "fivetran_destination" "dest" {
 
 - `config` (Block, Optional) (see [below for nested schema](#nestedblock--config))
 - `daylight_saving_time_enabled` (Boolean) Shift my UTC offset with daylight savings time (US Only)
-- `local_processing_agent_id` (String) The local processing agent ID that refers to the controller created for the group the connection belongs to. If the value is specified, the system will try to associate the connection with an existing agent.
-- `networking_method` (String) Possible values: Directly, PrivateLink, SshTunnel, ProxyAgent.
 - `private_link_id` (String) The private link ID.
 - `run_setup_tests` (Boolean) Specifies whether the setup tests should be run automatically. The default value is TRUE.
 - `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
