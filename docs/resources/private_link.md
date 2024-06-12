@@ -2,7 +2,7 @@
 page_title: "Resource: fivetran_private_link"
 ---
 
-# Resource: fivetran_proxy
+# Resource: fivetran_private_link
 
 This resource allows you to create, update, and delete private links.
 

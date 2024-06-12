@@ -10,15 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.26](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.25...v1.1.26)
 
 ## Added
-- New resource `fivetran_proxy` that allows to manage Proxies.
 - New resource `fivetran_private_link` that allows to manage Private Links.
 - New resource `fivetran_local_processing_agent` that allows to manage Local Processing Agents.
-
-
 - New data source `fivetran_private_link` that allows to retrieve details of the existing Private Link for a given identifier.
 - New data source `fivetran_private_links` that allows to retrieve the list of existing Private Links available for the current account.
-- New data source `fivetran_proxy` that allows to retrieve details of the existing Proxy for a given identifier.
-- New data source `fivetran_proxies` that allows to retrieve the list of existing Proxies available for the current account.
 - New data source `fivetran_local_processing_agent` that allows to retrieve details of the existing Local Processing Agent for a given identifier.
 - New data source `fivetran_local_processing_agents` that allows to retrieve the list of existing Local Processing Agents available for the current account.
 
@@ -26,8 +21,6 @@ Updates to support management of private links, proxies and local processing age
 - Resource `fivetran_connector` updates:
     - Added field `fivetran_connector.local_processing_agent_id`.
     - Added field `fivetran_connector.private_link_id`.
-    - Added field `fivetran_connector.proxy_agent_id`.
-    - Added field `fivetran_connector.networking_method`.
 
 - Resource `fivetran_destination` updates:
     - Added field `fivetran_connector.local_processing_agent_id`.
@@ -37,8 +30,6 @@ Updates to support management of private links, proxies and local processing age
 - Datasource `fivetran_connector` updates:
     - Added field `fivetran_connector.local_processing_agent_id`.
     - Added field `fivetran_connector.private_link_id`.
-    - Added field `fivetran_connector.proxy_agent_id`.
-    - Added field `fivetran_connector.networking_method`.
 
 - Datasource `fivetran_destination` updates:
     - Added field `fivetran_connector.local_processing_agent_id`.

@@ -148,16 +148,8 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 		svc.PrivateLinkId(data.PrivateLinkId.ValueString())
 	}
 
-	if data.ProxyAgentId.ValueString() != "" {
-		svc.ProxyAgentId(data.ProxyAgentId.ValueString())
-	}
-
 	if data.LocalProcessingAgentId.ValueString() != "" {
 		svc.LocalProcessingAgentId(data.LocalProcessingAgentId.ValueString())
-	}
-
-	if data.NetworkingMethod.ValueString() != "" {
-		svc.NetworkingMethod(data.NetworkingMethod.ValueString())
 	}
 
 	if !noAuth {
@@ -324,16 +316,8 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 			svc.PrivateLinkId(plan.PrivateLinkId.ValueString())
 		}
 
-		if plan.ProxyAgentId.ValueString() != "" {
-			svc.ProxyAgentId(plan.ProxyAgentId.ValueString())
-		}
-
 		if plan.LocalProcessingAgentId.ValueString() != "" {
 			svc.LocalProcessingAgentId(plan.LocalProcessingAgentId.ValueString())
-		}
-
-		if plan.NetworkingMethod.ValueString() != "" {
-			svc.NetworkingMethod(plan.NetworkingMethod.ValueString())
 		}
 
 		if len(patch) > 0 {

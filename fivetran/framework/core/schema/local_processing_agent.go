@@ -12,7 +12,7 @@ func LocalProcessingAgentResource() resourceSchema.Schema {
         Attributes: map[string]resourceSchema.Attribute{
             "id": resourceSchema.StringAttribute{
                 Computed:    true,
-                Description: "The unique identifier for the proxy within your account.",
+                Description: "The unique identifier for the local processing agent within your account.",
             },
             "group_id": resourceSchema.StringAttribute{
                 Required:    true,
@@ -73,7 +73,7 @@ func LocalProcessingAgentDatasource() datasourceSchema.Schema {
         Attributes: map[string]datasourceSchema.Attribute{
             "id": datasourceSchema.StringAttribute{
                 Required:    true,
-                Description: "The unique identifier for the proxy within your account.",
+                Description: "The unique identifier for the local processing agent within your account.",
             },
             "group_id": datasourceSchema.StringAttribute{
                 Computed:    true,
