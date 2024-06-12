@@ -30,7 +30,6 @@ func setupMockClientProxyResource(t *testing.T) {
 	proxyAgentDetailsResponse :=
 	`{
     		"id": "agent_id",
-    		"account_id": "account_id",
     		"registred_at": "registred_at",
     		"region": "group_region",
     		"token": "auth_token",

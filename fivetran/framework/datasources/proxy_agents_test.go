@@ -16,7 +16,6 @@ const (
 		"items": [
     	{
         	"id": "id1",
-        	"account_id": "account_id1",
         	"registred_at": "registred_at1",
         	"region": "region1",
         	"token": "token1",
@@ -26,7 +25,6 @@ const (
     	},
     	{
         	"id": "id2",
-        	"account_id": "account_id2",
         	"registred_at": "registred_at2",
         	"region": "region2",
         	"token": "token2",
@@ -70,7 +68,6 @@ func TestDataSourceProxyAgentsConfigMappingMock(t *testing.T) {
                 return nil
             },
             resource.TestCheckResourceAttr("data.fivetran_proxy_agents.test_proxy_agents", "items.0.id", "id1"),
-            resource.TestCheckResourceAttr("data.fivetran_proxy_agents.test_proxy_agents", "items.0.account_id", "account_id1"),
             resource.TestCheckResourceAttr("data.fivetran_proxy_agents.test_proxy_agents", "items.0.registred_at", "registred_at1"),
             resource.TestCheckResourceAttr("data.fivetran_proxy_agents.test_proxy_agents", "items.0.group_region", "region1"),
             resource.TestCheckResourceAttr("data.fivetran_proxy_agents.test_proxy_agents", "items.0.token", "token1"),
@@ -79,7 +76,6 @@ func TestDataSourceProxyAgentsConfigMappingMock(t *testing.T) {
             resource.TestCheckResourceAttr("data.fivetran_proxy_agents.test_proxy_agents", "items.0.display_name", "display_name1"),
 
             resource.TestCheckResourceAttr("data.fivetran_proxy_agents.test_proxy_agents", "items.1.id", "id2"),
-            resource.TestCheckResourceAttr("data.fivetran_proxy_agents.test_proxy_agents", "items.1.account_id", "account_id2"),
             resource.TestCheckResourceAttr("data.fivetran_proxy_agents.test_proxy_agents", "items.1.registred_at", "registred_at2"),
             resource.TestCheckResourceAttr("data.fivetran_proxy_agents.test_proxy_agents", "items.1.group_region", "region2"),
             resource.TestCheckResourceAttr("data.fivetran_proxy_agents.test_proxy_agents", "items.1.token", "token2"),

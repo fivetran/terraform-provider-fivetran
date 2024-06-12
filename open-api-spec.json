@@ -4811,8 +4811,8 @@
         "tags": [
           "Proxy Agent Management"
         ],
-        "summary": "List All Proxy Agents",
-        "description": "Returns a list of all proxy agents.",
+        "summary": "Returns a list of all proxy agents within your Fivetran account.",
+        "description": "List all Proxy Agents",
         "operationId": "get_proxy_agent",
         "parameters": [
           {
@@ -4891,19 +4891,40 @@
                   },
                   "example": null
                 },
+                "examples": {
+                  "get_response": {
+                    "value": {
+                      "code": "Success",
+                      "data": {
+                        "items": [
+                          {
+                            "id": "id",
+                            "account_id": "account_id",
+                            "registered_at": "2018-12-01T15:43:29.013729Z",
+                            "region": "GCP_US_EAST4",
+                            "token": "token",
+                            "salt": "salt",
+                            "created_by": "created_by",
+                            "display_name": "display_name"
+                          }
+                        ],
+                        "next_cursor": "eyJza2lwIjoyfQ"
+                      }
+                    }
+                  }
+                },
                 "example": null
               }
             }
           }
-        },
-        "deprecated": true
+        }
       },
       "post": {
         "tags": [
           "Proxy Agent Management"
         ],
-        "summary": "Register new proxy agent.",
-        "description": "Register new proxy agent.",
+        "summary": "Creates a new proxy agent within your Fivetran account.",
+        "description": "Create a Proxy Agent",
         "operationId": "create_proxy_agent",
         "parameters": [
           {
@@ -4921,6 +4942,14 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/ProxyParamRequest"
+              },
+              "examples": {
+                "create_payload": {
+                  "value": {
+                    "display_name": "display_name",
+                    "group_region": "GCP_US_EAST4"
+                  }
+                }
               },
               "example": null
             }
@@ -4953,18 +4982,54 @@
                   },
                   "example": null
                 },
+                "examples": {
+                  "create_successful_response": {
+                    "value": {
+                      "code": "Success",
+                      "message": "Proxy agent has been created",
+                      "data": {
+                        "agent_id": "agent_id",
+                        "auth_token": "auth_token",
+                        "proxy_server_uri": "proxy_server_uri"
+                      }
+                    }
+                  }
+                },
                 "example": null
               }
             }
           },
           "400": {
-            "description": "Group region not supported"
-          },
-          "404": {
-            "description": "Group not found."
+            "description": "Group region not supported",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "group_region_not_found": {
+                    "value": {
+                      "code": "InvalidInput",
+                      "message": "Group region not supported."
+                    }
+                  }
+                },
+                "example": null
+              }
+            }
           },
           "409": {
-            "description": "Proxy agent with same name already exists."
+            "description": "Proxy agent with same name already exists.",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "proxy_name_conflict": {
+                    "value": {
+                      "code": "Conflict",
+                      "message": "Proxy agent with same name already exists."
+                    }
+                  }
+                },
+                "example": null
+              }
+            }
           }
         }
       }
@@ -6985,13 +7050,14 @@
         "tags": [
           "Proxy Agent Management"
         ],
-        "summary": "Returns all connections attached to the proxy agent.",
-        "description": "Returns all connections attached to the proxy agent.",
+        "summary": "Returns all connections attached to the specified proxy agent within your Fivetran account.",
+        "description": "Return all connections attached to the proxy agent",
         "operationId": "get_proxy_agent_connections",
         "parameters": [
           {
             "name": "agentId",
             "in": "path",
+            "description": "The unique identifier for the proxy agent within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -7074,86 +7140,40 @@
                   },
                   "example": null
                 },
-                "example": null
-              }
-            }
-          },
-          "404": {
-            "description": "Proxy Agent not found"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Proxy Agent Management"
-        ],
-        "summary": "Attach connection to proxy agent.",
-        "description": "Attach connection to proxy agent.",
-        "operationId": "add_proxy_integration",
-        "parameters": [
-          {
-            "name": "agentId",
-            "in": "path",
-            "description": "The unique identifier for the proxy agent.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": null
-            }
-          },
-          {
-            "name": "Accept",
-            "in": "header",
-            "schema": {
-              "type": "string",
-              "example": "application/json",
-              "default": "application/json"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProxyIntegrationRequest"
-              },
-              "example": null
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "required": [
-                    "code",
-                    "message"
-                  ],
-                  "properties": {
-                    "code": {
-                      "type": "string",
-                      "description": "Response status code",
-                      "example": null
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Response status text",
-                      "example": null
+                "examples": {
+                  "get_connections_response": {
+                    "value": {
+                      "code": "Success",
+                      "data": {
+                        "items": [
+                          {
+                            "connection_id": "connection_id"
+                          }
+                        ],
+                        "next_cursor": "eyJza2lwIjoyfQ"
+                      }
                     }
-                  },
-                  "example": null
+                  }
                 },
                 "example": null
               }
             }
           },
-          "400": {
-            "description": "Proxy agent region and connection region mismatch."
-          },
           "404": {
-            "description": "Connection not found."
+            "description": "Proxy Agent not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "proxy_not_found": {
+                    "value": {
+                      "code": "NotFound",
+                      "message": "Proxy Agent not found."
+                    }
+                  }
+                },
+                "example": null
+              }
+            }
           }
         }
       }
@@ -9091,14 +9111,14 @@
         "tags": [
           "Proxy Agent Management"
         ],
-        "summary": "Retrieve Proxy Agents Details",
-        "description": "Returns a proxy agent object if a valid identifier was provided.",
+        "summary": "Retrieves the details of the specified proxy agent.",
+        "description": "Retrieve Proxy Agent Details",
         "operationId": "get_proxy_agent_details",
         "parameters": [
           {
             "name": "agentId",
             "in": "path",
-            "description": "The unique identifier for the proxy agent.",
+            "description": "The unique identifier for the proxy agent within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -9123,12 +9143,42 @@
                 "schema": {
                   "$ref": "#/components/schemas/ProxyAgentResponse"
                 },
+                "examples": {
+                  "get_detail": {
+                    "value": {
+                      "code": "Success",
+                      "data": {
+                        "id": "id",
+                        "account_id": "account_id",
+                        "registered_at": "2018-12-01T15:43:29.013729Z",
+                        "region": "GCP_US_EAST4",
+                        "token": "token",
+                        "salt": "salt",
+                        "created_by": "created_by",
+                        "display_name": "display_name"
+                      }
+                    }
+                  }
+                },
                 "example": null
               }
             }
           },
           "404": {
-            "description": "Proxy Agent not found"
+            "description": "Proxy Agent not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "proxy_not_found": {
+                    "value": {
+                      "code": "NotFound",
+                      "message": "Proxy Agent not found."
+                    }
+                  }
+                },
+                "example": null
+              }
+            }
           }
         }
       },
@@ -9136,14 +9186,14 @@
         "tags": [
           "Proxy Agent Management"
         ],
-        "summary": "Delete a proxy agent",
-        "description": "Deletes a proxy agent from your Fivetran account.",
+        "summary": "Deletes the specified proxy agent from your Fivetran account.",
+        "description": "Delete a Proxy Agent",
         "operationId": "delete_proxy_agent",
         "parameters": [
           {
             "name": "agentId",
             "in": "path",
-            "description": "The unique identifier for the proxy agent.",
+            "description": "The unique identifier for the proxy agent within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -9184,91 +9234,51 @@
                   },
                   "example": null
                 },
+                "examples": {
+                  "delete_successful": {
+                    "value": {
+                      "code": "Success",
+                      "message": "Agent <proxy> successfully deleted."
+                    }
+                  }
+                },
                 "example": null
               }
             }
           },
           "404": {
-            "description": "Proxy agent not found."
+            "description": "Proxy agent not found.",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "proxy_not_found": {
+                    "value": {
+                      "code": "NotFound",
+                      "message": "Proxy Agent not found."
+                    }
+                  }
+                },
+                "example": null
+              }
+            }
           },
           "409": {
-            "description": "Proxy agent have attached connections."
-          }
-        }
-      }
-    },
-    "/v1/proxy/{agentId}/connections/{connectionId}": {
-      "delete": {
-        "tags": [
-          "Proxy Agent Management"
-        ],
-        "summary": "Detach connections from the proxy agent.",
-        "description": "Detach connections from the proxy agent.",
-        "operationId": "remove_proxy_integration",
-        "parameters": [
-          {
-            "name": "connectionId",
-            "in": "path",
-            "description": "The unique identifier for the connection.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": null
-            }
-          },
-          {
-            "name": "agentId",
-            "in": "path",
-            "description": "The unique identifier for the proxy agent.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": null
-            }
-          },
-          {
-            "name": "Accept",
-            "in": "header",
-            "schema": {
-              "type": "string",
-              "example": "application/json",
-              "default": "application/json"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
+            "description": "Proxy agent have attached connections.",
             "content": {
               "application/json": {
-                "schema": {
-                  "required": [
-                    "code",
-                    "message"
-                  ],
-                  "properties": {
-                    "code": {
-                      "type": "string",
-                      "description": "Response status code",
-                      "example": null
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Response status text",
-                      "example": null
+                "examples": {
+                  "proxy_has_connections": {
+                    "value": {
+                      "code": "Conflict",
+                      "message": "Proxy agent have attached connections."
                     }
-                  },
-                  "example": null
+                  }
                 },
                 "example": null
               }
             }
-          },
-          "404": {
-            "description": "Proxy agent or connection not found."
           }
-        },
-        "deprecated": true
+        }
       }
     },
     "/v1/webhooks/{webhookId}": {
@@ -11411,6 +11421,20 @@
             "type": "string",
             "description": "The proxy agent ID",
             "example": null
+          },
+          "private_link_id": {
+            "type": "string",
+            "example": null
+          },
+          "networking_method": {
+            "type": "string",
+            "example": null,
+            "enum": [
+              "Directly",
+              "PrivateLink",
+              "SshTunnel",
+              "ProxyAgent"
+            ]
           }
         },
         "example": null,
@@ -11437,6 +11461,7 @@
             "aha": "#/components/schemas/aha_NewConnectorRequestV1",
             "aircall": "#/components/schemas/aircall_NewConnectorRequestV1",
             "airtable": "#/components/schemas/airtable_NewConnectorRequestV1",
+            "akamai": "#/components/schemas/akamai_NewConnectorRequestV1",
             "alchemer": "#/components/schemas/alchemer_NewConnectorRequestV1",
             "algolia": "#/components/schemas/algolia_NewConnectorRequestV1",
             "amazon_ads": "#/components/schemas/amazon_ads_NewConnectorRequestV1",
@@ -11491,10 +11516,12 @@
             "braintree": "#/components/schemas/braintree_NewConnectorRequestV1",
             "braintree_sandbox": "#/components/schemas/braintree_sandbox_NewConnectorRequestV1",
             "branch": "#/components/schemas/branch_NewConnectorRequestV1",
+            "brave_ads": "#/components/schemas/brave_ads_NewConnectorRequestV1",
             "braze": "#/components/schemas/braze_NewConnectorRequestV1",
             "brevo": "#/components/schemas/brevo_NewConnectorRequestV1",
             "brex": "#/components/schemas/brex_NewConnectorRequestV1",
             "brightcove": "#/components/schemas/brightcove_NewConnectorRequestV1",
+            "bubbleio": "#/components/schemas/bubbleio_NewConnectorRequestV1",
             "buildkite": "#/components/schemas/buildkite_NewConnectorRequestV1",
             "business_central": "#/components/schemas/business_central_NewConnectorRequestV1",
             "buzzsprout": "#/components/schemas/buzzsprout_NewConnectorRequestV1",
@@ -11503,6 +11530,7 @@
             "callrail": "#/components/schemas/callrail_NewConnectorRequestV1",
             "campaignmonitor": "#/components/schemas/campaignmonitor_NewConnectorRequestV1",
             "canny": "#/components/schemas/canny_NewConnectorRequestV1",
+            "canvas_by_instructure": "#/components/schemas/canvas_by_instructure_NewConnectorRequestV1",
             "care_quality_commission": "#/components/schemas/care_quality_commission_NewConnectorRequestV1",
             "castor_edc": "#/components/schemas/castor_edc_NewConnectorRequestV1",
             "ceridian_dayforce": "#/components/schemas/ceridian_dayforce_NewConnectorRequestV1",
@@ -11518,14 +11546,17 @@
             "churnzero": "#/components/schemas/churnzero_NewConnectorRequestV1",
             "cimis": "#/components/schemas/cimis_NewConnectorRequestV1",
             "cin7": "#/components/schemas/cin7_NewConnectorRequestV1",
+            "cin7core": "#/components/schemas/cin7core_NewConnectorRequestV1",
             "circleci": "#/components/schemas/circleci_NewConnectorRequestV1",
             "cj_commission_detail": "#/components/schemas/cj_commission_detail_NewConnectorRequestV1",
             "clari": "#/components/schemas/clari_NewConnectorRequestV1",
+            "clarity": "#/components/schemas/clarity_NewConnectorRequestV1",
             "clickup": "#/components/schemas/clickup_NewConnectorRequestV1",
             "close": "#/components/schemas/close_NewConnectorRequestV1",
             "cloudfront": "#/components/schemas/cloudfront_NewConnectorRequestV1",
             "clubspeed": "#/components/schemas/clubspeed_NewConnectorRequestV1",
             "coassemble": "#/components/schemas/coassemble_NewConnectorRequestV1",
+            "cockroachdb": "#/components/schemas/cockroachdb_NewConnectorRequestV1",
             "codefresh": "#/components/schemas/codefresh_NewConnectorRequestV1",
             "collibra": "#/components/schemas/collibra_NewConnectorRequestV1",
             "column": "#/components/schemas/column_NewConnectorRequestV1",
@@ -11552,7 +11583,6 @@
             "db2i_sap_hva": "#/components/schemas/db2i_sap_hva_NewConnectorRequestV1",
             "dbt_cloud": "#/components/schemas/dbt_cloud_NewConnectorRequestV1",
             "dcl_logistics": "#/components/schemas/dcl_logistics_NewConnectorRequestV1",
-            "dear": "#/components/schemas/dear_NewConnectorRequestV1",
             "delighted": "#/components/schemas/delighted_NewConnectorRequestV1",
             "deputy": "#/components/schemas/deputy_NewConnectorRequestV1",
             "destini": "#/components/schemas/destini_NewConnectorRequestV1",
@@ -11560,6 +11590,7 @@
             "docebo": "#/components/schemas/docebo_NewConnectorRequestV1",
             "documentdb": "#/components/schemas/documentdb_NewConnectorRequestV1",
             "donus": "#/components/schemas/donus_NewConnectorRequestV1",
+            "doorloop": "#/components/schemas/doorloop_NewConnectorRequestV1",
             "double_click_campaign_manager": "#/components/schemas/double_click_campaign_manager_NewConnectorRequestV1",
             "double_click_publishers": "#/components/schemas/double_click_publishers_NewConnectorRequestV1",
             "drata": "#/components/schemas/drata_NewConnectorRequestV1",
@@ -11603,6 +11634,7 @@
             "freshchat": "#/components/schemas/freshchat_NewConnectorRequestV1",
             "freshdesk": "#/components/schemas/freshdesk_NewConnectorRequestV1",
             "freshdesk_contact_center": "#/components/schemas/freshdesk_contact_center_NewConnectorRequestV1",
+            "freshsales": "#/components/schemas/freshsales_NewConnectorRequestV1",
             "freshservice": "#/components/schemas/freshservice_NewConnectorRequestV1",
             "freshsuccess": "#/components/schemas/freshsuccess_NewConnectorRequestV1",
             "freshteam": "#/components/schemas/freshteam_NewConnectorRequestV1",
@@ -11671,7 +11703,6 @@
             "infobip": "#/components/schemas/infobip_NewConnectorRequestV1",
             "insightly": "#/components/schemas/insightly_NewConnectorRequestV1",
             "instagram_business": "#/components/schemas/instagram_business_NewConnectorRequestV1",
-            "instructure": "#/components/schemas/instructure_NewConnectorRequestV1",
             "integral_ad_science": "#/components/schemas/integral_ad_science_NewConnectorRequestV1",
             "integrate": "#/components/schemas/integrate_NewConnectorRequestV1",
             "intercom": "#/components/schemas/intercom_NewConnectorRequestV1",
@@ -11685,6 +11716,7 @@
             "justcall": "#/components/schemas/justcall_NewConnectorRequestV1",
             "kandji": "#/components/schemas/kandji_NewConnectorRequestV1",
             "katana": "#/components/schemas/katana_NewConnectorRequestV1",
+            "kevel": "#/components/schemas/kevel_NewConnectorRequestV1",
             "keypay": "#/components/schemas/keypay_NewConnectorRequestV1",
             "khoros_care": "#/components/schemas/khoros_care_NewConnectorRequestV1",
             "kinesis": "#/components/schemas/kinesis_NewConnectorRequestV1",
@@ -11799,6 +11831,7 @@
             "pivotal_tracker": "#/components/schemas/pivotal_tracker_NewConnectorRequestV1",
             "piwik_pro": "#/components/schemas/piwik_pro_NewConnectorRequestV1",
             "planetscale": "#/components/schemas/planetscale_NewConnectorRequestV1",
+            "planful": "#/components/schemas/planful_NewConnectorRequestV1",
             "playvox": "#/components/schemas/playvox_NewConnectorRequestV1",
             "postgres": "#/components/schemas/postgres_NewConnectorRequestV1",
             "postgres_rds": "#/components/schemas/postgres_rds_NewConnectorRequestV1",
@@ -11816,6 +11849,7 @@
             "rakutenadvertising": "#/components/schemas/rakutenadvertising_NewConnectorRequestV1",
             "ramp": "#/components/schemas/ramp_NewConnectorRequestV1",
             "rarible": "#/components/schemas/rarible_NewConnectorRequestV1",
+            "rebound_returns": "#/components/schemas/rebound_returns_NewConnectorRequestV1",
             "recharge": "#/components/schemas/recharge_NewConnectorRequestV1",
             "recurly": "#/components/schemas/recurly_NewConnectorRequestV1",
             "reddit_ads": "#/components/schemas/reddit_ads_NewConnectorRequestV1",
@@ -11877,10 +11911,12 @@
             "simplesat": "#/components/schemas/simplesat_NewConnectorRequestV1",
             "sistrix": "#/components/schemas/sistrix_NewConnectorRequestV1",
             "skilljar": "#/components/schemas/skilljar_NewConnectorRequestV1",
+            "skillstx": "#/components/schemas/skillstx_NewConnectorRequestV1",
             "skuvault": "#/components/schemas/skuvault_NewConnectorRequestV1",
             "slab": "#/components/schemas/slab_NewConnectorRequestV1",
             "slack": "#/components/schemas/slack_NewConnectorRequestV1",
             "smadex": "#/components/schemas/smadex_NewConnectorRequestV1",
+            "smarthr": "#/components/schemas/smarthr_NewConnectorRequestV1",
             "smartwaiver": "#/components/schemas/smartwaiver_NewConnectorRequestV1",
             "snapchat_ads": "#/components/schemas/snapchat_ads_NewConnectorRequestV1",
             "snowflake_db": "#/components/schemas/snowflake_db_NewConnectorRequestV1",
@@ -11921,6 +11957,7 @@
             "testrail": "#/components/schemas/testrail_NewConnectorRequestV1",
             "the_trade_desk": "#/components/schemas/the_trade_desk_NewConnectorRequestV1",
             "thinkific": "#/components/schemas/thinkific_NewConnectorRequestV1",
+            "ticket_tailor": "#/components/schemas/ticket_tailor_NewConnectorRequestV1",
             "tiktok_ads": "#/components/schemas/tiktok_ads_NewConnectorRequestV1",
             "toast": "#/components/schemas/toast_NewConnectorRequestV1",
             "toggl_track": "#/components/schemas/toggl_track_NewConnectorRequestV1",
@@ -12072,6 +12109,16 @@
             "description": "Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
             "example": null
           },
+          "networking_method": {
+            "type": "string",
+            "example": null,
+            "enum": [
+              "Directly",
+              "PrivateLink",
+              "SshTunnel",
+              "ProxyAgent"
+            ]
+          },
           "daily_sync_time": {
             "type": "string",
             "description": "The connector daily sync start time that we return only when the sync frequency is set to 1440 (which means 24 hours) and the daily_sync_time parameter was set using the Create a Connector or Modify a Connector request",
@@ -12142,6 +12189,10 @@
           "local_processing_agent_id": {
             "type": "string",
             "description": "The unique identifier for the local processing agent within the Fivetran system",
+            "example": null
+          },
+          "private_link_id": {
+            "type": "string",
             "example": null
           },
           "proxy_agent_id": {
@@ -12248,23 +12299,9 @@
             "format": "date-time",
             "example": null
           },
-          "connect_card": {
-            "$ref": "#/components/schemas/ConnectCardResponse"
-          },
           "sync_frequency": {
             "type": "integer",
             "description": "The connector sync frequency in minutes",
-            "format": "int32",
-            "example": null
-          },
-          "pause_after_trial": {
-            "type": "boolean",
-            "description": "Specifies whether the connector should be paused after the free trial period has ended",
-            "example": null
-          },
-          "data_delay_threshold": {
-            "type": "integer",
-            "description": "Custom sync delay notification threshold in minutes. The default value is 0. This parameter is only used when data_delay_sensitivity set to CUSTOM.",
             "format": "int32",
             "example": null
           },
@@ -12291,17 +12328,6 @@
             "description": "The additional information about the connector's state. The format of this parameter is specific for each connector type",
             "example": null
           },
-          "data_delay_sensitivity": {
-            "type": "string",
-            "description": "The level of data delay notification threshold. Possible values: LOW, NORMAL, HIGH, CUSTOM. The default value NORMAL. CUSTOM is only available for customers using the [Enterprise plan](https://fivetran.com/docs/getting-started/pricing#fivetranplans) or above.",
-            "example": null,
-            "enum": [
-              "LOW",
-              "NORMAL",
-              "HIGH",
-              "CUSTOM"
-            ]
-          },
           "service_version": {
             "type": "integer",
             "description": "The connector type version within the Fivetran system",
@@ -12319,6 +12345,50 @@
             "description": "The timestamp of the time the connector sync failed last time",
             "format": "date-time",
             "example": null
+          },
+          "private_link_id": {
+            "type": "string",
+            "example": null
+          },
+          "proxy_agent_id": {
+            "type": "string",
+            "description": "The proxy agent ID",
+            "example": null
+          },
+          "networking_method": {
+            "type": "string",
+            "example": null,
+            "enum": [
+              "Directly",
+              "PrivateLink",
+              "SshTunnel",
+              "ProxyAgent"
+            ]
+          },
+          "connect_card": {
+            "$ref": "#/components/schemas/ConnectCardResponse"
+          },
+          "pause_after_trial": {
+            "type": "boolean",
+            "description": "Specifies whether the connector should be paused after the free trial period has ended",
+            "example": null
+          },
+          "data_delay_threshold": {
+            "type": "integer",
+            "description": "Custom sync delay notification threshold in minutes. The default value is 0. This parameter is only used when data_delay_sensitivity set to CUSTOM.",
+            "format": "int32",
+            "example": null
+          },
+          "data_delay_sensitivity": {
+            "type": "string",
+            "description": "The level of data delay notification threshold. Possible values: LOW, NORMAL, HIGH, CUSTOM. The default value NORMAL. CUSTOM is only available for customers using the [Enterprise plan](https://fivetran.com/docs/getting-started/pricing#fivetranplans) or above.",
+            "example": null,
+            "enum": [
+              "LOW",
+              "NORMAL",
+              "HIGH",
+              "CUSTOM"
+            ]
           },
           "schedule_type": {
             "type": "string",
@@ -12358,6 +12428,7 @@
             "aha": "#/components/schemas/aha_ConnectorResponseV1",
             "aircall": "#/components/schemas/aircall_ConnectorResponseV1",
             "airtable": "#/components/schemas/airtable_ConnectorResponseV1",
+            "akamai": "#/components/schemas/akamai_ConnectorResponseV1",
             "alchemer": "#/components/schemas/alchemer_ConnectorResponseV1",
             "algolia": "#/components/schemas/algolia_ConnectorResponseV1",
             "amazon_ads": "#/components/schemas/amazon_ads_ConnectorResponseV1",
@@ -12412,10 +12483,12 @@
             "braintree": "#/components/schemas/braintree_ConnectorResponseV1",
             "braintree_sandbox": "#/components/schemas/braintree_sandbox_ConnectorResponseV1",
             "branch": "#/components/schemas/branch_ConnectorResponseV1",
+            "brave_ads": "#/components/schemas/brave_ads_ConnectorResponseV1",
             "braze": "#/components/schemas/braze_ConnectorResponseV1",
             "brevo": "#/components/schemas/brevo_ConnectorResponseV1",
             "brex": "#/components/schemas/brex_ConnectorResponseV1",
             "brightcove": "#/components/schemas/brightcove_ConnectorResponseV1",
+            "bubbleio": "#/components/schemas/bubbleio_ConnectorResponseV1",
             "buildkite": "#/components/schemas/buildkite_ConnectorResponseV1",
             "business_central": "#/components/schemas/business_central_ConnectorResponseV1",
             "buzzsprout": "#/components/schemas/buzzsprout_ConnectorResponseV1",
@@ -12424,6 +12497,7 @@
             "callrail": "#/components/schemas/callrail_ConnectorResponseV1",
             "campaignmonitor": "#/components/schemas/campaignmonitor_ConnectorResponseV1",
             "canny": "#/components/schemas/canny_ConnectorResponseV1",
+            "canvas_by_instructure": "#/components/schemas/canvas_by_instructure_ConnectorResponseV1",
             "care_quality_commission": "#/components/schemas/care_quality_commission_ConnectorResponseV1",
             "castor_edc": "#/components/schemas/castor_edc_ConnectorResponseV1",
             "ceridian_dayforce": "#/components/schemas/ceridian_dayforce_ConnectorResponseV1",
@@ -12439,14 +12513,17 @@
             "churnzero": "#/components/schemas/churnzero_ConnectorResponseV1",
             "cimis": "#/components/schemas/cimis_ConnectorResponseV1",
             "cin7": "#/components/schemas/cin7_ConnectorResponseV1",
+            "cin7core": "#/components/schemas/cin7core_ConnectorResponseV1",
             "circleci": "#/components/schemas/circleci_ConnectorResponseV1",
             "cj_commission_detail": "#/components/schemas/cj_commission_detail_ConnectorResponseV1",
             "clari": "#/components/schemas/clari_ConnectorResponseV1",
+            "clarity": "#/components/schemas/clarity_ConnectorResponseV1",
             "clickup": "#/components/schemas/clickup_ConnectorResponseV1",
             "close": "#/components/schemas/close_ConnectorResponseV1",
             "cloudfront": "#/components/schemas/cloudfront_ConnectorResponseV1",
             "clubspeed": "#/components/schemas/clubspeed_ConnectorResponseV1",
             "coassemble": "#/components/schemas/coassemble_ConnectorResponseV1",
+            "cockroachdb": "#/components/schemas/cockroachdb_ConnectorResponseV1",
             "codefresh": "#/components/schemas/codefresh_ConnectorResponseV1",
             "collibra": "#/components/schemas/collibra_ConnectorResponseV1",
             "column": "#/components/schemas/column_ConnectorResponseV1",
@@ -12473,7 +12550,6 @@
             "db2i_sap_hva": "#/components/schemas/db2i_sap_hva_ConnectorResponseV1",
             "dbt_cloud": "#/components/schemas/dbt_cloud_ConnectorResponseV1",
             "dcl_logistics": "#/components/schemas/dcl_logistics_ConnectorResponseV1",
-            "dear": "#/components/schemas/dear_ConnectorResponseV1",
             "delighted": "#/components/schemas/delighted_ConnectorResponseV1",
             "deputy": "#/components/schemas/deputy_ConnectorResponseV1",
             "destini": "#/components/schemas/destini_ConnectorResponseV1",
@@ -12481,6 +12557,7 @@
             "docebo": "#/components/schemas/docebo_ConnectorResponseV1",
             "documentdb": "#/components/schemas/documentdb_ConnectorResponseV1",
             "donus": "#/components/schemas/donus_ConnectorResponseV1",
+            "doorloop": "#/components/schemas/doorloop_ConnectorResponseV1",
             "double_click_campaign_manager": "#/components/schemas/double_click_campaign_manager_ConnectorResponseV1",
             "double_click_publishers": "#/components/schemas/double_click_publishers_ConnectorResponseV1",
             "drata": "#/components/schemas/drata_ConnectorResponseV1",
@@ -12524,6 +12601,7 @@
             "freshchat": "#/components/schemas/freshchat_ConnectorResponseV1",
             "freshdesk": "#/components/schemas/freshdesk_ConnectorResponseV1",
             "freshdesk_contact_center": "#/components/schemas/freshdesk_contact_center_ConnectorResponseV1",
+            "freshsales": "#/components/schemas/freshsales_ConnectorResponseV1",
             "freshservice": "#/components/schemas/freshservice_ConnectorResponseV1",
             "freshsuccess": "#/components/schemas/freshsuccess_ConnectorResponseV1",
             "freshteam": "#/components/schemas/freshteam_ConnectorResponseV1",
@@ -12592,7 +12670,6 @@
             "infobip": "#/components/schemas/infobip_ConnectorResponseV1",
             "insightly": "#/components/schemas/insightly_ConnectorResponseV1",
             "instagram_business": "#/components/schemas/instagram_business_ConnectorResponseV1",
-            "instructure": "#/components/schemas/instructure_ConnectorResponseV1",
             "integral_ad_science": "#/components/schemas/integral_ad_science_ConnectorResponseV1",
             "integrate": "#/components/schemas/integrate_ConnectorResponseV1",
             "intercom": "#/components/schemas/intercom_ConnectorResponseV1",
@@ -12606,6 +12683,7 @@
             "justcall": "#/components/schemas/justcall_ConnectorResponseV1",
             "kandji": "#/components/schemas/kandji_ConnectorResponseV1",
             "katana": "#/components/schemas/katana_ConnectorResponseV1",
+            "kevel": "#/components/schemas/kevel_ConnectorResponseV1",
             "keypay": "#/components/schemas/keypay_ConnectorResponseV1",
             "khoros_care": "#/components/schemas/khoros_care_ConnectorResponseV1",
             "kinesis": "#/components/schemas/kinesis_ConnectorResponseV1",
@@ -12720,6 +12798,7 @@
             "pivotal_tracker": "#/components/schemas/pivotal_tracker_ConnectorResponseV1",
             "piwik_pro": "#/components/schemas/piwik_pro_ConnectorResponseV1",
             "planetscale": "#/components/schemas/planetscale_ConnectorResponseV1",
+            "planful": "#/components/schemas/planful_ConnectorResponseV1",
             "playvox": "#/components/schemas/playvox_ConnectorResponseV1",
             "postgres": "#/components/schemas/postgres_ConnectorResponseV1",
             "postgres_rds": "#/components/schemas/postgres_rds_ConnectorResponseV1",
@@ -12737,6 +12816,7 @@
             "rakutenadvertising": "#/components/schemas/rakutenadvertising_ConnectorResponseV1",
             "ramp": "#/components/schemas/ramp_ConnectorResponseV1",
             "rarible": "#/components/schemas/rarible_ConnectorResponseV1",
+            "rebound_returns": "#/components/schemas/rebound_returns_ConnectorResponseV1",
             "recharge": "#/components/schemas/recharge_ConnectorResponseV1",
             "recurly": "#/components/schemas/recurly_ConnectorResponseV1",
             "reddit_ads": "#/components/schemas/reddit_ads_ConnectorResponseV1",
@@ -12798,10 +12878,12 @@
             "simplesat": "#/components/schemas/simplesat_ConnectorResponseV1",
             "sistrix": "#/components/schemas/sistrix_ConnectorResponseV1",
             "skilljar": "#/components/schemas/skilljar_ConnectorResponseV1",
+            "skillstx": "#/components/schemas/skillstx_ConnectorResponseV1",
             "skuvault": "#/components/schemas/skuvault_ConnectorResponseV1",
             "slab": "#/components/schemas/slab_ConnectorResponseV1",
             "slack": "#/components/schemas/slack_ConnectorResponseV1",
             "smadex": "#/components/schemas/smadex_ConnectorResponseV1",
+            "smarthr": "#/components/schemas/smarthr_ConnectorResponseV1",
             "smartwaiver": "#/components/schemas/smartwaiver_ConnectorResponseV1",
             "snapchat_ads": "#/components/schemas/snapchat_ads_ConnectorResponseV1",
             "snowflake_db": "#/components/schemas/snowflake_db_ConnectorResponseV1",
@@ -12842,6 +12924,7 @@
             "testrail": "#/components/schemas/testrail_ConnectorResponseV1",
             "the_trade_desk": "#/components/schemas/the_trade_desk_ConnectorResponseV1",
             "thinkific": "#/components/schemas/thinkific_ConnectorResponseV1",
+            "ticket_tailor": "#/components/schemas/ticket_tailor_ConnectorResponseV1",
             "tiktok_ads": "#/components/schemas/tiktok_ads_ConnectorResponseV1",
             "toast": "#/components/schemas/toast_ConnectorResponseV1",
             "toggl_track": "#/components/schemas/toggl_track_ConnectorResponseV1",
@@ -14136,6 +14219,21 @@
           "local_processing_agent_id": {
             "type": "string",
             "example": null
+          },
+          "private_link_id": {
+            "type": "integer",
+            "format": "int64",
+            "example": null
+          },
+          "networking_method": {
+            "type": "string",
+            "example": null,
+            "enum": [
+              "Directly",
+              "PrivateLink",
+              "SshTunnel",
+              "ProxyAgent"
+            ]
           }
         },
         "example": null,
@@ -14235,6 +14333,16 @@
             "description": "Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
             "example": null
           },
+          "networking_method": {
+            "type": "string",
+            "example": null,
+            "enum": [
+              "Directly",
+              "PrivateLink",
+              "SshTunnel",
+              "ProxyAgent"
+            ]
+          },
           "run_setup_tests": {
             "type": "boolean",
             "description": "Specifies whether setup tests should be run automatically.",
@@ -14246,6 +14354,10 @@
             "example": null
           },
           "local_processing_agent_id": {
+            "type": "string",
+            "example": null
+          },
+          "private_link_id": {
             "type": "string",
             "example": null
           },
@@ -14319,6 +14431,16 @@
               "AZURE_CENTRALINDIA"
             ]
           },
+          "networking_method": {
+            "type": "string",
+            "example": null,
+            "enum": [
+              "Directly",
+              "PrivateLink",
+              "SshTunnel",
+              "ProxyAgent"
+            ]
+          },
           "setup_status": {
             "type": "string",
             "description": "Destination setup status",
@@ -14327,11 +14449,6 @@
           "daylight_saving_time_enabled": {
             "type": "boolean",
             "description": "Shift my UTC offset with daylight savings time (US Only)",
-            "example": null
-          },
-          "local_processing_agent_id": {
-            "type": "string",
-            "description": "The unique identifier for the local processing agent within the Fivetran system",
             "example": null
           },
           "group_id": {
@@ -14351,6 +14468,15 @@
             "items": {
               "$ref": "#/components/schemas/SetupTestResultResponse"
             }
+          },
+          "local_processing_agent_id": {
+            "type": "string",
+            "description": "The unique identifier for the local processing agent within the Fivetran system",
+            "example": null
+          },
+          "private_link_id": {
+            "type": "string",
+            "example": null
           }
         },
         "example": null,
@@ -14599,22 +14725,9 @@
             "format": "date-time",
             "example": null
           },
-          "connect_card": {
-            "$ref": "#/components/schemas/ConnectCardResponse"
-          },
           "sync_frequency": {
             "type": "integer",
             "description": "The connector sync frequency in minutes",
-            "format": "int32",
-            "example": null
-          },
-          "pause_after_trial": {
-            "type": "boolean",
-            "description": "Specifies whether the connector should be paused after the free trial period has ended.",
-            "example": null
-          },
-          "data_delay_threshold": {
-            "type": "integer",
             "format": "int32",
             "example": null
           },
@@ -14641,16 +14754,6 @@
             "description": "The additional information about the connector's state. The format of this parameter is specific for each connector type.",
             "example": null
           },
-          "data_delay_sensitivity": {
-            "type": "string",
-            "example": null,
-            "enum": [
-              "LOW",
-              "NORMAL",
-              "HIGH",
-              "CUSTOM"
-            ]
-          },
           "service_version": {
             "type": "integer",
             "description": "The connector type version within the Fivetran system.",
@@ -14668,6 +14771,48 @@
             "description": "The timestamp of the time the connector sync failed last time.",
             "format": "date-time",
             "example": null
+          },
+          "private_link_id": {
+            "type": "integer",
+            "format": "int64",
+            "example": null
+          },
+          "proxy_agent_id": {
+            "type": "string",
+            "example": null
+          },
+          "networking_method": {
+            "type": "string",
+            "example": null,
+            "enum": [
+              "Directly",
+              "PrivateLink",
+              "SshTunnel",
+              "ProxyAgent"
+            ]
+          },
+          "connect_card": {
+            "$ref": "#/components/schemas/ConnectCardResponse"
+          },
+          "pause_after_trial": {
+            "type": "boolean",
+            "description": "Specifies whether the connector should be paused after the free trial period has ended.",
+            "example": null
+          },
+          "data_delay_threshold": {
+            "type": "integer",
+            "format": "int32",
+            "example": null
+          },
+          "data_delay_sensitivity": {
+            "type": "string",
+            "example": null,
+            "enum": [
+              "LOW",
+              "NORMAL",
+              "HIGH",
+              "CUSTOM"
+            ]
           },
           "schedule_type": {
             "type": "string",
@@ -15309,29 +15454,54 @@
         },
         "example": null
       },
-      "ProxyIntegrationRequest": {
-        "type": "object",
-        "properties": {
-          "connection_id": {
-            "type": "string",
-            "description": "The unique identifier for the connection within the Fivetran system.",
-            "example": null
-          }
-        },
-        "example": null
-      },
       "ProxyParamRequest": {
         "type": "object",
         "properties": {
           "display_name": {
             "type": "string",
             "description": "Proxy agent name.",
-            "example": null
+            "example": "display_name"
           },
-          "group_id": {
+          "group_region": {
             "type": "string",
-            "description": "The unique identifier for the group within the Fivetran system.",
-            "example": null
+            "description": "Data processing location. This is where Fivetran will operate and run computation on data.",
+            "example": "GCP_US_EAST4",
+            "enum": [
+              "GCP_US_EAST4",
+              "GCP_US_WEST1",
+              "GCP_US_CENTRAL1",
+              "GCP_EUROPE_WEST3",
+              "GCP_AUSTRALIA_SOUTHEAST1",
+              "GCP_NORTHAMERICA_NORTHEAST1",
+              "GCP_EUROPE_WEST2",
+              "GCP_ASIA_SOUTHEAST1",
+              "GCP_ASIA_SOUTHEAST2",
+              "GCP_ASIA_SOUTH1",
+              "GCP_ASIA_NORTHEAST1",
+              "AWS_US_EAST_1",
+              "AWS_US_EAST_2",
+              "AWS_US_WEST_2",
+              "AWS_AP_NORTHEAST_1",
+              "AWS_AP_SOUTHEAST_1",
+              "AWS_AP_SOUTHEAST_2",
+              "AWS_EU_CENTRAL_1",
+              "AWS_EU_WEST_1",
+              "AWS_EU_WEST_2",
+              "AWS_AP_SOUTH_1",
+              "AWS_CA_CENTRAL_1",
+              "AWS_US_GOV_WEST_1",
+              "AZURE_EASTUS2",
+              "AZURE_AUSTRALIAEAST",
+              "AZURE_UKSOUTH",
+              "AZURE_WESTEUROPE",
+              "AZURE_CENTRALUS",
+              "AZURE_CANADACENTRAL",
+              "AZURE_UAENORTH",
+              "AZURE_SOUTHEASTASIA",
+              "AZURE_EASTUS",
+              "AZURE_JAPANEAST",
+              "AZURE_CENTRALINDIA"
+            ]
           }
         },
         "example": null
@@ -15341,17 +15511,18 @@
         "properties": {
           "agent_id": {
             "type": "string",
-            "example": null
+            "description": "The unique identifier for the proxy agent within the Fivetran system.",
+            "example": "id"
           },
           "proxy_server_uri": {
             "type": "string",
-            "description": "The proxy server URI",
-            "example": null
+            "description": "The proxy server URI.",
+            "example": "proxy_server_uri"
           },
           "auth_token": {
             "type": "string",
-            "description": "The auth token",
-            "example": null
+            "description": "The auth token.",
+            "example": "auth_token"
           }
         },
         "example": null
@@ -15362,12 +15533,12 @@
           "id": {
             "type": "string",
             "description": "The unique identifier for the proxy agent within the Fivetran system.",
-            "example": null
+            "example": "id"
           },
           "account_id": {
             "type": "string",
             "description": "Fivetran Account ID.",
-            "example": null
+            "example": "account_id"
           },
           "registered_at": {
             "type": "string",
@@ -15377,7 +15548,7 @@
           "region": {
             "type": "string",
             "description": "Data processing location. This is where Fivetran will operate and run computation on data.",
-            "example": null,
+            "example": "GCP_US_EAST4",
             "enum": [
               "GCP_US_EAST4",
               "GCP_US_WEST1",
@@ -15417,23 +15588,23 @@
           },
           "token": {
             "type": "string",
-            "description": "The auth token",
-            "example": null
+            "description": "The auth token.",
+            "example": "token"
           },
           "salt": {
             "type": "string",
-            "description": "The salt",
-            "example": null
+            "description": "The salt.",
+            "example": "salt"
           },
           "created_by": {
             "type": "string",
-            "description": "The actor who created the proxy agent",
-            "example": null
+            "description": "The actor who created the proxy agent.",
+            "example": "created_by"
           },
           "display_name": {
             "type": "string",
             "description": "Proxy agent name.",
-            "example": null
+            "example": "display_name"
           }
         },
         "example": null
@@ -15444,7 +15615,7 @@
           "connection_id": {
             "type": "string",
             "description": "The unique identifier for the connection within the Fivetran system.",
-            "example": null
+            "example": "connection_id"
           }
         },
         "example": null
@@ -16144,12 +16315,6 @@
                 "description": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
                 "example": null
               },
-              "resource_id": {
-                "title": "",
-                "type": "string",
-                "description": "",
-                "example": null
-              },
               "always_encrypted": {
                 "title": "",
                 "type": "boolean",
@@ -16245,12 +16410,6 @@
                 "title": "",
                 "type": "string",
                 "description": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
-                "example": null
-              },
-              "resource_id": {
-                "title": "",
-                "type": "string",
-                "description": "This field is currently being introduced to test the Self-serve Private Link functionality",
                 "example": null
               },
               "always_encrypted": {
@@ -16535,12 +16694,6 @@
                 "description": "",
                 "example": null
               },
-              "resource_id": {
-                "title": "",
-                "type": "string",
-                "description": "",
-                "example": null
-              },
               "always_encrypted": {
                 "title": "",
                 "type": "boolean",
@@ -16636,12 +16789,6 @@
                 "title": "",
                 "type": "string",
                 "description": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
-                "example": null
-              },
-              "resource_id": {
-                "title": "",
-                "type": "string",
-                "description": "This field is currently being introduced to test the Self-serve Private Link functionality",
                 "example": null
               },
               "always_encrypted": {
@@ -16741,12 +16888,6 @@
                 "description": "",
                 "example": null
               },
-              "resource_id": {
-                "title": "",
-                "type": "string",
-                "description": "Field to test Self serve Private Link",
-                "example": null
-              },
               "always_encrypted": {
                 "title": "",
                 "type": "boolean",
@@ -16842,12 +16983,6 @@
                 "title": "",
                 "type": "string",
                 "description": "",
-                "example": null
-              },
-              "resource_id": {
-                "title": "",
-                "type": "string",
-                "description": "Field to test Self serve Private Link",
                 "example": null
               },
               "always_encrypted": {
@@ -17144,6 +17279,16 @@
           "config": {
             "type": "object",
             "properties": {
+              "auth_type": {
+                "title": "",
+                "type": "object",
+                "description": "Authentication type",
+                "example": null,
+                "enum": [
+                  "PERSONAL_ACCESS_TOKEN",
+                  "OAUTH2"
+                ]
+              },
               "create_external_tables": {
                 "title": "",
                 "type": "boolean",
@@ -17175,12 +17320,6 @@
                 "description": "Catalog name",
                 "example": null
               },
-              "resource_id": {
-                "title": "",
-                "type": "string",
-                "description": "This field is currently being introduced to test the Self-serve Private Link functionality",
-                "example": null
-              },
               "http_path": {
                 "title": "",
                 "type": "string",
@@ -17197,6 +17336,19 @@
                   "GCP",
                   "AWS"
                 ]
+              },
+              "oauth2_secret": {
+                "title": "",
+                "type": "string",
+                "description": "OAuth 2.0 secret",
+                "format": "password",
+                "example": null
+              },
+              "oauth2_client_id": {
+                "title": "",
+                "type": "string",
+                "description": "OAuth 2.0 client ID",
+                "example": null
               },
               "server_host_name": {
                 "title": "",
@@ -17350,12 +17502,6 @@
                 "description": "",
                 "example": null
               },
-              "resource_id": {
-                "title": "",
-                "type": "string",
-                "description": "This field is currently being introduced to test the Self-serve Private Link functionality",
-                "example": null
-              },
               "always_encrypted": {
                 "title": "",
                 "type": "boolean",
@@ -17451,12 +17597,6 @@
                 "title": "",
                 "type": "string",
                 "description": "",
-                "example": null
-              },
-              "resource_id": {
-                "title": "",
-                "type": "string",
-                "description": "This field is currently being introduced to test the Self-serve Private Link functionality",
                 "example": null
               },
               "always_encrypted": {
@@ -17598,12 +17738,6 @@
                 "description": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
                 "example": null
               },
-              "resource_id": {
-                "title": "",
-                "type": "string",
-                "description": "This field is currently being introduced to test the Self-serve Private Link functionality",
-                "example": null
-              },
               "always_encrypted": {
                 "title": "",
                 "type": "boolean",
@@ -17699,12 +17833,6 @@
                 "title": "",
                 "type": "string",
                 "description": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
-                "example": null
-              },
-              "resource_id": {
-                "title": "",
-                "type": "string",
-                "description": "This field is currently being introduced to test the Self-serve Private Link functionality",
                 "example": null
               },
               "always_encrypted": {
@@ -17923,12 +18051,6 @@
                 "description": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
                 "example": null
               },
-              "resource_id": {
-                "title": "",
-                "type": "string",
-                "description": "",
-                "example": null
-              },
               "always_encrypted": {
                 "title": "",
                 "type": "boolean",
@@ -18027,12 +18149,6 @@
                 "description": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
                 "example": null
               },
-              "resource_id": {
-                "title": "",
-                "type": "string",
-                "description": "",
-                "example": null
-              },
               "always_encrypted": {
                 "title": "",
                 "type": "boolean",
@@ -18129,12 +18245,6 @@
                 "title": "",
                 "type": "string",
                 "description": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
-                "example": null
-              },
-              "resource_id": {
-                "title": "",
-                "type": "string",
-                "description": "",
                 "example": null
               },
               "always_encrypted": {
@@ -18302,12 +18412,6 @@
                 "description": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
                 "example": null
               },
-              "resource_id": {
-                "title": "",
-                "type": "string",
-                "description": "This field is currently being introduced to test the Self-serve Private Link functionality",
-                "example": null
-              },
               "is_redshift_serverless": {
                 "title": "",
                 "type": "boolean",
@@ -18446,12 +18550,6 @@
                 "description": "Server name",
                 "example": null
               },
-              "resource_id": {
-                "title": "",
-                "type": "string",
-                "description": "This field is currently being introduced to test the Self-serve Private Link functionality",
-                "example": null
-              },
               "passphrase": {
                 "title": "",
                 "type": "string",
@@ -18542,12 +18640,6 @@
                 "title": "",
                 "type": "string",
                 "description": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
-                "example": null
-              },
-              "resource_id": {
-                "title": "",
-                "type": "string",
-                "description": "Field to test Self serve Private Link",
                 "example": null
               },
               "always_encrypted": {
@@ -18645,12 +18737,6 @@
                 "title": "",
                 "type": "string",
                 "description": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
-                "example": null
-              },
-              "resource_id": {
-                "title": "",
-                "type": "string",
-                "description": "Field to test Self serve Private Link",
                 "example": null
               },
               "always_encrypted": {
@@ -20661,6 +20747,60 @@
           }
         ]
       },
+      "akamai_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "hostname": {
+                "title": "",
+                "type": "string",
+                "description": "Your Akamai hostname.",
+                "example": null
+              },
+              "type_name": {
+                "title": "",
+                "type": "string",
+                "description": "Your Akamai type name.",
+                "example": null
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Akamai client secret.",
+                "format": "password",
+                "example": null
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Akamai client ID.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "akamai_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/akamai_config_V1"
+          }
+        ]
+      },
       "alchemer_config_V1": {
         "properties": {
           "config": {
@@ -21593,6 +21733,13 @@
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
                 "example": null
               },
+              "rollback_window": {
+                "title": "",
+                "type": "integer",
+                "description": "Rollback window",
+                "format": "int32",
+                "example": null
+              },
               "api_token": {
                 "title": "",
                 "type": "string",
@@ -21950,17 +22097,23 @@
           "config": {
             "type": "object",
             "properties": {
-              "access_token": {
-                "title": "",
-                "type": "string",
-                "description": "Your Attio bearer token",
-                "format": "password",
-                "example": null
-              },
               "schema": {
                 "title": "Destination schema",
                 "type": "string",
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Attio client secret .",
+                "format": "password",
+                "example": null
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Attio client ID.",
                 "example": null
               }
             },
@@ -22681,6 +22834,7 @@
                   "tsv",
                   "xml",
                   "csv",
+                  "unstructured",
                   "spreadsheet",
                   "json",
                   "jsonl",
@@ -23003,6 +23157,7 @@
                   "eu-south-2",
                   "us-gov-east-1",
                   "me-central-1",
+                  "il-central-1",
                   "ca-central-1",
                   "eu-central-1",
                   "us-iso-west-1",
@@ -23022,6 +23177,7 @@
                   "ap-east-1",
                   "cn-north-1",
                   "us-gov-west-1",
+                  "ca-west-1",
                   "ap-southeast-1",
                   "ap-southeast-2",
                   "us-iso-east-1",
@@ -23620,12 +23776,12 @@
               "hosts": {
                 "title": "",
                 "type": "array",
-                "description": "A list of host addresses for Cosmos DB for Mongo DB.",
+                "description": "A list of host addresses for Azure Cosmos DB for Mongo DB.",
                 "example": null,
                 "items": {
                   "title": "",
                   "type": "string",
-                  "description": "A list of host addresses for Cosmos DB for Mongo DB.",
+                  "description": "A list of host addresses for Azure Cosmos DB for Mongo DB.",
                   "example": null
                 }
               },
@@ -25355,6 +25511,42 @@
           }
         ]
       },
+      "brave_ads_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Brave Ads API key",
+                "format": "password",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "brave_ads_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/brave_ads_config_V1"
+          }
+        ]
+      },
       "braze_config_V1": {
         "properties": {
           "config": {
@@ -25628,6 +25820,63 @@
           },
           {
             "$ref": "#/components/schemas/brightcove_config_V1"
+          }
+        ]
+      },
+      "bubbleio_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "type_name": {
+                "title": "",
+                "type": "string",
+                "description": "Your Bubble.io type name.",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Bubble.io API key.",
+                "format": "password",
+                "example": null
+              },
+              "domain": {
+                "title": "",
+                "type": "string",
+                "description": "Your Bubble.io domain.",
+                "example": null
+              },
+              "sub_domain": {
+                "type": "object",
+                "description": "Your Bubble.io subDomain.",
+                "example": null,
+                "enum": [
+                  "com",
+                  "bubbleapps.io"
+                ]
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "bubbleio_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/bubbleio_config_V1"
           }
         ]
       },
@@ -25999,6 +26248,54 @@
           },
           {
             "$ref": "#/components/schemas/canny_config_V1"
+          }
+        ]
+      },
+      "canvas_by_instructure_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "sub_domain": {
+                "title": "",
+                "type": "string",
+                "description": "Your Canvas by Instructure domain.",
+                "example": null
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Canvas by Instructure client secret.",
+                "format": "password",
+                "example": null
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Canvas by Instructure client ID.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "canvas_by_instructure_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/canvas_by_instructure_config_V1"
           }
         ]
       },
@@ -26641,6 +26938,48 @@
           }
         ]
       },
+      "cin7core_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "account_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Cin7 Core account ID.",
+                "example": null
+              },
+              "application_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Cin7 Core application key.",
+                "format": "password",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "cin7core_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/cin7core_config_V1"
+          }
+        ]
+      },
       "circleci_config_V1": {
         "properties": {
           "config": {
@@ -26758,6 +27097,121 @@
           },
           {
             "$ref": "#/components/schemas/clari_config_V1"
+          }
+        ]
+      },
+      "clarity_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "public_key": {
+                "title": "",
+                "type": "string",
+                "description": "Public Key.",
+                "example": null
+              },
+              "connection_type": {
+                "title": "",
+                "type": "object",
+                "description": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
+                "example": null,
+                "enum": [
+                  "Directly",
+                  "PrivateLink",
+                  "SshTunnel",
+                  "ProxyAgent"
+                ]
+              },
+              "update_method": {
+                "title": "",
+                "type": "object",
+                "description": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
+                "example": null,
+                "enum": [
+                  "NATIVE_UPDATE",
+                  "TELEPORT",
+                  "DIRECT"
+                ]
+              },
+              "always_encrypted": {
+                "title": "",
+                "type": "boolean",
+                "description": "Require TLS through Tunnel.",
+                "example": null
+              },
+              "tunnel_user": {
+                "title": "",
+                "type": "string",
+                "description": "SSH user, specify only to connect via an SSH tunnel.",
+                "example": null
+              },
+              "tunnel_port": {
+                "title": "",
+                "type": "integer",
+                "description": "SSH port, specify only to connect via an SSH tunnel.",
+                "format": "int32",
+                "example": null
+              },
+              "database": {
+                "title": "",
+                "type": "string",
+                "description": "The database name.",
+                "example": null
+              },
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "The user's password.",
+                "format": "password",
+                "example": null
+              },
+              "port": {
+                "title": "",
+                "type": "integer",
+                "description": "The port number.",
+                "format": "int32",
+                "example": null
+              },
+              "host": {
+                "title": "",
+                "type": "string",
+                "description": "DB instance host or IP address.",
+                "example": null
+              },
+              "tunnel_host": {
+                "title": "",
+                "type": "string",
+                "description": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+                "example": null
+              },
+              "schema_prefix": {
+                "title": "Destination schema prefix",
+                "type": "string",
+                "description": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "The user name.  For Azure Databases, the format must be `user@domain`.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "clarity_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/clarity_config_V1"
           }
         ]
       },
@@ -26974,6 +27428,67 @@
           },
           {
             "$ref": "#/components/schemas/coassemble_config_V1"
+          }
+        ]
+      },
+      "cockroachdb_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "database": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": null
+              },
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": null
+              },
+              "port": {
+                "title": "",
+                "type": "integer",
+                "description": "",
+                "format": "int32",
+                "example": null
+              },
+              "host": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": null
+              },
+              "schema_prefix": {
+                "title": "Destination schema prefix",
+                "type": "string",
+                "description": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "cockroachdb_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/cockroachdb_config_V1"
           }
         ]
       },
@@ -27593,7 +28108,7 @@
               "sync_pack_mode": {
                 "title": "",
                 "type": "object",
-                "description": "The packing mode type. Supported values:<br>`STANDARD_UNPACKED_MODE`- Unpacks _one_ layer of nested fields and infers types.<br>`PACKED_MODE`- Delivers packed data as a single destination column value.<br>Learn more in our [Cosmos DB Sync Pack Mode Options documentation](/docs/connectors/databases/cosmos#packmodeoptions).",
+                "description": "The packing mode type. Supported values:<br>`STANDARD_UNPACKED_MODE`- Unpacks _one_ layer of nested fields and infers types.<br>`PACKED_MODE`- Delivers packed data as a single destination column value.<br>Learn more in our [Azure Cosmos DB Sync Pack Mode Options documentation](/docs/connectors/databases/cosmos#packmodeoptions).",
                 "example": null,
                 "enum": [
                   "STANDARD_UNPACKED_MODE",
@@ -27603,7 +28118,7 @@
               "data_access_method": {
                 "title": "",
                 "type": "object",
-                "description": "The source data access method. Supported values:<br>`ACCOUNT_KEY`- Data access method that uses account keys to authenticate to the source database. It comes in both read-write and read-only variants.<br>`RESOURCE_TOKEN`- Fine-grained permission model based on native Azure Cosmos DB users and permissions.<br> Learn more in our [Cosmos DB Data Access Methods documentation](/docs/connectors/databases/cosmos#dataaccessmethods).",
+                "description": "The source data access method. Supported values:<br>`ACCOUNT_KEY`- Data access method that uses account keys to authenticate to the source database. It comes in both read-write and read-only variants.<br>`RESOURCE_TOKEN`- Fine-grained permission model based on native Azure Cosmos DB users and permissions.<br> Learn more in our [Azure Cosmos DB Data Access Methods documentation](/docs/connectors/databases/cosmos#dataaccessmethods).",
                 "example": null,
                 "enum": [
                   "ACCOUNT_KEY",
@@ -27633,7 +28148,7 @@
               "resource_token": {
                 "title": "",
                 "type": "string",
-                "description": "A token that provides access to a specific Cosmos DB resource. Required for the `RESOURCE_TOKEN` data access method.",
+                "description": "A token that provides access to a specific Azure Cosmos DB resource. Required for the `RESOURCE_TOKEN` data access method.",
                 "format": "password",
                 "example": null
               },
@@ -29426,48 +29941,6 @@
           }
         ]
       },
-      "dear_config_V1": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "properties": {
-              "schema": {
-                "title": "Destination schema",
-                "type": "string",
-                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
-                "example": null
-              },
-              "account_id": {
-                "title": "",
-                "type": "string",
-                "description": "Your Dear Account ID.",
-                "example": null
-              },
-              "application_key": {
-                "title": "",
-                "type": "string",
-                "description": "Your Dear Application key.",
-                "format": "password",
-                "example": null
-              }
-            },
-            "description": "",
-            "example": null
-          }
-        },
-        "example": null
-      },
-      "dear_NewConnectorRequestV1": {
-        "example": null,
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NewConnectorRequestV1"
-          },
-          {
-            "$ref": "#/components/schemas/dear_config_V1"
-          }
-        ]
-      },
       "delighted_config_V1": {
         "properties": {
           "config": {
@@ -29839,6 +30312,42 @@
           },
           {
             "$ref": "#/components/schemas/donus_config_V1"
+          }
+        ]
+      },
+      "doorloop_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your DoorLoop API key.",
+                "format": "password",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "doorloop_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/doorloop_config_V1"
           }
         ]
       },
@@ -30866,12 +31375,12 @@
               "scope": {
                 "title": "",
                 "type": "string",
-                "description": "Your eBay Scopes.",
+                "description": "Your eBay scopes.",
                 "example": null
               },
               "subdomain": {
                 "type": "object",
-                "description": "Your eBay Environment.",
+                "description": "Your eBay environment.",
                 "example": null,
                 "enum": [
                   "ebay",
@@ -30881,14 +31390,14 @@
               "client_secret": {
                 "title": "",
                 "type": "string",
-                "description": "Your eBay client secret.",
+                "description": "Your eBay cert ID.",
                 "format": "password",
                 "example": null
               },
               "client_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your eBay client ID.",
+                "description": "Your eBay app ID.",
                 "example": null
               }
             },
@@ -31705,6 +32214,11 @@
                         "ACTION_CONVERSION_DEVICE"
                       ]
                     },
+                    "use_unified_attribution_setting": {
+                      "title": "",
+                      "type": "boolean",
+                      "example": null
+                    },
                     "view_attribution_window": {
                       "title": "",
                       "type": "object",
@@ -31712,15 +32226,11 @@
                       "example": null,
                       "enum": [
                         "DAY_1",
+                        "DAY_1_EV",
                         "DAY_7",
                         "NONE",
                         "DAY_28"
                       ]
-                    },
-                    "use_unified_attribution_setting": {
-                      "title": "",
-                      "type": "boolean",
-                      "example": null
                     },
                     "level": {
                       "title": "",
@@ -31773,6 +32283,61 @@
                         ]
                       }
                     },
+                    "click_attribution_window": {
+                      "title": "",
+                      "type": "object",
+                      "description": "Time period to attribute conversions based on clicks. [Possible click_attribution_window values](/docs/connectors/applications/facebook-ads-insights/api-config#clickattributionwindow).",
+                      "example": null,
+                      "enum": [
+                        "DAY_1",
+                        "DAY_1_EV",
+                        "DAY_7",
+                        "NONE",
+                        "DAY_28"
+                      ]
+                    },
+                    "aggregation": {
+                      "title": "",
+                      "type": "object",
+                      "description": "Options to select aggregation duration. [Possible aggregation values](/docs/connectors/applications/facebook-ads-insights/api-config#aggregation).",
+                      "example": null,
+                      "enum": [
+                        "Month",
+                        "Lifetime",
+                        "Day",
+                        "Week"
+                      ]
+                    },
+                    "table_name": {
+                      "title": "",
+                      "type": "string",
+                      "description": "The table name within the schema to which the connector will sync the data. It must be unique within the connector and must comply with [Fivetran's naming conventions](/docs/getting-started/core-concepts#namingconventions).",
+                      "example": null
+                    },
+                    "action_report_time": {
+                      "title": "",
+                      "type": "object",
+                      "description": "The report time of action stats. [Possible action_report time values](/docs/connectors/applications/facebook-ads-insights/api-config#actionreporttime).",
+                      "example": null,
+                      "enum": [
+                        "impression",
+                        "mixed",
+                        "conversion"
+                      ]
+                    },
+                    "engaged_view_attribution_window": {
+                      "title": "",
+                      "type": "object",
+                      "description": "",
+                      "example": null,
+                      "enum": [
+                        "DAY_1",
+                        "DAY_1_EV",
+                        "DAY_7",
+                        "NONE",
+                        "DAY_28"
+                      ]
+                    },
                     "action_breakdowns": {
                       "title": "",
                       "type": "array",
@@ -31797,30 +32362,6 @@
                           "action_reaction"
                         ]
                       }
-                    },
-                    "click_attribution_window": {
-                      "title": "",
-                      "type": "object",
-                      "description": "Time period to attribute conversions based on clicks. [Possible click_attribution_window values](/docs/connectors/applications/facebook-ads-insights/api-config#clickattributionwindow).",
-                      "example": null,
-                      "enum": [
-                        "DAY_1",
-                        "DAY_7",
-                        "NONE",
-                        "DAY_28"
-                      ]
-                    },
-                    "aggregation": {
-                      "title": "",
-                      "type": "object",
-                      "description": "Options to select aggregation duration. [Possible aggregation values](/docs/connectors/applications/facebook-ads-insights/api-config#aggregation).",
-                      "example": null,
-                      "enum": [
-                        "Month",
-                        "Lifetime",
-                        "Day",
-                        "Week"
-                      ]
                     },
                     "config_type": {
                       "title": "",
@@ -31956,23 +32497,6 @@
                           "mobile_app_purchase_roas"
                         ]
                       }
-                    },
-                    "table_name": {
-                      "title": "",
-                      "type": "string",
-                      "description": "The table name within the schema to which the connector will sync the data. It must be unique within the connector and must comply with [Fivetran's naming conventions](/docs/getting-started/core-concepts#namingconventions).",
-                      "example": null
-                    },
-                    "action_report_time": {
-                      "title": "",
-                      "type": "object",
-                      "description": "The report time of action stats. [Possible action_report time values](/docs/connectors/applications/facebook-ads-insights/api-config#actionreporttime).",
-                      "example": null,
-                      "enum": [
-                        "impression",
-                        "mixed",
-                        "conversion"
-                      ]
                     }
                   },
                   "description": "List of custom tables. Each custom table corresponds to a table within the schema to which connector will sync the data.",
@@ -32218,6 +32742,18 @@
                 "description": "",
                 "format": "password",
                 "example": null
+              },
+              "connection_type": {
+                "title": "",
+                "type": "object",
+                "description": "",
+                "example": null,
+                "enum": [
+                  "Directly",
+                  "PrivateLink",
+                  "SshTunnel",
+                  "ProxyAgent"
+                ]
               },
               "connecting_user": {
                 "title": "",
@@ -32938,6 +33474,57 @@
           }
         ]
       },
+      "freshsales_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Freshsales API key.",
+                "format": "password",
+                "example": null
+              },
+              "base_url": {
+                "type": "object",
+                "description": "Your Freshsales product.",
+                "example": null,
+                "enum": [
+                  "myfreshworks.com/crm/sales",
+                  "freshsales.io"
+                ]
+              },
+              "subdomain": {
+                "title": "",
+                "type": "string",
+                "description": "Your Freshsales domain.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "freshsales_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/freshsales_config_V1"
+          }
+        ]
+      },
       "freshservice_config_V1": {
         "properties": {
           "config": {
@@ -33520,7 +34107,7 @@
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Gainsight Product Experience API Key.",
+                "description": "Your Gainsight Product Experience API key.",
                 "format": "password",
                 "example": null
               },
@@ -36320,6 +36907,18 @@
                       "type": "string",
                       "description": "The name of a table within the schema to which connector syncs the data of a given report.",
                       "example": null
+                    },
+                    "segments": {
+                      "title": "",
+                      "type": "array",
+                      "description": "The report segments included to sync.",
+                      "example": null,
+                      "items": {
+                        "title": "",
+                        "type": "string",
+                        "description": "The report segments included to sync.",
+                        "example": null
+                      }
                     }
                   },
                   "description": "The list of reports. Each report corresponds to a table within the schema to which connector syncs the data.",
@@ -36540,7 +37139,6 @@
                 "description": "Number of months' worth of reporting data you'd like to include in your initial sync. A change of this value will trigger a re-sync for enabled reports during the next connector sync.",
                 "example": null,
                 "enum": [
-                  "TWENTY_FOUR",
                   "SIX",
                   "ALL_TIME",
                   "TWELVE",
@@ -39296,54 +39894,6 @@
           }
         ]
       },
-      "instructure_config_V1": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "properties": {
-              "schema": {
-                "title": "Destination schema",
-                "type": "string",
-                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
-                "example": null
-              },
-              "sub_domain": {
-                "title": "",
-                "type": "string",
-                "description": "The Sub domain in which your Instructure account is hosted.",
-                "example": null
-              },
-              "client_secret": {
-                "title": "",
-                "type": "string",
-                "description": "Your Instructure client secret.",
-                "format": "password",
-                "example": null
-              },
-              "client_id": {
-                "title": "",
-                "type": "string",
-                "description": "Your Instructure client ID.",
-                "example": null
-              }
-            },
-            "description": "",
-            "example": null
-          }
-        },
-        "example": null
-      },
-      "instructure_NewConnectorRequestV1": {
-        "example": null,
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NewConnectorRequestV1"
-          },
-          {
-            "$ref": "#/components/schemas/instructure_config_V1"
-          }
-        ]
-      },
       "integral_ad_science_config_V1": {
         "properties": {
           "config": {
@@ -40098,6 +40648,42 @@
           }
         ]
       },
+      "kevel_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Kevel API key.",
+                "format": "password",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "kevel_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/kevel_config_V1"
+          }
+        ]
+      },
       "keypay_config_V1": {
         "properties": {
           "config": {
@@ -40522,6 +41108,16 @@
                 "type": "string",
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
                 "example": null
+              },
+              "packing_mode": {
+                "title": "",
+                "type": "object",
+                "description": "Packing mode for EVENT and PERSON tables.",
+                "example": null,
+                "enum": [
+                  "UNPACKED",
+                  "PACKED"
+                ]
               },
               "api_key": {
                 "title": "",
@@ -43229,7 +43825,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "hosts": {
@@ -43348,7 +43945,8 @@
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "hosts": {
@@ -43504,20 +44102,20 @@
               "password": {
                 "title": "",
                 "type": "string",
-                "description": "Your Myosh Password .",
+                "description": "Your myosh password.",
                 "format": "password",
                 "example": null
               },
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Myosh API Key.",
+                "description": "Your myosh API key.",
                 "format": "password",
                 "example": null
               },
               "sub_domain": {
                 "type": "object",
-                "description": "Your Myosh Subdomain .",
+                "description": "Your myosh subdomain.",
                 "example": null,
                 "enum": [
                   "oteapi",
@@ -43525,16 +44123,16 @@
                   "testapi"
                 ]
               },
-              "db": {
+              "server_variable": {
                 "title": "",
                 "type": "string",
-                "description": "Your Myosh Server variables/db .",
+                "description": "Your myosh server variable.",
                 "example": null
               },
               "username": {
                 "title": "",
                 "type": "string",
-                "description": "Your Myosh  Username.",
+                "description": "Your myosh username.",
                 "example": null
               }
             },
@@ -45002,7 +45600,8 @@
                 "example": null,
                 "enum": [
                   "LOGMINER",
-                  "TELEPORT"
+                  "TELEPORT",
+                  "DIRECT_CAPTURE"
                 ]
               },
               "pdb_name": {
@@ -45176,7 +45775,8 @@
                 "example": null,
                 "enum": [
                   "LOGMINER",
-                  "TELEPORT"
+                  "TELEPORT",
+                  "DIRECT_CAPTURE"
                 ]
               },
               "pdb_name": {
@@ -45696,7 +46296,8 @@
                 "example": null,
                 "enum": [
                   "LOGMINER",
-                  "TELEPORT"
+                  "TELEPORT",
+                  "DIRECT_CAPTURE"
                 ]
               },
               "pdb_name": {
@@ -45816,7 +46417,8 @@
                 "example": null,
                 "enum": [
                   "LOGMINER",
-                  "TELEPORT"
+                  "TELEPORT",
+                  "DIRECT_CAPTURE"
                 ]
               },
               "pdb_name": {
@@ -47156,7 +47758,7 @@
               "sub_domain": {
                 "title": "",
                 "type": "string",
-                "description": "Your Picqer sub domain name.",
+                "description": "Your Picqer subdomain.",
                 "example": null
               }
             },
@@ -47706,6 +48308,54 @@
           },
           {
             "$ref": "#/components/schemas/planetscale_config_V1"
+          }
+        ]
+      },
+      "planful_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "Your Planful password.",
+                "format": "password",
+                "example": null
+              },
+              "subdomain": {
+                "title": "",
+                "type": "string",
+                "description": "Your Planful subdomain.",
+                "example": null
+              },
+              "username": {
+                "title": "",
+                "type": "string",
+                "description": "Your Planful username.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "planful_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/planful_config_V1"
           }
         ]
       },
@@ -48337,6 +48987,16 @@
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
                 "example": null
               },
+              "auth_type": {
+                "title": "",
+                "type": "object",
+                "description": "Type of authentication being used by connector",
+                "example": null,
+                "enum": [
+                  "OAUTH2",
+                  "API_TOKEN"
+                ]
+              },
               "api_requests_per_minute": {
                 "title": "",
                 "type": "integer",
@@ -48355,6 +49015,38 @@
                 "title": "",
                 "type": "string",
                 "description": "Data center ID of the Qualtrics account. Can be found in the URL before `qualtrics.com`. (For example, if your URL is `youraccount.ca1.qualtrics.com`, then the data center is `ca1`.)",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          },
+          "auth": {
+            "type": "object",
+            "properties": {
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": null
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": null
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": null
+                  }
+                },
+                "description": "Your application client access fields.",
                 "example": null
               }
             },
@@ -48683,6 +49375,48 @@
           },
           {
             "$ref": "#/components/schemas/rarible_config_V1"
+          }
+        ]
+      },
+      "rebound_returns_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your ReBound Returns API key.",
+                "format": "password",
+                "example": null
+              },
+              "login": {
+                "title": "",
+                "type": "string",
+                "description": "Your ReBound Returns login.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "rebound_returns_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/rebound_returns_config_V1"
           }
         ]
       },
@@ -50397,6 +51131,18 @@
                 "format": "password",
                 "example": null
               },
+              "connection_type": {
+                "title": "",
+                "type": "object",
+                "description": "",
+                "example": null,
+                "enum": [
+                  "Directly",
+                  "PrivateLink",
+                  "SshTunnel",
+                  "ProxyAgent"
+                ]
+              },
               "connecting_user": {
                 "title": "",
                 "type": "string",
@@ -50755,6 +51501,18 @@
                 "type": "string",
                 "format": "password",
                 "example": null
+              },
+              "connection_type": {
+                "title": "",
+                "type": "object",
+                "description": "",
+                "example": null,
+                "enum": [
+                  "Directly",
+                  "PrivateLink",
+                  "SshTunnel",
+                  "ProxyAgent"
+                ]
               },
               "connecting_user": {
                 "title": "",
@@ -51159,12 +51917,6 @@
                   "SshTunnel"
                 ]
               },
-              "snc_my_name": {
-                "title": "",
-                "type": "string",
-                "description": "",
-                "example": null
-              },
               "snc_mode": {
                 "title": "",
                 "type": "object",
@@ -51175,6 +51927,13 @@
                   "NoSnc",
                   "SncCertificate"
                 ]
+              },
+              "snc_certificate_source": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": null
               },
               "always_encrypted": {
                 "title": "",
@@ -51192,12 +51951,6 @@
                 "title": "",
                 "type": "string",
                 "description": "SSH user, specify only to connect via an SSH tunnel.",
-                "example": null
-              },
-              "snc_partner_name": {
-                "title": "",
-                "type": "string",
-                "description": "",
                 "example": null
               },
               "tunnel_port": {
@@ -51220,18 +51973,17 @@
                 "format": "password",
                 "example": null
               },
-              "snc_certificate": {
-                "title": "",
-                "type": "string",
-                "description": "",
-                "format": "password",
-                "example": null
-              },
               "port": {
                 "title": "",
                 "type": "integer",
                 "description": "",
                 "format": "int32",
+                "example": null
+              },
+              "snc_fivetran_name": {
+                "title": "",
+                "type": "string",
+                "description": "",
                 "example": null
               },
               "host": {
@@ -51265,6 +52017,12 @@
                 "example": null
               },
               "user": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": null
+              },
+              "snc_source_name": {
                 "title": "",
                 "type": "string",
                 "description": "",
@@ -52716,6 +53474,54 @@
           }
         ]
       },
+      "skillstx_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "subdomain": {
+                "title": "",
+                "type": "string",
+                "description": "Your SkillsTX subdomain.",
+                "example": null
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your SkillsTX client secret.",
+                "format": "password",
+                "example": null
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your SkillsTX client ID.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "skillstx_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/skillstx_config_V1"
+          }
+        ]
+      },
       "skuvault_config_V1": {
         "properties": {
           "config": {
@@ -52903,6 +53709,57 @@
           },
           {
             "$ref": "#/components/schemas/smadex_config_V1"
+          }
+        ]
+      },
+      "smarthr_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "environment": {
+                "type": "object",
+                "description": "Your SmartHR environment.",
+                "example": null,
+                "enum": [
+                  "daruma.space",
+                  "smarthr.jp"
+                ]
+              },
+              "bearer_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your SmartHR access token.",
+                "format": "password",
+                "example": null
+              },
+              "subdomain": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "smarthr_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/smarthr_config_V1"
           }
         ]
       },
@@ -53891,6 +54748,7 @@
                           "NEW_LISTENER_CONVERSION_RATE",
                           "FREQUENCY",
                           "OFF_SPOTIFY_IMPRESSIONS",
+                          "VIDEO_EXPAND_RATE",
                           "NEW_LISTENERS",
                           "PAID_LISTENS",
                           "IMPRESSIONS",
@@ -53904,6 +54762,7 @@
                           "STARTS",
                           "NEW_LISTENER_STREAMS",
                           "STREAMS",
+                          "VIDEO_EXPANDS",
                           "INTENT_RATE",
                           "MIDPOINTS",
                           "E_CPM"
@@ -53916,6 +54775,7 @@
                       "description": "The dimension (entity_type) to sync.",
                       "example": null,
                       "enum": [
+                        "AD_ACCOUNT",
                         "AD",
                         "AD_SET",
                         "CAMPAIGN"
@@ -55840,6 +56700,42 @@
           }
         ]
       },
+      "ticket_tailor_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Ticket Tailor API key.",
+                "format": "password",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "ticket_tailor_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/ticket_tailor_config_V1"
+          }
+        ]
+      },
       "tiktok_ads_config_V1": {
         "properties": {
           "config": {
@@ -56018,7 +56914,7 @@
               "subdomain": {
                 "title": "",
                 "type": "string",
-                "description": "Your Toast Domain.",
+                "description": "Your Toast domain.",
                 "example": null
               },
               "client_secret": {
@@ -56037,7 +56933,7 @@
               "toast_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Toast Restaurant External ID.",
+                "description": "Your restaurant external ID.",
                 "example": null
               }
             },
@@ -56113,9 +57009,9 @@
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
                 "example": null
               },
-              "sub_domain": {
+              "region": {
                 "type": "object",
-                "description": "Your Totango Subdomain.",
+                "description": "Your Totango region.",
                 "example": null,
                 "enum": [
                   "api-eu1",
@@ -56125,7 +57021,7 @@
               "personal_access_token": {
                 "title": "",
                 "type": "string",
-                "description": "Your Totango Personal Access token.",
+                "description": "Your Totango personal access token.",
                 "format": "password",
                 "example": null
               }
@@ -57198,6 +58094,12 @@
                 "description": "Your Vitally API key.",
                 "format": "password",
                 "example": null
+              },
+              "base_url": {
+                "title": "",
+                "type": "string",
+                "description": "Your Vitally base URL.",
+                "example": null
               }
             },
             "description": "",
@@ -58138,6 +59040,12 @@
                   "example": null
                 }
               },
+              "domain_host_name": {
+                "title": "",
+                "type": "string",
+                "description": "Workday host name.",
+                "example": null
+              },
               "user_name": {
                 "title": "",
                 "type": "string",
@@ -58160,6 +59068,12 @@
                   "json"
                 ]
               },
+              "tenant": {
+                "title": "",
+                "type": "string",
+                "description": "Workday tenant name",
+                "example": null
+              },
               "support_nested_columns": {
                 "title": "",
                 "type": "boolean",
@@ -58170,6 +59084,31 @@
                 "title": "Destination table",
                 "type": "string",
                 "description": "Destination table. Table is permanent and cannot be changed after connection creation",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          },
+          "auth": {
+            "type": "object",
+            "properties": {
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": null
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Client Secret",
+                "example": null
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Client ID",
                 "example": null
               }
             },
@@ -59973,7 +60912,7 @@
               "data_center": {
                 "title": "",
                 "type": "object",
-                "description": "Data Center",
+                "description": "Data Center, depending on the Domain name",
                 "example": null,
                 "enum": [
                   "EU",
@@ -60174,6 +61113,12 @@
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
                 "example": null
               },
+              "environment": {
+                "title": "",
+                "type": "string",
+                "description": "Zuora Sandbox Environment. This accepts either of the two values Sandbox or Central Sandbox based on your subscription. The default environment is Sandbox.",
+                "example": null
+              },
               "is_multi_entity_feature_enabled": {
                 "title": "",
                 "type": "boolean",
@@ -60238,6 +61183,16 @@
                 "type": "string",
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
                 "example": null
+              },
+              "environment": {
+                "title": "",
+                "type": "object",
+                "description": "Zuora Sandbox Environment. This accepts either of the two values Sandbox or Central Sandbox based on your subscription. The default environment is Sandbox.",
+                "example": null,
+                "enum": [
+                  "Central Sandbox",
+                  "Sandbox"
+                ]
               },
               "is_multi_entity_feature_enabled": {
                 "title": "",
@@ -60499,6 +61454,17 @@
           },
           {
             "$ref": "#/components/schemas/airtable_config_V1"
+          }
+        ]
+      },
+      "akamai_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/akamai_config_V1"
           }
         ]
       },
@@ -61096,6 +62062,17 @@
           }
         ]
       },
+      "brave_ads_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/brave_ads_config_V1"
+          }
+        ]
+      },
       "braze_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -61137,6 +62114,17 @@
           },
           {
             "$ref": "#/components/schemas/brightcove_config_V1"
+          }
+        ]
+      },
+      "bubbleio_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/bubbleio_config_V1"
           }
         ]
       },
@@ -61225,6 +62213,17 @@
           },
           {
             "$ref": "#/components/schemas/canny_config_V1"
+          }
+        ]
+      },
+      "canvas_by_instructure_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/canvas_by_instructure_config_V1"
           }
         ]
       },
@@ -61393,6 +62392,17 @@
           }
         ]
       },
+      "cin7core_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/cin7core_config_V1"
+          }
+        ]
+      },
       "circleci_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -61423,6 +62433,17 @@
           },
           {
             "$ref": "#/components/schemas/clari_config_V1"
+          }
+        ]
+      },
+      "clarity_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/clarity_config_V1"
           }
         ]
       },
@@ -61478,6 +62499,17 @@
           },
           {
             "$ref": "#/components/schemas/coassemble_config_V1"
+          }
+        ]
+      },
+      "cockroachdb_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/cockroachdb_config_V1"
           }
         ]
       },
@@ -61767,17 +62799,6 @@
           }
         ]
       },
-      "dear_ConnectorResponseV1": {
-        "example": null,
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ConnectorResponseV1"
-          },
-          {
-            "$ref": "#/components/schemas/dear_config_V1"
-          }
-        ]
-      },
       "delighted_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -61852,6 +62873,17 @@
           },
           {
             "$ref": "#/components/schemas/donus_config_V1"
+          }
+        ]
+      },
+      "doorloop_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/doorloop_config_V1"
           }
         ]
       },
@@ -62325,6 +63357,17 @@
           },
           {
             "$ref": "#/components/schemas/freshdesk_contact_center_config_V1"
+          }
+        ]
+      },
+      "freshsales_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/freshsales_config_V1"
           }
         ]
       },
@@ -63076,17 +64119,6 @@
           }
         ]
       },
-      "instructure_ConnectorResponseV1": {
-        "example": null,
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ConnectorResponseV1"
-          },
-          {
-            "$ref": "#/components/schemas/instructure_config_V1"
-          }
-        ]
-      },
       "integral_ad_science_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -63227,6 +64259,17 @@
           },
           {
             "$ref": "#/components/schemas/katana_config_V1"
+          }
+        ]
+      },
+      "kevel_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/kevel_config_V1"
           }
         ]
       },
@@ -64484,6 +65527,17 @@
           }
         ]
       },
+      "planful_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/planful_config_V1"
+          }
+        ]
+      },
       "playvox_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -64668,6 +65722,17 @@
           },
           {
             "$ref": "#/components/schemas/rarible_config_V1"
+          }
+        ]
+      },
+      "rebound_returns_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/rebound_returns_config_V1"
           }
         ]
       },
@@ -65342,6 +66407,17 @@
           }
         ]
       },
+      "skillstx_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/skillstx_config_V1"
+          }
+        ]
+      },
       "skuvault_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -65383,6 +66459,17 @@
           },
           {
             "$ref": "#/components/schemas/smadex_config_V1"
+          }
+        ]
+      },
+      "smarthr_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/smarthr_config_V1"
           }
         ]
       },
@@ -65823,6 +66910,17 @@
           },
           {
             "$ref": "#/components/schemas/thinkific_config_V1"
+          }
+        ]
+      },
+      "ticket_tailor_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/ticket_tailor_config_V1"
           }
         ]
       },

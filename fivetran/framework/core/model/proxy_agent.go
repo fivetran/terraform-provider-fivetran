@@ -6,7 +6,6 @@ import (
 
 type proxyAgentModel interface {
     SetId(string)
-    SetAccountId(string)
     SetRegistredAt(string)
     SetGroupRegion(string)
     SetAuthToken(string)
@@ -17,7 +16,6 @@ type proxyAgentModel interface {
 
 func readProxyAgentFromResponse(d proxyAgentModel, resp proxy.ProxyDetailsResponse) {
     d.SetId(resp.Data.Id)
-    d.SetAccountId(resp.Data.AccountId)
     d.SetRegistredAt(resp.Data.RegistredAt)
     d.SetGroupRegion(resp.Data.Region)
     d.SetAuthToken(resp.Data.Token)

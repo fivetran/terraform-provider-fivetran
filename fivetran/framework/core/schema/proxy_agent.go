@@ -36,11 +36,6 @@ func ProxyAgentSchema() core.Schema {
                 ValueType:   core.String,
                 Description: "The actor who created the proxy agent.",
             },
-            "account_id": {
-                Readonly:    true,
-                ValueType:   core.String,
-                Description: "The unique identifier for the account.",
-            },
             "proxy_server_uri": {
                 Readonly:    true,
                 ValueType:   core.String,

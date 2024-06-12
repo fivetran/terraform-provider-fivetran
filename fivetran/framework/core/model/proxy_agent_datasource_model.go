@@ -7,7 +7,6 @@ import (
 
 type ProxyAgentDatasourceModel struct {
     Id               types.String `tfsdk:"id"`
-    AccountId        types.String `tfsdk:"account_id"`
     RegistredAt      types.String `tfsdk:"registred_at"`
     GroupRegion      types.String `tfsdk:"group_region"`
     AuthToken        types.String `tfsdk:"token"`
@@ -20,9 +19,6 @@ var _ proxyAgentModel = &ProxyAgentDatasourceModel{}
 
 func (d *ProxyAgentDatasourceModel) SetId(value string) {
 	d.Id = types.StringValue(value)
-}
-func (d *ProxyAgentDatasourceModel) SetAccountId(value string) {
-	d.AccountId = types.StringValue(value)
 }
 func (d *ProxyAgentDatasourceModel) SetRegistredAt(value string) {
 	d.RegistredAt = types.StringValue(value)

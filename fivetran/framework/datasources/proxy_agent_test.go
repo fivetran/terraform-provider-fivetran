@@ -57,7 +57,6 @@ func TestDataSourceProxyAgentConfigMappingMock(t *testing.T) {
                 return nil
             },
             resource.TestCheckResourceAttr("data.fivetran_proxy_agent.test_proxy_agent", "id", "id"),
-            resource.TestCheckResourceAttr("data.fivetran_proxy_agent.test_proxy_agent", "account_id", "account_id"),
             resource.TestCheckResourceAttr("data.fivetran_proxy_agent.test_proxy_agent", "registred_at", "registred_at"),
             resource.TestCheckResourceAttr("data.fivetran_proxy_agent.test_proxy_agent", "group_region", "region"),
             resource.TestCheckResourceAttr("data.fivetran_proxy_agent.test_proxy_agent", "token", "token"),

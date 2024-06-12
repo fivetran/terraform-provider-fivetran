@@ -15,7 +15,6 @@ type ProxyAgents struct {
 func (d *ProxyAgents) ReadFromResponse(ctx context.Context, resp proxy.ProxyListResponse) {
     elementType := map[string]attr.Type{
         "id":              types.StringType,
-        "account_id":      types.StringType,
         "registred_at":    types.StringType,
         "group_region":    types.StringType,
         "token":           types.StringType,
@@ -33,7 +32,6 @@ func (d *ProxyAgents) ReadFromResponse(ctx context.Context, resp proxy.ProxyList
     for _, v := range resp.Data.Items {
         item := map[string]attr.Value{}
         item["id"] = types.StringValue(v.Id)
-        item["account_id"] = types.StringValue(v.AccountId)
         item["registred_at"] = types.StringValue(v.RegistredAt)
         item["group_region"] = types.StringValue(v.Region)
         item["token"] = types.StringValue(v.Token)
