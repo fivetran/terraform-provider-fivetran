@@ -80,6 +80,7 @@ const (
         "failed_at": null,
         "sync_frequency": 5,
 		"schedule_type": "auto",
+		"networking_method": "Directly",
         "status": {
             "setup_state": "incomplete",
             "sync_state": "paused",
