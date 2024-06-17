@@ -21,21 +21,14 @@ data "fivetran_local_processing_agent" "local_processing_agent" {
 
 - `id` (String) The unique identifier for the local processing agent within your account.
 
-### Optional
-
-- `auth_json` (String) Base64-encoded content of the auth.json file.
-- `config_json` (String) Base64-encoded content of the config.json file.
-- `docker_compose_yaml` (String) Base64-encoded content of the compose file for the chosen containerization type.
-- `re_auth` (Boolean) Determines whether re-authentication needs to be performed.
-
 ### Read-Only
 
 - `display_name` (String) The unique name for the local processing agent.
-- `group_id` (String) The unique identifier for the group or group within the Fivetran system.
+- `group_id` (String) The unique identifier for the Group within the Fivetran system.
 - `registered_at` (String) The timestamp of the time the local processing agent was created in your account.
-- `usage` (Block Set) (see [below for nested schema](#nestedblock--usage))
+- `usage` (Attributes Set) (see [below for nested schema](#nestedatt--usage))
 
-<a id="nestedblock--usage"></a>
+<a id="nestedatt--usage"></a>
 ### Nested Schema for `usage`
 
 Read-Only:

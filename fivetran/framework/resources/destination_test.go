@@ -75,7 +75,7 @@ func TestReadonlyFieldSetMock(t *testing.T) {
 							"time_zone_offset":"0",
 							"setup_status":"connected",
 							"daylight_saving_time_enabled":true,
-							
+							"networking_method":"Directly",
 							"config":{
 								"external_id": "group_id",
 								"bucket": "bucket",
@@ -108,7 +108,7 @@ func TestReadonlyFieldSetMock(t *testing.T) {
 							"time_zone_offset":"0",
 							"setup_status":"connected",
 							"daylight_saving_time_enabled":true,
-							
+							"networking_method":"Directly",
 							"config":{
 								"external_id": "",
 								"bucket": "bucket1",
@@ -287,6 +287,7 @@ func TestResourceDestinationMappingMock(t *testing.T) {
 							"time_zone_offset":"0",
 							"setup_status":"connected",
 							"daylight_saving_time_enabled":true,
+							"networking_method":"Directly",
 							"setup_tests":[
 								{
 									"title":"Host Connection",
@@ -388,6 +389,7 @@ func TestResourceDestinationSetupTests(t *testing.T) {
 				trust_fingerprints = "true"
 				run_setup_tests = "true"
 				daylight_saving_time_enabled = "true"
+				networking_method = "Directly"
 
 				config {
 					host = "terraform-test.us-east-1.rds.amazonaws.com"
@@ -407,6 +409,7 @@ func TestResourceDestinationSetupTests(t *testing.T) {
 		"region":"GCP_US_EAST4",
 		"time_zone_offset":"0",
 		"daylight_saving_time_enabled":true,
+		"networking_method":"Directly",
 		"setup_status":"incomplete",
 		"setup_tests":[
 			{
@@ -514,6 +517,7 @@ func TestResourceDestinationMock(t *testing.T) {
 				trust_fingerprints = "true"
 				daylight_saving_time_enabled = "true"
 				run_setup_tests = "false"
+				networking_method = "Directly"
 
 				config {
 					host = "terraform-test.us-east-1.rds.amazonaws.com"
@@ -560,6 +564,7 @@ func TestResourceDestinationMock(t *testing.T) {
 				trust_fingerprints = "true"
 				daylight_saving_time_enabled = "true"
 				run_setup_tests = "false"
+				networking_method = "Directly"
 
 				config {
 					host = "test.host"
@@ -603,6 +608,7 @@ func TestResourceDestinationMock(t *testing.T) {
 				trust_fingerprints = "true"
 				daylight_saving_time_enabled = "true"
 				run_setup_tests = "true"
+				networking_method = "Directly"
 
 				config {
 					host = "test.host"

@@ -5,9 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.27...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.1...HEAD)
 
-## [1.1.27](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.26...v1.1.27)
+## [1.2.1](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.26...v1.2.1)
 
 - New resource `fivetran_local_processing_agent` that allows to manage Local Processing Agents.
 - New data source `fivetran_local_processing_agent` that allows to retrieve details of the existing Local Processing Agent for a given identifier.
@@ -19,13 +19,15 @@ Updates to support management of local processing agents:
 
 - Resource `fivetran_destination` updates:
   - Added field `fivetran_connector.local_processing_agent_id`.
+  - Added field `fivetran_connector.networking_method`.
 
 - Datasource `fivetran_connector` updates:
   - Added field `fivetran_connector.local_processing_agent_id`.
 
 - Datasource `fivetran_destination` updates:
   - Added field `fivetran_connector.local_processing_agent_id`.
- 
+  - Added field `fivetran_connector.networking_method`.
+
 ## [1.1.26](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.25...v1.1.26)
 
 ## Added

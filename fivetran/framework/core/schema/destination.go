@@ -69,7 +69,6 @@ func DestinationAttributesSchema() core.Schema {
 			},
 			"networking_method": {
 				ValueType:   	core.StringEnum,
-				DefaultString:  "Directly",
 				Description: 	"Possible values: Directly, PrivateLink, SshTunnel, ProxyAgent.",
 			},
 		},

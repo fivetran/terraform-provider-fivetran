@@ -23,11 +23,11 @@ resource "fivetran_local_processing_agent" "test_lpa" {
 ### Required
 
 - `display_name` (String) The unique name for the local processing agent.
-- `group_id` (String) The unique identifier for the group or group within the Fivetran system.
+- `group_id` (String) The unique identifier for the Group within the Fivetran system.
 
 ### Optional
 
-- `re_auth` (Boolean) Determines whether re-authentication needs to be performed.
+- `authentication_counter` (Number) Determines whether re-authentication needs to be performed.
 
 ### Read-Only
 
@@ -36,13 +36,16 @@ resource "fivetran_local_processing_agent" "test_lpa" {
 - `docker_compose_yaml` (String) Base64-encoded content of the compose file for the chosen containerization type.
 - `id` (String) The unique identifier for the local processing agent within your account.
 - `registered_at` (String) The timestamp of the time the local processing agent was created in your account.
-- `usage` (Block Set) (see [below for nested schema](#nestedblock--usage))
+- `usage` (Attributes Set) (see [below for nested schema](#nestedatt--usage))
 
-<a id="nestedblock--usage"></a>
+<a id="nestedatt--usage"></a>
 ### Nested Schema for `usage`
+
+Required:
+
+- `schema` (String) The connection schema name.
+- `service` (String) The connection type.
 
 Read-Only:
 
 - `connection_id` (String) The unique identifier of the connection associated with the agent.
-- `schema` (String) The connection schema name.
-- `service` (String) The connection type.

@@ -27,7 +27,6 @@ resource "fivetran_proxy_agent" "test_proxy_agent" {
 
 ### Read-Only
 
-- `account_id` (String) The unique identifier for the account.
 - `created_by` (String) The actor who created the proxy agent.
 - `id` (String) The unique identifier for the proxy within your account.
 - `proxy_server_uri` (String) The proxy server URI.

@@ -29,7 +29,6 @@ Required:
 
 Read-Only:
 
-- `account_id` (String) The unique identifier for the account.
 - `created_by` (String) The actor who created the proxy agent.
 - `display_name` (String) Proxy agent name.
 - `group_region` (String) Data processing location. This is where Fivetran will operate and run computation on data.
