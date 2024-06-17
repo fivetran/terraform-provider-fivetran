@@ -1,0 +1,1187 @@
+{
+   "always_encrypted": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aurora_postgres_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "aurora_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "azure_postgres_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "azure_sql_data_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "azure_sql_database": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "azure_sql_managed_db_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "maria_rds_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "maria_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "mysql_rds_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "mysql_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "panoply": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "periscope_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "postgres_gcp_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "postgres_rds_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "postgres_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "redshift": "Require TLS through Tunnel",
+         "sql_server_rds_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "sql_server_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`."
+      },
+      "api_field": ""
+   },
+   "auth": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "snowflake": "Password-based or key-based authentication type"
+      },
+      "api_field": ""
+   },
+   "auth_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "databricks": "Authentication type",
+         "panoply": "",
+         "periscope_warehouse": "",
+         "redshift": "Authentication type. Default value: `PASSWORD`."
+      },
+      "api_field": ""
+   },
+   "bootstrap_servers": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "item_type": {
+         "aiven_kafka_wh": "string",
+         "aws_msk_wh": "string",
+         "confluent_cloud_wh": "string"
+      },
+      "description": {
+         "aiven_kafka_wh": "",
+         "aws_msk_wh": "",
+         "confluent_cloud_wh": ""
+      },
+      "api_field": ""
+   },
+   "bucket": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "big_query": "Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
+         "big_query_dts": "Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
+         "managed_big_query": "Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
+         "new_s3_datalake": "The name of the bucket to be used as destination"
+      },
+      "api_field": ""
+   },
+   "catalog": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "databricks": "Catalog name"
+      },
+      "api_field": ""
+   },
+   "client_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "adls": "Client id of service principal",
+         "onelake": "Client ID of service principal"
+      },
+      "api_field": ""
+   },
+   "cloud_provider": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "databricks": "Databricks deployment cloud"
+      },
+      "api_field": ""
+   },
+   "cluster_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "panoply": "Cluster ID.",
+         "periscope_warehouse": "Cluster ID.",
+         "redshift": "Cluster ID. Must be populated if `connection_type` is set to `SshTunnel` and `auth_type` is set to `IAM`."
+      },
+      "api_field": ""
+   },
+   "cluster_region": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "panoply": "Cluster region.",
+         "periscope_warehouse": "Cluster region.",
+         "redshift": "Cluster region. Must be populated if `connection_type` is set to `SshTunnel` and `auth_type` is set to `IAM`."
+      },
+      "api_field": ""
+   },
+   "connection_method": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aiven_kafka_wh": "",
+         "aws_msk_wh": "",
+         "confluent_cloud_wh": ""
+      },
+      "api_field": ""
+   },
+   "connection_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "adls": "Connection method. Default value: `Directly`.",
+         "aurora_postgres_warehouse": "Connection method. Default value: `Directly`.",
+         "aurora_warehouse": "Connection method. Default value: `Directly`.",
+         "azure_postgres_warehouse": "Connection method. Default value: `Directly`.",
+         "azure_sql_data_warehouse": "Connection method. Default value: `Directly`.",
+         "azure_sql_database": "Connection method. Default value: `Directly`.",
+         "azure_sql_managed_db_warehouse": "Connection method. Default value: `Directly`.",
+         "databricks": "Connection method. Default value: `Directly`.",
+         "maria_rds_warehouse": "Connection method. Default value: `Directly`.",
+         "maria_warehouse": "Connection method. Default value: `Directly`.",
+         "mysql_rds_warehouse": "Connection method. Default value: `Directly`.",
+         "mysql_warehouse": "Connection method. Default value: `Directly`.",
+         "panoply": "Connection method. Default value: `Directly`.",
+         "periscope_warehouse": "Connection method. Default value: `Directly`.",
+         "postgres_gcp_warehouse": "Connection method. Default value: `Directly`.",
+         "postgres_rds_warehouse": "Connection method. Default value: `Directly`.",
+         "postgres_warehouse": "Connection method. Default value: `Directly`.",
+         "redshift": "Connection method. Default value: `Directly`.",
+         "snowflake": "Connection method. Default value: `Directly`.",
+         "sql_server_rds_warehouse": "Connection method. Default value: `Directly`.",
+         "sql_server_warehouse": "Connection method. Default value: `Directly`."
+      },
+      "api_field": ""
+   },
+   "container_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "adls": "Container to store delta table files",
+         "onelake": "Workspace name to store delta table files"
+      },
+      "api_field": ""
+   },
+   "controller_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "databricks": "",
+         "snowflake": ""
+      },
+      "api_field": ""
+   },
+   "create_external_tables": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "databricks": "Whether to create external tables"
+      },
+      "api_field": ""
+   },
+   "data_format": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aiven_kafka_wh": "",
+         "aws_msk_wh": "",
+         "confluent_cloud_wh": ""
+      },
+      "api_field": ""
+   },
+   "data_set_location": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "big_query": "Data location. Datasets will reside in this location.",
+         "big_query_dts": "Data location. Datasets will reside in this location.",
+         "managed_big_query": "Data location. Datasets will reside in this location."
+      },
+      "api_field": ""
+   },
+   "database": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aurora_postgres_warehouse": "Database name",
+         "aurora_warehouse": "Database name",
+         "azure_postgres_warehouse": "Database name",
+         "azure_sql_data_warehouse": "Database name",
+         "azure_sql_database": "Database name",
+         "azure_sql_managed_db_warehouse": "Database name",
+         "maria_rds_warehouse": "Database name",
+         "maria_warehouse": "Database name",
+         "mysql_rds_warehouse": "Database name",
+         "mysql_warehouse": "Database name",
+         "panoply": "Database name",
+         "periscope_warehouse": "Database name",
+         "postgres_gcp_warehouse": "Database name",
+         "postgres_rds_warehouse": "Database name",
+         "postgres_warehouse": "Database name",
+         "redshift": "Database name",
+         "snowflake": "Database name",
+         "sql_server_rds_warehouse": "Database name",
+         "sql_server_warehouse": "Database name"
+      },
+      "api_field": ""
+   },
+   "enable_remote_execution": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "databricks": "",
+         "snowflake": ""
+      },
+      "api_field": ""
+   },
+   "external_id": {
+      "readonly": true,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aws_msk_wh": "Fivetran generated External ID",
+         "panoply": "Fivetran generated External ID",
+         "periscope_warehouse": "Fivetran generated External ID",
+         "redshift": "Fivetran generated External ID"
+      },
+      "api_field": ""
+   },
+   "external_location": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "databricks": "External location to store Delta tables. Default value: `\"\"`  (null). By default, the external tables will reside in the `/{schema}/{table}` path, and if you specify an external location in the `{externalLocation}/{schema}/{table}` path."
+      },
+      "api_field": ""
+   },
+   "fivetran_glue_role_arn": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aws_msk_wh": ""
+      },
+      "api_field": ""
+   },
+   "fivetran_msk_role_arn": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aws_msk_wh": ""
+      },
+      "api_field": ""
+   },
+   "fivetran_role_arn": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "new_s3_datalake": "ARN of the role which you created with different required policy mentioned in our setup guide"
+      },
+      "api_field": ""
+   },
+   "host": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aurora_postgres_warehouse": "Server name",
+         "aurora_warehouse": "Server name",
+         "azure_postgres_warehouse": "Server name",
+         "azure_sql_data_warehouse": "Server name",
+         "azure_sql_database": "Server name",
+         "azure_sql_managed_db_warehouse": "Server name",
+         "maria_rds_warehouse": "Server name",
+         "maria_warehouse": "Server name",
+         "mysql_rds_warehouse": "Server name",
+         "mysql_warehouse": "Server name",
+         "panoply": "Server name",
+         "periscope_warehouse": "Server name",
+         "postgres_gcp_warehouse": "Server name",
+         "postgres_rds_warehouse": "Server name",
+         "postgres_warehouse": "Server name",
+         "redshift": "Server name",
+         "snowflake": "Server name",
+         "sql_server_rds_warehouse": "Server name",
+         "sql_server_warehouse": "Server name"
+      },
+      "api_field": ""
+   },
+   "http_path": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "databricks": "HTTP path"
+      },
+      "api_field": ""
+   },
+   "is_private_key_encrypted": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "snowflake": "Indicates that a private key is encrypted. The default value: `false`. The field can be specified if authentication type is `KEY_PAIR`."
+      },
+      "api_field": ""
+   },
+   "is_private_link_required": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "new_s3_datalake": "We use PrivateLink by default if your s3 bucket is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to s3 bucket over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options#awsprivatelinkbeta)."
+      },
+      "api_field": ""
+   },
+   "is_redshift_serverless": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "redshift": "Is your destination Redshift Serverless"
+      },
+      "api_field": ""
+   },
+   "lakehouse_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "onelake": "Name of your lakehouse"
+      },
+      "api_field": ""
+   },
+   "msk_sts_region": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aws_msk_wh": ""
+      },
+      "api_field": ""
+   },
+   "num_of_partitions": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aiven_kafka_wh": "",
+         "aws_msk_wh": "",
+         "confluent_cloud_wh": ""
+      },
+      "api_field": ""
+   },
+   "oauth2_client_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "databricks": "OAuth 2.0 client ID"
+      },
+      "api_field": ""
+   },
+   "oauth2_secret": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "databricks": "OAuth 2.0 secret"
+      },
+      "api_field": ""
+   },
+   "passphrase": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "snowflake": "In case private key is encrypted, you are required to enter passphrase that was used to encrypt the private key. The field can be specified if authentication type is `KEY_PAIR`."
+      },
+      "api_field": ""
+   },
+   "password": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aurora_postgres_warehouse": "Database user password",
+         "aurora_warehouse": "Database user password",
+         "azure_postgres_warehouse": "Database user password",
+         "azure_sql_data_warehouse": "Database user password",
+         "azure_sql_database": "Database user password",
+         "azure_sql_managed_db_warehouse": "Database user password",
+         "maria_rds_warehouse": "Database user password",
+         "maria_warehouse": "Database user password",
+         "mysql_rds_warehouse": "Database user password",
+         "mysql_warehouse": "Database user password",
+         "panoply": "Database user password",
+         "periscope_warehouse": "Database user password",
+         "postgres_gcp_warehouse": "Database user password",
+         "postgres_rds_warehouse": "Database user password",
+         "postgres_warehouse": "Database user password",
+         "redshift": "Database user password. Required if authentication type is `PASSWORD`.",
+         "snowflake": "Database user password. The field should be specified if authentication type is `PASSWORD`.",
+         "sql_server_rds_warehouse": "Database user password",
+         "sql_server_warehouse": "Database user password"
+      },
+      "api_field": ""
+   },
+   "personal_access_token": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "databricks": "Personal access token"
+      },
+      "api_field": ""
+   },
+   "port": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aurora_postgres_warehouse": "Server port number",
+         "aurora_warehouse": "Server port number",
+         "azure_postgres_warehouse": "Server port number",
+         "azure_sql_data_warehouse": "Server port number",
+         "azure_sql_database": "Server port number",
+         "azure_sql_managed_db_warehouse": "Server port number",
+         "databricks": "Server port number",
+         "maria_rds_warehouse": "Server port number",
+         "maria_warehouse": "Server port number",
+         "mysql_rds_warehouse": "Server port number",
+         "mysql_warehouse": "Server port number",
+         "panoply": "Server port number",
+         "periscope_warehouse": "Server port number",
+         "postgres_gcp_warehouse": "Server port number",
+         "postgres_rds_warehouse": "Server port number",
+         "postgres_warehouse": "Server port number",
+         "redshift": "Server port number",
+         "snowflake": "Server port number",
+         "sql_server_rds_warehouse": "Server port number",
+         "sql_server_warehouse": "Server port number"
+      },
+      "api_field": ""
+   },
+   "prefix_path": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "adls": "path/to/data within the container",
+         "new_s3_datalake": "Prefix path of the bucket for which you have configured access policy. It is not required if access has been granted to entire Bucket in the access policy",
+         "onelake": "path/to/data within your lakehouse inside the Files directory"
+      },
+      "api_field": ""
+   },
+   "private_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "snowflake": "Private access key.  The field should be specified if authentication type is `KEY_PAIR`."
+      },
+      "api_field": ""
+   },
+   "project_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "big_query": "BigQuery project ID",
+         "big_query_dts": "",
+         "managed_big_query": ""
+      },
+      "api_field": ""
+   },
+   "public_key": {
+      "readonly": true,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aurora_postgres_warehouse": "Public Key",
+         "aurora_warehouse": "Public Key",
+         "azure_postgres_warehouse": "Public Key",
+         "azure_sql_data_warehouse": "Public Key",
+         "azure_sql_database": "Public Key",
+         "azure_sql_managed_db_warehouse": "Public Key",
+         "maria_rds_warehouse": "Public Key",
+         "maria_warehouse": "Public Key",
+         "mysql_rds_warehouse": "Public Key",
+         "mysql_warehouse": "Public Key",
+         "panoply": "Public Key",
+         "periscope_warehouse": "Public Key",
+         "postgres_gcp_warehouse": "Public Key",
+         "postgres_rds_warehouse": "Public Key",
+         "postgres_warehouse": "Public Key",
+         "redshift": "Public Key",
+         "sql_server_rds_warehouse": "Public Key",
+         "sql_server_warehouse": "Public Key"
+      },
+      "api_field": ""
+   },
+   "region": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "new_s3_datalake": "Region of your AWS S3 bucket"
+      },
+      "api_field": ""
+   },
+   "registry_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aws_msk_wh": ""
+      },
+      "api_field": ""
+   },
+   "registry_sts_region": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aws_msk_wh": ""
+      },
+      "api_field": ""
+   },
+   "replication_factor": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aiven_kafka_wh": "",
+         "aws_msk_wh": "",
+         "confluent_cloud_wh": ""
+      },
+      "api_field": ""
+   },
+   "resource_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aurora_postgres_warehouse": "This field is currently being introduced to test the Self-serve Private Link functionality",
+         "aurora_warehouse": "This field is currently being introduced to test the Self-serve Private Link functionality",
+         "azure_postgres_warehouse": "This field is currently being introduced to test the Self-serve Private Link functionality",
+         "azure_sql_data_warehouse": "This field is currently being introduced to test the Self-serve Private Link functionality",
+         "azure_sql_database": "Field to test Self serve Private Link",
+         "azure_sql_managed_db_warehouse": "Field to test Self serve Private Link",
+         "databricks": "This field is currently being introduced to test the Self-serve Private Link functionality",
+         "maria_rds_warehouse": "This field is currently being introduced to test the Self-serve Private Link functionality",
+         "maria_warehouse": "This field is currently being introduced to test the Self-serve Private Link functionality",
+         "mysql_rds_warehouse": "This field is currently being introduced to test the Self-serve Private Link functionality",
+         "mysql_warehouse": "This field is currently being introduced to test the Self-serve Private Link functionality",
+         "panoply": "This field is currently being introduced to test the Self-serve Private Link functionality",
+         "periscope_warehouse": "This field is currently being introduced to test the Self-serve Private Link functionality",
+         "postgres_gcp_warehouse": "This field is currently being introduced to test the Self-serve Private Link functionality",
+         "postgres_rds_warehouse": "This field is currently being introduced to test the Self-serve Private Link functionality",
+         "postgres_warehouse": "This field is currently being introduced to test the Self-serve Private Link functionality",
+         "redshift": "This field is currently being introduced to test the Self-serve Private Link functionality",
+         "snowflake": "This field is currently being introduced to test the Self-serve Private Link functionality",
+         "sql_server_rds_warehouse": "Field to test Self serve Private Link",
+         "sql_server_warehouse": "Field to test Self serve Private Link"
+      },
+      "api_field": ""
+   },
+   "role": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "snowflake": "If not specified, Fivetran will use the user's default role"
+      },
+      "api_field": ""
+   },
+   "role_arn": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "panoply": "",
+         "periscope_warehouse": "",
+         "redshift": "Role ARN with Redshift permissions. Required if authentication type is `IAM`."
+      },
+      "api_field": ""
+   },
+   "sasl_mechanism": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aiven_kafka_wh": "",
+         "aws_msk_wh": "",
+         "confluent_cloud_wh": ""
+      },
+      "api_field": ""
+   },
+   "sasl_plain_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aiven_kafka_wh": "",
+         "aws_msk_wh": "",
+         "confluent_cloud_wh": ""
+      },
+      "api_field": ""
+   },
+   "sasl_plain_secret": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aiven_kafka_wh": "",
+         "aws_msk_wh": "",
+         "confluent_cloud_wh": ""
+      },
+      "api_field": ""
+   },
+   "schema_compatibility": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aws_msk_wh": ""
+      },
+      "api_field": ""
+   },
+   "schema_registry": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aiven_kafka_wh": "",
+         "aws_msk_wh": "",
+         "confluent_cloud_wh": ""
+      },
+      "api_field": ""
+   },
+   "schema_registry_api_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aiven_kafka_wh": "",
+         "aws_msk_wh": "",
+         "confluent_cloud_wh": ""
+      },
+      "api_field": ""
+   },
+   "schema_registry_api_secret": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aiven_kafka_wh": "",
+         "aws_msk_wh": "",
+         "confluent_cloud_wh": ""
+      },
+      "api_field": ""
+   },
+   "schema_registry_url": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aiven_kafka_wh": "",
+         "aws_msk_wh": "",
+         "confluent_cloud_wh": ""
+      },
+      "api_field": ""
+   },
+   "secret_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "big_query": "Private key of the customer service account. If specified, your service account will be used to process the data instead of the Fivetran-managed service account.",
+         "big_query_dts": "Private key of the customer service account. If specified, your service account will be used to process the data instead of the Fivetran-managed service account.",
+         "managed_big_query": "Private key of the customer service account. If specified, your service account will be used to process the data instead of the Fivetran-managed service account."
+      },
+      "api_field": ""
+   },
+   "secret_value": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "adls": "Secret value for service principal",
+         "onelake": "Secret value for service principal"
+      },
+      "api_field": ""
+   },
+   "security_protocol": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aiven_kafka_wh": "",
+         "aws_msk_wh": "",
+         "confluent_cloud_wh": ""
+      },
+      "api_field": ""
+   },
+   "server_host_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "databricks": "Server name"
+      },
+      "api_field": ""
+   },
+   "snowflake_cloud": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "snowflake": ""
+      },
+      "api_field": ""
+   },
+   "snowflake_region": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "snowflake": ""
+      },
+      "api_field": ""
+   },
+   "storage_account_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "adls": "Storage account for Azure Data Lake Storage Gen2 name",
+         "onelake": "Storage account for Azure Data Lake Storage Gen2 name"
+      },
+      "api_field": ""
+   },
+   "tenant_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "adls": "Tenant id of service principal",
+         "onelake": "Tenant ID of service principal"
+      },
+      "api_field": ""
+   },
+   "tunnel_host": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aurora_postgres_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "aurora_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "azure_postgres_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "azure_sql_data_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "azure_sql_database": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "azure_sql_managed_db_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "maria_rds_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "maria_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "mysql_rds_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "mysql_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "panoply": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "periscope_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "postgres_gcp_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "postgres_rds_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "postgres_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "redshift": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "sql_server_rds_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "sql_server_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`."
+      },
+      "api_field": ""
+   },
+   "tunnel_port": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aurora_postgres_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "aurora_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "azure_postgres_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "azure_sql_data_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "azure_sql_database": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "azure_sql_managed_db_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "maria_rds_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "maria_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "mysql_rds_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "mysql_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "panoply": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "periscope_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "postgres_gcp_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "postgres_rds_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "postgres_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "redshift": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "sql_server_rds_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "sql_server_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`."
+      },
+      "api_field": ""
+   },
+   "tunnel_user": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aurora_postgres_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "aurora_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "azure_postgres_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "azure_sql_data_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "azure_sql_database": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "azure_sql_managed_db_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "maria_rds_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "maria_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "mysql_rds_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "mysql_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "panoply": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "periscope_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "postgres_gcp_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "postgres_rds_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "postgres_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "redshift": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "sql_server_rds_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "sql_server_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`."
+      },
+      "api_field": ""
+   },
+   "user": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aurora_postgres_warehouse": "Database user name",
+         "aurora_warehouse": "Database user name",
+         "azure_postgres_warehouse": "Database user name",
+         "azure_sql_data_warehouse": "Database user name",
+         "azure_sql_database": "Database user name",
+         "azure_sql_managed_db_warehouse": "Database user name",
+         "maria_rds_warehouse": "Database user name",
+         "maria_warehouse": "Database user name",
+         "mysql_rds_warehouse": "Database user name",
+         "mysql_warehouse": "Database user name",
+         "panoply": "Database user name",
+         "periscope_warehouse": "Database user name",
+         "postgres_gcp_warehouse": "Database user name",
+         "postgres_rds_warehouse": "Database user name",
+         "postgres_warehouse": "Database user name",
+         "redshift": "Database user name",
+         "snowflake": "Database user name",
+         "sql_server_rds_warehouse": "Database user name",
+         "sql_server_warehouse": "Database user name"
+      },
+      "api_field": ""
+   },
+   "workspace_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "onelake": "OneLake workspace name"
+      },
+      "api_field": ""
+   }
+}

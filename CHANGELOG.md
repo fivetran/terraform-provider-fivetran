@@ -5,29 +5,68 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.26...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.27...HEAD)
 
-## [1.1.26](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.25...v1.1.26)
+## [1.1.27](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.26...v1.1.27)
 
-## Added
 - New resource `fivetran_local_processing_agent` that allows to manage Local Processing Agents.
 - New data source `fivetran_local_processing_agent` that allows to retrieve details of the existing Local Processing Agent for a given identifier.
 - New data source `fivetran_local_processing_agents` that allows to retrieve the list of existing Local Processing Agents available for the current account.
 
 Updates to support management of local processing agents:
 - Resource `fivetran_connector` updates:
-    - Added field `fivetran_connector.local_processing_agent_id`.
+  - Added field `fivetran_connector.local_processing_agent_id`.
 
 - Resource `fivetran_destination` updates:
-    - Added field `fivetran_connector.local_processing_agent_id`.
+  - Added field `fivetran_connector.local_processing_agent_id`.
+
+- Datasource `fivetran_connector` updates:
+  - Added field `fivetran_connector.local_processing_agent_id`.
+
+- Datasource `fivetran_destination` updates:
+  - Added field `fivetran_connector.local_processing_agent_id`.
+ 
+## [1.1.26](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.25...v1.1.26)
+
+## Added
+- New resource `fivetran_proxy_agent` that allows to manage Proxy Agents.
+- New data source `fivetran_proxy_agent` that allows to retrieve details of the existing Proxy Agent for a given identifier.
+- New data source `fivetran_proxy_agents` that allows to retrieve the list of existing Proxy Agents available for the current account.
+
+Updates to support management of proxies:
+- Resource `fivetran_connector` updates:
+    - Added field `fivetran_connector.proxy_agent_id`.
     - Added field `fivetran_connector.networking_method`.
 
 - Datasource `fivetran_connector` updates:
-    - Added field `fivetran_connector.local_processing_agent_id`.
-
-- Datasource `fivetran_destination` updates:
-    - Added field `fivetran_connector.local_processing_agent_id`.
+    - Added field `fivetran_connector.proxy_agent_id`.
     - Added field `fivetran_connector.networking_method`.
+
+New connection services supported:
+- Supported service: `akamai`
+- Supported service: `brave_ads`
+- Supported service: `bubbleio`
+- Supported service: `canvas_by_instructure`
+- Supported service: `cin7core`
+- Supported service: `clarity`
+- Supported service: `cockroachdb`
+- Supported service: `doorloop`
+- Supported service: `freshsales`
+- Supported service: `kevel`
+- Supported service: `planful`
+- Supported service: `rebound_returns`
+- Supported service: `skillstx`
+- Supported service: `smarthr`
+- Supported service: `ticket_tailor`
+
+New connector config fields supported:
+- Added field `fivetran_connector.config.snc_certificate_source` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.type_name` for services: `akamai`, `bubbleio`.
+- Added field `fivetran_connector.config.rollback_window` for services: `appsflyer`.
+- Added field `fivetran_connector.config.custom_tables.engaged_view_attribution_window` for services: `facebook_ads`.
+- Added field `fivetran_connector.config.server_variable` for services: `myosh`.
+- Added field `fivetran_connector.config.snc_source_name` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.snc_fivetran_name` for services: `sap_hana_db`.
 
 ## [1.1.25](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.24...v1.1.25)
 

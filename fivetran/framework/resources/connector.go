@@ -145,6 +145,14 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 		TrustFingerprints(trustFingerprintsPlan).
 		ConfigCustom(&configMap) // on creation we have config always with schema params
 
+	if data.ProxyAgentId.ValueString() != "" {
+		svc.ProxyAgentId(data.ProxyAgentId.ValueString())
+	}
+
+	if data.NetworkingMethod.ValueString() != "" {
+		svc.NetworkingMethod(data.NetworkingMethod.ValueString())
+	}
+
 	if data.LocalProcessingAgentId.ValueString() != "" {
 		svc.LocalProcessingAgentId(data.LocalProcessingAgentId.ValueString())
 	}
@@ -318,6 +326,14 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 		}
 		if len(authPatch) > 0 {
 			svc.AuthCustom(&authPatch)
+		}
+
+		if plan.ProxyAgentId.ValueString() != "" {
+			svc.ProxyAgentId(plan.ProxyAgentId.ValueString())
+		}
+
+		if plan.NetworkingMethod.ValueString() != "" {
+			svc.NetworkingMethod(plan.NetworkingMethod.ValueString())
 		}
 
 		response, err := svc.DoCustom(ctx)

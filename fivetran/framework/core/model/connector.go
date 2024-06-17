@@ -33,6 +33,8 @@ type ConnectorDatasourceModel struct {
 	PauseAfterTrial types.Bool   `tfsdk:"pause_after_trial"`
 	DailySyncTime   types.String `tfsdk:"daily_sync_time"`
 
+    ProxyAgentId            types.String `tfsdk:"proxy_agent_id"`
+    NetworkingMethod        types.String `tfsdk:"networking_method"`
     LocalProcessingAgentId  types.String `tfsdk:"local_processing_agent_id"`
 
 	Status types.Object `tfsdk:"status"`
@@ -120,6 +122,8 @@ type ConnectorResourceModel struct {
 	Service           types.String `tfsdk:"service"`
 	DestinationSchema types.Object `tfsdk:"destination_schema"`
 
+    ProxyAgentId            types.String `tfsdk:"proxy_agent_id"`
+    NetworkingMethod        types.String `tfsdk:"networking_method"`
     LocalProcessingAgentId  types.String `tfsdk:"local_processing_agent_id"`
 
 	Config   types.Object   `tfsdk:"config"`
@@ -200,6 +204,16 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
 
 	d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
 
+    if c.ProxyAgentId != "" {
+        d.ProxyAgentId = types.StringValue(c.ProxyAgentId)
+    } else {
+        d.ProxyAgentId = types.StringNull()
+    }
+
+    if c.NetworkingMethod != "" {
+        d.NetworkingMethod = types.StringValue(c.NetworkingMethod)
+    }
+
 	if forceReadConfig || (!d.Config.IsNull() && !d.Config.IsUnknown()) {
 		d.Config = getValue(
 			types.ObjectType{AttrTypes: getAttrTypes(common.GetConfigFieldsMap())},
@@ -225,6 +239,16 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
 
 	d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
 
+    if c.ProxyAgentId != "" {
+        d.ProxyAgentId = types.StringValue(c.ProxyAgentId)
+    } else {
+        d.ProxyAgentId = types.StringNull()
+    }
+
+    if c.NetworkingMethod != "" {
+        d.NetworkingMethod = types.StringValue(c.NetworkingMethod)
+    }
+
 	d.Config = getValue(
 		types.ObjectType{AttrTypes: getAttrTypes(common.GetConfigFieldsMap())},
 		c.Config,
@@ -243,6 +267,8 @@ type ConnectorModelContainer struct {
 	Service     string
 	Schema      string
 
+    ProxyAgentId            string
+    NetworkingMethod        string
     LocalProcessingAgentId  string
 
 	Config map[string]interface{}
@@ -261,6 +287,14 @@ func (c *ConnectorModelContainer) ReadFromResponseData(data connectors.DetailsRe
 	c.Service = data.Service
 	c.Schema = data.Schema
 	c.Config = config
+
+    if data.ProxyAgentId != "" {
+        c.ProxyAgentId = data.ProxyAgentId
+    }
+
+    if data.NetworkingMethod != "" {
+        c.NetworkingMethod = data.NetworkingMethod
+    }
 
     if data.LocalProcessingAgentId != "" {
         c.LocalProcessingAgentId = data.LocalProcessingAgentId
