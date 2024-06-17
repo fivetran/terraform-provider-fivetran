@@ -19,15 +19,13 @@ Updates to support management of local processing agents:
 
 - Resource `fivetran_destination` updates:
   - Added field `fivetran_connector.local_processing_agent_id`.
-  - Added field `fivetran_connector.networking_method`.
 
 - Datasource `fivetran_connector` updates:
   - Added field `fivetran_connector.local_processing_agent_id`.
 
 - Datasource `fivetran_destination` updates:
   - Added field `fivetran_connector.local_processing_agent_id`.
-  - Added field `fivetran_connector.networking_method`.
-  - 
+ 
 ## [1.1.26](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.25...v1.1.26)
 
 ## Added
