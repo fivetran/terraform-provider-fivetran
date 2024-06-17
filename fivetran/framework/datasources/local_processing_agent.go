@@ -40,7 +40,7 @@ func (d *localProcessingAgent) Read(ctx context.Context, req datasource.ReadRequ
         return
     }
 
-    var data model.LocalProcessingAgent
+    var data model.LocalProcessingAgentDatasourceModel
 
     resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
@@ -54,7 +54,7 @@ func (d *localProcessingAgent) Read(ctx context.Context, req datasource.ReadRequ
         return
     }
 
-    data.ReadFromResponse(ctx, detailsResponse)
+    data.ReadFromResponse(detailsResponse)
 
     resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }

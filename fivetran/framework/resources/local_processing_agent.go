@@ -45,7 +45,7 @@ func (r *localProcessingAgent) Create(ctx context.Context, req resource.CreateRe
 		return
 	}
 
-	var data model.LocalProcessingAgent
+	var data model.LocalProcessingAgentResourceModel
 
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
@@ -70,7 +70,7 @@ func (r *localProcessingAgent) Create(ctx context.Context, req resource.CreateRe
 		return
 	}
 
-	data.ReadFromCreateResponse(ctx, createResponse)
+	data.ReadFromCreateResponse(createResponse)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -85,7 +85,7 @@ func (r *localProcessingAgent) Read(ctx context.Context, req resource.ReadReques
         return
     }
 
-    var data model.LocalProcessingAgent
+    var data model.LocalProcessingAgentResourceModel
 
     // Read Terraform prior state data into the model
     resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
@@ -100,7 +100,7 @@ func (r *localProcessingAgent) Read(ctx context.Context, req resource.ReadReques
         return
     }
 
-    data.ReadFromResponse(ctx, readResponse)
+    data.ReadFromResponse(readResponse)
 
     resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -115,7 +115,7 @@ func (r *localProcessingAgent) Update(ctx context.Context, req resource.UpdateRe
         return
     }
 
-    var plan, state model.LocalProcessingAgent
+    var plan, state model.LocalProcessingAgentResourceModel
 
     resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
     resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -131,7 +131,7 @@ func (r *localProcessingAgent) Update(ctx context.Context, req resource.UpdateRe
         return
     }
 
-    state.ReadFromCreateResponse(ctx, updateResponse)
+    state.ReadFromCreateResponse(updateResponse)
 
     resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
@@ -146,7 +146,7 @@ func (r *localProcessingAgent) Delete(ctx context.Context, req resource.DeleteRe
         return
     }
 
-    var data model.LocalProcessingAgent
+    var data model.LocalProcessingAgentResourceModel
 
     resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
