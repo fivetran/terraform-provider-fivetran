@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.27...HEAD)
 
-## [1.1.26](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.26...v1.1.27)
+## [1.1.27](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.26...v1.1.27)
 
 ## Fixed
 
