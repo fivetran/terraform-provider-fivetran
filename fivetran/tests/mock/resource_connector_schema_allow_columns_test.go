@@ -112,7 +112,7 @@ func TestResourceSchemaDisableColumnMissingInSchemaResponseMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 1)   // 1 read attempt before reload, 1 read after create
+				assertEqual(t, getHandler.Interactions, 3)   // 1 read attempt before reload, 1 read after create
 				assertEqual(t, patchHandler.Interactions, 1) // Update SCM and align schema
 				assertNotEmpty(t, schemaData)                // schema initialised
 				return nil

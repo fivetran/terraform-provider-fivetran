@@ -125,12 +125,12 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 			svc.SchemaChangeHandling(schemaChangeHandling)
 		}
 		// we should not parse response here because it will contain only applied diffs, not the whole configuration
-		schemaResponse, err = svc.Do(ctx)
+		applyResponse, err := svc.Do(ctx)
 
 		if err != nil {
 			resp.Diagnostics.AddError(
 				"Unable to Create Connector Schema Resource.",
-				fmt.Sprintf("Error wile applying schema config patch. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
+				fmt.Sprintf("Error wile applying schema config patch. %v; code: %v; message: %v", err, applyResponse.Code, applyResponse.Message),
 			)
 			return
 		}
@@ -147,20 +147,20 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 				)
 				return
 			}
-
-			// We need to re-read schema
-			schemaResponse, err = client.NewConnectorSchemaDetails().ConnectorID(connectorID).Do(ctx)
-			if err != nil {
-				resp.Diagnostics.AddError(
-					"Unable to Create Connector Schema Resource.",
-					fmt.Sprintf("Error while reading schema after schema change handling apply. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
-				)
-				return
-			}
 		}
 	}
 
-	// after applying changes it may come that solumns weren't saved in table configs, but after switching schema_change_handling - new columns apper in enabled tables.
+	// We need to re-read schema
+	schemaResponse, err = client.NewConnectorSchemaDetails().ConnectorID(connectorID).Do(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to Create Connector Schema Resource.",
+			fmt.Sprintf("Error while reading schema after schema change handling apply. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
+		)
+		return
+	}
+
+	// after applying changes it may come that columns weren't saved in table configs, but after switching schema_change_handling - new columns apper in enabled tables.
 	// we have to additionally disable them if table has non empty columns configuration
 
 	configAfterApply := configSchema.SchemaConfig{}
@@ -180,15 +180,25 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		svc := configAfterApply.PrepareRequest(client.NewConnectorSchemaUpdateService())
 		svc.ConnectorID(connectorID)
 		// we should not parse response here because it will contain only applied diffs, not the whole configuration
-		schemaResponse, err = svc.Do(ctx)
+		applyResponse, err := svc.Do(ctx)
 
 		if err != nil {
 			resp.Diagnostics.AddError(
 				"Unable to Create Connector Schema Resource.",
-				fmt.Sprintf("Error wile applying schema config patch. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
+				fmt.Sprintf("Error wile applying schema config patch. %v; code: %v; message: %v", err, applyResponse.Code, applyResponse.Message),
 			)
 			return
 		}
+	}
+
+	// We need to re-read schema
+	schemaResponse, err = client.NewConnectorSchemaDetails().ConnectorID(connectorID).Do(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to Create Connector Schema Resource.",
+			fmt.Sprintf("Error while reading schema after schema change handling apply. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
+		)
+		return
 	}
 
 	// read data from response and merge with existing config
@@ -294,12 +304,12 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 			svc.SchemaChangeHandling(plan.SchemaChangeHandling.ValueString())
 		}
 		// we should not parse response here because it will contain only applied diffs, not the whole configuration
-		schemaResponse, err = svc.Do(ctx)
+		applyResponse, err := svc.Do(ctx)
 
 		if err != nil {
 			resp.Diagnostics.AddError(
 				"Unable to Create Connector Schema Resource.",
-				fmt.Sprintf("Error wile applying schema config patch. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
+				fmt.Sprintf("Error wile applying schema config patch. %v; code: %v; message: %v", err, applyResponse.Code, applyResponse.Message),
 			)
 			return
 		}
@@ -318,6 +328,16 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 				return
 			}
 		}
+	}
+
+	// re-read schema after apply changes
+	schemaResponse, err = client.NewConnectorSchemaDetails().ConnectorID(connectorID).Do(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to Update Connector Schema Resource.",
+			fmt.Sprintf("Error while reading upstream schema. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
+		)
+		return
 	}
 	// read data from response and merge with existing config
 
@@ -338,14 +358,24 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 	if configAfterApply.HasUpdates() {
 		svc := configAfterApply.PrepareRequest(client.NewConnectorSchemaUpdateService())
 		svc.ConnectorID(connectorID)
-		schemaResponse, err = svc.Do(ctx)
+		applyResponse, err := svc.Do(ctx)
 		if err != nil {
 			resp.Diagnostics.AddError(
 				"Unable to Create Connector Schema Resource.",
-				fmt.Sprintf("Error wile applying schema config patch. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
+				fmt.Sprintf("Error wile applying schema config patch. %v; code: %v; message: %v", err, applyResponse.Code, applyResponse.Message),
 			)
 			return
 		}
+	}
+
+	// re-read schema after apply changes
+	schemaResponse, err = client.NewConnectorSchemaDetails().ConnectorID(connectorID).Do(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to Update Connector Schema Resource.",
+			fmt.Sprintf("Error while reading upstream schema. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
+		)
+		return
 	}
 
 	plan.ReadFromResponse(schemaResponse)

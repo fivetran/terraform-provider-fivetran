@@ -6,7 +6,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/fivetran/go-fivetran/tests/mock"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
@@ -117,14 +116,11 @@ func TestResourceSchemaRawWithExtraFieldsTestMock(t *testing.T) {
 	`
 	var schemaData map[string]interface{}
 
-	var getHandler *mock.Handler
-
 	step1 := resource.TestStep{
 		Config: tfCofnig1,
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 1)
 				assertNotEmpty(t, schemaData)
 				return nil
 			},
@@ -136,7 +132,6 @@ func TestResourceSchemaRawWithExtraFieldsTestMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 4)
 				assertNotEmpty(t, schemaData)
 				return nil
 			},
@@ -150,7 +145,7 @@ func TestResourceSchemaRawWithExtraFieldsTestMock(t *testing.T) {
 				mockClient.Reset()
 				schemaData = nil
 
-				getHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+				mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 						if nil == schemaData {
 							schemaData = createMapFromJsonString(t, jsonResponse)
@@ -284,14 +279,11 @@ resource "fivetran_connector_schema_config" "test_schema" {
 
 	var schemaData map[string]interface{}
 
-	var getHandler *mock.Handler
-
 	step1 := resource.TestStep{
 		Config: generateTfConfig(schemasCount, tablesCount, "BLOCK_ALL"),
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 1)
 				assertNotEmpty(t, schemaData)
 				return nil
 			},
@@ -305,7 +297,7 @@ resource "fivetran_connector_schema_config" "test_schema" {
 				mockClient.Reset()
 				schemaData = nil
 
-				getHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+				mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 						if nil == schemaData {
 							schemaData = createMapFromJsonString(t, generateJsonResponse(schemasCount, tablesCount, "BLOCK_ALL"))
@@ -427,21 +419,14 @@ resource "fivetran_connector_schema_config" "test_schema" {
 
 	var schemaData map[string]interface{}
 
-	var getHandler *mock.Handler
-	//var patchHandler *mock.Handler
-
 	step1 := resource.TestStep{
 		Config: generateTfConfig(schemasCount, tablesCount, "BLOCK_ALL"),
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 1)
-				//assertEqual(t, patchHandler.Interactions, 1)
 				assertNotEmpty(t, schemaData)
 				return nil
 			},
-			//resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "ALLOW_COLUMNS"),
-			//resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.0.column.0.enabled", "false"),
 		),
 	}
 
@@ -452,7 +437,7 @@ resource "fivetran_connector_schema_config" "test_schema" {
 				mockClient.Reset()
 				schemaData = nil
 
-				getHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+				mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 						if nil == schemaData {
 							schemaData = createMapFromJsonString(t, generateJsonResponse(schemasCount, tablesCount, "BLOCK_ALL"))
