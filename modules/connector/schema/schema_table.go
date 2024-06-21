@@ -22,6 +22,9 @@ func (t _table) validateColumns(
 	client fivetran.Client,
 	ctx context.Context) error {
 	if len(t.columns) > 0 {
+		if responseTable.SupportsColumnsConfig != nil && !*responseTable.SupportsColumnsConfig {
+			return fmt.Errorf("Table `%v` of schema `%s` doesn't support columns configuration.", tName, sName)
+		}
 		columnsWereFetched := false
 		if len(responseTable.Columns) == 0 {
 			response, err := client.NewConnectorColumnConfigListService().ConnectorId(connectorId).Schema(sName).Table(tName).Do(ctx)
