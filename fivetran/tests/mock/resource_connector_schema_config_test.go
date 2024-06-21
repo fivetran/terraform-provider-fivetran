@@ -379,10 +379,22 @@ func setupMockClientEmptyDefaultSchemaResource(t *testing.T) {
 
 			// Check the request
 			assertEqual(t, len(body), 1)
-			assertEqual(t, body["exclude_mode"], "PRESERVE") // reload schema in PRESERVE mode
+			//assertEqual(t, body["exclude_mode"], "PRESERVE") // reload schema in PRESERVE mode
+			assertKeyExists(t, body, "exclude_mode")
 
 			// create schema structure
-			schemaEmptyDefaultData = createMapFromJsonString(t, schemaEmptyDefaultJsonSchema)
+			if updateIteration == 0 {
+				schemaEmptyDefaultData = createMapFromJsonString(t, schemaEmptyDefaultJsonSchema)
+			}
+			if updateIteration == 1 {
+				schemaEmptyDefaultData = createMapFromJsonString(t, schemaEmptyDefaultJsonBlockedSchema2)
+			}
+			if updateIteration == 2 {
+				schemaEmptyDefaultData = createMapFromJsonString(t, schemaEmptyDefaultJsonBlockedSchema3)
+			}
+			if updateIteration > 2 {
+				schemaEmptyDefaultData = createMapFromJsonString(t, schemaEmptyDefaultJsonBlockedSchema4)
+			}
 
 			response := fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaEmptyDefaultData)
 

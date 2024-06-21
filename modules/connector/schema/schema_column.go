@@ -44,7 +44,7 @@ func (c *_column) override(local *_column, sch string) error {
 			if c.isPatchAllowed() {
 				c.setEnabled(local.enabled)
 			} else {
-				return fmt.Errorf("attempt to patch locked column %s", c.name)
+				return fmt.Errorf("Attempt to patch locked column %s. The column is not allowed to change `enabled` value, reason: %v.", c.name, c.getLockReason())
 			}
 		}
 		c.setHashed(local.hashed)
@@ -83,6 +83,21 @@ func (c *_column) readFromResponse(name string, response *connectors.ConnectorSc
 	c.enabled = *response.Enabled
 	c.hashed = response.Hashed
 	c.patchAllowed = response.EnabledPatchSettings.Allowed
+	if !c.isPatchAllowed() {
+		lockReason := "Reason unknown. Please report this error to provider developers."
+		if response.EnabledPatchSettings.ReasonCode != nil || response.EnabledPatchSettings.Reason != nil {
+			code := "unknown"
+			reason := "unknown"
+			if response.EnabledPatchSettings.ReasonCode != nil {
+				code = *response.EnabledPatchSettings.ReasonCode
+			}
+			if response.EnabledPatchSettings.Reason != nil {
+				reason = *response.EnabledPatchSettings.Reason
+			}
+			lockReason = fmt.Sprintf("code: %v | reason: %v", code, reason)
+		}
+		c.lockReason = &lockReason
+	}
 }
 
 func (c _column) toStateObject(sch string, local *_column) (map[string]interface{}, bool) {

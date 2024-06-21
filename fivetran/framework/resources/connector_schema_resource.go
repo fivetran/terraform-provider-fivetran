@@ -4,10 +4,12 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/fivetran/go-fivetran/connectors"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
 	configSchema "github.com/fivetran/terraform-provider-fivetran/modules/connector/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -35,6 +37,36 @@ func (r *connectorSchema) Schema(ctx context.Context, req resource.SchemaRequest
 
 func (r *connectorSchema) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+}
+
+func (r *connectorSchema) reloadSchema(ctx context.Context, schemaChangeHandling, connectorID string, diag diag.Diagnostics) connectors.ConnectorSchemaDetailsResponse {
+	client := r.GetClient()
+	if client == nil {
+		diag.AddError(
+			"Unconfigured Fivetran Client",
+			"Please report this issue to the provider developers.",
+		)
+
+		return connectors.ConnectorSchemaDetailsResponse{}
+	}
+
+	// Reload schema: we can't update schema if connector doesn't have it yet.
+	excludeMode := "PRESERVE"
+
+	// If we want to disable everything by default - we can do it in schema reload
+	if schemaChangeHandling == configSchema.BLOCK_ALL {
+		excludeMode = "EXCLUDE"
+	}
+
+	schemaResponse, err := client.NewConnectorSchemaReload().ExcludeMode(excludeMode).ConnectorID(connectorID).Do(ctx)
+	if err != nil {
+		diag.AddError(
+			"Unable to manage connector schema settings.",
+			fmt.Sprintf("Error during schema reloading. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
+		)
+		return connectors.ConnectorSchemaDetailsResponse{}
+	}
+	return schemaResponse
 }
 
 func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -70,7 +102,8 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 	client := r.GetClient()
 
 	schemaResponse, err := client.NewConnectorSchemaDetails().ConnectorID(connectorID).Do(ctx)
-
+	// We might have to reload schema in case if there's no schema settings at all, or schema is out of sync with source
+	needReload := false
 	if err != nil {
 		if schemaResponse.Code != "NotFound_SchemaConfig" {
 			resp.Diagnostics.AddError(
@@ -79,22 +112,38 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 			)
 			return
 		} else {
-			// Reload schema: we can't update schema if connector doesn't have it yet.
-			excludeMode := "PRESERVE"
-
-			// If we want to disable everything by default - we can do it in schema reload
-			if schemaChangeHandling == configSchema.BLOCK_ALL {
-				excludeMode = "EXCLUDE"
-			}
-
-			schemaResponse, err = client.NewConnectorSchemaReload().ExcludeMode(excludeMode).ConnectorID(connectorID).Do(ctx)
-			if err != nil {
+			// reload because connector doens't have any schema settings yet
+			needReload = true
+		}
+	} else {
+		// We might have to refresh schema, not all tables might be saved in current configuration
+		err, needReloadSchema := data.ValidateSchemaElements(schemaResponse, *client, ctx)
+		if err != nil {
+			// Reload as schema might be out of sync with the real source schema
+			needReload = needReloadSchema
+			if !needReloadSchema {
 				resp.Diagnostics.AddError(
-					"Unable to Create Connector Schema Resource.",
-					fmt.Sprintf("Error wile schema reload. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
+					"Unable to create Connector Schema Resource",
+					fmt.Sprintf("Column config validation failed. %v", err),
 				)
 				return
 			}
+		}
+	}
+
+	if needReload {
+		schemaResponse = r.reloadSchema(ctx, schemaChangeHandling, connectorID, resp.Diagnostics)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		// validate request one more time after reload schema
+		err, _ = data.ValidateSchemaElements(schemaResponse, *client, ctx)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to create Connector Schema Resource.",
+				fmt.Sprintf("Schema configuration is not aligned with source schema. Details:\n %v;", err),
+			)
+			return
 		}
 	}
 
@@ -111,7 +160,7 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Create Connector Schema Resource.",
-			fmt.Sprintf("Error wile applying schema config patch. %v; Please report this issue to the provider developers.", err),
+			fmt.Sprintf("Error wile applying schema config patch. %v;", err),
 		)
 		return
 	}
@@ -172,7 +221,7 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Create Connector Schema Resource.",
-			fmt.Sprintf("Error wile applying schema config patch. %v; Please report this issue to the provider developers.", err),
+			fmt.Sprintf("Error wile applying schema config patch. %v.", err),
 		)
 		return
 	}
@@ -200,12 +249,17 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		)
 		return
 	}
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to Create Connector Schema Resource.",
+			fmt.Sprintf("Some elements missing in upstream schema. Details: %v", err),
+		)
+		return
+	}
 
 	// read data from response and merge with existing config
-	data.ReadFromResponse(schemaResponse)
-
+	data.ReadFromResponse(schemaResponse, &resp.Diagnostics)
 	data.Id = types.StringValue(connectorID)
-
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
@@ -236,14 +290,13 @@ func (r *connectorSchema) Read(ctx context.Context, req resource.ReadRequest, re
 		)
 		return
 	}
-
-	data.ReadFromResponse(schemaResponse)
+	data.ReadFromResponse(schemaResponse, &resp.Diagnostics)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
 func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-
-	if r.GetClient() == nil {
+	client := r.GetClient()
+	if client == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
 			"Please report this issue to the provider developers.",
@@ -251,8 +304,6 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 
 		return
 	}
-
-	client := r.GetClient()
 
 	var plan, state model.ConnectorSchemaResourceModel
 
@@ -273,8 +324,28 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Update Connector Schema Resource.",
-			fmt.Sprintf("Error while reading upstream schema. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
+			fmt.Sprintf("Error wile retrieving existing schema. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
 		)
+		return
+	}
+
+	// Before applying changes we should validate existing state and planned changes and decide if we need to reload schema
+	planErr, _ := plan.ValidateSchemaElements(schemaResponse, *client, ctx)
+	stateErr, _ := state.ValidateSchemaElements(schemaResponse, *client, ctx)
+	if planErr != nil || stateErr != nil {
+		schemaResponse = r.reloadSchema(ctx, plan.SchemaChangeHandling.ValueString(), connectorID, resp.Diagnostics)
+	}
+
+	err, _ = plan.ValidateSchemaElements(schemaResponse, *client, ctx)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to update Connector Schema Resource.",
+			fmt.Sprintf("Schema configuration is not aligned with source schema. Details:\n %v;", err),
+		)
+		return
+	}
+
+	if resp.Diagnostics.HasError() {
 		return
 	}
 	// read upstream config
@@ -290,7 +361,7 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Create Connector Schema Resource.",
-			fmt.Sprintf("Error wile applying schema config patch. %v; Please report this issue to the provider developers.", err),
+			fmt.Sprintf("Error wile applying schema config patch. %v.", err),
 		)
 		return
 	}
@@ -350,7 +421,7 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Update Connector Schema Resource.",
-			fmt.Sprintf("Error wile applying schema config patch. %v; Please report this issue to the provider developers.", err),
+			fmt.Sprintf("Error wile applying schema config patch. %v.", err),
 		)
 		return
 	}
@@ -378,7 +449,7 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
-	plan.ReadFromResponse(schemaResponse)
+	plan.ReadFromResponse(schemaResponse, &resp.Diagnostics)
 	plan.Id = types.StringValue(connectorID)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }

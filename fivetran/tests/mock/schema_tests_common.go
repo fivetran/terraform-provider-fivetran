@@ -32,6 +32,44 @@ type schemaConfigTestData struct {
 	schemas              map[string]*schemaTestData
 }
 
+type columnsConfigTestData struct {
+	columns map[string]*columnTestData
+}
+
+func newColumnConfigTestData() columnsConfigTestData {
+	return columnsConfigTestData{}
+}
+
+func (cctd columnsConfigTestData) newColumn(name string, enabled bool, hashed *bool) columnsConfigTestData {
+	if cctd.columns == nil {
+		cctd.columns = map[string]*columnTestData{}
+	}
+	cctd.columns[name] = &columnTestData{
+		enabled:              enabled,
+		hashed:               hashed,
+		enabledPatchSettings: true,
+	}
+	return cctd
+}
+
+func (cctd columnsConfigTestData) jsonResponse() string {
+	columns := ""
+	for cName, c := range cctd.columns {
+		if len(columns) > 0 {
+			columns = columns + ",\n"
+		}
+		columns = columns + fmt.Sprintf(
+			`    "%v": %v`, cName, c.jsonConfig())
+	}
+	columns = fmt.Sprintf(`
+{
+  "columns": {
+%v  
+  }
+}`, columns)
+	return columns
+}
+
 func (sctd *schemaConfigTestData) tfConfig() string {
 	schemas := ""
 	for sName, s := range sctd.schemas {
@@ -301,6 +339,75 @@ func setupComplexTest(t *testing.T, initalUpstreamConfig schemaConfigTestData, t
 		mockClient.Reset()
 		upstreamData = nil
 		updateIteration := 0
+
+		mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				if nil == upstreamData {
+					upstreamData = createMapFromJsonString(t, initalUpstreamConfig.jsonResponse())
+				}
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", upstreamData), nil
+			},
+		)
+
+		mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				body := requestBodyToJson(t, req)
+				bodies = append(bodies, body)
+				upstreamData = createMapFromJsonString(t, responseConfigs[updateIteration].jsonResponse())
+				updateIteration++
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", upstreamData), nil
+			},
+		)
+	}
+
+	steps := []resource.TestStep{}
+	for _, tfConfig := range tfConfigs {
+		steps = append(steps, resource.TestStep{Config: tfConfig.tfConfig()})
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClient(t)
+			},
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				// there is no possibility to destroy schema config - it alsways exists within the connector
+				return nil
+			},
+
+			Steps: steps,
+		},
+	)
+
+	return bodies
+}
+
+func setupComplexTestWithColumnsReload(
+	t *testing.T,
+	initalUpstreamConfig schemaConfigTestData,
+	tfConfigs, responseConfigs []schemaConfigTestData,
+	columnsResponseConfigs map[string](map[string]([]columnsConfigTestData)),
+) []map[string]interface{} {
+	var upstreamData map[string]interface{}
+	bodies := []map[string]interface{}{}
+
+	setupMockClient := func(t *testing.T) {
+		mockClient.Reset()
+		upstreamData = nil
+		updateIteration := 0
+
+		for schema, tables := range columnsResponseConfigs {
+			for table, columnConfigs := range tables {
+				mockClient.When(http.MethodGet, fmt.Sprintf("/v1/connectors/connector_id/schemas/%s/tables/%s/columns", schema, table)).ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return fivetranSuccessResponse(t, req, http.StatusOK, "Success",
+							createMapFromJsonString(t, columnConfigs[updateIteration].jsonResponse())), nil
+					},
+				)
+			}
+		}
 
 		mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
 			func(req *http.Request) (*http.Response, error) {

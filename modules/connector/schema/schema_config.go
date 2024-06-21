@@ -1,11 +1,30 @@
 package schema
 
 import (
+	"context"
+	"fmt"
+
+	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/connectors"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 )
 
 type SchemaConfig struct {
 	schemas map[string]*_schema
+}
+
+func (c SchemaConfig) ValidateSchemas(connectorId string, schemas map[string]*connectors.ConnectorSchemaConfigSchemaResponse, client fivetran.Client, ctx context.Context) (error, bool) {
+	for sName, schema := range c.schemas {
+		if responseSchema, ok := schemas[sName]; ok {
+			err, needReload := schema.validateTables(connectorId, sName, responseSchema, client, ctx)
+			if err != nil {
+				return err, needReload
+			}
+		} else {
+			return fmt.Errorf("Schema with name `%s` not found in source.", sName), true
+		}
+	}
+	return nil, false
 }
 
 func (c SchemaConfig) HasUpdates() bool {
@@ -24,7 +43,6 @@ func (c SchemaConfig) PrepareRequest(svc *connectors.ConnectorSchemaConfigUpdate
 	}
 	return svc
 }
-
 func (c *SchemaConfig) Override(local *SchemaConfig, sch string) error {
 	if local != nil {
 		for sName, s := range c.schemas {
@@ -73,28 +91,38 @@ func (c *SchemaConfig) ReadFromResponse(response connectors.ConnectorSchemaDetai
 	}
 }
 
-func (c SchemaConfig) GetSchemas(sch string, local SchemaConfig) []interface{} {
+func (c SchemaConfig) GetSchemas(sch string, local SchemaConfig, diag *diag.Diagnostics) []interface{} {
 	schemas := make([]interface{}, 0)
 
 	for k, v := range c.schemas {
 		var schemaState map[string]interface{}
 		var include bool
 		if ls, ok := local.schemas[k]; ok {
-			schemaState, include = v.toStateObject(sch, ls)
+			schemaState, include = v.toStateObject(sch, ls, diag)
 		} else {
-			schemaState, include = v.toStateObject(sch, nil)
+			schemaState, include = v.toStateObject(sch, nil, diag)
 		}
 		if include {
 			schemas = append(schemas, schemaState)
 		}
 	}
 
-	return schemas
-}
+	// Include locally configured, but not represented in upstream
+	for k, v := range local.schemas {
+		if _, ok := c.schemas[k]; !ok {
+			diag.AddWarning(
+				"Schema might be missconfigured.",
+				fmt.Sprintf(
+					"Schema with name `%v`, defined in your config, not found in upstream source config.\n"+
+						"Schema might be deleted from source or renamed.\n "+
+						"Please remove it from your configuration, or align its name with source schema.", k),
+			)
+			schemaState, include := v.toStateObject(sch, nil, diag)
+			if include {
+				schemas = append(schemas, schemaState)
+			}
+		}
+	}
 
-func (c SchemaConfig) ToStateObject(sch string, local SchemaConfig) map[string]interface{} {
-	result := make(map[string]interface{})
-	result[SCHEMA_CHANGE_HANDLING] = sch
-	result[SCHEMA] = c.GetSchemas(sch, local)
-	return result
+	return schemas
 }
