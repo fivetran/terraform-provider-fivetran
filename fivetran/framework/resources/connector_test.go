@@ -45,6 +45,7 @@ const (
         "failed_at": null,
         "sync_frequency": 5,
 		"schedule_type": "auto",
+		"networking_method": "Directly",
         "status": {
             "setup_state": "incomplete",
             "sync_state": "paused",
@@ -74,6 +75,7 @@ const (
         "failed_at": null,
         "sync_frequency": 5,
 		"schedule_type": "auto",
+		"networking_method": "Directly",
         "status": {
             "setup_state": "incomplete",
             "sync_state": "paused",
@@ -117,7 +119,7 @@ const (
         "succeeded_at": null,
         "failed_at": null,
 		"schedule_type": "auto",
-
+		"networking_method": "Directly",
         "status": {
             "setup_state": "incomplete",
             "sync_state": "paused",
@@ -161,6 +163,7 @@ const (
         "failed_at": null,
         "sync_frequency": 5,
 		"schedule_type": "auto",
+		"networking_method": "Directly",
         "status": {
             "setup_state": "incomplete",
             "sync_state": "paused",
@@ -605,6 +608,7 @@ func createConnectorTestResponseJsonMock(id, groupId, service, schema, config st
 		"data_delay_sensitivity": "NORMAL",
 		"data_delay_threshold": 0,
 		"schedule_type": "auto",
+		"networking_method": "Directly",
 		"status": {
 			"setup_state": "incomplete",
 			"schema_status": "ready",
@@ -879,7 +883,7 @@ func TestResourceConnectorMock(t *testing.T) {
 						body := tfmock.RequestBodyToJson(t, req)
 
 						// Check the request
-						tfmock.AssertEqual(t, len(body), 5)
+						tfmock.AssertEqual(t, len(body), 4)
 
 						tfmock.AssertKeyExistsAndHasValue(t, body, "run_setup_tests", true)
 						tfmock.AssertKeyExistsAndHasValue(t, body, "trust_certificates", true)
