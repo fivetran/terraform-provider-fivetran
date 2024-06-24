@@ -179,7 +179,7 @@ resource "fivetran_connector_schema_config" "schema" {
 ### Required
 
 - `connector_id` (String) The unique identifier for the connector within the Fivetran system.
-- `schema_change_handling` (String)
+- `schema_change_handling` (String) The value specifying how new source data is handled.
 
 ### Optional
 
@@ -187,6 +187,10 @@ resource "fivetran_connector_schema_config" "schema" {
 - `schemas` (Attributes Map) Map of schema configurations. (see [below for nested schema](#nestedatt--schemas))
 - `schemas_json` (String) Schema settings in Json format, following Fivetran API endpoint contract for `schemas` field (a map of schemas).
 - `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
+- `validation_level` (String) The value defines validation method. 
+- NONE: no validation, any configuration accepted. 
+- TABLES: validate table names, fail on attempt to configure non-existing schemas/tables.
+- COLUMNS: validate the whole schema config including column names. The resource will try to fetch columns for every configured table and verify column names.
 
 ### Read-Only
 
