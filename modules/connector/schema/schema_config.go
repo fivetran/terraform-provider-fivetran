@@ -13,10 +13,15 @@ type SchemaConfig struct {
 	schemas map[string]*_schema
 }
 
-func (c SchemaConfig) ValidateSchemas(connectorId string, schemas map[string]*connectors.ConnectorSchemaConfigSchemaResponse, client fivetran.Client, ctx context.Context) (error, bool) {
+func (c SchemaConfig) ValidateSchemas(
+	connectorId string,
+	schemas map[string]*connectors.ConnectorSchemaConfigSchemaResponse,
+	client fivetran.Client,
+	ctx context.Context,
+	validateColumns bool) (error, bool) {
 	for sName, schema := range c.schemas {
 		if responseSchema, ok := schemas[sName]; ok {
-			err, needReload := schema.validateTables(connectorId, sName, responseSchema, client, ctx)
+			err, needReload := schema.validateTables(connectorId, sName, responseSchema, client, ctx, validateColumns)
 			if err != nil {
 				return err, needReload
 			}
@@ -40,6 +45,12 @@ func (c SchemaConfig) PrepareRequest(svc *connectors.ConnectorSchemaConfigUpdate
 		if v.updated {
 			svc.Schema(k, v.prepareRequest())
 		}
+	}
+	return svc
+}
+func (c SchemaConfig) PrepareCreateRequest(svc *connectors.ConnectorSchemaConfigCreateService) *connectors.ConnectorSchemaConfigCreateService {
+	for k, v := range c.schemas {
+		svc.Schema(k, v.prepareCreateRequest())
 	}
 	return svc
 }

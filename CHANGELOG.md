@@ -5,7 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.26...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.0...HEAD)
+
+## [1.2.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.26...v1.2.0)
+
+## Updated
+- Resource `fivetran_connector_schema_config` reworked, added new validation logic and new field `validation_level`.
+    - `fivetran_connector_schema_config.validation_level` allows to setup desired level of schema validation before apply
+        - NONE: no validation needed, the fastest way to apply schema, especially for a newly created connector - it will use new [Create a Connector Schema Config](https://fivetran.com/docs/rest-api/connectors#createaconnectorschemaconfig) endpoint.
+        - TABLES: validate only schemas and tables names. This level will require only schema reloading, without requests to retrieve columns for every configured table
+        - COLUMNS: performs full configuration validation, but requires to make requests to the source to retrieve all columns for every table.
+- Resource `fivetran_connector_schema_config` won't fail if some parts of schema were deleted from source and now able to handle such changes. 
+    - Provider will show warnings in output if some configures schema element doesn't exist anymore in source schema.
+    - Provider will fail on attempt to patch not existing schema, table or columns if appropriate `validation_level` specified and will prompt to update resource configuration.
 
 ## [1.1.26](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.25...v1.1.26)
 

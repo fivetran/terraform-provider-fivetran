@@ -15,12 +15,19 @@ type _schema struct {
 	tables map[string]*_table
 }
 
-func (s _schema) validateTables(connectorId, sName string, responseSchema *connectors.ConnectorSchemaConfigSchemaResponse, client fivetran.Client, ctx context.Context) (error, bool) {
+func (s _schema) validateTables(
+	connectorId, sName string,
+	responseSchema *connectors.ConnectorSchemaConfigSchemaResponse,
+	client fivetran.Client,
+	ctx context.Context,
+	validateColumns bool) (error, bool) {
 	for tName, table := range s.tables {
 		if responseTable, ok := responseSchema.Tables[tName]; ok {
-			err := table.validateColumns(connectorId, sName, tName, responseTable, client, ctx)
-			if err != nil {
-				return err, false
+			if validateColumns {
+				err := table.validateColumns(connectorId, sName, tName, responseTable, client, ctx)
+				if err != nil {
+					return err, false
+				}
 			}
 		} else {
 			return fmt.Errorf("Table with name `%s` not found in source schema `%s`.", tName, sName), true
@@ -38,6 +45,14 @@ func (s _schema) prepareRequest() *connectors.ConnectorSchemaConfigSchema {
 		if v.updated {
 			result.Table(k, v.prepareRequest())
 		}
+	}
+	return result
+}
+func (s _schema) prepareCreateRequest() *connectors.ConnectorSchemaConfigSchema {
+	result := fivetran.NewConnectorSchemaConfigSchema()
+	result.Enabled(s.enabled)
+	for k, v := range s.tables {
+		result.Table(k, v.prepareCreateRequest())
 	}
 	return result
 }

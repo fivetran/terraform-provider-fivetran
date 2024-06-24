@@ -6,6 +6,7 @@ import (
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/connectors"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 )
 
 type _column struct {
@@ -32,6 +33,15 @@ func (c _column) prepareRequest() *connectors.ConnectorSchemaConfigColumn {
 	if c.enabledPatched && c.isPatchAllowed() {
 		result.Enabled(c.enabled)
 	}
+	if c.hashed != nil {
+		result.Hashed(*c.hashed)
+	}
+	return result
+}
+
+func (c _column) prepareCreateRequest() *connectors.ConnectorSchemaConfigColumn {
+	result := fivetran.NewConnectorSchemaConfigColumn()
+	result.Enabled(c.enabled)
 	if c.hashed != nil {
 		result.Hashed(*c.hashed)
 	}
@@ -100,10 +110,29 @@ func (c *_column) readFromResponse(name string, response *connectors.ConnectorSc
 	}
 }
 
-func (c _column) toStateObject(sch string, local *_column) (map[string]interface{}, bool) {
+func (c _column) toStateObject(sch string, local *_column, diag *diag.Diagnostics, schema, table string) (map[string]interface{}, bool) {
 	result := make(map[string]interface{})
 
 	result[ENABLED] = helpers.BoolToStr(c.enabled)
+
+	// In case if table patch is not allowed we have to preserve local value in state to avoid conflict
+	if local != nil {
+		if c.patchAllowed != nil && !*c.patchAllowed && c.enabled != local.enabled {
+			lockReason := "Unknown"
+			if c.lockReason != nil {
+				lockReason = *c.lockReason
+			}
+			diag.AddWarning(
+				"Schema might be missconfigured.",
+				fmt.Sprintf(
+					"Column `%v` in table `%v` of schema `%v`, defined in your config, doesn't allowed to be enabled or disabled:\n"+
+						"Reason: %v\n"+
+						"Configured `enabled = %v` value ignored and not applied. Effective value: %v", c.name, table, schema, lockReason, local.enabled, c.enabled),
+			)
+			result[ENABLED] = helpers.BoolToStr(local.enabled)
+		}
+	}
+
 	result[NAME] = c.name
 
 	if c.hashed != nil {

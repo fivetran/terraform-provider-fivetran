@@ -84,6 +84,17 @@ func (t _table) prepareRequest() *connectors.ConnectorSchemaConfigTable {
 	}
 	return result
 }
+func (t _table) prepareCreateRequest() *connectors.ConnectorSchemaConfigTable {
+	result := fivetran.NewConnectorSchemaConfigTable()
+	result.Enabled(t.enabled)
+	if t.syncMode != nil {
+		result.SyncMode(*t.syncMode)
+	}
+	for k, v := range t.columns {
+		result.Column(k, v.prepareCreateRequest())
+	}
+	return result
+}
 func (t *_table) override(local *_table, sch string) error {
 	if local != nil {
 		if local.enabled != t.enabled {
@@ -209,6 +220,25 @@ func (t *_table) readFromResponse(name string, response *connectors.ConnectorSch
 func (t _table) toStateObject(sch string, local *_table, diag *diag.Diagnostics, schema string) (map[string]interface{}, bool) {
 	result := make(map[string]interface{})
 	result[ENABLED] = helpers.BoolToStr(t.enabled)
+
+	// In case if table patch is not allowed we have to preserve local value in state to avoid conflict
+	if local != nil {
+		if t.patchAllowed != nil && !*t.patchAllowed && t.enabled != local.enabled {
+			lockReason := "Unknown"
+			if t.lockReason != nil {
+				lockReason = *t.lockReason
+			}
+			diag.AddWarning(
+				"Schema might be missconfigured.",
+				fmt.Sprintf(
+					"Table `%v` of schema `%v`, defined in your config, doesn't allowed to be enabled or disabled:\n"+
+						"Reason: %v;\n"+
+						"Configured `enabled = %v` value ignored and not applied. Effective value: %v", t.name, schema, lockReason, local.enabled, t.enabled),
+			)
+			result[ENABLED] = helpers.BoolToStr(local.enabled)
+		}
+	}
+
 	result[NAME] = t.name
 	if t.syncMode != nil && (local != nil && local.syncMode != nil) { // save sync_mode in state only if it is configured!
 		result[SYNC_MODE] = *t.syncMode
@@ -220,12 +250,12 @@ func (t _table) toStateObject(sch string, local *_table, diag *diag.Diagnostics,
 			var include bool
 			if local != nil {
 				if lc, ok := local.columns[k]; ok {
-					columnState, include = v.toStateObject(sch, lc)
+					columnState, include = v.toStateObject(sch, lc, diag, schema, k)
 				} else {
-					columnState, include = v.toStateObject(sch, nil)
+					columnState, include = v.toStateObject(sch, nil, diag, schema, k)
 				}
 			} else {
-				columnState, include = v.toStateObject(sch, nil)
+				columnState, include = v.toStateObject(sch, nil, diag, schema, k)
 			}
 			if include {
 				columns = append(columns, columnState)
@@ -241,7 +271,7 @@ func (t _table) toStateObject(sch string, local *_table, diag *diag.Diagnostics,
 							"Table might be deleted from source or renamed.\n "+
 							"Please remove it from your configuration, or align its name with source schema.", k, t.name, schema),
 				)
-				columnState, include := v.toStateObject(sch, nil)
+				columnState, include := v.toStateObject(sch, nil, diag, schema, k)
 				if include {
 					columns = append(columns, columnState)
 				}

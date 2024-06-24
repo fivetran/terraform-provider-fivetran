@@ -24,6 +24,7 @@ type ConnectorSchemaResourceModel struct {
 	Schema               types.Set                     `tfsdk:"schema"`
 	Timeouts             timeouts.Value                `tfsdk:"timeouts"`
 	SchemasRaw           fivetrantypes.JsonSchemaValue `tfsdk:"schemas_json"`
+	ValidationLevel      types.String                  `tfsdk:"validation_level"`
 }
 
 func (d *ConnectorSchemaResourceModel) IsValid() bool {
@@ -31,8 +32,32 @@ func (d *ConnectorSchemaResourceModel) IsValid() bool {
 	return noSchemaDefined || ((d.IsRawSchemaDefined() != d.IsMappedSchemaDefined()) != d.IsLegacySchemaDefined())
 }
 
+func (d *ConnectorSchemaResourceModel) getValidationLevels() (bool, bool) {
+	validationLevel := d.ValidationLevel.ValueString()
+
+	validateTables := false
+	validateColumns := false
+
+	if validationLevel != "NONE" {
+		validateTables = true
+	}
+	if validationLevel == "COLUMNS" {
+		validateColumns = true
+	}
+	return validateTables, validateColumns
+}
+
 func (d *ConnectorSchemaResourceModel) ValidateSchemaElements(response connectors.ConnectorSchemaDetailsResponse, client fivetran.Client, ctx context.Context) (error, bool) {
-	return d.GetSchemaConfig().ValidateSchemas(d.ConnectorId.ValueString(), response.Data.Schemas, client, ctx)
+	validateTables, validateColumns := d.getValidationLevels()
+	if validateTables {
+		return d.GetSchemaConfig().ValidateSchemas(
+			d.ConnectorId.ValueString(),
+			response.Data.Schemas,
+			client,
+			ctx,
+			validateColumns)
+	}
+	return nil, false
 }
 
 func (d *ConnectorSchemaResourceModel) IsRawSchemaDefined() bool {

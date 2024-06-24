@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
@@ -29,6 +30,21 @@ func GetConnectorSchemaResourceSchema(ctx context.Context) schema.Schema {
 				Validators: []validator.String{
 					stringvalidator.OneOf("ALLOW_ALL", "ALLOW_COLUMNS", "BLOCK_ALL"),
 				},
+				Description: "The value specifying how new source data is handled.",
+			},
+			"validation_level": schema.StringAttribute{
+				Optional: true,
+				Computed: true,
+				Default:  stringdefault.StaticString("TABLES"),
+				Validators: []validator.String{
+					stringvalidator.OneOf("NONE", "TABLES", "COLUMNS"),
+				},
+				Description: `
+The value defines validation method. 
+- NONE: no validation, any configuration accepted. 
+- TABLES: validate table names, fail on attempt to configure non-existing schemas/tables.
+- COLUMNS: validate the whole schema config including column names. The resource will try to fetch columns for every configured table and verify column names.
+`,
 			},
 			"schemas": schema.MapNestedAttribute{
 				Optional:    true,
