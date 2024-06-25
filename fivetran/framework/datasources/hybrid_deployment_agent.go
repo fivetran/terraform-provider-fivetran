@@ -11,26 +11,26 @@ import (
     fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
 )
 
-func LocalProcessingAgent() datasource.DataSource {
-    return &localProcessingAgent{}
+func HybridDeploymentAgent() datasource.DataSource {
+    return &hybridDeploymentAgent{}
 }
 
 // Ensure the implementation satisfies the desired interfaces.
-var _ datasource.DataSourceWithConfigure = &localProcessingAgent{}
+var _ datasource.DataSourceWithConfigure = &hybridDeploymentAgent{}
 
-type localProcessingAgent struct {
+type hybridDeploymentAgent struct {
     core.ProviderDatasource
 }
 
-func (d *localProcessingAgent) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-    resp.TypeName = "fivetran_local_processing_agent"
+func (d *hybridDeploymentAgent) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+    resp.TypeName = "fivetran_hybrid_deployment_agent"
 }
 
-func (d *localProcessingAgent) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
-    resp.Schema = fivetranSchema.LocalProcessingAgentDatasource()
+func (d *hybridDeploymentAgent) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+    resp.Schema = fivetranSchema.HybridDeploymentAgentDatasource()
 }
 
-func (d *localProcessingAgent) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+func (d *hybridDeploymentAgent) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
     if d.GetClient() == nil {
         resp.Diagnostics.AddError(
             "Unconfigured Fivetran Client",
@@ -40,11 +40,11 @@ func (d *localProcessingAgent) Read(ctx context.Context, req datasource.ReadRequ
         return
     }
 
-    var data model.LocalProcessingAgentDatasourceModel
+    var data model.HybridDeploymentAgentDatasourceModel
 
     resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
-    detailsResponse, err := d.GetClient().NewLocalProcessingAgentDetails().AgentId(data.Id.ValueString()).Do(ctx)
+    detailsResponse, err := d.GetClient().NewHybridDeploymentAgentDetails().AgentId(data.Id.ValueString()).Do(ctx)
 
     if err != nil {
         resp.Diagnostics.AddError(

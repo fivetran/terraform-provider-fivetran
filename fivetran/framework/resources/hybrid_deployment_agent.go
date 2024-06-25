@@ -11,31 +11,31 @@ import (
     "github.com/hashicorp/terraform-plugin-framework/resource"
 )
 
-func LocalProcessingAgent() resource.Resource {
-    return &localProcessingAgent{}
+func HybridDeploymentAgent() resource.Resource {
+    return &hybridDeploymentAgent{}
 }
 
-type localProcessingAgent struct {
+type hybridDeploymentAgent struct {
     core.ProviderResource
 }
 
 // Ensure the implementation satisfies the desired interfaces.
-var _ resource.ResourceWithConfigure = &localProcessingAgent{}
-var _ resource.ResourceWithImportState = &localProcessingAgent{}
+var _ resource.ResourceWithConfigure = &hybridDeploymentAgent{}
+var _ resource.ResourceWithImportState = &hybridDeploymentAgent{}
 
-func (r *localProcessingAgent) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-    resp.TypeName = req.ProviderTypeName + "_local_processing_agent"
+func (r *hybridDeploymentAgent) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+    resp.TypeName = req.ProviderTypeName + "_hybrid_deployment_agent"
 }
 
-func (r *localProcessingAgent) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
-    resp.Schema = fivetranSchema.LocalProcessingAgentResource()
+func (r *hybridDeploymentAgent) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+    resp.Schema = fivetranSchema.HybridDeploymentAgentResource()
 }
 
-func (r *localProcessingAgent) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *hybridDeploymentAgent) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
     resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
-func (r *localProcessingAgent) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (r *hybridDeploymentAgent) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -45,7 +45,7 @@ func (r *localProcessingAgent) Create(ctx context.Context, req resource.CreateRe
 		return
 	}
 
-	var data model.LocalProcessingAgentResourceModel
+	var data model.HybridDeploymentAgentResourceModel
 
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
@@ -54,7 +54,7 @@ func (r *localProcessingAgent) Create(ctx context.Context, req resource.CreateRe
 		return
 	}
 
-	svc := r.GetClient().NewLocalProcessingAgentCreate()
+	svc := r.GetClient().NewHybridDeploymentAgentCreate()
 	svc.GroupId(data.GroupId.ValueString())
 	svc.DisplayName(data.DisplayName.ValueString())
     svc.EnvType("DOCKER")
@@ -63,7 +63,7 @@ func (r *localProcessingAgent) Create(ctx context.Context, req resource.CreateRe
 	createResponse, err := svc.Do(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Unable to Create Local Processing Agent Resource.",
+			"Unable to Create Hybrid Deployment Agent Resource.",
 			fmt.Sprintf("%v; code: %v; message: %v", err, createResponse.Code, createResponse.Message),
 		)
 
@@ -75,7 +75,7 @@ func (r *localProcessingAgent) Create(ctx context.Context, req resource.CreateRe
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *localProcessingAgent) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+func (r *hybridDeploymentAgent) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
     if r.GetClient() == nil {
         resp.Diagnostics.AddError(
             "Unconfigured Fivetran Client",
@@ -85,16 +85,16 @@ func (r *localProcessingAgent) Read(ctx context.Context, req resource.ReadReques
         return
     }
 
-    var data model.LocalProcessingAgentResourceModel
+    var data model.HybridDeploymentAgentResourceModel
 
     // Read Terraform prior state data into the model
     resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
-    readResponse, err := r.GetClient().NewLocalProcessingAgentDetails().AgentId(data.Id.ValueString()).Do(ctx)
+    readResponse, err := r.GetClient().NewHybridDeploymentAgentDetails().AgentId(data.Id.ValueString()).Do(ctx)
 
     if err != nil {
         resp.Diagnostics.AddError(
-            "Unable to Read Local Processing Agent Resource.",
+            "Unable to Read Hybrid Deployment Agent Resource.",
             fmt.Sprintf("%v; code: %v", err, readResponse.Code),
         )
         return
@@ -105,7 +105,7 @@ func (r *localProcessingAgent) Read(ctx context.Context, req resource.ReadReques
     resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *localProcessingAgent) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (r *hybridDeploymentAgent) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
     if r.GetClient() == nil {
         resp.Diagnostics.AddError(
             "Unconfigured Fivetran Client",
@@ -115,17 +115,17 @@ func (r *localProcessingAgent) Update(ctx context.Context, req resource.UpdateRe
         return
     }
 
-    var plan, state model.LocalProcessingAgentResourceModel
+    var plan, state model.HybridDeploymentAgentResourceModel
 
     resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
     resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
-    svc := r.GetClient().NewLocalProcessingAgentReAuth().AgentId(state.Id.ValueString())
+    svc := r.GetClient().NewHybridDeploymentAgentReAuth().AgentId(state.Id.ValueString())
     
     updateResponse, err := svc.Do(ctx)
     if err != nil {
         resp.Diagnostics.AddError(
-            "Unable to Update Local Processing Agent Resource.",
+            "Unable to Update Hybrid Deployment Agent Resource.",
             fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
         )
         return
@@ -136,7 +136,7 @@ func (r *localProcessingAgent) Update(ctx context.Context, req resource.UpdateRe
     resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
-func (r *localProcessingAgent) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (r *hybridDeploymentAgent) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
     if r.GetClient() == nil {
         resp.Diagnostics.AddError(
             "Unconfigured Fivetran Client",
@@ -146,14 +146,14 @@ func (r *localProcessingAgent) Delete(ctx context.Context, req resource.DeleteRe
         return
     }
 
-    var data model.LocalProcessingAgentResourceModel
+    var data model.HybridDeploymentAgentResourceModel
 
     resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
-    deleteResponse, err := r.GetClient().NewLocalProcessingAgentDelete().AgentId(data.Id.ValueString()).Do(ctx)
+    deleteResponse, err := r.GetClient().NewHybridDeploymentAgentDelete().AgentId(data.Id.ValueString()).Do(ctx)
     if err != nil {
         resp.Diagnostics.AddError(
-            "Unable to Delete Local Processing Agent Resource.",
+            "Unable to Delete Hybrid Deployment Agent Resource.",
             fmt.Sprintf("%v; code: %v; message: %v", err, deleteResponse.Code, deleteResponse.Message),
         )
         return

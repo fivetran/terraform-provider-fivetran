@@ -44,7 +44,6 @@ func ConnectorAttributesSchema() core.Schema {
 				ValueType:   core.String,
 				Description: "The connector type id within the Fivetran system.",
 			},
-
 			"run_setup_tests": {
 				ValueType:    core.Boolean,
 				Description:  "Specifies whether the setup tests should be run automatically. The default value is FALSE.",
@@ -109,9 +108,13 @@ func ConnectorAttributesSchema() core.Schema {
 				ValueType:   	core.StringEnum,
 				Description: 	"Possible values: Directly, SshTunnel, ProxyAgent.",
 			},
-			"local_processing_agent_id": {
+			"hybrid_deployment_agent_id": {
 				ValueType:   core.String,
-				Description: "The local processing agent ID that refers to the controller created for the group the connection belongs to. If the value is specified, the system will try to associate the connection with an existing agent.",
+				Description: "The hybrid deployment agent ID that refers to the controller created for the group the connection belongs to. If the value is specified, the system will try to associate the connection with an existing agent.",
+			},
+			"private_link_id": {
+				ValueType:   core.String,
+				Description: "The private link ID.",
 			},
 		},
 	}

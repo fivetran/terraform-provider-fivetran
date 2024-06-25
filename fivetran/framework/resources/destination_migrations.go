@@ -32,8 +32,8 @@ func upgradeDestinationState(ctx context.Context, req resource.UpgradeStateReque
 	}
 
 	dynamicValue, err := tfprotov6.NewDynamicValue(
-		getDestinationStateModel(1),
-		tftypes.NewValue(getDestinationStateModel(1), map[string]tftypes.Value{
+		getDestinationStateModel(2),
+		tftypes.NewValue(getDestinationStateModel(2), map[string]tftypes.Value{
 			"id":                           rawState["id"],
 			"group_id":                     rawState["group_id"],
 			"service":                      rawState["service"],
@@ -42,8 +42,7 @@ func upgradeDestinationState(ctx context.Context, req resource.UpgradeStateReque
 			"time_zone_offset":             rawState["time_zone_offset"],
 			"setup_status":                 rawState["setup_status"],
 			"daylight_saving_time_enabled": tftypes.NewValue(tftypes.Bool, nil),
-			"local_processing_agent_id":    tftypes.NewValue(tftypes.String, nil),
-			"networking_method":            tftypes.NewValue(tftypes.String, nil),
+			"hybrid_deployment_agent_id":   rawState["local_processing_agent_id"],
 
 			"run_setup_tests":    convertStringStateValueToBool("run_setup_tests", rawState["run_setup_tests"], resp.Diagnostics),
 			"trust_fingerprints": convertStringStateValueToBool("trust_fingerprints", rawState["trust_fingerprints"], resp.Diagnostics),
@@ -75,7 +74,7 @@ func getDestinationStateModel(version int) tftypes.Type {
 			},
 		},
 	}
-	if version == 1 {
+	if version == 1 || version == 2 {
 		base["run_setup_tests"] = tftypes.Bool
 		base["trust_certificates"] = tftypes.Bool
 		base["trust_fingerprints"] = tftypes.Bool

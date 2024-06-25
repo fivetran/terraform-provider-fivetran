@@ -219,6 +219,7 @@ func getJsonConfigForFieldImpl(fieldName, service string, field common.ConfigFie
 }
 
 func getTfDestinationSchema(service string) string {
+
 	schemaFields := common.GetDestinationSchemaFields()
 	if schemaFields[service]["schema"] {
 		if schemaFields[service]["table"] {
@@ -336,7 +337,7 @@ func TestResourceConnectorDynamicMapping(t *testing.T) {
 	for len(*restFields) > 0 {
 		stepFields, rest, service := fetchFieldsBatchByService(*restFields)
 
-		fmt.Printf("Fields left to test: %v | Step fields count: %v | Fields rest %v \n", len(rest)+len(stepFields), len(stepFields), len(rest))
+		fmt.Printf("Service %v | Fields left to test: %v | Step fields count: %v | Fields rest %v \n", service, len(rest)+len(stepFields), len(stepFields), len(rest))
 
 		if debug {
 			fmt.Printf("Testing fields for service %v : [\t\n%v]\n", service, strings.Join(stepFields, "\t\n "))

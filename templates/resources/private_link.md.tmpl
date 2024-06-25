@@ -1,0 +1,25 @@
+---
+page_title: "Resource: fivetran_private_link"
+---
+
+# Resource: fivetran_private_link
+
+This resource allows you to create, update, and delete private links.
+
+## Example Usage
+
+```hcl
+resource "fivetran_private_link" "test_pl" {
+    provider = fivetran-provider
+
+    name = "name"
+    region = "region"
+    service = "service"
+
+    config {
+        connection_service_name = "connection_service_name"
+    }
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}

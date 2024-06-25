@@ -30,11 +30,12 @@ data "fivetran_connector" "connector" {
 - `destination_schema` (Block, Read-only) (see [below for nested schema](#nestedblock--destination_schema))
 - `failed_at` (String) The timestamp of the time the connector sync failed last time.
 - `group_id` (String) The unique identifier for the Group (Destination) within the Fivetran system.
-- `local_processing_agent_id` (String) The local processing agent ID that refers to the controller created for the group the connection belongs to. If the value is specified, the system will try to associate the connection with an existing agent.
+- `hybrid_deployment_agent_id` (String) The hybrid deployment agent ID that refers to the controller created for the group the connection belongs to. If the value is specified, the system will try to associate the connection with an existing agent.
 - `name` (String) The name used both as the connector's name within the Fivetran system and as the source schema's name within your destination.
 - `networking_method` (String) Possible values: Directly, SshTunnel, ProxyAgent.
 - `pause_after_trial` (Boolean) Specifies whether the connector should be paused after the free trial period has ended.
 - `paused` (Boolean) Specifies whether the connector is paused.
+- `private_link_id` (String) The private link ID.
 - `proxy_agent_id` (String) The proxy agent ID.
 - `schedule_type` (String) The connector schedule configuration type. Supported values: auto, manual.
 - `service` (String) The connector type id within the Fivetran system.

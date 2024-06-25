@@ -45,7 +45,6 @@ func (r *connector) ImportState(ctx context.Context, req resource.ImportStateReq
 }
 
 func (r *connector) UpgradeState(ctx context.Context) map[int64]resource.StateUpgrader {
-
 	v0ConfigTfTypes := model.GetTfTypes(common.GetConfigFieldsMap(), 1)
 
 	v0ConfigTfTypes["servers"] = tftypes.String
@@ -68,6 +67,12 @@ func (r *connector) UpgradeState(ctx context.Context) map[int64]resource.StateUp
 		2: {
 			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
 				upgradeConnectorState(ctx, req, resp, 2)
+			},
+		},
+		// State upgrade implementation from 2 (prior state version) to 4 (Schema.Version)
+		3: {
+			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
+				upgradeConnectorState(ctx, req, resp, 3)
 			},
 		},
 	}
@@ -153,8 +158,12 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 		svc.NetworkingMethod(data.NetworkingMethod.ValueString())
 	}
 
-	if data.LocalProcessingAgentId.ValueString() != "" {
-		svc.LocalProcessingAgentId(data.LocalProcessingAgentId.ValueString())
+	if data.HybridDeploymentAgentId.ValueString() != "" {
+		svc.HybridDeploymentAgentId(data.HybridDeploymentAgentId.ValueString())
+	}
+
+	if data.PrivateLinkId.ValueString() != "" {
+		svc.PrivateLinkId(data.PrivateLinkId.ValueString())
 	}
 
 	if !noAuth {
@@ -317,8 +326,12 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 			TrustFingerprints(trustFingerprintsPlan).
 			ConnectorID(state.Id.ValueString())
 
-		if plan.LocalProcessingAgentId.ValueString() != "" {
-			svc.LocalProcessingAgentId(plan.LocalProcessingAgentId.ValueString())
+		if plan.HybridDeploymentAgentId.ValueString() != "" {
+			svc.HybridDeploymentAgentId(plan.HybridDeploymentAgentId.ValueString())
+		}
+
+		if plan.PrivateLinkId.ValueString() != "" {
+			svc.PrivateLinkId(plan.PrivateLinkId.ValueString())
 		}
 
 		if len(patch) > 0 {
