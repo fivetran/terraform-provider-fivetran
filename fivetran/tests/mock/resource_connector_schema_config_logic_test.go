@@ -112,7 +112,17 @@ func TestUpstreamSchemaWithoutColumnsColumnConfigured(t *testing.T) {
 		newColumn("column_1", true, boolPtr(false)). // column user configured in tf
 		newColumn("column_2", false, boolPtr(false)) // column set disbled after second patch
 
-	bodies := setupComplexTest(t, upstreamConfig, []schemaConfigTestData{tfConfig}, []schemaConfigTestData{responseConfig, response2Config})
+	bodies := setupComplexTestWithColumnsReload(
+		t, upstreamConfig,
+		[]schemaConfigTestData{tfConfig},
+		[]schemaConfigTestData{responseConfig, response2Config},
+		map[string]map[string][]columnsConfigTestData{
+			"schema_1": map[string][]columnsConfigTestData{
+				"table_1": []columnsConfigTestData{
+					newColumnConfigTestData().newColumn("column_1", false, boolPtr(false)).newColumn("column_2", false, boolPtr(false)),
+				},
+			},
+		})
 
 	assertEqual(t, len(bodies), 2)
 

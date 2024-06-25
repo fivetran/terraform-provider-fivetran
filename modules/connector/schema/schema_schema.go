@@ -1,16 +1,39 @@
 package schema
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/connectors"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 )
 
 type _schema struct {
 	_element
 	tables map[string]*_table
+}
+
+func (s _schema) validateTables(
+	connectorId, sName string,
+	responseSchema *connectors.ConnectorSchemaConfigSchemaResponse,
+	client fivetran.Client,
+	ctx context.Context,
+	validateColumns bool) (error, bool) {
+	for tName, table := range s.tables {
+		if responseTable, ok := responseSchema.Tables[tName]; ok {
+			if validateColumns {
+				err := table.validateColumns(connectorId, sName, tName, responseTable, client, ctx)
+				if err != nil {
+					return err, false
+				}
+			}
+		} else {
+			return fmt.Errorf("Table with name `%s` not found in source schema `%s`.", tName, sName), true
+		}
+	}
+	return nil, false
 }
 
 func (s _schema) prepareRequest() *connectors.ConnectorSchemaConfigSchema {
@@ -22,6 +45,14 @@ func (s _schema) prepareRequest() *connectors.ConnectorSchemaConfigSchema {
 		if v.updated {
 			result.Table(k, v.prepareRequest())
 		}
+	}
+	return result
+}
+func (s _schema) prepareCreateRequest() *connectors.ConnectorSchemaConfigSchema {
+	result := fivetran.NewConnectorSchemaConfigSchema()
+	result.Enabled(s.enabled)
+	for k, v := range s.tables {
+		result.Table(k, v.prepareCreateRequest())
 	}
 	return result
 }
@@ -120,7 +151,7 @@ func (s *_schema) readTables(tables []interface{}, sch string) {
 	}
 }
 
-func (s _schema) toStateObject(sch string, local *_schema) (map[string]interface{}, bool) {
+func (s _schema) toStateObject(sch string, local *_schema, diag *diag.Diagnostics) (map[string]interface{}, bool) {
 	result := make(map[string]interface{})
 	result[ENABLED] = helpers.BoolToStr(s.enabled)
 	result[NAME] = s.name
@@ -130,15 +161,33 @@ func (s _schema) toStateObject(sch string, local *_schema) (map[string]interface
 		var include bool
 		if local != nil {
 			if lt, ok := local.tables[k]; ok {
-				tableState, include = v.toStateObject(sch, lt)
+				tableState, include = v.toStateObject(sch, lt, diag, s.name)
 			} else {
-				tableState, include = v.toStateObject(sch, nil)
+				tableState, include = v.toStateObject(sch, nil, diag, s.name)
 			}
 		} else {
-			tableState, include = v.toStateObject(sch, nil)
+			tableState, include = v.toStateObject(sch, nil, diag, s.name)
 		}
 		if include {
 			tables = append(tables, tableState)
+		}
+	}
+	if local != nil {
+		// Include locally configured tables that are not exist in upstream
+		for k, v := range local.tables {
+			if _, ok := s.tables[k]; !ok {
+				diag.AddWarning(
+					"Schema might be missconfigured.",
+					fmt.Sprintf(
+						"Table with name `%v` of schema `%v`, defined in your config, not found in upstream source config.\n"+
+							"Table might be deleted from source or renamed.\n "+
+							"Please remove it from your configuration, or align its name with source schema.", k, s.name),
+				)
+				tableState, include := v.toStateObject(sch, nil, diag, s.name)
+				if include {
+					tables = append(tables, tableState)
+				}
+			}
 		}
 	}
 	result[TABLE] = tables

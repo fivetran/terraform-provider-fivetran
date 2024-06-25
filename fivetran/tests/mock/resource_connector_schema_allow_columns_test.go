@@ -17,6 +17,29 @@ func TestResourceSchemaDisableColumnMissingInSchemaResponseMock(t *testing.T) {
 	var getHandler *mock.Handler
 	var patchHandler *mock.Handler
 
+	var columnsListResponse = `
+{
+	"columns": {
+		"column_1": {
+			"name_in_destination": "column_1",
+			"enabled": true,
+			"hashed": false,
+			"enabled_patch_settings": {
+				"allowed": true
+			}
+		},
+		"column_2": {
+			"name_in_destination": "column_2",
+			"enabled": true,
+			"hashed": false,
+			"enabled_patch_settings": {
+				"allowed": true
+			}
+		}
+	}
+}
+`
+
 	var schemasWoColumnsJsonResponse = `
 {
 	"enable_new_by_default": true,
@@ -112,7 +135,7 @@ func TestResourceSchemaDisableColumnMissingInSchemaResponseMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 1)   // 1 read attempt before reload, 1 read after create
+				assertEqual(t, getHandler.Interactions, 3)   // 1 read attempt before reload, 1 read after create
 				assertEqual(t, patchHandler.Interactions, 1) // Update SCM and align schema
 				assertNotEmpty(t, schemaData)                // schema initialised
 				return nil
@@ -138,6 +161,12 @@ func TestResourceSchemaDisableColumnMissingInSchemaResponseMock(t *testing.T) {
 					},
 				)
 
+				mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas/schema_1/tables/table_1/columns").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", createMapFromJsonString(t, columnsListResponse)), nil
+					},
+				)
+
 				patchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 						body := requestBodyToJson(t, req)
@@ -145,25 +174,19 @@ func TestResourceSchemaDisableColumnMissingInSchemaResponseMock(t *testing.T) {
 						assertEqual(t, len(body), 2)
 						assertEqual(t, body["schema_change_handling"], "ALLOW_COLUMNS")
 
-						assertKeyExists(t, body, "schemas")
-						schemas := body["schemas"].(map[string]interface{})
+						schemas := assertKeyExists(t, body, "schemas").(map[string]interface{})
 
-						assertKeyExists(t, schemas, "schema_1")
-						schema := schemas["schema_1"].(map[string]interface{})
+						schema := assertKeyExists(t, schemas, "schema_1").(map[string]interface{})
 
 						AssertKeyDoesNotExist(t, schema, "enabled")
-						assertKeyExists(t, schema, "tables")
-						tables := schema["tables"].(map[string]interface{})
+						tables := assertKeyExists(t, schema, "tables").(map[string]interface{})
 
-						assertKeyExists(t, tables, "table_1")
-						table := tables["table_1"].(map[string]interface{})
+						table := assertKeyExists(t, tables, "table_1").(map[string]interface{})
 
-						assertKeyExists(t, table, "columns")
+						columns := assertKeyExists(t, table, "columns").(map[string]interface{})
 						AssertKeyDoesNotExist(t, table, "enabled")
-						columns := table["columns"].(map[string]interface{})
 
-						assertKeyExists(t, columns, "column_1")
-						column := columns["column_1"].(map[string]interface{})
+						column := assertKeyExists(t, columns, "column_1").(map[string]interface{})
 
 						assertKeyExistsAndHasValue(t, column, "enabled", false)
 

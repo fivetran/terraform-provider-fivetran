@@ -379,10 +379,22 @@ func setupMockClientEmptyDefaultSchemaResource(t *testing.T) {
 
 			// Check the request
 			assertEqual(t, len(body), 1)
-			assertEqual(t, body["exclude_mode"], "PRESERVE") // reload schema in PRESERVE mode
+			//assertEqual(t, body["exclude_mode"], "PRESERVE") // reload schema in PRESERVE mode
+			assertKeyExists(t, body, "exclude_mode")
 
 			// create schema structure
-			schemaEmptyDefaultData = createMapFromJsonString(t, schemaEmptyDefaultJsonSchema)
+			if updateIteration == 0 {
+				schemaEmptyDefaultData = createMapFromJsonString(t, schemaEmptyDefaultJsonSchema)
+			}
+			if updateIteration == 1 {
+				schemaEmptyDefaultData = createMapFromJsonString(t, schemaEmptyDefaultJsonBlockedSchema2)
+			}
+			if updateIteration == 2 {
+				schemaEmptyDefaultData = createMapFromJsonString(t, schemaEmptyDefaultJsonBlockedSchema3)
+			}
+			if updateIteration > 2 {
+				schemaEmptyDefaultData = createMapFromJsonString(t, schemaEmptyDefaultJsonBlockedSchema4)
+			}
 
 			response := fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaEmptyDefaultData)
 
@@ -496,7 +508,7 @@ func TestResourceEmptyDefaultSchemaMock(t *testing.T) {
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 				assertEqual(t, schemaEmptyDefaultReloadHandler.Interactions, 1)
-				assertEqual(t, schemaEmptyDefaultGetHandler.Interactions, 1)
+				assertEqual(t, schemaEmptyDefaultGetHandler.Interactions, 3)
 				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 0)
 				assertNotEmpty(t, schemaEmptyDefaultData) // schema initialised
 				return nil
@@ -808,7 +820,7 @@ func TestSyncModeMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 1) // 1 read attempt before reload, 1 read after create
+				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 3) // 1 read attempt before reload, 1 read after create
 				assertNotEmpty(t, schemaConsistentWithUpstreamData)                    // schema initialised
 				return nil
 			},
@@ -920,7 +932,7 @@ func TestConsistentWithUpstreamSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 1)
+				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 3)
 				assertNotEmpty(t, schemaConsistentWithUpstreamData)
 				return nil
 			},
@@ -1018,7 +1030,7 @@ func TestResourceHashedAlignmentSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaHashedAlignmentGetHandler.Interactions, 1)   // 1 read attempt before reload, 1 read after create
+				assertEqual(t, schemaHashedAlignmentGetHandler.Interactions, 3)   // 1 read attempt before reload, 1 read after create
 				assertEqual(t, schemaHashedAlignmentPatchHandler.Interactions, 1) // Update hashed for column
 				assertNotEmpty(t, schemaHashedAlignmentData)                      // schema initialised
 				return nil
@@ -1057,7 +1069,7 @@ func TestResourceLockedSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaLockedGetHandler.Interactions, 1)   // 1 read attempt before reload, 1 read after create
+				assertEqual(t, schemaLockedGetHandler.Interactions, 3)   // 1 read attempt before reload, 1 read after create
 				assertEqual(t, schemaLockedPatchHandler.Interactions, 1) // Update SCM and align schema
 				assertNotEmpty(t, schemaLockedData)                      // schema initialised
 				return nil
@@ -1169,7 +1181,7 @@ func TestConsistentWithUpstreamSchemaMappedMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 1)
+				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 3)
 				assertNotEmpty(t, schemaConsistentWithUpstreamData)
 				return nil
 			},

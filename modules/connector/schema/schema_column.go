@@ -6,6 +6,7 @@ import (
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/connectors"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 )
 
 type _column struct {
@@ -38,13 +39,22 @@ func (c _column) prepareRequest() *connectors.ConnectorSchemaConfigColumn {
 	return result
 }
 
+func (c _column) prepareCreateRequest() *connectors.ConnectorSchemaConfigColumn {
+	result := fivetran.NewConnectorSchemaConfigColumn()
+	result.Enabled(c.enabled)
+	if c.hashed != nil {
+		result.Hashed(*c.hashed)
+	}
+	return result
+}
+
 func (c *_column) override(local *_column, sch string) error {
 	if local != nil {
 		if local.enabled != c.enabled {
 			if c.isPatchAllowed() {
 				c.setEnabled(local.enabled)
 			} else {
-				return fmt.Errorf("attempt to patch locked column %s", c.name)
+				return fmt.Errorf("Attempt to patch locked column %s. The column is not allowed to change `enabled` value, reason: %v.", c.name, c.getLockReason())
 			}
 		}
 		c.setHashed(local.hashed)
@@ -83,12 +93,46 @@ func (c *_column) readFromResponse(name string, response *connectors.ConnectorSc
 	c.enabled = *response.Enabled
 	c.hashed = response.Hashed
 	c.patchAllowed = response.EnabledPatchSettings.Allowed
+	if !c.isPatchAllowed() {
+		lockReason := "Reason unknown. Please report this error to provider developers."
+		if response.EnabledPatchSettings.ReasonCode != nil || response.EnabledPatchSettings.Reason != nil {
+			code := "unknown"
+			reason := "unknown"
+			if response.EnabledPatchSettings.ReasonCode != nil {
+				code = *response.EnabledPatchSettings.ReasonCode
+			}
+			if response.EnabledPatchSettings.Reason != nil {
+				reason = *response.EnabledPatchSettings.Reason
+			}
+			lockReason = fmt.Sprintf("code: %v | reason: %v", code, reason)
+		}
+		c.lockReason = &lockReason
+	}
 }
 
-func (c _column) toStateObject(sch string, local *_column) (map[string]interface{}, bool) {
+func (c _column) toStateObject(sch string, local *_column, diag *diag.Diagnostics, schema, table string) (map[string]interface{}, bool) {
 	result := make(map[string]interface{})
 
 	result[ENABLED] = helpers.BoolToStr(c.enabled)
+
+	// In case if table patch is not allowed we have to preserve local value in state to avoid conflict
+	if local != nil {
+		if c.patchAllowed != nil && !*c.patchAllowed && c.enabled != local.enabled {
+			lockReason := "Unknown"
+			if c.lockReason != nil {
+				lockReason = *c.lockReason
+			}
+			diag.AddWarning(
+				"Schema might be missconfigured.",
+				fmt.Sprintf(
+					"Column `%v` in table `%v` of schema `%v`, defined in your config, doesn't allowed to be enabled or disabled:\n"+
+						"Reason: %v\n"+
+						"Configured `enabled = %v` value ignored and not applied. Effective value: %v", c.name, table, schema, lockReason, local.enabled, c.enabled),
+			)
+			result[ENABLED] = helpers.BoolToStr(local.enabled)
+		}
+	}
+
 	result[NAME] = c.name
 
 	if c.hashed != nil {

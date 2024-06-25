@@ -1,14 +1,17 @@
 package model
 
 import (
+	"context"
 	"encoding/json"
 
+	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/connectors"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/fivetrantypes"
 	configSchema "github.com/fivetran/terraform-provider-fivetran/modules/connector/schema"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
@@ -21,11 +24,40 @@ type ConnectorSchemaResourceModel struct {
 	Schema               types.Set                     `tfsdk:"schema"`
 	Timeouts             timeouts.Value                `tfsdk:"timeouts"`
 	SchemasRaw           fivetrantypes.JsonSchemaValue `tfsdk:"schemas_json"`
+	ValidationLevel      types.String                  `tfsdk:"validation_level"`
 }
 
 func (d *ConnectorSchemaResourceModel) IsValid() bool {
 	noSchemaDefined := !(d.IsRawSchemaDefined() || d.IsMappedSchemaDefined() || d.IsLegacySchemaDefined())
 	return noSchemaDefined || ((d.IsRawSchemaDefined() != d.IsMappedSchemaDefined()) != d.IsLegacySchemaDefined())
+}
+
+func (d *ConnectorSchemaResourceModel) getValidationLevels() (bool, bool) {
+	validationLevel := d.ValidationLevel.ValueString()
+
+	validateTables := false
+	validateColumns := false
+
+	if validationLevel != "NONE" {
+		validateTables = true
+	}
+	if validationLevel == "COLUMNS" {
+		validateColumns = true
+	}
+	return validateTables, validateColumns
+}
+
+func (d *ConnectorSchemaResourceModel) ValidateSchemaElements(response connectors.ConnectorSchemaDetailsResponse, client fivetran.Client, ctx context.Context) (error, bool) {
+	validateTables, validateColumns := d.getValidationLevels()
+	if validateTables {
+		return d.GetSchemaConfig().ValidateSchemas(
+			d.ConnectorId.ValueString(),
+			response.Data.Schemas,
+			client,
+			ctx,
+			validateColumns)
+	}
+	return nil, false
 }
 
 func (d *ConnectorSchemaResourceModel) IsRawSchemaDefined() bool {
@@ -40,10 +72,10 @@ func (d *ConnectorSchemaResourceModel) IsMappedSchemaDefined() bool {
 	return !d.Schemas.IsUnknown() && !d.Schemas.IsNull() && len(d.Schemas.Elements()) > 0
 }
 
-func (d *ConnectorSchemaResourceModel) ReadFromResponse(response connectors.ConnectorSchemaDetailsResponse) {
+func (d *ConnectorSchemaResourceModel) ReadFromResponse(response connectors.ConnectorSchemaDetailsResponse, diag *diag.Diagnostics) {
 	schemaObject := configSchema.SchemaConfig{}
 	schemaObject.ReadFromResponse(response)
-	schemas := schemaObject.GetSchemas(response.Data.SchemaChangeHandling, d.GetSchemaConfig())
+	schemas := schemaObject.GetSchemas(response.Data.SchemaChangeHandling, d.GetSchemaConfig(), diag)
 
 	if d.IsLegacySchemaDefined() {
 		d.Schema = d.getLegacySchemaItems(schemas)
