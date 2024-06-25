@@ -35,6 +35,7 @@ type ConnectorDatasourceModel struct {
 
     ProxyAgentId            types.String `tfsdk:"proxy_agent_id"`
     NetworkingMethod        types.String `tfsdk:"networking_method"`
+    LocalProcessingAgentId  types.String `tfsdk:"local_processing_agent_id"`
 
 	Status types.Object `tfsdk:"status"`
 
@@ -123,6 +124,7 @@ type ConnectorResourceModel struct {
 
     ProxyAgentId            types.String `tfsdk:"proxy_agent_id"`
     NetworkingMethod        types.String `tfsdk:"networking_method"`
+    LocalProcessingAgentId  types.String `tfsdk:"local_processing_agent_id"`
 
 	Config   types.Object   `tfsdk:"config"`
 	Auth     types.Object   `tfsdk:"auth"`
@@ -193,6 +195,12 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
 	d.CreatedAt = types.StringValue(c.CreatedAt)
 	d.GroupId = types.StringValue(c.GroupId)
 	d.Service = types.StringValue(c.Service)
+    
+    if c.LocalProcessingAgentId != "" {
+        d.LocalProcessingAgentId = types.StringValue(c.LocalProcessingAgentId)
+    } else {
+        d.LocalProcessingAgentId = types.StringNull()
+    }
 
 	d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
 
@@ -222,6 +230,12 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
 	d.CreatedAt = types.StringValue(c.CreatedAt)
 	d.GroupId = types.StringValue(c.GroupId)
 	d.Service = types.StringValue(c.Service)
+    
+    if c.LocalProcessingAgentId != "" {
+        d.LocalProcessingAgentId = types.StringValue(c.LocalProcessingAgentId)
+    } else {
+        d.LocalProcessingAgentId = types.StringNull()
+    }
 
 	d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
 
@@ -255,6 +269,7 @@ type ConnectorModelContainer struct {
 
     ProxyAgentId            string
     NetworkingMethod        string
+    LocalProcessingAgentId  string
 
 	Config map[string]interface{}
 
@@ -279,6 +294,10 @@ func (c *ConnectorModelContainer) ReadFromResponseData(data connectors.DetailsRe
 
     if data.NetworkingMethod != "" {
         c.NetworkingMethod = data.NetworkingMethod
+    }
+
+    if data.LocalProcessingAgentId != "" {
+        c.LocalProcessingAgentId = data.LocalProcessingAgentId
     }
 }
 

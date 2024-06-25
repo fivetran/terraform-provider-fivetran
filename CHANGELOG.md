@@ -7,9 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.0...HEAD)
 
-## [1.2.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.26...v1.2.0)
+## [1.2.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.1.27...v1.2.0)
+
+## Added
+- New resource `fivetran_local_processing_agent` that allows to manage Local Processing Agents.
+- New data source `fivetran_local_processing_agent` that allows to retrieve details of the existing Local Processing Agent for a given identifier.
+- New data source `fivetran_local_processing_agents` that allows to retrieve the list of existing Local Processing Agents available for the current account.
 
 ## Updated
+Updates to support management of local processing agents:
+- Resource `fivetran_connector` updates:
+  - Added field `fivetran_connector.local_processing_agent_id`.
+
+- Resource `fivetran_destination` updates:
+  - Added field `fivetran_connector.local_processing_agent_id`.
+  - Added field `fivetran_connector.networking_method`.
+
+- Datasource `fivetran_connector` updates:
+  - Added field `fivetran_connector.local_processing_agent_id`.
+
+- Datasource `fivetran_destination` updates:
+  - Added field `fivetran_connector.local_processing_agent_id`.
+  - Added field `fivetran_connector.networking_method`.
+
 - Resource `fivetran_connector_schema_config` reworked, added new validation logic and new field `validation_level`.
     - `fivetran_connector_schema_config.validation_level` allows to setup desired level of schema validation before apply
         - NONE: no validation needed, the fastest way to apply schema, especially for a newly created connector - it will use new [Create a Connector Schema Config](https://fivetran.com/docs/rest-api/connectors#createaconnectorschemaconfig) endpoint.

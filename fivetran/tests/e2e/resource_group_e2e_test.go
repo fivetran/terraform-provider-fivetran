@@ -22,12 +22,12 @@ func TestResourceGroupE2E(t *testing.T) {
 				Config: `
 					resource "fivetran_group" "testgroup" {
 						provider = fivetran-provider
-						name = "test_group_name"
+						name = "TestResourceGroupE2E"
 					}
 				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranGroupResourceCreate(t, "fivetran_group.testgroup"),
-					resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "test_group_name"),
+					resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "TestResourceGroupE2E"),
 					resource.TestCheckResourceAttrSet("fivetran_group.testgroup", "created_at"),
 				),
 			},
@@ -35,12 +35,12 @@ func TestResourceGroupE2E(t *testing.T) {
 				Config: `
 				resource "fivetran_group" "testgroup" {
 					provider = fivetran-provider
-					name = "test_group_name_updated"
+					name = "TestResourceGroupE2E_updated"
 			    }
 		  `,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranGroupResourceUpdate(t, "fivetran_group.testgroup"),
-					resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "test_group_name_updated"),
+					resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "TestResourceGroupE2E_updated"),
 					resource.TestCheckResourceAttrSet("fivetran_group.testgroup", "created_at"),
 					resource.TestCheckResourceAttrSet("fivetran_group.testgroup", "last_updated"),
 				),
@@ -70,7 +70,7 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 
 					resource "fivetran_group" "testgroup" {
 						provider = fivetran-provider
-						name = "test_group_name"
+						name = "TestResourceGroupWithUsersE2E"
 					}
 
 					resource "fivetran_group_users" "testgroup_users" {
@@ -103,7 +103,7 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 
 					resource "fivetran_group" "testgroup" {
 						provider = fivetran-provider
-						name = "test_group_name"
+						name = "TestResourceGroupWithUsersE2E"
 					}
 
 					resource "fivetran_group_users" "testgroup_users" {
@@ -136,7 +136,7 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 
 					resource "fivetran_group" "testgroup" {
 						provider = fivetran-provider
-						name = "test_group_name"
+						name = "TestResourceGroupWithUsersE2E"
 					}
 
 					resource "fivetran_group_users" "testgroup_users" {
@@ -145,7 +145,7 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 					}
 				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "test_group_name"),
+					resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "TestResourceGroupWithUsersE2E"),
 					resource.TestCheckResourceAttr("fivetran_group_users.testgroup_users", "user.#", "0"),
 				),
 			},
@@ -162,8 +162,8 @@ func testFivetranGroupResourceUpdate(t *testing.T, resourceName string) resource
 			return err
 		}
 
-		if response.Data.Name != "test_group_name_updated" {
-			return fmt.Errorf("Group has name %v different from expected (%v)", response.Data.Name, "test_group_name_updated")
+		if response.Data.Name != "TestResourceGroupE2E_updated" {
+			return fmt.Errorf("Group has name %v different from expected (%v)", response.Data.Name, "TestResourceGroupE2E_updated")
 		}
 
 		return nil

@@ -86,7 +86,6 @@ type SchemaField struct {
 	Sensitive      bool
 
 	DefaultString string
-
 	Readonly    bool
 	Description string
 }

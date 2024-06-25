@@ -88,6 +88,8 @@ func cleanupAccount() {
 	cleanupGroups()
 	cleanupWebhooks()
 	cleanupTeams()
+	cleanupProxyAgents()
+	cleanupLocalProcessingAgents()
 }
 
 func isPredefinedUserExist() bool {
@@ -255,5 +257,39 @@ func cleanupTeams() {
 
 	if teams.Data.NextCursor != "" {
 		cleanupTeams()
+	}
+}
+
+func cleanupProxyAgents() {
+	proxyList, err := client.NewProxyList().Do(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, proxy := range proxyList.Data.Items {
+		_, err := client.NewProxyDelete().ProxyId(proxy.Id).Do(context.Background())
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	if proxyList.Data.NextCursor != "" {
+		cleanupProxyAgents()
+	}
+}
+
+func cleanupLocalProcessingAgents() {
+	lpaList, err := client.NewLocalProcessingAgentList().Do(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, lpa := range lpaList.Data.Items {
+		_, err := client.NewLocalProcessingAgentDelete().AgentId(lpa.Id).Do(context.Background())
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	if lpaList.Data.NextCursor != "" {
+		cleanupLocalProcessingAgents()
 	}
 }
