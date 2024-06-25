@@ -11,12 +11,12 @@ import (
 )
 
 var (
-	localProcessingAgentsDataSourceMockGetHandler *mock.Handler
-	localProcessingAgentsDataSourceMockData       map[string]interface{}
+	hybridDeploymentAgentsDataSourceMockGetHandler *mock.Handler
+	hybridDeploymentAgentsDataSourceMockData       map[string]interface{}
 )
 
 const (
-	localProcessingAgentsMappingResponse = `
+	hybridDeploymentAgentsMappingResponse = `
     {
         "items": [
           {
@@ -60,13 +60,13 @@ const (
     }`
 )
 
-func setupMockClientLocalProcessingAgentsDataSourceConfigMapping(t *testing.T) {
+func setupMockClientHybridDeploymentAgentsDataSourceConfigMapping(t *testing.T) {
 	tfmock.MockClient().Reset()
 
-	localProcessingAgentsDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/local-processing-agents").ThenCall(
+	hybridDeploymentAgentsDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/hybrid-deployment-agents").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			localProcessingAgentsDataSourceMockData = tfmock.CreateMapFromJsonString(t, localProcessingAgentsMappingResponse)
-			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", localProcessingAgentsDataSourceMockData), nil
+			hybridDeploymentAgentsDataSourceMockData = tfmock.CreateMapFromJsonString(t, hybridDeploymentAgentsMappingResponse)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", hybridDeploymentAgentsDataSourceMockData), nil
 		},
 	)
 }
@@ -80,8 +80,8 @@ func TestDataSourceLocalProcessingAgentsMappingMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				tfmock.AssertEqual(t, localProcessingAgentsDataSourceMockGetHandler.Interactions, 1)
-				tfmock.AssertNotEmpty(t, localProcessingAgentsDataSourceMockData)
+				tfmock.AssertEqual(t, hybridDeploymentAgentsDataSourceMockGetHandler.Interactions, 1)
+				tfmock.AssertNotEmpty(t, hybridDeploymentAgentsDataSourceMockData)
 				return nil
 			},
             resource.TestCheckResourceAttr("data.fivetran_local_processing_agents.test_lpa", "items.0.display_name", "display_name1"),
@@ -110,7 +110,7 @@ func TestDataSourceLocalProcessingAgentsMappingMock(t *testing.T) {
 		t,
 		resource.TestCase{
 			PreCheck: func() {
-				setupMockClientLocalProcessingAgentsDataSourceConfigMapping(t)
+				setupMockClientHybridDeploymentAgentsDataSourceConfigMapping(t)
 			},
 			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {

@@ -8,11 +8,11 @@ import (
     "github.com/hashicorp/terraform-plugin-framework/attr"
 )
 
-type LocalProcessingAgents struct {
+type HybridDeploymentAgents struct {
     Items   types.Set `tfsdk:"items"`
 }
 
-func (d *LocalProcessingAgents) ReadFromResponse(ctx context.Context, resp localprocessingagent.LocalProcessingAgentListResponse) {
+func (d *HybridDeploymentAgents) ReadFromResponse(ctx context.Context, resp localprocessingagent.LocalProcessingAgentListResponse) {
     subSetElementType := map[string]attr.Type{
         "connection_id":   types.StringType,
         "schema":          types.StringType,

@@ -11,35 +11,35 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
-func TestResourceLocalProcessingAgentE2E(t *testing.T) {
+func TestResourceHybridDeploymentAgentE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
 		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
-		CheckDestroy:             testFivetranLocalProcessingAgentResourceDestroy,
+		CheckDestroy:             testFivetranHybridDeploymentAgentResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `
 				resource "fivetran_group" "testgroup" {
 					provider = fivetran-provider
-					name = "TestResourceLocalProcessingAgentE2E"
+					name = "TestResourceHybridDeploymentAgentE2E"
 			    }
 
             	resource "fivetran_local_processing_agent" "test_lpa" {
                 	provider = fivetran-provider
 
-                 	display_name = "TestResourceLocalProcessingAgentE2E"
+                 	display_name = "TestResourceHybridDeploymentAgentE2E"
                  	group_id = fivetran_group.testgroup.id
             	}`,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					testFivetranLocalProcessingAgentResourceCreate(t, "fivetran_local_processing_agent.test_lpa"),
-					resource.TestCheckResourceAttr("fivetran_local_processing_agent.test_lpa", "display_name", "TestResourceLocalProcessingAgentE2E"),
+					testFivetranHybridDeploymentAgentResourceCreate(t, "fivetran_local_processing_agent.test_lpa"),
+					resource.TestCheckResourceAttr("fivetran_local_processing_agent.test_lpa", "display_name", "TestResourceHybridDeploymentAgentE2E"),
 				),
 			},
 		},
 	})
 }
 
-func testFivetranLocalProcessingAgentResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {
+func testFivetranHybridDeploymentAgentResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
 
@@ -53,7 +53,7 @@ func testFivetranLocalProcessingAgentResourceCreate(t *testing.T, resourceName s
 	}
 }
 
-func testFivetranLocalProcessingAgentResourceDestroy(s *terraform.State) error {
+func testFivetranHybridDeploymentAgentResourceDestroy(s *terraform.State) error {
 	for _, rs := range s.RootModule().Resources {
 		if rs.Type != "fivetran_local_processing_agent" {
 			continue

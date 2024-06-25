@@ -60,8 +60,12 @@ func DestinationAttributesSchema() core.Schema {
 				Description: "Destination setup status.",
 			},
 			"daylight_saving_time_enabled": {
-				ValueType:    core.Boolean,
-				Description:  "Shift my UTC offset with daylight savings time (US Only)",
+				ValueType:   core.Boolean,
+				Description: "Shift my UTC offset with daylight savings time (US Only)",
+			},
+			"private_link_id": {
+				ValueType:   core.String,
+				Description: "The private link ID.",
 			},
 			"local_processing_agent_id": {
 				ValueType:   core.String,

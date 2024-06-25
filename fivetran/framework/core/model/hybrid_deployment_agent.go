@@ -4,7 +4,7 @@ import (
     "github.com/fivetran/go-fivetran/local_processing_agent"
 )
 
-type localProcessingAgentModel interface {
+type hybridDeploymentAgentModel interface {
     SetId(string)
     SetDisplayName(string)
     SetGroupId(string)
@@ -15,7 +15,7 @@ type localProcessingAgentModel interface {
     SetUsage([]localprocessingagent.LocalProcessingAgentUsageDetails)
 }
 
-func readLocalProcessingAgentFromResponse(d localProcessingAgentModel, resp localprocessingagent.LocalProcessingAgentDetailsResponse) {
+func readHybridDeploymentAgentFromResponse(d hybridDeploymentAgentModel, resp localprocessingagent.LocalProcessingAgentDetailsResponse) {
     d.SetId(resp.Data.Id)
     d.SetDisplayName(resp.Data.DisplayName)
     d.SetGroupId(resp.Data.GroupId)
@@ -23,7 +23,7 @@ func readLocalProcessingAgentFromResponse(d localProcessingAgentModel, resp loca
     d.SetUsage(resp.Data.Usage)
 }
 
-func readLocalProcessingAgentFromCreateResponse(d localProcessingAgentModel, resp localprocessingagent.LocalProcessingAgentCreateResponse) {
+func readHybridDeploymentAgentFromCreateResponse(d hybridDeploymentAgentModel, resp localprocessingagent.LocalProcessingAgentCreateResponse) {
     d.SetId(resp.Data.Id)
     d.SetDisplayName(resp.Data.DisplayName)
     d.SetGroupId(resp.Data.GroupId)

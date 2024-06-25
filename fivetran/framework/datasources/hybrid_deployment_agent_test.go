@@ -11,12 +11,12 @@ import (
 )
 
 var (
-    lpaDataSourceMockGetHandler *mock.Handler
-    lpaDataSourceMockData map[string]interface{}
+    hdaDataSourceMockGetHandler *mock.Handler
+    hdaDataSourceMockData map[string]interface{}
 )
 
 const (
-    lpaMappingResponse = `
+    hdaMappingResponse = `
     {
         "id": "lpa_id",
         "display_name": "display_name",
@@ -38,18 +38,18 @@ const (
     `
 )
 
-func setupMockClientLocalProcessingAgentDataSourceConfigMapping(t *testing.T) {
+func setupMockClientHybridDeploymentAgentDataSourceConfigMapping(t *testing.T) {
     tfmock.MockClient().Reset()
 
-    lpaDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/local-processing-agents/lpa_id").ThenCall(
+    hdaDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/local-processing-agents/lpa_id").ThenCall(
         func(req *http.Request) (*http.Response, error) {
-            lpaDataSourceMockData = tfmock.CreateMapFromJsonString(t, lpaMappingResponse)
-            return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", lpaDataSourceMockData), nil
+            hdaDataSourceMockData = tfmock.CreateMapFromJsonString(t, hdaMappingResponse)
+            return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", hdaDataSourceMockData), nil
         },
     )
 }
 
-func TestDataSourceLocalProcessingAgentMappingMock(t *testing.T) {
+func TestDataSourceHybridDeploymentAgentMappingMock(t *testing.T) {
     step1 := resource.TestStep{
         Config: `
         data "fivetran_local_processing_agent" "test_lpa" {
@@ -59,8 +59,8 @@ func TestDataSourceLocalProcessingAgentMappingMock(t *testing.T) {
 
         Check: resource.ComposeAggregateTestCheckFunc(
             func(s *terraform.State) error {
-                tfmock.AssertEqual(t, lpaDataSourceMockGetHandler.Interactions, 1)
-                tfmock.AssertNotEmpty(t, lpaDataSourceMockData)
+                tfmock.AssertEqual(t, hdaDataSourceMockGetHandler.Interactions, 1)
+                tfmock.AssertNotEmpty(t, hdaDataSourceMockData)
                 return nil
             },
             resource.TestCheckResourceAttr("data.fivetran_local_processing_agent.test_lpa", "display_name", "display_name"),
@@ -79,7 +79,7 @@ func TestDataSourceLocalProcessingAgentMappingMock(t *testing.T) {
         t,
         resource.TestCase{
             PreCheck: func() {
-                setupMockClientLocalProcessingAgentDataSourceConfigMapping(t)
+                setupMockClientHybridDeploymentAgentDataSourceConfigMapping(t)
             },
             ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
             CheckDestroy: func(s *terraform.State) error {

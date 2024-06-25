@@ -11,31 +11,31 @@ import (
     "github.com/hashicorp/terraform-plugin-framework/resource"
 )
 
-func LocalProcessingAgent() resource.Resource {
-    return &localProcessingAgent{}
+func HybridDeploymentAgent() resource.Resource {
+    return &hybridDeploymentAgent{}
 }
 
-type localProcessingAgent struct {
+type hybridDeploymentAgent struct {
     core.ProviderResource
 }
 
 // Ensure the implementation satisfies the desired interfaces.
-var _ resource.ResourceWithConfigure = &localProcessingAgent{}
-var _ resource.ResourceWithImportState = &localProcessingAgent{}
+var _ resource.ResourceWithConfigure = &hybridDeploymentAgent{}
+var _ resource.ResourceWithImportState = &hybridDeploymentAgent{}
 
-func (r *localProcessingAgent) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (r *hybridDeploymentAgent) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
     resp.TypeName = req.ProviderTypeName + "_local_processing_agent"
 }
 
-func (r *localProcessingAgent) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
-    resp.Schema = fivetranSchema.LocalProcessingAgentResource()
+func (r *hybridDeploymentAgent) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+    resp.Schema = fivetranSchema.HybridDeploymentAgentResource()
 }
 
-func (r *localProcessingAgent) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *hybridDeploymentAgent) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
     resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
-func (r *localProcessingAgent) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (r *hybridDeploymentAgent) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -45,7 +45,7 @@ func (r *localProcessingAgent) Create(ctx context.Context, req resource.CreateRe
 		return
 	}
 
-	var data model.LocalProcessingAgentResourceModel
+	var data model.HybridDeploymentAgentResourceModel
 
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
@@ -75,7 +75,7 @@ func (r *localProcessingAgent) Create(ctx context.Context, req resource.CreateRe
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *localProcessingAgent) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+func (r *hybridDeploymentAgent) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
     if r.GetClient() == nil {
         resp.Diagnostics.AddError(
             "Unconfigured Fivetran Client",
@@ -85,7 +85,7 @@ func (r *localProcessingAgent) Read(ctx context.Context, req resource.ReadReques
         return
     }
 
-    var data model.LocalProcessingAgentResourceModel
+    var data model.HybridDeploymentAgentResourceModel
 
     // Read Terraform prior state data into the model
     resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
@@ -105,7 +105,7 @@ func (r *localProcessingAgent) Read(ctx context.Context, req resource.ReadReques
     resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *localProcessingAgent) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (r *hybridDeploymentAgent) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
     if r.GetClient() == nil {
         resp.Diagnostics.AddError(
             "Unconfigured Fivetran Client",
@@ -115,7 +115,7 @@ func (r *localProcessingAgent) Update(ctx context.Context, req resource.UpdateRe
         return
     }
 
-    var plan, state model.LocalProcessingAgentResourceModel
+    var plan, state model.HybridDeploymentAgentResourceModel
 
     resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
     resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -136,7 +136,7 @@ func (r *localProcessingAgent) Update(ctx context.Context, req resource.UpdateRe
     resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
-func (r *localProcessingAgent) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (r *hybridDeploymentAgent) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
     if r.GetClient() == nil {
         resp.Diagnostics.AddError(
             "Unconfigured Fivetran Client",
@@ -146,7 +146,7 @@ func (r *localProcessingAgent) Delete(ctx context.Context, req resource.DeleteRe
         return
     }
 
-    var data model.LocalProcessingAgentResourceModel
+    var data model.HybridDeploymentAgentResourceModel
 
     resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
