@@ -14,6 +14,7 @@ type destinationModel interface {
 	SetDaylightSavingTimeEnabled(bool)
     SetLocalProcessingAgentId(string)
     SetNetworkingMethod(string)
+    SetPrivateLinkId(string)
 	SetConfig(map[string]interface{})
 }
 
@@ -27,5 +28,6 @@ func readFromResponse(d destinationModel, resp destinations.DestinationDetailsBa
 	d.SetDaylightSavingTimeEnabled(resp.DaylightSavingTimeEnabled)
 	d.SetLocalProcessingAgentId(resp.LocalProcessingAgentId)
 	d.SetNetworkingMethod(resp.NetworkingMethod)
+	d.SetPrivateLinkId(resp.PrivateLinkId)
 	d.SetConfig(config)
 }

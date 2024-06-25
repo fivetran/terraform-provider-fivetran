@@ -45,7 +45,6 @@ func (r *connector) ImportState(ctx context.Context, req resource.ImportStateReq
 }
 
 func (r *connector) UpgradeState(ctx context.Context) map[int64]resource.StateUpgrader {
-
 	v0ConfigTfTypes := model.GetTfTypes(common.GetConfigFieldsMap(), 1)
 
 	v0ConfigTfTypes["servers"] = tftypes.String
@@ -155,6 +154,10 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 
 	if data.LocalProcessingAgentId.ValueString() != "" {
 		svc.LocalProcessingAgentId(data.LocalProcessingAgentId.ValueString())
+	}
+
+	if data.PrivateLinkId.ValueString() != "" {
+		svc.PrivateLinkId(data.PrivateLinkId.ValueString())
 	}
 
 	if !noAuth {
@@ -319,6 +322,10 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 
 		if plan.LocalProcessingAgentId.ValueString() != "" {
 			svc.LocalProcessingAgentId(plan.LocalProcessingAgentId.ValueString())
+		}
+
+		if plan.PrivateLinkId.ValueString() != "" {
+			svc.PrivateLinkId(plan.PrivateLinkId.ValueString())
 		}
 
 		if len(patch) > 0 {

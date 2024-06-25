@@ -106,6 +106,10 @@ func (r *destination) Create(ctx context.Context, req resource.CreateRequest, re
 
 	if data.NetworkingMethod.ValueString() != "" {
 		svc.NetworkingMethod(data.NetworkingMethod.ValueString())
+    }
+
+	if data.PrivateLinkId.ValueString() != "" {
+		svc.PrivateLinkId(data.PrivateLinkId.ValueString())
 	}
 
 	response, err := svc.
@@ -288,6 +292,10 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 
 		if plan.NetworkingMethod.ValueString() != "" {
 			svc.NetworkingMethod(plan.NetworkingMethod.ValueString())
+        }
+
+		if plan.PrivateLinkId.ValueString() != "" {
+			svc.PrivateLinkId(plan.PrivateLinkId.ValueString())
 		}
 
 		if len(patch) > 0 {
