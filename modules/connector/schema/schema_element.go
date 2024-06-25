@@ -6,11 +6,20 @@ type _element struct {
 	updated bool
 
 	patchAllowed   *bool
+	lockReason     *string
 	enabledPatched bool // indicates that we need to include new value in request
 }
 
 func (e *_element) isPatchAllowed() bool {
 	return e.patchAllowed == nil || *e.patchAllowed
+}
+
+func (e *_element) getLockReason() string {
+	if e.lockReason == nil {
+		return ""
+	} else {
+		return *(e.lockReason)
+	}
 }
 
 func (e *_element) setEnabled(value bool) {
