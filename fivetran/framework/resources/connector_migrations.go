@@ -38,13 +38,16 @@ func upgradeConnectorState(ctx context.Context, req resource.UpgradeStateRequest
 	dynamicValue, err := tfprotov6.NewDynamicValue(
 		getConnectorStateModel(3),
 		tftypes.NewValue(getConnectorStateModel(3), map[string]tftypes.Value{
-			"id":           rawState["id"],
-			"name":         rawState["name"],
-			"connected_by": rawState["connected_by"],
-			"created_at":   rawState["created_at"],
-			"group_id":     rawState["group_id"],
-			"service":      rawState["service"],
-			"timeouts":     rawState["timeouts"],
+			"id":                        rawState["id"],
+			"name":                      rawState["name"],
+			"connected_by":              rawState["connected_by"],
+			"created_at":                rawState["created_at"],
+			"group_id":                  rawState["group_id"],
+			"service":                   rawState["service"],
+			"timeouts":                  rawState["timeouts"],
+			"networking_method":         tftypes.NewValue(tftypes.String, nil),
+			"proxy_agent_id":            tftypes.NewValue(tftypes.String, nil),
+			"local_processing_agent_id": tftypes.NewValue(tftypes.String, nil),
 
 			"run_setup_tests":    convertStringStateValueToBool("run_setup_tests", rawState["run_setup_tests"], resp.Diagnostics),
 			"trust_fingerprints": convertStringStateValueToBool("trust_fingerprints", rawState["trust_fingerprints"], resp.Diagnostics),
@@ -101,7 +104,8 @@ func getConnectorStateModel(version int) tftypes.Type {
 
 		base["proxy_agent_id"] = tftypes.String
 		base["networking_method"] = tftypes.String
-		
+		base["local_processing_agent_id"] = tftypes.String
+
 		base["config"] = tftypes.Object{AttributeTypes: model.GetTfTypes(common.GetConfigFieldsMap(), 3)}
 		base["auth"] = tftypes.Object{AttributeTypes: model.GetTfTypes(common.GetAuthFieldsMap(), 3)}
 	} else {
