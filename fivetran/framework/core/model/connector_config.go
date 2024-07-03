@@ -331,16 +331,22 @@ func getValueFromAttrValue(av attr.Value, fieldsMap map[string]common.ConfigFiel
 		if currentField != nil {
 			if t, ok := currentField.ItemType[service]; ok {
 				if t == common.Integer {
+					if v.ValueString() == "" {
+						return nil
+					}
 					res, err := strconv.Atoi(v.ValueString())
 					if err != nil {
-						panic(fmt.Sprintf("Can't convert value %v to int", v.ValueString()))
+						return int(0)
 					}
 					return res
 				}
 				if t == common.Float {
+					if v.ValueString() == "" {
+						return nil
+					}
 					res, err := strconv.ParseFloat(v.ValueString(), 64)
 					if err != nil {
-						panic(fmt.Sprintf("Can't convert value %v to int", v.ValueString()))
+						return float64(0)
 					}
 					return res
 				}
@@ -362,7 +368,10 @@ func getValueFromAttrValue(av attr.Value, fieldsMap map[string]common.ConfigFiel
 				if scf, ok := fieldsMap[an+"_"+service]; ok {
 					cf = scf
 				}
-				result[an] = getValueFromAttrValue(av, cf.ItemFields, &cf, service)
+				value := getValueFromAttrValue(av, cf.ItemFields, &cf, service)
+				if value != nil {
+					result[an] = value
+				}
 			}
 		}
 		return result
@@ -370,14 +379,20 @@ func getValueFromAttrValue(av attr.Value, fieldsMap map[string]common.ConfigFiel
 	if v, ok := av.(basetypes.SetValue); ok {
 		result := make([]interface{}, 0)
 		for _, ev := range v.Elements() {
-			result = append(result, getValueFromAttrValue(ev, fieldsMap, currentField, service))
+			value := getValueFromAttrValue(ev, fieldsMap, currentField, service)
+			if value != nil {
+				result = append(result, value)
+			}
 		}
 		return result
 	}
 	if v, ok := av.(basetypes.ListValue); ok {
 		result := make([]interface{}, 0)
 		for _, ev := range v.Elements() {
-			result = append(result, getValueFromAttrValue(ev, fieldsMap, currentField, service))
+			value := getValueFromAttrValue(ev, fieldsMap, currentField, service)
+			if value != nil {
+				result = append(result, value)
+			}
 		}
 		return result
 	}
