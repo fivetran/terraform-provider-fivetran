@@ -216,28 +216,39 @@ func (r *teamConnectorMembership) Delete(ctx context.Context, req resource.Delet
 			"Unconfigured Fivetran Client",
 			"Please report this issue to the provider developers.",
 		)
-
 		return
 	}
 
-	var data model.TeamConnectorMemberships
+	var data, state model.TeamConnectorMemberships
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
+	stateConnectorsMap := make(map[string]string)
+	for _, connector := range state.Connector.Elements() {
+		if connectorElement, ok := connector.(basetypes.ObjectValue); ok {
+			stateConnectorsMap[connectorElement.Attributes()["connector_id"].(basetypes.StringValue).ValueString()] = connectorElement.Attributes()["role"].(basetypes.StringValue).ValueString()
+		}
+	}
+
+	deletedConnectors := make([]string, 0)
 	for _, connector := range data.Connector.Elements() {
 		if connectorElement, ok := connector.(basetypes.ObjectValue); ok {
+			connectorId := connectorElement.Attributes()["connector_id"].(basetypes.StringValue).ValueString()
 			svc := r.GetClient().NewTeamConnectorMembershipDelete()
 			svc.TeamId(data.TeamId.ValueString())
-			svc.ConnectorId(connectorElement.Attributes()["connector_id"].(basetypes.StringValue).ValueString())
+			svc.ConnectorId(connectorId)
 
 			if deleteResponse, err := svc.Do(ctx); err != nil {
 				resp.Diagnostics.AddError(
 					"Unable to Delete Team Connector Memberships Resource.",
 					fmt.Sprintf("%v; code: %v; message: %v", err, deleteResponse.Code, deleteResponse.Message),
 				)
-
+				
+				r.RevertDeleted(ctx, deletedConnectors, data.TeamId.ValueString(), stateConnectorsMap)
 				return
 			}
+			deletedConnectors = append(deletedConnectors, connectorId)
 		}
 	}
 }

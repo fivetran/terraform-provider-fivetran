@@ -49,12 +49,14 @@ func (r *userConnectorMembership) Create(ctx context.Context, req resource.Creat
     var data model.UserConnectorMemberships
 
     resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
-
-    for _, connector := range data.Connector.Elements() {
+    
+	savedConnectors := make([]string, 0, len(data.Connector.Elements()))
+	for _, connector := range data.Connector.Elements() {
         if connectorElement, ok := connector.(basetypes.ObjectValue); ok {
+			connectorId := connectorElement.Attributes()["connector_id"].(basetypes.StringValue).ValueString()
             svc := r.GetClient().NewUserConnectorMembershipCreate()
             svc.UserId(data.UserId.ValueString())
-            svc.ConnectorId(connectorElement.Attributes()["connector_id"].(basetypes.StringValue).ValueString())
+            svc.ConnectorId(connectorId)
             svc.Role(connectorElement.Attributes()["role"].(basetypes.StringValue).ValueString())
             if userConnectorResponse, err := svc.Do(ctx); err != nil {
                 resp.Diagnostics.AddError(
@@ -62,8 +64,11 @@ func (r *userConnectorMembership) Create(ctx context.Context, req resource.Creat
                     fmt.Sprintf("%v; code: %v; message: %v", err, userConnectorResponse.Code, userConnectorResponse.Message),
                 )
 
+				r.RevertCreated(ctx, savedConnectors, data.UserId.ValueString())
                 return
             }
+
+			savedConnectors = append(savedConnectors, connectorId)
         }
     }
 
@@ -140,6 +145,8 @@ func (r *userConnectorMembership) Update(ctx context.Context, req resource.Updat
     }
 
     /* sync */
+	deletedConnectors := make([]string, 0)
+	modifiedConnectors := make([]string, 0)
     for stateKey, stateValue := range stateConnectorsMap {
         role, found := planConnectorsMap[stateKey]
 
@@ -149,19 +156,27 @@ func (r *userConnectorMembership) Update(ctx context.Context, req resource.Updat
                     "Unable to Update User Connector Membership Resource.",
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
                 )
+
+				r.RevertDeleted(ctx, deletedConnectors, plan.UserId.ValueString(), stateConnectorsMap)
                 return
             }
+			deletedConnectors = append(deletedConnectors, stateKey)
         } else if role != stateValue {
             if updateResponse, err := r.GetClient().NewUserConnectorMembershipModify().UserId(plan.UserId.ValueString()).ConnectorId(stateKey).Role(role).Do(ctx); err != nil {
                 resp.Diagnostics.AddError(
                     "Unable to Update User Connector Membership Resource.",
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
                 )
+
+				r.RevertDeleted(ctx, deletedConnectors, plan.UserId.ValueString(), stateConnectorsMap)
+				r.RevertModified(ctx, modifiedConnectors, plan.UserId.ValueString(), stateConnectorsMap)
                 return
             }
+			modifiedConnectors = append(modifiedConnectors, stateKey)
         }
     }
 
+	createdConnectors := make([]string, 0)
     for planKey, planValue := range planConnectorsMap {
         _, exists := stateConnectorsMap[planKey]
 
@@ -171,8 +186,13 @@ func (r *userConnectorMembership) Update(ctx context.Context, req resource.Updat
                     "Unable to Update User Connector Membership Resource.",
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
                 )
+
+				r.RevertDeleted(ctx, deletedConnectors, plan.UserId.ValueString(), stateConnectorsMap)
+				r.RevertModified(ctx, modifiedConnectors, plan.UserId.ValueString(), stateConnectorsMap)
+				r.RevertCreated(ctx, createdConnectors, plan.UserId.ValueString())
                 return
             }
+			createdConnectors = append(createdConnectors, planKey)
         }
     }
 
@@ -201,15 +221,25 @@ func (r *userConnectorMembership) Delete(ctx context.Context, req resource.Delet
         return
     }
 
-    var data model.UserConnectorMemberships
+    var data, state model.UserConnectorMemberships
 
     resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
+    stateConnectorsMap := make(map[string]string)
+    for _, connector := range state.Connector.Elements() {
+        if connectorElement, ok := connector.(basetypes.ObjectValue); ok {
+            stateConnectorsMap[connectorElement.Attributes()["connector_id"].(basetypes.StringValue).ValueString()] = connectorElement.Attributes()["role"].(basetypes.StringValue).ValueString()
+        }
+    }
+
+	deletedConnectors := make([]string, 0)
     for _, connector := range data.Connector.Elements() {
         if connectorElement, ok := connector.(basetypes.ObjectValue); ok {
+			connectorId := connectorElement.Attributes()["connector_id"].(basetypes.StringValue).ValueString()
             svc := r.GetClient().NewUserConnectorMembershipDelete()
             svc.UserId(data.UserId.ValueString())
-            svc.ConnectorId(connectorElement.Attributes()["connector_id"].(basetypes.StringValue).ValueString())
+            svc.ConnectorId(connectorId)
 
             if deleteResponse, err := svc.Do(ctx); err != nil {
                 resp.Diagnostics.AddError(
@@ -217,8 +247,40 @@ func (r *userConnectorMembership) Delete(ctx context.Context, req resource.Delet
                     fmt.Sprintf("%v; code: %v; message: %v", err, deleteResponse.Code, deleteResponse.Message),
                 )
 
+				r.RevertDeleted(ctx, deletedConnectors, data.UserId.ValueString(), stateConnectorsMap)
                 return
             }
+			deletedConnectors = append(deletedConnectors, connectorId)
         }
     }
+}
+
+
+func (r *userConnectorMembership) RevertDeleted(ctx context.Context, toRevert []string, userId string, stateConnectorsMap map[string]string) {
+	for _, connectorId := range toRevert {
+		svc := r.GetClient().NewUserConnectorMembershipCreate()
+		svc.UserId(userId)
+		svc.ConnectorId(connectorId)
+		svc.Role(stateConnectorsMap[connectorId])
+		svc.Do(ctx)
+	}
+}
+
+func (r *userConnectorMembership) RevertModified(ctx context.Context, toRevert []string, userId string, stateConnectorsMap map[string]string) {
+	for _, connectorId := range toRevert {
+		svc := r.GetClient().NewUserConnectorMembershipModify()
+		svc.UserId(userId)
+		svc.ConnectorId(connectorId)
+		svc.Role(stateConnectorsMap[connectorId])
+		svc.Do(ctx)
+	}
+}
+
+func (r *userConnectorMembership) RevertCreated(ctx context.Context, toRevert []string, userId string) {
+	for _, connectorId := range toRevert {
+		svc := r.GetClient().NewUserConnectorMembershipDelete()
+		svc.UserId(userId)
+		svc.ConnectorId(connectorId)
+		svc.Do(ctx)
+	}
 }
