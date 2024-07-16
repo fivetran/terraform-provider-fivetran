@@ -5,7 +5,58 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.3...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.4...HEAD)
+
+## [1.2.4](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.3...v1.2.4)
+
+## Updated
+- Documentation on using fields `fivetran_connector.networking_method` and `fivetran_destination.networking_method` has been clarified
+- Added documentation on migration to version 1.1.18
+
+New connection services supported:
+- Supported service: `anvyl`
+- Supported service: `boostr`
+- Supported service: `cloudbeds`
+- Supported service: `databricks_db`
+- Supported service: `exact_online`
+- Supported service: `factbird`
+- Supported service: `invoiced`
+- Supported service: `medallia_agile_research`
+- Supported service: `rundeck`
+- Supported service: `sigma_computing_source`
+- Supported service: `smartrecruiters`
+- Supported service: `splash`
+- Supported service: `statistics_netherlands_cbs`
+- Supported service: `teamtailor`
+- Supported service: `xandr`
+- Supported service: `zoho_inventory`
+
+New connector config fields supported:
+- Added field `fivetran_connector.config.service_account_username` for services: `mixpanel`.
+- Added field `fivetran_connector.config.identifier` for services: `statistics_netherlands_cbs`.
+- Added field `fivetran_connector.config.property_id` for services: `cloudbeds`.
+- Added field `fivetran_connector.config.http_path` for services: `databricks_db`.
+- Added field `fivetran_connector.config.x_key` for services: `medallia_agile_research`.
+- Added field `fivetran_connector.config.type_name` for services: `akamai`, `bubbleio`.
+- Added field `fivetran_connector.config.quota_project_id` for services: `bigquery_db`.
+- Added field `fivetran_connector.config.skip_empty_reports` for services: `google_ads`.
+- Added field `fivetran_connector.config.x_master_key` for services: `medallia_agile_research`.
+- Added field `fivetran_connector.config.tenant_configs` for services: `reltio`.
+- Added field `fivetran_connector.config.snc_source_name` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.api_server` for services: `sigma_computing_source`.
+- Added field `fivetran_connector.config.rollback_window` for services: `appsflyer`.
+- Added field `fivetran_connector.config.private_token` for services: `eventbrite`.
+- Added field `fivetran_connector.config.service_account_secret` for services: `mixpanel`.
+- Added field `fivetran_connector.config.tenant_app_url` for services: `planful`.
+- Added field `fivetran_connector.config.catalog` for services: `databricks_db`.
+- Added field `fivetran_connector.config.access_id` for services: `planful`.
+- Added field `fivetran_connector.config.max_api_requests_per_day` for services: `reltio`.
+- Added field `fivetran_connector.config.snc_certificate_source` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.api_key` for services: `elastic_cloud`, `es_self_hosted`.
+
+New destination config fields supported:
+- Added field `fivetran_connector.config.snapshot_retention_period` for services: `adls`, `new_s3_datalake`, `onelake`.
+- Added field `fivetran_connector.config.table_format` for services: `new_s3_datalake`.
 
 ## [1.2.3](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.2...v1.2.3)
 
@@ -38,15 +89,15 @@ Updates to support management of local processing agents:
   - Added field `fivetran_connector.local_processing_agent_id`.
 
 - Resource `fivetran_destination` updates:
-  - Added field `fivetran_connector.local_processing_agent_id`.
-  - Added field `fivetran_connector.networking_method`.
+  - Added field `fivetran_destination.local_processing_agent_id`.
+  - Added field `fivetran_destination.networking_method`.
 
 - Datasource `fivetran_connector` updates:
   - Added field `fivetran_connector.local_processing_agent_id`.
 
 - Datasource `fivetran_destination` updates:
-  - Added field `fivetran_connector.local_processing_agent_id`.
-  - Added field `fivetran_connector.networking_method`.
+  - Added field `fivetran_destination.local_processing_agent_id`.
+  - Added field `fivetran_destination.networking_method`.
 
 - Resource `fivetran_connector_schema_config` reworked, added new validation logic and new field `validation_level`.
     - `fivetran_connector_schema_config.validation_level` allows to setup desired level of schema validation before apply

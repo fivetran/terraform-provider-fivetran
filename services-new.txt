@@ -26,6 +26,7 @@ amazon_attribution
 amazon_selling_partner
 amplitude
 anaplan
+anvyl
 apache_kafka
 appcues
 appfigures
@@ -69,6 +70,7 @@ bingads
 birdeye
 bitly
 bizzabo
+boostr
 box
 braintree
 braintree_sandbox
@@ -110,6 +112,7 @@ clari
 clarity
 clickup
 close
+cloudbeds
 cloudfront
 clubspeed
 coassemble
@@ -134,6 +137,7 @@ culture_amp
 customerio
 cvent
 d2l_brightspace
+databricks_db
 datadog
 db2
 db2i_hva
@@ -171,10 +175,12 @@ es_self_hosted
 eventbrite
 eventsforce
 everhour
+exact_online
 expensify
 ezofficeinventory
 facebook_ads
 facebook_pages
+factbird
 factorial
 financial_force
 firebase
@@ -238,11 +244,6 @@ greenhouse
 grepsr
 grin
 guru
-hana_sap_hva_b1
-hana_sap_hva_ecc
-hana_sap_hva_ecc_netweaver
-hana_sap_hva_s4
-hana_sap_hva_s4_netweaver
 happyfox
 harvest
 heap
@@ -263,11 +264,13 @@ instagram_business
 integral_ad_science
 integrate
 intercom
+invoiced
 ironclad
 ironsource
 iterable
 itunes_connect
 ivanti
+jamf
 jira
 jotform
 justcall
@@ -316,6 +319,7 @@ mavenlink
 maxio_chargify
 maxio_saasoptics
 medallia
+medallia_agile_research
 megaphone
 mention
 microsoft_dynamics_365_fno
@@ -431,6 +435,7 @@ rocketlane
 rollbar
 rootly
 rtb_house
+rundeck
 s3
 safetyculture
 sage_hr
@@ -464,6 +469,7 @@ shopify
 shopware
 shortcut
 shortio
+sigma_computing_source
 simplecast
 simplesat
 sistrix
@@ -474,6 +480,7 @@ slab
 slack
 smadex
 smarthr
+smartrecruiters
 smartwaiver
 snapchat_ads
 snowflake_db
@@ -482,6 +489,7 @@ snyk
 solarwinds_service_desk
 sonarqube
 sparkpost
+splash
 splitio
 splunk
 spotify_ads
@@ -495,6 +503,7 @@ squarespace
 stackadapt
 standard_metrics
 starrez
+statistics_netherlands_cbs
 statsig
 statuspage
 stripe
@@ -509,6 +518,7 @@ taboola
 talkdesk
 talkwalker
 teads
+teamtailor
 teamwork
 tempo
 testrail
@@ -558,6 +568,7 @@ workday_hcm
 workday_strategic_sourcing
 workramp
 wrike
+xandr
 xero
 xray
 xsolla
@@ -578,6 +589,7 @@ zoho_books
 zoho_campaigns
 zoho_crm
 zoho_desk
+zoho_inventory
 zoom
 zuora
 zuora_sandbox

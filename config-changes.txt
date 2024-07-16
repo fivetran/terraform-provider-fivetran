@@ -1,7 +1,23 @@
-- Added field `fivetran_connector.config.snc_certificate_source` for services: `sap_hana_db`.
-- Added field `fivetran_connector.config.type_name` for services: `akamai`, `bubbleio`.
-- Added field `fivetran_connector.config.rollback_window` for services: `appsflyer`.
+- Added field `fivetran_connector.config.service_account_username` for services: `mixpanel`.
+- Added field `fivetran_connector.config.identifier` for services: `statistics_netherlands_cbs`.
+- Added field `fivetran_connector.config.property_id` for services: `cloudbeds`.
+- Added field `fivetran_connector.config.http_path` for services: `databricks_db`.
 - Added field `fivetran_connector.config.custom_tables.engaged_view_attribution_window` for services: `facebook_ads`.
+- Added field `fivetran_connector.config.x_key` for services: `medallia_agile_research`.
 - Added field `fivetran_connector.config.server_variable` for services: `myosh`.
-- Added field `fivetran_connector.config.snc_source_name` for services: `sap_hana_db`.
 - Added field `fivetran_connector.config.snc_fivetran_name` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.type_name` for services: `akamai`, `bubbleio`.
+- Added field `fivetran_connector.config.quota_project_id` for services: `bigquery_db`.
+- Added field `fivetran_connector.config.skip_empty_reports` for services: `google_ads`.
+- Added field `fivetran_connector.config.x_master_key` for services: `medallia_agile_research`.
+- Added field `fivetran_connector.config.tenant_configs` for services: `reltio`.
+- Added field `fivetran_connector.config.snc_source_name` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.api_server` for services: `sigma_computing_source`.
+- Added field `fivetran_connector.config.rollback_window` for services: `appsflyer`.
+- Added field `fivetran_connector.config.private_token` for services: `eventbrite`.
+- Added field `fivetran_connector.config.service_account_secret` for services: `mixpanel`.
+- Added field `fivetran_connector.config.tenant_app_url` for services: `planful`.
+- Added field `fivetran_connector.config.catalog` for services: `databricks_db`.
+- Added field `fivetran_connector.config.access_id` for services: `planful`.
+- Added field `fivetran_connector.config.max_api_requests_per_day` for services: `reltio`.
+- Added field `fivetran_connector.config.snc_certificate_source` for services: `sap_hana_db`.

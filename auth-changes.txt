@@ -1,0 +1,1 @@
+- Added field `fivetran_connector.config.api_key` for services: `elastic_cloud`, `es_self_hosted`.
