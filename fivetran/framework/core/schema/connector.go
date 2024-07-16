@@ -107,7 +107,7 @@ func ConnectorAttributesSchema() core.Schema {
 			},
 			"networking_method": {
 				ValueType:   	core.StringEnum,
-				Description: 	"Possible values: Directly, PrivateLink, SshTunnel, ProxyAgent.",
+				Description: 	"Possible values: Directly, SshTunnel, ProxyAgent.",
 			},
 			"local_processing_agent_id": {
 				ValueType:   core.String,

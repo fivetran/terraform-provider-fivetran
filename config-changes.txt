@@ -1,7 +1,0 @@
-- Added field `fivetran_connector.config.snc_certificate_source` for services: `sap_hana_db`.
-- Added field `fivetran_connector.config.type_name` for services: `akamai`, `bubbleio`.
-- Added field `fivetran_connector.config.rollback_window` for services: `appsflyer`.
-- Added field `fivetran_connector.config.custom_tables.engaged_view_attribution_window` for services: `facebook_ads`.
-- Added field `fivetran_connector.config.server_variable` for services: `myosh`.
-- Added field `fivetran_connector.config.snc_source_name` for services: `sap_hana_db`.
-- Added field `fivetran_connector.config.snc_fivetran_name` for services: `sap_hana_db`.
