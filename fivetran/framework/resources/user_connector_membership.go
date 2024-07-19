@@ -64,7 +64,7 @@ func (r *userConnectorMembership) Create(ctx context.Context, req resource.Creat
                     fmt.Sprintf("%v; code: %v; message: %v", err, userConnectorResponse.Code, userConnectorResponse.Message),
                 )
 
-				r.RevertCreated(ctx, savedConnectors, data.UserId.ValueString())
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertCreated(ctx, savedConnectors, data.UserId.ValueString()))
                 return
             }
 
@@ -157,7 +157,7 @@ func (r *userConnectorMembership) Update(ctx context.Context, req resource.Updat
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
                 )
 
-				r.RevertDeleted(ctx, deletedConnectors, plan.UserId.ValueString(), stateConnectorsMap)
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertDeleted(ctx, deletedConnectors, plan.UserId.ValueString(), stateConnectorsMap))
                 return
             }
 			deletedConnectors = append(deletedConnectors, stateKey)
@@ -168,8 +168,8 @@ func (r *userConnectorMembership) Update(ctx context.Context, req resource.Updat
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
                 )
 
-				r.RevertDeleted(ctx, deletedConnectors, plan.UserId.ValueString(), stateConnectorsMap)
-				r.RevertModified(ctx, modifiedConnectors, plan.UserId.ValueString(), stateConnectorsMap)
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertDeleted(ctx, deletedConnectors, plan.UserId.ValueString(), stateConnectorsMap))
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertModified(ctx, modifiedConnectors, plan.UserId.ValueString(), stateConnectorsMap))
                 return
             }
 			modifiedConnectors = append(modifiedConnectors, stateKey)
@@ -187,9 +187,9 @@ func (r *userConnectorMembership) Update(ctx context.Context, req resource.Updat
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
                 )
 
-				r.RevertDeleted(ctx, deletedConnectors, plan.UserId.ValueString(), stateConnectorsMap)
-				r.RevertModified(ctx, modifiedConnectors, plan.UserId.ValueString(), stateConnectorsMap)
-				r.RevertCreated(ctx, createdConnectors, plan.UserId.ValueString())
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertDeleted(ctx, deletedConnectors, plan.UserId.ValueString(), stateConnectorsMap))
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertModified(ctx, modifiedConnectors, plan.UserId.ValueString(), stateConnectorsMap))
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertCreated(ctx, createdConnectors, plan.UserId.ValueString()))
                 return
             }
 			createdConnectors = append(createdConnectors, planKey)
@@ -247,7 +247,7 @@ func (r *userConnectorMembership) Delete(ctx context.Context, req resource.Delet
                     fmt.Sprintf("%v; code: %v; message: %v", err, deleteResponse.Code, deleteResponse.Message),
                 )
 
-				r.RevertDeleted(ctx, deletedConnectors, data.UserId.ValueString(), stateConnectorsMap)
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertDeleted(ctx, deletedConnectors, data.UserId.ValueString(), stateConnectorsMap))
                 return
             }
 			deletedConnectors = append(deletedConnectors, connectorId)
@@ -256,31 +256,40 @@ func (r *userConnectorMembership) Delete(ctx context.Context, req resource.Delet
 }
 
 
-func (r *userConnectorMembership) RevertDeleted(ctx context.Context, toRevert []string, userId string, stateConnectorsMap map[string]string) {
+func (r *userConnectorMembership) RevertDeleted(ctx context.Context, toRevert []string, userId string, stateConnectorsMap map[string]string) string {
+	reverted := []string{}
 	for _, connectorId := range toRevert {
 		svc := r.GetClient().NewUserConnectorMembershipCreate()
 		svc.UserId(userId)
 		svc.ConnectorId(connectorId)
 		svc.Role(stateConnectorsMap[connectorId])
 		svc.Do(ctx)
+		reverted = append(reverted, connectorId)
 	}
+	return fmt.Sprintf("Delete action reverted for connectors: %v", reverted)
 }
 
-func (r *userConnectorMembership) RevertModified(ctx context.Context, toRevert []string, userId string, stateConnectorsMap map[string]string) {
+func (r *userConnectorMembership) RevertModified(ctx context.Context, toRevert []string, userId string, stateConnectorsMap map[string]string) string {
+	reverted := []string{}
 	for _, connectorId := range toRevert {
 		svc := r.GetClient().NewUserConnectorMembershipModify()
 		svc.UserId(userId)
 		svc.ConnectorId(connectorId)
 		svc.Role(stateConnectorsMap[connectorId])
 		svc.Do(ctx)
+		reverted = append(reverted, connectorId)
 	}
+	return fmt.Sprintf("Modify action reverted for connectors: %v", reverted)
 }
 
-func (r *userConnectorMembership) RevertCreated(ctx context.Context, toRevert []string, userId string) {
+func (r *userConnectorMembership) RevertCreated(ctx context.Context, toRevert []string, userId string) string  {
+	reverted := []string{}
 	for _, connectorId := range toRevert {
 		svc := r.GetClient().NewUserConnectorMembershipDelete()
 		svc.UserId(userId)
 		svc.ConnectorId(connectorId)
 		svc.Do(ctx)
+		reverted = append(reverted, connectorId)
 	}
+	return fmt.Sprintf("Create action reverted for connectors: %v", reverted)
 }

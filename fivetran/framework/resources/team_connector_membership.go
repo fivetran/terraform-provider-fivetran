@@ -63,8 +63,7 @@ func (r *teamConnectorMembership) Create(ctx context.Context, req resource.Creat
 					"Unable to Create Team Connector Memberships Resource.",
 					fmt.Sprintf("%v; code: %v; message: %v", err, teamConnectorResponse.Code, teamConnectorResponse.Message),
 				)
-
-				r.RevertCreated(ctx, savedConnectors, data.TeamId.ValueString())
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertCreated(ctx, savedConnectors, data.TeamId.ValueString()))
 				return
 			}
 			savedConnectors = append(savedConnectors, connectorId)
@@ -156,7 +155,7 @@ func (r *teamConnectorMembership) Update(ctx context.Context, req resource.Updat
 					fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
 				)
 
-				r.RevertDeleted(ctx, deletedConnectors, plan.TeamId.ValueString(), stateConnectorsMap)
+					resp.Diagnostics.AddWarning("Acction reverted", r.RevertDeleted(ctx, deletedConnectors, plan.TeamId.ValueString(), stateConnectorsMap))
 				return
 			}
 			deletedConnectors = append(deletedConnectors, stateKey)
@@ -167,8 +166,8 @@ func (r *teamConnectorMembership) Update(ctx context.Context, req resource.Updat
 					fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
 				)
 
-				r.RevertDeleted(ctx, deletedConnectors, plan.TeamId.ValueString(), stateConnectorsMap)
-				r.RevertModified(ctx, modifiedConnectors, plan.TeamId.ValueString(), stateConnectorsMap)
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertDeleted(ctx, deletedConnectors, plan.TeamId.ValueString(), stateConnectorsMap))
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertModified(ctx, modifiedConnectors, plan.TeamId.ValueString(), stateConnectorsMap))
 				return
 			}
 			modifiedConnectors = append(modifiedConnectors, stateKey)
@@ -186,9 +185,9 @@ func (r *teamConnectorMembership) Update(ctx context.Context, req resource.Updat
 					fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
 				)
 
-				r.RevertDeleted(ctx, deletedConnectors, plan.TeamId.ValueString(), stateConnectorsMap)
-				r.RevertModified(ctx, modifiedConnectors, plan.TeamId.ValueString(), stateConnectorsMap)
-				r.RevertCreated(ctx, createdConnectors, plan.TeamId.ValueString())
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertDeleted(ctx, deletedConnectors, plan.TeamId.ValueString(), stateConnectorsMap))
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertModified(ctx, modifiedConnectors, plan.TeamId.ValueString(), stateConnectorsMap))
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertCreated(ctx, createdConnectors, plan.TeamId.ValueString()))
 				return
 			}
 			createdConnectors = append(createdConnectors, planKey)
@@ -245,7 +244,7 @@ func (r *teamConnectorMembership) Delete(ctx context.Context, req resource.Delet
 					fmt.Sprintf("%v; code: %v; message: %v", err, deleteResponse.Code, deleteResponse.Message),
 				)
 				
-				r.RevertDeleted(ctx, deletedConnectors, data.TeamId.ValueString(), stateConnectorsMap)
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertDeleted(ctx, deletedConnectors, data.TeamId.ValueString(), stateConnectorsMap))
 				return
 			}
 			deletedConnectors = append(deletedConnectors, connectorId)
@@ -253,31 +252,40 @@ func (r *teamConnectorMembership) Delete(ctx context.Context, req resource.Delet
 	}
 }
 
-func (r *teamConnectorMembership) RevertDeleted(ctx context.Context, toRevert []string, teamId string, stateConnectorsMap map[string]string) {
+func (r *teamConnectorMembership) RevertDeleted(ctx context.Context, toRevert []string, teamId string, stateConnectorsMap map[string]string) string {
+	reverted := []string{}
 	for _, connectorId := range toRevert {
 		svc := r.GetClient().NewTeamConnectorMembershipCreate()
 		svc.TeamId(teamId)
 		svc.ConnectorId(connectorId)
 		svc.Role(stateConnectorsMap[connectorId])
 		svc.Do(ctx)
+		reverted = append(reverted, connectorId)
 	}
+	return fmt.Sprintf("Delete action reverted for connectors: %v", reverted)
 }
 
-func (r *teamConnectorMembership) RevertModified(ctx context.Context, toRevert []string, teamId string, stateConnectorsMap map[string]string) {
+func (r *teamConnectorMembership) RevertModified(ctx context.Context, toRevert []string, teamId string, stateConnectorsMap map[string]string) string {
+	reverted := []string{}
 	for _, connectorId := range toRevert {
 		svc := r.GetClient().NewTeamConnectorMembershipModify()
 		svc.TeamId(teamId)
 		svc.ConnectorId(connectorId)
 		svc.Role(stateConnectorsMap[connectorId])
 		svc.Do(ctx)
+		reverted = append(reverted, connectorId)
 	}
+	return fmt.Sprintf("Modify action reverted for connectors: %v", reverted)
 }
 
-func (r *teamConnectorMembership) RevertCreated(ctx context.Context, toRevert []string, teamId string) {
+func (r *teamConnectorMembership) RevertCreated(ctx context.Context, toRevert []string, teamId string) string {
+	reverted := []string{}
 	for _, connectorId := range toRevert {
 		svc := r.GetClient().NewTeamConnectorMembershipDelete()
 		svc.TeamId(teamId)
 		svc.ConnectorId(connectorId)
 		svc.Do(ctx)
+		reverted = append(reverted, connectorId)
 	}
+	return fmt.Sprintf("Created action reverted for connectors: %v", reverted)
 }

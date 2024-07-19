@@ -65,7 +65,7 @@ func (r *teamUserMembership) Create(ctx context.Context, req resource.CreateRequ
                     fmt.Sprintf("%v; code: %v; message: %v", err, teamUserResponse.Code, teamUserResponse.Message),
                 )
 
-				r.RevertCreated(ctx, savedUsers, data.TeamId.ValueString())
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertCreated(ctx, savedUsers, data.TeamId.ValueString()))
                 return
             }
 
@@ -158,8 +158,7 @@ func (r *teamUserMembership) Update(ctx context.Context, req resource.UpdateRequ
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
                 )
 
-
-				r.RevertDeleted(ctx, deletedUsers, plan.TeamId.ValueString(), stateUsersMap)
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertDeleted(ctx, deletedUsers, plan.TeamId.ValueString(), stateUsersMap))
                 return
             }
 
@@ -171,8 +170,8 @@ func (r *teamUserMembership) Update(ctx context.Context, req resource.UpdateRequ
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
                 )
 
-				r.RevertDeleted(ctx, deletedUsers, plan.TeamId.ValueString(), stateUsersMap)
-				r.RevertModified(ctx, modifiedUsers, plan.TeamId.ValueString(), stateUsersMap)
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertDeleted(ctx, deletedUsers, plan.TeamId.ValueString(), stateUsersMap))
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertModified(ctx, modifiedUsers, plan.TeamId.ValueString(), stateUsersMap))
                 return
             }
 			modifiedUsers = append(modifiedUsers, stateKey)
@@ -191,9 +190,9 @@ func (r *teamUserMembership) Update(ctx context.Context, req resource.UpdateRequ
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
                 )
 
-				r.RevertDeleted(ctx, deletedUsers, plan.TeamId.ValueString(), stateUsersMap)
-				r.RevertModified(ctx, modifiedUsers, plan.TeamId.ValueString(), stateUsersMap)
-				r.RevertCreated(ctx, createdUsers, plan.TeamId.ValueString())
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertDeleted(ctx, deletedUsers, plan.TeamId.ValueString(), stateUsersMap))
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertModified(ctx, modifiedUsers, plan.TeamId.ValueString(), stateUsersMap))
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertCreated(ctx, createdUsers, plan.TeamId.ValueString()))
                 return
             }
         }
@@ -251,7 +250,7 @@ func (r *teamUserMembership) Delete(ctx context.Context, req resource.DeleteRequ
                 )
 
 
-				r.RevertDeleted(ctx, deletedUsers, data.TeamId.ValueString(), stateUsersMap)
+				resp.Diagnostics.AddWarning("Acction reverted", r.RevertDeleted(ctx, deletedUsers, data.TeamId.ValueString(), stateUsersMap))
                 return
             }
 			deletedUsers = append(deletedUsers, userId)
@@ -259,31 +258,40 @@ func (r *teamUserMembership) Delete(ctx context.Context, req resource.DeleteRequ
     }
 }
 
-func (r *teamUserMembership) RevertDeleted(ctx context.Context, toRevert []string, teamId string, stateUserMap map[string]string) {
+func (r *teamUserMembership) RevertDeleted(ctx context.Context, toRevert []string, teamId string, stateUserMap map[string]string)  string {
+	reverted := []string{}
 	for _, userId := range toRevert {
 		svc := r.GetClient().NewTeamUserMembershipCreate()
 		svc.TeamId(teamId)
 		svc.UserId(userId)
 		svc.Role(stateUserMap[userId])
 		svc.Do(ctx)
+		reverted = append(reverted, userId)
 	}
+	return fmt.Sprintf("Delete action reverted for users: %v", reverted)
 }
 
-func (r *teamUserMembership) RevertModified(ctx context.Context, toRevert []string, teamId string, stateUserMap map[string]string) {
+func (r *teamUserMembership) RevertModified(ctx context.Context, toRevert []string, teamId string, stateUserMap map[string]string)  string {
+	reverted := []string{}
 	for _, userId := range toRevert {
 		svc := r.GetClient().NewTeamUserMembershipModify()
 		svc.TeamId(teamId)
 		svc.UserId(userId)
 		svc.Role(stateUserMap[userId])
 		svc.Do(ctx)
+		reverted = append(reverted, userId)
 	}
+	return fmt.Sprintf("Modify action reverted for users: %v", reverted)
 }
 
-func (r *teamUserMembership) RevertCreated(ctx context.Context, toRevert []string, teamId string) {
+func (r *teamUserMembership) RevertCreated(ctx context.Context, toRevert []string, teamId string)  string {
+	reverted := []string{}
 	for _, userId := range toRevert {
 		svc := r.GetClient().NewTeamUserMembershipDelete()
 		svc.TeamId(teamId)
 		svc.UserId(userId)
 		svc.Do(ctx)
+		reverted = append(reverted, userId)
 	}
+	return fmt.Sprintf("Create action reverted for users: %v", reverted)
 }

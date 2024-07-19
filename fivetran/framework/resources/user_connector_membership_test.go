@@ -1,11 +1,13 @@
 package resources_test
 
 import (
+	"fmt"
 	"net/http"
+	"regexp"
 	"testing"
-	
-	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
+
 	"github.com/fivetran/go-fivetran/tests/mock"
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
@@ -17,6 +19,8 @@ var (
 	userConnectorMembershipData     map[string]interface{}
 	userConnectorMembershipListData map[string]interface{}
 	userConnectorMembershipResponse string
+	userConnectorMembershipResponse2 string
+	deleteCount						int
 )
 
 func setupMockClientUserConnectorMembershipResource(t *testing.T) {
@@ -111,6 +115,97 @@ func TestConnectorMembershipResourceUserMock(t *testing.T) {
 			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				tfmock.AssertEqual(t, userConnectorMembershipDeleteHandler.Interactions, 1)
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
+			},
+		},
+	)
+}
+
+func setupMockClientUserConnectorMembershipResourceNotFound(t *testing.T) {
+	tfmock.MockClient().Reset()
+	userConnectorMembershipResponse =
+		`{
+        "id": "test_connector",
+        "role": "Connector Reviewer",
+        "created_at": "2020-05-25T15:26:47.306509Z"
+ }`
+
+	userConnectorMembershipResponse =
+		`{
+        "id": "test_connector2",
+        "role": "Connector Reviewer",
+        "created_at": "2020-05-25T15:26:47.306509Z"
+    }`
+
+	userConnectorMembershipResponse = `{
+             "items": [
+                {
+                    "id": "test_connector",
+                    "role": "Connector Reviewer",
+                    "created_at": "2020-05-25T15:26:47.306509Z"
+                }
+                ],
+                "next_cursor": null}`
+
+
+	callCount := 0
+	userConnectorMembershipPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/users/test_user/connectors").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			callCount++;
+			if callCount != 0 {
+			userConnectorMembershipData = tfmock.CreateMapFromJsonString(t, userConnectorMembershipResponse)
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Connector membership has been created", userConnectorMembershipData), nil
+			}
+			userConnectorMembershipData = tfmock.CreateMapFromJsonString(t, userConnectorMembershipResponse2)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Connector not found", userConnectorMembershipData), nil
+		},
+	)
+
+	deleteCount := 0
+	userConnectorMembershipDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/users/test_user/connectors/test_connector").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			deleteCount++
+			return tfmock.FivetranSuccessResponse(t, req, 200, "Connector membership has been deleted", nil), nil
+		},
+	)
+}
+
+func TestConnectorMembershipResourceUserMockNotfound(t *testing.T) {
+	step1 := resource.TestStep{
+		Config: `
+            resource "fivetran_user_connector_membership" "test_user_connector_membership" {
+                 provider = fivetran-provider
+
+                 user_id = "test_user"
+                 
+                 connector {
+                    connector_id = "test_connector"
+                    role = "Connector Reviewer"                    
+                 }
+                 connector {
+                    connector_id = "test_connector2"
+                    role = "Connector Reviewer"                    
+                 }
+            }`,
+		ExpectError: regexp.MustCompile(`Error: Unable to Create User Connector Memberships Resource`),
+		}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientUserConnectorMembershipResourceNotFound(t)
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, userConnectorMembershipDeleteHandler.Interactions, 1)
+				if (deleteCount != 1) {
+					return fmt.Errorf("Failed acctions are not reverted.")
+				}
 				return nil
 			},
 
