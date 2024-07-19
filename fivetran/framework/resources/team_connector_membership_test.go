@@ -20,7 +20,7 @@ var (
 	teamConnectorMembershipListData      map[string]interface{}
 	teamConnectorMembershipResponse      string
 	teamConnectorMembershipResponse2     string
-	deleteCount							 int
+	teamConnectormembershipDeleteCount	int
 )
 
 func setupMockClientTeamConnectorMembershipResource(t *testing.T) {
@@ -163,10 +163,10 @@ func setupMockClientTeamConnectorMembershipResourceNotFound(t *testing.T) {
 		},
 	)
 
-	deleteCount := 0;
+	teamConnectormembershipDeleteCount := 0;
 	teamConnectorMembershipDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/teams/test_team/connectors/test_connector").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			deleteCount++
+			teamConnectormembershipDeleteCount++
 			return tfmock.FivetranSuccessResponse(t, req, 200, "Connector membership has been deleted", nil), nil
 		},
 	)
@@ -211,7 +211,7 @@ func TestConnectorMembershipResourceTeamMockNotFound(t *testing.T) {
 			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				tfmock.AssertEqual(t, teamConnectorMembershipDeleteHandler.Interactions, 1)
-				if (deleteCount != 1) {
+				if (teamConnectormembershipDeleteCount != 1) {
 					return fmt.Errorf("Failed acctions are not reverted.")
 				}
 				return nil

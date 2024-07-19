@@ -20,7 +20,7 @@ var (
 	userGroupMembershipListData map[string]interface{}
 	userGroupMembershipResponse string
 	userGroupMembershipResponse2 string
-	deleteCount						int
+	userGroupmembershipdeleteCount int
 )
 
 func setupMockClientUserGroupMembershipResource(t *testing.T) {
@@ -168,10 +168,10 @@ func setupMockClientUserGroupMembershipResourceNotFoud(t *testing.T) {
 		},
 	)
 
-	deleteCount := 0
+	userGroupmembershipdeleteCount := 0
 	userGroupMembershipDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/users/test_user/groups/test_group").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			deleteCount++
+			userGroupmembershipdeleteCount++
 			return tfmock.FivetranSuccessResponse(t, req, 200, "Group membership has been deleted", nil), nil
 		},
 	)
@@ -207,7 +207,7 @@ func TestGroupMembershipResourceUserMockNotFound(t *testing.T) {
 			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				tfmock.AssertEqual(t, userGroupMembershipDeleteHandler.Interactions, 1)
-				if (deleteCount != 1) {
+				if (userGroupmembershipdeleteCount != 1) {
 					return fmt.Errorf("Failed acctions are not reverted.")
 				}
 				return nil
