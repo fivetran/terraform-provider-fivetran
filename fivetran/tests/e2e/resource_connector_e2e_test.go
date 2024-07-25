@@ -34,10 +34,6 @@ func TestResourceConnectorE2E(t *testing.T) {
 					trust_certificates = false
 					trust_fingerprints = false
 					run_setup_tests = false
-			
-					config {
-						group_name = fivetran_group.test_group.name
-					}
 				}
 
 				resource "fivetran_connector_schedule" "test_connector_schedule" {
@@ -53,13 +49,9 @@ func TestResourceConnectorE2E(t *testing.T) {
 					testFivetranConnectorResourceCreate(t, "fivetran_connector.test_connector"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "fivetran_log"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "fivetran_log_schema"),
-
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "false"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "false"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
-
-					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.group_name", "test_group_name"),
-
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "schedule_type", "auto"),
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "sync_frequency", "5"),
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "paused", "true"),
@@ -84,10 +76,6 @@ func TestResourceConnectorE2E(t *testing.T) {
 					trust_certificates = true
 					trust_fingerprints = true
 					run_setup_tests = true
-			
-					config {
-						group_name = fivetran_group.test_group.name
-					}
 				}
 
 				resource "fivetran_connector_schedule" "test_connector_schedule" {

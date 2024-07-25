@@ -40,10 +40,6 @@ func TestResourceTeamConnectorMembershipE2E(t *testing.T) {
                 trust_certificates = false
                 trust_fingerprints = false
                 run_setup_tests = false
-            
-                config {
-                    group_name = fivetran_group.test_group.name
-                }
             }
 
             resource "fivetran_team_connector_membership" "test_team_connector_membership" {
@@ -90,10 +86,6 @@ func TestResourceTeamConnectorMembershipE2E(t *testing.T) {
                 trust_certificates = false
                 trust_fingerprints = false
                 run_setup_tests = false
-            
-                config {
-                    group_name = fivetran_group.test_group.name
-                }
             }
 
             resource "fivetran_team_connector_membership" "test_team_connector_membership" {
