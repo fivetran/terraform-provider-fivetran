@@ -47,6 +47,5 @@ func (d *ProxyAgentResourceModel) ReadFromResponse(resp proxy.ProxyDetailsRespon
 
 func (d *ProxyAgentResourceModel) ReadFromCreateResponse(resp proxy.ProxyCreateResponse) {
     d.Id = types.StringValue(resp.Data.AgentId)
-    d.AuthToken = types.StringValue(resp.Data.AuthToken)
     d.ProxyServerUri = types.StringValue(resp.Data.ProxyServerUri)
 }
