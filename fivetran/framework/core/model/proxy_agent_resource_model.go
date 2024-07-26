@@ -28,7 +28,6 @@ func (d *ProxyAgentResourceModel) SetGroupRegion(value string) {
 	d.GroupRegion = types.StringValue(value)
 }
 func (d *ProxyAgentResourceModel) SetAuthToken(value string) {
-	d.AuthToken = types.StringValue(value)
 }
 func (d *ProxyAgentResourceModel) SetSalt(value string) {
 	d.Salt = types.StringValue(value)
@@ -47,5 +46,6 @@ func (d *ProxyAgentResourceModel) ReadFromResponse(resp proxy.ProxyDetailsRespon
 
 func (d *ProxyAgentResourceModel) ReadFromCreateResponse(resp proxy.ProxyCreateResponse) {
     d.Id = types.StringValue(resp.Data.AgentId)
+    d.AuthToken = types.StringValue(resp.Data.AuthToken)
     d.ProxyServerUri = types.StringValue(resp.Data.ProxyServerUri)
 }
