@@ -6,6 +6,10 @@ page_title: "Resource: fivetran_destination"
 
 This resource allows you to create, update, and delete destinations.
 
+IMPORTANT: Groups and destinations are mapped 1:1 to each other. We do this mapping using the group's id value that we automatically generate when you create a group using our REST API, and the destination's group_id value that you specify when you create a destination using our REST API. This means that if you use our REST API to create a destination, you must create a group in your Fivetran account before you can create a destination in it.
+
+When you create a destination in your Fivetran dashboard, we automatically create a group and assign a value to its id and a destination with the same group_id value, which is unique in your Fivetran account. The group's name corresponds to the Destination name you specify in your Fivetran dashboard when creating the destination in your Fivetran dashboard.
+
 ## Example Usage
 
 ```hcl
