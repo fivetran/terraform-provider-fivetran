@@ -3,6 +3,7 @@ package resources
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/common"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
@@ -339,11 +340,18 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 		response, err := svc.DoCustom(ctx)
 
 		if err != nil {
-			resp.Diagnostics.AddError(
-				"Unable to Update Connector Resource.",
-				fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
-			)
-			return
+			if response.Code == "400" && strings.Contains(response.Message, "No update parameters specified") {
+				resp.Diagnostics.AddWarning(
+					"Warning when updating Сonnector Resource.",
+					fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
+				)				
+			} else {
+				resp.Diagnostics.AddError(
+					"Unable to Update Connector Resource.",
+					fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
+				)
+				return
+			}
 		}
 		plan.ReadFromCreateResponse(response)
 
