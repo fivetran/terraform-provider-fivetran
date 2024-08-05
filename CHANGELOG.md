@@ -9,11 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.2.6](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.5...v1.2.6)
 
-Release fix
+## Fixed
+- Issue with rewriting value in `token` field in `fivetran_proxy_agent` resource
 
 ## [1.2.5](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.4...v1.2.5)
 
-Broken release, please don't use it
+**IMPORTANT**: Broken release, please don't use it
 
 ## [1.2.4](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.3...v1.2.4)
 

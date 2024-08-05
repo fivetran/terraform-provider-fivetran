@@ -47,7 +47,7 @@ func ConnectorAttributesSchema() core.Schema {
 
 			"run_setup_tests": {
 				ValueType:    core.Boolean,
-				Description:  "Specifies whether the setup tests should be run automatically. The default value is TRUE.",
+				Description:  "Specifies whether the setup tests should be run automatically. The default value is FALSE.",
 				ResourceOnly: true,
 			},
 			"trust_certificates": {
