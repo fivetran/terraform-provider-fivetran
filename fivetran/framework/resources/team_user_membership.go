@@ -50,11 +50,14 @@ func (r *teamUserMembership) Create(ctx context.Context, req resource.CreateRequ
 
     resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 
+
+	savedUsers := make([]string, 0, len(data.User.Elements()))
     for _, user := range data.User.Elements() {
         if userElement, ok := user.(basetypes.ObjectValue); ok {
+			userId := userElement.Attributes()["user_id"].(basetypes.StringValue).ValueString()
             svc := r.GetClient().NewTeamUserMembershipCreate()
             svc.TeamId(data.TeamId.ValueString())
-            svc.UserId(userElement.Attributes()["user_id"].(basetypes.StringValue).ValueString())
+            svc.UserId(userId)
             svc.Role(userElement.Attributes()["role"].(basetypes.StringValue).ValueString())
             if teamUserResponse, err := svc.Do(ctx); err != nil {
                 resp.Diagnostics.AddError(
@@ -62,8 +65,13 @@ func (r *teamUserMembership) Create(ctx context.Context, req resource.CreateRequ
                     fmt.Sprintf("%v; code: %v; message: %v", err, teamUserResponse.Code, teamUserResponse.Message),
                 )
 
+				creRvertMsg, creRevertErr :=  r.RevertCreated(ctx, savedUsers, data.TeamId.ValueString())		
+				resp.Diagnostics.AddWarning("Action reverted", creRvertMsg)
+				resp.Diagnostics.AddWarning("Action reverted failed", creRevertErr)
                 return
             }
+
+			savedUsers = append(savedUsers, userId)
         }
     }
 
@@ -140,6 +148,8 @@ func (r *teamUserMembership) Update(ctx context.Context, req resource.UpdateRequ
     }
 
     /* sync */
+	deletedUsers := make([]string, 0)
+	modifiedUsers := make([]string, 0)
     for stateKey, stateValue := range stateUsersMap {
         role, found := planUsersMap[stateKey]
 
@@ -149,19 +159,36 @@ func (r *teamUserMembership) Update(ctx context.Context, req resource.UpdateRequ
                     "Unable to Update Team User Membership Resource.",
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
                 )
+
+				delRevertMsg, delRevertErr :=  r.RevertDeleted(ctx, deletedUsers, plan.TeamId.ValueString(), stateUsersMap)	
+				resp.Diagnostics.AddWarning("Action reverted", delRevertMsg)
+				resp.Diagnostics.AddWarning("Action reverted failed", delRevertErr)
                 return
             }
+
+			deletedUsers = append(deletedUsers, stateKey)
         } else if role != stateValue {
             if updateResponse, err := r.GetClient().NewTeamUserMembershipModify().TeamId(plan.TeamId.ValueString()).UserId(stateKey).Role(role).Do(ctx); err != nil {
                 resp.Diagnostics.AddError(
                     "Unable to Update Team User Membership Resource.",
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
                 )
+
+				delRevertMsg, delRevertErr :=  r.RevertDeleted(ctx, deletedUsers, plan.TeamId.ValueString(), stateUsersMap)	
+				resp.Diagnostics.AddWarning("Action reverted", delRevertMsg)
+				resp.Diagnostics.AddWarning("Action reverted failed", delRevertErr)
+
+				modRevertMsg, modRevertErr := r.RevertModified(ctx, modifiedUsers, plan.TeamId.ValueString(), stateUsersMap)		
+				resp.Diagnostics.AddWarning("Action reverted", modRevertMsg)
+				resp.Diagnostics.AddWarning("Action reverted failed", modRevertErr)
                 return
             }
+			modifiedUsers = append(modifiedUsers, stateKey)
         }
     }
 
+
+	createdUsers := make([]string, 0)
     for planKey, planValue := range planUsersMap {
         _, exists := stateUsersMap[planKey]
 
@@ -171,6 +198,18 @@ func (r *teamUserMembership) Update(ctx context.Context, req resource.UpdateRequ
                     "Unable to Update Team User Membership Resource.",
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
                 )
+
+				delRevertMsg, delRevertErr :=  r.RevertDeleted(ctx, deletedUsers, plan.TeamId.ValueString(), stateUsersMap)	
+				resp.Diagnostics.AddWarning("Action reverted", delRevertMsg)
+				resp.Diagnostics.AddWarning("Action reverted failed", delRevertErr)
+
+				modRevertMsg, modRevertErr := r.RevertModified(ctx, modifiedUsers, plan.TeamId.ValueString(), stateUsersMap)		
+				resp.Diagnostics.AddWarning("Action reverted", modRevertMsg)
+				resp.Diagnostics.AddWarning("Action reverted failed", modRevertErr)
+
+				creRvertMsg, creRevertErr :=  r.RevertCreated(ctx, createdUsers, plan.TeamId.ValueString())		
+				resp.Diagnostics.AddWarning("Action reverted", creRvertMsg)
+				resp.Diagnostics.AddWarning("Action reverted failed", creRevertErr)
                 return
             }
         }
@@ -201,24 +240,94 @@ func (r *teamUserMembership) Delete(ctx context.Context, req resource.DeleteRequ
         return
     }
 
-    var data model.TeamUserMemberships
+    var data, state model.TeamUserMemberships
 
     resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+    resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
+    stateUsersMap := make(map[string]string)
+    for _, user := range state.User.Elements() {
+        if userElement, ok := user.(basetypes.ObjectValue); ok {
+            stateUsersMap[userElement.Attributes()["user_id"].(basetypes.StringValue).ValueString()] = userElement.Attributes()["role"].(basetypes.StringValue).ValueString()
+        }
+    }
+
+	deletedUsers := make([]string, 0)
     for _, user := range data.User.Elements() {
         if userElement, ok := user.(basetypes.ObjectValue); ok {
+			userId := userElement.Attributes()["user_id"].(basetypes.StringValue).ValueString()
             svc := r.GetClient().NewTeamUserMembershipDelete()
             svc.TeamId(data.TeamId.ValueString())
-            svc.UserId(userElement.Attributes()["user_id"].(basetypes.StringValue).ValueString())
+            svc.UserId(userId)
 
             if deleteResponse, err := svc.Do(ctx); err != nil {
                 resp.Diagnostics.AddError(
                     "Unable to Delete Team User Memberships Resource.",
                     fmt.Sprintf("%v; code: %v; message: %v", err, deleteResponse.Code, deleteResponse.Message),
                 )
+				delRevertMsg, delRevertErr :=  r.RevertDeleted(ctx, deletedUsers, data.TeamId.ValueString(), stateUsersMap);
+				resp.Diagnostics.AddWarning("Action reverted", delRevertMsg)
+				resp.Diagnostics.AddWarning("Action reverted failed", delRevertErr)
 
                 return
             }
+			deletedUsers = append(deletedUsers, userId)
         }
     }
+}
+
+func (r *teamUserMembership) RevertDeleted(ctx context.Context, toRevert []string, teamId string, stateUserMap map[string]string) (string, string){
+	reverted := []string{}
+	failed := []string{}
+	for _, userId := range toRevert {
+		svc := r.GetClient().NewTeamUserMembershipCreate()
+		svc.TeamId(teamId)
+		svc.UserId(userId)
+		svc.Role(stateUserMap[userId])
+
+		if _, err := svc.Do(ctx); err != nil {
+			failed = append(failed, userId)
+		} else {
+			reverted = append(reverted, userId)
+		} 
+	}
+	return fmt.Sprintf("Delete action reverted for users: %v", reverted),
+	fmt.Sprintf("Delete for revert action failed for users: %v", failed)
+}
+
+func (r *teamUserMembership) RevertModified(ctx context.Context, toRevert []string, teamId string, stateUserMap map[string]string) (string, string) {
+	reverted := []string{}
+	failed := []string{}
+	for _, userId := range toRevert {
+		svc := r.GetClient().NewTeamUserMembershipModify()
+		svc.TeamId(teamId)
+		svc.UserId(userId)
+		svc.Role(stateUserMap[userId])
+
+		if _, err := svc.Do(ctx); err != nil {
+			failed = append(failed, userId)
+		} else {
+			reverted = append(reverted, userId)
+		} 
+	}
+	return fmt.Sprintf("Modify action reverted for users: %v", reverted),
+	fmt.Sprintf("Modify for revert action failed for users: %v", failed)
+}
+
+func (r *teamUserMembership) RevertCreated(ctx context.Context, toRevert []string, teamId string) (string, string) {
+	reverted := []string{}
+	failed := []string{}
+	for _, userId := range toRevert {
+		svc := r.GetClient().NewTeamUserMembershipDelete()
+		svc.TeamId(teamId)
+		svc.UserId(userId)
+
+		if _, err := svc.Do(ctx); err != nil {
+			failed = append(failed, userId)
+		} else {
+			reverted = append(reverted, userId)
+		} 
+	}
+	return fmt.Sprintf("Create action reverted for users: %v", reverted),
+	fmt.Sprintf("Create for revert action failed for users: %v", failed)
 }

@@ -50,20 +50,27 @@ func (r *teamGroupMembership) Create(ctx context.Context, req resource.CreateReq
 
     resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 
+	savedGroups := make([]string, 0, len(data.Group.Elements()))
     for _, group := range data.Group.Elements() {
         if groupElement, ok := group.(basetypes.ObjectValue); ok {
+			groupId := groupElement.Attributes()["group_id"].(basetypes.StringValue).ValueString()
             svc := r.GetClient().NewTeamGroupMembershipCreate()
             svc.TeamId(data.TeamId.ValueString())
-            svc.GroupId(groupElement.Attributes()["group_id"].(basetypes.StringValue).ValueString())
+            svc.GroupId(groupId)
             svc.Role(groupElement.Attributes()["role"].(basetypes.StringValue).ValueString())
             if teamGroupResponse, err := svc.Do(ctx); err != nil {
                 resp.Diagnostics.AddError(
                     "Unable to Create Team Group Memberships Resource.",
                     fmt.Sprintf("%v; code: %v; message: %v", err, teamGroupResponse.Code, teamGroupResponse.Message),
                 )
+				
 
+				creRvertMsg, creRevertErr :=  r.RevertCreated(ctx, savedGroups, data.TeamId.ValueString())		
+				resp.Diagnostics.AddWarning("Action reverted", creRvertMsg)
+				resp.Diagnostics.AddWarning("Action reverted failed", creRevertErr)
                 return
             }
+			savedGroups = append(savedGroups, groupId)
         }
     }
 
@@ -140,6 +147,8 @@ func (r *teamGroupMembership) Update(ctx context.Context, req resource.UpdateReq
     }
 
     /* sync */
+	deletedGroups := make([]string, 0)
+	modifiedGroups := make([]string, 0)
     for stateKey, stateValue := range stateGroupsMap {
         role, found := planGroupsMap[stateKey]
 
@@ -149,19 +158,34 @@ func (r *teamGroupMembership) Update(ctx context.Context, req resource.UpdateReq
                     "Unable to Update Team Group Membership Resource.",
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
                 )
+
+				delRevertMsg, delRevertErr :=  r.RevertDeleted(ctx, deletedGroups, plan.TeamId.ValueString(), stateGroupsMap)	
+				resp.Diagnostics.AddWarning("Action reverted", delRevertMsg)
+				resp.Diagnostics.AddWarning("Action reverted failed", delRevertErr)
                 return
             }
+			deletedGroups = append(deletedGroups, stateKey)
         } else if role != stateValue {
             if updateResponse, err := r.GetClient().NewTeamGroupMembershipModify().TeamId(plan.TeamId.ValueString()).GroupId(stateKey).Role(role).Do(ctx); err != nil {
                 resp.Diagnostics.AddError(
                     "Unable to Update Team Group Membership Resource.",
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
                 )
+
+				delRevertMsg, delRevertErr :=  r.RevertDeleted(ctx, deletedGroups, plan.TeamId.ValueString(), stateGroupsMap)	
+				resp.Diagnostics.AddWarning("Action reverted", delRevertMsg)
+				resp.Diagnostics.AddWarning("Action reverted failed", delRevertErr)
+
+				modRevertMsg, modRevertErr := r.RevertModified(ctx, modifiedGroups, plan.TeamId.ValueString(), stateGroupsMap)		
+				resp.Diagnostics.AddWarning("Action reverted", modRevertMsg)
+				resp.Diagnostics.AddWarning("Action reverted failed", modRevertErr)
                 return
             }
+			modifiedGroups = append(modifiedGroups, stateKey)
         }
     }
 
+	createdGroups := make([]string, 0)
     for planKey, planValue := range planGroupsMap {
         _, exists := stateGroupsMap[planKey]
 
@@ -171,8 +195,22 @@ func (r *teamGroupMembership) Update(ctx context.Context, req resource.UpdateReq
                     "Unable to Update Team Group Membership Resource.",
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
                 )
+
+				delRevertMsg, delRevertErr :=  r.RevertDeleted(ctx, deletedGroups, plan.TeamId.ValueString(), stateGroupsMap)	
+				resp.Diagnostics.AddWarning("Action reverted", delRevertMsg)
+				resp.Diagnostics.AddWarning("Action reverted failed", delRevertErr)
+
+				modRevertMsg, modRevertErr := r.RevertModified(ctx, modifiedGroups, plan.TeamId.ValueString(), stateGroupsMap)		
+				resp.Diagnostics.AddWarning("Action reverted", modRevertMsg)
+				resp.Diagnostics.AddWarning("Action reverted failed", modRevertErr)
+
+				creRvertMsg, creRevertErr :=  r.RevertCreated(ctx, createdGroups, plan.TeamId.ValueString())		
+				resp.Diagnostics.AddWarning("Action reverted", creRvertMsg)
+				resp.Diagnostics.AddWarning("Action reverted failed", creRevertErr)
+
                 return
             }
+			createdGroups = append(createdGroups, planKey)
         }
     }
 
@@ -182,7 +220,6 @@ func (r *teamGroupMembership) Update(ctx context.Context, req resource.UpdateReq
             "Unable to Create Team Group Memberships Resource.",
             fmt.Sprintf("%v; code: %v", err, teamGroupResponse.Code),
         )
-
         return
     }
 
@@ -201,15 +238,25 @@ func (r *teamGroupMembership) Delete(ctx context.Context, req resource.DeleteReq
         return
     }
 
-    var data model.TeamGroupMemberships
+    var data, state model.TeamGroupMemberships
 
     resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
+    stateGroupsMap := make(map[string]string)
+    for _, group := range state.Group.Elements() {
+        if groupElement, ok := group.(basetypes.ObjectValue); ok {
+            stateGroupsMap[groupElement.Attributes()["group_id"].(basetypes.StringValue).ValueString()] = groupElement.Attributes()["role"].(basetypes.StringValue).ValueString()
+        }
+    }
+	
+	deletedGroups := make([]string, 0)
     for _, group := range data.Group.Elements() {
         if groupElement, ok := group.(basetypes.ObjectValue); ok {
+			groupId := groupElement.Attributes()["group_id"].(basetypes.StringValue).ValueString()
             svc := r.GetClient().NewTeamGroupMembershipDelete()
             svc.TeamId(data.TeamId.ValueString())
-            svc.GroupId(groupElement.Attributes()["group_id"].(basetypes.StringValue).ValueString())
+            svc.GroupId(groupId)
 
             if deleteResponse, err := svc.Do(ctx); err != nil {
                 resp.Diagnostics.AddError(
@@ -217,8 +264,65 @@ func (r *teamGroupMembership) Delete(ctx context.Context, req resource.DeleteReq
                     fmt.Sprintf("%v; code: %v; message: %v", err, deleteResponse.Code, deleteResponse.Message),
                 )
 
+				delRevertMsg, delRevertErr :=  r.RevertDeleted(ctx, deletedGroups, data.TeamId.ValueString(), stateGroupsMap);
+				resp.Diagnostics.AddWarning("Action reverted", delRevertMsg)
+				resp.Diagnostics.AddWarning("Action reverted failed", delRevertErr)
                 return
             }
+			deletedGroups = append(deletedGroups, groupId)
         }
     }
+}
+
+func (r *teamGroupMembership) RevertDeleted(ctx context.Context, toRevert []string, teamId string, stateGroupsMap map[string]string) (string, string)  {
+	reverted := []string{}
+	failed := []string{}
+	for _, groupId := range toRevert {
+		svc := r.GetClient().NewTeamGroupMembershipCreate()
+		svc.TeamId(teamId)
+		svc.GroupId(groupId)
+		svc.Role(stateGroupsMap[groupId])
+		if _, err := svc.Do(ctx); err != nil {
+			failed = append(failed, groupId)
+		} else {
+			reverted = append(reverted, groupId)
+		} 
+	}
+	return fmt.Sprintf("Delete action reverted for groups: %v", reverted),
+	fmt.Sprintf("Delete for revert action failed for groups: %v", failed)
+}
+
+func (r *teamGroupMembership) RevertModified(ctx context.Context, toRevert []string, teamId string, stateGroupsMap map[string]string) (string, string)  {
+	reverted := []string{}
+	failed := []string{}
+	for _, groupId := range toRevert {
+		svc := r.GetClient().NewTeamGroupMembershipModify()
+		svc.TeamId(teamId)
+		svc.GroupId(groupId)
+		svc.Role(stateGroupsMap[groupId])
+		if _, err := svc.Do(ctx); err != nil {
+			failed = append(failed, groupId)
+		} else {
+			reverted = append(reverted, groupId)
+		} 
+	}
+	return fmt.Sprintf("Modify action reverted for groups: %v", reverted),
+	fmt.Sprintf("Modify for revert action failed for groups: %v", failed)
+}
+
+func (r *teamGroupMembership) RevertCreated(ctx context.Context, toRevert []string, teamId string)(string, string) {
+	reverted := []string{}
+	failed := []string{}
+	for _, groupId := range toRevert {
+		svc := r.GetClient().NewTeamGroupMembershipDelete()
+		svc.TeamId(teamId)
+		svc.GroupId(groupId)
+		if _, err := svc.Do(ctx); err != nil {
+			failed = append(failed, groupId)
+		} else {
+			reverted = append(reverted, groupId)
+		} 
+	}
+	return fmt.Sprintf("Create action reverted for groups: %v", reverted),
+	fmt.Sprintf("Create for revert action failed for groups: %v", failed)
 }
