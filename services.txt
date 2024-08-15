@@ -4,7 +4,6 @@
 7shifts
 absorb_lms
 activecampaign
-acumatica
 ada
 adjust
 adobe_analytics
@@ -63,6 +62,8 @@ azure_sql_db
 azure_sql_managed_db
 ballotready
 bamboohr
+bazaarvoice
+betterworks
 big_commerce
 bigquery_db
 billing_platform
@@ -80,7 +81,9 @@ braze
 brevo
 brex
 brightcove
-bubbleio
+brightpearl
+bubble
+buildium
 buildkite
 business_central
 buzzsprout
@@ -92,6 +95,7 @@ canny
 canvas_by_instructure
 care_quality_commission
 castor_edc
+centra
 ceridian_dayforce
 chameleon
 chargebee_product_catalog_1
@@ -394,13 +398,16 @@ piwik_pro
 planetscale
 planful
 playvox
+playvox_workforce_management
 postgres
 postgres_rds
 posthog
 postmark
 power_reviews_enterprise
+prisma_cloud
 prive
 productboard
+productive
 proofpoint_security_awareness
 qualaroo
 qualtrics
@@ -522,6 +529,7 @@ teamtailor
 teamwork
 tempo
 testrail
+textus
 the_trade_desk
 thinkific
 ticket_tailor
@@ -552,6 +560,7 @@ vonage
 vonage_contact_center
 vts
 vwo
+walmart_dsp
 walmart_marketplace
 wasabi_cloud_storage
 web_scraper

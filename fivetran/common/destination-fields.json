@@ -51,6 +51,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "databricks": "Authentication type",
          "panoply": "",
          "periscope_warehouse": "",
          "redshift": "Authentication type. Default value: `PASSWORD`."
@@ -116,32 +117,6 @@
       "description": {
          "adls": "Client id of service principal",
          "onelake": "Client ID of service principal"
-      },
-      "api_field": ""
-   },
-   "oauth2_client_id": {
-      "readonly": false,
-      "sensitive": false,
-      "nullable": true,
-      "type": "string",
-      "fields": null,
-      "key_field": "",
-      "item_type": {},
-      "description": {
-         "databricks": "OAuth 2.0 client ID. Required if auth_type is set to OAUTH2."
-      },
-      "api_field": ""
-   },
-   "oauth2_secret": {
-      "readonly": false,
-      "sensitive": true,
-      "nullable": true,
-      "type": "string",
-      "fields": null,
-      "key_field": "",
-      "item_type": {},
-      "description": {
-         "databricks": "OAuth 2.0 secret. Required if auth_type is set to OAUTH2."
       },
       "api_field": ""
    },
@@ -541,6 +516,32 @@
          "aiven_kafka_wh": "",
          "aws_msk_wh": "",
          "confluent_cloud_wh": ""
+      },
+      "api_field": ""
+   },
+   "oauth2_client_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "databricks": "OAuth 2.0 client ID"
+      },
+      "api_field": ""
+   },
+   "oauth2_secret": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "databricks": "OAuth 2.0 secret"
       },
       "api_field": ""
    },
@@ -995,6 +996,21 @@
       },
       "api_field": ""
    },
+   "snapshot_retention_period": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "adls": "Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.",
+         "new_s3_datalake": "Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.",
+         "onelake": "Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`."
+      },
+      "api_field": ""
+   },
    "snowflake_cloud": {
       "readonly": false,
       "sensitive": false,
@@ -1032,6 +1048,19 @@
       "description": {
          "adls": "Storage account for Azure Data Lake Storage Gen2 name",
          "onelake": "Storage account for Azure Data Lake Storage Gen2 name"
+      },
+      "api_field": ""
+   },
+   "table_format": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "new_s3_datalake": "The table format in which you want to sync your tables. Valid values are ICEBERG and DELTA_LAKE"
       },
       "api_field": ""
    },

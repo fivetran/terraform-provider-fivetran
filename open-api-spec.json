@@ -19,11 +19,11 @@
   "tags": [
     {
       "name": "updated",
-      "description": "2024-07-15T17:35:32.821Z"
+      "description": "2024-08-07T08:46:28.566Z"
     },
     {
       "name": "hash",
-      "description": "a1dfdc4df31c6560988fb2b0a7783c8345b0f6c116d9f13a0cf577bbab0c45aa"
+      "description": "6b07a0eac431e659cd16ee4413f302e6b1453b893d49bc975e2b4ae063f3fda3"
     }
   ],
   "paths": {
@@ -890,8 +890,8 @@
           "Local Processing Agent Management"
         ],
         "summary": "Regenerate authentication keys",
-        "description": "Regenerate authentication keys for a Local Processing Agent.",
-        "operationId": "regenerate_certificate_local_processing_agent",
+        "description": "Regenerate authentication for a Local Processing Agent.",
+        "operationId": "re_auth_local_processing_agent",
         "parameters": [
           {
             "name": "agentId",
@@ -913,6 +913,16 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocalProcessingAgentReAuthRequest"
+              },
+              "example": null
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Successful response",
@@ -4401,6 +4411,285 @@
         }
       }
     },
+    "/v1/system-keys": {
+      "get": {
+        "tags": [
+          "System Key Management"
+        ],
+        "summary": "List all System Keys",
+        "description": "Returns a list of system keys within your Fivetran account.",
+        "operationId": "get_system_keys",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Paging cursor, [read more about pagination](https://fivetran.com/docs/rest-api/pagination)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "example": null
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code",
+                      "example": null
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text",
+                      "example": null
+                    },
+                    "data": {
+                      "required": [
+                        "items"
+                      ],
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "description": "The collection of return items",
+                          "example": null,
+                          "items": {
+                            "$ref": "#/components/schemas/SystemKeyResponse"
+                          }
+                        },
+                        "nextCursor": {
+                          "type": "string",
+                          "description": "The value of the cursor parameter for the next page",
+                          "example": null
+                        }
+                      },
+                      "example": null
+                    }
+                  },
+                  "example": null
+                },
+                "examples": {
+                  "get_list_response": {
+                    "value": {
+                      "code": "Success",
+                      "data": {
+                        "items": [
+                          {
+                            "id": "_moonbeam_acc_dev",
+                            "name": "dev",
+                            "key": "<key_1_value>",
+                            "created_at": "2023-11-10T22:11:52.326265Z",
+                            "expired_at": "2024-02-10T22:11:52.326265Z"
+                          },
+                          {
+                            "id": "cyclical_prospered",
+                            "name": "prod_key",
+                            "key": "<key_2_value>",
+                            "created_at": "2023-11-10T22:11:58.931Z",
+                            "updated_at": "2023-11-10T22:11:58.931Z",
+                            "expired_at": "2024-02-10T22:11:58.931Z"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "example": null
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "System Key Management"
+        ],
+        "summary": "Create a new System Key",
+        "description": "Creates a new system key with your Fivetran account.",
+        "operationId": "create_system_key",
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewSystemKeyRequest"
+              },
+              "examples": {
+                "create_request": {
+                  "value": {
+                    "name": "prod_key",
+                    "expiration_period": "THREE_MONTHS",
+                    "permissions": [
+                      {
+                        "resource_type": "USER",
+                        "access_level": "READ"
+                      },
+                      {
+                        "resource_type": "WEBHOOK",
+                        "access_level": "MANAGE"
+                      },
+                      {
+                        "resource_type": "CONNECTOR",
+                        "access_level": "MANAGE"
+                      },
+                      {
+                        "resource_type": "DESTINATION",
+                        "access_level": "MANAGE"
+                      },
+                      {
+                        "resource_type": "TRANSFORMATION",
+                        "access_level": "MANAGE",
+                        "resource_filter": {
+                          "group_ids": [
+                            "group_id_1",
+                            "group_id_2"
+                          ]
+                        }
+                      },
+                      {
+                        "resource_type": "CONNECTOR",
+                        "access_level": "NONE",
+                        "resource_filter": {
+                          "ids": [
+                            "connector_id_1",
+                            "connector_id_2"
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              "example": null
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code",
+                      "example": null
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text",
+                      "example": null
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/SystemKeyResponse"
+                    }
+                  },
+                  "example": null
+                },
+                "examples": {
+                  "create_response": {
+                    "value": {
+                      "code": "Success",
+                      "message": "System key has been created",
+                      "data": {
+                        "id": "sod_determine",
+                        "name": "prod_key",
+                        "key": "<key_value>",
+                        "secret": "<secret_value>",
+                        "created_at": "2023-11-10T19:32:58.646Z",
+                        "expired_at": "2024-02-10T19:32:58.646Z",
+                        "permissions": [
+                          {
+                            "resource_type": "USER",
+                            "access_level": "READ"
+                          },
+                          {
+                            "resource_type": "WEBHOOK",
+                            "access_level": "MANAGE"
+                          },
+                          {
+                            "resource_type": "DESTINATION",
+                            "access_level": "MANAGE"
+                          },
+                          {
+                            "resource_type": "TRANSFORMATION",
+                            "access_level": "MANAGE",
+                            "resource_filter": {
+                              "group_ids": [
+                                "group_id_1",
+                                "group_id_2"
+                              ]
+                            }
+                          },
+                          {
+                            "resource_type": "CONNECTOR",
+                            "access_level": "NONE",
+                            "resource_filter": {
+                              "ids": [
+                                "connector_id_1",
+                                "connector_id_2"
+                              ]
+                            }
+                          },
+                          {
+                            "resource_type": "CONNECTOR",
+                            "access_level": "MANAGE"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "example": null
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/groups/{groupId}/users": {
       "get": {
         "tags": [
@@ -4912,8 +5201,6 @@
                             "account_id": "account_id",
                             "registered_at": "2018-12-01T15:43:29.013729Z",
                             "region": "GCP_US_EAST4",
-                            "token": "token",
-                            "salt": "salt",
                             "created_by": "created_by",
                             "display_name": "display_name"
                           }
@@ -5398,6 +5685,334 @@
           },
           "404": {
             "description": "Fingerprint with specified hash not found"
+          }
+        }
+      }
+    },
+    "/v1/system-keys/{keyId}": {
+      "get": {
+        "tags": [
+          "System Key Management"
+        ],
+        "summary": "Retrieve System Key details",
+        "description": "Retrieves a system key object within your Fivetran account.",
+        "operationId": "get_system_key_details",
+        "parameters": [
+          {
+            "name": "keyId",
+            "in": "path",
+            "description": "The unique identifier for the system key within your Fivetran account.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code",
+                      "example": null
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text",
+                      "example": null
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/SystemKeyResponse"
+                    }
+                  },
+                  "example": null
+                },
+                "examples": {
+                  "get_response": {
+                    "value": {
+                      "code": "Success",
+                      "data": {
+                        "id": "rushed_fainting",
+                        "name": "updated_key",
+                        "key_value": "<key_value>",
+                        "created_at": "2023-10-17T14:01:16.318Z",
+                        "updated_at": "2023-10-17T14:02:20.919291Z",
+                        "expired_at": "2024-01-17T14:01:16.318Z",
+                        "permissions": [
+                          {
+                            "resource_type": "CONNECTOR",
+                            "access_level": "MANAGE"
+                          },
+                          {
+                            "resource_type": "DESTINATION",
+                            "access_level": "MANAGE"
+                          },
+                          {
+                            "resource_type": "TRANSFORMATION",
+                            "access_level": "MANAGE",
+                            "resource_filter": {
+                              "group_ids": [
+                                "group_id_1",
+                                "group_id_2"
+                              ]
+                            }
+                          },
+                          {
+                            "resource_type": "CONNECTOR",
+                            "access_level": "NONE",
+                            "resource_filter": {
+                              "ids": [
+                                "connector_id_3",
+                                "connector_id_4"
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "example": null
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "System Key Management"
+        ],
+        "summary": "Delete a System Key",
+        "description": "Deletes a system key from your Fivetran account.",
+        "operationId": "delete_system_key",
+        "parameters": [
+          {
+            "name": "keyId",
+            "in": "path",
+            "description": "The unique identifier for the system key within your Fivetran account.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code",
+                      "example": null
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text",
+                      "example": null
+                    }
+                  },
+                  "example": null
+                },
+                "examples": {
+                  "delete_response": {
+                    "value": {
+                      "code": "Success",
+                      "message": "System key with id 'rushed_fainting' has been deleted"
+                    }
+                  }
+                },
+                "example": null
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "System Key Management"
+        ],
+        "summary": "Update a System Key",
+        "description": "Updates an existing system key within your Fivetran account.",
+        "operationId": "update_system_key",
+        "parameters": [
+          {
+            "name": "keyId",
+            "in": "path",
+            "description": "The unique identifier for the system key within your Fivetran account.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSystemKeyRequest"
+              },
+              "examples": {
+                "update_request": {
+                  "value": {
+                    "name": "updated_key",
+                    "permissions": [
+                      {
+                        "resource_type": "CONNECTOR",
+                        "access_level": "MANAGE"
+                      },
+                      {
+                        "resource_type": "DESTINATION",
+                        "access_level": "MANAGE"
+                      },
+                      {
+                        "resource_type": "TRANSFORMATION",
+                        "access_level": "MANAGE",
+                        "resource_filter": {
+                          "group_ids": [
+                            "group_id_3",
+                            "group_id_4"
+                          ]
+                        }
+                      },
+                      {
+                        "resource_type": "CONNECTOR",
+                        "access_level": "NONE",
+                        "resource_filter": {
+                          "ids": [
+                            "connector_id_3",
+                            "connector_id_4"
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              "example": null
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code",
+                      "example": null
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text",
+                      "example": null
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/SystemKeyResponse"
+                    }
+                  },
+                  "example": null
+                },
+                "examples": {
+                  "update_response": {
+                    "value": {
+                      "code": "Success",
+                      "message": "System key has been updated",
+                      "data": {
+                        "id": "rushed_fainting",
+                        "name": "updated_key",
+                        "key_value": "<key_value>",
+                        "created_at": "2023-10-17T14:01:16.318Z",
+                        "updated_at": "2023-10-17T14:02:20.919291Z",
+                        "expired_at": "2024-01-17T14:01:16.318Z",
+                        "permissions": [
+                          {
+                            "resource_type": "CONNECTOR",
+                            "access_level": "MANAGE"
+                          },
+                          {
+                            "resource_type": "DESTINATION",
+                            "access_level": "MANAGE"
+                          },
+                          {
+                            "resource_type": "TRANSFORMATION",
+                            "access_level": "MANAGE",
+                            "resource_filter": {
+                              "group_ids": [
+                                "group_id_3",
+                                "group_id_4"
+                              ]
+                            }
+                          },
+                          {
+                            "resource_type": "CONNECTOR",
+                            "access_level": "NONE",
+                            "resource_filter": {
+                              "ids": [
+                                "connector_id_3",
+                                "connector_id_4"
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "example": null
+              }
+            }
           }
         }
       }
@@ -7550,6 +8165,143 @@
         }
       }
     },
+    "/v1/system-keys/{keyId}/rotate": {
+      "post": {
+        "tags": [
+          "System Key Management"
+        ],
+        "summary": "Rotate a System Key",
+        "description": "Updates the secret value and expired_at date for an existing system key within your Fivetran account.",
+        "operationId": "rotate_system_key",
+        "parameters": [
+          {
+            "name": "keyId",
+            "in": "path",
+            "description": "The unique identifier for the system key within your Fivetran account.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RotateSystemKeyRequest"
+              },
+              "examples": {
+                "rotate_request": {
+                  "value": {
+                    "name": "updated_key",
+                    "permissions": {
+                      "expiration_period": "THREE_MONTHS"
+                    }
+                  }
+                }
+              },
+              "example": null
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code",
+                      "example": null
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text",
+                      "example": null
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/SystemKeyResponse"
+                    }
+                  },
+                  "example": null
+                },
+                "examples": {
+                  "rotate_response": {
+                    "value": {
+                      "code": "Success",
+                      "message": "System key with id 'rushed_fainting' has been rotated",
+                      "data": {
+                        "id": "rushed_fainting",
+                        "name": "prod_key",
+                        "key": "<key_value>",
+                        "secret": "<secret_value>",
+                        "created_at": "2023-11-10T19:32:58.646Z",
+                        "expired_at": "2024-02-10T19:32:58.646Z",
+                        "permissions": [
+                          {
+                            "resource_type": "USER",
+                            "access_level": "READ"
+                          },
+                          {
+                            "resource_type": "WEBHOOK",
+                            "access_level": "MANAGE"
+                          },
+                          {
+                            "resource_type": "DESTINATION",
+                            "access_level": "MANAGE"
+                          },
+                          {
+                            "resource_type": "TRANSFORMATION",
+                            "access_level": "MANAGE",
+                            "resource_filter": {
+                              "group_ids": [
+                                "group_id_1",
+                                "group_id_2"
+                              ]
+                            }
+                          },
+                          {
+                            "resource_type": "CONNECTOR",
+                            "access_level": "NONE",
+                            "resource_filter": {
+                              "ids": [
+                                "connector_id_3",
+                                "connector_id_4"
+                              ]
+                            }
+                          },
+                          {
+                            "resource_type": "CONNECTOR",
+                            "access_level": "MANAGE"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "example": null
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/groups/{groupId}/users/{userId}": {
       "delete": {
         "tags": [
@@ -9162,8 +9914,6 @@
                         "account_id": "account_id",
                         "registered_at": "2018-12-01T15:43:29.013729Z",
                         "region": "GCP_US_EAST4",
-                        "token": "token",
-                        "salt": "salt",
                         "created_by": "created_by",
                         "display_name": "display_name"
                       }
@@ -10050,8 +10800,7 @@
             "description": "The unique identifier for the private link within the Fivetran system",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64",
+              "type": "string",
               "example": null
             }
           },
@@ -10115,8 +10864,7 @@
             "description": "The unique identifier for the private link within the Fivetran system",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64",
+              "type": "string",
               "example": null
             }
           },
@@ -10177,8 +10925,7 @@
             "description": "The unique identifier for the private link within the Fivetran system",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64",
+              "type": "string",
               "example": null
             }
           },
@@ -10586,7 +11333,7 @@
           "Connector Management"
         ],
         "summary": "Retrieve Connector state",
-        "description": "Returns the connector state. This endpoint is only supported for function connectors.",
+        "description": "Returns the connector state. This endpoint is only supported for Function and Connector SDK connectors.",
         "operationId": "connector_state",
         "parameters": [
           {
@@ -10631,7 +11378,7 @@
                       "example": null
                     },
                     "data": {
-                      "$ref": "#/components/schemas/UpdateFunctionState"
+                      "$ref": "#/components/schemas/UpdateFunctionOrConnectorSdkState"
                     }
                   },
                   "example": null
@@ -10656,7 +11403,7 @@
           "Connector Management"
         ],
         "summary": "Modify a Connector state",
-        "description": "Modifies the connector state. This endpoint is only supported for function connectors.",
+        "description": "Modifies the connector state. This endpoint is only supported for Function and Connector SDK connectors.",
         "operationId": "modify_connector_state",
         "parameters": [
           {
@@ -10683,7 +11430,7 @@
           "content": {
             "*/*": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateFunctionState"
+                "$ref": "#/components/schemas/UpdateFunctionOrConnectorSdkState"
               },
               "example": null
             }
@@ -10711,7 +11458,7 @@
                       "example": null
                     },
                     "data": {
-                      "$ref": "#/components/schemas/UpdateFunctionState"
+                      "$ref": "#/components/schemas/UpdateFunctionOrConnectorSdkState"
                     }
                   },
                   "example": null
@@ -11457,7 +12204,6 @@
             "7shifts": "#/components/schemas/7shifts_NewConnectorRequestV1",
             "absorb_lms": "#/components/schemas/absorb_lms_NewConnectorRequestV1",
             "activecampaign": "#/components/schemas/activecampaign_NewConnectorRequestV1",
-            "acumatica": "#/components/schemas/acumatica_NewConnectorRequestV1",
             "ada": "#/components/schemas/ada_NewConnectorRequestV1",
             "adjust": "#/components/schemas/adjust_NewConnectorRequestV1",
             "adobe_analytics": "#/components/schemas/adobe_analytics_NewConnectorRequestV1",
@@ -11516,6 +12262,8 @@
             "azure_sql_managed_db": "#/components/schemas/azure_sql_managed_db_NewConnectorRequestV1",
             "ballotready": "#/components/schemas/ballotready_NewConnectorRequestV1",
             "bamboohr": "#/components/schemas/bamboohr_NewConnectorRequestV1",
+            "bazaarvoice": "#/components/schemas/bazaarvoice_NewConnectorRequestV1",
+            "betterworks": "#/components/schemas/betterworks_NewConnectorRequestV1",
             "big_commerce": "#/components/schemas/big_commerce_NewConnectorRequestV1",
             "bigquery_db": "#/components/schemas/bigquery_db_NewConnectorRequestV1",
             "billing_platform": "#/components/schemas/billing_platform_NewConnectorRequestV1",
@@ -11533,7 +12281,9 @@
             "brevo": "#/components/schemas/brevo_NewConnectorRequestV1",
             "brex": "#/components/schemas/brex_NewConnectorRequestV1",
             "brightcove": "#/components/schemas/brightcove_NewConnectorRequestV1",
-            "bubbleio": "#/components/schemas/bubbleio_NewConnectorRequestV1",
+            "brightpearl": "#/components/schemas/brightpearl_NewConnectorRequestV1",
+            "bubble": "#/components/schemas/bubble_NewConnectorRequestV1",
+            "buildium": "#/components/schemas/buildium_NewConnectorRequestV1",
             "buildkite": "#/components/schemas/buildkite_NewConnectorRequestV1",
             "business_central": "#/components/schemas/business_central_NewConnectorRequestV1",
             "buzzsprout": "#/components/schemas/buzzsprout_NewConnectorRequestV1",
@@ -11545,6 +12295,7 @@
             "canvas_by_instructure": "#/components/schemas/canvas_by_instructure_NewConnectorRequestV1",
             "care_quality_commission": "#/components/schemas/care_quality_commission_NewConnectorRequestV1",
             "castor_edc": "#/components/schemas/castor_edc_NewConnectorRequestV1",
+            "centra": "#/components/schemas/centra_NewConnectorRequestV1",
             "ceridian_dayforce": "#/components/schemas/ceridian_dayforce_NewConnectorRequestV1",
             "chameleon": "#/components/schemas/chameleon_NewConnectorRequestV1",
             "chargebee_product_catalog_1": "#/components/schemas/chargebee_product_catalog_1_NewConnectorRequestV1",
@@ -11847,13 +12598,16 @@
             "planetscale": "#/components/schemas/planetscale_NewConnectorRequestV1",
             "planful": "#/components/schemas/planful_NewConnectorRequestV1",
             "playvox": "#/components/schemas/playvox_NewConnectorRequestV1",
+            "playvox_workforce_management": "#/components/schemas/playvox_workforce_management_NewConnectorRequestV1",
             "postgres": "#/components/schemas/postgres_NewConnectorRequestV1",
             "postgres_rds": "#/components/schemas/postgres_rds_NewConnectorRequestV1",
             "posthog": "#/components/schemas/posthog_NewConnectorRequestV1",
             "postmark": "#/components/schemas/postmark_NewConnectorRequestV1",
             "power_reviews_enterprise": "#/components/schemas/power_reviews_enterprise_NewConnectorRequestV1",
+            "prisma_cloud": "#/components/schemas/prisma_cloud_NewConnectorRequestV1",
             "prive": "#/components/schemas/prive_NewConnectorRequestV1",
             "productboard": "#/components/schemas/productboard_NewConnectorRequestV1",
+            "productive": "#/components/schemas/productive_NewConnectorRequestV1",
             "proofpoint_security_awareness": "#/components/schemas/proofpoint_security_awareness_NewConnectorRequestV1",
             "qualaroo": "#/components/schemas/qualaroo_NewConnectorRequestV1",
             "qualtrics": "#/components/schemas/qualtrics_NewConnectorRequestV1",
@@ -11975,6 +12729,7 @@
             "teamwork": "#/components/schemas/teamwork_NewConnectorRequestV1",
             "tempo": "#/components/schemas/tempo_NewConnectorRequestV1",
             "testrail": "#/components/schemas/testrail_NewConnectorRequestV1",
+            "textus": "#/components/schemas/textus_NewConnectorRequestV1",
             "the_trade_desk": "#/components/schemas/the_trade_desk_NewConnectorRequestV1",
             "thinkific": "#/components/schemas/thinkific_NewConnectorRequestV1",
             "ticket_tailor": "#/components/schemas/ticket_tailor_NewConnectorRequestV1",
@@ -12005,6 +12760,7 @@
             "vonage_contact_center": "#/components/schemas/vonage_contact_center_NewConnectorRequestV1",
             "vts": "#/components/schemas/vts_NewConnectorRequestV1",
             "vwo": "#/components/schemas/vwo_NewConnectorRequestV1",
+            "walmart_dsp": "#/components/schemas/walmart_dsp_NewConnectorRequestV1",
             "walmart_marketplace": "#/components/schemas/walmart_marketplace_NewConnectorRequestV1",
             "wasabi_cloud_storage": "#/components/schemas/wasabi_cloud_storage_NewConnectorRequestV1",
             "web_scraper": "#/components/schemas/web_scraper_NewConnectorRequestV1",
@@ -12225,7 +12981,7 @@
         },
         "example": null
       },
-      "UpdateFunctionState": {
+      "UpdateFunctionOrConnectorSdkState": {
         "type": "object",
         "properties": {
           "state": {
@@ -12436,7 +13192,6 @@
             "7shifts": "#/components/schemas/7shifts_ConnectorResponseV1",
             "absorb_lms": "#/components/schemas/absorb_lms_ConnectorResponseV1",
             "activecampaign": "#/components/schemas/activecampaign_ConnectorResponseV1",
-            "acumatica": "#/components/schemas/acumatica_ConnectorResponseV1",
             "ada": "#/components/schemas/ada_ConnectorResponseV1",
             "adjust": "#/components/schemas/adjust_ConnectorResponseV1",
             "adobe_analytics": "#/components/schemas/adobe_analytics_ConnectorResponseV1",
@@ -12495,6 +13250,8 @@
             "azure_sql_managed_db": "#/components/schemas/azure_sql_managed_db_ConnectorResponseV1",
             "ballotready": "#/components/schemas/ballotready_ConnectorResponseV1",
             "bamboohr": "#/components/schemas/bamboohr_ConnectorResponseV1",
+            "bazaarvoice": "#/components/schemas/bazaarvoice_ConnectorResponseV1",
+            "betterworks": "#/components/schemas/betterworks_ConnectorResponseV1",
             "big_commerce": "#/components/schemas/big_commerce_ConnectorResponseV1",
             "bigquery_db": "#/components/schemas/bigquery_db_ConnectorResponseV1",
             "billing_platform": "#/components/schemas/billing_platform_ConnectorResponseV1",
@@ -12512,7 +13269,9 @@
             "brevo": "#/components/schemas/brevo_ConnectorResponseV1",
             "brex": "#/components/schemas/brex_ConnectorResponseV1",
             "brightcove": "#/components/schemas/brightcove_ConnectorResponseV1",
-            "bubbleio": "#/components/schemas/bubbleio_ConnectorResponseV1",
+            "brightpearl": "#/components/schemas/brightpearl_ConnectorResponseV1",
+            "bubble": "#/components/schemas/bubble_ConnectorResponseV1",
+            "buildium": "#/components/schemas/buildium_ConnectorResponseV1",
             "buildkite": "#/components/schemas/buildkite_ConnectorResponseV1",
             "business_central": "#/components/schemas/business_central_ConnectorResponseV1",
             "buzzsprout": "#/components/schemas/buzzsprout_ConnectorResponseV1",
@@ -12524,6 +13283,7 @@
             "canvas_by_instructure": "#/components/schemas/canvas_by_instructure_ConnectorResponseV1",
             "care_quality_commission": "#/components/schemas/care_quality_commission_ConnectorResponseV1",
             "castor_edc": "#/components/schemas/castor_edc_ConnectorResponseV1",
+            "centra": "#/components/schemas/centra_ConnectorResponseV1",
             "ceridian_dayforce": "#/components/schemas/ceridian_dayforce_ConnectorResponseV1",
             "chameleon": "#/components/schemas/chameleon_ConnectorResponseV1",
             "chargebee_product_catalog_1": "#/components/schemas/chargebee_product_catalog_1_ConnectorResponseV1",
@@ -12826,13 +13586,16 @@
             "planetscale": "#/components/schemas/planetscale_ConnectorResponseV1",
             "planful": "#/components/schemas/planful_ConnectorResponseV1",
             "playvox": "#/components/schemas/playvox_ConnectorResponseV1",
+            "playvox_workforce_management": "#/components/schemas/playvox_workforce_management_ConnectorResponseV1",
             "postgres": "#/components/schemas/postgres_ConnectorResponseV1",
             "postgres_rds": "#/components/schemas/postgres_rds_ConnectorResponseV1",
             "posthog": "#/components/schemas/posthog_ConnectorResponseV1",
             "postmark": "#/components/schemas/postmark_ConnectorResponseV1",
             "power_reviews_enterprise": "#/components/schemas/power_reviews_enterprise_ConnectorResponseV1",
+            "prisma_cloud": "#/components/schemas/prisma_cloud_ConnectorResponseV1",
             "prive": "#/components/schemas/prive_ConnectorResponseV1",
             "productboard": "#/components/schemas/productboard_ConnectorResponseV1",
+            "productive": "#/components/schemas/productive_ConnectorResponseV1",
             "proofpoint_security_awareness": "#/components/schemas/proofpoint_security_awareness_ConnectorResponseV1",
             "qualaroo": "#/components/schemas/qualaroo_ConnectorResponseV1",
             "qualtrics": "#/components/schemas/qualtrics_ConnectorResponseV1",
@@ -12954,6 +13717,7 @@
             "teamwork": "#/components/schemas/teamwork_ConnectorResponseV1",
             "tempo": "#/components/schemas/tempo_ConnectorResponseV1",
             "testrail": "#/components/schemas/testrail_ConnectorResponseV1",
+            "textus": "#/components/schemas/textus_ConnectorResponseV1",
             "the_trade_desk": "#/components/schemas/the_trade_desk_ConnectorResponseV1",
             "thinkific": "#/components/schemas/thinkific_ConnectorResponseV1",
             "ticket_tailor": "#/components/schemas/ticket_tailor_ConnectorResponseV1",
@@ -12984,6 +13748,7 @@
             "vonage_contact_center": "#/components/schemas/vonage_contact_center_ConnectorResponseV1",
             "vts": "#/components/schemas/vts_ConnectorResponseV1",
             "vwo": "#/components/schemas/vwo_ConnectorResponseV1",
+            "walmart_dsp": "#/components/schemas/walmart_dsp_ConnectorResponseV1",
             "walmart_marketplace": "#/components/schemas/walmart_marketplace_ConnectorResponseV1",
             "wasabi_cloud_storage": "#/components/schemas/wasabi_cloud_storage_ConnectorResponseV1",
             "web_scraper": "#/components/schemas/web_scraper_ConnectorResponseV1",
@@ -14303,8 +15068,7 @@
             "example": null
           },
           "private_link_id": {
-            "type": "integer",
-            "format": "int64",
+            "type": "string",
             "example": null
           },
           "networking_method": {
@@ -14855,8 +15619,7 @@
             "example": null
           },
           "private_link_id": {
-            "type": "integer",
-            "format": "int64",
+            "type": "string",
             "example": null
           },
           "proxy_agent_id": {
@@ -15053,12 +15816,26 @@
         "example": null
       },
       "LocalProcessingAgentCreateRequest": {
+        "required": [
+          "accept_terms",
+          "display_name",
+          "env_type",
+          "group_id"
+        ],
         "type": "object",
         "properties": {
           "accept_terms": {
             "type": "boolean",
             "description": "Boolean, must be true to indicate that the caller accepts the Fivetran On-Prem Software License Addendum.",
             "example": null
+          },
+          "auth_type": {
+            "type": "string",
+            "example": null,
+            "enum": [
+              "AUTO",
+              "MANUAL"
+            ]
           },
           "display_name": {
             "type": "string",
@@ -15081,7 +15858,27 @@
         },
         "example": null
       },
+      "LocalProcessingAgentReAuthRequest": {
+        "type": "object",
+        "properties": {
+          "auth_type": {
+            "type": "string",
+            "example": null,
+            "enum": [
+              "AUTO",
+              "MANUAL"
+            ]
+          }
+        },
+        "example": null
+      },
       "LocalProcessingAgentCreateResponse": {
+        "required": [
+          "display_name",
+          "group_id",
+          "id",
+          "registered_at"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -15092,10 +15889,9 @@
           "files": {
             "$ref": "#/components/schemas/LocalProcessingAgentFilesResponse"
           },
-          "registered_at": {
+          "token": {
             "type": "string",
-            "description": "Time when this Local Processing Agent was created.",
-            "format": "date-time",
+            "description": "Base64 encoded content of token",
             "example": null
           },
           "display_name": {
@@ -15106,6 +15902,12 @@
           "group_id": {
             "type": "string",
             "description": "The unique identifier for the group within your Fivetran account.",
+            "example": null
+          },
+          "registered_at": {
+            "type": "string",
+            "description": "Time when this Local Processing Agent was created.",
+            "format": "date-time",
             "example": null
           }
         },
@@ -15148,6 +15950,10 @@
         "example": null
       },
       "LocalProcessingAgentUsageResponse": {
+        "required": [
+          "schema",
+          "service"
+        ],
         "type": "object",
         "properties": {
           "schema": {
@@ -15168,6 +15974,12 @@
         "example": null
       },
       "LocalProcessingAgentWithUsageResponse": {
+        "required": [
+          "display_name",
+          "group_id",
+          "id",
+          "registered_at"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -15591,6 +16403,10 @@
       "ProxyAgentCreatedResponse": {
         "type": "object",
         "properties": {
+          "client_cert": {
+            "type": "string",
+            "example": null
+          },
           "agent_id": {
             "type": "string",
             "description": "The unique identifier for the proxy agent within the Fivetran system.",
@@ -15605,6 +16421,10 @@
             "type": "string",
             "description": "The auth token.",
             "example": "auth_token"
+          },
+          "client_private_key": {
+            "type": "string",
+            "example": null
           }
         },
         "example": null
@@ -15624,8 +16444,9 @@
           },
           "registered_at": {
             "type": "string",
+            "description": "The timestamp of the time the proxy agent was created in your account.",
             "format": "date-time",
-            "example": null
+            "example": "2018-12-01T15:43:29.013729Z"
           },
           "region": {
             "type": "string",
@@ -15667,16 +16488,6 @@
               "AZURE_JAPANEAST",
               "AZURE_CENTRALINDIA"
             ]
-          },
-          "token": {
-            "type": "string",
-            "description": "The auth token.",
-            "example": "token"
-          },
-          "salt": {
-            "type": "string",
-            "description": "The salt.",
-            "example": "salt"
           },
           "created_by": {
             "type": "string",
@@ -15732,6 +16543,223 @@
           "is_custom": {
             "type": "boolean",
             "description": "Defines whether the role is standard or custom",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "NewSystemKeyRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The system key name within the account",
+            "example": null
+          },
+          "expiration_period": {
+            "type": "string",
+            "description": "The system key's expiration period",
+            "example": null,
+            "enum": [
+              "ONE_WEEK",
+              "ONE_MONTH",
+              "THREE_MONTHS",
+              "SIX_MONTHS",
+              "INFINITE"
+            ]
+          },
+          "permissions": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/SystemKeyPermissionRequest"
+            }
+          }
+        },
+        "example": null
+      },
+      "SystemKeyPermissionRequest": {
+        "type": "object",
+        "properties": {
+          "resource_type": {
+            "type": "string",
+            "description": "The resource type for the permission",
+            "example": null,
+            "enum": [
+              "ACCOUNT",
+              "USER",
+              "WEBHOOK",
+              "TEAM",
+              "ROLES",
+              "DESTINATION",
+              "TRANSFORMATION",
+              "REMOTE_EXECUTION_AGENT",
+              "CONNECTOR"
+            ]
+          },
+          "access_level": {
+            "type": "string",
+            "description": "The access level for the permission",
+            "example": null,
+            "enum": [
+              "NONE",
+              "READ",
+              "MANAGE"
+            ]
+          },
+          "resource_filter": {
+            "$ref": "#/components/schemas/SystemKeyPermissionResourceFilter"
+          }
+        },
+        "example": null
+      },
+      "SystemKeyPermissionResourceFilter": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "description": "The IDs of managed entities",
+            "example": null,
+            "items": {
+              "type": "string",
+              "example": null
+            }
+          },
+          "group_ids": {
+            "type": "array",
+            "description": "The IDs of managed groups",
+            "example": null,
+            "items": {
+              "type": "string",
+              "example": null
+            }
+          }
+        },
+        "example": null
+      },
+      "RotateSystemKeyRequest": {
+        "type": "object",
+        "properties": {
+          "expiration_period": {
+            "type": "string",
+            "description": "The system key's expiration period",
+            "example": null,
+            "enum": [
+              "ONE_WEEK",
+              "ONE_MONTH",
+              "THREE_MONTHS",
+              "SIX_MONTHS",
+              "INFINITE"
+            ]
+          }
+        },
+        "example": null
+      },
+      "UpdateSystemKeyRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The system key name within the account",
+            "example": null
+          },
+          "permissions": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/SystemKeyPermissionRequest"
+            }
+          }
+        },
+        "example": null
+      },
+      "SystemKeyPermissionResponse": {
+        "type": "object",
+        "properties": {
+          "resource_filter": {
+            "$ref": "#/components/schemas/SystemKeyPermissionResourceFilter"
+          },
+          "access_level": {
+            "type": "string",
+            "description": "The access level for the permission",
+            "example": null,
+            "enum": [
+              "NONE",
+              "READ",
+              "MANAGE"
+            ]
+          },
+          "resource_type": {
+            "type": "string",
+            "description": "The resource type for the permission",
+            "example": null,
+            "enum": [
+              "ACCOUNT",
+              "USER",
+              "WEBHOOK",
+              "TEAM",
+              "ROLES",
+              "DESTINATION",
+              "TRANSFORMATION",
+              "REMOTE_EXECUTION_AGENT",
+              "CONNECTOR"
+            ]
+          }
+        },
+        "example": null
+      },
+      "SystemKeyResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier for the system key within the Fivetran system",
+            "example": null
+          },
+          "name": {
+            "type": "string",
+            "description": "The system key name within the account",
+            "example": null
+          },
+          "key": {
+            "type": "string",
+            "description": "The key value of the system key",
+            "example": null
+          },
+          "secret": {
+            "type": "string",
+            "description": "The secret value of rotated system key",
+            "example": null
+          },
+          "permissions": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/SystemKeyPermissionResponse"
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "description": "The system key creation timestamp",
+            "format": "date-time",
+            "example": null
+          },
+          "expired_at": {
+            "type": "string",
+            "description": "The system key expiration timestamp",
+            "format": "date-time",
+            "example": null
+          },
+          "last_used_at": {
+            "type": "string",
+            "description": "The timestamp of last usage",
+            "format": "date-time",
+            "example": null
+          },
+          "updated_at": {
+            "type": "string",
+            "description": "The system key update timestamp",
+            "format": "date-time",
             "example": null
           }
         },
@@ -19834,60 +20862,6 @@
           },
           {
             "$ref": "#/components/schemas/activecampaign_config_V1"
-          }
-        ]
-      },
-      "acumatica_config_V1": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "properties": {
-              "schema": {
-                "title": "Destination schema",
-                "type": "string",
-                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
-                "example": null
-              },
-              "instance": {
-                "title": "",
-                "type": "string",
-                "description": "Your Acumatica instance name.",
-                "example": null
-              },
-              "sub_domain": {
-                "title": "",
-                "type": "string",
-                "description": "Your Acumatica subdomain.",
-                "example": null
-              },
-              "client_secret": {
-                "title": "",
-                "type": "string",
-                "description": "Your Acumatica client secret.",
-                "format": "password",
-                "example": null
-              },
-              "client_id": {
-                "title": "",
-                "type": "string",
-                "description": "Your Acumatica client ID.",
-                "example": null
-              }
-            },
-            "description": "",
-            "example": null
-          }
-        },
-        "example": null
-      },
-      "acumatica_NewConnectorRequestV1": {
-        "example": null,
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NewConnectorRequestV1"
-          },
-          {
-            "$ref": "#/components/schemas/acumatica_config_V1"
           }
         ]
       },
@@ -24985,6 +25959,93 @@
           }
         ]
       },
+      "bazaarvoice_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "environment": {
+                "type": "object",
+                "description": "Your Bazaarvoice  Environment.",
+                "example": null,
+                "enum": [
+                  "api.bazaarvoice.com",
+                  "stg.api.bazaarvoice.com"
+                ]
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Bazaarvoice  API key.",
+                "format": "password",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "bazaarvoice_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/bazaarvoice_config_V1"
+          }
+        ]
+      },
+      "betterworks_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Betterworks private API key.",
+                "format": "password",
+                "example": null
+              },
+              "sub_domain": {
+                "title": "",
+                "type": "string",
+                "description": "Your Betterworks subdomain.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "betterworks_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/betterworks_config_V1"
+          }
+        ]
+      },
       "big_commerce_config_V1": {
         "properties": {
           "config": {
@@ -24993,7 +26054,7 @@
               "access_token": {
                 "title": "",
                 "type": "string",
-                "description": "API access token of your store.",
+                "description": "",
                 "format": "password",
                 "example": null
               },
@@ -25006,7 +26067,7 @@
               "store_hash": {
                 "title": "",
                 "type": "string",
-                "description": "The BigCommerce store hash.",
+                "description": "",
                 "example": null
               }
             },
@@ -25813,13 +26874,25 @@
               "s3_export_bucket": {
                 "title": "",
                 "type": "string",
-                "description": "Exports Bucket",
+                "description": "Your S3 user export bucket. Required if `AWS_S3` is the `export_storage_type`",
+                "example": null
+              },
+              "gcs_export_bucket": {
+                "title": "",
+                "type": "string",
+                "description": "Your GCS bucket. Required if `GCS` is the `export_storage_type`",
                 "example": null
               },
               "api_url": {
                 "title": "",
                 "type": "string",
                 "description": "Your Braze API URL.",
+                "example": null
+              },
+              "s3_export_external_id": {
+                "title": "",
+                "type": "string",
+                "description": "This is the same as your `group_id`, used if `export_storage_type` is `AWS_S3`",
                 "example": null
               },
               "gcs_bucket": {
@@ -25831,7 +26904,7 @@
               "s3_export_role_arn": {
                 "title": "",
                 "type": "string",
-                "description": "Exports Role ARN",
+                "description": "The Role ARN required for authentication required if `AWS_S3` is the `export_storage_type`",
                 "format": "password",
                 "example": null
               },
@@ -25850,7 +26923,7 @@
               "s3_export_folder": {
                 "title": "",
                 "type": "string",
-                "description": "Exports Folder",
+                "description": "Your S3 user export folder name. Required if `AWS_S3` is the `export_storage_type`",
                 "example": null
               },
               "s3folder": {
@@ -25886,7 +26959,7 @@
               "export_storage_type": {
                 "title": "",
                 "type": "object",
-                "description": "Export Storage",
+                "description": "Export Storage. Required if `enable_exports` is `true`",
                 "example": null,
                 "enum": [
                   "AZURE_BLOB_STORAGE",
@@ -25920,6 +26993,12 @@
                 "type": "string",
                 "description": "Your Braze API Key.",
                 "format": "password",
+                "example": null
+              },
+              "gcs_export_folder": {
+                "title": "",
+                "type": "string",
+                "description": "Your GCS folder name. Required if `GCS` is the `export_storage_type`",
                 "example": null
               }
             },
@@ -26069,7 +27148,76 @@
           }
         ]
       },
-      "bubbleio_config_V1": {
+      "brightpearl_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "app_reference": {
+                "title": "",
+                "type": "string",
+                "description": "Your Brightpearl app reference.",
+                "example": null
+              },
+              "data_center": {
+                "type": "object",
+                "description": "Your Brightpearl data center.",
+                "example": null,
+                "enum": [
+                  "euw1",
+                  "ws-use"
+                ]
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Brightpearl client secret.",
+                "format": "password",
+                "example": null
+              },
+              "developer_reference": {
+                "title": "",
+                "type": "string",
+                "description": "Your Brightpearl developer reference.",
+                "example": null
+              },
+              "organization_name": {
+                "title": "",
+                "type": "string",
+                "description": "Your Brightpearl organization name.",
+                "example": null
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Brightpearl client id.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "brightpearl_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/brightpearl_config_V1"
+          }
+        ]
+      },
+      "bubble_config_V1": {
         "properties": {
           "config": {
             "type": "object",
@@ -26083,25 +27231,25 @@
               "type_name": {
                 "title": "",
                 "type": "string",
-                "description": "Your Bubble.io type name.",
+                "description": "Your Bubble type name.",
                 "example": null
               },
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Bubble.io API key.",
+                "description": "Your Bubble API token.",
                 "format": "password",
                 "example": null
               },
               "domain": {
                 "title": "",
                 "type": "string",
-                "description": "Your Bubble.io domain.",
+                "description": "Your Bubble app name or domain name.",
                 "example": null
               },
               "sub_domain": {
                 "type": "object",
-                "description": "Your Bubble.io subDomain.",
+                "description": "Your Bubble subdomain.",
                 "example": null,
                 "enum": [
                   "com",
@@ -26115,14 +27263,56 @@
         },
         "example": null
       },
-      "bubbleio_NewConnectorRequestV1": {
+      "bubble_NewConnectorRequestV1": {
         "example": null,
         "allOf": [
           {
             "$ref": "#/components/schemas/NewConnectorRequestV1"
           },
           {
-            "$ref": "#/components/schemas/bubbleio_config_V1"
+            "$ref": "#/components/schemas/bubble_config_V1"
+          }
+        ]
+      },
+      "buildium_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Buildium private API key.",
+                "format": "password",
+                "example": null
+              },
+              "sub_domain": {
+                "title": "",
+                "type": "string",
+                "description": "Your Buildium subdomain.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "buildium_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/buildium_config_V1"
           }
         ]
       },
@@ -26170,7 +27360,7 @@
               "tenant_id": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "`Tenant ID` of your Business Central application",
                 "example": null
               },
               "schema": {
@@ -26182,19 +27372,19 @@
               "companies": {
                 "title": "",
                 "type": "array",
-                "description": "",
+                "description": "List of companies to sync",
                 "example": null,
                 "items": {
                   "title": "",
                   "type": "string",
-                  "description": "",
+                  "description": "List of companies to sync",
                   "example": null
                 }
               },
               "environment_name": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Name of the environment",
                 "example": null
               }
             },
@@ -26216,13 +27406,13 @@
                   "client_secret": {
                     "title": "",
                     "type": "string",
-                    "description": "",
+                    "description": "`Client Secret` of your Airtable client application.",
                     "example": null
                   },
                   "client_id": {
                     "title": "",
                     "type": "string",
-                    "description": "",
+                    "description": "`Client ID` of your Airtable client application.",
                     "example": null
                   }
                 },
@@ -26637,6 +27827,48 @@
           },
           {
             "$ref": "#/components/schemas/castor_edc_config_V1"
+          }
+        ]
+      },
+      "centra_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your Centra API Token.",
+                "format": "password",
+                "example": null
+              },
+              "base_url": {
+                "title": "",
+                "type": "string",
+                "description": "Your Centra Base URL.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "centra_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/centra_config_V1"
           }
         ]
       },
@@ -28113,10 +29345,10 @@
                 "format": "password",
                 "example": null
               },
-              "organization_name": {
+              "domain": {
                 "title": "",
                 "type": "string",
-                "description": "Your Confluence organization name.",
+                "description": "Your Confluence domain.",
                 "example": null
               },
               "username": {
@@ -32637,6 +33869,7 @@
                         "ACTION_VIDEO_VIEW_TYPE",
                         "BASIC_ALL_LEVELS",
                         "ACTION_CAROUSEL_CARD",
+                        "MARKETING_MIX_MODELING",
                         "DEMOGRAPHICS_AGE",
                         "DEMOGRAPHICS_DMA_REGION",
                         "BASIC_CAMPAIGN",
@@ -32704,6 +33937,7 @@
                           "title_asset",
                           "action_converted_product_id",
                           "fidelity_type",
+                          "mmm",
                           "call_to_action_asset",
                           "image_asset",
                           "product_id",
@@ -33466,12 +34700,6 @@
                 "title": "",
                 "type": "boolean",
                 "description": "(Optional) Retrieve account-level logs.",
-                "example": null
-              },
-              "group_name": {
-                "title": "",
-                "type": "string",
-                "description": "(Optional) The group name of the `target_group_id`.",
                 "example": null
               }
             },
@@ -37307,6 +38535,12 @@
           "auth": {
             "type": "object",
             "properties": {
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": null
+              },
               "client_access": {
                 "type": "object",
                 "properties": {
@@ -37640,7 +38874,8 @@
                           "COUNTRY",
                           "QUERY",
                           "DEVICE",
-                          "PAGE"
+                          "PAGE",
+                          "SEARCH_APPEARANCE"
                         ]
                       }
                     }
@@ -37986,7 +39221,7 @@
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Greenhouse API key.",
+                "description": "",
                 "format": "password",
                 "example": null
               }
@@ -38309,12 +39544,6 @@
                 "type": "string",
                 "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
                 "example": null
-              },
-              "conversation_webhook_url": {
-                "title": "",
-                "type": "string",
-                "description": "Your conversation webhook URL",
-                "example": null
               }
             },
             "description": "",
@@ -38323,19 +39552,29 @@
           "auth": {
             "type": "object",
             "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": null
+              },
               "refresh_token": {
                 "title": "",
                 "type": "string",
                 "description": "The long-lived `refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.",
+                "format": "password",
                 "example": null
               },
               "client_access": {
+                "title": "",
                 "type": "object",
                 "properties": {
                   "client_secret": {
                     "title": "",
                     "type": "string",
                     "description": "`Client Secret` of your Help Scout client application.",
+                    "format": "password",
                     "example": null
                   },
                   "client_id": {
@@ -39752,6 +40991,19 @@
                   "OAUTH"
                 ]
               },
+              "projects": {
+                "title": "",
+                "type": "array",
+                "description": "Specific projects to sync. Must be populated if `syncMode` is set to `CUSTOM`.",
+                "example": null,
+                "items": {
+                  "title": "",
+                  "type": "integer",
+                  "description": "Specific projects to sync. Must be populated if `syncMode` is set to `CUSTOM`.",
+                  "format": "int32",
+                  "example": null
+                }
+              },
               "port": {
                 "title": "",
                 "type": "integer",
@@ -40423,6 +41675,20 @@
           "config": {
             "type": "object",
             "properties": {
+              "historic_sync_time_frame": {
+                "title": "",
+                "type": "object",
+                "description": "Range of data in history you would like to include in the initial sync. Default value: `ALL_TIME`.",
+                "example": null,
+                "enum": [
+                  "ONE_YEAR",
+                  "ALL_TIME",
+                  "FIVE_YEARS",
+                  "TWO_YEARS",
+                  "THREE_MONTHS",
+                  "SIX_MONTHS"
+                ]
+              },
               "schema": {
                 "title": "Destination schema",
                 "type": "string",
@@ -40779,7 +42045,7 @@
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Lever API key.",
+                "description": "",
                 "format": "password",
                 "example": null
               }
@@ -42230,6 +43496,20 @@
                 "description": "Marketo SOAP API Endpoint.",
                 "example": null
               },
+              "historic_sync_time_frame": {
+                "title": "",
+                "type": "object",
+                "description": "Range of data in history you would like to include in the initial sync. Default value: `ALL_TIME`.",
+                "example": null,
+                "enum": [
+                  "ONE_YEAR",
+                  "ALL_TIME",
+                  "FIVE_YEARS",
+                  "TWO_YEARS",
+                  "THREE_MONTHS",
+                  "SIX_MONTHS"
+                ]
+              },
               "schema": {
                 "title": "Destination schema",
                 "type": "string",
@@ -42513,13 +43793,13 @@
               "x_master_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Medallia Agile Research Master Key.",
+                "description": "Your Medallia Agile Research master key.",
                 "format": "password",
                 "example": null
               },
               "region": {
                 "type": "object",
-                "description": "Your Medallia Agile Region.",
+                "description": "Your Medallia Agile region.",
                 "example": null,
                 "enum": [
                   "eu",
@@ -42531,7 +43811,7 @@
               "x_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Medallia Agile Research Key.",
+                "description": "Your Medallia Agile Research key.",
                 "format": "password",
                 "example": null
               }
@@ -46622,13 +47902,6 @@
           "config": {
             "type": "object",
             "properties": {
-              "salesforce_security_token": {
-                "title": "",
-                "type": "string",
-                "description": "The Pardot user's Salesforce SSO Account Security Token.",
-                "format": "password",
-                "example": null
-              },
               "schema": {
                 "title": "Destination schema",
                 "type": "string",
@@ -46642,13 +47915,6 @@
                 "format": "int32",
                 "example": null
               },
-              "password": {
-                "title": "",
-                "type": "string",
-                "description": "The Pardot user's password.",
-                "format": "password",
-                "example": null
-              },
               "auth_type": {
                 "title": "",
                 "type": "object",
@@ -46658,18 +47924,6 @@
                   "BASIC",
                   "OAUTH"
                 ]
-              },
-              "business_unit_id": {
-                "title": "",
-                "type": "string",
-                "description": "Business Unit Id",
-                "example": null
-              },
-              "is_external_activities_endpoint_selected": {
-                "title": "",
-                "type": "boolean",
-                "description": "",
-                "example": null
               },
               "user_key": {
                 "title": "",
@@ -46736,17 +47990,57 @@
                   "GMT-03:00"
                 ]
               },
-              "email": {
-                "title": "",
-                "type": "string",
-                "description": "The email of the Pardot user.",
-                "example": null
-              },
               "rest_api_limit": {
                 "title": "",
                 "type": "integer",
                 "description": "The number of API calls that the connector should not exceed in a day. Default REST API call limit per day: 150,000.",
                 "format": "int32",
+                "example": null
+              },
+              "salesforce_security_token": {
+                "title": "",
+                "type": "string",
+                "description": "The Pardot user's Salesforce SSO Account Security Token.",
+                "format": "password",
+                "example": null
+              },
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "The Pardot user's password.",
+                "format": "password",
+                "example": null
+              },
+              "historical_sync_limit": {
+                "title": "",
+                "type": "object",
+                "description": "The time range for which historical data should be synced. Default value: `All Time`.",
+                "example": null,
+                "enum": [
+                  "ONE_YEAR",
+                  "ALL_TIME",
+                  "FIVE_YEARS",
+                  "TWO_YEARS",
+                  "THREE_MONTHS",
+                  "SIX_MONTHS"
+                ]
+              },
+              "business_unit_id": {
+                "title": "",
+                "type": "string",
+                "description": "Business Unit Id",
+                "example": null
+              },
+              "is_external_activities_endpoint_selected": {
+                "title": "",
+                "type": "boolean",
+                "description": "",
+                "example": null
+              },
+              "email": {
+                "title": "",
+                "type": "string",
+                "description": "The email of the Pardot user.",
                 "example": null
               }
             },
@@ -47730,6 +49024,12 @@
           "config": {
             "type": "object",
             "properties": {
+              "email_id": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": null
+              },
               "schema": {
                 "title": "Destination schema",
                 "type": "string",
@@ -47818,6 +49118,60 @@
           },
           {
             "$ref": "#/components/schemas/playvox_config_V1"
+          }
+        ]
+      },
+      "playvox_workforce_management_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "identifier": {
+                "title": "",
+                "type": "string",
+                "description": "Your Playvox Workforce Management Identifier.",
+                "example": null
+              },
+              "tenant_url": {
+                "title": "",
+                "type": "string",
+                "description": "Your Playvox Workforce Management Tenant URL.",
+                "example": null
+              },
+              "region_url": {
+                "title": "",
+                "type": "string",
+                "description": "Your Playvox Workforce Management Region URL.",
+                "example": null
+              },
+              "secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Playvox Workforce Management Secret.",
+                "format": "password",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "playvox_workforce_management_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/playvox_workforce_management_config_V1"
           }
         ]
       },
@@ -48226,6 +49580,77 @@
           }
         ]
       },
+      "prisma_cloud_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "console_url": {
+                "title": "",
+                "type": "string",
+                "description": "Your Prisma Cloud Console URL.",
+                "example": null
+              },
+              "base_url": {
+                "type": "object",
+                "description": "Your Prisma Cloud Admin Console URL.",
+                "example": null,
+                "enum": [
+                  "https://api.gov.prismacloud.io",
+                  "https://api.id.prismacloud.io",
+                  "https://api4.prismacloud.io",
+                  "https://api.jp.prismacloud.io",
+                  "https://api3.prismacloud.io",
+                  "https://api.uk.prismacloud.io",
+                  "https://api.ind.prismacloud.io",
+                  "https://api2.eu.prismacloud.io",
+                  "https://api.eu.prismacloud.io",
+                  "https://api.sg.prismacloud.io",
+                  "https://api.prismacloud.io",
+                  "https://api.prismacloud.cn",
+                  "https://api.anz.prismacloud.io",
+                  "https://api.ca.prismacloud.io",
+                  "https://api.fr.prismacloud.io",
+                  "https://api2.prismacloud.io"
+                ]
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Prisma Cloud client secret.",
+                "format": "password",
+                "example": null
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Prisma Cloud client ID.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "prisma_cloud_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/prisma_cloud_config_V1"
+          }
+        ]
+      },
       "prive_config_V1": {
         "properties": {
           "config": {
@@ -48295,6 +49720,48 @@
           },
           {
             "$ref": "#/components/schemas/productboard_config_V1"
+          }
+        ]
+      },
+      "productive_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "organization_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Productive Organization ID.",
+                "example": null
+              },
+              "api_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your Productive API token.",
+                "format": "password",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "productive_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/productive_config_V1"
           }
         ]
       },
@@ -48409,9 +49876,16 @@
                 "description": "Type of authentication being used by connector",
                 "example": null,
                 "enum": [
-                  "OAUTH2",
-                  "API_TOKEN"
+                  "STANDARD",
+                  "ADVANCED"
                 ]
+              },
+              "pass_phrase": {
+                "title": "",
+                "type": "string",
+                "description": "Pass Phrase",
+                "format": "password",
+                "example": null
               },
               "api_requests_per_minute": {
                 "title": "",
@@ -48427,10 +49901,24 @@
                 "format": "password",
                 "example": null
               },
+              "certificate": {
+                "title": "",
+                "type": "string",
+                "description": "Your Client Certificate",
+                "format": "password",
+                "example": null
+              },
               "data_center": {
                 "title": "",
                 "type": "string",
                 "description": "Data center ID of the Qualtrics account. Can be found in the URL before `qualtrics.com`. (For example, if your URL is `youraccount.ca1.qualtrics.com`, then the data center is `ca1`.)",
+                "example": null
+              },
+              "private_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your private key",
+                "format": "password",
                 "example": null
               }
             },
@@ -48443,7 +49931,7 @@
               "refresh_token": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.",
                 "example": null
               },
               "client_access": {
@@ -48452,13 +49940,13 @@
                   "client_secret": {
                     "title": "",
                     "type": "string",
-                    "description": "",
+                    "description": "`Client Secret` of your Qualtrics client application.",
                     "example": null
                   },
                   "client_id": {
                     "title": "",
                     "type": "string",
-                    "description": "",
+                    "description": "`Client ID` of your Qualtrics client application.",
                     "example": null
                   }
                 },
@@ -49019,6 +50507,16 @@
                         "example": null
                       }
                     },
+                    "time_zone_mode": {
+                      "title": "",
+                      "type": "object",
+                      "description": "When this parameter is set to `ACCOUNT`, connector will use account related time zone to sync report data. Default value: `ACCOUNT`. Possible values: `ACCOUNT`, `USER`",
+                      "example": null,
+                      "enum": [
+                        "ACCOUNT",
+                        "USER"
+                      ]
+                    },
                     "level": {
                       "title": "",
                       "type": "object",
@@ -49058,6 +50556,12 @@
                         "NONE",
                         "INTEREST"
                       ]
+                    },
+                    "time_zone": {
+                      "title": "",
+                      "type": "string",
+                      "description": "The specific time zone to sync report data if  `useAccountTimeZone` set to `false`.",
+                      "example": null
                     },
                     "report_name": {
                       "title": "",
@@ -50539,10 +52043,22 @@
                   "PACKED"
                 ]
               },
+              "s3role_arn": {
+                "title": "",
+                "type": "string",
+                "description": "Role ARN of the IAM role created for Fivetran.",
+                "example": null
+              },
               "s3path": {
                 "title": "",
                 "type": "string",
                 "description": "Copy and use this to configure Sailthru Connect in your sailthru account.",
+                "example": null
+              },
+              "s3bucket": {
+                "title": "",
+                "type": "string",
+                "description": "Name of the bucket configured to receive sailthru connect data.",
                 "example": null
               },
               "api_key": {
@@ -50555,6 +52071,12 @@
                 "title": "",
                 "type": "boolean",
                 "description": "Enable this if you want to sync Sailthru Connect",
+                "example": null
+              },
+              "s3external_id": {
+                "title": "",
+                "type": "string",
+                "description": "The external ID is a string that designates who can assume the role.",
                 "example": null
               },
               "api_secret": {
@@ -50829,7 +52351,7 @@
               "sftp_is_key_pair": {
                 "title": "",
                 "type": "boolean",
-                "description": "",
+                "description": "Set this field if you use a key pair for logging into your SFTP server. Don't set it if you use a username and password",
                 "example": null
               },
               "sftp_user": {
@@ -50860,14 +52382,14 @@
               "sftp_port": {
                 "title": "",
                 "type": "integer",
-                "description": "",
+                "description": "Port",
                 "format": "int32",
                 "example": null
               },
               "sftp_host": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Host",
                 "example": null
               },
               "client_id": {
@@ -50892,16 +52414,30 @@
                   "AllEvents"
                 ]
               },
+              "historic_sync_time_frame": {
+                "title": "",
+                "type": "object",
+                "description": "Range of data in history you would like to include in the initial sync. Default value: `ALL_TIME`.",
+                "example": null,
+                "enum": [
+                  "ONE_YEAR",
+                  "ALL_TIME",
+                  "FIVE_YEARS",
+                  "TWO_YEARS",
+                  "THREE_MONTHS",
+                  "SIX_MONTHS"
+                ]
+              },
               "sftp_public_key": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Public Key",
                 "example": null
               },
               "is_sftp_creds_available": {
                 "title": "",
                 "type": "boolean",
-                "description": "",
+                "description": "Provide SFTP credentials",
                 "example": null
               },
               "sub_domain": {
@@ -50932,7 +52468,7 @@
               "sftp_password": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Password",
                 "format": "password",
                 "example": null
               }
@@ -52214,6 +53750,12 @@
                 "type": "integer",
                 "description": "SFTP port.",
                 "format": "int32",
+                "example": null
+              },
+              "is_single_table_mode": {
+                "title": "",
+                "type": "boolean",
+                "description": "Allows the creation of connector using the specified Sync strategy.",
                 "example": null
               },
               "tunnel_host": {
@@ -56268,6 +57810,42 @@
           }
         ]
       },
+      "textus_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "api_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your TextUs API token.",
+                "format": "password",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "textus_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/textus_config_V1"
+          }
+        ]
+      },
       "the_trade_desk_config_V1": {
         "properties": {
           "config": {
@@ -57985,6 +59563,83 @@
           },
           {
             "$ref": "#/components/schemas/vwo_config_V1"
+          }
+        ]
+      },
+      "walmart_dsp_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "sync_mode": {
+                "title": "",
+                "type": "object",
+                "description": "Whether to sync all accounts or specific accounts.",
+                "example": null,
+                "enum": [
+                  "AllAccounts",
+                  "SpecificAccounts"
+                ]
+              },
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": null
+              },
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "Walmart DSP password. It is a part of the login credentials.",
+                "format": "password",
+                "example": null
+              },
+              "partners": {
+                "title": "",
+                "type": "array",
+                "description": "Specific Partner IDs to sync.  Must be populated if `syncMode` is set to `SpecificAccounts`.",
+                "example": null,
+                "items": {
+                  "title": "",
+                  "type": "string",
+                  "description": "Specific Partner IDs to sync.  Must be populated if `syncMode` is set to `SpecificAccounts`.",
+                  "example": null
+                }
+              },
+              "timeframe_months": {
+                "title": "",
+                "type": "object",
+                "description": "Number of months' worth of data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `THREE`.",
+                "example": null,
+                "enum": [
+                  "TWENTY_FOUR",
+                  "SIX",
+                  "ALL_TIME",
+                  "TWELVE",
+                  "THREE"
+                ]
+              },
+              "login": {
+                "title": "",
+                "type": "string",
+                "description": "Walmart DSP email. It is a part of the login credentials.",
+                "example": null
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "walmart_dsp_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/walmart_dsp_config_V1"
           }
         ]
       },
@@ -60298,7 +61953,7 @@
               "subdomain": {
                 "title": "",
                 "type": "string",
-                "description": "Your Zendesk domain.",
+                "description": "",
                 "example": null
               },
               "client_secret": {
@@ -60312,7 +61967,6 @@
                 "title": "",
                 "type": "string",
                 "description": "Your Zendesk client ID.",
-                "format": "password",
                 "example": null
               }
             },
@@ -60326,6 +61980,7 @@
                 "title": "",
                 "type": "string",
                 "description": "The long-lived `Access token` carries the information necessary to access API resources.",
+                "format": "password",
                 "example": null
               }
             },
@@ -61095,17 +62750,6 @@
           }
         ]
       },
-      "acumatica_ConnectorResponseV1": {
-        "example": null,
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ConnectorResponseV1"
-          },
-          {
-            "$ref": "#/components/schemas/acumatica_config_V1"
-          }
-        ]
-      },
       "ada_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -61744,6 +63388,28 @@
           }
         ]
       },
+      "bazaarvoice_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/bazaarvoice_config_V1"
+          }
+        ]
+      },
+      "betterworks_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/betterworks_config_V1"
+          }
+        ]
+      },
       "big_commerce_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -61931,14 +63597,36 @@
           }
         ]
       },
-      "bubbleio_ConnectorResponseV1": {
+      "brightpearl_ConnectorResponseV1": {
         "example": null,
         "allOf": [
           {
             "$ref": "#/components/schemas/ConnectorResponseV1"
           },
           {
-            "$ref": "#/components/schemas/bubbleio_config_V1"
+            "$ref": "#/components/schemas/brightpearl_config_V1"
+          }
+        ]
+      },
+      "bubble_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/bubble_config_V1"
+          }
+        ]
+      },
+      "buildium_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/buildium_config_V1"
           }
         ]
       },
@@ -62060,6 +63748,17 @@
           },
           {
             "$ref": "#/components/schemas/castor_edc_config_V1"
+          }
+        ]
+      },
+      "centra_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/centra_config_V1"
           }
         ]
       },
@@ -65385,6 +67084,17 @@
           }
         ]
       },
+      "playvox_workforce_management_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/playvox_workforce_management_config_V1"
+          }
+        ]
+      },
       "postgres_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -65440,6 +67150,17 @@
           }
         ]
       },
+      "prisma_cloud_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/prisma_cloud_config_V1"
+          }
+        ]
+      },
       "prive_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -65459,6 +67180,17 @@
           },
           {
             "$ref": "#/components/schemas/productboard_config_V1"
+          }
+        ]
+      },
+      "productive_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/productive_config_V1"
           }
         ]
       },
@@ -66793,6 +68525,17 @@
           }
         ]
       },
+      "textus_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/textus_config_V1"
+          }
+        ]
+      },
       "the_trade_desk_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -67120,6 +68863,17 @@
           },
           {
             "$ref": "#/components/schemas/vwo_config_V1"
+          }
+        ]
+      },
+      "walmart_dsp_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/walmart_dsp_config_V1"
           }
         ]
       },
