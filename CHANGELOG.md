@@ -5,7 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.6...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.7...HEAD)
+
+## [1.2.6](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.6...v1.2.7)
+
+## Added
+Functionality to roll back changes when applying fails in resource `team_connector_membership`, `team_group_membership`, `team_user_membership`, `user_connector_membership`, `user_group_membership`
+
+## Fixed
+- Issue with schema migration in `fivetran_dbt_project` resource
+
+New connection services supported:
+- Supported service: `bazaarvoice`
+- Supported service: `betterworks`
+- Supported service: `brightpearl`
+- Supported service: `bubble`
+- Supported service: `buildium`
+- Supported service: `centra`
+- Supported service: `playvox_workforce_management`
+- Supported service: `prisma_cloud`
+- Supported service: `productive`
+- Supported service: `textus`
+- Supported service: `walmart_dsp`
+
+New connector config fields supported:
+- Added field `fivetran_connector.config.snapshot_retention_period` for services: `onelake`, `adls`, `new_s3_datalake`.
+- Added field `fivetran_connector.config.table_format` for services: `new_s3_datalake`.
 
 ## [1.2.6](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.5...v1.2.6)
 

@@ -1069,11 +1069,14 @@
          "avantlink": "Your AvantLink API key.",
          "ballotready": "Your BallotReady API token.",
          "bamboohr": "Your API Key.",
+         "bazaarvoice": "Your Bazaarvoice  API key.",
+         "betterworks": "Your Betterworks private API key.",
          "bizzabo": "Your Bizzabo API key.",
          "brave_ads": "Your Brave Ads API key",
          "braze": "Your Braze API Key.",
          "brevo": "Your Brevo API key.",
-         "bubbleio": "Your Bubble.io API key.",
+         "bubble": "Your Bubble API token.",
+         "buildium": "Your Buildium private API key.",
          "callrail": "Your CallRail API key.",
          "campaignmonitor": "Your Campaign Monitor API key.",
          "canny": "Your Canny API key.",
@@ -1361,6 +1364,7 @@
          "brex": "Your Brex API token",
          "buildkite": "Your Buildkite API token.",
          "buzzsprout": "Your Buzzsprout API token.",
+         "centra": "Your Centra API Token.",
          "chameleon": "Your Chameleon API token.",
          "clari": "Your Clari API token.",
          "confluence": "The Confluence API token.",
@@ -1385,6 +1389,7 @@
          "pipedrive": "(Optional)Your Pipedrive personal API token",
          "pivotal_tracker": "Pivotal Tracker API token.",
          "postmark": "Your Postmark account API token.",
+         "productive": "Your Productive API token.",
          "qualtrics": "API token of the Qualtrics account.",
          "rakutenadvertising": "Your Rakuten Advertising API token.",
          "recharge": "The Recharge API token.",
@@ -1396,6 +1401,7 @@
          "sensor_tower": "Your Sensor Tower API token.",
          "simplecast": "Your Simplecast API token.",
          "snyk": "Your Snyk API token.",
+         "textus": "Your TextUs API token.",
          "toggl_track": "Your Toggl Track API token",
          "trello": "Your TRELLO api token.",
          "trisolute": "Your Trisolute API token.",
@@ -1544,6 +1550,19 @@
       },
       "sensitive_exclusions": {
          "servicetitan": true
+      },
+      "api_field": ""
+   },
+   "app_reference": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "brightpearl": "Your Brightpearl app reference."
       },
       "api_field": ""
    },
@@ -2073,6 +2092,7 @@
          "billing_platform": "Your BillingPlatform subdomain.",
          "boostr": "Your Boostr base URL.",
          "brex": "Your Brex Base URL",
+         "centra": "Your Centra Base URL.",
          "culture_amp": "Your Culture Amp base URL.",
          "financial_force": "(Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.",
          "freshsales": "Your Freshsales product.",
@@ -2081,6 +2101,7 @@
          "jotform": "Your Jotform base URL.",
          "mailgun": "Your Mailgun base URL.",
          "ortto": "Your Ortto base URL. Possible values: `api`, `api.au`, `api.eu`.",
+         "prisma_cloud": "Your Prisma Cloud Admin Console URL.",
          "salesforce": "(Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.",
          "salesforce_sandbox": "(Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.",
          "veevavault": "Your Veeva Vault base URL.",
@@ -2278,7 +2299,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "anaplan": "The contents of your PEM certificate file. Must be populated if `auth_mode` is set to `Certificate`."
+         "anaplan": "The contents of your PEM certificate file. Must be populated if `auth_mode` is set to `Certificate`.",
+         "qualtrics": "Your Client Certificate"
       },
       "api_field": ""
    },
@@ -2367,6 +2389,7 @@
          "auth0": "Your Auth0 client ID.",
          "billing_platform": "Your BillingPlatform client ID.",
          "brightcove": "Your Brightcove client ID.",
+         "brightpearl": "Your Brightpearl client id.",
          "canvas_by_instructure": "Your Canvas by Instructure client ID.",
          "castor_edc": "Your Castor EDC client Id.",
          "commercetools": "Your commercetools client ID.",
@@ -2402,6 +2425,7 @@
          "personio": "Your Personio Client ID.",
          "piwik_pro": "Your Piwik PRO client ID.",
          "power_reviews_enterprise": "Your PowerReviews Enterprise Client ID.",
+         "prisma_cloud": "Your Prisma Cloud client ID.",
          "quora_ads": "Your Quora Ads client ID.",
          "reltio": "Your Reltio client ID.",
          "salesforce_commerce_cloud": "The Salesforce Commerce Cloud Client ID.",
@@ -2550,6 +2574,7 @@
          "auth0": "Your Auth0 client Secret.",
          "billing_platform": "Your BillingPlatform client secret.",
          "brightcove": "Your Brightcove client secret.",
+         "brightpearl": "Your Brightpearl client secret.",
          "canvas_by_instructure": "Your Canvas by Instructure client secret.",
          "castor_edc": "Your Castor EDC Client Secret.",
          "commercetools": "Your commercetools client secret.",
@@ -2576,6 +2601,7 @@
          "personio": "Your Personio secret.",
          "piwik_pro": "Your Piwik PRO client secret.",
          "power_reviews_enterprise": "Your PowerReviews Enterprise Client Secret.",
+         "prisma_cloud": "Your Prisma Cloud client secret.",
          "quora_ads": "Your Quora Ads client secret.",
          "reltio": "Your Reltio client secret.",
          "salesforce_commerce_cloud": "The Salesforce Commerce Cloud Client secret.",
@@ -2665,7 +2691,7 @@
          "business_central": "string"
       },
       "description": {
-         "business_central": ""
+         "business_central": "List of companies to sync"
       },
       "api_field": ""
    },
@@ -2964,6 +2990,19 @@
          "sql_server_hva": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
          "sql_server_rds": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
          "sql_server_sap_ecc_hva": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted."
+      },
+      "api_field": ""
+   },
+   "console_url": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "prisma_cloud": "Your Prisma Cloud Console URL."
       },
       "api_field": ""
    },
@@ -3515,6 +3554,32 @@
                "tiktok_ads": "Destination Table name of report"
             },
             "api_field": ""
+         },
+         "time_zone": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "reddit_ads": "The specific time zone to sync report data if  `useAccountTimeZone` set to `false`."
+            },
+            "api_field": ""
+         },
+         "time_zone_mode": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "reddit_ads": "When this parameter is set to `ACCOUNT`, connector will use account related time zone to sync report data. Default value: `ACCOUNT`. Possible values: `ACCOUNT`, `USER`"
+            },
+            "api_field": ""
          }
       },
       "key_field": "report_name|table_name",
@@ -3795,6 +3860,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "brightpearl": "Your Brightpearl data center.",
          "qualtrics": "Data center ID of the Qualtrics account. Can be found in the URL before `qualtrics.com`. (For example, if your URL is `youraccount.ca1.qualtrics.com`, then the data center is `ca1`.)",
          "zoho_crm": "Data Center, depending on the Domain name"
       },
@@ -3965,6 +4031,19 @@
       },
       "api_field": ""
    },
+   "developer_reference": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "brightpearl": "Your Brightpearl developer reference."
+      },
+      "api_field": ""
+   },
    "dimension_attributes": {
       "readonly": false,
       "sensitive": false,
@@ -4041,7 +4120,8 @@
       "item_type": {},
       "description": {
          "auth0": "Your Auth0 domain.",
-         "bubbleio": "Your Bubble.io domain.",
+         "bubble": "Your Bubble app name or domain name.",
+         "confluence": "Your Confluence domain.",
          "kustomer": "Domain is the beginning of your kustomer URL going before .kustomerapp.com, e.g. for yourcompany.kustomerapp.com the domain name is yourcompany",
          "okta": "Your Okta domain.",
          "pipedrive": "Your Pipedrive domain.",
@@ -4181,7 +4261,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "ordway": "Your Ordway user email ID."
+         "ordway": "Your Ordway user email ID.",
+         "planful": ""
       },
       "api_field": ""
    },
@@ -4397,6 +4478,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "bazaarvoice": "Your Bazaarvoice  Environment.",
          "checkout": "Your Checkout.com environment.",
          "concord": "Your Concord environment.",
          "invoiced": "Your Invoiced environment.",
@@ -4420,7 +4502,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "business_central": ""
+         "business_central": "Name of the environment"
       },
       "api_field": ""
    },
@@ -4502,7 +4584,7 @@
       "item_type": {},
       "description": {
          "adjust": "Your cloud storage.",
-         "braze": "Export Storage"
+         "braze": "Export Storage. Required if `enable_exports` is `true`"
       },
       "api_field": ""
    },
@@ -4806,6 +4888,32 @@
       },
       "api_field": ""
    },
+   "gcs_export_bucket": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "braze": "Your GCS bucket. Required if `GCS` is the `export_storage_type`"
+      },
+      "api_field": ""
+   },
+   "gcs_export_folder": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "braze": "Your GCS folder name. Required if `GCS` is the `export_storage_type`"
+      },
+      "api_field": ""
+   },
    "gcs_folder": {
       "readonly": false,
       "sensitive": false,
@@ -4876,6 +4984,34 @@
       "item_type": {},
       "description": {
          "azure_service_bus": "The boolean value specifying whether the connection string has manage permissions"
+      },
+      "api_field": ""
+   },
+   "historic_sync_time_frame": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "klaviyo": "Range of data in history you would like to include in the initial sync. Default value: `ALL_TIME`.",
+         "marketo": "Range of data in history you would like to include in the initial sync. Default value: `ALL_TIME`.",
+         "salesforce_marketing_cloud": "Range of data in history you would like to include in the initial sync. Default value: `ALL_TIME`."
+      },
+      "api_field": ""
+   },
+   "historical_sync_limit": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "pardot": "The time range for which historical data should be synced. Default value: `All Time`."
       },
       "api_field": ""
    },
@@ -5074,6 +5210,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "playvox_workforce_management": "Your Playvox Workforce Management Identifier.",
          "statistics_netherlands_cbs": "Your Statistics Netherlands CBS catalog identifier."
       },
       "api_field": ""
@@ -5345,7 +5482,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "salesforce_marketing_cloud": ""
+         "salesforce_marketing_cloud": "Provide SFTP credentials"
       },
       "api_field": ""
    },
@@ -5361,6 +5498,7 @@
          "box": "Allows the creation of connector using Merge Mode strategy.",
          "dropbox": "Allows the creation of connector using Merge Mode strategy.",
          "google_drive": "Allows the creation of connector using Merge Mode strategy.",
+         "sftp": "Allows the creation of connector using the specified Sync strategy.",
          "share_point": "Allows the creation of connector using Merge Mode strategy."
       },
       "api_field": ""
@@ -5640,7 +5778,8 @@
       "item_type": {},
       "description": {
          "rebound_returns": "Your ReBound Returns login.",
-         "the_trade_desk": "The Trade Desk email. It is a part of the login credentials."
+         "the_trade_desk": "The Trade Desk email. It is a part of the login credentials.",
+         "walmart_dsp": "Walmart DSP email. It is a part of the login credentials."
       },
       "api_field": ""
    },
@@ -6008,6 +6147,7 @@
          "financial_force": "",
          "integrate": "Your Integrate organization ID.",
          "megaphone": "Your Megaphone organization ID.",
+         "productive": "Your Productive Organization ID.",
          "salesforce": "",
          "salesforce_commerce_cloud": "The organization ID from Salesforce Commerce Cloud account.",
          "salesforce_sandbox": "",
@@ -6025,6 +6165,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "brightpearl": "Your Brightpearl organization name.",
          "confluence": "Your Confluence organization name."
       },
       "api_field": ""
@@ -6151,11 +6292,26 @@
       "key_field": "",
       "item_type": {
          "google_display_and_video_360": "string",
-         "the_trade_desk": "string"
+         "the_trade_desk": "string",
+         "walmart_dsp": "string"
       },
       "description": {
          "google_display_and_video_360": "The list of partners to include into a sync. This parameter only takes effect when `config_method` is set to `CREATE_NEW`.",
-         "the_trade_desk": "Specific Partner IDs to sync.  Must be populated if `syncMode` is set to `SpecificAccounts`."
+         "the_trade_desk": "Specific Partner IDs to sync.  Must be populated if `syncMode` is set to `SpecificAccounts`.",
+         "walmart_dsp": "Specific Partner IDs to sync.  Must be populated if `syncMode` is set to `SpecificAccounts`."
+      },
+      "api_field": ""
+   },
+   "pass_phrase": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "qualtrics": "Pass Phrase"
       },
       "api_field": ""
    },
@@ -6293,6 +6449,7 @@
          "unicommerce": "Your uniware login password.",
          "upland": "Your Upland Software Password.",
          "veevavault": "Your Veeva Vault password.",
+         "walmart_dsp": "Walmart DSP password. It is a part of the login credentials.",
          "when_i_work": "Your When I Work password.",
          "wherefour": "Your Wherefour password.",
          "workday": "Workday password.",
@@ -6702,6 +6859,7 @@
          "apple_search_ads": "The contents of your secret key file. Must be populated if `is_auth2_enabled` is set to `false`.",
          "braintree": "The contents of your secret key file.",
          "braintree_sandbox": "The contents of your secret key file.",
+         "qualtrics": "Your private key",
          "snowflake_db": "Private access key.  The field should be specified if authentication type is `KEY_PAIR`."
       },
       "api_field": ""
@@ -6857,10 +7015,12 @@
       "fields": null,
       "key_field": "",
       "item_type": {
-         "asana": "string"
+         "asana": "string",
+         "jira": "integer"
       },
       "description": {
-         "asana": "Specific Project IDs to sync. Must be populated if `syncMode` is set to `SpecificProjects`."
+         "asana": "Specific Project IDs to sync. Must be populated if `syncMode` is set to `SpecificProjects`.",
+         "jira": "Specific projects to sync. Must be populated if `syncMode` is set to `CUSTOM`."
       },
       "api_field": ""
    },
@@ -7080,7 +7240,7 @@
          "getfeedback": "Your GetFeedback region.",
          "happyfox": "Your HappyFox region.",
          "keypay": "Your KeyPay region.",
-         "medallia_agile_research": "Your Medallia Agile Region.",
+         "medallia_agile_research": "Your Medallia Agile region.",
          "messagebird": "Your MessageBird Account region.",
          "mixpanel": "Data Region",
          "navan": "Your Navan region.",
@@ -7138,6 +7298,19 @@
       "item_type": {},
       "description": {
          "amazon_attribution": "Your Amazon Attribution token URL region."
+      },
+      "api_field": ""
+   },
+   "region_url": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "playvox_workforce_management": "Your Playvox Workforce Management Region URL."
       },
       "api_field": ""
    },
@@ -7927,7 +8100,20 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "braze": "Exports Bucket"
+         "braze": "Your S3 user export bucket. Required if `AWS_S3` is the `export_storage_type`"
+      },
+      "api_field": ""
+   },
+   "s3_export_external_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "braze": "This is the same as your `group_id`, used if `export_storage_type` is `AWS_S3`"
       },
       "api_field": ""
    },
@@ -7940,7 +8126,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "braze": "Exports Folder"
+         "braze": "Your S3 user export folder name. Required if `AWS_S3` is the `export_storage_type`"
       },
       "api_field": ""
    },
@@ -7953,7 +8139,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "braze": "Exports Role ARN"
+         "braze": "The Role ARN required for authentication required if `AWS_S3` is the `export_storage_type`"
       },
       "api_field": ""
    },
@@ -7981,7 +8167,8 @@
       "item_type": {},
       "description": {
          "adobe_analytics_data_feed": "The S3 bucket name.",
-         "braze": "Your S3 bucket required if `AWS_S3` is the `cloud_storage_type`"
+         "braze": "Your S3 bucket required if `AWS_S3` is the `cloud_storage_type`",
+         "sailthru": "Name of the bucket configured to receive sailthru connect data."
       },
       "api_field": ""
    },
@@ -7994,7 +8181,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "braze": "This is the same as your `group_id`, used for authentication along with the `role_arn` required if `AWS_S3` is the `cloud_storage_type`"
+         "braze": "This is the same as your `group_id`, used for authentication along with the `role_arn` required if `AWS_S3` is the `cloud_storage_type`",
+         "sailthru": "The external ID is a string that designates who can assume the role."
       },
       "api_field": ""
    },
@@ -8034,7 +8222,8 @@
       "item_type": {},
       "description": {
          "adobe_analytics_data_feed": "The Role ARN required for authentication.",
-         "braze": "The Role ARN required for authentication required if `AWS_S3` is the `cloud_storage_type`"
+         "braze": "The Role ARN required for authentication required if `AWS_S3` is the `cloud_storage_type`",
+         "sailthru": "Role ARN of the IAM role created for Fivetran."
       },
       "api_field": ""
    },
@@ -8298,6 +8487,8 @@
          "azure_service_bus": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "ballotready": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "bamboohr": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "bazaarvoice": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "betterworks": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "big_commerce": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "billing_platform": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "bingads": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8314,7 +8505,9 @@
          "brevo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "brex": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "brightcove": "Destination schema. Schema is permanent and cannot be changed after connection creation",
-         "bubbleio": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "brightpearl": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "bubble": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "buildium": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "buildkite": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "business_central": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "buzzsprout": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8326,6 +8519,7 @@
          "canvas_by_instructure": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "care_quality_commission": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "castor_edc": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "centra": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "ceridian_dayforce": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "chameleon": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "channel_advisor": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8607,11 +8801,14 @@
          "planetscale": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "planful": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "playvox": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "playvox_workforce_management": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "posthog": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "postmark": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "power_reviews_enterprise": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "prisma_cloud": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "prive": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "productboard": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "productive": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "proofpoint_security_awareness": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "qualaroo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "qualtrics": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8727,6 +8924,7 @@
          "teamwork": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "tempo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "testrail": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "textus": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "the_trade_desk": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "thinkific": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "ticket_tailor": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8757,6 +8955,7 @@
          "vonage_contact_center": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "vts": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "vwo": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+         "walmart_dsp": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "walmart_marketplace": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "wasabi_cloud_storage": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "web_scraper": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -8975,6 +9174,7 @@
          "appcues": "Your Appcues Secret.",
          "loopio": "Your Loopio Secret.",
          "mode": "Your Mode Secret.",
+         "playvox_workforce_management": "Your Playvox Workforce Management Secret.",
          "twilio": "The Twilio API secret",
          "uservoice": "The UserVoice API secret.",
          "vts": "Your VTS secret."
@@ -9347,7 +9547,7 @@
       "item_type": {},
       "description": {
          "adobe_analytics_data_feed": "SFTP host.",
-         "salesforce_marketing_cloud": ""
+         "salesforce_marketing_cloud": "Host"
       },
       "api_field": ""
    },
@@ -9361,7 +9561,7 @@
       "item_type": {},
       "description": {
          "adobe_analytics_data_feed": "Log in with key pair or password",
-         "salesforce_marketing_cloud": ""
+         "salesforce_marketing_cloud": "Set this field if you use a key pair for logging into your SFTP server. Don't set it if you use a username and password"
       },
       "api_field": ""
    },
@@ -9375,7 +9575,7 @@
       "item_type": {},
       "description": {
          "adobe_analytics_data_feed": "SFTP password required if sftp_is_key_pair is false",
-         "salesforce_marketing_cloud": ""
+         "salesforce_marketing_cloud": "Password"
       },
       "api_field": ""
    },
@@ -9389,7 +9589,7 @@
       "item_type": {},
       "description": {
          "adobe_analytics_data_feed": "SFTP port.",
-         "salesforce_marketing_cloud": ""
+         "salesforce_marketing_cloud": "Port"
       },
       "api_field": ""
    },
@@ -9403,7 +9603,7 @@
       "item_type": {},
       "description": {
          "adobe_analytics_data_feed": "Public Key",
-         "salesforce_marketing_cloud": ""
+         "salesforce_marketing_cloud": "Public Key"
       },
       "api_field": ""
    },
@@ -9861,7 +10061,9 @@
          "atlassian_jira_align": "Your Jira Align base URL.",
          "azure_boards": "Your Azure Boards Organization Name.",
          "azure_devops": "Your Azure Organization Name",
-         "bubbleio": "Your Bubble.io subDomain.",
+         "betterworks": "Your Betterworks subdomain.",
+         "bubble": "Your Bubble subdomain.",
+         "buildium": "Your Buildium subdomain.",
          "canvas_by_instructure": "Your Canvas by Instructure domain.",
          "chargebee_product_catalog_1": "Your Chargebee Product Catalog 1 subdomain.",
          "chargebee_product_catalog_2": "",
@@ -10157,6 +10359,7 @@
          "twilio": "Whether to sync all accounts or specific accounts.",
          "twitter": "Whether to sync all accounts or specific accounts. Default value: `AllAccounts`.",
          "twitter_ads": "Whether to sync all accounts or specific accounts.",
+         "walmart_dsp": "Whether to sync all accounts or specific accounts.",
          "yahoo_gemini": "Whether to sync all accounts or specific accounts. Default value: `SpecificAccounts`.",
          "zuora": "Select `Zuora Billing` to sync exclusively Zuora Billing related records. Choose `Zuora Revenue` for syncing only Zuora Revenue reports. If both Zuora Billing records and Zuora Revenue reports are to be synced, opt for `Both`.",
          "zuora_sandbox": "Select `Zuora Billing` to sync exclusively Zuora Billing related records. Choose `Zuora Revenue` for syncing only Zuora Revenue reports. If both Zuora Billing records and Zuora Revenue reports are to be synced, opt for `Both`."
@@ -10531,7 +10734,7 @@
       "description": {
          "azure_sql_db": "Azure AD tenant ID.",
          "azure_sql_managed_db": "Azure AD tenant ID.",
-         "business_central": "",
+         "business_central": "`Tenant ID` of your Business Central application",
          "crowddev": "Your  crowd.dev Tenant ID.",
          "reltio": "Your Reltio tenant ID.",
          "servicetitan": "Your ServiceTitan tenant ID."
@@ -10561,6 +10764,7 @@
       "item_type": {},
       "description": {
          "ivanti": "Your Ivanti Tenant URL.",
+         "playvox_workforce_management": "Your Playvox Workforce Management Tenant URL.",
          "reltio": "Your Reltio tenant URL."
       },
       "api_field": ""
@@ -10630,6 +10834,7 @@
          "tiktok_ads": "Number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `THREE`.",
          "twitter": "Number of months' worth of data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `THREE`.",
          "twitter_ads": "Historical sync timeframe in months.",
+         "walmart_dsp": "Number of months' worth of data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `THREE`.",
          "yahoo_dsp": "Number of months` worth of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `THREE`.",
          "yahoo_gemini": "Number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `TWELVE`."
       },
@@ -11023,7 +11228,7 @@
       "item_type": {},
       "description": {
          "akamai": "Your Akamai type name.",
-         "bubbleio": "Your Bubble.io type name."
+         "bubble": "Your Bubble type name."
       },
       "api_field": ""
    },
@@ -11638,7 +11843,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "medallia_agile_research": "Your Medallia Agile Research Key."
+         "medallia_agile_research": "Your Medallia Agile Research key."
       },
       "api_field": ""
    },
@@ -11651,7 +11856,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "medallia_agile_research": "Your Medallia Agile Research Master Key."
+         "medallia_agile_research": "Your Medallia Agile Research master key."
       },
       "api_field": ""
    },
