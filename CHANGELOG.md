@@ -7,13 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.7...HEAD)
 
-## [1.2.6](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.6...v1.2.7)
-
-## Added
-Functionality to roll back changes when applying fails in resource `team_connector_membership`, `team_group_membership`, `team_user_membership`, `user_connector_membership`, `user_group_membership`
+## [1.2.7](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.6...v1.2.7)
 
 ## Fixed
 - Issue with schema migration in `fivetran_dbt_project` resource
+
+## Added
+- Functionality to roll back changes when applying fails in resource `team_connector_membership`, `team_group_membership`, `team_user_membership`, `user_connector_membership`, `user_group_membership`
 
 New connection services supported:
 - Supported service: `bazaarvoice`
