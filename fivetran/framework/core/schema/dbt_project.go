@@ -20,6 +20,7 @@ func DbtProjectResource(ctx context.Context) resourceSchema.Schema {
 	return resourceSchema.Schema{
 		Attributes: attributes,
 		Blocks:     dbtProjectResourceBlocks(ctx),
+		Version:    1,
 	}
 }
 
