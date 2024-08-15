@@ -1,2 +1,0 @@
-- Added field `fivetran_connector.config.table_format` for services: `new_s3_datalake`.
-- Added field `fivetran_connector.config.snapshot_retention_period` for services: `adls`, `new_s3_datalake`, `onelake`.
