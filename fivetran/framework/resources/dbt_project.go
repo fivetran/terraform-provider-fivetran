@@ -42,6 +42,18 @@ func (r *dbtProject) ImportState(ctx context.Context, req resource.ImportStateRe
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
+func (r *dbtProject) UpgradeState(ctx context.Context) map[int64]resource.StateUpgrader {
+	return map[int64]resource.StateUpgrader{
+		// State upgrade implementation from 0 (prior state version) to 1 (Schema.Version)
+		0: {
+			// Optionally, the PriorSchema field can be defined.
+			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
+				upgradeConnectorState(ctx, req, resp, 0)
+			},
+		},
+	}
+}
+
 func (r *dbtProject) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError(
