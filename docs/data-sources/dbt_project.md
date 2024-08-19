@@ -27,7 +27,6 @@ data "fivetran_dbt_project" "project" {
 - `created_by_id` (String) The unique identifier for the User within the Fivetran system who created the dbt Project.
 - `dbt_version` (String) The version of dbt that should run the project. We support the following versions: 0.18.0 - 0.18.2, 0.19.0 - 0.19.2, 0.20.0 - 0.20.2, 0.21.0 - 0.21.1, 1.0.0, 1.0.1, 1.0.3 - 1.0.9, 1.1.0 - 1.1.3, 1.2.0 - 1.2.4, 1.3.0 - 1.3.2, 1.4.1.
 - `default_schema` (String) Default schema in destination. This production schema will contain your transformed data.
-- `ensure_readiness` (Boolean) Should resource wait for project to finish initialization. Default value: true.
 - `environment_vars` (Set of String) List of environment variables defined as key-value pairs in the raw string format using = as a separator. The variable name should have the DBT_ prefix and can contain A-Z, 0-9, dash, underscore, or dot characters. Example: "DBT_VARIABLE=variable_value"
 - `group_id` (String) The unique identifier for the group within the Fivetran system.
 - `models` (Attributes Set) (see [below for nested schema](#nestedatt--models))
@@ -53,6 +52,6 @@ Read-Only:
 
 Read-Only:
 
-- `folder_path` (String) Folder in Git repo with your dbt project.
-- `git_branch` (String) Git branch.
-- `git_remote_url` (String) Git remote URL with your dbt project.
+- `folder_path` (String) (Deprecated) Folder in Git repo with your dbt project. The project_config block of the resource fivetran_dbt_project is deprecated and will be removed. Please migrate to the resource fivetran_dbt_git_project_config
+- `git_branch` (String) (Deprecated) Git branch. The project_config block of the resource fivetran_dbt_project is deprecated and will be removed. Please migrate to the resource fivetran_dbt_git_project_config
+- `git_remote_url` (String) (Deprecated) Git remote URL with your dbt project. The project_config block of the resource fivetran_dbt_project is deprecated and will be removed. Please migrate to the resource fivetran_dbt_git_project_config

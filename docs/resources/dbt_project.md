@@ -38,7 +38,6 @@ resource "fivetran_dbt_project" "project" {
 
 ### Optional
 
-- `ensure_readiness` (Boolean) Should resource wait for project to finish initialization. Default value: true.
 - `environment_vars` (Set of String) List of environment variables defined as key-value pairs in the raw string format using = as a separator. The variable name should have the DBT_ prefix and can contain A-Z, 0-9, dash, underscore, or dot characters. Example: "DBT_VARIABLE=variable_value"
 - `project_config` (Block, Optional) (see [below for nested schema](#nestedblock--project_config))
 - `target_name` (String) Target name to set or override the value from the deployment.yaml
@@ -60,9 +59,9 @@ resource "fivetran_dbt_project" "project" {
 
 Optional:
 
-- `folder_path` (String) Folder in Git repo with your dbt project.
-- `git_branch` (String) Git branch.
-- `git_remote_url` (String) Git remote URL with your dbt project.
+- `folder_path` (String) (Deprecated) Folder in Git repo with your dbt project. The project_config block of the resource fivetran_dbt_project is deprecated and will be removed. Please migrate to the resource fivetran_dbt_git_project_config
+- `git_branch` (String) (Deprecated) Git branch. The project_config block of the resource fivetran_dbt_project is deprecated and will be removed. Please migrate to the resource fivetran_dbt_git_project_config
+- `git_remote_url` (String) (Deprecated) Git remote URL with your dbt project. The project_config block of the resource fivetran_dbt_project is deprecated and will be removed. Please migrate to the resource fivetran_dbt_git_project_config
 
 
 <a id="nestedblock--timeouts"></a>

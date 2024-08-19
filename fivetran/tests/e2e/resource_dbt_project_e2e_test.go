@@ -41,24 +41,27 @@ func TestResourceDbtProjectE2E(t *testing.T) {
 						threads = 1
 						default_schema = "dbt_demo_test_e2e_terraform"
 						type = "GIT"
-						project_config {
-							folder_path = "/folder/path"
-							git_remote_url = "git@github.com:fivetran/dbt_demo.git"
-							git_branch = "main"
-						}
-						ensure_readiness = false
+					}
+
+					resource "fivetran_dbt_git_project_config" "test_project_config" {
+						provider = fivetran-provider
+						project_id = fivetran_dbt_project.test_project.id
+						folder_path = "/folder/path"
+						git_remote_url = "git@github.com:fivetran/dbt_demo.git"
+						git_branch = "main"
 					}
 				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranDbtProjectResourceCreate(t, "fivetran_dbt_project.test_project"),
+					testFivetranDbtProjectConfigResourceCreate(t, "fivetran_dbt_git_project_config.test_project_config"),
 
 					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "dbt_version", "1.0.1"),
 					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "threads", "1"),
 					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "default_schema", "dbt_demo_test_e2e_terraform"),
 					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "type", "GIT"),
-					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "project_config.git_remote_url", "git@github.com:fivetran/dbt_demo.git"),
-					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "project_config.git_branch", "main"),
-					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "project_config.folder_path", "/folder/path"),
+					resource.TestCheckResourceAttr("fivetran_dbt_git_project_config.test_project_config", "git_remote_url", "git@github.com:fivetran/dbt_demo.git"),
+					resource.TestCheckResourceAttr("fivetran_dbt_git_project_config.test_project_config", "git_branch", "main"),
+					resource.TestCheckResourceAttr("fivetran_dbt_git_project_config.test_project_config", "folder_path", "/folder/path"),
 				),
 			},
 			{
@@ -71,22 +74,27 @@ func TestResourceDbtProjectE2E(t *testing.T) {
 						target_name = "target_name"
 						default_schema = "dbt_demo_test_e2e_terraform"
 						type = "GIT"
-						project_config {
-							folder_path = "/folder/path_1"
-							git_remote_url = "git@github.com:fivetran/dbt_demo.git"
-							git_branch = "not_main"
-						}
-						ensure_readiness = false
+					}
+
+					resource "fivetran_dbt_git_project_config" "test_project_config" {
+						provider = fivetran-provider
+						project_id = fivetran_dbt_project.test_project.id
+						folder_path = "/folder/path_1"
+						git_remote_url = "git@github.com:fivetran/dbt_demo_1.git"
+						git_branch = "not_main"
 					}
 				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranDbtProjectResourceUpdate(t, "fivetran_dbt_project.test_project"),
+					testFivetranDbtProjectConfigResourceUpdate(t, "fivetran_dbt_git_project_config.test_project_config"),
+					
 
 					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "dbt_version", "1.0.0"),
 					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "target_name", "target_name"),
 					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "threads", "2"),
-					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "project_config.git_branch", "not_main"),
-					resource.TestCheckResourceAttr("fivetran_dbt_project.test_project", "project_config.folder_path", "/folder/path_1"),
+					resource.TestCheckResourceAttr("fivetran_dbt_git_project_config.test_project_config", "git_remote_url", "git@github.com:fivetran/dbt_demo_1.git"),
+					resource.TestCheckResourceAttr("fivetran_dbt_git_project_config.test_project_config", "git_branch", "not_main"),
+					resource.TestCheckResourceAttr("fivetran_dbt_git_project_config.test_project_config", "folder_path", "/folder/path_1"),
 				),
 			},
 		},
@@ -117,14 +125,29 @@ func testFivetranDbtProjectResourceCreate(t *testing.T, resourceName string) res
 		if response.Data.Type != "GIT" {
 			return errors.New("DBT Project " + rs.Primary.ID + " has wrong type value. Actual: " + response.Data.Type + " Expected: GIT")
 		}
+		return nil
+	}
+}
+
+func testFivetranDbtProjectConfigResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		rs := GetResource(t, s, resourceName)
+		response, err := client.NewDbtProjectDetails().DbtProjectID(rs.Primary.ID).Do(context.Background())
+		if err != nil {
+			return err
+		}
+
+		if response.Code != "Success" {
+			return errors.New("DBT Project " + rs.Primary.ID + " doesn't exist. Response code: " + response.Code)
+		}
 		if response.Data.ProjectConfig.GitRemoteUrl != "git@github.com:fivetran/dbt_demo.git" {
-			return errors.New("DBT Project " + rs.Primary.ID + " has wrong project_config.git_remote_url value. Actual: " + response.Data.ProjectConfig.GitRemoteUrl + " Expected: git@github.com:fivetran/dbt_demo.git")
+			return errors.New("DBT Project " + rs.Primary.ID + " has wrong git_remote_url value. Actual: " + response.Data.ProjectConfig.GitRemoteUrl + " Expected: git@github.com:fivetran/dbt_demo.git")
 		}
 		if response.Data.ProjectConfig.GitBranch != "main" {
-			return errors.New("DBT Project " + rs.Primary.ID + " has wrong project_config.git_branch value. Actual: " + response.Data.ProjectConfig.GitBranch + " Expected: main")
+			return errors.New("DBT Project " + rs.Primary.ID + " has wrong git_branch value. Actual: " + response.Data.ProjectConfig.GitBranch + " Expected: main")
 		}
 		if response.Data.ProjectConfig.FolderPath != "/folder/path" {
-			return errors.New("DBT Project " + rs.Primary.ID + " has wrong project_config.folder_path value. Actual: " + response.Data.ProjectConfig.FolderPath + " Expected: /folder/path")
+			return errors.New("DBT Project " + rs.Primary.ID + " has wrong folder_path value. Actual: " + response.Data.ProjectConfig.FolderPath + " Expected: /folder/path")
 		}
 		return nil
 	}
@@ -146,6 +169,21 @@ func testFivetranDbtProjectResourceUpdate(t *testing.T, resourceName string) res
 		}
 		if response.Data.Threads != 2 {
 			return errors.New("DBT Project " + rs.Primary.ID + " has wrong threads value. Actual: " + strconv.Itoa(response.Data.Threads) + " Expected: 2")
+		}
+		return nil
+	}
+}
+
+func testFivetranDbtProjectConfigResourceUpdate(t *testing.T, resourceName string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		rs := GetResource(t, s, resourceName)
+		response, err := client.NewDbtProjectDetails().DbtProjectID(rs.Primary.ID).Do(context.Background())
+		if err != nil {
+			return err
+		}
+
+		if response.Data.ProjectConfig.GitRemoteUrl != "git@github.com:fivetran/dbt_demo_1.git" {
+			return errors.New("DBT Project " + rs.Primary.ID + " has wrong project_config.git_branch value. Actual: " + response.Data.ProjectConfig.GitRemoteUrl + " Expected: git@github.com:fivetran/dbt_demo_1.git")
 		}
 		if response.Data.ProjectConfig.GitBranch != "not_main" {
 			return errors.New("DBT Project " + rs.Primary.ID + " has wrong project_config.git_branch value. Actual: " + response.Data.ProjectConfig.GitBranch + " Expected: not_main")

@@ -4,17 +4,14 @@ import (
 	"context"
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/datasources"
-	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
@@ -79,11 +76,6 @@ func (r *dbtProject) Create(ctx context.Context, req resource.CreateRequest, res
 	svc.DbtVersion(data.DbtVersion.ValueString())
 	svc.DefaultSchema(data.DefaultSchema.ValueString())
 
-	projectConfigAttributes := data.ProjectConfig.Attributes()
-
-	gitRemoteUrl := projectConfigAttributes["git_remote_url"]
-	gitRemoteUrlDefined := !gitRemoteUrl.IsUnknown() && !gitRemoteUrl.IsNull()
-
 	// If project type not defined we consider project_type = "GIT" on API side
 	projectType := "GIT"
 	if !data.Type.IsUnknown() && !data.Type.IsNull() {
@@ -99,16 +91,20 @@ func (r *dbtProject) Create(ctx context.Context, req resource.CreateRequest, res
 	}
 
 	svc.Type(projectType)
-	// Currently git_remote_url is required: only GIT project could be managed via API
-	if !gitRemoteUrlDefined && projectType == "GIT" {
-		resp.Diagnostics.AddError(
-			"Unable to Create dbt Project.",
-			"Field `git_remote_url` is required for project of type GIT.",
-		)
-		return
+	
+	resp.Diagnostics.AddWarning(
+		"The project_config block of the resource fivetran_dbt_project is deprecated and will be removed. ",
+		"Please migrate to the resource fivetran_dbt_git_project_config",
+	)
+
+	projectConfigAttributes := data.ProjectConfig.Attributes()
+
+	projectConfig := fivetran.NewDbtProjectConfig()
+	if v, ok := projectConfigAttributes["git_remote_url"].(basetypes.StringValue); ok && !v.IsUnknown() && !v.IsNull() {
+		projectConfig.GitRemoteUrl(v.ValueString())
+	} else {
+		projectConfig.GitRemoteUrl("")
 	}
-	projectConfig := fivetran.NewDbtProjectConfig().
-		GitRemoteUrl(gitRemoteUrl.(basetypes.StringValue).ValueString())
 
 	if v, ok := projectConfigAttributes["git_branch"].(basetypes.StringValue); ok && !v.IsUnknown() && !v.IsNull() {
 		projectConfig.GitBranch(v.ValueString())
@@ -117,6 +113,7 @@ func (r *dbtProject) Create(ctx context.Context, req resource.CreateRequest, res
 	if v, ok := projectConfigAttributes["folder_path"].(basetypes.StringValue); ok && !v.IsUnknown() && !v.IsNull() {
 		projectConfig.FolderPath(v.ValueString())
 	}
+
 	svc.ProjectConfig(projectConfig)
 
 	if !data.EnvironmentVars.IsUnknown() && !data.EnvironmentVars.IsNull() {
@@ -147,38 +144,15 @@ func (r *dbtProject) Create(ctx context.Context, req resource.CreateRequest, res
 
 	data.ReadFromResponse(ctx, projectResponse, nil)
 
-	projectIsReady := strings.ToLower(projectResponse.Data.Status) == "ready"
-
-	if data.EnsureReadiness.Equal(types.BoolValue(true)) && strings.ToLower(projectResponse.Data.Status) != "ready" {
-		if ok := ensureProjectIsReady(resp, ctx, client, projectResponse.Data.ID); !ok {
-			resp.Diagnostics.AddError(
-				"Unable to set up dbt Project Resource.",
-				"Project not ready.",
-			)
-			deleteResponse, err := client.NewDbtProjectDelete().DbtProjectID(projectResponse.Data.ID).Do(ctx)
-			if err != nil {
-				resp.Diagnostics.AddError(
-					"Unable to Cleanup dbt Project Resource.",
-					fmt.Sprintf("%v; code: %v; message: %v", err, deleteResponse.Code, deleteResponse.Message),
-				)
-			}
-			return
-		} else {
-			projectIsReady = true
-		}
-	}
-
-	if projectIsReady {
-		modelsResp, err := datasources.GetAllDbtModelsForProject(r.GetClient(), ctx, projectResponse.Data.ID, 1000)
-		if err != nil {
-			resp.Diagnostics.AddWarning(
-				"DbtProject Models Read Error.",
-				fmt.Sprintf("%v; code: %v; message: %v", err, modelsResp.Code, modelsResp.Message),
-			)
-		} else {
-			projectResponse.Data.Status = "READY"
-			data.ReadFromResponse(ctx, projectResponse, &modelsResp)
-		}
+	modelsResp, err := datasources.GetAllDbtModelsForProject(r.GetClient(), ctx, projectResponse.Data.ID, 1000)
+	if err != nil {
+		resp.Diagnostics.AddWarning(
+			"DbtProject Models Read Error.",
+			fmt.Sprintf("%v; code: %v; message: %v", err, modelsResp.Code, modelsResp.Message),
+		)
+	} else {
+		projectResponse.Data.Status = "READY"
+		data.ReadFromResponse(ctx, projectResponse, &modelsResp)
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -285,8 +259,14 @@ func (r *dbtProject) Update(ctx context.Context, req resource.UpdateRequest, res
 	}
 
 	if !state.ProjectConfig.Equal(plan.ProjectConfig) {
+		resp.Diagnostics.AddWarning(
+			"The project_config block of the resource fivetran_dbt_project is deprecated and will be removed. ",
+			"Please migrate to the resource fivetran_dbt_git_project_config",
+		)
+
 		planConfigAttributes := plan.ProjectConfig.Attributes()
 		projectConfig := fivetran.NewDbtProjectConfig()
+		projectConfig.GitRemoteUrl(planConfigAttributes["git_remote_url"].(basetypes.StringValue).ValueString())
 		projectConfig.FolderPath(planConfigAttributes["folder_path"].(basetypes.StringValue).ValueString())
 		projectConfig.GitBranch(planConfigAttributes["git_branch"].(basetypes.StringValue).ValueString())
 		svc.ProjectConfig(projectConfig)
@@ -336,46 +316,4 @@ func (r *dbtProject) Delete(ctx context.Context, req resource.DeleteRequest, res
 		)
 		return
 	}
-}
-
-func ensureProjectIsReady(
-	resp *resource.CreateResponse,
-	ctx context.Context,
-	client *fivetran.Client,
-	projectId string) bool {
-	for {
-		s, projectErrors, e := pollProjectStatus(ctx, client, projectId)
-		if e != nil {
-
-			resp.Diagnostics.AddError("create error", fmt.Sprintf("unable to get status for dbt project: %v error: %v", projectId, e))
-			return false
-
-		}
-		if s != "not_ready" {
-			if s != "ready" {
-
-				resp.Diagnostics.AddError("create error", fmt.Sprintf("dbt project: %v has \"ERROR\" status after creation; errors: %v;", projectId, projectErrors))
-				return false
-
-			}
-			break
-		}
-		if dl, ok := ctx.Deadline(); ok && time.Now().After(dl.Add(-20*time.Second)) {
-			// deadline will be exceeded on next iteration - it's time to cleanup
-
-			resp.Diagnostics.AddError("create error", fmt.Sprintf("project %v is stuck in \"NOT_READY\" status", projectId))
-			return false
-
-		}
-		helpers.ContextDelay(ctx, 10*time.Second)
-	}
-	return true
-}
-
-func pollProjectStatus(ctx context.Context, client *fivetran.Client, projectId string) (string, []string, error) {
-	resp, err := client.NewDbtProjectDetails().DbtProjectID(projectId).Do(ctx)
-	if err != nil {
-		return "", []string{}, err
-	}
-	return strings.ToLower(resp.Data.Status), resp.Data.Errors, err
 }

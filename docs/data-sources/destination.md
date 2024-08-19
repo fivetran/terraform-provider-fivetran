@@ -60,6 +60,7 @@ Read-Only:
 - `auth` (String) Field usage depends on `service` value: 
 	- Service `snowflake`: Password-based or key-based authentication type
 - `auth_type` (String) Field usage depends on `service` value: 
+	- Service `databricks`: Authentication type
 	- Service `redshift`: Authentication type. Default value: `PASSWORD`.
 - `bootstrap_servers` (Set of String)
 - `bucket` (String) Field usage depends on `service` value: 
@@ -181,9 +182,9 @@ Read-Only:
 - `msk_sts_region` (String)
 - `num_of_partitions` (Number)
 - `oauth2_client_id` (String) Field usage depends on `service` value: 
-	- Service `databricks`: OAuth 2.0 client ID. Required if auth_type is set to OAUTH2.
+	- Service `databricks`: OAuth 2.0 client ID
 - `oauth2_secret` (String, Sensitive) Field usage depends on `service` value: 
-	- Service `databricks`: OAuth 2.0 secret. Required if auth_type is set to OAUTH2.
+	- Service `databricks`: OAuth 2.0 secret
 - `passphrase` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `snowflake`: In case private key is encrypted, you are required to enter passphrase that was used to encrypt the private key. The field can be specified if authentication type is `KEY_PAIR`.
 - `password` (String, Sensitive) Field usage depends on `service` value: 
@@ -304,11 +305,17 @@ Read-Only:
 - `security_protocol` (String)
 - `server_host_name` (String) Field usage depends on `service` value: 
 	- Service `databricks`: Server name
+- `snapshot_retention_period` (String) Field usage depends on `service` value: 
+	- Service `adls`: Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.
+	- Service `new_s3_datalake`: Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.
+	- Service `onelake`: Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.
 - `snowflake_cloud` (String)
 - `snowflake_region` (String)
 - `storage_account_name` (String) Field usage depends on `service` value: 
 	- Service `adls`: Storage account for Azure Data Lake Storage Gen2 name
 	- Service `onelake`: Storage account for Azure Data Lake Storage Gen2 name
+- `table_format` (String) Field usage depends on `service` value: 
+	- Service `new_s3_datalake`: The table format in which you want to sync your tables. Valid values are ICEBERG and DELTA_LAKE
 - `tenant_id` (String) Field usage depends on `service` value: 
 	- Service `adls`: Tenant id of service principal
 	- Service `onelake`: Tenant ID of service principal

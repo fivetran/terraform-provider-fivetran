@@ -24,7 +24,6 @@ type DbtProject struct {
 	PublicKey       types.String `tfsdk:"public_key"`
 	ProjectConfig   types.Object `tfsdk:"project_config"`
 	Models          types.Set    `tfsdk:"models"`
-	EnsureReadiness types.Bool   `tfsdk:"ensure_readiness"`
 }
 
 type DbtProjectResourceModel struct {
@@ -42,7 +41,6 @@ type DbtProjectResourceModel struct {
 	PublicKey       types.String   `tfsdk:"public_key"`
 	ProjectConfig   types.Object   `tfsdk:"project_config"`
 	Models          types.Set      `tfsdk:"models"`
-	EnsureReadiness types.Bool     `tfsdk:"ensure_readiness"`
 	Timeouts        timeouts.Value `tfsdk:"timeouts"`
 }
 
@@ -81,25 +79,34 @@ func (d *DbtProjectResourceModel) ReadFromResponse(ctx context.Context, resp dbt
 		"git_branch":     types.StringType,
 		"folder_path":    types.StringType,
 	}
-	projectConfigItems := map[string]attr.Value{
-		"git_remote_url": types.StringValue(resp.Data.ProjectConfig.GitRemoteUrl),
-		// "git_branch":     types.StringValue(resp.Data.ProjectConfig.GitBranch),
-		// "folder_path":    types.StringValue(resp.Data.ProjectConfig.FolderPath),
-	}
 
-	if resp.Data.ProjectConfig.GitBranch != "" {
-		projectConfigItems["git_branch"] = types.StringValue(resp.Data.ProjectConfig.GitBranch)
+	projectConfigItems := make(map[string]attr.Value)
+
+	if resp.Data.ProjectConfig.GitBranch != "" || 
+	   resp.Data.ProjectConfig.FolderPath != "" || 
+	   resp.Data.ProjectConfig.GitRemoteUrl != "" {
+		if resp.Data.ProjectConfig.GitBranch != "" {
+			projectConfigItems["git_branch"] = types.StringValue(resp.Data.ProjectConfig.GitBranch)
+		} else {
+			projectConfigItems["git_branch"] = types.StringNull()
+		}
+
+		if resp.Data.ProjectConfig.FolderPath != "" {
+			projectConfigItems["folder_path"] = types.StringValue(resp.Data.ProjectConfig.FolderPath)
+		} else {
+			projectConfigItems["folder_path"] = types.StringNull()
+		}
+
+		if resp.Data.ProjectConfig.GitRemoteUrl != "" {
+			projectConfigItems["git_remote_url"] = types.StringValue(resp.Data.ProjectConfig.GitRemoteUrl)
+		} else {
+			projectConfigItems["git_remote_url"] = types.StringNull()
+		}
+
+		d.ProjectConfig, _ = types.ObjectValue(projectConfigTypes, projectConfigItems)
 	} else {
-		projectConfigItems["git_branch"] = types.StringNull()
+		d.ProjectConfig = types.ObjectNull(projectConfigTypes)
 	}
-
-	if resp.Data.ProjectConfig.FolderPath != "" {
-		projectConfigItems["folder_path"] = types.StringValue(resp.Data.ProjectConfig.FolderPath)
-	} else {
-		projectConfigItems["folder_path"] = types.StringNull()
-	}
-
-	d.ProjectConfig, _ = types.ObjectValue(projectConfigTypes, projectConfigItems)
 
 	if modelsResp != nil {
 		d.Models = GetModelsSetFromResponse(*modelsResp)
@@ -107,10 +114,6 @@ func (d *DbtProjectResourceModel) ReadFromResponse(ctx context.Context, resp dbt
 		if d.Models.IsUnknown() {
 			d.Models = types.SetNull(types.ObjectType{AttrTypes: ModelElementType()})
 		}
-	}
-
-	if d.EnsureReadiness.IsUnknown() {
-		d.EnsureReadiness = types.BoolValue(true)
 	}
 }
 
@@ -153,9 +156,5 @@ func (d *DbtProject) ReadFromResponse(ctx context.Context, resp dbt.DbtProjectDe
 		if d.Models.IsUnknown() {
 			d.Models = types.SetNull(types.ObjectType{AttrTypes: ModelElementType()})
 		}
-	}
-
-	if d.EnsureReadiness.IsUnknown() {
-		d.EnsureReadiness = types.BoolValue(false)
 	}
 }

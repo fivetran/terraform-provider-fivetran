@@ -101,10 +101,6 @@ func dbtProjectSchema() core.Schema {
 				Readonly:    true,
 				Description: "Public key to grant Fivetran SSH access to git repository.",
 			},
-			"ensure_readiness": {
-				ValueType:   core.Boolean,
-				Description: "Should resource wait for project to finish initialization. Default value: true.",
-			},
 		},
 	}
 }
@@ -114,10 +110,16 @@ func dbtProjectConfigSchema() core.Schema {
 		Fields: map[string]core.SchemaField{
 			"git_remote_url": {
 				ValueType:   core.String,
-				ForceNew:    true, // git_remote_url can't be changed after project creation
-				Description: "Git remote URL with your dbt project."},
-			"git_branch":  {ValueType: core.String, Description: "Git branch."},
-			"folder_path": {ValueType: core.String, Description: "Folder in Git repo with your dbt project."},
+				Description: "(Deprecated) Git remote URL with your dbt project. The project_config block of the resource fivetran_dbt_project is deprecated and will be removed. Please migrate to the resource fivetran_dbt_git_project_config",
+			},
+			"git_branch":  {
+				ValueType: core.String, 
+				Description: "(Deprecated) Git branch. The project_config block of the resource fivetran_dbt_project is deprecated and will be removed. Please migrate to the resource fivetran_dbt_git_project_config",
+			},
+			"folder_path": {
+				ValueType: core.String, 
+				Description: "(Deprecated) Folder in Git repo with your dbt project. The project_config block of the resource fivetran_dbt_project is deprecated and will be removed. Please migrate to the resource fivetran_dbt_git_project_config",
+			},
 		},
 	}
 }
