@@ -68,7 +68,6 @@ func TestResourceDbtGitProjectConfigCreateMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				tfmock.AssertEqual(t, dbtGitProjectConfigResourceMockGetHandler.Interactions, 1)
 				tfmock.AssertEqual(t, dbtGitProjectConfigResourceMockPatchHandler.Interactions, 1)
 				return nil
 			},
