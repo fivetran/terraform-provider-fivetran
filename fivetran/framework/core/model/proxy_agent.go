@@ -18,4 +18,6 @@ func readProxyAgentFromResponse(d proxyAgentModel, resp proxy.ProxyDetailsRespon
     d.SetGroupRegion(resp.Data.Region)
     d.SetCreatedBy(resp.Data.CreatedBy)
     d.SetDisplayName(resp.Data.DisplayName)
+    d.AuthToken = types.StringNull()
+    d.Salt = types.StringNull()
 }

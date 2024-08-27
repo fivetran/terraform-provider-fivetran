@@ -17,8 +17,6 @@ const (
         "account_id": "account_id",
         "registered_at": "registered_at",
         "region": "region",
-        "token": "token",
-        "salt": "salt",
         "created_by": "created_by",
         "display_name": "display_name"
     }
@@ -50,21 +48,19 @@ func TestDataSourceProxyAgentConfigMappingMock(t *testing.T) {
             id = "id"
         }`,
 
-		Check: resource.ComposeAggregateTestCheckFunc(
-			func(s *terraform.State) error {
-				tfmock.AssertEqual(t, proxyAgentDataSourceMockGetHandler.Interactions, 1)
-				tfmock.AssertNotEmpty(t, proxyAgentDataSourceMockData)
-				return nil
-			},
-			resource.TestCheckResourceAttr("data.fivetran_proxy_agent.test_proxy_agent", "id", "id"),
-			resource.TestCheckResourceAttr("data.fivetran_proxy_agent.test_proxy_agent", "registred_at", "registered_at"),
-			resource.TestCheckResourceAttr("data.fivetran_proxy_agent.test_proxy_agent", "group_region", "region"),
-			resource.TestCheckResourceAttr("data.fivetran_proxy_agent.test_proxy_agent", "token", "token"),
-			resource.TestCheckResourceAttr("data.fivetran_proxy_agent.test_proxy_agent", "salt", "salt"),
-			resource.TestCheckResourceAttr("data.fivetran_proxy_agent.test_proxy_agent", "created_by", "created_by"),
-			resource.TestCheckResourceAttr("data.fivetran_proxy_agent.test_proxy_agent", "display_name", "display_name"),
-		),
-	}
+        Check: resource.ComposeAggregateTestCheckFunc(
+            func(s *terraform.State) error {
+                tfmock.AssertEqual(t, proxyAgentDataSourceMockGetHandler.Interactions, 1)
+                tfmock.AssertNotEmpty(t, proxyAgentDataSourceMockData)
+                return nil
+            },
+            resource.TestCheckResourceAttr("data.fivetran_proxy_agent.test_proxy_agent", "id", "id"),
+            resource.TestCheckResourceAttr("data.fivetran_proxy_agent.test_proxy_agent", "registred_at", "registered_at"),
+            resource.TestCheckResourceAttr("data.fivetran_proxy_agent.test_proxy_agent", "group_region", "region"),
+            resource.TestCheckResourceAttr("data.fivetran_proxy_agent.test_proxy_agent", "created_by", "created_by"),
+            resource.TestCheckResourceAttr("data.fivetran_proxy_agent.test_proxy_agent", "display_name", "display_name"),
+        ),
+    }
 
 	resource.Test(
 		t,
