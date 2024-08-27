@@ -490,7 +490,7 @@ func (d *ConnectorSchemaResourceModel) getSchemasRaw() []interface{} {
 								if sm, ok := tMap["sync_mode"]; ok {
 									table["sync_mode"] = sm
 								}
-								if c, ok := tMap["tables"]; ok {
+								if c, ok := tMap["columns"]; ok {
 									columns := []interface{}{}
 									if rawColumns, ok := c.(map[string]interface{}); ok {
 										for cName, ci := range rawColumns {
