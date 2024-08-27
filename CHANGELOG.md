@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.7...HEAD)
 
+## [1.2.8](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.7...v1.2.8)
+
+## Fixed
+- Issue with connector schema config columns update
+- Issue with connector schema config columns' hashed value being required in the .tf file
+
 ## [1.2.7](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.6...v1.2.7)
 
 ## Fixed
