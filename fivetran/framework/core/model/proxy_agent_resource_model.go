@@ -27,11 +27,6 @@ func (d *ProxyAgentResourceModel) SetRegisteredAt(value string) {
 func (d *ProxyAgentResourceModel) SetGroupRegion(value string) {
 	d.GroupRegion = types.StringValue(value)
 }
-func (d *ProxyAgentResourceModel) SetAuthToken(value string) {
-}
-func (d *ProxyAgentResourceModel) SetSalt(value string) {
-	d.Salt = types.StringValue(value)
-}
 func (d *ProxyAgentResourceModel) SetCreatedBy(value string) {
 	d.CreatedBy = types.StringValue(value)
 }

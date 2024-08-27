@@ -59,7 +59,7 @@ func (r *dbtGitProjectConfig) Create(ctx context.Context, req resource.CreateReq
 		return
 	}
 
-	if data.EnsureReadiness.Equal(types.BoolValue(true)) {
+	if data.EnsureReadiness.Equal(types.BoolValue(false)) {
 		if ok := ensureProjectIsReady(resp, ctx, client, data.ProjectId.ValueString()); !ok {
 			resp.Diagnostics.AddError(
 				"Unable to set up dbt Git Project Config Resource.",

@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
@@ -137,17 +138,19 @@ func testFivetranDbtProjectConfigResourceCreate(t *testing.T, resourceName strin
 			return err
 		}
 
+		fmt.Printf("DBT Project Config Create %v \n", response)
+
 		if response.Code != "Success" {
-			return errors.New("DBT Project " + rs.Primary.ID + " doesn't exist. Response code: " + response.Code)
+			return errors.New("DBT Project Config Create " + rs.Primary.ID + " doesn't exist. Response code: " + response.Code)
 		}
 		if response.Data.ProjectConfig.GitRemoteUrl != "git@github.com:fivetran/dbt_demo.git" {
-			return errors.New("DBT Project " + rs.Primary.ID + " has wrong git_remote_url value. Actual: " + response.Data.ProjectConfig.GitRemoteUrl + " Expected: git@github.com:fivetran/dbt_demo.git")
+			return errors.New("DBT Project Config Create " + rs.Primary.ID + " has wrong git_remote_url value. Actual: " + response.Data.ProjectConfig.GitRemoteUrl + " Expected: git@github.com:fivetran/dbt_demo.git")
 		}
 		if response.Data.ProjectConfig.GitBranch != "main" {
-			return errors.New("DBT Project " + rs.Primary.ID + " has wrong git_branch value. Actual: " + response.Data.ProjectConfig.GitBranch + " Expected: main")
+			return errors.New("DBT Project Config Create " + rs.Primary.ID + " has wrong git_branch value. Actual: " + response.Data.ProjectConfig.GitBranch + " Expected: main")
 		}
 		if response.Data.ProjectConfig.FolderPath != "/folder/path" {
-			return errors.New("DBT Project " + rs.Primary.ID + " has wrong folder_path value. Actual: " + response.Data.ProjectConfig.FolderPath + " Expected: /folder/path")
+			return errors.New("DBT Project Config Create " + rs.Primary.ID + " has wrong folder_path value. Actual: " + response.Data.ProjectConfig.FolderPath + " Expected: /folder/path")
 		}
 		return nil
 	}
