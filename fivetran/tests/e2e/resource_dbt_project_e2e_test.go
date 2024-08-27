@@ -138,8 +138,6 @@ func testFivetranDbtProjectConfigResourceCreate(t *testing.T, resourceName strin
 			return err
 		}
 
-		fmt.Printf("DBT Project Config Create %v \n", response)
-
 		if response.Code != "Success" {
 			return errors.New("DBT Project Config Create " + rs.Primary.ID + " doesn't exist. Response code: " + response.Code)
 		}

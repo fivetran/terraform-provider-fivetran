@@ -74,40 +74,6 @@ func (d *DbtProjectResourceModel) ReadFromResponse(ctx context.Context, resp dbt
 	d.CreatedById = types.StringValue(resp.Data.CreatedById)
 	d.PublicKey = types.StringValue(resp.Data.PublicKey)
 
-	projectConfigTypes := map[string]attr.Type{
-		"git_remote_url": types.StringType,
-		"git_branch":     types.StringType,
-		"folder_path":    types.StringType,
-	}
-
-	projectConfigItems := make(map[string]attr.Value)
-
-	if resp.Data.ProjectConfig.GitBranch != "" || 
-	   resp.Data.ProjectConfig.FolderPath != "" || 
-	   resp.Data.ProjectConfig.GitRemoteUrl != "" {
-		if resp.Data.ProjectConfig.GitBranch != "" {
-			projectConfigItems["git_branch"] = types.StringValue(resp.Data.ProjectConfig.GitBranch)
-		} else {
-			projectConfigItems["git_branch"] = types.StringNull()
-		}
-
-		if resp.Data.ProjectConfig.FolderPath != "" {
-			projectConfigItems["folder_path"] = types.StringValue(resp.Data.ProjectConfig.FolderPath)
-		} else {
-			projectConfigItems["folder_path"] = types.StringNull()
-		}
-
-		if resp.Data.ProjectConfig.GitRemoteUrl != "" {
-			projectConfigItems["git_remote_url"] = types.StringValue(resp.Data.ProjectConfig.GitRemoteUrl)
-		} else {
-			projectConfigItems["git_remote_url"] = types.StringNull()
-		}
-
-		d.ProjectConfig, _ = types.ObjectValue(projectConfigTypes, projectConfigItems)
-	} else {
-		d.ProjectConfig = types.ObjectNull(projectConfigTypes)
-	}
-
 	if modelsResp != nil {
 		d.Models = GetModelsSetFromResponse(*modelsResp)
 	} else {
