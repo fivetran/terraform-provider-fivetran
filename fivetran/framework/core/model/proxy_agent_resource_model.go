@@ -37,6 +37,12 @@ func (d *ProxyAgentResourceModel) SetDisplayName(value string) {
 func (d *ProxyAgentResourceModel) ReadFromResponse(resp proxy.ProxyDetailsResponse) {
 	var model proxyAgentModel = d
 	readProxyAgentFromResponse(model, resp)
+	if(d.AuthToken.IsUnknown()){
+		d.AuthToken = types.StringNull()
+	}
+	if(d.Salt.IsUnknown()){
+		d.Salt = types.StringNull()
+	}
 }
 
 func (d *ProxyAgentResourceModel) ReadFromCreateResponse(resp proxy.ProxyCreateResponse) {
