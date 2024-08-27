@@ -21,3 +21,4 @@ func readProxyAgentFromResponse(d proxyAgentModel, resp proxy.ProxyDetailsRespon
     d.AuthToken = types.StringNull()
     d.Salt = types.StringNull()
 }
+

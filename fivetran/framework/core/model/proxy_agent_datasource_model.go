@@ -19,6 +19,8 @@ var _ proxyAgentModel = &ProxyAgentDatasourceModel{}
 
 func (d *ProxyAgentDatasourceModel) SetId(value string) {
 	d.Id = types.StringValue(value)
+	d.AuthToken = types.StringNull()
+    d.Salt = types.StringNull()
 }
 func (d *ProxyAgentDatasourceModel) SetRegisteredAt(value string) {
 	d.RegisteredAt = types.StringValue(value)
@@ -36,6 +38,4 @@ func (d *ProxyAgentDatasourceModel) SetDisplayName(value string) {
 func (d *ProxyAgentDatasourceModel) ReadFromResponse(resp proxy.ProxyDetailsResponse) {
 	var model proxyAgentModel = d
 	readProxyAgentFromResponse(model, resp)
-	d.AuthToken = types.StringNull()
-	d.Salt = types.StringNull()
 }
