@@ -45,7 +45,7 @@ func (r *dbtProject) UpgradeState(ctx context.Context) map[int64]resource.StateU
 		0: {
 			// Optionally, the PriorSchema field can be defined.
 			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
-				upgradeConnectorState(ctx, req, resp, 0)
+				upgradeDbtProjectState(ctx, req, resp, 0)
 			},
 		},
 	}
