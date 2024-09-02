@@ -21,7 +21,7 @@ Previous configuration:
 ```hcl
 required_providers {
    fivetran = {
-     version = "~> 1.1.17"
+     version = "~> 1.2.8"
      source  = "fivetran/fivetran"                
    }
  }
@@ -32,7 +32,7 @@ Updated configuration:
 ```hcl
 required_providers {
    fivetran = {
-     version = ">= 1.1.18"
+     version = ">= 1.3.0"
      source  = "fivetran/fivetran"                
    }
  }
