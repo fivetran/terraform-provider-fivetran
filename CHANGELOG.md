@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.2.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.8...v1.2.9)
 
 ## Fixed
-- Issue with SyncFrequency unable to be set to nil
+- Issue with resource `fivetran_connector_schedule` when SyncFrequency is unknown.
 
 ## [1.2.8](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.7...v1.2.8)
 
