@@ -51,8 +51,8 @@ func (r *connectorSchedule) Create(ctx context.Context, req resource.CreateReque
 	svc := r.GetClient().NewConnectorModify().
 		ConnectorID(data.ConnectorId.ValueString())
 
-	syncFrequency := helpers.StrToInt(data.SyncFrequency.ValueString())
 	if data.SyncFrequency.ValueString() != "" {
+		syncFrequency := helpers.StrToInt(data.SyncFrequency.ValueString())
 		svc.SyncFrequency(&syncFrequency)
 	} else {
 		svc.SyncFrequency(nil)
@@ -148,8 +148,8 @@ func (r *connectorSchedule) Update(ctx context.Context, req resource.UpdateReque
 		ConnectorID(state.ConnectorId.ValueString())
 
 	if !plan.SyncFrequency.Equal(state.SyncFrequency) {
-		syncFrequency := helpers.StrToInt(plan.SyncFrequency.ValueString())
 		if plan.SyncFrequency.ValueString() != "" {
+			syncFrequency := helpers.StrToInt(plan.SyncFrequency.ValueString())
 			svc.SyncFrequency(&syncFrequency)
 		} else {
 			svc.SyncFrequency(nil)
