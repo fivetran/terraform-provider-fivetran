@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.9...HEAD)
 
-## [1.2.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.8...v1.2.9)
+## [1.2.9](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.8...v1.2.9)
 
 ## Fixed
 - Issue with resource `fivetran_connector_schedule` when SyncFrequency is unknown.
