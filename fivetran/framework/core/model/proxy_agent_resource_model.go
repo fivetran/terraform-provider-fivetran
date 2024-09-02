@@ -6,14 +6,14 @@ import (
 )
 
 type ProxyAgentResourceModel struct {
-    Id               types.String `tfsdk:"id"`
-    RegistredAt      types.String `tfsdk:"registred_at"`
-    GroupRegion      types.String `tfsdk:"group_region"`
-    AuthToken        types.String `tfsdk:"token"`
-    Salt             types.String `tfsdk:"salt"`
-    CreatedBy        types.String `tfsdk:"created_by"`
-    DisplayName      types.String `tfsdk:"display_name"`
-    ProxyServerUri   types.String `tfsdk:"proxy_server_uri"`
+	Id             types.String `tfsdk:"id"`
+	RegisteredAt   types.String `tfsdk:"registred_at"`
+	GroupRegion    types.String `tfsdk:"group_region"`
+	AuthToken      types.String `tfsdk:"token"`
+	Salt           types.String `tfsdk:"salt"`
+	CreatedBy      types.String `tfsdk:"created_by"`
+	DisplayName    types.String `tfsdk:"display_name"`
+	ProxyServerUri types.String `tfsdk:"proxy_server_uri"`
 }
 
 var _ proxyAgentModel = &ProxyAgentResourceModel{}
@@ -21,8 +21,8 @@ var _ proxyAgentModel = &ProxyAgentResourceModel{}
 func (d *ProxyAgentResourceModel) SetId(value string) {
 	d.Id = types.StringValue(value)
 }
-func (d *ProxyAgentResourceModel) SetRegistredAt(value string) {
-	d.RegistredAt = types.StringValue(value)
+func (d *ProxyAgentResourceModel) SetRegisteredAt(value string) {
+	d.RegisteredAt = types.StringValue(value)
 }
 func (d *ProxyAgentResourceModel) SetGroupRegion(value string) {
 	d.GroupRegion = types.StringValue(value)
@@ -45,7 +45,7 @@ func (d *ProxyAgentResourceModel) ReadFromResponse(resp proxy.ProxyDetailsRespon
 }
 
 func (d *ProxyAgentResourceModel) ReadFromCreateResponse(resp proxy.ProxyCreateResponse) {
-    d.Id = types.StringValue(resp.Data.AgentId)
-    d.AuthToken = types.StringValue(resp.Data.AuthToken)
-    d.ProxyServerUri = types.StringValue(resp.Data.ProxyServerUri)
+	d.Id = types.StringValue(resp.Data.AgentId)
+	d.AuthToken = types.StringValue(resp.Data.AuthToken)
+	d.ProxyServerUri = types.StringValue(resp.Data.ProxyServerUri)
 }

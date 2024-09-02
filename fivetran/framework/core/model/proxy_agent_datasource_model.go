@@ -6,13 +6,13 @@ import (
 )
 
 type ProxyAgentDatasourceModel struct {
-    Id               types.String `tfsdk:"id"`
-    RegistredAt      types.String `tfsdk:"registred_at"`
-    GroupRegion      types.String `tfsdk:"group_region"`
-    AuthToken        types.String `tfsdk:"token"`
-    Salt             types.String `tfsdk:"salt"`
-    CreatedBy        types.String `tfsdk:"created_by"`
-    DisplayName      types.String `tfsdk:"display_name"`
+	Id           types.String `tfsdk:"id"`
+	RegisteredAt types.String `tfsdk:"registred_at"`
+	GroupRegion  types.String `tfsdk:"group_region"`
+	AuthToken    types.String `tfsdk:"token"`
+	Salt         types.String `tfsdk:"salt"`
+	CreatedBy    types.String `tfsdk:"created_by"`
+	DisplayName  types.String `tfsdk:"display_name"`
 }
 
 var _ proxyAgentModel = &ProxyAgentDatasourceModel{}
@@ -20,8 +20,8 @@ var _ proxyAgentModel = &ProxyAgentDatasourceModel{}
 func (d *ProxyAgentDatasourceModel) SetId(value string) {
 	d.Id = types.StringValue(value)
 }
-func (d *ProxyAgentDatasourceModel) SetRegistredAt(value string) {
-	d.RegistredAt = types.StringValue(value)
+func (d *ProxyAgentDatasourceModel) SetRegisteredAt(value string) {
+	d.RegisteredAt = types.StringValue(value)
 }
 func (d *ProxyAgentDatasourceModel) SetGroupRegion(value string) {
 	d.GroupRegion = types.StringValue(value)
