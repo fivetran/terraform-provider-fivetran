@@ -49,8 +49,14 @@ func (r *connectorSchedule) Create(ctx context.Context, req resource.CreateReque
 	}
 
 	svc := r.GetClient().NewConnectorModify().
-		ConnectorID(data.ConnectorId.ValueString()).
-		SyncFrequency(helpers.StrToInt(data.SyncFrequency.ValueString()))
+		ConnectorID(data.ConnectorId.ValueString())
+
+	syncFrequency := helpers.StrToInt(data.SyncFrequency.ValueString())
+	if data.SyncFrequency.ValueString() != "" {
+		svc.SyncFrequency(&syncFrequency)
+	} else {
+		svc.SyncFrequency(nil)
+	}
 
 	if !data.DailySyncTime.IsUnknown() && !data.DailySyncTime.IsNull() && data.SyncFrequency.ValueString() == "1440" {
 		svc.DailySyncTime(data.DailySyncTime.ValueString())
@@ -142,7 +148,12 @@ func (r *connectorSchedule) Update(ctx context.Context, req resource.UpdateReque
 		ConnectorID(state.ConnectorId.ValueString())
 
 	if !plan.SyncFrequency.Equal(state.SyncFrequency) {
-		svc.SyncFrequency(helpers.StrToInt(plan.SyncFrequency.ValueString()))
+		syncFrequency := helpers.StrToInt(plan.SyncFrequency.ValueString())
+		if plan.SyncFrequency.ValueString() != "" {
+			svc.SyncFrequency(&syncFrequency)
+		} else {
+			svc.SyncFrequency(nil)
+		}
 		if !plan.DailySyncTime.IsUnknown() && plan.SyncFrequency.ValueString() == "1440" {
 			svc.DailySyncTime(plan.DailySyncTime.ValueString())
 		}
