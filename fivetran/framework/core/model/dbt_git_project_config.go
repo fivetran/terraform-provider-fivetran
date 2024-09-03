@@ -18,10 +18,10 @@ func (d *DbtGitProjectConfig) ReadFromResponse(resp dbt.DbtProjectDetailsRespons
 	d.Id = types.StringValue(resp.Data.ID)
 	d.ProjectId = types.StringValue(resp.Data.ID)
 
-	if resp.Data.ProjectConfig.GitBranch != "" {
-		d.GitBranch = types.StringValue(resp.Data.ProjectConfig.GitBranch)
+	if resp.Data.ProjectConfig.GitRemoteUrl != "" {
+		d.GitRemoteUrl = types.StringValue(resp.Data.ProjectConfig.GitRemoteUrl)
 	} else {
-		d.GitBranch = types.StringNull()
+		d.GitRemoteUrl = types.StringNull()
 	}
 
 	if resp.Data.ProjectConfig.GitBranch != "" {
