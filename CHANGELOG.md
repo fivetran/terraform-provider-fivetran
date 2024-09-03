@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Fixed
 - Issue with resource `fivetran_connector_schedule` when SyncFrequency is unknown.
+- Table field in `destination_schema` for `share_point` connector is no longer required
 
 ## [1.2.8](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.7...v1.2.8)
 
