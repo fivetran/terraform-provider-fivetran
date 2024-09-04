@@ -14,10 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 New connection services supported:
 - Supported service: `connector_sdk`
+- Supported service: `criteo_retail_media`
+- Supported service: `ehr`
 - Supported service: `google_classroom`
 - Supported service: `jama_software`
 - Supported service: `okendo`
 - Supported service: `oncehub`
+- Supported service: `placerai`
 - Supported service: `planhat`
 - Supported service: `podio`
 - Supported service: `procore`

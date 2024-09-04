@@ -19,11 +19,11 @@
   "tags": [
     {
       "name": "updated",
-      "description": "2024-08-26T12:58:21.830Z"
+      "description": "2024-09-02T11:08:00.297Z"
     },
     {
       "name": "hash",
-      "description": "05589742ec814a9cb5a885c9d0e16b677804e2e50bbee68c78439583fdf9b799"
+      "description": "1cfc67946b33669fc03f497e42dfa1d55526cbd2038193c9e943ab0ab4dbceb0"
     }
   ],
   "paths": {
@@ -12524,7 +12524,6 @@
             "circleci": "#/components/schemas/circleci_NewConnectorRequestV1",
             "cj_commission_detail": "#/components/schemas/cj_commission_detail_NewConnectorRequestV1",
             "clari": "#/components/schemas/clari_NewConnectorRequestV1",
-            "clarity": "#/components/schemas/clarity_NewConnectorRequestV1",
             "clickup": "#/components/schemas/clickup_NewConnectorRequestV1",
             "close": "#/components/schemas/close_NewConnectorRequestV1",
             "cloudbeds": "#/components/schemas/cloudbeds_NewConnectorRequestV1",
@@ -12547,6 +12546,7 @@
             "cosmos": "#/components/schemas/cosmos_NewConnectorRequestV1",
             "coupa": "#/components/schemas/coupa_NewConnectorRequestV1",
             "criteo": "#/components/schemas/criteo_NewConnectorRequestV1",
+            "criteo_retail_media": "#/components/schemas/criteo_retail_media_NewConnectorRequestV1",
             "crossbeam": "#/components/schemas/crossbeam_NewConnectorRequestV1",
             "crowddev": "#/components/schemas/crowddev_NewConnectorRequestV1",
             "culture_amp": "#/components/schemas/culture_amp_NewConnectorRequestV1",
@@ -12582,6 +12582,7 @@
             "easypost": "#/components/schemas/easypost_NewConnectorRequestV1",
             "ebay": "#/components/schemas/ebay_NewConnectorRequestV1",
             "economic": "#/components/schemas/economic_NewConnectorRequestV1",
+            "ehr": "#/components/schemas/ehr_NewConnectorRequestV1",
             "elastic_cloud": "#/components/schemas/elastic_cloud_NewConnectorRequestV1",
             "electronic_tenant_solutions": "#/components/schemas/electronic_tenant_solutions_NewConnectorRequestV1",
             "eloqua": "#/components/schemas/eloqua_NewConnectorRequestV1",
@@ -12811,6 +12812,7 @@
             "pipedrive": "#/components/schemas/pipedrive_NewConnectorRequestV1",
             "pivotal_tracker": "#/components/schemas/pivotal_tracker_NewConnectorRequestV1",
             "piwik_pro": "#/components/schemas/piwik_pro_NewConnectorRequestV1",
+            "placerai": "#/components/schemas/placerai_NewConnectorRequestV1",
             "planetscale": "#/components/schemas/planetscale_NewConnectorRequestV1",
             "planful": "#/components/schemas/planful_NewConnectorRequestV1",
             "planhat": "#/components/schemas/planhat_NewConnectorRequestV1",
@@ -13532,7 +13534,6 @@
             "circleci": "#/components/schemas/circleci_ConnectorResponseV1",
             "cj_commission_detail": "#/components/schemas/cj_commission_detail_ConnectorResponseV1",
             "clari": "#/components/schemas/clari_ConnectorResponseV1",
-            "clarity": "#/components/schemas/clarity_ConnectorResponseV1",
             "clickup": "#/components/schemas/clickup_ConnectorResponseV1",
             "close": "#/components/schemas/close_ConnectorResponseV1",
             "cloudbeds": "#/components/schemas/cloudbeds_ConnectorResponseV1",
@@ -13555,6 +13556,7 @@
             "cosmos": "#/components/schemas/cosmos_ConnectorResponseV1",
             "coupa": "#/components/schemas/coupa_ConnectorResponseV1",
             "criteo": "#/components/schemas/criteo_ConnectorResponseV1",
+            "criteo_retail_media": "#/components/schemas/criteo_retail_media_ConnectorResponseV1",
             "crossbeam": "#/components/schemas/crossbeam_ConnectorResponseV1",
             "crowddev": "#/components/schemas/crowddev_ConnectorResponseV1",
             "culture_amp": "#/components/schemas/culture_amp_ConnectorResponseV1",
@@ -13590,6 +13592,7 @@
             "easypost": "#/components/schemas/easypost_ConnectorResponseV1",
             "ebay": "#/components/schemas/ebay_ConnectorResponseV1",
             "economic": "#/components/schemas/economic_ConnectorResponseV1",
+            "ehr": "#/components/schemas/ehr_ConnectorResponseV1",
             "elastic_cloud": "#/components/schemas/elastic_cloud_ConnectorResponseV1",
             "electronic_tenant_solutions": "#/components/schemas/electronic_tenant_solutions_ConnectorResponseV1",
             "eloqua": "#/components/schemas/eloqua_ConnectorResponseV1",
@@ -13819,6 +13822,7 @@
             "pipedrive": "#/components/schemas/pipedrive_ConnectorResponseV1",
             "pivotal_tracker": "#/components/schemas/pivotal_tracker_ConnectorResponseV1",
             "piwik_pro": "#/components/schemas/piwik_pro_ConnectorResponseV1",
+            "placerai": "#/components/schemas/placerai_ConnectorResponseV1",
             "planetscale": "#/components/schemas/planetscale_ConnectorResponseV1",
             "planful": "#/components/schemas/planful_ConnectorResponseV1",
             "planhat": "#/components/schemas/planhat_ConnectorResponseV1",
@@ -28888,121 +28892,6 @@
           }
         ]
       },
-      "clarity_config_V1": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "properties": {
-              "public_key": {
-                "title": "",
-                "type": "string",
-                "description": "Public Key.",
-                "example": "string"
-              },
-              "connection_type": {
-                "title": "",
-                "type": "object",
-                "description": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
-                "enum": [
-                  "Directly",
-                  "PrivateLink",
-                  "SshTunnel",
-                  "ProxyAgent"
-                ]
-              },
-              "update_method": {
-                "title": "",
-                "type": "object",
-                "description": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
-                "example": "NATIVE_UPDATE | DIRECT | TELEPORT",
-                "enum": [
-                  "NATIVE_UPDATE",
-                  "TELEPORT",
-                  "DIRECT"
-                ]
-              },
-              "always_encrypted": {
-                "title": "",
-                "type": "boolean",
-                "description": "Require TLS through Tunnel.",
-                "example": true
-              },
-              "tunnel_user": {
-                "title": "",
-                "type": "string",
-                "description": "SSH user, specify only to connect via an SSH tunnel.",
-                "example": "string"
-              },
-              "tunnel_port": {
-                "title": "",
-                "type": "integer",
-                "description": "SSH port, specify only to connect via an SSH tunnel.",
-                "format": "int32",
-                "example": 0
-              },
-              "database": {
-                "title": "",
-                "type": "string",
-                "description": "The database name.",
-                "example": "string"
-              },
-              "password": {
-                "title": "",
-                "type": "string",
-                "description": "The user's password.",
-                "format": "password",
-                "example": "string"
-              },
-              "port": {
-                "title": "",
-                "type": "integer",
-                "description": "The port number.",
-                "format": "int32",
-                "example": 0
-              },
-              "host": {
-                "title": "",
-                "type": "string",
-                "description": "DB instance host or IP address.",
-                "example": "string"
-              },
-              "tunnel_host": {
-                "title": "",
-                "type": "string",
-                "description": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
-                "example": "string"
-              },
-              "schema_prefix": {
-                "title": "Destination schema prefix",
-                "type": "string",
-                "description": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
-                "example": "\"prefix\""
-              },
-              "user": {
-                "title": "",
-                "type": "string",
-                "description": "The user name.  For Azure Databases, the format must be `user@domain`.",
-                "example": "string"
-              }
-            },
-            "description": "",
-            "example": null
-          }
-        },
-        "example": null
-      },
-      "clarity_NewConnectorRequestV1": {
-        "example": null,
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NewConnectorRequestV1"
-          },
-          {
-            "$ref": "#/components/schemas/clarity_config_V1"
-          }
-        ]
-      },
       "clickup_config_V1": {
         "properties": {
           "config": {
@@ -31066,6 +30955,54 @@
           }
         ]
       },
+      "criteo_retail_media_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": "\"schema_name\""
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Criteo Retail Media client Secret.",
+                "format": "password",
+                "example": "your_criteo_retail_media_client_secret"
+              },
+              "version": {
+                "title": "",
+                "type": "string",
+                "description": "Your Criteo Retail Media version.",
+                "example": "your_criteo_retail_media_version"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Criteo Retail Media client ID.",
+                "example": "your_criteo_retail_media_client_id"
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "criteo_retail_media_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/criteo_retail_media_config_V1"
+          }
+        ]
+      },
       "crossbeam_config_V1": {
         "properties": {
           "config": {
@@ -31456,19 +31393,22 @@
                 "type": "string",
                 "description": "Your Datadog API key.",
                 "format": "password",
-                "example": "your_datadog_api_key"
-              },
-              "subdomain": {
-                "title": "",
-                "type": "string",
-                "description": "Your Datadog subdomain.",
-                "example": "your_datadog_subdomain"
+                "example": "your_datadog_ api_key"
               },
               "application_key": {
                 "title": "",
                 "type": "string",
                 "description": "Your Datadog application key.",
                 "example": "your_datadog_application_key"
+              },
+              "host_name": {
+                "type": "object",
+                "description": "Your Datadog host name.",
+                "example": null,
+                "enum": [
+                  "com",
+                  "eu"
+                ]
               }
             },
             "description": "",
@@ -33263,6 +33203,16 @@
                 "type": "string",
                 "description": "The custom domain name associated with Dynamics 365.",
                 "example": "domain_name"
+              },
+              "auth_type": {
+                "title": "",
+                "type": "object",
+                "description": "Authentication mechanism. Either one of `OAUTH2`, or `SERVICE_PRINCIPAL`. Default value `OAUTH2`",
+                "example": "OAUTH2 | SERVICE_PRINCIPAL",
+                "enum": [
+                  "SERVICE_PRINCIPAL",
+                  "OAUTH2"
+                ]
               }
             },
             "description": "",
@@ -33520,6 +33470,121 @@
           },
           {
             "$ref": "#/components/schemas/economic_config_V1"
+          }
+        ]
+      },
+      "ehr_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "public_key": {
+                "title": "",
+                "type": "string",
+                "description": "Public Key.",
+                "example": "string"
+              },
+              "connection_type": {
+                "title": "",
+                "type": "object",
+                "description": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
+                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
+                "enum": [
+                  "Directly",
+                  "PrivateLink",
+                  "SshTunnel",
+                  "ProxyAgent"
+                ]
+              },
+              "update_method": {
+                "title": "",
+                "type": "object",
+                "description": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
+                "example": "NATIVE_UPDATE | DIRECT | TELEPORT",
+                "enum": [
+                  "NATIVE_UPDATE",
+                  "TELEPORT",
+                  "DIRECT"
+                ]
+              },
+              "always_encrypted": {
+                "title": "",
+                "type": "boolean",
+                "description": "Require TLS through Tunnel.",
+                "example": true
+              },
+              "tunnel_user": {
+                "title": "",
+                "type": "string",
+                "description": "SSH user, specify only to connect via an SSH tunnel.",
+                "example": "string"
+              },
+              "tunnel_port": {
+                "title": "",
+                "type": "integer",
+                "description": "SSH port, specify only to connect via an SSH tunnel.",
+                "format": "int32",
+                "example": 0
+              },
+              "database": {
+                "title": "",
+                "type": "string",
+                "description": "The database name.",
+                "example": "string"
+              },
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "The user's password.",
+                "format": "password",
+                "example": "string"
+              },
+              "port": {
+                "title": "",
+                "type": "integer",
+                "description": "The port number.",
+                "format": "int32",
+                "example": 0
+              },
+              "host": {
+                "title": "",
+                "type": "string",
+                "description": "DB instance host or IP address.",
+                "example": "string"
+              },
+              "tunnel_host": {
+                "title": "",
+                "type": "string",
+                "description": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+                "example": "string"
+              },
+              "schema_prefix": {
+                "title": "Destination schema prefix",
+                "type": "string",
+                "description": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
+                "example": "\"prefix\""
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "The user name.  For Azure Databases, the format must be `user@domain`.",
+                "example": "string"
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "ehr_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/ehr_config_V1"
           }
         ]
       },
@@ -49748,6 +49813,42 @@
           }
         ]
       },
+      "placerai_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema",
+                "type": "string",
+                "description": "Destination schema. Schema is permanent and cannot be changed after connection creation",
+                "example": "\"schema_name\""
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Placer.ai API key.",
+                "format": "password",
+                "example": "string"
+              }
+            },
+            "description": "",
+            "example": null
+          }
+        },
+        "example": null
+      },
+      "placerai_NewConnectorRequestV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/placerai_config_V1"
+          }
+        ]
+      },
       "planetscale_config_V1": {
         "properties": {
           "config": {
@@ -50443,12 +50544,12 @@
               "console_url": {
                 "title": "",
                 "type": "string",
-                "description": "Your Prisma Cloud Console URL.",
-                "example": "your_prisma_cloud_console_url"
+                "description": "Your Prisma Cloud console URL.",
+                "example": "string"
               },
               "base_url": {
                 "type": "object",
-                "description": "Your Prisma Cloud Admin Console URL.",
+                "description": "Your Prisma Cloud admin console URL.",
                 "example": null,
                 "enum": [
                   "https://api.gov.prismacloud.io",
@@ -50472,15 +50573,15 @@
               "client_secret": {
                 "title": "",
                 "type": "string",
-                "description": "Your Prisma Cloud client secret.",
+                "description": "Your Prisma Cloud secret access Key.",
                 "format": "password",
-                "example": "your_prisma_cloud_client_secret"
+                "example": "string"
               },
               "client_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Prisma Cloud client ID.",
-                "example": "your_prisma_cloud_client_id"
+                "description": "Your Prisma Cloud access key ID.",
+                "example": "string"
               }
             },
             "description": "",
@@ -56386,16 +56487,6 @@
                   "KEY_PAIR"
                 ]
               },
-              "update_method": {
-                "title": "",
-                "type": "object",
-                "description": "Default value: `Teleport`",
-                "example": "TIME_TRAVEL | TELEPORT",
-                "enum": [
-                  "TIME_TRAVEL",
-                  "TELEPORT"
-                ]
-              },
               "private_key": {
                 "title": "",
                 "type": "string",
@@ -61467,6 +61558,12 @@
                 "description": "Workday host name.",
                 "example": "string"
               },
+              "generate_fivetran_pk": {
+                "title": "",
+                "type": "boolean",
+                "description": "Select this option to generate a Primary Key for reports where no single column or combination of columns can be used to form a Primary Key.",
+                "example": true
+              },
               "user_name": {
                 "title": "",
                 "type": "string",
@@ -61672,6 +61769,12 @@
           "auth": {
             "type": "object",
             "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": "string"
+              },
               "refresh_token": {
                 "title": "",
                 "type": "string",
@@ -61682,6 +61785,12 @@
                 "title": "",
                 "type": "string",
                 "description": "Secret of your Workday Client App",
+                "example": "string"
+              },
+              "realm_id": {
+                "title": "",
+                "type": "string",
+                "description": "",
                 "example": "string"
               },
               "client_id": {
@@ -63490,8 +63599,8 @@
               "organization_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Zoho Books Organization ID.",
-                "example": "your_zoho_books_organization_id"
+                "description": "Your Zoho Inventory organization ID.",
+                "example": "string"
               },
               "client_secret": {
                 "title": "",
@@ -65064,17 +65173,6 @@
           }
         ]
       },
-      "clarity_ConnectorResponseV1": {
-        "example": null,
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ConnectorResponseV1"
-          },
-          {
-            "$ref": "#/components/schemas/clarity_config_V1"
-          }
-        ]
-      },
       "clickup_ConnectorResponseV1": {
         "example": null,
         "allOf": [
@@ -65314,6 +65412,17 @@
           },
           {
             "$ref": "#/components/schemas/criteo_config_V1"
+          }
+        ]
+      },
+      "criteo_retail_media_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/criteo_retail_media_config_V1"
           }
         ]
       },
@@ -65699,6 +65808,17 @@
           },
           {
             "$ref": "#/components/schemas/economic_config_V1"
+          }
+        ]
+      },
+      "ehr_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/ehr_config_V1"
           }
         ]
       },
@@ -68218,6 +68338,17 @@
           },
           {
             "$ref": "#/components/schemas/piwik_pro_config_V1"
+          }
+        ]
+      },
+      "placerai_ConnectorResponseV1": {
+        "example": null,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/placerai_config_V1"
           }
         ]
       },

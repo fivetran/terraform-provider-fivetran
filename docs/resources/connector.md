@@ -590,6 +590,7 @@ Optional:
 	- Service `db2i_sap_hva`: Require TLS through Tunnel
 	- Service `documentdb`: Require TLS encryption.
 	- Service `dynamics_365_fo`: Require TLS through Tunnel.
+	- Service `ehr`: Require TLS through Tunnel.
 	- Service `elastic_cloud`: Default value: true. Set to false if TLS is not required when using an SSH tunnel.
 	- Service `es_self_hosted`: Default value: true. Set to false if TLS is not required when using an SSH tunnel.
 	- Service `google_cloud_mysql`: Require TLS through Tunnel
@@ -758,6 +759,7 @@ Optional:
 	- Service `picqer`: Your Picqer API key.
 	- Service `pinpoint`: Your Pinpoint API key.
 	- Service `pipe17`: The Pipe17 API key.
+	- Service `placerai`: Your Placer.ai API key.
 	- Service `playvox`: Your Playvox API Key.
 	- Service `posthog`: Your PostHog API key.
 	- Service `prive`: Your Prive API key.
@@ -1007,6 +1009,7 @@ Optional:
 	- Service `airtable`: Type of authentication being used by connector
 	- Service `aws_cost_report`: Access approach
 	- Service `azure_service_bus`: The authentication mode to access the topic
+	- Service `dynamics_365`: Authentication mechanism. Either one of `OAUTH2`, or `SERVICE_PRINCIPAL`. Default value `OAUTH2`
 	- Service `gcs`: Authorization type. Required for storage bucket authentication.
 	- Service `google_sheets`: The `OAuth` value must be specified for this type of authorization.
 	- Service `jira`: Authorization type.
@@ -1045,7 +1048,7 @@ Optional:
 	- Service `jotform`: Your Jotform base URL.
 	- Service `mailgun`: Your Mailgun base URL.
 	- Service `ortto`: Your Ortto base URL. Possible values: `api`, `api.au`, `api.eu`.
-	- Service `prisma_cloud`: Your Prisma Cloud Admin Console URL.
+	- Service `prisma_cloud`: Your Prisma Cloud admin console URL.
 	- Service `salesforce`: (Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.
 	- Service `salesforce_sandbox`: (Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.
 	- Service `veevavault`: Your Veeva Vault base URL.
@@ -1129,6 +1132,7 @@ Optional:
 	- Service `concur`: The SAP Concur Client ID.
 	- Service `coupa`: Your Coupa client_id
 	- Service `criteo`: Your Criteo Client ID.
+	- Service `criteo_retail_media`: Your Criteo Retail Media client ID.
 	- Service `culture_amp`: Your Culture Amp client ID.
 	- Service `cvent`: Your Cvent client ID.
 	- Service `d2l_brightspace`: Your D2L Brightspace client ID.
@@ -1157,7 +1161,7 @@ Optional:
 	- Service `piwik_pro`: Your Piwik PRO client ID.
 	- Service `podio`: Your Podio client ID.
 	- Service `power_reviews_enterprise`: Your PowerReviews Enterprise Client ID.
-	- Service `prisma_cloud`: Your Prisma Cloud client ID.
+	- Service `prisma_cloud`: Your Prisma Cloud access key ID.
 	- Service `procore`: Your Procore client ID.
 	- Service `quora_ads`: Your Quora Ads client ID.
 	- Service `reltio`: Your Reltio client ID.
@@ -1234,6 +1238,7 @@ Optional:
 	- Service `concur`: The SAP Concur Client secret.
 	- Service `coupa`: Your Coupa client_id
 	- Service `criteo`: Your Criteo client secret key.
+	- Service `criteo_retail_media`: Your Criteo Retail Media client Secret.
 	- Service `culture_amp`: Your Culture Amp client secret.
 	- Service `cvent`: Your Cvent client secret.
 	- Service `d2l_brightspace`: Your D2L Brightspace client secret.
@@ -1256,7 +1261,7 @@ Optional:
 	- Service `piwik_pro`: Your Piwik PRO client secret.
 	- Service `podio`: Your Podio client secret.
 	- Service `power_reviews_enterprise`: Your PowerReviews Enterprise Client Secret.
-	- Service `prisma_cloud`: Your Prisma Cloud client secret.
+	- Service `prisma_cloud`: Your Prisma Cloud secret access Key.
 	- Service `procore`: Your Procore client secret.
 	- Service `quora_ads`: Your Quora Ads client secret.
 	- Service `reltio`: Your Reltio client secret.
@@ -1370,6 +1375,7 @@ Optional:
 	- Service `db2i_sap_hva`: Possible values:`SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`.
 	- Service `documentdb`: Possible values:`SshTunnel`, `PrivateLink` . `SshTunnel` is used as a value if this parameter is omitted in the request and the following parameter's values are specified: `tunnel_host`, `tunnel_port`, `tunnel_user`.
 	- Service `dynamics_365_fo`: Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
+	- Service `ehr`: Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
 	- Service `elastic_cloud`: Possible values:`Directly`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
 	- Service `email`: Connection method. Default value: `Directly`.
 	- Service `es_self_hosted`: Possible values:`Directly`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
@@ -1414,7 +1420,7 @@ Optional:
 	- Service `sql_server_rds`: Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
 	- Service `sql_server_sap_ecc_hva`: Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
 - `console_url` (String) Field usage depends on `service` value: 
-	- Service `prisma_cloud`: Your Prisma Cloud Console URL.
+	- Service `prisma_cloud`: Your Prisma Cloud console URL.
 - `consumer_group` (String) Field usage depends on `service` value: 
 	- Service `apache_kafka`: Kafka consumer group name.
 	- Service `aws_msk`: The name of consumer group created for Fivetran.
@@ -1494,6 +1500,7 @@ Optional:
 	- Service `db2i_hva`: The database name.
 	- Service `db2i_sap_hva`: The database name.
 	- Service `dynamics_365_fo`: The database name.
+	- Service `ehr`: The database name.
 	- Service `google_cloud_mysql`: The database name.
 	- Service `google_cloud_postgresql`: The database name.
 	- Service `google_cloud_sqlserver`: The database name.
@@ -1775,6 +1782,8 @@ Optional:
 	- Service `braze`: Your GCS folder name. Required if `GCS` is the `export_storage_type`
 - `gcs_folder` (String) Field usage depends on `service` value: 
 	- Service `braze`: Your GCS folder name. Required if `GCS` is the `cloud_storage_type`
+- `generate_fivetran_pk` (Boolean) Field usage depends on `service` value: 
+	- Service `workday`: Select this option to generate a Primary Key for reports where no single column or combination of columns can be used to form a Primary Key.
 - `group_name` (String) Field usage depends on `service` value: 
 	- Service `fivetran_log`: (Optional) The group name of the `target_group_id`.
 - `hana_backup_password` (String, Sensitive)
@@ -1808,6 +1817,7 @@ Optional:
 	- Service `db2i_sap_hva`: DB instance host or IP address.
 	- Service `documentdb`: Host IP address of the primary node. Ignored if `hosts` value is provided.
 	- Service `dynamics_365_fo`: DB instance host or IP address.
+	- Service `ehr`: DB instance host or IP address.
 	- Service `elastic_cloud`: DB instance host or IP address.
 	- Service `es_self_hosted`: DB instance host or IP address.
 	- Service `ftp`: FTP host address.
@@ -2093,7 +2103,7 @@ Optional:
 	- Service `productive`: Your Productive Organization ID.
 	- Service `salesforce_commerce_cloud`: The organization ID from Salesforce Commerce Cloud account.
 	- Service `zoho_books`: Your Zoho Books Organization ID.
-	- Service `zoho_inventory`: Your Zoho Books Organization ID.
+	- Service `zoho_inventory`: Your Zoho Inventory organization ID.
 - `organization_name` (String) Field usage depends on `service` value: 
 	- Service `brightpearl`: Your Brightpearl organization name.
 	- Service `confluence`: Your Confluence organization name.
@@ -2152,6 +2162,7 @@ Optional:
 	- Service `db2i_sap_hva`: The user's password.
 	- Service `documentdb`: The user's password.
 	- Service `dynamics_365_fo`: The user's password.
+	- Service `ehr`: The user's password.
 	- Service `elastic_cloud`: The user's password.
 	- Service `es_self_hosted`: The user's password.
 	- Service `ftp`: FTP password.
@@ -2322,6 +2333,7 @@ Optional:
 	- Service `db2i_sap_hva`: The port number.
 	- Service `documentdb`: Port of the primary node. Ignored if `hosts` value is provided.
 	- Service `dynamics_365_fo`: The port number.
+	- Service `ehr`: The port number.
 	- Service `elastic_cloud`: The port number.
 	- Service `es_self_hosted`: The port number.
 	- Service `ftp`: FTP port.
@@ -2444,6 +2456,7 @@ Optional:
 	- Service `db2i_sap_hva`: Public Key
 	- Service `documentdb`: Public Key
 	- Service `dynamics_365_fo`: Public Key.
+	- Service `ehr`: Public Key.
 	- Service `elastic_cloud`: Public Key
 	- Service `es_self_hosted`: Public Key
 	- Service `google_cloud_mysql`: Public Key
@@ -3193,6 +3206,7 @@ Optional:
 	- Service `db2i_sap_hva`: SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).
 	- Service `documentdb`: SSH host, only specify when connecting via an SSH tunnel (do not use a load balancer). Required for connector creation.
 	- Service `dynamics_365_fo`: SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).
+	- Service `ehr`: SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).
 	- Service `elastic_cloud`: SSH host, specify only to connect using an SSH tunnel (do not use a load balancer).
 	- Service `es_self_hosted`: SSH host, specify only to connect using an SSH tunnel (do not use a load balancer).
 	- Service `google_cloud_mysql`: SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).
@@ -3246,6 +3260,7 @@ Optional:
 	- Service `db2i_sap_hva`: SSH port, specify only to connect via an SSH tunnel.
 	- Service `documentdb`: SSH port, only specify when connecting via an SSH tunnel. Required for connector creation.
 	- Service `dynamics_365_fo`: SSH port, specify only to connect via an SSH tunnel.
+	- Service `ehr`: SSH port, specify only to connect via an SSH tunnel.
 	- Service `elastic_cloud`: SSH port, specify only to connect using an SSH tunnel.
 	- Service `es_self_hosted`: SSH port, specify only to connect using an SSH tunnel.
 	- Service `google_cloud_mysql`: SSH port, specify only to connect via an SSH tunnel.
@@ -3299,6 +3314,7 @@ Optional:
 	- Service `db2i_sap_hva`: SSH user, specify only to connect via an SSH tunnel.
 	- Service `documentdb`: SSH user, specify only to connect via an SSH tunnel. Required for connector creation.
 	- Service `dynamics_365_fo`: SSH user, specify only to connect via an SSH tunnel.
+	- Service `ehr`: SSH user, specify only to connect via an SSH tunnel.
 	- Service `elastic_cloud`: SSH user, specify only to connect using an SSH tunnel.
 	- Service `es_self_hosted`: SSH user, specify only to connect using an SSH tunnel.
 	- Service `google_cloud_mysql`: SSH user, specify only to connect via an SSH tunnel.
@@ -3353,6 +3369,7 @@ Optional:
 	- Service `azure_sql_managed_db`: (Optional) The incremental update method the connector will use. The possible values are `"TELEPORT"` or `"NATIVE_UPDATE"`. The type defaults to `"NATIVE_UPDATE"` if the value is set to `null` or not specified.
 	- Service `clarity`: (Optional) The incremental update method the connector will use. The possible values are `"TELEPORT"` or `"NATIVE_UPDATE"`. The type defaults to `"NATIVE_UPDATE"` if the value is set to `null` or not specified.
 	- Service `dynamics_365_fo`: Update Method
+	- Service `ehr`: (Optional) The incremental update method the connector will use. The possible values are `"TELEPORT"` or `"NATIVE_UPDATE"`. The type defaults to `"NATIVE_UPDATE"` if the value is set to `null` or not specified.
 	- Service `google_cloud_mysql`: The method to detect new or changed rows. Supported values:`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
 	- Service `google_cloud_postgresql`: The method to detect new or changed rows. Specify only for `"service": "postgres"` or `"service": "postgres_rds"`. Supported values:`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
 	- Service `google_cloud_sqlserver`: (Optional) The incremental update method the connector will use. The possible values are `"TELEPORT"` or `"NATIVE_UPDATE"`. The type defaults to `"NATIVE_UPDATE"` if the value is set to `null` or not specified.
@@ -3420,6 +3437,7 @@ Optional:
 	- Service `db2i_sap_hva`: The username.
 	- Service `documentdb`: The user name.
 	- Service `dynamics_365_fo`: The user name. The format must be `user@domain`.
+	- Service `ehr`: The user name.  For Azure Databases, the format must be `user@domain`.
 	- Service `elastic_cloud`: The user name.
 	- Service `es_self_hosted`: The user name.
 	- Service `ftp`: FTP user.
@@ -3544,6 +3562,8 @@ Optional:
 	- Service `workday_hcm`: Username of your Workday Integration System User account
 	- Service `xandr`: Your Xandr username.
 	- Service `younium`: Your Younium username.
+- `version` (String) Field usage depends on `service` value: 
+	- Service `criteo_retail_media`: Your Criteo Retail Media version.
 - `view_attribution_window` (String) Field usage depends on `service` value: 
 	- Service `facebook`: Time period to attribute conversions based on views. [Possible view_attribution_window values](https://fivetran.com/docs/applications/facebook-ad-insights/api-config#viewattributionwindow).
 	- Service `pinterest_ads`: The number of days to use as the conversion attribution window for a 'view' action.
