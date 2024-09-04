@@ -76,6 +76,11 @@ func (r *dbtProject) Create(ctx context.Context, req resource.CreateRequest, res
 	svc.DbtVersion(data.DbtVersion.ValueString())
 	svc.DefaultSchema(data.DefaultSchema.ValueString())
 
+	projectConfigAttributes := data.ProjectConfig.Attributes()
+
+	gitRemoteUrl := projectConfigAttributes["git_remote_url"]
+	gitRemoteUrlDefined := !gitRemoteUrl.IsUnknown() && !gitRemoteUrl.IsNull()
+
 	// If project type not defined we consider project_type = "GIT" on API side
 	projectType := "GIT"
 	if !data.Type.IsUnknown() && !data.Type.IsNull() {
@@ -91,7 +96,15 @@ func (r *dbtProject) Create(ctx context.Context, req resource.CreateRequest, res
 	}
 
 	svc.Type(projectType)
-	
+	// Currently git_remote_url is required: only GIT project could be managed via API
+	if !gitRemoteUrlDefined && projectType == "GIT" {
+		resp.Diagnostics.AddError(
+			"Unable to Create dbt Project.",
+			"Field `git_remote_url` is required for project of type GIT.",
+		)
+		return
+	}
+
 	resp.Diagnostics.AddWarning(
 		"The project_config block of the resource fivetran_dbt_project is deprecated and will be removed. ",
 		"Please migrate to the resource fivetran_dbt_git_project_config",
