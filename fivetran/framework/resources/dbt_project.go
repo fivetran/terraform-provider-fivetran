@@ -155,16 +155,8 @@ func (r *dbtProject) Create(ctx context.Context, req resource.CreateRequest, res
 
 	data.ReadFromResponse(ctx, projectResponse, nil)
 
-	modelsResp, err := datasources.GetAllDbtModelsForProject(r.GetClient(), ctx, projectResponse.Data.ID, 1000)
-	if err != nil {
-		resp.Diagnostics.AddWarning(
-			"DbtProject Models Read Error.",
-			fmt.Sprintf("%v; code: %v; message: %v", err, modelsResp.Code, modelsResp.Message),
-		)
-	} else {
-		projectResponse.Data.Status = "READY"
-		data.ReadFromResponse(ctx, projectResponse, &modelsResp)
-	}
+	projectIsReady := strings.ToLower(projectResponse.Data.Status) == "ready"
+	data.EnsureReadiness = types.BoolValue(projectIsReady)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 
@@ -295,6 +287,9 @@ func (r *dbtProject) Update(ctx context.Context, req resource.UpdateRequest, res
 
 	plan.ReadFromResponse(ctx, projectResponse, nil)
 
+	projectIsReady := strings.ToLower(projectResponse.Data.Status) == "ready"
+	plan.EnsureReadiness = types.BoolValue(projectIsReady)
+	
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
 }
