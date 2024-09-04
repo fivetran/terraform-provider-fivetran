@@ -67,7 +67,6 @@ var (
 	destinationFieldsByService = make(map[string]map[string]ConfigField)
 
 	destinationSchemaFields = make(map[string]map[string]bool)
-	optionalForFields       = make(map[string]map[string]bool)
 )
 
 func GetFieldsForService(service string) (map[string]ConfigField, error) {
