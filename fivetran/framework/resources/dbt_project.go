@@ -110,8 +110,6 @@ func (r *dbtProject) Create(ctx context.Context, req resource.CreateRequest, res
 		"Please migrate to the resource fivetran_dbt_git_project_config",
 	)
 
-	projectConfigAttributes := data.ProjectConfig.Attributes()
-
 	projectConfig := fivetran.NewDbtProjectConfig()
 	if v, ok := projectConfigAttributes["git_remote_url"].(basetypes.StringValue); ok && !v.IsUnknown() && !v.IsNull() {
 		projectConfig.GitRemoteUrl(v.ValueString())

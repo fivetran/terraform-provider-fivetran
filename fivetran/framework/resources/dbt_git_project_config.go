@@ -59,18 +59,6 @@ func (r *dbtGitProjectConfig) Create(ctx context.Context, req resource.CreateReq
 		return
 	}
 
-	if data.EnsureReadiness.Equal(types.BoolValue(false)) {
-		if ok := ensureProjectIsReady(resp, ctx, client, data.ProjectId.ValueString()); !ok {
-			resp.Diagnostics.AddError(
-				"Unable to set up dbt Git Project Config Resource.",
-				"Project not ready.",
-			)
-			return
-		} else {
-			data.EnsureReadiness = types.BoolValue(true)
-		}
-	}
-
 	svc := r.GetClient().NewDbtProjectModify().DbtProjectID(data.ProjectId.ValueString())
 	projectConfig := fivetran.NewDbtProjectConfig()
 	projectConfig.GitRemoteUrl(data.GitRemoteUrl.ValueString())
@@ -89,6 +77,19 @@ func (r *dbtGitProjectConfig) Create(ctx context.Context, req resource.CreateReq
 	}
 
 	data.ReadFromResponse(projectResponse)
+
+	if data.EnsureReadiness.Equal(types.BoolValue(false)) {
+		if ok, msg := ensureProjectIsReady(ctx, client, data.ProjectId.ValueString()); !ok {
+			resp.Diagnostics.AddError("Create Dbt Project Config error", msg)
+			resp.Diagnostics.AddError(
+				"Unable to set up dbt Git Project Config Resource.",
+				"Project not ready.",
+			)
+			return
+		} else {
+			data.EnsureReadiness = types.BoolValue(true)
+		}
+	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -136,6 +137,7 @@ func (r *dbtGitProjectConfig) Update(ctx context.Context, req resource.UpdateReq
 
 		return
 	}
+	client := r.GetClient()
 
 	var state model.DbtGitProjectConfig
 	var plan model.DbtGitProjectConfig
@@ -172,46 +174,46 @@ func (r *dbtGitProjectConfig) Update(ctx context.Context, req resource.UpdateReq
 
 	plan.ReadFromResponse(projectResponse)
 
-	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+	if plan.EnsureReadiness.Equal(types.BoolValue(false)) {
+		if ok, msg := ensureProjectIsReady(ctx, client, plan.ProjectId.ValueString()); !ok {
+			resp.Diagnostics.AddError("Update Dbt Project Config error", msg)
+			resp.Diagnostics.AddError(
+				"Unable to set up dbt Git Project Config Resource.",
+				"Project not ready.",
+			)
+			return
+		} else {
+			plan.EnsureReadiness = types.BoolValue(true)
+		}
+	}
 
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
 func (r *dbtGitProjectConfig) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	// no op
 }
 
-func ensureProjectIsReady(
-	resp *resource.CreateResponse,
-	ctx context.Context,
-	client *fivetran.Client,
-	projectId string) bool {
+func ensureProjectIsReady(ctx context.Context, client *fivetran.Client, projectId string) (bool, string) {
 	for {
 		s, projectErrors, e := pollProjectStatus(ctx, client, projectId)
 		if e != nil {
-
-			resp.Diagnostics.AddError("create error", fmt.Sprintf("unable to get status for dbt project: %v error: %v", projectId, e))
-			return false
-
+			return false, fmt.Sprintf("unable to get status for dbt project: %v error: %v", projectId, e)
 		}
 		if s != "not_ready" {
 			if s != "ready" {
-
-				resp.Diagnostics.AddError("create error", fmt.Sprintf("dbt project: %v has \"ERROR\" status after creation; errors: %v;", projectId, projectErrors))
-				return false
-
+				return false, fmt.Sprintf("dbt project: %v has \"ERROR\" status after creation; errors: %v;", projectId, projectErrors)
 			}
 			break
 		}
 		if dl, ok := ctx.Deadline(); ok && time.Now().After(dl.Add(-20*time.Second)) {
 			// deadline will be exceeded on next iteration - it's time to cleanup
-
-			resp.Diagnostics.AddError("create error", fmt.Sprintf("project %v is stuck in \"NOT_READY\" status", projectId))
-			return false
+			return false, fmt.Sprintf("project %v is stuck in \"NOT_READY\" status", projectId)
 
 		}
 		helpers.ContextDelay(ctx, 10*time.Second)
 	}
-	return true
+	return true, ""
 }
 
 func pollProjectStatus(ctx context.Context, client *fivetran.Client, projectId string) (string, []string, error) {

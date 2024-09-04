@@ -59,7 +59,8 @@ func (r *dbtTransformation) Create(ctx context.Context, req resource.CreateReque
 
 	projectId := data.DbtProjectId.ValueString()
 
-	if ok := ensureProjectIsReady(resp, ctx, r.GetClient(), projectId); !ok {
+	if ok, msg := ensureProjectIsReady(ctx, r.GetClient(), projectId); !ok {
+		resp.Diagnostics.AddError("Create Dbt Transformation error", msg)
 		resp.Diagnostics.AddError(
 			"Dbt Project is not Ready",
 			fmt.Sprintf("Dbt project `%v` is not in READY status.", projectId),
