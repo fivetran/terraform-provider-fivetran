@@ -24,6 +24,7 @@ type DbtProject struct {
 	PublicKey       types.String `tfsdk:"public_key"`
 	ProjectConfig   types.Object `tfsdk:"project_config"`
 	Models          types.Set    `tfsdk:"models"`
+	EnsureReadiness types.Bool   `tfsdk:"ensure_readiness"`
 }
 
 type DbtProjectResourceModel struct {
@@ -41,6 +42,7 @@ type DbtProjectResourceModel struct {
 	PublicKey       types.String   `tfsdk:"public_key"`
 	ProjectConfig   types.Object   `tfsdk:"project_config"`
 	Models          types.Set      `tfsdk:"models"`
+	EnsureReadiness types.Bool     `tfsdk:"ensure_readiness"`
 	Timeouts        timeouts.Value `tfsdk:"timeouts"`
 }
 
@@ -73,6 +75,31 @@ func (d *DbtProjectResourceModel) ReadFromResponse(ctx context.Context, resp dbt
 	d.CreatedAt = types.StringValue(resp.Data.CreatedAt)
 	d.CreatedById = types.StringValue(resp.Data.CreatedById)
 	d.PublicKey = types.StringValue(resp.Data.PublicKey)
+
+	projectConfigTypes := map[string]attr.Type{
+		"git_remote_url": types.StringType,
+		"git_branch":     types.StringType,
+		"folder_path":    types.StringType,
+	}
+	projectConfigItems := map[string]attr.Value{
+		"git_remote_url": types.StringValue(resp.Data.ProjectConfig.GitRemoteUrl),
+		// "git_branch":     types.StringValue(resp.Data.ProjectConfig.GitBranch),
+		// "folder_path":    types.StringValue(resp.Data.ProjectConfig.FolderPath),
+	}
+
+	if resp.Data.ProjectConfig.GitBranch != "" {
+		projectConfigItems["git_branch"] = types.StringValue(resp.Data.ProjectConfig.GitBranch)
+	} else {
+		projectConfigItems["git_branch"] = types.StringNull()
+	}
+
+	if resp.Data.ProjectConfig.FolderPath != "" {
+		projectConfigItems["folder_path"] = types.StringValue(resp.Data.ProjectConfig.FolderPath)
+	} else {
+		projectConfigItems["folder_path"] = types.StringNull()
+	}
+
+	d.ProjectConfig, _ = types.ObjectValue(projectConfigTypes, projectConfigItems)
 
 	if modelsResp != nil {
 		d.Models = GetModelsSetFromResponse(*modelsResp)
