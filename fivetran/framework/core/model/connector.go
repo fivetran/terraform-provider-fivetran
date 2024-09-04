@@ -328,7 +328,7 @@ func getDestinatonSchemaForConfig(serviceId, nameAttr, tableAttr, prefixAttr att
 			"schema": nameAttr.(types.String).ValueString(),
 		}
 		if common.GetDestinationSchemaFields()[service]["table"] {
-			if !tableAttr.IsNull() {
+			if !tableAttr.IsNull() && tableAttr.(types.String).ValueString() != "" {
 				result["table"] = tableAttr.(types.String).ValueString()
 			}
 		}
