@@ -321,17 +321,16 @@ func getDestinatonSchemaForConfig(serviceId, nameAttr, tableAttr, prefixAttr att
 			"schema_prefix": prefix,
 		}, nil
 	} else {
-		if nameAttr.IsNull() && !common.IsOptionalFor(service, "name") {
+		if nameAttr.IsNull() {
 			return nil, fmt.Errorf("`destination_schema.name` field is required to create `%v` connector", service)
 		}
 		result := map[string]interface{}{
 			"schema": nameAttr.(types.String).ValueString(),
 		}
 		if common.GetDestinationSchemaFields()[service]["table"] {
-			if tableAttr.IsNull() && !common.IsOptionalFor(service, "table") {
-				return nil, fmt.Errorf("`destination_schema.table` field is required to create `%v` connector", service)
+			if !tableAttr.IsNull() {
+				result["table"] = tableAttr.(types.String).ValueString()
 			}
-			result["table"] = tableAttr.(types.String).ValueString()
 		}
 		return result, nil
 	}

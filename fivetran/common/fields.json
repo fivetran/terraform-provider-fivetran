@@ -10489,9 +10489,6 @@
       "fields": null,
       "key_field": "",
       "item_type": {},
-      "optional_for" : {
-         "share_point" : true
-      },
       "description": {
          "adroll": "Destination table. Table is permanent and cannot be changed after connection creation",
          "aws_cost_report": "Destination table. Table is permanent and cannot be changed after connection creation",
