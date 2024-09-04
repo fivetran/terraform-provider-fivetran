@@ -21,7 +21,6 @@ func dbtGitProjectConfigSchema() core.Schema {
 			},
 			"project_id": {
 				Required:    true,
-				ForceNew:    true,
 				ValueType:   core.String,
 				Description: "The unique identifier for the dbt Project within the Fivetran system.",
 			},

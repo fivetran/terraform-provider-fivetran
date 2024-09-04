@@ -12,7 +12,6 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/datasources"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
@@ -77,11 +76,6 @@ func (r *dbtProject) Create(ctx context.Context, req resource.CreateRequest, res
 	svc.DbtVersion(data.DbtVersion.ValueString())
 	svc.DefaultSchema(data.DefaultSchema.ValueString())
 
-	projectConfigAttributes := data.ProjectConfig.Attributes()
-
-	gitRemoteUrl := projectConfigAttributes["git_remote_url"]
-	gitRemoteUrlDefined := !gitRemoteUrl.IsUnknown() && !gitRemoteUrl.IsNull()
-
 	// If project type not defined we consider project_type = "GIT" on API side
 	projectType := "GIT"
 	if !data.Type.IsUnknown() && !data.Type.IsNull() {
@@ -95,35 +89,44 @@ func (r *dbtProject) Create(ctx context.Context, req resource.CreateRequest, res
 		)
 		return
 	}
-
 	svc.Type(projectType)
-	// Currently git_remote_url is required: only GIT project could be managed via API
-	if !gitRemoteUrlDefined && projectType == "GIT" {
-		resp.Diagnostics.AddError(
-			"Unable to Create dbt Project.",
-			"Field `git_remote_url` is required for project of type GIT.",
-		)
-		return
-	}
-
-	resp.Diagnostics.AddWarning(
-		"The project_config block of the resource fivetran_dbt_project is deprecated and will be removed. ",
-		"Please migrate to the resource fivetran_dbt_git_project_config",
-	)
 
 	projectConfig := fivetran.NewDbtProjectConfig()
-	if v, ok := projectConfigAttributes["git_remote_url"].(basetypes.StringValue); ok && !v.IsUnknown() && !v.IsNull() {
-		projectConfig.GitRemoteUrl(v.ValueString())
+	if !data.ProjectConfig.IsNull() && !data.ProjectConfig.IsUnknown() {
+		projectConfigAttributes := data.ProjectConfig.Attributes()
+
+		gitRemoteUrl := projectConfigAttributes["git_remote_url"]
+		gitRemoteUrlDefined := !gitRemoteUrl.IsUnknown() && !gitRemoteUrl.IsNull()
+
+		// Currently git_remote_url is required: only GIT project could be managed via API
+		if !gitRemoteUrlDefined && projectType == "GIT" {
+			resp.Diagnostics.AddError(
+				"Unable to Create dbt Project.",
+				"Field `git_remote_url` is required for project of type GIT.",
+			)
+			return
+		}
+
+		resp.Diagnostics.AddWarning(
+			"The project_config block of the resource fivetran_dbt_project is deprecated and will be removed. ",
+			"Please migrate to the resource fivetran_dbt_git_project_config",
+		)
+
+		if v, ok := projectConfigAttributes["git_remote_url"].(basetypes.StringValue); ok && !v.IsUnknown() && !v.IsNull() {
+			projectConfig.GitRemoteUrl(v.ValueString())
+		} else {
+			projectConfig.GitRemoteUrl("")
+		}
+
+		if v, ok := projectConfigAttributes["git_branch"].(basetypes.StringValue); ok && !v.IsUnknown() && !v.IsNull() {
+			projectConfig.GitBranch(v.ValueString())
+		}
+
+		if v, ok := projectConfigAttributes["folder_path"].(basetypes.StringValue); ok && !v.IsUnknown() && !v.IsNull() {
+			projectConfig.FolderPath(v.ValueString())
+		}
 	} else {
 		projectConfig.GitRemoteUrl("")
-	}
-
-	if v, ok := projectConfigAttributes["git_branch"].(basetypes.StringValue); ok && !v.IsUnknown() && !v.IsNull() {
-		projectConfig.GitBranch(v.ValueString())
-	}
-
-	if v, ok := projectConfigAttributes["folder_path"].(basetypes.StringValue); ok && !v.IsUnknown() && !v.IsNull() {
-		projectConfig.FolderPath(v.ValueString())
 	}
 
 	svc.ProjectConfig(projectConfig)
@@ -157,8 +160,6 @@ func (r *dbtProject) Create(ctx context.Context, req resource.CreateRequest, res
 	data.ReadFromResponse(ctx, projectResponse, nil)
 
 	projectIsReady := strings.ToLower(projectResponse.Data.Status) == "ready"
-	data.EnsureReadiness = types.BoolValue(projectIsReady)
-
 	if projectIsReady {
 		modelsResp, err := datasources.GetAllDbtModelsForProject(r.GetClient(), ctx, projectResponse.Data.ID, 1000)
 		if err != nil {
@@ -275,7 +276,7 @@ func (r *dbtProject) Update(ctx context.Context, req resource.UpdateRequest, res
 		svc.EnvironmentVars(evars)
 	}
 
-	if !state.ProjectConfig.Equal(plan.ProjectConfig) {
+	if !plan.ProjectConfig.IsUnknown() && !state.ProjectConfig.Equal(plan.ProjectConfig) {
 		resp.Diagnostics.AddWarning(
 			"The project_config block of the resource fivetran_dbt_project is deprecated and will be removed. ",
 			"Please migrate to the resource fivetran_dbt_git_project_config",
@@ -302,8 +303,6 @@ func (r *dbtProject) Update(ctx context.Context, req resource.UpdateRequest, res
 	plan.ReadFromResponse(ctx, projectResponse, nil)
 
 	projectIsReady := strings.ToLower(projectResponse.Data.Status) == "ready"
-	plan.EnsureReadiness = types.BoolValue(projectIsReady)
-
 	if projectIsReady {
 		modelsResp, err := datasources.GetAllDbtModelsForProject(r.GetClient(), ctx, projectResponse.Data.ID, 1000)
 		if err != nil {

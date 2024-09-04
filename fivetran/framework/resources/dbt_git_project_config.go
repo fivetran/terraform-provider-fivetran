@@ -79,13 +79,11 @@ func (r *dbtGitProjectConfig) Create(ctx context.Context, req resource.CreateReq
 	data.ReadFromResponse(projectResponse)
 
 	if data.EnsureReadiness.Equal(types.BoolValue(false)) {
-		if ok, msg := ensureProjectIsReady(ctx, client, data.ProjectId.ValueString()); !ok {
-			resp.Diagnostics.AddError("Create Dbt Project Config error", msg)
-			resp.Diagnostics.AddError(
-				"Unable to set up dbt Git Project Config Resource.",
+		if ok, _ := ensureProjectIsReady(ctx, client, data.ProjectId.ValueString()); !ok {
+			resp.Diagnostics.AddWarning(
+				"Unable to finish set up dbt Git Project Config Resource.",
 				"Project not ready.",
 			)
-			return
 		} else {
 			data.EnsureReadiness = types.BoolValue(true)
 		}
@@ -175,13 +173,11 @@ func (r *dbtGitProjectConfig) Update(ctx context.Context, req resource.UpdateReq
 	plan.ReadFromResponse(projectResponse)
 
 	if plan.EnsureReadiness.Equal(types.BoolValue(false)) {
-		if ok, msg := ensureProjectIsReady(ctx, client, plan.ProjectId.ValueString()); !ok {
-			resp.Diagnostics.AddError("Update Dbt Project Config error", msg)
-			resp.Diagnostics.AddError(
-				"Unable to set up dbt Git Project Config Resource.",
+		if ok, _ := ensureProjectIsReady(ctx, client, plan.ProjectId.ValueString()); !ok {
+			resp.Diagnostics.AddWarning(
+				"Unable to finish set up dbt Git Project Config Resource.",
 				"Project not ready.",
 			)
-			return
 		} else {
 			plan.EnsureReadiness = types.BoolValue(true)
 		}
