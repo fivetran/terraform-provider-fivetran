@@ -194,7 +194,7 @@ func TestResourceDbtProjectMappingMock(t *testing.T) {
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 				tfmock.AssertEqual(t, dbtProjectResourceMockPatchHandler.Interactions, 1)
-				tfmock.AssertEqual(t, dbtProjectResourceMockGetHandler.Interactions, 2)
+				tfmock.AssertEqual(t, dbtProjectResourceMockGetHandler.Interactions, 0)
 				tfmock.AssertNotEmpty(t, dbtProjectResourceMockData)
 				return nil
 			},
