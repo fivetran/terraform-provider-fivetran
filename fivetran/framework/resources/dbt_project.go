@@ -12,6 +12,7 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/datasources"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
@@ -158,6 +159,19 @@ func (r *dbtProject) Create(ctx context.Context, req resource.CreateRequest, res
 	projectIsReady := strings.ToLower(projectResponse.Data.Status) == "ready"
 	data.EnsureReadiness = types.BoolValue(projectIsReady)
 
+	if projectIsReady {
+		modelsResp, err := datasources.GetAllDbtModelsForProject(r.GetClient(), ctx, projectResponse.Data.ID, 1000)
+		if err != nil {
+			resp.Diagnostics.AddWarning(
+				"DbtProject Models Read Error.",
+				fmt.Sprintf("%v; code: %v; message: %v", err, modelsResp.Code, modelsResp.Message),
+			)
+		} else {
+			projectResponse.Data.Status = "READY"
+			data.ReadFromResponse(ctx, projectResponse, &modelsResp)
+		}
+	}
+
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 
 	if resp.Diagnostics.HasError() {
@@ -289,9 +303,21 @@ func (r *dbtProject) Update(ctx context.Context, req resource.UpdateRequest, res
 
 	projectIsReady := strings.ToLower(projectResponse.Data.Status) == "ready"
 	plan.EnsureReadiness = types.BoolValue(projectIsReady)
-	
-	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
+	if projectIsReady {
+		modelsResp, err := datasources.GetAllDbtModelsForProject(r.GetClient(), ctx, projectResponse.Data.ID, 1000)
+		if err != nil {
+			resp.Diagnostics.AddWarning(
+				"DbtProject Models Read Error.",
+				fmt.Sprintf("%v; code: %v; message: %v", err, modelsResp.Code, modelsResp.Message),
+			)
+		} else {
+			projectResponse.Data.Status = "READY"
+			plan.ReadFromResponse(ctx, projectResponse, &modelsResp)
+		}
+	}
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
 func (r *dbtProject) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
