@@ -10511,7 +10511,7 @@
          "kinesis": "Destination table. Table is permanent and cannot be changed after connection creation",
          "s3": "Destination table. Table is permanent and cannot be changed after connection creation",
          "sftp": "Destination table. Table is permanent and cannot be changed after connection creation",
-         "share_point": "Destination table. Table is permanent and cannoddt be changed after connection creation",
+         "share_point": "Destination table. Table is permanent and cannot be changed after connection creation",
          "wasabi_cloud_storage": "Destination table. Table is permanent and cannot be changed after connection creation",
          "webhooks": "Destination table. Table is permanent and cannot be changed after connection creation",
          "workday": "Destination table. Table is permanent and cannot be changed after connection creation",
