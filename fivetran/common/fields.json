@@ -659,8 +659,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "adobe_analytics": "The table name unique within the schema to which connector will sync the data. Required for connector creation.",
-               "share_point": "The table name within the schema to which the connector will sync the data."
+               "adobe_analytics": "The table name unique within the schema to which connector will sync the data. Required for connector creation."
             },
             "api_field": ""
          }
@@ -10490,6 +10489,9 @@
       "fields": null,
       "key_field": "",
       "item_type": {},
+      "optional_for" : {
+         "share_point" : true
+      },
       "description": {
          "adroll": "Destination table. Table is permanent and cannot be changed after connection creation",
          "aws_cost_report": "Destination table. Table is permanent and cannot be changed after connection creation",
@@ -10509,6 +10511,7 @@
          "kinesis": "Destination table. Table is permanent and cannot be changed after connection creation",
          "s3": "Destination table. Table is permanent and cannot be changed after connection creation",
          "sftp": "Destination table. Table is permanent and cannot be changed after connection creation",
+         "share_point": "Destination table. Table is permanent and cannoddt be changed after connection creation",
          "wasabi_cloud_storage": "Destination table. Table is permanent and cannot be changed after connection creation",
          "webhooks": "Destination table. Table is permanent and cannot be changed after connection creation",
          "workday": "Destination table. Table is permanent and cannot be changed after connection creation",

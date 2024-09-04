@@ -17,6 +17,7 @@ type ConfigField struct {
 	Description         map[string]string         `json:"description"`
 	SensitiveExclusions map[string]bool           `json:"sensitive_exclusions,omitempty"`
 	ApiField            string                    `json:"api_field"`
+	OptionalFor         map[string]bool           `json:"optional_for"`
 }
 
 func (c ConfigField) GetIsSensitiveForSchema() bool {
@@ -67,12 +68,14 @@ var (
 	destinationFieldsByService = make(map[string]map[string]ConfigField)
 
 	destinationSchemaFields = make(map[string]map[string]bool)
+	optionalForFields       = make(map[string]map[string]bool)
 )
 
 func GetFieldsForService(service string) (map[string]ConfigField, error) {
 	if len(configFieldsByService) == 0 {
 		panic("Fields for config are not loaded")
 	}
+
 	if r, ok := configFieldsByService[service]; ok {
 		return r, nil
 	}
@@ -130,6 +133,10 @@ func GetDestinationFieldsMap() map[string]ConfigField {
 	return destinationFields
 }
 
+func IsOptionalFor(service string, field string) bool {
+	return optionalForFields[service] != nil && optionalForFields[service][field]
+}
+
 func LoadAuthFieldsMap() {
 	if len(authFields) == 0 {
 		readAuthFieldsFromJson(&authFields)
@@ -178,10 +185,17 @@ func readDestinationFieldsFromJson(target *map[string]ConfigField) {
 func handleDestinationSchemaField(fieldName string) {
 	if schema, ok := configFields[fieldName]; ok {
 		for k := range schema.Description {
+			optionalForFields[k] = make(map[string]bool)
 			if _, ok := destinationSchemaFields[k]; !ok {
 				destinationSchemaFields[k] = make(map[string]bool)
+				if optional, ok := schema.OptionalFor[k]; ok {
+					optionalForFields[k][fieldName] = optional
+				}
 			}
 			destinationSchemaFields[k][fieldName] = true
+			if optional, ok := schema.OptionalFor[k]; ok {
+				optionalForFields[k][fieldName] = optional
+			}
 		}
 		delete(configFields, fieldName)
 	}
