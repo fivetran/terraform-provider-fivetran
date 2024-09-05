@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"strings"
 
 	"github.com/fivetran/go-fivetran/dbt"
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
@@ -100,7 +101,7 @@ func (d *DbtProjectResourceModel) ReadFromResponse(ctx context.Context, resp dbt
 	}
 
 	d.ProjectConfig, _ = types.ObjectValue(projectConfigTypes, projectConfigItems)
-
+	d.EnsureReadiness = types.BoolValue(strings.ToLower(resp.Data.Status) == "ready")
 	if modelsResp != nil {
 		d.Models = GetModelsSetFromResponse(*modelsResp)
 	} else {
@@ -142,7 +143,7 @@ func (d *DbtProject) ReadFromResponse(ctx context.Context, resp dbt.DbtProjectDe
 	}
 
 	d.ProjectConfig, _ = types.ObjectValue(projectConfigTypes, projectConfigItems)
-
+	d.EnsureReadiness = types.BoolValue(strings.ToLower(resp.Data.Status) == "ready")
 	if modelsResp != nil {
 		d.Models = GetModelsSetFromResponse(*modelsResp)
 	} else {
