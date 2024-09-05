@@ -33,9 +33,9 @@ type ConnectorDatasourceModel struct {
 	PauseAfterTrial types.Bool   `tfsdk:"pause_after_trial"`
 	DailySyncTime   types.String `tfsdk:"daily_sync_time"`
 
-    ProxyAgentId            types.String `tfsdk:"proxy_agent_id"`
-    NetworkingMethod        types.String `tfsdk:"networking_method"`
-    LocalProcessingAgentId  types.String `tfsdk:"local_processing_agent_id"`
+	ProxyAgentId           types.String `tfsdk:"proxy_agent_id"`
+	NetworkingMethod       types.String `tfsdk:"networking_method"`
+	LocalProcessingAgentId types.String `tfsdk:"local_processing_agent_id"`
 
 	Status types.Object `tfsdk:"status"`
 
@@ -122,9 +122,9 @@ type ConnectorResourceModel struct {
 	Service           types.String `tfsdk:"service"`
 	DestinationSchema types.Object `tfsdk:"destination_schema"`
 
-    ProxyAgentId            types.String `tfsdk:"proxy_agent_id"`
-    NetworkingMethod        types.String `tfsdk:"networking_method"`
-    LocalProcessingAgentId  types.String `tfsdk:"local_processing_agent_id"`
+	ProxyAgentId           types.String `tfsdk:"proxy_agent_id"`
+	NetworkingMethod       types.String `tfsdk:"networking_method"`
+	LocalProcessingAgentId types.String `tfsdk:"local_processing_agent_id"`
 
 	Config   types.Object   `tfsdk:"config"`
 	Auth     types.Object   `tfsdk:"auth"`
@@ -195,24 +195,24 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
 	d.CreatedAt = types.StringValue(c.CreatedAt)
 	d.GroupId = types.StringValue(c.GroupId)
 	d.Service = types.StringValue(c.Service)
-    
-    if c.LocalProcessingAgentId != "" {
-        d.LocalProcessingAgentId = types.StringValue(c.LocalProcessingAgentId)
-    } else {
-        d.LocalProcessingAgentId = types.StringNull()
-    }
+
+	if c.LocalProcessingAgentId != "" {
+		d.LocalProcessingAgentId = types.StringValue(c.LocalProcessingAgentId)
+	} else {
+		d.LocalProcessingAgentId = types.StringNull()
+	}
 
 	d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
 
-    if c.ProxyAgentId != "" {
-        d.ProxyAgentId = types.StringValue(c.ProxyAgentId)
-    } else {
-        d.ProxyAgentId = types.StringNull()
-    }
+	if c.ProxyAgentId != "" {
+		d.ProxyAgentId = types.StringValue(c.ProxyAgentId)
+	} else {
+		d.ProxyAgentId = types.StringNull()
+	}
 
-    if c.NetworkingMethod != "" {
-        d.NetworkingMethod = types.StringValue(c.NetworkingMethod)
-    }
+	if c.NetworkingMethod != "" {
+		d.NetworkingMethod = types.StringValue(c.NetworkingMethod)
+	}
 
 	if forceReadConfig || (!d.Config.IsNull() && !d.Config.IsUnknown()) {
 		d.Config = getValue(
@@ -230,24 +230,24 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
 	d.CreatedAt = types.StringValue(c.CreatedAt)
 	d.GroupId = types.StringValue(c.GroupId)
 	d.Service = types.StringValue(c.Service)
-    
-    if c.LocalProcessingAgentId != "" {
-        d.LocalProcessingAgentId = types.StringValue(c.LocalProcessingAgentId)
-    } else {
-        d.LocalProcessingAgentId = types.StringNull()
-    }
+
+	if c.LocalProcessingAgentId != "" {
+		d.LocalProcessingAgentId = types.StringValue(c.LocalProcessingAgentId)
+	} else {
+		d.LocalProcessingAgentId = types.StringNull()
+	}
 
 	d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
 
-    if c.ProxyAgentId != "" {
-        d.ProxyAgentId = types.StringValue(c.ProxyAgentId)
-    } else {
-        d.ProxyAgentId = types.StringNull()
-    }
+	if c.ProxyAgentId != "" {
+		d.ProxyAgentId = types.StringValue(c.ProxyAgentId)
+	} else {
+		d.ProxyAgentId = types.StringNull()
+	}
 
-    if c.NetworkingMethod != "" {
-        d.NetworkingMethod = types.StringValue(c.NetworkingMethod)
-    }
+	if c.NetworkingMethod != "" {
+		d.NetworkingMethod = types.StringValue(c.NetworkingMethod)
+	}
 
 	d.Config = getValue(
 		types.ObjectType{AttrTypes: getAttrTypes(common.GetConfigFieldsMap())},
@@ -267,9 +267,9 @@ type ConnectorModelContainer struct {
 	Service     string
 	Schema      string
 
-    ProxyAgentId            string
-    NetworkingMethod        string
-    LocalProcessingAgentId  string
+	ProxyAgentId           string
+	NetworkingMethod       string
+	LocalProcessingAgentId string
 
 	Config map[string]interface{}
 
@@ -288,17 +288,17 @@ func (c *ConnectorModelContainer) ReadFromResponseData(data connectors.DetailsRe
 	c.Schema = data.Schema
 	c.Config = config
 
-    if data.ProxyAgentId != "" {
-        c.ProxyAgentId = data.ProxyAgentId
-    }
+	if data.ProxyAgentId != "" {
+		c.ProxyAgentId = data.ProxyAgentId
+	}
 
-    if data.NetworkingMethod != "" {
-        c.NetworkingMethod = data.NetworkingMethod
-    }
+	if data.NetworkingMethod != "" {
+		c.NetworkingMethod = data.NetworkingMethod
+	}
 
-    if data.LocalProcessingAgentId != "" {
-        c.LocalProcessingAgentId = data.LocalProcessingAgentId
-    }
+	if data.LocalProcessingAgentId != "" {
+		c.LocalProcessingAgentId = data.LocalProcessingAgentId
+	}
 }
 
 func getDestinatonSchemaForConfig(serviceId, nameAttr, tableAttr, prefixAttr attr.Value) (map[string]interface{}, error) {
@@ -328,10 +328,9 @@ func getDestinatonSchemaForConfig(serviceId, nameAttr, tableAttr, prefixAttr att
 			"schema": nameAttr.(types.String).ValueString(),
 		}
 		if common.GetDestinationSchemaFields()[service]["table"] {
-			if tableAttr.IsNull() {
-				return nil, fmt.Errorf("`destination_schema.table` field is required to create `%v` connector", service)
+			if !tableAttr.IsNull() && tableAttr.(types.String).ValueString() != "" {
+				result["table"] = tableAttr.(types.String).ValueString()
 			}
-			result["table"] = tableAttr.(types.String).ValueString()
 		}
 		return result, nil
 	}
