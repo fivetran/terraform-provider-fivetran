@@ -85,6 +85,7 @@ type SchemaField struct {
 	ResourceOnly   bool
 	Sensitive      bool
 
+	DeprecationMessage string
 	DefaultString string
 	Readonly    bool
 	Description string
@@ -183,6 +184,9 @@ func (s SchemaField) getResourceSchemaAttribute() resourceSchema.Attribute {
 		if s.DefaultString != "" {
 			stringAttribute.Default = stringdefault.StaticString(s.DefaultString)
 		}
+		if s.DeprecationMessage != "" {
+			stringAttribute.DeprecationMessage = s.DeprecationMessage
+		}
 		result = stringAttribute
 	case String:
 		var stringAttribute = resourceSchema.StringAttribute{
@@ -200,6 +204,9 @@ func (s SchemaField) getResourceSchemaAttribute() resourceSchema.Attribute {
 		if s.DefaultString != "" {
 			stringAttribute.Default = stringdefault.StaticString(s.DefaultString)
 		}
+		if s.DeprecationMessage != "" {
+			stringAttribute.DeprecationMessage = s.DeprecationMessage
+		}
 		result = stringAttribute
 	case Boolean:
 		var stringAttribute = resourceSchema.BoolAttribute{
@@ -213,6 +220,9 @@ func (s SchemaField) getResourceSchemaAttribute() resourceSchema.Attribute {
 				boolplanmodifier.RequiresReplace(),
 			}
 		}
+		if s.DeprecationMessage != "" {
+			stringAttribute.DeprecationMessage = s.DeprecationMessage
+		}
 		result = stringAttribute
 	case Integer:
 		var stringAttribute = resourceSchema.Int64Attribute{
@@ -225,6 +235,9 @@ func (s SchemaField) getResourceSchemaAttribute() resourceSchema.Attribute {
 			stringAttribute.PlanModifiers = []planmodifier.Int64{
 				int64planmodifier.RequiresReplace(),
 			}
+		}
+		if s.DeprecationMessage != "" {
+			stringAttribute.DeprecationMessage = s.DeprecationMessage
 		}
 		result = stringAttribute
 	case StringsList:
@@ -240,6 +253,9 @@ func (s SchemaField) getResourceSchemaAttribute() resourceSchema.Attribute {
 				listplanmodifier.RequiresReplace(),
 			}
 		}
+		if s.DeprecationMessage != "" {
+			stringAttribute.DeprecationMessage = s.DeprecationMessage
+		}
 		result = stringAttribute
 	case StringsSet:
 		var stringAttribute = resourceSchema.SetAttribute{
@@ -253,6 +269,9 @@ func (s SchemaField) getResourceSchemaAttribute() resourceSchema.Attribute {
 			stringAttribute.PlanModifiers = []planmodifier.Set{
 				setplanmodifier.RequiresReplace(),
 			}
+		}
+		if s.DeprecationMessage != "" {
+			stringAttribute.DeprecationMessage = s.DeprecationMessage
 		}
 		result = stringAttribute
 	}

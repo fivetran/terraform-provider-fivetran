@@ -73,7 +73,7 @@
       "description": {
          "aiven_kafka_wh": "",
          "aws_msk_wh": "",
-         "confluent_cloud_wh": ""
+         "confluent_cloud_wh": "Comma-separated list of Confluent Cloud servers in the `server:port` format."
       },
       "api_field": ""
    },
@@ -263,7 +263,7 @@
       "description": {
          "aiven_kafka_wh": "",
          "aws_msk_wh": "",
-         "confluent_cloud_wh": ""
+         "confluent_cloud_wh": "Confluent Cloud message format."
       },
       "api_field": ""
    },
@@ -515,7 +515,7 @@
       "description": {
          "aiven_kafka_wh": "",
          "aws_msk_wh": "",
-         "confluent_cloud_wh": ""
+         "confluent_cloud_wh": "Number of partitions per topic."
       },
       "api_field": ""
    },
@@ -757,7 +757,7 @@
       "description": {
          "aiven_kafka_wh": "",
          "aws_msk_wh": "",
-         "confluent_cloud_wh": ""
+         "confluent_cloud_wh": "Replication factor."
       },
       "api_field": ""
    },
@@ -832,7 +832,7 @@
       "description": {
          "aiven_kafka_wh": "",
          "aws_msk_wh": "",
-         "confluent_cloud_wh": ""
+         "confluent_cloud_wh": "Security protocol for Confluent Cloud interaction."
       },
       "api_field": ""
    },
@@ -847,7 +847,7 @@
       "description": {
          "aiven_kafka_wh": "",
          "aws_msk_wh": "",
-         "confluent_cloud_wh": ""
+         "confluent_cloud_wh": "Confluent Cloud SASL key."
       },
       "api_field": ""
    },
@@ -862,7 +862,7 @@
       "description": {
          "aiven_kafka_wh": "",
          "aws_msk_wh": "",
-         "confluent_cloud_wh": ""
+         "confluent_cloud_wh": "Confluent Cloud SASL secret."
       },
       "api_field": ""
    },
@@ -890,7 +890,7 @@
       "description": {
          "aiven_kafka_wh": "",
          "aws_msk_wh": "",
-         "confluent_cloud_wh": ""
+         "confluent_cloud_wh": "Schema Registry"
       },
       "api_field": ""
    },
@@ -905,7 +905,7 @@
       "description": {
          "aiven_kafka_wh": "",
          "aws_msk_wh": "",
-         "confluent_cloud_wh": ""
+         "confluent_cloud_wh": "Schema registry API key."
       },
       "api_field": ""
    },
@@ -920,7 +920,7 @@
       "description": {
          "aiven_kafka_wh": "",
          "aws_msk_wh": "",
-         "confluent_cloud_wh": ""
+         "confluent_cloud_wh": "Schema registry API secret."
       },
       "api_field": ""
    },
@@ -935,7 +935,7 @@
       "description": {
          "aiven_kafka_wh": "",
          "aws_msk_wh": "",
-         "confluent_cloud_wh": ""
+         "confluent_cloud_wh": "Schema registry URL."
       },
       "api_field": ""
    },
@@ -979,7 +979,7 @@
       "description": {
          "aiven_kafka_wh": "",
          "aws_msk_wh": "",
-         "confluent_cloud_wh": ""
+         "confluent_cloud_wh": "Security protocol for Confluent Cloud interaction."
       },
       "api_field": ""
    },
@@ -1060,7 +1060,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "new_s3_datalake": "The table format in which you want to sync your tables. Valid values are ICEBERG and DELTA_LAKE"
+         "new_s3_datalake": "(Immutable) The table format in which you want to sync your tables. Valid values are ICEBERG and DELTA_LAKE"
       },
       "api_field": ""
    },

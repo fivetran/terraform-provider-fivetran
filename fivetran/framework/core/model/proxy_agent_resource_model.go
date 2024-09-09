@@ -27,11 +27,6 @@ func (d *ProxyAgentResourceModel) SetRegisteredAt(value string) {
 func (d *ProxyAgentResourceModel) SetGroupRegion(value string) {
 	d.GroupRegion = types.StringValue(value)
 }
-func (d *ProxyAgentResourceModel) SetAuthToken(value string) {
-}
-func (d *ProxyAgentResourceModel) SetSalt(value string) {
-	d.Salt = types.StringValue(value)
-}
 func (d *ProxyAgentResourceModel) SetCreatedBy(value string) {
 	d.CreatedBy = types.StringValue(value)
 }
@@ -42,6 +37,12 @@ func (d *ProxyAgentResourceModel) SetDisplayName(value string) {
 func (d *ProxyAgentResourceModel) ReadFromResponse(resp proxy.ProxyDetailsResponse) {
 	var model proxyAgentModel = d
 	readProxyAgentFromResponse(model, resp)
+	if(d.AuthToken.IsUnknown()){
+		d.AuthToken = types.StringNull()
+	}
+	if(d.Salt.IsUnknown()){
+		d.Salt = types.StringNull()
+	}
 }
 
 func (d *ProxyAgentResourceModel) ReadFromCreateResponse(resp proxy.ProxyCreateResponse) {

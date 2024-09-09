@@ -53,6 +53,6 @@ Read-Only:
 
 Read-Only:
 
-- `folder_path` (String) Folder in Git repo with your dbt project.
-- `git_branch` (String) Git branch.
-- `git_remote_url` (String) Git remote URL with your dbt project.
+- `folder_path` (String) Folder in Git repo with your dbt project
+- `git_branch` (String) Git branch
+- `git_remote_url` (String) Git remote URL with your dbt project

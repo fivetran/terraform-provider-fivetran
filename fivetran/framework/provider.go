@@ -17,7 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-const Version = "1.2.9" // Current provider version
+const Version = "1.3.0" // Current provider version
 
 type fivetranProvider struct {
 	mockClient httputils.HttpClient
@@ -120,6 +120,7 @@ func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Reso
 		resources.DbtTransformation,
 		resources.ProxyAgent,
 		resources.LocalProcessingAgent,
+		resources.DbtGitProjectConfig,
 	}
 }
 

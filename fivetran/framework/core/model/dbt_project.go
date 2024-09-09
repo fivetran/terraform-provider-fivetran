@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"strings"
 
 	"github.com/fivetran/go-fivetran/dbt"
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
@@ -100,17 +101,13 @@ func (d *DbtProjectResourceModel) ReadFromResponse(ctx context.Context, resp dbt
 	}
 
 	d.ProjectConfig, _ = types.ObjectValue(projectConfigTypes, projectConfigItems)
-
+	d.EnsureReadiness = types.BoolValue(strings.ToLower(resp.Data.Status) == "ready")
 	if modelsResp != nil {
 		d.Models = GetModelsSetFromResponse(*modelsResp)
 	} else {
 		if d.Models.IsUnknown() {
 			d.Models = types.SetNull(types.ObjectType{AttrTypes: ModelElementType()})
 		}
-	}
-
-	if d.EnsureReadiness.IsUnknown() {
-		d.EnsureReadiness = types.BoolValue(true)
 	}
 }
 
@@ -146,16 +143,12 @@ func (d *DbtProject) ReadFromResponse(ctx context.Context, resp dbt.DbtProjectDe
 	}
 
 	d.ProjectConfig, _ = types.ObjectValue(projectConfigTypes, projectConfigItems)
-
+	d.EnsureReadiness = types.BoolValue(strings.ToLower(resp.Data.Status) == "ready")
 	if modelsResp != nil {
 		d.Models = GetModelsSetFromResponse(*modelsResp)
 	} else {
 		if d.Models.IsUnknown() {
 			d.Models = types.SetNull(types.ObjectType{AttrTypes: ModelElementType()})
 		}
-	}
-
-	if d.EnsureReadiness.IsUnknown() {
-		d.EnsureReadiness = types.BoolValue(false)
 	}
 }

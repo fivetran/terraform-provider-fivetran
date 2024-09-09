@@ -5,7 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.10...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.3.0...HEAD)
+
+## [1.3.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.10...v1.3.0)
+
+## Added
+- New resource `fivetran_dbt_git_project_config` to support the new flow for installing a public key in a Git repository (see the migration guide and the guide to adding a key to an external repository).
+
+New connection services supported:
+- Supported service: `connector_sdk`
+- Supported service: `criteo_retail_media`
+- Supported service: `ehr`
+- Supported service: `google_classroom`
+- Supported service: `jama_software`
+- Supported service: `okendo`
+- Supported service: `oncehub`
+- Supported service: `placerai`
+- Supported service: `planhat`
+- Supported service: `podio`
+- Supported service: `procore`
+- Supported service: `safebase`
+- Supported service: `shipnetwork`
+- Supported service: `visma`
+- Supported service: `zonka_feedback`
 
 ## [1.2.10](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.2.9...v1.2.10)
 

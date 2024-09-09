@@ -60,8 +60,10 @@ Read-Only:
 - `auth` (String) Field usage depends on `service` value: 
 	- Service `snowflake`: Password-based or key-based authentication type
 - `auth_type` (String) Field usage depends on `service` value: 
+	- Service `databricks`: Authentication type
 	- Service `redshift`: Authentication type. Default value: `PASSWORD`.
-- `bootstrap_servers` (Set of String)
+- `bootstrap_servers` (Set of String) Field usage depends on `service` value: 
+	- Service `confluent_cloud_wh`: Comma-separated list of Confluent Cloud servers in the `server:port` format.
 - `bucket` (String) Field usage depends on `service` value: 
 	- Service `big_query`: Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.
 	- Service `big_query_dts`: Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.
@@ -111,7 +113,8 @@ Read-Only:
 - `controller_id` (String)
 - `create_external_tables` (Boolean) Field usage depends on `service` value: 
 	- Service `databricks`: Whether to create external tables
-- `data_format` (String)
+- `data_format` (String) Field usage depends on `service` value: 
+	- Service `confluent_cloud_wh`: Confluent Cloud message format.
 - `data_set_location` (String) Field usage depends on `service` value: 
 	- Service `big_query`: Data location. Datasets will reside in this location.
 	- Service `big_query_dts`: Data location. Datasets will reside in this location.
@@ -179,11 +182,12 @@ Read-Only:
 - `lakehouse_name` (String) Field usage depends on `service` value: 
 	- Service `onelake`: Name of your lakehouse
 - `msk_sts_region` (String)
-- `num_of_partitions` (Number)
+- `num_of_partitions` (Number) Field usage depends on `service` value: 
+	- Service `confluent_cloud_wh`: Number of partitions per topic.
 - `oauth2_client_id` (String) Field usage depends on `service` value: 
-	- Service `databricks`: OAuth 2.0 client ID. Required if auth_type is set to OAUTH2.
+	- Service `databricks`: OAuth 2.0 client ID
 - `oauth2_secret` (String, Sensitive) Field usage depends on `service` value: 
-	- Service `databricks`: OAuth 2.0 secret. Required if auth_type is set to OAUTH2.
+	- Service `databricks`: OAuth 2.0 secret
 - `passphrase` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `snowflake`: In case private key is encrypted, you are required to enter passphrase that was used to encrypt the private key. The field can be specified if authentication type is `KEY_PAIR`.
 - `password` (String, Sensitive) Field usage depends on `service` value: 
@@ -260,7 +264,8 @@ Read-Only:
 	- Service `new_s3_datalake`: Region of your AWS S3 bucket
 - `registry_name` (String)
 - `registry_sts_region` (String)
-- `replication_factor` (Number)
+- `replication_factor` (Number) Field usage depends on `service` value: 
+	- Service `confluent_cloud_wh`: Replication factor.
 - `resource_id` (String) Field usage depends on `service` value: 
 	- Service `aurora_postgres_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
 	- Service `aurora_warehouse`: This field is currently being introduced to test the Self-serve Private Link functionality
@@ -286,14 +291,21 @@ Read-Only:
 	- Service `snowflake`: If not specified, Fivetran will use the user's default role
 - `role_arn` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `redshift`: Role ARN with Redshift permissions. Required if authentication type is `IAM`.
-- `sasl_mechanism` (String)
-- `sasl_plain_key` (String, Sensitive)
-- `sasl_plain_secret` (String, Sensitive)
+- `sasl_mechanism` (String) Field usage depends on `service` value: 
+	- Service `confluent_cloud_wh`: Security protocol for Confluent Cloud interaction.
+- `sasl_plain_key` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `confluent_cloud_wh`: Confluent Cloud SASL key.
+- `sasl_plain_secret` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `confluent_cloud_wh`: Confluent Cloud SASL secret.
 - `schema_compatibility` (String)
-- `schema_registry` (String)
-- `schema_registry_api_key` (String, Sensitive)
-- `schema_registry_api_secret` (String, Sensitive)
-- `schema_registry_url` (String)
+- `schema_registry` (String) Field usage depends on `service` value: 
+	- Service `confluent_cloud_wh`: Schema Registry
+- `schema_registry_api_key` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `confluent_cloud_wh`: Schema registry API key.
+- `schema_registry_api_secret` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `confluent_cloud_wh`: Schema registry API secret.
+- `schema_registry_url` (String) Field usage depends on `service` value: 
+	- Service `confluent_cloud_wh`: Schema registry URL.
 - `secret_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `big_query`: Private key of the customer service account. If specified, your service account will be used to process the data instead of the Fivetran-managed service account.
 	- Service `big_query_dts`: Private key of the customer service account. If specified, your service account will be used to process the data instead of the Fivetran-managed service account.
@@ -301,14 +313,21 @@ Read-Only:
 - `secret_value` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `adls`: Secret value for service principal
 	- Service `onelake`: Secret value for service principal
-- `security_protocol` (String)
+- `security_protocol` (String) Field usage depends on `service` value: 
+	- Service `confluent_cloud_wh`: Security protocol for Confluent Cloud interaction.
 - `server_host_name` (String) Field usage depends on `service` value: 
 	- Service `databricks`: Server name
+- `snapshot_retention_period` (String) Field usage depends on `service` value: 
+	- Service `adls`: Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.
+	- Service `new_s3_datalake`: Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.
+	- Service `onelake`: Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.
 - `snowflake_cloud` (String)
 - `snowflake_region` (String)
 - `storage_account_name` (String) Field usage depends on `service` value: 
 	- Service `adls`: Storage account for Azure Data Lake Storage Gen2 name
 	- Service `onelake`: Storage account for Azure Data Lake Storage Gen2 name
+- `table_format` (String) Field usage depends on `service` value: 
+	- Service `new_s3_datalake`: (Immutable) The table format in which you want to sync your tables. Valid values are ICEBERG and DELTA_LAKE
 - `tenant_id` (String) Field usage depends on `service` value: 
 	- Service `adls`: Tenant id of service principal
 	- Service `onelake`: Tenant ID of service principal

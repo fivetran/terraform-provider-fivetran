@@ -147,7 +147,6 @@ func TestResourceDbtProjectMappingMock(t *testing.T) {
 				git_branch = "git_branch"
 				folder_path = "folder_path"
 			}
-			ensure_readiness = false
 		}`,
 
 		Check: resource.ComposeAggregateTestCheckFunc(
@@ -395,8 +394,7 @@ func TestResourceDbtProjectCreateMock(t *testing.T) {
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 				tfmock.AssertEqual(t, dbtProjectResourceCreateMockPostHandler.Interactions, 1)
-				tfmock.AssertEqual(t, dbtProjectResourceCreateMockGetModelsHandler.Interactions, 2)
-				tfmock.AssertEqual(t, dbtProjectResourceCreateMockGetHandler.Interactions, 2)
+				tfmock.AssertEqual(t, dbtProjectResourceCreateMockGetModelsHandler.Interactions, 0)
 				tfmock.AssertNotEmpty(t, dbtProjectResourceCreateMockData)
 				return nil
 			},
