@@ -3,7 +3,6 @@ package model
 import (
 	"context"
 	"strings"
-	"fmt"
 
 	"github.com/fivetran/go-fivetran/dbt"
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
