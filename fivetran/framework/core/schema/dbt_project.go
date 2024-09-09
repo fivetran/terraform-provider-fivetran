@@ -116,17 +116,14 @@ func dbtProjectConfigSchema() core.Schema {
 			"git_remote_url": {
 				ValueType:   core.String,
 				Description: "Git remote URL with your dbt project",
-				DeprecationMessage: "Deprecated attribute. The project_config block of the resource fivetran_dbt_project is deprecated and will be removed. Please migrate to the resource fivetran_dbt_git_project_config",
 			},
 			"git_branch":  {
 				ValueType: core.String, 
 				Description: "Git branch",
-				DeprecationMessage: "Deprecated attribute. The project_config block of the resource fivetran_dbt_project is deprecated and will be removed. Please migrate to the resource fivetran_dbt_git_project_config",
 			},
 			"folder_path": {
 				ValueType: core.String, 
 				Description: "Folder in Git repo with your dbt project",
-				DeprecationMessage: "Deprecated attribute. The project_config block of the resource fivetran_dbt_project is deprecated and will be removed. Please migrate to the resource fivetran_dbt_git_project_config",
 			},
 		},
 	}
@@ -142,6 +139,7 @@ func dbtProjectResourceBlocks(ctx context.Context) map[string]resourceSchema.Blo
 	return map[string]resourceSchema.Block{
 		"project_config": resourceSchema.SingleNestedBlock{
 			Attributes: dbtProjectConfigSchema().GetResourceSchema(),
+			DeprecationMessage: "Deprecated block. The project_config block of the resource fivetran_dbt_project is deprecated and will be removed. Please migrate to the resource fivetran_dbt_git_project_config",
 		},
 		"timeouts": timeouts.Block(ctx, timeouts.Opts{Create: true}),
 	}

@@ -40,7 +40,7 @@ resource "fivetran_dbt_project" "project" {
 
 - `ensure_readiness` (Boolean, Deprecated) Should resource wait for project to finish initialization. Default value: true.
 - `environment_vars` (Set of String) List of environment variables defined as key-value pairs in the raw string format using = as a separator. The variable name should have the DBT_ prefix and can contain A-Z, 0-9, dash, underscore, or dot characters. Example: "DBT_VARIABLE=variable_value"
-- `project_config` (Block, Optional) (see [below for nested schema](#nestedblock--project_config))
+- `project_config` (Block, Optional, Deprecated) (see [below for nested schema](#nestedblock--project_config))
 - `target_name` (String) Target name to set or override the value from the deployment.yaml
 - `threads` (Number) The number of threads dbt will use (from 1 to 32). Make sure this value is compatible with your destination type. For example, Snowflake supports only 8 concurrent queries on an X-Small warehouse.
 - `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
@@ -60,9 +60,9 @@ resource "fivetran_dbt_project" "project" {
 
 Optional:
 
-- `folder_path` (String, Deprecated) Folder in Git repo with your dbt project
-- `git_branch` (String, Deprecated) Git branch
-- `git_remote_url` (String, Deprecated) Git remote URL with your dbt project
+- `folder_path` (String) Folder in Git repo with your dbt project
+- `git_branch` (String) Git branch
+- `git_remote_url` (String) Git remote URL with your dbt project
 
 
 <a id="nestedblock--timeouts"></a>
