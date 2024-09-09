@@ -50,6 +50,7 @@ func upgradeDbtProjectState(ctx context.Context, req resource.UpgradeStateReques
 			"created_by_id":	rawState["created_by_id"],
 			"public_key":		rawState["public_key"],
 			"environment_vars":	rawState["environment_vars"],
+			"ensure_readiness": rawState["ensure_readiness"],
 			"models":			rawState["models"],
 			"project_config": 	convertSetToBlock("project_config", 
 									rawState["project_config"], 
@@ -75,6 +76,7 @@ func getDbtProjectStateModel(version int) tftypes.Type {
 		"created_at":     	tftypes.String,
 		"created_by_id":    tftypes.String,
 		"public_key":     	tftypes.String,
+		"ensure_readiness": tftypes.Bool,
 		"environment_vars": tftypes.Set{ElementType:tftypes.String},
 		"models":  			tftypes.Set{
 				ElementType: tftypes.Object{
