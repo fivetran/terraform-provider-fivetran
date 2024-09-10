@@ -149,12 +149,39 @@ func (r *dbtProject) Create(ctx context.Context, req resource.CreateRequest, res
 
 	projectResponse, err := svc.Do(ctx)
 	if err != nil {
-		resp.Diagnostics.AddError(
-			"Unable to Create dbt Project Resource.",
-			fmt.Sprintf("%v; code: %v; message: %v", err, projectResponse.Code, projectResponse.Message),
-		)
+		if projectResponse.Code != "DbtProjectExists" {
+			resp.Diagnostics.AddError(
+				"Unable to Create dbt Project Resource.",
+				fmt.Sprintf("%v; code: %v; message: %v", err, projectResponse.Code, projectResponse.Message),
+			)
 
-		return
+			return			
+		} else {
+			// try to recover Id
+			projectListResponse, err := r.GetClient().NewDbtProjectsList().Do(ctx)
+
+			if err != nil {
+				resp.Diagnostics.AddError(
+					"Unable to Read Dbt Project Resource.",
+					fmt.Sprintf("%v; code: %v; message: %v", err, projectResponse.Code, projectResponse.Message),
+				)
+				return
+			}
+
+			for _, v := range projectListResponse.Data.Items {
+				if v.GroupId == data.GroupId.ValueString() {
+					projectResponse, err := r.GetClient().NewDbtProjectDetails().DbtProjectID(v.ID).Do(ctx)
+
+					if err != nil {
+						resp.Diagnostics.AddError(
+							"Unable to Read Dbt Project Resource.",
+							fmt.Sprintf("%v; code: %v; message: %v", err, projectResponse.Code, projectResponse.Message),
+						)
+						return
+					}
+				}
+			}
+		}
 	}
 
 	data.ReadFromResponse(ctx, projectResponse, nil)

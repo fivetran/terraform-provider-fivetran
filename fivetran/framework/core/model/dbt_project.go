@@ -77,30 +77,32 @@ func (d *DbtProjectResourceModel) ReadFromResponse(ctx context.Context, resp dbt
 	d.CreatedById = types.StringValue(resp.Data.CreatedById)
 	d.PublicKey = types.StringValue(resp.Data.PublicKey)
 
-	projectConfigTypes := map[string]attr.Type{
-		"git_remote_url": types.StringType,
-		"git_branch":     types.StringType,
-		"folder_path":    types.StringType,
-	}
-	projectConfigItems := map[string]attr.Value{
-		"git_remote_url": types.StringValue(resp.Data.ProjectConfig.GitRemoteUrl),
-		// "git_branch":     types.StringValue(resp.Data.ProjectConfig.GitBranch),
-		// "folder_path":    types.StringValue(resp.Data.ProjectConfig.FolderPath),
+	// If user specifies config section
+	if !d.ProjectConfig.IsNull() && !d.ProjectConfig.IsUnknown(){
+		projectConfigTypes := map[string]attr.Type{
+			"git_remote_url": types.StringType,
+			"git_branch":     types.StringType,
+			"folder_path":    types.StringType,
+		}
+		projectConfigItems := map[string]attr.Value{
+			"git_remote_url": types.StringValue(resp.Data.ProjectConfig.GitRemoteUrl),
+		}
+
+		if resp.Data.ProjectConfig.GitBranch != "" {
+			projectConfigItems["git_branch"] = types.StringValue(resp.Data.ProjectConfig.GitBranch)
+		} else {
+			projectConfigItems["git_branch"] = types.StringNull()
+		}
+
+		if resp.Data.ProjectConfig.FolderPath != "" {
+			projectConfigItems["folder_path"] = types.StringValue(resp.Data.ProjectConfig.FolderPath)
+		} else {
+			projectConfigItems["folder_path"] = types.StringNull()
+		}
+
+		d.ProjectConfig, _ = types.ObjectValue(projectConfigTypes, projectConfigItems)
 	}
 
-	if resp.Data.ProjectConfig.GitBranch != "" {
-		projectConfigItems["git_branch"] = types.StringValue(resp.Data.ProjectConfig.GitBranch)
-	} else {
-		projectConfigItems["git_branch"] = types.StringNull()
-	}
-
-	if resp.Data.ProjectConfig.FolderPath != "" {
-		projectConfigItems["folder_path"] = types.StringValue(resp.Data.ProjectConfig.FolderPath)
-	} else {
-		projectConfigItems["folder_path"] = types.StringNull()
-	}
-
-	d.ProjectConfig, _ = types.ObjectValue(projectConfigTypes, projectConfigItems)
 	d.EnsureReadiness = types.BoolValue(strings.ToLower(resp.Data.Status) == "ready")
 	if modelsResp != nil {
 		d.Models = GetModelsSetFromResponse(*modelsResp)

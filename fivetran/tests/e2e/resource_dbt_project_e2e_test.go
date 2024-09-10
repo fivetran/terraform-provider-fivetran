@@ -12,7 +12,7 @@ import (
 )
 
 func TestResourceDbtProjectE2E(t *testing.T) {
-	t.Skip("Now for deployment you need to use a third-party provider, which is impossible to do inside the local provider test")
+	//t.Skip("Now for deployment you need to use a third-party provider, which is impossible to do inside the local provider test")
 	destinationConfig := `
 	resource "fivetran_destination" "test_destination" {
 		provider = fivetran-provider
@@ -41,13 +41,6 @@ func TestResourceDbtProjectE2E(t *testing.T) {
 						threads = 1
 						default_schema = "dbt_demo_test_e2e_terraform"
 						type = "GIT"
-						project_config {
-							folder_path = "/folder/path"
-							git_remote_url = "git@github.com:fivetran/dbt_demo.git"
-							git_branch = "main"
-						}
-
-						ensure_readiness = true
 					}
 
 					resource "fivetran_dbt_git_project_config" "test_project_config" {

@@ -73,7 +73,7 @@ resource "fivetran_dbt_project" "test_project" {
 }
 
 resource "fivetran_dbt_git_project_config" "test_project_config" {
-  id = fivetran_dbt_project.test_project.id
+  project_id = fivetran_dbt_project.test_project.id
 
   folder_path = "/folder/path"
   git_remote_url = "git@github.com:fivetran/dbt_demo.git"
