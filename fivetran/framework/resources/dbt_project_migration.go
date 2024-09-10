@@ -82,7 +82,6 @@ func getDbtProjectStateModel(version int) tftypes.Type {
 		"timeouts": tftypes.Object{
 			AttributeTypes: map[string]tftypes.Type{
 				"create": tftypes.String,
-				"update": tftypes.String,
 			},
 		},
 		"models":  			tftypes.Set{
