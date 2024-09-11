@@ -71,7 +71,7 @@ resource "fivetran_dbt_project" "test_project" {
   default_schema = "dbt_demo_test_e2e_terraform"
   type = "GIT"
 }
-
+```
 
 For GitHub based repositories
 ```hcl
