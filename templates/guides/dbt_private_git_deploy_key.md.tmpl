@@ -28,7 +28,7 @@ Then you need to set up the dbt Project public key (field `public_key` in create
 ```hcl
 resource "github_repository_deploy_key" "example_repository_deploy_key" {
   title      = "Repository test key"
-  repository = "your-repo"
+  repository = "repo-owner/repo-name"
   key        = fivetran_dbt_project.project.public_key
   read_only  = true
 }
@@ -40,7 +40,7 @@ And after that you can configure your project in `fivetran_dbt_git_project_confi
 resource "fivetran_dbt_git_project_config" "project_config" {
     id = fivetran_dbt_project.project.id
     
-    git_remote_url = "git@github.com:your-repo.git"
+    git_remote_url = "git@github.com:repo-owner/repo-name.git"
     git_branch = "main"
 }
 ```

@@ -19,11 +19,6 @@ resource "fivetran_dbt_project" "project" {
     environment_vars = ["environment_var=value"]
     threads = 8
     type = "GIT"
-    project_config {
-        git_remote_url = "your_git_remote_url"
-        git_branch = "main"
-        folder_path = "/dbt/project/folder/path"
-    }
 }
 ```
 

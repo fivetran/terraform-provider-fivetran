@@ -72,6 +72,28 @@ resource "fivetran_dbt_project" "test_project" {
   type = "GIT"
 }
 
+
+For GitHub based repositories
+```hcl
+resource "github_repository_deploy_key" "example_repository_deploy_key" {
+  title      = "Repository test key"
+  repository = "fivetran/dbt_demo"
+  key        = fivetran_dbt_project.test_project.public_key
+  read_only  = true
+}
+```
+
+For Bitbucket based repositories
+```hcl
+resource "bitbucket_deploy_key" "test" {
+  workspace  = "fivetran"
+  repository = "dbt_demo"  
+  key        = fivetran_dbt_project.test_project.public_key
+  label      = "Repository test key"
+}
+```
+
+```hcl
 resource "fivetran_dbt_git_project_config" "test_project_config" {
   project_id = fivetran_dbt_project.test_project.id
 

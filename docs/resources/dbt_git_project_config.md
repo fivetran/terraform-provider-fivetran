@@ -12,7 +12,7 @@ This resource allows you to add and manage dbt Git Projects Configs.
 
 ```hcl
 resource "fivetran_dbt_git_project_config" "git_project_config" {
-    id = "project_id"
+    project_id = "project_id"
     git_remote_url = "your_git_remote_url"
     git_branch = "main"
     folder_path = "/dbt/project/folder/path"
