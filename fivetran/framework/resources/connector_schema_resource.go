@@ -229,7 +229,7 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		svc := config.PrepareRequest(client.NewConnectorSchemaUpdateService())
 		svc.ConnectorID(connectorID)
 		// update schema_change_handling if needed
-		if schemaChangeHandling != schemaResponse.Data.SchemaChangeHandling {
+		if schemaChangeHandling != "" && schemaChangeHandling != schemaResponse.Data.SchemaChangeHandling {
 			svc.SchemaChangeHandling(schemaChangeHandling)
 		}
 		// we should not parse response here because it will contain only applied diffs, not the whole configuration
@@ -244,7 +244,7 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		}
 	} else {
 		// we update only schema_change_handling if needed
-		if schemaChangeHandling != schemaResponse.Data.SchemaChangeHandling {
+		if schemaChangeHandling != "" && schemaChangeHandling != schemaResponse.Data.SchemaChangeHandling {
 			svc := client.NewConnectorSchemaUpdateService().ConnectorID(connectorID)
 			svc.SchemaChangeHandling(schemaChangeHandling)
 			schResponse, err := svc.Do(ctx)
@@ -433,7 +433,7 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 		svc := config.PrepareRequest(client.NewConnectorSchemaUpdateService())
 		svc.ConnectorID(connectorID)
 		// update schema_change_handling as well if needed
-		if plan.SchemaChangeHandling != state.SchemaChangeHandling {
+		if plan.SchemaChangeHandling.String() != "" && plan.SchemaChangeHandling != state.SchemaChangeHandling {
 			svc.SchemaChangeHandling(plan.SchemaChangeHandling.ValueString())
 		}
 		// we should not parse response here because it will contain only applied diffs, not the whole configuration
@@ -449,7 +449,7 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 
 	} else {
 		// update schema_change_handling if needed
-		if plan.SchemaChangeHandling != state.SchemaChangeHandling {
+		if plan.SchemaChangeHandling.String() != "" && plan.SchemaChangeHandling != state.SchemaChangeHandling {
 			svc := client.NewConnectorSchemaUpdateService().ConnectorID(connectorID)
 			svc.SchemaChangeHandling(plan.SchemaChangeHandling.ValueString())
 			schResponse, err := svc.Do(ctx)

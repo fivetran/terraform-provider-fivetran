@@ -26,7 +26,7 @@ func GetConnectorSchemaResourceSchema(ctx context.Context) schema.Schema {
 				Description:   "The unique identifier for the connector within the Fivetran system.",
 			},
 			"schema_change_handling": schema.StringAttribute{
-				Required: true,
+				Optional: true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("ALLOW_ALL", "ALLOW_COLUMNS", "BLOCK_ALL"),
 				},

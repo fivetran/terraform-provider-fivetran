@@ -94,7 +94,10 @@ func (d *ConnectorSchemaResourceModel) ReadFromResponse(response connectors.Conn
 		d.SchemasRaw = fivetrantypes.NewJsonSchemaValue(schemasJson)
 	}
 
-	d.SchemaChangeHandling = types.StringValue(response.Data.SchemaChangeHandling)
+	// SAP connectors will not accept schemaChangeHandling in request and will return ALLOW_COLUMNS as default
+	if d.SchemaChangeHandling.ValueString() != "" {
+		d.SchemaChangeHandling = types.StringValue(response.Data.SchemaChangeHandling)
+	}
 }
 
 func (d *ConnectorSchemaResourceModel) getNullSchema() basetypes.SetValue {
