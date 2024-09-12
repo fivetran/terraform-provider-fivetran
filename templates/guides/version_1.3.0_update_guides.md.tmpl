@@ -54,7 +54,7 @@ resource "fivetran_dbt_project" "test_project" {
   type = "GIT"
   project_config {
     folder_path = "/folder/path"
-    git_remote_url = "git@github.com:fivetran/dbt_demo.git"
+    git_remote_url = "git@github.com:fivetran/repo-name.git"
     git_branch = "main"
   }
 }
@@ -77,7 +77,7 @@ For GitHub based repositories
 ```hcl
 resource "github_repository_deploy_key" "example_repository_deploy_key" {
   title      = "Repository test key"
-  repository = "fivetran/dbt_demo"
+  repository = "fivetran/repo-name"
   key        = fivetran_dbt_project.test_project.public_key
   read_only  = true
 }
@@ -87,7 +87,7 @@ For Bitbucket based repositories
 ```hcl
 resource "bitbucket_deploy_key" "test" {
   workspace  = "fivetran"
-  repository = "dbt_demo"  
+  repository = "repo-name"  
   key        = fivetran_dbt_project.test_project.public_key
   label      = "Repository test key"
 }
@@ -101,7 +101,7 @@ resource "fivetran_dbt_git_project_config" "test_project_config" {
   project_id = fivetran_dbt_project.test_project.id
 
   folder_path = "/folder/path"
-  git_remote_url = "git@github.com:fivetran/dbt_demo.git"
+  git_remote_url = "git@github.com:fivetran/repo-name.git"
   git_branch = "main"
 }
 
