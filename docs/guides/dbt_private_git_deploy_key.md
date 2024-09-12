@@ -23,7 +23,7 @@ resource "fivetran_dbt_project" "project" {
 }
 ```
 
-Then you need to set up the dbt Project public key (field `public_key` in created resource) as a deploy key into your repo using  or :
+Then you need to set up the dbt Project public key (field `public_key` in created resource) as a deploy key into your repo using:
 
 [GitHub Provider Repository Deploy Key Resource](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_deploy_key):
 ```hcl
