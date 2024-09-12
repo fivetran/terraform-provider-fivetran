@@ -93,6 +93,9 @@ resource "bitbucket_deploy_key" "test" {
 }
 ```
 
+Since we recommend using third-party providers in this case, please make sure that access to the repositories is provided correctly and the providers are configured correctly for connection.
+
+
 ```hcl
 resource "fivetran_dbt_git_project_config" "test_project_config" {
   project_id = fivetran_dbt_project.test_project.id
