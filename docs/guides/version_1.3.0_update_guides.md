@@ -54,7 +54,7 @@ resource "fivetran_dbt_project" "test_project" {
   type = "GIT"
   project_config {
     folder_path = "/folder/path"
-    git_remote_url = "git@github.com:fivetran/dbt_demo.git"
+    git_remote_url = "git@github.com:fivetran/repo-name.git"
     git_branch = "main"
   }
 }
@@ -71,12 +71,37 @@ resource "fivetran_dbt_project" "test_project" {
   default_schema = "dbt_demo_test_e2e_terraform"
   type = "GIT"
 }
+```
 
+For GitHub based repositories
+```hcl
+resource "github_repository_deploy_key" "example_repository_deploy_key" {
+  title      = "Repository test key"
+  repository = "fivetran/repo-name"
+  key        = fivetran_dbt_project.test_project.public_key
+  read_only  = true
+}
+```
+
+For Bitbucket based repositories
+```hcl
+resource "bitbucket_deploy_key" "test" {
+  workspace  = "fivetran"
+  repository = "repo-name"  
+  key        = fivetran_dbt_project.test_project.public_key
+  label      = "Repository test key"
+}
+```
+
+Since we recommend using third-party providers in this case, please make sure that access to the repositories is provided correctly and the providers are configured correctly for connection.
+
+
+```hcl
 resource "fivetran_dbt_git_project_config" "test_project_config" {
-  id = fivetran_dbt_project.test_project.id
+  project_id = fivetran_dbt_project.test_project.id
 
   folder_path = "/folder/path"
-  git_remote_url = "git@github.com:fivetran/dbt_demo.git"
+  git_remote_url = "git@github.com:fivetran/repo-name.git"
   git_branch = "main"
 }
 

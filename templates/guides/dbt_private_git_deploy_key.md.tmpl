@@ -23,16 +23,31 @@ resource "fivetran_dbt_project" "project" {
 }
 ```
 
-Then you need to set up the dbt Project public key (field `public_key` in created resource) as a deploy key into your repo using [GitHub Provider Repository Deploy Key Resource](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_deploy_key):
+Then you need to set up the dbt Project public key (field `public_key` in created resource) as a deploy key into your repo using:
 
+[GitHub Provider Repository Deploy Key Resource](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_deploy_key):
 ```hcl
 resource "github_repository_deploy_key" "example_repository_deploy_key" {
   title      = "Repository test key"
-  repository = "your-repo"
-  key        = fivetran_dbt_project.project.public_key
+  repository = "repo-owner/repo-name"
+  key        = fivetran_dbt_project.test_project.public_key
   read_only  = true
 }
 ```
+
+or
+
+[Bitbucket Provider Repository Deploy Key Resource]https://registry.terraform.io/providers/DrFaust92/bitbucket/latest/docs/resources/deploy_key)
+```hcl
+resource "bitbucket_deploy_key" "test" {
+  workspace  = "repo-owner"
+  repository = "repo-name"  
+  key        = fivetran_dbt_project.test_project.public_key
+  label      = "Repository test key"
+}
+```
+
+Since we recommend using third-party providers in this case, please make sure that access to the repositories is provided correctly and the providers are configured correctly for connection.
 
 And after that you can configure your project in `fivetran_dbt_git_project_config` resource:
 
@@ -40,7 +55,7 @@ And after that you can configure your project in `fivetran_dbt_git_project_confi
 resource "fivetran_dbt_git_project_config" "project_config" {
     id = fivetran_dbt_project.project.id
     
-    git_remote_url = "git@github.com:your-repo.git"
+    git_remote_url = "git@github.com:repo-owner/repo-name.git"
     git_branch = "main"
 }
 ```
