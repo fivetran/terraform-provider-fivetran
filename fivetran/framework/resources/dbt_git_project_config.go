@@ -79,6 +79,16 @@ func (r *dbtGitProjectConfig) Create(ctx context.Context, req resource.CreateReq
 	data.ReadFromResponse(projectResponse)
 
 	if data.EnsureReadiness.Equal(types.BoolValue(false)) {
+		testReponse, err := r.GetClient().NewDbtProjectTest().ProjectID(data.ProjectId.ValueString()).Do(ctx)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Dbt Project Test.",
+				fmt.Sprintf("%v; code: %v; message: %v", err, testReponse.Code, testReponse.Message),
+			)
+
+			return
+		}
+
 		if ok, _ := ensureProjectIsReady(ctx, client, data.ProjectId.ValueString()); !ok {
 			resp.Diagnostics.AddWarning(
 				"Unable to finish set up dbt Git Project Config Resource.",
@@ -173,6 +183,16 @@ func (r *dbtGitProjectConfig) Update(ctx context.Context, req resource.UpdateReq
 	plan.ReadFromResponse(projectResponse)
 
 	if plan.EnsureReadiness.Equal(types.BoolValue(false)) {
+		testReponse, err := r.GetClient().NewDbtProjectTest().ProjectID(plan.ProjectId.ValueString()).Do(ctx)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Dbt Project Test.",
+				fmt.Sprintf("%v; code: %v; message: %v", err, testReponse.Code, testReponse.Message),
+			)
+
+			return
+		}
+
 		if ok, _ := ensureProjectIsReady(ctx, client, plan.ProjectId.ValueString()); !ok {
 			resp.Diagnostics.AddWarning(
 				"Unable to finish set up dbt Git Project Config Resource.",
