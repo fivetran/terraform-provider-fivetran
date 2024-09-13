@@ -83,7 +83,7 @@ func (r *dbtGitProjectConfig) Create(ctx context.Context, req resource.CreateReq
 		if err != nil {
 			resp.Diagnostics.AddError(
 				"Dbt Project Test.",
-				fmt.Sprintf("%v; code: %v; message: %v", err, testReponse.Code, testReponse.Message),
+				fmt.Sprintf("%v; code: %v", err, testReponse.Code),
 			)
 
 			return
@@ -187,7 +187,7 @@ func (r *dbtGitProjectConfig) Update(ctx context.Context, req resource.UpdateReq
 		if err != nil {
 			resp.Diagnostics.AddError(
 				"Dbt Project Test.",
-				fmt.Sprintf("%v; code: %v; message: %v", err, testReponse.Code, testReponse.Message),
+				fmt.Sprintf("%v; code: %v", err, testReponse.Code),
 			)
 
 			return
