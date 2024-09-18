@@ -95,7 +95,7 @@ func (d *ConnectorSchemaResourceModel) ReadFromResponse(response connectors.Conn
 	}
 
 	// SAP connectors will not accept schemaChangeHandling in request and will return ALLOW_COLUMNS as default
-	if d.SchemaChangeHandling.ValueString() != "" {
+	if d.SchemaChangeHandling.IsNull() || d.SchemaChangeHandling.IsUnknown() || d.SchemaChangeHandling.ValueString() != "" {
 		d.SchemaChangeHandling = types.StringValue(response.Data.SchemaChangeHandling)
 	}
 }
