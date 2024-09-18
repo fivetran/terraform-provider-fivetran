@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Added
 - DBT project test in resource `fivetran_dbt_git_project_config`
+- `schema_change_handling` is no longer required for `fivetran_connector_schema_config` resource
 
 ## [1.3.1](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.3.0...v1.3.1)
 
