@@ -17,7 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-const Version = "1.3.0" // Current provider version
+const Version = "1.3.2" // Current provider version
 
 type fivetranProvider struct {
 	mockClient httputils.HttpClient
