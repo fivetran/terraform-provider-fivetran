@@ -50,4 +50,4 @@ resource "fivetran_connector_schema_config" "test_schema" {
     schemas_json = file("path/to/schema-config.json")
 }
 ```
-Note: Enabled value should be of boolean type
+-> NOTE: Please make sure that the `enabled` field inside the JSON is set to boolean data type.
