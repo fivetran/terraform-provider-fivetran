@@ -27,8 +27,8 @@ func TestResourcePrivateLinkE2E(t *testing.T) {
                 	service = "REDSHIFT"
 
                 	config {
-    					aws_account_id = "privatelink.snowflakecomputing.com"
-    					cluster_identifier = "privatelink.snowflakecomputing.com"
+    					aws_account_id = "privatelink"
+    					cluster_identifier = "privatelink"
                  	}
             	}`,
 				Check: resource.ComposeAggregateTestCheckFunc(
@@ -36,8 +36,8 @@ func TestResourcePrivateLinkE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "name", "test_pl_tf"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "region", "AWS_US_EAST_1"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "service", "SOURCE"),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.aws_account_id", "privatelink.snowflakecomputing.com"),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.cluster_identifier", "privatelink.snowflakecomputing.com"),
+					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.aws_account_id", "privatelink"),
+					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.cluster_identifier", "privatelink"),
 				),
 			},
 		},
