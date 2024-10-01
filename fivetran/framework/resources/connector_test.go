@@ -883,7 +883,7 @@ func TestResourceConnectorMock(t *testing.T) {
 						body := tfmock.RequestBodyToJson(t, req)
 
 						// Check the request
-						tfmock.AssertEqual(t, len(body), 5)
+						tfmock.AssertEqual(t, len(body), 4)
 
 						tfmock.AssertKeyExistsAndHasValue(t, body, "run_setup_tests", true)
 						tfmock.AssertKeyExistsAndHasValue(t, body, "trust_certificates", true)

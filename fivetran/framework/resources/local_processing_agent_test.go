@@ -38,7 +38,7 @@ func setupMockClientHybridDeploymentAgentResource(t *testing.T) {
 		},
 	)
 
-	tfmock.MockClient().When(http.MethodGet, "/v1/local-processing-agents/lpa_id").ThenCall(
+	tfmock.MockClient().When(http.MethodGet, "/v1/hybrid-deployment-agents/lpa_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "", hybridDeploymentAgentData), nil
 		},
