@@ -153,7 +153,7 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 	}
 
 	if data.HybridDeploymentAgentId.ValueString() != "" {
-		svc.LocalProcessingAgentId(data.HybridDeploymentAgentId.ValueString())
+		svc.HybridDeploymentAgentId(data.HybridDeploymentAgentId.ValueString())
 	}
 
 	if data.PrivateLinkId.ValueString() != "" {
@@ -321,7 +321,7 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 			ConnectorID(state.Id.ValueString())
 
 		if plan.HybridDeploymentAgentId.ValueString() != "" {
-			svc.LocalProcessingAgentId(plan.HybridDeploymentAgentId.ValueString())
+			svc.HybridDeploymentAgentId(plan.HybridDeploymentAgentId.ValueString())
 		}
 
 		if plan.PrivateLinkId.ValueString() != "" {

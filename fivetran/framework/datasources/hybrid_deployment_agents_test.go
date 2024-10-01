@@ -71,7 +71,7 @@ func setupMockClientHybridDeploymentAgentsDataSourceConfigMapping(t *testing.T) 
 	)
 }
 
-func TestDataSourceLocalProcessingAgentsMappingMock(t *testing.T) {
+func TestDataSourceHybridDeploymentAgentsMappingMock(t *testing.T) {
 	step1 := resource.TestStep{
 		Config: `
         data "fivetran_local_processing_agents" "test_lpa" {

@@ -18,7 +18,7 @@ type DestinationResourceModel struct {
 	DaylightSavingTimeEnabled	 types.Bool   	`tfsdk:"daylight_saving_time_enabled"`
 	Config  					 types.Object   `tfsdk:"config"`
 	Timeouts					 timeouts.Value `tfsdk:"timeouts"`
-    HybridDeploymentAgentId      types.String   `tfsdk:"local_processing_agent_id"`
+    HybridDeploymentAgentId      types.String   `tfsdk:"hybrid_deployment_agent_id"`
     NetworkingMethod             types.String   `tfsdk:"networking_method"`
     PrivateLinkId                types.String   `tfsdk:"private_link_id"`
 

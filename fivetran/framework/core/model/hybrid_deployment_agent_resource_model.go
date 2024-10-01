@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/fivetran/go-fivetran/local_processing_agent"
+	"github.com/fivetran/go-fivetran/hybrid_deployment_agent"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 )
@@ -41,7 +41,7 @@ func (d *HybridDeploymentAgentResourceModel) SetAuthJson(value string) {
 func (d *HybridDeploymentAgentResourceModel) SetDockerComposeYaml(value string) {
 	d.DockerComposeYaml = types.StringValue(value)
 }
-func (d *HybridDeploymentAgentResourceModel) SetUsage(value []localprocessingagent.LocalProcessingAgentUsageDetails) {
+func (d *HybridDeploymentAgentResourceModel) SetUsage(value []hybriddeploymentagent.HybridDeploymentAgentUsageDetails) {
     if value == nil {
         d.Usage = types.SetNull(types.ObjectType{AttrTypes: elementType})
     }
@@ -59,13 +59,13 @@ func (d *HybridDeploymentAgentResourceModel) SetUsage(value []localprocessingage
 
     d.Usage, _ = types.SetValue(types.ObjectType{AttrTypes: elementType}, items)
 }
-func (d *HybridDeploymentAgentResourceModel) ReadFromCreateResponse(resp localprocessingagent.LocalProcessingAgentCreateResponse) {
+func (d *HybridDeploymentAgentResourceModel) ReadFromCreateResponse(resp hybriddeploymentagent.HybridDeploymentAgentCreateResponse) {
 	var model hybridDeploymentAgentModel = d
 	readHybridDeploymentAgentFromCreateResponse(model, resp)
 	d.AuthenticationCounter = types.Int64Value(d.AuthenticationCounter.ValueInt64() + 1)
 }
 
-func (d *HybridDeploymentAgentResourceModel) ReadFromResponse(resp localprocessingagent.LocalProcessingAgentDetailsResponse) {
+func (d *HybridDeploymentAgentResourceModel) ReadFromResponse(resp hybriddeploymentagent.HybridDeploymentAgentDetailsResponse) {
 	var model hybridDeploymentAgentModel = d
 	readHybridDeploymentAgentFromResponse(model, resp)
 }

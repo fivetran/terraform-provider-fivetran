@@ -15,7 +15,7 @@ type DestinationDatasourceModel struct {
 	TimeZoneOffset				 types.String `tfsdk:"time_zone_offset"`
 	SetupStatus    				 types.String `tfsdk:"setup_status"`
 	DaylightSavingTimeEnabled	 types.Bool   `tfsdk:"daylight_saving_time_enabled"`
-    HybridDeploymentAgentId      types.String `tfsdk:"local_processing_agent_id"`
+    HybridDeploymentAgentId      types.String `tfsdk:"hybrid_deployment_agent_id"`
     NetworkingMethod             types.String `tfsdk:"networking_method"`
     PrivateLinkId                types.String `tfsdk:"private_link_id"`
 	Config        				 types.Object `tfsdk:"config"`

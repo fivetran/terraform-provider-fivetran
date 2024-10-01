@@ -1,7 +1,7 @@
 package model
 
 import (
-    "github.com/fivetran/go-fivetran/local_processing_agent"
+    "github.com/fivetran/go-fivetran/hybrid_deployment_agent"
 )
 
 type hybridDeploymentAgentModel interface {
@@ -12,10 +12,10 @@ type hybridDeploymentAgentModel interface {
     SetConfigJson(string)
     SetAuthJson(string)
     SetDockerComposeYaml(string)
-    SetUsage([]localprocessingagent.LocalProcessingAgentUsageDetails)
+    SetUsage([]hybriddeploymentagent.HybridDeploymentAgentUsageDetails)
 }
 
-func readHybridDeploymentAgentFromResponse(d hybridDeploymentAgentModel, resp localprocessingagent.LocalProcessingAgentDetailsResponse) {
+func readHybridDeploymentAgentFromResponse(d hybridDeploymentAgentModel, resp hybriddeploymentagent.HybridDeploymentAgentDetailsResponse) {
     d.SetId(resp.Data.Id)
     d.SetDisplayName(resp.Data.DisplayName)
     d.SetGroupId(resp.Data.GroupId)
@@ -23,7 +23,7 @@ func readHybridDeploymentAgentFromResponse(d hybridDeploymentAgentModel, resp lo
     d.SetUsage(resp.Data.Usage)
 }
 
-func readHybridDeploymentAgentFromCreateResponse(d hybridDeploymentAgentModel, resp localprocessingagent.LocalProcessingAgentCreateResponse) {
+func readHybridDeploymentAgentFromCreateResponse(d hybridDeploymentAgentModel, resp hybriddeploymentagent.HybridDeploymentAgentCreateResponse) {
     d.SetId(resp.Data.Id)
     d.SetDisplayName(resp.Data.DisplayName)
     d.SetGroupId(resp.Data.GroupId)

@@ -26,7 +26,7 @@ func readFromResponse(d destinationModel, resp destinations.DestinationDetailsBa
 	d.SetSetupStatus(resp.SetupStatus)
 	d.SetTimeZonOffset(resp.TimeZoneOffset)
 	d.SetDaylightSavingTimeEnabled(resp.DaylightSavingTimeEnabled)
-	d.SetHybridDeploymentAgentId(resp.LocalProcessingAgentId)
+	d.SetHybridDeploymentAgentId(resp.HybridDeploymentAgentId)
 	d.SetNetworkingMethod(resp.NetworkingMethod)
 	d.SetPrivateLinkId(resp.PrivateLinkId)
 	d.SetConfig(config)
