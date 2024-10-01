@@ -41,7 +41,7 @@ const (
 func setupMockClientHybridDeploymentAgentDataSourceConfigMapping(t *testing.T) {
     tfmock.MockClient().Reset()
 
-    hdaDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/local-processing-agents/lpa_id").ThenCall(
+    hdaDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/hybrid-deployment-agents/lpa_id").ThenCall(
         func(req *http.Request) (*http.Response, error) {
             hdaDataSourceMockData = tfmock.CreateMapFromJsonString(t, hdaMappingResponse)
             return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", hdaDataSourceMockData), nil

@@ -31,7 +31,7 @@ func setupMockClientHybridDeploymentAgentResource(t *testing.T) {
        	}
     	}`
 
-	hybridDeploymentAgentPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/local-processing-agents").ThenCall(
+	hybridDeploymentAgentPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/hybrid-deployment-agents").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			hybridDeploymentAgentData = tfmock.CreateMapFromJsonString(t, hybridDeploymentAgentResponse)
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Local Processing Agent has been created", hybridDeploymentAgentData), nil
@@ -44,7 +44,7 @@ func setupMockClientHybridDeploymentAgentResource(t *testing.T) {
 		},
 	)
 
-	hybridDeploymentAgentDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/local-processing-agents/lpa_id").ThenCall(
+	hybridDeploymentAgentDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/hybrid-deployment-agents/lpa_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			return tfmock.FivetranSuccessResponse(t, req, 200, "Local Processing Agent has been deleted", nil), nil
 		},
