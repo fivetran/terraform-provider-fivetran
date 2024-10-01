@@ -35,7 +35,7 @@ type ConnectorDatasourceModel struct {
 
     ProxyAgentId             types.String `tfsdk:"proxy_agent_id"`
     NetworkingMethod         types.String `tfsdk:"networking_method"`
-    HybridDeploymentAgentId  types.String `tfsdk:"hybrid_deployment_agent_id"`
+    HybridDeploymentAgentId  types.String `tfsdk:"local_processing_agent_id"`
     PrivateLinkId            types.String `tfsdk:"private_link_id"`
 
     Status types.Object `tfsdk:"status"`
@@ -126,7 +126,7 @@ type ConnectorResourceModel struct {
 
     ProxyAgentId             types.String `tfsdk:"proxy_agent_id"`
     NetworkingMethod         types.String `tfsdk:"networking_method"`
-    HybridDeploymentAgentId  types.String `tfsdk:"hybrid_deployment_agent_id"`
+    HybridDeploymentAgentId  types.String `tfsdk:"local_processing_agent_id"`
     PrivateLinkId            types.String `tfsdk:"private_link_id"`
 
     Config   types.Object   `tfsdk:"config"`
