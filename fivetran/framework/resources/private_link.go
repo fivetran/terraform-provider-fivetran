@@ -161,7 +161,7 @@ func (r *privateLink) Delete(ctx context.Context, req resource.DeleteRequest, re
 	if err.Error() != "status code: 404; expected: 200" {
 		resp.Diagnostics.AddError(
 			"Unable to Delete Private Link Resource.",
-			fmt.Sprintf("%v; code: %v; message: %v", err, deleteResponse.Code, deleteResponse.Message),
+			fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
 		)
 		return
 	}
