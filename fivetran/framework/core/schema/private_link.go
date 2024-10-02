@@ -91,7 +91,7 @@ func PrivateLinkResource() resourceSchema.Schema {
                     },
                     "private_dns_regions": resourceSchema.StringAttribute{
                         Optional:    true,
-                        Description: "Private DNS Records.",
+                        Description: "Private DNS Regions.",
                     },
                     "private_connection_service_id": resourceSchema.StringAttribute{
                         Optional:    true,
@@ -182,9 +182,9 @@ func PrivateLinkDatasource() datasourceSchema.Schema {
                         Optional:    true,
                         Description: "The name of subresource.",
                     },
-                    "private_dns_regions": resourceSchema.StringAttribute{
+                    "private_dns_regions": datasourceSchema.StringAttribute{
                         Optional:    true,
-                        Description: "Private DNS Records.",
+                        Description: "Private DNS Regions.",
                     },
                     "private_connection_service_id": datasourceSchema.StringAttribute{
                         Optional:    true,
