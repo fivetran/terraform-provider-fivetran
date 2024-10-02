@@ -35,7 +35,7 @@ func TestResourcePrivateLinkE2E(t *testing.T) {
 					testFivetranPrivateLinkResourceCreate(t, "fivetran_private_link.test_pl"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "name", "test_pl_tf"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "region", "AWS_US_EAST_1"),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "service", "SOURCE"),
+					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "service", "REDSHIFT"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.aws_account_id", "privatelink"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.cluster_identifier", "privatelink"),
 				),
