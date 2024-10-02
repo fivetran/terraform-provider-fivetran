@@ -32,6 +32,7 @@ var PrivateLinkConfigType = map[string]attr.Type{
         "workspace_url":                  types.StringType,
         "pls_id":                         types.StringType,
         "sub_resource_name":              types.StringType,
+        "private_dns_regions":            types.StringType,
         "private_connection_service_id":  types.StringType,
 }
 
@@ -102,6 +103,12 @@ func (d *PrivateLink) ReadFromResponse(ctx context.Context, resp privatelink.Pri
         config["sub_resource_name"] = types.StringNull()
     }
 
+    if resp.Data.Config.PrivateDnsRegions != "" {
+        config["private_dns_regions"] = types.StringValue(resp.Data.Config.PrivateDnsRegions)
+    } else {
+        config["private_dns_regions"] = types.StringNull()
+    }
+
     if resp.Data.Config.PrivateConnectionServiceId != "" {
         config["private_connection_service_id"] = types.StringValue(resp.Data.Config.PrivateConnectionServiceId)
     } else {
@@ -148,6 +155,10 @@ func (d *PrivateLink) GetConfig() privatelink.PrivateLinkConfig {
 
     if !d.Config.Attributes()["private_connection_service_id"].IsNull() {
         config.PrivateConnectionServiceId(d.Config.Attributes()["private_connection_service_id"].(types.String).ValueString())
+    }
+
+    if !d.Config.Attributes()["private_dns_regions"].IsNull() {
+        config.PrivateDnsRegions(d.Config.Attributes()["private_dns_regions"].(types.String).ValueString())
     }
 
     return config
