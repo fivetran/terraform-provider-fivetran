@@ -89,6 +89,7 @@ func cleanupAccount() {
 	cleanupWebhooks()
 	cleanupTeams()
 	cleanupProxyAgents()
+	cleanupPrivateLinks()
 	cleanupHybridDeploymentAgents()
 }
 
@@ -274,6 +275,23 @@ func cleanupProxyAgents() {
 
 	if proxyList.Data.NextCursor != "" {
 		cleanupProxyAgents()
+	}
+}
+
+func cleanupPrivateLinks() {
+	plList, err := client.NewPrivateLinkList().Do(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, pl := range plList.Data.Items {
+		_, err := client.NewPrivateLinkDelete().PrivateLinkId(pl.Id).Do(context.Background())
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	if plList.Data.NextCursor != "" {
+		cleanupPrivateLinks()
 	}
 }
 
