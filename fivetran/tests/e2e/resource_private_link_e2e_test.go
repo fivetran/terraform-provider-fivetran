@@ -6,23 +6,17 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+	"math/rand"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
-func TestResourcePrivateLinkE2E(t *testing.T) {
-	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() {},
-		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
-		CheckDestroy:             testFivetranPrivateLinkResourceDestroy,
-		Steps: []resource.TestStep{
-			{
-				Config: `
+var  := `
             	resource "fivetran_private_link" "test_pl" {
                 	provider = fivetran-provider
 
-                	name = "test_pl_tf"
+                	name = "%v"
                 	region = "AWS_US_EAST_1"
                 	service = "REDSHIFT"
 
@@ -30,7 +24,20 @@ func TestResourcePrivateLinkE2E(t *testing.T) {
     					aws_account_id = "privatelink"
     					cluster_identifier = "privatelink"
                  	}
-            	}`,
+            	}`
+
+const charset = "abcdefghijklmnopqrstuvwxyz" +
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+func TestResourcePrivateLinkE2E(t *testing.T) {
+	resourceConfig = fmt.Sprint(resourceConfig, "test_tf_pl" + rand.Seed(time.Now().UnixNano()))
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranPrivateLinkResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: resourceConfig,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranPrivateLinkResourceCreate(t, "fivetran_private_link.test_pl"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "name", "test_pl_tf"),
