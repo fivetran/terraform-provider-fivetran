@@ -30,10 +30,7 @@ func TestResourcePrivateLinkE2E(t *testing.T) {
 	privateLinkName := "test_tf_pl" + rand.Seed(time.Now().UnixNano()
 	privateLinkCfgValue := "privatelink" + rand.Seed(time.Now().UnixNano())
 
-	resourceConfig = fmt.Sprint(resourceConfig
-		, privateLinkName)
-		, privateLinkCfgValue
-		, privateLinkCfgValue)
+	resourceConfig = fmt.Sprintf(resourceConfig, privateLinkName, privateLinkCfgValue, privateLinkCfgValue)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
