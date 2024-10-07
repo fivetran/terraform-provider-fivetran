@@ -5,14 +5,16 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"strconv"
 	"testing"
 	"math/rand"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
-var  := `
+var resourceConfig = `
             	resource "fivetran_private_link" "test_pl" {
                 	provider = fivetran-provider
 
@@ -26,9 +28,12 @@ var  := `
                  	}
             	}`
 
+var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
+
 func TestResourcePrivateLinkE2E(t *testing.T) {
-	privateLinkName := "test_tf_pl" + rand.Seed(time.Now().UnixNano()
-	privateLinkCfgValue := "privatelink" + rand.Seed(time.Now().UnixNano())
+	suffix := strconv.Itoa(seededRand.Int())
+	privateLinkName := suffix
+	privateLinkCfgValue := "privatelink_" + suffix
 
 	resourceConfig = fmt.Sprintf(resourceConfig, privateLinkName, privateLinkCfgValue, privateLinkCfgValue)
 
