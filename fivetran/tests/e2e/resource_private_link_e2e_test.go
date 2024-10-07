@@ -21,16 +21,20 @@ var  := `
                 	service = "REDSHIFT"
 
                 	config {
-    					aws_account_id = "privatelink"
-    					cluster_identifier = "privatelink"
+    					aws_account_id = "%v"
+    					cluster_identifier = "%v"
                  	}
             	}`
 
-const charset = "abcdefghijklmnopqrstuvwxyz" +
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-
 func TestResourcePrivateLinkE2E(t *testing.T) {
-	resourceConfig = fmt.Sprint(resourceConfig, "test_tf_pl" + rand.Seed(time.Now().UnixNano()))
+	privateLinkName := "test_tf_pl" + rand.Seed(time.Now().UnixNano()
+	privateLinkCfgValue := "privatelink" + rand.Seed(time.Now().UnixNano())
+
+	resourceConfig = fmt.Sprint(resourceConfig
+		, privateLinkName)
+		, privateLinkCfgValue
+		, privateLinkCfgValue)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
 		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
@@ -40,11 +44,11 @@ func TestResourcePrivateLinkE2E(t *testing.T) {
 				Config: resourceConfig,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranPrivateLinkResourceCreate(t, "fivetran_private_link.test_pl"),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "name", "test_pl_tf"),
+					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "name", privateLinkName),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "region", "AWS_US_EAST_1"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "service", "REDSHIFT"),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.aws_account_id", "privatelink"),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.cluster_identifier", "privatelink"),
+					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.aws_account_id", privateLinkCfgValue),
+					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.cluster_identifier", privateLinkCfgValue),
 				),
 			},
 		},
