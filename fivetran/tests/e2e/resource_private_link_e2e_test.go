@@ -78,7 +78,7 @@ func testFivetranPrivateLinkResourceDestroy(s *terraform.State) error {
 		}
 
 		response, err := client.NewPrivateLinkDetails().PrivateLinkId(rs.Primary.ID).Do(context.Background())
-		if err.Error() != "status code: 404; expected: 200" {
+		if err != nil && err.Error() != "status code: 404; expected: 200" {
 			return err
 		}
 		if !strings.HasPrefix(response.Code, "NotFound") {
