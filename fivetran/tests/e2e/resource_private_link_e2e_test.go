@@ -2,9 +2,7 @@ package e2e_test
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"strings"
 	"strconv"
 	"testing"
 	"math/rand"
