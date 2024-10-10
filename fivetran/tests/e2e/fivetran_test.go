@@ -89,7 +89,8 @@ func cleanupAccount() {
 	cleanupWebhooks()
 	cleanupTeams()
 	cleanupProxyAgents()
-	cleanupLocalProcessingAgents()
+	cleanupPrivateLinks()
+	cleanupHybridDeploymentAgents()
 }
 
 func isPredefinedUserExist() bool {
@@ -277,19 +278,36 @@ func cleanupProxyAgents() {
 	}
 }
 
-func cleanupLocalProcessingAgents() {
-	lpaList, err := client.NewLocalProcessingAgentList().Do(context.Background())
+func cleanupPrivateLinks() {
+	plList, err := client.NewPrivateLinkList().Do(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, pl := range plList.Data.Items {
+		_, err := client.NewPrivateLinkDelete().PrivateLinkId(pl.Id).Do(context.Background())
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	if plList.Data.NextCursor != "" {
+		cleanupPrivateLinks()
+	}
+}
+
+func cleanupHybridDeploymentAgents() {
+	lpaList, err := client.NewHybridDeploymentAgentList().Do(context.Background())
 	if err != nil {
 		log.Fatal(err)
 	}
 	for _, lpa := range lpaList.Data.Items {
-		_, err := client.NewLocalProcessingAgentDelete().AgentId(lpa.Id).Do(context.Background())
+		_, err := client.NewHybridDeploymentAgentDelete().AgentId(lpa.Id).Do(context.Background())
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
 
 	if lpaList.Data.NextCursor != "" {
-		cleanupLocalProcessingAgents()
+		cleanupHybridDeploymentAgents()
 	}
 }

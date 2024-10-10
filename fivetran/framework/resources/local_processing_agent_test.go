@@ -11,14 +11,14 @@ import (
 )
 
 var (
-	localProcessingAgentPostHandler   *mock.Handler
-	localProcessingAgentDeleteHandler *mock.Handler
-	localProcessingAgentData map[string]interface{}
+	hybridDeploymentAgentPostHandler   *mock.Handler
+	hybridDeploymentAgentDeleteHandler *mock.Handler
+	hybridDeploymentAgentData map[string]interface{}
 )
 
-func setupMockClientLocalProcessingAgentResource(t *testing.T) {
+func setupMockClientHybridDeploymentAgentResource(t *testing.T) {
 	tfmock.MockClient().Reset()
-	localProcessingAgentResponse :=
+	hybridDeploymentAgentResponse :=
 	`{
      	"id": "lpa_id",
        	"display_name": "display_name",
@@ -31,27 +31,27 @@ func setupMockClientLocalProcessingAgentResource(t *testing.T) {
        	}
     	}`
 
-	localProcessingAgentPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/local-processing-agents").ThenCall(
+	hybridDeploymentAgentPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/hybrid-deployment-agents").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			localProcessingAgentData = tfmock.CreateMapFromJsonString(t, localProcessingAgentResponse)
-			return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Local Processing Agent has been created", localProcessingAgentData), nil
+			hybridDeploymentAgentData = tfmock.CreateMapFromJsonString(t, hybridDeploymentAgentResponse)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Local Processing Agent has been created", hybridDeploymentAgentData), nil
 		},
 	)
 
-	tfmock.MockClient().When(http.MethodGet, "/v1/local-processing-agents/lpa_id").ThenCall(
+	tfmock.MockClient().When(http.MethodGet, "/v1/hybrid-deployment-agents/lpa_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "", localProcessingAgentData), nil
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "", hybridDeploymentAgentData), nil
 		},
 	)
 
-	localProcessingAgentDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/local-processing-agents/lpa_id").ThenCall(
+	hybridDeploymentAgentDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/hybrid-deployment-agents/lpa_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			return tfmock.FivetranSuccessResponse(t, req, 200, "Local Processing Agent has been deleted", nil), nil
 		},
 	)
 }
 
-func TestResourceLocalProcessingAgentMock(t *testing.T) {
+func TestResourceHybridDeploymentAgentMock(t *testing.T) {
 	step1 := resource.TestStep{
 		Config: `
             resource "fivetran_local_processing_agent" "test_lpa" {
@@ -63,7 +63,7 @@ func TestResourceLocalProcessingAgentMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				tfmock.AssertEqual(t, localProcessingAgentPostHandler.Interactions, 1)
+				tfmock.AssertEqual(t, hybridDeploymentAgentPostHandler.Interactions, 1)
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_local_processing_agent.test_lpa", "display_name", "display_name"),
@@ -79,11 +79,11 @@ func TestResourceLocalProcessingAgentMock(t *testing.T) {
 		t,
 		resource.TestCase{
 			PreCheck: func() {
-				setupMockClientLocalProcessingAgentResource(t)
+				setupMockClientHybridDeploymentAgentResource(t)
 			},
 			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
-				tfmock.AssertEqual(t, localProcessingAgentDeleteHandler.Interactions, 1)
+				tfmock.AssertEqual(t, hybridDeploymentAgentDeleteHandler.Interactions, 1)
 				return nil
 			},
 

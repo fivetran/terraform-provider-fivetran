@@ -6,7 +6,7 @@ import (
     resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-func localDataProcessingAgentAttribute() core.Schema {
+func hybridDeploymentAgentAttribute() core.Schema {
     result := core.Schema{
         Fields: map[string]core.SchemaField{
             "id": {
@@ -59,7 +59,7 @@ func localDataProcessingAgentAttribute() core.Schema {
     return result
 }
 
-func localDataProcessingAgentUsageAttribute() core.Schema {
+func hybridDeploymentAgentUsageAttribute() core.Schema {
     return core.Schema{
         Fields: map[string]core.SchemaField{
             "connection_id": {
@@ -81,45 +81,45 @@ func localDataProcessingAgentUsageAttribute() core.Schema {
     }
 }
 
-func localDataProcessingAgentDatasourceSchema() map[string]datasourceSchema.Attribute {
-    schema := localDataProcessingAgentAttribute().GetDatasourceSchema()
+func hybridDeploymentAgentDatasourceSchema() map[string]datasourceSchema.Attribute {
+    schema := hybridDeploymentAgentAttribute().GetDatasourceSchema()
 
     schema["usage"] = datasourceSchema.SetNestedAttribute{
                         Computed: true,
                         NestedObject: datasourceSchema.NestedAttributeObject{
-                            Attributes: localDataProcessingAgentUsageAttribute().GetDatasourceSchema(),
+                            Attributes: hybridDeploymentAgentUsageAttribute().GetDatasourceSchema(),
                         },
                     }
     return schema
 }
 
-func localDataProcessingAgentResourceSchema() map[string]resourceSchema.Attribute {
-    schema := localDataProcessingAgentAttribute().GetResourceSchema()
+func hybridDeploymentAgentResourceSchema() map[string]resourceSchema.Attribute {
+    schema := hybridDeploymentAgentAttribute().GetResourceSchema()
 
     schema["usage"] = resourceSchema.SetNestedAttribute{
                         Computed: true,
                         NestedObject: resourceSchema.NestedAttributeObject{
-                            Attributes: localDataProcessingAgentUsageAttribute().GetResourceSchema(),
+                            Attributes: hybridDeploymentAgentUsageAttribute().GetResourceSchema(),
                         },
                     }
     return schema
 }
 
-func LocalProcessingAgentResource() resourceSchema.Schema {
-    return resourceSchema.Schema{Attributes: localDataProcessingAgentResourceSchema(),}
+func HybridDeploymentAgentResource() resourceSchema.Schema {
+    return resourceSchema.Schema{Attributes: hybridDeploymentAgentResourceSchema(),}
 }
 
-func LocalProcessingAgentDatasource() datasourceSchema.Schema {
-    return datasourceSchema.Schema{Attributes: localDataProcessingAgentDatasourceSchema(),}
+func HybridDeploymentAgentDatasource() datasourceSchema.Schema {
+    return datasourceSchema.Schema{Attributes: hybridDeploymentAgentDatasourceSchema(),}
 }
 
-func LocalProcessingAgentsDatasource() datasourceSchema.Schema {
+func HybridDeploymentAgentsDatasource() datasourceSchema.Schema {
     return datasourceSchema.Schema{
         Attributes: map[string]datasourceSchema.Attribute{
             "items": datasourceSchema.SetNestedAttribute{
                 Computed: true,
                 NestedObject: datasourceSchema.NestedAttributeObject{
-                    Attributes: localDataProcessingAgentDatasourceSchema(),
+                    Attributes: hybridDeploymentAgentDatasourceSchema(),
                 },
             },
         },

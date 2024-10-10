@@ -36,6 +36,7 @@ data "fivetran_connector" "connector" {
 - `pause_after_trial` (Boolean) Specifies whether the connector should be paused after the free trial period has ended.
 - `paused` (Boolean) Specifies whether the connector is paused.
 - `proxy_agent_id` (String) The proxy agent ID.
+- `private_link_id` (String) The private link ID.
 - `schedule_type` (String) The connector schedule configuration type. Supported values: auto, manual.
 - `service` (String) The connector type id within the Fivetran system.
 - `service_version` (String) The connector type version within the Fivetran system.
