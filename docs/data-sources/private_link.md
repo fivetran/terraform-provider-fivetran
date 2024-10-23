@@ -48,6 +48,7 @@ Optional:
 - `connection_service_name` (String) The name of your connection service.
 - `pls_id` (String) The ID of your Azure Private Link service.
 - `private_connection_service_id` (String) The ID of your connection service.
+- `private_dns_regions` (String) Private DNS Regions.
 - `sub_resource_name` (String) The name of subresource.
 - `vpce_id` (String) The ID of your Virtual Private Cloud Endpoint.
 - `workspace_url` (String) The URL of your workspace.

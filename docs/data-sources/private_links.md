@@ -30,6 +30,6 @@ Read-Only:
 - `id` (String) The unique identifier for the private link within the Fivetran system.
 - `name` (String) The private link name within the account. The name must start with a letter or underscore and can only contain letters, numbers, or underscores. Maximum size of name is 23 characters.
 - `region` (String) Data processing location. This is where Fivetran will operate and run computation on data.
-- `service` (String) Service type.
+- `service` (String) Service type. Possible values: SNOWFLAKE_AZURE, ONELAKE_AZURE, SNOWFLAKE_GCP, SOURCE_AZURE, DATABRICKS_AZURE, POSTGRES_WAREHOUSE_AZURE, SQL_DATA_WAREHOUSE_AZURE, SNOWFLAKE_AWS, SOURCE_AWS, DATABRICKS_AWS, REDSHIFT_AWS, SOURCE_GCP, SYNAPSE_AZURE
 - `state` (String) The state of the private link.
 - `state_summary` (String) The state of the private link.
