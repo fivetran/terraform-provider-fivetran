@@ -29,6 +29,7 @@ var resourceConfig = `
 var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 func TestResourcePrivateLinkE2E(t *testing.T) {
+	t.Skip("Private links have a strict limit on the number of entities created. This test should only be used for intermediate tests when changes are made directly to Private links.")
 	suffix := strconv.Itoa(seededRand.Int())
 	privateLinkName := suffix
 	privateLinkCfgValue := "privatelink_" + suffix
