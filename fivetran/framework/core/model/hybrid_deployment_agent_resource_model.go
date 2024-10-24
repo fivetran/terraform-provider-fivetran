@@ -1,12 +1,12 @@
 package model
 
 import (
-	"github.com/fivetran/go-fivetran/local_processing_agent"
+	"github.com/fivetran/go-fivetran/hybrid_deployment_agent"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 )
 
-type LocalProcessingAgentResourceModel struct {
+type HybridDeploymentAgentResourceModel struct {
     Id                  	types.String `tfsdk:"id"`
     DisplayName         	types.String `tfsdk:"display_name"`
     GroupId             	types.String `tfsdk:"group_id"`
@@ -18,30 +18,30 @@ type LocalProcessingAgentResourceModel struct {
     Usage               	types.Set    `tfsdk:"usage"`
 }
 
-var _ localProcessingAgentModel = &LocalProcessingAgentResourceModel{}
+var _ hybridDeploymentAgentModel = &HybridDeploymentAgentResourceModel{}
 
-func (d *LocalProcessingAgentResourceModel) SetId(value string) {
+func (d *HybridDeploymentAgentResourceModel) SetId(value string) {
 	d.Id = types.StringValue(value)
 }
-func (d *LocalProcessingAgentResourceModel) SetGroupId(value string) {
+func (d *HybridDeploymentAgentResourceModel) SetGroupId(value string) {
 	d.GroupId = types.StringValue(value)
 }
-func (d *LocalProcessingAgentResourceModel) SetDisplayName(value string) {
+func (d *HybridDeploymentAgentResourceModel) SetDisplayName(value string) {
 	d.DisplayName = types.StringValue(value)
 }
-func (d *LocalProcessingAgentResourceModel) SetRegisteredAt(value string) {
+func (d *HybridDeploymentAgentResourceModel) SetRegisteredAt(value string) {
 	d.RegisteredAt = types.StringValue(value)
 }
-func (d *LocalProcessingAgentResourceModel) SetConfigJson(value string) {
+func (d *HybridDeploymentAgentResourceModel) SetConfigJson(value string) {
 	d.ConfigJson = types.StringValue(value)
 }
-func (d *LocalProcessingAgentResourceModel) SetAuthJson(value string) {
+func (d *HybridDeploymentAgentResourceModel) SetAuthJson(value string) {
 	d.AuthJson = types.StringValue(value)
 }
-func (d *LocalProcessingAgentResourceModel) SetDockerComposeYaml(value string) {
+func (d *HybridDeploymentAgentResourceModel) SetDockerComposeYaml(value string) {
 	d.DockerComposeYaml = types.StringValue(value)
 }
-func (d *LocalProcessingAgentResourceModel) SetUsage(value []localprocessingagent.LocalProcessingAgentUsageDetails) {
+func (d *HybridDeploymentAgentResourceModel) SetUsage(value []hybriddeploymentagent.HybridDeploymentAgentUsageDetails) {
     if value == nil {
         d.Usage = types.SetNull(types.ObjectType{AttrTypes: elementType})
     }
@@ -59,13 +59,13 @@ func (d *LocalProcessingAgentResourceModel) SetUsage(value []localprocessingagen
 
     d.Usage, _ = types.SetValue(types.ObjectType{AttrTypes: elementType}, items)
 }
-func (d *LocalProcessingAgentResourceModel) ReadFromCreateResponse(resp localprocessingagent.LocalProcessingAgentCreateResponse) {
-	var model localProcessingAgentModel = d
-	readLocalProcessingAgentFromCreateResponse(model, resp)
+func (d *HybridDeploymentAgentResourceModel) ReadFromCreateResponse(resp hybriddeploymentagent.HybridDeploymentAgentCreateResponse) {
+	var model hybridDeploymentAgentModel = d
+	readHybridDeploymentAgentFromCreateResponse(model, resp)
 	d.AuthenticationCounter = types.Int64Value(d.AuthenticationCounter.ValueInt64() + 1)
 }
 
-func (d *LocalProcessingAgentResourceModel) ReadFromResponse(resp localprocessingagent.LocalProcessingAgentDetailsResponse) {
-	var model localProcessingAgentModel = d
-	readLocalProcessingAgentFromResponse(model, resp)
+func (d *HybridDeploymentAgentResourceModel) ReadFromResponse(resp hybriddeploymentagent.HybridDeploymentAgentDetailsResponse) {
+	var model hybridDeploymentAgentModel = d
+	readHybridDeploymentAgentFromResponse(model, resp)
 }
