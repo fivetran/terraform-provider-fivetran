@@ -18,7 +18,7 @@ var resourceConfig = `
 
                 	name = "%v"
                 	region = "AWS_US_EAST_1"
-                	service = "REDSHIFT_AWS"
+                	service = "REDSHIFT"
 
                 	config {
     					aws_account_id = "%v"
@@ -45,7 +45,7 @@ func TestResourcePrivateLinkE2E(t *testing.T) {
 					testFivetranPrivateLinkResourceCreate(t, "fivetran_private_link.test_pl"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "name", privateLinkName),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "region", "AWS_US_EAST_1"),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "service", "REDSHIFT_AWS"),
+					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "service", "REDSHIFT"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.aws_account_id", privateLinkCfgValue),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.cluster_identifier", privateLinkCfgValue),
 				),
