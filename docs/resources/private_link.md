@@ -29,7 +29,7 @@ resource "fivetran_private_link" "test_pl" {
 
 - `name` (String) The private link name within the account. The name must start with a letter or underscore and can only contain letters, numbers, or underscores. Maximum size of name is 23 characters.
 - `region` (String) Data processing location. This is where Fivetran will operate and run computation on data.
-- `service` (String) Service type. Possible values: SNOWFLAKE_AZURE, ONELAKE_AZURE, SNOWFLAKE_GCP, SOURCE_AZURE, DATABRICKS_AZURE, POSTGRES_WAREHOUSE_AZURE, SQL_DATA_WAREHOUSE_AZURE, SNOWFLAKE_AWS, SOURCE_AWS, DATABRICKS_AWS, REDSHIFT_AWS, SOURCE_GCP, SYNAPSE_AZURE
+- `service` (String) Service type.
 
 ### Optional
 
@@ -56,7 +56,6 @@ Optional:
 - `connection_service_name` (String) The name of your connection service.
 - `pls_id` (String) The ID of your Azure Private Link service.
 - `private_connection_service_id` (String) The ID of your connection service.
-- `private_dns_regions` (String) Private DNS Regions.
 - `sub_resource_name` (String) The name of subresource.
 - `vpce_id` (String) The ID of your Virtual Private Cloud Endpoint.
 - `workspace_url` (String) The URL of your workspace.

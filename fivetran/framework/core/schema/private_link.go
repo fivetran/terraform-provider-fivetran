@@ -27,7 +27,7 @@ func PrivateLinkResource() resourceSchema.Schema {
             "service": resourceSchema.StringAttribute{
                 Required:    true,
                 PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
-                Description: "Service type. Possible values: SNOWFLAKE_AZURE, ONELAKE_AZURE, SNOWFLAKE_GCP, SOURCE_AZURE, DATABRICKS_AZURE, POSTGRES_WAREHOUSE_AZURE, SQL_DATA_WAREHOUSE_AZURE, SNOWFLAKE_AWS, SOURCE_AWS, DATABRICKS_AWS, REDSHIFT_AWS, SOURCE_GCP, SYNAPSE_AZURE",
+                Description: "Service type.",
             },
             "cloud_provider": resourceSchema.StringAttribute{
                 Computed:    true,
@@ -216,7 +216,7 @@ func PrivateLinksDatasource() datasourceSchema.Schema {
                         },
                         "service": datasourceSchema.StringAttribute{
                             Computed:    true,
-                            Description: "Service type. Possible values: SNOWFLAKE_AZURE, ONELAKE_AZURE, SNOWFLAKE_GCP, SOURCE_AZURE, DATABRICKS_AZURE, POSTGRES_WAREHOUSE_AZURE, SQL_DATA_WAREHOUSE_AZURE, SNOWFLAKE_AWS, SOURCE_AWS, DATABRICKS_AWS, REDSHIFT_AWS, SOURCE_GCP, SYNAPSE_AZURE",
+                            Description: "Service type.",
                         },
                         "cloud_provider": datasourceSchema.StringAttribute{
                             Computed:    true,
