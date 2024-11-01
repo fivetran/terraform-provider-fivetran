@@ -43,7 +43,7 @@ func testFivetranLocalProcessingAgentResourceCreate(t *testing.T, resourceName s
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
 
-		_, err := client.NewLocalProcessingAgentDetails().AgentId(rs.Primary.ID).Do(context.Background())
+		_, err := client.NewHybridDeploymentAgentDetails().AgentId(rs.Primary.ID).Do(context.Background())
 		if err != nil {
 			fmt.Println(err)
 			return err
@@ -59,7 +59,7 @@ func testFivetranLocalProcessingAgentResourceDestroy(s *terraform.State) error {
 			continue
 		}
 
-		response, err := client.NewLocalProcessingAgentDetails().AgentId(rs.Primary.ID).Do(context.Background())
+		response, err := client.NewHybridDeploymentAgentDetails().AgentId(rs.Primary.ID).Do(context.Background())
 		if err.Error() != "status code: 404; expected: 200" {
 			return err
 		}
