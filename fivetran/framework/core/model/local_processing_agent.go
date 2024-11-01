@@ -1,7 +1,7 @@
 package model
 
 import (
-    "github.com/fivetran/go-fivetran/local_processing_agent"
+    localprocessingagent "github.com/fivetran/go-fivetran/hybrid_deployment_agent"
 )
 
 type localProcessingAgentModel interface {
@@ -12,10 +12,10 @@ type localProcessingAgentModel interface {
     SetConfigJson(string)
     SetAuthJson(string)
     SetDockerComposeYaml(string)
-    SetUsage([]localprocessingagent.LocalProcessingAgentUsageDetails)
+    SetUsage([]localprocessingagent.HybridDeploymentAgentUsageDetails)
 }
 
-func readLocalProcessingAgentFromResponse(d localProcessingAgentModel, resp localprocessingagent.LocalProcessingAgentDetailsResponse) {
+func readLocalProcessingAgentFromResponse(d localProcessingAgentModel, resp localprocessingagent.HybridDeploymentAgentDetailsResponse) {
     d.SetId(resp.Data.Id)
     d.SetDisplayName(resp.Data.DisplayName)
     d.SetGroupId(resp.Data.GroupId)
@@ -23,7 +23,7 @@ func readLocalProcessingAgentFromResponse(d localProcessingAgentModel, resp loca
     d.SetUsage(resp.Data.Usage)
 }
 
-func readLocalProcessingAgentFromCreateResponse(d localProcessingAgentModel, resp localprocessingagent.LocalProcessingAgentCreateResponse) {
+func readLocalProcessingAgentFromCreateResponse(d localProcessingAgentModel, resp localprocessingagent.HybridDeploymentAgentCreateResponse) {
     d.SetId(resp.Data.Id)
     d.SetDisplayName(resp.Data.DisplayName)
     d.SetGroupId(resp.Data.GroupId)

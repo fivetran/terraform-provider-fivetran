@@ -310,8 +310,8 @@ func (c *ConnectorModelContainer) ReadFromResponseData(data connectors.DetailsRe
 		c.NetworkingMethod = data.NetworkingMethod
 	}
 
-	if data.LocalProcessingAgentId != "" {
-		c.LocalProcessingAgentId = data.LocalProcessingAgentId
+	if data.HybridDeploymentAgentId != "" {
+		c.LocalProcessingAgentId = data.HybridDeploymentAgentId
 	}
 
     if data.PrivateLinkId != "" {

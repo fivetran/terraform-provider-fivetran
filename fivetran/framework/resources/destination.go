@@ -106,7 +106,7 @@ func (r *destination) Create(ctx context.Context, req resource.CreateRequest, re
 		ConfigCustom(&configMap)
 
 	if data.LocalProcessingAgentId.ValueString() != "" {
-		svc.LocalProcessingAgentId(data.LocalProcessingAgentId.ValueString())
+		svc.HybridDeploymentAgentId(data.LocalProcessingAgentId.ValueString())
 	}
 
 	if data.NetworkingMethod.ValueString() != "" {
@@ -292,7 +292,7 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 			DestinationID(state.Id.ValueString())
 
 		if plan.LocalProcessingAgentId.ValueString() != "" {
-			svc.LocalProcessingAgentId(plan.LocalProcessingAgentId.ValueString())
+			svc.HybridDeploymentAgentId(plan.LocalProcessingAgentId.ValueString())
 		}
 
 		if plan.NetworkingMethod.ValueString() != "" {

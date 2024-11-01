@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/fivetran/go-fivetran/local_processing_agent"
+	localprocessingagent "github.com/fivetran/go-fivetran/hybrid_deployment_agent"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 )
@@ -36,7 +36,7 @@ func (d *LocalProcessingAgentDatasourceModel) SetDisplayName(value string) {
 func (d *LocalProcessingAgentDatasourceModel) SetRegisteredAt(value string) {
 	d.RegisteredAt = types.StringValue(value)
 }
-func (d *LocalProcessingAgentDatasourceModel) SetUsage(value []localprocessingagent.LocalProcessingAgentUsageDetails) {
+func (d *LocalProcessingAgentDatasourceModel) SetUsage(value []localprocessingagent.HybridDeploymentAgentUsageDetails) {
     if value == nil {
         d.Usage = types.SetNull(types.ObjectType{AttrTypes: elementType})
     }
@@ -59,7 +59,7 @@ func (d *LocalProcessingAgentDatasourceModel) SetConfigJson(value string) {}
 func (d *LocalProcessingAgentDatasourceModel) SetAuthJson(value string) {}
 func (d *LocalProcessingAgentDatasourceModel) SetDockerComposeYaml(value string) {}
 
-func (d *LocalProcessingAgentDatasourceModel) ReadFromResponse(resp localprocessingagent.LocalProcessingAgentDetailsResponse) {
+func (d *LocalProcessingAgentDatasourceModel) ReadFromResponse(resp localprocessingagent.HybridDeploymentAgentDetailsResponse) {
 	var model localProcessingAgentModel = d
 	readLocalProcessingAgentFromResponse(model, resp)
 }

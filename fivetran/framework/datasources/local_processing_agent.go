@@ -44,7 +44,7 @@ func (d *localProcessingAgent) Read(ctx context.Context, req datasource.ReadRequ
 
     resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
-    detailsResponse, err := d.GetClient().NewLocalProcessingAgentDetails().AgentId(data.Id.ValueString()).Do(ctx)
+    detailsResponse, err := d.GetClient().NewHybridDeploymentAgentDetails().AgentId(data.Id.ValueString()).Do(ctx)
 
     if err != nil {
         resp.Diagnostics.AddError(

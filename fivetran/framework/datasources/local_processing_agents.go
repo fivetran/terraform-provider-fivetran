@@ -7,7 +7,7 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
-    sdk "github.com/fivetran/go-fivetran/local_processing_agent"
+    sdk "github.com/fivetran/go-fivetran/hybrid_deployment_agent"
 
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
 )
@@ -45,13 +45,13 @@ func (d *localProcessingAgents) Read(ctx context.Context, req datasource.ReadReq
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
 	var respNextCursor string
-	var listResponse sdk.LocalProcessingAgentListResponse
+	var listResponse sdk.HybridDeploymentAgentListResponse
 	limit := 1000
 
 	for {
 		var err error
-		var tmpResp sdk.LocalProcessingAgentListResponse
-		svc := d.GetClient().NewLocalProcessingAgentList()
+		var tmpResp sdk.HybridDeploymentAgentListResponse
+		svc := d.GetClient().NewHybridDeploymentAgentList()
 		
 		if respNextCursor == "" {
 			tmpResp, err = svc.Limit(limit).Do(ctx)
@@ -66,7 +66,7 @@ func (d *localProcessingAgents) Read(ctx context.Context, req datasource.ReadReq
 				"Read error.",
 				fmt.Sprintf("%v; code: %v", err, tmpResp.Code),
 			)
-			listResponse = sdk.LocalProcessingAgentListResponse{}
+			listResponse = sdk.HybridDeploymentAgentListResponse{}
 		}
 
 		listResponse.Data.Items = append(listResponse.Data.Items, tmpResp.Data.Items...)

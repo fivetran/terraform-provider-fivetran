@@ -20,6 +20,7 @@ type DestinationResourceModel struct {
 	Timeouts					 timeouts.Value `tfsdk:"timeouts"`
     LocalProcessingAgentId       types.String   `tfsdk:"local_processing_agent_id"`
     NetworkingMethod             types.String   `tfsdk:"networking_method"`
+    PrivateLinkId                types.String `tfsdk:"private_link_id"`
 
 	RunSetupTests    			 types.Bool 	`tfsdk:"run_setup_tests"`
 	TrustCertificates			 types.Bool 	`tfsdk:"trust_certificates"`

@@ -17,6 +17,7 @@ type DestinationDatasourceModel struct {
 	DaylightSavingTimeEnabled	 types.Bool   `tfsdk:"daylight_saving_time_enabled"`
     LocalProcessingAgentId       types.String `tfsdk:"local_processing_agent_id"`
     NetworkingMethod             types.String `tfsdk:"networking_method"`
+    PrivateLinkId                types.String `tfsdk:"private_link_id"`
 	Config        				 types.Object `tfsdk:"config"`
 }
 

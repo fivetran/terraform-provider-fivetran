@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/fivetran/go-fivetran/local_processing_agent"
+	localprocessingagent "github.com/fivetran/go-fivetran/hybrid_deployment_agent"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 )
@@ -41,7 +41,7 @@ func (d *LocalProcessingAgentResourceModel) SetAuthJson(value string) {
 func (d *LocalProcessingAgentResourceModel) SetDockerComposeYaml(value string) {
 	d.DockerComposeYaml = types.StringValue(value)
 }
-func (d *LocalProcessingAgentResourceModel) SetUsage(value []localprocessingagent.LocalProcessingAgentUsageDetails) {
+func (d *LocalProcessingAgentResourceModel) SetUsage(value []localprocessingagent.HybridDeploymentAgentUsageDetails) {
     if value == nil {
         d.Usage = types.SetNull(types.ObjectType{AttrTypes: elementType})
     }
@@ -59,13 +59,13 @@ func (d *LocalProcessingAgentResourceModel) SetUsage(value []localprocessingagen
 
     d.Usage, _ = types.SetValue(types.ObjectType{AttrTypes: elementType}, items)
 }
-func (d *LocalProcessingAgentResourceModel) ReadFromCreateResponse(resp localprocessingagent.LocalProcessingAgentCreateResponse) {
+func (d *LocalProcessingAgentResourceModel) ReadFromCreateResponse(resp localprocessingagent.HybridDeploymentAgentCreateResponse) {
 	var model localProcessingAgentModel = d
 	readLocalProcessingAgentFromCreateResponse(model, resp)
 	d.AuthenticationCounter = types.Int64Value(d.AuthenticationCounter.ValueInt64() + 1)
 }
 
-func (d *LocalProcessingAgentResourceModel) ReadFromResponse(resp localprocessingagent.LocalProcessingAgentDetailsResponse) {
+func (d *LocalProcessingAgentResourceModel) ReadFromResponse(resp localprocessingagent.HybridDeploymentAgentDetailsResponse) {
 	var model localProcessingAgentModel = d
 	readLocalProcessingAgentFromResponse(model, resp)
 }
