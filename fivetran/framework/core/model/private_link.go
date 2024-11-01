@@ -21,7 +21,6 @@ type PrivateLink struct {
     CreatedBy       types.String `tfsdk:"created_by"`
     
     Config          types.Object `tfsdk:"config"`
-    CustomConfig    types.Object `tfsdk:"custom_config"`
 }
 
 var PrivateLinkConfigType = map[string]attr.Type{
@@ -203,7 +202,7 @@ func (d *PrivateLink) ReadFromCustomResponse(ctx context.Context, resp privateli
 }
 
 func (d *PrivateLink) GetConfig() map[string]interface{} {
-    attr := d.CustomConfig.Attributes()
+    attr := d.Config.Attributes()
 
     config := make(map[string]interface{})
     for k, v := range attr{
