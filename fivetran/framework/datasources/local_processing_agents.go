@@ -7,31 +7,31 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
-    sdk "github.com/fivetran/go-fivetran/hybrid_deployment_agent"
+    sdk "github.com/fivetran/go-fivetran/local_processing_agent"
 
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
 )
 
-func HybridDeploymentAgents() datasource.DataSource {
-	return &hybridDeploymentAgents{}
+func LocalProcessingAgents() datasource.DataSource {
+	return &localProcessingAgents{}
 }
 
 // Ensure the implementation satisfies the desired interfaces.
-var _ datasource.DataSourceWithConfigure = &hybridDeploymentAgents{}
+var _ datasource.DataSourceWithConfigure = &localProcessingAgents{}
 
-type hybridDeploymentAgents struct {
+type localProcessingAgents struct {
 	core.ProviderDatasource
 }
 
-func (d *hybridDeploymentAgents) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = "fivetran_hybrid_deployment_agents"
+func (d *localProcessingAgents) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = "fivetran_local_processing_agents"
 }
 
-func (d *hybridDeploymentAgents) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
-	resp.Schema = fivetranSchema.HybridDeploymentAgentsDatasource()
+func (d *localProcessingAgents) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+	resp.Schema = fivetranSchema.LocalProcessingAgentsDatasource()
 }
 
-func (d *hybridDeploymentAgents) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+func (d *localProcessingAgents) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	if d.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -41,17 +41,17 @@ func (d *hybridDeploymentAgents) Read(ctx context.Context, req datasource.ReadRe
 		return
 	}
 
-	var data model.HybridDeploymentAgents
+	var data model.LocalProcessingAgents
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
 	var respNextCursor string
-	var listResponse sdk.HybridDeploymentAgentListResponse
+	var listResponse sdk.LocalProcessingAgentListResponse
 	limit := 1000
 
 	for {
 		var err error
-		var tmpResp sdk.HybridDeploymentAgentListResponse
-		svc := d.GetClient().NewHybridDeploymentAgentList()
+		var tmpResp sdk.LocalProcessingAgentListResponse
+		svc := d.GetClient().NewLocalProcessingAgentList()
 		
 		if respNextCursor == "" {
 			tmpResp, err = svc.Limit(limit).Do(ctx)
@@ -66,7 +66,7 @@ func (d *hybridDeploymentAgents) Read(ctx context.Context, req datasource.ReadRe
 				"Read error.",
 				fmt.Sprintf("%v; code: %v", err, tmpResp.Code),
 			)
-			listResponse = sdk.HybridDeploymentAgentListResponse{}
+			listResponse = sdk.LocalProcessingAgentListResponse{}
 		}
 
 		listResponse.Data.Items = append(listResponse.Data.Items, tmpResp.Data.Items...)
