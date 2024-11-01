@@ -27,13 +27,6 @@ Updates to support management of private links:
 - Datasource `fivetran_destination` updates:
   - Added field `fivetran_destination.private_link_id`.
 
-## Updated
-- Resource `fivetran_local_processing_agent` renamed to `fivetran_hybrid_deployment_agent`.
-- Data source `fivetran_local_processing_agent` renamed to `fivetran_hybrid_deployment_agent`.
-- Data source `fivetran_local_processing_agents` renamed to `fivetran_hybrid_deployment_agents`.
-- Field `fivetran_connector.local_processing_agent_id` renamed to `fivetran_connector.hybrid_deployment_id`.
-- Field `fivetran_destination.local_processing_agent_id` renamed to `fivetran_destination.hybrid_deployment_id`.
-
 ## [1.3.2](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.3.1...v1.3.2)
 
 ## Added
