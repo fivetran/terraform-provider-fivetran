@@ -60,16 +60,16 @@ func DestinationAttributesSchema() core.Schema {
 				Description: "Destination setup status.",
 			},
 			"daylight_saving_time_enabled": {
-				ValueType:   core.Boolean,
-				Description: "Shift my UTC offset with daylight savings time (US Only)",
+				ValueType:    core.Boolean,
+				Description:  "Shift my UTC offset with daylight savings time (US Only)",
 			},
 			"private_link_id": {
 				ValueType:   core.String,
 				Description: "The private link ID.",
 			},
-			"hybrid_deployment_agent_id": {
+			"local_processing_agent_id": {
 				ValueType:   core.String,
-				Description: "The lhybrid deployment agent ID that refers to the controller created for the group the connection belongs to. If the value is specified, the system will try to associate the connection with an existing agent.",
+				Description: "The local processing agent ID that refers to the controller created for the group the connection belongs to. If the value is specified, the system will try to associate the connection with an existing agent.",
 			},
 			"networking_method": {
 				ValueType:   	core.StringEnum,

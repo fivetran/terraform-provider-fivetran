@@ -1,194 +1,194 @@
 package model
 
 import (
-    "fmt"
-    "strings"
+	"fmt"
+	"strings"
 
-    gfcommon "github.com/fivetran/go-fivetran/common"
-    "github.com/fivetran/go-fivetran/connectors"
-    "github.com/fivetran/terraform-provider-fivetran/fivetran/common"
-    "github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
-    "github.com/hashicorp/terraform-plugin-framework/attr"
-    "github.com/hashicorp/terraform-plugin-framework/diag"
-    "github.com/hashicorp/terraform-plugin-framework/types"
-    "github.com/hashicorp/terraform-plugin-framework/types/basetypes"
+	gfcommon "github.com/fivetran/go-fivetran/common"
+	"github.com/fivetran/go-fivetran/connectors"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/common"
+	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
 type ConnectorDatasourceModel struct {
-    Id          types.String `tfsdk:"id"`
-    Name        types.String `tfsdk:"name"`
-    ConnectedBy types.String `tfsdk:"connected_by"`
-    CreatedAt   types.String `tfsdk:"created_at"`
-    GroupId     types.String `tfsdk:"group_id"`
-    Service     types.String `tfsdk:"service"`
+	Id          types.String `tfsdk:"id"`
+	Name        types.String `tfsdk:"name"`
+	ConnectedBy types.String `tfsdk:"connected_by"`
+	CreatedAt   types.String `tfsdk:"created_at"`
+	GroupId     types.String `tfsdk:"group_id"`
+	Service     types.String `tfsdk:"service"`
 
-    DestinationSchema types.Object `tfsdk:"destination_schema"`
+	DestinationSchema types.Object `tfsdk:"destination_schema"`
 
-    SucceededAt     types.String `tfsdk:"succeeded_at"`
-    FailedAt        types.String `tfsdk:"failed_at"`
-    ServiceVersion  types.String `tfsdk:"service_version"`
-    SyncFrequency   types.Int64  `tfsdk:"sync_frequency"`
-    ScheduleType    types.String `tfsdk:"schedule_type"`
-    Paused          types.Bool   `tfsdk:"paused"`
-    PauseAfterTrial types.Bool   `tfsdk:"pause_after_trial"`
-    DailySyncTime   types.String `tfsdk:"daily_sync_time"`
+	SucceededAt     types.String `tfsdk:"succeeded_at"`
+	FailedAt        types.String `tfsdk:"failed_at"`
+	ServiceVersion  types.String `tfsdk:"service_version"`
+	SyncFrequency   types.Int64  `tfsdk:"sync_frequency"`
+	ScheduleType    types.String `tfsdk:"schedule_type"`
+	Paused          types.Bool   `tfsdk:"paused"`
+	PauseAfterTrial types.Bool   `tfsdk:"pause_after_trial"`
+	DailySyncTime   types.String `tfsdk:"daily_sync_time"`
 
-    ProxyAgentId             types.String `tfsdk:"proxy_agent_id"`
-    NetworkingMethod         types.String `tfsdk:"networking_method"`
-    HybridDeploymentAgentId  types.String `tfsdk:"hybrid_deployment_agent_id"`
-    PrivateLinkId            types.String `tfsdk:"private_link_id"`
+	ProxyAgentId           types.String `tfsdk:"proxy_agent_id"`
+	NetworkingMethod       types.String `tfsdk:"networking_method"`
+	LocalProcessingAgentId types.String `tfsdk:"local_processing_agent_id"`
+    PrivateLinkId          types.String `tfsdk:"private_link_id"`
 
-    Status types.Object `tfsdk:"status"`
+	Status types.Object `tfsdk:"status"`
 
-    Config types.Object `tfsdk:"config"`
+	Config types.Object `tfsdk:"config"`
 }
 
 var (
-    codeMessageAttrTypes = map[string]attr.Type{
-        "code":    types.StringType,
-        "message": types.StringType,
-    }
+	codeMessageAttrTypes = map[string]attr.Type{
+		"code":    types.StringType,
+		"message": types.StringType,
+	}
 )
 
 func (d *ConnectorDatasourceModel) ReadFromResponse(resp connectors.DetailsWithCustomConfigNoTestsResponse) {
-    responseContainer := ConnectorModelContainer{}
-    responseContainer.ReadFromResponseData(resp.Data.DetailsResponseDataCommon, resp.Data.Config)
-    d.ReadFromContainer(responseContainer)
+	responseContainer := ConnectorModelContainer{}
+	responseContainer.ReadFromResponseData(resp.Data.DetailsResponseDataCommon, resp.Data.Config)
+	d.ReadFromContainer(responseContainer)
 
-    d.SucceededAt = types.StringValue(resp.Data.SucceededAt.String())
-    d.FailedAt = types.StringValue(resp.Data.FailedAt.String())
-    d.ServiceVersion = types.StringValue(fmt.Sprintf("%v", *resp.Data.ServiceVersion))
-    d.SyncFrequency = types.Int64Value(int64(*resp.Data.SyncFrequency))
-    d.ScheduleType = types.StringValue(resp.Data.ScheduleType)
-    d.Paused = types.BoolValue(*resp.Data.Paused)
-    d.PauseAfterTrial = types.BoolValue(*resp.Data.PauseAfterTrial)
+	d.SucceededAt = types.StringValue(resp.Data.SucceededAt.String())
+	d.FailedAt = types.StringValue(resp.Data.FailedAt.String())
+	d.ServiceVersion = types.StringValue(fmt.Sprintf("%v", *resp.Data.ServiceVersion))
+	d.SyncFrequency = types.Int64Value(int64(*resp.Data.SyncFrequency))
+	d.ScheduleType = types.StringValue(resp.Data.ScheduleType)
+	d.Paused = types.BoolValue(*resp.Data.Paused)
+	d.PauseAfterTrial = types.BoolValue(*resp.Data.PauseAfterTrial)
 
-    if resp.Data.DailySyncTime != "" {
-        d.DailySyncTime = types.StringValue(resp.Data.DailySyncTime)
-    } else {
-        d.DailySyncTime = types.StringNull()
-    }
+	if resp.Data.DailySyncTime != "" {
+		d.DailySyncTime = types.StringValue(resp.Data.DailySyncTime)
+	} else {
+		d.DailySyncTime = types.StringNull()
+	}
 
-    codeMessageAttrType := types.ObjectType{
-        AttrTypes: codeMessageAttrTypes,
-    }
+	codeMessageAttrType := types.ObjectType{
+		AttrTypes: codeMessageAttrTypes,
+	}
 
-    warns := []attr.Value{}
-    for _, w := range resp.Data.Status.Warnings {
-        warns = append(warns, readCommonResponse(w))
-    }
-    tasks := []attr.Value{}
-    for _, t := range resp.Data.Status.Tasks {
-        tasks = append(tasks, readCommonResponse(t))
-    }
+	warns := []attr.Value{}
+	for _, w := range resp.Data.Status.Warnings {
+		warns = append(warns, readCommonResponse(w))
+	}
+	tasks := []attr.Value{}
+	for _, t := range resp.Data.Status.Tasks {
+		tasks = append(tasks, readCommonResponse(t))
+	}
 
-    wsV, _ := types.SetValue(codeMessageAttrType, warns)
-    tsV, _ := types.SetValue(codeMessageAttrType, tasks)
+	wsV, _ := types.SetValue(codeMessageAttrType, warns)
+	tsV, _ := types.SetValue(codeMessageAttrType, tasks)
 
-    status, _ := types.ObjectValue(
-        map[string]attr.Type{
-            "setup_state":        types.StringType,
-            "is_historical_sync": types.BoolType,
-            "sync_state":         types.StringType,
-            "update_state":       types.StringType,
-            "tasks":              types.SetType{ElemType: codeMessageAttrType},
-            "warnings":           types.SetType{ElemType: codeMessageAttrType},
-        },
-        map[string]attr.Value{
-            "setup_state":        types.StringValue(resp.Data.Status.SetupState),
-            "is_historical_sync": types.BoolPointerValue(resp.Data.Status.IsHistoricalSync),
-            "sync_state":         types.StringValue(resp.Data.Status.SyncState),
-            "update_state":       types.StringValue(resp.Data.Status.UpdateState),
-            "warnings":           wsV,
-            "tasks":              tsV,
-        },
-    )
-    d.Status = status
+	status, _ := types.ObjectValue(
+		map[string]attr.Type{
+			"setup_state":        types.StringType,
+			"is_historical_sync": types.BoolType,
+			"sync_state":         types.StringType,
+			"update_state":       types.StringType,
+			"tasks":              types.SetType{ElemType: codeMessageAttrType},
+			"warnings":           types.SetType{ElemType: codeMessageAttrType},
+		},
+		map[string]attr.Value{
+			"setup_state":        types.StringValue(resp.Data.Status.SetupState),
+			"is_historical_sync": types.BoolPointerValue(resp.Data.Status.IsHistoricalSync),
+			"sync_state":         types.StringValue(resp.Data.Status.SyncState),
+			"update_state":       types.StringValue(resp.Data.Status.UpdateState),
+			"warnings":           wsV,
+			"tasks":              tsV,
+		},
+	)
+	d.Status = status
 }
 
 func readCommonResponse(r gfcommon.CommonResponse) attr.Value {
-    result, _ := types.ObjectValue(codeMessageAttrTypes,
-        map[string]attr.Value{
-            "code":    types.StringValue(r.Code),
-            "message": types.StringValue(r.Message),
-        })
-    return result
+	result, _ := types.ObjectValue(codeMessageAttrTypes,
+		map[string]attr.Value{
+			"code":    types.StringValue(r.Code),
+			"message": types.StringValue(r.Message),
+		})
+	return result
 }
 
 type ConnectorResourceModel struct {
-    Id                types.String `tfsdk:"id"`
-    Name              types.String `tfsdk:"name"`
-    ConnectedBy       types.String `tfsdk:"connected_by"`
-    CreatedAt         types.String `tfsdk:"created_at"`
-    GroupId           types.String `tfsdk:"group_id"`
-    Service           types.String `tfsdk:"service"`
-    DestinationSchema types.Object `tfsdk:"destination_schema"`
+	Id                types.String `tfsdk:"id"`
+	Name              types.String `tfsdk:"name"`
+	ConnectedBy       types.String `tfsdk:"connected_by"`
+	CreatedAt         types.String `tfsdk:"created_at"`
+	GroupId           types.String `tfsdk:"group_id"`
+	Service           types.String `tfsdk:"service"`
+	DestinationSchema types.Object `tfsdk:"destination_schema"`
 
-    ProxyAgentId             types.String `tfsdk:"proxy_agent_id"`
-    NetworkingMethod         types.String `tfsdk:"networking_method"`
-    HybridDeploymentAgentId  types.String `tfsdk:"hybrid_deployment_agent_id"`
-    PrivateLinkId            types.String `tfsdk:"private_link_id"`
+	ProxyAgentId           types.String `tfsdk:"proxy_agent_id"`
+	NetworkingMethod       types.String `tfsdk:"networking_method"`
+	LocalProcessingAgentId types.String `tfsdk:"local_processing_agent_id"`
+    PrivateLinkId          types.String `tfsdk:"private_link_id"`
 
-    Config   types.Object   `tfsdk:"config"`
-    Auth     types.Object   `tfsdk:"auth"`
-    Timeouts timeouts.Value `tfsdk:"timeouts"`
+	Config   types.Object   `tfsdk:"config"`
+	Auth     types.Object   `tfsdk:"auth"`
+	Timeouts timeouts.Value `tfsdk:"timeouts"`
 
-    RunSetupTests     types.Bool `tfsdk:"run_setup_tests"`
-    TrustCertificates types.Bool `tfsdk:"trust_certificates"`
-    TrustFingerprints types.Bool `tfsdk:"trust_fingerprints"`
+	RunSetupTests     types.Bool `tfsdk:"run_setup_tests"`
+	TrustCertificates types.Bool `tfsdk:"trust_certificates"`
+	TrustFingerprints types.Bool `tfsdk:"trust_fingerprints"`
 }
 
 func (d *ConnectorResourceModel) ReadFromResponse(resp connectors.DetailsWithCustomConfigNoTestsResponse, forceReadConfig bool) diag.Diagnostics {
-    responseContainer := ConnectorModelContainer{}
-    responseContainer.ReadFromResponseData(resp.Data.DetailsResponseDataCommon, resp.Data.Config)
-    d.ReadFromContainer(responseContainer, forceReadConfig)
-    return nil
+	responseContainer := ConnectorModelContainer{}
+	responseContainer.ReadFromResponseData(resp.Data.DetailsResponseDataCommon, resp.Data.Config)
+	d.ReadFromContainer(responseContainer, forceReadConfig)
+	return nil
 }
 
 func (d *ConnectorResourceModel) ReadFromCreateResponse(resp connectors.DetailsWithCustomConfigResponse) diag.Diagnostics {
-    responseContainer := ConnectorModelContainer{}
-    responseContainer.ReadFromResponseData(resp.Data.DetailsResponseDataCommon, resp.Data.Config)
-    d.ReadFromContainer(responseContainer, false)
-    return nil
+	responseContainer := ConnectorModelContainer{}
+	responseContainer.ReadFromResponseData(resp.Data.DetailsResponseDataCommon, resp.Data.Config)
+	d.ReadFromContainer(responseContainer, false)
+	return nil
 }
 
 func (d *ConnectorResourceModel) GetConfigMap(nullOnNull bool) (map[string]interface{}, error) {
-    if d.Config.IsNull() && nullOnNull {
-        return nil, nil
-    }
-    result := getValueFromAttrValue(d.Config, common.GetConfigFieldsMap(), nil, d.Service.ValueString()).(map[string]interface{})
-    serviceName := d.Service.ValueString()
-    serviceFields, err := common.GetFieldsForService(serviceName)
-    if err != nil {
-        return result, err
-    }
-    allFields := common.GetConfigFieldsMap()
-    err = patchServiceSpecificFields(result, serviceName, serviceFields, allFields)
-    return result, err
+	if d.Config.IsNull() && nullOnNull {
+		return nil, nil
+	}
+	result := getValueFromAttrValue(d.Config, common.GetConfigFieldsMap(), nil, d.Service.ValueString()).(map[string]interface{})
+	serviceName := d.Service.ValueString()
+	serviceFields, err := common.GetFieldsForService(serviceName)
+	if err != nil {
+		return result, err
+	}
+	allFields := common.GetConfigFieldsMap()
+	err = patchServiceSpecificFields(result, serviceName, serviceFields, allFields)
+	return result, err
 }
 
 func (d *ConnectorResourceModel) GetAuthMap(nullOnNull bool) (map[string]interface{}, error) {
-    if d.Auth.IsNull() && nullOnNull {
-        return nil, nil
-    }
-    serviceName := d.Service.ValueString()
-    serviceFields := common.GetAuthFieldsForService(serviceName)
-    allFields := common.GetAuthFieldsMap()
+	if d.Auth.IsNull() && nullOnNull {
+		return nil, nil
+	}
+	serviceName := d.Service.ValueString()
+	serviceFields := common.GetAuthFieldsForService(serviceName)
+	allFields := common.GetAuthFieldsMap()
 
-    result := getValueFromAttrValue(d.Auth, allFields, nil, serviceName).(map[string]interface{})
-    err := patchServiceSpecificFields(result, serviceName, serviceFields, allFields)
-    return result, err
+	result := getValueFromAttrValue(d.Auth, allFields, nil, serviceName).(map[string]interface{})
+	err := patchServiceSpecificFields(result, serviceName, serviceFields, allFields)
+	return result, err
 }
 
 func (d *ConnectorResourceModel) GetDestinatonSchemaForConfig() (map[string]interface{}, error) {
-    if d.DestinationSchema.IsNull() || d.DestinationSchema.IsUnknown() {
-        return nil, fmt.Errorf("Field `destination_schema` is required.")
-    }
-    return getDestinatonSchemaForConfig(d.Service,
-        d.DestinationSchema.Attributes()["name"],
-        d.DestinationSchema.Attributes()["table"],
-        d.DestinationSchema.Attributes()["prefix"],
-    )
+	if d.DestinationSchema.IsNull() || d.DestinationSchema.IsUnknown() {
+		return nil, fmt.Errorf("Field `destination_schema` is required.")
+	}
+	return getDestinatonSchemaForConfig(d.Service,
+		d.DestinationSchema.Attributes()["name"],
+		d.DestinationSchema.Attributes()["table"],
+		d.DestinationSchema.Attributes()["prefix"],
+	)
 }
 
 func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, forceReadConfig bool) {
@@ -199,17 +199,17 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
 	d.GroupId = types.StringValue(c.GroupId)
 	d.Service = types.StringValue(c.Service)
 
-	if c.HybridDeploymentAgentId != "" {
-		d.HybridDeploymentAgentId = types.StringValue(c.HybridDeploymentAgentId)
+	if c.LocalProcessingAgentId != "" {
+		d.LocalProcessingAgentId = types.StringValue(c.LocalProcessingAgentId)
 	} else {
-		d.HybridDeploymentAgentId = types.StringNull()
+		d.LocalProcessingAgentId = types.StringNull()
 	}
 
     if c.PrivateLinkId != "" {
         d.PrivateLinkId = types.StringValue(c.PrivateLinkId)
-    } else {
+	} else {
         d.PrivateLinkId = types.StringNull()
-    }
+	}
 
 	if c.ProxyAgentId != "" {
 		d.ProxyAgentId = types.StringValue(c.ProxyAgentId)
@@ -231,18 +231,18 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
 }
 
 func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) {
-    d.Id = types.StringValue(c.Id)
-    d.Name = types.StringValue(c.Schema)
-    d.ConnectedBy = types.StringValue(c.ConnectedBy)
-    d.CreatedAt = types.StringValue(c.CreatedAt)
-    d.GroupId = types.StringValue(c.GroupId)
-    d.Service = types.StringValue(c.Service)
+	d.Id = types.StringValue(c.Id)
+	d.Name = types.StringValue(c.Schema)
+	d.ConnectedBy = types.StringValue(c.ConnectedBy)
+	d.CreatedAt = types.StringValue(c.CreatedAt)
+	d.GroupId = types.StringValue(c.GroupId)
+	d.Service = types.StringValue(c.Service)
 
     if c.PrivateLinkId != "" {
         d.PrivateLinkId = types.StringValue(c.PrivateLinkId)
-    } else {
+	} else {
         d.PrivateLinkId = types.StringNull()
-    }
+	}
 
 	if c.ProxyAgentId != "" {
 		d.ProxyAgentId = types.StringValue(c.ProxyAgentId)
@@ -254,42 +254,42 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
 		d.NetworkingMethod = types.StringValue(c.NetworkingMethod)
 	}
 
-    if c.HybridDeploymentAgentId != "" {
-        d.HybridDeploymentAgentId = types.StringValue(c.HybridDeploymentAgentId)
-    } else {
-        d.HybridDeploymentAgentId = types.StringNull()
-    }
+	if c.LocalProcessingAgentId != "" {
+		d.LocalProcessingAgentId = types.StringValue(c.LocalProcessingAgentId)
+	} else {
+		d.LocalProcessingAgentId = types.StringNull()
+	}
 
     d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
 
-    d.Config = getValue(
-        types.ObjectType{AttrTypes: getAttrTypes(common.GetConfigFieldsMap())},
-        c.Config,
-        c.Config,
-        common.GetConfigFieldsMap(),
-        nil,
-        c.Service).(basetypes.ObjectValue)
+	d.Config = getValue(
+		types.ObjectType{AttrTypes: getAttrTypes(common.GetConfigFieldsMap())},
+		c.Config,
+		c.Config,
+		common.GetConfigFieldsMap(),
+		nil,
+		c.Service).(basetypes.ObjectValue)
 }
 
 type ConnectorModelContainer struct {
-    Id          string
-    Name        string
-    ConnectedBy string
-    CreatedAt   string
-    GroupId     string
-    Service     string
-    Schema      string
+	Id          string
+	Name        string
+	ConnectedBy string
+	CreatedAt   string
+	GroupId     string
+	Service     string
+	Schema      string
 
-    ProxyAgentId            string
-    NetworkingMethod        string
-    HybridDeploymentAgentId  string
+	ProxyAgentId           string
+	NetworkingMethod       string
+	LocalProcessingAgentId string
     PrivateLinkId           string
 
 	Config map[string]interface{}
 
-    RunSetupTests     bool
-    TrustCertificates bool
-    TrustFingerprints bool
+	RunSetupTests     bool
+	TrustCertificates bool
+	TrustFingerprints bool
 }
 
 func (c *ConnectorModelContainer) ReadFromResponseData(data connectors.DetailsResponseDataCommon, config map[string]interface{}) {
@@ -310,13 +310,13 @@ func (c *ConnectorModelContainer) ReadFromResponseData(data connectors.DetailsRe
 		c.NetworkingMethod = data.NetworkingMethod
 	}
 
-    if data.HybridDeploymentAgentId != "" {
-        c.HybridDeploymentAgentId = data.HybridDeploymentAgentId
-    }
+	if data.LocalProcessingAgentId != "" {
+		c.LocalProcessingAgentId = data.LocalProcessingAgentId
+	}
 
     if data.PrivateLinkId != "" {
         c.PrivateLinkId = data.PrivateLinkId
-    }
+	}
 }
 
 func getDestinatonSchemaForConfig(serviceId, nameAttr, tableAttr, prefixAttr attr.Value) (map[string]interface{}, error) {
@@ -355,38 +355,38 @@ func getDestinatonSchemaForConfig(serviceId, nameAttr, tableAttr, prefixAttr att
 }
 
 func getDestinationSchemaValue(service, schema string) types.Object {
-    r, _ := types.ObjectValue(
-        map[string]attr.Type{
-            "name":   types.StringType,
-            "table":  types.StringType,
-            "prefix": types.StringType,
-        },
-        getDestinationSchemaValuesMap(service, schema),
-    )
-    return r
+	r, _ := types.ObjectValue(
+		map[string]attr.Type{
+			"name":   types.StringType,
+			"table":  types.StringType,
+			"prefix": types.StringType,
+		},
+		getDestinationSchemaValuesMap(service, schema),
+	)
+	return r
 }
 
 func getDestinationSchemaValuesMap(service, schema string) map[string]attr.Value {
-    if _, ok := common.GetDestinationSchemaFields()[service]; !ok {
-        panic(fmt.Errorf("unknown connector service: `%v`", service))
-    }
+	if _, ok := common.GetDestinationSchemaFields()[service]; !ok {
+		panic(fmt.Errorf("unknown connector service: `%v`", service))
+	}
 
-    if common.GetDestinationSchemaFields()[service]["schema_prefix"] {
-        return map[string]attr.Value{
-            "name":   types.StringNull(),
-            "table":  types.StringNull(),
-            "prefix": types.StringValue(schema),
-        }
-    } else {
-        result := map[string]attr.Value{
-            "table":  types.StringNull(),
-            "prefix": types.StringNull(),
-        }
-        s := strings.Split(schema, ".")
-        result["name"] = types.StringValue(s[0])
-        if len(s) > 1 && common.GetDestinationSchemaFields()[service]["table"] {
-            result["table"] = types.StringValue(s[1])
-        }
-        return result
-    }
+	if common.GetDestinationSchemaFields()[service]["schema_prefix"] {
+		return map[string]attr.Value{
+			"name":   types.StringNull(),
+			"table":  types.StringNull(),
+			"prefix": types.StringValue(schema),
+		}
+	} else {
+		result := map[string]attr.Value{
+			"table":  types.StringNull(),
+			"prefix": types.StringNull(),
+		}
+		s := strings.Split(schema, ".")
+		result["name"] = types.StringValue(s[0])
+		if len(s) > 1 && common.GetDestinationSchemaFields()[service]["table"] {
+			result["table"] = types.StringValue(s[1])
+		}
+		return result
+	}
 }
