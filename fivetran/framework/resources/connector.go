@@ -158,8 +158,8 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 		svc.NetworkingMethod(data.NetworkingMethod.ValueString())
 	}
 
-	if data.HybridDeploymentAgentId.ValueString() != "" {
-		svc.HybridDeploymentAgentId(data.HybridDeploymentAgentId.ValueString())
+	if data.LocalProcessingAgentId.ValueString() != "" {
+		svc.LocalProcessingAgentId(data.LocalProcessingAgentId.ValueString())
 	}
 
 	if data.PrivateLinkId.ValueString() != "" {
@@ -326,8 +326,8 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 			TrustFingerprints(trustFingerprintsPlan).
 			ConnectorID(state.Id.ValueString())
 
-		if plan.HybridDeploymentAgentId.ValueString() != "" {
-			svc.HybridDeploymentAgentId(plan.HybridDeploymentAgentId.ValueString())
+		if plan.LocalProcessingAgentId.ValueString() != "" {
+			svc.LocalProcessingAgentId(plan.LocalProcessingAgentId.ValueString())
 		}
 
 		if plan.PrivateLinkId.ValueString() != "" {
