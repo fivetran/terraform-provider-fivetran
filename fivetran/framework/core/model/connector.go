@@ -205,6 +205,8 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
 		d.LocalProcessingAgentId = types.StringNull()
 	}
 
+	d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
+
     if c.PrivateLinkId != "" {
         d.PrivateLinkId = types.StringValue(c.PrivateLinkId)
 	} else {
@@ -238,6 +240,14 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
 	d.GroupId = types.StringValue(c.GroupId)
 	d.Service = types.StringValue(c.Service)
 
+	if c.LocalProcessingAgentId != "" {
+		d.LocalProcessingAgentId = types.StringValue(c.LocalProcessingAgentId)
+	} else {
+		d.LocalProcessingAgentId = types.StringNull()
+	}
+
+    d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
+    
     if c.PrivateLinkId != "" {
         d.PrivateLinkId = types.StringValue(c.PrivateLinkId)
 	} else {
@@ -253,14 +263,6 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
 	if c.NetworkingMethod != "" {
 		d.NetworkingMethod = types.StringValue(c.NetworkingMethod)
 	}
-
-	if c.LocalProcessingAgentId != "" {
-		d.LocalProcessingAgentId = types.StringValue(c.LocalProcessingAgentId)
-	} else {
-		d.LocalProcessingAgentId = types.StringNull()
-	}
-
-    d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
 
 	d.Config = getValue(
 		types.ObjectType{AttrTypes: getAttrTypes(common.GetConfigFieldsMap())},
