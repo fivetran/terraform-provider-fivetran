@@ -1,0 +1,21 @@
+---
+page_title: "Resource: fivetran_hybrid_deployment_agent"
+---
+
+# Resource: fivetran_hybrid_deployment_agent
+
+This resource allows you to create, update, and delete hybrid deployment agents.
+
+## Example Usage
+
+```hcl
+resource "fivetran_hybrid_deployment_agent" "hybrid_deployment_agent" {
+    provider = fivetran-provider
+
+    display_name = "display_name"
+    group_id = "group_id"
+    auth_type = "AUTO"
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}

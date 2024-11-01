@@ -45,7 +45,7 @@ func upgradeDestinationState(ctx context.Context, req resource.UpgradeStateReque
 			"local_processing_agent_id":    tftypes.NewValue(tftypes.String, nil),
 			"networking_method":            tftypes.NewValue(tftypes.String, nil),
             "private_link_id":              tftypes.NewValue(tftypes.String, nil),
-
+			"hybrid_deployment_agent_id":   rawState["local_processing_agent_id"],
 			"run_setup_tests":    convertStringStateValueToBool("run_setup_tests", rawState["run_setup_tests"], resp.Diagnostics),
 			"trust_fingerprints": convertStringStateValueToBool("trust_fingerprints", rawState["trust_fingerprints"], resp.Diagnostics),
 			"trust_certificates": convertStringStateValueToBool("trust_certificates", rawState["trust_certificates"], resp.Diagnostics),
@@ -76,7 +76,8 @@ func getDestinationStateModel(version int) tftypes.Type {
 			},
 		},
 	}
-	if version == 1 ||  version == 2 {
+
+	if version == 1 || version == 2 {
 		base["run_setup_tests"] = tftypes.Bool
 		base["trust_certificates"] = tftypes.Bool
 		base["trust_fingerprints"] = tftypes.Bool

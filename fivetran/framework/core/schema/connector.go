@@ -44,7 +44,6 @@ func ConnectorAttributesSchema() core.Schema {
 				ValueType:   core.String,
 				Description: "The connector type id within the Fivetran system.",
 			},
-
 			"run_setup_tests": {
 				ValueType:    core.Boolean,
 				Description:  "Specifies whether the setup tests should be run automatically. The default value is FALSE.",
@@ -60,7 +59,6 @@ func ConnectorAttributesSchema() core.Schema {
 				Description:  "Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
 				ResourceOnly: true,
 			},
-
 			"succeeded_at": {
 				DatasourceOnly: true,
 				ValueType:      core.String,
@@ -111,7 +109,12 @@ func ConnectorAttributesSchema() core.Schema {
 			},
 			"local_processing_agent_id": {
 				ValueType:   core.String,
-				Description: "The local processing agent ID that refers to the controller created for the group the connection belongs to. If the value is specified, the system will try to associate the connection with an existing agent.",
+				DeprecationMessage: "This field is Deprecated, please follow the 1.4.0 migration guide to update the schema",
+				Description: "(Deprecated) The hybrid deployment agent ID that refers to the controller created for the group the connection belongs to. If the value is specified, the system will try to associate the connection with an existing agent.",
+			},
+			"hybrid_deployment_agent_id": {
+				ValueType:   core.String,
+				Description: "The hybrid deployment agent ID that refers to the controller created for the group the connection belongs to. If the value is specified, the system will try to associate the connection with an existing agent.",
 			},
 			"private_link_id": {
 				ValueType:   core.String,
