@@ -5,14 +5,12 @@ import (
 	"fmt"
 	"strconv"
 	"testing"
-	"math/rand"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
-var resourceConfig = `
+var privateLinkResourceConfig = `
             	resource "fivetran_private_link" "test_pl" {
                 	provider = fivetran-provider
 
@@ -26,15 +24,13 @@ var resourceConfig = `
                  	}
             	}`
 
-var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
-
 func TestResourcePrivateLinkE2E(t *testing.T) {
-	t.Skip("Private links have a strict limit on the number of entities created. This test should only be used for intermediate tests when changes are made directly to Private links.")
+	//t.Skip("Private links have a strict limit on the number of entities created. This test should only be used for intermediate tests when changes are made directly to Private links.")
 	suffix := strconv.Itoa(seededRand.Int())
 	privateLinkName := suffix
 	privateLinkCfgValue := "privatelink_" + suffix
 
-	resourceConfig = fmt.Sprintf(resourceConfig, privateLinkName, privateLinkCfgValue, privateLinkCfgValue)
+	resourceConfig := fmt.Sprintf(privateLinkResourceConfig, privateLinkName, privateLinkCfgValue, privateLinkCfgValue)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},

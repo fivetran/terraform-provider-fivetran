@@ -5,6 +5,8 @@ import (
 	"log"
 	"os"
 	"testing"
+	"math/rand"
+	"time"
 
 	gofivetran "github.com/fivetran/go-fivetran"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework"
@@ -26,6 +28,7 @@ const (
 
 var testProvioderFramework provider.Provider
 var client *gofivetran.Client
+var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 var ProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServer, error){
 	"fivetran-provider": func() (tfprotov6.ProviderServer, error) {
