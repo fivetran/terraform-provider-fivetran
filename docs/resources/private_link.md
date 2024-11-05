@@ -27,13 +27,23 @@ resource "fivetran_private_link" "test_pl" {
 
 ### Required
 
+- `config_map` (Map of String) Configuration.
+
+#### Possible values  
+-- `connection_service_name` (String): The name of your connection service.
+-- `account_url` (String): The URL of your account.
+-- `vpce_id` (String): The ID of your Virtual Private Cloud Endpoint.
+-- `aws_account_id` (String): The ID of your AWS account.
+-- `cluster_identifier` (String): The cluster identifier.
+-- `connection_service_id` (String): The ID of your connection service.
+-- `workspace_url` (String): The URL of your workspace.
+-- `pls_id` (String): The ID of your Azure Private Link service.
+-- `sub_resource_name` (String): The name of subresource.
+-- `private_dns_regions` (String): Private DNS Regions.
+-- `private_connection_service_id` (String): The ID of your connection service.
 - `name` (String) The private link name within the account. The name must start with a letter or underscore and can only contain letters, numbers, or underscores. Maximum size of name is 23 characters.
 - `region` (String) Data processing location. This is where Fivetran will operate and run computation on data.
 - `service` (String) Service type.
-
-### Optional
-
-- `config` (Block, Optional) (see [below for nested schema](#nestedblock--config))
 
 ### Read-Only
 
@@ -43,20 +53,3 @@ resource "fivetran_private_link" "test_pl" {
 - `id` (String) The unique identifier for the private link within the Fivetran system.
 - `state` (String) The state of the private link.
 - `state_summary` (String) The state of the private link.
-
-<a id="nestedblock--config"></a>
-### Nested Schema for `config`
-
-Optional:
-
-- `account_url` (String) The URL of your account.
-- `aws_account_id` (String) The ID of your AWS account.
-- `cluster_identifier` (String) The cluster identifier.
-- `connection_service_id` (String) The ID of your connection service.
-- `connection_service_name` (String) The name of your connection service.
-- `pls_id` (String) The ID of your Azure Private Link service.
-- `private_connection_service_id` (String) The ID of your connection service.
-- `private_dns_regions` (String) Private DNS Regions.
-- `sub_resource_name` (String) The name of subresource.
-- `vpce_id` (String) The ID of your Virtual Private Cloud Endpoint.
-- `workspace_url` (String) The URL of your workspace.

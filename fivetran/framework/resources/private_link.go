@@ -59,8 +59,8 @@ func (r *privateLink) Create(ctx context.Context, req resource.CreateRequest, re
 	svc.Service(data.Service.ValueString())
 	svc.Name(data.Name.ValueString())
 
-	config := data.GetConfig()
-	svc.ConfigCustom(&config)
+	configMap := data.GetConfigMap()
+	svc.ConfigCustom(&configMap)
 
 	createResponse, err := svc.DoCustom(ctx)
 	if err != nil {
@@ -118,9 +118,9 @@ func (r *privateLink) Update(ctx context.Context, req resource.UpdateRequest, re
 
 	svc := r.GetClient().NewPrivateLinkModify().PrivateLinkId(state.Id.ValueString())
 
-	if !plan.Config.Equal(state.Config) {
-		config := plan.GetConfig()
-		svc.ConfigCustom(&config)
+	if !plan.ConfigMap.Equal(state.ConfigMap) {
+		configMap := plan.GetConfigMap()
+		svc.ConfigCustom(&configMap)
 		hasChanges = true
 	}
 

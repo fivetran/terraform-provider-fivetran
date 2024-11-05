@@ -18,7 +18,7 @@ var privateLinkResourceConfig = `
                 	region = "AWS_US_EAST_1"
                 	service = "REDSHIFT_AWS"
 
-                	config {
+                	config_map = {
     					aws_account_id = "%v"
     					cluster_identifier = "%v"
                  	}
@@ -43,8 +43,8 @@ func TestResourcePrivateLinkE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "name", privateLinkName),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "region", "AWS_US_EAST_1"),
 					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "service", "REDSHIFT_AWS"),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.aws_account_id", privateLinkCfgValue),
-					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.cluster_identifier", privateLinkCfgValue),
+					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config_map.aws_account_id", privateLinkCfgValue),
+					resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config_map.cluster_identifier", privateLinkCfgValue),
 				),
 			},
 		},

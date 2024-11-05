@@ -182,7 +182,6 @@ resource "fivetran_connector_schema_config" "schema" {
 
 ### Optional
 
-- `schema_change_handling` (String) The value specifying how new source data is handled.
 - `schema` (Block Set, Deprecated) (see [below for nested schema](#nestedblock--schema))
 - `schema_change_handling` (String) The value specifying how new source data is handled.
 - `schemas` (Attributes Map) Map of schema configurations. (see [below for nested schema](#nestedatt--schemas))

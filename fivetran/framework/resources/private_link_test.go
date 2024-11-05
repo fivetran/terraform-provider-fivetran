@@ -32,7 +32,7 @@ func setupMockClientPrivateLinkResource(t *testing.T) {
         "created_at": "created_at",
         "created_by": "created_by",
         "config": {
-          "connection_service_name": "connection_service_name"
+        	"connection_service_name": "connection_service_name"
         }
     }`
 
@@ -67,9 +67,9 @@ func TestResourcePrivateLinkMock(t *testing.T) {
                  region = "region"
                  service = "service"
 
-                 config {
-                 	connection_service_name = "connection_service_name"
-                 }
+        				 config_map = {
+        					connection_service_name = "connection_service_name"
+        				 }
             }`,
 
 		Check: resource.ComposeAggregateTestCheckFunc(
@@ -80,7 +80,7 @@ func TestResourcePrivateLinkMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "name", "name"),
 			resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "region", "region"),
 			resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "service", "service"),
-			resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config.connection_service_name", "connection_service_name"),
+			resource.TestCheckResourceAttr("fivetran_private_link.test_pl", "config_map.connection_service_name", "connection_service_name"),
 		),
 	}
 

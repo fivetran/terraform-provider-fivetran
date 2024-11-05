@@ -19,8 +19,7 @@ type PrivateLink struct {
     StateSummary    types.String `tfsdk:"state_summary"`
     CreatedAt       types.String `tfsdk:"created_at"`
     CreatedBy       types.String `tfsdk:"created_by"`
-    
-    Config          types.Object `tfsdk:"config"`
+    ConfigMap       types.Map    `tfsdk:"config_map"`
 }
 
 var PrivateLinkConfigType = map[string]attr.Type{
@@ -116,7 +115,7 @@ func (d *PrivateLink) ReadFromResponse(ctx context.Context, resp privatelink.Pri
         config["private_connection_service_id"] = types.StringNull()
     }
 
-    d.Config, _ = types.ObjectValue(PrivateLinkConfigType, config)
+    d.ConfigMap, _ = types.MapValue(types.StringType, config)
 }
 
 func (d *PrivateLink) ReadFromCustomResponse(ctx context.Context, resp privatelink.PrivateLinkCustomResponse) {
@@ -131,81 +130,15 @@ func (d *PrivateLink) ReadFromCustomResponse(ctx context.Context, resp privateli
     d.CreatedBy = types.StringValue(resp.Data.CreatedBy)
 
     config := map[string]attr.Value{}
-
-    if resp.Data.Config["connection_service_name"] != nil && resp.Data.Config["connection_service_name"] != "" {
-        config["connection_service_name"] = types.StringValue(resp.Data.Config["connection_service_name"].(string))
-    } else {
-        config["connection_service_name"] = types.StringNull()
+    for k, v := range resp.Data.Config {
+        config[k] = types.StringValue(v.(string))
     }
-    
-    if resp.Data.Config["account_url"] != nil && resp.Data.Config["account_url"] != "" {
-        config["account_url"] = types.StringValue(resp.Data.Config["account_url"].(string))
-    } else {
-        config["account_url"] = types.StringNull()
-    }
-    
-    if resp.Data.Config["vpce_id"] != nil && resp.Data.Config["vpce_id"] != "" {
-        config["vpce_id"] = types.StringValue(resp.Data.Config["vpce_id"].(string))
-    } else {
-        config["vpce_id"] = types.StringNull()
-    }
-
-    if resp.Data.Config["aws_account_id"] != nil && resp.Data.Config["aws_account_id"] != "" {
-        config["aws_account_id"] = types.StringValue(resp.Data.Config["aws_account_id"].(string))
-    } else {
-        config["aws_account_id"] = types.StringNull()
-    }
-    
-    if resp.Data.Config["cluster_identifier"] != nil && resp.Data.Config["cluster_identifier"] != "" {
-        config["cluster_identifier"] = types.StringValue(resp.Data.Config["cluster_identifier"].(string))
-    } else {
-        config["cluster_identifier"] = types.StringNull()
-    }
-
-    if resp.Data.Config["connection_service_id"] != nil && resp.Data.Config["connection_service_id"] != "" {
-        config["connection_service_id"] = types.StringValue(resp.Data.Config["connection_service_id"].(string))
-    } else {
-        config["connection_service_id"] = types.StringNull()
-    }
-    
-    if resp.Data.Config["workspace_url"] != nil && resp.Data.Config["workspace_url"] != "" {
-        config["workspace_url"] = types.StringValue(resp.Data.Config["workspace_url"].(string))
-    } else {
-        config["workspace_url"] = types.StringNull()
-    }
-    
-    if resp.Data.Config["pls_id"] != nil && resp.Data.Config["pls_id"] != "" {
-        config["pls_id"] = types.StringValue(resp.Data.Config["pls_id"].(string))
-    } else {
-        config["pls_id"] = types.StringNull()
-    }
-    
-    if resp.Data.Config["sub_resource_name"] != nil && resp.Data.Config["sub_resource_name"] != "" {
-        config["sub_resource_name"] = types.StringValue(resp.Data.Config["sub_resource_name"].(string))
-    } else {
-        config["sub_resource_name"] = types.StringNull()
-    }
-    
-    if resp.Data.Config["private_dns_regions"] != nil && resp.Data.Config["private_dns_regions"] != "" {
-        config["private_dns_regions"] = types.StringValue(resp.Data.Config["private_dns_regions"].(string))
-    } else {
-        config["private_dns_regions"] = types.StringNull()
-    }
-
-    if resp.Data.Config["private_connection_service_id"] != nil {
-        config["private_connection_service_id"] = types.BoolValue(resp.Data.Config["private_connection_service_id"].(bool))    
-    } else {
-        config["private_connection_service_id"] = types.BoolValue(false)
-    }
-
-    d.Config, _ = types.ObjectValue(PrivateLinkConfigType, config)
+    d.ConfigMap, _ = types.MapValue(types.StringType, config)
 }
 
-func (d *PrivateLink) GetConfig() map[string]interface{} {
-    attr := d.Config.Attributes()
-
+func (d *PrivateLink) GetConfigMap() map[string]interface{} {
     config := make(map[string]interface{})
-    for k, v := range attr{
+    for k, v := range d.ConfigMap.Elements(){
         if !v.IsUnknown() && !v.IsNull() {
             if t, ok := v.(basetypes.Int64Value); ok {
                 config[k] = t.ValueInt64()

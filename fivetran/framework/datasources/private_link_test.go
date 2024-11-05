@@ -70,7 +70,7 @@ func TestDataSourcePrivateLinkConfigMappingMock(t *testing.T) {
             resource.TestCheckResourceAttr("data.fivetran_private_link.test_pl", "created_at", "created_at"),
             resource.TestCheckResourceAttr("data.fivetran_private_link.test_pl", "created_by", "created_by"),
 
-            resource.TestCheckResourceAttr("data.fivetran_private_link.test_pl", "config.connection_service_name", "connection_service_name"),
+            resource.TestCheckResourceAttr("data.fivetran_private_link.test_pl", "config_map.connection_service_name", "connection_service_name"),
         ),
     }
 
