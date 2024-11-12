@@ -106,7 +106,23 @@ func (r *destination) Create(ctx context.Context, req resource.CreateRequest, re
 		ConfigCustom(&configMap)
 
 	if data.LocalProcessingAgentId.ValueString() != "" {
-		svc.HybridDeploymentAgentId(data.LocalProcessingAgentId.ValueString())
+		resp.Diagnostics.AddWarning(
+			"Field `local_processing_agent_id` is Deprecated", 
+			"Please follow the 1.4.0 migration guide to update the schema",
+		)
+
+		if data.LocalProcessingAgentId.ValueString() != data.HybridDeploymentAgentId.ValueString() {
+			resp.Diagnostics.AddError(
+				"Unable to Create Connector Resource.",
+				"Fields `local_processing_agent_id` and `hybrid_deployment_agent_id` must be the same",
+			)
+
+			return	
+		}
+	}
+
+	if data.HybridDeploymentAgentId.ValueString() != "" {
+		svc.HybridDeploymentAgentId(data.HybridDeploymentAgentId.ValueString())
 	}
 
 	if data.NetworkingMethod.ValueString() != "" {
@@ -292,7 +308,23 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 			DestinationID(state.Id.ValueString())
 
 		if plan.LocalProcessingAgentId.ValueString() != "" {
-			svc.HybridDeploymentAgentId(plan.LocalProcessingAgentId.ValueString())
+			resp.Diagnostics.AddWarning(
+				"Field `local_processing_agent_id` is Deprecated", 
+				"Please follow the 1.4.0 migration guide to update the schema",
+			)
+		
+			if plan.LocalProcessingAgentId.ValueString() != plan.HybridDeploymentAgentId.ValueString() {
+				resp.Diagnostics.AddError(
+					"Unable to Create Connector Resource.",
+					"Fields `local_processing_agent_id` and `hybrid_deployment_agent_id` must be the same",
+				)
+
+				return	
+			}
+		}
+
+		if plan.HybridDeploymentAgentId.ValueString() != "" {
+			svc.HybridDeploymentAgentId(plan.HybridDeploymentAgentId.ValueString())
 		}
 
 		if plan.NetworkingMethod.ValueString() != "" {

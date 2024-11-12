@@ -5,9 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.4.1...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.4.0...HEAD)
 
-## [1.4.1](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.4.0...v1.4.1)
+## [1.4.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.3.2...v1.4.0)
 
 ## Added
 - New resource `fivetran_private_link` that allows to manage Private Links.
@@ -26,6 +26,17 @@ Updates to support management of private links:
 
 - Datasource `fivetran_destination` updates:
   - Added field `fivetran_destination.private_link_id`.
+
+## Updated
+In connection with the general availability of the hybrid deployment functionality and in order to synchronize internal terminology, we have implemented new resources and datasources to replace the deprecated ones. The deprecated resources will be removed in version 1.5.0
+
+- New resource `fivetran_hybrid_deployment_agent` instead of deprecated `fivetran_local_processing_agent`
+- New data source `fivetran_hybrid_deployment_agent` instead of deprecated `fivetran_local_processing_agent`.
+- New data source `fivetran_hybrid_deployment_agents` instead of deprecated `fivetran_local_processing_agents`.
+- New field `fivetran_connector.hybrid_deployment_id` instead of deprecated `fivetran_connector.local_processing_agent_id`.
+- New field `fivetran_destination.hybrid_deployment_id` instead of deprecated `fivetran_destination.local_processing_agent_id`.
+
+Old fields and resources are marked as Deprecated, please follow the migration guide to update the schema
 
 ## [1.3.2](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.3.1...v1.3.2)
 

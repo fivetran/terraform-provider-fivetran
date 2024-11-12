@@ -4,6 +4,8 @@ page_title: "Data Source: fivetran_local_processing_agent"
 
 # Data Source: fivetran_local_processing_agent
 
+NOTE: In connection with the general availability of the hybrid deployment functionality and in order to synchronize internal terminology, we have deprecate this data source.
+
 This data source returns a local processing agent object.
 
 ## Example Usage

@@ -19,6 +19,7 @@ type DestinationResourceModel struct {
 	Config  					 types.Object   `tfsdk:"config"`
 	Timeouts					 timeouts.Value `tfsdk:"timeouts"`
     LocalProcessingAgentId       types.String   `tfsdk:"local_processing_agent_id"`
+    HybridDeploymentAgentId      types.String   `tfsdk:"hybrid_deployment_agent_id"`
     NetworkingMethod             types.String   `tfsdk:"networking_method"`
     PrivateLinkId                types.String `tfsdk:"private_link_id"`
 
@@ -55,6 +56,13 @@ func (d *DestinationResourceModel) SetLocalProcessingAgentId(value string) {
         d.LocalProcessingAgentId = types.StringValue(value)
     } else {
         d.LocalProcessingAgentId = types.StringNull()
+    }
+}
+func (d *DestinationResourceModel) SetHybridDeploymentAgentId(value string) {
+    if value != "" {
+        d.HybridDeploymentAgentId = types.StringValue(value)
+    } else {
+        d.HybridDeploymentAgentId = types.StringNull()
     }
 }
 func (d *DestinationResourceModel) SetNetworkingMethod(value string) {

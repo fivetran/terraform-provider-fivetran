@@ -4,6 +4,8 @@ page_title: "Data Source: fivetran_local_processing_agents"
 
 # Data Source: fivetran_local_processing_agents
 
+NOTE: In connection with the general availability of the hybrid deployment functionality and in order to synchronize internal terminology, we have deprecate this data source.
+
 This data source returns a list of all local processing agents within your Fivetran account.
 
 ## Example Usage
