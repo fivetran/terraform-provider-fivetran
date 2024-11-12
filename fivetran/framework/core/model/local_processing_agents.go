@@ -3,7 +3,7 @@ package model
 import (
     "context"
 
-    "github.com/fivetran/go-fivetran/local_processing_agent"
+    localprocessingagent "github.com/fivetran/go-fivetran/hybrid_deployment_agent"
     "github.com/hashicorp/terraform-plugin-framework/types"
     "github.com/hashicorp/terraform-plugin-framework/attr"
 )
@@ -12,7 +12,7 @@ type LocalProcessingAgents struct {
     Items   types.Set `tfsdk:"items"`
 }
 
-func (d *LocalProcessingAgents) ReadFromResponse(ctx context.Context, resp localprocessingagent.LocalProcessingAgentListResponse) {
+func (d *LocalProcessingAgents) ReadFromResponse(ctx context.Context, resp localprocessingagent.HybridDeploymentAgentListResponse) {
     subSetElementType := map[string]attr.Type{
         "connection_id":   types.StringType,
         "schema":          types.StringType,

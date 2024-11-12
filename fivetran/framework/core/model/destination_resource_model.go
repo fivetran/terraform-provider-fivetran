@@ -20,6 +20,7 @@ type DestinationResourceModel struct {
 	Timeouts					 timeouts.Value `tfsdk:"timeouts"`
     LocalProcessingAgentId       types.String   `tfsdk:"local_processing_agent_id"`
     NetworkingMethod             types.String   `tfsdk:"networking_method"`
+    PrivateLinkId                types.String `tfsdk:"private_link_id"`
 
 	RunSetupTests    			 types.Bool 	`tfsdk:"run_setup_tests"`
 	TrustCertificates			 types.Bool 	`tfsdk:"trust_certificates"`
@@ -59,6 +60,13 @@ func (d *DestinationResourceModel) SetLocalProcessingAgentId(value string) {
 func (d *DestinationResourceModel) SetNetworkingMethod(value string) {
     if value != "" {
         d.NetworkingMethod = types.StringValue(value)
+    }
+}
+func (d *DestinationResourceModel) SetPrivateLinkId(value string) {
+    if value != "" {
+        d.PrivateLinkId = types.StringValue(value)
+    } else {
+        d.PrivateLinkId = types.StringNull()
     }
 }
 func (d *DestinationResourceModel) SetConfig(value map[string]interface{}) {

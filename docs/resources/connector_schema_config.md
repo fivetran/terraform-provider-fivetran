@@ -182,8 +182,8 @@ resource "fivetran_connector_schema_config" "schema" {
 
 ### Optional
 
-- `schema_change_handling` (String) The value specifying how new source data is handled.
 - `schema` (Block Set, Deprecated) (see [below for nested schema](#nestedblock--schema))
+- `schema_change_handling` (String) The value specifying how new source data is handled.
 - `schemas` (Attributes Map) Map of schema configurations. (see [below for nested schema](#nestedatt--schemas))
 - `schemas_json` (String) Schema settings in Json format, following Fivetran API endpoint contract for `schemas` field (a map of schemas).
 - `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))

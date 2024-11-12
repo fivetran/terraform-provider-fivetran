@@ -36,6 +36,7 @@ type ConnectorDatasourceModel struct {
 	ProxyAgentId           types.String `tfsdk:"proxy_agent_id"`
 	NetworkingMethod       types.String `tfsdk:"networking_method"`
 	LocalProcessingAgentId types.String `tfsdk:"local_processing_agent_id"`
+    PrivateLinkId          types.String `tfsdk:"private_link_id"`
 
 	Status types.Object `tfsdk:"status"`
 
@@ -61,6 +62,7 @@ func (d *ConnectorDatasourceModel) ReadFromResponse(resp connectors.DetailsWithC
 	d.ScheduleType = types.StringValue(resp.Data.ScheduleType)
 	d.Paused = types.BoolValue(*resp.Data.Paused)
 	d.PauseAfterTrial = types.BoolValue(*resp.Data.PauseAfterTrial)
+
 	if resp.Data.DailySyncTime != "" {
 		d.DailySyncTime = types.StringValue(resp.Data.DailySyncTime)
 	} else {
@@ -125,6 +127,7 @@ type ConnectorResourceModel struct {
 	ProxyAgentId           types.String `tfsdk:"proxy_agent_id"`
 	NetworkingMethod       types.String `tfsdk:"networking_method"`
 	LocalProcessingAgentId types.String `tfsdk:"local_processing_agent_id"`
+    PrivateLinkId          types.String `tfsdk:"private_link_id"`
 
 	Config   types.Object   `tfsdk:"config"`
 	Auth     types.Object   `tfsdk:"auth"`
@@ -204,6 +207,12 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
 
 	d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
 
+    if c.PrivateLinkId != "" {
+        d.PrivateLinkId = types.StringValue(c.PrivateLinkId)
+	} else {
+        d.PrivateLinkId = types.StringNull()
+	}
+
 	if c.ProxyAgentId != "" {
 		d.ProxyAgentId = types.StringValue(c.ProxyAgentId)
 	} else {
@@ -237,7 +246,13 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
 		d.LocalProcessingAgentId = types.StringNull()
 	}
 
-	d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
+    d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
+    
+    if c.PrivateLinkId != "" {
+        d.PrivateLinkId = types.StringValue(c.PrivateLinkId)
+	} else {
+        d.PrivateLinkId = types.StringNull()
+	}
 
 	if c.ProxyAgentId != "" {
 		d.ProxyAgentId = types.StringValue(c.ProxyAgentId)
@@ -270,6 +285,7 @@ type ConnectorModelContainer struct {
 	ProxyAgentId           string
 	NetworkingMethod       string
 	LocalProcessingAgentId string
+    PrivateLinkId           string
 
 	Config map[string]interface{}
 
@@ -296,8 +312,12 @@ func (c *ConnectorModelContainer) ReadFromResponseData(data connectors.DetailsRe
 		c.NetworkingMethod = data.NetworkingMethod
 	}
 
-	if data.LocalProcessingAgentId != "" {
-		c.LocalProcessingAgentId = data.LocalProcessingAgentId
+	if data.HybridDeploymentAgentId != "" {
+		c.LocalProcessingAgentId = data.HybridDeploymentAgentId
+	}
+
+    if data.PrivateLinkId != "" {
+        c.PrivateLinkId = data.PrivateLinkId
 	}
 }
 

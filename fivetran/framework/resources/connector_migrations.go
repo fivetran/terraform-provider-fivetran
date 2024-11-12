@@ -36,8 +36,8 @@ func upgradeConnectorState(ctx context.Context, req resource.UpgradeStateRequest
 	}
 
 	dynamicValue, err := tfprotov6.NewDynamicValue(
-		getConnectorStateModel(3),
-		tftypes.NewValue(getConnectorStateModel(3), map[string]tftypes.Value{
+		getConnectorStateModel(4),
+		tftypes.NewValue(getConnectorStateModel(4), map[string]tftypes.Value{
 			"id":                        rawState["id"],
 			"name":                      rawState["name"],
 			"connected_by":              rawState["connected_by"],
@@ -48,6 +48,7 @@ func upgradeConnectorState(ctx context.Context, req resource.UpgradeStateRequest
 			"networking_method":         tftypes.NewValue(tftypes.String, nil),
 			"proxy_agent_id":            tftypes.NewValue(tftypes.String, nil),
 			"local_processing_agent_id": tftypes.NewValue(tftypes.String, nil),
+			"private_link_id":           tftypes.NewValue(tftypes.String, nil),
 
 			"run_setup_tests":    convertStringStateValueToBool("run_setup_tests", rawState["run_setup_tests"], resp.Diagnostics),
 			"trust_fingerprints": convertStringStateValueToBool("trust_fingerprints", rawState["trust_fingerprints"], resp.Diagnostics),
@@ -96,16 +97,15 @@ func getConnectorStateModel(version int) tftypes.Type {
 			},
 		},
 	}
-	if version == 3 {
+	if version == 3 || version == 4 {
 		base["destination_schema"] = dsObj
 		base["run_setup_tests"] = tftypes.Bool
 		base["trust_certificates"] = tftypes.Bool
 		base["trust_fingerprints"] = tftypes.Bool
-
 		base["proxy_agent_id"] = tftypes.String
 		base["networking_method"] = tftypes.String
 		base["local_processing_agent_id"] = tftypes.String
-
+        base["private_link_id"] = tftypes.String
 		base["config"] = tftypes.Object{AttributeTypes: model.GetTfTypes(common.GetConfigFieldsMap(), 3)}
 		base["auth"] = tftypes.Object{AttributeTypes: model.GetTfTypes(common.GetAuthFieldsMap(), 3)}
 	} else {

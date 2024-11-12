@@ -49,6 +49,11 @@ func (r *destination) UpgradeState(ctx context.Context) map[int64]resource.State
 				upgradeDestinationState(ctx, req, resp, 0)
 			},
 		},
+		1: {
+			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
+				upgradeDestinationState(ctx, req, resp, 1)
+			},
+		},
 	}
 }
 
@@ -101,11 +106,15 @@ func (r *destination) Create(ctx context.Context, req resource.CreateRequest, re
 		ConfigCustom(&configMap)
 
 	if data.LocalProcessingAgentId.ValueString() != "" {
-		svc.LocalProcessingAgentId(data.LocalProcessingAgentId.ValueString())
+		svc.HybridDeploymentAgentId(data.LocalProcessingAgentId.ValueString())
 	}
 
 	if data.NetworkingMethod.ValueString() != "" {
 		svc.NetworkingMethod(data.NetworkingMethod.ValueString())
+	}
+
+	if data.PrivateLinkId.ValueString() != "" {
+		svc.PrivateLinkId(data.PrivateLinkId.ValueString())
 	}
 
 	response, err := svc.
@@ -283,11 +292,15 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 			DestinationID(state.Id.ValueString())
 
 		if plan.LocalProcessingAgentId.ValueString() != "" {
-			svc.LocalProcessingAgentId(plan.LocalProcessingAgentId.ValueString())
+			svc.HybridDeploymentAgentId(plan.LocalProcessingAgentId.ValueString())
 		}
 
 		if plan.NetworkingMethod.ValueString() != "" {
 			svc.NetworkingMethod(plan.NetworkingMethod.ValueString())
+		}
+
+		if plan.PrivateLinkId.ValueString() != "" {
+			svc.PrivateLinkId(plan.PrivateLinkId.ValueString())
 		}
 
 		if len(patch) > 0 {

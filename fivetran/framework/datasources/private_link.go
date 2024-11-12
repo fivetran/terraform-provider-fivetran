@@ -11,26 +11,26 @@ import (
     fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
 )
 
-func LocalProcessingAgent() datasource.DataSource {
-    return &localProcessingAgent{}
+func PrivateLink() datasource.DataSource {
+    return &privateLink{}
 }
 
 // Ensure the implementation satisfies the desired interfaces.
-var _ datasource.DataSourceWithConfigure = &localProcessingAgent{}
+var _ datasource.DataSourceWithConfigure = &privateLink{}
 
-type localProcessingAgent struct {
+type privateLink struct {
     core.ProviderDatasource
 }
 
-func (d *localProcessingAgent) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-    resp.TypeName = "fivetran_local_processing_agent"
+func (d *privateLink) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+    resp.TypeName = "fivetran_private_link"
 }
 
-func (d *localProcessingAgent) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
-    resp.Schema = fivetranSchema.LocalProcessingAgentDatasource()
+func (d *privateLink) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+    resp.Schema = fivetranSchema.PrivateLinkDatasource()
 }
 
-func (d *localProcessingAgent) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+func (d *privateLink) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
     if d.GetClient() == nil {
         resp.Diagnostics.AddError(
             "Unconfigured Fivetran Client",
@@ -40,11 +40,11 @@ func (d *localProcessingAgent) Read(ctx context.Context, req datasource.ReadRequ
         return
     }
 
-    var data model.LocalProcessingAgentDatasourceModel
+    var data model.PrivateLink
 
     resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
-    detailsResponse, err := d.GetClient().NewHybridDeploymentAgentDetails().AgentId(data.Id.ValueString()).Do(ctx)
+    detailsResponse, err := d.GetClient().NewPrivateLinkDetails().PrivateLinkId(data.Id.ValueString()).Do(ctx)
 
     if err != nil {
         resp.Diagnostics.AddError(
@@ -54,7 +54,7 @@ func (d *localProcessingAgent) Read(ctx context.Context, req datasource.ReadRequ
         return
     }
 
-    data.ReadFromResponse(detailsResponse)
+    data.ReadFromResponse(ctx, detailsResponse)
 
     resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }

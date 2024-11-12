@@ -54,7 +54,7 @@ func (r *localProcessingAgent) Create(ctx context.Context, req resource.CreateRe
 		return
 	}
 
-	svc := r.GetClient().NewLocalProcessingAgentCreate()
+	svc := r.GetClient().NewHybridDeploymentAgentCreate()
 	svc.GroupId(data.GroupId.ValueString())
 	svc.DisplayName(data.DisplayName.ValueString())
     svc.EnvType("DOCKER")
@@ -90,7 +90,7 @@ func (r *localProcessingAgent) Read(ctx context.Context, req resource.ReadReques
     // Read Terraform prior state data into the model
     resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
-    readResponse, err := r.GetClient().NewLocalProcessingAgentDetails().AgentId(data.Id.ValueString()).Do(ctx)
+    readResponse, err := r.GetClient().NewHybridDeploymentAgentDetails().AgentId(data.Id.ValueString()).Do(ctx)
 
     if err != nil {
         resp.Diagnostics.AddError(
@@ -120,7 +120,7 @@ func (r *localProcessingAgent) Update(ctx context.Context, req resource.UpdateRe
     resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
     resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
-    svc := r.GetClient().NewLocalProcessingAgentReAuth().AgentId(state.Id.ValueString())
+    svc := r.GetClient().NewHybridDeploymentAgentReAuth().AgentId(state.Id.ValueString())
     
     updateResponse, err := svc.Do(ctx)
     if err != nil {
@@ -150,7 +150,7 @@ func (r *localProcessingAgent) Delete(ctx context.Context, req resource.DeleteRe
 
     resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
-    deleteResponse, err := r.GetClient().NewLocalProcessingAgentDelete().AgentId(data.Id.ValueString()).Do(ctx)
+    deleteResponse, err := r.GetClient().NewHybridDeploymentAgentDelete().AgentId(data.Id.ValueString()).Do(ctx)
     if err != nil {
         resp.Diagnostics.AddError(
             "Unable to Delete Local Processing Agent Resource.",

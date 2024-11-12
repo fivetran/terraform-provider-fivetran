@@ -5,6 +5,8 @@ import (
 	"log"
 	"os"
 	"testing"
+	"math/rand"
+	"time"
 
 	gofivetran "github.com/fivetran/go-fivetran"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework"
@@ -26,6 +28,7 @@ const (
 
 var testProvioderFramework provider.Provider
 var client *gofivetran.Client
+var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 var ProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServer, error){
 	"fivetran-provider": func() (tfprotov6.ProviderServer, error) {
@@ -89,6 +92,7 @@ func cleanupAccount() {
 	cleanupWebhooks()
 	cleanupTeams()
 	cleanupProxyAgents()
+	cleanupPrivateLinks()
 	cleanupLocalProcessingAgents()
 }
 
@@ -277,13 +281,30 @@ func cleanupProxyAgents() {
 	}
 }
 
+func cleanupPrivateLinks() {
+	plList, err := client.NewPrivateLinkList().Do(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, pl := range plList.Data.Items {
+		_, err := client.NewPrivateLinkDelete().PrivateLinkId(pl.Id).Do(context.Background())
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	if plList.Data.NextCursor != "" {
+		cleanupPrivateLinks()
+	}
+}
+
 func cleanupLocalProcessingAgents() {
-	lpaList, err := client.NewLocalProcessingAgentList().Do(context.Background())
+	lpaList, err := client.NewHybridDeploymentAgentList().Do(context.Background())
 	if err != nil {
 		log.Fatal(err)
 	}
 	for _, lpa := range lpaList.Data.Items {
-		_, err := client.NewLocalProcessingAgentDelete().AgentId(lpa.Id).Do(context.Background())
+		_, err := client.NewHybridDeploymentAgentDelete().AgentId(lpa.Id).Do(context.Background())
 		if err != nil {
 			log.Fatal(err)
 		}
