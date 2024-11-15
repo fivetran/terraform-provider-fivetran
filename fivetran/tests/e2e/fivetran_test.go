@@ -299,6 +299,9 @@ func cleanupPrivateLinks() {
 }
 
 func cleanupHybridDeploymentAgents() {
+	// this methods hides under FF
+	return;
+
 	lpaList, err := client.NewHybridDeploymentAgentList().Do(context.Background())
 	if err != nil {
 		log.Fatal(err)
