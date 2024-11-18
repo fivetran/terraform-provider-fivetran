@@ -7,59 +7,36 @@ import (
 	"strings"
 	"testing"
 	"regexp"
+	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
-func TestResourceHybridDeploymentAgentE2E(t *testing.T) {
-	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() {},
-		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
-		CheckDestroy:             testFivetranHybridDeploymentAgentResourceDestroy,
-		Steps: []resource.TestStep{
-			{
-				Config: `
+var hdaResourceConfig = `
 				resource "fivetran_group" "testgroup" {
 					provider = fivetran-provider
-					name = "TestResourceHybridDeploymentAgentE2E"
+					name = "%v"
 			    }
 
             	resource "fivetran_hybrid_deployment_agent" "test_lpa" {
                 	provider = fivetran-provider
 
-                 	display_name = "TestResourceHybridDeploymentAgentE2E"
+                 	display_name = "%v"
                  	group_id = fivetran_group.testgroup.id
                  	auth_type = "AUTO"
-            	}`,
-				Check: resource.ComposeAggregateTestCheckFunc(
-					testFivetranHybridDeploymentAgentResourceCreate(t, "fivetran_hybrid_deployment_agent.test_lpa"),
-					resource.TestCheckResourceAttr("fivetran_hybrid_deployment_agent.test_lpa", "display_name", "TestResourceHybridDeploymentAgentE2E"),
-					resource.TestCheckResourceAttrSet("fivetran_hybrid_deployment_agent.test_lpa", "token"),
-				),
-			},
-		},
-	})
-}
+            	}`
 
-func TestResourceConnectorWithHybridDeploymentAgentE2E(t *testing.T) {
-	regexp, _ := regexp.Compile("[a-z]*_[a-z]*")
-	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() {},
-		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
-		CheckDestroy:             testFivetranConnectorResourceDestroy,
-		Steps: []resource.TestStep{
-			{
-				Config: `
+var connectorWithHdaResourceConfig = `
 				resource "fivetran_group" "test_group" {
 					provider = fivetran-provider
-					name = "test_group_name"
+					name = "%v"
 			    }
 
             	resource "fivetran_hybrid_deployment_agent" "test_hda" {
                 	provider = fivetran-provider
 
-                 	display_name = "TestResourceHybridDeploymentAgentE2E"
+                 	display_name = "%v"
                  	group_id = fivetran_group.test_group.id
                  	auth_type = "AUTO"
             	}
@@ -77,7 +54,46 @@ func TestResourceConnectorWithHybridDeploymentAgentE2E(t *testing.T) {
 					trust_fingerprints = false
 					run_setup_tests = false
 				}
-		  `,
+		  `
+
+func TestResourceHybridDeploymentAgentE2E(t *testing.T) {
+	hdaName := strconv.Itoa(seededRand.Int())
+	groupName := strconv.Itoa(seededRand.Int())
+
+	resourceConfig := fmt.Sprintf(hdaResourceConfig, groupName, hdaName)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranHybridDeploymentAgentResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config:resourceConfig,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranHybridDeploymentAgentResourceCreate(t, "fivetran_hybrid_deployment_agent.test_lpa"),
+					resource.TestCheckResourceAttr("fivetran_hybrid_deployment_agent.test_lpa", "display_name", hdaName),
+					resource.TestCheckResourceAttrSet("fivetran_hybrid_deployment_agent.test_lpa", "token"),
+				),
+			},
+		},
+	})
+}
+
+func TestResourceConnectorWithHybridDeploymentAgentE2E(t *testing.T) {
+	regexp, _ := regexp.Compile("[a-z]*_[a-z]*")
+	
+	hdaName := strconv.Itoa(seededRand.Int())
+	groupName := strconv.Itoa(seededRand.Int())
+
+	resourceConfig := fmt.Sprintf(connectorWithHdaResourceConfig, groupName, hdaName)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectorResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: resourceConfig,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranConnectorResourceCreate(t, "fivetran_connector.test_connector"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "fivetran_log"),
@@ -93,15 +109,11 @@ func TestResourceConnectorWithHybridDeploymentAgentE2E(t *testing.T) {
 }
 
 func testFivetranHybridDeploymentAgentResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {
-	fmt.Printf("sadasasas")
-
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
-		fmt.Printf("sdfsdsdsdf %v", rs.Primary.ID)
 
 		_, err := client.NewHybridDeploymentAgentDetails().AgentId(rs.Primary.ID).Do(context.Background())
 		if err != nil {
-			fmt.Printf("sdfsdsdsdf %v %v", rs.Primary.ID, err)
 			return err
 		}
 		//todo: check response _  fields if needed
