@@ -52,7 +52,7 @@ func (d *DestinationResourceModel) SetDaylightSavingTimeEnabled(value bool) {
 	d.DaylightSavingTimeEnabled = types.BoolValue(value)
 }
 func (d *DestinationResourceModel) SetLocalProcessingAgentId(value string) {
-    if value != "" && !d.LocalProcessingAgentId.IsUnknown() {
+    if value != "" && !d.LocalProcessingAgentId.IsUnknown() && !d.LocalProcessingAgentId.IsNull() {
         d.LocalProcessingAgentId = types.StringValue(value)
     } else {
         d.LocalProcessingAgentId = types.StringNull()

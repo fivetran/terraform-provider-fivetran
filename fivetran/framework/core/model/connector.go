@@ -206,7 +206,7 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
 	d.GroupId = types.StringValue(c.GroupId)
 	d.Service = types.StringValue(c.Service)
 
-	if c.LocalProcessingAgentId != "" && !d.LocalProcessingAgentId.IsUnknown() {
+	if c.LocalProcessingAgentId != "" && !d.LocalProcessingAgentId.IsUnknown() && !d.LocalProcessingAgentId.IsNull(){
 		d.LocalProcessingAgentId = types.StringValue(c.HybridDeploymentAgentId)
 	} else {
 		d.LocalProcessingAgentId = types.StringNull()
