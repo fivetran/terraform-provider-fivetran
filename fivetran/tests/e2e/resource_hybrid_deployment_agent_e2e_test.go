@@ -58,7 +58,7 @@ var connectorWithHdaResourceConfig = `
 
 func TestResourceHybridDeploymentAgentE2E(t *testing.T) {
 	hdaName := strconv.Itoa(seededRand.Int())
-	groupName := strconv.Itoa(seededRand.Int())
+	groupName := "group" + strconv.Itoa(seededRand.Int())
 
 	resourceConfig := fmt.Sprintf(hdaResourceConfig, groupName, hdaName)
 
@@ -83,7 +83,7 @@ func TestResourceConnectorWithHybridDeploymentAgentE2E(t *testing.T) {
 	regexp, _ := regexp.Compile("[a-z]*_[a-z]*")
 	
 	hdaName := strconv.Itoa(seededRand.Int())
-	groupName := strconv.Itoa(seededRand.Int())
+	groupName := "group" + strconv.Itoa(seededRand.Int())
 
 	resourceConfig := fmt.Sprintf(connectorWithHdaResourceConfig, groupName, hdaName)
 
