@@ -93,7 +93,6 @@ func cleanupAccount() {
 	cleanupTeams()
 	cleanupProxyAgents()
 	cleanupPrivateLinks()
-	cleanupHybridDeploymentAgents()
 }
 
 func isPredefinedUserExist() bool {
@@ -295,22 +294,5 @@ func cleanupPrivateLinks() {
 
 	if plList.Data.NextCursor != "" {
 		cleanupPrivateLinks()
-	}
-}
-
-func cleanupHybridDeploymentAgents() {
-	lpaList, err := client.NewHybridDeploymentAgentList().Do(context.Background())
-	if err != nil {
-		log.Fatal(err)
-	}
-	for _, lpa := range lpaList.Data.Items {
-		_, err := client.NewHybridDeploymentAgentDelete().AgentId(lpa.Id).Do(context.Background())
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	if lpaList.Data.NextCursor != "" {
-		cleanupHybridDeploymentAgents()
 	}
 }

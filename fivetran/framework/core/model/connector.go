@@ -206,7 +206,7 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
 	d.GroupId = types.StringValue(c.GroupId)
 	d.Service = types.StringValue(c.Service)
 
-	if c.LocalProcessingAgentId != "" {
+	if c.LocalProcessingAgentId != "" && !d.LocalProcessingAgentId.IsUnknown() && !d.LocalProcessingAgentId.IsNull(){
 		d.LocalProcessingAgentId = types.StringValue(c.HybridDeploymentAgentId)
 	} else {
 		d.LocalProcessingAgentId = types.StringNull()
@@ -250,12 +250,6 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
 	d.CreatedAt = types.StringValue(c.CreatedAt)
 	d.GroupId = types.StringValue(c.GroupId)
 	d.Service = types.StringValue(c.Service)
-
-	if c.LocalProcessingAgentId != "" {
-		d.LocalProcessingAgentId = types.StringValue(c.LocalProcessingAgentId)
-	} else {
-		d.LocalProcessingAgentId = types.StringNull()
-	}
 
     d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
     
@@ -341,7 +335,7 @@ func (c *ConnectorModelContainer) ReadFromResponseData(data connectors.DetailsRe
         c.PrivateLinkId = data.PrivateLinkId
 	}
 
-	if data.HybridDeploymentAgentId != "" {
+	if data.HybridDeploymentAgentId != "" && c.LocalProcessingAgentId != "" {
 		c.LocalProcessingAgentId = data.HybridDeploymentAgentId
 	}
 

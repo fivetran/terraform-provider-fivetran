@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Fixed
 - Problem with `schema_change_handling` validation for SAP connectors
+- Issue with `local_processing_agent_id` in `fivetran_connector` and `fivetran_destination` resources
 
 ## [1.4.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.3.2...v1.4.0)
 
