@@ -150,6 +150,9 @@ func (c _column) toStateObject(sch string, local *_column, diag *diag.Diagnostic
 	if local != nil && local.hashed != nil && c.hashed != nil {
 		result[HASHED] = helpers.BoolToStr(*c.hashed)
 	}
+	if local != nil && local.isPrimaryKey != nil && c.isPrimaryKey != nil {
+		result[IS_PRIMARY_KEY] = helpers.BoolToStr(*c.isPrimaryKey)
+	}
 	return result, local != nil ||
 		(c.enabled != (sch != BLOCK_ALL) && c.isPatchAllowed()) // if column is not aligned with sch it should not be included if patch not allowed
 }
