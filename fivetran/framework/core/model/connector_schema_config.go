@@ -322,7 +322,7 @@ func (d *ConnectorSchemaResourceModel) getLegacySchemaItems(schemas []interface{
 		"name":           types.StringType,
 		"enabled":        types.BoolType,
 		"hashed":         types.BoolType,
-		"is_primary_ket": types.BoolType,
+		"is_primary_key": types.BoolType,
 	}
 
 	tableAttrTypes := map[string]attr.Type{
@@ -381,7 +381,7 @@ func (d *ConnectorSchemaResourceModel) getLegacySchemaItems(schemas []interface{
 						} else {
 							columnElements["hashed"] = types.BoolNull()
 						}
-						if _, ok := localColumn["is_primary_key"]; ok {
+						if _, ok := localColumn["is_primary_key"]; ok && columnMap["is_primary_key"] != nil {
 							columnElements["is_primary_key"] = types.BoolValue(helpers.StrToBool(columnMap["is_primary_key"].(string)))
 						} else {
 							columnElements["is_primary_key"] = types.BoolNull()
