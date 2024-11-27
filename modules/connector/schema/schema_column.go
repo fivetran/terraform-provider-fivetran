@@ -23,6 +23,15 @@ func (c *_column) setHashed(value *bool) {
 	}
 }
 
+func (c *_column) setIsPrimaryKey(value *bool) {
+	if value != nil && (c.isPrimaryKey == nil || *value != *c.isPrimaryKey) {
+		c.isPrimaryKey = value
+		c.updated = true
+	} else {
+		c.isPrimaryKey = nil
+	}
+}
+
 func (c *_column) setHashedToDefault() {
 	hashedDefault := false
 	c.setHashed(&hashedDefault)
@@ -64,6 +73,7 @@ func (c *_column) override(local *_column, sch string) error {
 			}
 		}
 		c.setHashed(local.hashed)
+		c.setIsPrimaryKey(local.isPrimaryKey)
 	} else {
 		// patch silently if possible
 		c.setEnabled(sch != BLOCK_ALL)
