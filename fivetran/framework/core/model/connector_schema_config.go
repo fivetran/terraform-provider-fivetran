@@ -104,9 +104,10 @@ func (d *ConnectorSchemaResourceModel) ReadFromResponse(response connectors.Conn
 
 func (d *ConnectorSchemaResourceModel) getNullSchema() basetypes.SetValue {
 	columnAttrTypes := map[string]attr.Type{
-		"name":    types.StringType,
-		"enabled": types.BoolType,
-		"hashed":  types.BoolType,
+		"name":           types.StringType,
+		"enabled":        types.BoolType,
+		"hashed":         types.BoolType,
+		"is_primary_key": types.BoolType,
 	}
 	tableAttrTypes := map[string]attr.Type{
 		"name":      types.StringType,
@@ -132,8 +133,9 @@ func (d *ConnectorSchemaResourceModel) getNullSchema() basetypes.SetValue {
 
 func (d *ConnectorSchemaResourceModel) getNullSchemas() basetypes.MapValue {
 	columnsAttrTypes := map[string]attr.Type{
-		"enabled": types.BoolType,
-		"hashed":  types.BoolType,
+		"enabled":        types.BoolType,
+		"hashed":         types.BoolType,
+		"is_primary_key": types.BoolType,
 	}
 
 	tablesAttrTypes := map[string]attr.Type{
@@ -181,8 +183,9 @@ func (d *ConnectorSchemaResourceModel) getSchemasRawValue(schemas []interface{})
 
 func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}) basetypes.MapValue {
 	columnsAttrTypes := map[string]attr.Type{
-		"enabled": types.BoolType,
-		"hashed":  types.BoolType,
+		"enabled":        types.BoolType,
+		"hashed":         types.BoolType,
+		"is_primary_key": types.BoolType,
 	}
 
 	tablesAttrTypes := map[string]attr.Type{
@@ -259,6 +262,12 @@ func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}) base
 						} else {
 							columnElements["hashed"] = types.BoolNull()
 						}
+
+						if _, ok := localColumn["is_primary_key"]; ok {
+							columnElements["is_primary_key"] = types.BoolValue(helpers.StrToBool(columnMap["is_primary_key"].(string)))
+						} else {
+							columnElements["is_primary_key"] = types.BoolNull()
+						}
 						columnValue, _ := types.ObjectValue(columnsAttrTypes, columnElements)
 						columns[columnName] = columnValue
 					}
@@ -310,9 +319,10 @@ func (d *ConnectorSchemaResourceModel) getLegacySchemaItems(schemas []interface{
 	schemaItems := []attr.Value{}
 	localSchemas := d.mapLocalSchemas()
 	columnAttrTypes := map[string]attr.Type{
-		"name":    types.StringType,
-		"enabled": types.BoolType,
-		"hashed":  types.BoolType,
+		"name":           types.StringType,
+		"enabled":        types.BoolType,
+		"hashed":         types.BoolType,
+		"is_primary_ket": types.BoolType,
 	}
 
 	tableAttrTypes := map[string]attr.Type{
@@ -370,6 +380,11 @@ func (d *ConnectorSchemaResourceModel) getLegacySchemaItems(schemas []interface{
 							columnElements["hashed"] = types.BoolValue(helpers.StrToBool(columnMap["hashed"].(string)))
 						} else {
 							columnElements["hashed"] = types.BoolNull()
+						}
+						if _, ok := localColumn["is_primary_key"]; ok {
+							columnElements["is_primary_key"] = types.BoolValue(helpers.StrToBool(columnMap["is_primary_key"].(string)))
+						} else {
+							columnElements["is_primary_key"] = types.BoolNull()
 						}
 						columnValue, _ := types.ObjectValue(columnAttrTypes, columnElements)
 						columns = append(columns, columnValue)
@@ -435,6 +450,11 @@ func (d *ConnectorSchemaResourceModel) getLegacySchemas() []interface{} {
 							hashedValue := columnElement.Attributes()["hashed"].(basetypes.BoolValue)
 							if !hashedValue.IsUnknown() && !hashedValue.IsNull() {
 								column["hashed"] = columnElement.Attributes()["hashed"].(basetypes.BoolValue).ValueBool()
+							}
+
+							isPrimaryKey := columnElement.Attributes()["is_primary_key"].(basetypes.BoolValue)
+							if !isPrimaryKey.IsUnknown() && !isPrimaryKey.IsNull() {
+								column["is_primary_key"] = columnElement.Attributes()["is_primary_key"].(basetypes.BoolValue).ValueBool()
 							}
 						}
 						columns = append(columns, column)
@@ -509,6 +529,9 @@ func (d *ConnectorSchemaResourceModel) getSchemasRaw() []interface{} {
 												if h, ok := cMap["hashed"].(bool); ok {
 													column["hashed"] = h
 												}
+												if p, ok := cMap["is_primary_key"].(bool); ok {
+													column["is_primary_key"] = p
+												}
 												columns = append(columns, column)
 											}
 										}
@@ -564,6 +587,9 @@ func (d *ConnectorSchemaResourceModel) getSchemas() []interface{} {
 									}
 									if !columnElement.Attributes()["hashed"].(basetypes.BoolValue).IsUnknown() {
 										column["hashed"] = columnElement.Attributes()["hashed"].(basetypes.BoolValue).ValueBool()
+									}
+									if !columnElement.Attributes()["is_primary_key"].(basetypes.BoolValue).IsUnknown() {
+										column["is_primary_key"] = columnElement.Attributes()["is_primary_key"].(basetypes.BoolValue).ValueBool()
 									}
 									columns = append(columns, column)
 								}

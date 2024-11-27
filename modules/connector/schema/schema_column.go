@@ -36,6 +36,9 @@ func (c _column) prepareRequest() *connectors.ConnectorSchemaConfigColumn {
 	if c.hashed != nil {
 		result.Hashed(*c.hashed)
 	}
+	if c.isPrimaryKey != nil {
+		result.IsPrimaryKey(*c.isPrimaryKey)
+	}
 	return result
 }
 
@@ -44,6 +47,9 @@ func (c _column) prepareCreateRequest() *connectors.ConnectorSchemaConfigColumn 
 	result.Enabled(c.enabled)
 	if c.hashed != nil {
 		result.Hashed(*c.hashed)
+	}
+	if c.isPrimaryKey != nil {
+		result.IsPrimaryKey(*c.isPrimaryKey)
 	}
 	return result
 }
@@ -85,6 +91,11 @@ func (c *_column) readFromResourceData(source map[string]interface{}, sch string
 	} else {
 		c.enabled = (c.hashed != nil) || sch != BLOCK_ALL
 	}
+
+	if isPrimaryKey, ok := source[IS_PRIMARY_KEY]; ok {
+		value := getBoolValue(isPrimaryKey)
+		c.isPrimaryKey = &value
+	}
 	c.name = source[NAME].(string)
 }
 
@@ -92,6 +103,7 @@ func (c *_column) readFromResponse(name string, response *connectors.ConnectorSc
 	c.name = name
 	c.enabled = *response.Enabled
 	c.hashed = response.Hashed
+	c.isPrimaryKey = response.IsPrimaryKey
 	c.patchAllowed = response.EnabledPatchSettings.Allowed
 	if !c.isPatchAllowed() {
 		lockReason := "Reason unknown. Please report this error to provider developers."
