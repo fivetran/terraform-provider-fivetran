@@ -23,6 +23,15 @@ func (c *_column) setHashed(value *bool) {
 	}
 }
 
+func (c *_column) setIsPrimaryKey(value *bool) {
+	if value != nil && (c.isPrimaryKey == nil || *value != *c.isPrimaryKey) {
+		c.isPrimaryKey = value
+		c.updated = true
+	} else {
+		c.isPrimaryKey = nil
+	}
+}
+
 func (c *_column) setHashedToDefault() {
 	hashedDefault := false
 	c.setHashed(&hashedDefault)
@@ -36,6 +45,9 @@ func (c _column) prepareRequest() *connectors.ConnectorSchemaConfigColumn {
 	if c.hashed != nil {
 		result.Hashed(*c.hashed)
 	}
+	if c.isPrimaryKey != nil {
+		result.IsPrimaryKey(*c.isPrimaryKey)
+	}
 	return result
 }
 
@@ -44,6 +56,9 @@ func (c _column) prepareCreateRequest() *connectors.ConnectorSchemaConfigColumn 
 	result.Enabled(c.enabled)
 	if c.hashed != nil {
 		result.Hashed(*c.hashed)
+	}
+	if c.isPrimaryKey != nil {
+		result.IsPrimaryKey(*c.isPrimaryKey)
 	}
 	return result
 }
@@ -58,6 +73,7 @@ func (c *_column) override(local *_column, sch string) error {
 			}
 		}
 		c.setHashed(local.hashed)
+		c.setIsPrimaryKey(local.isPrimaryKey)
 	} else {
 		// patch silently if possible
 		c.setEnabled(sch != BLOCK_ALL)
@@ -85,6 +101,11 @@ func (c *_column) readFromResourceData(source map[string]interface{}, sch string
 	} else {
 		c.enabled = (c.hashed != nil) || sch != BLOCK_ALL
 	}
+
+	if isPrimaryKey, ok := source[IS_PRIMARY_KEY]; ok {
+		value := getBoolValue(isPrimaryKey)
+		c.isPrimaryKey = &value
+	}
 	c.name = source[NAME].(string)
 }
 
@@ -92,6 +113,7 @@ func (c *_column) readFromResponse(name string, response *connectors.ConnectorSc
 	c.name = name
 	c.enabled = *response.Enabled
 	c.hashed = response.Hashed
+	c.isPrimaryKey = response.IsPrimaryKey
 	c.patchAllowed = response.EnabledPatchSettings.Allowed
 	if !c.isPatchAllowed() {
 		lockReason := "Reason unknown. Please report this error to provider developers."
@@ -137,6 +159,9 @@ func (c _column) toStateObject(sch string, local *_column, diag *diag.Diagnostic
 
 	if local != nil && local.hashed != nil && c.hashed != nil {
 		result[HASHED] = helpers.BoolToStr(*c.hashed)
+	}
+	if local != nil && local.isPrimaryKey != nil && c.isPrimaryKey != nil {
+		result[IS_PRIMARY_KEY] = helpers.BoolToStr(*c.isPrimaryKey)
 	}
 	return result, local != nil ||
 		(c.enabled != (sch != BLOCK_ALL) && c.isPatchAllowed()) // if column is not aligned with sch it should not be included if patch not allowed

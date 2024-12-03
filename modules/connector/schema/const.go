@@ -18,6 +18,7 @@ const (
 	NAME                   = "name"
 	ENABLED                = "enabled"
 	HASHED                 = "hashed"
+	IS_PRIMARY_KEY         = "is_primary_key"
 	SYNC_MODE              = "sync_mode"
 
 	HANDLED       = "handled"

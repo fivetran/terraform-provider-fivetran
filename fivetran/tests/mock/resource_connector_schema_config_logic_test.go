@@ -38,16 +38,16 @@ func TestUpstreamSchemaWithoutColumns(t *testing.T) {
 	schema_1response.newTable("table_1", false, nil)
 	// as table_2 stays enabled on switch to BLOCK_ALL - column settings are fetched from source and saved in config
 	schema_1response.newTable("table_2", true, nil).
-		newColumn("column_1", true, boolPtr(false)).
-		newColumn("column_2", true, boolPtr(false))
+		newColumn("column_1", true, boolPtr(false), true).
+		newColumn("column_2", true, boolPtr(false), false)
 	schema_1response.newTable("table_3", false, nil)
 
 	schema_2response := responseConfig.newSchema("schema_2", true)
 	schema_2response.newTable("table_1", false, nil)
 	// as table_2 stays enabled on switch to BLOCK_ALL - column settings are fetched from source and saved in config
 	schema_2response.newTable("table_2", true, nil).
-		newColumn("column_1", true, boolPtr(false)).
-		newColumn("column_2", true, boolPtr(false))
+		newColumn("column_1", true, boolPtr(false), true).
+		newColumn("column_2", true, boolPtr(false), false)
 	schema_2response.newTable("table_3", false, nil)
 
 	body := setupOneStepTest(t, upstreamConfig, tfConfig, responseConfig)
@@ -92,7 +92,7 @@ func TestUpstreamSchemaWithoutColumnsColumnConfigured(t *testing.T) {
 	// Enable only two tables
 	tfConfig.newSchema("schema_1", true).
 		newTable("table_1", true, nil).
-		newColumn("column_1", true, nil)
+		newColumn("column_1", true, nil, true)
 
 	responseConfig := schemaConfigTestData{
 		schemaChangeHandling: "BLOCK_ALL",
@@ -100,8 +100,8 @@ func TestUpstreamSchemaWithoutColumnsColumnConfigured(t *testing.T) {
 
 	responseConfig.newSchema("schema_1", true).
 		newTable("table_1", true, nil).
-		newColumn("column_1", true, boolPtr(false)). // column user configured in tf
-		newColumn("column_2", true, boolPtr(false))  // column present in source, but not saved to standard config before switch to BA mode
+		newColumn("column_1", true, boolPtr(false), false). // column user configured in tf
+		newColumn("column_2", true, boolPtr(false), false)  // column present in source, but not saved to standard config before switch to BA mode
 
 	response2Config := schemaConfigTestData{
 		schemaChangeHandling: "BLOCK_ALL",
@@ -109,8 +109,8 @@ func TestUpstreamSchemaWithoutColumnsColumnConfigured(t *testing.T) {
 
 	response2Config.newSchema("schema_1", true).
 		newTable("table_1", true, nil).
-		newColumn("column_1", true, boolPtr(false)). // column user configured in tf
-		newColumn("column_2", false, boolPtr(false)) // column set disbled after second patch
+		newColumn("column_1", true, boolPtr(false), false). // column user configured in tf
+		newColumn("column_2", false, boolPtr(false), false) // column set disbled after second patch
 
 	bodies := setupComplexTestWithColumnsReload(
 		t, upstreamConfig,
@@ -119,7 +119,7 @@ func TestUpstreamSchemaWithoutColumnsColumnConfigured(t *testing.T) {
 		map[string]map[string][]columnsConfigTestData{
 			"schema_1": map[string][]columnsConfigTestData{
 				"table_1": []columnsConfigTestData{
-					newColumnConfigTestData().newColumn("column_1", false, boolPtr(false)).newColumn("column_2", false, boolPtr(false)),
+					newColumnConfigTestData().newColumn("column_1", false, boolPtr(false), true).newColumn("column_2", false, boolPtr(false), false),
 				},
 			},
 		})
@@ -142,7 +142,7 @@ func TestUpstreamSchemaWithoutColumnsColumnConfigured(t *testing.T) {
 
 	assertEqual(t, len(columns), 1)
 	column11 := AssertKeyExists(t, columns, "column_1").(map[string]interface{})
-	assertEqual(t, len(column11), 1)
+	assertEqual(t, len(column11), 2)
 	assertKeyExistsAndHasValue(t, column11, "enabled", true)
 
 	body2 := bodies[1]
@@ -160,7 +160,7 @@ func TestUpstreamSchemaWithoutColumnsColumnConfigured(t *testing.T) {
 	columns = AssertKeyExists(t, table11, "columns").(map[string]interface{})
 	assertEqual(t, len(columns), 1)
 	column12 := AssertKeyExists(t, columns, "column_2").(map[string]interface{})
-	assertEqual(t, len(column12), 1)
+	assertEqual(t, len(column12), 2)
 	assertKeyExistsAndHasValue(t, column12, "enabled", false)
 }
 
@@ -173,14 +173,14 @@ func TestSchemaDoesntTouchColumnsInBlockAllIfNoColumnSettingsMock(t *testing.T) 
 	schema_1 := upstreamConfig.newSchema("schema_1", true)
 
 	schema_1.newTable("table_1", true, nil).
-		newColumnLocked("column_1", true, boolPtr(false)).
-		newColumn("column_2", true, boolPtr(false)).
-		newColumn("column_3", true, boolPtr(true))
+		newColumnLocked("column_1", true, boolPtr(false), true).
+		newColumn("column_2", true, boolPtr(false), false).
+		newColumn("column_3", true, boolPtr(true), false)
 
 	schema_1.newTable("table_2", true, nil).
-		newColumnLocked("column_1", true, boolPtr(false)).
-		newColumn("column_2", true, boolPtr(false)).
-		newColumn("column_3", true, boolPtr(true))
+		newColumnLocked("column_1", true, boolPtr(false), true).
+		newColumn("column_2", true, boolPtr(false), false).
+		newColumn("column_3", true, boolPtr(true), false)
 
 	// only schema_1.table_1 will stay enabled
 	// table_2 will be disabled
@@ -199,15 +199,15 @@ func TestSchemaDoesntTouchColumnsInBlockAllIfNoColumnSettingsMock(t *testing.T) 
 	schema_1response := responseConfig.newSchema("schema_1", true)
 	// table_1 enabled, existing columns saved settings
 	schema_1response.newTable("table_1", true, nil).
-		newColumnLocked("column_1", true, boolPtr(false)).
-		newColumn("column_2", true, boolPtr(false)).
-		newColumn("column_3", true, boolPtr(true))
+		newColumnLocked("column_1", true, boolPtr(false), true).
+		newColumn("column_2", true, boolPtr(false), false).
+		newColumn("column_3", true, boolPtr(true), false)
 
 	// table_2 enabled, existing columns saved settings
 	schema_1response.newTable("table_2", false, nil).
-		newColumnLocked("column_1", true, boolPtr(false)).
-		newColumn("column_2", true, boolPtr(false)).
-		newColumn("column_3", true, boolPtr(true))
+		newColumnLocked("column_1", true, boolPtr(false), true).
+		newColumn("column_2", true, boolPtr(false), false).
+		newColumn("column_3", true, boolPtr(true), false)
 
 	// act
 	body := setupOneStepTest(t, upstreamConfig, tfConfig, responseConfig)
@@ -231,9 +231,9 @@ func TestSetupSchemaBlockAllMock(t *testing.T) {
 	schema_1 := upstreamConfig.newSchema("schema_1", true)
 
 	schema_1.newTable("table_1", true, nil).
-		newColumnLocked("column_1", true, boolPtr(false)).
-		newColumn("column_2", true, boolPtr(false)).
-		newColumn("column_3", true, boolPtr(true))
+		newColumnLocked("column_1", true, boolPtr(false), true).
+		newColumn("column_2", true, boolPtr(false), false).
+		newColumn("column_3", true, boolPtr(true), false)
 
 	schema_1.newTableLocked("table_locked", true, nil)
 
@@ -243,7 +243,7 @@ func TestSetupSchemaBlockAllMock(t *testing.T) {
 
 	tfConfig.newSchema("schema_1", true).
 		newTable("table_1", true, nil).
-		newColumn("column_2", true, nil)
+		newColumn("column_2", true, nil, true)
 
 	responseConfig := schemaConfigTestData{
 		schemaChangeHandling: "BLOCK_ALL",
@@ -251,9 +251,9 @@ func TestSetupSchemaBlockAllMock(t *testing.T) {
 
 	schema_1response := responseConfig.newSchema("schema_1", true)
 	schema_1response.newTable("table_1", true, nil).
-		newColumnLocked("column_1", true, boolPtr(false)).
-		newColumn("column_2", true, boolPtr(false)).
-		newColumn("column_3", false, boolPtr(true))
+		newColumnLocked("column_1", true, boolPtr(false), true).
+		newColumn("column_2", true, boolPtr(false), false).
+		newColumn("column_3", false, boolPtr(true), false)
 	schema_1response.newTableLocked("table_locked", true, nil)
 
 	// act
@@ -272,7 +272,7 @@ func TestSetupSchemaBlockAllMock(t *testing.T) {
 
 	assertEqual(t, len(columns), 1)
 	column3 := assertKeyExists(t, columns, "column_3").(map[string]interface{})
-	assertEqual(t, len(column3), 1)
+	assertEqual(t, len(column3), 2)
 	assertKeyExistsAndHasValue(t, column3, "enabled", false)
 }
 
@@ -282,9 +282,9 @@ func TestIgnoreNoPatchAllowedColumnsMock(t *testing.T) {
 	}
 	upstreamConfig.newSchema("schema_1", true).
 		newTable("table_1", true, nil).
-		newColumn("column_1", true, boolPtr(false)).
-		newColumn("column_2", true, boolPtr(false)).
-		newColumn("column_3", true, boolPtr(true))
+		newColumn("column_1", true, boolPtr(false), true).
+		newColumn("column_2", true, boolPtr(false), false).
+		newColumn("column_3", true, boolPtr(true), false)
 
 	tfConfig := schemaConfigTestData{
 		schemaChangeHandling: "BLOCK_ALL",
@@ -292,16 +292,16 @@ func TestIgnoreNoPatchAllowedColumnsMock(t *testing.T) {
 
 	tfConfig.newSchema("schema_1", true).
 		newTable("table_1", true, nil).
-		newColumn("column_2", true, nil)
+		newColumn("column_2", true, nil, true)
 
 	responseConfig := schemaConfigTestData{
 		schemaChangeHandling: "BLOCK_ALL",
 	}
 	responseConfig.newSchema("schema_1", true).
 		newTable("table_1", true, nil).
-		newColumn("column_1", false, boolPtr(false)).
-		newColumn("column_2", true, boolPtr(false)).
-		newColumn("column_3", false, boolPtr(true))
+		newColumn("column_1", false, boolPtr(false), true).
+		newColumn("column_2", true, boolPtr(false), false).
+		newColumn("column_3", false, boolPtr(true), false)
 
 	// act
 	body := setupOneStepTest(t, upstreamConfig, tfConfig, responseConfig)
@@ -317,10 +317,10 @@ func TestIgnoreNoPatchAllowedColumnsMock(t *testing.T) {
 	columns := assertKeyExists(t, table_1, "columns").(map[string]interface{})
 	assertEqual(t, len(columns), 2)
 	column_1 := assertKeyExists(t, columns, "column_1").(map[string]interface{})
-	assertEqual(t, len(column_1), 1)
+	assertEqual(t, len(column_1), 2)
 	assertKeyExistsAndHasValue(t, column_1, "enabled", false)
 	column_3 := assertKeyExists(t, columns, "column_3").(map[string]interface{})
-	assertEqual(t, len(column_3), 1)
+	assertEqual(t, len(column_3), 2)
 	assertKeyExistsAndHasValue(t, column_3, "enabled", false)
 }
 

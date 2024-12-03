@@ -1,9 +1,10 @@
 package schema
 
 type _element struct {
-	name    string
-	enabled bool
-	updated bool
+	name         string
+	enabled      bool
+	updated      bool
+	isPrimaryKey *bool
 
 	patchAllowed   *bool
 	lockReason     *string

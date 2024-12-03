@@ -89,6 +89,11 @@ The value defines validation method.
 													Computed:    true,
 													Description: "The boolean value specifying whether a column should be hashed.",
 												},
+												"is_primary_key": schema.BoolAttribute{
+													Optional:    true,
+													Computed:    true,
+													Description: "",
+												},
 											},
 										},
 									},
@@ -183,6 +188,10 @@ func getColumnBlock() schema.SetNestedBlock {
 					Optional:    true,
 					Computed:    true,
 					Description: "The boolean value specifying whether a column should be hashed.",
+				},
+				"is_primary_key": schema.BoolAttribute{
+					Optional:    true,
+					Description: "",
 				},
 			},
 		},
