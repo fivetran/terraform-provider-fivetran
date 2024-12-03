@@ -13,6 +13,7 @@ type columnTestData struct {
 	enabled              bool
 	hashed               *bool
 	enabledPatchSettings bool
+	isPrimaryKey         bool
 }
 
 type tableTestData struct {
@@ -40,7 +41,7 @@ func newColumnConfigTestData() columnsConfigTestData {
 	return columnsConfigTestData{}
 }
 
-func (cctd columnsConfigTestData) newColumn(name string, enabled bool, hashed *bool) columnsConfigTestData {
+func (cctd columnsConfigTestData) newColumn(name string, enabled bool, hashed *bool, isPrimaryKey bool) columnsConfigTestData {
 	if cctd.columns == nil {
 		cctd.columns = map[string]*columnTestData{}
 	}
@@ -48,6 +49,7 @@ func (cctd columnsConfigTestData) newColumn(name string, enabled bool, hashed *b
 		enabled:              enabled,
 		hashed:               hashed,
 		enabledPatchSettings: true,
+		isPrimaryKey:         isPrimaryKey,
 	}
 	return cctd
 }
@@ -173,7 +175,7 @@ func (std *schemaTestData) newTableLocked(name string, enabled bool, syncMode *s
 	return table
 }
 
-func (ttd *tableTestData) newColumn(name string, enabled bool, hashed *bool) *tableTestData {
+func (ttd *tableTestData) newColumn(name string, enabled bool, hashed *bool, isPrimaryKey bool) *tableTestData {
 	if ttd.columns == nil {
 		ttd.columns = map[string]*columnTestData{}
 	}
@@ -181,11 +183,12 @@ func (ttd *tableTestData) newColumn(name string, enabled bool, hashed *bool) *ta
 		enabled:              enabled,
 		hashed:               hashed,
 		enabledPatchSettings: true,
+		isPrimaryKey:         isPrimaryKey,
 	}
 	return ttd
 }
 
-func (ttd *tableTestData) newColumnLocked(name string, enabled bool, hashed *bool) *tableTestData {
+func (ttd *tableTestData) newColumnLocked(name string, enabled bool, hashed *bool, isPrimaryKey bool) *tableTestData {
 	if ttd.columns == nil {
 		ttd.columns = map[string]*columnTestData{}
 	}
@@ -193,6 +196,7 @@ func (ttd *tableTestData) newColumnLocked(name string, enabled bool, hashed *boo
 		enabled:              enabled,
 		hashed:               hashed,
 		enabledPatchSettings: false,
+		isPrimaryKey:         isPrimaryKey,
 	}
 	return ttd
 }
