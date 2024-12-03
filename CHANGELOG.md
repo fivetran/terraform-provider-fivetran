@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.4.1](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.4.1...v1.4.2)
 
 ## Added
-- Add `is_primary_key` to connector schema configC
+- Add `is_primary_key` to connector schema config
 
 ## [1.4.1](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.4.0...v1.4.1)
 
