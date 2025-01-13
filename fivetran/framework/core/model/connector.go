@@ -32,12 +32,15 @@ type ConnectorDatasourceModel struct {
     Paused          types.Bool   `tfsdk:"paused"`
     PauseAfterTrial types.Bool   `tfsdk:"pause_after_trial"`
     DailySyncTime   types.String `tfsdk:"daily_sync_time"`
+    
+    DataDelaySensitivity    types.String `tfsdk:"data_delay_sensitivity"`
+    DataDelayThreshold      types.Int64  `tfsdk:"data_delay_threshold"`
 
     ProxyAgentId             types.String `tfsdk:"proxy_agent_id"`
     NetworkingMethod         types.String `tfsdk:"networking_method"`
     HybridDeploymentAgentId  types.String `tfsdk:"hybrid_deployment_agent_id"`
     LocalProcessingAgentId   types.String `tfsdk:"local_processing_agent_id"`
-    PrivateLinkId          types.String `tfsdk:"private_link_id"`
+    PrivateLinkId            types.String `tfsdk:"private_link_id"`
     Status types.Object `tfsdk:"status"`
 
     Config types.Object `tfsdk:"config"`
@@ -62,6 +65,9 @@ func (d *ConnectorDatasourceModel) ReadFromResponse(resp connectors.DetailsWithC
 	d.ScheduleType = types.StringValue(resp.Data.ScheduleType)
 	d.Paused = types.BoolValue(*resp.Data.Paused)
 	d.PauseAfterTrial = types.BoolValue(*resp.Data.PauseAfterTrial)
+    
+    d.DataDelaySensitivity = types.StringValue(resp.Data.DataDelaySensitivity)
+    d.DataDelayThreshold = types.Int64Value(int64(*resp.Data.DataDelayThreshold))
 
 	if resp.Data.DailySyncTime != "" {
 		d.DailySyncTime = types.StringValue(resp.Data.DailySyncTime)
@@ -136,6 +142,9 @@ type ConnectorResourceModel struct {
     HybridDeploymentAgentId  types.String `tfsdk:"hybrid_deployment_agent_id"`
     PrivateLinkId          types.String `tfsdk:"private_link_id"`
 
+    DataDelaySensitivity    types.String `tfsdk:"data_delay_sensitivity"`
+    DataDelayThreshold      types.Int64  `tfsdk:"data_delay_threshold"`
+
     Config   types.Object   `tfsdk:"config"`
     Auth     types.Object   `tfsdk:"auth"`
     Timeouts timeouts.Value `tfsdk:"timeouts"`
@@ -206,6 +215,9 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
 	d.GroupId = types.StringValue(c.GroupId)
 	d.Service = types.StringValue(c.Service)
 
+    d.DataDelaySensitivity = types.StringValue(c.DataDelaySensitivity)
+    d.DataDelayThreshold = types.Int64Value(int64(*c.DataDelayThreshold))
+
 	if c.LocalProcessingAgentId != "" && !d.LocalProcessingAgentId.IsUnknown() && !d.LocalProcessingAgentId.IsNull(){
 		d.LocalProcessingAgentId = types.StringValue(c.HybridDeploymentAgentId)
 	} else {
@@ -250,6 +262,9 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
 	d.CreatedAt = types.StringValue(c.CreatedAt)
 	d.GroupId = types.StringValue(c.GroupId)
 	d.Service = types.StringValue(c.Service)
+
+    d.DataDelaySensitivity = types.StringValue(c.DataDelaySensitivity)
+    d.DataDelayThreshold = types.Int64Value(int64(*c.DataDelayThreshold))
 
     d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
     
@@ -306,6 +321,10 @@ type ConnectorModelContainer struct {
     HybridDeploymentAgentId string
     LocalProcessingAgentId  string
     PrivateLinkId           string
+
+    DataDelaySensitivity string
+    DataDelayThreshold   *int
+
 	Config map[string]interface{}
 
     RunSetupTests     bool
@@ -321,6 +340,10 @@ func (c *ConnectorModelContainer) ReadFromResponseData(data connectors.DetailsRe
 	c.GroupId = data.GroupID
 	c.Service = data.Service
 	c.Schema = data.Schema
+
+    c.DataDelaySensitivity = data.DataDelaySensitivity
+    c.DataDelayThreshold = data.DataDelayThreshold
+
 	c.Config = config
 
 	if data.ProxyAgentId != "" {

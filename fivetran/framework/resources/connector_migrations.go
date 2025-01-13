@@ -49,6 +49,8 @@ func upgradeConnectorState(ctx context.Context, req resource.UpgradeStateRequest
 			"proxy_agent_id":            tftypes.NewValue(tftypes.String, nil),
 			"local_processing_agent_id": tftypes.NewValue(tftypes.String, nil),
 			"private_link_id":           tftypes.NewValue(tftypes.String, nil),
+			"data_delay_sensitivity":    tftypes.NewValue(tftypes.String, nil),
+			"data_delay_threshold":      tftypes.NewValue(tftypes.Number, nil),
 			"hybrid_deployment_agent_id": rawState["local_processing_agent_id"],
 			"run_setup_tests":    convertStringStateValueToBool("run_setup_tests", rawState["run_setup_tests"], resp.Diagnostics),
 			"trust_fingerprints": convertStringStateValueToBool("trust_fingerprints", rawState["trust_fingerprints"], resp.Diagnostics),
@@ -106,6 +108,8 @@ func getConnectorStateModel(version int) tftypes.Type {
 		base["networking_method"] = tftypes.String
 		base["local_processing_agent_id"] = tftypes.String
         base["private_link_id"] = tftypes.String
+        base["data_delay_sensitivity"] = tftypes.String
+        base["data_delay_threshold"] = tftypes.Number
 		base["config"] = tftypes.Object{AttributeTypes: model.GetTfTypes(common.GetConfigFieldsMap(), 3)}
 		base["auth"] = tftypes.Object{AttributeTypes: model.GetTfTypes(common.GetAuthFieldsMap(), 3)}
 	} else {

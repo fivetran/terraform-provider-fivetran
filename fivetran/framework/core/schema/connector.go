@@ -120,6 +120,14 @@ func ConnectorAttributesSchema() core.Schema {
 				ValueType:   core.String,
 				Description: "The private link ID.",
 			},
+			"data_delay_sensitivity": {
+				ValueType:   core.String,
+				Description: "The level of data delay notification threshold. Possible values: LOW, NORMAL, HIGH, CUSTOM. The default value NORMAL. CUSTOM is only available for customers using the Enterprise plan or above.",
+			},
+			"data_delay_threshold": {
+				ValueType:   core.Integer,
+				Description: "Custom sync delay notification threshold in minutes. The default value is 0. This parameter is only used when data_delay_sensitivity set to CUSTOM.",
+			},
 		},
 	}
 }

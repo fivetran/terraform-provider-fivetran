@@ -26,6 +26,8 @@ const (
         "failed_at": null,
         "sync_frequency": 5,
 		"schedule_type": "auto",
+		"data_delay_sensitivity": "NORMAL",
+		"data_delay_threshold": 0,
         "status": {
             "setup_state": "incomplete",
             "sync_state": "paused",
@@ -101,6 +103,8 @@ func TestDataSourceConnectorConfigMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "sync_frequency", "5"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "paused", "true"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "pause_after_trial", "true"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "data_delay_sensitivity", "NORMAL"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "data_delay_threshold", "0"),
 		),
 	}
 
@@ -156,6 +160,8 @@ func TestDataSourceConnectorMock(t *testing.T) {
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.reports.1.report_type", "report_2"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.reports.1.metrics.0", "metric2"),
 			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "config.reports.1.metrics.1", "metric3"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "data_delay_sensitivity", "NORMAL"),
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "data_delay_threshold", "0"),
 		),
 	}
 

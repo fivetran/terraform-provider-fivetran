@@ -27,6 +27,8 @@ data "fivetran_connector" "connector" {
 - `connected_by` (String) The unique identifier of the user who has created the connector in your account.
 - `created_at` (String) The timestamp of the time the connector was created in your account.
 - `daily_sync_time` (String) The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use [the baseline sync start time](https://fivetran.com/docs/getting-started/syncoverview#syncfrequencyandscheduling). This parameter has no effect on the [0 to 60 minutes offset](https://fivetran.com/docs/getting-started/syncoverview#syncstarttimesandoffsets) used to determine the actual sync start time.
+- `data_delay_sensitivity` (String) The level of data delay notification threshold. Possible values: LOW, NORMAL, HIGH, CUSTOM. The default value NORMAL. CUSTOM is only available for customers using the Enterprise plan or above.
+- `data_delay_threshold` (Number) Custom sync delay notification threshold in minutes. The default value is 0. This parameter is only used when data_delay_sensitivity set to CUSTOM.
 - `destination_schema` (Block, Read-only) (see [below for nested schema](#nestedblock--destination_schema))
 - `failed_at` (String) The timestamp of the time the connector sync failed last time.
 - `group_id` (String) The unique identifier for the Group (Destination) within the Fivetran system.
