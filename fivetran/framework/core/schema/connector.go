@@ -123,7 +123,6 @@ func ConnectorAttributesSchema() core.Schema {
 			"data_delay_sensitivity": {
 				ValueType:   core.String,
 				Description: "The level of data delay notification threshold. Possible values: LOW, NORMAL, HIGH, CUSTOM. The default value NORMAL. CUSTOM is only available for customers using the Enterprise plan or above.",
-				StringValidators: []string{"LOW", "NORMAL", "HIGH", "CUSTOM"},
 			},
 			"data_delay_threshold": {
 				ValueType:   core.Integer,

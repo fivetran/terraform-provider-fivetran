@@ -89,7 +89,6 @@ type SchemaField struct {
 	DefaultString string
 	Readonly    bool
 	Description string
-	StringValidators []string
 }
 
 type Schema struct {
@@ -207,11 +206,6 @@ func (s SchemaField) getResourceSchemaAttribute() resourceSchema.Attribute {
 		}
 		if s.DeprecationMessage != "" {
 			stringAttribute.DeprecationMessage = s.DeprecationMessage
-		}
-		if s.StringValidators != nil && len(s.StringValidators) > 0 {
-			stringAttribute.Validators = []validator.String{
-				stringvalidator.OneOf("ALLOW_ALL", "ALLOW_COLUMNS", "BLOCK_ALL"),
-			}
 		}
 		result = stringAttribute
 	case Boolean:
