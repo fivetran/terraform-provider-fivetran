@@ -12,7 +12,7 @@ import (
 )
 
 func TestResourceDbtProjectE2E(t *testing.T) {
-	//t.Skip("Now for deployment you need to use a third-party provider, which is impossible to do inside the local provider test")
+	t.Skip("Skip cause deprecated in upstream.")
 	destinationConfig := `
 	resource "fivetran_destination" "test_destination" {
 		provider = fivetran-provider
