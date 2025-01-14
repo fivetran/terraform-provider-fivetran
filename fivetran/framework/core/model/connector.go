@@ -215,7 +215,11 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
 	d.GroupId = types.StringValue(c.GroupId)
 	d.Service = types.StringValue(c.Service)
 
-    d.DataDelaySensitivity = types.StringValue(c.DataDelaySensitivity)
+    // as fact - this is computed attribute which user can change
+    if !d.DataDelaySensitivity.IsUnknown() && !d.DataDelaySensitivity.IsNull() {
+        d.DataDelaySensitivity = types.StringValue(c.DataDelaySensitivity)    
+    }
+    
     d.DataDelayThreshold = types.Int64Value(int64(*c.DataDelayThreshold))
 
 	if c.LocalProcessingAgentId != "" && !d.LocalProcessingAgentId.IsUnknown() && !d.LocalProcessingAgentId.IsNull(){
@@ -262,7 +266,6 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
 	d.CreatedAt = types.StringValue(c.CreatedAt)
 	d.GroupId = types.StringValue(c.GroupId)
 	d.Service = types.StringValue(c.Service)
-
     d.DataDelaySensitivity = types.StringValue(c.DataDelaySensitivity)
     d.DataDelayThreshold = types.Int64Value(int64(*c.DataDelayThreshold))
 
