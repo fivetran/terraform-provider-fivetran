@@ -42,6 +42,7 @@ func (d *groupConnectors) Read(ctx context.Context, req datasource.ReadRequest, 
 	}
 
 	var data model.GroupConnectors
+	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
 	var respNextCursor string
 	var listResponse sdk.GroupListConnectorsResponse
