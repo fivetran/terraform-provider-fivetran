@@ -7,6 +7,7 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	sdk "github.com/fivetran/go-fivetran/groups"
 
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
 )
@@ -40,13 +41,15 @@ func (d *groupConnectors) Read(ctx context.Context, req datasource.ReadRequest, 
 		return
 	}
 
+	var data model.GroupConnectors
+
 	var respNextCursor string
-	var listResponse model.GroupConnectors
+	var listResponse sdk.GroupListConnectorsResponse
 	limit := 1000
 
 	for {
 		var err error
-		var tmpResp model.GroupConnectors
+		var tmpResp sdk.GroupListConnectorsResponse
 		svc := d.GetClient().NewGroupListConnectors()
 		
 		if respNextCursor == "" {
@@ -62,7 +65,7 @@ func (d *groupConnectors) Read(ctx context.Context, req datasource.ReadRequest, 
 				"Read error.",
 				fmt.Sprintf("%v; code: %v; message: %v", err, tmpResp.Code, tmpResp.Message),
 			)
-			listResponse = sdk.GroupConnectors{}
+			listResponse = sdk.GroupListConnectorsResponse{}
 		}
 
 		listResponse.Data.Items = append(listResponse.Data.Items, tmpResp.Data.Items...)
