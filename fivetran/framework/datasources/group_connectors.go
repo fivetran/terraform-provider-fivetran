@@ -7,6 +7,7 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	sdk "github.com/fivetran/go-fivetran/groups"
 
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
 )
@@ -41,26 +42,43 @@ func (d *groupConnectors) Read(ctx context.Context, req datasource.ReadRequest, 
 	}
 
 	var data model.GroupConnectors
-
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
-	svc := d.GetClient().NewGroupListConnectors().GroupID(data.Id.ValueString())
+	var respNextCursor string
+	var listResponse sdk.GroupListConnectorsResponse
+	limit := 1000
 
-	if !data.Schema.IsNull() {
-		svc.Schema(data.Schema.ValueString())		
+	for {
+		var err error
+		var tmpResp sdk.GroupListConnectorsResponse
+		svc := d.GetClient().NewGroupListConnectors()
+		
+		if respNextCursor == "" {
+			tmpResp, err = svc.Limit(limit).GroupID(data.Id.ValueString()).Do(ctx)
+		}
+
+		if respNextCursor != "" {
+			tmpResp, err = svc.Limit(limit).GroupID(data.Id.ValueString()).Cursor(respNextCursor).Do(ctx)
+		}
+		
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Read error.",
+				fmt.Sprintf("%v; code: %v; message: %v", err, tmpResp.Code, tmpResp.Message),
+			)
+			listResponse = sdk.GroupListConnectorsResponse{}
+		}
+
+		listResponse.Data.Items = append(listResponse.Data.Items, tmpResp.Data.Items...)
+
+		if tmpResp.Data.NextCursor == "" {
+			break
+		}
+
+		respNextCursor = tmpResp.Data.NextCursor
 	}
 
-	groupConnectorsResponse, err := svc.Do(ctx)
-
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Read error.",
-			fmt.Sprintf("%v; code: %v; message: %v", err, groupConnectorsResponse.Code, groupConnectorsResponse.Message),
-		)
-		return
-	}
-
-	data.ReadFromResponse(ctx, groupConnectorsResponse)
+	data.ReadFromResponse(ctx, listResponse)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
