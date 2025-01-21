@@ -232,6 +232,7 @@ Optional:
 
 - `enabled` (Boolean) The boolean value specifying whether the sync of the column into the destination is enabled.
 - `hashed` (Boolean) The boolean value specifying whether a column should be hashed.
+- `is_primary_key` (Boolean)
 
 
 
@@ -260,6 +261,7 @@ Optional:
 
 - `enabled` (Boolean) The boolean value specifying whether the sync of the column into the destination is enabled.
 - `hashed` (Boolean) The boolean value specifying whether a column should be hashed.
+- `is_primary_key` (Boolean)
 
 
 

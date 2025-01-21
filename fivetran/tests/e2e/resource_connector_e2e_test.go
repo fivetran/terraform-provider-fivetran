@@ -28,6 +28,10 @@ func TestResourceConnectorE2E(t *testing.T) {
 					provider = fivetran-provider
 					group_id = fivetran_group.test_group.id
 					service = "fivetran_log"
+					
+					data_delay_sensitivity = "NORMAL"
+					data_delay_threshold = 0
+
 					destination_schema {
 						name = "fivetran_log_schema"
 					}
@@ -53,6 +57,8 @@ func TestResourceConnectorE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "false"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "false"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_sensitivity", "NORMAL"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_threshold", "0"),
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "schedule_type", "auto"),
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "sync_frequency", "5"),
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "paused", "true"),
@@ -70,6 +76,10 @@ func TestResourceConnectorE2E(t *testing.T) {
 					provider = fivetran-provider
 					group_id = fivetran_group.test_group.id
 					service = "fivetran_log"
+					
+					data_delay_sensitivity = "NORMAL"
+					data_delay_threshold = 0
+
 					destination_schema {
 						name = "fivetran_log_schema"
 					}
@@ -95,7 +105,8 @@ func TestResourceConnectorE2E(t *testing.T) {
 
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "fivetran_log"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "fivetran_log_schema"),
-
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_sensitivity", "NORMAL"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_threshold", "0"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "true"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "true"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "true"),

@@ -46,6 +46,8 @@ const (
         "sync_frequency": 5,
 		"schedule_type": "auto",
 		"networking_method": "Directly",
+		"data_delay_sensitivity": "NORMAL",
+		"data_delay_threshold": 0,
         "status": {
             "setup_state": "incomplete",
             "sync_state": "paused",
@@ -76,6 +78,8 @@ const (
         "sync_frequency": 5,
 		"schedule_type": "auto",
 		"networking_method": "Directly",
+		"data_delay_sensitivity": "NORMAL",
+		"data_delay_threshold": 0,
         "status": {
             "setup_state": "incomplete",
             "sync_state": "paused",
@@ -120,6 +124,8 @@ const (
         "failed_at": null,
 		"schedule_type": "auto",
 		"networking_method": "Directly",
+		"data_delay_sensitivity": "NORMAL",
+		"data_delay_threshold": 0,
         "status": {
             "setup_state": "incomplete",
             "sync_state": "paused",
@@ -164,6 +170,8 @@ const (
         "sync_frequency": 5,
 		"schedule_type": "auto",
 		"networking_method": "Directly",
+		"data_delay_sensitivity": "NORMAL",
+		"data_delay_threshold": 0,
         "status": {
             "setup_state": "incomplete",
             "sync_state": "paused",
@@ -238,6 +246,9 @@ const (
 			name = "google_sheets_schema"
 			table = "table"
 		}
+
+		data_delay_sensitivity = "NORMAL"
+		data_delay_threshold = 0
 
 		trust_certificates = false
 		trust_fingerprints = false
@@ -394,6 +405,9 @@ func TestResourceConnectorUpdateMock(t *testing.T) {
 			group_id = "group_id"
 			service = "postgres"
 
+			data_delay_sensitivity = "NORMAL"
+			data_delay_threshold = 0
+
 			destination_schema {
 				prefix = "postgres"
 			}
@@ -438,6 +452,9 @@ func TestResourceConnectorUpdateMock(t *testing.T) {
 
 			group_id = "group_id"
 			service = "postgres"
+
+			data_delay_sensitivity = "NORMAL"
+			data_delay_threshold = 0
 
 			destination_schema {
 				prefix = "postgres"
@@ -507,6 +524,9 @@ func TestResourceConnectorEmptyConfigMock(t *testing.T) {
 
 			group_id = "group_id"
 			service = "postgres"
+
+			data_delay_sensitivity = "NORMAL"
+			data_delay_threshold = 0
 
 			destination_schema {
 				prefix = "postgres"
@@ -666,6 +686,9 @@ func TestResourceConnectorUnknownServiceMock(t *testing.T) {
 			group_id           = "group_id"
 			service            = "unknown-service-name"
 
+			data_delay_sensitivity = "NORMAL"
+			data_delay_threshold = 0
+
 			destination_schema {
 				name = "schema"
 			}
@@ -698,6 +721,9 @@ func TestResourceConnectorMock(t *testing.T) {
 
 			service = "google_ads"
 			group_id = "group_id"
+
+			data_delay_sensitivity = "NORMAL"
+			data_delay_threshold = 0
 
 			destination_schema {
 				name = "adwords_schema"
@@ -732,6 +758,8 @@ func TestResourceConnectorMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "group_id", "group_id"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "google_ads"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "destination_schema.name", "adwords_schema"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_sensitivity", "NORMAL"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_threshold", "0"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.user", "user_name"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.password", "password"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.port", "5432"),
@@ -755,6 +783,9 @@ func TestResourceConnectorMock(t *testing.T) {
 			service = "google_ads"
 			group_id = "group_id"
 
+			data_delay_sensitivity = "NORMAL"
+			data_delay_threshold = 0
+			
 			destination_schema {
 				name = "adwords_schema"
 			}
@@ -787,6 +818,8 @@ func TestResourceConnectorMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "group_id", "group_id"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "google_ads"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "destination_schema.name", "adwords_schema"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_sensitivity", "NORMAL"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_threshold", "0"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.user", "user_name_1"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.password", "password_1"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.port", "2345"),
@@ -883,7 +916,7 @@ func TestResourceConnectorMock(t *testing.T) {
 						body := tfmock.RequestBodyToJson(t, req)
 
 						// Check the request
-						tfmock.AssertEqual(t, len(body), 4)
+						tfmock.AssertEqual(t, len(body), 6)
 
 						tfmock.AssertKeyExistsAndHasValue(t, body, "run_setup_tests", true)
 						tfmock.AssertKeyExistsAndHasValue(t, body, "trust_certificates", true)

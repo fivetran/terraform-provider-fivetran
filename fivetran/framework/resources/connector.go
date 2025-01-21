@@ -162,6 +162,15 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 		svc.PrivateLinkId(data.PrivateLinkId.ValueString())
 	}
 
+	if data.DataDelaySensitivity.ValueString() != "" {
+		svc.DataDelaySensitivity(data.DataDelaySensitivity.ValueString())
+	}
+
+	if !data.DataDelayThreshold.IsNull() {
+		value := int(data.DataDelayThreshold.ValueInt64())
+		svc.DataDelayThreshold(&value)
+	}
+
 	if data.LocalProcessingAgentId.ValueString() != "" {
 		resp.Diagnostics.AddWarning(
 			"Field `local_processing_agent_id` is Deprecated", 
@@ -379,6 +388,15 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 
 		if plan.NetworkingMethod.ValueString() != "" {
 			svc.NetworkingMethod(plan.NetworkingMethod.ValueString())
+		}
+
+		if plan.DataDelaySensitivity.ValueString() != "" {
+			svc.DataDelaySensitivity(plan.DataDelaySensitivity.ValueString())
+		}
+
+		if !plan.DataDelayThreshold.IsNull() {
+			value := int(plan.DataDelayThreshold.ValueInt64())
+			svc.DataDelayThreshold(&value)
 		}
 
 		response, err := svc.DoCustom(ctx)
