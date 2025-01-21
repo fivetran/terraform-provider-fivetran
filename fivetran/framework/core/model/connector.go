@@ -70,6 +70,8 @@ func (d *ConnectorDatasourceModel) ReadFromResponse(resp connectors.DetailsWithC
 
     if resp.Data.DataDelayThreshold != nil {
         d.DataDelayThreshold = types.Int64Value(int64(*resp.Data.DataDelayThreshold))
+    } else {
+        d.DataDelayThreshold = types.Int64Null()
     }
 
 	if resp.Data.DailySyncTime != "" {
@@ -225,6 +227,8 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
     
     if c.DataDelayThreshold != nil {
         d.DataDelayThreshold = types.Int64Value(int64(*c.DataDelayThreshold))
+    } else {
+        d.DataDelayThreshold = types.Int64Null()
     }
     
 	if c.LocalProcessingAgentId != "" && !d.LocalProcessingAgentId.IsUnknown() && !d.LocalProcessingAgentId.IsNull(){
@@ -279,6 +283,8 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
     
     if c.DataDelayThreshold != nil {
         d.DataDelayThreshold = types.Int64Value(int64(*c.DataDelayThreshold))
+    } else {
+        d.DataDelayThreshold = types.Int64Null()
     }
 
     d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
