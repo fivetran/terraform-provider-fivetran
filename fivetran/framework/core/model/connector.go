@@ -67,7 +67,10 @@ func (d *ConnectorDatasourceModel) ReadFromResponse(resp connectors.DetailsWithC
 	d.PauseAfterTrial = types.BoolValue(*resp.Data.PauseAfterTrial)
     
     d.DataDelaySensitivity = types.StringValue(resp.Data.DataDelaySensitivity)
-    d.DataDelayThreshold = types.Int64Value(int64(*resp.Data.DataDelayThreshold))
+
+    if resp.Data.DataDelayThreshold != nil {
+        d.DataDelayThreshold = types.Int64Value(int64(*resp.Data.DataDelayThreshold))
+    }
 
 	if resp.Data.DailySyncTime != "" {
 		d.DailySyncTime = types.StringValue(resp.Data.DailySyncTime)
@@ -220,8 +223,10 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
         d.DataDelaySensitivity = types.StringValue(c.DataDelaySensitivity)    
     }
     
-    d.DataDelayThreshold = types.Int64Value(int64(*c.DataDelayThreshold))
-
+    if c.DataDelayThreshold != nil {
+        d.DataDelayThreshold = types.Int64Value(int64(*c.DataDelayThreshold))
+    }
+    
 	if c.LocalProcessingAgentId != "" && !d.LocalProcessingAgentId.IsUnknown() && !d.LocalProcessingAgentId.IsNull(){
 		d.LocalProcessingAgentId = types.StringValue(c.HybridDeploymentAgentId)
 	} else {
@@ -266,8 +271,15 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
 	d.CreatedAt = types.StringValue(c.CreatedAt)
 	d.GroupId = types.StringValue(c.GroupId)
 	d.Service = types.StringValue(c.Service)
-    d.DataDelaySensitivity = types.StringValue(c.DataDelaySensitivity)
-    d.DataDelayThreshold = types.Int64Value(int64(*c.DataDelayThreshold))
+
+    // as fact - this is computed attribute which user can change
+    if !d.DataDelaySensitivity.IsUnknown() && !d.DataDelaySensitivity.IsNull() {
+        d.DataDelaySensitivity = types.StringValue(c.DataDelaySensitivity)    
+    }
+    
+    if c.DataDelayThreshold != nil {
+        d.DataDelayThreshold = types.Int64Value(int64(*c.DataDelayThreshold))
+    }
 
     d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
     
