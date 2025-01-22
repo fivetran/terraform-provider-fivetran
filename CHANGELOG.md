@@ -5,9 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.4.2...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.5.0...HEAD)
 
-## [1.4.1](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.4.1...v1.4.2)
+## [1.5.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.4.2...v1.5.0)
+
+- New data source `fivetran_connectors` that allows to retrieve the list of existing Connections available for the current account.
+- New data source `fivetran_destinations` that allows to retrieve the list of existing Destinations available for the current account.
+- New data source `fivetran_external_logs` that allows to retrieve the list of existing External Logging Services available for the current account.
+
+## [1.4.2](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.4.1...v1.4.2)
 
 ## Added
 - Add `is_primary_key` to connector schema config

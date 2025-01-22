@@ -166,5 +166,8 @@ func (p *fivetranProvider) DataSources(ctx context.Context) []func() datasource.
 		datasources.PrivateLinks,
 		datasources.HybridDeploymentAgent,
 		datasources.HybridDeploymentAgents,
+		datasources.Connectors,
+		datasources.Destinations,
+		datasources.ExternalLogs,
 	}
 }

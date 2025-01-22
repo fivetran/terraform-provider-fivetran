@@ -13,9 +13,9 @@ func DestinationAttributesSchema() core.Schema {
 	return core.Schema{
 		Fields: map[string]core.SchemaField{
 			"id": {
-				IsId:        true,
-				ValueType:   core.String,
-				Description: "The unique identifier for the destination within the Fivetran system.",
+				IsId:        	true,
+				ValueType:   	core.String,
+				Description: 	"The unique identifier for the destination within the Fivetran system.",
 			},
 			"group_id": {
 				Required:    true,
@@ -108,6 +108,24 @@ func DestinationDatasourceBlocks() map[string]datasourceSchema.Block {
 	return map[string]datasourceSchema.Block{
 		"config": datasourceSchema.SingleNestedBlock{
 			Attributes: GetDatasourceDestinationConfigSchemaAttributes(),
+		},
+	}
+}
+
+func DestinationsDatasource() datasourceSchema.Schema {
+	return datasourceSchema.Schema{
+		Attributes: map[string]datasourceSchema.Attribute{
+			"id": datasourceSchema.StringAttribute{
+				Computed:    true,
+				Description: "The ID of this resource.",
+			},
+		},
+		Blocks: map[string]datasourceSchema.Block{
+			"destinations": datasourceSchema.SetNestedBlock{
+				NestedObject: datasourceSchema.NestedBlockObject{
+					Attributes: DestinationAttributesSchema().GetDatasourceListSchema(),
+				},
+			},
 		},
 	}
 }

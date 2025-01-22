@@ -207,3 +207,34 @@ func ExternalLoggingDatasource() datasourceSchema.Schema {
 		},
 	}
 }
+
+func ExternalLogsDatasource() datasourceSchema.Schema {
+	return datasourceSchema.Schema{
+		Attributes: map[string]datasourceSchema.Attribute{
+			"id": datasourceSchema.StringAttribute{
+				Computed:    true,
+				Description: "The ID of this resource.",
+			},
+		},
+		Blocks: map[string]datasourceSchema.Block{
+			"logs": datasourceSchema.SetNestedBlock{
+				NestedObject: datasourceSchema.NestedBlockObject{
+					Attributes: map[string]datasourceSchema.Attribute{
+						"id": datasourceSchema.StringAttribute{
+							Computed:    true,
+							Description: "The unique identifier for the log service within the Fivetran system.",
+						},
+						"service": datasourceSchema.StringAttribute{
+							Computed:    true,
+							Description: "The name for the log service type within the Fivetran system. We support the following log services: azure_monitor_log, cloudwatch, datadog_log, new_relic_log, splunkLog, stackdriver.",
+						},
+						"enabled": datasourceSchema.BoolAttribute{
+							Computed:	 true,
+							Description: "The boolean value specifying whether the log service is enabled.",
+						},
+					},
+				},
+			},
+		},
+	}
+}

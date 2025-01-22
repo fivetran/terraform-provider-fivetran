@@ -1,0 +1,17 @@
+---
+page_title: "Data Source: fivetran_connectors"
+---
+
+# Data Source: fivetran_connectors
+
+This data source returns list of connector objects.
+
+## Example Usage
+
+```hcl
+data "fivetran_connectors" "connector" {
+    id = "anonymous_mystery"
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}

@@ -105,6 +105,16 @@ func (s Schema) GetDatasourceSchema() map[string]datasourceSchema.Attribute {
 	return result
 }
 
+func (s Schema) GetDatasourceListSchema() map[string]datasourceSchema.Attribute {
+	result := map[string]datasourceSchema.Attribute{}
+	for k, v := range s.Fields {
+		if !v.ResourceOnly {
+			result[k] = v.getDatasourceSchemaAttributeForList()
+		}
+	}
+	return result
+}
+
 func (s Schema) GetResourceSchema() map[string]resourceSchema.Attribute {
 	result := make(map[string]resourceSchema.Attribute)
 	for k, v := range s.Fields {
@@ -156,6 +166,50 @@ func (s SchemaField) getDatasourceSchemaAttribute() datasourceSchema.Attribute {
 		result = datasourceSchema.SetAttribute{
 			Required:    s.IsId,
 			Computed:    !s.IsId,
+			Sensitive:   s.Sensitive,
+			Description: s.Description,
+			ElementType: basetypes.StringType{},
+		}
+	}
+
+	return result
+}
+
+func (s SchemaField) getDatasourceSchemaAttributeForList() datasourceSchema.Attribute {
+	var result datasourceSchema.Attribute
+	switch s.ValueType {
+	case StringEnum:
+		result = datasourceSchema.StringAttribute{
+			Computed:    true,
+			Sensitive:   s.Sensitive,
+			Description: s.Description,
+		}
+	case String:
+		result = datasourceSchema.StringAttribute{
+			Computed:    true,
+			Sensitive:   s.Sensitive,
+			Description: s.Description,
+		}
+	case Boolean:
+		result = datasourceSchema.BoolAttribute{
+			Computed:    true,
+			Description: s.Description,
+		}
+	case Integer:
+		result = datasourceSchema.Int64Attribute{
+			Computed:    true,
+			Description: s.Description,
+		}
+	case StringsList:
+		result = datasourceSchema.ListAttribute{
+			Computed:    true,
+			Sensitive:   s.Sensitive,
+			Description: s.Description,
+			ElementType: basetypes.StringType{},
+		}
+	case StringsSet:
+		result = datasourceSchema.SetAttribute{
+			Computed:    true,
 			Sensitive:   s.Sensitive,
 			Description: s.Description,
 			ElementType: basetypes.StringType{},
