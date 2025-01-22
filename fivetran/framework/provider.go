@@ -123,6 +123,7 @@ func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Reso
 		resources.HybridDeploymentAgent,
 		resources.DbtGitProjectConfig,
 		resources.PrivateLink,
+		resources.TransformationProject,
 	}
 }
 

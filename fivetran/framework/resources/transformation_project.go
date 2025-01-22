@@ -30,7 +30,7 @@ func (r *transformationProject) Metadata(ctx context.Context, req resource.Metad
 }
 
 func (r *transformationProject) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = fivetranSchema.DbtProjectResource(ctx)
+	resp.Schema = fivetranSchema.TransformationProjectResource(ctx)
 }
 
 func (r *transformationProject) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
