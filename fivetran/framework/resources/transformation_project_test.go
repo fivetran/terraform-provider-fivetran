@@ -3,7 +3,6 @@ package resources_test
 import (
     "net/http"
     "testing"
-    "fmt"
 
     "github.com/fivetran/go-fivetran/tests/mock"
     tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"

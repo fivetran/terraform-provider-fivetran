@@ -47,7 +47,7 @@ func (r *transformationProject) Create(ctx context.Context, req resource.CreateR
 		return
 	}
 
-	var data model.TransformationProject
+	var data model.TransformationResourceProject
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 
@@ -147,7 +147,7 @@ func (r *transformationProject) Read(ctx context.Context, req resource.ReadReque
 		return
 	}
 
-	var data model.TransformationProject
+	var data model.TransformationResourceProject
 
 	// Read Terraform prior state data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
@@ -181,8 +181,8 @@ func (r *transformationProject) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	var state model.TransformationProject
-	var plan model.TransformationProject
+	var state model.TransformationResourceProject
+	var plan model.TransformationResourceProject
 
 	// Read Terraform prior state data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -239,7 +239,7 @@ func (r *transformationProject) Delete(ctx context.Context, req resource.DeleteR
 		return
 	}
 
-	var data model.TransformationProject
+	var data model.TransformationResourceProject
 
 	// Read Terraform prior state data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)

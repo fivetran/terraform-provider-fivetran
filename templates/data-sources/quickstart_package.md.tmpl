@@ -1,0 +1,17 @@
+---
+page_title: "Data Source: fivetran_quickstart_package"
+---
+
+# Data Source: fivetran_quickstart_package
+
+This data source returns the metadata details of the Quickstart transformation package if a valid identifier is provided
+
+## Example Usage
+
+```hcl
+data "fivetran_quickstart_package" "test" {
+    id = "id"
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}

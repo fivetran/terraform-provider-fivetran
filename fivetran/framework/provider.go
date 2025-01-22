@@ -170,5 +170,9 @@ func (p *fivetranProvider) DataSources(ctx context.Context) []func() datasource.
 		datasources.Connectors,
 		datasources.Destinations,
 		datasources.ExternalLogs,
+		datasources.QuickstartPackage,
+		datasources.QuickstartPackages,
+		datasources.TransformationProject,
+		datasources.TransformationProjects,
 	}
 }

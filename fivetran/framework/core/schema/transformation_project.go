@@ -12,10 +12,10 @@ func TransformationProjectResource(ctx context.Context) resourceSchema.Schema {
 	return resourceSchema.Schema{
 		Attributes: transformationProjectSchema().GetResourceSchema(),
 		Blocks:     map[string]resourceSchema.Block{
-						"project_config": resourceSchema.SingleNestedBlock{
-								Attributes: transformationProjectConfigSchema().GetResourceSchema(),
-						},
-					},
+			"project_config": resourceSchema.SingleNestedBlock{
+				Attributes: transformationProjectConfigSchema().GetResourceSchema(),
+			},
+		},
 	}
 }
 
@@ -23,16 +23,44 @@ func TransformationProjectDatasource() datasourceSchema.Schema {
 	return datasourceSchema.Schema{
 		Attributes: transformationProjectSchema().GetDatasourceSchema(),
 		Blocks:     map[string]datasourceSchema.Block{
-				"project_config": datasourceSchema.SingleNestedBlock{
-						Attributes: dbtProjectConfigSchema().GetDatasourceSchema(),
-				},
+			"project_config": datasourceSchema.SingleNestedBlock{
+				Attributes: transformationProjectConfigSchema().GetDatasourceSchema(),
+			},
 		},
 	}
 }
 
 func TransformationProjectListDatasource() datasourceSchema.Schema {
 	return datasourceSchema.Schema{
-		Attributes: transformationProjectSchema().GetDatasourceSchema(),
+		Attributes: map[string]datasourceSchema.Attribute{
+			"projects": datasourceSchema.ListNestedAttribute{
+				Computed: true,
+				NestedObject: datasourceSchema.NestedAttributeObject{
+					Attributes: map[string]datasourceSchema.Attribute{
+						"id": datasourceSchema.StringAttribute{
+							Computed:    true,
+							Description: "The unique identifier for the transformation project within the Fivetran system.",
+						},
+						"group_id": datasourceSchema.StringAttribute{
+							Computed:    true,
+							Description: "The name of the group within your account related to the project.",
+						},
+						"created_at": datasourceSchema.StringAttribute{
+							Computed:    true,
+							Description: "The timestamp of when the project was created in your account.",
+						},
+						"created_by_id": datasourceSchema.StringAttribute{
+							Computed:    true,
+							Description: "The unique identifier for the User within the Fivetran system who created the transformation Project.",
+						},
+						"type": datasourceSchema.StringAttribute{
+							Computed:    true,
+							Description: "Transformation project type.",
+						},
+					},
+				},
+			},
+		},
 	}
 }
 
@@ -42,7 +70,7 @@ func transformationProjectSchema() core.Schema {
 			"id": {
 				IsId:        true,
 				ValueType:   core.String,
-				Description: "The unique identifier for the dbt Project within the Fivetran system.",
+				Description: "The unique identifier for the transformation Project within the Fivetran system.",
 			},
 			"group_id": {
 				Required:    true,
@@ -59,13 +87,12 @@ func transformationProjectSchema() core.Schema {
 			"status": {
 				ValueType:   core.String,
 				Readonly:    true,
-				ResourceOnly:true,
-				Description: "Status of dbt Project (NOT_READY, READY, ERROR).",
+				Description: "Status of transformation Project (NOT_READY, READY, ERROR).",
 			},
 			"created_at": {
 				ValueType:   core.String,
 				Readonly:    true,
-				Description: "The timestamp of the dbt Project creation.",
+				Description: "The timestamp of the transformation Project creation.",
 			},
 			"created_by_id": {
 				ValueType:   core.String,
@@ -92,7 +119,7 @@ func transformationProjectConfigSchema() core.Schema {
 			"dbt_version": {
 				ValueType:   core.String,
 				ForceNew:    true,
-				Description: "The version of dbt that should run the project",
+				Description: "The version of transformation that should run the project",
 			},
 			"default_schema": {
 				ValueType:   core.String,
@@ -102,11 +129,11 @@ func transformationProjectConfigSchema() core.Schema {
 			"git_remote_url": {
 				ValueType:   core.String,
 				ForceNew:    true,
-				Description: "Git remote URL with your dbt project",
+				Description: "Git remote URL with your transformation project",
 			},
 			"folder_path": {
 				ValueType: core.String, 
-				Description: "Folder in Git repo with your dbt project",
+				Description: "Folder in Git repo with your transformation project",
 			},
 			"git_branch":  {
 				ValueType: core.String, 
@@ -114,7 +141,7 @@ func transformationProjectConfigSchema() core.Schema {
 			},
 			"threads": {
 				ValueType:   core.Integer,
-				Description: "The number of threads dbt will use (from 1 to 32). Make sure this value is compatible with your destination type. For example, Snowflake supports only 8 concurrent queries on an X-Small warehouse.",
+				Description: "The number of threads transformation will use (from 1 to 32). Make sure this value is compatible with your destination type. For example, Snowflake supports only 8 concurrent queries on an X-Small warehouse.",
 			},
 			"target_name": {
 				ValueType:   core.String,
