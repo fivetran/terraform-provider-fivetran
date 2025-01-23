@@ -8,24 +8,65 @@ Resource is in ALPHA state.
 
 This resource allows you to add, manage and delete transformation projects in your account. 
 
-## Example Usage
+## Example Usage for dbt Core Transformation
 
 ```hcl
 resource "fivetran_transformation" "transformation" {
     provider = fivetran-provider
-    group_id = "group_id"
-    type = "DBT_GIT"
-    run_tests = true
 
-    project_config {
-        git_remote_url = "git_remote_url"
-        git_branch = "git_branch"
-        folder_path = "folder_path"
-        dbt_version = "dbt_version"
-        default_schema = "default_schema"
-        threads = 0
-        target_name = "target_name"
-        environment_vars = ["environment_var"]
+    type = "DBT_CORE"
+    paused = true
+
+    schedule {
+        cron = ["cron1","cron2"]
+        interval = 601
+        smart_syncing = true
+        connection_ids = ["connection_id1", "connection_id2"]
+        schedule_type = "schedule_type1"
+        days_of_week = ["days_of_week1","days_of_week2"]
+        time_of_day = "time_of_day1"
+    }
+
+    transformation_config {
+        project_id = "project_id"
+        name = "name"
+        steps = [
+            {
+                name = "name1"
+                command = "command1"
+            },
+            {
+                name = "name2"
+                command = "command2"
+            }
+        ]
+    }
+}
+```
+
+## Example Usage for Quickstart Transformation
+
+```hcl
+resource "fivetran_transformation" "transformation" {
+    provider = fivetran-provider
+
+    type = "QUICKSTART"
+    paused = true
+
+    schedule {
+        cron = ["cron1","cron2"]
+        interval = 601
+        smart_syncing = true
+        connection_ids = ["connection_id1", "connection_id2"]
+        schedule_type = "schedule_type1"
+        days_of_week = ["days_of_week1","days_of_week2"]
+        time_of_day = "time_of_day1"
+    }
+
+    transformation_config {
+        package_name = "package_name"
+        connection_ids = ["connection_id1", "connection_id2"]
+        excluded_models = ["excluded_model1", "excluded_model2"]
     }
 }
 ```

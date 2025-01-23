@@ -7,6 +7,7 @@ import (
 
 func DbtGitProjectConfigSchema() resourceSchema.Schema {
 	return resourceSchema.Schema{
+		DeprecationMessage: "This datasource is Deprecated, please follow the 1.5.0 migration guide to update the schema",
 		Attributes: dbtGitProjectConfigSchema().GetResourceSchema(),
 	}
 }
