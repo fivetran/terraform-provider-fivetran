@@ -25,6 +25,14 @@ Support for a new [Transformation Management API](https://fivetran.com/docs/rest
 - Datasources `fivetran_dbt_project`, `fivetran_dbt_projects`, `fivetran_dbt_transformation`, `fivetran_dbt_models`
 - Resources `fivetran_dbt_project`, `fivetran_dbt_transformation`
 
+## Breaking changes
+The deprecated resources, datasources and fields removed:
+- Resource `fivetran_local_processing_agent`.
+- Data source `fivetran_local_processing_agent`.
+- Data source `fivetran_local_processing_agents`.
+- Field `fivetran_connector.local_processing_agent_id`.
+- Field `fivetran_destination.local_processing_agent_id`.
+
 ## [1.4.2](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.4.1...v1.4.2)
 
 ## Added
