@@ -54,6 +54,11 @@ func (r *destination) UpgradeState(ctx context.Context) map[int64]resource.State
 				upgradeDestinationState(ctx, req, resp, 1)
 			},
 		},
+		2: {
+			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
+				upgradeDestinationState(ctx, req, resp, 2)
+			},
+		},
 	}
 }
 
@@ -104,22 +109,6 @@ func (r *destination) Create(ctx context.Context, req resource.CreateRequest, re
 		TrustFingerprints(trustFingerprintsPlan).
 		DaylightSavingTimeEnabled(daylightSavingTimeEnabledPlan).
 		ConfigCustom(&configMap)
-
-	if data.LocalProcessingAgentId.ValueString() != "" {
-		resp.Diagnostics.AddWarning(
-			"Field `local_processing_agent_id` is Deprecated", 
-			"Please follow the 1.4.0 migration guide to update the schema",
-		)
-
-		if data.LocalProcessingAgentId.ValueString() != data.HybridDeploymentAgentId.ValueString() {
-			resp.Diagnostics.AddError(
-				"Unable to Create Connector Resource.",
-				"Fields `local_processing_agent_id` and `hybrid_deployment_agent_id` must be the same",
-			)
-
-			return	
-		}
-	}
 
 	if data.HybridDeploymentAgentId.ValueString() != "" {
 		svc.HybridDeploymentAgentId(data.HybridDeploymentAgentId.ValueString())
@@ -306,22 +295,6 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 			TimeZoneOffset(plan.TimeZoneOffset.ValueString()).
 			Region(plan.Region.ValueString()).
 			DestinationID(state.Id.ValueString())
-
-		if plan.LocalProcessingAgentId.ValueString() != "" {
-			resp.Diagnostics.AddWarning(
-				"Field `local_processing_agent_id` is Deprecated", 
-				"Please follow the 1.4.0 migration guide to update the schema",
-			)
-		
-			if plan.LocalProcessingAgentId.ValueString() != plan.HybridDeploymentAgentId.ValueString() {
-				resp.Diagnostics.AddError(
-					"Unable to Create Connector Resource.",
-					"Fields `local_processing_agent_id` and `hybrid_deployment_agent_id` must be the same",
-				)
-
-				return	
-			}
-		}
 
 		if plan.HybridDeploymentAgentId.ValueString() != "" {
 			svc.HybridDeploymentAgentId(plan.HybridDeploymentAgentId.ValueString())

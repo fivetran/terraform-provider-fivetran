@@ -75,6 +75,12 @@ func (r *connector) UpgradeState(ctx context.Context) map[int64]resource.StateUp
 				upgradeConnectorState(ctx, req, resp, 3)
 			},
 		},
+		// State upgrade implementation from 3 or 4 (prior state version) to 5 (Schema.Version)
+		4: {
+			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
+				upgradeConnectorState(ctx, req, resp, 4)
+			},
+		},
 	}
 }
 
@@ -169,22 +175,6 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 	if !data.DataDelayThreshold.IsNull() {
 		value := int(data.DataDelayThreshold.ValueInt64())
 		svc.DataDelayThreshold(&value)
-	}
-
-	if data.LocalProcessingAgentId.ValueString() != "" {
-		resp.Diagnostics.AddWarning(
-			"Field `local_processing_agent_id` is Deprecated", 
-			"Please follow the 1.4.0 migration guide to update the schema",
-		)
-		
-		if data.LocalProcessingAgentId.ValueString() != data.HybridDeploymentAgentId.ValueString() {
-			resp.Diagnostics.AddError(
-				"Unable to Create Connector Resource.",
-				"Fields `local_processing_agent_id` and `hybrid_deployment_agent_id` must be the same",
-			)
-
-			return	
-		}
 	}
 
 	if data.HybridDeploymentAgentId.ValueString() != "" {
@@ -353,22 +343,6 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 
 		if plan.PrivateLinkId.ValueString() != "" {
 			svc.PrivateLinkId(plan.PrivateLinkId.ValueString())
-		}
-
-		if plan.LocalProcessingAgentId.ValueString() != "" {
-			resp.Diagnostics.AddWarning(
-				"Field `local_processing_agent_id` is Deprecated", 
-				"Please follow the 1.4.0 migration guide to update the schema",
-			)
-		
-			if plan.LocalProcessingAgentId.ValueString() != plan.HybridDeploymentAgentId.ValueString() {
-				resp.Diagnostics.AddError(
-					"Unable to Create Connector Resource.",
-					"Fields `local_processing_agent_id` and `hybrid_deployment_agent_id` must be the same",
-				)
-
-				return	
-			}
 		}
 
 		if plan.HybridDeploymentAgentId.ValueString() != "" {
