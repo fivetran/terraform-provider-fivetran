@@ -86,39 +86,11 @@ func (r *transformationProject) Create(ctx context.Context, req resource.CreateR
 
 	projectResponse, err := svc.Do(ctx)
 	if err != nil {
-		if projectResponse.Code != "DbtProjectExists" {
-			resp.Diagnostics.AddError(
-				"Unable to Create dbt Project Resource.",
-				fmt.Sprintf("%v; code: %v; message: %v", err, projectResponse.Code, projectResponse.Message),
-			)
-
-			return			
-		} else {
-			// try to recover Id
-			projectListResponse, err := r.GetClient().NewTransformationProjectsList().Do(ctx)
-
-			if err != nil {
-				resp.Diagnostics.AddError(
-					"Unable to Read Transformation Project Resource.",
-					fmt.Sprintf("%v; code: %v; message: %v", err, projectResponse.Code, projectResponse.Message),
-				)
-				return
-			}
-
-			for _, v := range projectListResponse.Data.Items {
-				if v.GroupId == data.GroupId.ValueString() {
-					projectResponse, err := r.GetClient().NewTransformationProjectDetails().ProjectId(v.Id).Do(ctx)
-
-					if err != nil {
-						resp.Diagnostics.AddError(
-							"Unable to Read Transformation Project Resource.",
-							fmt.Sprintf("%v; code: %v; message: %v", err, projectResponse.Code, projectResponse.Message),
-						)
-						return
-					}
-				}
-			}
-		}
+		resp.Diagnostics.AddError(
+			"Unable to Create Transformation Project Resource.",
+			fmt.Sprintf("%v; code: %v; message: %v", err, projectResponse.Code, projectResponse.Message),
+		)
+		return			
 	}
 
 	data.ReadFromResponse(ctx, projectResponse)

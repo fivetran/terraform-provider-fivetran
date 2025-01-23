@@ -124,6 +124,7 @@ func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Reso
 		resources.DbtGitProjectConfig,
 		resources.PrivateLink,
 		resources.TransformationProject,
+		resources.Transformation,
 	}
 }
 
@@ -174,5 +175,7 @@ func (p *fivetranProvider) DataSources(ctx context.Context) []func() datasource.
 		datasources.QuickstartPackages,
 		datasources.TransformationProject,
 		datasources.TransformationProjects,
+		datasources.Transformation,
+		datasources.Transformations,
 	}
 }
