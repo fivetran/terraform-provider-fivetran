@@ -1,335 +1,403 @@
 package resources_test
 
 import (
-	"net/http"
-	"testing"
-	"time"
+    "net/http"
+    "testing"
 
-	"github.com/fivetran/go-fivetran/tests/mock"
-	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
-	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
+    "github.com/fivetran/go-fivetran/tests/mock"
+    tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
+    "github.com/hashicorp/terraform-plugin-testing/helper/resource"
+    "github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 var (
-	transformationPostHandler   *mock.Handler
-	transformationPatchHandler  *mock.Handler
-	transformationDeleteHandler *mock.Handler
-	transformationData          map[string]interface{}
+    transformationGitPostHandler            *mock.Handler
+    transformationQuickstartPostHandler     *mock.Handler
+    transformationGitData                   map[string]interface{}
+    transformationQuickstartData            map[string]interface{}
+
+    transformationGitDeleteHandler          *mock.Handler
+    transformationQuickstartDeleteHandler   *mock.Handler
+
+    gitResponse = `{
+    "id": "transformation_id",
+    "status": "status",
+    "schedule": {
+      "cron": [
+        "cron1","cron2"
+      ],
+      "interval": 601,
+      "smart_syncing": true,
+      "connection_ids": [
+        "connection_id1",
+        "connection_id2"
+      ],
+      "schedule_type": "schedule_type1",
+      "days_of_week": [
+        "days_of_week1",
+        "days_of_week2"
+      ],
+      "time_of_day": "time_of_day1"
+    },
+    "type": "DBT_CORE",
+    "paused": true,
+    "created_at": "created_at",
+    "output_model_names": [
+      "output_model_name1",
+      "output_model_name2"
+    ],
+    "created_by_id": "created_by_id",
+    "transformation_config": {
+      "project_id": "project_id",
+      "name": "name",
+      "steps": [
+        {
+          "name": "name1",
+          "command": "command1"
+        },
+        {
+          "name": "name2",
+          "command": "command2"
+        }
+      ]
+    }
+  }`
+
+ quickstartResponse = `{
+    "id": "transformation_id",
+    "status": "status",
+    "schedule": {
+      "cron": [
+        "cron1","cron2"
+      ],
+      "interval": 601,
+      "smart_syncing": true,
+      "connection_ids": [
+        "connection_id1",
+        "connection_id2"
+      ],
+      "schedule_type": "schedule_type1",
+      "days_of_week": [
+        "days_of_week1",
+        "days_of_week2"
+      ],
+      "time_of_day": "time_of_day1"
+    },
+    "type": "QUICKSTART",
+    "paused": true,
+    "created_at": "created_at",
+    "output_model_names": [
+      "output_model_name1",
+      "output_model_name2"
+    ],
+    "created_by_id": "created_by_id",
+    "transformation_config": {
+      "package_name": "package_name",
+      "connection_ids": [
+        "connection_id1",
+        "connection_id2"
+      ],
+      "excluded_models": [
+        "excluded_model1","excluded_model2"
+      ],
+      "upgrade_available": true
+    }
+  }`
 )
 
-func onPostTranformation(t *testing.T, req *http.Request) (*http.Response, error) {
-	tfmock.AssertEmpty(t, transformationData)
+func setupMockClientTransformationGitResource(t *testing.T) {
+    tfmock.MockClient().Reset()
 
-	body := tfmock.RequestBodyToJson(t, req)
-v
-	// Check the request
-	tfmock.AssertEqual(t, len(body), 4)
+    transformationGitPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/transformations").ThenCall(
+        func(req *http.Request) (*http.Response, error) {
+            body := tfmock.RequestBodyToJson(t, req)
+            tfmock.AssertKeyExistsAndHasValue(t, body, "type", "DBT_CORE")
+            tfmock.AssertKeyExistsAndHasValue(t, body, "paused", true)
 
-	tfmock.AssertKeyExistsAndHasValue(t, body, "dbt_model_id", "dbt_model_id")
-	tfmock.AssertKeyExistsAndHasValue(t, body, "paused", false)
-	tfmock.AssertKeyExistsAndHasValue(t, body, "run_tests", false)
+            tfmock.AssertKeyExists(t, body, "transformation_config")
+            config := body["transformation_config"].(map[string]interface{})
+            tfmock.AssertKeyExistsAndHasValue(t, config, "project_id", "project_id")
+            tfmock.AssertKeyExistsAndHasValue(t, config, "name", "name")
 
-	requestSchedule := tfmock.AssertKeyExists(t, body, "schedule").(map[string]interface{})
+            steps := config["steps"].([]interface{})
+            tfmock.AssertKeyExistsAndHasValue(t, steps[0].(map[string]interface{}), "name", "name1")
+            tfmock.AssertKeyExistsAndHasValue(t, steps[0].(map[string]interface{}), "command", "command1")
+            tfmock.AssertKeyExistsAndHasValue(t, steps[1].(map[string]interface{}), "name", "name2")
+            tfmock.AssertKeyExistsAndHasValue(t, steps[1].(map[string]interface{}), "command", "command2")
 
-	tfmock.AssertKeyExistsAndHasValue(t, requestSchedule, "schedule_type", "TIME_OF_DAY")
-	tfmock.AssertKeyExistsAndHasValue(t, requestSchedule, "time_of_day", "12:00")
+            tfmock.AssertKeyExists(t, body, "schedule")
+            schedule := body["schedule"].(map[string]interface{})
+            tfmock.AssertKeyExistsAndHasValue(t, schedule, "interval", float64(601))
+            tfmock.AssertKeyExistsAndHasValue(t, schedule, "smart_syncing", true)
+            tfmock.AssertKeyExistsAndHasValue(t, schedule, "schedule_type", "schedule_type1")
+            tfmock.AssertKeyExistsAndHasValue(t, schedule, "time_of_day", "time_of_day1")
 
-	requestScheduleDays := tfmock.AssertKeyExists(t, requestSchedule, "days_of_week").([]interface{})
+            cron := schedule["cron"].([]interface{})
+            tfmock.AssertEqual(t, len(cron), 2)
+            tfmock.AssertEqual(t, cron[0], "cron1")
+            tfmock.AssertEqual(t, cron[1], "cron2")
 
-	expectedDays := make([]interface{}, 0)
+            connectionIds := schedule["connection_ids"].([]interface{})
+            tfmock.AssertEqual(t, len(connectionIds), 2)
+            tfmock.AssertEqual(t, connectionIds[0], "connection_id1")
+            tfmock.AssertEqual(t, connectionIds[1], "connection_id2")
 
-	expectedDays = append(expectedDays, "MONDAY")
-	//expectedDays = append(expectedDays, "SATURDAY")
+            daysOfWeek := schedule["days_of_week"].([]interface{})
+            tfmock.AssertEqual(t, len(daysOfWeek), 2)
+            tfmock.AssertEqual(t, daysOfWeek[0], "days_of_week1")
+            tfmock.AssertEqual(t, daysOfWeek[1], "days_of_week2")
 
-	tfmock.AssertArrayItems(t, requestScheduleDays, expectedDays)
+            transformationGitData = tfmock.CreateMapFromJsonString(t, gitResponse)
+            return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", transformationGitData), nil
+        },
+    )
 
-	// Add response fields
-	body["id"] = "transformation_id"
-	body["dbt_project_id"] = "dbt_project_id"
-	body["output_model_name"] = "output_model_name"
+    tfmock.MockClient().When(http.MethodGet, "/v1/transformations/transformation_id").ThenCall(
+        func(req *http.Request) (*http.Response, error) {
+            tfmock.AssertNotEmpty(t, transformationGitData)
+            response := tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "", transformationGitData)
+            return response, nil
+        },
+    )
 
-	connectorIds := make([]string, 0)
-	body["connector_ids"] = append(connectorIds, "connector_id")
-
-	modelIds := make([]string, 0)
-	body["model_ids"] = append(modelIds, "model_id")
-
-	body["created_at"] = time.Now().Format("2006-01-02T15:04:05.000000Z")
-
-	transformationData = body
-
-	response := tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "", transformationData)
-
-	return response, nil
+    transformationGitDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/transformations/transformation_id").ThenCall(
+        func(req *http.Request) (*http.Response, error) {
+            tfmock.AssertNotEmpty(t, transformationGitData)
+            transformationGitData = nil
+            response := tfmock.FivetranSuccessResponse(t, req, 200, "", nil)
+            return response, nil
+        },
+    )
 }
 
-func onPatchTransformation(t *testing.T, req *http.Request, updateIteration int) (*http.Response, error) {
-	tfmock.AssertNotEmpty(t, transformationData)
+func setupMockClientTransformationQuickstartResource(t *testing.T) {
+    tfmock.MockClient().Reset()
 
-	body := tfmock.RequestBodyToJson(t, req)
+    transformationQuickstartPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/transformations").ThenCall(
+        func(req *http.Request) (*http.Response, error) {
+            body := tfmock.RequestBodyToJson(t, req)
+            tfmock.AssertKeyExistsAndHasValue(t, body, "type", "QUICKSTART")
+            tfmock.AssertKeyExistsAndHasValue(t, body, "paused", true)
 
-	if updateIteration == 0 {
-		// Check the request
-		tfmock.AssertEqual(t, len(body), 3)
-		tfmock.AssertKeyExistsAndHasValue(t, body, "paused", true)
-		tfmock.AssertKeyExistsAndHasValue(t, body, "run_tests", true)
-		requestSchedule := tfmock.AssertKeyExists(t, body, "schedule").(map[string]interface{})
+            tfmock.AssertKeyExists(t, body, "transformation_config")
+            config := body["transformation_config"].(map[string]interface{})
+            tfmock.AssertKeyExistsAndHasValue(t, config, "package_name", "package_name")
+            connectionIds := config["connection_ids"].([]interface{})
+            tfmock.AssertEqual(t, len(connectionIds), 2)
+            tfmock.AssertEqual(t, connectionIds[0], "connection_id1")
+            tfmock.AssertEqual(t, connectionIds[1], "connection_id2")
+            excludedModels := config["excluded_models"].([]interface{})
+            tfmock.AssertEqual(t, len(excludedModels), 2)
+            tfmock.AssertEqual(t, excludedModels[0], "excluded_model1")
+            tfmock.AssertEqual(t, excludedModels[1], "excluded_model2")
 
-		requestScheduleDays := tfmock.AssertKeyExists(t, requestSchedule, "days_of_week").([]interface{})
-		expectedDays := make([]interface{}, 0)
-		expectedDays = append(expectedDays, "MONDAY")
-		expectedDays = append(expectedDays, "SATURDAY")
+            tfmock.AssertKeyExists(t, body, "schedule")
+            schedule := body["schedule"].(map[string]interface{})
+            tfmock.AssertKeyExistsAndHasValue(t, schedule, "interval", float64(601))
+            tfmock.AssertKeyExistsAndHasValue(t, schedule, "smart_syncing", true)
+            tfmock.AssertKeyExistsAndHasValue(t, schedule, "schedule_type", "schedule_type1")
+            tfmock.AssertKeyExistsAndHasValue(t, schedule, "time_of_day", "time_of_day1")
 
-		tfmock.AssertArrayItems(t, requestScheduleDays, expectedDays)
+            cron := schedule["cron"].([]interface{})
+            tfmock.AssertEqual(t, len(cron), 2)
+            tfmock.AssertEqual(t, cron[0], "cron1")
+            tfmock.AssertEqual(t, cron[1], "cron2")
 
-		// Update saved values
-		for k, v := range body {
-			if k != "schedule" {
-				transformationData[k] = v
-			} else {
-				stateSchedule := transformationData[k].(map[string]interface{})
-				stateSchedule["days_of_week"] = expectedDays
-			}
-		}
+            connectionIds = schedule["connection_ids"].([]interface{})
+            tfmock.AssertEqual(t, len(connectionIds), 2)
+            tfmock.AssertEqual(t, connectionIds[0], "connection_id1")
+            tfmock.AssertEqual(t, connectionIds[1], "connection_id2")
 
-		response := tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Transformation has been updated", transformationData)
-		return response, nil
-	}
+            daysOfWeek := schedule["days_of_week"].([]interface{})
+            tfmock.AssertEqual(t, len(daysOfWeek), 2)
+            tfmock.AssertEqual(t, daysOfWeek[0], "days_of_week1")
+            tfmock.AssertEqual(t, daysOfWeek[1], "days_of_week2")
 
-	if updateIteration == 1 {
-		// Check the request
-		tfmock.AssertEqual(t, len(body), 1)
-		schedule := tfmock.AssertKeyExists(t, body, "schedule").(map[string]interface{})
-		tfmock.AssertKeyExistsAndHasValue(t, schedule, "schedule_type", "INTERVAL")
-		tfmock.AssertKeyExistsAndHasValue(t, schedule, "interval", float64(60))
+            transformationQuickstartData = tfmock.CreateMapFromJsonString(t, quickstartResponse)
+            return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", transformationQuickstartData), nil
+        },
+    )
 
-		// Update saved values
-		for k, v := range body {
-			transformationData[k] = v
-		}
+    tfmock.MockClient().When(http.MethodGet, "/v1/transformations/transformation_id").ThenCall(
+        func(req *http.Request) (*http.Response, error) {
+            tfmock.AssertNotEmpty(t, transformationQuickstartData)
+            response := tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "", transformationQuickstartData)
+            return response, nil
+        },
+    )
 
-		response := tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Transformation has been updated", transformationData)
-		return response, nil
-	}
-
-	response := tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "", transformationData)
-
-	return response, nil
+    transformationQuickstartDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/transformations/transformation_id").ThenCall(
+        func(req *http.Request) (*http.Response, error) {
+            tfmock.AssertNotEmpty(t, transformationQuickstartData)
+            transformationQuickstartData = nil
+            response := tfmock.FivetranSuccessResponse(t, req, 200, "", nil)
+            return response, nil
+        },
+    )
 }
 
-func setupMockClientTransformationResource(t *testing.T) {
-	tfmock.MockClient().Reset()
-	transformationData = nil
-	updateCounter := 0
+func TestResourceTransformationGitMock(t *testing.T) {
+    step1 := resource.TestStep{
+        Config: `
+        resource "fivetran_transformation" "transformation" {
+            provider = fivetran-provider
 
-	transformationPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/dbt/transformations").ThenCall(
-		func(req *http.Request) (*http.Response, error) {
-			return onPostTranformation(t, req)
-		},
-	)
+            type = "DBT_CORE"
+            paused = true
 
-	tfmock.MockClient().When(http.MethodGet, "/v1/dbt/transformations/transformation_id").ThenCall(
-		func(req *http.Request) (*http.Response, error) {
-			tfmock.AssertNotEmpty(t, transformationData)
-			response := tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "", transformationData)
-			return response, nil
-		},
-	)
+            schedule {
+                cron = ["cron1","cron2"]
+                interval = 601
+                smart_syncing = true
+                connection_ids = ["connection_id1", "connection_id2"]
+                schedule_type = "schedule_type1"
+                days_of_week = ["days_of_week1","days_of_week2"]
+                time_of_day = "time_of_day1"
+            }
 
-	transformationPatchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/dbt/transformations/transformation_id").ThenCall(
-		func(req *http.Request) (*http.Response, error) {
-			response, err := onPatchTransformation(t, req, updateCounter)
-			updateCounter++
-			return response, err
-		},
-	)
+            transformation_config {
+                project_id = "project_id"
+                name = "name"
+                steps = [
+                    {
+                        name = "name1"
+                        command = "command1"
+                    },
+                    {
+                        name = "name2"
+                        command = "command2"
+                    }
+                ]
+            }
+        }
+        `,
 
-	transformationDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/dbt/transformations/transformation_id").ThenCall(
-		func(req *http.Request) (*http.Response, error) {
-			tfmock.AssertNotEmpty(t, transformationData)
-			transformationData = nil
-			response := tfmock.FivetranSuccessResponse(t, req, 200, "", nil)
-			return response, nil
-		},
-	)
-
-	projectResponse := `{
-		"id": "project_id",
-		"group_id": "group_id",
-		"dbt_version": "dbt_version",
-		"created_at": "created_at",
-		"created_by_id": "created_by_id",
-		"public_key": "public_key",
-		"default_schema": "default_schema",
-		"target_name": "target_name",
-		"environment_vars": ["environment_var"],
-		"threads": 1,
-		"type": "GIT",
-		"project_config": {
-			"git_remote_url": "git_remote_url",
-			"git_branch": "git_branch",
-			"folder_path": "folder_path"
-		},
-		"status": "READY"
-	}
-	`
-
-	tfmock.MockClient().When(http.MethodGet, "/v1/dbt/projects/dbt_project_id").ThenCall(
-		func(req *http.Request) (*http.Response, error) {
-			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", tfmock.CreateMapFromJsonString(t, projectResponse)), nil
-		},
-	)
-
-	modelsMappingResponse := `
-	{
-		"items":[
-			{
-				"id": "dbt_model_id",
-				"model_name": "dbt_model_name",
-				"scheduled": true
-			}
-		],
-		"next_cursor": null	
+        Check: resource.ComposeAggregateTestCheckFunc(
+            func(s *terraform.State) error {
+                tfmock.AssertEqual(t, transformationGitPostHandler.Interactions, 1)
+                return nil
+            },
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "id", "transformation_id"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "status", "status"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "created_at", "created_at"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "created_by_id", "created_by_id"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "type", "DBT_CORE"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "paused", "true"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "output_model_names.0", "output_model_name1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "output_model_names.1", "output_model_name2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.project_id", "project_id"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.name", "name"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.steps.0.name", "name1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.steps.0.command", "command1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.steps.1.name", "name2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.steps.1.command", "command2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.smart_syncing", "true"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.interval", "601"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.schedule_type", "schedule_type1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.cron.0", "cron1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.cron.1", "cron2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.connection_ids.0", "connection_id1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.connection_ids.1", "connection_id2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.days_of_week.0", "days_of_week1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.days_of_week.1", "days_of_week2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.time_of_day", "time_of_day1"),
+        ),
     }
-	`
 
-	modelMappingResponse := `
-	{
-		"id": "dbt_model_id",
-		"model_name": "dbt_model_name",
-		"scheduled": true
-	}
-	`
+    resource.Test(
+        t,
+        resource.TestCase{
+            PreCheck: func() {
+                setupMockClientTransformationGitResource(t)
+            },
+            ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+            CheckDestroy: func(s *terraform.State) error {
+                tfmock.AssertEqual(t, transformationGitDeleteHandler.Interactions, 1)
+                tfmock.AssertEmpty(t, transformationData)
+                return nil
+            },
 
-	tfmock.MockClient().When(http.MethodGet, "/v1/dbt/models/dbt_model_id").ThenCall(
-		func(req *http.Request) (*http.Response, error) {
-			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", tfmock.CreateMapFromJsonString(t, modelMappingResponse)), nil
-		},
-	)
-
-	tfmock.MockClient().When(http.MethodGet, "/v1/dbt/models").ThenCall(
-		func(req *http.Request) (*http.Response, error) {
-			project_id := req.URL.Query().Get("project_id")
-			tfmock.AssertEqual(t, project_id, "dbt_project_id")
-			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", tfmock.CreateMapFromJsonString(t, modelsMappingResponse)), nil
-		},
-	)
-
+            Steps: []resource.TestStep{
+                step1,
+            },
+        },
+    )
 }
 
-func TestResourceTransformationMock(t *testing.T) {
-	step1 := resource.TestStep{
-		Config: `
-		resource "fivetran_dbt_transformation" "transformation" {
-			provider = fivetran-provider
+func TestResourceTransformationQuickstartMock(t *testing.T) {
+    step1 := resource.TestStep{
+        Config: `
+        resource "fivetran_transformation" "transformation" {
+            provider = fivetran-provider
 
-			dbt_project_id = "dbt_project_id"
-			dbt_model_name = "dbt_model_name"
-			run_tests = "false"
-			paused = "false"
-			schedule {
-				schedule_type = "TIME_OF_DAY"
-				time_of_day = "12:00"
-				days_of_week = ["MONDAY"]
-			}
-		}
-		`,
+            type = "QUICKSTART"
+            paused = true
 
-		Check: resource.ComposeAggregateTestCheckFunc(
-			func(s *terraform.State) error {
-				tfmock.AssertEqual(t, transformationPostHandler.Interactions, 1)
-				tfmock.AssertNotEmpty(t, transformationData)
-				return nil
-			},
-			resource.TestCheckResourceAttr("fivetran_dbt_transformation.transformation", "id", "transformation_id"),
-			resource.TestCheckResourceAttr("fivetran_dbt_transformation.transformation", "dbt_model_id", "dbt_model_id"),
-			resource.TestCheckResourceAttr("fivetran_dbt_transformation.transformation", "run_tests", "false"),
-			resource.TestCheckResourceAttr("fivetran_dbt_transformation.transformation", "paused", "false"),
-			resource.TestCheckResourceAttr("fivetran_dbt_transformation.transformation", "schedule.schedule_type", "TIME_OF_DAY"),
-			resource.TestCheckResourceAttr("fivetran_dbt_transformation.transformation", "schedule.time_of_day", "12:00"),
-			resource.TestCheckResourceAttr("fivetran_dbt_transformation.transformation", "schedule.days_of_week.0", "MONDAY"),
-		),
-	}
+            schedule {
+                cron = ["cron1","cron2"]
+                interval = 601
+                smart_syncing = true
+                connection_ids = ["connection_id1", "connection_id2"]
+                schedule_type = "schedule_type1"
+                days_of_week = ["days_of_week1","days_of_week2"]
+                time_of_day = "time_of_day1"
+            }
 
-	// Update run_tests and paused fields, update days of week in schedule
-	step2 := resource.TestStep{
-		Config: `
-		resource "fivetran_dbt_transformation" "transformation" {
-			provider = fivetran-provider
+            transformation_config {
+                package_name = "package_name"
+                connection_ids = ["connection_id1", "connection_id2"]
+                excluded_models = ["excluded_model1", "excluded_model2"]
+            }
+        }
+        `,
 
-			dbt_project_id = "dbt_project_id"
-			dbt_model_name = "dbt_model_name"
-			run_tests = "true"
-			paused = "true"
-			schedule {
-				schedule_type = "TIME_OF_DAY"
-				time_of_day = "12:00"
-				days_of_week = ["MONDAY", "SATURDAY"]
-			}
-		}
-		`,
+        Check: resource.ComposeAggregateTestCheckFunc(
+            func(s *terraform.State) error {
+                tfmock.AssertEqual(t, transformationQuickstartPostHandler.Interactions, 1)
+                return nil
+            },
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "id", "transformation_id"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "status", "status"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "created_at", "created_at"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "created_by_id", "created_by_id"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "type", "QUICKSTART"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "paused", "true"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "output_model_names.0", "output_model_name1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "output_model_names.1", "output_model_name2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.package_name", "package_name"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.connection_ids.0", "connection_id1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.connection_ids.1", "connection_id2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.excluded_models.0", "excluded_model1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.excluded_models.1", "excluded_model2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.upgrade_available", "true"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.smart_syncing", "true"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.interval", "601"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.schedule_type", "schedule_type1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.cron.0", "cron1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.cron.1", "cron2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.connection_ids.0", "connection_id1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.connection_ids.1", "connection_id2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.days_of_week.0", "days_of_week1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.days_of_week.1", "days_of_week2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.time_of_day", "time_of_day1"),
+        ),
+    }
 
-		Check: resource.ComposeAggregateTestCheckFunc(
-			func(s *terraform.State) error {
-				tfmock.AssertEqual(t, transformationPatchHandler.Interactions, 1)
-				tfmock.AssertNotEmpty(t, transformationData)
-				return nil
-			},
+    resource.Test(
+        t,
+        resource.TestCase{
+            PreCheck: func() {
+                setupMockClientTransformationQuickstartResource(t)
+            },
+            ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+            CheckDestroy: func(s *terraform.State) error {
+                tfmock.AssertEqual(t, transformationQuickstartDeleteHandler.Interactions, 1)
+                return nil
+            },
 
-			resource.TestCheckResourceAttr("fivetran_dbt_transformation.transformation", "run_tests", "true"),
-			resource.TestCheckResourceAttr("fivetran_dbt_transformation.transformation", "paused", "true"),
-			resource.TestCheckResourceAttr("fivetran_dbt_transformation.transformation", "schedule.days_of_week.1", "SATURDAY"),
-		),
-	}
-
-	// Update schedule_type and paused fields
-	step3 := resource.TestStep{
-		Config: `
-		resource "fivetran_dbt_transformation" "transformation" {
-			provider = fivetran-provider
-
-			dbt_project_id = "dbt_project_id"
-			dbt_model_name = "dbt_model_name"
-			run_tests = "true"
-			paused = "true"
-			schedule {
-				schedule_type = "INTERVAL"
-				interval = 60
-			}
-		}
-		`,
-
-		Check: resource.ComposeAggregateTestCheckFunc(
-			func(s *terraform.State) error {
-				tfmock.AssertEqual(t, transformationPatchHandler.Interactions, 2)
-				tfmock.AssertNotEmpty(t, transformationData)
-				return nil
-			},
-
-			resource.TestCheckResourceAttr("fivetran_dbt_transformation.transformation", "schedule.schedule_type", "INTERVAL"),
-			resource.TestCheckResourceAttr("fivetran_dbt_transformation.transformation", "schedule.interval", "60"),
-		),
-	}
-
-	resource.Test(
-		t,
-		resource.TestCase{
-			PreCheck: func() {
-				setupMockClientTransformationResource(t)
-			},
-			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
-			CheckDestroy: func(s *terraform.State) error {
-				tfmock.AssertEqual(t, transformationDeleteHandler.Interactions, 1)
-				tfmock.AssertEmpty(t, transformationData)
-				return nil
-			},
-
-			Steps: []resource.TestStep{
-				step1,
-				step2,
-				step3,
-			},
-		},
-	)
+            Steps: []resource.TestStep{
+                step1,
+            },
+        },
+    )
 }

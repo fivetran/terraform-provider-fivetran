@@ -157,17 +157,21 @@ func (d *Transformations) ReadFromResponse(ctx context.Context, resp transformat
 			} else {
 				configAttrValues["excluded_models"] = types.SetNull(types.StringType)
 			}
+    
+    		if v.TransformationConfig.Steps != nil {
+		        subItems := []attr.Value{}
+        		for _, sub := range v.TransformationConfig.Steps {
+		            subItem := map[string]attr.Value{}
+        		    subItem["name"] = types.StringValue(sub.Name)
+		            subItem["command"] = types.StringValue(sub.Command)
 
-		    subItems := []attr.Value{}
-		    for _, sub := range v.TransformationConfig.Steps {
-    			subItem := map[string]attr.Value{}
-		        subItem["name"] = types.StringValue(sub.Name)
-        		subItem["command"] = types.StringValue(sub.Command)
-
-		        subObjectValue, _ := types.ObjectValue(stepAttrTypes, subItem)
-        		subItems = append(subItems, subObjectValue)
+        		    subObjectValue, _ := types.ObjectValue(stepAttrTypes, subItem)
+		            subItems = append(subItems, subObjectValue)
+        		}
+		        configAttrValues["steps"], _ = types.ListValue(stepSetAttrType, subItems)
+		    } else {
+        		configAttrValues["steps"] = types.ListNull(stepSetAttrType)
 		    }
-		   	configAttrValues["steps"], _ = types.ListValue(stepSetAttrType, subItems)
 
 			item["transformation_config"] = types.ObjectValueMust(configAttrs, configAttrValues)
 

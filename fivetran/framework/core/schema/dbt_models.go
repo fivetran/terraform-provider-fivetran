@@ -7,6 +7,7 @@ import (
 
 func DbtModelsDatasource() datasourceSchema.Schema {
 	return datasourceSchema.Schema{
+		DeprecationMessage: "This datasource is Deprecated, please follow the 1.5.0 migration guide to update the schema",
 		Attributes: map[string]datasourceSchema.Attribute{
 			"id": datasourceSchema.StringAttribute{
 				Computed:    true,

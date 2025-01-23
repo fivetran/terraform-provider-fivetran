@@ -11,6 +11,7 @@ import (
 
 func DbtTransformationResourceSchema(ctx context.Context) resourceSchema.Schema {
 	return resourceSchema.Schema{
+		DeprecationMessage: "This resource is Deprecated, please follow the 1.5.0 migration guide to update the schema",
 		Attributes: dbtTransformationSchema().GetResourceSchema(),
 		Blocks:     dbtTransformationResourceBlocks(ctx),
 	}
@@ -18,6 +19,7 @@ func DbtTransformationResourceSchema(ctx context.Context) resourceSchema.Schema 
 
 func DbtTransformationDatasourceSchema() datasourceSchema.Schema {
 	return datasourceSchema.Schema{
+		DeprecationMessage: "This datasource is Deprecated, please follow the 1.5.0 migration guide to update the schema",
 		Attributes: dbtTransformationSchema().GetDatasourceSchema(),
 		Blocks:     dbtTransformationDatasourceBlocks(),
 	}

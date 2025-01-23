@@ -92,7 +92,7 @@ func (r *transformation) Create(ctx context.Context, req resource.CreateRequest,
 
 		if !configAttributes["steps"].IsUnknown() && !configAttributes["steps"].IsNull() {
 			evars := []transformations.TransformationStep{}
-			for _, ev := range configAttributes["steps"].(basetypes.SetValue).Elements() {
+			for _, ev := range configAttributes["steps"].(basetypes.ListValue).Elements() {
 				if element, ok := ev.(basetypes.ObjectValue); ok {
 					step := transformations.TransformationStep{}
 					step.Name = element.Attributes()["name"].(basetypes.StringValue).ValueString()
@@ -265,7 +265,7 @@ func (r *transformation) Update(ctx context.Context, req resource.UpdateRequest,
 
 		if !configAttributes["steps"].IsUnknown() && !configAttributes["steps"].IsNull() {
 			evars := []transformations.TransformationStep{}
-			for _, ev := range configAttributes["steps"].(basetypes.SetValue).Elements() {
+			for _, ev := range configAttributes["steps"].(basetypes.ListValue).Elements() {
 				if element, ok := ev.(basetypes.ObjectValue); ok {
 					var step transformations.TransformationStep
 					step.Name = element.Attributes()["name"].(basetypes.StringValue).ValueString()

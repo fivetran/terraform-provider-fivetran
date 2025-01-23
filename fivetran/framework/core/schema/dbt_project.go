@@ -19,6 +19,7 @@ func DbtProjectResource(ctx context.Context) resourceSchema.Schema {
 	}
 	return resourceSchema.Schema{
 		Attributes: attributes,
+		DeprecationMessage: "This datasource is Deprecated, please follow the 1.5.0 migration guide to update the schema",
 		Blocks:     dbtProjectResourceBlocks(ctx),
 		Version:    1,
 	}
@@ -34,6 +35,7 @@ func DbtProjectDatasource() datasourceSchema.Schema {
 	}
 	return datasourceSchema.Schema{
 		Attributes: attributes,
+		DeprecationMessage: "This datasource is Deprecated, please follow the 1.5.0 migration guide to update the schema",
 		Blocks:     dbtProjectDatasourceBlocks(),
 	}
 }
