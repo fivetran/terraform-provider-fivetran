@@ -146,6 +146,7 @@
       "description": {
          "gainsight_customer_success": "The access key for API authentication.",
          "gongio": "Your Gongio Access key.",
+         "line_ads": "Your LINE Ads access key.",
          "planful": "Your Planful access key.",
          "retailnext": "Your RetailNext access key."
       },
@@ -163,11 +164,14 @@
          "appsflyer": "Your AWS access key ID.",
          "aws_cost_report": "Access Key ID",
          "checkout": "Your Checkout.com access key ID.",
+         "cloudtalk": "Your CloudTalk Access Key ID.",
+         "nice": "Your NICE access key ID.",
          "s3": "Access Key ID",
          "wasabi_cloud_storage": "Access Key ID"
       },
       "sensitive_exclusions": {
-         "appsflyer": true
+         "appsflyer": true,
+         "cloudtalk": true
       },
       "api_field": ""
    },
@@ -182,7 +186,9 @@
       "description": {
          "aws_cost_report": "Access Key Secret",
          "checkout": "Your Checkout.com access key secret.",
+         "cloudtalk": "Your CloudTalk Access Key Secret.",
          "gongio": "Your Gongio Access Key Secret.",
+         "nice": "Your NICE access key secret.",
          "s3": "Access Key Secret",
          "wasabi_cloud_storage": "Access Key Secret"
       },
@@ -207,14 +213,18 @@
          "getfeedback": "Your GetFeedback Access token.",
          "gocardless": "Your GoCardless API token.",
          "ironclad": "Your Ironclad access token.",
+         "khoros_marketing": "Your Khoros Marketing access token.",
          "kustomer": "Your Kustomer API key.",
          "lattice": "Your Lattice API access token.",
          "launchdarkly": "Your LaunchDarkly access token.",
+         "leap_crm": "Your Leap CRM access token.",
          "nylas": "Your Nylas access_token.",
          "planhat": "Your Planhat access token.",
          "rollbar": "Your Rollbar Access Token.",
          "samsara": "Your Samsara API token.",
          "slab": "Your Slab API key.",
+         "stripe": "The Stripe API Restricted Key",
+         "stripe_test": "The Stripe API Restricted Key",
          "talkwalker": "Your Talkwalker access token.",
          "workable": "Your Workable Access Token.",
          "workramp": "Your WorkRamp access token."
@@ -276,6 +286,7 @@
          "dear": "Your Dear Account ID.",
          "harvest": "Your Harvest Account ID.",
          "optimizely": "Your Optimizely account ID.",
+         "rokt": "Your Rokt account ID.",
          "udemy_business": "Your Udemy Business account ID."
       },
       "api_field": ""
@@ -790,6 +801,19 @@
       },
       "api_field": ""
    },
+   "agent_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "phoenix_ads": "Your Phoenix Ads Agent ID."
+      },
+      "api_field": ""
+   },
    "agent_ora_home": {
       "readonly": false,
       "sensitive": false,
@@ -1014,6 +1038,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "flywheel_digital": "Your Flywheel Digital API access token.",
          "shopify": "API access token of your custom app.",
          "square": "The Square API access token of your application."
       },
@@ -1057,12 +1082,14 @@
          "15five": "Your 15five API key.",
          "360learning": "Your 360Learning API Key.",
          "6sense": "Your 6sense API Key.",
+         "acculynx": "Your Acculynx API key.",
          "activecampaign": "Your ActiveCampaign API key.",
          "affinity": "Your Affinity API key.",
          "airtable": "API key of the Airtable account.",
          "algolia": "Your Algolia API key.",
          "anvyl": "Your Anvyl API key.",
          "appcues": "Your Appcues API key.",
+         "ashby": "Your Ashby API key.",
          "assembled": "Your Assembled API key.",
          "atlassian_jira_align": "Your Jira Align API key.",
          "atlassian_ops_genie": "Your Opsgenie API key",
@@ -1071,8 +1098,9 @@
          "avantlink": "Your AvantLink API key.",
          "ballotready": "Your BallotReady API token.",
          "bamboohr": "Your API Key.",
-         "bazaarvoice": "Your Bazaarvoice  API key.",
+         "bazaarvoice": "Your Bazaarvoice API key.",
          "betterworks": "Your Betterworks API key.",
+         "bigmarker": "Your BigMarker API key.",
          "bizzabo": "Your Bizzabo API key.",
          "brave_ads": "Your Brave Ads API key",
          "braze": "Your Braze API Key.",
@@ -1091,6 +1119,8 @@
          "cimis": "Your Cimis API key.",
          "circleci": "Your CircleCI API Key.",
          "clickup": "Your ClickUp API key.",
+         "clockify": "Your Clockify API key.",
+         "clockodo": "Your Clockodo API key.",
          "close": "Your Close API key.",
          "cloudbeds": "Your Cloudbeds API key.",
          "clubspeed": "Your Clubspeed API key.",
@@ -1115,7 +1145,9 @@
          "easypost": "Your EasyPost API Key.",
          "electronic_tenant_solutions": "Your Electronic Tenant Solutions API key.",
          "eventsforce": "Your Eventsforce API secret key.",
+         "everflow": "Your Everflow API key.",
          "everhour": "Your Everhour API Token.",
+         "expensein": "Your ExpenseIn API key.",
          "factorial": "Your Factorial API key.",
          "firehydrant": "Your FireHydrant API key.",
          "float": "Your Float API key.",
@@ -1137,6 +1169,7 @@
          "grepsr": "Your Grepsr API Key.",
          "grin": "Your Grin API key.",
          "happyfox": "Your HappyFox API key.",
+         "healthie": "",
          "height": "Your Height API key.",
          "helpshift": "Your Helpshift API Key.",
          "incidentio": "Your incident.io API key.",
@@ -1146,6 +1179,7 @@
          "invoiced": "Your Invoiced API key.",
          "iterable": "Your Iterable API key.",
          "ivanti": "Your Ivanti API Key.",
+         "jobnimbus": "",
          "jotform": "Your Jotform API key.",
          "justcall": "Your JustCall API key.",
          "katana": "Your Katana API key.",
@@ -1161,8 +1195,12 @@
          "linksquares": "Your LinkSquares API key.",
          "lob": "Your Lob API key.",
          "loop": "Your Loop API key.",
+         "lucca": "Your Lucca API key.",
          "luma": "Your Luma API key.",
+         "maileon": "Your Maileon API key.",
          "mailgun": "Your Mailgun API key.",
+         "mailjet": "Your Mailjet API key.",
+         "malomo": "Your Malomo API key.",
          "mambu": "Your Mambu API key.",
          "mandrill": "Your Mandrill API key.",
          "maxio_chargify": "Enter Your API Key.",
@@ -1175,16 +1213,19 @@
          "ordway": "Your Ordway API key.",
          "ortto": "Your Ortto API key.",
          "pagerduty": "Your PagerDuty API key.",
+         "pandadoc": "Your PandaDoc API key.",
          "papershift": "Your Papershift API Key",
          "partnerize": "Your Partnerize user API key.",
          "persona": "Your Persona API key.",
          "picqer": "Your Picqer API key.",
+         "pigment": "Your Pigment API key.",
          "pinpoint": "Your Pinpoint API key.",
          "pipe17": "The Pipe17 API key.",
          "placerai": "Your Placer.ai API key.",
          "playvox": "Your Playvox API Key.",
          "posthog": "Your PostHog API key.",
          "prive": "Your Prive API key.",
+         "prosperstack": "Your ProsperStack API key.",
          "qualaroo": "Your Qualaroo API Key.",
          "quorum": "Your Quorum API key.",
          "rebound_returns": "Your ReBound Returns API key.",
@@ -1198,6 +1239,7 @@
          "rippling": "Your Rippling API key.",
          "rocketlane": "Your Rocketlane API key.",
          "rootly": "Your Rootly API key.",
+         "ruddr": "Your Ruddr API key.",
          "safebase": "Your SafeBase API key.",
          "sage_hr": "Your Sage HR API key.",
          "sailthru": "The Sailthru API key.",
@@ -1225,18 +1267,23 @@
          "teamtailor": "Your Teamtailor API key.",
          "testrail": "Your TestRail API key.",
          "ticket_tailor": "Your Ticket Tailor API key.",
-         "transcend": "Your Transcend API Key.",
+         "transcend": "Your Transcend API key.",
          "trello": "Your TRELLO api key.",
+         "triple_whale": "Your Triple Whale API key.",
          "uppromote": "Your UpPromote API key.",
          "veeqo": "Your Veeqo API key.",
+         "venminder": "Your Venminder API key.",
          "visit_by_ges": "Your Visit by GES API key.",
          "vitally": "Your Vitally API key.",
          "vonage": "Your Vonage API Key.",
          "vts": "Your VTS API key.",
          "webconnex": "Your Webconnex API key.",
+         "wicked_reports": "Your Wicked Reports API key.",
+         "workleap_officevibe": "Your Workleap Officevibe API key.",
          "xsolla": "Your Xsolla API key.",
          "yougov_sport": "Your Yougov Sport API key.",
-         "zingtree": "Your Zingtree API key."
+         "zingtree": "Your Zingtree API key.",
+         "zip": "Your Zip API key."
       },
       "api_field": ""
    },
@@ -1294,6 +1341,19 @@
       },
       "api_field": ""
    },
+   "api_read_access_token": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "the_movie_database": "Your The Movie Database API read access token."
+      },
+      "api_field": ""
+   },
    "api_requests_per_minute": {
       "readonly": false,
       "sensitive": false,
@@ -1319,11 +1379,12 @@
          "confluent_cloud": "API Secret",
          "forj_community": "Your Forj Community API secret.",
          "friendbuy": "Your Friendbuy API secret.",
-         "justcall": "Your JustCall API Secret.",
+         "justcall": "Your JustCall API secret.",
          "liftoff": "Your Liftoff API secret.",
          "mixpanel": "Mixpanel API Secret.",
          "qualaroo": "Your Qualaroo API Secret.",
          "sailthru": "The Sailthru API secret.",
+         "shareasale": "Your ShareASale API secret.",
          "vonage": "Your Vonage API Secret."
       },
       "api_field": ""
@@ -1367,12 +1428,14 @@
          "aircall": "Your Aircall API Token.",
          "appsflyer": "API Token for AppsFlyer's PULL API.",
          "awin": "Your Awin API Token.",
+         "backbone_plm": "Your Backbone PLM API token.",
          "brex": "Your Brex API token",
          "buildkite": "Your Buildkite API token.",
          "buzzsprout": "Your Buzzsprout API token.",
-         "centra": "Your Centra API Token.",
+         "centra": "Your Centra API token.",
          "chameleon": "Your Chameleon API token.",
          "clari": "Your Clari API token.",
+         "cloudflare_analytics": "Your Cloudflare Analytics API token.",
          "confluence": "The Confluence API token.",
          "dixa": "Your Dixa API token.",
          "drip": "Your Drip API Token.",
@@ -1392,6 +1455,7 @@
          "mixmax": "Mixmax API token.",
          "okta": "Your Okta API token.",
          "ordway": "Your Ordway API token.",
+         "packiyo": "Your Packiyo API token.",
          "pipedrive": "(Optional)Your Pipedrive personal API token",
          "pivotal_tracker": "Pivotal Tracker API token.",
          "postmark": "Your Postmark account API token.",
@@ -1402,9 +1466,11 @@
          "referralhero": "Your Referralhero API token.",
          "resource_management_by_smartsheet": "Your Resource Management by Smartsheet API token.",
          "retently": "Your Retently API token.",
+         "reviewsai": "Your REVIEWS.ai API token.",
          "rundeck": "Your Rundeck API token.",
          "safetyculture": "Your SafetyCulture API token.",
          "sensor_tower": "Your Sensor Tower API token.",
+         "sentry": "Your Sentry auth token.",
          "simplecast": "Your Simplecast API token.",
          "snyk": "Your Snyk API token.",
          "textus": "Your TextUs API token.",
@@ -1439,6 +1505,19 @@
       "item_type": {},
       "description": {
          "braze": "Your Braze API URL."
+      },
+      "api_field": ""
+   },
+   "api_url_region": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "amazon_dsp": "Your Amazon DSP API URL region."
       },
       "api_field": ""
    },
@@ -1521,7 +1600,8 @@
       "item_type": {},
       "description": {
          "churnkey": "Your Churnkey APP ID.",
-         "open_exchange_rates": "Your Open Exchange Rates App Id."
+         "open_exchange_rates": "Your Open Exchange Rates App Id.",
+         "rokt": "Your Rokt app ID."
       },
       "api_field": ""
    },
@@ -1598,6 +1678,19 @@
       },
       "api_field": ""
    },
+   "app_secret": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "rokt": "Your Rokt app secret."
+      },
+      "api_field": ""
+   },
    "app_secret_token": {
       "readonly": false,
       "sensitive": true,
@@ -1670,7 +1763,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "algolia": "Your Algolia application ID."
+         "algolia": "Your Algolia application ID.",
+         "xactly": "Your Xactly Application ID."
       },
       "api_field": ""
    },
@@ -1912,7 +2006,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "databricks_db": "",
+         "databricks_db": "Token-based authentication type",
          "redshift_db": "Password-based authentication type",
          "snowflake_db": "Password-based or key-based authentication type"
       },
@@ -1953,8 +2047,16 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "aurora_postgres": "Database authentication method",
+         "azure_postgres": "Database authentication method",
          "azure_sql_db": "Authentication Method.",
          "azure_sql_managed_db": "Authentication Method.",
+         "google_cloud_postgresql": "Database authentication method",
+         "heroku_postgres": "Database authentication method",
+         "postgres": "Database authentication method",
+         "postgres_rds": "Database authentication method",
+         "sql_server_hva": "Authentication Method",
+         "sql_server_sap_ecc_hva": "Authentication Method",
          "webhooks": "The authentication mechanism you want to use"
       },
       "api_field": ""
@@ -2011,6 +2113,19 @@
       },
       "api_field": ""
    },
+   "auth_url_region": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "amazon_dsp": "Your Amazon DSP auth grant URL region."
+      },
+      "api_field": ""
+   },
    "authentication_method": {
       "readonly": false,
       "sensitive": false,
@@ -2023,8 +2138,14 @@
          "adobe_analytics": "Authentication Method",
          "elastic_cloud": "The authentication method used to connect to your cluster.",
          "es_self_hosted": "The authentication method used to connect to your cluster.",
+         "financial_force": "",
          "opendistro": "The authentication method used to connect to your cluster.",
-         "opensearch": "The authentication method used to connect to your cluster."
+         "opensearch": "The authentication method used to connect to your cluster.",
+         "oracle_fusion_cloud_apps_crm": "The Oracle Fusion Cloud authentication method.",
+         "oracle_fusion_cloud_apps_fscm": "The Oracle Fusion Cloud authentication method.",
+         "oracle_fusion_cloud_apps_hcm": "The Oracle Fusion Cloud authentication method.",
+         "salesforce": "(Optional) Authentication type (default value = `STANDARD`)",
+         "salesforce_sandbox": "(Optional) Authentication type (default value = `STANDARD`)"
       },
       "api_field": ""
    },
@@ -2086,6 +2207,19 @@
       },
       "api_field": ""
    },
+   "backward_sync_limit": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "zendesk": "Limit of the Historical Sync Time for selected tables"
+      },
+      "api_field": ""
+   },
    "base_currency": {
       "readonly": false,
       "sensitive": false,
@@ -2135,21 +2269,28 @@
       "item_type": {},
       "description": {
          "aha": "Your Aha! subdomain.",
+         "akeneo": "Your Akeneo base URL.",
          "billing_platform": "Your BillingPlatform subdomain.",
          "boostr": "Your Boostr base URL.",
          "brex": "Your Brex Base URL",
-         "centra": "Your Centra Base URL.",
+         "centra": "Your Centra base URL.",
+         "cornerstone": "Your Cornerstone base URL.",
          "culture_amp": "Your Culture Amp base URL.",
+         "datadog": "Your Datadog base url.",
+         "factbird": "Your Factbird base url.",
+         "fillout": "Your Fillout Base URL.",
          "financial_force": "(Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.",
          "freshsales": "Your Freshsales product.",
          "gongio": "Your Gong API Base URL.",
          "ironclad": "Your Ironclad base url.",
          "jotform": "Your Jotform base URL.",
          "mailgun": "Your Mailgun base URL.",
+         "nice": "Your NICE base URL.",
          "ortto": "Your Ortto base URL. Possible values: `api`, `api.au`, `api.eu`.",
          "prisma_cloud": "Your Prisma Cloud admin console URL.",
          "salesforce": "(Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.",
          "salesforce_sandbox": "(Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.",
+         "stickyio": "Your sticky.io base URL .",
          "veevavault": "Your Veeva Vault base URL.",
          "vitally": "Your Vitally base URL."
       },
@@ -2311,6 +2452,19 @@
       },
       "api_field": ""
    },
+   "business_unit": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "deposco": "Your Deposco business unit."
+      },
+      "api_field": ""
+   },
    "business_unit_id": {
       "readonly": false,
       "sensitive": false,
@@ -2347,7 +2501,10 @@
       "item_type": {},
       "description": {
          "anaplan": "The contents of your PEM certificate file. Must be populated if `auth_mode` is set to `Certificate`.",
-         "qualtrics": "Your Client Certificate"
+         "financial_force": "",
+         "qualtrics": "Your Client Certificate",
+         "salesforce": "Provide content of the `.pem` certificate (only when authentication_method = `ADVANCED`).",
+         "salesforce_sandbox": "Provide content of the `.pem` certificate (only when authentication_method = `ADVANCED`)."
       },
       "api_field": ""
    },
@@ -2433,40 +2590,58 @@
          "adobe_workfront": "Your Adobe Workfront client ID.",
          "adp_workforce_now": "Your ADP Client ID.",
          "akamai": "Your Akamai client ID.",
+         "akeneo": "Your Akeneo client ID.",
          "auth0": "Your Auth0 client ID.",
+         "autodesk_bim_360": "Your Autodesk BIM 360 client ID.",
+         "bigin_by_zoho_crm": "Your Bigin by Zoho CRM Client Id",
          "billing_platform": "Your BillingPlatform client ID.",
+         "bing_webmaster_tools": "Your Bing Webmaster Tools client ID.",
          "brightcove": "Your Brightcove client ID.",
-         "brightpearl": "Your Brightpearl client id.",
+         "brightpearl": "Your Brightpearl client ID.",
          "buildium": "Your Buildium API client ID.",
          "canvas_by_instructure": "Your Canvas by Instructure client ID.",
+         "canvas_data_2_by_instructure": "Your Canvas Data 2 by Instructure client ID.",
          "castor_edc": "Your Castor EDC client Id.",
+         "clazar": "Your Clazar client ID.",
+         "cloudbeds": "Your Cloudbeds client ID.",
          "commercetools": "Your commercetools client ID.",
          "concur": "The SAP Concur Client ID.",
+         "constant_contact": "Your Constant Contact client ID.",
+         "cornerstone": "Your Cornerstone client ID.",
          "coupa": "Your Coupa client_id",
          "criteo": "Your Criteo Client ID.",
          "criteo_retail_media": "Your Criteo Retail Media client ID.",
          "culture_amp": "Your Culture Amp client ID.",
          "cvent": "Your Cvent client ID.",
          "d2l_brightspace": "Your D2L Brightspace client ID.",
+         "dialpad": "Your Dialpad client ID.",
          "ebay": "Your eBay app ID.",
          "exact_online": "Your Exact Online client ID.",
+         "fillout": "Your Fillout client ID.",
          "flexport": "The Flexport API Key.",
+         "formstack": "Your Formstack client ID.",
          "genesys": "Your Genesys client ID.",
          "hana_sap_hva_b1": "",
          "hana_sap_hva_ecc": "",
          "hana_sap_hva_ecc_netweaver": "Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.",
          "hana_sap_hva_s4": "",
          "hana_sap_hva_s4_netweaver": "Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.",
+         "hilti_ontrack": "Your Hilti On!Track client ID.",
          "ilevel": "Your iLevel Client ID.",
          "instructure": "Your Instructure client ID.",
          "integral_ad_science": "Your integral_ad_science client id.",
+         "ironclad": "Your Ironclad client ID.",
          "jama_software": "Your Jama Software client ID.",
+         "jibble": "Your Jibble client ID.",
+         "khoros_communities": "Your Khoros Communities client ID.",
          "looker_source": "Your Looker Client ID.",
          "marketo": "Marketo REST API Client Id.",
          "medallia": "Medallia Client ID",
          "microsoft_entra_id": "Your Microsoft Entra ID Client ID.",
+         "microsoft_power_bi": "Your Microsoft Power BI client ID.",
          "microsoft_teams": "Your Microsoft Teams Client ID.",
          "navan": "Your Navan client ID.",
+         "nice": "Your NICE client ID.",
          "on24": "Your ON24 client ID.",
          "oracle_sap_hva_netweaver": "Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.",
          "paychex": "Your Paychex client ID.",
@@ -2483,6 +2658,7 @@
          "salesforce_commerce_cloud": "The Salesforce Commerce Cloud Client ID.",
          "salesforce_marketing_cloud": "The Salesforce Marketing Cloud client ID.",
          "salesloft": "`Client ID` of your Salesloft client application.",
+         "sana": "Your Sana client ID.",
          "sap_success_factors": "Your SAP SuccessFactors Client ID.",
          "servicenow": "ServiceNow Client ID.",
          "servicetitan": "Your ServiceTitan client ID.",
@@ -2490,17 +2666,22 @@
          "shipnetwork": "Your ShipNetwork client ID.",
          "sigma_computing_source": "Your Sigma Computing client ID.",
          "skillstx": "Your SkillsTX client ID.",
+         "skimlinks": "Your Skimlinks client ID.",
          "smartrecruiters": "Your SmartRecruiters client ID.",
          "splash": "Your Splash client ID.",
          "square": "The Application ID of your organization.",
          "standard_metrics": "Your Standard Metrics Client ID.",
+         "sugarcrm": "Your SugarCRM client ID.",
          "swoogo": "Your Swoogo client Id.",
          "taboola": "The Taboola client ID.",
          "talkdesk": "The Client ID of your OAuth Client",
+         "tive": "Your Tive client ID.",
          "toast": "Your Toast client ID.",
          "trelica": "Your Trelica client ID.",
+         "tremendous": "Your Tremendous client ID.",
          "tymeshift": "Your Tymeshift email.",
          "udemy_business": "Your Udemy Business client ID.",
+         "vimeo": "Your Vimeo client ID.",
          "visma": "Your Visma client ID.",
          "vonage_contact_center": "Your Vonage Contact Center client ID.",
          "walmart_marketplace": "Your Walmart Marketplace client ID.",
@@ -2625,34 +2806,50 @@
          "adobe_workfront": "Your Adobe Workfront client secret.",
          "adp_workforce_now": "Your ADP Client Secret.",
          "akamai": "Your Akamai client secret.",
-         "auth0": "Your Auth0 client Secret.",
+         "akeneo": "Your Akeneo client secret.",
+         "auth0": "Your Auth0 client secret.",
+         "autodesk_bim_360": "Your Autodesk BIM 360 client secret.",
+         "bigin_by_zoho_crm": "Your Bigin by Zoho CRM Client Secret",
          "billing_platform": "Your BillingPlatform client secret.",
+         "bing_webmaster_tools": "Your Bing Webmaster Tools client secret.",
          "brightcove": "Your Brightcove client secret.",
          "brightpearl": "Your Brightpearl client secret.",
          "canvas_by_instructure": "Your Canvas by Instructure client secret.",
          "castor_edc": "Your Castor EDC Client Secret.",
+         "clazar": "Your Clazar client secret.",
+         "cloudbeds": "Your Cloudbeds client secret.",
          "commercetools": "Your commercetools client secret.",
          "concur": "The SAP Concur Client secret.",
+         "constant_contact": "Your Constant Contact client secret.",
+         "cornerstone": "Your Cornerstone client secret.",
          "coupa": "Your Coupa client_id",
          "criteo": "Your Criteo client secret key.",
-         "criteo_retail_media": "Your Criteo Retail Media client Secret.",
+         "criteo_retail_media": "Your Criteo Retail Media client secret.",
          "culture_amp": "Your Culture Amp client secret.",
          "cvent": "Your Cvent client secret.",
          "d2l_brightspace": "Your D2L Brightspace client secret.",
+         "dialpad": "Your Dialpad client secret.",
          "ebay": "Your eBay cert ID.",
          "exact_online": "Your Exact Online client secret.",
+         "fillout": "Your Fillout client secret",
          "flexport": "The Flexport API Secret.",
+         "formstack": "Your Formstack client secret.",
          "genesys": "Your Genesys client secret.",
+         "hilti_ontrack": "Your Hilti On!Track client secret.",
          "ilevel": "Your iLevel Client Secret.",
          "instructure": "Your Instructure client secret.",
          "integral_ad_science": "Your integral_ad_science client secret.",
+         "ironclad": "Your Ironclad client secret.",
          "jama_software": "Your Jama Software client secret.",
+         "jibble": "Your Jibble client secret.",
          "looker_source": "Your Looker Client Secret.",
          "marketo": "Marketo REST API Client Secret.",
          "medallia": "Medallia Client Secret key",
          "microsoft_entra_id": "Your Microsoft Entra ID Client Secret.",
+         "microsoft_power_bi": "Your Microsoft Power BI client secret.",
          "microsoft_teams": "Your Microsoft Teams Client Secret.",
          "navan": "Your Navan client secret.",
+         "nice": "Your NICE client secret.",
          "paychex": "Your Paychex client secret.",
          "personio": "Your Personio secret.",
          "piwik_pro": "Your Piwik PRO client secret.",
@@ -2665,24 +2862,30 @@
          "salesforce_commerce_cloud": "The Salesforce Commerce Cloud Client secret.",
          "salesforce_marketing_cloud": "The Salesforce Marketing Cloud client secret.",
          "salesloft": "`Client Secret` of your Salesloft client application.",
+         "sana": "Your Sana client secret.",
          "sap_success_factors": "Your SAP SuccessFactors Client Secret that you generated through SAML Assertion.",
          "servicenow": "ServiceNow Client Secret.",
          "servicetitan": "Your ServiceTitan secret key.",
          "sharetribe": "Your Sharetribe client secret.",
          "sigma_computing_source": "Your Sigma Computing client secret.",
          "skillstx": "Your SkillsTX client secret.",
+         "skimlinks": "Your Skimlinks client secret.",
          "smartrecruiters": "Your SmartRecruiters client secret.",
          "splash": "Your Splash client secret.",
          "square": "The Application Secret of your organization.",
          "standard_metrics": "Your Standard Metrics Client secret.",
+         "sugarcrm": "Your SugarCRM client secret.",
          "swoogo": "Your Swoogo Client Secret.",
          "taboola": "The Taboola client secret.",
          "talkdesk": "The Client Secret of your OAuth Client",
          "thinkific": "Your Thinkific client secret.",
+         "tive": "Your Tive client secret.",
          "toast": "Your Toast client secret.",
          "trelica": "Your Trelica client secret.",
+         "tremendous": "Your Tremendous client secret.",
          "tymeshift": "Your Tymeshift password.",
          "udemy_business": "Your Udemy Business client secret.",
+         "vimeo": "Your Vimeo client secret.",
          "visma": "Your Visma client secret.",
          "vonage_contact_center": "Your Vonage Contact Center client secret.",
          "walmart_marketplace": "Your Walmart Marketplace client secret.",
@@ -2736,6 +2939,32 @@
       },
       "description": {
          "double_click_publishers": "Columns provide all trafficking statistics and revenue information available for the chosen Dimensions."
+      },
+      "api_field": ""
+   },
+   "community_domain": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "khoros_communities": "Your Khoros Communities community domain."
+      },
+      "api_field": ""
+   },
+   "community_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "khoros_communities": "Your Khoros Communities community ID."
       },
       "api_field": ""
    },
@@ -2806,6 +3035,19 @@
       "description": {
          "khoros_care": "Your Khoros Care companyKey.",
          "upland": "Your Upland Software Company Key."
+      },
+      "api_field": ""
+   },
+   "company_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "clockodo": "Your Clockodo company name."
       },
       "api_field": ""
    },
@@ -2897,6 +3139,32 @@
       "description": {
          "facebook": "Option to select Prebuilt Reports or Custom Reports. [Possible config_type values](https://fivetran.com/docs/applications/facebook-ad-insights/api-config#configtype).",
          "google_analytics": "Whether to use the [Prebuilt Reports or Custom Reports](https://fivetran.com/docs/connectors/applications/google-analytics#schemainformation)."
+      },
+      "api_field": ""
+   },
+   "connect_password": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "xactly": "Your Xactly Connect password."
+      },
+      "api_field": ""
+   },
+   "connect_username": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "xactly": "Your Xactly Connect username."
       },
       "api_field": ""
    },
@@ -3100,6 +3368,19 @@
       },
       "api_field": ""
    },
+   "consumer_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "xactly": "Your Xactly Connect consumer name."
+      },
+      "api_field": ""
+   },
    "consumer_secret": {
       "readonly": false,
       "sensitive": true,
@@ -3154,6 +3435,19 @@
       "item_type": {},
       "description": {
          "youtube_analytics": "Used only for Content Owner reports. The ID of the content owner for whom the API request is being made."
+      },
+      "api_field": ""
+   },
+   "contract_version": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "acumatica": "Your Acumatica contract version."
       },
       "api_field": ""
    },
@@ -3246,7 +3540,22 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "criteo": "Currency"
+         "criteo": "Currency",
+         "rokt": "Your Rokt currency."
+      },
+      "api_field": ""
+   },
+   "custom_base_url": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "datadog": "Your Datadog custom base url.",
+         "deposco": "Your Deposco custom base URL."
       },
       "api_field": ""
    },
@@ -3848,6 +4157,7 @@
       "item_type": {},
       "description": {
          "dbt_cloud": "Your dbt Cloud access url.",
+         "factbird": "Your Factbird custom base url.",
          "jotform": "Your Jotform custom base URL."
       },
       "api_field": ""
@@ -3967,6 +4277,7 @@
       "description": {
          "aurora": "The database name.",
          "aurora_postgres": "The database name.",
+         "azure_cosmos_for_mongo": "Authentication database for the source. Usually 'admin'.",
          "azure_postgres": "The database name.",
          "azure_sql_db": "The database name.",
          "azure_sql_managed_db": "The database name.",
@@ -4027,6 +4338,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "aveva_pi": "",
          "firebase": "Database Name"
       },
       "api_field": ""
@@ -4118,7 +4430,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "brightpearl": "Your Brightpearl developer reference."
+         "brightpearl": "Your Brightpearl dev reference."
       },
       "api_field": ""
    },
@@ -4296,6 +4608,19 @@
       },
       "api_field": ""
    },
+   "edition": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "bigin_by_zoho_crm": ""
+      },
+      "api_field": ""
+   },
    "elements": {
       "readonly": false,
       "sensitive": false,
@@ -4327,6 +4652,19 @@
          "smadex": "Your Smadex account's email ID.",
          "zendesk": "Zendesk email.",
          "zendesk_sunshine": "Zendesk email."
+      },
+      "api_field": ""
+   },
+   "email_address": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "clockodo": "Your Clockodo email address."
       },
       "api_field": ""
    },
@@ -4556,20 +4894,41 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "bazaarvoice": "Your Bazaarvoice  Environment.",
+         "bazaarvoice": "Your Bazaarvoice environment.",
          "buildium": "Your Buildium environment.",
          "checkout": "Your Checkout.com environment.",
          "concord": "Your Concord environment.",
+         "deposco": "Your Deposco environment.",
+         "dialpad": "Your Dialpad environment.",
+         "healthie": "",
          "invoiced": "Your Invoiced environment.",
+         "jibble": "Your Jibble environment.",
+         "lucca": "Your Lucca environment.",
          "procore": "Your Procore account environment.",
          "reltio": "Your Reltio environment.",
          "servicetitan": "Your ServiceTitan environment.",
          "smarthr": "Your SmartHR environment.",
          "trelica": "Your Trelica environment.",
+         "tremendous": "Your Tremendous environment.",
          "vts": "Your VTS environment.",
+         "xactly": "Your Xactly environment.",
          "younium": "Your Younium API environment.",
+         "zip": "",
          "zuora": "Zuora Sandbox Environment. This accepts either of the two values Sandbox or Central Sandbox based on your subscription. The default environment is Sandbox.",
          "zuora_sandbox": "Zuora Sandbox Environment. This accepts either of the two values Sandbox or Central Sandbox based on your subscription. The default environment is Sandbox."
+      },
+      "api_field": ""
+   },
+   "environment_host": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "xactly": "Your Xactly environment host."
       },
       "api_field": ""
    },
@@ -5021,6 +5380,19 @@
       },
       "api_field": ""
    },
+   "group_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "line_ads": "Your LINE Ads group ID(s)."
+      },
+      "api_field": ""
+   },
    "group_name": {
       "readonly": false,
       "sensitive": false,
@@ -5090,8 +5462,11 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "braze": "Range of data in history you would like to include in the initial sync.",
+         "iterable": "The time range for which historical data should be synced. Default value: `All Time`.",
          "klaviyo": "Range of data in history you would like to include in the initial sync. Default value: `ALL_TIME`.",
          "marketo": "Range of data in history you would like to include in the initial sync. Default value: `ALL_TIME`.",
+         "sailthru": "Range of historical data you would like to include in the initial sync. Default value: `ALL_TIME`.",
          "salesforce_marketing_cloud": "Range of data in history you would like to include in the initial sync. Default value: `ALL_TIME`."
       },
       "api_field": ""
@@ -5105,7 +5480,25 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "concur": "Historical Sync Limit for the Sync",
+         "eloqua": "Range of data in history you would like to include in the initial sync. Default value: `ALL_TIME`.",
          "pardot": "The time range for which historical data should be synced. Default value: `All Time`."
+      },
+      "api_field": ""
+   },
+   "historical_sync_time_frame": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "rokt": "Your Rokt historical sync time frame.",
+         "skimlinks": "Your Skimlinks Historical sync time frame.",
+         "vimeo": "Your Vimeo Historical sync time frame.",
+         "zendesk": "Used to configure Historical sync timeframe for selected tables"
       },
       "api_field": ""
    },
@@ -5305,7 +5698,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "playvox_workforce_management": "Your Playvox Workforce Management Identifier.",
+         "playvox_workforce_management": "Your Playvox Workforce Management client identifier.",
          "statistics_netherlands_cbs": "Your Statistics Netherlands CBS catalog identifier."
       },
       "api_field": ""
@@ -5347,6 +5740,7 @@
       "description": {
          "acumatica": "Your Acumatica instance name.",
          "coupa": "The instance name of your Coupa account in the URL.",
+         "flywheel_digital": "Your Flywheel Digital instance.",
          "salesforce_marketing_cloud": "The Salesforce Marketing Cloud instance ID",
          "servicenow": "ServiceNow Instance ID."
       },
@@ -5393,6 +5787,19 @@
       "item_type": {},
       "description": {
          "pendo": "The integration key of the Pendo account."
+      },
+      "api_field": ""
+   },
+   "ip_address": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aveva_pi": "IP address of the AF Server"
       },
       "api_field": ""
    },
@@ -5523,7 +5930,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "aws_lambda": "We use PrivateLink by default if your AWS Lambda is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to AWS lambda over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options#awsprivatelink)."
+         "aws_lambda": "We use PrivateLink by default if your AWS Lambda is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to AWS lambda over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options#awsprivatelink).",
+         "s3": "Set to `true` if you want to connect to S3 bucket over PrivateLink. Default value: `false`."
       },
       "api_field": ""
    },
@@ -5598,6 +6006,19 @@
       },
       "api_field": ""
    },
+   "is_test_account": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "adyen": "Whether or not your Adyen Account is a Test Account. Default value: `false`."
+      },
+      "api_field": ""
+   },
    "is_vendor": {
       "readonly": false,
       "sensitive": false,
@@ -5608,6 +6029,21 @@
       "item_type": {},
       "description": {
          "amazon_selling_partner": "Whether or not you have a Vendor Account. Default value: `false`."
+      },
+      "api_field": ""
+   },
+   "issuer": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "oracle_fusion_cloud_apps_crm": "The Oracle Fusion Cloud issuer name.",
+         "oracle_fusion_cloud_apps_fscm": "The Oracle Fusion Cloud issuer name.",
+         "oracle_fusion_cloud_apps_hcm": "The Oracle Fusion Cloud issuer name."
       },
       "api_field": ""
    },
@@ -5777,6 +6213,19 @@
       },
       "api_field": ""
    },
+   "list_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "pigment": "Your Pigment list ID."
+      },
+      "api_field": ""
+   },
    "list_of_company_ids": {
       "readonly": false,
       "sensitive": false,
@@ -5934,6 +6383,7 @@
          "avantlink": "Your AvantLink Merchant ID.",
          "braintree": "Your Braintree merchant ID.",
          "braintree_sandbox": "Your Braintree merchant ID.",
+         "shareasale": "Your ShareASale merchant ID.",
          "xsolla": "Your Xsolla Merchant ID."
       },
       "api_field": ""
@@ -5953,6 +6403,19 @@
          "azure_service_bus": "The format of messages in the topic",
          "confluent_cloud": "Confluent Cloud message type.",
          "heroku_kafka": "Heroku Kafka message type."
+      },
+      "api_field": ""
+   },
+   "metric_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "pigment": "Your Pigment metric ID."
       },
       "api_field": ""
    },
@@ -6246,6 +6709,7 @@
          "salesforce": "",
          "salesforce_commerce_cloud": "The organization ID from Salesforce Commerce Cloud account.",
          "salesforce_sandbox": "",
+         "sentry": "Your Sentry organization ID.",
          "zoho_books": "Your Zoho Books Organization ID.",
          "zoho_inventory": "Your Zoho Inventory organization ID."
       },
@@ -6434,10 +6898,12 @@
       "description": {
          "absorb_lms": "Your Absorb LMS password.",
          "adobe_commerce": "Your Adobe Commerce password.",
+         "akeneo": "Your Akeneo password.",
          "anaplan": "Your Anaplan password. Must be populated if `auth_mode` is set to `Basic`.",
          "appfigures": "Your Appfigures Password.",
          "aurora": "The user's password.",
          "aurora_postgres": "The user's password.",
+         "aveva_pi": "",
          "azure_cosmos_for_mongo": "Password used for source database authentication.",
          "azure_postgres": "The user's password.",
          "azure_sql_db": "The user's password.",
@@ -6448,10 +6914,13 @@
          "clarity": "The user's password.",
          "cockroachdb": "The user's password.",
          "collibra": "Your collibra password.",
+         "compliance_checkpoint": "Your Compliance Checkpoint account password.",
          "contrast_security": "Your Contrast Security API Password.",
          "db2": "",
          "db2i_hva": "The user's password.",
          "db2i_sap_hva": "The user's password.",
+         "delighted": "",
+         "deposco": "Your Deposco password.",
          "documentdb": "The user's password.",
          "dynamics_365_fo": "The user's password.",
          "ehr": "The user's password.",
@@ -6471,6 +6940,7 @@
          "hana_sap_hva_s4": "The user's password.",
          "hana_sap_hva_s4_netweaver": "The user's password.",
          "heroku_postgres": "The user's password.",
+         "hilti_ontrack": "Your Hilti On!Track password.",
          "impact": "Your Impact Account Token",
          "integral_ad_science": "Your integral_ad_science password.",
          "itunes_connect": "Your password",
@@ -6510,9 +6980,10 @@
          "outbrain": "The Outbrain user's password.",
          "pardot": "The Pardot user's password.",
          "partnerize": "Your Partnerize account's password.",
-         "podio": "Your Podio password.",
+         "podio": "Your Podio account password.",
          "postgres": "The user's password.",
          "postgres_rds": "The user's password.",
+         "qmatic_data_connect": "Your Qmatic Data Connect password.",
          "redshift_db": "The Redshift user's password.",
          "revx": "Your RevX Password.",
          "rtb_house": "Your RTB House password.",
@@ -6538,7 +7009,9 @@
          "sql_server_rds": "The user's password.",
          "sql_server_sap_ecc_hva": "The user's password.",
          "starrez": "Your StarRez API password",
+         "stickyio": "Your sticky.io password.",
          "stylight": "Your Stylight Password.",
+         "sugarcrm": "Your SugarCRM password.",
          "teamwork": "Your Teamwork password.",
          "the_trade_desk": "The Trade Desk password. It is a part of the login credentials.",
          "toggl_track": "Your Toggl Track Password",
@@ -6788,6 +7261,19 @@
       },
       "api_field": ""
    },
+   "plan_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "justcall": "Your JustCall Plan Type."
+      },
+      "api_field": ""
+   },
    "port": {
       "readonly": false,
       "sensitive": false,
@@ -6799,6 +7285,7 @@
       "description": {
          "aurora": "The port number.",
          "aurora_postgres": "The port number.",
+         "aveva_pi": "Port number at which the AF Server is running",
          "azure_postgres": "The port number.",
          "azure_sql_db": "The port number.",
          "azure_sql_managed_db": "The port number.",
@@ -6958,7 +7445,13 @@
          "apple_search_ads": "The contents of your secret key file. Must be populated if `is_auth2_enabled` is set to `false`.",
          "braintree": "The contents of your secret key file.",
          "braintree_sandbox": "The contents of your secret key file.",
+         "financial_force": "",
+         "oracle_fusion_cloud_apps_crm": "The Oracle Fusion Cloud private key.",
+         "oracle_fusion_cloud_apps_fscm": "The Oracle Fusion Cloud private key.",
+         "oracle_fusion_cloud_apps_hcm": "The Oracle Fusion Cloud private key.",
          "qualtrics": "Your private key",
+         "salesforce": "Provide content of the `.key` private key (only when authentication_method = `ADVANCED`).",
+         "salesforce_sandbox": "Provide content of the `.key` private key (only when authentication_method = `ADVANCED`).",
          "snowflake_db": "Private access key.  The field should be specified if authentication type is `KEY_PAIR`."
       },
       "api_field": ""
@@ -7007,6 +7500,19 @@
          "google_analytics_mcf": "Specific User Profile IDs to sync.  Must be populated if `sync_mode` is set to `SPECIFIC_ACCOUNTS`."
       },
       "api_field": ""
+   },
+   "profiles_amazon_dsp": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "amazon_dsp": "Comma-separated list of your Amazon DSP profiles."
+      },
+      "api_field": "profiles"
    },
    "project_access_token": {
       "readonly": false,
@@ -7093,6 +7599,19 @@
       },
       "api_field": ""
    },
+   "project_ids": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sentry": "Your Sentry project IDs."
+      },
+      "api_field": ""
+   },
    "project_key": {
       "readonly": false,
       "sensitive": false,
@@ -7147,7 +7666,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "cloudbeds": "Your Cloudbeds Property IDs."
+         "cloudbeds": "Your Cloudbeds property IDs."
       },
       "api_field": ""
    },
@@ -7203,6 +7722,9 @@
          "opensearch": "Public Key",
          "oracle": "Public Key",
          "oracle_ebs": "Public Key",
+         "oracle_fusion_cloud_apps_crm": "The Oracle Fusion Cloud public key.",
+         "oracle_fusion_cloud_apps_fscm": "The Oracle Fusion Cloud public key.",
+         "oracle_fusion_cloud_apps_hcm": "The Oracle Fusion Cloud public key.",
          "oracle_hva": "Public Key",
          "oracle_rac": "Public Key",
          "oracle_rds": "Public Key",
@@ -7219,6 +7741,11 @@
          "sql_server_hva": "Public Key.",
          "sql_server_rds": "Public Key.",
          "sql_server_sap_ecc_hva": "Public Key."
+      },
+      "sensitive_exclusions": {
+         "oracle_fusion_cloud_apps_crm": true,
+         "oracle_fusion_cloud_apps_fscm": true,
+         "oracle_fusion_cloud_apps_hcm": true
       },
       "api_field": ""
    },
@@ -7240,6 +7767,19 @@
       },
       "api_field": ""
    },
+   "publisher_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "skimlinks": "Your Skimlinks publisher ID."
+      },
+      "api_field": ""
+   },
    "pull_archived_campaigns": {
       "readonly": false,
       "sensitive": false,
@@ -7250,6 +7790,19 @@
       "item_type": {},
       "description": {
          "outbrain": "Include or ignore results from archived campaigns"
+      },
+      "api_field": ""
+   },
+   "python_version": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "connector_sdk": ""
       },
       "api_field": ""
    },
@@ -7290,6 +7843,55 @@
       "item_type": {},
       "description": {
          "bigquery_db": "Specify a different project ID to account for quota and billing of Fivetran query workload"
+      },
+      "api_field": ""
+   },
+   "quote_char": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "azure_blob_storage": "You can specify the enclosing character used in your CSVs here. Fivetran will consider \" as the quote character if this field is empty and quote_character_enabled is set to true.",
+         "gcs": "You can specify the enclosing character used in your CSVs here. Fivetran will consider \" as the quote character if this field is empty and quote_character_enabled is set to true.",
+         "google_drive": "You can specify the enclosing character used in your CSVs here. Fivetran will consider \" as the quote character if this field is empty and quote_character_enabled is set to true.",
+         "s3": "You can specify the enclosing character used in your CSVs here. Fivetran will consider \" as the quote character if this field is empty and quote_character_enabled is set to true.",
+         "sftp": "You can specify the enclosing character used in your CSVs here. Fivetran will consider \" as the quote character if this field is empty and quote_character_enabled is set to true.",
+         "share_point": "You can specify the enclosing character used in your CSVs here. Fivetran will consider \" as the quote character if this field is empty and quote_character_enabled is set to true."
+      },
+      "api_field": ""
+   },
+   "quote_character_enabled": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "azure_blob_storage": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character.",
+         "gcs": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character.",
+         "google_drive": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character.",
+         "s3": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character.",
+         "sftp": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character.",
+         "share_point": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character."
+      },
+      "api_field": ""
+   },
+   "rate_limit_plan": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "vimeo": "Your Vimeo rate limit plan."
       },
       "api_field": ""
    },
@@ -7335,8 +7937,10 @@
          "atlassian_ops_genie": "Your company's Osgenie region (usually **company**.opsgenie.com)",
          "awin": "Your Awin Region.",
          "aws_lambda": "The AWS region code for the DynamoDB instance.",
+         "bigin_by_zoho_crm": "Your Bigin by Zoho CRM Region",
          "concur": "The region.",
          "cvent": "Your Cvent region.",
+         "everflow": "Your Everflow region.",
          "exact_online": "Your Exact Online region.",
          "getfeedback": "Your GetFeedback region.",
          "happyfox": "Your HappyFox region.",
@@ -7353,6 +7957,7 @@
          "snyk": "Your Snyk region.",
          "talkdesk": "Your Talkdesk region (\".com\",\".eu\",\"ca.com\")",
          "totango": "Your Totango region.",
+         "transcend": "Your Transcend region.",
          "vonage_contact_center": "Your Vonage Contact Center region.",
          "wasabi_cloud_storage": "The Wasabi Cloud Storage bucket region. Required for connector creation. Default value: `US_EAST_1`.",
          "workday_strategic_sourcing": "Your Workday Strategic Sourcing Region.",
@@ -7411,7 +8016,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "playvox_workforce_management": "Your Playvox Workforce Management Region URL."
+         "playvox_workforce_management": "Your Playvox Workforce Management region URL."
       },
       "api_field": ""
    },
@@ -7614,6 +8219,19 @@
       },
       "api_field": ""
    },
+   "report_granularity": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "pinterest_ads": "Granularity at which reports will be "
+      },
+      "api_field": ""
+   },
    "report_keys": {
       "readonly": false,
       "sensitive": false,
@@ -7690,6 +8308,19 @@
       "item_type": {},
       "description": {
          "spotify_ads": "The list of reports. Each report corresponds to a table within the schema to which connector will sync the data."
+      },
+      "api_field": ""
+   },
+   "report_service_api_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "adyen": "Your Report Service API key."
       },
       "api_field": ""
    },
@@ -7879,6 +8510,19 @@
             },
             "api_field": ""
          },
+         "generate_fivetran_pk": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "boolean",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "workday": "Select this option to generate a Primary Key for reports where no single column or combination of columns can be used to form a Primary Key."
+            },
+            "api_field": ""
+         },
          "metrics": {
             "readonly": false,
             "sensitive": false,
@@ -7912,6 +8556,34 @@
             },
             "api_field": ""
          },
+         "primary_keys": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "item_type": {
+               "workday": "string"
+            },
+            "description": {
+               "workday": "Primary Keys"
+            },
+            "api_field": ""
+         },
+         "report_format_type": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "workday": "This is to select report format from JSON and CSV. By default, report format is JSON."
+            },
+            "api_field": ""
+         },
          "report_type": {
             "readonly": false,
             "sensitive": false,
@@ -7924,6 +8596,19 @@
                "google_ads": "The name of the Google Ads report from which the connector will sync the data. [Possible report_type values](https://developers.google.com/adwords/api/docs/appendix/reports#report-types).",
                "google_search_ads_360": "The type of report",
                "google_search_console": "The type of report"
+            },
+            "api_field": ""
+         },
+         "report_url": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "workday": "URL for a live custom report."
             },
             "api_field": ""
          },
@@ -7985,6 +8670,19 @@
             },
             "api_field": ""
          },
+         "support_nested_columns": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "boolean",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "workday": "This option is to unpack the nested columns and sync them separately. By default, we sync the nested columns as JSON objects."
+            },
+            "api_field": ""
+         },
          "table": {
             "readonly": false,
             "sensitive": false,
@@ -7998,7 +8696,8 @@
                "google_analytics": "The table name within the schema to which connector will sync the data of the specific report.",
                "google_analytics_4": "The table name within the schema to which connector will sync the data of the specific report.",
                "google_search_ads_360": "The name of a table within the schema to which connector syncs the data of a given report.",
-               "google_search_console": "The name of a table within the schema to which connector syncs the data of a given report."
+               "google_search_console": "The name of a table within the schema to which connector syncs the data of a given report.",
+               "workday": "The table name within the schema to which connector will sync the data of the specific report."
             },
             "api_field": ""
          },
@@ -8023,7 +8722,8 @@
          "google_analytics": "The list of reports. Each report corresponds to a table within the schema to which connector will sync the data.",
          "google_analytics_4": "The list of reports. Each report corresponds to a table within the schema to which connector will sync the data.",
          "google_search_ads_360": "The list of reports. Each report corresponds to a table within the schema to which connector syncs the data.",
-         "google_search_console": "The list of reports. Each report corresponds to a table within the schema to which connector syncs the data."
+         "google_search_console": "The list of reports. Each report corresponds to a table within the schema to which connector syncs the data.",
+         "workday": "The list of reports. Each report corresponds to a table within the schema to which connector will sync the data."
       },
       "api_field": ""
    },
@@ -8393,6 +9093,7 @@
       "description": {
          "db2i_hva": "The SAP schema.",
          "db2i_sap_hva": "SAP schema name.",
+         "sql_server_hva": "SAP Schema Name. Required only for High-Volume Agent SAP ECC connector.",
          "sql_server_sap_ecc_hva": "SAP Schema Name."
       },
       "api_field": ""
@@ -9263,6 +9964,19 @@
       },
       "api_field": ""
    },
+   "scopes": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "cornerstone": "Your Cornerstone scopes."
+      },
+      "api_field": ""
+   },
    "seats": {
       "readonly": false,
       "sensitive": false,
@@ -9289,11 +10003,13 @@
       "description": {
          "appcues": "Your Appcues Secret.",
          "buildium": "Your Buildium API secret.",
+         "canvas_data_2_by_instructure": "Your Canvas Data 2 by Instructure secret.",
          "loopio": "Your Loopio Secret.",
          "mode": "Your Mode Secret.",
-         "playvox_workforce_management": "Your Playvox Workforce Management Secret.",
+         "playvox_workforce_management": "Your Playvox Workforce Management client secret.",
          "twilio": "The Twilio API secret",
          "uservoice": "The UserVoice API secret.",
+         "venminder": "Your Venminder secret.",
          "vts": "Your VTS secret."
       },
       "api_field": ""
@@ -9314,9 +10030,12 @@
          "ezofficeinventory": "Your EZOfficeInventory API secret key.",
          "gcs": "Your JSON Private Key. Used to authorize service account. Required if you use a Custom Service Account to authenticate the storage bucket.",
          "ironsource": "Your Ironsource `Client ID`.",
+         "line_ads": "Your LINE Ads secret key.",
+         "mailjet": "Your Mailjet secret key.",
          "partnerstack_vendor": "Your PartnerStack Vendor Secret key.",
          "paypal": "`Client Secret` of your PayPal client application.",
          "paypal_sandbox": "`Client Secret` of your PayPal client application.",
+         "phoenix_ads": "Your Phoenix Ads Secret key.",
          "retailnext": "Your RetailNext secret key.",
          "statsig": "Your Statsig secret key.",
          "yotpo": "Your Yotpo Secret key"
@@ -9498,6 +10217,19 @@
       "item_type": {},
       "description": {
          "tableau_source": "Your Tableau Source server address."
+      },
+      "api_field": ""
+   },
+   "server_region": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "clockify": "Your Clockify server region."
       },
       "api_field": ""
    },
@@ -9778,6 +10510,19 @@
       "item_type": {},
       "description": {
          "shopify": "The Shopify shop name. Can be found in the URL before **.myshopify.com**."
+      },
+      "api_field": ""
+   },
+   "shop_domain": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "triple_whale": "Your Triple Whale shop domain."
       },
       "api_field": ""
    },
@@ -10192,6 +10937,7 @@
          "churnzero": "",
          "clubspeed": "Your Clubspeed subdomain.",
          "collibra": "Your collibra subdomain.",
+         "compliance_checkpoint": "Your Compliance Checkpoint subdomain.",
          "concord": "Your Concord Sub Domain.",
          "contrast_security": "Your Contrast Security subdomain.",
          "customerio": "Your Customer.io region-specific Subdomain.",
@@ -10215,7 +10961,9 @@
          "kandji": "Your Kandji Subdomain.",
          "khoros_care": "Your Khoros Care subDomain.",
          "looker_source": "Your looker SubDomain name.",
+         "lucca": "Your Lucca subdomain.",
          "mailgun": "Your Mailgun subdomain.",
+         "matomo": "Your Matomo subdomain.",
          "maxio_chargify": "Enter Your Subdomain.",
          "myosh": "Your myosh subdomain.",
          "namely": "Your Namely subdomain.",
@@ -10236,6 +10984,7 @@
          "sap_success_factors": "Your SAP SuccessFactors Subdomain.",
          "sonarqube": "Your Sonarqube subdomain.",
          "starrez": "Your StarRez subdomain",
+         "sugarcrm": "Your SugarCRM subdomain.",
          "tableau_source": "Your Tableau Source subdomain.",
          "tempo": "Your Tempo subdomain.",
          "testrail": "Your TestRail subdomain.",
@@ -10271,6 +11020,9 @@
          "learnupon": "Your Learnupon subdomain.",
          "maxio_saasoptics": "Your Maxio SaaSOptics subdomain.",
          "medallia": "Medallia subdomain",
+         "packiyo": "Your Packiyo subdomain.",
+         "qmatic_data_connect": "Your Qmatic Data Connect subdomain.",
+         "sana": "Your Sana subdomain.",
          "skillstx": "Your SkillsTX subdomain.",
          "smarthr": "Your SmartHR subdomain.",
          "sonarqube": "Your Sonarqube subdomain.",
@@ -10407,9 +11159,9 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "financial_force": "",
-         "salesforce": "(optional) Configuration to enable syncing formulaFields. Make sure its value is `true` or `false`",
-         "salesforce_sandbox": "(Optional) Sync formula fields (default value = `false`)."
+         "financial_force": "Enable this option to sync formula fields directly (default value = `false`)",
+         "salesforce": "Enable this option to sync formula fields directly (default value = `false`)",
+         "salesforce_sandbox": "Enable this option to sync formula fields directly (default value = `false`)"
       },
       "api_field": ""
    },
@@ -10456,7 +11208,7 @@
          "asana": "Whether to sync all projects or specific projects.",
          "bingads": "Whether to sync all accounts or specific accounts. Default value: `AllAccounts`.",
          "double_click_campaign_manager": "Whether to sync all user profiles or specific ones. Default value: `AllAccounts`.",
-         "dynamodb": "Whether to sync all tables in unpacked mode only or specific tables in packed mode. Default value: `UseUnpackedModeOnly`.",
+         "dynamodb": "Which packed mode setting to use. Default value: `UsePackedModeOnly`.",
          "facebook": "Option to select connector should sync all accounts or specific accounts. [Possible sync_mode values](https://fivetran.com/docs/applications/facebook-ad-insights/api-config#syncmode).",
          "facebook_ad_account": "Whether to sync all accounts or specific accounts. Default value: `AllAccounts`.",
          "facebook_ads": "Option to select connector should sync all accounts or specific accounts. [Possible sync_mode values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#syncmode).",
@@ -10640,6 +11392,19 @@
       },
       "api_field": ""
    },
+   "table_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "pigment": "Your Pigment table ID."
+      },
+      "api_field": ""
+   },
    "table_name": {
       "readonly": false,
       "sensitive": false,
@@ -10650,6 +11415,19 @@
       "item_type": {},
       "description": {
          "airtable": "Name of table in Airtable"
+      },
+      "api_field": ""
+   },
+   "tables_without_access_updated_at": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "hubspot": "Timestamp to indicate when tables without access was updated"
       },
       "api_field": ""
    },
@@ -10786,6 +11564,7 @@
       "item_type": {},
       "description": {
          "microsoft_entra_id": "Your Microsoft Entra ID Tenant.",
+         "microsoft_power_bi": "Your Microsoft Power BI tenant.",
          "microsoft_teams": "Your Microsoft Teams Tenant.",
          "unicommerce": "Your uniware tenant.",
          "workday": "Workday tenant name",
@@ -10804,6 +11583,19 @@
       "item_type": {},
       "description": {
          "planful": "Your Planful tenant app URL."
+      },
+      "api_field": ""
+   },
+   "tenant_code": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "deposco": "Your Deposco tenant code."
       },
       "api_field": ""
    },
@@ -10889,7 +11681,7 @@
       "item_type": {},
       "description": {
          "ivanti": "Your Ivanti Tenant URL.",
-         "playvox_workforce_management": "Your Playvox Workforce Management Tenant URL.",
+         "playvox_workforce_management": "Your Playvox Workforce Management tenant URL.",
          "reltio": "Your Reltio tenant URL."
       },
       "api_field": ""
@@ -10965,6 +11757,32 @@
       },
       "api_field": ""
    },
+   "timezone": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "rokt": "Your Rokt timezone."
+      },
+      "api_field": ""
+   },
+   "timezone_mode": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "apple_search_ads": "Determines whether to use UTC or the users timezone from the apple account"
+      },
+      "api_field": ""
+   },
    "tns": {
       "readonly": false,
       "sensitive": false,
@@ -11001,12 +11819,18 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "khoros_communities": "Your Khoros Communities token.",
+         "matomo": "Your Matomo auth token.",
          "mode": "Your Mode Token.",
          "oracle_moat_analytics": "Your Oracle Moat Analytics Token.",
+         "shareasale": "Your ShareASale token.",
          "solarwinds_service_desk": "Your SolarWinds Service Desk token."
       },
       "sensitive_exclusions": {
+         "khoros_communities": true,
+         "matomo": true,
          "oracle_moat_analytics": true,
+         "shareasale": true,
          "solarwinds_service_desk": true
       },
       "api_field": ""
@@ -11090,6 +11914,19 @@
       "item_type": {},
       "description": {
          "mux": "Your Mux token secret key"
+      },
+      "api_field": ""
+   },
+   "token_url_region": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "amazon_dsp": "Your Amazon DSP token URL region."
       },
       "api_field": ""
    },
@@ -11659,7 +12496,8 @@
          "marketo": "Marketo SOAP API User Id.",
          "okendo": "Your Okendo user ID.",
          "playvox": "Your Playvox User ID.",
-         "sage_intacct": "User ID"
+         "sage_intacct": "User ID",
+         "vimeo": "Your Vimeo user ID."
       },
       "api_field": ""
    },
@@ -11730,16 +12568,20 @@
       "description": {
          "absorb_lms": "Your Absorb LMS username.",
          "adobe_commerce": "Your Adobe Commerce username.",
+         "akeneo": "Your Akeneo username.",
          "anaplan": "Your Anaplan user ID. Must be populated if `auth_mode` is set to `Basic`.",
          "appfigures": "Your Appfigures Username.",
+         "aveva_pi": "Username for the user to authenticate as with the AF Server",
          "ceridian_dayforce": "Your Ceridian Dayforce Username.",
          "churnzero": "Your ChurnZero username.",
          "cin7": "Your Cin7 API Username.",
          "collibra": "Your collibra username.",
+         "compliance_checkpoint": "Your Compliance Checkpoint account username.",
          "concur": "The SAP Concur username.",
          "confluence": "Your Confluence username.",
          "contrast_security": "Your Contrast Security API Username.",
          "dcl_logistics": "Your DCL Logistics username.",
+         "deposco": "Your Deposco username.",
          "financial_force": "",
          "github": "`Login` of your GitHub profile.",
          "gladly": "Your Gladly Username.",
@@ -11747,6 +12589,7 @@
          "gorgias": "Your Gorgias username.",
          "green_power_monitor": "Your GreenPowerMonitor username.",
          "guru": "Your Guru username.",
+         "hilti_ontrack": "Your Hilti On!Track username.",
          "impact": "Your Impact Account SID",
          "integral_ad_science": "Your integral_ad_science username.",
          "itunes_connect": "Your Apple ID",
@@ -11764,7 +12607,8 @@
          "oracle_fusion_cloud_apps_hcm": "The Oracle Fusion Cloud username.",
          "partnerize": "Your Partnerize account's username.",
          "pingdom": "Your Pingdom Username.",
-         "podio": "Your Podio username.",
+         "podio": "Your Podio account username.",
+         "qmatic_data_connect": "Your Qmatic Data Connect username.",
          "quorum": "Your Quorum username .",
          "revx": "Your RevX Username.",
          "rtb_house": "Your RTB House username.",
@@ -11778,7 +12622,9 @@
          "shopware": "Your Shopware username.",
          "splash": "Your Splash username.",
          "starrez": "Your StarRez API username",
+         "stickyio": "Your sticky.io username .",
          "stylight": "Your Stylight Username.",
+         "sugarcrm": "Your SugarCRM username.",
          "teamwork": "Your Teamwork username.",
          "testrail": "Your TestRail username.",
          "ukg_pro": "Your UKG Pro username.",
@@ -11791,6 +12637,10 @@
          "workday_hcm": "Username of your Workday Integration System User account",
          "xandr": "Your Xandr username.",
          "younium": "Your Younium username."
+      },
+      "sensitive_exclusions": {
+         "compliance_checkpoint": true,
+         "pingdom": true
       },
       "api_field": ""
    },
@@ -11822,6 +12672,19 @@
       },
       "api_field": ""
    },
+   "view_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "pigment": "Your Pigment view ID."
+      },
+      "api_field": ""
+   },
    "view_through_attribution_window_size": {
       "readonly": false,
       "sensitive": false,
@@ -11832,6 +12695,19 @@
       "item_type": {},
       "description": {
          "linkedin_ads": "The time period to attribute conversions based on views. Default value: `DAY_7`"
+      },
+      "api_field": ""
+   },
+   "web_service_api_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "adyen": "Your Adyen Web Service API key."
       },
       "api_field": ""
    },
