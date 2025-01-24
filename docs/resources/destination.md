@@ -88,17 +88,27 @@ Optional:
 - `auth` (String) Field usage depends on `service` value: 
 	- Service `snowflake`: Password-based or key-based authentication type
 - `auth_type` (String) Field usage depends on `service` value: 
+	- Service `adls`: Authentication type
 	- Service `databricks`: Authentication type
+	- Service `new_s3_datalake`: Authentication type
+	- Service `onelake`: Authentication type
 	- Service `redshift`: Authentication type. Default value: `PASSWORD`.
+- `aws_access_key_id` (String) Field usage depends on `service` value: 
+	- Service `new_s3_datalake`: AWS access key to access the S3 bucket and AWS Glue
+- `aws_secret_access_key` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `new_s3_datalake`: AWS secret access key to access the S3 bucket and AWS Glue
 - `bootstrap_servers` (Set of String) Field usage depends on `service` value: 
 	- Service `confluent_cloud_wh`: Comma-separated list of Confluent Cloud servers in the `server:port` format.
 - `bucket` (String) Field usage depends on `service` value: 
 	- Service `big_query`: Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.
 	- Service `big_query_dts`: Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.
 	- Service `managed_big_query`: Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.
-	- Service `new_s3_datalake`: The name of the bucket to be used as destination
+	- Service `new_s3_datalake`: (Immutable) The name of the bucket to be used as destination
 - `catalog` (String) Field usage depends on `service` value: 
+	- Service `adls`: Catalog name
 	- Service `databricks`: Catalog name
+	- Service `new_s3_datalake`: Catalog name
+	- Service `onelake`: Catalog name
 - `client_id` (String) Field usage depends on `service` value: 
 	- Service `adls`: Client id of service principal
 	- Service `onelake`: Client ID of service principal
@@ -136,7 +146,7 @@ Optional:
 	- Service `sql_server_rds_warehouse`: Connection method. Default value: `Directly`.
 	- Service `sql_server_warehouse`: Connection method. Default value: `Directly`.
 - `container_name` (String) Field usage depends on `service` value: 
-	- Service `adls`: Container to store delta table files
+	- Service `adls`: (Immutable) Container to store delta table files
 	- Service `onelake`: Workspace name to store delta table files
 - `controller_id` (String)
 - `create_external_tables` (Boolean) Field usage depends on `service` value: 
@@ -167,6 +177,10 @@ Optional:
 	- Service `snowflake`: Database name
 	- Service `sql_server_rds_warehouse`: Database name
 	- Service `sql_server_warehouse`: Database name
+- `databricks_connection_type` (String) Field usage depends on `service` value: 
+	- Service `adls`: Databricks Connection method. Default value: `Directly`.
+	- Service `new_s3_datalake`: Databricks Connection method. Default value: `Directly`.
+	- Service `onelake`: Databricks Connection method. Default value: `Directly`.
 - `enable_remote_execution` (Boolean)
 - `external_location` (String) Field usage depends on `service` value: 
 	- Service `databricks`: External location to store Delta tables. Default value: `""`  (null). By default, the external tables will reside in the `/{schema}/{table}` path, and if you specify an external location in the `{externalLocation}/{schema}/{table}` path.
@@ -195,22 +209,33 @@ Optional:
 	- Service `sql_server_rds_warehouse`: Server name
 	- Service `sql_server_warehouse`: Server name
 - `http_path` (String) Field usage depends on `service` value: 
+	- Service `adls`: HTTP path
 	- Service `databricks`: HTTP path
+	- Service `new_s3_datalake`: HTTP path
+	- Service `onelake`: HTTP path
 - `is_private_key_encrypted` (Boolean) Field usage depends on `service` value: 
 	- Service `snowflake`: Indicates that a private key is encrypted. The default value: `false`. The field can be specified if authentication type is `KEY_PAIR`.
 - `is_private_link_required` (Boolean) Field usage depends on `service` value: 
 	- Service `new_s3_datalake`: We use PrivateLink by default if your s3 bucket is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to s3 bucket over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options#awsprivatelinkbeta).
 - `is_redshift_serverless` (Boolean) Field usage depends on `service` value: 
 	- Service `redshift`: Is your destination Redshift Serverless
+- `lakehouse_guid` (String) Field usage depends on `service` value: 
+	- Service `onelake`: (Immutable) OneLake lakehouse GUID
 - `lakehouse_name` (String) Field usage depends on `service` value: 
-	- Service `onelake`: Name of your lakehouse
+	- Service `onelake`: (Immutable) Name of your lakehouse
 - `msk_sts_region` (String)
 - `num_of_partitions` (Number) Field usage depends on `service` value: 
 	- Service `confluent_cloud_wh`: Number of partitions per topic.
 - `oauth2_client_id` (String) Field usage depends on `service` value: 
+	- Service `adls`: OAuth 2.0 client ID
 	- Service `databricks`: OAuth 2.0 client ID
+	- Service `new_s3_datalake`: OAuth 2.0 client ID
+	- Service `onelake`: OAuth 2.0 client ID
 - `oauth2_secret` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `adls`: OAuth 2.0 secret
 	- Service `databricks`: OAuth 2.0 secret
+	- Service `new_s3_datalake`: OAuth 2.0 secret
+	- Service `onelake`: OAuth 2.0 secret
 - `passphrase` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `snowflake`: In case private key is encrypted, you are required to enter passphrase that was used to encrypt the private key. The field can be specified if authentication type is `KEY_PAIR`.
 - `password` (String, Sensitive) Field usage depends on `service` value: 
@@ -234,8 +259,12 @@ Optional:
 	- Service `sql_server_rds_warehouse`: Database user password
 	- Service `sql_server_warehouse`: Database user password
 - `personal_access_token` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `adls`: Personal access token
 	- Service `databricks`: Personal access token
+	- Service `new_s3_datalake`: Personal access token
+	- Service `onelake`: Personal access token
 - `port` (Number) Field usage depends on `service` value: 
+	- Service `adls`: Server port number
 	- Service `aurora_postgres_warehouse`: Server port number
 	- Service `aurora_warehouse`: Server port number
 	- Service `azure_postgres_warehouse`: Server port number
@@ -247,6 +276,8 @@ Optional:
 	- Service `maria_warehouse`: Server port number
 	- Service `mysql_rds_warehouse`: Server port number
 	- Service `mysql_warehouse`: Server port number
+	- Service `new_s3_datalake`: Server port number
+	- Service `onelake`: Server port number
 	- Service `panoply`: Server port number
 	- Service `periscope_warehouse`: Server port number
 	- Service `postgres_gcp_warehouse`: Server port number
@@ -257,9 +288,9 @@ Optional:
 	- Service `sql_server_rds_warehouse`: Server port number
 	- Service `sql_server_warehouse`: Server port number
 - `prefix_path` (String) Field usage depends on `service` value: 
-	- Service `adls`: path/to/data within the container
-	- Service `new_s3_datalake`: Prefix path of the bucket for which you have configured access policy. It is not required if access has been granted to entire Bucket in the access policy
-	- Service `onelake`: path/to/data within your lakehouse inside the Files directory
+	- Service `adls`: (Immutable) path/to/data within the container
+	- Service `new_s3_datalake`: (Immutable) Prefix path of the bucket for which you have configured access policy. It is not required if access has been granted to entire Bucket in the access policy
+	- Service `onelake`: (Immutable) path/to/data within your lakehouse inside the Files directory
 - `private_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `snowflake`: Private access key.  The field should be specified if authentication type is `KEY_PAIR`.
 - `project_id` (String) Field usage depends on `service` value: 
@@ -320,7 +351,14 @@ Optional:
 - `security_protocol` (String) Field usage depends on `service` value: 
 	- Service `confluent_cloud_wh`: Security protocol for Confluent Cloud interaction.
 - `server_host_name` (String) Field usage depends on `service` value: 
+	- Service `adls`: Server Host name
 	- Service `databricks`: Server name
+	- Service `new_s3_datalake`: Server host name
+	- Service `onelake`: Server Host name
+- `should_maintain_tables_in_databricks` (Boolean) Field usage depends on `service` value: 
+	- Service `adls`: Should maintain tables in Databricks 
+	- Service `new_s3_datalake`: Should maintain tables in Databricks 
+	- Service `onelake`: Should maintain tables in Databricks
 - `snapshot_retention_period` (String) Field usage depends on `service` value: 
 	- Service `adls`: Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.
 	- Service `new_s3_datalake`: Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.
@@ -328,8 +366,8 @@ Optional:
 - `snowflake_cloud` (String)
 - `snowflake_region` (String)
 - `storage_account_name` (String) Field usage depends on `service` value: 
-	- Service `adls`: Storage account for Azure Data Lake Storage Gen2 name
-	- Service `onelake`: Storage account for Azure Data Lake Storage Gen2 name
+	- Service `adls`: (Immutable) Storage account for Azure Data Lake Storage Gen2 name
+	- Service `onelake`: (Immutable) Storage account for Azure Data Lake Storage Gen2 name
 - `table_format` (String) Field usage depends on `service` value: 
 	- Service `new_s3_datalake`: (Immutable) The table format in which you want to sync your tables. Valid values are ICEBERG and DELTA_LAKE
 - `tenant_id` (String) Field usage depends on `service` value: 
@@ -412,6 +450,8 @@ Optional:
 	- Service `snowflake`: Database user name
 	- Service `sql_server_rds_warehouse`: Database user name
 	- Service `sql_server_warehouse`: Database user name
+- `workspace_guid` (String) Field usage depends on `service` value: 
+	- Service `onelake`: (Immutable) OneLake workspace GUID
 - `workspace_name` (String) Field usage depends on `service` value: 
 	- Service `onelake`: OneLake workspace name
 
