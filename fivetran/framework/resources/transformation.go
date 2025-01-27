@@ -56,42 +56,51 @@ func (r *transformation) Create(ctx context.Context, req resource.CreateRequest,
 		return
 	}
 
+	transformationType := data.ProjectType.ValueString()
 	client := r.GetClient()
 	svc := client.NewTransformationCreate()
-	svc.ProjectType(data.ProjectType.ValueString())
+	svc.ProjectType(transformationType)
 	svc.Paused(data.Paused.ValueBool())
 
 	if !data.Config.IsNull() && !data.Config.IsUnknown() {
 		config := fivetran.NewTransformationConfig()
 		configAttributes := data.Config.Attributes()
+		/* DBT_CORE */
 		if !configAttributes["project_id"].(basetypes.StringValue).IsNull() && !configAttributes["project_id"].(basetypes.StringValue).IsUnknown() {
-			config.ProjectId(configAttributes["project_id"].(basetypes.StringValue).ValueString())			
+			if transformationType != "DBT_CORE" {
+				resp.Diagnostics.AddError(
+					"Unable to Create Transformation Resource.",
+					fmt.Sprintf("The parameter `%v` can be set only for DBT_CORE type transformation", "project_id"),
+				)
+				return
+			}
+
+			config.ProjectId(configAttributes["project_id"].(basetypes.StringValue).ValueString())
 		}
+
 		if !configAttributes["name"].(basetypes.StringValue).IsNull() && !configAttributes["name"].(basetypes.StringValue).IsUnknown() {
+			if transformationType != "DBT_CORE" {
+				resp.Diagnostics.AddError(
+					"Unable to Create Transformation Resource.",
+					fmt.Sprintf("The parameter `%v` can be set only for DBT_CORE type transformation", "name"),
+				)
+				return
+			}
+
 			config.Name(configAttributes["name"].(basetypes.StringValue).ValueString())			
-		}
-		if !configAttributes["package_name"].(basetypes.StringValue).IsNull() && !configAttributes["package_name"].(basetypes.StringValue).IsUnknown() {
-			config.PackageName(configAttributes["package_name"].(basetypes.StringValue).ValueString())			
-		}
-
-		if !configAttributes["connection_ids"].IsUnknown() && !configAttributes["connection_ids"].IsNull() {
-			evars := []string{}
-			for _, ev := range configAttributes["connection_ids"].(basetypes.SetValue).Elements() {
-				evars = append(evars, ev.(basetypes.StringValue).ValueString())
-			}
-			config.ConnectionIds(evars)
-		}
-
-		if !configAttributes["excluded_models"].IsUnknown() && !configAttributes["excluded_models"].IsNull() {
-			evars := []string{}
-			for _, ev := range configAttributes["excluded_models"].(basetypes.SetValue).Elements() {
-				evars = append(evars, ev.(basetypes.StringValue).ValueString())
-			}
-			config.ExcludedModels(evars)
-		}
+		} 
 
 		if !configAttributes["steps"].IsUnknown() && !configAttributes["steps"].IsNull() {
+			if transformationType != "DBT_CORE" {
+				resp.Diagnostics.AddError(
+					"Unable to Create Transformation Resource.",
+					fmt.Sprintf("The parameter `%v` can be set only for DBT_CORE type transformation", "steps"),
+				)
+				return
+			}
+
 			evars := []transformations.TransformationStep{}
+
 			for _, ev := range configAttributes["steps"].(basetypes.ListValue).Elements() {
 				if element, ok := ev.(basetypes.ObjectValue); ok {
 					step := transformations.TransformationStep{}
@@ -100,7 +109,66 @@ func (r *transformation) Create(ctx context.Context, req resource.CreateRequest,
 					evars = append(evars, step)
 				}
 			}
+
 			config.Steps(evars)
+		}
+
+		/* QUICKSTART */
+		packageName := ""
+		if !configAttributes["package_name"].(basetypes.StringValue).IsNull() && !configAttributes["package_name"].(basetypes.StringValue).IsUnknown() {
+			if transformationType != "QUICKSTART" {
+				resp.Diagnostics.AddError(
+					"Unable to Create Transformation Resource.",
+					fmt.Sprintf("The parameter `%v` can be set only for QUICKSTART type transformation", "package_name"),
+				)
+				return
+			}
+
+			packageName = configAttributes["package_name"].(basetypes.StringValue).ValueString()
+			
+			config.PackageName(packageName)
+		}
+
+		connectionIds := []string{}
+		if !configAttributes["connection_ids"].IsUnknown() && !configAttributes["connection_ids"].IsNull() {
+			if transformationType != "QUICKSTART" {
+				resp.Diagnostics.AddError(
+					"Unable to Create Transformation Resource.",
+					fmt.Sprintf("The parameter `%v` can be set only for QUICKSTART type transformation", "connection_ids"),
+				)
+				return
+			}
+
+			for _, ev := range configAttributes["connection_ids"].(basetypes.SetValue).Elements() {
+				connectionIds = append(connectionIds, ev.(basetypes.StringValue).ValueString())
+			}
+
+
+			config.ConnectionIds(connectionIds)
+		}
+
+		if len(connectionIds) == 0 && packageName == "" && transformationType == "QUICKSTART" {
+			resp.Diagnostics.AddError(
+				"Unable to Create Transformation Resource.",
+				fmt.Sprintf("For a QUICKSTART type transformation, at least one of the `%v` or `%v` parameters must be set.", "package_name", "connection_ids"),
+			)
+			return
+		}
+
+		if !configAttributes["excluded_models"].IsUnknown() && !configAttributes["excluded_models"].IsNull() {
+			if transformationType != "QUICKSTART" {
+				resp.Diagnostics.AddError(
+					"Unable to Create Transformation Resource.",
+					fmt.Sprintf("The parameter `%v` can be set only for QUICKSTART type transformation", "excluded_models"),
+				)
+				return
+			}
+
+			evars := []string{}
+			for _, ev := range configAttributes["excluded_models"].(basetypes.SetValue).Elements() {
+				evars = append(evars, ev.(basetypes.StringValue).ValueString())
+			}
+			config.ExcludedModels(evars)
 		}
 
 		svc.TransformationConfig(config)
@@ -237,33 +305,28 @@ func (r *transformation) Update(ctx context.Context, req resource.UpdateRequest,
 	if !plan.Config.IsNull() && !plan.Config.IsUnknown() {
 		config := fivetran.NewTransformationConfig()
 		configAttributes := plan.Config.Attributes()
-		if !configAttributes["project_id"].(basetypes.StringValue).IsNull() && !configAttributes["project_id"].(basetypes.StringValue).IsUnknown() {
-			config.ProjectId(configAttributes["project_id"].(basetypes.StringValue).ValueString())			
-		}
+
 		if !configAttributes["name"].(basetypes.StringValue).IsNull() && !configAttributes["name"].(basetypes.StringValue).IsUnknown() {
+			if state.ProjectType.ValueString() != "DBT_CORE" {
+				resp.Diagnostics.AddError(
+					"Unable to Create Transformation Resource.",
+					fmt.Sprintf("The parameter `%v` can be set only for DBT_CORE type transformation", "name"),
+				)
+				return
+			}
+
 			config.Name(configAttributes["name"].(basetypes.StringValue).ValueString())			
-		}
-		if !configAttributes["package_name"].(basetypes.StringValue).IsNull() && !configAttributes["package_name"].(basetypes.StringValue).IsUnknown() {
-			config.PackageName(configAttributes["package_name"].(basetypes.StringValue).ValueString())			
-		}
-
-		if !configAttributes["connection_ids"].IsUnknown() && !configAttributes["connection_ids"].IsNull() {
-			evars := []string{}
-			for _, ev := range configAttributes["connection_ids"].(basetypes.SetValue).Elements() {
-				evars = append(evars, ev.(basetypes.StringValue).ValueString())
-			}
-			config.ConnectionIds(evars)
-		}
-
-		if !configAttributes["excluded_models"].IsUnknown() && !configAttributes["excluded_models"].IsNull() {
-			evars := []string{}
-			for _, ev := range configAttributes["excluded_models"].(basetypes.SetValue).Elements() {
-				evars = append(evars, ev.(basetypes.StringValue).ValueString())
-			}
-			config.ExcludedModels(evars)
 		}
 
 		if !configAttributes["steps"].IsUnknown() && !configAttributes["steps"].IsNull() {
+			if state.ProjectType.ValueString() != "DBT_CORE" {
+				resp.Diagnostics.AddError(
+					"Unable to Create Transformation Resource.",
+					fmt.Sprintf("The parameter `%v` can be set only for DBT_CORE type transformation", "steps"),
+				)
+				return
+			}
+
 			evars := []transformations.TransformationStep{}
 			for _, ev := range configAttributes["steps"].(basetypes.ListValue).Elements() {
 				if element, ok := ev.(basetypes.ObjectValue); ok {
@@ -274,6 +337,22 @@ func (r *transformation) Update(ctx context.Context, req resource.UpdateRequest,
 				}
 			}
 			config.Steps(evars)
+		}
+
+		if !configAttributes["excluded_models"].IsUnknown() && !configAttributes["excluded_models"].IsNull() {
+			if state.ProjectType.ValueString() != "QUICKSTART" {
+				resp.Diagnostics.AddError(
+					"Unable to Create Transformation Resource.",
+					fmt.Sprintf("The parameter `%v` can be set only for QUICKSTART type transformation", "excluded_models"),
+				)
+				return
+			}
+
+			evars := []string{}
+			for _, ev := range configAttributes["excluded_models"].(basetypes.SetValue).Elements() {
+				evars = append(evars, ev.(basetypes.StringValue).ValueString())
+			}
+			config.ExcludedModels(evars)
 		}
 
 		svc.TransformationConfig(config)

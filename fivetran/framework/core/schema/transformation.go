@@ -5,6 +5,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	datasourceSchema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 )
 
 func TransformationResource() resourceSchema.Schema {
@@ -158,6 +161,7 @@ func transformationConfigDatasourceSchema() map[string]datasourceSchema.Attribut
 func transformationConfigResourceSchema() map[string]resourceSchema.Attribute {
 	return map[string]resourceSchema.Attribute{
 		"project_id": resourceSchema.StringAttribute{
+			PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			Optional:    true,
 			Description: "The unique identifier for the dbt Core project within the Fivetran system",
 		},
@@ -166,10 +170,12 @@ func transformationConfigResourceSchema() map[string]resourceSchema.Attribute {
 			Description: "The transformation name",
 		},
 		"package_name": resourceSchema.StringAttribute{
+			PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			Optional:    true,
 			Description: `The Quickstart transformation package name`,
 		},
 		"connection_ids": resourceSchema.SetAttribute{
+			PlanModifiers: []planmodifier.Set{setplanmodifier.RequiresReplace()},
 			Optional:    true,
 			ElementType: basetypes.StringType{},
 			Description: "The list of the connection identifiers to be used for the integrated schedule. Also used to identify package_name automatically if package_name was not specified",
