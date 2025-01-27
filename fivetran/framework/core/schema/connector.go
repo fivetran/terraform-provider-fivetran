@@ -243,3 +243,21 @@ func destinationSchemaAttributes() core.Schema {
 		},
 	}
 }
+
+func ConnectorsDatasource() datasourceSchema.Schema {
+	return datasourceSchema.Schema{
+		Attributes: map[string]datasourceSchema.Attribute{
+			"id": datasourceSchema.StringAttribute{
+				Computed:    true,
+				Description: "The ID of this resource.",
+			},
+		},
+		Blocks: map[string]datasourceSchema.Block{
+			"connectors": datasourceSchema.SetNestedBlock{
+				NestedObject: datasourceSchema.NestedBlockObject{
+					Attributes: ConnectorAttributesSchema().GetDatasourceListSchema(),
+				},
+			},
+		},
+	}
+}
