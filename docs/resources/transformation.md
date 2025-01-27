@@ -18,13 +18,13 @@ resource "fivetran_transformation" "transformation" {
     paused = true
 
     schedule {
-        cron = ["cron1","cron2"]
+        cron = ["0 */1 * * *"]
         interval = 601
         smart_syncing = true
         connection_ids = ["connection_id1", "connection_id2"]
-        schedule_type = "schedule_type1"
-        days_of_week = ["days_of_week1","days_of_week2"]
-        time_of_day = "time_of_day1"
+        schedule_type = "INTEGRATED"
+        days_of_week = ["MONDAY", "FRIDAY"]
+        time_of_day = "14:00"
     }
 
     transformation_config {
@@ -54,13 +54,8 @@ resource "fivetran_transformation" "transformation" {
     paused = true
 
     schedule {
-        cron = ["cron1","cron2"]
-        interval = 601
-        smart_syncing = true
-        connection_ids = ["connection_id1", "connection_id2"]
-        schedule_type = "schedule_type1"
-        days_of_week = ["days_of_week1","days_of_week2"]
-        time_of_day = "time_of_day1"
+        schedule_type = "TIME_OF_DAY"
+        time_of_day = "11:00"
     }
 
     transformation_config {
@@ -68,6 +63,37 @@ resource "fivetran_transformation" "transformation" {
         connection_ids = ["connection_id1", "connection_id2"]
         excluded_models = ["excluded_model1", "excluded_model2"]
     }
+}
+```
+
+## Example Usages for Transformation Schedule section
+
+```hcl
+schedule {
+    schedule_type = "TIME_OF_DAY"
+    days_of_week = ["MONDAY", "FRIDAY"]
+    time_of_day = "11:00"
+}
+```
+
+```hcl
+schedule {
+    schedule_type = "INTEGRATED"
+    connection_ids = ["connection_id1", "connection_id2"]
+}
+```
+
+```hcl
+schedule {
+    schedule_type = "INTERVAL"
+    interval = 601
+}
+```
+
+```hcl
+schedule {
+    schedule_type = "CRON"
+    cron = ["0 */1 * * *"]
 }
 ```
 
@@ -79,13 +105,13 @@ resource "fivetran_transformation" "transformation" {
 - `paused` (Boolean) The field indicating whether the transformation will be set into the paused state. By default, the value is false.
 - `schedule` (Block, Optional) (see [below for nested schema](#nestedblock--schedule))
 - `transformation_config` (Block, Optional) (see [below for nested schema](#nestedblock--transformation_config))
-- `type` (String) Transformation type.
+- `type` (String) Transformation type. The following values are supported: DBT_CORE, QUICKSTART.
 
 ### Read-Only
 
 - `created_at` (String) The timestamp of when the transformation was created in your account.
 - `created_by_id` (String) The unique identifier for the User within the Fivetran system who created the transformation.
-- `id` (String) The unique identifier for the dbt Transformation within the Fivetran system.
+- `id` (String) The unique identifier for the Transformation within the Fivetran system.
 - `output_model_names` (Set of String) Identifiers of related models.
 - `status` (String) Status of transformation Project (NOT_READY, READY, ERROR).
 
@@ -94,13 +120,13 @@ resource "fivetran_transformation" "transformation" {
 
 Optional:
 
-- `connection_ids` (Set of String) Identifiers of related connectors.
-- `cron` (Set of String) Cron schedule: list of CRON strings.
-- `days_of_week` (Set of String) The set of the days of the week the transformation should be launched on. The following values are supported: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY.
-- `interval` (Number) The time interval in minutes between subsequent transformation runs.
-- `schedule_type` (String) The type of the schedule to run the dbt Transformation on. The following values are supported: INTEGRATED, TIME_OF_DAY, INTERVAL. For INTEGRATED schedule type, interval and time_of_day values are ignored and only the days_of_week parameter values are taken into account (but may be empty or null). For TIME_OF_DAY schedule type, the interval parameter value is ignored and the time_of_day values is taken into account along with days_of_week value. For INTERVAL schedule type, time_of_day value is ignored and the interval parameter value is taken into account along with days_of_week value.
+- `connection_ids` (Set of String) The list of the connection identifiers to be used for the integrated schedule. Not expected for QUICKSTART transformations
+- `cron` (Set of String) Cron schedule: list of CRON strings. Used for for CRON schedule type
+- `days_of_week` (Set of String) The set of the days of the week the transformation should be launched on. The following values are supported: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY. Used for for INTEGRATED schedule type
+- `interval` (Number) The time interval in minutes between subsequent transformation runs. Used for for INTERVAL schedule type
+- `schedule_type` (String) The type of the schedule to run the Transformation on. The following values are supported: INTEGRATED, TIME_OF_DAY, INTERVAL, CRON.
 - `smart_syncing` (Boolean) The boolean flag that enables the Smart Syncing schedule
-- `time_of_day` (String) The time of the day the transformation should be launched at. Supported values are: "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"
+- `time_of_day` (String) The time of the day the transformation should be launched at. Supported values are: "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00". Used for for TIME_OF_DAY schedule type
 
 
 <a id="nestedblock--transformation_config"></a>

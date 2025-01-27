@@ -12,6 +12,8 @@ import (
 
 var (
     transformationGitPostHandler            *mock.Handler
+    transformationGitPatchHandler           *mock.Handler
+    transformationQuickstartPatchHandler    *mock.Handler
     transformationQuickstartPostHandler     *mock.Handler
     transformationGitData                   map[string]interface{}
     transformationQuickstartData            map[string]interface{}
@@ -63,7 +65,7 @@ var (
     }
   }`
 
- quickstartResponse = `{
+    gitPatchedResponse = `{
     "id": "transformation_id",
     "status": "status",
     "schedule": {
@@ -82,6 +84,83 @@ var (
         "days_of_week2"
       ],
       "time_of_day": "time_of_day1"
+    },
+    "type": "DBT_CORE",
+    "paused": true,
+    "created_at": "created_at",
+    "output_model_names": [
+      "output_model_name1",
+      "output_model_name2"
+    ],
+    "created_by_id": "created_by_id",
+    "transformation_config": {
+      "project_id": "project_id",
+      "name": "name2",
+      "steps": [
+        {
+          "name": "name1",
+          "command": "command1"
+        },
+        {
+          "name": "name3",
+          "command": "command3"
+        }
+      ]
+    }
+  }`
+
+ quickstartResponse = `{
+    "id": "transformation_id",
+    "status": "status",
+    "schedule": {
+      "cron": [
+        "cron1","cron2"
+      ],
+      "interval": 601,
+      "smart_syncing": true,
+      "schedule_type": "schedule_type1",
+      "days_of_week": [
+        "days_of_week1",
+        "days_of_week2"
+      ],
+      "time_of_day": "time_of_day1"
+    },
+    "type": "QUICKSTART",
+    "paused": true,
+    "created_at": "created_at",
+    "output_model_names": [
+      "output_model_name1",
+      "output_model_name2"
+    ],
+    "created_by_id": "created_by_id",
+    "transformation_config": {
+      "package_name": "package_name",
+      "connection_ids": [
+        "connection_id1",
+        "connection_id2"
+      ],
+      "excluded_models": [
+        "excluded_model1","excluded_model2"
+      ],
+      "upgrade_available": true
+    }
+  }`
+
+ quickstartPatchedResponse = `{
+    "id": "transformation_id",
+    "status": "status",
+    "schedule": {
+      "cron": [
+        "cron1","cron2"
+      ],
+      "interval": 601,
+      "smart_syncing": true,
+      "schedule_type": "schedule_type1",
+      "days_of_week": [
+        "days_of_week1",
+        "days_of_week2"
+      ],
+      "time_of_day": "14:00"
     },
     "type": "QUICKSTART",
     "paused": true,
@@ -152,6 +231,29 @@ func setupMockClientTransformationGitResource(t *testing.T) {
         },
     )
 
+    transformationGitPatchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/transformations/transformation_id").ThenCall(
+        func(req *http.Request) (*http.Response, error) {
+            body := tfmock.RequestBodyToJson(t, req)
+            tfmock.AssertKeyDoesNotExist(t, body, "type")
+            tfmock.AssertKeyDoesNotExist(t, body, "paused")
+
+            tfmock.AssertKeyExists(t, body, "transformation_config")
+            config := body["transformation_config"].(map[string]interface{})
+            tfmock.AssertKeyDoesNotExist(t, config, "project_id")
+            tfmock.AssertKeyExistsAndHasValue(t, config, "name", "name2")
+            steps := config["steps"].([]interface{})
+            tfmock.AssertKeyExistsAndHasValue(t, steps[0].(map[string]interface{}), "name", "name1")
+            tfmock.AssertKeyExistsAndHasValue(t, steps[0].(map[string]interface{}), "command", "command1")
+            tfmock.AssertKeyExistsAndHasValue(t, steps[1].(map[string]interface{}), "name", "name3")
+            tfmock.AssertKeyExistsAndHasValue(t, steps[1].(map[string]interface{}), "command", "command3")
+
+            tfmock.AssertKeyDoesNotExist(t, body, "schedule")
+
+            transformationGitData = tfmock.CreateMapFromJsonString(t, gitPatchedResponse)
+            return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", transformationGitData), nil
+        },
+    )
+
     tfmock.MockClient().When(http.MethodGet, "/v1/transformations/transformation_id").ThenCall(
         func(req *http.Request) (*http.Response, error) {
             tfmock.AssertNotEmpty(t, transformationGitData)
@@ -203,11 +305,6 @@ func setupMockClientTransformationQuickstartResource(t *testing.T) {
             tfmock.AssertEqual(t, cron[0], "cron1")
             tfmock.AssertEqual(t, cron[1], "cron2")
 
-            connectionIds = schedule["connection_ids"].([]interface{})
-            tfmock.AssertEqual(t, len(connectionIds), 2)
-            tfmock.AssertEqual(t, connectionIds[0], "connection_id1")
-            tfmock.AssertEqual(t, connectionIds[1], "connection_id2")
-
             daysOfWeek := schedule["days_of_week"].([]interface{})
             tfmock.AssertEqual(t, len(daysOfWeek), 2)
             tfmock.AssertEqual(t, daysOfWeek[0], "days_of_week1")
@@ -215,6 +312,28 @@ func setupMockClientTransformationQuickstartResource(t *testing.T) {
 
             transformationQuickstartData = tfmock.CreateMapFromJsonString(t, quickstartResponse)
             return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", transformationQuickstartData), nil
+        },
+    )
+
+    transformationQuickstartPatchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/transformations/transformation_id").ThenCall(
+        func(req *http.Request) (*http.Response, error) {
+            body := tfmock.RequestBodyToJson(t, req)
+            tfmock.AssertKeyDoesNotExist(t, body, "type")
+            tfmock.AssertKeyDoesNotExist(t, body, "paused")
+
+            tfmock.AssertKeyDoesNotExist(t, body, "transformation_config")
+
+            tfmock.AssertKeyExists(t, body, "schedule")
+            schedule := body["schedule"].(map[string]interface{})
+            tfmock.AssertKeyDoesNotExist(t, schedule, "interval")
+            tfmock.AssertKeyDoesNotExist(t, schedule, "smart_syncing")
+            tfmock.AssertKeyDoesNotExist(t, schedule, "schedule_type")
+            tfmock.AssertKeyExists(t, schedule, "time_of_day")
+            tfmock.AssertKeyDoesNotExist(t, schedule, "cron")
+            tfmock.AssertKeyDoesNotExist(t, schedule, "days_of_week")
+
+            transformationQuickstartData = tfmock.CreateMapFromJsonString(t, quickstartPatchedResponse)
+            return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", transformationQuickstartData), nil
         },
     )
 
@@ -304,6 +423,73 @@ func TestResourceTransformationGitMock(t *testing.T) {
         ),
     }
 
+    step2 := resource.TestStep{
+        Config: `
+        resource "fivetran_transformation" "transformation" {
+            provider = fivetran-provider
+
+            type = "DBT_CORE"
+            paused = true
+
+            schedule {
+                cron = ["cron1","cron2"]
+                interval = 601
+                smart_syncing = true
+                connection_ids = ["connection_id1", "connection_id2"]
+                schedule_type = "schedule_type1"
+                days_of_week = ["days_of_week1","days_of_week2"]
+                time_of_day = "time_of_day1"
+            }
+
+            transformation_config {
+                project_id = "project_id"
+                name = "name2"
+                steps = [
+                    {
+                        name = "name1"
+                        command = "command1"
+                    },
+                    {
+                        name = "name3"
+                        command = "command3"
+                    }
+                ]
+            }
+        }
+        `,
+
+        Check: resource.ComposeAggregateTestCheckFunc(
+            func(s *terraform.State) error {
+                tfmock.AssertEqual(t, transformationGitPostHandler.Interactions, 1)
+                return nil
+            },
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "id", "transformation_id"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "status", "status"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "created_at", "created_at"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "created_by_id", "created_by_id"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "type", "DBT_CORE"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "paused", "true"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "output_model_names.0", "output_model_name1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "output_model_names.1", "output_model_name2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.project_id", "project_id"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.name", "name2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.steps.0.name", "name1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.steps.0.command", "command1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.steps.1.name", "name3"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.steps.1.command", "command3"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.smart_syncing", "true"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.interval", "601"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.schedule_type", "schedule_type1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.cron.0", "cron1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.cron.1", "cron2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.connection_ids.0", "connection_id1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.connection_ids.1", "connection_id2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.days_of_week.0", "days_of_week1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.days_of_week.1", "days_of_week2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.time_of_day", "time_of_day1"),
+        ),
+    }
+
     resource.Test(
         t,
         resource.TestCase{
@@ -319,6 +505,7 @@ func TestResourceTransformationGitMock(t *testing.T) {
 
             Steps: []resource.TestStep{
                 step1,
+                step2,
             },
         },
     )
@@ -337,7 +524,6 @@ func TestResourceTransformationQuickstartMock(t *testing.T) {
                 cron = ["cron1","cron2"]
                 interval = 601
                 smart_syncing = true
-                connection_ids = ["connection_id1", "connection_id2"]
                 schedule_type = "schedule_type1"
                 days_of_week = ["days_of_week1","days_of_week2"]
                 time_of_day = "time_of_day1"
@@ -375,11 +561,64 @@ func TestResourceTransformationQuickstartMock(t *testing.T) {
             resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.schedule_type", "schedule_type1"),
             resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.cron.0", "cron1"),
             resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.cron.1", "cron2"),
-            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.connection_ids.0", "connection_id1"),
-            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.connection_ids.1", "connection_id2"),
             resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.days_of_week.0", "days_of_week1"),
             resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.days_of_week.1", "days_of_week2"),
             resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.time_of_day", "time_of_day1"),
+        ),
+    }
+
+    step2 := resource.TestStep{
+        Config: `
+        resource "fivetran_transformation" "transformation" {
+            provider = fivetran-provider
+
+            type = "QUICKSTART"
+            paused = true
+
+            schedule {
+                cron = ["cron1","cron2"]
+                interval = 601
+                smart_syncing = true
+                schedule_type = "schedule_type1"
+                days_of_week = ["days_of_week1","days_of_week2"]
+                time_of_day = "14:00"
+            }
+
+            transformation_config {
+                package_name = "package_name"
+                connection_ids = ["connection_id1", "connection_id2"]
+                excluded_models = ["excluded_model1", "excluded_model2"]
+            }
+        }
+        `,
+
+        Check: resource.ComposeAggregateTestCheckFunc(
+            func(s *terraform.State) error {
+                tfmock.AssertEqual(t, transformationQuickstartPostHandler.Interactions, 1)
+                return nil
+            },
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "id", "transformation_id"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "status", "status"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "created_at", "created_at"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "created_by_id", "created_by_id"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "type", "QUICKSTART"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "paused", "true"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "output_model_names.0", "output_model_name1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "output_model_names.1", "output_model_name2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.package_name", "package_name"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.connection_ids.0", "connection_id1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.connection_ids.1", "connection_id2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.excluded_models.0", "excluded_model1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.excluded_models.1", "excluded_model2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.upgrade_available", "true"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.smart_syncing", "true"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.interval", "601"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.schedule_type", "schedule_type1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.cron.0", "cron1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.cron.1", "cron2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.days_of_week.0", "days_of_week1"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.days_of_week.1", "days_of_week2"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.time_of_day", "14:00"),
         ),
     }
 
@@ -397,6 +636,7 @@ func TestResourceTransformationQuickstartMock(t *testing.T) {
 
             Steps: []resource.TestStep{
                 step1,
+                step2,
             },
         },
     )

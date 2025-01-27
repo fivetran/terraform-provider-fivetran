@@ -18,13 +18,13 @@ resource "fivetran_transformation" "transformation" {
     paused = true
 
     schedule {
-        cron = ["cron1","cron2"]
+        cron = ["0 */1 * * *"]
         interval = 601
         smart_syncing = true
         connection_ids = ["connection_id1", "connection_id2"]
-        schedule_type = "schedule_type1"
-        days_of_week = ["days_of_week1","days_of_week2"]
-        time_of_day = "time_of_day1"
+        schedule_type = "INTEGRATED"
+        days_of_week = ["MONDAY", "FRIDAY"]
+        time_of_day = "14:00"
     }
 
     transformation_config {
@@ -55,7 +55,6 @@ resource "fivetran_transformation" "transformation" {
 
     schedule {
         schedule_type = "TIME_OF_DAY"
-        days_of_week = ["MONDAY", "FRIDAY"]
         time_of_day = "11:00"
     }
 
@@ -64,6 +63,37 @@ resource "fivetran_transformation" "transformation" {
         connection_ids = ["connection_id1", "connection_id2"]
         excluded_models = ["excluded_model1", "excluded_model2"]
     }
+}
+```
+
+## Example Usages for Transformation Schedule section
+
+```hcl
+schedule {
+    schedule_type = "TIME_OF_DAY"
+    days_of_week = ["MONDAY", "FRIDAY"]
+    time_of_day = "11:00"
+}
+```
+
+```hcl
+schedule {
+    schedule_type = "INTEGRATED"
+    connection_ids = ["connection_id1", "connection_id2"]
+}
+```
+
+```hcl
+schedule {
+    schedule_type = "INTERVAL"
+    interval = 601
+}
+```
+
+```hcl
+schedule {
+    schedule_type = "CRON"
+    cron = ["0 */1 * * *"]
 }
 ```
 

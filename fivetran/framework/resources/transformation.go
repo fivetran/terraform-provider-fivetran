@@ -70,7 +70,7 @@ func (r *transformation) Create(ctx context.Context, req resource.CreateRequest,
 			if transformationType != "DBT_CORE" {
 				resp.Diagnostics.AddError(
 					"Unable to Create Transformation Resource.",
-					fmt.Sprintf("The parameter `%v` can be set only for DBT_CORE type transformation", "project_id"),
+					fmt.Sprintf("The parameter `%v` can be set only for DBT_CORE type transformation", "transformation_config.project_id"),
 				)
 				return
 			}
@@ -82,7 +82,7 @@ func (r *transformation) Create(ctx context.Context, req resource.CreateRequest,
 			if transformationType != "DBT_CORE" {
 				resp.Diagnostics.AddError(
 					"Unable to Create Transformation Resource.",
-					fmt.Sprintf("The parameter `%v` can be set only for DBT_CORE type transformation", "name"),
+					fmt.Sprintf("The parameter `%v` can be set only for DBT_CORE type transformation", "transformation_config.name"),
 				)
 				return
 			}
@@ -94,7 +94,7 @@ func (r *transformation) Create(ctx context.Context, req resource.CreateRequest,
 			if transformationType != "DBT_CORE" {
 				resp.Diagnostics.AddError(
 					"Unable to Create Transformation Resource.",
-					fmt.Sprintf("The parameter `%v` can be set only for DBT_CORE type transformation", "steps"),
+					fmt.Sprintf("The parameter `%v` can be set only for DBT_CORE type transformation", "transformation_config.steps"),
 				)
 				return
 			}
@@ -119,7 +119,7 @@ func (r *transformation) Create(ctx context.Context, req resource.CreateRequest,
 			if transformationType != "QUICKSTART" {
 				resp.Diagnostics.AddError(
 					"Unable to Create Transformation Resource.",
-					fmt.Sprintf("The parameter `%v` can be set only for QUICKSTART type transformation", "package_name"),
+					fmt.Sprintf("The parameter `%v` can be set only for QUICKSTART type transformation", "transformation_config.package_name"),
 				)
 				return
 			}
@@ -134,7 +134,7 @@ func (r *transformation) Create(ctx context.Context, req resource.CreateRequest,
 			if transformationType != "QUICKSTART" {
 				resp.Diagnostics.AddError(
 					"Unable to Create Transformation Resource.",
-					fmt.Sprintf("The parameter `%v` can be set only for QUICKSTART type transformation", "connection_ids"),
+					fmt.Sprintf("The parameter `%v` can be set only for QUICKSTART type transformation", "transformation_config.connection_ids"),
 				)
 				return
 			}
@@ -150,7 +150,7 @@ func (r *transformation) Create(ctx context.Context, req resource.CreateRequest,
 		if len(connectionIds) == 0 && packageName == "" && transformationType == "QUICKSTART" {
 			resp.Diagnostics.AddError(
 				"Unable to Create Transformation Resource.",
-				fmt.Sprintf("For a QUICKSTART type transformation, at least one of the `%v` or `%v` parameters must be set.", "package_name", "connection_ids"),
+				fmt.Sprintf("For a QUICKSTART type transformation, at least one of the `%v` or `%v` parameters must be set.", "transformation_config.package_name", "transformation_config.connection_ids"),
 			)
 			return
 		}
@@ -159,7 +159,7 @@ func (r *transformation) Create(ctx context.Context, req resource.CreateRequest,
 			if transformationType != "QUICKSTART" {
 				resp.Diagnostics.AddError(
 					"Unable to Create Transformation Resource.",
-					fmt.Sprintf("The parameter `%v` can be set only for QUICKSTART type transformation", "excluded_models"),
+					fmt.Sprintf("The parameter `%v` can be set only for QUICKSTART type transformation", "transformation_config.excluded_models"),
 				)
 				return
 			}
@@ -178,20 +178,28 @@ func (r *transformation) Create(ctx context.Context, req resource.CreateRequest,
 		schedule := fivetran.NewTransformationSchedule()
 		scheduleAttributes := data.Schedule.Attributes()
 
-		if !scheduleAttributes["time_of_day"].(basetypes.StringValue).IsNull() && !scheduleAttributes["time_of_day"].(basetypes.StringValue).IsUnknown() {
+		if !scheduleAttributes["time_of_day"].IsNull() && !scheduleAttributes["time_of_day"].IsUnknown() {
 			schedule.TimeOfDay(scheduleAttributes["time_of_day"].(basetypes.StringValue).ValueString())			
 		}
-		if !scheduleAttributes["schedule_type"].(basetypes.StringValue).IsNull() && !scheduleAttributes["schedule_type"].(basetypes.StringValue).IsUnknown() {
+		if !scheduleAttributes["schedule_type"].IsNull() && !scheduleAttributes["schedule_type"].IsUnknown() {
 			schedule.ScheduleType(scheduleAttributes["schedule_type"].(basetypes.StringValue).ValueString())			
 		}
-		if !scheduleAttributes["interval"].(basetypes.Int64Value).IsNull() && !scheduleAttributes["interval"].(basetypes.Int64Value).IsUnknown() {
+		if !scheduleAttributes["interval"].IsNull() && !scheduleAttributes["interval"].IsUnknown() {
 			schedule.Interval(int(scheduleAttributes["interval"].(basetypes.Int64Value).ValueInt64()))
 		}
-		if !scheduleAttributes["smart_syncing"].(basetypes.BoolValue).IsNull() && !scheduleAttributes["smart_syncing"].(basetypes.BoolValue).IsUnknown() {
+		if !scheduleAttributes["smart_syncing"].IsNull() && !scheduleAttributes["smart_syncing"].IsUnknown() {
 			schedule.SmartSyncing(scheduleAttributes["smart_syncing"].(basetypes.BoolValue).ValueBool())			
 		}
 
 		if !scheduleAttributes["connection_ids"].IsUnknown() && !scheduleAttributes["connection_ids"].IsNull() {
+			if transformationType != "DBT_CORE" {
+				resp.Diagnostics.AddError(
+					"Unable to Update Transformation Resource.",
+					fmt.Sprintf("The parameter `%v` can be set only for DBT_CORE type transformation", "schedule.connection_ids"),
+				)
+				return
+			}
+
 			evars := []string{}
 			for _, ev := range scheduleAttributes["connection_ids"].(basetypes.SetValue).Elements() {
 				evars = append(evars, ev.(basetypes.StringValue).ValueString())
@@ -299,36 +307,49 @@ func (r *transformation) Update(ctx context.Context, req resource.UpdateRequest,
 		return
 	}
 
-	svc := r.GetClient().NewTransformationUpdate()
-	svc.Paused(plan.Paused.ValueBool())
+	svc := r.GetClient().NewTransformationUpdate().TransformationId(state.Id.ValueString())
 
-	if !plan.Config.IsNull() && !plan.Config.IsUnknown() {
+	pausedPlan := core.GetBoolOrDefault(plan.Paused, true)
+	pausedState := core.GetBoolOrDefault(state.Paused, true)
+
+	if pausedPlan != pausedState {
+		svc.Paused(pausedPlan)
+	}
+
+	if !plan.Config.IsNull() && !plan.Config.IsUnknown() && !plan.Config.Equal(state.Config) {
+		hasChanges := false
 		config := fivetran.NewTransformationConfig()
-		configAttributes := plan.Config.Attributes()
+		configPlanAttributes := plan.Config.Attributes()
+		configStateAttributes := state.Config.Attributes()
 
-		if !configAttributes["name"].(basetypes.StringValue).IsNull() && !configAttributes["name"].(basetypes.StringValue).IsUnknown() {
+		if !configPlanAttributes["name"].IsNull() &&
+		!configPlanAttributes["name"].IsUnknown() && 
+		!configStateAttributes["name"].(basetypes.StringValue).Equal(configPlanAttributes["name"].(basetypes.StringValue)) {
 			if state.ProjectType.ValueString() != "DBT_CORE" {
 				resp.Diagnostics.AddError(
-					"Unable to Create Transformation Resource.",
-					fmt.Sprintf("The parameter `%v` can be set only for DBT_CORE type transformation", "name"),
+					"Unable to Update Transformation Resource.",
+					fmt.Sprintf("The parameter `%v` can be set only for DBT_CORE type transformation", "transformation_config.name"),
 				)
 				return
 			}
 
-			config.Name(configAttributes["name"].(basetypes.StringValue).ValueString())			
+			hasChanges = true
+			config.Name(configPlanAttributes["name"].(basetypes.StringValue).ValueString())			
 		}
 
-		if !configAttributes["steps"].IsUnknown() && !configAttributes["steps"].IsNull() {
+		if !configPlanAttributes["steps"].IsUnknown() &&
+		!configPlanAttributes["steps"].IsNull() &&
+		!configStateAttributes["steps"].(basetypes.ListValue).Equal(configPlanAttributes["steps"].(basetypes.ListValue)) {
 			if state.ProjectType.ValueString() != "DBT_CORE" {
 				resp.Diagnostics.AddError(
-					"Unable to Create Transformation Resource.",
-					fmt.Sprintf("The parameter `%v` can be set only for DBT_CORE type transformation", "steps"),
+					"Unable to Update Transformation Resource.",
+					fmt.Sprintf("The parameter `%v` can be set only for DBT_CORE type transformation", "transformation_config.steps"),
 				)
 				return
 			}
 
 			evars := []transformations.TransformationStep{}
-			for _, ev := range configAttributes["steps"].(basetypes.ListValue).Elements() {
+			for _, ev := range configPlanAttributes["steps"].(basetypes.ListValue).Elements() {
 				if element, ok := ev.(basetypes.ObjectValue); ok {
 					var step transformations.TransformationStep
 					step.Name = element.Attributes()["name"].(basetypes.StringValue).ValueString()
@@ -336,70 +357,114 @@ func (r *transformation) Update(ctx context.Context, req resource.UpdateRequest,
 					evars = append(evars, step)
 				}
 			}
+
+			hasChanges = true
 			config.Steps(evars)
 		}
 
-		if !configAttributes["excluded_models"].IsUnknown() && !configAttributes["excluded_models"].IsNull() {
+		if !configPlanAttributes["excluded_models"].IsUnknown() && 
+		!configPlanAttributes["excluded_models"].IsNull() &&
+		!configStateAttributes["excluded_models"].(basetypes.SetValue).Equal(configPlanAttributes["excluded_models"].(basetypes.SetValue)) {
 			if state.ProjectType.ValueString() != "QUICKSTART" {
 				resp.Diagnostics.AddError(
-					"Unable to Create Transformation Resource.",
-					fmt.Sprintf("The parameter `%v` can be set only for QUICKSTART type transformation", "excluded_models"),
+					"Unable to Update Transformation Resource.",
+					fmt.Sprintf("The parameter `%v` can be set only for QUICKSTART type transformation", "transformation_config.excluded_models"),
 				)
 				return
 			}
 
 			evars := []string{}
-			for _, ev := range configAttributes["excluded_models"].(basetypes.SetValue).Elements() {
+			for _, ev := range configPlanAttributes["excluded_models"].(basetypes.SetValue).Elements() {
 				evars = append(evars, ev.(basetypes.StringValue).ValueString())
 			}
+
+			hasChanges = true
 			config.ExcludedModels(evars)
 		}
 
-		svc.TransformationConfig(config)
+		if hasChanges {
+			svc.TransformationConfig(config)
+		}
 	}
 
-	if !plan.Schedule.IsNull() && !plan.Schedule.IsUnknown() {
+	if !plan.Schedule.IsNull() && !plan.Schedule.IsUnknown() && !plan.Schedule.Equal(state.Schedule) {
+		hasChanges := false
 		schedule := fivetran.NewTransformationSchedule()
-		scheduleAttributes := plan.Schedule.Attributes()
+		schedulePlanAttributes := plan.Schedule.Attributes()
+		scheduleStateAttributes := state.Schedule.Attributes()
 
-		if !scheduleAttributes["time_of_day"].(basetypes.StringValue).IsNull() && !scheduleAttributes["time_of_day"].(basetypes.StringValue).IsUnknown() {
-			schedule.TimeOfDay(scheduleAttributes["time_of_day"].(basetypes.StringValue).ValueString())			
-		}
-		if !scheduleAttributes["schedule_type"].(basetypes.StringValue).IsNull() && !scheduleAttributes["schedule_type"].(basetypes.StringValue).IsUnknown() {
-			schedule.ScheduleType(scheduleAttributes["schedule_type"].(basetypes.StringValue).ValueString())			
-		}
-		if !scheduleAttributes["interval"].(basetypes.Int64Value).IsNull() && !scheduleAttributes["interval"].(basetypes.Int64Value).IsUnknown() {
-			schedule.Interval(int(scheduleAttributes["interval"].(basetypes.Int64Value).ValueInt64()))
-		}
-		if !scheduleAttributes["smart_syncing"].(basetypes.BoolValue).IsNull() && !scheduleAttributes["smart_syncing"].(basetypes.BoolValue).IsUnknown() {
-			schedule.SmartSyncing(scheduleAttributes["smart_syncing"].(basetypes.BoolValue).ValueBool())			
+		if !schedulePlanAttributes["time_of_day"].IsNull() && 
+		!schedulePlanAttributes["time_of_day"].IsUnknown() &&
+		!scheduleStateAttributes["time_of_day"].(basetypes.StringValue).Equal(schedulePlanAttributes["time_of_day"].(basetypes.StringValue)) {
+			hasChanges = true
+			schedule.TimeOfDay(schedulePlanAttributes["time_of_day"].(basetypes.StringValue).ValueString())			
 		}
 
-		if !scheduleAttributes["connection_ids"].IsUnknown() && !scheduleAttributes["connection_ids"].IsNull() {
+		if !schedulePlanAttributes["schedule_type"].IsNull() &&
+		!schedulePlanAttributes["schedule_type"].IsUnknown() &&
+		!scheduleStateAttributes["schedule_type"].(basetypes.StringValue).Equal(schedulePlanAttributes["schedule_type"].(basetypes.StringValue)) {
+			hasChanges = true
+			schedule.ScheduleType(schedulePlanAttributes["schedule_type"].(basetypes.StringValue).ValueString())			
+		}
+
+		if !schedulePlanAttributes["interval"].IsNull() &&
+		!schedulePlanAttributes["interval"].IsUnknown() &&
+		!scheduleStateAttributes["interval"].(basetypes.Int64Value).Equal(schedulePlanAttributes["interval"].(basetypes.Int64Value)) {
+			hasChanges = true
+			schedule.Interval(int(schedulePlanAttributes["interval"].(basetypes.Int64Value).ValueInt64()))
+		}
+
+		if !schedulePlanAttributes["smart_syncing"].IsNull() &&
+		!schedulePlanAttributes["smart_syncing"].IsUnknown() &&
+		!scheduleStateAttributes["smart_syncing"].(basetypes.BoolValue).Equal(schedulePlanAttributes["smart_syncing"].(basetypes.BoolValue)) {
+			hasChanges = true
+			schedule.SmartSyncing(schedulePlanAttributes["smart_syncing"].(basetypes.BoolValue).ValueBool())			
+		}
+
+		if !schedulePlanAttributes["connection_ids"].IsUnknown() &&
+		!schedulePlanAttributes["connection_ids"].IsNull() &&
+		!scheduleStateAttributes["connection_ids"].(basetypes.SetValue).Equal(schedulePlanAttributes["connection_ids"].(basetypes.SetValue)) {
+			if plan.ProjectType.ValueString() != "DBT_CORE" {
+				resp.Diagnostics.AddError(
+					"Unable to Update Transformation Resource.",
+					fmt.Sprintf("The parameter `%v` can be set only for DBT_CORE type transformation", "schedule.connection_ids"),
+				)
+				return
+			}
+
 			evars := []string{}
-			for _, ev := range scheduleAttributes["connection_ids"].(basetypes.SetValue).Elements() {
+			for _, ev := range schedulePlanAttributes["connection_ids"].(basetypes.SetValue).Elements() {
 				evars = append(evars, ev.(basetypes.StringValue).ValueString())
 			}
+			hasChanges = true
 			schedule.ConnectionIds(evars)
 		}
 
-		if !scheduleAttributes["days_of_week"].IsUnknown() && !scheduleAttributes["days_of_week"].IsNull() {
+		if !schedulePlanAttributes["days_of_week"].IsUnknown() &&
+		!schedulePlanAttributes["days_of_week"].IsNull() &&
+		!scheduleStateAttributes["days_of_week"].(basetypes.SetValue).Equal(schedulePlanAttributes["days_of_week"].(basetypes.SetValue)) {
 			evars := []string{}
-			for _, ev := range scheduleAttributes["days_of_week"].(basetypes.SetValue).Elements() {
+			for _, ev := range schedulePlanAttributes["days_of_week"].(basetypes.SetValue).Elements() {
 				evars = append(evars, ev.(basetypes.StringValue).ValueString())
 			}
+			hasChanges = true
 			schedule.DaysOfWeek(evars)
 		}
 
-		if !scheduleAttributes["cron"].IsUnknown() && !scheduleAttributes["cron"].IsNull() {
+		if !schedulePlanAttributes["cron"].IsUnknown() &&
+		!schedulePlanAttributes["cron"].IsNull() &&
+		!scheduleStateAttributes["cron"].(basetypes.SetValue).Equal(schedulePlanAttributes["cron"].(basetypes.SetValue)) {
 			evars := []string{}
-			for _, ev := range scheduleAttributes["cron"].(basetypes.SetValue).Elements() {
+			for _, ev := range schedulePlanAttributes["cron"].(basetypes.SetValue).Elements() {
 				evars = append(evars, ev.(basetypes.StringValue).ValueString())
 			}
+			hasChanges = true
 			schedule.Cron(evars)
 		}
 
-		svc.TransformationSchedule(schedule)
+		if hasChanges {
+			svc.TransformationSchedule(schedule)
+		}
 	}
 
 	updateResponse, err := svc.Do(ctx)

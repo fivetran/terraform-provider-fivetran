@@ -43,15 +43,15 @@ func transformationSchema() core.Schema {
 			"id": {
 				ValueType:   core.String,
 				IsId:        true,
-				Description: "The unique identifier for the dbt Transformation within the Fivetran system.",
+				Description: "The unique identifier for the Transformation within the Fivetran system.",
 			},
 			"paused": {
 				ValueType:   core.Boolean,
 				Description: "The field indicating whether the transformation will be set into the paused state. By default, the value is false.",
 			},
 			"type": {
-				ValueType:   core.String,
-				Description: "Transformation type.",
+				ValueType:   core.StringEnum,
+				Description: "Transformation type. The following values are supported: DBT_CORE, QUICKSTART.",
 			},
 			"created_at": {
 				ValueType:   core.String,
@@ -81,24 +81,24 @@ func transformationScheduleSchema() core.Schema {
 	return core.Schema{
 		Fields: map[string]core.SchemaField{
 			"schedule_type": {
-				ValueType:   core.String,
-				Description: "The type of the schedule to run the dbt Transformation on. The following values are supported: INTEGRATED, TIME_OF_DAY, INTERVAL. For INTEGRATED schedule type, interval and time_of_day values are ignored and only the days_of_week parameter values are taken into account (but may be empty or null). For TIME_OF_DAY schedule type, the interval parameter value is ignored and the time_of_day values is taken into account along with days_of_week value. For INTERVAL schedule type, time_of_day value is ignored and the interval parameter value is taken into account along with days_of_week value.",
+				ValueType:   core.StringEnum,
+				Description: "The type of the schedule to run the Transformation on. The following values are supported: INTEGRATED, TIME_OF_DAY, INTERVAL, CRON.",
 			},
 			"days_of_week": {
 				ValueType:   core.StringsSet,
-				Description: "The set of the days of the week the transformation should be launched on. The following values are supported: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY.",
+				Description: "The set of the days of the week the transformation should be launched on. The following values are supported: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY. Used for for INTEGRATED schedule type",
 			},
 			"interval": {
 				ValueType:   core.Integer,
-				Description: "The time interval in minutes between subsequent transformation runs.",
+				Description: "The time interval in minutes between subsequent transformation runs. Used for for INTERVAL schedule type",
 			},
 			"time_of_day": {
 				ValueType:   core.String,
-				Description: `The time of the day the transformation should be launched at. Supported values are: "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"`,
+				Description: `The time of the day the transformation should be launched at. Supported values are: "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00". Used for for TIME_OF_DAY schedule type `,
 			},
 			"connection_ids": {
 				ValueType:   core.StringsSet,
-				Description: "Identifiers of related connectors.",
+				Description: "The list of the connection identifiers to be used for the integrated schedule. Not expected for QUICKSTART transformations",
 			},
 			"smart_syncing": {
 				ValueType:   core.Boolean,
@@ -106,7 +106,7 @@ func transformationScheduleSchema() core.Schema {
 			},
 			"cron": {
 				ValueType:   core.StringsSet,
-				Description: "Cron schedule: list of CRON strings.",
+				Description: "Cron schedule: list of CRON strings. Used for for CRON schedule type",
 			},
 		},
 	}

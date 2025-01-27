@@ -9,8 +9,7 @@ Returns a list of available Quickstart transformation package metadata details
 ## Example Usage
 
 ```hcl
-data "fivetran_quickstart_packages" "test" {
-    id = "id"
+data "fivetran_quickstart_packages" "all_packages_metadata" {
 }
 ```
 

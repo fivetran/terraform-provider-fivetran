@@ -166,24 +166,64 @@ func (r *transformationProject) Update(ctx context.Context, req resource.UpdateR
 
 	svc := r.GetClient().NewTransformationProjectUpdate()
 	svc.ProjectId(state.Id.ValueString())
-	svc.RunTests(plan.RunTests.ValueBool())
+	
+	runTestsPlan := core.GetBoolOrDefault(plan.RunTests, true)
+	runTestsState := core.GetBoolOrDefault(state.RunTests, true)
+
+	if runTestsPlan != runTestsState {
+		svc.RunTests(runTestsPlan)
+	}
 
 	if !plan.ProjectConfig.IsUnknown() && !state.ProjectConfig.Equal(plan.ProjectConfig) {
+		hasChanges := false
 		projectConfig := fivetran.NewTransformationProjectConfig()
-		projectConfigAttributes := plan.ProjectConfig.Attributes()
-		projectConfig.FolderPath(projectConfigAttributes["folder_path"].(basetypes.StringValue).ValueString())
-		projectConfig.GitBranch(projectConfigAttributes["git_branch"].(basetypes.StringValue).ValueString())
-		projectConfig.TargetName(projectConfigAttributes["target_name"].(basetypes.StringValue).ValueString())
-		projectConfig.Threads(int(projectConfigAttributes["threads"].(basetypes.Int64Value).ValueInt64()))
+		configPlanAttributes := plan.ProjectConfig.Attributes()
+		configStateAttributes := state.ProjectConfig.Attributes()
 
-		if !projectConfigAttributes["environment_vars"].IsUnknown() && !projectConfigAttributes["environment_vars"].IsNull() {
+		fmt.Printf("configPlanAttributes %v\n", configPlanAttributes)
+		fmt.Printf("configStateAttributes %v\n", configStateAttributes)
+		if !configPlanAttributes["folder_path"].IsNull() &&
+		!configPlanAttributes["folder_path"].IsUnknown() && 
+		!configStateAttributes["folder_path"].(basetypes.StringValue).Equal(configPlanAttributes["folder_path"].(basetypes.StringValue)) {
+			hasChanges = true
+			projectConfig.FolderPath(configPlanAttributes["folder_path"].(basetypes.StringValue).ValueString())	
+		}
+
+		if !configPlanAttributes["git_branch"].IsNull() &&
+		!configPlanAttributes["git_branch"].IsUnknown() && 
+		!configStateAttributes["git_branch"].(basetypes.StringValue).Equal(configPlanAttributes["git_branch"].(basetypes.StringValue)) {
+			hasChanges = true
+			projectConfig.GitBranch(configPlanAttributes["git_branch"].(basetypes.StringValue).ValueString())	
+		}
+
+		if !configPlanAttributes["target_name"].IsNull() &&
+		!configPlanAttributes["target_name"].IsUnknown() && 
+		!configStateAttributes["target_name"].(basetypes.StringValue).Equal(configPlanAttributes["target_name"].(basetypes.StringValue)) {
+			hasChanges = true
+			projectConfig.TargetName(configPlanAttributes["target_name"].(basetypes.StringValue).ValueString())	
+		}
+
+		if !configPlanAttributes["threads"].IsNull() &&
+		!configPlanAttributes["threads"].IsUnknown() && 
+		!configStateAttributes["threads"].(basetypes.Int64Value).Equal(configPlanAttributes["threads"].(basetypes.Int64Value)) {
+			hasChanges = true
+			projectConfig.Threads(int(configPlanAttributes["threads"].(basetypes.Int64Value).ValueInt64()))
+		}
+
+		if !configPlanAttributes["environment_vars"].IsNull() &&
+		!configPlanAttributes["environment_vars"].IsUnknown() && 
+		!configStateAttributes["environment_vars"].(basetypes.SetValue).Equal(configPlanAttributes["environment_vars"].(basetypes.SetValue)) {
 			evars := []string{}
-			for _, ev := range projectConfigAttributes["environment_vars"].(basetypes.SetValue).Elements() {
+			for _, ev := range configPlanAttributes["environment_vars"].(basetypes.SetValue).Elements() {
 				evars = append(evars, ev.(basetypes.StringValue).ValueString())
 			}
+			hasChanges = true
 			projectConfig.EnvironmentVars(evars)
 		}
-		svc.ProjectConfig(projectConfig)
+
+		if hasChanges {
+			svc.ProjectConfig(projectConfig)			
+		}
 	}
 
 	projectResponse, err := svc.Do(ctx)

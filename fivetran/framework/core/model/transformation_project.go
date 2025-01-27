@@ -63,15 +63,49 @@ func (d *TransformationResourceProject) ReadFromResponse(ctx context.Context, re
         "threads":              types.Int64Type,
     }
     projectConfigItems := map[string]attr.Value{}
-    projectConfigItems["dbt_version"] = types.StringValue(resp.Data.ProjectConfig.DbtVersion)
-    projectConfigItems["default_schema"] = types.StringValue(resp.Data.ProjectConfig.DefaultSchema)
-    projectConfigItems["git_remote_url"] = types.StringValue(resp.Data.ProjectConfig.GitRemoteUrl)
-    projectConfigItems["folder_path"] = types.StringValue(resp.Data.ProjectConfig.FolderPath)
-    projectConfigItems["git_branch"] = types.StringValue(resp.Data.ProjectConfig.GitBranch)
-    projectConfigItems["target_name"] = types.StringValue(resp.Data.ProjectConfig.TargetName)
-    projectConfigItems["public_key"] = types.StringValue(resp.Data.ProjectConfig.PublicKey)
-    projectConfigItems["threads"] = types.Int64Value(int64(resp.Data.ProjectConfig.Threads))
+    if resp.Data.ProjectConfig.DbtVersion != "" {
+        projectConfigItems["dbt_version"] = types.StringValue(resp.Data.ProjectConfig.DbtVersion)
+    } else {
+        projectConfigItems["dbt_version"] = types.StringNull()
+    }
+    
+    if resp.Data.ProjectConfig.DefaultSchema != "" {
+        projectConfigItems["default_schema"] = types.StringValue(resp.Data.ProjectConfig.DefaultSchema)
+    } else {
+        projectConfigItems["default_schema"] = types.StringNull()
+    }
+    
+    if resp.Data.ProjectConfig.GitRemoteUrl != "" {
+        projectConfigItems["git_remote_url"] = types.StringValue(resp.Data.ProjectConfig.GitRemoteUrl)
+    } else {
+        projectConfigItems["git_remote_url"] = types.StringNull()
+    }
+    
+    if resp.Data.ProjectConfig.FolderPath != "" {
+        projectConfigItems["folder_path"] = types.StringValue(resp.Data.ProjectConfig.FolderPath)
+    } else {
+        projectConfigItems["folder_path"] = types.StringNull()
+    }
+    
+    if resp.Data.ProjectConfig.GitBranch != "" {
+        projectConfigItems["git_branch"] = types.StringValue(resp.Data.ProjectConfig.GitBranch)
+    } else {
+        projectConfigItems["git_branch"] = types.StringNull()
+    }
 
+    if resp.Data.ProjectConfig.TargetName != "" {
+        projectConfigItems["target_name"] = types.StringValue(resp.Data.ProjectConfig.TargetName)
+    } else {
+        projectConfigItems["target_name"] = types.StringNull()
+    }
+
+    if resp.Data.ProjectConfig.PublicKey != "" {
+        projectConfigItems["public_key"] = types.StringValue(resp.Data.ProjectConfig.PublicKey)
+    } else {
+        projectConfigItems["public_key"] = types.StringNull()
+    }
+
+    projectConfigItems["threads"] = types.Int64Value(int64(resp.Data.ProjectConfig.Threads))
     envVars := []attr.Value{}
     for _, el := range resp.Data.ProjectConfig.EnvironmentVars {
         envVars = append(envVars, types.StringValue(el))

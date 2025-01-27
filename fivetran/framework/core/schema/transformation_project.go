@@ -81,7 +81,7 @@ func transformationProjectSchema() core.Schema {
 			"type": {
 				Required:    true,
 				ForceNew:    true,
-				ValueType:   core.String,
+				ValueType:   core.StringEnum,
 				Description: "Transformation project type.",
 			},
 			"status": {
