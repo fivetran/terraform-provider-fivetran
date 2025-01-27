@@ -28,6 +28,20 @@ const (
     "next_cursor": null
   }
 `
+
+	externalLogsMappingResponseWithCursor = `
+{
+    "items": [
+      {
+        "id": "log_id1",
+        "service": "string",
+        "enabled": true
+      }
+    ],
+    "next_cursor": "next_cursor"
+  }
+`
+
 )
 
 func setupMockClientExternalLogsDataSourceConfigMapping(t *testing.T) {
@@ -35,7 +49,12 @@ func setupMockClientExternalLogsDataSourceConfigMapping(t *testing.T) {
 
 	externalLogsDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/external-logging").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			externalLogsDataSourceMockData = tfmock.CreateMapFromJsonString(t, externalLogsMappingResponse)
+			if req.URL.Query().Get("cursor") == "next_cursor" {
+				externalLogsDataSourceMockData = tfmock.CreateMapFromJsonString(t, externalLogsMappingResponse)
+			} else {
+				externalLogsDataSourceMockData = tfmock.CreateMapFromJsonString(t, externalLogsMappingResponseWithCursor)
+			}
+
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", externalLogsDataSourceMockData), nil
 		},
 	)
@@ -50,7 +69,7 @@ func TestDataSourceExternalLogsMappingMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				tfmock.AssertEqual(t, externalLogsDataSourceMockGetHandler.Interactions, 1)
+				tfmock.AssertEqual(t, externalLogsDataSourceMockGetHandler.Interactions, 2)
 				tfmock.AssertNotEmpty(t, externalLogsDataSourceMockData)
 				return nil
 			},

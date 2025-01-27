@@ -35,14 +35,41 @@ const (
     "next_cursor": null
   }
 `
+
+	destinationsMappingResponseWithCursor = `
+{
+    "items": [
+      {
+        "id": "destination_id1",
+        "service": "string",
+        "region": "GCP_US_EAST4",
+        "networking_method": "Directly",
+        "setup_status": "CONNECTED",
+        "daylight_saving_time_enabled": true,
+        "private_link_id": "private_link_id",
+        "group_id": "group_id",
+        "time_zone_offset": "+3",
+        "hybrid_deployment_agent_id": "hybrid_deployment_agent_id"
+      }
+    ],
+    "next_cursor": "next_cursor"
+  }
+`
 )
+
+
+
 
 func setupMockClientDestinationsDataSourceConfigMapping(t *testing.T) {
 	tfmock.MockClient().Reset()
 
 	destinationsDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/destinations").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			destinationsDataSourceMockData = tfmock.CreateMapFromJsonString(t, destinationsMappingResponse)
+			if req.URL.Query().Get("cursor") == "next_cursor" {
+				destinationsDataSourceMockData = tfmock.CreateMapFromJsonString(t, destinationsMappingResponse)
+			} else {
+				destinationsDataSourceMockData = tfmock.CreateMapFromJsonString(t, destinationsMappingResponseWithCursor)
+			}
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", destinationsDataSourceMockData), nil
 		},
 	)
@@ -57,7 +84,7 @@ func TestDataSourceDestinationsMappingMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				tfmock.AssertEqual(t, destinationsDataSourceMockGetHandler.Interactions, 1)
+				tfmock.AssertEqual(t, destinationsDataSourceMockGetHandler.Interactions, 2)
 				tfmock.AssertNotEmpty(t, destinationsDataSourceMockData)
 				return nil
 			},
