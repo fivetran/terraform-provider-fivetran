@@ -33,6 +33,9 @@ The deprecated resources, datasources and fields removed:
 - Field `fivetran_connector.local_processing_agent_id`.
 - Field `fivetran_destination.local_processing_agent_id`.
 
+New destination services supported:
+- Supported service: `milvus`
+ 
 New connection services supported:
 - Supported service: `acculynx`
 - Supported service: `acumatica`
