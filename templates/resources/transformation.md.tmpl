@@ -54,13 +54,9 @@ resource "fivetran_transformation" "transformation" {
     paused = true
 
     schedule {
-        cron = ["cron1","cron2"]
-        interval = 601
-        smart_syncing = true
-        connection_ids = ["connection_id1", "connection_id2"]
-        schedule_type = "schedule_type1"
-        days_of_week = ["days_of_week1","days_of_week2"]
-        time_of_day = "time_of_day1"
+        schedule_type = "TIME_OF_DAY"
+        days_of_week = ["MONDAY", "FRIDAY"]
+        time_of_day = "11:00"
     }
 
     transformation_config {
