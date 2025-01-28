@@ -31,9 +31,18 @@ func upgradeDestinationState(ctx context.Context, req resource.UpgradeStateReque
 		return
 	}
 
+	resultValue := tftypes.NewValue(tftypes.String, nil)
+	if fromVersion == 1 || fromVersion == 2 {
+		if !rawState["hybrid_deployment_agent_id"].IsNull() {
+			resultValue = rawState["hybrid_deployment_agent_id"]
+		} else if !rawState["local_processing_agent_id"].IsNull() {
+			resultValue = rawState["local_processing_agent_id"]
+		}
+	}
+
 	dynamicValue, err := tfprotov6.NewDynamicValue(
-		getDestinationStateModel(3),
-		tftypes.NewValue(getDestinationStateModel(3), map[string]tftypes.Value{
+		getDestinationStateModel(4),
+		tftypes.NewValue(getDestinationStateModel(4), map[string]tftypes.Value{
 			"id":                           rawState["id"],
 			"group_id":                     rawState["group_id"],
 			"service":                      rawState["service"],
@@ -44,7 +53,7 @@ func upgradeDestinationState(ctx context.Context, req resource.UpgradeStateReque
 			"daylight_saving_time_enabled": tftypes.NewValue(tftypes.Bool, nil),
 			"networking_method":            tftypes.NewValue(tftypes.String, nil),
             "private_link_id":              tftypes.NewValue(tftypes.String, nil),
-			"hybrid_deployment_agent_id":   rawState["hybrid_deployment_agent_id"],
+			"hybrid_deployment_agent_id":   resultValue,
 			"run_setup_tests":    convertStringStateValueToBool("run_setup_tests", rawState["run_setup_tests"], resp.Diagnostics),
 			"trust_fingerprints": convertStringStateValueToBool("trust_fingerprints", rawState["trust_fingerprints"], resp.Diagnostics),
 			"trust_certificates": convertStringStateValueToBool("trust_certificates", rawState["trust_certificates"], resp.Diagnostics),
@@ -75,7 +84,7 @@ func getDestinationStateModel(version int) tftypes.Type {
 			},
 		},
 	}
-	if version == 3 {
+	if version == 3 || version == 4 {
 		base["run_setup_tests"] = tftypes.Bool
 		base["trust_certificates"] = tftypes.Bool
 		base["trust_fingerprints"] = tftypes.Bool

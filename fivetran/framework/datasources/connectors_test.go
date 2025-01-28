@@ -39,7 +39,6 @@ const (
         "data_delay_threshold": 0,
         "data_delay_sensitivity": "LOW",
         "schedule_type": "auto",
-        "local_processing_agent_id": "string",
         "hybrid_deployment_agent_id": "string"
       }
     ],
@@ -70,7 +69,6 @@ const (
         "data_delay_threshold": 0,
         "data_delay_sensitivity": "LOW",
         "schedule_type": "auto",
-        "local_processing_agent_id": "string",
         "hybrid_deployment_agent_id": "string"
       }
     ],

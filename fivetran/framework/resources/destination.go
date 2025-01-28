@@ -59,6 +59,11 @@ func (r *destination) UpgradeState(ctx context.Context) map[int64]resource.State
 				upgradeDestinationState(ctx, req, resp, 2)
 			},
 		},
+		3: {
+			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
+				upgradeDestinationState(ctx, req, resp, 3)
+			},
+		},
 	}
 }
 

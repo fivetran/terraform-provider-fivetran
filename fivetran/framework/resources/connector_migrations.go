@@ -35,9 +35,13 @@ func upgradeConnectorState(ctx context.Context, req resource.UpgradeStateRequest
 		return
 	}
 
-	lpaValue := tftypes.NewValue(tftypes.String, nil)
+	resultValue := tftypes.NewValue(tftypes.String, nil)
 	if fromVersion == 3 || fromVersion == 4 {
-		lpaValue = rawState["local_processing_agent_id"]
+		if !rawState["hybrid_deployment_agent_id"].IsNull() {
+			resultValue = rawState["hybrid_deployment_agent_id"]
+		} else if !rawState["local_processing_agent_id"].IsNull() {
+			resultValue = rawState["local_processing_agent_id"]
+		}
 	}
 
 	dynamicValue, err := tfprotov6.NewDynamicValue(
@@ -55,7 +59,7 @@ func upgradeConnectorState(ctx context.Context, req resource.UpgradeStateRequest
 			"private_link_id":           tftypes.NewValue(tftypes.String, nil),
 			"data_delay_sensitivity":    tftypes.NewValue(tftypes.String, nil),
 			"data_delay_threshold":      tftypes.NewValue(tftypes.Number, nil),
-			"hybrid_deployment_agent_id": lpaValue,
+			"hybrid_deployment_agent_id": resultValue,
 			"run_setup_tests":    convertStringStateValueToBool("run_setup_tests", rawState["run_setup_tests"], resp.Diagnostics),
 			"trust_fingerprints": convertStringStateValueToBool("trust_fingerprints", rawState["trust_fingerprints"], resp.Diagnostics),
 			"trust_certificates": convertStringStateValueToBool("trust_certificates", rawState["trust_certificates"], resp.Diagnostics),

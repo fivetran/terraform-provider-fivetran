@@ -34,7 +34,6 @@ func (d *Connectors) ReadFromResponse(ctx context.Context, resp connectors.Conne
         "data_delay_threshold":         types.Int64Type,
         "proxy_agent_id":               types.StringType,
         "networking_method":            types.StringType,
-        "local_processing_agent_id":    types.StringType,
         "hybrid_deployment_agent_id":   types.StringType,
         "private_link_id":              types.StringType,
     }
@@ -65,7 +64,6 @@ func (d *Connectors) ReadFromResponse(ctx context.Context, resp connectors.Conne
         item["data_delay_threshold"] = types.Int64Value(int64(*v.DataDelayThreshold))
         item["proxy_agent_id"] = types.StringValue(v.ProxyAgentId)
         item["networking_method"] = types.StringValue(v.NetworkingMethod)
-        item["local_processing_agent_id"] = types.StringValue(v.HybridDeploymentAgentId)
         item["hybrid_deployment_agent_id"] = types.StringValue(v.HybridDeploymentAgentId)
         item["private_link_id"] = types.StringValue(v.PrivateLinkId)
 
