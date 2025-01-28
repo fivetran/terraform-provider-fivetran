@@ -9,9 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.5.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.4.2...v1.5.0)
 
+## Added
+Support for a new [Transformation Management API](https://fivetran.com/docs/rest-api/api-reference/transformation-management)
+- New resource `fivetran_transformation_project` instead of deprecated `fivetran_dbt_project`
+- New resource `fivetran_transformation` instead of deprecated `fivetran_dbt_transformation`
+- New data source `fivetran_transformation_project` instead of deprecated `fivetran_dbt_project`
+- New data source `fivetran_transformation_projects` instead of deprecated `fivetran_dbt_projects`
+- New data source `fivetran_transformation` instead of deprecated `fivetran_dbt_transformation`
+
 - New data source `fivetran_connectors` that allows to retrieve the list of existing Connections available for the current account.
 - New data source `fivetran_destinations` that allows to retrieve the list of existing Destinations available for the current account.
 - New data source `fivetran_external_logs` that allows to retrieve the list of existing External Logging Services available for the current account.
+
+## Deprecated
+- Datasources `fivetran_dbt_project`, `fivetran_dbt_projects`, `fivetran_dbt_transformation`, `fivetran_dbt_models`
+- Resources `fivetran_dbt_project`, `fivetran_dbt_transformation`
 
 ## [1.4.2](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.4.1...v1.4.2)
 

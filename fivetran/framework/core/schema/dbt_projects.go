@@ -4,6 +4,7 @@ import datasourceSchema "github.com/hashicorp/terraform-plugin-framework/datasou
 
 func DbtProjectsSchema() datasourceSchema.Schema {
 	return datasourceSchema.Schema{
+		DeprecationMessage: "This resource is Deprecated, please follow the 1.5.0 migration guide to update the schema",
 		Attributes: map[string]datasourceSchema.Attribute{
 			"projects": datasourceSchema.ListNestedAttribute{
 				Computed: true,

@@ -1,0 +1,17 @@
+---
+page_title: "Data Source: fivetran_transformation"
+---
+
+# Data Source: fivetran_transformation
+
+Returns transformation details if a valid identifier was provided
+
+## Example Usage
+
+```hcl
+data "fivetran_transformation" "test" {
+	id = "id"
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}
