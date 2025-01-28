@@ -65,13 +65,34 @@ func (r *transformationProject) Create(ctx context.Context, req resource.CreateR
 	if !data.ProjectConfig.IsNull() && !data.ProjectConfig.IsUnknown() {
 		projectConfig := fivetran.NewTransformationProjectConfig()
 		projectConfigAttributes := data.ProjectConfig.Attributes()
-		projectConfig.DbtVersion(projectConfigAttributes["dbt_version"].(basetypes.StringValue).ValueString())
-		projectConfig.DefaultSchema(projectConfigAttributes["default_schema"].(basetypes.StringValue).ValueString())
-		projectConfig.GitRemoteUrl(projectConfigAttributes["git_remote_url"].(basetypes.StringValue).ValueString())
-		projectConfig.FolderPath(projectConfigAttributes["folder_path"].(basetypes.StringValue).ValueString())
-		projectConfig.GitBranch(projectConfigAttributes["git_branch"].(basetypes.StringValue).ValueString())
-		projectConfig.TargetName(projectConfigAttributes["target_name"].(basetypes.StringValue).ValueString())
-		projectConfig.Threads(int(projectConfigAttributes["threads"].(basetypes.Int64Value).ValueInt64()))
+
+		if !projectConfigAttributes["dbt_version"].IsNull() && !projectConfigAttributes["dbt_version"].IsUnknown() {
+			projectConfig.DbtVersion(projectConfigAttributes["dbt_version"].(basetypes.StringValue).ValueString())			
+		}
+
+		if !projectConfigAttributes["default_schema"].IsNull() && !projectConfigAttributes["default_schema"].IsUnknown() {
+			projectConfig.DefaultSchema(projectConfigAttributes["default_schema"].(basetypes.StringValue).ValueString())
+		}
+
+		if !projectConfigAttributes["git_remote_url"].IsNull() && !projectConfigAttributes["git_remote_url"].IsUnknown() {
+			projectConfig.GitRemoteUrl(projectConfigAttributes["git_remote_url"].(basetypes.StringValue).ValueString())
+		}
+
+		if !projectConfigAttributes["folder_path"].IsNull() && !projectConfigAttributes["folder_path"].IsUnknown() {
+			projectConfig.FolderPath(projectConfigAttributes["folder_path"].(basetypes.StringValue).ValueString())
+		}
+	
+		if !projectConfigAttributes["git_branch"].IsNull() && !projectConfigAttributes["git_branch"].IsUnknown() {
+			projectConfig.GitBranch(projectConfigAttributes["git_branch"].(basetypes.StringValue).ValueString())
+		}
+		
+		if !projectConfigAttributes["target_name"].IsNull() && !projectConfigAttributes["target_name"].IsUnknown() {
+			projectConfig.TargetName(projectConfigAttributes["target_name"].(basetypes.StringValue).ValueString())
+		}
+		
+		if !projectConfigAttributes["threads"].IsNull() && !projectConfigAttributes["threads"].IsUnknown() {
+			projectConfig.Threads(int(projectConfigAttributes["threads"].(basetypes.Int64Value).ValueInt64()))
+		}
 
 		if !projectConfigAttributes["environment_vars"].IsUnknown() && !projectConfigAttributes["environment_vars"].IsNull() {
 			evars := []string{}
@@ -166,22 +187,20 @@ func (r *transformationProject) Update(ctx context.Context, req resource.UpdateR
 
 	svc := r.GetClient().NewTransformationProjectUpdate()
 	svc.ProjectId(state.Id.ValueString())
-	
+	hasChanges := false
 	runTestsPlan := core.GetBoolOrDefault(plan.RunTests, true)
 	runTestsState := core.GetBoolOrDefault(state.RunTests, true)
 
 	if runTestsPlan != runTestsState {
+		hasChanges = true
 		svc.RunTests(runTestsPlan)
 	}
 
 	if !plan.ProjectConfig.IsUnknown() && !state.ProjectConfig.Equal(plan.ProjectConfig) {
-		hasChanges := false
 		projectConfig := fivetran.NewTransformationProjectConfig()
 		configPlanAttributes := plan.ProjectConfig.Attributes()
 		configStateAttributes := state.ProjectConfig.Attributes()
 
-		fmt.Printf("configPlanAttributes %v\n", configPlanAttributes)
-		fmt.Printf("configStateAttributes %v\n", configStateAttributes)
 		if !configPlanAttributes["folder_path"].IsNull() &&
 		!configPlanAttributes["folder_path"].IsUnknown() && 
 		!configStateAttributes["folder_path"].(basetypes.StringValue).Equal(configPlanAttributes["folder_path"].(basetypes.StringValue)) {
@@ -226,17 +245,19 @@ func (r *transformationProject) Update(ctx context.Context, req resource.UpdateR
 		}
 	}
 
-	projectResponse, err := svc.Do(ctx)
+	if hasChanges {
+		projectResponse, err := svc.Do(ctx)
 
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Unable to Update Transformation Project Resource.",
-			fmt.Sprintf("%v; code: %v; message: %v", err, projectResponse.Code, projectResponse.Message),
-		)
-		return
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to Update Transformation Project Resource.",
+				fmt.Sprintf("%v; code: %v; message: %v", err, projectResponse.Code, projectResponse.Message),
+			)
+			return
+		}
+
+		plan.ReadFromResponse(ctx, projectResponse)		
 	}
-
-	plan.ReadFromResponse(ctx, projectResponse)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }

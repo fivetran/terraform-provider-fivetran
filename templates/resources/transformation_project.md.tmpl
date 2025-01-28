@@ -82,9 +82,9 @@ resource "fivetran_transformation_project" "project" {
         folder_path = "folder_path"
         dbt_version = "dbt_version"
         default_schema = "default_schema"
-        threads = 0
+        threads = 1
         target_name = "target_name"
-        environment_vars = ["environment_var"]
+        environment_vars = ["DBT_VARIABLE=variable_value"]
     }
 }
 ```

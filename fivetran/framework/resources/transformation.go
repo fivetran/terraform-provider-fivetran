@@ -309,15 +309,16 @@ func (r *transformation) Update(ctx context.Context, req resource.UpdateRequest,
 
 	svc := r.GetClient().NewTransformationUpdate().TransformationId(state.Id.ValueString())
 
+	hasChanges := false
 	pausedPlan := core.GetBoolOrDefault(plan.Paused, true)
 	pausedState := core.GetBoolOrDefault(state.Paused, true)
 
 	if pausedPlan != pausedState {
 		svc.Paused(pausedPlan)
+		hasChanges = true
 	}
 
 	if !plan.Config.IsNull() && !plan.Config.IsUnknown() && !plan.Config.Equal(state.Config) {
-		hasChanges := false
 		config := fivetran.NewTransformationConfig()
 		configPlanAttributes := plan.Config.Attributes()
 		configStateAttributes := state.Config.Attributes()
@@ -388,7 +389,6 @@ func (r *transformation) Update(ctx context.Context, req resource.UpdateRequest,
 	}
 
 	if !plan.Schedule.IsNull() && !plan.Schedule.IsUnknown() && !plan.Schedule.Equal(state.Schedule) {
-		hasChanges := false
 		schedule := fivetran.NewTransformationSchedule()
 		schedulePlanAttributes := plan.Schedule.Attributes()
 		scheduleStateAttributes := state.Schedule.Attributes()
@@ -397,7 +397,7 @@ func (r *transformation) Update(ctx context.Context, req resource.UpdateRequest,
 		!schedulePlanAttributes["time_of_day"].IsUnknown() &&
 		!scheduleStateAttributes["time_of_day"].(basetypes.StringValue).Equal(schedulePlanAttributes["time_of_day"].(basetypes.StringValue)) {
 			hasChanges = true
-			schedule.TimeOfDay(schedulePlanAttributes["time_of_day"].(basetypes.StringValue).ValueString())			
+			schedule.TimeOfDay(schedulePlanAttributes["time_of_day"].(basetypes.StringValue).ValueString())
 		}
 
 		if !schedulePlanAttributes["schedule_type"].IsNull() &&
@@ -467,17 +467,19 @@ func (r *transformation) Update(ctx context.Context, req resource.UpdateRequest,
 		}
 	}
 
-	updateResponse, err := svc.Do(ctx)
+	if hasChanges {
+		updateResponse, err := svc.Do(ctx)
 
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Unable to Update Transformation Resource.",
-			fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
-		)
-		return
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to Update Transformation Resource.",
+				fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
+			)
+			return
+		}
+
+		plan.ReadFromResponse(ctx, updateResponse)
 	}
-
-	plan.ReadFromResponse(ctx, updateResponse)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }

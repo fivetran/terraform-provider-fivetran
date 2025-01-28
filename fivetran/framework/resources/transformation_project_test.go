@@ -77,11 +77,11 @@ func setupMockClientTransformationProjectResourceMappingTest(t *testing.T) {
       "default_schema": "default_schema",
       "git_remote_url": "git_remote_url",
       "folder_path": "folder_path",
-      "git_branch": "git_branch",
-      "threads": 0,
-      "target_name": "target_name",
+      "git_branch": "git_branch1",
+      "threads": 1,
+      "target_name": "target_name1",
       "environment_vars": [
-        "environment_var"
+        "environment_var1"
       ],
       "public_key": "public_key"
     }
@@ -108,7 +108,6 @@ func setupMockClientTransformationProjectResourceMappingTest(t *testing.T) {
             tfmock.AssertKeyExistsAndHasValue(t, config, "dbt_version", "dbt_version")
             tfmock.AssertKeyExistsAndHasValue(t, config, "default_schema", "default_schema")
             tfmock.AssertKeyExistsAndHasValue(t, config, "target_name", "target_name")
-            
 
             transformationProjectResourceMockData = tfmock.CreateMapFromJsonString(t, transformationProjectResponse)
             return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", transformationProjectResourceMockData), nil
@@ -125,12 +124,12 @@ func setupMockClientTransformationProjectResourceMappingTest(t *testing.T) {
             tfmock.AssertKeyExists(t, body, "project_config")
             config := body["project_config"].(map[string]interface{})
             tfmock.AssertKeyDoesNotExist(t, config, "git_remote_url")
-            tfmock.AssertKeyDoesNotExist(t, config, "git_branch")
+            tfmock.AssertKeyExistsAndHasValue(t, config, "git_branch", "git_branch1")
             tfmock.AssertKeyExistsAndHasValue(t, config, "folder_path", "folder_path")
             tfmock.AssertKeyDoesNotExist(t, config, "dbt_version")
             tfmock.AssertKeyDoesNotExist(t, config, "default_schema")
-            tfmock.AssertKeyDoesNotExist(t, config, "target_name")
-            
+            tfmock.AssertKeyExistsAndHasValue(t, config, "target_name", "target_name1")
+
             transformationProjectResourceMockData = tfmock.CreateMapFromJsonString(t, transformationProjectPatchedResponse)
             return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", transformationProjectResourceMockData), nil
         },
@@ -198,13 +197,13 @@ func TestResourceTransformationProjectMappingMock(t *testing.T) {
 
             project_config {
                 git_remote_url = "git_remote_url"
-                git_branch = "git_branch"
+                git_branch = "git_branch1"
                 folder_path = "folder_path"
                 dbt_version = "dbt_version"
                 default_schema = "default_schema"
-                threads = 0
-                target_name = "target_name"
-                environment_vars = ["environment_var"]
+                threads = 1
+                target_name = "target_name1"
+                environment_vars = ["environment_var1"]
             }
         }`,
 
@@ -224,10 +223,10 @@ func TestResourceTransformationProjectMappingMock(t *testing.T) {
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.dbt_version", "dbt_version"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.public_key", "public_key"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.default_schema", "default_schema"),
-            resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.target_name", "target_name"),
-            resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.environment_vars.0", "environment_var"),
+            resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.target_name", "target_name1"),
+            resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.environment_vars.0", "environment_var1"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.git_remote_url", "git_remote_url"),
-            resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.git_branch", "git_branch"),
+            resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.git_branch", "git_branch1"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.folder_path", "folder_path"),
         ),
     }

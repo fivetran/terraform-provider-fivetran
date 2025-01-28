@@ -153,7 +153,6 @@ var (
       "cron": [
         "cron1","cron2"
       ],
-      "interval": 601,
       "smart_syncing": true,
       "schedule_type": "schedule_type1",
       "days_of_week": [
