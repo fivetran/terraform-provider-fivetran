@@ -35,9 +35,18 @@ func upgradeConnectorState(ctx context.Context, req resource.UpgradeStateRequest
 		return
 	}
 
+	resultValue := tftypes.NewValue(tftypes.String, nil)
+	if fromVersion == 3 || fromVersion == 4 {
+		if !rawState["hybrid_deployment_agent_id"].IsNull() {
+			resultValue = rawState["hybrid_deployment_agent_id"]
+		} else if !rawState["local_processing_agent_id"].IsNull() {
+			resultValue = rawState["local_processing_agent_id"]
+		}
+	}
+
 	dynamicValue, err := tfprotov6.NewDynamicValue(
-		getConnectorStateModel(4),
-		tftypes.NewValue(getConnectorStateModel(4), map[string]tftypes.Value{
+		getConnectorStateModel(5),
+		tftypes.NewValue(getConnectorStateModel(5), map[string]tftypes.Value{
 			"id":                        rawState["id"],
 			"name":                      rawState["name"],
 			"connected_by":              rawState["connected_by"],
@@ -47,11 +56,10 @@ func upgradeConnectorState(ctx context.Context, req resource.UpgradeStateRequest
 			"timeouts":                  rawState["timeouts"],
 			"networking_method":         tftypes.NewValue(tftypes.String, nil),
 			"proxy_agent_id":            tftypes.NewValue(tftypes.String, nil),
-			"local_processing_agent_id": tftypes.NewValue(tftypes.String, nil),
 			"private_link_id":           tftypes.NewValue(tftypes.String, nil),
 			"data_delay_sensitivity":    tftypes.NewValue(tftypes.String, nil),
 			"data_delay_threshold":      tftypes.NewValue(tftypes.Number, nil),
-			"hybrid_deployment_agent_id": rawState["local_processing_agent_id"],
+			"hybrid_deployment_agent_id": resultValue,
 			"run_setup_tests":    convertStringStateValueToBool("run_setup_tests", rawState["run_setup_tests"], resp.Diagnostics),
 			"trust_fingerprints": convertStringStateValueToBool("trust_fingerprints", rawState["trust_fingerprints"], resp.Diagnostics),
 			"trust_certificates": convertStringStateValueToBool("trust_certificates", rawState["trust_certificates"], resp.Diagnostics),
@@ -99,14 +107,16 @@ func getConnectorStateModel(version int) tftypes.Type {
 			},
 		},
 	}
-	if version == 3 || version == 4 {
+	if version == 5 || version == 3 || version == 4 {
 		base["destination_schema"] = dsObj
 		base["run_setup_tests"] = tftypes.Bool
 		base["trust_certificates"] = tftypes.Bool
 		base["trust_fingerprints"] = tftypes.Bool
 		base["proxy_agent_id"] = tftypes.String
 		base["networking_method"] = tftypes.String
-		base["local_processing_agent_id"] = tftypes.String
+		if version == 5 {
+			base["local_processing_agent_id"] = tftypes.String
+		}
         base["private_link_id"] = tftypes.String
         base["data_delay_sensitivity"] = tftypes.String
         base["data_delay_threshold"] = tftypes.Number

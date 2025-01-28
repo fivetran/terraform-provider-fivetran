@@ -15,7 +15,6 @@ type DestinationDatasourceModel struct {
 	TimeZoneOffset				 types.String `tfsdk:"time_zone_offset"`
 	SetupStatus    				 types.String `tfsdk:"setup_status"`
 	DaylightSavingTimeEnabled	 types.Bool   `tfsdk:"daylight_saving_time_enabled"`
-    LocalProcessingAgentId       types.String `tfsdk:"local_processing_agent_id"`
     HybridDeploymentAgentId      types.String `tfsdk:"hybrid_deployment_agent_id"`
     NetworkingMethod             types.String `tfsdk:"networking_method"`
     PrivateLinkId                types.String `tfsdk:"private_link_id"`
@@ -50,13 +49,6 @@ func (d *DestinationDatasourceModel) SetPrivateLinkId(value string) {
         d.PrivateLinkId = types.StringValue(value)
     } else {
         d.PrivateLinkId = types.StringNull()
-    }
-}
-func (d *DestinationDatasourceModel) SetLocalProcessingAgentId(value string) {
-    if value != "" {
-        d.LocalProcessingAgentId = types.StringValue(value)
-    } else {
-        d.LocalProcessingAgentId = types.StringNull()
     }
 }
 func (d *DestinationDatasourceModel) SetHybridDeploymentAgentId(value string) {

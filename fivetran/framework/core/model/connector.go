@@ -39,7 +39,6 @@ type ConnectorDatasourceModel struct {
     ProxyAgentId             types.String `tfsdk:"proxy_agent_id"`
     NetworkingMethod         types.String `tfsdk:"networking_method"`
     HybridDeploymentAgentId  types.String `tfsdk:"hybrid_deployment_agent_id"`
-    LocalProcessingAgentId   types.String `tfsdk:"local_processing_agent_id"`
     PrivateLinkId            types.String `tfsdk:"private_link_id"`
     Status types.Object `tfsdk:"status"`
 
@@ -143,7 +142,6 @@ type ConnectorResourceModel struct {
 
 	ProxyAgentId           types.String `tfsdk:"proxy_agent_id"`
 	NetworkingMethod       types.String `tfsdk:"networking_method"`
-	LocalProcessingAgentId types.String `tfsdk:"local_processing_agent_id"`
     HybridDeploymentAgentId  types.String `tfsdk:"hybrid_deployment_agent_id"`
     PrivateLinkId          types.String `tfsdk:"private_link_id"`
 
@@ -231,12 +229,6 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
         d.DataDelayThreshold = types.Int64Null()
     }
     
-	if c.LocalProcessingAgentId != "" && !d.LocalProcessingAgentId.IsUnknown() && !d.LocalProcessingAgentId.IsNull(){
-		d.LocalProcessingAgentId = types.StringValue(c.HybridDeploymentAgentId)
-	} else {
-		d.LocalProcessingAgentId = types.StringNull()
-	}
-
 	if c.HybridDeploymentAgentId != "" {
 		d.HybridDeploymentAgentId = types.StringValue(c.HybridDeploymentAgentId)
 	} else {
@@ -305,12 +297,6 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
 		d.NetworkingMethod = types.StringValue(c.NetworkingMethod)
 	}
 
-	if c.HybridDeploymentAgentId != "" {
-		d.LocalProcessingAgentId = types.StringValue(c.HybridDeploymentAgentId)
-	} else {
-		d.LocalProcessingAgentId = types.StringNull()
-	}
-
     if c.HybridDeploymentAgentId != "" {
         d.HybridDeploymentAgentId = types.StringValue(c.HybridDeploymentAgentId)
     } else {
@@ -340,7 +326,6 @@ type ConnectorModelContainer struct {
     ProxyAgentId            string
     NetworkingMethod        string
     HybridDeploymentAgentId string
-    LocalProcessingAgentId  string
     PrivateLinkId           string
 
     DataDelaySensitivity string
@@ -377,10 +362,6 @@ func (c *ConnectorModelContainer) ReadFromResponseData(data connectors.DetailsRe
 
     if data.PrivateLinkId != "" {
         c.PrivateLinkId = data.PrivateLinkId
-	}
-
-	if data.HybridDeploymentAgentId != "" && c.LocalProcessingAgentId != "" {
-		c.LocalProcessingAgentId = data.HybridDeploymentAgentId
 	}
 
     if data.HybridDeploymentAgentId != "" {

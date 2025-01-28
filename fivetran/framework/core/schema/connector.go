@@ -107,11 +107,6 @@ func ConnectorAttributesSchema() core.Schema {
 				ValueType:   	core.StringEnum,
 				Description: 	"Possible values: Directly, SshTunnel, ProxyAgent.",
 			},
-			"local_processing_agent_id": {
-				ValueType:   core.String,
-				DeprecationMessage: "This field is Deprecated, please follow the 1.4.0 migration guide to update the schema",
-				Description: "(Deprecated) The hybrid deployment agent ID that refers to the controller created for the group the connection belongs to. If the value is specified, the system will try to associate the connection with an existing agent.",
-			},
 			"hybrid_deployment_agent_id": {
 				ValueType:   core.String,
 				Description: "The hybrid deployment agent ID that refers to the controller created for the group the connection belongs to. If the value is specified, the system will try to associate the connection with an existing agent.",

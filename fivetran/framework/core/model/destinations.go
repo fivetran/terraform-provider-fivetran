@@ -22,7 +22,6 @@ func (d *Destinations) ReadFromResponse(ctx context.Context, resp destinations.D
         "time_zone_offset":             types.StringType,
         "setup_status":                 types.StringType,
         "networking_method":            types.StringType,
-        "local_processing_agent_id":    types.StringType,
         "hybrid_deployment_agent_id":   types.StringType,
         "private_link_id":              types.StringType,
         "daylight_saving_time_enabled": types.BoolType,
@@ -43,7 +42,6 @@ func (d *Destinations) ReadFromResponse(ctx context.Context, resp destinations.D
         item["time_zone_offset"] = types.StringValue(v.TimeZoneOffset)
         item["setup_status"] = types.StringValue(v.SetupStatus)
         item["private_link_id"] = types.StringValue(v.PrivateLinkId)
-        item["local_processing_agent_id"] = types.StringValue(v.HybridDeploymentAgentId)
         item["hybrid_deployment_agent_id"] = types.StringValue(v.HybridDeploymentAgentId)
         item["networking_method"] = types.StringValue(v.NetworkingMethod)
         item["daylight_saving_time_enabled"] = types.BoolValue(v.DaylightSavingTimeEnabled)

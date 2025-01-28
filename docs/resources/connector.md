@@ -73,7 +73,6 @@ resource "fivetran_connector" "amplitude" {
 - `data_delay_threshold` (Number) Custom sync delay notification threshold in minutes. The default value is 0. This parameter is only used when data_delay_sensitivity set to CUSTOM.
 - `destination_schema` (Block, Optional) (see [below for nested schema](#nestedblock--destination_schema))
 - `hybrid_deployment_agent_id` (String) The hybrid deployment agent ID that refers to the controller created for the group the connection belongs to. If the value is specified, the system will try to associate the connection with an existing agent.
-- `local_processing_agent_id` (String, Deprecated) (Deprecated) The hybrid deployment agent ID that refers to the controller created for the group the connection belongs to. If the value is specified, the system will try to associate the connection with an existing agent.
 - `networking_method` (String) Possible values: Directly, SshTunnel, ProxyAgent.
 - `private_link_id` (String) The private link ID.
 - `proxy_agent_id` (String) The proxy agent ID.
