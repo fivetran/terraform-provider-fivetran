@@ -2,7 +2,6 @@ package model
 
 import (
     "context"
-    "fmt"
 
     sdk "github.com/fivetran/go-fivetran/transformations"
     "github.com/hashicorp/terraform-plugin-framework/attr"
