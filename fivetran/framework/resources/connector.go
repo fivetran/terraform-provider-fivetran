@@ -36,7 +36,7 @@ func (r *connector) Schema(ctx context.Context, req resource.SchemaRequest, resp
 	resp.Schema = schema.Schema{
 		Attributes: fivetranSchema.ConnectorAttributesSchema().GetResourceSchema(),
 		Blocks:     fivetranSchema.ConnectorResourceBlocks(ctx),
-		Version:    3,
+		Version:    4,
 	}
 }
 
@@ -50,35 +50,29 @@ func (r *connector) UpgradeState(ctx context.Context) map[int64]resource.StateUp
 	v0ConfigTfTypes["servers"] = tftypes.String
 
 	return map[int64]resource.StateUpgrader{
-		// State upgrade implementation from 0 (prior state version) to 3 (Schema.Version)
+		// State upgrade implementation from 0 (prior state version) to 4 (Schema.Version)
 		0: {
 			// Optionally, the PriorSchema field can be defined.
 			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
 				upgradeConnectorState(ctx, req, resp, 0)
 			},
 		},
-		// State upgrade implementation from 1 (prior state version) to 3 (Schema.Version)
+		// State upgrade implementation from 1 (prior state version) to 4 (Schema.Version)
 		1: {
 			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
 				upgradeConnectorState(ctx, req, resp, 1)
 			},
 		},
-		// State upgrade implementation from 2 (prior state version) to 3 (Schema.Version)
+		// State upgrade implementation from 2 (prior state version) to 4 (Schema.Version)
 		2: {
 			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
 				upgradeConnectorState(ctx, req, resp, 2)
 			},
 		},
-		// State upgrade implementation from 2 (prior state version) to 4 (Schema.Version)
+		// State upgrade implementation from 3 (prior state version) to 4 (Schema.Version)
 		3: {
 			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
 				upgradeConnectorState(ctx, req, resp, 3)
-			},
-		},
-		// State upgrade implementation from 3 or 4 (prior state version) to 5 (Schema.Version)
-		4: {
-			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
-				upgradeConnectorState(ctx, req, resp, 4)
 			},
 		},
 	}

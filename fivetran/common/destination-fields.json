@@ -51,10 +51,39 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "adls": "Authentication type",
          "databricks": "Authentication type",
+         "new_s3_datalake": "Authentication type",
+         "onelake": "Authentication type",
          "panoply": "",
          "periscope_warehouse": "",
          "redshift": "Authentication type. Default value: `PASSWORD`."
+      },
+      "api_field": ""
+   },
+   "aws_access_key_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "new_s3_datalake": "AWS access key to access the S3 bucket and AWS Glue"
+      },
+      "api_field": ""
+   },
+   "aws_secret_access_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "new_s3_datalake": "AWS secret access key to access the S3 bucket and AWS Glue"
       },
       "api_field": ""
    },
@@ -89,7 +118,7 @@
          "big_query": "Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
          "big_query_dts": "Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
          "managed_big_query": "Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
-         "new_s3_datalake": "The name of the bucket to be used as destination"
+         "new_s3_datalake": "(Immutable) The name of the bucket to be used as destination"
       },
       "api_field": ""
    },
@@ -102,7 +131,10 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "databricks": "Catalog name"
+         "adls": "Catalog name",
+         "databricks": "Catalog name",
+         "new_s3_datalake": "Catalog name",
+         "onelake": "Catalog name"
       },
       "api_field": ""
    },
@@ -220,7 +252,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "adls": "Container to store delta table files",
+         "adls": "(Immutable) Container to store delta table files",
          "onelake": "Workspace name to store delta table files"
       },
       "api_field": ""
@@ -310,6 +342,21 @@
          "snowflake": "Database name",
          "sql_server_rds_warehouse": "Database name",
          "sql_server_warehouse": "Database name"
+      },
+      "api_field": ""
+   },
+   "databricks_connection_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "adls": "Databricks Connection method. Default value: `Directly`.",
+         "new_s3_datalake": "Databricks Connection method. Default value: `Directly`.",
+         "onelake": "Databricks Connection method. Default value: `Directly`."
       },
       "api_field": ""
    },
@@ -435,7 +482,10 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "databricks": "HTTP path"
+         "adls": "HTTP path",
+         "databricks": "HTTP path",
+         "new_s3_datalake": "HTTP path",
+         "onelake": "HTTP path"
       },
       "api_field": ""
    },
@@ -478,6 +528,19 @@
       },
       "api_field": ""
    },
+   "lakehouse_guid": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "onelake": "(Immutable) OneLake lakehouse GUID"
+      },
+      "api_field": ""
+   },
    "lakehouse_name": {
       "readonly": false,
       "sensitive": false,
@@ -487,7 +550,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "onelake": "Name of your lakehouse"
+         "onelake": "(Immutable) Name of your lakehouse"
       },
       "api_field": ""
    },
@@ -528,7 +591,10 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "databricks": "OAuth 2.0 client ID"
+         "adls": "OAuth 2.0 client ID",
+         "databricks": "OAuth 2.0 client ID",
+         "new_s3_datalake": "OAuth 2.0 client ID",
+         "onelake": "OAuth 2.0 client ID"
       },
       "api_field": ""
    },
@@ -541,7 +607,10 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "databricks": "OAuth 2.0 secret"
+         "adls": "OAuth 2.0 secret",
+         "databricks": "OAuth 2.0 secret",
+         "new_s3_datalake": "OAuth 2.0 secret",
+         "onelake": "OAuth 2.0 secret"
       },
       "api_field": ""
    },
@@ -598,7 +667,10 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "databricks": "Personal access token"
+         "adls": "Personal access token",
+         "databricks": "Personal access token",
+         "new_s3_datalake": "Personal access token",
+         "onelake": "Personal access token"
       },
       "api_field": ""
    },
@@ -611,6 +683,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "adls": "Server port number",
          "aurora_postgres_warehouse": "Server port number",
          "aurora_warehouse": "Server port number",
          "azure_postgres_warehouse": "Server port number",
@@ -622,6 +695,8 @@
          "maria_warehouse": "Server port number",
          "mysql_rds_warehouse": "Server port number",
          "mysql_warehouse": "Server port number",
+         "new_s3_datalake": "Server port number",
+         "onelake": "Server port number",
          "panoply": "Server port number",
          "periscope_warehouse": "Server port number",
          "postgres_gcp_warehouse": "Server port number",
@@ -643,9 +718,9 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "adls": "path/to/data within the container",
-         "new_s3_datalake": "Prefix path of the bucket for which you have configured access policy. It is not required if access has been granted to entire Bucket in the access policy",
-         "onelake": "path/to/data within your lakehouse inside the Files directory"
+         "adls": "(Immutable) path/to/data within the container",
+         "new_s3_datalake": "(Immutable) Prefix path of the bucket for which you have configured access policy. It is not required if access has been granted to entire Bucket in the access policy",
+         "onelake": "(Immutable) path/to/data within your lakehouse inside the Files directory"
       },
       "api_field": ""
    },
@@ -992,7 +1067,25 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "databricks": "Server name"
+         "adls": "Server Host name",
+         "databricks": "Server name",
+         "new_s3_datalake": "Server host name",
+         "onelake": "Server Host name"
+      },
+      "api_field": ""
+   },
+   "should_maintain_tables_in_databricks": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "adls": "Should maintain tables in Databricks ",
+         "new_s3_datalake": "Should maintain tables in Databricks ",
+         "onelake": "Should maintain tables in Databricks "
       },
       "api_field": ""
    },
@@ -1046,8 +1139,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "adls": "Storage account for Azure Data Lake Storage Gen2 name",
-         "onelake": "Storage account for Azure Data Lake Storage Gen2 name"
+         "adls": "(Immutable) Storage account for Azure Data Lake Storage Gen2 name",
+         "onelake": "(Immutable) Storage account for Azure Data Lake Storage Gen2 name"
       },
       "api_field": ""
    },
@@ -1196,6 +1289,19 @@
          "snowflake": "Database user name",
          "sql_server_rds_warehouse": "Database user name",
          "sql_server_warehouse": "Database user name"
+      },
+      "api_field": ""
+   },
+   "workspace_guid": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "onelake": "(Immutable) OneLake workspace GUID"
       },
       "api_field": ""
    },

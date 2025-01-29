@@ -33,6 +33,102 @@ The deprecated resources, datasources and fields removed:
 - Field `fivetran_connector.local_processing_agent_id`.
 - Field `fivetran_destination.local_processing_agent_id`.
 
+New destination services supported:
+- Supported service: `milvus`
+ 
+New connection services supported:
+- Supported service: `acculynx`
+- Supported service: `acumatica`
+- Supported service: `adyen`
+- Supported service: `akeneo`
+- Supported service: `amazon_dsp`
+- Supported service: `ashby`
+- Supported service: `aveva_pi`
+- Supported service: `backbone_plm`
+- Supported service: `bigin_by_zoho_crm`
+- Supported service: `bigmarker`
+- Supported service: `bing_webmaster_tools`
+- Supported service: `canvas_data_2_by_instructure`
+- Supported service: `clazar`
+- Supported service: `clockify`
+- Supported service: `clockodo`
+- Supported service: `cloudflare_analytics`
+- Supported service: `cloudtalk`
+- Supported service: `compliance_checkpoint`
+- Supported service: `connector_sdk`
+- Supported service: `constant_contact`
+- Supported service: `cornerstone`
+- Supported service: `criteo_retail_media`
+- Supported service: `deposco`
+- Supported service: `dialpad`
+- Supported service: `ehr`
+- Supported service: `everflow`
+- Supported service: `expensein`
+- Supported service: `fillout`
+- Supported service: `flywheel_digital`
+- Supported service: `formstack`
+- Supported service: `google_classroom`
+- Supported service: `healthie`
+- Supported service: `hilti_ontrack`
+- Supported service: `jama_software`
+- Supported service: `jibble`
+- Supported service: `jobnimbus`
+- Supported service: `khoros_communities`
+- Supported service: `khoros_marketing`
+- Supported service: `leap_crm`
+- Supported service: `line_ads`
+- Supported service: `lucca`
+- Supported service: `maileon`
+- Supported service: `mailjet`
+- Supported service: `malomo`
+- Supported service: `matomo`
+- Supported service: `microsoft_power_bi`
+- Supported service: `nice`
+- Supported service: `okendo`
+- Supported service: `oncehub`
+- Supported service: `packiyo`
+- Supported service: `pandadoc`
+- Supported service: `phoenix_ads`
+- Supported service: `pigment`
+- Supported service: `placerai`
+- Supported service: `planhat`
+- Supported service: `podio`
+- Supported service: `procore`
+- Supported service: `prosperstack`
+- Supported service: `qmatic_data_connect`
+- Supported service: `reviewsai`
+- Supported service: `rokt`
+- Supported service: `ruddr`
+- Supported service: `safebase`
+- Supported service: `sana`
+- Supported service: `sentry`
+- Supported service: `shareasale`
+- Supported service: `shipnetwork`
+- Supported service: `singlestore_source`
+- Supported service: `skimlinks`
+- Supported service: `stickyio`
+- Supported service: `sugarcrm`
+- Supported service: `the_movie_database`
+- Supported service: `tive`
+- Supported service: `tremendous`
+- Supported service: `triple_whale`
+- Supported service: `venminder`
+- Supported service: `vimeo`
+- Supported service: `visma`
+- Supported service: `wicked_reports`
+- Supported service: `workleap_officevibe`
+- Supported service: `xactly`
+- Supported service: `zip`
+- Supported service: `zonka_feedback`
+
+New connection config fields supported:
+- Added field `fivetran_connector.config.aws_secret_access_key` for services: `new_s3_datalake`.
+- Added field `fivetran_connector.config.lakehouse_guid` for services: `onelake`.
+- Added field `fivetran_connector.config.workspace_guid` for services: `onelake`.
+- Added field `fivetran_connector.config.should_maintain_tables_in_databricks` for services: `adls`, `new_s3_datalake`, `onelake`.
+- Added field `fivetran_connector.config.databricks_connection_type` for services: `adls`, `new_s3_datalake`, `onelake`.
+- Added field `fivetran_connector.config.aws_access_key_id` for services: `new_s3_datalake`.
+
 ## [1.4.2](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.4.1...v1.4.2)
 
 ## Added

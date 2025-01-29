@@ -36,13 +36,13 @@ func (r *destination) Schema(ctx context.Context, req resource.SchemaRequest, re
 	resp.Schema = schema.Schema{
 		Attributes: fivetranSchema.DestinationAttributesSchema().GetResourceSchema(),
 		Blocks:     fivetranSchema.DestinationResourceBlocks(ctx),
-		Version:    1,
+		Version:    2,
 	}
 }
 
 func (r *destination) UpgradeState(ctx context.Context) map[int64]resource.StateUpgrader {
 	return map[int64]resource.StateUpgrader{
-		// State upgrade implementation from 0 (prior state version) to 3 (Schema.Version)
+		// State upgrade implementation from 0 (prior state version) to 2 (Schema.Version)
 		0: {
 			// Optionally, the PriorSchema field can be defined.
 			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
@@ -52,16 +52,6 @@ func (r *destination) UpgradeState(ctx context.Context) map[int64]resource.State
 		1: {
 			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
 				upgradeDestinationState(ctx, req, resp, 1)
-			},
-		},
-		2: {
-			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
-				upgradeDestinationState(ctx, req, resp, 2)
-			},
-		},
-		3: {
-			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
-				upgradeDestinationState(ctx, req, resp, 3)
 			},
 		},
 	}
