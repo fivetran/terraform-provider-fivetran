@@ -32,7 +32,7 @@ func upgradeDestinationState(ctx context.Context, req resource.UpgradeStateReque
 	}
 
 	resultValue := tftypes.NewValue(tftypes.String, nil)
-	if fromVersion == 1 || fromVersion == 2 {
+	if fromVersion == 1 {
 		if !rawState["hybrid_deployment_agent_id"].IsNull() {
 			resultValue = rawState["hybrid_deployment_agent_id"]
 		} else if !rawState["local_processing_agent_id"].IsNull() {
@@ -40,9 +40,18 @@ func upgradeDestinationState(ctx context.Context, req resource.UpgradeStateReque
 		}
 	}
 
+	config := rawState["config"]
+	if fromVersion < 1 {
+		config = convertSetToBlock(
+				"config",
+				rawState["config"],
+				model.GetTfTypesDestination(common.GetDestinationFieldsMap(), 1),
+				model.GetTfTypesDestination(common.GetDestinationFieldsMap(), fromVersion), resp.Diagnostics)
+	}
+
 	dynamicValue, err := tfprotov6.NewDynamicValue(
-		getDestinationStateModel(4),
-		tftypes.NewValue(getDestinationStateModel(4), map[string]tftypes.Value{
+		getDestinationStateModel(2),
+		tftypes.NewValue(getDestinationStateModel(2), map[string]tftypes.Value{
 			"id":                           rawState["id"],
 			"group_id":                     rawState["group_id"],
 			"service":                      rawState["service"],
@@ -57,12 +66,7 @@ func upgradeDestinationState(ctx context.Context, req resource.UpgradeStateReque
 			"run_setup_tests":    convertStringStateValueToBool("run_setup_tests", rawState["run_setup_tests"], resp.Diagnostics),
 			"trust_fingerprints": convertStringStateValueToBool("trust_fingerprints", rawState["trust_fingerprints"], resp.Diagnostics),
 			"trust_certificates": convertStringStateValueToBool("trust_certificates", rawState["trust_certificates"], resp.Diagnostics),
-
-			"config": convertSetToBlock(
-				"config",
-				rawState["config"],
-				model.GetTfTypesDestination(common.GetDestinationFieldsMap(), 1),
-				model.GetTfTypesDestination(common.GetDestinationFieldsMap(), fromVersion), resp.Diagnostics),
+			"config": config,
 		}),
 	)
 
@@ -84,23 +88,26 @@ func getDestinationStateModel(version int) tftypes.Type {
 			},
 		},
 	}
-	if version == 3 || version == 4 {
+
+	if version == 2 {
 		base["run_setup_tests"] = tftypes.Bool
 		base["trust_certificates"] = tftypes.Bool
 		base["trust_fingerprints"] = tftypes.Bool
 		base["daylight_saving_time_enabled"] = tftypes.Bool
 		base["hybrid_deployment_agent_id"] = tftypes.String
 		base["networking_method"] = tftypes.String
+		base["private_link_id"] = tftypes.String
 
 		base["config"] = tftypes.Object{AttributeTypes: model.GetTfTypesDestination(common.GetDestinationFieldsMap(), 1)}
-	} else if version == 1 || version == 2 {
+	} else if version == 1 {
 		base["run_setup_tests"] = tftypes.Bool
 		base["trust_certificates"] = tftypes.Bool
 		base["trust_fingerprints"] = tftypes.Bool
 		base["daylight_saving_time_enabled"] = tftypes.Bool
-		base["local_processing_agent_id"] = tftypes.String
 		base["hybrid_deployment_agent_id"] = tftypes.String
+		base["local_processing_agent_id"] = tftypes.String
 		base["networking_method"] = tftypes.String
+		base["private_link_id"] = tftypes.String
 
 		base["config"] = tftypes.Object{AttributeTypes: model.GetTfTypesDestination(common.GetDestinationFieldsMap(), 1)}
 	} else {
