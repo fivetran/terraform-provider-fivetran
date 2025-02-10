@@ -71,7 +71,7 @@ func (d *Transformation) ReadFromResponse(ctx context.Context, resp sdk.Transfor
     if resp.Data.TransformationSchedule.ScheduleType == "INTERVAL" || resp.Data.TransformationSchedule.Interval > 0 {
         scheduleAttrValues["interval"] = types.Int64Value(int64(resp.Data.TransformationSchedule.Interval))
     } else {
-        if !d.Schedule.Attributes()["interval"].IsUnknown() {
+        if !d.Schedule.IsNull() && !d.Schedule.Attributes()["interval"].IsUnknown() {
             scheduleAttrValues["interval"] = d.Schedule.Attributes()["interval"]
         } else {
             scheduleAttrValues["interval"] = types.Int64Null()
@@ -81,7 +81,7 @@ func (d *Transformation) ReadFromResponse(ctx context.Context, resp sdk.Transfor
     if resp.Data.TransformationSchedule.TimeOfDay != "" {
         scheduleAttrValues["time_of_day"] = types.StringValue(resp.Data.TransformationSchedule.TimeOfDay)
     } else {
-        if !d.Schedule.Attributes()["time_of_day"].IsUnknown() {
+        if !d.Schedule.IsNull() && !d.Schedule.Attributes()["time_of_day"].IsUnknown() {
             scheduleAttrValues["time_of_day"] = d.Schedule.Attributes()["time_of_day"]
         } else {
             scheduleAttrValues["time_of_day"] = types.StringNull()
@@ -91,7 +91,7 @@ func (d *Transformation) ReadFromResponse(ctx context.Context, resp sdk.Transfor
     if resp.Data.TransformationSchedule.ScheduleType != "" {
         scheduleAttrValues["schedule_type"] = types.StringValue(resp.Data.TransformationSchedule.ScheduleType)
     } else {
-        if !d.Schedule.Attributes()["schedule_type"].IsUnknown() {
+        if !d.Schedule.IsNull() && !d.Schedule.Attributes()["schedule_type"].IsUnknown() {
             scheduleAttrValues["schedule_type"] = d.Schedule.Attributes()["schedule_type"]
         } else {
             scheduleAttrValues["schedule_type"] = types.StringNull()
@@ -109,14 +109,14 @@ func (d *Transformation) ReadFromResponse(ctx context.Context, resp sdk.Transfor
             scheduleAttrValues["cron"] = types.SetNull(types.StringType)
         }
     } else {
-        if !d.Schedule.Attributes()["cron"].IsUnknown() {
+        if !d.Schedule.IsNull() && !d.Schedule.Attributes()["cron"].IsUnknown() {
             scheduleAttrValues["cron"] = d.Schedule.Attributes()["cron"]
         } else {
             scheduleAttrValues["cron"] = types.SetNull(types.StringType)
         }
     }
 
-    if resp.Data.TransformationSchedule.ConnectionIds != nil && resp.Data.ProjectType == "DBT_CORE" {
+    if resp.Data.TransformationSchedule.ConnectionIds != nil && d.ProjectType.ValueString() == "DBT_CORE" {
         vars := []attr.Value{}
         for _, el := range resp.Data.TransformationSchedule.ConnectionIds {
             vars = append(vars, types.StringValue(el))
@@ -127,7 +127,7 @@ func (d *Transformation) ReadFromResponse(ctx context.Context, resp sdk.Transfor
             scheduleAttrValues["connection_ids"] = types.SetNull(types.StringType)
         }
     } else {
-        if !d.Schedule.Attributes()["connection_ids"].IsUnknown() {
+        if !d.Schedule.IsNull() && !d.Schedule.Attributes()["connection_ids"].IsNull() {
             scheduleAttrValues["connection_ids"] = d.Schedule.Attributes()["connection_ids"]
         } else {
             scheduleAttrValues["connection_ids"] = types.SetNull(types.StringType)
@@ -145,7 +145,7 @@ func (d *Transformation) ReadFromResponse(ctx context.Context, resp sdk.Transfor
             scheduleAttrValues["days_of_week"] = types.SetNull(types.StringType)
         }
     } else {
-        if !d.Schedule.Attributes()["days_of_week"].IsUnknown() {
+        if !d.Schedule.IsNull() && !d.Schedule.Attributes()["days_of_week"].IsUnknown() {
             scheduleAttrValues["days_of_week"] = d.Schedule.Attributes()["days_of_week"]
         } else {
             scheduleAttrValues["days_of_week"] = types.SetNull(types.StringType)

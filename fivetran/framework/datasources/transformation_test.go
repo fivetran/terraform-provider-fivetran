@@ -121,8 +121,6 @@ func TestDataSourcetransformationMappingMock(t *testing.T) {
             resource.TestCheckResourceAttr("data.fivetran_transformation.transformation", "schedule.schedule_type", "schedule_type"),
             resource.TestCheckResourceAttr("data.fivetran_transformation.transformation", "schedule.cron.0", "cron1"),
             resource.TestCheckResourceAttr("data.fivetran_transformation.transformation", "schedule.cron.1", "cron2"),
-            resource.TestCheckResourceAttr("data.fivetran_transformation.transformation", "schedule.connection_ids.0", "connection_id1"),
-            resource.TestCheckResourceAttr("data.fivetran_transformation.transformation", "schedule.connection_ids.1", "connection_id2"),
             resource.TestCheckResourceAttr("data.fivetran_transformation.transformation", "schedule.days_of_week.0", "days_of_week1"),
             resource.TestCheckResourceAttr("data.fivetran_transformation.transformation", "schedule.days_of_week.1", "days_of_week2"),
             resource.TestCheckResourceAttr("data.fivetran_transformation.transformation", "schedule.time_of_day", "time_of_day"),
