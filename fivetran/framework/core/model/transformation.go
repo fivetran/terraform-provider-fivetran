@@ -116,7 +116,7 @@ func (d *Transformation) ReadFromResponse(ctx context.Context, resp sdk.Transfor
         }
     }
 
-    if resp.Data.TransformationSchedule.ConnectionIds != nil {
+    if resp.Data.TransformationSchedule.ConnectionIds != nil && d.ProjectType == "DBT_CORE" {
         vars := []attr.Value{}
         for _, el := range resp.Data.TransformationSchedule.ConnectionIds {
             vars = append(vars, types.StringValue(el))
