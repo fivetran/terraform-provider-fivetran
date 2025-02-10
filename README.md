@@ -6,7 +6,7 @@ Checkout our [CHANGELOG](CHANGELOG.md) for information about the latest bug fixe
 
 Make sure you read the Fivetran REST API [documentation](https://fivetran.com/docs/rest-api) before using the Provider.
 
-**NOTE**: `terraform-provider-fivetran` is in [BETA](https://en.wikipedia.org/wiki/Software_release_life_cycle#Beta) development stage. Future versions may introduce minor changes and bug-fixes. 
+**NOTE**: `terraform-provider-fivetran` is in [BETA](https://en.wikipedia.org/wiki/Software_release_life_cycle#Beta) development stage. Future versions may introduce minor changes and bug fixes. 
 
 ## Known issues
 
