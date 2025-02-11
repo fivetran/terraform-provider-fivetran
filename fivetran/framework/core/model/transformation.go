@@ -127,11 +127,7 @@ func (d *Transformation) ReadFromResponse(ctx context.Context, resp sdk.Transfor
             scheduleAttrValues["connection_ids"] = types.SetNull(types.StringType)
         }
     } else {
-        if !d.Schedule.IsNull() && !d.Schedule.Attributes()["connection_ids"].IsNull() {
-            scheduleAttrValues["connection_ids"] = d.Schedule.Attributes()["connection_ids"]
-        } else {
-            scheduleAttrValues["connection_ids"] = types.SetNull(types.StringType)
-        }
+        scheduleAttrValues["connection_ids"] = types.SetNull(types.StringType)
     }
 
     if resp.Data.TransformationSchedule.DaysOfWeek != nil {
