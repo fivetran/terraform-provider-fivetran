@@ -123,6 +123,10 @@ var (
         "days_of_week1",
         "days_of_week2"
       ],
+      "connection_ids": [
+        "connection_id1",
+        "connection_id2"
+      ],
       "time_of_day": "time_of_day1"
     },
     "type": "QUICKSTART",
@@ -158,6 +162,10 @@ var (
       "days_of_week": [
         "days_of_week1",
         "days_of_week2"
+      ],
+      "connection_ids": [
+        "connection_id1",
+        "connection_id2"
       ],
       "time_of_day": "14:00"
     },
