@@ -215,3 +215,11 @@ func (d *Transformation) ReadFromResponse(ctx context.Context, resp sdk.Transfor
 
     d.Config = types.ObjectValueMust(configAttrs, configAttrValues)
 }
+
+func stringListToAttrList(in []string) []attr.Value {
+    result := []attr.Value{}
+    for _, i := range in {
+        result = append(result, types.StringValue(i))
+    }
+    return result
+}
