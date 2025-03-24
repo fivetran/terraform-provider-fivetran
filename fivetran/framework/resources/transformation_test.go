@@ -15,6 +15,7 @@ var (
     transformationGitPatchHandler           *mock.Handler
     transformationQuickstartPatchHandler    *mock.Handler
     transformationQuickstartPostHandler     *mock.Handler
+    transformationData                      map[string]interface{}
     transformationGitData                   map[string]interface{}
     transformationQuickstartData            map[string]interface{}
 
