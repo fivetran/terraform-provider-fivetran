@@ -85,14 +85,14 @@ func GetResource(t *testing.T, s *terraform.State, resourceName string) *terrafo
 
 func cleanupAccount() {
 	cleanupUsers()
-	cleanupExternalLogging("")
-	cleanupDestinations()
-	cleanupDbtProjects()
-	cleanupGroups()
 	cleanupWebhooks()
 	cleanupTeams()
+	cleanupConnections()
 	cleanupProxyAgents()
 	cleanupPrivateLinks()
+	cleanupExternalLogging()
+	cleanupDestinations()
+	cleanupGroups()
 }
 
 func isPredefinedUserExist() bool {
@@ -112,187 +112,152 @@ func isPredefinedGroupExist() bool {
 }
 
 func cleanupUsers() {
-	users, err := client.NewUsersList().Do(context.Background())
+	list, err := client.NewUsersList().Do(context.Background())
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
-	for _, user := range users.Data.Items {
-		if user.ID != PredefinedUserId {
-			_, err := client.NewUserDelete().UserID(user.ID).Do(context.Background())
+	for _, item := range list.Data.Items {
+		if item.ID != PredefinedUserId {
+			_, err := client.NewUserDelete().UserID(item.ID).Do(context.Background())
 			if err != nil {
-				log.Fatal(err)
+				log.Fatalln(err)
 			}
 		}
 	}
 }
 
 func cleanupDestinations() {
-	groups, err := client.NewGroupsList().Do(context.Background())
+	list, err := client.NewDestinationsList().Do(context.Background())
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
-	for _, group := range groups.Data.Items {
-		_, err := client.NewDestinationDelete().DestinationID(group.ID).Do(context.Background())
+	for _, item := range list.Data.Items {
+		_, err := client.NewDestinationDelete().DestinationID(item.ID).Do(context.Background())
 		if err != nil && err.Error() != "status code: 404; expected: 200" {
-			log.Fatal(err)
+			log.Fatalln(err)
 		}
+	}
+
+	if list.Data.NextCursor != "" {
+		cleanupDestinations()
 	}
 }
 
-func cleanupExternalLogging(nextCursor string) {
-	svc := client.NewGroupsList()
-
-	if nextCursor != "" {
-		svc.Cursor(nextCursor)
-	}
-
-	groups, err := svc.Do(context.Background())
+func cleanupExternalLogging() {
+	list, err := client.NewExternalLoggingList().Do(context.Background())
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
-	for _, group := range groups.Data.Items {
-		_, err := client.NewExternalLoggingDelete().ExternalLoggingId(group.ID).Do(context.Background())
+	for _, item := range list.Data.Items {
+		_, err := client.NewExternalLoggingDelete().ExternalLoggingId(item.Id).Do(context.Background())
 		if err != nil && err.Error() != "status code: 404; expected: 200" {
-			log.Fatal(err)
-		}
-	}
-	if groups.Data.NextCursor != "" {
-		cleanupExternalLogging(groups.Data.NextCursor)
-	}
-}
-
-func cleanupDbtProjects() {
-	projects, err := client.NewDbtProjectsList().Do(context.Background())
-	if err != nil {
-		log.Fatal(err)
-	}
-	for _, project := range projects.Data.Items {
-		cleanupDbtTransformations(project.ID, "")
-		_, err := client.NewDbtProjectDelete().DbtProjectID(project.ID).Do(context.Background())
-		if err != nil && err.Error() != "status code: 404; expected: 200" {
-			log.Fatal(err)
-		}
-	}
-	if projects.Data.NextCursor != "" {
-		cleanupDbtProjects()
-	}
-}
-
-func cleanupDbtTransformations(projectId, nextCursor string) {
-	svc := client.NewDbtModelsList().ProjectId(projectId)
-
-	if nextCursor != "" {
-		svc.Cursor(nextCursor)
-	}
-
-	models, err := svc.Do(context.Background())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for _, model := range models.Data.Items {
-		if model.Scheduled {
-			_, err := client.NewDbtTransformationDeleteService().TransformationId(model.ID).Do(context.Background())
-			if err != nil && err.Error() != "status code: 404; expected: 200" {
-				log.Fatal(err)
-			}
+			log.Fatalln(err)
 		}
 	}
 
-	if models.Data.NextCursor != "" {
-		cleanupDbtTransformations(projectId, models.Data.NextCursor)
+	if list.Data.NextCursor != "" {
+		cleanupExternalLogging()
 	}
 }
 
 func cleanupGroups() {
-	groups, err := client.NewGroupsList().Do(context.Background())
+	list, err := client.NewGroupsList().Do(context.Background())
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
-	for _, group := range groups.Data.Items {
-		cleanupConnectors(group.ID)
-		if group.ID != PredefinedGroupId {
-			_, err := client.NewGroupDelete().GroupID(group.ID).Do(context.Background())
-			if err != nil {
-				log.Fatal(err)
+	for _, item := range list.Data.Items {
+		if item.ID != PredefinedGroupId {
+			_, err := client.NewGroupDelete().GroupID(item.ID).Do(context.Background())
+			if err != nil && err.Error() != "status code: 404; expected: 200" {
+				log.Fatalln(err)
 			}
 		}
 	}
 }
 
-func cleanupConnectors(groupId string) {
-	connectors, err := client.NewGroupListConnectors().GroupID(groupId).Do(context.Background())
+func cleanupConnections() {
+	list, err := client.NewConnectorsList().Do(context.Background())
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
-	for _, connector := range connectors.Data.Items {
-		_, err := client.NewConnectorDelete().ConnectorID(connector.ID).Do(context.Background())
-		if err != nil {
-			log.Fatal(err)
+	for _, item := range list.Data.Items {
+		_, err := client.NewConnectorDelete().ConnectorID(item.ID).Do(context.Background())
+		if err != nil && err.Error() != "status code: 404; expected: 200" {
+			log.Fatalln(err)
 		}
+	}
+
+	if list.Data.NextCursor != "" {
+		cleanupConnections()
 	}
 }
 
 func cleanupWebhooks() {
-	webhooks, err := client.NewWebhookList().Do(context.Background())
+	list, err := client.NewWebhookList().Do(context.Background())
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
-	for _, webhook := range webhooks.Data.Items {
-		_, err := client.NewWebhookDelete().WebhookId(webhook.Id).Do(context.Background())
-		if err != nil {
-			log.Fatal(err)
+	for _, item := range list.Data.Items {
+		_, err := client.NewWebhookDelete().WebhookId(item.Id).Do(context.Background())
+		if err != nil && err.Error() != "status code: 404; expected: 200" {
+			log.Fatalln(err)
 		}
+	}
+
+	if list.Data.NextCursor != "" {
+		cleanupWebhooks()
 	}
 }
 
 func cleanupTeams() {
-	teams, err := client.NewTeamsList().Do(context.Background())
+	list, err := client.NewTeamsList().Do(context.Background())
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
-	for _, team := range teams.Data.Items {
-		_, err := client.NewTeamsDelete().TeamId(team.Id).Do(context.Background())
-		if err != nil {
-			log.Fatal(err)
+	for _, item := range list.Data.Items {
+		_, err := client.NewTeamsDelete().TeamId(item.Id).Do(context.Background())
+		if err != nil && err.Error() != "status code: 404; expected: 200" {
+			log.Fatalln("cleanupTeams Delete")
+			log.Fatalln(err)
 		}
 	}
 
-	if teams.Data.NextCursor != "" {
+	if list.Data.NextCursor != "" {
 		cleanupTeams()
 	}
 }
 
 func cleanupProxyAgents() {
-	proxyList, err := client.NewProxyList().Do(context.Background())
+	list, err := client.NewProxyList().Do(context.Background())
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
-	for _, proxy := range proxyList.Data.Items {
+	for _, proxy := range list.Data.Items {
 		_, err := client.NewProxyDelete().ProxyId(proxy.Id).Do(context.Background())
-		if err != nil {
-			log.Fatal(err)
+		if err != nil && err.Error() != "status code: 404; expected: 200" {
+			log.Fatalln("cleanupProxyAgents Delete")
+			log.Fatalln(err)
 		}
 	}
 
-	if proxyList.Data.NextCursor != "" {
+	if list.Data.NextCursor != "" {
 		cleanupProxyAgents()
 	}
 }
 
 func cleanupPrivateLinks() {
-	plList, err := client.NewPrivateLinkList().Do(context.Background())
+	list, err := client.NewPrivateLinkList().Do(context.Background())
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
-	for _, pl := range plList.Data.Items {
-		_, err := client.NewPrivateLinkDelete().PrivateLinkId(pl.Id).Do(context.Background())
-		if err != nil {
-			log.Fatal(err)
+	for _, item := range list.Data.Items {
+		_, err := client.NewPrivateLinkDelete().PrivateLinkId(item.Id).Do(context.Background())
+		if err != nil && err.Error() != "status code: 404; expected: 200" {
+			log.Fatalln(err)
 		}
 	}
 
-	if plList.Data.NextCursor != "" {
+	if list.Data.NextCursor != "" {
 		cleanupPrivateLinks()
 	}
 }
