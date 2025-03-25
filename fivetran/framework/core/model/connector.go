@@ -229,6 +229,8 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
         d.DataDelayThreshold = types.Int64Null()
     }
     
+    d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
+
 	if c.HybridDeploymentAgentId != "" {
 		d.HybridDeploymentAgentId = types.StringValue(c.HybridDeploymentAgentId)
 	} else {
