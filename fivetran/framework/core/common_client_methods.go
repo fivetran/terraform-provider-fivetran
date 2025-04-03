@@ -15,9 +15,9 @@ func RevokeCertificates(ctx context.Context, client *fivetran.Client, id, servic
 	var resp common.CommonResponse = common.CommonResponse{Code: "", Message: ""}
 	for _, h := range hashes {
 		var err error = nil
-		if serviceType == "connector" {
-			svc := client.NewConnectorCertificateRevoke()
-			resp, err = svc.ConnectorID(id).Hash(h).Do(ctx)
+		if serviceType == "connection" {
+			svc := client.NewConnectionCertificateRevoke()
+			resp, err = svc.ConnectionID(id).Hash(h).Do(ctx)
 		}
 		if serviceType == "destination" {
 			svc := client.NewDestinationCertificateRevoke()
@@ -34,9 +34,9 @@ func RevokeFingerptints(ctx context.Context, client *fivetran.Client, id, servic
 	var resp common.CommonResponse = common.CommonResponse{Code: "", Message: ""}
 	for _, h := range hashes {
 		var err error = nil
-		if serviceType == "connector" {
-			svc := client.NewConnectorFingerprintRevoke()
-			resp, err = svc.ConnectorID(id).Hash(h).Do(ctx)
+		if serviceType == "connection" {
+			svc := client.NewConnectionFingerprintRevoke()
+			resp, err = svc.ConnectionID(id).Hash(h).Do(ctx)
 		}
 		if serviceType == "destination" {
 			svc := client.NewDestinationFingerprintRevoke()
@@ -58,8 +58,8 @@ func ReadCertificatesFromUpstream(ctx context.Context, client *fivetran.Client, 
 		var err error
 		var tmpResp certificates.CertificatesListResponse
 
-		if serviceType == "connector" {
-			svc := client.NewConnectorCertificatesList().ConnectorID(id).Limit(limit)
+		if serviceType == "connection" {
+			svc := client.NewConnectionCertificatesList().ConnectionID(id).Limit(limit)
 			if respNextCursor != "" {
 				svc.Cursor(respNextCursor)
 			}
@@ -99,8 +99,8 @@ func ReadFromSourceFingerprintCommon(ctx context.Context, client *fivetran.Clien
 	for {
 		var tmpResp fingerprints.FingerprintsListResponse
 
-		if serviceType == "connector" {
-			svc := client.NewConnectorFingerprintsList().ConnectorID(id).Limit(limit)
+		if serviceType == "connection" {
+			svc := client.NewConnectionFingerprintsList().ConnectionID(id).Limit(limit)
 			if respNextCursor != "" {
 				svc.Cursor(respNextCursor)
 			}

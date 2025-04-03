@@ -8,14 +8,14 @@ import (
     "github.com/hashicorp/terraform-plugin-framework/attr"
 )
 
-type GroupConnectors struct {
+type GroupConnections struct {
     Id           types.String `tfsdk:"id"`
     Schema       types.String `tfsdk:"schema"`
-    Connectors   types.Set    `tfsdk:"connectors"`
+    Connections  types.Set    `tfsdk:"connectors"`
 }
 
 var (
-    elementConnectorType = map[string]attr.Type{
+    elementConnectionType = map[string]attr.Type{
         "id":                  types.StringType,
         "group_id":            types.StringType,
         "service":             types.StringType,
@@ -28,10 +28,10 @@ var (
         "sync_frequency":      types.Int64Type,
         "schedule_type":       types.StringType,
         "daily_sync_time":     types.StringType,
-        "status":              types.ObjectType{AttrTypes: elementConnectorStatusType},
+        "status":              types.ObjectType{AttrTypes: elementConnectionStatusType},
     }
 
-    elementConnectorStatusType = map[string]attr.Type{
+    elementConnectionStatusType = map[string]attr.Type{
         "setup_state":         types.StringType,
         "is_historical_sync":  types.BoolType,
         "sync_state":          types.StringType,
@@ -41,31 +41,31 @@ var (
     }
 )
 
-func (d *GroupConnectors) ReadFromResponse(ctx context.Context, resp groups.GroupListConnectorsResponse) {
+func (d *GroupConnections) ReadFromResponse(ctx context.Context, resp groups.GroupListConnectionsResponse) {
     if resp.Data.Items == nil {
-        d.Connectors = types.SetNull(types.ObjectType{AttrTypes: elementConnectorType})
+        d.Connections = types.SetNull(types.ObjectType{AttrTypes: elementConnectionType})
     }
 
-    connectors := []attr.Value{}
+    connections := []attr.Value{}
     
     for _, v := range resp.Data.Items {
-        connector := map[string]attr.Value{}
-        connector["id"] = types.StringValue(v.ID)
-        connector["group_id"] = types.StringValue(v.GroupID)
-        connector["service"] = types.StringValue(v.Service)
-        connector["service_version"] = types.Int64Value(int64(*v.ServiceVersion))
-        connector["schema"] = types.StringValue(v.Schema)
-        connector["connected_by"] = types.StringValue(v.ConnectedBy)
-        connector["created_at"] = types.StringValue(v.CreatedAt.String())
-        connector["succeeded_at"] = types.StringValue(v.SucceededAt.String())
-        connector["failed_at"] = types.StringValue(v.FailedAt.String())
-        connector["sync_frequency"] = types.Int64Value(int64(*v.SyncFrequency))
-        connector["schedule_type"] = types.StringValue(v.ScheduleType)
+        connection := map[string]attr.Value{}
+        connection["id"] = types.StringValue(v.ID)
+        connection["group_id"] = types.StringValue(v.GroupID)
+        connection["service"] = types.StringValue(v.Service)
+        connection["service_version"] = types.Int64Value(int64(*v.ServiceVersion))
+        connection["schema"] = types.StringValue(v.Schema)
+        connection["connected_by"] = types.StringValue(v.ConnectedBy)
+        connection["created_at"] = types.StringValue(v.CreatedAt.String())
+        connection["succeeded_at"] = types.StringValue(v.SucceededAt.String())
+        connection["failed_at"] = types.StringValue(v.FailedAt.String())
+        connection["sync_frequency"] = types.Int64Value(int64(*v.SyncFrequency))
+        connection["schedule_type"] = types.StringValue(v.ScheduleType)
 
         if v.DailySyncTime != "" {
-            connector["daily_sync_time"] = types.StringValue(v.DailySyncTime)
+            connection["daily_sync_time"] = types.StringValue(v.DailySyncTime)
         } else {
-            connector["daily_sync_time"] = types.StringNull()
+            connection["daily_sync_time"] = types.StringNull()
         }
 
         warns := []attr.Value{}
@@ -82,7 +82,7 @@ func (d *GroupConnectors) ReadFromResponse(ctx context.Context, resp groups.Grou
         tsV, _ := types.SetValue(types.ObjectType{AttrTypes: codeMessageAttrTypes}, tasks)
 
         status, _ := types.ObjectValue(
-            elementConnectorStatusType,
+            elementConnectionStatusType,
             map[string]attr.Value{
                 "setup_state":        types.StringValue(v.Status.SetupState),
                 "is_historical_sync": types.BoolPointerValue(v.Status.IsHistoricalSync),
@@ -93,15 +93,15 @@ func (d *GroupConnectors) ReadFromResponse(ctx context.Context, resp groups.Grou
             },
         )
 
-        connector["status"] = status
+        connection["status"] = status
 
-        objectConnector, _ := types.ObjectValue(elementConnectorType, connector)
-        connectors = append(connectors, objectConnector)
+        objectConnection, _ := types.ObjectValue(elementConnectionType, connection)
+        connections = append(connections, objectConnection)
     }
 
     if d.Id.IsUnknown() || d.Id.IsNull() {
         d.Id = types.StringValue("0")        
     }
 
-    d.Connectors, _ = types.SetValue(types.ObjectType{AttrTypes: elementConnectorType}, connectors)
+    d.Connections, _ = types.SetValue(types.ObjectType{AttrTypes: elementConnectionType}, connections)
 }

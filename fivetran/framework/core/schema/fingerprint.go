@@ -6,7 +6,7 @@ import (
 	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-func fingerprintCertificateConnectorSchema() core.Schema {
+func fingerprintCertificateConnectionSchema() core.Schema {
 	return core.Schema{
 		Fields: map[string]core.SchemaField{
 			"id": {
@@ -70,18 +70,18 @@ func fingerprintItemSchema() core.Schema {
 	}
 }
 
-func FingerprintConnectorResource() resourceSchema.Schema {
+func FingerprintConnectionResource() resourceSchema.Schema {
 	return resourceSchema.Schema{
-		Attributes: fingerprintCertificateConnectorSchema().GetResourceSchema(),
+		Attributes: fingerprintCertificateConnectionSchema().GetResourceSchema(),
 		Blocks: map[string]resourceSchema.Block{
 			"fingerprint": fingerprintResourceItem(),
 		},
 	}
 }
 
-func FingerprintConnectorDatasource() datasourceSchema.Schema {
+func FingerprintConnectionDatasource() datasourceSchema.Schema {
 	return datasourceSchema.Schema{
-		Attributes: fingerprintCertificateConnectorSchema().GetDatasourceSchema(),
+		Attributes: fingerprintCertificateConnectionSchema().GetDatasourceSchema(),
 		Blocks: map[string]datasourceSchema.Block{
 			"fingerprints": fingerprintDatasourceItem(),
 		},

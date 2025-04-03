@@ -8,16 +8,16 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-type FingerprintConnector struct {
-	Id          types.String `tfsdk:"id"`
-	ConnectorId types.String `tfsdk:"connector_id"`
-	Fingerprint types.Set    `tfsdk:"fingerprint"`
+type FingerprintConnection struct {
+	Id           types.String `tfsdk:"id"`
+	ConnectionId types.String `tfsdk:"connector_id"`
+	Fingerprint  types.Set    `tfsdk:"fingerprint"`
 }
 
-type FingerprintsConnector struct {
-	Id           types.String `tfsdk:"id"`
-	ConnectorId  types.String `tfsdk:"connector_id"`
-	Fingerprints types.Set    `tfsdk:"fingerprints"`
+type FingerprintsConnection struct {
+	Id            types.String `tfsdk:"id"`
+	ConnectionId  types.String `tfsdk:"connector_id"`
+	Fingerprints  types.Set    `tfsdk:"fingerprints"`
 }
 
 type FingerprintDestination struct {
@@ -63,13 +63,13 @@ func readFingerprintItemsFromResponse(resp fingerprints.FingerprintsListResponse
 	return result
 }
 
-func (d *FingerprintConnector) ReadFromResponse(ctx context.Context, resp fingerprints.FingerprintsListResponse) {
-	d.Id = d.ConnectorId
+func (d *FingerprintConnection) ReadFromResponse(ctx context.Context, resp fingerprints.FingerprintsListResponse) {
+	d.Id = d.ConnectionId
 	d.Fingerprint = readFingerprintItemsFromResponse(resp)
 }
 
-func (d *FingerprintsConnector) ReadFromResponse(ctx context.Context, resp fingerprints.FingerprintsListResponse) {
-	d.ConnectorId = d.Id
+func (d *FingerprintsConnection) ReadFromResponse(ctx context.Context, resp fingerprints.FingerprintsListResponse) {
+	d.ConnectionId = d.Id
 	d.Fingerprints = readFingerprintItemsFromResponse(resp)
 }
 

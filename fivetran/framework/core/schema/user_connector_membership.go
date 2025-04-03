@@ -5,7 +5,7 @@ import (
     datasourceSchema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 )
 
-func UserConnectorMembershipResource() resourceSchema.Schema {
+func UserConnectionMembershipResource() resourceSchema.Schema {
     return resourceSchema.Schema {
         Attributes: map[string]resourceSchema.Attribute{
             "user_id": resourceSchema.StringAttribute{
@@ -19,11 +19,11 @@ func UserConnectorMembershipResource() resourceSchema.Schema {
                     Attributes: map[string]resourceSchema.Attribute{
                         "connector_id": resourceSchema.StringAttribute{
                             Required:    true,
-                            Description: "The connector unique identifier",
+                            Description: "The connection unique identifier",
                         },
                         "role": resourceSchema.StringAttribute{
                             Required:    true,
-                            Description: "The user's role that links the user and the connector",
+                            Description: "The user's role that links the user and the connection",
                         },
                         "created_at": resourceSchema.StringAttribute{
                             Computed:       true,
@@ -36,7 +36,7 @@ func UserConnectorMembershipResource() resourceSchema.Schema {
     }
 }
 
-func UserConnectorMembershipDatasource() datasourceSchema.Schema {
+func UserConnectionMembershipDatasource() datasourceSchema.Schema {
     return datasourceSchema.Schema {
         Attributes: map[string]datasourceSchema.Attribute{
             "user_id": datasourceSchema.StringAttribute{
@@ -50,11 +50,11 @@ func UserConnectorMembershipDatasource() datasourceSchema.Schema {
                     Attributes: map[string]datasourceSchema.Attribute{
                         "connector_id": datasourceSchema.StringAttribute{
                             Computed:    true,
-                            Description: "The connector unique identifier",
+                            Description: "The connection unique identifier",
                         },
                         "role": datasourceSchema.StringAttribute{
                             Computed:    true,
-                            Description: "The user's role that links the user and the connector",
+                            Description: "The user's role that links the user and the connection",
                         },
                         "created_at": datasourceSchema.StringAttribute{
                             Computed:    true,

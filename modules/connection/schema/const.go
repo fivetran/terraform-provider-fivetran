@@ -2,7 +2,7 @@ package schema
 
 const (
 	ID           = "id"
-	CONNECTOR_ID = "connector_id"
+	CONNECTION_ID = "connection_id"
 
 	ALLOW_ALL     = "ALLOW_ALL"
 	ALLOW_COLUMNS = "ALLOW_COLUMNS"

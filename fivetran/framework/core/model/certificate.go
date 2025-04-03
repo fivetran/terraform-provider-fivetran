@@ -9,15 +9,15 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
-type CertificateConnector struct {
+type CertificateConnection struct {
 	Id          types.String `tfsdk:"id"`
-	ConnectorId types.String `tfsdk:"connector_id"`
+	ConnectionId types.String `tfsdk:"connector_id"`
 	Certificate types.Set    `tfsdk:"certificate"`
 }
 
-type CertificatesConnector struct {
+type CertificatesConnection struct {
 	Id           types.String `tfsdk:"id"`
-	ConnectorId  types.String `tfsdk:"connector_id"`
+	ConnectionId  types.String `tfsdk:"connector_id"`
 	Certificates types.Set    `tfsdk:"certificates"`
 }
 
@@ -107,8 +107,8 @@ func readCertificateItemsFromResponse(resp certificates.CertificatesListResponse
 	return result
 }
 
-func (d *CertificateConnector) ReadFromResponse(ctx context.Context, resp certificates.CertificatesListResponse) {
-	d.Id = d.ConnectorId
+func (d *CertificateConnection) ReadFromResponse(ctx context.Context, resp certificates.CertificatesListResponse) {
+	d.Id = d.ConnectionId
 	d.Certificate = readCertificateItemsFromResponse(resp, d.getEncodedCertsMap(), true)
 }
 
@@ -117,8 +117,8 @@ func (d *CertificateDestination) ReadFromResponse(ctx context.Context, resp cert
 	d.Certificate = readCertificateItemsFromResponse(resp, d.getEncodedCertsMap(), true)
 }
 
-func (d *CertificatesConnector) ReadFromResponse(ctx context.Context, resp certificates.CertificatesListResponse) {
-	d.ConnectorId = d.Id
+func (d *CertificatesConnection) ReadFromResponse(ctx context.Context, resp certificates.CertificatesListResponse) {
+	d.ConnectionId = d.Id
 	emptyMap := make(map[string]string)
 	d.Certificates = readCertificateItemsFromResponse(resp, emptyMap, false)
 }
@@ -129,7 +129,7 @@ func (d *CertificatesDestination) ReadFromResponse(ctx context.Context, resp cer
 	d.Certificates = readCertificateItemsFromResponse(resp, emptyMap, false)
 }
 
-func (d *CertificateConnector) getEncodedCertsMap() map[string]string {
+func (d *CertificateConnection) getEncodedCertsMap() map[string]string {
 	return getEncodedCertsMapImpl(d.Certificate.Elements())
 }
 

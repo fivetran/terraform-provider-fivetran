@@ -5,7 +5,7 @@ import (
     datasourceSchema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 )
 
-func TeamConnectorMembershipResource() resourceSchema.Schema {
+func TeamConnectionMembershipResource() resourceSchema.Schema {
     return resourceSchema.Schema {
         Attributes: map[string]resourceSchema.Attribute{
             "id": resourceSchema.StringAttribute{
@@ -23,11 +23,11 @@ func TeamConnectorMembershipResource() resourceSchema.Schema {
                     Attributes: map[string]resourceSchema.Attribute{
                         "connector_id": resourceSchema.StringAttribute{
                             Required:    true,
-                            Description: "The connector unique identifier",
+                            Description: "The connection unique identifier",
                         },
                         "role": resourceSchema.StringAttribute{
                             Required:    true,
-                            Description: "The team's role that links the team and the connector",
+                            Description: "The team's role that links the team and the connection",
                         },
                         "created_at": resourceSchema.StringAttribute{
                             Computed:       true,
@@ -40,7 +40,7 @@ func TeamConnectorMembershipResource() resourceSchema.Schema {
     }
 }
 
-func TeamConnectorMembershipDatasource() datasourceSchema.Schema {
+func TeamConnectionMembershipDatasource() datasourceSchema.Schema {
     return datasourceSchema.Schema {
         Attributes: map[string]datasourceSchema.Attribute{
             "id": resourceSchema.StringAttribute{
@@ -58,11 +58,11 @@ func TeamConnectorMembershipDatasource() datasourceSchema.Schema {
                     Attributes: map[string]datasourceSchema.Attribute{
                         "connector_id": datasourceSchema.StringAttribute{
                             Required:    true,
-                            Description: "The connector unique identifier",
+                            Description: "The connection unique identifier",
                         },
                         "role": datasourceSchema.StringAttribute{
                             Computed:    true,
-                            Description: "The team's role that links the team and the connector",
+                            Description: "The team's role that links the team and the connection",
                         },
                         "created_at": datasourceSchema.StringAttribute{
                             Computed:    true,

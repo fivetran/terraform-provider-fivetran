@@ -9,13 +9,13 @@ import (
     "github.com/hashicorp/terraform-plugin-framework/attr"
 )
 
-type TeamConnectorMemberships struct {
+type TeamConnectionMemberships struct {
     Id          types.String `tfsdk:"id"`
     TeamId      types.String `tfsdk:"team_id"`
-    Connector   types.Set    `tfsdk:"connector"`
+    Connection  types.Set    `tfsdk:"connector"`
 }
 
-func (d *TeamConnectorMemberships) ReadFromResponse(ctx context.Context, resp teams.TeamConnectorMembershipsListResponse) {
+func (d *TeamConnectionMemberships) ReadFromResponse(ctx context.Context, resp teams.TeamConnectionMembershipsListResponse) {
     elementType := map[string]attr.Type{
         "connector_id": types.StringType,
         "role":         types.StringType,
@@ -23,14 +23,14 @@ func (d *TeamConnectorMemberships) ReadFromResponse(ctx context.Context, resp te
     }
 
     if resp.Data.Items == nil {
-        d.Connector = types.SetNull(types.ObjectType{AttrTypes: elementType})
+        d.Connection = types.SetNull(types.ObjectType{AttrTypes: elementType})
     }
 
     items := []attr.Value{}
     
     for _, v := range resp.Data.Items {
         item := map[string]attr.Value{}
-        item["connector_id"] = types.StringValue(v.ConnectorId)
+        item["connector_id"] = types.StringValue(v.ConnectionId)
         item["role"] = types.StringValue(v.Role)
         item["created_at"] = types.StringValue(v.CreatedAt)
 
@@ -39,20 +39,20 @@ func (d *TeamConnectorMemberships) ReadFromResponse(ctx context.Context, resp te
     }
 
     d.Id = d.TeamId
-    d.Connector, _ = types.SetValue(types.ObjectType{AttrTypes: elementType}, items)
+    d.Connection, _ = types.SetValue(types.ObjectType{AttrTypes: elementType}, items)
 }
 
-func (d *TeamConnectorMemberships) ReadFromSource(ctx context.Context, client *fivetran.Client, teamId string) (teams.TeamConnectorMembershipsListResponse, error) {
+func (d *TeamConnectionMemberships) ReadFromSource(ctx context.Context, client *fivetran.Client, teamId string) (teams.TeamConnectionMembershipsListResponse, error) {
     var respNextCursor string
-    var listResponse teams.TeamConnectorMembershipsListResponse
+    var listResponse teams.TeamConnectionMembershipsListResponse
     limit := 1000
 
-    svc := client.NewTeamConnectorMembershipsList()
+    svc := client.NewTeamConnectionMembershipsList()
     svc.TeamId(teamId)
 
     for {
         var err error
-        var tmpResp teams.TeamConnectorMembershipsListResponse
+        var tmpResp teams.TeamConnectionMembershipsListResponse
 
         if respNextCursor == "" {
             tmpResp, err = svc.Limit(limit).Do(ctx)
@@ -63,7 +63,7 @@ func (d *TeamConnectorMemberships) ReadFromSource(ctx context.Context, client *f
         }
         
         if err != nil {
-            listResponse = teams.TeamConnectorMembershipsListResponse{}
+            listResponse = teams.TeamConnectionMembershipsListResponse{}
             return listResponse, err
         }
 

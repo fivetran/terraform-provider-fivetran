@@ -49,12 +49,12 @@ func (d *User) ReadFromResponse(resp users.UserDetailsResponse) {
 }
 
 /*          */
-type UserConnectorMemberships struct {
+type UserConnectionMemberships struct {
     UserId      types.String `tfsdk:"user_id"`
-    Connector   types.Set    `tfsdk:"connector"`
+    Connection   types.Set    `tfsdk:"connector"`
 }
 
-func (d *UserConnectorMemberships) ReadFromResponse(ctx context.Context, resp users.UserConnectorMembershipsListResponse) {
+func (d *UserConnectionMemberships) ReadFromResponse(ctx context.Context, resp users.UserConnectionMembershipsListResponse) {
     elementType := map[string]attr.Type{
         "connector_id": types.StringType,
         "role":         types.StringType,
@@ -62,14 +62,14 @@ func (d *UserConnectorMemberships) ReadFromResponse(ctx context.Context, resp us
     }
 
     if resp.Data.Items == nil {
-        d.Connector = types.SetNull(types.ObjectType{AttrTypes: elementType})
+        d.Connection = types.SetNull(types.ObjectType{AttrTypes: elementType})
     }
 
     items := []attr.Value{}
     
     for _, v := range resp.Data.Items {
         item := map[string]attr.Value{}
-        item["connector_id"] = types.StringValue(v.ConnectorId)
+        item["connector_id"] = types.StringValue(v.ConnectionId)
         item["role"] = types.StringValue(v.Role)
         item["created_at"] = types.StringValue(v.CreatedAt)
 
@@ -78,20 +78,20 @@ func (d *UserConnectorMemberships) ReadFromResponse(ctx context.Context, resp us
     }
 
 
-    d.Connector, _ = types.SetValue(types.ObjectType{AttrTypes: elementType}, items)
+    d.Connection, _ = types.SetValue(types.ObjectType{AttrTypes: elementType}, items)
 }
 
-func (d *UserConnectorMemberships) ReadFromSource(ctx context.Context, client *fivetran.Client, userId string) (users.UserConnectorMembershipsListResponse, error) {
+func (d *UserConnectionMemberships) ReadFromSource(ctx context.Context, client *fivetran.Client, userId string) (users.UserConnectionMembershipsListResponse, error) {
     var respNextCursor string
-    var listResponse users.UserConnectorMembershipsListResponse
+    var listResponse users.UserConnectionMembershipsListResponse
     limit := 1000
 
-    svc := client.NewUserConnectorMembershipsList()
+    svc := client.NewUserConnectionMembershipsList()
     svc.UserId(userId)
 
     for {
         var err error
-        var tmpResp users.UserConnectorMembershipsListResponse
+        var tmpResp users.UserConnectionMembershipsListResponse
 
         if respNextCursor == "" {
             tmpResp, err = svc.Limit(limit).Do(ctx)
@@ -102,7 +102,7 @@ func (d *UserConnectorMemberships) ReadFromSource(ctx context.Context, client *f
         }
         
         if err != nil {
-            listResponse = users.UserConnectorMembershipsListResponse{}
+            listResponse = users.UserConnectionMembershipsListResponse{}
             return listResponse, err
         }
 

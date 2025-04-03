@@ -6,9 +6,9 @@ import (
 	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-func CertificateConnectorResource() resourceSchema.Schema {
+func CertificateConnectionResource() resourceSchema.Schema {
 	return resourceSchema.Schema{
-		Attributes: fingerprintCertificateConnectorSchema().GetResourceSchema(),
+		Attributes: fingerprintCertificateConnectionSchema().GetResourceSchema(),
 		Blocks: map[string]resourceSchema.Block{
 			"certificate": certificateResourceItem(),
 		},
@@ -24,9 +24,9 @@ func CertificateDestinationResource() resourceSchema.Schema {
 	}
 }
 
-func CertificateConnectorDatasource() datasourceSchema.Schema {
+func CertificateConnectionDatasource() datasourceSchema.Schema {
 	return datasourceSchema.Schema{
-		Attributes: fingerprintCertificateConnectorSchema().GetDatasourceSchema(),
+		Attributes: fingerprintCertificateConnectionSchema().GetDatasourceSchema(),
 		Blocks: map[string]datasourceSchema.Block{
 			"certificates": certificateDatasourceItem(),
 		},
