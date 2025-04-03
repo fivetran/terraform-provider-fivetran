@@ -48,7 +48,7 @@ func (r *connectorSchedule) Create(ctx context.Context, req resource.CreateReque
 		return
 	}
 
-	svc := r.GetClient().NewConnectorModify().
+	svc := r.GetClient().NewConnectionUpdate().
 		ConnectorID(data.ConnectorId.ValueString())
 
 	if !data.SyncFrequency.IsNull() && !data.SyncFrequency.IsUnknown() && data.SyncFrequency.ValueString() != "" {
@@ -109,7 +109,7 @@ func (r *connectorSchedule) Read(ctx context.Context, req resource.ReadRequest, 
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
-	connectorResponse, err := r.GetClient().NewConnectorDetails().ConnectorID(data.Id.ValueString()).DoCustom(ctx)
+	connectorResponse, err := r.GetClient().NewConnectionDetails().ConnectionID(data.Id.ValueString()).DoCustom(ctx)
 
 	if err != nil {
 		if connectorResponse.Code == "NotFound_Connector" {
@@ -144,7 +144,7 @@ func (r *connectorSchedule) Update(ctx context.Context, req resource.UpdateReque
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
-	svc := r.GetClient().NewConnectorModify().
+	svc := r.GetClient().NewConnectionUpdate().
 		ConnectorID(state.ConnectorId.ValueString())
 
 	if !plan.SyncFrequency.Equal(state.SyncFrequency) {

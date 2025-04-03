@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/fivetran/go-fivetran/connectors"
+	"github.com/fivetran/go-fivetran/connections"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
@@ -39,7 +39,7 @@ func (r *connectorSchema) ImportState(ctx context.Context, req resource.ImportSt
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
-func (r *connectorSchema) reloadSchema(ctx context.Context, schemaChangeHandling, connectorID string, diag diag.Diagnostics) connectors.ConnectorSchemaDetailsResponse {
+func (r *connectorSchema) reloadSchema(ctx context.Context, schemaChangeHandling, connectorID string, diag diag.Diagnostics) connections.ConnectionSchemaDetailsResponse {
 	client := r.GetClient()
 	if client == nil {
 		diag.AddError(
@@ -47,7 +47,7 @@ func (r *connectorSchema) reloadSchema(ctx context.Context, schemaChangeHandling
 			"Please report this issue to the provider developers.",
 		)
 
-		return connectors.ConnectorSchemaDetailsResponse{}
+		return connections.ConnectionSchemaDetailsResponse{}
 	}
 
 	// Reload schema: we can't update schema if connector doesn't have it yet.
@@ -64,7 +64,7 @@ func (r *connectorSchema) reloadSchema(ctx context.Context, schemaChangeHandling
 			"Unable to manage connector schema settings.",
 			fmt.Sprintf("Error during schema reloading. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
 		)
-		return connectors.ConnectorSchemaDetailsResponse{}
+		return connections.ConnectionSchemaDetailsResponse{}
 	}
 	return schemaResponse
 }

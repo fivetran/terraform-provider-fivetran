@@ -11,26 +11,26 @@ import (
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
 )
 
-func ConnectorCertificates() datasource.DataSource {
-	return &connectorCertificates{}
+func ConnectionCertificates() datasource.DataSource {
+	return &connectionCertificates{}
 }
 
 // Ensure the implementation satisfies the desired interfaces.
-var _ datasource.DataSourceWithConfigure = &connectorCertificates{}
+var _ datasource.DataSourceWithConfigure = &connectionCertificates{}
 
-type connectorCertificates struct {
+type connectionCertificates struct {
 	core.ProviderDatasource
 }
 
-func (d *connectorCertificates) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+func (d *connectionCertificates) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = "fivetran_connector_certificates"
 }
 
-func (d *connectorCertificates) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *connectionCertificates) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = fivetranSchema.CertificateConnectorDatasource()
 }
 
-func (d *connectorCertificates) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+func (d *connectionCertificates) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	if d.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -40,7 +40,7 @@ func (d *connectorCertificates) Read(ctx context.Context, req datasource.ReadReq
 		return
 	}
 
-	var data model.CertificatesConnector
+	var data model.CertificatesConnection
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
 	listResponse, err := core.ReadCertificatesFromUpstream(ctx, d.GetClient(), data.Id.ValueString(), "connector")

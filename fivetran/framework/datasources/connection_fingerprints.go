@@ -12,26 +12,26 @@ import (
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
 )
 
-func ConnectorFingerprints() datasource.DataSource {
-	return &connectorFingerprints{}
+func ConnectionFingerprints() datasource.DataSource {
+	return &connectionFingerprints{}
 }
 
 // Ensure the implementation satisfies the desired interfaces.
-var _ datasource.DataSourceWithConfigure = &connectorFingerprints{}
+var _ datasource.DataSourceWithConfigure = &connectionFingerprints{}
 
-type connectorFingerprints struct {
+type connectionFingerprints struct {
 	core.ProviderDatasource
 }
 
-func (d *connectorFingerprints) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = "fivetran_connector_fingerprints"
+func (d *connectionFingerprints) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = "fivetran_connection_fingerprints"
 }
 
-func (d *connectorFingerprints) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
-	resp.Schema = fivetranSchema.FingerprintConnectorDatasource()
+func (d *connectionFingerprints) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+	resp.Schema = fivetranSchema.FingerprintConnectionDatasource()
 }
 
-func (d *connectorFingerprints) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+func (d *connectionFingerprints) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	if d.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -41,7 +41,7 @@ func (d *connectorFingerprints) Read(ctx context.Context, req datasource.ReadReq
 		return
 	}
 
-	var data model.FingerprintsConnector
+	var data model.FingerprintsConnection
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
 	var respNextCursor string
@@ -51,7 +51,7 @@ func (d *connectorFingerprints) Read(ctx context.Context, req datasource.ReadReq
 	for {
 		var err error
 		var tmpResp sdk.FingerprintsListResponse
-		svc := d.GetClient().NewConnectorFingerprintsList().ConnectorID(data.Id.ValueString())
+		svc := d.GetClient().NewConnectionFingerprintsList().ConnectionID(data.Id.ValueString())
 		
 		if respNextCursor == "" {
 			tmpResp, err = svc.Limit(limit).Do(ctx)

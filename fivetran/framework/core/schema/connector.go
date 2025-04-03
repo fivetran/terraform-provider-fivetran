@@ -214,31 +214,6 @@ func ConnectorDatasourceBlocks() map[string]datasourceSchema.Block {
 	}
 }
 
-func destinationSchemaAttributes() core.Schema {
-	return core.Schema{
-		Fields: map[string]core.SchemaField{
-			"name": {
-				ForceNew:    true,
-				Required:    false,
-				ValueType:   core.String,
-				Description: "The connector schema name in destination. Has to be unique within the group (destination). Required for connector creation.",
-			},
-			"table": {
-				ForceNew:    true,
-				Required:    false,
-				ValueType:   core.String,
-				Description: "The table name unique within the schema to which connector will sync the data. Required for connector creation.",
-			},
-			"prefix": {
-				ForceNew:    true,
-				Required:    false,
-				ValueType:   core.String,
-				Description: "The connector schema prefix has to be unique within the group (destination). Each replicated schema is prefixed with the provided value. Required for connector creation.",
-			},
-		},
-	}
-}
-
 func ConnectorsDatasource() datasourceSchema.Schema {
 	return datasourceSchema.Schema{
 		Attributes: map[string]datasourceSchema.Attribute{

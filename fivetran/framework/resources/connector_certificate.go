@@ -46,14 +46,14 @@ func (r *connectorCertificate) Create(ctx context.Context, req resource.CreateRe
 		return
 	}
 
-	var data model.CertificateConnector
+	var data model.CertificateConnection
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 
 	for _, item := range data.Certificate.Elements() {
 		if element, ok := item.(basetypes.ObjectValue); ok {
-			svc := r.GetClient().NewCertificateConnectorCertificateApprove()
-			svc.ConnectorID(data.ConnectorId.ValueString())
+			svc := r.GetClient().NewCertificateConnectionCertificateApprove()
+			svc.ConnectionID(data.ConnectorId.ValueString())
 			svc.Hash(element.Attributes()["hash"].(basetypes.StringValue).ValueString())
 			svc.EncodedCert(element.Attributes()["encoded_cert"].(basetypes.StringValue).ValueString())
 			response, err := svc.Do(ctx)
@@ -93,7 +93,7 @@ func (r *connectorCertificate) Read(ctx context.Context, req resource.ReadReques
 		return
 	}
 
-	var data model.CertificateConnector
+	var data model.CertificateConnection
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
 	stateMap := make(map[string]string)
@@ -128,7 +128,7 @@ func (r *connectorCertificate) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	var plan, state model.CertificateConnector
+	var plan, state model.CertificateConnection
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -161,7 +161,7 @@ func (r *connectorCertificate) Update(ctx context.Context, req resource.UpdateRe
 
 	// in plan map left only new items we have to approve
 	for h, c := range planMap {
-		if updateResponse, err := r.GetClient().NewCertificateConnectorCertificateApprove().ConnectorID(plan.ConnectorId.ValueString()).Hash(h).EncodedCert(c).Do(ctx); err != nil {
+		if updateResponse, err := r.GetClient().NewCertificateConnectionCertificateApprove().ConnectorID(plan.ConnectorId.ValueString()).Hash(h).EncodedCert(c).Do(ctx); err != nil {
 			resp.Diagnostics.AddError(
 				"Unable to Update Connector Certificate Resource. Unable to approve certificate with hash "+h,
 				fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
@@ -195,7 +195,7 @@ func (r *connectorCertificate) Delete(ctx context.Context, req resource.DeleteRe
 		return
 	}
 
-	var data model.CertificateConnector
+	var data model.CertificateConnection
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 

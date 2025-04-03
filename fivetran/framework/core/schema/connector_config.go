@@ -9,13 +9,13 @@ import (
 )
 
 var (
-	configDatasourceSchemaAttrs map[string]datasourceSchema.Attribute
-	configResourceSchemaAttrs   map[string]resourceSchema.Attribute
-	configResourceSchemaBlocks  map[string]resourceSchema.Block
+	configOldDatasourceSchemaAttrs map[string]datasourceSchema.Attribute
+	configOldResourceSchemaAttrs   map[string]resourceSchema.Attribute
+	configOldResourceSchemaBlocks  map[string]resourceSchema.Block
 
-	configDatasourceSchemaAttrsMutex sync.RWMutex = sync.RWMutex{}
-	configResourceSchemaAttrsMutex   sync.RWMutex = sync.RWMutex{}
-	configResourceSchemaBlocksMutex  sync.RWMutex = sync.RWMutex{}
+	configOldDatasourceSchemaAttrsMutex sync.RWMutex = sync.RWMutex{}
+	configOldResourceSchemaAttrsMutex   sync.RWMutex = sync.RWMutex{}
+	configOldResourceSchemaBlocksMutex  sync.RWMutex = sync.RWMutex{}
 )
 
 func GetDatasourceConnectorConfigSchemaAttributes() map[string]datasourceSchema.Attribute {
@@ -24,12 +24,12 @@ func GetDatasourceConnectorConfigSchemaAttributes() map[string]datasourceSchema.
 		for fn, f := range common.GetConfigFieldsMap() {
 			result[fn] = schemaAttributeFromConfigField(f, true).(datasourceSchema.Attribute)
 		}
-		if configDatasourceSchemaAttrsMutex.TryLock() {
-			configDatasourceSchemaAttrs = result
+		if configOldDatasourceSchemaAttrsMutex.TryLock() {
+			configOldDatasourceSchemaAttrs = result
 		}
 		return result
 	}
-	return configDatasourceSchemaAttrs
+	return configOldDatasourceSchemaAttrs
 }
 
 func GetResourceConnectorConfigSchemaAttributes() map[string]resourceSchema.Attribute {
@@ -40,12 +40,12 @@ func GetResourceConnectorConfigSchemaAttributes() map[string]resourceSchema.Attr
 				result[fn] = schemaAttributeFromConfigField(f, false).(resourceSchema.Attribute)
 			}
 		}
-		if configResourceSchemaAttrsMutex.TryLock() {
-			configResourceSchemaAttrs = result
+		if configOldResourceSchemaAttrsMutex.TryLock() {
+			configOldResourceSchemaAttrs = result
 		}
 		return result
 	}
-	return configResourceSchemaAttrs
+	return configOldResourceSchemaAttrs
 }
 
 func GetResourceConnectorConfigSchemaBlocks() map[string]resourceSchema.Block {
@@ -56,10 +56,10 @@ func GetResourceConnectorConfigSchemaBlocks() map[string]resourceSchema.Block {
 				result[fn] = schemaBlockFromConfigField(f)
 			}
 		}
-		if configResourceSchemaBlocksMutex.TryLock() {
-			configResourceSchemaBlocks = result
+		if configOldResourceSchemaBlocksMutex.TryLock() {
+			configOldResourceSchemaBlocks = result
 		}
 		return result
 	}
-	return configResourceSchemaBlocks
+	return configOldResourceSchemaBlocks
 }

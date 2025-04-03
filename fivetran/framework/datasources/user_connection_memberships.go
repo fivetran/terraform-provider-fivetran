@@ -12,26 +12,26 @@ import (
 )
 
 
-func UserConnectorMemberships() datasource.DataSource {
-	return &userConnectorMemberships{}
+func UserConnectionMemberships() datasource.DataSource {
+	return &userConnectionMemberships{}
 }
 
 // Ensure the implementation satisfies the desired interfaces.
-var _ datasource.DataSourceWithConfigure = &userConnectorMemberships{}
+var _ datasource.DataSourceWithConfigure = &userConnectionMemberships{}
 
-type userConnectorMemberships struct {
+type userConnectionMemberships struct {
 	core.ProviderDatasource
 }
 
-func (d *userConnectorMemberships) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = "fivetran_user_connector_memberships"
+func (d *userConnectionMemberships) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = "fivetran_user_connection_memberships"
 }
 
-func (d *userConnectorMemberships) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
-	resp.Schema = fivetranSchema.UserConnectorMembershipDatasource()
+func (d *userConnectionMemberships) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+	resp.Schema = fivetranSchema.UserConnectionMembershipDatasource()
 }
 
-func (d *userConnectorMemberships) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+func (d *userConnectionMemberships) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	if d.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -41,20 +41,20 @@ func (d *userConnectorMemberships) Read(ctx context.Context, req datasource.Read
 		return
 	}
 
-	var data model.UserConnectorMemberships
+	var data model.UserConnectionMemberships
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
-    userConnectorResponse, err := data.ReadFromSource(ctx, d.GetClient(), data.UserId.ValueString())
+    listResponse, err := data.ReadFromSource(ctx, d.GetClient(), data.UserId.ValueString())
     if err != nil {
         resp.Diagnostics.AddError(
-            "Unable to Read User Connector Memberships DataSource.",
-            fmt.Sprintf("%v; code: %v", err, userConnectorResponse.Code),
+            "Unable to Read User Connection Memberships DataSource.",
+            fmt.Sprintf("%v; code: %v", err, listResponse.Code),
         )
 
         return
     }
 
-	data.ReadFromResponse(ctx, userConnectorResponse)
+	data.ReadFromResponse(ctx, listResponse)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }

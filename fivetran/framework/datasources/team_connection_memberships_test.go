@@ -11,22 +11,22 @@ import (
 )
 
 var (
-	teamConnectorMembershipsDataSourceMockGetHandler *mock.Handler
-	teamConnectorMembershipsDataSourceMockData       map[string]interface{}
+	dataSourceMockGetHandler *mock.Handler
+	dataSourceMockData       map[string]interface{}
 )
 
 const (
-	teamConnectorMembershipsMappingResponse = `
+	mappingResponse = `
     {
       "items": [
         {
-          "id": "connector_id_1",
-          "role": "Connector Administrator",
+          "id": "connection_id_1",
+          "role": "Connection Administrator",
           "created_at": "2020-05-25T15:26:47.306509Z"
         },
         {
-          "id": "connector_id_2",
-          "role": "Connector Reviewer",
+          "id": "connection_id_2",
+          "role": "Connection Reviewer",
           "created_at": "2020-05-25T15:26:47.306509Z"
         }
       ],
@@ -34,7 +34,7 @@ const (
     }`
 )
 
-func setupMockClientTeamConnectorMembershipsDataSourceConfigMapping(t *testing.T) {
+func setupMockClientTeamConnectionMembershipsDataSourceConfigMapping(t *testing.T) {
 	tfmock.MockClient().Reset()
 
 	teamsDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/teams").ThenCall(
@@ -44,26 +44,26 @@ func setupMockClientTeamConnectorMembershipsDataSourceConfigMapping(t *testing.T
 		},
 	)
 
-	teamConnectorMembershipsDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/teams/team_id/connectors").ThenCall(
+	dataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/teams/team_id/connections").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			teamConnectorMembershipsDataSourceMockData = tfmock.CreateMapFromJsonString(t, teamConnectorMembershipsMappingResponse)
-			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", teamConnectorMembershipsDataSourceMockData), nil
+			dataSourceMockData = tfmock.CreateMapFromJsonString(t, mappingResponse)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", dataSourceMockData), nil
 		},
 	)
 }
 
-func TestDataSourceTeamConnectorMembershipsMappingMock(t *testing.T) {
+func TestDataSourceTeamConnectionMembershipsMappingMock(t *testing.T) {
 	step1 := resource.TestStep{
 		Config: `
-        data "fivetran_team_connector_memberships" "test_team_connector_memberships" {
+        data "fivetran_team_connection_memberships" "test_team_connection_memberships" {
             provider     = fivetran-provider
             team_id      = "team_id"
         }`,
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				tfmock.AssertEqual(t, teamConnectorMembershipsDataSourceMockGetHandler.Interactions, 1)
-				tfmock.AssertNotEmpty(t, teamConnectorMembershipsDataSourceMockData)
+				tfmock.AssertEqual(t, dataSourceMockGetHandler.Interactions, 1)
+				tfmock.AssertNotEmpty(t, dataSourceMockData)
 				return nil
 			},
 		),
@@ -73,7 +73,7 @@ func TestDataSourceTeamConnectorMembershipsMappingMock(t *testing.T) {
 		t,
 		resource.TestCase{
 			PreCheck: func() {
-				setupMockClientTeamConnectorMembershipsDataSourceConfigMapping(t)
+				setupMockClientTeamConnectionMembershipsDataSourceConfigMapping(t)
 			},
 			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {

@@ -12,31 +12,31 @@ import (
     "github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
-func UserConnectorMembership() resource.Resource {
-    return &userConnectorMembership{}
+func UserConnectionMembership() resource.Resource {
+    return &userConnectionMembership{}
 }
 
-type userConnectorMembership struct {
+type userConnectionMembership struct {
     core.ProviderResource
 }
 
 // Ensure the implementation satisfies the desired interfaces.
-var _ resource.ResourceWithConfigure = &userConnectorMembership{}
-var _ resource.ResourceWithImportState = &userConnectorMembership{}
+var _ resource.ResourceWithConfigure = &userConnectionMembership{}
+var _ resource.ResourceWithImportState = &userConnectionMembership{}
 
-func (r *userConnectorMembership) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-    resp.TypeName = req.ProviderTypeName + "_user_connector_membership"
+func (r *userConnectionMembership) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+    resp.TypeName = req.ProviderTypeName + "_user_connection_membership"
 }
 
-func (r *userConnectorMembership) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
-    resp.Schema = fivetranSchema.UserConnectorMembershipResource()
+func (r *userConnectionMembership) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+    resp.Schema = fivetranSchema.UserConnectionMembershipResource()
 }
 
-func (r *userConnectorMembership) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *userConnectionMembership) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
     resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
-func (r *userConnectorMembership) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (r *userConnectionMembership) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
     if r.GetClient() == nil {
         resp.Diagnostics.AddError(
             "Unconfigured Fivetran Client",
@@ -46,50 +46,50 @@ func (r *userConnectorMembership) Create(ctx context.Context, req resource.Creat
         return
     }
 
-    var data model.UserConnectorMemberships
+    var data model.UserConnectionMemberships
 
     resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
     
-	savedConnectors := make([]string, 0, len(data.Connector.Elements()))
-	for _, connector := range data.Connector.Elements() {
-        if connectorElement, ok := connector.(basetypes.ObjectValue); ok {
-			connectorId := connectorElement.Attributes()["connector_id"].(basetypes.StringValue).ValueString()
-            svc := r.GetClient().NewUserConnectorMembershipCreate()
+	savedConnections := make([]string, 0, len(data.Connection.Elements()))
+	for _, connection := range data.Connection.Elements() {
+        if connectionElement, ok := connection.(basetypes.ObjectValue); ok {
+			connectionId := connectionElement.Attributes()["connection_id"].(basetypes.StringValue).ValueString()
+            svc := r.GetClient().NewUserConnectionMembershipCreate()
             svc.UserId(data.UserId.ValueString())
-            svc.ConnectorId(connectorId)
-            svc.Role(connectorElement.Attributes()["role"].(basetypes.StringValue).ValueString())
-            if userConnectorResponse, err := svc.Do(ctx); err != nil {
+            svc.ConnectionId(connectionId)
+            svc.Role(connectionElement.Attributes()["role"].(basetypes.StringValue).ValueString())
+            if userConnectionResponse, err := svc.Do(ctx); err != nil {
                 resp.Diagnostics.AddError(
-                    "Unable to Create User Connector Memberships Resource.",
-                    fmt.Sprintf("%v; code: %v; message: %v", err, userConnectorResponse.Code, userConnectorResponse.Message),
+                    "Unable to Create User Connection Memberships Resource.",
+                    fmt.Sprintf("%v; code: %v; message: %v", err, userConnectionResponse.Code, userConnectionResponse.Message),
                 )
 
-				creRvertMsg, creRevertErr :=  r.RevertCreated(ctx, savedConnectors, data.UserId.ValueString())		
+				creRvertMsg, creRevertErr :=  r.RevertCreated(ctx, savedConnections, data.UserId.ValueString())		
 				resp.Diagnostics.AddWarning("Action reverted", creRvertMsg)
 				resp.Diagnostics.AddWarning("Action reverted failed", creRevertErr)
                 return
             }
 
-			savedConnectors = append(savedConnectors, connectorId)
+			savedConnections = append(savedConnections, connectionId)
         }
     }
 
-    userConnectorResponse, err := data.ReadFromSource(ctx, r.GetClient(), data.UserId.ValueString())
+    userConnectionResponse, err := data.ReadFromSource(ctx, r.GetClient(), data.UserId.ValueString())
     if err != nil {
         resp.Diagnostics.AddError(
-            "Unable to Create User Connector Memberships Resource.",
-            fmt.Sprintf("%v; code: %v", err, userConnectorResponse.Code),
+            "Unable to Create User Connection Memberships Resource.",
+            fmt.Sprintf("%v; code: %v", err, userConnectionResponse.Code),
         )
 
         return
     }
 
-    data.ReadFromResponse(ctx, userConnectorResponse)
+    data.ReadFromResponse(ctx, userConnectionResponse)
 
     resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *userConnectorMembership) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+func (r *userConnectionMembership) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
     if r.GetClient() == nil {
         resp.Diagnostics.AddError(
             "Unconfigured Fivetran Client",
@@ -99,25 +99,25 @@ func (r *userConnectorMembership) Read(ctx context.Context, req resource.ReadReq
         return
     }
 
-    var data model.UserConnectorMemberships
+    var data model.UserConnectionMemberships
     resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
-    userConnectorResponse, err := data.ReadFromSource(ctx, r.GetClient(), data.UserId.ValueString())
+    userConnectionResponse, err := data.ReadFromSource(ctx, r.GetClient(), data.UserId.ValueString())
     if err != nil {
         resp.Diagnostics.AddError(
-            "Unable to Read User Connector Memberships Resource.",
-            fmt.Sprintf("%v; code: %v", err, userConnectorResponse.Code),
+            "Unable to Read User Connection Memberships Resource.",
+            fmt.Sprintf("%v; code: %v", err, userConnectionResponse.Code),
         )
 
         return
     }
 
-    data.ReadFromResponse(ctx, userConnectorResponse)
+    data.ReadFromResponse(ctx, userConnectionResponse)
 
     resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *userConnectorMembership) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (r *userConnectionMembership) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
     if r.GetClient() == nil {
         resp.Diagnostics.AddError(
             "Unconfigured Fivetran Client",
@@ -127,108 +127,108 @@ func (r *userConnectorMembership) Update(ctx context.Context, req resource.Updat
         return
     }
 
-    var plan, state model.UserConnectorMemberships
+    var plan, state model.UserConnectionMemberships
 
     resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
     resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
-    planConnectorsMap := make(map[string]string)
-    for _, connector := range plan.Connector.Elements() {
-        if connectorElement, ok := connector.(basetypes.ObjectValue); ok {
-            planConnectorsMap[connectorElement.Attributes()["connector_id"].(basetypes.StringValue).ValueString()] = connectorElement.Attributes()["role"].(basetypes.StringValue).ValueString()
+    planConnectionsMap := make(map[string]string)
+    for _, connection := range plan.Connection.Elements() {
+        if connectionElement, ok := connection.(basetypes.ObjectValue); ok {
+            planConnectionsMap[connectionElement.Attributes()["connection_id"].(basetypes.StringValue).ValueString()] = connectionElement.Attributes()["role"].(basetypes.StringValue).ValueString()
         }
     }
 
-    stateConnectorsMap := make(map[string]string)
-    for _, connector := range state.Connector.Elements() {
-        if connectorElement, ok := connector.(basetypes.ObjectValue); ok {
-            stateConnectorsMap[connectorElement.Attributes()["connector_id"].(basetypes.StringValue).ValueString()] = connectorElement.Attributes()["role"].(basetypes.StringValue).ValueString()
+    stateConnectionsMap := make(map[string]string)
+    for _, connection := range state.Connection.Elements() {
+        if connectionElement, ok := connection.(basetypes.ObjectValue); ok {
+            stateConnectionsMap[connectionElement.Attributes()["connection_id"].(basetypes.StringValue).ValueString()] = connectionElement.Attributes()["role"].(basetypes.StringValue).ValueString()
         }
     }
 
     /* sync */
-	deletedConnectors := make([]string, 0)
-	modifiedConnectors := make([]string, 0)
-    for stateKey, stateValue := range stateConnectorsMap {
-        role, found := planConnectorsMap[stateKey]
+	deletedConnections := make([]string, 0)
+	modifiedConnections := make([]string, 0)
+    for stateKey, stateValue := range stateConnectionsMap {
+        role, found := planConnectionsMap[stateKey]
 
         if !found {
-            if updateResponse, err := r.GetClient().NewUserConnectorMembershipDelete().UserId(plan.UserId.ValueString()).ConnectorId(stateKey).Do(ctx); err != nil {
+            if updateResponse, err := r.GetClient().NewUserConnectionMembershipDelete().UserId(plan.UserId.ValueString()).ConnectionId(stateKey).Do(ctx); err != nil {
                 resp.Diagnostics.AddError(
-                    "Unable to Update User Connector Membership Resource.",
+                    "Unable to Update User Connection Membership Resource.",
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
                 )
 
-				delRevertMsg, delRevertErr :=  r.RevertDeleted(ctx, deletedConnectors, plan.UserId.ValueString(), stateConnectorsMap)	
+				delRevertMsg, delRevertErr :=  r.RevertDeleted(ctx, deletedConnections, plan.UserId.ValueString(), stateConnectionsMap)	
 				resp.Diagnostics.AddWarning("Action reverted", delRevertMsg)
 				resp.Diagnostics.AddWarning("Action reverted failed", delRevertErr)
                 return
             }
-			deletedConnectors = append(deletedConnectors, stateKey)
+			deletedConnections = append(deletedConnections, stateKey)
         } else if role != stateValue {
-            if updateResponse, err := r.GetClient().NewUserConnectorMembershipModify().UserId(plan.UserId.ValueString()).ConnectorId(stateKey).Role(role).Do(ctx); err != nil {
+            if updateResponse, err := r.GetClient().NewUserConnectionMembershipModify().UserId(plan.UserId.ValueString()).ConnectionId(stateKey).Role(role).Do(ctx); err != nil {
                 resp.Diagnostics.AddError(
-                    "Unable to Update User Connector Membership Resource.",
+                    "Unable to Update User Connection Membership Resource.",
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
                 )
 
-				delRevertMsg, delRevertErr :=  r.RevertDeleted(ctx, deletedConnectors, plan.UserId.ValueString(), stateConnectorsMap)	
+				delRevertMsg, delRevertErr :=  r.RevertDeleted(ctx, deletedConnections, plan.UserId.ValueString(), stateConnectionsMap)	
 				resp.Diagnostics.AddWarning("Action reverted", delRevertMsg)
 				resp.Diagnostics.AddWarning("Action reverted failed", delRevertErr)
 
-				modRevertMsg, modRevertErr := r.RevertModified(ctx, modifiedConnectors, plan.UserId.ValueString(), stateConnectorsMap)		
+				modRevertMsg, modRevertErr := r.RevertModified(ctx, modifiedConnections, plan.UserId.ValueString(), stateConnectionsMap)		
 				resp.Diagnostics.AddWarning("Action reverted", modRevertMsg)
 				resp.Diagnostics.AddWarning("Action reverted failed", modRevertErr)
                 return
             }
-			modifiedConnectors = append(modifiedConnectors, stateKey)
+			modifiedConnections = append(modifiedConnections, stateKey)
         }
     }
 
-	createdConnectors := make([]string, 0)
-    for planKey, planValue := range planConnectorsMap {
-        _, exists := stateConnectorsMap[planKey]
+	createdConnections := make([]string, 0)
+    for planKey, planValue := range planConnectionsMap {
+        _, exists := stateConnectionsMap[planKey]
 
         if !exists {
-            if updateResponse, err := r.GetClient().NewUserConnectorMembershipCreate().UserId(plan.UserId.ValueString()).ConnectorId(planKey).Role(planValue).Do(ctx); err != nil {
+            if updateResponse, err := r.GetClient().NewUserConnectionMembershipCreate().UserId(plan.UserId.ValueString()).ConnectionId(planKey).Role(planValue).Do(ctx); err != nil {
                 resp.Diagnostics.AddError(
-                    "Unable to Update User Connector Membership Resource.",
+                    "Unable to Update User Connection Membership Resource.",
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
                 )
 
-				delRevertMsg, delRevertErr :=  r.RevertDeleted(ctx, deletedConnectors, plan.UserId.ValueString(), stateConnectorsMap)	
+				delRevertMsg, delRevertErr :=  r.RevertDeleted(ctx, deletedConnections, plan.UserId.ValueString(), stateConnectionsMap)	
 				resp.Diagnostics.AddWarning("Action reverted", delRevertMsg)
 				resp.Diagnostics.AddWarning("Action reverted failed", delRevertErr)
 
-				modRevertMsg, modRevertErr := r.RevertModified(ctx, modifiedConnectors, plan.UserId.ValueString(), stateConnectorsMap)		
+				modRevertMsg, modRevertErr := r.RevertModified(ctx, modifiedConnections, plan.UserId.ValueString(), stateConnectionsMap)		
 				resp.Diagnostics.AddWarning("Action reverted", modRevertMsg)
 				resp.Diagnostics.AddWarning("Action reverted failed", modRevertErr)
 
-				creRvertMsg, creRevertErr :=  r.RevertCreated(ctx, createdConnectors, plan.UserId.ValueString())		
+				creRvertMsg, creRevertErr :=  r.RevertCreated(ctx, createdConnections, plan.UserId.ValueString())		
 				resp.Diagnostics.AddWarning("Action reverted", creRvertMsg)
 				resp.Diagnostics.AddWarning("Action reverted failed", creRevertErr)
                 return
             }
-			createdConnectors = append(createdConnectors, planKey)
+			createdConnections = append(createdConnections, planKey)
         }
     }
 
-    userConnectorResponse, err := plan.ReadFromSource(ctx, r.GetClient(), plan.UserId.ValueString())
+    userConnectionResponse, err := plan.ReadFromSource(ctx, r.GetClient(), plan.UserId.ValueString())
     if err != nil {
         resp.Diagnostics.AddError(
-            "Unable to Create User Connector Memberships Resource.",
-            fmt.Sprintf("%v; code: %v", err, userConnectorResponse.Code),
+            "Unable to Create User Connection Memberships Resource.",
+            fmt.Sprintf("%v; code: %v", err, userConnectionResponse.Code),
         )
 
         return
     }
 
-    plan.ReadFromResponse(ctx, userConnectorResponse)
+    plan.ReadFromResponse(ctx, userConnectionResponse)
 
     resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
-func (r *userConnectorMembership) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (r *userConnectionMembership) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
     if r.GetClient() == nil {
         resp.Diagnostics.AddError(
             "Unconfigured Fivetran Client",
@@ -238,92 +238,92 @@ func (r *userConnectorMembership) Delete(ctx context.Context, req resource.Delet
         return
     }
 
-    var data, state model.UserConnectorMemberships
+    var data, state model.UserConnectionMemberships
 
     resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
-    stateConnectorsMap := make(map[string]string)
-    for _, connector := range state.Connector.Elements() {
-        if connectorElement, ok := connector.(basetypes.ObjectValue); ok {
-            stateConnectorsMap[connectorElement.Attributes()["connector_id"].(basetypes.StringValue).ValueString()] = connectorElement.Attributes()["role"].(basetypes.StringValue).ValueString()
+    stateConnectionsMap := make(map[string]string)
+    for _, connection := range state.Connection.Elements() {
+        if connectionElement, ok := connection.(basetypes.ObjectValue); ok {
+            stateConnectionsMap[connectionElement.Attributes()["connection_id"].(basetypes.StringValue).ValueString()] = connectionElement.Attributes()["role"].(basetypes.StringValue).ValueString()
         }
     }
 
-	deletedConnectors := make([]string, 0)
-    for _, connector := range data.Connector.Elements() {
-        if connectorElement, ok := connector.(basetypes.ObjectValue); ok {
-			connectorId := connectorElement.Attributes()["connector_id"].(basetypes.StringValue).ValueString()
-            svc := r.GetClient().NewUserConnectorMembershipDelete()
+	deletedConnections := make([]string, 0)
+    for _, connection := range data.Connection.Elements() {
+        if connectionElement, ok := connection.(basetypes.ObjectValue); ok {
+			connectionId := connectionElement.Attributes()["connection_id"].(basetypes.StringValue).ValueString()
+            svc := r.GetClient().NewUserConnectionMembershipDelete()
             svc.UserId(data.UserId.ValueString())
-            svc.ConnectorId(connectorId)
+            svc.ConnectionId(connectionId)
 
             if deleteResponse, err := svc.Do(ctx); err != nil {
                 resp.Diagnostics.AddError(
-                    "Unable to Delete User Connector Memberships Resource.",
+                    "Unable to Delete User Connection Memberships Resource.",
                     fmt.Sprintf("%v; code: %v; message: %v", err, deleteResponse.Code, deleteResponse.Message),
                 )
 
-				delRevertMsg, delRevertErr :=  r.RevertDeleted(ctx, deletedConnectors, data.UserId.ValueString(), stateConnectorsMap);
+				delRevertMsg, delRevertErr :=  r.RevertDeleted(ctx, deletedConnections, data.UserId.ValueString(), stateConnectionsMap);
 				resp.Diagnostics.AddWarning("Action reverted", delRevertMsg)
 				resp.Diagnostics.AddWarning("Action reverted failed", delRevertErr)
                 return
             }
-			deletedConnectors = append(deletedConnectors, connectorId)
+			deletedConnections = append(deletedConnections, connectionId)
         }
     }
 }
 
 
-func (r *userConnectorMembership) RevertDeleted(ctx context.Context, toRevert []string, userId string, stateConnectorsMap map[string]string) (string, string) {
+func (r *userConnectionMembership) RevertDeleted(ctx context.Context, toRevert []string, userId string, stateConnectionsMap map[string]string) (string, string) {
 	reverted := []string{}
 	failed := []string{}
-	for _, connectorId := range toRevert {
-		svc := r.GetClient().NewUserConnectorMembershipCreate()
+	for _, connectionId := range toRevert {
+		svc := r.GetClient().NewUserConnectionMembershipCreate()
 		svc.UserId(userId)
-		svc.ConnectorId(connectorId)
-		svc.Role(stateConnectorsMap[connectorId])
+		svc.ConnectionId(connectionId)
+		svc.Role(stateConnectionsMap[connectionId])
 		if _, err := svc.Do(ctx); err != nil {
 			failed = append(failed, userId)
 		} else {
 			reverted = append(reverted, userId)
 		} 
 	}
-	return fmt.Sprintf("Delete action reverted for connectors: %v", reverted),
-	fmt.Sprintf("Delete for revert action failed for connectors: %v", failed)
+	return fmt.Sprintf("Delete action reverted for connections: %v", reverted),
+	fmt.Sprintf("Delete for revert action failed for connections: %v", failed)
 }
 
-func (r *userConnectorMembership) RevertModified(ctx context.Context, toRevert []string, userId string, stateConnectorsMap map[string]string) (string, string) {
+func (r *userConnectionMembership) RevertModified(ctx context.Context, toRevert []string, userId string, stateConnectionsMap map[string]string) (string, string) {
 	reverted := []string{}
 	failed := []string{}
-	for _, connectorId := range toRevert {
-		svc := r.GetClient().NewUserConnectorMembershipModify()
+	for _, connectionId := range toRevert {
+		svc := r.GetClient().NewUserConnectionMembershipModify()
 		svc.UserId(userId)
-		svc.ConnectorId(connectorId)
-		svc.Role(stateConnectorsMap[connectorId])
+		svc.ConnectionId(connectionId)
+		svc.Role(stateConnectionsMap[connectionId])
 		if _, err := svc.Do(ctx); err != nil {
 			failed = append(failed, userId)
 		} else {
 			reverted = append(reverted, userId)
 		} 
 	}
-	return fmt.Sprintf("Modify action reverted for connectors: %v", reverted),
-	fmt.Sprintf("Modify for revert action failed for connectors: %v", failed)
+	return fmt.Sprintf("Modify action reverted for connections: %v", reverted),
+	fmt.Sprintf("Modify for revert action failed for connections: %v", failed)
 }
 
-func (r *userConnectorMembership) RevertCreated(ctx context.Context, toRevert []string, userId string) (string, string) {
+func (r *userConnectionMembership) RevertCreated(ctx context.Context, toRevert []string, userId string) (string, string) {
 	reverted := []string{}
 	failed := []string{}
-	for _, connectorId := range toRevert {
-		svc := r.GetClient().NewUserConnectorMembershipDelete()
+	for _, connectionId := range toRevert {
+		svc := r.GetClient().NewUserConnectionMembershipDelete()
 		svc.UserId(userId)
-		svc.ConnectorId(connectorId)
+		svc.ConnectionId(connectionId)
 		if _, err := svc.Do(ctx); err != nil {
 			failed = append(failed, userId)
 		} else {
 			reverted = append(reverted, userId)
 		} 
 	}
-	return fmt.Sprintf("Create action reverted for connectors: %v", reverted),
-	fmt.Sprintf("Create for revert action failed for connectors: %v", failed)
+	return fmt.Sprintf("Create action reverted for connections: %v", reverted),
+	fmt.Sprintf("Create for revert action failed for connections: %v", failed)
 }

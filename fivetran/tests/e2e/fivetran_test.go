@@ -181,7 +181,7 @@ func cleanupConnections() {
 		log.Fatalln(err)
 	}
 	for _, item := range list.Data.Items {
-		_, err := client.NewConnectorDelete().ConnectorID(item.ID).Do(context.Background())
+		_, err := client.NewConnectionDelete().ConnectionID(item.ID).Do(context.Background())
 		if err != nil && err.Error() != "status code: 404; expected: 200" {
 			log.Fatalln(err)
 		}

@@ -12,26 +12,26 @@ import (
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
 )
 
-func GroupConnectors() datasource.DataSource {
-	return &groupConnectors{}
+func GroupConnections() datasource.DataSource {
+	return &groupConnections{}
 }
 
 // Ensure the implementation satisfies the desired interfaces.
-var _ datasource.DataSourceWithConfigure = &groupConnectors{}
+var _ datasource.DataSourceWithConfigure = &groupConnections{}
 
-type groupConnectors struct {
+type groupConnections struct {
 	core.ProviderDatasource
 }
 
-func (d *groupConnectors) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = "fivetran_group_connectors"
+func (d *groupConnections) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = "fivetran_group_connections"
 }
 
-func (d *groupConnectors) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
-	resp.Schema = fivetranSchema.GroupConnectorsDatasource()
+func (d *groupConnections) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+	resp.Schema = fivetranSchema.GroupConnectionsDatasource()
 }
 
-func (d *groupConnectors) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+func (d *groupConnections) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	if d.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -41,17 +41,17 @@ func (d *groupConnectors) Read(ctx context.Context, req datasource.ReadRequest, 
 		return
 	}
 
-	var data model.GroupConnectors
+	var data model.GroupConnections
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
 	var respNextCursor string
-	var listResponse sdk.GroupListConnectorsResponse
+	var listResponse sdk.GroupListConnectionsResponse
 	limit := 1000
 
 	for {
 		var err error
-		var tmpResp sdk.GroupListConnectorsResponse
-		svc := d.GetClient().NewGroupListConnectors()
+		var tmpResp sdk.GroupListConnectionsResponse
+		svc := d.GetClient().NewGroupListConnections()
 		
 		if respNextCursor == "" {
 			tmpResp, err = svc.Limit(limit).GroupID(data.Id.ValueString()).Do(ctx)
@@ -66,7 +66,7 @@ func (d *groupConnectors) Read(ctx context.Context, req datasource.ReadRequest, 
 				"Read error.",
 				fmt.Sprintf("%v; code: %v; message: %v", err, tmpResp.Code, tmpResp.Message),
 			)
-			listResponse = sdk.GroupListConnectorsResponse{}
+			listResponse = sdk.GroupListConnectionsResponse{}
 		}
 
 		listResponse.Data.Items = append(listResponse.Data.Items, tmpResp.Data.Items...)

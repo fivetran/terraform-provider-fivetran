@@ -28,7 +28,7 @@ func (d *Team) ReadFromCreateResponse(ctx context.Context, resp teams.TeamsCreat
     d.Role = types.StringValue(resp.Data.Role)
 }
 
-func (d *Team) ReadFromModifyResponse(ctx context.Context, resp teams.TeamsModifyResponse) {
+func (d *Team) ReadFromUpdateResponse(ctx context.Context, resp teams.TeamsUpdateResponse) {
     d.Id = types.StringValue(resp.Data.Id)
     d.Name = types.StringValue(resp.Data.Name)
     d.Description = types.StringValue(resp.Data.Description)

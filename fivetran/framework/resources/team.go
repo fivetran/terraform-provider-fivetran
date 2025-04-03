@@ -146,7 +146,7 @@ func (r *team) Update(ctx context.Context, req resource.UpdateRequest, resp *res
         return
     }
 
-    state.ReadFromModifyResponse(ctx, updateResponse)
+    state.ReadFromUpdateResponse(ctx, updateResponse)
 
     resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }

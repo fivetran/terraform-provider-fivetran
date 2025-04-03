@@ -51,7 +51,7 @@ func (d *groupConnectors) Read(ctx context.Context, req datasource.ReadRequest, 
 	for {
 		var err error
 		var tmpResp sdk.GroupListConnectorsResponse
-		svc := d.GetClient().NewGroupListConnectors()
+		svc := d.GetClient().NewGroupListConnections()
 		
 		if respNextCursor == "" {
 			tmpResp, err = svc.Limit(limit).GroupID(data.Id.ValueString()).Do(ctx)

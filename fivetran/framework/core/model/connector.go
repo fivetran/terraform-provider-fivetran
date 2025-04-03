@@ -2,10 +2,8 @@ package model
 
 import (
     "fmt"
-    "strings"
 
-    gfcommon "github.com/fivetran/go-fivetran/common"
-    "github.com/fivetran/go-fivetran/connectors"
+    "github.com/fivetran/go-fivetran/connections"
     "github.com/fivetran/terraform-provider-fivetran/fivetran/common"
     "github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
     "github.com/hashicorp/terraform-plugin-framework/attr"
@@ -45,14 +43,7 @@ type ConnectorDatasourceModel struct {
     Config types.Object `tfsdk:"config"`
 }
 
-var (
-    codeMessageAttrTypes = map[string]attr.Type{
-        "code":    types.StringType,
-        "message": types.StringType,
-    }
-)
-
-func (d *ConnectorDatasourceModel) ReadFromResponse(resp connectors.DetailsWithCustomConfigNoTestsResponse) {
+func (d *ConnectorDatasourceModel) ReadFromResponse(resp connections.DetailsWithCustomConfigNoTestsResponse) {
     responseContainer := ConnectorModelContainer{}
     responseContainer.ReadFromResponseData(resp.Data.DetailsResponseDataCommon, resp.Data.Config)
     d.ReadFromContainer(responseContainer)
@@ -122,15 +113,6 @@ func (d *ConnectorDatasourceModel) ReadFromResponse(resp connectors.DetailsWithC
     d.Status = status
 }
 
-func readCommonResponse(r gfcommon.CommonResponse) attr.Value {
-    result, _ := types.ObjectValue(codeMessageAttrTypes,
-        map[string]attr.Value{
-            "code":    types.StringValue(r.Code),
-            "message": types.StringValue(r.Message),
-        })
-    return result
-}
-
 type ConnectorResourceModel struct {
     Id                types.String `tfsdk:"id"`
     Name              types.String `tfsdk:"name"`
@@ -157,14 +139,14 @@ type ConnectorResourceModel struct {
     TrustFingerprints types.Bool `tfsdk:"trust_fingerprints"`
 }
 
-func (d *ConnectorResourceModel) ReadFromResponse(resp connectors.DetailsWithCustomConfigNoTestsResponse, forceReadConfig bool) diag.Diagnostics {
+func (d *ConnectorResourceModel) ReadFromResponse(resp connections.DetailsWithCustomConfigNoTestsResponse, forceReadConfig bool) diag.Diagnostics {
     responseContainer := ConnectorModelContainer{}
     responseContainer.ReadFromResponseData(resp.Data.DetailsResponseDataCommon, resp.Data.Config)
     d.ReadFromContainer(responseContainer, forceReadConfig)
     return nil
 }
 
-func (d *ConnectorResourceModel) ReadFromCreateResponse(resp connectors.DetailsWithCustomConfigResponse) diag.Diagnostics {
+func (d *ConnectorResourceModel) ReadFromCreateResponse(resp connections.DetailsWithCustomConfigResponse) diag.Diagnostics {
     responseContainer := ConnectorModelContainer{}
     responseContainer.ReadFromResponseData(resp.Data.DetailsResponseDataCommon, resp.Data.Config)
     d.ReadFromContainer(responseContainer, false)
@@ -340,7 +322,7 @@ type ConnectorModelContainer struct {
     TrustFingerprints bool
 }
 
-func (c *ConnectorModelContainer) ReadFromResponseData(data connectors.DetailsResponseDataCommon, config map[string]interface{}) {
+func (c *ConnectorModelContainer) ReadFromResponseData(data connections.DetailsResponseDataCommon, config map[string]interface{}) {
 	c.Id = data.ID
 	c.Name = data.Schema
 	c.ConnectedBy = data.ConnectedBy
@@ -368,77 +350,5 @@ func (c *ConnectorModelContainer) ReadFromResponseData(data connectors.DetailsRe
 
     if data.HybridDeploymentAgentId != "" {
         c.HybridDeploymentAgentId = data.HybridDeploymentAgentId
-    }
-}
-
-func getDestinatonSchemaForConfig(serviceId, nameAttr, tableAttr, prefixAttr attr.Value) (map[string]interface{}, error) {
-	service := serviceId.(basetypes.StringValue).ValueString()
-	if _, ok := common.GetDestinationSchemaFields()[service]; !ok {
-		return nil, fmt.Errorf("unknown connector service: `%v`", service)
-	}
-	if common.GetDestinationSchemaFields()[service]["schema_prefix"] {
-		if prefixAttr.IsNull() || prefixAttr.IsUnknown() {
-			return nil, fmt.Errorf("`destination_schema.prefix` field is required to create `%v` connector", service)
-		}
-		if !nameAttr.IsNull() {
-			return nil, fmt.Errorf("`destination_schema.name` field can't be set for `%v` connector", service)
-		}
-		if !tableAttr.IsNull() {
-			return nil, fmt.Errorf("`destination_schema.table` field can't be set for `%v` connector", service)
-		}
-		prefix := prefixAttr.(types.String).ValueString()
-		return map[string]interface{}{
-			"schema_prefix": prefix,
-		}, nil
-	} else {
-		if nameAttr.IsNull() {
-			return nil, fmt.Errorf("`destination_schema.name` field is required to create `%v` connector", service)
-		}
-		result := map[string]interface{}{
-			"schema": nameAttr.(types.String).ValueString(),
-		}
-		if common.GetDestinationSchemaFields()[service]["table"] {
-			if !tableAttr.IsNull() && tableAttr.(types.String).ValueString() != "" {
-				result["table"] = tableAttr.(types.String).ValueString()
-			}
-		}
-		return result, nil
-	}
-}
-
-func getDestinationSchemaValue(service, schema string) types.Object {
-    r, _ := types.ObjectValue(
-        map[string]attr.Type{
-            "name":   types.StringType,
-            "table":  types.StringType,
-            "prefix": types.StringType,
-        },
-        getDestinationSchemaValuesMap(service, schema),
-    )
-    return r
-}
-
-func getDestinationSchemaValuesMap(service, schema string) map[string]attr.Value {
-    if _, ok := common.GetDestinationSchemaFields()[service]; !ok {
-        panic(fmt.Errorf("unknown connector service: `%v`", service))
-    }
-
-    if common.GetDestinationSchemaFields()[service]["schema_prefix"] {
-        return map[string]attr.Value{
-            "name":   types.StringNull(),
-            "table":  types.StringNull(),
-            "prefix": types.StringValue(schema),
-        }
-    } else {
-        result := map[string]attr.Value{
-            "table":  types.StringNull(),
-            "prefix": types.StringNull(),
-        }
-        s := strings.Split(schema, ".")
-        result["name"] = types.StringValue(s[0])
-        if len(s) > 1 && common.GetDestinationSchemaFields()[service]["table"] {
-            result["table"] = types.StringValue(s[1])
-        }
-        return result
     }
 }

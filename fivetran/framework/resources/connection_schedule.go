@@ -12,25 +12,25 @@ import (
 )
 
 func ConnectionSchedule() resource.Resource {
-	return &connectorSchedule{}
+	return &connectionSchedule{}
 }
 
-type connectorSchedule struct {
+type connectionSchedule struct {
 	core.ProviderResource
 }
 
 // Ensure the implementation satisfies the desired interfaces.
-var _ resource.ResourceWithConfigure = &connectorSchedule{}
+var _ resource.ResourceWithConfigure = &connectionSchedule{}
 
-func (r *connectorSchedule) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_connector_schedule"
+func (r *connectionSchedule) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_connection_schedule"
 }
 
-func (r *connectorSchedule) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *connectionSchedule) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = fivetranSchema.GetConnectionScheduleResourceSchema()
 }
 
-func (r *connectorSchedule) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (r *connectionSchedule) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -48,7 +48,7 @@ func (r *connectorSchedule) Create(ctx context.Context, req resource.CreateReque
 		return
 	}
 
-	svc := r.GetClient().NewConnectionModify().
+	svc := r.GetClient().NewConnectionUpdate().
 		ConnectionID(data.ConnectionId.ValueString())
 
 	if !data.SyncFrequency.IsNull() && !data.SyncFrequency.IsUnknown() && data.SyncFrequency.ValueString() != "" {
@@ -74,10 +74,10 @@ func (r *connectorSchedule) Create(ctx context.Context, req resource.CreateReque
 		svc.ScheduleType(data.ScheduleType.ValueString())
 	}
 
-	connectorResponse, err := svc.DoCustom(ctx)
+	connectionResponse, err := svc.DoCustom(ctx)
 
 	if err != nil {
-		if connectorResponse.Code == "NotFound_Connection" {
+		if connectionResponse.Code == "NotFound_Connection" {
 			resp.Diagnostics.AddError(
 				"Unable to Create Connection Schedule Resource.",
 				"Connection with id = "+data.ConnectionId.ValueString()+" doesn't exist.",
@@ -85,17 +85,17 @@ func (r *connectorSchedule) Create(ctx context.Context, req resource.CreateReque
 		} else {
 			resp.Diagnostics.AddError(
 				"Unable to Create Connection Schedule Resource.",
-				fmt.Sprintf("%v; code: %v; message: %v", err, connectorResponse.Code, connectorResponse.Message),
+				fmt.Sprintf("%v; code: %v; message: %v", err, connectionResponse.Code, connectionResponse.Message),
 			)
 		}
 		return
 	}
 
-	data.ReadFromUpdateResponse(connectorResponse)
+	data.ReadFromUpdateResponse(connectionResponse)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *connectorSchedule) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+func (r *connectionSchedule) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -109,10 +109,10 @@ func (r *connectorSchedule) Read(ctx context.Context, req resource.ReadRequest, 
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
-	connectorResponse, err := r.GetClient().NewConnectionDetails().ConnectionID(data.Id.ValueString()).DoCustom(ctx)
+	connectionResponse, err := r.GetClient().NewConnectionDetails().ConnectionID(data.Id.ValueString()).DoCustom(ctx)
 
 	if err != nil {
-		if connectorResponse.Code == "NotFound_Connection" {
+		if connectionResponse.Code == "NotFound_Connection" {
 			resp.Diagnostics.AddError(
 				"Unable to Read Connection Schedule Resource.",
 				"Connection with id = "+data.ConnectionId.ValueString()+" doesn't exist.",
@@ -120,16 +120,16 @@ func (r *connectorSchedule) Read(ctx context.Context, req resource.ReadRequest, 
 		} else {
 			resp.Diagnostics.AddError(
 				"Unable to Read Connection Schedule Resource.",
-				fmt.Sprintf("%v; code: %v; message: %v", err, connectorResponse.Code, connectorResponse.Message),
+				fmt.Sprintf("%v; code: %v; message: %v", err, connectionResponse.Code, connectionResponse.Message),
 			)
 		}
 		return
 	}
-	data.ReadFromResponse(connectorResponse)
+	data.ReadFromResponse(connectionResponse)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *connectorSchedule) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (r *connectionSchedule) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -144,7 +144,7 @@ func (r *connectorSchedule) Update(ctx context.Context, req resource.UpdateReque
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
-	svc := r.GetClient().NewConnectionModify().
+	svc := r.GetClient().NewConnectionUpdate().
 		ConnectionID(state.ConnectionId.ValueString())
 
 	if !plan.SyncFrequency.Equal(state.SyncFrequency) {
@@ -175,27 +175,27 @@ func (r *connectorSchedule) Update(ctx context.Context, req resource.UpdateReque
 		svc.ScheduleType(plan.ScheduleType.ValueString())
 	}
 
-	connectorResponse, err := svc.DoCustom(ctx)
+	connectionResponse, err := svc.DoCustom(ctx)
 
 	if err != nil {
-		if connectorResponse.Code == "NotFound_Connection" {
+		if connectionResponse.Code == "NotFound_Connection" {
 			resp.Diagnostics.AddError(
 				"Unable to Update Connection Schedule Resource.",
 				"Connection with id = "+state.ConnectionId.ValueString()+" doesn't exist.",
 			)
 		} else {
 			resp.Diagnostics.AddError(
-				"Unable to Update Connector Schedule Resource.",
-				fmt.Sprintf("%v; code: %v; message: %v", err, connectorResponse.Code, connectorResponse.Message),
+				"Unable to Update Connection Schedule Resource.",
+				fmt.Sprintf("%v; code: %v; message: %v", err, connectionResponse.Code, connectionResponse.Message),
 			)
 		}
 		return
 	}
 
-	state.ReadFromUpdateResponse(connectorResponse)
+	state.ReadFromUpdateResponse(connectionResponse)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
-func (r *connectorSchedule) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (r *connectionSchedule) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	// do nothing
 }

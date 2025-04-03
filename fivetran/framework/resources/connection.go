@@ -25,7 +25,6 @@ type connection struct {
 
 // Ensure the implementation satisfies the desired interfaces.
 var _ resource.ResourceWithConfigure = &connection{}
-var _ resource.ResourceWithUpgradeState = &connection{}
 var _ resource.ResourceWithImportState = &connection{}
 
 func (r *connection) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -295,7 +294,7 @@ func (r *connection) Update(ctx context.Context, req resource.UpdateRequest, res
 
 	updatePerformed := false
 	if len(patch) > 0 || len(authPatch) > 0 {
-		svc := r.GetClient().NewConnectionModify().
+		svc := r.GetClient().NewConnectionUpdate().
 			RunSetupTests(runSetupTestsPlan).
 			TrustCertificates(trustCertificatesPlan).
 			TrustFingerprints(trustFingerprintsPlan).

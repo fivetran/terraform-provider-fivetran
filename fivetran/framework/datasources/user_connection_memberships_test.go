@@ -11,12 +11,12 @@ import (
 )
 
 var (
-	userConnectorMembershipsDataSourceMockGetHandler *mock.Handler
-	userConnectorMembershipsDataSourceMockData       map[string]interface{}
+	dataSourceMockGetHandler *mock.Handler
+	dataSourceMockData       map[string]interface{}
 )
 
 const (
-	userConnectorMembershipsMappingResponse = `
+	mappingResponse = `
     {
       "items": [
         {

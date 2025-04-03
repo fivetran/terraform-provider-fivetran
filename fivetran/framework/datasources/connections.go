@@ -7,31 +7,31 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
-    sdk "github.com/fivetran/go-fivetran/connectors"
+    sdk "github.com/fivetran/go-fivetran/connections"
 
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
 )
 
-func Connectors() datasource.DataSource {
-	return &connectors{}
+func Connections() datasource.DataSource {
+	return &connections{}
 }
 
 // Ensure the implementation satisfies the desired interfaces.
-var _ datasource.DataSourceWithConfigure = &connectors{}
+var _ datasource.DataSourceWithConfigure = &connections{}
 
-type connectors struct {
+type connections struct {
 	core.ProviderDatasource
 }
 
-func (d *connectors) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = "fivetran_connectors"
+func (d *connections) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = "fivetran_connections"
 }
 
-func (d *connectors) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *connections) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = fivetranSchema.ConnectorsDatasource()
 }
 
-func (d *connectors) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+func (d *connections) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	if d.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -41,17 +41,17 @@ func (d *connectors) Read(ctx context.Context, req datasource.ReadRequest, resp 
 		return
 	}
 
-	var data model.Connectors
+	var data model.Connections
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
 	var respNextCursor string
-	var connectorsResponse sdk.ConnectorsListResponse
+	var connectorsResponse sdk.ConnectionsListResponse
 	limit := 1000
 
 	for {
 		var err error
-		var tmpResp sdk.ConnectorsListResponse
-		svc := d.GetClient().NewConnectorsList()
+		var tmpResp sdk.ConnectionsListResponse
+		svc := d.GetClient().NewConnectionsList()
 		
 		if respNextCursor == "" {
 			tmpResp, err = svc.Limit(limit).Do(ctx)
@@ -66,7 +66,7 @@ func (d *connectors) Read(ctx context.Context, req datasource.ReadRequest, resp 
 				"Read error.",
 				fmt.Sprintf("%v; code: %v", err, tmpResp.Code),
 			)
-			connectorsResponse = sdk.ConnectorsListResponse{}
+			connectorsResponse = sdk.ConnectionsListResponse{}
 		}
 
 		connectorsResponse.Data.Items = append(connectorsResponse.Data.Items, tmpResp.Data.Items...)

@@ -37,8 +37,8 @@ func (c *_column) setHashedToDefault() {
 	c.setHashed(&hashedDefault)
 }
 
-func (c _column) prepareRequest() *connections.ConnectorSchemaConfigColumn {
-	result := fivetran.NewConnectorSchemaConfigColumn()
+func (c _column) prepareRequest() *connections.ConnectionSchemaConfigColumn {
+	result := fivetran.NewConnectionSchemaConfigColumn()
 	if c.enabledPatched && c.isPatchAllowed() {
 		result.Enabled(c.enabled)
 	}
@@ -51,8 +51,8 @@ func (c _column) prepareRequest() *connections.ConnectorSchemaConfigColumn {
 	return result
 }
 
-func (c _column) prepareCreateRequest() *connections.ConnectorSchemaConfigColumn {
-	result := fivetran.NewConnectorSchemaConfigColumn()
+func (c _column) prepareCreateRequest() *connections.ConnectionSchemaConfigColumn {
+	result := fivetran.NewConnectionSchemaConfigColumn()
 	result.Enabled(c.enabled)
 	if c.hashed != nil {
 		result.Hashed(*c.hashed)
@@ -109,7 +109,7 @@ func (c *_column) readFromResourceData(source map[string]interface{}, sch string
 	c.name = source[NAME].(string)
 }
 
-func (c *_column) readFromResponse(name string, response *connections.ConnectorSchemaConfigColumnResponse) {
+func (c *_column) readFromResponse(name string, response *connections.ConnectionSchemaConfigColumnResponse) {
 	c.name = name
 	c.enabled = *response.Enabled
 	c.hashed = response.Hashed

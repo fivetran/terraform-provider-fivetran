@@ -11,29 +11,29 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 )
 
-func Connector() datasource.DataSource {
-	return &connector{}
+func Connection() datasource.DataSource {
+	return &connection{}
 }
 
 // Ensure the implementation satisfies the desired interfaces.
-var _ datasource.DataSourceWithConfigure = &connector{}
+var _ datasource.DataSourceWithConfigure = &connection{}
 
-type connector struct {
+type connection struct {
 	core.ProviderDatasource
 }
 
-func (d *connector) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = "fivetran_connector"
+func (d *connection) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = "fivetran_connection"
 }
 
-func (d *connector) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *connection) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: fivetranSchema.ConnectorAttributesSchema().GetDatasourceSchema(),
 		Blocks:     fivetranSchema.ConnectorDatasourceBlocks(),
 	}
 }
 
-func (d *connector) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+func (d *connection) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	if d.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -47,7 +47,7 @@ func (d *connector) Read(ctx context.Context, req datasource.ReadRequest, resp *
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
-	response, err := d.GetClient().NewConnectorDetails().ConnectorID(data.Id.ValueString()).DoCustom(ctx)
+	response, err := d.GetClient().NewConnectionDetails().ConnectionID(data.Id.ValueString()).DoCustom(ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError(

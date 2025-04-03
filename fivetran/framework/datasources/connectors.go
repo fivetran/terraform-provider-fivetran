@@ -7,7 +7,7 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
-    sdk "github.com/fivetran/go-fivetran/connectors"
+    sdk "github.com/fivetran/go-fivetran/connections"
 
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
 )
@@ -45,12 +45,12 @@ func (d *connectors) Read(ctx context.Context, req datasource.ReadRequest, resp 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
 	var respNextCursor string
-	var connectorsResponse sdk.ConnectorsListResponse
+	var connectorsResponse sdk.ConnectionsListResponse
 	limit := 1000
 
 	for {
 		var err error
-		var tmpResp sdk.ConnectorsListResponse
+		var tmpResp sdk.ConnectionsListResponse
 		svc := d.GetClient().NewConnectorsList()
 		
 		if respNextCursor == "" {
@@ -66,7 +66,7 @@ func (d *connectors) Read(ctx context.Context, req datasource.ReadRequest, resp 
 				"Read error.",
 				fmt.Sprintf("%v; code: %v", err, tmpResp.Code),
 			)
-			connectorsResponse = sdk.ConnectorsListResponse{}
+			connectorsResponse = sdk.ConnectionsListResponse{}
 		}
 
 		connectorsResponse.Data.Items = append(connectorsResponse.Data.Items, tmpResp.Data.Items...)
