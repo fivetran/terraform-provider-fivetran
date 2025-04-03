@@ -7,7 +7,7 @@ import (
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/connectors"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/fivetrantypes"
-	configSchema "github.com/fivetran/terraform-provider-fivetran/modules/connector/schema"
+	configSchema "github.com/fivetran/terraform-provider-fivetran/modules/connection/schema"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework/attr"

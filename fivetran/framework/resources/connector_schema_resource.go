@@ -8,7 +8,7 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
-	configSchema "github.com/fivetran/terraform-provider-fivetran/modules/connector/schema"
+	configSchema "github.com/fivetran/terraform-provider-fivetran/modules/connection/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
