@@ -46,6 +46,7 @@ const (
         "sync_frequency": 5,
 		"schedule_type": "auto",
 		"networking_method": "Directly",
+		"hybrid_deployment_agent_id": "hybrid_deployment_agent_id",
 		"data_delay_sensitivity": "NORMAL",
 		"data_delay_threshold": 0,
         "status": {
