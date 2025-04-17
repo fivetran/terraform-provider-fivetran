@@ -231,7 +231,7 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
     
     d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
 
-	if c.HybridDeploymentAgentId != "" {
+	if c.HybridDeploymentAgentId != "" && !d.HybridDeploymentAgentId.IsUnknown() && !d.HybridDeploymentAgentId.IsNull() {
 		d.HybridDeploymentAgentId = types.StringValue(c.HybridDeploymentAgentId)
 	} else {
 		d.HybridDeploymentAgentId = types.StringNull()
@@ -299,7 +299,7 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
 		d.NetworkingMethod = types.StringValue(c.NetworkingMethod)
 	}
 
-    if c.HybridDeploymentAgentId != "" {
+    if c.HybridDeploymentAgentId != "" && !d.HybridDeploymentAgentId.IsUnknown() && !d.HybridDeploymentAgentId.IsNull() {
         d.HybridDeploymentAgentId = types.StringValue(c.HybridDeploymentAgentId)
     } else {
         d.HybridDeploymentAgentId = types.StringNull()
