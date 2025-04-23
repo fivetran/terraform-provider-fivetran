@@ -31,4 +31,3 @@ singlestore
 snowflake
 sql_server_rds_warehouse
 sql_server_warehouse
-teradata_destination
