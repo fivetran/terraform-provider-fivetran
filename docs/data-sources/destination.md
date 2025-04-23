@@ -154,7 +154,10 @@ Read-Only:
 	- Service `adls`: Databricks Connection method. Default value: `Directly`.
 	- Service `new_s3_datalake`: Databricks Connection method. Default value: `Directly`.
 	- Service `onelake`: Databricks Connection method. Default value: `Directly`.
+- `enable_external_storage_for_unstructured_files` (Boolean)
 - `enable_remote_execution` (Boolean)
+- `enable_single_topic` (Boolean) Field usage depends on `service` value: 
+	- Service `confluent_cloud_wh`: Populate all tables in a single topic.
 - `external_id` (String) Field usage depends on `service` value: 
 	- Service `aws_msk_wh`: Fivetran generated External ID
 	- Service `panoply`: Fivetran generated External ID
@@ -162,6 +165,9 @@ Read-Only:
 	- Service `redshift`: Fivetran generated External ID
 - `external_location` (String) Field usage depends on `service` value: 
 	- Service `databricks`: External location to store Delta tables. Default value: `""`  (null). By default, the external tables will reside in the `/{schema}/{table}` path, and if you specify an external location in the `{externalLocation}/{schema}/{table}` path.
+- `external_stage_storage_provider` (String)
+- `external_storage_integration` (String)
+- `external_storage_parent_folder_uri` (String)
 - `fivetran_glue_role_arn` (String)
 - `fivetran_msk_role_arn` (String)
 - `fivetran_role_arn` (String) Field usage depends on `service` value: 
