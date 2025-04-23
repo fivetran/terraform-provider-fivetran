@@ -101,10 +101,12 @@ Read-Only:
 	- Service `big_commerce`: API access token of your store.
 	- Service `bitly`: Your Bitly access token.
 	- Service `calabrio`: Your Calabrio access token.
+	- Service `coalesce`: Your Coalesce access token.
 	- Service `coupa`: Your Coupa access token fetched using client_id and client_secret
 	- Service `deputy`: Your Deputy API access token.
 	- Service `getfeedback`: Your GetFeedback Access token.
 	- Service `gocardless`: Your GoCardless API token.
+	- Service `higher_logic_vanilla`: Your Higher Logic Vanilla access token.
 	- Service `ironclad`: Your Ironclad access token.
 	- Service `khoros_marketing`: Your Khoros Marketing access token.
 	- Service `kustomer`: Your Kustomer API key.
@@ -113,6 +115,7 @@ Read-Only:
 	- Service `leap_crm`: Your Leap CRM access token.
 	- Service `nylas`: Your Nylas access_token.
 	- Service `planhat`: Your Planhat access token.
+	- Service `poplar`: Your Poplar access token.
 	- Service `rollbar`: Your Rollbar Access Token.
 	- Service `samsara`: Your Samsara API token.
 	- Service `slab`: Your Slab API key.
@@ -155,12 +158,13 @@ Read-Only:
 	- Service `iterable`: If your Iterable account URL starts with `https://app.eu.iterable.com` then provide `EU` else `US`
 - `account_sid` (String) Field usage depends on `service` value: 
 	- Service `fone_dynamics`: Your Fone Dynamics account SID.
+	- Service `impact_partner`: Your Impact Partner account SID
 - `account_sync_mode` (String) Field usage depends on `service` value: 
 	- Service `itunes_connect`: Account Sync Mode
 - `account_token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `konnect_insights`: Your Konnect Insights Account Token.
 - `account_type` (String) Field usage depends on `service` value: 
-	- Service `freightview`: Your Freightview Account Type.
+	- Service `freightview`: Your Freightview account type.
 - `accounts` (Set of String) Field usage depends on `service` value: 
 	- Service `bingads`: Specific accounts to sync. Must be populated if `syncMode` is set to `SpecificAccounts`.
 	- Service `facebook`: List of accounts of which connector will sync the data.
@@ -193,6 +197,8 @@ Read-Only:
 	- Service `double_click_publishers`: Ad unit view for the report.
 - `admin_api_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `splitio`: Your Split admin api key.
+- `admin_username` (String) Field usage depends on `service` value: 
+	- Service `brivo`: Your Brivo Admin username.
 - `adobe_analytics_configurations` (Attributes Set) Field usage depends on `service` value: 
 	- Service `adobe_analytics`: The list of configurations of tables you want to sync. The number of tables and their configurations is limited to 5. Required for connector creation. (see [below for nested schema](#nestedatt--config--adobe_analytics_configurations))
 - `advertisables` (Set of String) Field usage depends on `service` value: 
@@ -282,6 +288,8 @@ Read-Only:
 	- Service `facebook`: Options to select aggregation duration. [Possible aggregation values](https://fivetran.com/docs/applications/facebook-ad-insights/api-config#aggregation).
 - `agreement_grant_token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `economic`: Your E-conomic X-AgreementGrantToken goes here.
+- `algorithm` (String) Field usage depends on `service` value: 
+	- Service `webhooks`: HMAC algorithm used for generating the HMAC signature. Supported algorithms  INFER_FROM_HEADER, MD5, SHA_1, SHA_224, SHA_256, SHA_384, SHA_512. Default: SHA_256
 - `always_encrypted` (Boolean) Field usage depends on `service` value: 
 	- Service `aurora`: Require TLS through Tunnel
 	- Service `aurora_postgres`: Require TLS through Tunnel
@@ -330,6 +338,7 @@ Read-Only:
 - `api` (String) Field usage depends on `service` value: 
 	- Service `freshsuccess`: Set this parameter to `api`.
 - `api_access_token` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `device_magic`: Your Device Magic API access token.
 	- Service `flywheel_digital`: Your Flywheel Digital API access token.
 	- Service `shopify`: API access token of your custom app.
 	- Service `square`: The Square API access token of your application.
@@ -346,6 +355,7 @@ Read-Only:
 	- Service `affinity`: Your Affinity API key.
 	- Service `airtable`: API key of the Airtable account.
 	- Service `algolia`: Your Algolia API key.
+	- Service `alida`: Your Alida API key.
 	- Service `anvyl`: Your Anvyl API key.
 	- Service `appcues`: Your Appcues API key.
 	- Service `ashby`: Your Ashby API key.
@@ -364,6 +374,7 @@ Read-Only:
 	- Service `brave_ads`: Your Brave Ads API key
 	- Service `braze`: Your Braze API Key.
 	- Service `brevo`: Your Brevo API key.
+	- Service `brivo`: Your Brivo API key.
 	- Service `bubble`: Your Bubble API token.
 	- Service `buildium`: Your Buildium private API key.
 	- Service `callrail`: Your CallRail API key.
@@ -423,6 +434,7 @@ Read-Only:
 	- Service `fullstory`: Your Fullstory API key.
 	- Service `gainsight_product_experience`: Your Gainsight Product Experience API key.
 	- Service `gem`: Your Gem API key.
+	- Service `goldcast`: Your Goldcast API key.
 	- Service `gorgias`: Your Gorgias API key.
 	- Service `greenhouse`: Your Greenhouse API key.
 	- Service `grepsr`: Your Grepsr API Key.
@@ -467,8 +479,10 @@ Read-Only:
 	- Service `okendo`: Your Okendo API key.
 	- Service `ometria`: Your Ometria API Key.
 	- Service `oncehub`: Your OnceHub API key.
+	- Service `ordergroove`: Your Ordergroove API key.
 	- Service `ordway`: Your Ordway API key.
 	- Service `ortto`: Your Ortto API key.
+	- Service `paddle`: Your Paddle API key.
 	- Service `pagerduty`: Your PagerDuty API key.
 	- Service `pandadoc`: Your PandaDoc API key.
 	- Service `papershift`: Your Papershift API Key
@@ -538,6 +552,7 @@ Read-Only:
 	- Service `wicked_reports`: Your Wicked Reports API key.
 	- Service `workleap_officevibe`: Your Workleap Officevibe API key.
 	- Service `xsolla`: Your Xsolla API key.
+	- Service `yext`: Your Yext API key.
 	- Service `yougov_sport`: Your Yougov Sport API key.
 	- Service `zingtree`: Your Zingtree API key.
 	- Service `zip`: Your Zip API key.
@@ -570,7 +585,7 @@ Read-Only:
 	- Service `sigma_computing_source`: Your Sigma Computing api server.
 - `api_token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `aha`: Your Aha! API key.
-	- Service `aircall`: Your Aircall API Token.
+	- Service `aircall`: Your Aircall API token.
 	- Service `appsflyer`: API Token for AppsFlyer's PULL API.
 	- Service `awin`: Your Awin API Token.
 	- Service `backbone_plm`: Your Backbone PLM API token.
@@ -586,6 +601,7 @@ Read-Only:
 	- Service `drip`: Your Drip API Token.
 	- Service `factbird`: Your Factbird API token.
 	- Service `fone_dynamics`: Your Fone Dynamics API token.
+	- Service `forethought`: Your Forethought API token.
 	- Service `fountain`: Your Fountain API token.
 	- Service `g2`: Your G2 API token.
 	- Service `gladly`: Your Gladly API Token.
@@ -604,6 +620,7 @@ Read-Only:
 	- Service `pivotal_tracker`: Pivotal Tracker API token.
 	- Service `postmark`: Your Postmark account API token.
 	- Service `productive`: Your Productive API token.
+	- Service `pylon_support_platform`: Your Pylon Support Platform API token.
 	- Service `qualtrics`: API token of the Qualtrics account.
 	- Service `rakutenadvertising`: Your Rakuten Advertising API token.
 	- Service `recharge`: The Recharge API token.
@@ -652,6 +669,7 @@ Read-Only:
 	- Service `loopio`: Your Loopio App Key.
 	- Service `servicetitan`: Your ServiceTitan app key.
 	- Service `yotpo`: Your Yotpo App Key
+	- Service `yotpo_app`: Your Yotpo App key.
 - `app_reference` (String) Field usage depends on `service` value: 
 	- Service `brightpearl`: Your Brightpearl app reference.
 - `app_secret` (String, Sensitive) Field usage depends on `service` value: 
@@ -737,13 +755,25 @@ Read-Only:
 	- Service `happyfox`: Your HappyFox auth code.
 - `auth_environment` (String) Field usage depends on `service` value: 
 	- Service `younium`: Your Younium auth environment.
+- `auth_header_key` (String) Field usage depends on `service` value: 
+	- Service `webhooks`: Set if you use HMAC/token-based auth methods. This is used to retrieve a key in headers
 - `auth_method` (String) Field usage depends on `service` value: 
+	- Service `aurora`: Database authentication method
 	- Service `aurora_postgres`: Database authentication method
 	- Service `azure_postgres`: Database authentication method
 	- Service `azure_sql_db`: Authentication Method.
 	- Service `azure_sql_managed_db`: Authentication Method.
+	- Service `google_cloud_mysql`: Database authentication method
 	- Service `google_cloud_postgresql`: Database authentication method
 	- Service `heroku_postgres`: Database authentication method
+	- Service `magento_mysql`: Database authentication method
+	- Service `magento_mysql_rds`: Database authentication method
+	- Service `maria`: Database authentication method
+	- Service `maria_azure`: Database authentication method
+	- Service `maria_rds`: Database authentication method
+	- Service `mysql`: Database authentication method
+	- Service `mysql_azure`: Database authentication method
+	- Service `mysql_rds`: Database authentication method
 	- Service `postgres`: Database authentication method
 	- Service `postgres_rds`: Database authentication method
 	- Service `sql_server_hva`: Authentication Method
@@ -753,7 +783,10 @@ Read-Only:
 	- Service `anaplan`: The Anaplan authentication method.
 	- Service `concur`: The Authentication Mode used by SAP Concur. It can be PasswordGrant or CompanyLevel auth mode
 	- Service `github`: Authorization type.
+- `auth_secret` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `webhooks`: The secret you want to use for HMAC/token-based auth methods
 - `auth_token` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `impact_partner`: Your Impact Partner auth token
 	- Service `zonka_feedback`: Your Zonka Feedback auth token.
 - `auth_type` (String) Field usage depends on `service` value: 
 	- Service `airtable`: Type of authentication being used by connector
@@ -787,7 +820,10 @@ Read-Only:
 - `backint_configuration_path` (String)
 - `backint_executable_path` (String)
 - `backward_sync_limit` (String) Field usage depends on `service` value: 
-	- Service `zendesk`: Limit of the Historical Sync Time for selected tables
+	- Service `shopify`: Limit of the Historical Sync Time for selected tables
+	- Service `zendesk`: Date Limit of the Historical Sync Time for selected tables. The format should be YYYY-MM-DD
+- `backward_sync_limit_date` (String) Field usage depends on `service` value: 
+	- Service `hubspot`: Date Limit of the Historical Sync Time for selected tables. The Format should be YYYY-MM-DD
 - `base_currency` (String) Field usage depends on `service` value: 
 	- Service `open_exchange_rates`: Your Open Exchange Rates Base Currency.
 - `base_domain` (String) Field usage depends on `service` value: 
@@ -801,6 +837,7 @@ Read-Only:
 	- Service `boostr`: Your Boostr base URL.
 	- Service `brex`: Your Brex Base URL
 	- Service `centra`: Your Centra base URL.
+	- Service `coalesce`: Your Coalesce base URL.
 	- Service `cornerstone`: Your Cornerstone base URL.
 	- Service `culture_amp`: Your Culture Amp base URL.
 	- Service `datadog`: Your Datadog base url.
@@ -809,6 +846,7 @@ Read-Only:
 	- Service `financial_force`: (Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.
 	- Service `freshsales`: Your Freshsales product.
 	- Service `gongio`: Your Gong API Base URL.
+	- Service `higher_logic_vanilla`: Your Higher Logic Vanilla base URL.
 	- Service `ironclad`: Your Ironclad base url.
 	- Service `jotform`: Your Jotform base URL.
 	- Service `mailgun`: Your Mailgun base URL.
@@ -821,7 +859,7 @@ Read-Only:
 	- Service `veevavault`: Your Veeva Vault base URL.
 	- Service `vitally`: Your Vitally base URL.
 - `bearer_token` (String, Sensitive) Field usage depends on `service` value: 
-	- Service `ada`: Your Ada API Access Token.
+	- Service `ada`: Your Ada API key.
 	- Service `crowddev`: Your crowd.dev Auth Token.
 	- Service `customerio`: Your Customer.io App API Key.
 	- Service `freshchat`: Your Freshchat API Token.
@@ -874,6 +912,8 @@ Read-Only:
 	- Service `qualtrics`: Your Client Certificate
 	- Service `salesforce`: Provide content of the `.pem` certificate (only when authentication_method = `ADVANCED`).
 	- Service `salesforce_sandbox`: Provide content of the `.pem` certificate (only when authentication_method = `ADVANCED`).
+- `certificate_id` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `netsuite_suiteanalytics`: Certificate Id
 - `click_attribution_window` (String) Field usage depends on `service` value: 
 	- Service `facebook`: Time period to attribute conversions based on clicks. [Possible click_attribution_window values](https://fivetran.com/docs/applications/facebook-ad-insights/api-config#clickattributionwindow).
 	- Service `pinterest_ads`: The number of days to use as the conversion attribution window for a 'click' action.
@@ -900,7 +940,9 @@ Read-Only:
 	- Service `bing_webmaster_tools`: Your Bing Webmaster Tools client ID.
 	- Service `brightcove`: Your Brightcove client ID.
 	- Service `brightpearl`: Your Brightpearl client ID.
+	- Service `brivo`: Your Brivo client ID.
 	- Service `buildium`: Your Buildium API client ID.
+	- Service `cabcharge`: Your Cabcharge client ID.
 	- Service `canvas_by_instructure`: Your Canvas by Instructure client ID.
 	- Service `canvas_data_2_by_instructure`: Your Canvas Data 2 by Instructure client ID.
 	- Service `castor_edc`: Your Castor EDC client Id.
@@ -925,6 +967,7 @@ Read-Only:
 	- Service `genesys`: Your Genesys client ID.
 	- Service `hana_sap_hva_ecc_netweaver`: Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.
 	- Service `hana_sap_hva_s4_netweaver`: Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.
+	- Service `helpdesk`: Your HelpDesk client ID.
 	- Service `hilti_ontrack`: Your Hilti On!Track client ID.
 	- Service `ilevel`: Your iLevel Client ID.
 	- Service `instructure`: Your Instructure client ID.
@@ -933,12 +976,13 @@ Read-Only:
 	- Service `jama_software`: Your Jama Software client ID.
 	- Service `jibble`: Your Jibble client ID.
 	- Service `khoros_communities`: Your Khoros Communities client ID.
+	- Service `learn_amp`: Your Learn Amp client ID.
 	- Service `looker_source`: Your Looker Client ID.
 	- Service `marketo`: Marketo REST API Client Id.
 	- Service `medallia`: Medallia Client ID
 	- Service `microsoft_entra_id`: Your Microsoft Entra ID Client ID.
 	- Service `microsoft_power_bi`: Your Microsoft Power BI client ID.
-	- Service `microsoft_teams`: Your Microsoft Teams Client ID.
+	- Service `microsoft_teams`: Your Microsoft Teams client ID.
 	- Service `navan`: Your Navan client ID.
 	- Service `nice`: Your NICE client ID.
 	- Service `on24`: Your ON24 client ID.
@@ -963,6 +1007,7 @@ Read-Only:
 	- Service `servicetitan`: Your ServiceTitan client ID.
 	- Service `sharetribe`: Your Sharetribe client ID.
 	- Service `shipnetwork`: Your ShipNetwork client ID.
+	- Service `showpad`: Your Showpad client ID.
 	- Service `sigma_computing_source`: Your Sigma Computing client ID.
 	- Service `skillstx`: Your SkillsTX client ID.
 	- Service `skimlinks`: Your Skimlinks client ID.
@@ -980,18 +1025,21 @@ Read-Only:
 	- Service `tremendous`: Your Tremendous client ID.
 	- Service `tymeshift`: Your Tymeshift email.
 	- Service `udemy_business`: Your Udemy Business client ID.
+	- Service `ukg_pro_workforce_management`: Your UKG Pro Workforce Management client ID.
 	- Service `vimeo`: Your Vimeo client ID.
 	- Service `visma`: Your Visma client ID.
 	- Service `vonage_contact_center`: Your Vonage Contact Center client ID.
 	- Service `walmart_marketplace`: Your Walmart Marketplace client ID.
 	- Service `xero`: your clientId
 	- Service `xray`: Your Xray Client ID.
+	- Service `yahoo_display_ads_on_yahoo_japan`: Your Yahoo Display Ads on Yahoo Japan client ID.
 	- Service `yougov_sport`: Your Yougov Sport client ID.
 	- Service `zendesk_chat`: Your Zendesk client ID.
 	- Service `zoho_books`: Your Zoho Books Client ID.
 	- Service `zoho_campaigns`: Your Zoho Campaigns Client ID.
 	- Service `zoho_desk`: Your Zoho Desk Client Id.
 	- Service `zoho_inventory`: Your Zoho Inventory client ID.
+	- Service `zoho_recruit`: Your Zoho Recruit client ID.
 	- Service `zuora`: Zuora Client ID.
 	- Service `zuora_sandbox`: Zuora Client ID.
 - `client_key` (String, Sensitive) Field usage depends on `service` value: 
@@ -1004,17 +1052,37 @@ Read-Only:
 - `client_namespace` (String) Field usage depends on `service` value: 
 	- Service `ceridian_dayforce`: Your Ceridian Dayforce Client Namespace.
 - `client_private_key` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `aurora`: Client Private Key in .pem format.
 	- Service `aurora_postgres`: Client Private Key in .pem format.
 	- Service `azure_postgres`: Client Private Key in .pem format.
+	- Service `google_cloud_mysql`: Client Private Key in .pem format.
 	- Service `google_cloud_postgresql`: Client Private Key in .pem format.
 	- Service `heroku_postgres`: Client Private Key in .pem format.
+	- Service `magento_mysql`: Client Private Key in .pem format.
+	- Service `magento_mysql_rds`: Client Private Key in .pem format.
+	- Service `maria`: Client Private Key in .pem format.
+	- Service `maria_azure`: Client Private Key in .pem format.
+	- Service `maria_rds`: Client Private Key in .pem format.
+	- Service `mysql`: Client Private Key in .pem format.
+	- Service `mysql_azure`: Client Private Key in .pem format.
+	- Service `mysql_rds`: Client Private Key in .pem format.
 	- Service `postgres`: Client Private Key in .pem format.
 	- Service `postgres_rds`: Client Private Key in .pem format.
 - `client_public_certificate` (String) Field usage depends on `service` value: 
+	- Service `aurora`: Client Certificate in .pem format.
 	- Service `aurora_postgres`: Client Certificate in .pem format.
 	- Service `azure_postgres`: Client Certificate in .pem format.
+	- Service `google_cloud_mysql`: Client Certificate in .pem format.
 	- Service `google_cloud_postgresql`: Client Certificate in .pem format.
 	- Service `heroku_postgres`: Client Certificate in .pem format.
+	- Service `magento_mysql`: Client Certificate in .pem format.
+	- Service `magento_mysql_rds`: Client Certificate in .pem format.
+	- Service `maria`: Client Certificate in .pem format.
+	- Service `maria_azure`: Client Certificate in .pem format.
+	- Service `maria_rds`: Client Certificate in .pem format.
+	- Service `mysql`: Client Certificate in .pem format.
+	- Service `mysql_azure`: Client Certificate in .pem format.
+	- Service `mysql_rds`: Client Certificate in .pem format.
 	- Service `postgres`: Client Certificate in .pem format.
 	- Service `postgres_rds`: Client Certificate in .pem format.
 - `client_secret` (String, Sensitive) Field usage depends on `service` value: 
@@ -1031,8 +1099,9 @@ Read-Only:
 	- Service `bing_webmaster_tools`: Your Bing Webmaster Tools client secret.
 	- Service `brightcove`: Your Brightcove client secret.
 	- Service `brightpearl`: Your Brightpearl client secret.
+	- Service `brivo`: Your Brivo client secret.
 	- Service `canvas_by_instructure`: Your Canvas by Instructure client secret.
-	- Service `castor_edc`: Your Castor EDC Client Secret.
+	- Service `castor_edc`: Your Castor EDC client secret.
 	- Service `clazar`: Your Clazar client secret.
 	- Service `cloudbeds`: Your Cloudbeds client secret.
 	- Service `commercetools`: Your commercetools client secret.
@@ -1052,6 +1121,7 @@ Read-Only:
 	- Service `flexport`: The Flexport API Secret.
 	- Service `formstack`: Your Formstack client secret.
 	- Service `genesys`: Your Genesys client secret.
+	- Service `helpdesk`: Your HelpDesk client secret.
 	- Service `hilti_ontrack`: Your Hilti On!Track client secret.
 	- Service `ilevel`: Your iLevel Client Secret.
 	- Service `instructure`: Your Instructure client secret.
@@ -1059,12 +1129,13 @@ Read-Only:
 	- Service `ironclad`: Your Ironclad client secret.
 	- Service `jama_software`: Your Jama Software client secret.
 	- Service `jibble`: Your Jibble client secret.
+	- Service `learn_amp`: Your Learn Amp client secret.
 	- Service `looker_source`: Your Looker Client Secret.
 	- Service `marketo`: Marketo REST API Client Secret.
 	- Service `medallia`: Medallia Client Secret key
 	- Service `microsoft_entra_id`: Your Microsoft Entra ID Client Secret.
 	- Service `microsoft_power_bi`: Your Microsoft Power BI client secret.
-	- Service `microsoft_teams`: Your Microsoft Teams Client Secret.
+	- Service `microsoft_teams`: Your Microsoft Teams client secret.
 	- Service `navan`: Your Navan client secret.
 	- Service `nice`: Your NICE client secret.
 	- Service `paychex`: Your Paychex client secret.
@@ -1084,6 +1155,7 @@ Read-Only:
 	- Service `servicenow`: ServiceNow Client Secret.
 	- Service `servicetitan`: Your ServiceTitan secret key.
 	- Service `sharetribe`: Your Sharetribe client secret.
+	- Service `showpad`: Your Showpad client secret.
 	- Service `sigma_computing_source`: Your Sigma Computing client secret.
 	- Service `skillstx`: Your SkillsTX client secret.
 	- Service `skimlinks`: Your Skimlinks client secret.
@@ -1102,17 +1174,20 @@ Read-Only:
 	- Service `tremendous`: Your Tremendous client secret.
 	- Service `tymeshift`: Your Tymeshift password.
 	- Service `udemy_business`: Your Udemy Business client secret.
+	- Service `ukg_pro_workforce_management`: Your UKG Pro Workforce Management client secret.
 	- Service `vimeo`: Your Vimeo client secret.
 	- Service `visma`: Your Visma client secret.
 	- Service `vonage_contact_center`: Your Vonage Contact Center client secret.
 	- Service `walmart_marketplace`: Your Walmart Marketplace client secret.
 	- Service `xero`: your clientSecret
 	- Service `xray`: Your Xray Client Secret.
+	- Service `yahoo_display_ads_on_yahoo_japan`: Your Yahoo Display Ads on Yahoo Japan client secret.
 	- Service `zendesk_chat`: Your Zendesk client secret.
 	- Service `zoho_books`: Your Zoho Books Client Secret.
 	- Service `zoho_campaigns`: Your Zoho Campaigns Client Secret.
 	- Service `zoho_desk`: Your Zoho Desk Client secret.
 	- Service `zoho_inventory`: Your Zoho Inventory client secret.
+	- Service `zoho_recruit`: Your Zoho Recruit client secret.
 	- Service `zuora`: Zuora Client Secret.
 	- Service `zuora_sandbox`: Zuora Client Secret.
 - `cloud_storage_type` (String) Field usage depends on `service` value: 
@@ -1121,6 +1196,8 @@ Read-Only:
 	- Service `rarible`: Your Rarible Collection Address.
 - `columns` (Set of String) Field usage depends on `service` value: 
 	- Service `double_click_publishers`: Columns provide all trafficking statistics and revenue information available for the chosen Dimensions.
+- `community_api_key_name` (String) Field usage depends on `service` value: 
+	- Service `alida`: Your Alida community API key name.
 - `community_domain` (String) Field usage depends on `service` value: 
 	- Service `khoros_communities`: Your Khoros Communities community domain.
 - `community_id` (String) Field usage depends on `service` value: 
@@ -1256,6 +1333,7 @@ Read-Only:
 	- Service `heroku_kafka`: Heroku Kafka consumer group name.
 - `consumer_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `netsuite_suiteanalytics`: Consumer Key
+	- Service `odoo`: Your Odoo consumer key.
 	- Service `twitter`: API Key of your app
 	- Service `twitter_ads`: The Twitter App consumer key.
 	- Service `woocommerce`: Your WooCommerce Consumer key.
@@ -1263,6 +1341,7 @@ Read-Only:
 	- Service `xactly`: Your Xactly Connect consumer name.
 - `consumer_secret` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `netsuite_suiteanalytics`: Consumer Secret
+	- Service `odoo`: Your Odoo consumer secret.
 	- Service `twitter`: API Secret of your app
 	- Service `twitter_ads`: The Twitter App consumer secret.
 	- Service `woocommerce`: Your WooCommerce Consumer secret.
@@ -1291,6 +1370,7 @@ Read-Only:
 	- Service `criteo`: Currency
 	- Service `rokt`: Your Rokt currency.
 - `custom_base_url` (String) Field usage depends on `service` value: 
+	- Service `coalesce`: Your Coalesce Custom Base URL.
 	- Service `datadog`: Your Datadog custom base url.
 	- Service `deposco`: Your Deposco custom base URL.
 - `custom_event_sync_mode` (String) Field usage depends on `service` value: 
@@ -1330,6 +1410,8 @@ Read-Only:
 	- Service `zoho_crm`: Data Center, depending on the Domain name
 - `data_center_id` (String) Field usage depends on `service` value: 
 	- Service `zonka_feedback`: Your Zonka Feedback data center ID.
+- `data_model_path_alias_list` (Attributes Set) Field usage depends on `service` value: 
+	- Service `oracle_business_intelligence_publisher`: Data Model Paths (Optional) (see [below for nested schema](#nestedatt--config--data_model_path_alias_list))
 - `data_set_name` (String) Field usage depends on `service` value: 
 	- Service `bigquery_db`: Data set name
 - `database` (String) Field usage depends on `service` value: 
@@ -1419,6 +1501,8 @@ Read-Only:
 - `distributed_connector_cluster_size` (Number) Field usage depends on `service` value: 
 	- Service `cosmos`: Specifies the total number of connectors in the Distributed Connector Cluster running in parallel.
 	- Service `dynamodb`: Specifies the total number of connectors in the Distributed Connector Cluster running in parallel.
+- `distribution_incremental_fetch_window_days` (Number) Field usage depends on `service` value: 
+	- Service `qualtrics`: Can be used to set the distributions fetch window for incremental sync. Fetch window cannot be lesser than 60 days.
 - `domain` (String) Field usage depends on `service` value: 
 	- Service `auth0`: Your Auth0 domain.
 	- Service `bubble`: Your Bubble app name or domain name.
@@ -1463,6 +1547,7 @@ Read-Only:
 - `email_address` (String) Field usage depends on `service` value: 
 	- Service `clockodo`: Your Clockodo email address.
 - `email_id` (String) Field usage depends on `service` value: 
+	- Service `cabcharge`: Your Cabcharge email ID.
 	- Service `ordway`: Your Ordway user email ID.
 	- Service `planful`: Your Planful email ID.
 - `empty_header` (Boolean) Field usage depends on `service` value: 
@@ -1523,6 +1608,8 @@ Read-Only:
 	- Service `invoiced`: Your Invoiced environment.
 	- Service `jibble`: Your Jibble environment.
 	- Service `lucca`: Your Lucca environment.
+	- Service `ordergroove`: Your Ordergroove environment.
+	- Service `paddle`: Your Paddle environment.
 	- Service `procore`: Your Procore account environment.
 	- Service `reltio`: Your Reltio environment.
 	- Service `servicetitan`: Your ServiceTitan environment.
@@ -1593,6 +1680,12 @@ Read-Only:
 	- Service `sftp`: If your files are saved with improper extensions, you can force them to by synced as the selected file type.
 	- Service `share_point`: If your files are saved with improper extensions, you can force them to be synced as the selected file type.
 	- Service `wasabi_cloud_storage`: If your files are saved with improper extensions, you can force them to be synced as the selected file type.
+- `files` (Attributes Set) Field usage depends on `service` value: 
+	- Service `azure_blob_storage`: Mapped file name patterns to a destination table.
+	- Service `gcs`: Mapped file name patterns to a destination table.
+	- Service `google_drive`: Mapped file name patterns to a destination table.
+	- Service `s3`: Mapped file name patterns to a destination table.
+	- Service `sftp`: Mapped file name patterns to a destination table. (see [below for nested schema](#nestedatt--config--files))
 - `filter` (String) Field usage depends on `service` value: 
 	- Service `google_analytics`: String parameter restricts the data returned for your report. To use the filter parameter, specify a dimension or metric on which to filter, followed by the filter expression
 - `finance_account_sync_mode` (String) Field usage depends on `service` value: 
@@ -1664,7 +1757,9 @@ Read-Only:
 	- Service `eloqua`: Range of data in history you would like to include in the initial sync. Default value: `ALL_TIME`.
 	- Service `pardot`: The time range for which historical data should be synced. Default value: `All Time`.
 - `historical_sync_time_frame` (String) Field usage depends on `service` value: 
+	- Service `hubspot`: Used to configure Historical sync timeframe for selected tables
 	- Service `rokt`: Your Rokt historical sync time frame.
+	- Service `shopify`: Used to configure Historical sync timeframe for selected tables
 	- Service `skimlinks`: Your Skimlinks Historical sync time frame.
 	- Service `vimeo`: Your Vimeo Historical sync time frame.
 	- Service `zendesk`: Used to configure Historical sync timeframe for selected tables
@@ -1735,6 +1830,7 @@ Read-Only:
 - `host_name` (String) Field usage depends on `service` value: 
 	- Service `coassemble`: Your Coassemble Hostname.
 	- Service `datadog`: Your Datadog host name.
+	- Service `ukg_pro_workforce_management`: Your UKG Pro Workforce Management hostname.
 - `host_url` (String) Field usage depends on `service` value: 
 	- Service `adobe_commerce`: Your Adobe Commerce host url.
 	- Service `sparkpost`: Your SparkPost host URL.
@@ -1982,6 +2078,7 @@ Read-Only:
 	- Service `adobe_workfront`: Your Adobe Workfront organization domain.
 - `organization_id` (String) Field usage depends on `service` value: 
 	- Service `adobe_analytics`: Organization ID from the Service Account (JWT) credentials of your Adobe Project.
+	- Service `device_magic`: Your Device Magic organization ID.
 	- Service `integrate`: Your Integrate organization ID.
 	- Service `megaphone`: Your Megaphone organization ID.
 	- Service `productive`: Your Productive Organization ID.
@@ -2029,6 +2126,7 @@ Read-Only:
 	- Service `absorb_lms`: Your Absorb LMS password.
 	- Service `adobe_commerce`: Your Adobe Commerce password.
 	- Service `akeneo`: Your Akeneo password.
+	- Service `alida`: Your Alida client secret.
 	- Service `anaplan`: Your Anaplan password. Must be populated if `auth_mode` is set to `Basic`.
 	- Service `appfigures`: Your Appfigures Password.
 	- Service `aurora`: The user's password.
@@ -2038,6 +2136,8 @@ Read-Only:
 	- Service `azure_sql_db`: The user's password.
 	- Service `azure_sql_managed_db`: The user's password.
 	- Service `boostr`: Your Boostr password.
+	- Service `brivo`: Your Brivo password.
+	- Service `cabcharge`: Your Cabcharge password.
 	- Service `ceridian_dayforce`: Your Ceridian Dayforce Password.
 	- Service `cin7`: Your Cin7 API Key.
 	- Service `clarity`: The user's password.
@@ -2139,6 +2239,7 @@ Read-Only:
 	- Service `the_trade_desk`: The Trade Desk password. It is a part of the login credentials.
 	- Service `toggl_track`: Your Toggl Track Password
 	- Service `ukg_pro`: Your UKG Pro password.
+	- Service `ukg_pro_workforce_management`: Your UKG Pro Workforce Management password.
 	- Service `unicommerce`: Your uniware login password.
 	- Service `upland`: Your Upland Software Password.
 	- Service `veevavault`: Your Veeva Vault password.
@@ -2307,6 +2408,7 @@ Read-Only:
 	- Service `apple_search_ads`: The contents of your secret key file. Must be populated if `is_auth2_enabled` is set to `false`.
 	- Service `braintree`: The contents of your secret key file.
 	- Service `braintree_sandbox`: The contents of your secret key file.
+	- Service `netsuite_suiteanalytics`: Private Key
 	- Service `oracle_fusion_cloud_apps_crm`: The Oracle Fusion Cloud private key.
 	- Service `oracle_fusion_cloud_apps_fscm`: The Oracle Fusion Cloud private key.
 	- Service `oracle_fusion_cloud_apps_hcm`: The Oracle Fusion Cloud private key.
@@ -2445,6 +2547,7 @@ Read-Only:
 	- Service `pinterest_ads`: The expiration date of the refresh token. Unix timestamp in seconds
 - `region` (String) Field usage depends on `service` value: 
 	- Service `algolia`: Your Algolia analytics region.
+	- Service `alida`: Your Alida region.
 	- Service `amazon_ads`: The region used by the Amazon Ads profile.
 	- Service `amazon_selling_partner`: The region used by the Amazon Selling Partner profile.
 	- Service `anaplan`: Your Anaplan account region
@@ -2475,10 +2578,12 @@ Read-Only:
 	- Service `vonage_contact_center`: Your Vonage Contact Center region.
 	- Service `wasabi_cloud_storage`: The Wasabi Cloud Storage bucket region. Required for connector creation. Default value: `US_EAST_1`.
 	- Service `workday_strategic_sourcing`: Your Workday Strategic Sourcing Region.
+	- Service `xray`: Your Xray region.
 	- Service `zoho_books`: Your Zoho Books application host region.
 	- Service `zoho_campaigns`: Your Zoho Campaigns application host region.
 	- Service `zoho_desk`: Your Zoho Desk domain.
 	- Service `zoho_inventory`: Your Zoho Inventory application host region.
+	- Service `zoho_recruit`: Your Zoho Recruit region.
 - `region_api_url` (String) Field usage depends on `service` value: 
 	- Service `amazon_attribution`: Your Amazon Attribution API URL region.
 - `region_auth_url` (String) Field usage depends on `service` value: 
@@ -2714,7 +2819,7 @@ Read-Only:
 - `sender_password` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `sage_intacct`: Your Sender Password
 - `server` (String) Field usage depends on `service` value: 
-	- Service `castor_edc`: Your Castor EDC Server.
+	- Service `castor_edc`: Your Castor EDC server.
 - `server_address` (String) Field usage depends on `service` value: 
 	- Service `tableau_source`: Your Tableau Source server address.
 - `server_region` (String) Field usage depends on `service` value: 
@@ -2782,6 +2887,8 @@ Read-Only:
 	- Service `apple_search_ads`: Turn the toggle on if you want the reports to also return records without metrics.
 - `sid` (String) Field usage depends on `service` value: 
 	- Service `twilio`: The Twilio API key SID
+- `signature_encoding` (String) Field usage depends on `service` value: 
+	- Service `webhooks`: This is used in HMAC auth method to decode and verify the signature. Supported encodings BASE64 and HEXA_DECIMAL. Default: BASE64
 - `signer_public_key` (String) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.
 	- Service `ftp`: The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.
@@ -2854,6 +2961,8 @@ Read-Only:
 	- Service `big_commerce`: The BigCommerce store hash.
 - `store_id` (String) Field usage depends on `service` value: 
 	- Service `reviewsio`: Your REVIEWS.io store ID
+- `sub_collections` (Set of String) Field usage depends on `service` value: 
+	- Service `firebase`: List of nested collections to sync. Only specified subCollections can be synced.
 - `sub_domain` (String) Field usage depends on `service` value: 
 	- Service `absorb_lms`: Your Absorb LMS subdomain.
 	- Service `activecampaign`: Your ActiveCampaign sub-domain.
@@ -2888,6 +2997,7 @@ Read-Only:
 	- Service `gainsight_product_experience`: Your Gainsight Product Experience subdomain.
 	- Service `genesys`: Your Genesys subdomain.
 	- Service `green_power_monitor`: Your GreenPowerMonitor subdomain.
+	- Service `heartland_retail_pos`: Your Heartland Retail POS subdomain.
 	- Service `infobip`: Your Infobip sub_domain.
 	- Service `insightly`: Your company's Insightly subdomain name.
 	- Service `instructure`: The Sub domain in which your Instructure account is hosted.
@@ -2902,6 +3012,7 @@ Read-Only:
 	- Service `myosh`: Your myosh subdomain.
 	- Service `namely`: Your Namely subdomain.
 	- Service `nylas`: Your Nylas subdomain.
+	- Service `odoo`: Your Odoo subdomain.
 	- Service `okta`: Your Okta subdomain.
 	- Service `picqer`: Your Picqer subdomain.
 	- Service `pinpoint`: Your Pinpoint sub domain name.
@@ -2938,6 +3049,7 @@ Read-Only:
 	- Service `freshservice`: Your company's freshservice subdomain (usually **company**.freshservice.com).
 	- Service `freshsuccess`: Your Freshsuccess subdomain.
 	- Service `gorgias`: Your Gorgias subdomain.
+	- Service `hex`: Your Hex subdomain.
 	- Service `jama_software`: Your Jama Software subdomain.
 	- Service `klarna`: Your Klarna subdomain.
 	- Service `learnupon`: Your Learnupon subdomain.
@@ -2946,17 +3058,20 @@ Read-Only:
 	- Service `packiyo`: Your Packiyo subdomain.
 	- Service `qmatic_data_connect`: Your Qmatic Data Connect subdomain.
 	- Service `sana`: Your Sana subdomain.
+	- Service `showpad`: Your Showpad subdomain.
 	- Service `skillstx`: Your SkillsTX subdomain.
 	- Service `smarthr`: Your SmartHR subdomain.
 	- Service `sonarqube`: Your Sonarqube subdomain.
 	- Service `toast`: Your Toast domain.
 	- Service `vts`: Your VTS Subdomain.
+	- Service `yext`: Your Yext subdomain. 
 	- Service `zendesk_chat`: Your Zendesk domain.
 - `subscriber_name` (String) Field usage depends on `service` value: 
 	- Service `azure_service_bus`: The subscriber name. If the connection string does not have manage permission, you need to specify a subscriber name we can use to fetch data. If not specified, we default to `fivetran_sub_schema`
 - `subscription` (String) Field usage depends on `service` value: 
 	- Service `retailnext`: Your RetailNext subscription.
 - `subscription_key` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `cabcharge`: Your Cabcharge subscription key.
 	- Service `dsv`: Your DSV subscription key.
 - `support_connected_accounts_sync` (Boolean) Field usage depends on `service` value: 
 	- Service `stripe`: Sync Connected Accounts. Connected Account Documentation - https://stripe.com/docs/api/connected_accounts.
@@ -3471,7 +3586,7 @@ Read-Only:
 	- Service `sql_server_sap_ecc_hva`: The user name.  For Azure Databases, the format must be `user@domain`.
 - `user_id` (String) Field usage depends on `service` value: 
 	- Service `coassemble`: Your Coassemble user ID.
-	- Service `gmail`: Your Gmail user ID.
+	- Service `gmail`: (DEPRECATED) Your Gmail user ID.
 	- Service `hibob`: Your HiBob Service User Token.
 	- Service `marketo`: Marketo SOAP API User Id.
 	- Service `okendo`: Your Okendo user ID.
@@ -3491,6 +3606,7 @@ Read-Only:
 	- Service `absorb_lms`: Your Absorb LMS username.
 	- Service `adobe_commerce`: Your Adobe Commerce username.
 	- Service `akeneo`: Your Akeneo username.
+	- Service `alida`: Your Alida client ID.
 	- Service `anaplan`: Your Anaplan user ID. Must be populated if `auth_mode` is set to `Basic`.
 	- Service `appfigures`: Your Appfigures Username.
 	- Service `aveva_pi`: Username for the user to authenticate as with the AF Server
@@ -3547,6 +3663,7 @@ Read-Only:
 	- Service `teamwork`: Your Teamwork username.
 	- Service `testrail`: Your TestRail username.
 	- Service `ukg_pro`: Your UKG Pro username.
+	- Service `ukg_pro_workforce_management`: Your UKG Pro Workforce Management username.
 	- Service `unicommerce`: Your uniware login username.
 	- Service `upland`: Your Upland Software Username.
 	- Service `veevavault`: Your Veeva Vault username.
@@ -3590,6 +3707,8 @@ Read-Only:
 	- Service `bigquery_db`: Use the source dataset as the workspace dataset
 - `workspace_schema` (String) Field usage depends on `service` value: 
 	- Service `snowflake_db`: The name of the schema that belongs to the workspace database where the temporary tables will be created.
+- `workspace_token` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `hex`: Your Hex workspace token.
 - `ws_certificate` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `adp_workforce_now`: Web Services Certificate.
 - `x_api_key` (String, Sensitive) Field usage depends on `service` value: 
@@ -3738,6 +3857,36 @@ Read-Only:
 	- Service `facebook_ads`: Time period to attribute conversions based on views. [Possible view_attribution_window values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#viewattributionwindow).
 
 
+<a id="nestedatt--config--data_model_path_alias_list"></a>
+### Nested Schema for `config.data_model_path_alias_list`
+
+Read-Only:
+
+- `alias` (String) Field usage depends on `service` value: 
+	- Service `oracle_business_intelligence_publisher`: Schema name
+- `path` (String) Field usage depends on `service` value: 
+	- Service `oracle_business_intelligence_publisher`: Path
+
+
+<a id="nestedatt--config--files"></a>
+### Nested Schema for `config.files`
+
+Read-Only:
+
+- `file_pattern` (String) Field usage depends on `service` value: 
+	- Service `azure_blob_storage`: All files in your search path matching this regular expression will be synced per table.
+	- Service `gcs`: All files in your search path matching this regular expression will be synced per table.
+	- Service `google_drive`: All files in your search path matching this regular expression will be synced per table.
+	- Service `s3`: All files in your search path matching this regular expression will be synced per table.
+	- Service `sftp`: All files in your search path matching this regular expression will be synced per table.
+- `table_name` (String) Field usage depends on `service` value: 
+	- Service `azure_blob_storage`: All files matching the above pattern will be synced to this table.
+	- Service `gcs`: All files matching the above pattern will be synced to this table.
+	- Service `google_drive`: All files matching the above pattern will be synced to this table.
+	- Service `s3`: All files matching the above pattern will be synced to this table.
+	- Service `sftp`: All files matching the above pattern will be synced to this table.
+
+
 <a id="nestedatt--config--project_credentials"></a>
 ### Nested Schema for `config.project_credentials`
 
@@ -3807,6 +3956,10 @@ Read-Only:
 	- Service `google_analytics`: The report dimensions to include into a sync. The `date` dimension is mandatory for all the report types.
 	- Service `google_analytics_4`: The report dimensions to include into a sync.
 	- Service `google_search_console`: The report dimensions included to sync.
+- `dynamic_parameter_field` (String) Field usage depends on `service` value: 
+	- Service `workday`: Dynamic parameter field name
+- `enable_dynamic_parameters` (Boolean) Field usage depends on `service` value: 
+	- Service `workday`: Select this option to enable dynamic report parameters.
 - `fields` (Set of String) Field usage depends on `service` value: 
 	- Service `google_ads`: A list of the fields to sync. Must be populated if `config_type` is set to `Custom`.
 - `filter` (String) Field usage depends on `service` value: 
@@ -3843,8 +3996,14 @@ Read-Only:
 - `segments` (Set of String) Field usage depends on `service` value: 
 	- Service `google_analytics`: A segment is a subset of your Analytics data that is made up of one or more non-destructive filters (filters that do not alter the underlying data). Those filters isolate subsets of users, sessions, and hits.
 	- Service `google_search_ads_360`: The report segments included to sync.
+- `start_date` (String) Field usage depends on `service` value: 
+	- Service `workday`: Start date
+- `start_date_parameter_field` (String) Field usage depends on `service` value: 
+	- Service `workday`: Start date parameter field name
 - `support_nested_columns` (Boolean) Field usage depends on `service` value: 
 	- Service `workday`: This option is to unpack the nested columns and sync them separately. By default, we sync the nested columns as JSON objects.
+- `sync_strategy` (String) Field usage depends on `service` value: 
+	- Service `workday`: Dynamic report parameters sync strategy
 - `table` (String) Field usage depends on `service` value: 
 	- Service `google_ads`: The table name within the schema to which connector will sync the data of the specific report.
 	- Service `google_analytics`: The table name within the schema to which connector will sync the data of the specific report.

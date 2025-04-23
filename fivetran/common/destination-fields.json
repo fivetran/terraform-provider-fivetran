@@ -360,6 +360,19 @@
       },
       "api_field": ""
    },
+   "enable_external_storage_for_unstructured_files": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "snowflake": ""
+      },
+      "api_field": ""
+   },
    "enable_remote_execution": {
       "readonly": false,
       "sensitive": false,
@@ -371,6 +384,21 @@
       "description": {
          "databricks": "",
          "snowflake": ""
+      },
+      "api_field": ""
+   },
+   "enable_single_topic": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aiven_kafka_wh": "",
+         "aws_msk_wh": "",
+         "confluent_cloud_wh": "Populate all tables in a single topic."
       },
       "api_field": ""
    },
@@ -400,6 +428,45 @@
       "item_type": {},
       "description": {
          "databricks": "External location to store Delta tables. Default value: `\"\"`  (null). By default, the external tables will reside in the `/{schema}/{table}` path, and if you specify an external location in the `{externalLocation}/{schema}/{table}` path."
+      },
+      "api_field": ""
+   },
+   "external_stage_storage_provider": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "snowflake": ""
+      },
+      "api_field": ""
+   },
+   "external_storage_integration": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "snowflake": ""
+      },
+      "api_field": ""
+   },
+   "external_storage_parent_folder_uri": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "snowflake": ""
       },
       "api_field": ""
    },
