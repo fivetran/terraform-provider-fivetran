@@ -5,7 +5,151 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.6.2...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.6.3...HEAD)
+
+## [1.6.3](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.6.2...v1.6.3)
+
+### Added
+New connection services supported:
+- Supported service: `acculynx`
+- Supported service: `acumatica`
+- Supported service: `adyen`
+- Supported service: `akeneo`
+- Supported service: `alida`
+- Supported service: `amazon_dsp`
+- Supported service: `ashby`
+- Supported service: `aveva_pi`
+- Supported service: `backbone_plm`
+- Supported service: `bigin_by_zoho_crm`
+- Supported service: `bigmarker`
+- Supported service: `bing_webmaster_tools`
+- Supported service: `brivo`
+- Supported service: `cabcharge`
+- Supported service: `canvas_data_2_by_instructure`
+- Supported service: `clazar`
+- Supported service: `clockify`
+- Supported service: `clockodo`
+- Supported service: `cloudflare_analytics`
+- Supported service: `cloudtalk`
+- Supported service: `coalesce`
+- Supported service: `compliance_checkpoint`
+- Supported service: `connector_sdk`
+- Supported service: `constant_contact`
+- Supported service: `cornerstone`
+- Supported service: `criteo_retail_media`
+- Supported service: `deposco`
+- Supported service: `device_magic`
+- Supported service: `dialpad`
+- Supported service: `ehr`
+- Supported service: `everflow`
+- Supported service: `expensein`
+- Supported service: `fillout`
+- Supported service: `flywheel_digital`
+- Supported service: `forethought`
+- Supported service: `formstack`
+- Supported service: `goldcast`
+- Supported service: `google_classroom`
+- Supported service: `healthie`
+- Supported service: `heartland_retail_pos`
+- Supported service: `helpdesk`
+- Supported service: `hex`
+- Supported service: `higher_logic_vanilla`
+- Supported service: `hilti_ontrack`
+- Supported service: `impact_partner`
+- Supported service: `jama_software`
+- Supported service: `jibble`
+- Supported service: `jobnimbus`
+- Supported service: `khoros_communities`
+- Supported service: `khoros_marketing`
+- Supported service: `leap_crm`
+- Supported service: `learn_amp`
+- Supported service: `line_ads`
+- Supported service: `lucca`
+- Supported service: `maileon`
+- Supported service: `mailjet`
+- Supported service: `malomo`
+- Supported service: `matomo`
+- Supported service: `microsoft_power_bi`
+- Supported service: `microsoft_teams`
+- Supported service: `nice`
+- Supported service: `odoo`
+- Supported service: `okendo`
+- Supported service: `oncehub`
+- Supported service: `ordergroove`
+- Supported service: `packiyo`
+- Supported service: `paddle`
+- Supported service: `pandadoc`
+- Supported service: `phoenix_ads`
+- Supported service: `pigment`
+- Supported service: `placerai`
+- Supported service: `planhat`
+- Supported service: `podio`
+- Supported service: `poplar`
+- Supported service: `procore`
+- Supported service: `prosperstack`
+- Supported service: `pylon_support_platform`
+- Supported service: `qmatic_data_connect`
+- Supported service: `reviewsai`
+- Supported service: `rokt`
+- Supported service: `ruddr`
+- Supported service: `safebase`
+- Supported service: `sana`
+- Supported service: `sentry`
+- Supported service: `shareasale`
+- Supported service: `shipnetwork`
+- Supported service: `showpad`
+- Supported service: `singlestore_source`
+- Supported service: `skimlinks`
+- Supported service: `stickyio`
+- Supported service: `sugarcrm`
+- Supported service: `the_movie_database`
+- Supported service: `tive`
+- Supported service: `tracksuit_source`
+- Supported service: `tremendous`
+- Supported service: `triple_whale`
+- Supported service: `ukg_pro_workforce_management`
+- Supported service: `venminder`
+- Supported service: `vimeo`
+- Supported service: `visma`
+- Supported service: `wicked_reports`
+- Supported service: `workleap_officevibe`
+- Supported service: `xactly`
+- Supported service: `yahoo_display_ads_on_yahoo_japan`
+- Supported service: `yext`
+- Supported service: `yotpo_app`
+- Supported service: `zip`
+- Supported service: `zoho_recruit`
+- Supported service: `zonka_feedback`
+
+New connection config fields supported:
+- Added field `fivetran_connector.config.files` for services: `google_drive`, `s3`, `sftp`, `azure_blob_storage`, `gcs`.
+- Added field `fivetran_connector.config.admin_username` for services: `brivo`.
+- Added field `fivetran_connector.config.distribution_incremental_fetch_window_days` for services: `qualtrics`.
+- Added field `fivetran_connector.config.auth_secret` for services: `webhooks`.
+- Added field `fivetran_connector.config.reports.start_date_parameter_field` for services: `workday`.
+- Added field `fivetran_connector.config.reports.enable_dynamic_parameters` for services: `workday`.
+- Added field `fivetran_connector.config.workspace_token` for services: `hex`.
+- Added field `fivetran_connector.config.certificate_id` for services: `netsuite_suiteanalytics`.
+- Added field `fivetran_connector.config.signature_encoding` for services: `webhooks`.
+- Added field `fivetran_connector.config.auth_header_key` for services: `webhooks`.
+- Added field `fivetran_connector.config.community_api_key_name` for services: `alida`.
+- Added field `fivetran_connector.config.sub_collections` for services: `firebase`.
+- Added field `fivetran_connector.config.reports.sync_strategy` for services: `workday`.
+- Added field `fivetran_connector.config.reports.start_date` for services: `workday`.
+- Added field `fivetran_connector.config.backward_sync_limit_date` for services: `hubspot`.
+- Added field `fivetran_connector.config.data_model_path_alias_list` for services: `oracle_business_intelligence_publisher`.
+- Added field `fivetran_connector.config.algorithm` for services: `webhooks`.
+- Added field `fivetran_connector.config.reports.dynamic_parameter_field` for services: `workday`.
+
+New destination services supported:
+- Supported service: `teradata_destination`
+
+New destination config fields supported:
+- Added field `fivetran_destination.config.enable_single_topic` for services: `aws_msk_wh`, `confluent_cloud_wh`, `aiven_kafka_wh`.
+- Added field `fivetran_destination.config.external_storage_parent_folder_uri` for services: `snowflake`.
+- Added field `fivetran_destination.config.enable_external_storage_for_unstructured_files` for services: `snowflake`.
+- Added field `fivetran_destination.config.external_stage_storage_provider` for services: `snowflake`.
+- Added field `fivetran_destination.config.external_storage_integration` for services: `snowflake`.
 
 ## [1.6.2](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.6.1...v1.6.2)
 

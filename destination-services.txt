@@ -16,6 +16,7 @@ managed_big_query
 maria_rds_warehouse
 maria_warehouse
 materialize
+milvus
 motherduck
 mysql_rds_warehouse
 mysql_warehouse
@@ -30,3 +31,4 @@ singlestore
 snowflake
 sql_server_rds_warehouse
 sql_server_warehouse
+teradata_destination
