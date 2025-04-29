@@ -15,10 +15,12 @@ type Roles struct {
 
 func (d *Roles) ReadFromResponse(ctx context.Context, resp roles.RolesListResponse) {
     roleElementType := map[string]attr.Type{
-        "name":         types.StringType,
-        "description":  types.StringType,
-        "is_custom":    types.BoolType,
-        "scope":        types.SetType{ElemType: types.StringType},
+        "name":                  types.StringType,
+        "description":           types.StringType,
+        "is_custom":             types.BoolType,
+        "scope":                 types.SetType{ElemType: types.StringType},
+        "is_deprecated":         types.BoolType,
+        "replacement_role_name": types.StringType,
     }
 
     if resp.Data.Items == nil {
@@ -33,6 +35,8 @@ func (d *Roles) ReadFromResponse(ctx context.Context, resp roles.RolesListRespon
         item["description"] = types.StringValue(v.Description)
         item["is_custom"] = types.BoolValue(*v.IsCustom)
         item["scope"], _ = types.SetValueFrom(ctx, types.StringType, v.Scope)
+        item["is_deprecated"] = types.BoolValue(*v.IsDeprecated)
+        item["replacement_role_name"] = types.StringValue(v.ReplacementRoleName)
 
         objectValue, _ := types.ObjectValue(roleElementType, item)
         items = append(items, objectValue)

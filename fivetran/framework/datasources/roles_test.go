@@ -23,7 +23,9 @@ const (
         	"name": "Account Administrator",
         	"description": "text_description",
         	"is_custom": false,
-        	"scope": ["ACCOUNT"]
+        	"scope": ["ACCOUNT"],
+        	"replacement_role_name": "text_replacement",
+        	"is_deprecated": false
       	}],
     	"next_cursor": null
 	}`
@@ -57,6 +59,8 @@ func TestDataSourceRolesMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("data.fivetran_roles.test_roles", "roles.0.description", "text_description"),
 			resource.TestCheckResourceAttr("data.fivetran_roles.test_roles", "roles.0.is_custom", "false"),
 			resource.TestCheckResourceAttr("data.fivetran_roles.test_roles", "roles.0.scope.0", "ACCOUNT"),
+			resource.TestCheckResourceAttr("data.fivetran_roles.test_roles", "roles.0.is_deprecated", "false"),
+			resource.TestCheckResourceAttr("data.fivetran_roles.test_roles", "roles.0.replacement_role_name", "text_replacement"),
 		),
 	}
 
