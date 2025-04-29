@@ -92,7 +92,7 @@ func TestResourceConnectorScheduleMock(t *testing.T) {
 
 	preCheckFunc := func() {
 		tfmock.MockClient().Reset()
-		tfmock.MockClient().When(http.MethodGet, "/v1/connectors/connector_id").ThenCall(
+		tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				responseData = tfmock.CreateMapFromJsonString(t, createResponse(scheduleState))
 				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
@@ -100,7 +100,7 @@ func TestResourceConnectorScheduleMock(t *testing.T) {
 		)
 
 		patchHandler =
-			tfmock.MockClient().When(http.MethodPatch, "/v1/connectors/connector_id").ThenCall(
+			tfmock.MockClient().When(http.MethodPatch, "/v1/connections/connector_id").ThenCall(
 				func(req *http.Request) (*http.Response, error) {
 					body := tfmock.RequestBodyToJson(t, req)
 

@@ -36,7 +36,7 @@ func TestDataSourceGroupConnectorsMappingMock(t *testing.T) {
 			PreCheck: func() {
 				tfmock.MockClient().Reset()
 
-				getHandler = tfmock.MockClient().When(http.MethodGet, "/v1/groups/group/connectors").ThenCall(
+				getHandler = tfmock.MockClient().When(http.MethodGet, "/v1/groups/group/connections").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 						var responseData = tfmock.CreateMapFromJsonString(t, `
     				{

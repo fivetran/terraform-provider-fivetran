@@ -373,7 +373,7 @@ func setupMockClientEmptyDefaultSchemaResource(t *testing.T) {
 
 	updateIteration := 0
 
-	schemaEmptyDefaultReloadHandler = mockClient.When(http.MethodPost, "/v1/connectors/connector_id/schemas/reload").ThenCall(
+	schemaEmptyDefaultReloadHandler = mockClient.When(http.MethodPost, "/v1/connections/connector_id/schemas/reload").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			body := requestBodyToJson(t, req)
 
@@ -402,7 +402,7 @@ func setupMockClientEmptyDefaultSchemaResource(t *testing.T) {
 		},
 	)
 
-	schemaEmptyDefaultGetHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+	schemaEmptyDefaultGetHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			if nil == schemaEmptyDefaultData {
 				return fivetranResponse(t, req,
@@ -414,7 +414,7 @@ func setupMockClientEmptyDefaultSchemaResource(t *testing.T) {
 		},
 	)
 
-	schemaEmptyDefaultPatchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas").ThenCall(
+	schemaEmptyDefaultPatchHandler = mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			body := requestBodyToJson(t, req)
 			if updateIteration == 0 {
@@ -618,7 +618,7 @@ func setupMockClientLockedPartsSchemaResource(t *testing.T) {
 	schemaLockedData = nil
 	updateIteration := 0
 
-	schemaLockedGetHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+	schemaLockedGetHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			if nil == schemaLockedData {
 				schemaLockedData = createMapFromJsonString(t, schemaWithLockedTableAndColumn)
@@ -627,7 +627,7 @@ func setupMockClientLockedPartsSchemaResource(t *testing.T) {
 		},
 	)
 
-	schemaLockedPatchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas").ThenCall(
+	schemaLockedPatchHandler = mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			body := requestBodyToJson(t, req)
 
@@ -656,7 +656,7 @@ func setupMockClientHashedAlignmentSchemaResource(t *testing.T) {
 	schemaHashedAlignmentData = nil
 	updateIteration := 0
 
-	schemaHashedAlignmentGetHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+	schemaHashedAlignmentGetHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			if nil == schemaHashedAlignmentData {
 				schemaHashedAlignmentData = createMapFromJsonString(t, schemaHashedColumnAlignmentJsonSchema)
@@ -665,7 +665,7 @@ func setupMockClientHashedAlignmentSchemaResource(t *testing.T) {
 		},
 	)
 
-	schemaHashedAlignmentPatchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas").ThenCall(
+	schemaHashedAlignmentPatchHandler = mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			body := requestBodyToJson(t, req)
 			if updateIteration == 0 {
@@ -740,13 +740,13 @@ func TestSyncModeMock(t *testing.T) {
 					}
 					`)
 
-		schemaConsistentWithUpstreamGetHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+		schemaConsistentWithUpstreamGetHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaConsistentWithUpstreamData), nil
 			},
 		)
 
-		schemaConsistentWithUpstreamPathchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas").ThenCall(
+		schemaConsistentWithUpstreamPathchHandler = mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				body := requestBodyToJson(t, req)
 				fmt.Print(body)
@@ -854,7 +854,7 @@ func TestConsistentWithUpstreamSchemaMock(t *testing.T) {
 		mockClient.Reset()
 		schemaConsistentWithUpstreamData = nil
 
-		schemaConsistentWithUpstreamGetHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+		schemaConsistentWithUpstreamGetHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				if nil == schemaHashedAlignmentData {
 					schemaConsistentWithUpstreamData = createMapFromJsonString(t, `
@@ -900,7 +900,7 @@ func TestConsistentWithUpstreamSchemaMock(t *testing.T) {
 			},
 		)
 
-		schemaConsistentWithUpstreamPathchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas").ThenCall(
+		schemaConsistentWithUpstreamPathchHandler = mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				body := requestBodyToJson(t, req)
 				fmt.Print(body)
@@ -1102,7 +1102,7 @@ func TestConsistentWithUpstreamSchemaMappedMock(t *testing.T) {
 		mockClient.Reset()
 		schemaConsistentWithUpstreamData = nil
 
-		schemaConsistentWithUpstreamGetHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+		schemaConsistentWithUpstreamGetHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				if nil == schemaConsistentWithUpstreamData {
 					schemaConsistentWithUpstreamData = createMapFromJsonString(t, `
@@ -1148,7 +1148,7 @@ func TestConsistentWithUpstreamSchemaMappedMock(t *testing.T) {
 			},
 		)
 
-		schemaConsistentWithUpstreamPathchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas").ThenCall(
+		schemaConsistentWithUpstreamPathchHandler = mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				body := requestBodyToJson(t, req)
 				fmt.Print(body)

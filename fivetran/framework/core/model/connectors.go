@@ -4,7 +4,7 @@ import (
     "context"
     "fmt"
 
-    "github.com/fivetran/go-fivetran/connectors"
+    "github.com/fivetran/go-fivetran/connections"
     "github.com/hashicorp/terraform-plugin-framework/types"
     "github.com/hashicorp/terraform-plugin-framework/attr"
 )
@@ -14,7 +14,7 @@ type Connectors struct {
     Connectors   types.Set    `tfsdk:"connectors"`
 }
 
-func (d *Connectors) ReadFromResponse(ctx context.Context, resp connectors.ConnectorsListResponse) {
+func (d *Connectors) ReadFromResponse(ctx context.Context, resp connections.ConnectionsListResponse) {
     elementAttrType := map[string]attr.Type{
         "id":                           types.StringType,
         "name":                         types.StringType,

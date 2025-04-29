@@ -54,9 +54,9 @@ func (r *userConnectorMembership) Create(ctx context.Context, req resource.Creat
 	for _, connector := range data.Connector.Elements() {
         if connectorElement, ok := connector.(basetypes.ObjectValue); ok {
 			connectorId := connectorElement.Attributes()["connector_id"].(basetypes.StringValue).ValueString()
-            svc := r.GetClient().NewUserConnectorMembershipCreate()
+            svc := r.GetClient().NewUserConnectionMembershipCreate()
             svc.UserId(data.UserId.ValueString())
-            svc.ConnectorId(connectorId)
+            svc.ConnectionId(connectorId)
             svc.Role(connectorElement.Attributes()["role"].(basetypes.StringValue).ValueString())
             if userConnectorResponse, err := svc.Do(ctx); err != nil {
                 resp.Diagnostics.AddError(
@@ -153,7 +153,7 @@ func (r *userConnectorMembership) Update(ctx context.Context, req resource.Updat
         role, found := planConnectorsMap[stateKey]
 
         if !found {
-            if updateResponse, err := r.GetClient().NewUserConnectorMembershipDelete().UserId(plan.UserId.ValueString()).ConnectorId(stateKey).Do(ctx); err != nil {
+            if updateResponse, err := r.GetClient().NewUserConnectionMembershipDelete().UserId(plan.UserId.ValueString()).ConnectionId(stateKey).Do(ctx); err != nil {
                 resp.Diagnostics.AddError(
                     "Unable to Update User Connector Membership Resource.",
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
@@ -166,7 +166,7 @@ func (r *userConnectorMembership) Update(ctx context.Context, req resource.Updat
             }
 			deletedConnectors = append(deletedConnectors, stateKey)
         } else if role != stateValue {
-            if updateResponse, err := r.GetClient().NewUserConnectorMembershipModify().UserId(plan.UserId.ValueString()).ConnectorId(stateKey).Role(role).Do(ctx); err != nil {
+            if updateResponse, err := r.GetClient().NewUserConnectionMembershipUpdate().UserId(plan.UserId.ValueString()).ConnectionId(stateKey).Role(role).Do(ctx); err != nil {
                 resp.Diagnostics.AddError(
                     "Unable to Update User Connector Membership Resource.",
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
@@ -190,7 +190,7 @@ func (r *userConnectorMembership) Update(ctx context.Context, req resource.Updat
         _, exists := stateConnectorsMap[planKey]
 
         if !exists {
-            if updateResponse, err := r.GetClient().NewUserConnectorMembershipCreate().UserId(plan.UserId.ValueString()).ConnectorId(planKey).Role(planValue).Do(ctx); err != nil {
+            if updateResponse, err := r.GetClient().NewUserConnectionMembershipCreate().UserId(plan.UserId.ValueString()).ConnectionId(planKey).Role(planValue).Do(ctx); err != nil {
                 resp.Diagnostics.AddError(
                     "Unable to Update User Connector Membership Resource.",
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
@@ -254,9 +254,9 @@ func (r *userConnectorMembership) Delete(ctx context.Context, req resource.Delet
     for _, connector := range data.Connector.Elements() {
         if connectorElement, ok := connector.(basetypes.ObjectValue); ok {
 			connectorId := connectorElement.Attributes()["connector_id"].(basetypes.StringValue).ValueString()
-            svc := r.GetClient().NewUserConnectorMembershipDelete()
+            svc := r.GetClient().NewUserConnectionMembershipDelete()
             svc.UserId(data.UserId.ValueString())
-            svc.ConnectorId(connectorId)
+            svc.ConnectionId(connectorId)
 
             if deleteResponse, err := svc.Do(ctx); err != nil {
                 resp.Diagnostics.AddError(
@@ -279,9 +279,9 @@ func (r *userConnectorMembership) RevertDeleted(ctx context.Context, toRevert []
 	reverted := []string{}
 	failed := []string{}
 	for _, connectorId := range toRevert {
-		svc := r.GetClient().NewUserConnectorMembershipCreate()
+		svc := r.GetClient().NewUserConnectionMembershipCreate()
 		svc.UserId(userId)
-		svc.ConnectorId(connectorId)
+		svc.ConnectionId(connectorId)
 		svc.Role(stateConnectorsMap[connectorId])
 		if _, err := svc.Do(ctx); err != nil {
 			failed = append(failed, userId)
@@ -297,9 +297,9 @@ func (r *userConnectorMembership) RevertModified(ctx context.Context, toRevert [
 	reverted := []string{}
 	failed := []string{}
 	for _, connectorId := range toRevert {
-		svc := r.GetClient().NewUserConnectorMembershipModify()
+		svc := r.GetClient().NewUserConnectionMembershipUpdate()
 		svc.UserId(userId)
-		svc.ConnectorId(connectorId)
+		svc.ConnectionId(connectorId)
 		svc.Role(stateConnectorsMap[connectorId])
 		if _, err := svc.Do(ctx); err != nil {
 			failed = append(failed, userId)
@@ -307,17 +307,17 @@ func (r *userConnectorMembership) RevertModified(ctx context.Context, toRevert [
 			reverted = append(reverted, userId)
 		} 
 	}
-	return fmt.Sprintf("Modify action reverted for connectors: %v", reverted),
-	fmt.Sprintf("Modify for revert action failed for connectors: %v", failed)
+	return fmt.Sprintf("Update action reverted for connectors: %v", reverted),
+	fmt.Sprintf("Update for revert action failed for connectors: %v", failed)
 }
 
 func (r *userConnectorMembership) RevertCreated(ctx context.Context, toRevert []string, userId string) (string, string) {
 	reverted := []string{}
 	failed := []string{}
 	for _, connectorId := range toRevert {
-		svc := r.GetClient().NewUserConnectorMembershipDelete()
+		svc := r.GetClient().NewUserConnectionMembershipDelete()
 		svc.UserId(userId)
-		svc.ConnectorId(connectorId)
+		svc.ConnectionId(connectorId)
 		if _, err := svc.Do(ctx); err != nil {
 			failed = append(failed, userId)
 		} else {

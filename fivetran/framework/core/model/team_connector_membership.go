@@ -15,7 +15,7 @@ type TeamConnectorMemberships struct {
     Connector   types.Set    `tfsdk:"connector"`
 }
 
-func (d *TeamConnectorMemberships) ReadFromResponse(ctx context.Context, resp teams.TeamConnectorMembershipsListResponse) {
+func (d *TeamConnectorMemberships) ReadFromResponse(ctx context.Context, resp teams.TeamConnectionMembershipsListResponse) {
     elementType := map[string]attr.Type{
         "connector_id": types.StringType,
         "role":         types.StringType,
@@ -30,7 +30,7 @@ func (d *TeamConnectorMemberships) ReadFromResponse(ctx context.Context, resp te
     
     for _, v := range resp.Data.Items {
         item := map[string]attr.Value{}
-        item["connector_id"] = types.StringValue(v.ConnectorId)
+        item["connector_id"] = types.StringValue(v.ConnectionId)
         item["role"] = types.StringValue(v.Role)
         item["created_at"] = types.StringValue(v.CreatedAt)
 
@@ -42,17 +42,17 @@ func (d *TeamConnectorMemberships) ReadFromResponse(ctx context.Context, resp te
     d.Connector, _ = types.SetValue(types.ObjectType{AttrTypes: elementType}, items)
 }
 
-func (d *TeamConnectorMemberships) ReadFromSource(ctx context.Context, client *fivetran.Client, teamId string) (teams.TeamConnectorMembershipsListResponse, error) {
+func (d *TeamConnectorMemberships) ReadFromSource(ctx context.Context, client *fivetran.Client, teamId string) (teams.TeamConnectionMembershipsListResponse, error) {
     var respNextCursor string
-    var listResponse teams.TeamConnectorMembershipsListResponse
+    var listResponse teams.TeamConnectionMembershipsListResponse
     limit := 1000
 
-    svc := client.NewTeamConnectorMembershipsList()
+    svc := client.NewTeamConnectionMembershipsList()
     svc.TeamId(teamId)
 
     for {
         var err error
-        var tmpResp teams.TeamConnectorMembershipsListResponse
+        var tmpResp teams.TeamConnectionMembershipsListResponse
 
         if respNextCursor == "" {
             tmpResp, err = svc.Limit(limit).Do(ctx)
@@ -63,7 +63,7 @@ func (d *TeamConnectorMemberships) ReadFromSource(ctx context.Context, client *f
         }
         
         if err != nil {
-            listResponse = teams.TeamConnectorMembershipsListResponse{}
+            listResponse = teams.TeamConnectionMembershipsListResponse{}
             return listResponse, err
         }
 

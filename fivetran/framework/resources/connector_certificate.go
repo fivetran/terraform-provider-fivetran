@@ -52,8 +52,8 @@ func (r *connectorCertificate) Create(ctx context.Context, req resource.CreateRe
 
 	for _, item := range data.Certificate.Elements() {
 		if element, ok := item.(basetypes.ObjectValue); ok {
-			svc := r.GetClient().NewCertificateConnectorCertificateApprove()
-			svc.ConnectorID(data.ConnectorId.ValueString())
+			svc := r.GetClient().NewCertificateConnectionCertificateApprove()
+			svc.ConnectionID(data.ConnectorId.ValueString())
 			svc.Hash(element.Attributes()["hash"].(basetypes.StringValue).ValueString())
 			svc.EncodedCert(element.Attributes()["encoded_cert"].(basetypes.StringValue).ValueString())
 			response, err := svc.Do(ctx)
@@ -145,7 +145,7 @@ func (r *connectorCertificate) Update(ctx context.Context, req resource.UpdateRe
 			hash := element.Attributes()["hash"].(basetypes.StringValue).ValueString()
 			if _, ok := planMap[hash]; !ok {
 				// no such hash in plan - revoke
-				if updateResponse, err := r.GetClient().NewConnectorCertificateRevoke().ConnectorID(plan.ConnectorId.ValueString()).Hash(hash).Do(ctx); err != nil {
+				if updateResponse, err := r.GetClient().NewConnectionCertificateRevoke().ConnectionID(plan.ConnectorId.ValueString()).Hash(hash).Do(ctx); err != nil {
 					resp.Diagnostics.AddError(
 						"Unable to Update Connector Certificate Resource. Failed to revoke certificate with hash "+hash,
 						fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
@@ -161,7 +161,7 @@ func (r *connectorCertificate) Update(ctx context.Context, req resource.UpdateRe
 
 	// in plan map left only new items we have to approve
 	for h, c := range planMap {
-		if updateResponse, err := r.GetClient().NewCertificateConnectorCertificateApprove().ConnectorID(plan.ConnectorId.ValueString()).Hash(h).EncodedCert(c).Do(ctx); err != nil {
+		if updateResponse, err := r.GetClient().NewCertificateConnectionCertificateApprove().ConnectionID(plan.ConnectorId.ValueString()).Hash(h).EncodedCert(c).Do(ctx); err != nil {
 			resp.Diagnostics.AddError(
 				"Unable to Update Connector Certificate Resource. Unable to approve certificate with hash "+h,
 				fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),

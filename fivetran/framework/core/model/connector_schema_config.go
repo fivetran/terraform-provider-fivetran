@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 
 	"github.com/fivetran/go-fivetran"
-	"github.com/fivetran/go-fivetran/connectors"
+	"github.com/fivetran/go-fivetran/connections"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/fivetrantypes"
 	configSchema "github.com/fivetran/terraform-provider-fivetran/modules/connector/schema"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
@@ -47,7 +47,7 @@ func (d *ConnectorSchemaResourceModel) getValidationLevels() (bool, bool) {
 	return validateTables, validateColumns
 }
 
-func (d *ConnectorSchemaResourceModel) ValidateSchemaElements(response connectors.ConnectorSchemaDetailsResponse, client fivetran.Client, ctx context.Context) (error, bool) {
+func (d *ConnectorSchemaResourceModel) ValidateSchemaElements(response connections.ConnectionSchemaDetailsResponse, client fivetran.Client, ctx context.Context) (error, bool) {
 	validateTables, validateColumns := d.getValidationLevels()
 	if validateTables {
 		return d.GetSchemaConfig().ValidateSchemas(
@@ -72,7 +72,7 @@ func (d *ConnectorSchemaResourceModel) IsMappedSchemaDefined() bool {
 	return !d.Schemas.IsUnknown() && !d.Schemas.IsNull() && len(d.Schemas.Elements()) > 0
 }
 
-func (d *ConnectorSchemaResourceModel) ReadFromResponse(response connectors.ConnectorSchemaDetailsResponse, diag *diag.Diagnostics) {
+func (d *ConnectorSchemaResourceModel) ReadFromResponse(response connections.ConnectionSchemaDetailsResponse, diag *diag.Diagnostics) {
 	schemaObject := configSchema.SchemaConfig{}
 	schemaObject.ReadFromResponse(response)
 	schemas := schemaObject.GetSchemas(response.Data.SchemaChangeHandling, d.GetSchemaConfig(), diag)
@@ -94,7 +94,7 @@ func (d *ConnectorSchemaResourceModel) ReadFromResponse(response connectors.Conn
 		d.SchemasRaw = fivetrantypes.NewJsonSchemaValue(schemasJson)
 	}
 
-	// SAP connectors will not accept schemaChangeHandling in request and will return ALLOW_COLUMNS as default
+	// SAP connections will not accept schemaChangeHandling in request and will return ALLOW_COLUMNS as default
 	if !d.SchemaChangeHandling.IsNull() && !d.SchemaChangeHandling.IsUnknown() && d.SchemaChangeHandling.ValueString() != "" {
 		d.SchemaChangeHandling = types.StringValue(response.Data.SchemaChangeHandling)
 	} else {

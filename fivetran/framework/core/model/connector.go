@@ -5,7 +5,7 @@ import (
     "strings"
 
     gfcommon "github.com/fivetran/go-fivetran/common"
-    "github.com/fivetran/go-fivetran/connectors"
+    "github.com/fivetran/go-fivetran/connections"
     "github.com/fivetran/terraform-provider-fivetran/fivetran/common"
     "github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
     "github.com/hashicorp/terraform-plugin-framework/attr"
@@ -52,7 +52,7 @@ var (
     }
 )
 
-func (d *ConnectorDatasourceModel) ReadFromResponse(resp connectors.DetailsWithCustomConfigNoTestsResponse) {
+func (d *ConnectorDatasourceModel) ReadFromResponse(resp connections.DetailsWithCustomConfigNoTestsResponse) {
     responseContainer := ConnectorModelContainer{}
     responseContainer.ReadFromResponseData(resp.Data.DetailsResponseDataCommon, resp.Data.Config)
     d.ReadFromContainer(responseContainer)
@@ -157,14 +157,14 @@ type ConnectorResourceModel struct {
     TrustFingerprints types.Bool `tfsdk:"trust_fingerprints"`
 }
 
-func (d *ConnectorResourceModel) ReadFromResponse(resp connectors.DetailsWithCustomConfigNoTestsResponse, forceReadConfig bool) diag.Diagnostics {
+func (d *ConnectorResourceModel) ReadFromResponse(resp connections.DetailsWithCustomConfigNoTestsResponse, forceReadConfig bool) diag.Diagnostics {
     responseContainer := ConnectorModelContainer{}
     responseContainer.ReadFromResponseData(resp.Data.DetailsResponseDataCommon, resp.Data.Config)
     d.ReadFromContainer(responseContainer, forceReadConfig)
     return nil
 }
 
-func (d *ConnectorResourceModel) ReadFromCreateResponse(resp connectors.DetailsWithCustomConfigResponse) diag.Diagnostics {
+func (d *ConnectorResourceModel) ReadFromCreateResponse(resp connections.DetailsWithCustomConfigResponse) diag.Diagnostics {
     responseContainer := ConnectorModelContainer{}
     responseContainer.ReadFromResponseData(resp.Data.DetailsResponseDataCommon, resp.Data.Config)
     d.ReadFromContainer(responseContainer, false)
@@ -340,7 +340,7 @@ type ConnectorModelContainer struct {
     TrustFingerprints bool
 }
 
-func (c *ConnectorModelContainer) ReadFromResponseData(data connectors.DetailsResponseDataCommon, config map[string]interface{}) {
+func (c *ConnectorModelContainer) ReadFromResponseData(data connections.DetailsResponseDataCommon, config map[string]interface{}) {
 	c.Id = data.ID
 	c.Name = data.Schema
 	c.ConnectedBy = data.ConnectedBy

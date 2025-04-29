@@ -115,7 +115,7 @@ func testFivetranTeamConnectorMembershipResourceCreate(t *testing.T, resourceNam
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
 
-		response, err := client.NewTeamConnectorMembershipsList().
+		response, err := client.NewTeamConnectionMembershipsList().
 			TeamId(rs.Primary.ID).
 			Do(context.Background())
 
@@ -138,7 +138,7 @@ func testFivetranTeamConnectorMembershipResourceDestroy(s *terraform.State) erro
 			continue
 		}
 
-		response, err := client.NewTeamConnectorMembershipsList().
+		response, err := client.NewTeamConnectionMembershipsList().
 			TeamId(rs.Primary.ID).
 			Do(context.Background())
 

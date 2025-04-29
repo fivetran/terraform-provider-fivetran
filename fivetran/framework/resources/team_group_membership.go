@@ -166,7 +166,7 @@ func (r *teamGroupMembership) Update(ctx context.Context, req resource.UpdateReq
             }
 			deletedGroups = append(deletedGroups, stateKey)
         } else if role != stateValue {
-            if updateResponse, err := r.GetClient().NewTeamGroupMembershipModify().TeamId(plan.TeamId.ValueString()).GroupId(stateKey).Role(role).Do(ctx); err != nil {
+            if updateResponse, err := r.GetClient().NewTeamGroupMembershipUpdate().TeamId(plan.TeamId.ValueString()).GroupId(stateKey).Role(role).Do(ctx); err != nil {
                 resp.Diagnostics.AddError(
                     "Unable to Update Team Group Membership Resource.",
                     fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
@@ -296,7 +296,7 @@ func (r *teamGroupMembership) RevertModified(ctx context.Context, toRevert []str
 	reverted := []string{}
 	failed := []string{}
 	for _, groupId := range toRevert {
-		svc := r.GetClient().NewTeamGroupMembershipModify()
+		svc := r.GetClient().NewTeamGroupMembershipUpdate()
 		svc.TeamId(teamId)
 		svc.GroupId(groupId)
 		svc.Role(stateGroupsMap[groupId])
@@ -306,8 +306,8 @@ func (r *teamGroupMembership) RevertModified(ctx context.Context, toRevert []str
 			reverted = append(reverted, groupId)
 		} 
 	}
-	return fmt.Sprintf("Modify action reverted for groups: %v", reverted),
-	fmt.Sprintf("Modify for revert action failed for groups: %v", failed)
+	return fmt.Sprintf("Update action reverted for groups: %v", reverted),
+	fmt.Sprintf("Update for revert action failed for groups: %v", failed)
 }
 
 func (r *teamGroupMembership) RevertCreated(ctx context.Context, toRevert []string, teamId string)(string, string) {

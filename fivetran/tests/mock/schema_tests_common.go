@@ -344,7 +344,7 @@ func setupComplexTest(t *testing.T, initalUpstreamConfig schemaConfigTestData, t
 		upstreamData = nil
 		updateIteration := 0
 
-		mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+		mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				if nil == upstreamData {
 					upstreamData = createMapFromJsonString(t, initalUpstreamConfig.jsonResponse())
@@ -353,7 +353,7 @@ func setupComplexTest(t *testing.T, initalUpstreamConfig schemaConfigTestData, t
 			},
 		)
 
-		mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas").ThenCall(
+		mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				body := requestBodyToJson(t, req)
 				bodies = append(bodies, body)
@@ -404,7 +404,7 @@ func setupComplexTestWithColumnsReload(
 
 		for schema, tables := range columnsResponseConfigs {
 			for table, columnConfigs := range tables {
-				mockClient.When(http.MethodGet, fmt.Sprintf("/v1/connectors/connector_id/schemas/%s/tables/%s/columns", schema, table)).ThenCall(
+				mockClient.When(http.MethodGet, fmt.Sprintf("/v1/connections/connector_id/schemas/%s/tables/%s/columns", schema, table)).ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 						return fivetranSuccessResponse(t, req, http.StatusOK, "Success",
 							createMapFromJsonString(t, columnConfigs[updateIteration].jsonResponse())), nil
@@ -413,7 +413,7 @@ func setupComplexTestWithColumnsReload(
 			}
 		}
 
-		mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+		mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				if nil == upstreamData {
 					upstreamData = createMapFromJsonString(t, initalUpstreamConfig.jsonResponse())
@@ -422,7 +422,7 @@ func setupComplexTestWithColumnsReload(
 			},
 		)
 
-		mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas").ThenCall(
+		mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				body := requestBodyToJson(t, req)
 				bodies = append(bodies, body)
@@ -466,7 +466,7 @@ func setupOneStepTest(t *testing.T, upstreamConfig, tfConfig, responseConfig sch
 		mockClient.Reset()
 		upstreamData = nil
 
-		mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+		mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				if nil == upstreamData {
 					upstreamData = createMapFromJsonString(t, upstreamConfig.jsonResponse())
@@ -475,7 +475,7 @@ func setupOneStepTest(t *testing.T, upstreamConfig, tfConfig, responseConfig sch
 			},
 		)
 
-		mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas").ThenCall(
+		mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				body = requestBodyToJson(t, req)
 				upstreamData = createMapFromJsonString(t, responseConfig.jsonResponse())

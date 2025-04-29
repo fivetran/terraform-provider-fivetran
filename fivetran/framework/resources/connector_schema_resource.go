@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/fivetran/go-fivetran/connectors"
+	"github.com/fivetran/go-fivetran/connections"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
@@ -39,7 +39,7 @@ func (r *connectorSchema) ImportState(ctx context.Context, req resource.ImportSt
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
-func (r *connectorSchema) reloadSchema(ctx context.Context, schemaChangeHandling, connectorID string, diag diag.Diagnostics) connectors.ConnectorSchemaDetailsResponse {
+func (r *connectorSchema) reloadSchema(ctx context.Context, schemaChangeHandling, connectorID string, diag diag.Diagnostics) connections.ConnectionSchemaDetailsResponse {
 	client := r.GetClient()
 	if client == nil {
 		diag.AddError(
@@ -47,7 +47,7 @@ func (r *connectorSchema) reloadSchema(ctx context.Context, schemaChangeHandling
 			"Please report this issue to the provider developers.",
 		)
 
-		return connectors.ConnectorSchemaDetailsResponse{}
+		return connections.ConnectionSchemaDetailsResponse{}
 	}
 
 	// Reload schema: we can't update schema if connector doesn't have it yet.
@@ -58,13 +58,13 @@ func (r *connectorSchema) reloadSchema(ctx context.Context, schemaChangeHandling
 		excludeMode = "EXCLUDE"
 	}
 
-	schemaResponse, err := client.NewConnectorSchemaReload().ExcludeMode(excludeMode).ConnectorID(connectorID).Do(ctx)
+	schemaResponse, err := client.NewConnectionSchemaReload().ExcludeMode(excludeMode).ConnectionID(connectorID).Do(ctx)
 	if err != nil {
 		diag.AddError(
 			"Unable to manage connector schema settings.",
 			fmt.Sprintf("Error during schema reloading. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
 		)
-		return connectors.ConnectorSchemaDetailsResponse{}
+		return connections.ConnectionSchemaDetailsResponse{}
 	}
 	return schemaResponse
 }
@@ -102,8 +102,8 @@ func (r *connectorSchema) createNewSchema(ctx context.Context, req resource.Crea
 	connectorID := data.ConnectorId.ValueString()
 	schemaChangeHandling := data.SchemaChangeHandling.ValueString()
 	localConfig := data.GetSchemaConfig()
-	svc := localConfig.PrepareCreateRequest(client.NewConnectorSchemaCreateService()).
-		ConnectorID(connectorID).
+	svc := localConfig.PrepareCreateRequest(client.NewConnectionSchemaCreateService()).
+		ConnectionID(connectorID).
 		SchemaChangeHandling(schemaChangeHandling)
 
 	// we should not parse response here because it will contain only applied diffs, not the whole configuration
@@ -154,7 +154,7 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 
 	client := r.GetClient()
 
-	schemaResponse, err := client.NewConnectorSchemaDetails().ConnectorID(connectorID).Do(ctx)
+	schemaResponse, err := client.NewConnectionSchemaDetails().ConnectionID(connectorID).Do(ctx)
 	// We might have to reload schema in case if there's no schema settings at all, or schema is out of sync with source
 	needReload := false
 	if err != nil {
@@ -226,8 +226,8 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 
 	if config.HasUpdates() {
 		// applying patch
-		svc := config.PrepareRequest(client.NewConnectorSchemaUpdateService())
-		svc.ConnectorID(connectorID)
+		svc := config.PrepareRequest(client.NewConnectionSchemaUpdateService())
+		svc.ConnectionID(connectorID)
 		// update schema_change_handling if needed
 		if schemaChangeHandling != "" && schemaChangeHandling != schemaResponse.Data.SchemaChangeHandling {
 			svc.SchemaChangeHandling(schemaChangeHandling)
@@ -245,7 +245,7 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 	} else {
 		// we update only schema_change_handling if needed
 		if schemaChangeHandling != "" && schemaChangeHandling != schemaResponse.Data.SchemaChangeHandling {
-			svc := client.NewConnectorSchemaUpdateService().ConnectorID(connectorID)
+			svc := client.NewConnectionSchemaUpdateService().ConnectionID(connectorID)
 			svc.SchemaChangeHandling(schemaChangeHandling)
 			schResponse, err := svc.Do(ctx)
 			if err != nil {
@@ -259,7 +259,7 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 	}
 
 	// We need to re-read schema
-	schemaResponse, err = client.NewConnectorSchemaDetails().ConnectorID(connectorID).Do(ctx)
+	schemaResponse, err = client.NewConnectionSchemaDetails().ConnectionID(connectorID).Do(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Create Connector Schema Resource.",
@@ -285,8 +285,8 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 	if configAfterApply.HasUpdates() {
-		svc := configAfterApply.PrepareRequest(client.NewConnectorSchemaUpdateService())
-		svc.ConnectorID(connectorID)
+		svc := configAfterApply.PrepareRequest(client.NewConnectionSchemaUpdateService())
+		svc.ConnectionID(connectorID)
 		// we should not parse response here because it will contain only applied diffs, not the whole configuration
 		applyResponse, err := svc.Do(ctx)
 
@@ -300,7 +300,7 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 	}
 
 	// We need to re-read schema
-	schemaResponse, err = client.NewConnectorSchemaDetails().ConnectorID(connectorID).Do(ctx)
+	schemaResponse, err = client.NewConnectionSchemaDetails().ConnectionID(connectorID).Do(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Create Connector Schema Resource.",
@@ -341,7 +341,7 @@ func (r *connectorSchema) Read(ctx context.Context, req resource.ReadRequest, re
 
 	connectorID := data.ConnectorId.ValueString()
 
-	schemaResponse, err := client.NewConnectorSchemaDetails().ConnectorID(connectorID).Do(ctx)
+	schemaResponse, err := client.NewConnectionSchemaDetails().ConnectionID(connectorID).Do(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Read Connector Schema Resource.",
@@ -385,7 +385,7 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 
 	connectorID := state.ConnectorId.ValueString()
 
-	schemaResponse, err := client.NewConnectorSchemaDetails().ConnectorID(connectorID).Do(ctx)
+	schemaResponse, err := client.NewConnectionSchemaDetails().ConnectionID(connectorID).Do(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Update Connector Schema Resource.",
@@ -430,8 +430,8 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 
 	if config.HasUpdates() {
 		// applying patch
-		svc := config.PrepareRequest(client.NewConnectorSchemaUpdateService())
-		svc.ConnectorID(connectorID)
+		svc := config.PrepareRequest(client.NewConnectionSchemaUpdateService())
+		svc.ConnectionID(connectorID)
 		// update schema_change_handling as well if needed
 		if plan.SchemaChangeHandling.String() != "" && plan.SchemaChangeHandling != state.SchemaChangeHandling {
 			svc.SchemaChangeHandling(plan.SchemaChangeHandling.ValueString())
@@ -450,7 +450,7 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 	} else {
 		// update schema_change_handling if needed
 		if plan.SchemaChangeHandling.String() != "" && plan.SchemaChangeHandling != state.SchemaChangeHandling {
-			svc := client.NewConnectorSchemaUpdateService().ConnectorID(connectorID)
+			svc := client.NewConnectionSchemaUpdateService().ConnectionID(connectorID)
 			svc.SchemaChangeHandling(plan.SchemaChangeHandling.ValueString())
 			schResponse, err := svc.Do(ctx)
 			if err != nil {
@@ -464,7 +464,7 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 	}
 
 	// re-read schema after apply changes
-	schemaResponse, err = client.NewConnectorSchemaDetails().ConnectorID(connectorID).Do(ctx)
+	schemaResponse, err = client.NewConnectionSchemaDetails().ConnectionID(connectorID).Do(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Update Connector Schema Resource.",
@@ -489,8 +489,8 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 	}
 
 	if configAfterApply.HasUpdates() {
-		svc := configAfterApply.PrepareRequest(client.NewConnectorSchemaUpdateService())
-		svc.ConnectorID(connectorID)
+		svc := configAfterApply.PrepareRequest(client.NewConnectionSchemaUpdateService())
+		svc.ConnectionID(connectorID)
 		applyResponse, err := svc.Do(ctx)
 		if err != nil {
 			resp.Diagnostics.AddError(
@@ -502,7 +502,7 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 	}
 
 	// re-read schema after apply changes
-	schemaResponse, err = client.NewConnectorSchemaDetails().ConnectorID(connectorID).Do(ctx)
+	schemaResponse, err = client.NewConnectionSchemaDetails().ConnectionID(connectorID).Do(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Update Connector Schema Resource.",

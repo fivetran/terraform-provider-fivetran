@@ -122,7 +122,7 @@ func (r *team) Update(ctx context.Context, req resource.UpdateRequest, resp *res
     resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
     resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
-    svc := r.GetClient().NewTeamsModify().TeamId(state.Id.ValueString())
+    svc := r.GetClient().NewTeamsUpdate().TeamId(state.Id.ValueString())
     
     if !plan.Name.Equal(state.Name) {
         svc.Name(plan.Name.ValueString())
@@ -146,7 +146,7 @@ func (r *team) Update(ctx context.Context, req resource.UpdateRequest, resp *res
         return
     }
 
-    state.ReadFromModifyResponse(ctx, updateResponse)
+    state.ReadFromUpdateResponse(ctx, updateResponse)
 
     resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }

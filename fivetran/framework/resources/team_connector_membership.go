@@ -54,9 +54,9 @@ func (r *teamConnectorMembership) Create(ctx context.Context, req resource.Creat
 	for _, connector := range data.Connector.Elements() {
 		if connectorElement, ok := connector.(basetypes.ObjectValue); ok {
 			connectorId := connectorElement.Attributes()["connector_id"].(basetypes.StringValue).ValueString()
-			svc := r.GetClient().NewTeamConnectorMembershipCreate()
+			svc := r.GetClient().NewTeamConnectionMembershipCreate()
 			svc.TeamId(data.TeamId.ValueString())
-			svc.ConnectorId(connectorId)
+			svc.ConnectionId(connectorId)
 			svc.Role(connectorElement.Attributes()["role"].(basetypes.StringValue).ValueString())
 			if teamConnectorResponse, err := svc.Do(ctx); err != nil {
 				resp.Diagnostics.AddError(
@@ -152,7 +152,7 @@ func (r *teamConnectorMembership) Update(ctx context.Context, req resource.Updat
 		role, found := planConnectorsMap[stateKey]
 
 		if !found {
-			if updateResponse, err := r.GetClient().NewTeamConnectorMembershipDelete().TeamId(plan.TeamId.ValueString()).ConnectorId(stateKey).Do(ctx); err != nil {
+			if updateResponse, err := r.GetClient().NewTeamConnectionMembershipDelete().TeamId(plan.TeamId.ValueString()).ConnectionId(stateKey).Do(ctx); err != nil {
 				resp.Diagnostics.AddError(
 					"Unable to Update Team Connector Membership Resource.",
 					fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
@@ -166,7 +166,7 @@ func (r *teamConnectorMembership) Update(ctx context.Context, req resource.Updat
 			}
 			deletedConnectors = append(deletedConnectors, stateKey)
 		} else if role != stateValue {
-			if updateResponse, err := r.GetClient().NewTeamConnectorMembershipModify().TeamId(plan.TeamId.ValueString()).ConnectorId(stateKey).Role(role).Do(ctx); err != nil {
+			if updateResponse, err := r.GetClient().NewTeamConnectionMembershipUpdate().TeamId(plan.TeamId.ValueString()).ConnectionId(stateKey).Role(role).Do(ctx); err != nil {
 				resp.Diagnostics.AddError(
 					"Unable to Update Team Connector Membership Resource.",
 					fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
@@ -190,7 +190,7 @@ func (r *teamConnectorMembership) Update(ctx context.Context, req resource.Updat
 		_, exists := stateConnectorsMap[planKey]
 
 		if !exists {
-			if updateResponse, err := r.GetClient().NewTeamConnectorMembershipCreate().TeamId(plan.TeamId.ValueString()).ConnectorId(planKey).Role(planValue).Do(ctx); err != nil {
+			if updateResponse, err := r.GetClient().NewTeamConnectionMembershipCreate().TeamId(plan.TeamId.ValueString()).ConnectionId(planKey).Role(planValue).Do(ctx); err != nil {
 				resp.Diagnostics.AddError(
 					"Unable to Update Team Connector Membership Resource.",
 					fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
@@ -253,9 +253,9 @@ func (r *teamConnectorMembership) Delete(ctx context.Context, req resource.Delet
 	for _, connector := range data.Connector.Elements() {
 		if connectorElement, ok := connector.(basetypes.ObjectValue); ok {
 			connectorId := connectorElement.Attributes()["connector_id"].(basetypes.StringValue).ValueString()
-			svc := r.GetClient().NewTeamConnectorMembershipDelete()
+			svc := r.GetClient().NewTeamConnectionMembershipDelete()
 			svc.TeamId(data.TeamId.ValueString())
-			svc.ConnectorId(connectorId)
+			svc.ConnectionId(connectorId)
 
 			if deleteResponse, err := svc.Do(ctx); err != nil {
 				resp.Diagnostics.AddError(
@@ -277,9 +277,9 @@ func (r *teamConnectorMembership) RevertDeleted(ctx context.Context, toRevert []
 	reverted := []string{}
 	failed := []string{}
 	for _, connectorId := range toRevert {
-		svc := r.GetClient().NewTeamConnectorMembershipCreate()
+		svc := r.GetClient().NewTeamConnectionMembershipCreate()
 		svc.TeamId(teamId)
-		svc.ConnectorId(connectorId)
+		svc.ConnectionId(connectorId)
 		svc.Role(stateConnectorsMap[connectorId])
 
 		if _, err := svc.Do(ctx); err != nil {
@@ -296,9 +296,9 @@ func (r *teamConnectorMembership) RevertModified(ctx context.Context, toRevert [
 	reverted := []string{}
 	failed := []string{}
 	for _, connectorId := range toRevert {
-		svc := r.GetClient().NewTeamConnectorMembershipModify()
+		svc := r.GetClient().NewTeamConnectionMembershipUpdate()
 		svc.TeamId(teamId)
-		svc.ConnectorId(connectorId)
+		svc.ConnectionId(connectorId)
 		svc.Role(stateConnectorsMap[connectorId])
 		
 		if _, err := svc.Do(ctx); err != nil {
@@ -307,17 +307,17 @@ func (r *teamConnectorMembership) RevertModified(ctx context.Context, toRevert [
 			reverted = append(reverted, connectorId)
 		} 
 	}
-	return fmt.Sprintf("Modify action reverted for connectors: %v", reverted),
-	fmt.Sprintf("Modify for revert action failed for connectors: %v", failed)
+	return fmt.Sprintf("Update action reverted for connectors: %v", reverted),
+	fmt.Sprintf("Update for revert action failed for connectors: %v", failed)
 }
 
 func (r *teamConnectorMembership) RevertCreated(ctx context.Context, toRevert []string, teamId string)  (string, string)  {
 	reverted := []string{}
 	failed := []string{}
 	for _, connectorId := range toRevert {
-		svc := r.GetClient().NewTeamConnectorMembershipDelete()
+		svc := r.GetClient().NewTeamConnectionMembershipDelete()
 		svc.TeamId(teamId)
-		svc.ConnectorId(connectorId)
+		svc.ConnectionId(connectorId)
 		
 		if _, err := svc.Do(ctx); err != nil {
 			failed = append(failed, connectorId)

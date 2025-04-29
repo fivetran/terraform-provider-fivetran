@@ -282,7 +282,7 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 
 	updatePerformed := false
 	if len(patch) > 0 || timeZoneHasChange || regionHasChange || daylightSavingTimeEnabledPlan != daylightSavingTimeEnabledState {
-		svc := r.GetClient().NewDestinationModify().
+		svc := r.GetClient().NewDestinationUpdate().
 			RunSetupTests(runSetupTestsPlan).
 			TrustCertificates(trustCertificatesPlan).
 			TrustFingerprints(trustFingerprintsPlan).

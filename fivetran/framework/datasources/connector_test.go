@@ -60,7 +60,7 @@ var (
 func setupMockClientConnectorDataSourceConfigMapping(t *testing.T) {
 	tfmock.MockClient().Reset()
 
-	connectorDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connectors/connector_id").ThenCall(
+	connectorDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			connectorDataSourceMockData = tfmock.CreateMapFromJsonString(t, connectorMappingResponse)
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorDataSourceMockData), nil
@@ -171,7 +171,7 @@ func TestDataSourceConnectorMock(t *testing.T) {
 			PreCheck: func() {
 				tfmock.MockClient().Reset()
 
-				getHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connectors/connector_id").ThenCall(
+				getHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 						var responseData = tfmock.CreateMapFromJsonString(t, `
 						{
