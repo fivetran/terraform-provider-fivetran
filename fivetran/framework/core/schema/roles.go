@@ -27,12 +27,20 @@ func RolesDatasource() datasourceSchema.Schema {
 						},
 						"is_custom": datasourceSchema.BoolAttribute{
 							Computed:      true,
-							Description:   "TypeBool",
+							Description:   "Defines whether the role is standard or custom",
 						},
 						"scope": datasourceSchema.SetAttribute{
 							Computed:      true,
 							Description:   "Defines the list of resources the role manages. Supported values: ACCOUNT, DESTINATION, CONNECTOR, and TEAM",
 							ElementType:   types.StringType,
+						},
+						"is_deprecated": datasourceSchema.BoolAttribute{
+							Computed:      true,
+							Description:   "Defines whether the role is deprecated",
+						},
+						"replacement_role_name": datasourceSchema.StringAttribute{
+							Computed:      true,
+							Description:   "The name of the new role replacing the deprecated role",
 						},
 					},
 				},
