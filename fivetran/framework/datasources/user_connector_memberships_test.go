@@ -44,7 +44,7 @@ func setupMockClientUserConnectorMembershipsDataSourceConfigMapping(t *testing.T
 		},
 	)
 
-	userConnectorMembershipsDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/users/user_id/connectors").ThenCall(
+	userConnectorMembershipsDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/users/user_id/connections").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			userConnectorMembershipsDataSourceMockData = tfmock.CreateMapFromJsonString(t, userConnectorMembershipsMappingResponse)
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", userConnectorMembershipsDataSourceMockData), nil

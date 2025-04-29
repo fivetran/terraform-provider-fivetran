@@ -18,7 +18,7 @@ func TestDataSourceConnectorCertificatesMock(t *testing.T) {
 	setupConnectorFingerprintsDatasourceMock := func() {
 		tfmock.MockClient().Reset()
 
-		getHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connectors/connector_id/certificates").ThenCall(
+		getHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id/certificates").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				cursor := req.URL.Query().Get("cursor")
 				if cursor == "" {

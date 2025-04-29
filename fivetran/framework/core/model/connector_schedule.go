@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/fivetran/go-fivetran/connectors"
+	"github.com/fivetran/go-fivetran/connections"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -16,7 +16,7 @@ type ConnectorSchedule struct {
 	DailySyncTime   types.String `tfsdk:"daily_sync_time"`
 }
 
-func (d *ConnectorSchedule) ReadFromResponse(response connectors.DetailsWithCustomConfigNoTestsResponse) {
+func (d *ConnectorSchedule) ReadFromResponse(response connections.DetailsWithCustomConfigNoTestsResponse) {
 	d.Id = types.StringValue(response.Data.ID)
 	d.ConnectorId = types.StringValue(response.Data.ID)
 	d.SyncFrequency = types.StringValue(helpers.IntPointerToStr(response.Data.SyncFrequency))
@@ -31,7 +31,7 @@ func (d *ConnectorSchedule) ReadFromResponse(response connectors.DetailsWithCust
 	}
 }
 
-func (d *ConnectorSchedule) ReadFromUpdateResponse(response connectors.DetailsWithCustomConfigResponse) {
+func (d *ConnectorSchedule) ReadFromUpdateResponse(response connections.DetailsWithCustomConfigResponse) {
 	d.Id = types.StringValue(response.Data.ID)
 	d.ConnectorId = types.StringValue(response.Data.ID)
 

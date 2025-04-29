@@ -133,7 +133,7 @@ func (r *user) Update(ctx context.Context, req resource.UpdateRequest, resp *res
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
-	svc := r.GetClient().NewUserModify().UserID(state.ID.ValueString())
+	svc := r.GetClient().NewUserUpdate().UserID(state.ID.ValueString())
 
 	if !plan.FamilyName.Equal(state.FamilyName) {
 		svc.FamilyName(plan.FamilyName.ValueString())

@@ -47,7 +47,7 @@ func (d *connector) Read(ctx context.Context, req datasource.ReadRequest, resp *
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
-	response, err := d.GetClient().NewConnectorDetails().ConnectorID(data.Id.ValueString()).DoCustom(ctx)
+	response, err := d.GetClient().NewConnectionDetails().ConnectionID(data.Id.ValueString()).DoCustom(ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError(

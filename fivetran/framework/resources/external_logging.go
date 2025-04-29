@@ -152,7 +152,7 @@ func (r *externalLogging) Update(ctx context.Context, req resource.UpdateRequest
 	enabledPlan := core.GetBoolOrDefault(plan.Enabled, true)
 	enabledState := core.GetBoolOrDefault(state.Enabled, true)
 
-	svc := r.GetClient().NewExternalLoggingModify().ExternalLoggingId(state.Id.ValueString())
+	svc := r.GetClient().NewExternalLoggingUpdate().ExternalLoggingId(state.Id.ValueString())
 
 	if enabledPlan != enabledState {
 		svc.Enabled(core.GetBoolOrDefault(plan.Enabled, true))

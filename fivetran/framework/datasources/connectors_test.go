@@ -81,7 +81,7 @@ const (
 func setupMockClientConnectorsDataSourceConfigMapping(t *testing.T) {
 	tfmock.MockClient().Reset()
 
-	connectorsDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connectors").ThenCall(
+	connectorsDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connections").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			if req.URL.Query().Get("cursor") == "next_cursor" {
 				connectorsDataSourceMockData = tfmock.CreateMapFromJsonString(t, connectorsMappingResponse)

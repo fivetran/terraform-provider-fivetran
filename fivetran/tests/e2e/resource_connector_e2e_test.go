@@ -125,7 +125,7 @@ func testFivetranConnectorResourceCreate(t *testing.T, resourceName string) reso
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
 
-		_, err := client.NewConnectorDetails().ConnectorID(rs.Primary.ID).Do(context.Background())
+		_, err := client.NewConnectionDetails().ConnectionID(rs.Primary.ID).Do(context.Background())
 
 		if err != nil {
 			return err
@@ -139,7 +139,7 @@ func testFivetranConnectorResourceUpdate(t *testing.T, resourceName string) reso
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
 
-		_, err := client.NewConnectorDetails().ConnectorID(rs.Primary.ID).Do(context.Background())
+		_, err := client.NewConnectionDetails().ConnectionID(rs.Primary.ID).Do(context.Background())
 
 		if err != nil {
 			return err
@@ -155,7 +155,7 @@ func testFivetranConnectorResourceDestroy(s *terraform.State) error {
 			continue
 		}
 
-		response, err := client.NewConnectorDetails().ConnectorID(rs.Primary.ID).Do(context.Background())
+		response, err := client.NewConnectionDetails().ConnectionID(rs.Primary.ID).Do(context.Background())
 		if err.Error() != "status code: 404; expected: 200" {
 			return err
 		}

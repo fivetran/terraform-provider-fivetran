@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/fivetran/go-fivetran"
-	"github.com/fivetran/go-fivetran/connectors"
+	"github.com/fivetran/go-fivetran/connections"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 )
@@ -17,7 +17,7 @@ type _schema struct {
 
 func (s _schema) validateTables(
 	connectorId, sName string,
-	responseSchema *connectors.ConnectorSchemaConfigSchemaResponse,
+	responseSchema *connections.ConnectionSchemaConfigSchemaResponse,
 	client fivetran.Client,
 	ctx context.Context,
 	validateColumns bool) (error, bool) {
@@ -36,8 +36,8 @@ func (s _schema) validateTables(
 	return nil, false
 }
 
-func (s _schema) prepareRequest() *connectors.ConnectorSchemaConfigSchema {
-	result := fivetran.NewConnectorSchemaConfigSchema()
+func (s _schema) prepareRequest() *connections.ConnectionSchemaConfigSchema {
+	result := fivetran.NewConnectionSchemaConfigSchema()
 	if s.enabledPatched {
 		result.Enabled(s.enabled)
 	}
@@ -48,8 +48,8 @@ func (s _schema) prepareRequest() *connectors.ConnectorSchemaConfigSchema {
 	}
 	return result
 }
-func (s _schema) prepareCreateRequest() *connectors.ConnectorSchemaConfigSchema {
-	result := fivetran.NewConnectorSchemaConfigSchema()
+func (s _schema) prepareCreateRequest() *connections.ConnectionSchemaConfigSchema {
+	result := fivetran.NewConnectionSchemaConfigSchema()
 	result.Enabled(s.enabled)
 	for k, v := range s.tables {
 		result.Table(k, v.prepareCreateRequest())
@@ -95,7 +95,7 @@ func (s *_schema) override(local *_schema, sch string) error {
 	return nil
 }
 
-func (s *_schema) readFromResponse(name string, response *connectors.ConnectorSchemaConfigSchemaResponse) {
+func (s *_schema) readFromResponse(name string, response *connections.ConnectionSchemaConfigSchemaResponse) {
 	s.name = name
 	s.enabled = *response.Enabled
 

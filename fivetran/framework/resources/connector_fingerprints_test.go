@@ -19,7 +19,7 @@ func TestResourceConnectorFingerprintsMock(t *testing.T) {
 	var data map[string]interface{}
 
 	createDeleteHandler := func(id string) *mock.Handler {
-		return tfmock.MockClient().When(http.MethodDelete, "/v1/connectors/connector_id/fingerprints/"+id).ThenCall(
+		return tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connector_id/fingerprints/"+id).ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", nil), nil
 			},
@@ -32,7 +32,7 @@ func TestResourceConnectorFingerprintsMock(t *testing.T) {
 		getInteraction := 0
 		postInteraction := 0
 
-		getHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connectors/connector_id/fingerprints").ThenCall(
+		getHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id/fingerprints").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 					data = tfmock.CreateMapFromJsonString(t, `
 					{
@@ -79,7 +79,7 @@ func TestResourceConnectorFingerprintsMock(t *testing.T) {
 			},
 		)
 
-		postHandler = tfmock.MockClient().When(http.MethodPost, "/v1/connectors/connector_id/fingerprints").ThenCall(
+		postHandler = tfmock.MockClient().When(http.MethodPost, "/v1/connections/connector_id/fingerprints").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				if postInteraction == 0 {
 					data = tfmock.CreateMapFromJsonString(t, `

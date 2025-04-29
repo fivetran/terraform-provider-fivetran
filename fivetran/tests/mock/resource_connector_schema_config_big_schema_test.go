@@ -145,7 +145,7 @@ func TestResourceSchemaRawWithExtraFieldsTestMock(t *testing.T) {
 				mockClient.Reset()
 				schemaData = nil
 
-				mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+				mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 						if nil == schemaData {
 							schemaData = createMapFromJsonString(t, jsonResponse)
@@ -297,7 +297,7 @@ resource "fivetran_connector_schema_config" "test_schema" {
 				mockClient.Reset()
 				schemaData = nil
 
-				mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+				mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 						if nil == schemaData {
 							schemaData = createMapFromJsonString(t, generateJsonResponse(schemasCount, tablesCount, "BLOCK_ALL"))
@@ -437,7 +437,7 @@ resource "fivetran_connector_schema_config" "test_schema" {
 				mockClient.Reset()
 				schemaData = nil
 
-				mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+				mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 						if nil == schemaData {
 							schemaData = createMapFromJsonString(t, generateJsonResponse(schemasCount, tablesCount, "BLOCK_ALL"))

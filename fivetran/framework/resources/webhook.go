@@ -212,7 +212,7 @@ func (r *webhook) Update(ctx context.Context, req resource.UpdateRequest, resp *
     resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
     resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
-    svc := r.GetClient().NewWebhookModify().WebhookId(state.Id.ValueString())
+    svc := r.GetClient().NewWebhookUpdate().WebhookId(state.Id.ValueString())
     
     active := core.GetBoolOrDefault(plan.Active, false)
     activeState := core.GetBoolOrDefault(state.Active, false)

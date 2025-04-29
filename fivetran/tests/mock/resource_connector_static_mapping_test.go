@@ -107,13 +107,13 @@ const (
 func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 	mockClient.Reset()
 
-	connectorMockGetHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id").ThenCall(
+	connectorMockGetHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMappingMockData), nil
 		},
 	)
 
-	connectorMockPostHandler = mockClient.When(http.MethodPost, "/v1/connectors").ThenCall(
+	connectorMockPostHandler = mockClient.When(http.MethodPost, "/v1/connections").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			body := requestBodyToJson(t, req)
 
@@ -151,7 +151,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 		},
 	)
 
-	connectorMockDelete = mockClient.When(http.MethodDelete, "/v1/connectors/connector_id").ThenCall(
+	connectorMockDelete = mockClient.When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			connectorMappingMockData = nil
 			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMappingMockData), nil

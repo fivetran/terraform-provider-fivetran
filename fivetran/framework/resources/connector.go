@@ -141,7 +141,7 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 	trustCertificatesPlan := core.GetBoolOrDefault(data.TrustCertificates, false)
 	trustFingerprintsPlan := core.GetBoolOrDefault(data.TrustFingerprints, false)
 
-	svc := r.GetClient().NewConnectorCreate().
+	svc := r.GetClient().NewConnectionCreate().
 		Paused(true). // on creation we always create paused connector
 		Service(data.Service.ValueString()).
 		GroupID(data.GroupId.ValueString()).
@@ -244,7 +244,7 @@ func (r *connector) Read(ctx context.Context, req resource.ReadRequest, resp *re
 		id = recoveredId
 	}
 
-	response, err := r.GetClient().NewConnectorDetails().ConnectorID(id).DoCustom(ctx)
+	response, err := r.GetClient().NewConnectionDetails().ConnectionID(id).DoCustom(ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -329,11 +329,11 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 
 	updatePerformed := false
 	if len(patch) > 0 || len(authPatch) > 0 {
-		svc := r.GetClient().NewConnectorModify().
+		svc := r.GetClient().NewConnectionUpdate().
 			RunSetupTests(runSetupTestsPlan).
 			TrustCertificates(trustCertificatesPlan).
 			TrustFingerprints(trustFingerprintsPlan).
-			ConnectorID(state.Id.ValueString())
+			ConnectionID(state.Id.ValueString())
 
 		if plan.PrivateLinkId.ValueString() != "" {
 			svc.PrivateLinkId(plan.PrivateLinkId.ValueString())
@@ -396,7 +396,7 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 			trustCertificatesPlan && trustCertificatesPlan != trustCertificatesState ||
 			trustFingerprintsPlan && trustFingerprintsPlan != trustFingerprintsState {
 
-			response, err := r.GetClient().NewConnectorSetupTests().ConnectorID(state.Id.ValueString()).DoCustom(ctx)
+			response, err := r.GetClient().NewConnectionSetupTests().ConnectionID(state.Id.ValueString()).DoCustom(ctx)
 			if err != nil {
 				resp.Diagnostics.AddError(
 					"Unable to Update Connector Resource.",
@@ -421,7 +421,7 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 
 	if !updatePerformed {
 		// re-read connector upstream with an additional request after update
-		response, err := r.GetClient().NewConnectorDetails().ConnectorID(state.Id.ValueString()).DoCustom(ctx)
+		response, err := r.GetClient().NewConnectionDetails().ConnectionID(state.Id.ValueString()).DoCustom(ctx)
 		if err != nil {
 			resp.Diagnostics.AddError(
 				"Unable to Read after Update Connector Resource.",
@@ -461,7 +461,7 @@ func (r *connector) Delete(ctx context.Context, req resource.DeleteRequest, resp
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
-	deleteResponse, err := r.GetClient().NewConnectorDelete().ConnectorID(data.Id.ValueString()).Do(ctx)
+	deleteResponse, err := r.GetClient().NewConnectionDelete().ConnectionID(data.Id.ValueString()).Do(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Delete Connector Resource.",
@@ -500,7 +500,7 @@ func (r *connector) recoverId(ctx context.Context, data model.ConnectorResourceM
 		if schemaName != "" && groupId != "" {
 			connectorsList, err := r.
 				GetClient().
-				NewGroupListConnectors().
+				NewGroupListConnections().
 				GroupID(groupId).
 				Limit(1000).
 				Do(ctx)
@@ -515,7 +515,7 @@ func (r *connector) recoverId(ctx context.Context, data model.ConnectorResourceM
 				}
 				for !found && connectorsList.Data.NextCursor != "" {
 					connectorsList, err = r.GetClient().
-						NewGroupListConnectors().
+						NewGroupListConnections().
 						GroupID(groupId).
 						Limit(1000).
 						Cursor(connectorsList.Data.NextCursor).

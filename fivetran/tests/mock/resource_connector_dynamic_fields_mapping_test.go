@@ -96,13 +96,13 @@ func getJsonConfigForConflictingFields(service, schema, configJson string) strin
 func setupMockClientConnectorResourceConfigConflictingFieldsMapping(t *testing.T, service, schema, configJson string) {
 	mockClient.Reset()
 
-	connectorConflictingMockGetHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id").ThenCall(
+	connectorConflictingMockGetHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorConflictingMappingMockData), nil
 		},
 	)
 
-	connectorConflictingMockPostHandler = mockClient.When(http.MethodPost, "/v1/connectors").ThenCall(
+	connectorConflictingMockPostHandler = mockClient.When(http.MethodPost, "/v1/connections").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 
 			response := getJsonConfigForConflictingFields(service, schema, configJson)
@@ -116,7 +116,7 @@ func setupMockClientConnectorResourceConfigConflictingFieldsMapping(t *testing.T
 		},
 	)
 
-	connectorConflictingMockDelete = mockClient.When(http.MethodDelete, "/v1/connectors/connector_id").ThenCall(
+	connectorConflictingMockDelete = mockClient.When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			connectorConflictingMappingMockData = nil
 			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorConflictingMappingMockData), nil

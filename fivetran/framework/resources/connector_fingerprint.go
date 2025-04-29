@@ -52,8 +52,8 @@ func (r *connectorFingerprint) Create(ctx context.Context, req resource.CreateRe
 
 	for _, item := range data.Fingerprint.Elements() {
 		if element, ok := item.(basetypes.ObjectValue); ok {
-			svc := r.GetClient().NewCertificateConnectorFingerprintApprove()
-			svc.ConnectorID(data.ConnectorId.ValueString())
+			svc := r.GetClient().NewCertificateConnectionFingerprintApprove()
+			svc.ConnectionID(data.ConnectorId.ValueString())
 			svc.Hash(element.Attributes()["hash"].(basetypes.StringValue).ValueString())
 			svc.PublicKey(element.Attributes()["public_key"].(basetypes.StringValue).ValueString())
 			if response, err := svc.Do(ctx); err != nil {
@@ -144,7 +144,7 @@ func (r *connectorFingerprint) Update(ctx context.Context, req resource.UpdateRe
 		_, found := planMap[stateKey]
 
 		if !found {
-			if updateResponse, err := r.GetClient().NewConnectorFingerprintRevoke().ConnectorID(plan.ConnectorId.ValueString()).Hash(stateKey).Do(ctx); err != nil {
+			if updateResponse, err := r.GetClient().NewConnectionFingerprintRevoke().ConnectionID(plan.ConnectorId.ValueString()).Hash(stateKey).Do(ctx); err != nil {
 				resp.Diagnostics.AddError(
 					"Unable to Update Connector Fingerprint Resource.",
 					fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
@@ -158,7 +158,7 @@ func (r *connectorFingerprint) Update(ctx context.Context, req resource.UpdateRe
 		_, exists := stateMap[planKey]
 
 		if !exists {
-			if updateResponse, err := r.GetClient().NewCertificateConnectorFingerprintApprove().ConnectorID(plan.ConnectorId.ValueString()).Hash(planKey).PublicKey(planValue).Do(ctx); err != nil {
+			if updateResponse, err := r.GetClient().NewCertificateConnectionFingerprintApprove().ConnectionID(plan.ConnectorId.ValueString()).Hash(planKey).PublicKey(planValue).Do(ctx); err != nil {
 				resp.Diagnostics.AddError(
 					"Unable to Update Connector Fingerprint Resource.",
 					fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),

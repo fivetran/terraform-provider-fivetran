@@ -41,7 +41,7 @@ var (
     }
 )
 
-func (d *GroupConnectors) ReadFromResponse(ctx context.Context, resp groups.GroupListConnectorsResponse) {
+func (d *GroupConnectors) ReadFromResponse(ctx context.Context, resp groups.GroupListConnectionsResponse) {
     if resp.Data.Items == nil {
         d.Connectors = types.SetNull(types.ObjectType{AttrTypes: elementConnectorType})
     }

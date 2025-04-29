@@ -305,20 +305,20 @@ const (
 func setupMockClientConnectorResourceListMappingConfig(t *testing.T) {
 	tfmock.MockClient().Reset()
 
-	connectorListsMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connectors/connector_id").ThenCall(
+	connectorListsMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
 		},
 	)
 
-	connectorListsMockPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/connectors").ThenCall(
+	connectorListsMockPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/connections").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			connectorMockData = tfmock.CreateMapFromJsonString(t, connectorConfigListsMappingResponse)
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", connectorMockData), nil
 		},
 	)
 
-	connectorListsMockDelete = tfmock.MockClient().When(http.MethodDelete, "/v1/connectors/connector_id").ThenCall(
+	connectorListsMockDelete = tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			connectorMockData = nil
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
@@ -338,13 +338,13 @@ func setupMockClientConnectorResourceUpdate(t *testing.T) {
 		}
 	}
 
-	connectorMockUpdateGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connectors/connector_id").ThenCall(
+	connectorMockUpdateGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
 		},
 	)
 
-	connectorMockUpdatePostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/connectors").ThenCall(
+	connectorMockUpdatePostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/connections").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			checkPatternNotRepresentedIfNotSet(t, tfmock.RequestBodyToJson(t, req))
 			connectorMockData = tfmock.CreateMapFromJsonString(t, connectorUpdateResponse1)
@@ -352,7 +352,7 @@ func setupMockClientConnectorResourceUpdate(t *testing.T) {
 		},
 	)
 
-	connectorMockUpdatePatchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/connectors/connector_id").ThenCall(
+	connectorMockUpdatePatchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/connections/connector_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			updateIteration++
 			checkPatternNotRepresentedIfNotSet(t, tfmock.RequestBodyToJson(t, req))
@@ -365,7 +365,7 @@ func setupMockClientConnectorResourceUpdate(t *testing.T) {
 		},
 	)
 
-	connectorMockUpdateDelete = tfmock.MockClient().When(http.MethodDelete, "/v1/connectors/connector_id").ThenCall(
+	connectorMockUpdateDelete = tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			connectorMockData = nil
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
@@ -376,20 +376,20 @@ func setupMockClientConnectorResourceUpdate(t *testing.T) {
 func setupMockClientConnectorResourceEmptyConfig(t *testing.T) {
 	tfmock.MockClient().Reset()
 
-	connectorEmptyMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connectors/connector_id").ThenCall(
+	connectorEmptyMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
 		},
 	)
 
-	connectorEmptyMockPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/connectors").ThenCall(
+	connectorEmptyMockPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/connections").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			connectorMockData = tfmock.CreateMapFromJsonString(t, connectorWithoutConfig)
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", connectorMockData), nil
 		},
 	)
 
-	connectorEmptyMockDelete = tfmock.MockClient().When(http.MethodDelete, "/v1/connectors/connector_id").ThenCall(
+	connectorEmptyMockDelete = tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			connectorMockData = nil
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
@@ -840,7 +840,7 @@ func TestResourceConnectorMock(t *testing.T) {
 				tfmock.MockClient().Reset()
 
 				//getHandler =
-				tfmock.MockClient().When(http.MethodGet, "/v1/connectors/connector_id").ThenCall(
+				tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 						if responseData == nil {
 							return tfmock.FivetranSuccessResponse(t, req, http.StatusNotFound, "NotFound", nil), nil
@@ -849,13 +849,13 @@ func TestResourceConnectorMock(t *testing.T) {
 					},
 				)
 
-				tfmock.MockClient().When(http.MethodDelete, "/v1/connectors/connector_id").ThenCall(
+				tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", nil), nil
 					},
 				)
 
-				postHandler = tfmock.MockClient().When(http.MethodPost, "/v1/connectors").ThenCall(
+				postHandler = tfmock.MockClient().When(http.MethodPost, "/v1/connections").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 
 						body := tfmock.RequestBodyToJson(t, req)
@@ -911,7 +911,7 @@ func TestResourceConnectorMock(t *testing.T) {
 					},
 				)
 
-				tfmock.MockClient().When(http.MethodPatch, "/v1/connectors/connector_id").ThenCall(
+				tfmock.MockClient().When(http.MethodPatch, "/v1/connections/connector_id").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 
 						body := tfmock.RequestBodyToJson(t, req)
@@ -1016,7 +1016,7 @@ func testConnectorCreateUpdate(t *testing.T,
 		tfmock.MockClient().Reset()
 
 		//getHandler =
-		tfmock.MockClient().When(http.MethodGet, "/v1/connectors/connector_id").ThenCall(
+		tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				if responseData == nil {
 					return tfmock.FivetranSuccessResponse(t, req, http.StatusNotFound, "NotFound", nil), nil
@@ -1025,13 +1025,13 @@ func testConnectorCreateUpdate(t *testing.T,
 			},
 		)
 
-		tfmock.MockClient().When(http.MethodDelete, "/v1/connectors/connector_id").ThenCall(
+		tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", nil), nil
 			},
 		)
 
-		tfmock.MockClient().When(http.MethodPost, "/v1/connectors").ThenCall(
+		tfmock.MockClient().When(http.MethodPost, "/v1/connections").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 
 				if bodyCheck1 != nil {
@@ -1052,7 +1052,7 @@ func testConnectorCreateUpdate(t *testing.T,
 			},
 		)
 
-		tfmock.MockClient().When(http.MethodPatch, "/v1/connectors/connector_id").ThenCall(
+		tfmock.MockClient().When(http.MethodPatch, "/v1/connections/connector_id").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 
 				if bodyCheck2 != nil {
@@ -1126,7 +1126,7 @@ func TestConnectorSubFieldsSensitiveMock(t *testing.T) {
 		tfmock.MockClient().Reset()
 
 		//getHandler =
-		tfmock.MockClient().When(http.MethodGet, "/v1/connectors/connector_id").ThenCall(
+		tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				if responseData == nil {
 					return tfmock.FivetranSuccessResponse(t, req, http.StatusNotFound, "NotFound", nil), nil
@@ -1135,13 +1135,13 @@ func TestConnectorSubFieldsSensitiveMock(t *testing.T) {
 			},
 		)
 
-		tfmock.MockClient().When(http.MethodDelete, "/v1/connectors/connector_id").ThenCall(
+		tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", nil), nil
 			},
 		)
 
-		tfmock.MockClient().When(http.MethodPost, "/v1/connectors").ThenCall(
+		tfmock.MockClient().When(http.MethodPost, "/v1/connections").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				responseJson := createConnectorTestResponseJsonMock(
 					"connector_id",
@@ -1212,7 +1212,7 @@ func TestConnectorCollectionSensitiveMock(t *testing.T) {
 		tfmock.MockClient().Reset()
 
 		//getHandler =
-		tfmock.MockClient().When(http.MethodGet, "/v1/connectors/connector_id").ThenCall(
+		tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				if responseData == nil {
 					return tfmock.FivetranSuccessResponse(t, req, http.StatusNotFound, "NotFound", nil), nil
@@ -1221,13 +1221,13 @@ func TestConnectorCollectionSensitiveMock(t *testing.T) {
 			},
 		)
 
-		tfmock.MockClient().When(http.MethodDelete, "/v1/connectors/connector_id").ThenCall(
+		tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", nil), nil
 			},
 		)
 
-		tfmock.MockClient().When(http.MethodPost, "/v1/connectors").ThenCall(
+		tfmock.MockClient().When(http.MethodPost, "/v1/connections").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				responseJson := createConnectorTestResponseJsonMock(
 					"connector_id",
@@ -1294,7 +1294,7 @@ func TestConnectorNonNullableFieldNotConfiguredMock(t *testing.T) {
 		tfmock.MockClient().Reset()
 
 		//getHandler =
-		tfmock.MockClient().When(http.MethodGet, "/v1/connectors/connector_id").ThenCall(
+		tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				if responseData == nil {
 					return tfmock.FivetranSuccessResponse(t, req, http.StatusNotFound, "NotFound", nil), nil
@@ -1303,13 +1303,13 @@ func TestConnectorNonNullableFieldNotConfiguredMock(t *testing.T) {
 			},
 		)
 
-		tfmock.MockClient().When(http.MethodDelete, "/v1/connectors/connector_id").ThenCall(
+		tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", nil), nil
 			},
 		)
 
-		tfmock.MockClient().When(http.MethodPost, "/v1/connectors").ThenCall(
+		tfmock.MockClient().When(http.MethodPost, "/v1/connections").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				responseJson := createConnectorTestResponseJsonMock(
 					"connector_id",

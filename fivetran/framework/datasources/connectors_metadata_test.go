@@ -41,7 +41,7 @@ const (
 func setupMockClientConnectorsMetadataSourceConfigMapping(t *testing.T) {
 	tfmock.MockClient().Reset()
 
-	connectorsMetadataDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/metadata/connectors").ThenCall(
+	connectorsMetadataDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/metadata/connections").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			connectorsMetadataDataSourceMockData = tfmock.CreateMapFromJsonString(t, connectorsMetadataMappingResponse)
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorsMetadataDataSourceMockData), nil

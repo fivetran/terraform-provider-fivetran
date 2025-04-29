@@ -116,7 +116,7 @@ func (r *privateLink) Update(ctx context.Context, req resource.UpdateRequest, re
 	var plan, state model.PrivateLink
 	hasChanges := false
 
-	svc := r.GetClient().NewPrivateLinkModify().PrivateLinkId(state.Id.ValueString())
+	svc := r.GetClient().NewPrivateLinkUpdate().PrivateLinkId(state.Id.ValueString())
 
 	if !plan.ConfigMap.Equal(state.ConfigMap) {
 		configMap := plan.GetConfigMap()

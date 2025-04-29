@@ -49,7 +49,7 @@ func setupMockClientTeamConnectorMembershipResource(t *testing.T) {
                 ],
                 "next_cursor": null}`
 
-	teamConnectorMembershipPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/teams/test_team/connectors").ThenCall(
+	teamConnectorMembershipPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/teams/test_team/connections").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			teamConnectorMembershipData = tfmock.CreateMapFromJsonString(t, teamConnectorMembershipResponse)
 			response := tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Connector membership has been created", teamConnectorMembershipData)
@@ -57,14 +57,14 @@ func setupMockClientTeamConnectorMembershipResource(t *testing.T) {
 		},
 	)
 
-	tfmock.MockClient().When(http.MethodGet, "/v1/teams/test_team/connectors/test_connector").ThenCall(
+	tfmock.MockClient().When(http.MethodGet, "/v1/teams/test_team/connections/test_connector").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			teamConnectorMembershipData = tfmock.CreateMapFromJsonString(t, teamConnectorMembershipUpdatedResponse)
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "", teamConnectorMembershipData), nil
 		},
 	)
 
-	tfmock.MockClient().When(http.MethodGet, "/v1/teams/test_team/connectors").ThenCall(
+	tfmock.MockClient().When(http.MethodGet, "/v1/teams/test_team/connections").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			teamConnectorMembershipListData = tfmock.CreateMapFromJsonString(t, teamConnectorMembershipResponse)
 			response := tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "", teamConnectorMembershipListData)
@@ -72,13 +72,13 @@ func setupMockClientTeamConnectorMembershipResource(t *testing.T) {
 		},
 	)
 
-	teamConnectorMembershipPatchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/teams/test_team/connectors/test_connector").ThenCall(
+	teamConnectorMembershipPatchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/teams/test_team/connections/test_connector").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Connector membership has been updated", teamConnectorMembershipData), nil
 		},
 	)
 
-	teamConnectorMembershipDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/teams/test_team/connectors/test_connector").ThenCall(
+	teamConnectorMembershipDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/teams/test_team/connections/test_connector").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			return tfmock.FivetranSuccessResponse(t, req, 200, "Connector membership has been deleted", nil), nil
 		},
@@ -151,7 +151,7 @@ func setupMockClientTeamConnectorMembershipResourceNotFound(t *testing.T) {
                 "next_cursor": null}`
 
 	callCount := 0
-	teamConnectorMembershipPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/teams/test_team/connectors").ThenCall(
+	teamConnectorMembershipPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/teams/test_team/connections").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			callCount++
 			if callCount != 1 {
@@ -164,14 +164,14 @@ func setupMockClientTeamConnectorMembershipResourceNotFound(t *testing.T) {
 	)
 
 	teamConnectormembershipDeleteCount := 0;
-	teamConnectorMembershipDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/teams/test_team/connectors/test_connector").ThenCall(
+	teamConnectorMembershipDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/teams/test_team/connections/test_connector").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			teamConnectormembershipDeleteCount++
 			return tfmock.FivetranSuccessResponse(t, req, 200, "Connector membership has been deleted", nil), nil
 		},
 	)
 
-	tfmock.MockClient().When(http.MethodGet, "/v1/teams/test_team/connectors").ThenCall(
+	tfmock.MockClient().When(http.MethodGet, "/v1/teams/test_team/connections").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			teamConnectorMembershipListData = tfmock.CreateMapFromJsonString(t, teamConnectorMembershipResponse)
 			response := tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "", teamConnectorMembershipListData)

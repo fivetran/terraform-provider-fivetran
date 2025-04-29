@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/fivetran/go-fivetran"
-	"github.com/fivetran/go-fivetran/connectors"
+	"github.com/fivetran/go-fivetran/connections"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 )
 
@@ -15,7 +15,7 @@ type SchemaConfig struct {
 
 func (c SchemaConfig) ValidateSchemas(
 	connectorId string,
-	schemas map[string]*connectors.ConnectorSchemaConfigSchemaResponse,
+	schemas map[string]*connections.ConnectionSchemaConfigSchemaResponse,
 	client fivetran.Client,
 	ctx context.Context,
 	validateColumns bool) (error, bool) {
@@ -40,7 +40,7 @@ func (c SchemaConfig) HasUpdates() bool {
 	return result
 }
 
-func (c SchemaConfig) PrepareRequest(svc *connectors.ConnectorSchemaConfigUpdateService) *connectors.ConnectorSchemaConfigUpdateService {
+func (c SchemaConfig) PrepareRequest(svc *connections.ConnectionSchemaConfigUpdateService) *connections.ConnectionSchemaConfigUpdateService {
 	for k, v := range c.schemas {
 		if v.updated {
 			svc.Schema(k, v.prepareRequest())
@@ -48,7 +48,7 @@ func (c SchemaConfig) PrepareRequest(svc *connectors.ConnectorSchemaConfigUpdate
 	}
 	return svc
 }
-func (c SchemaConfig) PrepareCreateRequest(svc *connectors.ConnectorSchemaConfigCreateService) *connectors.ConnectorSchemaConfigCreateService {
+func (c SchemaConfig) PrepareCreateRequest(svc *connections.ConnectionSchemaConfigCreateService) *connections.ConnectionSchemaConfigCreateService {
 	for k, v := range c.schemas {
 		svc.Schema(k, v.prepareCreateRequest())
 	}
@@ -93,7 +93,7 @@ func (c *SchemaConfig) ReadFromRawSourceData(d []interface{}, sch string) {
 	}
 }
 
-func (c *SchemaConfig) ReadFromResponse(response connectors.ConnectorSchemaDetailsResponse) {
+func (c *SchemaConfig) ReadFromResponse(response connections.ConnectionSchemaDetailsResponse) {
 	c.schemas = make(map[string]*_schema)
 	for k, v := range response.Data.Schemas {
 		s := &_schema{}

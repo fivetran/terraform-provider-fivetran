@@ -16,8 +16,8 @@ func RevokeCertificates(ctx context.Context, client *fivetran.Client, id, servic
 	for _, h := range hashes {
 		var err error = nil
 		if serviceType == "connector" {
-			svc := client.NewConnectorCertificateRevoke()
-			resp, err = svc.ConnectorID(id).Hash(h).Do(ctx)
+			svc := client.NewConnectionCertificateRevoke()
+			resp, err = svc.ConnectionID(id).Hash(h).Do(ctx)
 		}
 		if serviceType == "destination" {
 			svc := client.NewDestinationCertificateRevoke()
@@ -35,8 +35,8 @@ func RevokeFingerptints(ctx context.Context, client *fivetran.Client, id, servic
 	for _, h := range hashes {
 		var err error = nil
 		if serviceType == "connector" {
-			svc := client.NewConnectorFingerprintRevoke()
-			resp, err = svc.ConnectorID(id).Hash(h).Do(ctx)
+			svc := client.NewConnectionFingerprintRevoke()
+			resp, err = svc.ConnectionID(id).Hash(h).Do(ctx)
 		}
 		if serviceType == "destination" {
 			svc := client.NewDestinationFingerprintRevoke()
@@ -59,7 +59,7 @@ func ReadCertificatesFromUpstream(ctx context.Context, client *fivetran.Client, 
 		var tmpResp certificates.CertificatesListResponse
 
 		if serviceType == "connector" {
-			svc := client.NewConnectorCertificatesList().ConnectorID(id).Limit(limit)
+			svc := client.NewConnectionCertificatesList().ConnectionID(id).Limit(limit)
 			if respNextCursor != "" {
 				svc.Cursor(respNextCursor)
 			}
@@ -100,7 +100,7 @@ func ReadFromSourceFingerprintCommon(ctx context.Context, client *fivetran.Clien
 		var tmpResp fingerprints.FingerprintsListResponse
 
 		if serviceType == "connector" {
-			svc := client.NewConnectorFingerprintsList().ConnectorID(id).Limit(limit)
+			svc := client.NewConnectionFingerprintsList().ConnectionID(id).Limit(limit)
 			if respNextCursor != "" {
 				svc.Cursor(respNextCursor)
 			}

@@ -152,7 +152,7 @@ func TestResourceSchemaDisableColumnMissingInSchemaResponseMock(t *testing.T) {
 				mockClient.Reset()
 				schemaData = nil
 
-				getHandler = mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas").ThenCall(
+				getHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 						if nil == schemaData {
 							schemaData = createMapFromJsonString(t, fmt.Sprintf(schemasWoColumnsJsonResponse, "ALLOW_ALL"))
@@ -161,13 +161,13 @@ func TestResourceSchemaDisableColumnMissingInSchemaResponseMock(t *testing.T) {
 					},
 				)
 
-				mockClient.When(http.MethodGet, "/v1/connectors/connector_id/schemas/schema_1/tables/table_1/columns").ThenCall(
+				mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas/schema_1/tables/table_1/columns").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", createMapFromJsonString(t, columnsListResponse)), nil
 					},
 				)
 
-				patchHandler = mockClient.When(http.MethodPatch, "/v1/connectors/connector_id/schemas").ThenCall(
+				patchHandler = mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 						body := requestBodyToJson(t, req)
 

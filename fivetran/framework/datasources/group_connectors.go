@@ -45,13 +45,13 @@ func (d *groupConnectors) Read(ctx context.Context, req datasource.ReadRequest, 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
 	var respNextCursor string
-	var listResponse sdk.GroupListConnectorsResponse
+	var listResponse sdk.GroupListConnectionsResponse
 	limit := 1000
 
 	for {
 		var err error
-		var tmpResp sdk.GroupListConnectorsResponse
-		svc := d.GetClient().NewGroupListConnectors()
+		var tmpResp sdk.GroupListConnectionsResponse
+		svc := d.GetClient().NewGroupListConnections()
 		
 		if respNextCursor == "" {
 			tmpResp, err = svc.Limit(limit).GroupID(data.Id.ValueString()).Do(ctx)
@@ -66,7 +66,7 @@ func (d *groupConnectors) Read(ctx context.Context, req datasource.ReadRequest, 
 				"Read error.",
 				fmt.Sprintf("%v; code: %v; message: %v", err, tmpResp.Code, tmpResp.Message),
 			)
-			listResponse = sdk.GroupListConnectorsResponse{}
+			listResponse = sdk.GroupListConnectionsResponse{}
 		}
 
 		listResponse.Data.Items = append(listResponse.Data.Items, tmpResp.Data.Items...)

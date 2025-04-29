@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/fivetran/go-fivetran"
-	"github.com/fivetran/go-fivetran/connectors"
+	"github.com/fivetran/go-fivetran/connections"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 )
@@ -18,7 +18,7 @@ type _table struct {
 
 func (t _table) validateColumns(
 	connectorId, sName, tName string,
-	responseTable *connectors.ConnectorSchemaConfigTableResponse,
+	responseTable *connections.ConnectionSchemaConfigTableResponse,
 	client fivetran.Client,
 	ctx context.Context) error {
 	if len(t.columns) > 0 {
@@ -27,7 +27,7 @@ func (t _table) validateColumns(
 		}
 		columnsWereFetched := false
 		if len(responseTable.Columns) == 0 {
-			response, err := client.NewConnectorColumnConfigListService().ConnectorId(connectorId).Schema(sName).Table(tName).Do(ctx)
+			response, err := client.NewConnectionColumnConfigListService().ConnectionId(connectorId).Schema(sName).Table(tName).Do(ctx)
 			if err != nil {
 				return fmt.Errorf("Error while retrieving columns config for table `%s` of schema `%s. Error: %v; Code: `%v`.",
 					tName, sName, err, response.Code)
@@ -38,7 +38,7 @@ func (t _table) validateColumns(
 			for cName, _ := range t.columns {
 				if _, ok := responseTable.Columns[cName]; !ok {
 					if !columnsWereFetched {
-						response, err := client.NewConnectorColumnConfigListService().ConnectorId(connectorId).Schema(sName).Table(tName).Do(ctx)
+						response, err := client.NewConnectionColumnConfigListService().ConnectionId(connectorId).Schema(sName).Table(tName).Do(ctx)
 						if err != nil {
 							return fmt.Errorf("Error while retrieving columns config for table `%s` of schema `%s. Error: %v; Code: `%v`.",
 								tName, sName, err, response.Code)
@@ -67,8 +67,8 @@ func (t *_table) setSyncMode(value *string) {
 		t.syncMode = nil
 	}
 }
-func (t _table) prepareRequest() *connectors.ConnectorSchemaConfigTable {
-	result := fivetran.NewConnectorSchemaConfigTable()
+func (t _table) prepareRequest() *connections.ConnectionSchemaConfigTable {
+	result := fivetran.NewConnectionSchemaConfigTable()
 
 	if t.enabledPatched && t.isPatchAllowed() {
 		result.Enabled(t.enabled)
@@ -84,8 +84,8 @@ func (t _table) prepareRequest() *connectors.ConnectorSchemaConfigTable {
 	}
 	return result
 }
-func (t _table) prepareCreateRequest() *connectors.ConnectorSchemaConfigTable {
-	result := fivetran.NewConnectorSchemaConfigTable()
+func (t _table) prepareCreateRequest() *connections.ConnectionSchemaConfigTable {
+	result := fivetran.NewConnectionSchemaConfigTable()
 	result.Enabled(t.enabled)
 	if t.syncMode != nil {
 		result.SyncMode(*t.syncMode)
@@ -188,7 +188,7 @@ func (t *_table) readColumns(columns []interface{}, sch string) {
 	}
 }
 
-func (t *_table) readFromResponse(name string, response *connectors.ConnectorSchemaConfigTableResponse) {
+func (t *_table) readFromResponse(name string, response *connections.ConnectionSchemaConfigTableResponse) {
 	t.name = name
 	t.enabled = *response.Enabled
 	t.patchAllowed = response.EnabledPatchSettings.Allowed

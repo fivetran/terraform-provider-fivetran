@@ -51,7 +51,7 @@ func (d *connectorFingerprints) Read(ctx context.Context, req datasource.ReadReq
 	for {
 		var err error
 		var tmpResp sdk.FingerprintsListResponse
-		svc := d.GetClient().NewConnectorFingerprintsList().ConnectorID(data.Id.ValueString())
+		svc := d.GetClient().NewConnectionFingerprintsList().ConnectionID(data.Id.ValueString())
 		
 		if respNextCursor == "" {
 			tmpResp, err = svc.Limit(limit).Do(ctx)
