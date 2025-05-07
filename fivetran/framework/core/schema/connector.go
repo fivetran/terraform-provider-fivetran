@@ -241,6 +241,7 @@ func destinationSchemaAttributes() core.Schema {
 
 func ConnectorsDatasource() datasourceSchema.Schema {
 	return datasourceSchema.Schema{
+		DeprecationMessage: "This datasource is Deprecated, please migrate to actual resource",
 		Attributes: map[string]datasourceSchema.Attribute{
 			"id": datasourceSchema.StringAttribute{
 				Computed:    true,

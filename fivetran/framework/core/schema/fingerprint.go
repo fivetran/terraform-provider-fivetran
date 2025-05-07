@@ -94,6 +94,7 @@ func FingerprintConnectorResource() resourceSchema.Schema {
 
 func FingerprintConnectorDatasource() datasourceSchema.Schema {
 	return datasourceSchema.Schema{
+		DeprecationMessage: "This datasource is Deprecated, please migrate to actual resource",
 		Attributes: fingerprintCertificateConnectorSchema().GetDatasourceSchema(),
 		Blocks: map[string]datasourceSchema.Block{
 			"fingerprints": fingerprintDatasourceItem(),

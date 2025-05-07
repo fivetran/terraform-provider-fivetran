@@ -26,6 +26,7 @@ func CertificateDestinationResource() resourceSchema.Schema {
 
 func CertificateConnectorDatasource() datasourceSchema.Schema {
 	return datasourceSchema.Schema{
+		DeprecationMessage: "This datasource is Deprecated, please migrate to actual resource",
 		Attributes: fingerprintCertificateConnectorSchema().GetDatasourceSchema(),
 		Blocks: map[string]datasourceSchema.Block{
 			"certificates": certificateDatasourceItem(),
