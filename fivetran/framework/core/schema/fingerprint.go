@@ -24,6 +24,19 @@ func fingerprintCertificateConnectorSchema() core.Schema {
 	}
 }
 
+func fingerprintCertificateConnectionSchema() core.Schema {
+	return core.Schema{
+		Fields: map[string]core.SchemaField{
+			"id": {
+				Required:    true,
+				ForceNew:    true,
+				ValueType:   core.String,
+				Description: "The unique identifier for the target connection within the Fivetran system.",
+			},
+		},
+	}
+}
+
 func fingerprintCertificateDestinationSchema() core.Schema {
 	return core.Schema{
 		Fields: map[string]core.SchemaField{
@@ -80,6 +93,15 @@ func FingerprintConnectorResource() resourceSchema.Schema {
 }
 
 func FingerprintConnectorDatasource() datasourceSchema.Schema {
+	return datasourceSchema.Schema{
+		Attributes: fingerprintCertificateConnectorSchema().GetDatasourceSchema(),
+		Blocks: map[string]datasourceSchema.Block{
+			"fingerprints": fingerprintDatasourceItem(),
+		},
+	}
+}
+
+func FingerprintConnectionDatasource() datasourceSchema.Schema {
 	return datasourceSchema.Schema{
 		Attributes: fingerprintCertificateConnectorSchema().GetDatasourceSchema(),
 		Blocks: map[string]datasourceSchema.Block{

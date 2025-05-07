@@ -33,6 +33,15 @@ func CertificateConnectorDatasource() datasourceSchema.Schema {
 	}
 }
 
+func CertificateConnectionDatasource() datasourceSchema.Schema {
+	return datasourceSchema.Schema{
+		Attributes: fingerprintCertificateConnectionSchema().GetDatasourceSchema(),
+		Blocks: map[string]datasourceSchema.Block{
+			"certificates": certificateDatasourceItem(),
+		},
+	}
+}
+
 func CertificateDestinationDatasource() datasourceSchema.Schema {
 	return datasourceSchema.Schema{
 		Attributes: fingerprintCertificateDestinationSchema().GetDatasourceSchema(),

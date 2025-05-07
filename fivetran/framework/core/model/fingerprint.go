@@ -20,6 +20,18 @@ type FingerprintsConnector struct {
 	Fingerprints types.Set    `tfsdk:"fingerprints"`
 }
 
+type FingerprintConnection struct {
+	Id           types.String `tfsdk:"id"`
+	ConnectionId types.String `tfsdk:"connection_id"`
+	Fingerprint  types.Set    `tfsdk:"fingerprint"`
+}
+
+type FingerprintsConnection struct {
+	Id            types.String `tfsdk:"id"`
+	ConnectionId  types.String `tfsdk:"connection_id"`
+	Fingerprints  types.Set    `tfsdk:"fingerprints"`
+}
+
 type FingerprintDestination struct {
 	Id            types.String `tfsdk:"id"`
 	DestinationId types.String `tfsdk:"destination_id"`
@@ -70,6 +82,16 @@ func (d *FingerprintConnector) ReadFromResponse(ctx context.Context, resp finger
 
 func (d *FingerprintsConnector) ReadFromResponse(ctx context.Context, resp fingerprints.FingerprintsListResponse) {
 	d.ConnectorId = d.Id
+	d.Fingerprints = readFingerprintItemsFromResponse(resp)
+}
+
+func (d *FingerprintConnection) ReadFromResponse(ctx context.Context, resp fingerprints.FingerprintsListResponse) {
+	d.Id = d.ConnectionId
+	d.Fingerprint = readFingerprintItemsFromResponse(resp)
+}
+
+func (d *FingerprintsConnection) ReadFromResponse(ctx context.Context, resp fingerprints.FingerprintsListResponse) {
+	d.ConnectionId = d.Id
 	d.Fingerprints = readFingerprintItemsFromResponse(resp)
 }
 
