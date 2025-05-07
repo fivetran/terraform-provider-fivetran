@@ -13,7 +13,7 @@ func UserConnectionMembershipDatasource() datasourceSchema.Schema {
             },
         },
         Blocks: map[string]datasourceSchema.Block{
-            "connection": datasourceSchema.SetNestedBlock{
+            "connections": datasourceSchema.SetNestedBlock{
                 NestedObject: datasourceSchema.NestedBlockObject{
                     Attributes: map[string]datasourceSchema.Attribute{
                         "connection_id": datasourceSchema.StringAttribute{

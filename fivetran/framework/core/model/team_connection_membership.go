@@ -10,8 +10,8 @@ import (
 )
 
 type TeamConnectionMemberships struct {
-    Id           types.String `tfsdk:"id"`
-    Connection   types.Set    `tfsdk:"connection"`
+    Id            types.String `tfsdk:"id"`
+    Connections   types.Set    `tfsdk:"connections"`
 }
 
 func (d *TeamConnectionMemberships) ReadFromResponse(ctx context.Context, resp teams.TeamConnectionMembershipsListResponse) {
@@ -22,7 +22,7 @@ func (d *TeamConnectionMemberships) ReadFromResponse(ctx context.Context, resp t
     }
 
     if resp.Data.Items == nil {
-        d.Connection = types.SetNull(types.ObjectType{AttrTypes: elementType})
+        d.Connections = types.SetNull(types.ObjectType{AttrTypes: elementType})
     }
 
     items := []attr.Value{}
@@ -37,7 +37,7 @@ func (d *TeamConnectionMemberships) ReadFromResponse(ctx context.Context, resp t
         items = append(items, objectValue)
     }
 
-    d.Connection, _ = types.SetValue(types.ObjectType{AttrTypes: elementType}, items)
+    d.Connections, _ = types.SetValue(types.ObjectType{AttrTypes: elementType}, items)
 }
 
 func (d *TeamConnectionMemberships) ReadFromSource(ctx context.Context, client *fivetran.Client, teamId string) (teams.TeamConnectionMembershipsListResponse, error) {
