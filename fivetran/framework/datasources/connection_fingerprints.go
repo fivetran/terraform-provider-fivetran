@@ -51,6 +51,7 @@ func (d *connectionFingerprints) Read(ctx context.Context, req datasource.ReadRe
 	for {
 		var err error
 		var tmpResp sdk.FingerprintsListResponse
+
 		svc := d.GetClient().NewConnectionFingerprintsList().ConnectionID(data.Id.ValueString())
 		
 		if respNextCursor == "" {

@@ -22,13 +22,11 @@ type FingerprintsConnector struct {
 
 type FingerprintConnection struct {
 	Id           types.String `tfsdk:"id"`
-	ConnectionId types.String `tfsdk:"connection_id"`
 	Fingerprint  types.Set    `tfsdk:"fingerprint"`
 }
 
 type FingerprintsConnection struct {
 	Id            types.String `tfsdk:"id"`
-	ConnectionId  types.String `tfsdk:"connection_id"`
 	Fingerprints  types.Set    `tfsdk:"fingerprints"`
 }
 
@@ -86,12 +84,10 @@ func (d *FingerprintsConnector) ReadFromResponse(ctx context.Context, resp finge
 }
 
 func (d *FingerprintConnection) ReadFromResponse(ctx context.Context, resp fingerprints.FingerprintsListResponse) {
-	d.Id = d.ConnectionId
 	d.Fingerprint = readFingerprintItemsFromResponse(resp)
 }
 
 func (d *FingerprintsConnection) ReadFromResponse(ctx context.Context, resp fingerprints.FingerprintsListResponse) {
-	d.ConnectionId = d.Id
 	d.Fingerprints = readFingerprintItemsFromResponse(resp)
 }
 

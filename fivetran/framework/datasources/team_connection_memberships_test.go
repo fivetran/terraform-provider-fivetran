@@ -57,7 +57,7 @@ func TestDataSourceTeamConnectionMembershipsMappingMock(t *testing.T) {
 		Config: `
         data "fivetran_team_connection_memberships" "test" {
             provider     = fivetran-provider
-            team_id      = "team_id"
+            id           = "team_id"
         }`,
 
 		Check: resource.ComposeAggregateTestCheckFunc(

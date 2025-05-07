@@ -23,13 +23,11 @@ type CertificatesConnector struct {
 
 type CertificateConnection struct {
 	Id           types.String `tfsdk:"id"`
-	ConnectionId types.String `tfsdk:"connection_id"`
 	Certificate  types.Set    `tfsdk:"certificate"`
 }
 
 type CertificatesConnection struct {
 	Id            types.String `tfsdk:"id"`
-	ConnectionId  types.String `tfsdk:"connection_id"`
 	Certificates  types.Set    `tfsdk:"certificates"`
 }
 
@@ -131,12 +129,10 @@ func (d *CertificatesConnector) ReadFromResponse(ctx context.Context, resp certi
 }
 
 func (d *CertificateConnection) ReadFromResponse(ctx context.Context, resp certificates.CertificatesListResponse) {
-	d.Id = d.ConnectionId
 	d.Certificate = readCertificateItemsFromResponse(resp, d.getEncodedCertsMap(), true)
 }
 
 func (d *CertificatesConnection) ReadFromResponse(ctx context.Context, resp certificates.CertificatesListResponse) {
-	d.ConnectionId = d.Id
 	emptyMap := make(map[string]string)
 	d.Certificates = readCertificateItemsFromResponse(resp, emptyMap, false)
 }
