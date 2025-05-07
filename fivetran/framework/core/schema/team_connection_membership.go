@@ -8,7 +8,7 @@ func TeamConnectionMembershipDatasource() datasourceSchema.Schema {
     return datasourceSchema.Schema {
         Attributes: map[string]datasourceSchema.Attribute{
             "id": datasourceSchema.StringAttribute{
-                Computed:      true,
+                Required:    true,
                 Description:   "The unique identifier for the team within your account.",
             },
         },

@@ -66,6 +66,12 @@ func TestDataSourceTeamConnectionMembershipsMappingMock(t *testing.T) {
 				tfmock.AssertNotEmpty(t, teamConnectionMembershipsDataSourceMockData)
 				return nil
 			},
+      resource.TestCheckResourceAttr("data.fivetran_team_connection_memberships.test", "connections.0.connection_id", "connection_id_1"),
+      resource.TestCheckResourceAttr("data.fivetran_team_connection_memberships.test", "connections.0.role", "Connection Administrator"),
+      resource.TestCheckResourceAttr("data.fivetran_team_connection_memberships.test", "connections.0.created_at", "2020-05-25T15:26:47.306509Z"),
+      resource.TestCheckResourceAttr("data.fivetran_team_connection_memberships.test", "connections.1.connection_id", "connection_id_2"),
+			resource.TestCheckResourceAttr("data.fivetran_team_connection_memberships.test", "connections.1.role", "Connection Reviewer"),
+      resource.TestCheckResourceAttr("data.fivetran_team_connection_memberships.test", "connections.1.created_at", "2020-05-25T15:26:47.306509Z"),
 		),
 	}
 

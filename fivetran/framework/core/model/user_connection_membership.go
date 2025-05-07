@@ -11,7 +11,7 @@ import (
 
 type UserConnectionMemberships struct {
     Id            types.String `tfsdk:"id"`
-    Connections   types.Set    `tfsdk:"Connections"`
+    Connections   types.Set    `tfsdk:"connections"`
 }
 
 func (d *UserConnectionMemberships) ReadFromResponse(ctx context.Context, resp users.UserConnectionMembershipsListResponse) {
