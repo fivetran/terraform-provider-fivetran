@@ -42,7 +42,7 @@ func TestDataSourceConnectionFingerprintsMock(t *testing.T) {
 					}
 					`)
 				} else if cursor == "next_cursor" {
-					connectorFingerprintsData = tfmock.CreateMapFromJsonString(t, `
+					connectionFingerprintsData = tfmock.CreateMapFromJsonString(t, `
 					{
 						"items":[
 							{
@@ -79,7 +79,7 @@ func TestDataSourceConnectionFingerprintsMock(t *testing.T) {
 					}`,
 					Check: resource.ComposeAggregateTestCheckFunc(
 						func(s *terraform.State) error {
-							tfmock.AssertEqual(t, connectorFingerprintsGetHandler.Interactions, 2)
+							tfmock.AssertEqual(t, connectionFingerprintsGetHandler.Interactions, 2)
 							return nil
 						},
 						resource.TestCheckResourceAttr("data.fivetran_connection_fingerprints.test", "id", "connection_id"),
