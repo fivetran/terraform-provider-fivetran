@@ -32,6 +32,12 @@ func hybridDeploymentAgentAttribute() core.Schema {
                 ValueType:    core.String,
                 Description:  "Type of authentification. Possible values `AUTO`,`MANUAL`",
             },
+            "env_type": {
+                Required:     true,
+                ResourceOnly: true,
+                ValueType:    core.String,
+                Description:  "Environment type. Possible values `DOCKER`,`PODMAN`,`KUBERNETES`,`SNOWPARK`",
+            },
             "registered_at": {
                 Readonly:    true,
                 ValueType:   core.String,
