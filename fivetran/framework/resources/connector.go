@@ -328,18 +328,25 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 	authPatch := model.PrepareConfigAuthPatch(stateAuthMap, planAuthMap, plan.Service.ValueString(), common.GetAuthFieldsMap())
 
 	updatePerformed := false
-	if len(patch) > 0 || len(authPatch) > 0 {
+	if len(patch) > 0 || 
+			len(authPatch) > 0 || 
+			!plan.ProxyAgentId.Equal(state.ProxyAgentId) ||
+			!plan.PrivateLinkId.Equal(state.PrivateLinkId) ||
+			!plan.HybridDeploymentAgentId.Equal(state.HybridDeploymentAgentId) ||
+			!plan.DataDelaySensitivity.Equal(state.DataDelaySensitivity) ||
+			!plan.DataDelayThreshold.Equal(state.DataDelayThreshold) ||
+			!plan.NetworkingMethod.Equal(state.NetworkingMethod) {
 		svc := r.GetClient().NewConnectionUpdate().
 			RunSetupTests(runSetupTestsPlan).
 			TrustCertificates(trustCertificatesPlan).
 			TrustFingerprints(trustFingerprintsPlan).
 			ConnectionID(state.Id.ValueString())
 
-		if plan.PrivateLinkId.ValueString() != "" {
+		if !plan.PrivateLinkId.Equal(state.PrivateLinkId) {
 			svc.PrivateLinkId(plan.PrivateLinkId.ValueString())
 		}
 
-		if plan.HybridDeploymentAgentId.ValueString() != "" {
+		if !plan.HybridDeploymentAgentId.Equal(state.HybridDeploymentAgentId) {
 			svc.HybridDeploymentAgentId(plan.HybridDeploymentAgentId.ValueString())
 		}
 
@@ -350,15 +357,15 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 			svc.AuthCustom(&authPatch)
 		}
 
-		if plan.ProxyAgentId.ValueString() != "" {
+		if !plan.ProxyAgentId.Equal(state.ProxyAgentId) {
 			svc.ProxyAgentId(plan.ProxyAgentId.ValueString())
 		}
 
-		if plan.NetworkingMethod.ValueString() != "" {
+		if !plan.NetworkingMethod.Equal(state.NetworkingMethod) {
 			svc.NetworkingMethod(plan.NetworkingMethod.ValueString())
 		}
 
-		if plan.DataDelaySensitivity.ValueString() != "" {
+		if !plan.DataDelaySensitivity.Equal(state.DataDelaySensitivity) {
 			svc.DataDelaySensitivity(plan.DataDelaySensitivity.ValueString())
 		}
 

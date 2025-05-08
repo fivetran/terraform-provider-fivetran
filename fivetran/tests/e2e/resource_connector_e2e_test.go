@@ -121,6 +121,115 @@ func TestResourceConnectorE2E(t *testing.T) {
 	})
 }
 
+func TestResourceConnectorHdE2E(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectorResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+					resource "fivetran_group" "group" {
+						provider = fivetran-provider
+    					name = "sdhfkldwshkjshdkj"
+					}
+
+					resource "fivetran_hybrid_deployment_agent" "hybrid_deployment_agent1" {
+    					provider = fivetran-provider
+    					display_name = "display_name_1"
+    					group_id = fivetran_group.group.id
+    					auth_type = "AUTO"
+					}
+
+					resource "fivetran_hybrid_deployment_agent" "hybrid_deployment_agent2" {
+						provider = fivetran-provider
+    					display_name = "display_name_2"
+    					group_id = fivetran_group.group.id
+    					auth_type = "AUTO"
+					}
+
+					resource "fivetran_connector" "test_connector" {
+						provider = fivetran-provider
+      					group_id = fivetran_group.group.id
+      					service = "postgres"
+
+      					hybrid_deployment_agent_id = fivetran_hybrid_deployment_agent.hybrid_deployment_agent1.id
+
+      					destination_schema {
+        					prefix = "postgres"
+      					}
+
+      					trust_certificates = true
+      					trust_fingerprints = true
+      					run_setup_tests = false
+
+      					config {
+        					user = "user1"
+        					password = "password1"
+        					host = "host"
+        					port = "123"
+      					}
+    				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectorResourceCreate(t, "fivetran_connector.test_connector"),
+					resource.TestCheckResourceAttrSet("fivetran_connector.test_connector", "hybrid_deployment_agent_id"),
+				),
+			},
+			{
+				Config: `
+					resource "fivetran_group" "group" {
+						provider = fivetran-provider
+    					name = "sdhfkldwshkjshdkj"
+					}
+
+					resource "fivetran_hybrid_deployment_agent" "hybrid_deployment_agent1" {
+						provider = fivetran-provider
+    					display_name = "display_name_1"
+    					group_id = fivetran_group.group.id
+    					auth_type = "AUTO"
+					}
+
+					resource "fivetran_hybrid_deployment_agent" "hybrid_deployment_agent2" {
+						provider = fivetran-provider
+    					display_name = "display_name_2"
+    					group_id = fivetran_group.group.id
+    					auth_type = "AUTO"
+					}
+
+					resource "fivetran_connector" "test_connector" {
+						provider = fivetran-provider
+      					group_id = fivetran_group.group.id
+      					service = "postgres"
+
+      					hybrid_deployment_agent_id = fivetran_hybrid_deployment_agent.hybrid_deployment_agent2.id
+
+      					destination_schema {
+        					prefix = "postgres"
+      					}
+
+      					trust_certificates = true
+      					trust_fingerprints = true
+      					run_setup_tests = false
+
+      					config {
+        					user = "user1"
+        					password = "password1"
+        					host = "host"
+        					port = "123"
+      					}
+    				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectorResourceUpdate(t, "fivetran_connector.test_connector"),
+
+					resource.TestCheckResourceAttrSet("fivetran_connector.test_connector", "hybrid_deployment_agent_id"),
+				),
+			},
+		},
+	})
+}
+
 func testFivetranConnectorResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
