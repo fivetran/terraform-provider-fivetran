@@ -26,6 +26,10 @@ var (
 	connectorMockUpdatePatchHandler *mock.Handler
 	connectorMockUpdateDelete       *mock.Handler
 
+	connectorMockUpdateHdPostHandler  *mock.Handler
+	connectorMockUpdateHdGetHandler   *mock.Handler
+	connectorMockUpdateHdPatchHandler *mock.Handler
+
 	connectorMockData map[string]interface{}
 )
 
@@ -127,6 +131,100 @@ const (
 		"networking_method": "Directly",
 		"data_delay_sensitivity": "NORMAL",
 		"data_delay_threshold": 0,
+        "status": {
+            "setup_state": "incomplete",
+            "sync_state": "paused",
+            "update_state": "on_schedule",
+            "is_historical_sync": true,
+            "tasks": [{
+				"code":"task_code",
+				"message":"task_message"
+			}],
+            "warnings": [{
+				"code":"warning_code",
+				"message":"warning_message"
+			}]
+        },
+        "setup_tests": [{
+            "title": "Validate Login",
+            "status": "FAILED",
+            "message": "Invalid login credentials"
+        }],
+        "config": {
+            "user": "user1",
+			"password": "password1",
+			"host": "host",
+			"port": 123
+		}
+	}
+	`
+
+	connectorUpdateResponseHd1 = `
+	{
+		"id": "connector_id",
+        "group_id": "group_id",
+        "service": "postgres",
+        "service_version": 1,
+        "schema": "postgres",
+        "paused": true,
+        "pause_after_trial": true,
+        "connected_by": "user_id",
+        "created_at": "2022-01-01T11:22:33.012345Z",
+        "succeeded_at": null,
+        "failed_at": null,
+        "sync_frequency": 5,
+		"schedule_type": "auto",
+		"networking_method": "Directly",
+		"data_delay_sensitivity": "NORMAL",
+		"data_delay_threshold": 0,
+		"hybrid_deployment_agent_id": "existing_agent_id",
+        "status": {
+            "setup_state": "incomplete",
+            "sync_state": "paused",
+            "update_state": "on_schedule",
+            "is_historical_sync": true,
+            "tasks": [{
+				"code":"task_code",
+				"message":"task_message"
+			}],
+            "warnings": [{
+				"code":"warning_code",
+				"message":"warning_message"
+			}]
+        },
+        "setup_tests": [{
+            "title": "Validate Login",
+            "status": "FAILED",
+            "message": "Invalid login credentials"
+        }],
+        "config": {
+            "user": "user",
+			"password": "password"
+		}
+	}
+	`
+
+	connectorUpdateResponseHd2 = `
+	{
+		"id": "connector_id",
+        "group_id": "group_id",
+        "service": "postgres",
+        "service_version": 1,
+        "schema": "postgres",
+        "paused": false,
+        "pause_after_trial": false,
+        "sync_frequency": 1440,
+		"daily_sync_time": "03:00",
+
+		"connected_by": "user_id",
+        "created_at": "2022-01-01T11:22:33.012345Z",
+        "succeeded_at": null,
+        "failed_at": null,
+		"schedule_type": "auto",
+		"networking_method": "Directly",
+		"data_delay_sensitivity": "NORMAL",
+		"data_delay_threshold": 0,
+		"hybrid_deployment_agent_id": "new_agent_id",
         "status": {
             "setup_state": "incomplete",
             "sync_state": "paused",
@@ -373,6 +471,49 @@ func setupMockClientConnectorResourceUpdate(t *testing.T) {
 	)
 }
 
+func setupMockClientConnectorResourceUpdateHd(t *testing.T) {
+	tfmock.MockClient().Reset()
+
+	checkPatternNotRepresentedIfNotSet := func(t *testing.T, body map[string]interface{}) {
+		if c, ok := body["config"]; ok {
+			config := c.(map[string]interface{})
+			_, ok := config["pattern"]
+			tfmock.AssertEqual(t, ok, false)
+		}
+	}
+
+	connectorMockUpdateHdGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
+		},
+	)
+
+	connectorMockUpdateHdPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/connections").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			body := tfmock.RequestBodyToJson(t, req)
+			checkPatternNotRepresentedIfNotSet(t, tfmock.RequestBodyToJson(t, req))
+			connectorMockData = tfmock.CreateMapFromJsonString(t, connectorUpdateResponseHd1)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", connectorMockData), nil
+		},
+	)
+
+	connectorMockUpdateHdPatchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/connections/connector_id").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			body := tfmock.RequestBodyToJson(t, req)
+			checkPatternNotRepresentedIfNotSet(t, tfmock.RequestBodyToJson(t, req))
+			connectorMockData = tfmock.CreateMapFromJsonString(t, connectorUpdateResponseHd2)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
+		},
+	)
+
+	connectorMockUpdateDelete = tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			connectorMockData = nil
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
+		},
+	)
+}
+
 func setupMockClientConnectorResourceEmptyConfig(t *testing.T) {
 	tfmock.MockClient().Reset()
 
@@ -501,6 +642,108 @@ func TestResourceConnectorUpdateMock(t *testing.T) {
 		resource.TestCase{
 			PreCheck: func() {
 				setupMockClientConnectorResourceUpdate(t)
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, connectorMockUpdateDelete.Interactions, 1)
+				tfmock.AssertEmpty(t, connectorMockData)
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
+				step2,
+			},
+		},
+	)
+}
+
+func TestResourceConnectorHybridDeploymentMock(t *testing.T) {
+	step1 := resource.TestStep{
+		Config: `
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+
+			group_id = "group_id"
+			service = "postgres"
+
+			hybrid_deployment_agent_id = "existing_agent_id"
+			data_delay_threshold = 0
+
+			destination_schema {
+				prefix = "postgres"
+			}
+
+			trust_certificates = false
+			trust_fingerprints = false
+			run_setup_tests = false
+
+			config {
+				user = "user"
+				password = "password"
+			}
+		}
+		`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, connectorMockUpdateHdPostHandler.Interactions, 1)
+				tfmock.AssertEqual(t, connectorMockUpdateHdGetHandler.Interactions, 0)
+				tfmock.AssertEqual(t, connectorMockUpdateHdPatchHandler.Interactions, 0)
+				tfmock.AssertNotEmpty(t, connectorMockData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "postgres"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "hybrid_deployment_agent_id", "existing_agent_id"),
+		),
+	}
+
+	step2 := resource.TestStep{
+		Config: `
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+
+			group_id = "group_id"
+			service = "postgres"
+
+			hybrid_deployment_agent_id = "new_agent_id"
+			data_delay_threshold = 0
+
+			destination_schema {
+				prefix = "postgres"
+			}
+
+			trust_certificates = true
+			trust_fingerprints = true
+			run_setup_tests = true
+
+			config {
+				user = "user1"
+				password = "password1"
+				host = "host"
+				port = "123"
+			}
+		}
+		`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, connectorMockUpdateHdPostHandler.Interactions, 1)
+				tfmock.AssertEqual(t, connectorMockUpdateHdGetHandler.Interactions, 2)
+				tfmock.AssertEqual(t, connectorMockUpdateHdPatchHandler.Interactions, 1)
+				tfmock.AssertNotEmpty(t, connectorMockData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "postgres"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "hybrid_deployment_agent_id", "new_agent_id"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientConnectorResourceUpdateHd(t)
 			},
 			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
