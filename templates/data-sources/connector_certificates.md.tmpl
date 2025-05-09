@@ -1,0 +1,17 @@
+---
+page_title: "Data Source: fivetran_connector_certificates"
+---
+
+# Data Source: fivetran_connector_fingerprints
+
+This data source returns a list of SSH fingerprints approved for specified connector.
+
+## Example Usage
+
+```hcl
+data "fivetran_connector_fingerprints" "connector_fingerprints" {
+    id = "connector_id"
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}

@@ -1,16 +1,16 @@
 ---
-page_title: "Data Source: fivetran_connector_certificates"
+page_title: "Data Source: fivetran_connection_certificates"
 ---
 
-# Data Source: fivetran_connector_fingerprints
+# Data Source: fivetran_connection_certificates
 
-This data source returns a list of SSH fingerprints approved for specified connector.
+This data source returns a list of SSH fingerprints approved for specified connection.
 
 ## Example Usage
 
 ```hcl
-data "fivetran_connector_fingerprints" "connector_fingerprints" {
-    id = "connector_id"
+data "fivetran_connection_certificates" "connection_certificates" {
+    id = "connection_id"
 }
 ```
 
@@ -19,15 +19,11 @@ data "fivetran_connector_fingerprints" "connector_fingerprints" {
 
 ### Required
 
-- `id` (String) The unique identifier for the resource. Equal to target connection id.
+- `id` (String) The unique identifier for the target connection within the Fivetran system.
 
 ### Optional
 
 - `certificates` (Block Set) (see [below for nested schema](#nestedblock--certificates))
-
-### Read-Only
-
-- `connector_id` (String) The unique identifier for the target connection within the Fivetran system.
 
 <a id="nestedblock--certificates"></a>
 ### Nested Schema for `certificates`

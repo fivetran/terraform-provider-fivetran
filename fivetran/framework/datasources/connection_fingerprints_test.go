@@ -10,19 +10,19 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
-func TestDataSourceConnectorFingerprintsMock(t *testing.T) {
+func TestDataSourceConnectionFingerprintsMock(t *testing.T) {
 
-	var connectorFingerprintsGetHandler *mock.Handler
-	var connectorFingerprintsData map[string]interface{}
+	var connectionFingerprintsGetHandler *mock.Handler
+	var connectionFingerprintsData map[string]interface{}
 
-	setupConnectorFingerprintsDatasourceMock := func() {
+	setupConnectionFingerprintsDatasourceMock := func() {
 		tfmock.MockClient().Reset()
 
-		connectorFingerprintsGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id/fingerprints").ThenCall(
+		connectionFingerprintsGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connections/connection_id/fingerprints").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				cursor := req.URL.Query().Get("cursor")
 				if cursor == "" {
-					connectorFingerprintsData = tfmock.CreateMapFromJsonString(t, `
+					connectionFingerprintsData = tfmock.CreateMapFromJsonString(t, `
 					{
 						"items":[
 							{
@@ -42,7 +42,7 @@ func TestDataSourceConnectorFingerprintsMock(t *testing.T) {
 					}
 					`)
 				} else if cursor == "next_cursor" {
-					connectorFingerprintsData = tfmock.CreateMapFromJsonString(t, `
+					connectionFingerprintsData = tfmock.CreateMapFromJsonString(t, `
 					{
 						"items":[
 							{
@@ -61,33 +61,33 @@ func TestDataSourceConnectorFingerprintsMock(t *testing.T) {
 					}
 					`)
 				}
-				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorFingerprintsData), nil
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectionFingerprintsData), nil
 			},
 		)
 	}
 	resource.Test(
 		t,
 		resource.TestCase{
-			PreCheck:                 setupConnectorFingerprintsDatasourceMock,
+			PreCheck:                 setupConnectionFingerprintsDatasourceMock,
 			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			Steps: []resource.TestStep{
 				{
 					Config: `
-					data "fivetran_connector_fingerprints" "test" {
+					data "fivetran_connection_fingerprints" "test" {
 						provider = fivetran-provider
-						id = "connector_id"
+						id = "connection_id"
 					}`,
 					Check: resource.ComposeAggregateTestCheckFunc(
 						func(s *terraform.State) error {
-							tfmock.AssertEqual(t, connectorFingerprintsGetHandler.Interactions, 2)
+							tfmock.AssertEqual(t, connectionFingerprintsGetHandler.Interactions, 2)
 							return nil
 						},
-						resource.TestCheckResourceAttr("data.fivetran_connector_fingerprints.test", "id", "connector_id"),
-						resource.TestCheckResourceAttr("data.fivetran_connector_fingerprints.test", "fingerprints.#", "4"),
-						resource.TestCheckResourceAttr("data.fivetran_connector_fingerprints.test", "fingerprints.0.hash", "hash0"),
-						resource.TestCheckResourceAttr("data.fivetran_connector_fingerprints.test", "fingerprints.0.public_key", "public_key0"),
-						resource.TestCheckResourceAttr("data.fivetran_connector_fingerprints.test", "fingerprints.0.validated_by", "validated_by0"),
-						resource.TestCheckResourceAttr("data.fivetran_connector_fingerprints.test", "fingerprints.0.validated_date", "validated_date0"),
+						resource.TestCheckResourceAttr("data.fivetran_connection_fingerprints.test", "id", "connection_id"),
+						resource.TestCheckResourceAttr("data.fivetran_connection_fingerprints.test", "fingerprints.#", "4"),
+						resource.TestCheckResourceAttr("data.fivetran_connection_fingerprints.test", "fingerprints.0.hash", "hash0"),
+						resource.TestCheckResourceAttr("data.fivetran_connection_fingerprints.test", "fingerprints.0.public_key", "public_key0"),
+						resource.TestCheckResourceAttr("data.fivetran_connection_fingerprints.test", "fingerprints.0.validated_by", "validated_by0"),
+						resource.TestCheckResourceAttr("data.fivetran_connection_fingerprints.test", "fingerprints.0.validated_date", "validated_date0"),
 					),
 				},
 			},

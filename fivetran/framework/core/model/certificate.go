@@ -21,6 +21,16 @@ type CertificatesConnector struct {
 	Certificates types.Set    `tfsdk:"certificates"`
 }
 
+type CertificateConnection struct {
+	Id           types.String `tfsdk:"id"`
+	Certificate  types.Set    `tfsdk:"certificate"`
+}
+
+type CertificatesConnection struct {
+	Id            types.String `tfsdk:"id"`
+	Certificates  types.Set    `tfsdk:"certificates"`
+}
+
 type CertificateDestination struct {
 	Id            types.String `tfsdk:"id"`
 	DestinationId types.String `tfsdk:"destination_id"`
@@ -112,15 +122,24 @@ func (d *CertificateConnector) ReadFromResponse(ctx context.Context, resp certif
 	d.Certificate = readCertificateItemsFromResponse(resp, d.getEncodedCertsMap(), true)
 }
 
-func (d *CertificateDestination) ReadFromResponse(ctx context.Context, resp certificates.CertificatesListResponse) {
-	d.Id = d.DestinationId
-	d.Certificate = readCertificateItemsFromResponse(resp, d.getEncodedCertsMap(), true)
-}
-
 func (d *CertificatesConnector) ReadFromResponse(ctx context.Context, resp certificates.CertificatesListResponse) {
 	d.ConnectorId = d.Id
 	emptyMap := make(map[string]string)
 	d.Certificates = readCertificateItemsFromResponse(resp, emptyMap, false)
+}
+
+func (d *CertificateConnection) ReadFromResponse(ctx context.Context, resp certificates.CertificatesListResponse) {
+	d.Certificate = readCertificateItemsFromResponse(resp, d.getEncodedCertsMap(), true)
+}
+
+func (d *CertificatesConnection) ReadFromResponse(ctx context.Context, resp certificates.CertificatesListResponse) {
+	emptyMap := make(map[string]string)
+	d.Certificates = readCertificateItemsFromResponse(resp, emptyMap, false)
+}
+
+func (d *CertificateDestination) ReadFromResponse(ctx context.Context, resp certificates.CertificatesListResponse) {
+	d.Id = d.DestinationId
+	d.Certificate = readCertificateItemsFromResponse(resp, d.getEncodedCertsMap(), true)
 }
 
 func (d *CertificatesDestination) ReadFromResponse(ctx context.Context, resp certificates.CertificatesListResponse) {
@@ -130,6 +149,10 @@ func (d *CertificatesDestination) ReadFromResponse(ctx context.Context, resp cer
 }
 
 func (d *CertificateConnector) getEncodedCertsMap() map[string]string {
+	return getEncodedCertsMapImpl(d.Certificate.Elements())
+}
+
+func (d *CertificateConnection) getEncodedCertsMap() map[string]string {
 	return getEncodedCertsMapImpl(d.Certificate.Elements())
 }
 

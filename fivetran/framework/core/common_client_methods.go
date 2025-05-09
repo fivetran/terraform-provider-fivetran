@@ -15,6 +15,10 @@ func RevokeCertificates(ctx context.Context, client *fivetran.Client, id, servic
 	var resp common.CommonResponse = common.CommonResponse{Code: "", Message: ""}
 	for _, h := range hashes {
 		var err error = nil
+		if serviceType == "connection" {
+			svc := client.NewConnectionCertificateRevoke()
+			resp, err = svc.ConnectionID(id).Hash(h).Do(ctx)
+		}
 		if serviceType == "connector" {
 			svc := client.NewConnectionCertificateRevoke()
 			resp, err = svc.ConnectionID(id).Hash(h).Do(ctx)
@@ -34,6 +38,10 @@ func RevokeFingerptints(ctx context.Context, client *fivetran.Client, id, servic
 	var resp common.CommonResponse = common.CommonResponse{Code: "", Message: ""}
 	for _, h := range hashes {
 		var err error = nil
+		if serviceType == "connection" {
+			svc := client.NewConnectionFingerprintRevoke()
+			resp, err = svc.ConnectionID(id).Hash(h).Do(ctx)
+		}
 		if serviceType == "connector" {
 			svc := client.NewConnectionFingerprintRevoke()
 			resp, err = svc.ConnectionID(id).Hash(h).Do(ctx)
@@ -57,6 +65,14 @@ func ReadCertificatesFromUpstream(ctx context.Context, client *fivetran.Client, 
 	for {
 		var err error
 		var tmpResp certificates.CertificatesListResponse
+
+		if serviceType == "connection" {
+			svc := client.NewConnectionCertificatesList().ConnectionID(id).Limit(limit)
+			if respNextCursor != "" {
+				svc.Cursor(respNextCursor)
+			}
+			tmpResp, err = svc.Do(ctx)
+		}
 
 		if serviceType == "connector" {
 			svc := client.NewConnectionCertificatesList().ConnectionID(id).Limit(limit)
@@ -98,6 +114,14 @@ func ReadFromSourceFingerprintCommon(ctx context.Context, client *fivetran.Clien
 
 	for {
 		var tmpResp fingerprints.FingerprintsListResponse
+
+		if serviceType == "connection" {
+			svc := client.NewConnectionFingerprintsList().ConnectionID(id).Limit(limit)
+			if respNextCursor != "" {
+				svc.Cursor(respNextCursor)
+			}
+			tmpResp, err = svc.Do(ctx)
+		}
 
 		if serviceType == "connector" {
 			svc := client.NewConnectionFingerprintsList().ConnectionID(id).Limit(limit)

@@ -42,6 +42,7 @@ func TeamConnectorMembershipResource() resourceSchema.Schema {
 
 func TeamConnectorMembershipDatasource() datasourceSchema.Schema {
     return datasourceSchema.Schema {
+        DeprecationMessage: "This datasource is Deprecated, please migrate to actual resource",
         Attributes: map[string]datasourceSchema.Attribute{
             "id": resourceSchema.StringAttribute{
                 Computed:      true,

@@ -11,30 +11,29 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 )
 
-func Connector() datasource.DataSource {
-	return &connector{}
+func Connection() datasource.DataSource {
+	return &connection{}
 }
 
 // Ensure the implementation satisfies the desired interfaces.
-var _ datasource.DataSourceWithConfigure = &connector{}
+var _ datasource.DataSourceWithConfigure = &connection{}
 
-type connector struct {
+type connection struct {
 	core.ProviderDatasource
 }
 
-func (d *connector) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = "fivetran_connector"
+func (d *connection) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = "fivetran_connection"
 }
 
-func (d *connector) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *connection) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		DeprecationMessage: "This datasource is Deprecated, please migrate to actual resource",
-		Attributes: fivetranSchema.ConnectorAttributesSchema().GetDatasourceSchema(),
-		Blocks:     fivetranSchema.ConnectorDatasourceBlocks(),
+		Attributes: fivetranSchema.ConnectionAttributesSchema().GetDatasourceSchema(),
+		Blocks:     fivetranSchema.ConnectionDatasourceBlocks(),
 	}
 }
 
-func (d *connector) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+func (d *connection) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	if d.GetClient() == nil {
 		resp.Diagnostics.AddError(
 			"Unconfigured Fivetran Client",
@@ -44,7 +43,7 @@ func (d *connector) Read(ctx context.Context, req datasource.ReadRequest, resp *
 		return
 	}
 
-	var data model.ConnectorDatasourceModel
+	var data model.ConnectionDatasourceModel
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 

@@ -38,6 +38,7 @@ func UserConnectorMembershipResource() resourceSchema.Schema {
 
 func UserConnectorMembershipDatasource() datasourceSchema.Schema {
     return datasourceSchema.Schema {
+        DeprecationMessage: "This datasource is Deprecated, please migrate to actual resource",
         Attributes: map[string]datasourceSchema.Attribute{
             "user_id": datasourceSchema.StringAttribute{
                 Required:    true,

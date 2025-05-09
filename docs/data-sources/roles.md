@@ -27,6 +27,8 @@ data "fivetran_roles" "roles" {
 Read-Only:
 
 - `description` (String) The role description
-- `is_custom` (Boolean) TypeBool
+- `is_custom` (Boolean) Defines whether the role is standard or custom
+- `is_deprecated` (Boolean) Defines whether the role is deprecated
 - `name` (String) The role name
+- `replacement_role_name` (String) The name of the new role replacing the deprecated role
 - `scope` (Set of String) Defines the list of resources the role manages. Supported values: ACCOUNT, DESTINATION, CONNECTOR, and TEAM

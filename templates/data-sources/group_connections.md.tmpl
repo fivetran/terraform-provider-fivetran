@@ -1,0 +1,20 @@
+---
+page_title: "Data Source: fivetran_group_connections"
+---
+
+# Data Source: fivetran_group_connections
+
+This data source returns a list of information about all connections within a group in your Fivetran account.
+
+## Example Usage
+
+```hcl
+data "fivetran_group_connections" "group_connections" {
+    id = "anonymous_mystery"
+
+    # optional 
+    schema = "connection_schema_name"
+}
+```
+
+{{ .SchemaMarkdown | trimspace }}
