@@ -25,6 +25,7 @@ var hdaResourceConfig = `
                  	display_name = "%v"
                  	group_id = fivetran_group.testgroup.id
                  	auth_type = "AUTO"
+                 	env_type = "DOCKER"
             	}`
 
 var connectorWithHdaResourceConfig = `
@@ -39,6 +40,7 @@ var connectorWithHdaResourceConfig = `
                  	display_name = "%v"
                  	group_id = fivetran_group.test_group.id
                  	auth_type = "AUTO"
+                 	env_type = "DOCKER"
             	}
 
 			    resource "fivetran_connector" "test_connector" {

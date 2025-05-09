@@ -60,6 +60,7 @@ func TestResourceHybridDeploymentAgentMock(t *testing.T) {
                  display_name = "display_name"
                  group_id = "group_id"
                  auth_type = "AUTO"
+                 env_type = "DOCKER"
             }`,
 
 		Check: resource.ComposeAggregateTestCheckFunc(

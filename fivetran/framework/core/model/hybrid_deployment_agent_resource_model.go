@@ -13,6 +13,7 @@ type HybridDeploymentAgentResourceModel struct {
     ConfigJson          	types.String `tfsdk:"config_json"`
     AuthJson            	types.String `tfsdk:"auth_json"`
     AuthType                types.String `tfsdk:"auth_type"`
+    EnvType                 types.String `tfsdk:"env_type"`
     Token                   types.String `tfsdk:"token"`
     DockerComposeYaml   	types.String `tfsdk:"docker_compose_yaml"`
     AuthenticationCounter   types.Int64  `tfsdk:"authentication_counter"`
