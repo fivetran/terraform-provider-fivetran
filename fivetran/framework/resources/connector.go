@@ -281,61 +281,18 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 	trustCertificatesState := core.GetBoolOrDefault(state.TrustCertificates, false)
 	trustFingerprintsState := core.GetBoolOrDefault(state.TrustFingerprints, false)
 
-	stateConfigMap, err := state.GetConfigMap(false)
-	// this is not expected - state should contain only known fields relative to service
-	// but we have to check error just in case
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Unable to Update Connector Resource.",
-			fmt.Sprintf("%v; ", err),
-		)
-	}
 
-	stateAuthMap, err := state.GetAuthMap(false)
 
-	// this is not expected - state should contain only known fields relative to service
-	// but we have to check error just in case
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Unable to Update Connector Resource.",
-			fmt.Sprintf("%v; ", err),
-		)
-	}
-
-	planConfigMap, err := plan.GetConfigMap(false)
-
-	if err != nil {
-		if err != nil {
-			resp.Diagnostics.AddError(
-				"Unable to Update Connector Resource.",
-				fmt.Sprintf("%v; ", err),
-			)
-		}
-	}
-
-	planAuthMap, err := plan.GetAuthMap(false)
-
-	if err != nil {
-		if err != nil {
-			resp.Diagnostics.AddError(
-				"Unable to Update Connector Resource.",
-				fmt.Sprintf("%v; ", err),
-			)
-		}
-	}
-
-	patch := model.PrepareConfigAuthPatch(stateConfigMap, planConfigMap, plan.Service.ValueString(), common.GetConfigFieldsMap())
-	authPatch := model.PrepareConfigAuthPatch(stateAuthMap, planAuthMap, plan.Service.ValueString(), common.GetAuthFieldsMap())
+	hasUpdates, patch, authPatch, err := plan.HasUpdates(plan, state)
+    if err != nil {
+        resp.Diagnostics.AddError(
+            "Unable to Update Connector Resource.",
+            fmt.Sprintf("%v; ", err),
+        )
+    }
 
 	updatePerformed := false
-	if len(patch) > 0 || 
-			len(authPatch) > 0 || 
-			!plan.ProxyAgentId.Equal(state.ProxyAgentId) ||
-			!plan.PrivateLinkId.Equal(state.PrivateLinkId) ||
-			!plan.HybridDeploymentAgentId.Equal(state.HybridDeploymentAgentId) ||
-			!plan.DataDelaySensitivity.Equal(state.DataDelaySensitivity) ||
-			!plan.DataDelayThreshold.Equal(state.DataDelayThreshold) ||
-			!plan.NetworkingMethod.Equal(state.NetworkingMethod) {
+	if hasUpdates {
 		svc := r.GetClient().NewConnectionUpdate().
 			RunSetupTests(runSetupTestsPlan).
 			TrustCertificates(trustCertificatesPlan).
