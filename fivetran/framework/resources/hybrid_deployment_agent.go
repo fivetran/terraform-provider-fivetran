@@ -57,7 +57,7 @@ func (r *hybridDeploymentAgent) Create(ctx context.Context, req resource.CreateR
 	svc := r.GetClient().NewHybridDeploymentAgentCreate()
 	svc.GroupId(data.GroupId.ValueString())
 	svc.DisplayName(data.DisplayName.ValueString())
-    svc.EnvType("DOCKER")
+    svc.EnvType(data.EnvType.ValueString())
     svc.AuthType(data.AuthType.ValueString())
     svc.AcceptTerms(true)
 

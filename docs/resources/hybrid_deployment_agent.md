@@ -25,6 +25,7 @@ resource "fivetran_hybrid_deployment_agent" "hybrid_deployment_agent" {
 
 - `auth_type` (String) Type of authentification. Possible values `AUTO`,`MANUAL`
 - `display_name` (String) The unique name for the hybrid deployment agent.
+- `env_type` (String) Environment type. Possible values `DOCKER`,`PODMAN`,`KUBERNETES`,`SNOWPARK`
 - `group_id` (String) The unique identifier for the Group within the Fivetran system.
 
 ### Optional
