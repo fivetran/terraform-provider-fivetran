@@ -316,6 +316,48 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
         c.Service).(basetypes.ObjectValue)
 }
 
+func (d *ConnectorResourceModel) HasUpdates(plan ConnectorResourceModel, state ConnectorResourceModel) (bool, map[string]interface{}, map[string]interface{}, error) {
+    stateConfigMap, err := state.GetConfigMap(false)
+    // this is not expected - state should contain only known fields relative to service
+    // but we have to check error just in case
+    if err != nil {
+        return false, nil, nil, err
+    }
+
+    stateAuthMap, err := state.GetAuthMap(false)
+    // this is not expected - state should contain only known fields relative to service
+    // but we have to check error just in case
+    if err != nil {
+        return false, nil, nil, err
+    }
+
+    planConfigMap, err := plan.GetConfigMap(false)
+    if err != nil {
+        return false, nil, nil, err
+    }
+
+    planAuthMap, err := plan.GetAuthMap(false)
+    if err != nil {
+        return false, nil, nil, err
+    }
+
+    patch := PrepareConfigAuthPatch(stateConfigMap, planConfigMap, plan.Service.ValueString(), common.GetConfigFieldsMap())
+    authPatch := PrepareConfigAuthPatch(stateAuthMap, planAuthMap, plan.Service.ValueString(), common.GetAuthFieldsMap())
+
+    if len(patch) > 0 || 
+            len(authPatch) > 0 || 
+            !plan.ProxyAgentId.Equal(state.ProxyAgentId) ||
+            !plan.PrivateLinkId.Equal(state.PrivateLinkId) ||
+            !plan.HybridDeploymentAgentId.Equal(state.HybridDeploymentAgentId) ||
+            !plan.DataDelaySensitivity.Equal(state.DataDelaySensitivity) ||
+            !plan.DataDelayThreshold.Equal(state.DataDelayThreshold) ||
+            !plan.NetworkingMethod.Equal(state.NetworkingMethod) {
+                return true, patch, authPatch, nil
+            } else {
+                return false, nil, nil, nil
+            }
+}
+
 type ConnectorModelContainer struct {
 	Id          string
 	Name        string
