@@ -138,6 +138,7 @@ func TestResourceConnectorHdE2E(t *testing.T) {
     					display_name = "display_name_1"
     					group_id = fivetran_group.group.id
     					auth_type = "AUTO"
+                 		env_type = "DOCKER"
 					}
 
 					resource "fivetran_hybrid_deployment_agent" "hybrid_deployment_agent2" {
@@ -145,6 +146,7 @@ func TestResourceConnectorHdE2E(t *testing.T) {
     					display_name = "display_name_2"
     					group_id = fivetran_group.group.id
     					auth_type = "AUTO"
+                 		env_type = "DOCKER"
 					}
 
 					resource "fivetran_connector" "test_connector" {
@@ -187,6 +189,7 @@ func TestResourceConnectorHdE2E(t *testing.T) {
     					display_name = "display_name_1"
     					group_id = fivetran_group.group.id
     					auth_type = "AUTO"
+                 		env_type = "DOCKER"
 					}
 
 					resource "fivetran_hybrid_deployment_agent" "hybrid_deployment_agent2" {
@@ -194,6 +197,7 @@ func TestResourceConnectorHdE2E(t *testing.T) {
     					display_name = "display_name_2"
     					group_id = fivetran_group.group.id
     					auth_type = "AUTO"
+                 		env_type = "DOCKER"
 					}
 
 					resource "fivetran_connector" "test_connector" {
