@@ -11,7 +11,6 @@ import (
 )
 
 func TestResourceConnectorE2E(t *testing.T) {
-	t.Skip("The test often fails due to timeouts. It is necessary to check its work only when this resource changes")
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
 		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
