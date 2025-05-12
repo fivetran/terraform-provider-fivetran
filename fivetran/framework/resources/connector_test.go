@@ -490,7 +490,6 @@ func setupMockClientConnectorResourceUpdateHd(t *testing.T) {
 
 	connectorMockUpdateHdPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/connections").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			body := tfmock.RequestBodyToJson(t, req)
 			checkPatternNotRepresentedIfNotSet(t, tfmock.RequestBodyToJson(t, req))
 			connectorMockData = tfmock.CreateMapFromJsonString(t, connectorUpdateResponseHd1)
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", connectorMockData), nil
@@ -499,7 +498,6 @@ func setupMockClientConnectorResourceUpdateHd(t *testing.T) {
 
 	connectorMockUpdateHdPatchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/connections/connector_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			body := tfmock.RequestBodyToJson(t, req)
 			checkPatternNotRepresentedIfNotSet(t, tfmock.RequestBodyToJson(t, req))
 			connectorMockData = tfmock.CreateMapFromJsonString(t, connectorUpdateResponseHd2)
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
