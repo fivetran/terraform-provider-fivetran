@@ -63,7 +63,7 @@ func TestResourceUserE2E(t *testing.T) {
 	})
 }
 
-func TestResourceUserWihtoutRoleE2E(t *testing.T) {
+func TestResourceUserWithoutRoleE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
 		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
