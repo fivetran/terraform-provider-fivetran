@@ -29,7 +29,12 @@ func (d *User) ReadFromResponse(resp users.UserDetailsResponse) {
 	d.FamilyName = types.StringValue(resp.Data.FamilyName)
 	d.GivenName = types.StringValue(resp.Data.GivenName)
 
-	d.Role = types.StringValue(resp.Data.Role)
+    if resp.Data.Role == "" {
+	   d.Role = types.StringNull()
+    } else {
+       d.Role = types.StringValue(resp.Data.Role)
+    }
+
 	d.Verified = types.BoolValue(*resp.Data.Verified)
 	d.Invited = types.BoolValue(*resp.Data.Invited)
 	d.LoggedInAt = types.StringValue(resp.Data.LoggedInAt.String())
