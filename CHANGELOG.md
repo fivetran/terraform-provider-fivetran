@@ -10,7 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.6.5](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.6.4...v1.6.5)
 
 ### Added
-Fields `env_type` in `fivetran_hybrid_deployment_agent` resource with possible values `DOCKER`, `PODMAN`, `KUBERNETES`, `SNOWPARK`
+- Fields `env_type` in `fivetran_hybrid_deployment_agent` resource with possible values `DOCKER`, `PODMAN`, `KUBERNETES`, `SNOWPARK`
+
+## Fixed
+- Issue when provider produced an unexpected new value for field `role` in `fivetran_user` resource
+- Issue when provider produced inconsistent result after apply for field `hybrid_deployment_agent_id` in `fivetran_connector` resource
 
 ## [1.6.4](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.6.3...v1.6.4)
 
