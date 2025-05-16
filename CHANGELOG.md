@@ -5,7 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.6.5...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.7.0...HEAD)
+
+## [1.7.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.6.5...v1.7.0)
+
+## Breaking changes
+Destination service `propel` removed
+
+### Added
+New connection services supported:
+- Supported service: `aura_from_unity`
+- Supported service: `datastreamer_source`
+- Supported service: `oracle_fusion_field_service`
+- Supported service: `tiktok_organic`
+
+New connection config fields supported:
+- Added field `fivetran_connector.destination_schema.table_group_name` for services: `google_drive`, `s3`, `sftp`, `share_point`, `azure_blob_storage`, `gcs`.
+- Added field `fivetran_connector.config.reports.filters` for services: `google_analytics_4`.
+- Added field `fivetran_connector.config.issuer_id` for services: `itunes_connect`.
+- Added field `fivetran_connector.config.directories` for services: `qualtrics`.
+- Added field `fivetran_connector.config.historical_sync_limit_date` for services: `pardot`, `sailthru`, `braze`, `klaviyo`.
+- Added field `fivetran_connector.config.key_id` for services: `itunes_connect`.
+- Added field `fivetran_connector.config.vendors_id` for services: `itunes_connect`.
+- Added field `fivetran_connector.config.root_resource_id` for services: `oracle_fusion_field_service`.
+- Added field `fivetran_connector.config.historical_sync_limit_time_frame` for services: `pardot`.
+- Added field `fivetran_connector.config.directory_sync_mode` for services: `qualtrics`.
+- Added field `fivetran_connector.config.authorization_url` for services: `tiktok_organic`.
 
 ## [1.6.5](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.6.4...v1.6.5)
 

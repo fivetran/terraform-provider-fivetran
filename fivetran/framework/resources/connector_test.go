@@ -1515,7 +1515,7 @@ func TestConnectorNonNullableFieldNotConfiguredMock(t *testing.T) {
 	  
 		destination_schema {
 		  name = "schema_name"
-		  table = "name_of_table_in_snowflake_schema"
+		  table_group_name = "name_of_table_in_snowflake_schema"
 		}
 	  
 		config {
