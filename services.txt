@@ -45,6 +45,7 @@ atlassian_ops_genie
 attentive
 attio
 aumni
+aura_from_unity
 aurora
 aurora_postgres
 auth0
@@ -165,6 +166,7 @@ cvent
 d2l_brightspace
 databricks_db
 datadog
+datastreamer_source
 db2
 db2i_hva
 db2i_sap_hva
@@ -421,6 +423,7 @@ oracle_ebs
 oracle_fusion_cloud_apps_crm
 oracle_fusion_cloud_apps_fscm
 oracle_fusion_cloud_apps_hcm
+oracle_fusion_field_service
 oracle_hva
 oracle_moat_analytics
 oracle_rac
@@ -616,6 +619,7 @@ the_trade_desk
 thinkific
 ticket_tailor
 tiktok_ads
+tiktok_organic
 tive
 toggl_track
 totango

@@ -224,6 +224,9 @@ func getTfDestinationSchema(service string) string {
 		if schemaFields[service]["table"] {
 			return fmt.Sprintf("\n\tname = \"%v\"\n\ttable = \"table\"\n", service)
 		}
+		if schemaFields[service]["table_group_name"] {
+			return fmt.Sprintf("\n\tname = \"%v\"\n\ttable_group_name = \"table_group_name\"\n", service)
+		}
 	} else {
 		return fmt.Sprintf("\n\tprefix = \"%v\"\n", service)
 	}
@@ -235,6 +238,9 @@ func getJsonSchemaValue(service string) string {
 		if common.GetDestinationSchemaFields()[service]["table"] {
 			return fmt.Sprintf("%v.table", service)
 		}
+		if common.GetDestinationSchemaFields()[service]["table_group_name"] {
+			return fmt.Sprintf("%v.table_group_name", service)
+		}
 	}
 	return service
 }
@@ -245,7 +251,9 @@ func fetchFieldsBatchByService(fields []string) ([]string, []string, string) {
 		if field, ok := common.GetConfigFieldsMap()[f]; ok {
 			var service string
 			if len(field.Description) == 0 {
-				fmt.Printf("SKIP: field %v doesn't have definitions\n", f)
+				if debug {
+					fmt.Printf("SKIP: field %v doesn't have definitions\n", f)
+				}
 				return make([]string, 0), fields[1:], ""
 			}
 			fieldsCount := 0
@@ -263,7 +271,7 @@ func fetchFieldsBatchByService(fields []string) ([]string, []string, string) {
 				if sf, ok := serviceFields[fName]; ok {
 					if !sf.Readonly {
 						fieldsToTest = append(fieldsToTest, fName)
-					} else {
+					} else if debug{
 						fmt.Printf("SKIP: field %v - readonly", f)
 					}
 				} else {
@@ -272,7 +280,9 @@ func fetchFieldsBatchByService(fields []string) ([]string, []string, string) {
 			}
 			return fieldsToTest, restFields, service
 		} else {
-			fmt.Printf("SKIP: field %v not defined in schema", f)
+			if debug {
+				fmt.Printf("SKIP: field %v not defined in schema", f)
+			}
 			return make([]string, 0), fields[1:], ""
 		}
 	}
@@ -335,10 +345,9 @@ func TestResourceConnectorDynamicMapping(t *testing.T) {
 
 	for len(*restFields) > 0 {
 		stepFields, rest, service := fetchFieldsBatchByService(*restFields)
-
-		fmt.Printf("Fields left to test: %v | Step fields count: %v | Fields rest %v \n", len(rest)+len(stepFields), len(stepFields), len(rest))
-
+		
 		if debug {
+			fmt.Printf("Service %s | Fields left to test: %v | Step fields count: %v | Fields rest %v \n", service, len(rest)+len(stepFields), len(stepFields), len(rest))
 			fmt.Printf("Testing fields for service %v : [\t\n%v]\n", service, strings.Join(stepFields, "\t\n "))
 		}
 		if len(stepFields) > 0 {

@@ -235,6 +235,12 @@ func destinationSchemaAttributes() core.Schema {
 				ValueType:   core.String,
 				Description: "The connector schema prefix has to be unique within the group (destination). Each replicated schema is prefixed with the provided value. Required for connector creation.",
 			},
+			"table_group_name": {
+				ForceNew:    true,
+				Required:    false,
+				ValueType:   core.String,
+				Description: "Table group name.",
+			},
 		},
 	}
 }

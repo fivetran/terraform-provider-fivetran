@@ -166,6 +166,7 @@ func readFieldsFromJson(target *map[string]ConfigField) {
 	handleDestinationSchemaField("schema")
 	handleDestinationSchemaField("table")
 	handleDestinationSchemaField("schema_prefix")
+	handleDestinationSchemaField("table_group_name")
 }
 
 func readDestinationFieldsFromJson(target *map[string]ConfigField) {

@@ -25,7 +25,6 @@ onelake
 postgres_gcp_warehouse
 postgres_rds_warehouse
 postgres_warehouse
-propel
 redshift
 singlestore
 snowflake

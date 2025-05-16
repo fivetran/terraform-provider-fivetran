@@ -33,7 +33,7 @@ resource "fivetran_connector" "amplitude" {
 }
 ```
 
--> Use `destination_schema` to define connector schema configuration. Field `destination_schema.name` will be mapped into `config.schema` in REST API payload. Field `destination_schema.table` will be mapped into `config.table` in REST API payload. Field `destination_schema.prefix` will be mapped into `config.schema_prefix` in REST API payload. Specify values according to [public documentation](https://fivetran.com/docs/rest-api/connectors/config) for particular connector type.
+-> Use `destination_schema` to define connector schema configuration. Field `destination_schema.name` will be mapped into `config.schema` in REST API payload. Field `destination_schema.table` will be mapped into `config.table` in REST API payload. Field `destination_schema.prefix` will be mapped into `config.schema_prefix` in REST API payload. Field `destination_schema.table_group_name` will be mapped into `config.table_group_name` in REST API payload. Specify values according to [public documentation](https://fivetran.com/docs/rest-api/connectors/config) for particular connector type.
 
 ### NOTE: resources indirect dependencies
 

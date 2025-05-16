@@ -37,3 +37,12 @@ fivetran/common/auth-fields-old.json
 fivetran/common/fields-old.json
 .DS_Store
 */.DS_Store
+config-changes-schema_format_schema_prefix.txt
+config-changes-schema_format_schema_table.txt
+config-changes-schema_format_schema_table_group.txt
+services-new.txt
+fivetran/common/fields-updated.json
+destination-services-changelog.txt
+services-changelog.txt
+destination-services-new.txt
+config-changes-schema_format_schema.txt

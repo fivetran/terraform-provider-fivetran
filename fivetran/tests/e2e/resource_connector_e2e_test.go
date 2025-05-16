@@ -233,6 +233,67 @@ func TestResourceConnectorHdE2E(t *testing.T) {
 	})
 }
 
+func TestResourceConnectorWithTableGroupNameE2E(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectorResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+					resource "fivetran_group" "group" {
+						provider = fivetran-provider
+    					name = "test_group_name"
+					}
+
+					resource "fivetran_connector" "s3connector" {
+					    provider = fivetran-provider
+					    group_id  = fivetran_group.group.id
+    					service  = "s3"
+    					run_setup_tests  = false
+
+    					destination_schema {
+        					name = "my_s3_example_schema"
+      						table_group_name = "table_group_name"
+  					    } 
+
+  						config {
+      						bucket = "testbucket"
+      						is_public = true
+      						quote_character_enabled =  true
+      						delimiter = ","
+      						file_type = "csv"
+      						on_error = "fail"
+      						auth_type = "PUBLIC_BUCKET"
+      						append_file_option = "upsert_file"
+      						connection_type = "Directly"
+      						compression = "uncompressed"
+
+      						files {
+          						table_name = "csvtable2"
+          						file_pattern = "connection.csv"
+      						}
+    
+      						files {
+          						table_name = "csvtable1"
+          						file_pattern = "myfile.csv"
+        					}
+    					}
+  					}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectorResourceCreate(t, "fivetran_connector.s3connector"),
+					resource.TestCheckResourceAttrSet("fivetran_connector.s3connector", "destination_schema.table_group_name"),
+					resource.TestCheckNoResourceAttr("fivetran_connector.s3connector", "destination_schema.table"),
+					resource.TestCheckResourceAttrSet("fivetran_connector.s3connector", "destination_schema.name"),
+					resource.TestCheckNoResourceAttr("fivetran_connector.s3connector", "destination_schema.prefix"),
+				),
+			},
+		},
+	})
+}
+
+
 func testFivetranConnectorResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)

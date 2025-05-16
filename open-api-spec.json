@@ -7,8 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://api.fivetran.com",
-      "variables": {}
+      "url": "https://api.fivetran.com"
     }
   ],
   "security": [
@@ -19,11 +18,11 @@
   "tags": [
     {
       "name": "updated",
-      "description": "2025-04-22T16:13:54.841Z"
+      "description": "2025-05-16T00:46:07.053Z"
     },
     {
       "name": "hash",
-      "description": "7c2dedc9d00006881daba5f4a51fcb110db975dc3362e4f6497b50cd5ee7a1bd"
+      "description": "c87f89c11735cad161123ef722104281cd1b686e0138a68539a2f1fe9f3cdf2e"
     }
   ],
   "paths": {
@@ -514,7 +513,7 @@
         ],
         "summary": "List Hybrid Deployment Agents",
         "description": "Returns list of all Hybrid Deployment Agents within your Fivetran account, along with usage. Optionally filtered to a single group.",
-        "operationId": "get_local_processing_agent_list",
+        "operationId": "get_hybrid_deployment_agent_list",
         "parameters": [
           {
             "name": "groupId",
@@ -605,7 +604,7 @@
         ],
         "summary": "Create a Hybrid Deployment Agent",
         "description": "Creates a new Hybrid Deployment Agent in a group.",
-        "operationId": "create_local_processing_agent",
+        "operationId": "create_hybrid_deployment_agent",
         "parameters": [
           {
             "name": "Accept",
@@ -931,12 +930,12 @@
         ],
         "summary": "Regenerate authentication keys",
         "description": "Regenerate authentication for a Hybrid Deployment Agent.",
-        "operationId": "re_auth_local_processing_agent",
+        "operationId": "re_auth_hybrid_deployment_agent",
         "parameters": [
           {
             "name": "agentId",
             "in": "path",
-            "description": "Local Data Processing Agent Id",
+            "description": "Hybrid Deployment Agent Id",
             "required": true,
             "schema": {
               "type": "string",
@@ -4199,12 +4198,12 @@
         ],
         "summary": "Reset credentials",
         "description": "Reset credentials for a Hybrid Deployment Agent.",
-        "operationId": "reset_local_processing_agent_credentials",
+        "operationId": "reset_hybrid_deployment_agent_credentials",
         "parameters": [
           {
             "name": "agentId",
             "in": "path",
-            "description": "Local Data Processing Agent Id",
+            "description": "Hybrid Deployment Agent Id",
             "required": true,
             "schema": {
               "type": "string",
@@ -10400,12 +10399,12 @@
         ],
         "summary": "Returns Hybrid Deployment Agent Details",
         "description": "Returns Hybrid Deployment Agent Details.",
-        "operationId": "get_local_processing_agent",
+        "operationId": "get_hybrid_deployment_agent",
         "parameters": [
           {
             "name": "agentId",
             "in": "path",
-            "description": "Local Data Processing Agent Id",
+            "description": "Hybrid Deployment Agent Id",
             "required": true,
             "schema": {
               "type": "string",
@@ -10460,12 +10459,12 @@
         ],
         "summary": "Delete a Hybrid Deployment Agent",
         "description": "Delete a Hybrid Deployment Agent.",
-        "operationId": "delete_local_processing_agent",
+        "operationId": "delete_hybrid_deployment_agent",
         "parameters": [
           {
             "name": "agentId",
             "in": "path",
-            "description": "Local Data Processing Agent Id",
+            "description": "Hybrid Deployment Agent Id",
             "required": true,
             "schema": {
               "type": "string",
@@ -12059,7 +12058,7 @@
           },
           "proxy_agent_id": {
             "type": "string",
-            "description": "The proxy agent ID",
+            "description": "The unique identifier for the proxy agent within the Fivetran system",
             "example": "proxy_agent_id"
           },
           "private_link_id": {
@@ -12127,6 +12126,7 @@
             "attentive": "#/components/schemas/attentive_NewConnectorRequestV1",
             "attio": "#/components/schemas/attio_NewConnectorRequestV1",
             "aumni": "#/components/schemas/aumni_NewConnectorRequestV1",
+            "aura_from_unity": "#/components/schemas/aura_from_unity_NewConnectorRequestV1",
             "aurora": "#/components/schemas/aurora_NewConnectorRequestV1",
             "aurora_postgres": "#/components/schemas/aurora_postgres_NewConnectorRequestV1",
             "auth0": "#/components/schemas/auth0_NewConnectorRequestV1",
@@ -12247,6 +12247,7 @@
             "d2l_brightspace": "#/components/schemas/d2l_brightspace_NewConnectorRequestV1",
             "databricks_db": "#/components/schemas/databricks_db_NewConnectorRequestV1",
             "datadog": "#/components/schemas/datadog_NewConnectorRequestV1",
+            "datastreamer_source": "#/components/schemas/datastreamer_source_NewConnectorRequestV1",
             "db2": "#/components/schemas/db2_NewConnectorRequestV1",
             "db2i_hva": "#/components/schemas/db2i_hva_NewConnectorRequestV1",
             "db2i_sap_hva": "#/components/schemas/db2i_sap_hva_NewConnectorRequestV1",
@@ -12503,6 +12504,7 @@
             "oracle_fusion_cloud_apps_crm": "#/components/schemas/oracle_fusion_cloud_apps_crm_NewConnectorRequestV1",
             "oracle_fusion_cloud_apps_fscm": "#/components/schemas/oracle_fusion_cloud_apps_fscm_NewConnectorRequestV1",
             "oracle_fusion_cloud_apps_hcm": "#/components/schemas/oracle_fusion_cloud_apps_hcm_NewConnectorRequestV1",
+            "oracle_fusion_field_service": "#/components/schemas/oracle_fusion_field_service_NewConnectorRequestV1",
             "oracle_hva": "#/components/schemas/oracle_hva_NewConnectorRequestV1",
             "oracle_moat_analytics": "#/components/schemas/oracle_moat_analytics_NewConnectorRequestV1",
             "oracle_rac": "#/components/schemas/oracle_rac_NewConnectorRequestV1",
@@ -12698,6 +12700,7 @@
             "thinkific": "#/components/schemas/thinkific_NewConnectorRequestV1",
             "ticket_tailor": "#/components/schemas/ticket_tailor_NewConnectorRequestV1",
             "tiktok_ads": "#/components/schemas/tiktok_ads_NewConnectorRequestV1",
+            "tiktok_organic": "#/components/schemas/tiktok_organic_NewConnectorRequestV1",
             "tive": "#/components/schemas/tive_NewConnectorRequestV1",
             "toggl_track": "#/components/schemas/toggl_track_NewConnectorRequestV1",
             "totango": "#/components/schemas/totango_NewConnectorRequestV1",
@@ -12955,7 +12958,7 @@
           },
           "proxy_agent_id": {
             "type": "string",
-            "description": "The proxy agent ID",
+            "description": "The unique identifier for the proxy agent within the Fivetran system",
             "example": "proxy_agent_id"
           },
           "hybrid_deployment_agent_id": {
@@ -13123,7 +13126,7 @@
           },
           "proxy_agent_id": {
             "type": "string",
-            "description": "The proxy agent ID",
+            "description": "The unique identifier for the proxy agent within the Fivetran system",
             "example": "proxy_agent_id"
           },
           "networking_method": {
@@ -13232,6 +13235,7 @@
             "attentive": "#/components/schemas/attentive_ConnectorResponseV1",
             "attio": "#/components/schemas/attio_ConnectorResponseV1",
             "aumni": "#/components/schemas/aumni_ConnectorResponseV1",
+            "aura_from_unity": "#/components/schemas/aura_from_unity_ConnectorResponseV1",
             "aurora": "#/components/schemas/aurora_ConnectorResponseV1",
             "aurora_postgres": "#/components/schemas/aurora_postgres_ConnectorResponseV1",
             "auth0": "#/components/schemas/auth0_ConnectorResponseV1",
@@ -13352,6 +13356,7 @@
             "d2l_brightspace": "#/components/schemas/d2l_brightspace_ConnectorResponseV1",
             "databricks_db": "#/components/schemas/databricks_db_ConnectorResponseV1",
             "datadog": "#/components/schemas/datadog_ConnectorResponseV1",
+            "datastreamer_source": "#/components/schemas/datastreamer_source_ConnectorResponseV1",
             "db2": "#/components/schemas/db2_ConnectorResponseV1",
             "db2i_hva": "#/components/schemas/db2i_hva_ConnectorResponseV1",
             "db2i_sap_hva": "#/components/schemas/db2i_sap_hva_ConnectorResponseV1",
@@ -13608,6 +13613,7 @@
             "oracle_fusion_cloud_apps_crm": "#/components/schemas/oracle_fusion_cloud_apps_crm_ConnectorResponseV1",
             "oracle_fusion_cloud_apps_fscm": "#/components/schemas/oracle_fusion_cloud_apps_fscm_ConnectorResponseV1",
             "oracle_fusion_cloud_apps_hcm": "#/components/schemas/oracle_fusion_cloud_apps_hcm_ConnectorResponseV1",
+            "oracle_fusion_field_service": "#/components/schemas/oracle_fusion_field_service_ConnectorResponseV1",
             "oracle_hva": "#/components/schemas/oracle_hva_ConnectorResponseV1",
             "oracle_moat_analytics": "#/components/schemas/oracle_moat_analytics_ConnectorResponseV1",
             "oracle_rac": "#/components/schemas/oracle_rac_ConnectorResponseV1",
@@ -13803,6 +13809,7 @@
             "thinkific": "#/components/schemas/thinkific_ConnectorResponseV1",
             "ticket_tailor": "#/components/schemas/ticket_tailor_ConnectorResponseV1",
             "tiktok_ads": "#/components/schemas/tiktok_ads_ConnectorResponseV1",
+            "tiktok_organic": "#/components/schemas/tiktok_organic_ConnectorResponseV1",
             "tive": "#/components/schemas/tive_ConnectorResponseV1",
             "toggl_track": "#/components/schemas/toggl_track_ConnectorResponseV1",
             "totango": "#/components/schemas/totango_ConnectorResponseV1",
@@ -14821,6 +14828,11 @@
               "SshTunnel",
               "ProxyAgent"
             ]
+          },
+          "proxy_agent_id": {
+            "type": "string",
+            "description": "The unique identifier for the proxy agent within the Fivetran system",
+            "example": "proxy_agent_id"
           }
         },
         "discriminator": {
@@ -14853,7 +14865,6 @@
             "postgres_gcp_warehouse": "#/components/schemas/postgres_gcp_warehouse_NewDestinationRequest",
             "postgres_rds_warehouse": "#/components/schemas/postgres_rds_warehouse_NewDestinationRequest",
             "postgres_warehouse": "#/components/schemas/postgres_warehouse_NewDestinationRequest",
-            "propel": "#/components/schemas/propel_NewDestinationRequest",
             "redshift": "#/components/schemas/redshift_NewDestinationRequest",
             "singlestore": "#/components/schemas/singlestore_NewDestinationRequest",
             "snowflake": "#/components/schemas/snowflake_NewDestinationRequest",
@@ -14942,14 +14953,6 @@
             "description": "Shift my UTC offset with daylight savings time (US Only)",
             "example": true
           },
-          "local_processing_agent_id": {
-            "type": "string"
-          },
-          "private_link_id": {
-            "type": "string",
-            "description": "The unique identifier for the self-served private link that is used by the connection",
-            "example": "private_link_id"
-          },
           "time_zone_offset": {
             "type": "string",
             "description": "Determines the time zone for the Fivetran sync schedule.",
@@ -14980,6 +14983,19 @@
               "+11",
               "+12"
             ]
+          },
+          "local_processing_agent_id": {
+            "type": "string"
+          },
+          "private_link_id": {
+            "type": "string",
+            "description": "The unique identifier for the self-served private link that is used by the connection",
+            "example": "private_link_id"
+          },
+          "proxy_agent_id": {
+            "type": "string",
+            "description": "The unique identifier for the proxy agent within the Fivetran system",
+            "example": "proxy_agent_id"
           },
           "hybrid_deployment_agent_id": {
             "type": "string"
@@ -15125,6 +15141,11 @@
             "description": "The unique identifier for the self-served private link that is used by the connection",
             "example": "private_link_id"
           },
+          "proxy_agent_id": {
+            "type": "string",
+            "description": "The unique identifier for the proxy agent within the Fivetran system",
+            "example": "proxy_agent_id"
+          },
           "hybrid_deployment_agent_id": {
             "type": "string",
             "description": "The unique identifier for the hybrid deployment agent within the Fivetran system",
@@ -15161,7 +15182,6 @@
             "postgres_gcp_warehouse": "#/components/schemas/postgres_gcp_warehouse_DestinationExtendedResponse",
             "postgres_rds_warehouse": "#/components/schemas/postgres_rds_warehouse_DestinationExtendedResponse",
             "postgres_warehouse": "#/components/schemas/postgres_warehouse_DestinationExtendedResponse",
-            "propel": "#/components/schemas/propel_DestinationExtendedResponse",
             "redshift": "#/components/schemas/redshift_DestinationExtendedResponse",
             "singlestore": "#/components/schemas/singlestore_DestinationExtendedResponse",
             "snowflake": "#/components/schemas/snowflake_DestinationExtendedResponse",
@@ -15257,16 +15277,6 @@
             "description": "Shift my UTC offset with daylight savings time (US Only)",
             "example": true
           },
-          "local_processing_agent_id": {
-            "type": "string",
-            "description": "(Deprecated) The unique identifier for the hybrid deployment agent within the Fivetran system",
-            "example": "local_processing_agent_id"
-          },
-          "private_link_id": {
-            "type": "string",
-            "description": "The unique identifier for the self-served private link that is used by the connection",
-            "example": "private_link_id"
-          },
           "group_id": {
             "type": "string",
             "description": "The unique identifier for the group within the Fivetran system.",
@@ -15302,6 +15312,21 @@
               "+11",
               "+12"
             ]
+          },
+          "local_processing_agent_id": {
+            "type": "string",
+            "description": "(Deprecated) The unique identifier for the hybrid deployment agent within the Fivetran system",
+            "example": "local_processing_agent_id"
+          },
+          "private_link_id": {
+            "type": "string",
+            "description": "The unique identifier for the self-served private link that is used by the connection",
+            "example": "private_link_id"
+          },
+          "proxy_agent_id": {
+            "type": "string",
+            "description": "The unique identifier for the proxy agent within the Fivetran system",
+            "example": "proxy_agent_id"
           },
           "hybrid_deployment_agent_id": {
             "type": "string",
@@ -15568,8 +15593,7 @@
         "required": [
           "accept_terms",
           "display_name",
-          "env_type",
-          "group_id"
+          "env_type"
         ],
         "type": "object",
         "properties": {
@@ -15580,6 +15604,8 @@
           },
           "auth_type": {
             "type": "string",
+            "description": "Agent Auth Mode. Defines how agent should be authorised.",
+            "example": "AUTO",
             "enum": [
               "AUTO",
               "MANUAL"
@@ -15592,10 +15618,13 @@
           },
           "env_type": {
             "type": "string",
-            "description": "Environment type. (docker)",
+            "description": "Environment type.",
             "example": "DOCKER",
             "enum": [
-              "DOCKER"
+              "DOCKER",
+              "PODMAN",
+              "KUBERNETES",
+              "SNOWPARK"
             ]
           },
           "group_id": {
@@ -15666,31 +15695,22 @@
         "type": "object",
         "properties": {
           "config_json": {
-            "type": "array",
+            "type": "string",
             "description": "Base64 encoded content of the config.json",
-            "example": "Base64 {... config.json contents ...}",
-            "items": {
-              "type": "string",
-              "format": "byte"
-            }
+            "format": "byte",
+            "example": "Base64 {... config.json contents ...}"
           },
           "docker_compose_yaml": {
-            "type": "array",
+            "type": "string",
             "description": "Base64 encoded content of the docker-compose.yaml",
-            "example": "Base64 {... docker-compose.yaml contents ...}",
-            "items": {
-              "type": "string",
-              "format": "byte"
-            }
+            "format": "byte",
+            "example": "Base64 {... docker-compose.yaml contents ...}"
           },
           "auth_json": {
-            "type": "array",
+            "type": "string",
             "description": "Base64 encoded content of the auth.json",
-            "example": "Base64 {... auth.json contents ...}",
-            "items": {
-              "type": "string",
-              "format": "byte"
-            }
+            "format": "byte",
+            "example": "Base64 {... auth.json contents ...}"
           }
         }
       },
@@ -19738,24 +19758,6 @@
           }
         ]
       },
-      "propel_config_V1": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "description": ""
-          }
-        }
-      },
-      "propel_NewDestinationRequest": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NewDestinationRequest"
-          },
-          {
-            "$ref": "#/components/schemas/propel_config_V1"
-          }
-        ]
-      },
       "redshift_config_V1": {
         "properties": {
           "config": {
@@ -20497,16 +20499,6 @@
           },
           {
             "$ref": "#/components/schemas/postgres_warehouse_config_V1"
-          }
-        ]
-      },
-      "propel_DestinationExtendedResponse": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/DestinationExtendedResponse"
-          },
-          {
-            "$ref": "#/components/schemas/propel_config_V1"
           }
         ]
       },
@@ -22643,8 +22635,8 @@
               "profiles": {
                 "title": "",
                 "type": "string",
-                "description": "Comma-separated list of your Amazon DSP profiles.",
-                "example": "your_amazon_dsp_profiles_with_comma_separated"
+                "description": "your Amazon DSP profiles pass it inside an Array list.",
+                "example": "your_amazon_dsp_profiles_in_array"
               },
               "token_url_region": {
                 "type": "object",
@@ -23823,6 +23815,36 @@
           }
         ]
       },
+      "aura_from_unity_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Aura from Unity API key.",
+                "format": "password",
+                "example": "your_aura_from_unity_api_key"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "aura_from_unity_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/aura_from_unity_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
       "aurora_config_V1": {
         "properties": {
           "config": {
@@ -24224,6 +24246,19 @@
           "config": {
             "type": "object",
             "properties": {
+              "tunnel_port": {
+                "title": "",
+                "type": "integer",
+                "description": "SSH port, specify only to connect via an SSH tunnel.",
+                "format": "int32",
+                "example": 0
+              },
+              "database": {
+                "title": "Database Name",
+                "type": "string",
+                "description": "",
+                "example": "my_db"
+              },
               "password": {
                 "title": "Database User Password",
                 "type": "string",
@@ -24231,11 +24266,17 @@
                 "format": "password",
                 "example": "string"
               },
-              "database_name": {
-                "title": "Database Name",
-                "type": "string",
-                "description": "",
-                "example": "my_db"
+              "connection_type": {
+                "title": "",
+                "type": "object",
+                "description": "Possible values: `Directly`, `PrivateLink`",
+                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
+                "enum": [
+                  "Directly",
+                  "PrivateLink",
+                  "SshTunnel",
+                  "ProxyAgent"
+                ]
               },
               "port": {
                 "title": "AF Server Port Number",
@@ -24244,17 +24285,35 @@
                 "format": "int32",
                 "example": 443
               },
-              "ip_address": {
+              "host": {
                 "title": "AF Server IP Address",
                 "type": "string",
                 "description": "IP address of the AF Server",
                 "example": "127.0.0.1"
               },
-              "username": {
+              "tunnel_host": {
+                "title": "",
+                "type": "string",
+                "description": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+                "example": "string"
+              },
+              "always_encrypted": {
+                "title": "",
+                "type": "boolean",
+                "description": "Require TLS.",
+                "example": true
+              },
+              "user": {
                 "title": "Database User Username",
                 "type": "string",
                 "description": "Username for the user to authenticate as with the AF Server",
                 "example": "myuser"
+              },
+              "tunnel_user": {
+                "title": "",
+                "type": "string",
+                "description": "SSH user, specify only to connect via an SSH tunnel.",
+                "example": "string"
               }
             },
             "description": ""
@@ -24836,7 +24895,7 @@
               "quote_character_enabled": {
                 "title": "",
                 "type": "boolean",
-                "description": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character.",
+                "description": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as a quote character.",
                 "example": true
               },
               "prefix": {
@@ -25023,7 +25082,7 @@
                     "file_pattern": {
                       "title": "",
                       "type": "string",
-                      "description": "All files in your search path matching this regular expression will be synced per table.",
+                      "description": "All files in your search path matching this regular expression will be synced per table. We have discontinued this field, and will delete it by August 31, 2025.",
                       "example": "string"
                     },
                     "table_name": {
@@ -25071,6 +25130,25 @@
           }
         }
       },
+      "schema_format_schema_table_group": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "title": "Destination schema name",
+                "type": "string",
+                "description": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+                "example": "schema_name"
+              },
+              "table_group_name": {
+                "type": "string",
+                "description": "Table group name"
+              }
+            }
+          }
+        }
+      },
       "azure_blob_storage_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -25080,7 +25158,7 @@
             "$ref": "#/components/schemas/azure_blob_storage_config_V1"
           },
           {
-            "$ref": "#/components/schemas/schema_format_schema_table"
+            "$ref": "#/components/schemas/schema_format_schema_table_group"
           }
         ]
       },
@@ -25782,9 +25860,10 @@
                 "title": "",
                 "type": "object",
                 "description": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
-                "example": "NATIVE_UPDATE | TELEPORT | TRANSACTION_LOG | MIXED_TELEPORT_CSA",
+                "example": "NATIVE_UPDATE | TELEPORT | TRANSACTION_LOG | BINARY_LOG_READER | MIXED_TELEPORT_CSA",
                 "enum": [
                   "TRANSACTION_LOG",
+                  "BINARY_LOG_READER",
                   "MIXED_TELEPORT_CSA",
                   "NATIVE_UPDATE",
                   "TELEPORT"
@@ -25876,11 +25955,41 @@
                 "description": "The long-lived Access token carries the information necessary to access API resources.",
                 "example": "my_access_token"
               },
+              "service_principal_client_certificate": {
+                "title": "",
+                "type": "string",
+                "description": "Contents of Service Principal Client Certificate.",
+                "example": "service_principal_client_certificate"
+              },
               "refresh_token": {
                 "title": "",
                 "type": "string",
                 "description": "The long-lived Refresh token carries the information necessary to get a new access token for API resources.",
                 "example": "my_refresh_token"
+              },
+              "service_principal_client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Service Principal Client Secret.",
+                "example": "service_principal_client_secret"
+              },
+              "service_principal_id": {
+                "title": "",
+                "type": "string",
+                "description": "Service Principal Client ID.",
+                "example": "service_principal_id"
+              },
+              "managed_identity_user_assigned": {
+                "title": "",
+                "type": "string",
+                "description": "User Assigned Managed Identity Client ID.",
+                "example": "managed_identity_user_assigned"
+              },
+              "service_principal_client_cert_pvt_key": {
+                "title": "",
+                "type": "string",
+                "description": "Contents of Service Principal Client Certificate Private Key.",
+                "example": "service_principal_client_cert_pvt_key"
               }
             },
             "description": ""
@@ -25931,9 +26040,10 @@
                 "title": "",
                 "type": "object",
                 "description": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
-                "example": "NATIVE_UPDATE | TELEPORT | TRANSACTION_LOG | MIXED_TELEPORT_CSA",
+                "example": "NATIVE_UPDATE | TELEPORT | TRANSACTION_LOG | BINARY_LOG_READER | MIXED_TELEPORT_CSA",
                 "enum": [
                   "TRANSACTION_LOG",
+                  "BINARY_LOG_READER",
                   "MIXED_TELEPORT_CSA",
                   "NATIVE_UPDATE",
                   "TELEPORT"
@@ -26025,11 +26135,41 @@
                 "description": "The long-lived Access token carries the information necessary to access API resources.",
                 "example": "my_access_token"
               },
+              "service_principal_client_certificate": {
+                "title": "",
+                "type": "string",
+                "description": "Contents of Service Principal Client Certificate.",
+                "example": "service_principal_client_certificate"
+              },
               "refresh_token": {
                 "title": "",
                 "type": "string",
                 "description": "The long-lived Refresh token carries the information necessary to get a new access token for API resources.",
                 "example": "my_refresh_token"
+              },
+              "service_principal_client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Service Principal Client Secret.",
+                "example": "service_principal_client_secret"
+              },
+              "service_principal_id": {
+                "title": "",
+                "type": "string",
+                "description": "Service Principal Client ID.",
+                "example": "service_principal_id"
+              },
+              "managed_identity_user_assigned": {
+                "title": "",
+                "type": "string",
+                "description": "User Assigned Managed Identity Client ID.",
+                "example": "managed_identity_user_assigned"
+              },
+              "service_principal_client_cert_pvt_key": {
+                "title": "",
+                "type": "string",
+                "description": "Contents of Service Principal Client Certificate Private Key.",
+                "example": "service_principal_client_cert_pvt_key"
               }
             },
             "description": ""
@@ -26325,6 +26465,12 @@
                 "description": "Your BigMarker API key.",
                 "format": "password",
                 "example": "your_bigmarker_api_key"
+              },
+              "base_url": {
+                "title": "",
+                "type": "string",
+                "description": "Your BigMarker base URL.",
+                "example": "your_bigmarker_base_url"
               }
             },
             "description": ""
@@ -27157,6 +27303,22 @@
                   "TWO_YEARS",
                   "THREE_MONTHS",
                   "SIX_MONTHS"
+                ]
+              },
+              "historical_sync_limit_date": {
+                "title": "Historical sync limit date",
+                "type": "string",
+                "description": "The start date (in YYYY-MM-DD) from which to sync historical data. Only used when `historicalSyncLimit` is set to `DATE_LIMIT`.",
+                "example": "2006-01-01"
+              },
+              "historical_sync_limit": {
+                "title": "Historical sync time frame",
+                "type": "object",
+                "description": "Range of data in history you would like to include in the initial sync. Valid values are `ALL_TIME` and `DATE_LIMIT`",
+                "example": "ALL_TIME | DATE_LIMIT",
+                "enum": [
+                  "ALL_TIME",
+                  "DATE_LIMIT"
                 ]
               },
               "cloud_storage_type": {
@@ -29067,7 +29229,7 @@
               "custom_base_url": {
                 "title": "",
                 "type": "string",
-                "description": "Your Coalesce Custom Base URL.",
+                "description": "Your Coalesce custom base URL.",
                 "example": "your_coalesce_custom_base_url"
               },
               "access_token": {
@@ -31368,6 +31530,27 @@
           }
         ]
       },
+      "datastreamer_source_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "description": ""
+          }
+        }
+      },
+      "datastreamer_source_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/datastreamer_source_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
       "db2_config_V1": {
         "properties": {
           "config": {
@@ -33403,9 +33586,10 @@
                 "title": "",
                 "type": "object",
                 "description": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
-                "example": "NATIVE_UPDATE | TELEPORT | TRANSACTION_LOG | MIXED_TELEPORT_CSA",
+                "example": "NATIVE_UPDATE | TELEPORT | TRANSACTION_LOG | BINARY_LOG_READER | MIXED_TELEPORT_CSA",
                 "enum": [
                   "TRANSACTION_LOG",
+                  "BINARY_LOG_READER",
                   "MIXED_TELEPORT_CSA",
                   "NATIVE_UPDATE",
                   "TELEPORT"
@@ -34301,13 +34485,13 @@
                       "type": "array",
                       "description": "List of breakdowns which connector will sync. [Possible breakdowns values](/docs/connectors/applications/facebook-ads-insights/api-config#breakdowns).",
                       "example": [
-                        "ad_format_asset | age | app_id | body_asset | call_to_action_asset | country | description_asset | dma | gender | frequency_value | hourly_stats_aggregated_by_advertiser_time_zone | hourly_stats_aggregated_by_audience_time_zone | image_asset | impression_device | link_url_asset | place_page_id | placement | device_platform | product_id | publisher_platform | platform_position | region | skan_conversion_id | title_asset | video_asset | coarse_conversion_value | fidelity_type | hsid | is_conversion_id_modeled | postback_sequence_index | redownload | skan_campaign_id | action_converted_product_id | mmm"
+                        "ad_format_asset | age | app_id | body_asset | call_to_action_asset | country | description_asset | dma | gender | frequency_value | hourly_stats_aggregated_by_advertiser_time_zone | hourly_stats_aggregated_by_audience_time_zone | image_asset | impression_device | link_url_asset | place_page_id | placement | device_platform | product_id | publisher_platform | platform_position | region | skan_conversion_id | title_asset | video_asset | coarse_conversion_value | fidelity_type | hsid | is_conversion_id_modeled | postback_sequence_index | redownload | skan_campaign_id | action_converted_product_id | mmm | user_segment_key"
                       ],
                       "items": {
                         "title": "",
                         "type": "object",
                         "description": "",
-                        "example": "ad_format_asset | age | app_id | body_asset | call_to_action_asset | country | description_asset | dma | gender | frequency_value | hourly_stats_aggregated_by_advertiser_time_zone | hourly_stats_aggregated_by_audience_time_zone | image_asset | impression_device | link_url_asset | place_page_id | placement | device_platform | product_id | publisher_platform | platform_position | region | skan_conversion_id | title_asset | video_asset | coarse_conversion_value | fidelity_type | hsid | is_conversion_id_modeled | postback_sequence_index | redownload | skan_campaign_id | action_converted_product_id | mmm",
+                        "example": "ad_format_asset | age | app_id | body_asset | call_to_action_asset | country | description_asset | dma | gender | frequency_value | hourly_stats_aggregated_by_advertiser_time_zone | hourly_stats_aggregated_by_audience_time_zone | image_asset | impression_device | link_url_asset | place_page_id | placement | device_platform | product_id | publisher_platform | platform_position | region | skan_conversion_id | title_asset | video_asset | coarse_conversion_value | fidelity_type | hsid | is_conversion_id_modeled | postback_sequence_index | redownload | skan_campaign_id | action_converted_product_id | mmm | user_segment_key",
                         "enum": [
                           "country",
                           "skan_campaign_id",
@@ -34325,6 +34509,7 @@
                           "hsid",
                           "app_id",
                           "impression_device",
+                          "user_segment_key",
                           "body_asset",
                           "frequency_value",
                           "place_page_id",
@@ -36180,7 +36365,7 @@
               "pattern": {
                 "title": "",
                 "type": "string",
-                "description": "All files in your search path matching this regular expression will be synced.",
+                "description": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will delete it by August 31, 2025.",
                 "example": "file_pattern"
               },
               "json_delivery_mode": {
@@ -36403,7 +36588,7 @@
             "$ref": "#/components/schemas/gcs_config_V1"
           },
           {
-            "$ref": "#/components/schemas/schema_format_schema_table"
+            "$ref": "#/components/schemas/schema_format_schema_table_group"
           }
         ]
       },
@@ -37279,6 +37464,50 @@
                         "example": "string"
                       }
                     },
+                    "filters": {
+                      "title": "",
+                      "type": "array",
+                      "description": "The list of filters to apply to the report data.",
+                      "items": {
+                        "title": "",
+                        "type": "object",
+                        "properties": {
+                          "negation": {
+                            "title": "",
+                            "type": "boolean",
+                            "description": "Whether to negate the filter.",
+                            "example": true
+                          },
+                          "filter_value": {
+                            "title": "",
+                            "type": "string",
+                            "description": "The filter value.",
+                            "example": "string"
+                          },
+                          "filter_dimension": {
+                            "title": "",
+                            "type": "string",
+                            "description": "The dimension name to filter on.",
+                            "example": "string"
+                          },
+                          "match_type": {
+                            "title": "",
+                            "type": "object",
+                            "description": "The filter match type.",
+                            "example": "EXACT | BEGINS_WITH | ENDS_WITH | CONTAINS | FULL_REGEXP | PARTIAL_REGEXP",
+                            "enum": [
+                              "BEGINS_WITH",
+                              "ENDS_WITH",
+                              "FULL_REGEXP",
+                              "EXACT",
+                              "CONTAINS",
+                              "PARTIAL_REGEXP"
+                            ]
+                          }
+                        },
+                        "description": "The list of filters to apply to the report data."
+                      }
+                    },
                     "config_type": {
                       "title": "",
                       "type": "object",
@@ -38056,9 +38285,10 @@
                 "title": "",
                 "type": "object",
                 "description": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
-                "example": "NATIVE_UPDATE | TELEPORT | TRANSACTION_LOG | MIXED_TELEPORT_CSA",
+                "example": "NATIVE_UPDATE | TELEPORT | TRANSACTION_LOG | BINARY_LOG_READER | MIXED_TELEPORT_CSA",
                 "enum": [
                   "TRANSACTION_LOG",
+                  "BINARY_LOG_READER",
                   "MIXED_TELEPORT_CSA",
                   "NATIVE_UPDATE",
                   "TELEPORT"
@@ -38337,7 +38567,7 @@
               "pattern": {
                 "title": "",
                 "type": "string",
-                "description": "All files in your search path matching this regular expression will be synced.",
+                "description": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will delete it by August 31, 2025.",
                 "example": "file_pattern"
               },
               "escape_char": {
@@ -38500,7 +38730,7 @@
             "$ref": "#/components/schemas/google_drive_config_V1"
           },
           {
-            "$ref": "#/components/schemas/schema_format_schema_table"
+            "$ref": "#/components/schemas/schema_format_schema_table_group"
           }
         ]
       },
@@ -40269,14 +40499,14 @@
               "password": {
                 "title": "",
                 "type": "string",
-                "description": "Your Impact Account Token",
+                "description": "Your Impact Brand Account Token",
                 "format": "password",
                 "example": "string"
               },
               "username": {
                 "title": "",
                 "type": "string",
-                "description": "Your Impact Account SID",
+                "description": "Your Impact Brand Account SID",
                 "example": "string"
               }
             },
@@ -40868,63 +41098,17 @@
           "config": {
             "type": "object",
             "properties": {
-              "app_specific_password": {
+              "issuer_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your app-specific password",
-                "format": "password",
-                "example": "your_app_specific_password"
+                "description": "Your Issuer ID",
+                "example": "your_issuer_id"
               },
-              "sales_accounts": {
-                "title": "",
-                "type": "array",
-                "description": "Specific sales account to sync. Must be populated if `sales_account_sync_mode` is set to `SpecificSalesAccounts`.",
-                "example": [
-                  "string"
-                ],
-                "items": {
-                  "title": "",
-                  "type": "string",
-                  "description": "",
-                  "example": "string"
-                }
-              },
-              "app_sync_mode": {
-                "title": "",
-                "type": "object",
-                "description": "Whether to sync all apps or specific apps.",
-                "example": "AllApps | SpecificApps",
-                "enum": [
-                  "AllApps",
-                  "SpecificApps"
-                ]
-              },
-              "account_sync_mode": {
-                "title": "",
-                "type": "object",
-                "description": "Account Sync Mode",
-                "example": "AllAccounts | SpecificAccounts",
-                "enum": [
-                  "AllAccounts",
-                  "SpecificAccounts"
-                ]
-              },
-              "password": {
+              "key_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your password",
-                "format": "password",
-                "example": "password"
-              },
-              "finance_account_sync_mode": {
-                "title": "",
-                "type": "object",
-                "description": "Whether to sync all finance accounts or specific finance accounts.",
-                "example": "AllFinanceAccounts | SpecificFinanceAccounts",
-                "enum": [
-                  "AllFinanceAccounts",
-                  "SpecificFinanceAccounts"
-                ]
+                "description": "Your Key ID",
+                "example": "your_key_id"
               },
               "timeframe_months": {
                 "title": "",
@@ -40939,55 +41123,22 @@
                   "THREE"
                 ]
               },
-              "finance_accounts": {
-                "title": "",
-                "type": "array",
-                "description": "Specific finance accounts to sync. Must be populated if `finance_account_sync_mode` is set to `SpecificFinanceAccounts`.",
-                "example": [
-                  "string"
-                ],
-                "items": {
-                  "title": "",
-                  "type": "string",
-                  "description": "",
-                  "example": "string"
-                }
-              },
-              "phone_number": {
+              "private_key": {
                 "title": "",
                 "type": "string",
-                "description": "Register the number on AppleId Account Page for 2FA",
-                "example": "string"
+                "description": "Your Private Key",
+                "format": "password",
+                "example": "your_private_key"
               },
-              "accounts": {
-                "title": "",
-                "type": "array",
-                "description": "Accounts",
-                "example": [
-                  "string"
-                ],
-                "items": {
-                  "title": "",
-                  "type": "string",
-                  "description": "",
-                  "example": "string"
-                }
-              },
-              "sales_account_sync_mode": {
+              "app_sync_mode": {
                 "title": "",
                 "type": "object",
-                "description": "Whether to sync all sales accounts or specific sales accounts.",
-                "example": "AllSalesAccounts | SpecificSalesAccounts",
+                "description": "Whether to sync all apps or specific apps.",
+                "example": "AllApps | SpecificApps",
                 "enum": [
-                  "AllSalesAccounts",
-                  "SpecificSalesAccounts"
+                  "AllApps",
+                  "SpecificApps"
                 ]
-              },
-              "username": {
-                "title": "",
-                "type": "string",
-                "description": "Your Apple ID",
-                "example": "user"
               },
               "apps": {
                 "title": "",
@@ -41002,6 +41153,20 @@
                   "description": "",
                   "format": "int32",
                   "example": 0
+                }
+              },
+              "vendors_id": {
+                "title": "",
+                "type": "array",
+                "description": "Your vendors id",
+                "example": [
+                  "string"
+                ],
+                "items": {
+                  "title": "",
+                  "type": "string",
+                  "description": "",
+                  "example": "string"
                 }
               }
             },
@@ -41958,6 +42123,22 @@
                   "TWO_YEARS",
                   "THREE_MONTHS",
                   "SIX_MONTHS"
+                ]
+              },
+              "historical_sync_limit_date": {
+                "title": "",
+                "type": "string",
+                "description": "The start date (YYYY-MM-DD) from which to sync historical data.",
+                "example": "2011-01-01"
+              },
+              "historical_sync_limit": {
+                "title": "",
+                "type": "object",
+                "description": "The time range for which historical data should be synced. Default value: `All Time`.",
+                "example": "ALL_TIME | DATE_LIMIT",
+                "enum": [
+                  "ALL_TIME",
+                  "DATE_LIMIT"
                 ]
               },
               "packing_mode": {
@@ -46821,8 +47002,9 @@
                 "title": "",
                 "type": "object",
                 "description": "The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-                "example": "LOGMINER | TELEPORT | DIRECT_CAPTURE | BFILE_REMOTE_CAPTURE",
+                "example": "LOGMINER | TELEPORT | DIRECT_CAPTURE | BINARY_LOG_READER | BFILE_REMOTE_CAPTURE",
                 "enum": [
+                  "BINARY_LOG_READER",
                   "LOGMINER",
                   "TELEPORT",
                   "DIRECT_CAPTURE",
@@ -47003,8 +47185,9 @@
                 "title": "",
                 "type": "object",
                 "description": "The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables.  - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-                "example": "LOGMINER | TELEPORT | DIRECT_CAPTURE | BFILE_REMOTE_CAPTURE",
+                "example": "LOGMINER | TELEPORT | DIRECT_CAPTURE | BINARY_LOG_READER | BFILE_REMOTE_CAPTURE",
                 "enum": [
+                  "BINARY_LOG_READER",
                   "LOGMINER",
                   "TELEPORT",
                   "DIRECT_CAPTURE",
@@ -47308,6 +47491,54 @@
           }
         ]
       },
+      "oracle_fusion_field_service_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "sub_domain": {
+                "title": "",
+                "type": "string",
+                "description": "Your Oracle Fusion Field Service subDomain.",
+                "example": "your_oracle_fusion_field_service_sub_domain"
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Oracle Fusion Field Service client secret.",
+                "format": "password",
+                "example": "your_oracle_fusion_field_service_client_secret"
+              },
+              "root_resource_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Oracle Fusion Field Service rootresourceId.",
+                "example": "your_oracle_fusion_field_service_root_resource_id"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Oracle Fusion Field Service client ID.",
+                "example": "your_oracle_fusion_field_service_client_id"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "oracle_fusion_field_service_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/oracle_fusion_field_service_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
       "oracle_hva_config_V1": {
         "properties": {
           "config": {
@@ -47323,8 +47554,9 @@
                 "title": "",
                 "type": "object",
                 "description": "The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-                "example": "LOGMINER | TELEPORT | DIRECT_CAPTURE | BFILE_REMOTE_CAPTURE",
+                "example": "LOGMINER | TELEPORT | DIRECT_CAPTURE | BINARY_LOG_READER | BFILE_REMOTE_CAPTURE",
                 "enum": [
+                  "BINARY_LOG_READER",
                   "LOGMINER",
                   "TELEPORT",
                   "DIRECT_CAPTURE",
@@ -47568,8 +47800,9 @@
                 "title": "",
                 "type": "object",
                 "description": "The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables.  - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-                "example": "LOGMINER | TELEPORT | DIRECT_CAPTURE | BFILE_REMOTE_CAPTURE",
+                "example": "LOGMINER | TELEPORT | DIRECT_CAPTURE | BINARY_LOG_READER | BFILE_REMOTE_CAPTURE",
                 "enum": [
+                  "BINARY_LOG_READER",
                   "LOGMINER",
                   "TELEPORT",
                   "DIRECT_CAPTURE",
@@ -47678,8 +47911,9 @@
                 "title": "",
                 "type": "object",
                 "description": "The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables.  - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-                "example": "LOGMINER | TELEPORT | DIRECT_CAPTURE | BFILE_REMOTE_CAPTURE",
+                "example": "LOGMINER | TELEPORT | DIRECT_CAPTURE | BINARY_LOG_READER | BFILE_REMOTE_CAPTURE",
                 "enum": [
+                  "BINARY_LOG_READER",
                   "LOGMINER",
                   "TELEPORT",
                   "DIRECT_CAPTURE",
@@ -47782,8 +48016,9 @@
                 "title": "",
                 "type": "object",
                 "description": "The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-                "example": "LOGMINER | TELEPORT | DIRECT_CAPTURE | BFILE_REMOTE_CAPTURE",
+                "example": "LOGMINER | TELEPORT | DIRECT_CAPTURE | BINARY_LOG_READER | BFILE_REMOTE_CAPTURE",
                 "enum": [
+                  "BINARY_LOG_READER",
                   "LOGMINER",
                   "TELEPORT",
                   "DIRECT_CAPTURE",
@@ -48647,6 +48882,12 @@
                 "format": "password",
                 "example": "pardot_salesforce_security_token"
               },
+              "historical_sync_limit_date": {
+                "title": "Historical sync limit date",
+                "type": "string",
+                "description": "The start date (YYYY-MM-DD) from which to sync historical data.",
+                "example": "2006-01-01"
+              },
               "password": {
                 "title": "",
                 "type": "string",
@@ -48679,6 +48920,16 @@
                 "type": "boolean",
                 "description": "Whether the `EXTERNAL_ACTIVITY` table must be synced or not.",
                 "example": true
+              },
+              "historical_sync_limit_time_frame": {
+                "title": "Historical sync time frame",
+                "type": "object",
+                "description": "The options for time range for which historical data should be synced. Default value: `All Time`.",
+                "example": "ALL_TIME | DATE_LIMIT",
+                "enum": [
+                  "ALL_TIME",
+                  "DATE_LIMIT"
+                ]
               },
               "email": {
                 "title": "",
@@ -50763,6 +51014,20 @@
                 "format": "password",
                 "example": "---"
               },
+              "directories": {
+                "title": "",
+                "type": "array",
+                "description": "Set of directories to be synced when syncMode is CUSTOM",
+                "example": [
+                  "string"
+                ],
+                "items": {
+                  "title": "",
+                  "type": "string",
+                  "description": "",
+                  "example": "string"
+                }
+              },
               "data_center": {
                 "title": "",
                 "type": "string",
@@ -50782,6 +51047,16 @@
                 "description": "Can be used to set the distributions fetch window for incremental sync. Fetch window cannot be lesser than 60 days.",
                 "format": "int32",
                 "example": 0
+              },
+              "directory_sync_mode": {
+                "title": "",
+                "type": "object",
+                "description": "Sync mode to be used for fetching select directories. The Allowed Values are ALL and CUSTOM. If CUSTOM add the directories to be synced in the `directories` field.",
+                "example": "ALL | CUSTOM",
+                "enum": [
+                  "ALL",
+                  "CUSTOM"
+                ]
               }
             },
             "description": ""
@@ -52358,7 +52633,7 @@
               "pattern": {
                 "title": "",
                 "type": "string",
-                "description": "All files in your search path matching this regular expression will be synced.",
+                "description": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will delete it by August 31, 2025.",
                 "example": "file_pattern"
               },
               "json_delivery_mode": {
@@ -52623,7 +52898,7 @@
             "$ref": "#/components/schemas/s3_config_V1"
           },
           {
-            "$ref": "#/components/schemas/schema_format_schema_table"
+            "$ref": "#/components/schemas/schema_format_schema_table_group"
           }
         ]
       },
@@ -52728,6 +53003,12 @@
           "config": {
             "type": "object",
             "properties": {
+              "historical_sync_limit": {
+                "title": "",
+                "type": "string",
+                "description": "Historical Sync Limit for the Sync",
+                "example": "1970-01-01"
+              },
               "company_id": {
                 "title": "",
                 "type": "string",
@@ -52797,6 +53078,12 @@
                   "SIX_MONTHS"
                 ]
               },
+              "historical_sync_limit_date": {
+                "title": "",
+                "type": "string",
+                "description": "The start date (YYYY-MM-DD) from which to sync historical data.",
+                "example": "2008-03-25"
+              },
               "packing_mode": {
                 "title": "",
                 "type": "object",
@@ -52805,6 +53092,16 @@
                 "enum": [
                   "UNPACKED",
                   "PACKED"
+                ]
+              },
+              "historical_sync_limit": {
+                "title": "",
+                "type": "object",
+                "description": "The time range for which historical data should be synced. Default value: `All Time`.",
+                "example": "ALL_TIME | DATE_LIMIT",
+                "enum": [
+                  "ALL_TIME",
+                  "DATE_LIMIT"
                 ]
               },
               "s3role_arn": {
@@ -53982,34 +54279,6 @@
           }
         }
       },
-      "servicenow_auth_V1": {
-        "properties": {
-          "auth": {
-            "type": "object",
-            "properties": {
-              "access_token": {
-                "title": "",
-                "type": "string",
-                "description": "",
-                "example": "string"
-              },
-              "refresh_token": {
-                "title": "",
-                "type": "string",
-                "description": "",
-                "example": "string"
-              },
-              "realm_id": {
-                "title": "",
-                "type": "string",
-                "description": "",
-                "example": "string"
-              }
-            },
-            "description": ""
-          }
-        }
-      },
       "servicenow_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -54020,9 +54289,6 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
-          },
-          {
-            "$ref": "#/components/schemas/servicenow_auth_V1"
           }
         ]
       },
@@ -54103,7 +54369,7 @@
               "pattern": {
                 "title": "",
                 "type": "string",
-                "description": "All files in your search path matching this regular expression will be synced.",
+                "description": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will delete it by August 31, 2025.",
                 "example": "file_pattern"
               },
               "json_delivery_mode": {
@@ -54351,25 +54617,6 @@
           }
         }
       },
-      "schema_format_schema_table_group": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "properties": {
-              "schema": {
-                "title": "Destination schema name",
-                "type": "string",
-                "description": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
-                "example": "schema_name"
-              },
-              "table_group_name": {
-                "type": "string",
-                "description": "Table group name"
-              }
-            }
-          }
-        }
-      },
       "sftp_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -54529,6 +54776,30 @@
                   "skip"
                 ]
               },
+              "files": {
+                "title": "",
+                "type": "array",
+                "description": "Mapped file name patterns to a destination table.",
+                "items": {
+                  "title": "",
+                  "type": "object",
+                  "properties": {
+                    "file_pattern": {
+                      "title": "",
+                      "type": "string",
+                      "description": "All files in your search path matching this regular expression will be synced per table.",
+                      "example": "string"
+                    },
+                    "table_name": {
+                      "title": "",
+                      "type": "string",
+                      "description": "All files matching the above pattern will be synced to this table.",
+                      "example": "string"
+                    }
+                  },
+                  "description": "Mapped file name patterns to a destination table."
+                }
+              },
               "compression": {
                 "title": "",
                 "type": "object",
@@ -54600,7 +54871,7 @@
             "$ref": "#/components/schemas/share_point_config_V1"
           },
           {
-            "$ref": "#/components/schemas/schema_format_schema_table"
+            "$ref": "#/components/schemas/schema_format_schema_table_group"
           },
           {
             "$ref": "#/components/schemas/share_point_auth_V1"
@@ -55795,13 +56066,13 @@
                       "type": "array",
                       "description": "[List of Core, Additional and Conversion Metrics Stats Fields](/docs/connectors/applications/snapchat-ads/custom-reports#basemetricsfields).",
                       "example": [
-                        "impressions | swipes | view_time_millis | screen_time_millis | quartile_1 | quartile_2 | quartile_3 | view_completion | spend | video_views | android_installs | attachment_avg_view_time_millis | attachment_frequency | attachment_quartile_1 | attachment_quartile_2 | attachment_quartile_3 | attachment_total_view_time_millis | attachment_uniques | attachment_view_completion | attachment_video_views | avg_view_time_millis | avg_screen_time_millis | frequency | ios_installs | swipe_up_percent | total_installs | uniques | video_views_time_based | video_views_15s | story_opens | story_completes | profile_clicks | position_impressions | position_screen_time_millis | position_swipe_up_percent | avg_position_screen_time_millis | shares | saves | paid_impressions | earned_impressions | total_impressions | play_time_millis | total_reach | earned_reach | native_leads | conversion_purchases | conversion_purchases_value | conversion_save | conversion_save_value | conversion_start_checkout | conversion_start_checkout_value | conversion_add_cart | conversion_add_cart_value | conversion_view_content | conversion_view_content_value | conversion_add_billing | conversion_add_billing_value | conversion_sign_ups | conversion_sign_ups_value | conversion_searches | conversion_searches_value | conversion_level_completes | conversion_level_completes_value | conversion_app_opens | conversion_app_opens_value | conversion_page_views | conversion_page_views_value | conversion_subscribe | conversion_subscribe_value | conversion_ad_click | conversion_ad_click_value | conversion_ad_view | conversion_ad_view_value | conversion_complete_tutorial | conversion_complete_tutorial_value | conversion_invite | conversion_invite_value | conversion_login | conversion_login_value | conversion_share | conversion_share_value | conversion_reserve | conversion_reserve_value | conversion_achievement_unlocked | conversion_achievement_unlocked_value | conversion_add_to_wishlist | conversion_add_to_wishlist_value | conversion_spend_credits | conversion_spend_credits_value | conversion_rate | conversion_rate_value | conversion_start_trial | conversion_start_trial_value | conversion_list_view | conversion_list_view_value | conversion_visit | conversion_visit_value | custom_event_1 | custom_event_1_value | custom_event_2 | custom_event_2_value | custom_event_3 | custom_event_3_value | custom_event_4 | custom_event_4_value | custom_event_5 | custom_event_5_value"
+                        "impressions | swipes | view_time_millis | screen_time_millis | quartile_1 | quartile_2 | quartile_3 | view_completion | spend | video_views | android_installs | attachment_avg_view_time_millis | attachment_frequency | attachment_quartile_1 | attachment_quartile_2 | attachment_quartile_3 | attachment_total_view_time_millis | attachment_uniques | attachment_view_completion | attachment_video_views | avg_view_time_millis | avg_screen_time_millis | frequency | ios_installs | swipe_up_percent | total_installs | uniques | video_views_time_based | video_views_15s | story_opens | story_completes | profile_clicks | position_impressions | position_screen_time_millis | position_swipe_up_percent | avg_position_screen_time_millis | shares | saves | paid_impressions | earned_impressions | total_impressions | play_time_millis | total_reach | earned_reach | native_leads | landing_page_views | conversion_purchases | conversion_purchases_value | conversion_save | conversion_save_value | conversion_start_checkout | conversion_start_checkout_value | conversion_add_cart | conversion_add_cart_value | conversion_view_content | conversion_view_content_value | conversion_add_billing | conversion_add_billing_value | conversion_sign_ups | conversion_sign_ups_value | conversion_searches | conversion_searches_value | conversion_level_completes | conversion_level_completes_value | conversion_app_opens | conversion_app_opens_value | conversion_page_views | conversion_page_views_value | conversion_subscribe | conversion_subscribe_value | conversion_ad_click | conversion_ad_click_value | conversion_ad_view | conversion_ad_view_value | conversion_complete_tutorial | conversion_complete_tutorial_value | conversion_invite | conversion_invite_value | conversion_login | conversion_login_value | conversion_share | conversion_share_value | conversion_reserve | conversion_reserve_value | conversion_achievement_unlocked | conversion_achievement_unlocked_value | conversion_add_to_wishlist | conversion_add_to_wishlist_value | conversion_spend_credits | conversion_spend_credits_value | conversion_rate | conversion_rate_value | conversion_start_trial | conversion_start_trial_value | conversion_list_view | conversion_list_view_value | conversion_visit | conversion_visit_value | custom_event_1 | custom_event_1_value | custom_event_2 | custom_event_2_value | custom_event_3 | custom_event_3_value | custom_event_4 | custom_event_4_value | custom_event_5 | custom_event_5_value"
                       ],
                       "items": {
                         "title": "",
                         "type": "object",
                         "description": "",
-                        "example": "impressions | swipes | view_time_millis | screen_time_millis | quartile_1 | quartile_2 | quartile_3 | view_completion | spend | video_views | android_installs | attachment_avg_view_time_millis | attachment_frequency | attachment_quartile_1 | attachment_quartile_2 | attachment_quartile_3 | attachment_total_view_time_millis | attachment_uniques | attachment_view_completion | attachment_video_views | avg_view_time_millis | avg_screen_time_millis | frequency | ios_installs | swipe_up_percent | total_installs | uniques | video_views_time_based | video_views_15s | story_opens | story_completes | profile_clicks | position_impressions | position_screen_time_millis | position_swipe_up_percent | avg_position_screen_time_millis | shares | saves | paid_impressions | earned_impressions | total_impressions | play_time_millis | total_reach | earned_reach | native_leads | conversion_purchases | conversion_purchases_value | conversion_save | conversion_save_value | conversion_start_checkout | conversion_start_checkout_value | conversion_add_cart | conversion_add_cart_value | conversion_view_content | conversion_view_content_value | conversion_add_billing | conversion_add_billing_value | conversion_sign_ups | conversion_sign_ups_value | conversion_searches | conversion_searches_value | conversion_level_completes | conversion_level_completes_value | conversion_app_opens | conversion_app_opens_value | conversion_page_views | conversion_page_views_value | conversion_subscribe | conversion_subscribe_value | conversion_ad_click | conversion_ad_click_value | conversion_ad_view | conversion_ad_view_value | conversion_complete_tutorial | conversion_complete_tutorial_value | conversion_invite | conversion_invite_value | conversion_login | conversion_login_value | conversion_share | conversion_share_value | conversion_reserve | conversion_reserve_value | conversion_achievement_unlocked | conversion_achievement_unlocked_value | conversion_add_to_wishlist | conversion_add_to_wishlist_value | conversion_spend_credits | conversion_spend_credits_value | conversion_rate | conversion_rate_value | conversion_start_trial | conversion_start_trial_value | conversion_list_view | conversion_list_view_value | conversion_visit | conversion_visit_value | custom_event_1 | custom_event_1_value | custom_event_2 | custom_event_2_value | custom_event_3 | custom_event_3_value | custom_event_4 | custom_event_4_value | custom_event_5 | custom_event_5_value",
+                        "example": "impressions | swipes | view_time_millis | screen_time_millis | quartile_1 | quartile_2 | quartile_3 | view_completion | spend | video_views | android_installs | attachment_avg_view_time_millis | attachment_frequency | attachment_quartile_1 | attachment_quartile_2 | attachment_quartile_3 | attachment_total_view_time_millis | attachment_uniques | attachment_view_completion | attachment_video_views | avg_view_time_millis | avg_screen_time_millis | frequency | ios_installs | swipe_up_percent | total_installs | uniques | video_views_time_based | video_views_15s | story_opens | story_completes | profile_clicks | position_impressions | position_screen_time_millis | position_swipe_up_percent | avg_position_screen_time_millis | shares | saves | paid_impressions | earned_impressions | total_impressions | play_time_millis | total_reach | earned_reach | native_leads | landing_page_views | conversion_purchases | conversion_purchases_value | conversion_save | conversion_save_value | conversion_start_checkout | conversion_start_checkout_value | conversion_add_cart | conversion_add_cart_value | conversion_view_content | conversion_view_content_value | conversion_add_billing | conversion_add_billing_value | conversion_sign_ups | conversion_sign_ups_value | conversion_searches | conversion_searches_value | conversion_level_completes | conversion_level_completes_value | conversion_app_opens | conversion_app_opens_value | conversion_page_views | conversion_page_views_value | conversion_subscribe | conversion_subscribe_value | conversion_ad_click | conversion_ad_click_value | conversion_ad_view | conversion_ad_view_value | conversion_complete_tutorial | conversion_complete_tutorial_value | conversion_invite | conversion_invite_value | conversion_login | conversion_login_value | conversion_share | conversion_share_value | conversion_reserve | conversion_reserve_value | conversion_achievement_unlocked | conversion_achievement_unlocked_value | conversion_add_to_wishlist | conversion_add_to_wishlist_value | conversion_spend_credits | conversion_spend_credits_value | conversion_rate | conversion_rate_value | conversion_start_trial | conversion_start_trial_value | conversion_list_view | conversion_list_view_value | conversion_visit | conversion_visit_value | custom_event_1 | custom_event_1_value | custom_event_2 | custom_event_2_value | custom_event_3 | custom_event_3_value | custom_event_4 | custom_event_4_value | custom_event_5 | custom_event_5_value",
                         "enum": [
                           "quartile_2",
                           "quartile_3",
@@ -55895,6 +56166,7 @@
                           "total_impressions",
                           "conversion_app_opens_value",
                           "attachment_quartile_1",
+                          "landing_page_views",
                           "conversion_app_opens",
                           "conversion_invite_value",
                           "attachment_quartile_3",
@@ -56696,9 +56968,10 @@
                 "title": "",
                 "type": "object",
                 "description": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
-                "example": "NATIVE_UPDATE | TELEPORT | TRANSACTION_LOG | MIXED_TELEPORT_CSA",
+                "example": "NATIVE_UPDATE | TELEPORT | TRANSACTION_LOG | BINARY_LOG_READER | MIXED_TELEPORT_CSA",
                 "enum": [
                   "TRANSACTION_LOG",
+                  "BINARY_LOG_READER",
                   "MIXED_TELEPORT_CSA",
                   "NATIVE_UPDATE",
                   "TELEPORT"
@@ -57000,9 +57273,10 @@
                 "title": "",
                 "type": "object",
                 "description": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
-                "example": "NATIVE_UPDATE | TELEPORT | TRANSACTION_LOG | MIXED_TELEPORT_CSA",
+                "example": "NATIVE_UPDATE | TELEPORT | TRANSACTION_LOG | BINARY_LOG_READER | MIXED_TELEPORT_CSA",
                 "enum": [
                   "TRANSACTION_LOG",
+                  "BINARY_LOG_READER",
                   "MIXED_TELEPORT_CSA",
                   "NATIVE_UPDATE",
                   "TELEPORT"
@@ -58715,6 +58989,56 @@
           },
           {
             "$ref": "#/components/schemas/tiktok_ads_auth_V1"
+          }
+        ]
+      },
+      "tiktok_organic_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "authorization_url": {
+                "title": "",
+                "type": "string",
+                "description": "Your TikTok Organic Authorization URL",
+                "example": "your_tiktok_organic_authorization_url"
+              },
+              "api_environment": {
+                "type": "object",
+                "description": "Your TikTok Organic API Environment.",
+                "enum": [
+                  "business-api.tiktok.com",
+                  "sandbox-ads.tiktok.com"
+                ]
+              },
+              "secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your TikTok Organic Secret.",
+                "format": "password",
+                "example": "your_tiktok_organic_client_secret"
+              },
+              "app_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your TikTok Organic App ID.",
+                "example": "your_tiktok_organic_client_id"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "tiktok_organic_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/tiktok_organic_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
           }
         ]
       },
@@ -61188,7 +61512,7 @@
             "$ref": "#/components/schemas/workday_config_V1"
           },
           {
-            "$ref": "#/components/schemas/schema_format_schema_table"
+            "$ref": "#/components/schemas/schema_format_schema"
           },
           {
             "$ref": "#/components/schemas/workday_auth_V1"
@@ -61885,20 +62209,21 @@
                     "metrics": {
                       "title": "",
                       "type": "array",
-                      "description": "[Metrics](https://developer.yahooinc.com/dsp/api/docs/reporting/metrics.html) used in a report. Must be populated if `config_type` is set to `CUSTOM`.",
+                      "description": "[Metrics](https://developer.yahooinc.com/dsp/api/docs/reporting/metrics.html) used in a report. Must be populated if `config_type` is set to `CUSTOM`. PUBLISHER_EARNINGS, PUBLISHER_EARNINGS_PERCENTAGE, INVENTORY_ECPM_DEPRECATED, SEAT_TECH_FEE, and SEAT_DATA_FEE are deprecated and shouldn't be used anymore",
                       "example": [
-                        "IMPRESSIONS | CLICKS | CTR | CONVERSION | START_VIEWS | COMPLETIONS_25 | COMPLETIONS_50 | COMPLETIONS_75 | COMPLETIONS_100 | DROP_RATE_AT_0 | DROP_RATE_AT_25 | DROP_RATE_AT_50 | DROP_RATE_AT_75 | CPC | CNVR | CPA | ADVERTISER_SPENDING | ADVERTISER_ECPM | NETWORK_PROFIT | NETWORK_PROFIT_PERCENTAGE | NETWORK_ECPM | AVERAGE_FREQUENCY | COMPLETION_RATE_25 | COMPLETION_RATE_50 | COMPLETION_RATE_75 | COMPLETION_RATE_100 | YAHOO_MEASURABLE_IMPRESSIONS | YAHOO_VIEWABLE_IMPRESSIONS | YAHOO_VIEWABLE_RATE | NON_VIEWABLE_IMPRESSIONS | YAHOO_NON_MEASURABLE_IMPRESSIONS | YAHOO_MEASURABLE_RATE | IMPRESSION_DISTRIBUTION_VIEWABLE | IMPRESSION_DISTRIBUTION_NONVIEWABLE | IMPRESSION_DISTRIBUTION_NONMEASURABLE | VIEW_THROUGH_CONVERSION | CLICK_THROUGH_CONVERSION | VIEW_THROUGH_CONVERSION_RATE | CLICK_THROUGH_CONVERSION_RATE | VIEW_THROUGH_CPA | CLICK_THROUGH_CPA | UNIQUE_VIEWERS | SEAT_MANAGEMENT_FEE | FILTERED_IMPRESSIONS | FILTERED_CLICKS | CONVERSION_VALUE | ROAS | MOAT_VIEWABLE_RATE | MOAT_VIEWABLE_IMPRESSIONS | MOAT_MEASURABLE_IMPRESSIONS | VCPM | CPCV | CROSS_DEVICE_CONVERSIONS | QUALIFIED_BID_REQUESTS | YAHOO_DATA_FEES | THIRD_PARTY_DATA_FEES | ORDER_MANAGEMENT_FEE | AD_SERVING_COST | AD_VERIFICATION_COST | AUDIENCE_MEASUREMENT_COST | BRAND_SAFETY_COST | VIEWABIILITY_COST | OTHER_COST | TOTAL_VARIABLE_COST | MOAT_IMPRESSIONS_ANALYZED | MOAT_AVOC | MOAT_AVFH | MOAT_MEASURABILITY_RATE | MOAT_AVOC_RATE | SKIPPED_ADS | BID_RESPONSES | TOTAL_VENDOR_FEE | BID_PRICE_WITHOUT_MULTIPLIER | BID_PRICE_WITHOUT_MULTIPLIER_ORDER_CURRENCY | MULTIPLIED_ECPM | BID_CPM | BID_CPM_ORDER_CURRENCY | DYNAMIC_CONVERSION_VALUE | VERY_FIRST_CONVERSION | UNIQUE_CONVERTERS | UNIQUE_CLICK_THROUGH_CONVERTERS | UNIQUE_VIEW_THROUGH_CONVERTERS | AUDIENCE_IMPRESSIONS | COST_PER_VALID_VIDEO_VIEW_CPV | BID_PRICE_WITHOUT_MULTIPLIER_ADVERTISER_CURRENCY | BID_PRICE_WITHOUT_MULTIPLIER_SEAT_CURRENCY | BID_CPM_ADVERTISER_CURRENCY | BID_CPM_SEAT_CURRENCY | COMPANION_IMPRESSIONS | COMPANION_CLICKS | MAIL_AD_OPENS | MAIL_AD_FORM_SUBMITS | MAIL_AD_SAVES | MAIL_AD_FORWARDS | MAIL_AD_CLICK_OUTS | MAIL_AD_SUBMIT_RATE | MAIL_AD_SAVES_RATE | MAIL_AD_FORWARD_RATE | MAIL_AD_CLICK_OUTS_RATE | FILTERED_COMPANION_IMPRESSIONS | FILTERED_COMPANION_CLICKS | ESTIMATED_BILLABLE_AMOUNT | AVERAGE_FREQUENCY_PER_HOUSEHOLD | AVERAGE_IMPRESSION_MULTIPLIER | ESTIMATED_NUMBER_OF_STORE_VISITS | ESTIMATED_UNIQUE_STORE_VISITORS | ESTIMATED_STORE_VISIT_THROUGH_RATE_VTR | ESTIMATED_COST_PER_STORE_VISIT_CPSV | AVERAGE_PEOPLE_FREQUENCY | VERY_FIRST_VIEW_THROUGH_CONVERSION | VERY_FIRST_CLICK_THROUGH_CONVERSION | VIEW_THROUGH_CONVERSION_VALUE | CLICK_THROUGH_CONVERSION_VALUE | VERY_FIRST_VIEW_THROUGH_CONVERSION_VALUE | VERY_FIRST_CLICK_THROUGH_CONVERSION_VALUE | YAHOO_SEGMENT_FEE | THIRD_PARTY_SEGMENT_FEE | AVAILABLE_BID_REQUESTS | AVERAGE_WIN_RATE | TOTAL_DATA_FEE | PLATFORM_FEE | INVENTORY_ECPM | INVENTORY_COST_PERCENTAGE | INVENTORY_COST"
+                        "IMPRESSIONS | CLICKS | CTR | CONVERSION | START_VIEWS | COMPLETIONS_25 | COMPLETIONS_50 | COMPLETIONS_75 | COMPLETIONS_100 | DROP_RATE_AT_0 | DROP_RATE_AT_25 | DROP_RATE_AT_50 | DROP_RATE_AT_75 | CPC | CNVR | CPA | ADVERTISER_SPENDING | ADVERTISER_ECPM | PUBLISHER_EARNINGS | PUBLISHER_EARNINGS_PERCENTAGE | INVENTORY_ECPM_DEPRECATED | NETWORK_PROFIT | NETWORK_PROFIT_PERCENTAGE | NETWORK_ECPM | AVERAGE_FREQUENCY | COMPLETION_RATE_25 | COMPLETION_RATE_50 | COMPLETION_RATE_75 | COMPLETION_RATE_100 | YAHOO_MEASURABLE_IMPRESSIONS | YAHOO_VIEWABLE_IMPRESSIONS | YAHOO_VIEWABLE_RATE | NON_VIEWABLE_IMPRESSIONS | YAHOO_NON_MEASURABLE_IMPRESSIONS | YAHOO_MEASURABLE_RATE | IMPRESSION_DISTRIBUTION_VIEWABLE | IMPRESSION_DISTRIBUTION_NONVIEWABLE | IMPRESSION_DISTRIBUTION_NONMEASURABLE | VIEW_THROUGH_CONVERSION | CLICK_THROUGH_CONVERSION | VIEW_THROUGH_CONVERSION_RATE | CLICK_THROUGH_CONVERSION_RATE | VIEW_THROUGH_CPA | CLICK_THROUGH_CPA | UNIQUE_VIEWERS | SEAT_TECH_FEE | SEAT_DATA_FEE | SEAT_MANAGEMENT_FEE | FILTERED_IMPRESSIONS | FILTERED_CLICKS | CONVERSION_VALUE | ROAS | MOAT_VIEWABLE_RATE | MOAT_VIEWABLE_IMPRESSIONS | MOAT_MEASURABLE_IMPRESSIONS | VCPM | CPCV | CROSS_DEVICE_CONVERSIONS | QUALIFIED_BID_REQUESTS | YAHOO_DATA_FEES | THIRD_PARTY_DATA_FEES | ORDER_MANAGEMENT_FEE | AD_SERVING_COST | AD_VERIFICATION_COST | AUDIENCE_MEASUREMENT_COST | BRAND_SAFETY_COST | VIEWABIILITY_COST | OTHER_COST | TOTAL_VARIABLE_COST | MOAT_IMPRESSIONS_ANALYZED | MOAT_AVOC | MOAT_AVFH | MOAT_MEASURABILITY_RATE | MOAT_AVOC_RATE | SKIPPED_ADS | BID_RESPONSES | TOTAL_VENDOR_FEE | BID_PRICE_WITHOUT_MULTIPLIER | BID_PRICE_WITHOUT_MULTIPLIER_ORDER_CURRENCY | MULTIPLIED_ECPM | BID_CPM | BID_CPM_ORDER_CURRENCY | DYNAMIC_CONVERSION_VALUE | VERY_FIRST_CONVERSION | UNIQUE_CONVERTERS | UNIQUE_CLICK_THROUGH_CONVERTERS | UNIQUE_VIEW_THROUGH_CONVERTERS | AUDIENCE_IMPRESSIONS | COST_PER_VALID_VIDEO_VIEW_CPV | BID_PRICE_WITHOUT_MULTIPLIER_ADVERTISER_CURRENCY | BID_PRICE_WITHOUT_MULTIPLIER_SEAT_CURRENCY | BID_CPM_ADVERTISER_CURRENCY | BID_CPM_SEAT_CURRENCY | COMPANION_IMPRESSIONS | COMPANION_CLICKS | MAIL_AD_OPENS | MAIL_AD_FORM_SUBMITS | MAIL_AD_SAVES | MAIL_AD_FORWARDS | MAIL_AD_CLICK_OUTS | MAIL_AD_SUBMIT_RATE | MAIL_AD_SAVES_RATE | MAIL_AD_FORWARD_RATE | MAIL_AD_CLICK_OUTS_RATE | FILTERED_COMPANION_IMPRESSIONS | FILTERED_COMPANION_CLICKS | ESTIMATED_BILLABLE_AMOUNT | AVERAGE_FREQUENCY_PER_HOUSEHOLD | AVERAGE_IMPRESSION_MULTIPLIER | ESTIMATED_NUMBER_OF_STORE_VISITS | ESTIMATED_UNIQUE_STORE_VISITORS | ESTIMATED_STORE_VISIT_THROUGH_RATE_VTR | ESTIMATED_COST_PER_STORE_VISIT_CPSV | AVERAGE_PEOPLE_FREQUENCY | VERY_FIRST_VIEW_THROUGH_CONVERSION | VERY_FIRST_CLICK_THROUGH_CONVERSION | VIEW_THROUGH_CONVERSION_VALUE | CLICK_THROUGH_CONVERSION_VALUE | VERY_FIRST_VIEW_THROUGH_CONVERSION_VALUE | VERY_FIRST_CLICK_THROUGH_CONVERSION_VALUE | YAHOO_SEGMENT_FEE | THIRD_PARTY_SEGMENT_FEE | AVAILABLE_BID_REQUESTS | AVERAGE_WIN_RATE | TOTAL_DATA_FEE | PLATFORM_FEE | INVENTORY_ECPM | INVENTORY_COST_PERCENTAGE | INVENTORY_COST"
                       ],
                       "items": {
                         "title": "",
                         "type": "object",
                         "description": "",
-                        "example": "IMPRESSIONS | CLICKS | CTR | CONVERSION | START_VIEWS | COMPLETIONS_25 | COMPLETIONS_50 | COMPLETIONS_75 | COMPLETIONS_100 | DROP_RATE_AT_0 | DROP_RATE_AT_25 | DROP_RATE_AT_50 | DROP_RATE_AT_75 | CPC | CNVR | CPA | ADVERTISER_SPENDING | ADVERTISER_ECPM | NETWORK_PROFIT | NETWORK_PROFIT_PERCENTAGE | NETWORK_ECPM | AVERAGE_FREQUENCY | COMPLETION_RATE_25 | COMPLETION_RATE_50 | COMPLETION_RATE_75 | COMPLETION_RATE_100 | YAHOO_MEASURABLE_IMPRESSIONS | YAHOO_VIEWABLE_IMPRESSIONS | YAHOO_VIEWABLE_RATE | NON_VIEWABLE_IMPRESSIONS | YAHOO_NON_MEASURABLE_IMPRESSIONS | YAHOO_MEASURABLE_RATE | IMPRESSION_DISTRIBUTION_VIEWABLE | IMPRESSION_DISTRIBUTION_NONVIEWABLE | IMPRESSION_DISTRIBUTION_NONMEASURABLE | VIEW_THROUGH_CONVERSION | CLICK_THROUGH_CONVERSION | VIEW_THROUGH_CONVERSION_RATE | CLICK_THROUGH_CONVERSION_RATE | VIEW_THROUGH_CPA | CLICK_THROUGH_CPA | UNIQUE_VIEWERS | SEAT_MANAGEMENT_FEE | FILTERED_IMPRESSIONS | FILTERED_CLICKS | CONVERSION_VALUE | ROAS | MOAT_VIEWABLE_RATE | MOAT_VIEWABLE_IMPRESSIONS | MOAT_MEASURABLE_IMPRESSIONS | VCPM | CPCV | CROSS_DEVICE_CONVERSIONS | QUALIFIED_BID_REQUESTS | YAHOO_DATA_FEES | THIRD_PARTY_DATA_FEES | ORDER_MANAGEMENT_FEE | AD_SERVING_COST | AD_VERIFICATION_COST | AUDIENCE_MEASUREMENT_COST | BRAND_SAFETY_COST | VIEWABIILITY_COST | OTHER_COST | TOTAL_VARIABLE_COST | MOAT_IMPRESSIONS_ANALYZED | MOAT_AVOC | MOAT_AVFH | MOAT_MEASURABILITY_RATE | MOAT_AVOC_RATE | SKIPPED_ADS | BID_RESPONSES | TOTAL_VENDOR_FEE | BID_PRICE_WITHOUT_MULTIPLIER | BID_PRICE_WITHOUT_MULTIPLIER_ORDER_CURRENCY | MULTIPLIED_ECPM | BID_CPM | BID_CPM_ORDER_CURRENCY | DYNAMIC_CONVERSION_VALUE | VERY_FIRST_CONVERSION | UNIQUE_CONVERTERS | UNIQUE_CLICK_THROUGH_CONVERTERS | UNIQUE_VIEW_THROUGH_CONVERTERS | AUDIENCE_IMPRESSIONS | COST_PER_VALID_VIDEO_VIEW_CPV | BID_PRICE_WITHOUT_MULTIPLIER_ADVERTISER_CURRENCY | BID_PRICE_WITHOUT_MULTIPLIER_SEAT_CURRENCY | BID_CPM_ADVERTISER_CURRENCY | BID_CPM_SEAT_CURRENCY | COMPANION_IMPRESSIONS | COMPANION_CLICKS | MAIL_AD_OPENS | MAIL_AD_FORM_SUBMITS | MAIL_AD_SAVES | MAIL_AD_FORWARDS | MAIL_AD_CLICK_OUTS | MAIL_AD_SUBMIT_RATE | MAIL_AD_SAVES_RATE | MAIL_AD_FORWARD_RATE | MAIL_AD_CLICK_OUTS_RATE | FILTERED_COMPANION_IMPRESSIONS | FILTERED_COMPANION_CLICKS | ESTIMATED_BILLABLE_AMOUNT | AVERAGE_FREQUENCY_PER_HOUSEHOLD | AVERAGE_IMPRESSION_MULTIPLIER | ESTIMATED_NUMBER_OF_STORE_VISITS | ESTIMATED_UNIQUE_STORE_VISITORS | ESTIMATED_STORE_VISIT_THROUGH_RATE_VTR | ESTIMATED_COST_PER_STORE_VISIT_CPSV | AVERAGE_PEOPLE_FREQUENCY | VERY_FIRST_VIEW_THROUGH_CONVERSION | VERY_FIRST_CLICK_THROUGH_CONVERSION | VIEW_THROUGH_CONVERSION_VALUE | CLICK_THROUGH_CONVERSION_VALUE | VERY_FIRST_VIEW_THROUGH_CONVERSION_VALUE | VERY_FIRST_CLICK_THROUGH_CONVERSION_VALUE | YAHOO_SEGMENT_FEE | THIRD_PARTY_SEGMENT_FEE | AVAILABLE_BID_REQUESTS | AVERAGE_WIN_RATE | TOTAL_DATA_FEE | PLATFORM_FEE | INVENTORY_ECPM | INVENTORY_COST_PERCENTAGE | INVENTORY_COST",
+                        "example": "IMPRESSIONS | CLICKS | CTR | CONVERSION | START_VIEWS | COMPLETIONS_25 | COMPLETIONS_50 | COMPLETIONS_75 | COMPLETIONS_100 | DROP_RATE_AT_0 | DROP_RATE_AT_25 | DROP_RATE_AT_50 | DROP_RATE_AT_75 | CPC | CNVR | CPA | ADVERTISER_SPENDING | ADVERTISER_ECPM | PUBLISHER_EARNINGS | PUBLISHER_EARNINGS_PERCENTAGE | INVENTORY_ECPM_DEPRECATED | NETWORK_PROFIT | NETWORK_PROFIT_PERCENTAGE | NETWORK_ECPM | AVERAGE_FREQUENCY | COMPLETION_RATE_25 | COMPLETION_RATE_50 | COMPLETION_RATE_75 | COMPLETION_RATE_100 | YAHOO_MEASURABLE_IMPRESSIONS | YAHOO_VIEWABLE_IMPRESSIONS | YAHOO_VIEWABLE_RATE | NON_VIEWABLE_IMPRESSIONS | YAHOO_NON_MEASURABLE_IMPRESSIONS | YAHOO_MEASURABLE_RATE | IMPRESSION_DISTRIBUTION_VIEWABLE | IMPRESSION_DISTRIBUTION_NONVIEWABLE | IMPRESSION_DISTRIBUTION_NONMEASURABLE | VIEW_THROUGH_CONVERSION | CLICK_THROUGH_CONVERSION | VIEW_THROUGH_CONVERSION_RATE | CLICK_THROUGH_CONVERSION_RATE | VIEW_THROUGH_CPA | CLICK_THROUGH_CPA | UNIQUE_VIEWERS | SEAT_TECH_FEE | SEAT_DATA_FEE | SEAT_MANAGEMENT_FEE | FILTERED_IMPRESSIONS | FILTERED_CLICKS | CONVERSION_VALUE | ROAS | MOAT_VIEWABLE_RATE | MOAT_VIEWABLE_IMPRESSIONS | MOAT_MEASURABLE_IMPRESSIONS | VCPM | CPCV | CROSS_DEVICE_CONVERSIONS | QUALIFIED_BID_REQUESTS | YAHOO_DATA_FEES | THIRD_PARTY_DATA_FEES | ORDER_MANAGEMENT_FEE | AD_SERVING_COST | AD_VERIFICATION_COST | AUDIENCE_MEASUREMENT_COST | BRAND_SAFETY_COST | VIEWABIILITY_COST | OTHER_COST | TOTAL_VARIABLE_COST | MOAT_IMPRESSIONS_ANALYZED | MOAT_AVOC | MOAT_AVFH | MOAT_MEASURABILITY_RATE | MOAT_AVOC_RATE | SKIPPED_ADS | BID_RESPONSES | TOTAL_VENDOR_FEE | BID_PRICE_WITHOUT_MULTIPLIER | BID_PRICE_WITHOUT_MULTIPLIER_ORDER_CURRENCY | MULTIPLIED_ECPM | BID_CPM | BID_CPM_ORDER_CURRENCY | DYNAMIC_CONVERSION_VALUE | VERY_FIRST_CONVERSION | UNIQUE_CONVERTERS | UNIQUE_CLICK_THROUGH_CONVERTERS | UNIQUE_VIEW_THROUGH_CONVERTERS | AUDIENCE_IMPRESSIONS | COST_PER_VALID_VIDEO_VIEW_CPV | BID_PRICE_WITHOUT_MULTIPLIER_ADVERTISER_CURRENCY | BID_PRICE_WITHOUT_MULTIPLIER_SEAT_CURRENCY | BID_CPM_ADVERTISER_CURRENCY | BID_CPM_SEAT_CURRENCY | COMPANION_IMPRESSIONS | COMPANION_CLICKS | MAIL_AD_OPENS | MAIL_AD_FORM_SUBMITS | MAIL_AD_SAVES | MAIL_AD_FORWARDS | MAIL_AD_CLICK_OUTS | MAIL_AD_SUBMIT_RATE | MAIL_AD_SAVES_RATE | MAIL_AD_FORWARD_RATE | MAIL_AD_CLICK_OUTS_RATE | FILTERED_COMPANION_IMPRESSIONS | FILTERED_COMPANION_CLICKS | ESTIMATED_BILLABLE_AMOUNT | AVERAGE_FREQUENCY_PER_HOUSEHOLD | AVERAGE_IMPRESSION_MULTIPLIER | ESTIMATED_NUMBER_OF_STORE_VISITS | ESTIMATED_UNIQUE_STORE_VISITORS | ESTIMATED_STORE_VISIT_THROUGH_RATE_VTR | ESTIMATED_COST_PER_STORE_VISIT_CPSV | AVERAGE_PEOPLE_FREQUENCY | VERY_FIRST_VIEW_THROUGH_CONVERSION | VERY_FIRST_CLICK_THROUGH_CONVERSION | VIEW_THROUGH_CONVERSION_VALUE | CLICK_THROUGH_CONVERSION_VALUE | VERY_FIRST_VIEW_THROUGH_CONVERSION_VALUE | VERY_FIRST_CLICK_THROUGH_CONVERSION_VALUE | YAHOO_SEGMENT_FEE | THIRD_PARTY_SEGMENT_FEE | AVAILABLE_BID_REQUESTS | AVERAGE_WIN_RATE | TOTAL_DATA_FEE | PLATFORM_FEE | INVENTORY_ECPM | INVENTORY_COST_PERCENTAGE | INVENTORY_COST",
                         "enum": [
                           "CTR",
                           "AD_SERVING_COST",
                           "IMPRESSION_DISTRIBUTION_NONMEASURABLE",
                           "BID_CPM_ADVERTISER_CURRENCY",
+                          "SEAT_DATA_FEE",
                           "CLICK_THROUGH_CPA",
                           "AVAILABLE_BID_REQUESTS",
                           "COMPLETION_RATE_75",
@@ -61938,8 +62263,10 @@
                           "YAHOO_MEASURABLE_IMPRESSIONS",
                           "AVERAGE_WIN_RATE",
                           "IMPRESSIONS",
+                          "INVENTORY_ECPM_DEPRECATED",
                           "IMPRESSION_DISTRIBUTION_NONVIEWABLE",
                           "CONVERSION_VALUE",
+                          "SEAT_TECH_FEE",
                           "MAIL_AD_OPENS",
                           "FILTERED_IMPRESSIONS",
                           "MAIL_AD_FORWARDS",
@@ -61989,12 +62316,14 @@
                           "ESTIMATED_COST_PER_STORE_VISIT_CPSV",
                           "BID_CPM",
                           "MAIL_AD_CLICK_OUTS",
+                          "PUBLISHER_EARNINGS",
                           "AVERAGE_FREQUENCY",
                           "MULTIPLIED_ECPM",
                           "DROP_RATE_AT_25",
                           "MAIL_AD_FORWARD_RATE",
                           "NON_VIEWABLE_IMPRESSIONS",
                           "AVERAGE_IMPRESSION_MULTIPLIER",
+                          "PUBLISHER_EARNINGS_PERCENTAGE",
                           "MAIL_AD_SUBMIT_RATE",
                           "FILTERED_COMPANION_CLICKS",
                           "AD_VERIFICATION_COST",
@@ -62088,15 +62417,15 @@
                     "dimensions": {
                       "title": "",
                       "type": "array",
-                      "description": "[Dimensions](https://developer.yahooinc.com/dsp/api/docs/reporting/dimensions.html) used in a report. Must be populated if `config_type` is set to `CUSTOM`.",
+                      "description": "[Dimensions](https://developer.yahooinc.com/dsp/api/docs/reporting/dimensions.html) used in a report. Must be populated if `config_type` is set to `CUSTOM`. PUBLISHER, DESKTOP_OS_DEPRECATED, LINE_TYPE, GOAL_TYPE, BID_REQUEST_AD_SIZE, CHANNEL_TYPE, SITE_NAME, and SITE_GROUP_NAME are deprecated dimension, and shouldn't be used anymore",
                       "example": [
-                        "LAYOUT | ADVERTISER | CAMPAIGN | LINE | AD | CREATIVE | DOMAIN | ADVERTISER_CATEGORY_ID | COUNTRY | REGION | CITY | POSTAL_CODE | DEVICE_CATEGORY | BROWSER_TYPE | AGE | GENDER | AD_POSITION | DEVICE_TYPE | ADVERTISER_SUB_CATEGORY | PIXEL | SUBDOMAIN | APP_NAME | SEAT_ID | ADVERTISER_GROUP | MOBILE_CARRIER | LINE_BILLING_METHOD | PARENT_LINE | MARKET_AREA | FREQUENCY_BUCKET_1D | FREQUENCY_BUCKET_7D | FREQUENCY_BUCKET_30D | PIXEL_PARAMETER | TARGET_AUDIENCE_ID_GROUP_A | INVENTORY_TYPE | BUCKETED_AGE | DEMO_VENDOR | MOBILE_OS | MOBILE_MAKE | MOBILE_MODEL | CONNECTION_TYPE | ISP | CREATIVE_CUSTOM_ID | DAYS_TO_CONVERSION | PACKAGE | EXCHANGE_DEAL_ID | DOT_RULE | CONNECTED_TV_DEVICE | INVENTORY_AUCTION_TYPE | SUPPLY_GROUP | NATIVE_TYPE | WEATHER_CONDITION | TARGET_AUDIENCE_ID_GROUP_B | VIDEO_CONTENT_LENGTH | VIDEO_AD_PLACEMENT | ADS_TXT_DECLARATION | CREATIVE_FORMAT | VIDEO_PLAYER_SIZE | DYNAMIC_CREATIVE_VARIATION | DYNAMIC_CREATIVE_SET | LINE_START_DATE | LINE_END_DATE | PACKAGE_END_DATE | CAMPAIGN_CURRENT_SCHEDULE_TOTAL_BUDGET | PACKAGE_SCHEDULE_NAME | PACKAGE_CURRENT_SCHEDULE_TOTAL_BUDGET | LINE_SCHEDULE_NAME | LINE_SCHEDULE_START_DATE | LINE_SCHEDULE_END_DATE | LINE_DAILY_BUDGET_SCHEDULE | LINE_CURRENT_SCHEDULE_TOTAL_BUDGET | LINE_BUDGET_PACING | LINE_PACING_ACCELERATION | CONNECTED_TV_MAKE | CONNECTED_TV_MODEL | LINE_FLIGHT | PACKAGE_BUDGET_SCHEDULE | DEAL_TYPE | VIDEO_CREATIVE_DURATION | CAMPAIGN_SCHEDULE_NAME | CAMPAIGN_SCHEDULE_END_DATE | CAMPAIGN_START_DATE | CAMPAIGN_END_DATE | PACKAGE_SCHEDULE_START_DATE | PACKAGE_SCHEDULE_END_DATE | CAMPAIGN_TOTAL_BUDGET | CAMPAIGN_DAILY_BUDGET | PACKAGE_TOTAL_BUDGET | PACKAGE_DAILY_BUDGET | LINE_TOTAL_BUDGET | LINE_DAILY_BUDGET | CAMPAIGN_DAILY_BUDGET_SCHEDULE | PACKAGE_DAILY_BUDGET_SCHEDULE | PACKAGE_BUDGET_DISTRIBUTOR | AD_SERVING_COST_NAME | AUDIENCE_MEASUREMENT_COST_NAME | OTHER_COST_NAME | CONTENT_SHOW | CONTENT_CHANNEL | CONTENT_NETWORK | CONTENT_TITLE | CONTENT_GENRE | LINE_CHANNEL_TYPE | LINE_GOAL_TYPE | EXCHANGE | DESKTOP_OS | BID_REQUEST_DIMENSIONS | NATIVE_SITE | NATIVE_SITE_GROUP"
+                        "PUBLISHER | LAYOUT | ADVERTISER | CAMPAIGN | LINE | AD | CREATIVE | DOMAIN | ADVERTISER_CATEGORY_ID | COUNTRY | REGION | CITY | POSTAL_CODE | DEVICE_CATEGORY | BROWSER_TYPE | DESKTOP_OS_DEPRECATED | AGE | GENDER | AD_POSITION | DEVICE_TYPE | ADVERTISER_SUB_CATEGORY | PIXEL | SUBDOMAIN | APP_NAME | SEAT_ID | LINE_TYPE | ADVERTISER_GROUP | MOBILE_CARRIER | GOAL_TYPE | LINE_BILLING_METHOD | PARENT_LINE | MARKET_AREA | FREQUENCY_BUCKET_1D | FREQUENCY_BUCKET_7D | FREQUENCY_BUCKET_30D | PIXEL_PARAMETER | TARGET_AUDIENCE_ID_GROUP_A | INVENTORY_TYPE | BUCKETED_AGE | DEMO_VENDOR | MOBILE_OS | MOBILE_MAKE | MOBILE_MODEL | CONNECTION_TYPE | ISP | CREATIVE_CUSTOM_ID | DAYS_TO_CONVERSION | PACKAGE | EXCHANGE_DEAL_ID | DOT_RULE | CONNECTED_TV_DEVICE | INVENTORY_AUCTION_TYPE | SUPPLY_GROUP | NATIVE_TYPE | BID_REQUEST_AD_SIZE | WEATHER_CONDITION | TARGET_AUDIENCE_ID_GROUP_B | CHANNEL_TYPE | VIDEO_CONTENT_LENGTH | VIDEO_AD_PLACEMENT | ADS_TXT_DECLARATION | CREATIVE_FORMAT | SITE_NAME | VIDEO_PLAYER_SIZE | SITE_GROUP_NAME | DYNAMIC_CREATIVE_VARIATION | DYNAMIC_CREATIVE_SET | LINE_START_DATE | LINE_END_DATE | PACKAGE_END_DATE | CAMPAIGN_CURRENT_SCHEDULE_TOTAL_BUDGET | PACKAGE_SCHEDULE_NAME | PACKAGE_CURRENT_SCHEDULE_TOTAL_BUDGET | LINE_SCHEDULE_NAME | LINE_SCHEDULE_START_DATE | LINE_SCHEDULE_END_DATE | LINE_DAILY_BUDGET_SCHEDULE | LINE_CURRENT_SCHEDULE_TOTAL_BUDGET | LINE_BUDGET_PACING | LINE_PACING_ACCELERATION | CONNECTED_TV_MAKE | CONNECTED_TV_MODEL | LINE_FLIGHT | PACKAGE_BUDGET_SCHEDULE | DEAL_TYPE | VIDEO_CREATIVE_DURATION | CAMPAIGN_SCHEDULE_NAME | CAMPAIGN_SCHEDULE_END_DATE | CAMPAIGN_START_DATE | CAMPAIGN_END_DATE | PACKAGE_SCHEDULE_START_DATE | PACKAGE_SCHEDULE_END_DATE | CAMPAIGN_TOTAL_BUDGET | CAMPAIGN_DAILY_BUDGET | PACKAGE_TOTAL_BUDGET | PACKAGE_DAILY_BUDGET | LINE_TOTAL_BUDGET | LINE_DAILY_BUDGET | CAMPAIGN_DAILY_BUDGET_SCHEDULE | PACKAGE_DAILY_BUDGET_SCHEDULE | PACKAGE_BUDGET_DISTRIBUTOR | AD_SERVING_COST_NAME | AUDIENCE_MEASUREMENT_COST_NAME | OTHER_COST_NAME | CONTENT_SHOW | CONTENT_CHANNEL | CONTENT_NETWORK | CONTENT_TITLE | CONTENT_GENRE | LINE_CHANNEL_TYPE | LINE_GOAL_TYPE | EXCHANGE | DESKTOP_OS | BID_REQUEST_DIMENSIONS | NATIVE_SITE | NATIVE_SITE_GROUP"
                       ],
                       "items": {
                         "title": "",
                         "type": "object",
                         "description": "",
-                        "example": "LAYOUT | ADVERTISER | CAMPAIGN | LINE | AD | CREATIVE | DOMAIN | ADVERTISER_CATEGORY_ID | COUNTRY | REGION | CITY | POSTAL_CODE | DEVICE_CATEGORY | BROWSER_TYPE | AGE | GENDER | AD_POSITION | DEVICE_TYPE | ADVERTISER_SUB_CATEGORY | PIXEL | SUBDOMAIN | APP_NAME | SEAT_ID | ADVERTISER_GROUP | MOBILE_CARRIER | LINE_BILLING_METHOD | PARENT_LINE | MARKET_AREA | FREQUENCY_BUCKET_1D | FREQUENCY_BUCKET_7D | FREQUENCY_BUCKET_30D | PIXEL_PARAMETER | TARGET_AUDIENCE_ID_GROUP_A | INVENTORY_TYPE | BUCKETED_AGE | DEMO_VENDOR | MOBILE_OS | MOBILE_MAKE | MOBILE_MODEL | CONNECTION_TYPE | ISP | CREATIVE_CUSTOM_ID | DAYS_TO_CONVERSION | PACKAGE | EXCHANGE_DEAL_ID | DOT_RULE | CONNECTED_TV_DEVICE | INVENTORY_AUCTION_TYPE | SUPPLY_GROUP | NATIVE_TYPE | WEATHER_CONDITION | TARGET_AUDIENCE_ID_GROUP_B | VIDEO_CONTENT_LENGTH | VIDEO_AD_PLACEMENT | ADS_TXT_DECLARATION | CREATIVE_FORMAT | VIDEO_PLAYER_SIZE | DYNAMIC_CREATIVE_VARIATION | DYNAMIC_CREATIVE_SET | LINE_START_DATE | LINE_END_DATE | PACKAGE_END_DATE | CAMPAIGN_CURRENT_SCHEDULE_TOTAL_BUDGET | PACKAGE_SCHEDULE_NAME | PACKAGE_CURRENT_SCHEDULE_TOTAL_BUDGET | LINE_SCHEDULE_NAME | LINE_SCHEDULE_START_DATE | LINE_SCHEDULE_END_DATE | LINE_DAILY_BUDGET_SCHEDULE | LINE_CURRENT_SCHEDULE_TOTAL_BUDGET | LINE_BUDGET_PACING | LINE_PACING_ACCELERATION | CONNECTED_TV_MAKE | CONNECTED_TV_MODEL | LINE_FLIGHT | PACKAGE_BUDGET_SCHEDULE | DEAL_TYPE | VIDEO_CREATIVE_DURATION | CAMPAIGN_SCHEDULE_NAME | CAMPAIGN_SCHEDULE_END_DATE | CAMPAIGN_START_DATE | CAMPAIGN_END_DATE | PACKAGE_SCHEDULE_START_DATE | PACKAGE_SCHEDULE_END_DATE | CAMPAIGN_TOTAL_BUDGET | CAMPAIGN_DAILY_BUDGET | PACKAGE_TOTAL_BUDGET | PACKAGE_DAILY_BUDGET | LINE_TOTAL_BUDGET | LINE_DAILY_BUDGET | CAMPAIGN_DAILY_BUDGET_SCHEDULE | PACKAGE_DAILY_BUDGET_SCHEDULE | PACKAGE_BUDGET_DISTRIBUTOR | AD_SERVING_COST_NAME | AUDIENCE_MEASUREMENT_COST_NAME | OTHER_COST_NAME | CONTENT_SHOW | CONTENT_CHANNEL | CONTENT_NETWORK | CONTENT_TITLE | CONTENT_GENRE | LINE_CHANNEL_TYPE | LINE_GOAL_TYPE | EXCHANGE | DESKTOP_OS | BID_REQUEST_DIMENSIONS | NATIVE_SITE | NATIVE_SITE_GROUP",
+                        "example": "PUBLISHER | LAYOUT | ADVERTISER | CAMPAIGN | LINE | AD | CREATIVE | DOMAIN | ADVERTISER_CATEGORY_ID | COUNTRY | REGION | CITY | POSTAL_CODE | DEVICE_CATEGORY | BROWSER_TYPE | DESKTOP_OS_DEPRECATED | AGE | GENDER | AD_POSITION | DEVICE_TYPE | ADVERTISER_SUB_CATEGORY | PIXEL | SUBDOMAIN | APP_NAME | SEAT_ID | LINE_TYPE | ADVERTISER_GROUP | MOBILE_CARRIER | GOAL_TYPE | LINE_BILLING_METHOD | PARENT_LINE | MARKET_AREA | FREQUENCY_BUCKET_1D | FREQUENCY_BUCKET_7D | FREQUENCY_BUCKET_30D | PIXEL_PARAMETER | TARGET_AUDIENCE_ID_GROUP_A | INVENTORY_TYPE | BUCKETED_AGE | DEMO_VENDOR | MOBILE_OS | MOBILE_MAKE | MOBILE_MODEL | CONNECTION_TYPE | ISP | CREATIVE_CUSTOM_ID | DAYS_TO_CONVERSION | PACKAGE | EXCHANGE_DEAL_ID | DOT_RULE | CONNECTED_TV_DEVICE | INVENTORY_AUCTION_TYPE | SUPPLY_GROUP | NATIVE_TYPE | BID_REQUEST_AD_SIZE | WEATHER_CONDITION | TARGET_AUDIENCE_ID_GROUP_B | CHANNEL_TYPE | VIDEO_CONTENT_LENGTH | VIDEO_AD_PLACEMENT | ADS_TXT_DECLARATION | CREATIVE_FORMAT | SITE_NAME | VIDEO_PLAYER_SIZE | SITE_GROUP_NAME | DYNAMIC_CREATIVE_VARIATION | DYNAMIC_CREATIVE_SET | LINE_START_DATE | LINE_END_DATE | PACKAGE_END_DATE | CAMPAIGN_CURRENT_SCHEDULE_TOTAL_BUDGET | PACKAGE_SCHEDULE_NAME | PACKAGE_CURRENT_SCHEDULE_TOTAL_BUDGET | LINE_SCHEDULE_NAME | LINE_SCHEDULE_START_DATE | LINE_SCHEDULE_END_DATE | LINE_DAILY_BUDGET_SCHEDULE | LINE_CURRENT_SCHEDULE_TOTAL_BUDGET | LINE_BUDGET_PACING | LINE_PACING_ACCELERATION | CONNECTED_TV_MAKE | CONNECTED_TV_MODEL | LINE_FLIGHT | PACKAGE_BUDGET_SCHEDULE | DEAL_TYPE | VIDEO_CREATIVE_DURATION | CAMPAIGN_SCHEDULE_NAME | CAMPAIGN_SCHEDULE_END_DATE | CAMPAIGN_START_DATE | CAMPAIGN_END_DATE | PACKAGE_SCHEDULE_START_DATE | PACKAGE_SCHEDULE_END_DATE | CAMPAIGN_TOTAL_BUDGET | CAMPAIGN_DAILY_BUDGET | PACKAGE_TOTAL_BUDGET | PACKAGE_DAILY_BUDGET | LINE_TOTAL_BUDGET | LINE_DAILY_BUDGET | CAMPAIGN_DAILY_BUDGET_SCHEDULE | PACKAGE_DAILY_BUDGET_SCHEDULE | PACKAGE_BUDGET_DISTRIBUTOR | AD_SERVING_COST_NAME | AUDIENCE_MEASUREMENT_COST_NAME | OTHER_COST_NAME | CONTENT_SHOW | CONTENT_CHANNEL | CONTENT_NETWORK | CONTENT_TITLE | CONTENT_GENRE | LINE_CHANNEL_TYPE | LINE_GOAL_TYPE | EXCHANGE | DESKTOP_OS | BID_REQUEST_DIMENSIONS | NATIVE_SITE | NATIVE_SITE_GROUP",
                         "enum": [
                           "CONNECTION_TYPE",
                           "PACKAGE_END_DATE",
@@ -62111,8 +62440,10 @@
                           "LINE_BILLING_METHOD",
                           "NATIVE_TYPE",
                           "DAYS_TO_CONVERSION",
+                          "GOAL_TYPE",
                           "PACKAGE_TOTAL_BUDGET",
                           "NATIVE_SITE",
+                          "CHANNEL_TYPE",
                           "PACKAGE_SCHEDULE_NAME",
                           "EXCHANGE",
                           "CAMPAIGN_SCHEDULE_NAME",
@@ -62141,6 +62472,7 @@
                           "OTHER_COST_NAME",
                           "POSTAL_CODE",
                           "CONTENT_SHOW",
+                          "SITE_GROUP_NAME",
                           "LINE_START_DATE",
                           "CAMPAIGN",
                           "CONTENT_GENRE",
@@ -62148,12 +62480,14 @@
                           "LINE_GOAL_TYPE",
                           "CREATIVE_CUSTOM_ID",
                           "ISP",
+                          "LINE_TYPE",
                           "CITY",
                           "CREATIVE_FORMAT",
                           "PACKAGE_DAILY_BUDGET",
                           "VIDEO_AD_PLACEMENT",
                           "CAMPAIGN_DAILY_BUDGET",
                           "LINE_TOTAL_BUDGET",
+                          "PUBLISHER",
                           "CAMPAIGN_CURRENT_SCHEDULE_TOTAL_BUDGET",
                           "AUDIENCE_MEASUREMENT_COST_NAME",
                           "CREATIVE",
@@ -62161,6 +62495,7 @@
                           "PACKAGE_CURRENT_SCHEDULE_TOTAL_BUDGET",
                           "CONTENT_TITLE",
                           "SEAT_ID",
+                          "SITE_NAME",
                           "LINE_FLIGHT",
                           "INVENTORY_TYPE",
                           "COUNTRY",
@@ -62174,6 +62509,7 @@
                           "DEVICE_TYPE",
                           "MOBILE_MAKE",
                           "NATIVE_SITE_GROUP",
+                          "DESKTOP_OS_DEPRECATED",
                           "FREQUENCY_BUCKET_7D",
                           "DEVICE_CATEGORY",
                           "VIDEO_CREATIVE_DURATION",
@@ -62202,6 +62538,7 @@
                           "PIXEL",
                           "LINE_SCHEDULE_START_DATE",
                           "AD_POSITION",
+                          "BID_REQUEST_AD_SIZE",
                           "ADS_TXT_DECLARATION",
                           "MOBILE_CARRIER",
                           "MOBILE_MODEL",
@@ -62487,18 +62824,41 @@
           "config": {
             "type": "object",
             "properties": {
-              "secret_key": {
-                "title": "",
-                "type": "string",
-                "description": "Your Yotpo Secret key",
-                "format": "password",
-                "example": "your_yotpo_secret_key"
-              },
               "app_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Yotpo App Key",
-                "example": "your_yotpo_app_key"
+                "description": "Your Yotpo App key.",
+                "format": "password",
+                "example": "string"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "yotpo_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "client_access": {
+                "title": "",
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                }
               }
             },
             "description": ""
@@ -62515,6 +62875,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/yotpo_auth_V1"
           }
         ]
       },
@@ -64176,6 +64539,16 @@
           }
         ]
       },
+      "aura_from_unity_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/aura_from_unity_config_V1"
+          }
+        ]
+      },
       "aurora_readonly_config_V1": {
         "properties": {
           "config": {
@@ -64264,6 +64637,22 @@
           }
         ]
       },
+      "aveva_pi_readonly_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "public_key": {
+                "title": "",
+                "type": "string",
+                "description": "Public Key.",
+                "example": "string"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "aveva_pi_ConnectorResponseV1": {
         "allOf": [
           {
@@ -64271,6 +64660,9 @@
           },
           {
             "$ref": "#/components/schemas/aveva_pi_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/aveva_pi_readonly_config_V1"
           }
         ]
       },
@@ -65714,6 +66106,16 @@
           },
           {
             "$ref": "#/components/schemas/datadog_config_V1"
+          }
+        ]
+      },
+      "datastreamer_source_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/datastreamer_source_config_V1"
           }
         ]
       },
@@ -68950,6 +69352,16 @@
           }
         ]
       },
+      "oracle_fusion_field_service_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/oracle_fusion_field_service_config_V1"
+          }
+        ]
+      },
       "oracle_hva_readonly_config_V1": {
         "properties": {
           "config": {
@@ -71340,6 +71752,16 @@
           }
         ]
       },
+      "tiktok_organic_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/tiktok_organic_config_V1"
+          }
+        ]
+      },
       "tive_ConnectorResponseV1": {
         "allOf": [
           {
@@ -72704,15 +73126,15 @@
             ],
             "type": "object",
             "properties": {
-              "account_url": {
-                "type": "object",
-                "description": "The URL of your account.",
-                "example": "account_url"
-              },
               "vpce_id": {
                 "type": "object",
                 "description": "The ID of your Virtual Private Cloud Endpoint.",
                 "example": "vpce_id"
+              },
+              "account_url": {
+                "type": "object",
+                "description": "The URL of your account.",
+                "example": "account_url"
               }
             },
             "description": "Snowflake for AWS"
@@ -72739,15 +73161,15 @@
             ],
             "type": "object",
             "properties": {
-              "aws_account_id": {
-                "type": "object",
-                "description": "The ID of your AWS account.",
-                "example": "aws_account_id"
-              },
               "cluster_identifier": {
                 "type": "object",
                 "description": "The cluster identifier.",
                 "example": "cluster_identifier"
+              },
+              "aws_account_id": {
+                "type": "object",
+                "description": "The ID of your AWS account.",
+                "example": "aws_account_id"
               }
             },
             "description": "Redshift for AWS"
@@ -72803,15 +73225,15 @@
             ],
             "type": "object",
             "properties": {
-              "connection_service_id": {
-                "type": "object",
-                "description": "The ID of your connection service.",
-                "example": "connection_service_id"
-              },
               "workspace_url": {
                 "type": "object",
                 "description": "workspace_url",
                 "example": "workspace_url"
+              },
+              "connection_service_id": {
+                "type": "object",
+                "description": "The ID of your connection service.",
+                "example": "connection_service_id"
               }
             },
             "description": "Databricks for Azure"
@@ -72838,15 +73260,15 @@
             ],
             "type": "object",
             "properties": {
-              "account_url": {
-                "type": "object",
-                "description": "The URL of your account.",
-                "example": "account_url"
-              },
               "pls_id": {
                 "type": "object",
                 "description": "The ID of your Private Link service.",
                 "example": "pls_id"
+              },
+              "account_url": {
+                "type": "object",
+                "description": "The URL of your account.",
+                "example": "account_url"
               }
             },
             "description": "Snowflake for Azure"
@@ -72960,15 +73382,15 @@
             ],
             "type": "object",
             "properties": {
-              "connection_service_id": {
-                "type": "object",
-                "description": "The ID of your connection service.",
-                "example": "connection_service_id"
-              },
               "sub_resource_name": {
                 "type": "object",
                 "description": "The name of subresource.",
                 "example": "sub_resource_name"
+              },
+              "connection_service_id": {
+                "type": "object",
+                "description": "The ID of your connection service.",
+                "example": "connection_service_id"
               },
               "private_dns_records": {
                 "type": "object",
@@ -73000,15 +73422,15 @@
             ],
             "type": "object",
             "properties": {
-              "account_url": {
-                "type": "object",
-                "description": "The URL of your account.",
-                "example": "account_url"
-              },
               "pls_id": {
                 "type": "object",
                 "description": "The ID of your Private Link service.",
                 "example": "pls_id"
+              },
+              "account_url": {
+                "type": "object",
+                "description": "The URL of your account.",
+                "example": "account_url"
               }
             },
             "description": "Snowflake for GCP"
