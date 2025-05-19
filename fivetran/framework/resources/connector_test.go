@@ -1126,7 +1126,7 @@ func TestResourceConnectorMock(t *testing.T) {
 							"connector_id",
 							"group_id",
 							"google_ads",
-							"google_ads",
+							"adwords_schema",
 							"adwords_schema",
 							`{
 								"user": "user_name",
@@ -1180,7 +1180,7 @@ func TestResourceConnectorMock(t *testing.T) {
 							"connector_id",
 							"group_id",
 							"google_ads",
-							"google_ads",
+							"adwords_schema",
 							"adwords_schema",
 							`{
 								"user": "user_name_1",
