@@ -492,12 +492,14 @@ func getDestinationSchemaValuesMap(service, schema string, destinationSchema typ
         result["name"] = types.StringValue(s[0])
         if len(s) > 1 {
             if common.GetDestinationSchemaFields()[service]["table_group_name"] &&
+                !destinationSchema.IsNull() && 
                 !destinationSchema.Attributes()["table_group_name"].IsNull() && 
                 !destinationSchema.Attributes()["table_group_name"].IsUnknown() {
                 result["table_group_name"] = types.StringValue(s[1])                
             }
 
             if common.GetDestinationSchemaFields()[service]["table"] &&
+               !destinationSchema.IsNull() && 
                !destinationSchema.Attributes()["table"].IsNull() && 
                !destinationSchema.Attributes()["table"].IsUnknown() {
                 result["table"] = types.StringValue(s[1])                
