@@ -852,7 +852,7 @@ func TestResourceConnectorListsConfigMock(t *testing.T) {
 	)
 }
 
-func createConnectorTestResponseJsonMock(id, groupId, service, schema, config string) string {
+func createConnectorTestResponseJsonMock(id, groupId, service, schema, table_group_name, config string) string {
 	template := `
 	{
 		"id": "%v",
@@ -860,6 +860,7 @@ func createConnectorTestResponseJsonMock(id, groupId, service, schema, config st
 		"service": "%v",
 		"service_version": 0,
 		"schema": "%v",
+		"table_group_name": "%v",
 		"paused": true,
 		"pause_after_trial": true,
 		"connected_by": "monitoring_assuring",
@@ -889,7 +890,7 @@ func createConnectorTestResponseJsonMock(id, groupId, service, schema, config st
 		%v
 	}
 	`
-	return fmt.Sprintf(template, id, groupId, service, schema, config)
+	return fmt.Sprintf(template, id, groupId, service, schema, table_group_name, config)
 }
 
 func TestResourceConnectorNoDestinationSchemaMock(t *testing.T) {
@@ -1126,6 +1127,7 @@ func TestResourceConnectorMock(t *testing.T) {
 							"group_id",
 							"google_ads",
 							"adwords_schema",
+							"adwords_schema",
 							`{
 								"user": "user_name",
 								"password": "******",
@@ -1178,6 +1180,7 @@ func TestResourceConnectorMock(t *testing.T) {
 							"connector_id",
 							"group_id",
 							"google_ads",
+							"adwords_schema",
 							"adwords_schema",
 							`{
 								"user": "user_name_1",
@@ -1285,6 +1288,7 @@ func testConnectorCreateUpdate(t *testing.T,
 					"group_id",
 					service,
 					schemaNameJson,
+					schemaNameJson,
 					configJsonStep1,
 				)
 
@@ -1305,6 +1309,7 @@ func testConnectorCreateUpdate(t *testing.T,
 					"connector_id",
 					"group_id",
 					service,
+					schemaNameJson,
 					schemaNameJson,
 					configJsonStep2,
 				)
@@ -1388,6 +1393,7 @@ func TestConnectorSubFieldsSensitiveMock(t *testing.T) {
 					"connector_id",
 					"group_id",
 					"amplitude",
+					"schema_name",
 					"schema_name",
 					`{
 						"project_credentials": [
@@ -1475,6 +1481,7 @@ func TestConnectorCollectionSensitiveMock(t *testing.T) {
 					"group_id",
 					"github",
 					"schema_name",
+					"schema_name",
 					`{
 						"pats": ["******", "******"]
 					}`,
@@ -1515,7 +1522,7 @@ func TestConnectorNonNullableFieldNotConfiguredMock(t *testing.T) {
 	  
 		destination_schema {
 		  name = "schema_name"
-		  table = "name_of_table_in_snowflake_schema"
+		  table_group_name = "name_of_table_in_snowflake_schema"
 		}
 	  
 		config {
@@ -1557,6 +1564,7 @@ func TestConnectorNonNullableFieldNotConfiguredMock(t *testing.T) {
 					"group_id",
 					"azure_blob_storage",
 					"schema_name.name_of_table_in_snowflake_schema",
+					"name_of_table_in_snowflake_schema",
 					`{
 						"container_name": "name_of_container",
 						"pattern": "some_file_pattern",
