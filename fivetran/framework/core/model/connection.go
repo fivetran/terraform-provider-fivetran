@@ -60,7 +60,7 @@ func (d *ConnectionDatasourceModel) ReadFromResponse(resp connections.DetailsWit
     
     d.DataDelaySensitivity = types.StringValue(resp.Data.DataDelaySensitivity)
 
-    d.DestinationSchema = getDestinationSchemaValue(resp.Data.DetailsResponseDataCommon.Service, resp.Data.DetailsResponseDataCommon.Schema)
+    d.DestinationSchema = getDestinationSchemaValue(resp.Data.DetailsResponseDataCommon.Service, resp.Data.DetailsResponseDataCommon.Schema, d.DestinationSchema)
 
     if resp.Data.DetailsResponseDataCommon.ProxyAgentId != "" {
         d.ProxyAgentId = types.StringValue(resp.Data.DetailsResponseDataCommon.ProxyAgentId)
