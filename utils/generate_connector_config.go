@@ -30,14 +30,9 @@ func main() {
 		"components.schemas.NewConnectorRequestV1.discriminator.mapping",
 		"services.txt",
 		"services-changelog.txt",
-		"services-new.txt")
+		"services-new.txt",
+	)
 
-	destinationServices := updateServices(
-		schemaContainer,
-		"components.schemas.NewDestinationRequest.discriminator.mapping",
-		"destination-services.txt",
-		"destination-services-changelog.txt",
-		"destination-services-new.txt")
 
 	fmt.Println("Updating config fields")
 
@@ -46,6 +41,40 @@ func main() {
 		"_config_V1.properties.config.properties",
 		"fivetran/common/fields-updated.json",
 		"config-changes.txt",
+		false,
+	)
+	fmt.Println("Updating schema fields")
+
+	updateFields(services, schemaContainer,
+		"fivetran/common/fields.json",
+		"schema_format_schema_table.properties.config.properties",
+		"fivetran/common/fields-updated.json",
+		"config-changes-schema_format_schema_table.txt",
+		false,
+	)
+
+	updateFields(services, schemaContainer,
+		"fivetran/common/fields.json",
+		"schema_format_schema_prefix.properties.config.properties",
+		"fivetran/common/fields-updated.json",
+		"config-changes-schema_format_schema_prefix.txt",
+		false,
+	)
+
+	updateFields(services, schemaContainer,
+		"fivetran/common/fields.json",
+		"schema_format_schema_table_group.properties.config.properties",
+		"fivetran/common/fields-updated.json",
+		"config-changes-schema_format_schema_table_group.txt",
+		false,
+	)
+
+	updateFields(services, schemaContainer,
+		"fivetran/common/fields.json",
+		"schema_format_schema.properties.config.properties",
+		"fivetran/common/fields-updated.json",
+		"config-changes-schema_format_schema.txt",
+		false,
 	)
 
 	fmt.Println("Updating auth fields")
@@ -55,15 +84,26 @@ func main() {
 		"_config_V1.properties.auth.properties",
 		"fivetran/common/auth-fields-updated.json",
 		"auth-changes.txt",
+		true,
 	)
 
 	fmt.Println("Updating Destinations config fields")
+
+	destinationServices := updateServices(
+		schemaContainer,
+		"components.schemas.NewDestinationRequest.discriminator.mapping",
+		"destination-services.txt",
+		"destination-services-changelog.txt",
+		"destination-services-new.txt",
+	)
 
 	updateFields(destinationServices, schemaContainer,
 		"fivetran/common/destination-fields.json",
 		"_config_V1.properties.config.properties",
 		"fivetran/common/destination-fields-updated.json",
-		"destinatino-config-changes.txt")
+		"destinatino-config-changes.txt",
+		true,
+	)
 
 	fmt.Println("Done!")
 }
@@ -75,38 +115,29 @@ func updateFields(
 	schemaPropsPath string,
 	updatedFieldsFile string,
 	changelogFile string,
+	isDestination bool,
 ) {
-	fmt.Println("Reading existing " + existingFieldsFile + " file...")
 	fieldsExisting := loadExistingFields(existingFieldsFile)
-	fmt.Println("Loading updated fields")
 
-	updated, changedFields := importFields(services, schemaContainer, fieldsExisting, schemaPropsPath)
+	updated, changedFields := importFields(services, schemaContainer, fieldsExisting, schemaPropsPath, isDestination)
 
 	if updated {
-		fmt.Println("New fields detected...")
 		writeChangelog(changedFields, changelogFile)
 		writeFields(fieldsExisting, updatedFieldsFile)
-	} else {
-		fmt.Println("No changes detected.")
 	}
 }
 
 func loadExistingFields(file string) map[string]common.ConfigField {
-	fmt.Println("Reading existing fields.json file...")
 	content, err := os.ReadFile(file)
-
 	fieldsExisting := make(map[string]common.ConfigField)
 
 	if err != nil {
-		fmt.Println("Failed to read file. Will create a new file by OAS.")
+		log.Fatal(err)
 	} else {
-		fmt.Println("Loading existing fields...")
 		err = json.Unmarshal(content, &fieldsExisting)
 		if err != nil {
-			fmt.Println("Reading existing fields... Failed! File `fields.json` has wrong format.")
-			panic(err)
+			log.Fatal(err)
 		}
-		fmt.Println("Reading existing fields... Success")
 	}
 	return fieldsExisting
 }
@@ -115,32 +146,38 @@ func writeChangelog(changedFields map[string]common.ConfigField, clFile string) 
 	var changeLog []string
 
 	for fn, f := range changedFields {
-		if fn != "schema" && fn != "table" && fn != "schema_prefix" {
+		if fn != "schema" && fn != "table" && fn != "schema_prefix" && fn != "table_group_name" {
 			services := make([]string, 0, len(f.Description))
 			for k := range f.Description {
 				services = append(services, "`"+k+"`")
 			}
 			changeLog = append(changeLog, fmt.Sprintf("- Added field `fivetran_connector.config.%s` for services: %s.", fn, strings.Join(services, ", ")))
+		} else {
+			services := make([]string, 0, len(f.Description))
+			for k := range f.Description {
+				services = append(services, "`"+k+"`")
+			}
+			changeLog = append(changeLog, fmt.Sprintf("- Added field `fivetran_connector.destination_schema.%s` for services: %s.", fn, strings.Join(services, ", ")))
 		}
 	}
+
 	//"config-changes.txt"
-	err := os.WriteFile(clFile, []byte(strings.Join(changeLog, "\n")), 0644)
+	err := os.WriteFile(clFile, []byte(strings.Join(changeLog, "\n")), 0644); 
 	if err != nil {
-		fmt.Println("Failed to save changelog...")
-		log.Fatal(err)
+    	log.Fatal(err)
 	}
 }
 
 func writeFields(fieldsExisting map[string]common.ConfigField, fileName string) {
 	jsonResult, err := json.MarshalIndent(fieldsExisting, "", "   ")
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
+
 	err = os.WriteFile(fileName, jsonResult, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Updated " + fileName)
 }
 
 func readLines(fileName string) (map[string]bool, error) {
@@ -164,7 +201,6 @@ func updateServices(schemaContainer *gabs.Container, servicesPath, servicesFile,
 	servicesOld, err := readLines(servicesFile)
 
 	if err != nil {
-		fmt.Println("Failed to read existing services...")
 		log.Fatal(err)
 	}
 
@@ -180,82 +216,94 @@ func updateServices(schemaContainer *gabs.Container, servicesPath, servicesFile,
 
 	err = os.WriteFile(changelogFile, []byte(strings.Join(newServices, "\n")), 0644)
 	if err != nil {
-		fmt.Println("Failed to save services changelog...")
 		log.Fatal(err)
 	}
 
 	err = os.WriteFile(newServicesFile, []byte(strings.Join(services, "\n")), 0644)
 	if err != nil {
-		fmt.Println("Failed to save services list...")
 		log.Fatal(err)
 	}
 
 	return services
 }
 
+func checkSchemaAlignment(schemaContainer *gabs.Container, service string, path string) bool {
+	fileMap := schemaContainer.Path("components.schemas." + service + "_NewConnectorRequestV1").ChildrenMap()
+	for _, f := range fileMap {
+		for _, f2 := range f.Children() {
+			prefix, _, _ := strings.Cut(path, ".")
+			path, _ := strings.CutSuffix(f2.Path("$ref").String(), "\"")
+			if strings.HasSuffix(path, prefix) {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
 func importFields(
 	services []string,
 	schemaContainer *gabs.Container,
 	existingFields map[string]common.ConfigField,
-	propPath string) (bool, map[string]common.ConfigField) {
+	propPath string,
+	isDestination bool) (bool, map[string]common.ConfigField) {
 	updated := false
 	changeLog := make(map[string]common.ConfigField)
 
 	for _, service := range services {
-		path := SCHEMAS_PATH + service + propPath
+		var path string
+		if strings.HasPrefix(propPath, "_") {
+			path = service + propPath
+		} else {
+			path = propPath
+		}
+
+		if isDestination || !checkSchemaAlignment(schemaContainer, service, path) {
+			continue
+		}
+
+		path = SCHEMAS_PATH + path
+
 		serviceSchema := schemaContainer.Path(path).ChildrenMap()
 		serviceFieldsMap := createFields(serviceSchema, service)
 
 		for name, field := range serviceFieldsMap {
-			fmt.Println("INFO: processing field " + name + " (service " + service + ")")
 			if existingField, ok := existingFields[name]; ok {
 				if ableToMergeFields(field, existingField) {
-					fmt.Println("INFO: field " + name + " will be merged.")
 					m, u := mergeFields(field, existingField, service, changeLog, name)
+
 					if fieldCouldBeIncluded(m) {
 						existingFields[name] = m
 						updated = updated || u
-					} else {
-						fmt.Println("INFO: field " + name + " ignored as inconsistent. Service: " + service + ".")
 					}
 				} else {
 					serviceSpecificName := name + "_" + service
-					fmt.Println("INFO: field " + name + " can't be merged with existing field. It will be mapped into " + serviceSpecificName + ".")
 					if existingServiceField, ok := existingFields[serviceSpecificName]; ok {
 						if ableToMergeFields(existingServiceField, field) {
-							fmt.Println("INFO: Found existing service-specific field " + serviceSpecificName +
-								". Field " + name + " will be merged with service-specific field.")
 							mergedField, u := mergeFields(field, existingServiceField, service, changeLog, serviceSpecificName)
 							mergedField.ApiField = name
 							if fieldCouldBeIncluded(mergedField) {
 								existingFields[serviceSpecificName] = mergedField
 								updated = updated || u
-							} else {
-								fmt.Println("INFO: field " + name + " ignored as inconsistent. Service: " + service + ".")
 							}
 						} else {
-							panic("ERROR: Unable to handle field " + name + " for " + service)
+							log.Fatal("ERROR: Unable to handle field " + name + " for " + service)
 						}
 					} else {
 						if fieldCouldBeIncluded(field) {
-							fmt.Println("INFO: field " + name + " will be added into schema as " + serviceSpecificName + ".")
 							field.ApiField = name
 							existingFields[serviceSpecificName] = field
 							changeLog[serviceSpecificName] = field
 							updated = true
-						} else {
-							fmt.Println("INFO: field " + name + " ignored as inconsistent. Service: " + service + ".")
 						}
 					}
 				}
 			} else {
 				if fieldCouldBeIncluded(field) {
-					fmt.Println("INFO: field " + name + " will be added into schema as " + name + ".")
 					changeLog[name] = field
 					existingFields[name] = field
 					updated = true
-				} else {
-					fmt.Println("INFO: field " + name + " ignored as inconsistent. Service: " + service + ".")
 				}
 			}
 		}
@@ -373,6 +421,7 @@ func mergeFields(newField, existingField common.ConfigField, service string, cha
 			updated = true
 		}
 	}
+
 	updatedDescription := appendFieldDescription(&newField, &existingField, service)
 	updatedItemType := appendItemType(&newField, &existingField, service)
 	return existingField, updated || updatedDescription || updatedItemType
@@ -461,10 +510,7 @@ func getObjectField(childrenMap map[string]*gabs.Container, service string, enum
 		}
 
 		if needItemKey {
-			if len(possibleItemKeys) == 0 {
-				fmt.Println("WARNING: No key fields detected! Drifting changes possible.")
-			} else if len(possibleItemKeys) > 1 {
-				fmt.Println("WARNING: Multiple key fields detected! Please choose one manually.")
+			if len(possibleItemKeys) > 1 {
 				field.ItemKeyField = "[" + strings.Join(possibleItemKeys, ", ") + "]"
 			} else {
 				field.ItemKeyField = possibleItemKeys[0]
@@ -472,14 +518,12 @@ func getObjectField(childrenMap map[string]*gabs.Container, service string, enum
 		}
 	} else {
 		if enumElements != nil {
-			fmt.Println("ENUM-object: Object field without sub-fields but with enum.")
 			field.FieldValueType = common.String
 			if isArray {
 				field.FieldValueType = common.StringList
 			}
 			field.Nullable = false
 		} else {
-			fmt.Println("WARNING: Object field without sub-fields.")
 			field.FieldValueType = common.Object
 			if isArray {
 				field.FieldValueType = common.ObjectList
@@ -490,22 +534,17 @@ func getObjectField(childrenMap map[string]*gabs.Container, service string, enum
 }
 
 func getSchemaJson() *gabs.Container {
-	fmt.Println("Reading OAS file...")
 	oasJson, err := os.ReadFile("open-api-spec.json")
-
 	if err != nil {
-		fmt.Println("Reading OAS file... Failed to read schema file")
-		panic(err)
+		log.Fatal(err)
 	}
 
 	shemaJson, err := gabs.ParseJSON(oasJson)
 
 	if err != nil {
-		fmt.Println("Reading OAS file... Failed to parse json schema")
-		panic(err)
+		log.Fatal(err)
 	}
 
-	fmt.Println("Reading OAS file... Success")
 	return shemaJson
 }
 

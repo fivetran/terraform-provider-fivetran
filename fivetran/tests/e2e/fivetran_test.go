@@ -89,6 +89,7 @@ func cleanupAccount() {
 	cleanupTeams()
 	cleanupConnections()
 	cleanupProxyAgents()
+	cleanupHybridDeploymentAgents()
 	cleanupPrivateLinks()
 	cleanupExternalLogging()
 	cleanupDestinations()
@@ -259,5 +260,22 @@ func cleanupPrivateLinks() {
 
 	if list.Data.NextCursor != "" {
 		cleanupPrivateLinks()
+	}
+}
+
+func cleanupHybridDeploymentAgents() {
+	list, err := client.NewHybridDeploymentAgentList().Do(context.Background())
+	if err != nil {
+		log.Fatalln(err)
+	}
+	for _, item := range list.Data.Items {
+		_, err := client.NewHybridDeploymentAgentDelete().AgentId(item.Id).Do(context.Background())
+		if err != nil && err.Error() != "status code: 404; expected: 200" {
+			log.Fatalln(err)
+		}
+	}
+
+	if list.Data.NextCursor != "" {
+		cleanupHybridDeploymentAgents()
 	}
 }

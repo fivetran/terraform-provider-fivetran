@@ -63,6 +63,36 @@ func TestResourceUserE2E(t *testing.T) {
 	})
 }
 
+func TestResourceUserWithoutRoleE2E(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranUserResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+		   	resource "fivetran_user" "userjohn" {
+				 provider = fivetran-provider
+			     email = "john.fox@testmail.com"
+			     family_name = "Fox"
+			     given_name = "John"
+			     phone = "+19876543210"
+			     picture = "https://myPicturecom"
+			}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranUserResourceCreate(t, "fivetran_user.userjohn"),
+					resource.TestCheckResourceAttr("fivetran_user.userjohn", "email", "john.fox@testmail.com"),
+					resource.TestCheckResourceAttr("fivetran_user.userjohn", "family_name", "Fox"),
+					resource.TestCheckResourceAttr("fivetran_user.userjohn", "given_name", "John"),
+					resource.TestCheckResourceAttr("fivetran_user.userjohn", "phone", "+19876543210"),
+					resource.TestCheckResourceAttr("fivetran_user.userjohn", "picture", "https://myPicturecom"),
+				),
+			},
+		},
+	})
+}
+
 func testFivetranUserResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)

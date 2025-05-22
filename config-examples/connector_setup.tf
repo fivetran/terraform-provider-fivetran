@@ -23,6 +23,7 @@ resource "fivetran_destination" "destination" {
     trust_certificates = "true"
     trust_fingerprints = "true"
     run_setup_tests = "true"
+    networking_method = "Directly"
 
     config {
         host = "destination.host"
@@ -30,7 +31,6 @@ resource "fivetran_destination" "destination" {
         user = "postgres"
         password = "myPassword"
         database = "myDatabaseName"
-        connection_type = "Directly"
     }
 }
 

@@ -5,11 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.6.5...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.8.0...HEAD)
 
-## [1.6.5](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.6.4...v1.6.5)
+## [1.8.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.7.0...v1.8.0)
 
-In in order to synchronize internal terminology, we have implemented new datasources to replace the deprecated ones. The deprecated resources will be removed in version 1.7.0
+In in order to synchronize internal terminology, we have implemented new datasources to replace the deprecated ones. The deprecated resources will be removed in version 1.8.0
 
 - New data source `fivetran_connection` instead of deprecated `fivetran_connector`.
 - New data source `fivetran_connection_certificates` instead of deprecated `fivetran_connector_certificates`.
@@ -18,6 +18,40 @@ In in order to synchronize internal terminology, we have implemented new datasou
 - New data source `fivetran_group_connections` instead of deprecated `fivetran_group_connectors`.
 - New data source `fivetran_team_connection_membership` instead of deprecated `fivetran_team_connector_membership`.
 - New data source `fivetran_user_connection_memberships` instead of deprecated `fivetran_user_connector_memberships`.
+
+## [1.7.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.6.5...v1.7.0)
+
+## Breaking changes
+Destination service `propel` removed
+
+### Added
+New connection services supported:
+- Supported service: `aura_from_unity`
+- Supported service: `datastreamer_source`
+- Supported service: `oracle_fusion_field_service`
+- Supported service: `tiktok_organic`
+
+New connection config fields supported:
+- Added field `fivetran_connector.destination_schema.table_group_name` for services: `google_drive`, `s3`, `sftp`, `share_point`, `azure_blob_storage`, `gcs`.
+- Added field `fivetran_connector.config.reports.filters` for services: `google_analytics_4`.
+- Added field `fivetran_connector.config.issuer_id` for services: `itunes_connect`.
+- Added field `fivetran_connector.config.directories` for services: `qualtrics`.
+- Added field `fivetran_connector.config.historical_sync_limit_date` for services: `pardot`, `sailthru`, `braze`, `klaviyo`.
+- Added field `fivetran_connector.config.key_id` for services: `itunes_connect`.
+- Added field `fivetran_connector.config.vendors_id` for services: `itunes_connect`.
+- Added field `fivetran_connector.config.root_resource_id` for services: `oracle_fusion_field_service`.
+- Added field `fivetran_connector.config.historical_sync_limit_time_frame` for services: `pardot`.
+- Added field `fivetran_connector.config.directory_sync_mode` for services: `qualtrics`.
+- Added field `fivetran_connector.config.authorization_url` for services: `tiktok_organic`.
+
+## [1.6.5](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.6.4...v1.6.5)
+
+### Added
+- Fields `env_type` in `fivetran_hybrid_deployment_agent` resource with possible values `DOCKER`, `PODMAN`, `KUBERNETES`, `SNOWPARK`
+
+## Fixed
+- Issue when provider produced an unexpected new value for field `role` in `fivetran_user` resource
+- Issue when provider produced inconsistent result after apply for field `hybrid_deployment_agent_id` in `fivetran_connector` resource
 
 ## [1.6.4](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.6.3...v1.6.4)
 

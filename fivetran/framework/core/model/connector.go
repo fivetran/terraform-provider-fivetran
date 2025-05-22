@@ -201,6 +201,7 @@ func (d *ConnectorResourceModel) GetDestinatonSchemaForConfig() (map[string]inte
         d.DestinationSchema.Attributes()["name"],
         d.DestinationSchema.Attributes()["table"],
         d.DestinationSchema.Attributes()["prefix"],
+        d.DestinationSchema.Attributes()["table_group_name"],
     )
 }
 
@@ -223,7 +224,7 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
         d.DataDelayThreshold = types.Int64Null()
     }
     
-    d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
+    d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema, d.DestinationSchema)
 
 	if c.HybridDeploymentAgentId != "" && !d.HybridDeploymentAgentId.IsUnknown() && !d.HybridDeploymentAgentId.IsNull() {
 		d.HybridDeploymentAgentId = types.StringValue(c.HybridDeploymentAgentId)
@@ -275,7 +276,7 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
         d.DataDelayThreshold = types.Int64Null()
     }
 
-    d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
+    d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema, d.DestinationSchema)
     
     if c.PrivateLinkId != "" {
         d.PrivateLinkId = types.StringValue(c.PrivateLinkId)
@@ -299,8 +300,6 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
         d.HybridDeploymentAgentId = types.StringNull()
     }
 
-    d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema)
-
     d.Config = getValue(
         types.ObjectType{AttrTypes: getAttrTypes(common.GetConfigFieldsMap())},
         c.Config,
@@ -308,6 +307,48 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
         common.GetConfigFieldsMap(),
         nil,
         c.Service).(basetypes.ObjectValue)
+}
+
+func (d *ConnectorResourceModel) HasUpdates(plan ConnectorResourceModel, state ConnectorResourceModel) (bool, map[string]interface{}, map[string]interface{}, error) {
+    stateConfigMap, err := state.GetConfigMap(false)
+    // this is not expected - state should contain only known fields relative to service
+    // but we have to check error just in case
+    if err != nil {
+        return false, nil, nil, err
+    }
+
+    stateAuthMap, err := state.GetAuthMap(false)
+    // this is not expected - state should contain only known fields relative to service
+    // but we have to check error just in case
+    if err != nil {
+        return false, nil, nil, err
+    }
+
+    planConfigMap, err := plan.GetConfigMap(false)
+    if err != nil {
+        return false, nil, nil, err
+    }
+
+    planAuthMap, err := plan.GetAuthMap(false)
+    if err != nil {
+        return false, nil, nil, err
+    }
+
+    patch := PrepareConfigAuthPatch(stateConfigMap, planConfigMap, plan.Service.ValueString(), common.GetConfigFieldsMap())
+    authPatch := PrepareConfigAuthPatch(stateAuthMap, planAuthMap, plan.Service.ValueString(), common.GetAuthFieldsMap())
+
+    if len(patch) > 0 || 
+            len(authPatch) > 0 || 
+            !plan.ProxyAgentId.Equal(state.ProxyAgentId) ||
+            !plan.PrivateLinkId.Equal(state.PrivateLinkId) ||
+            !plan.HybridDeploymentAgentId.Equal(state.HybridDeploymentAgentId) ||
+            !plan.DataDelaySensitivity.Equal(state.DataDelaySensitivity) ||
+            !plan.DataDelayThreshold.Equal(state.DataDelayThreshold) ||
+            !plan.NetworkingMethod.Equal(state.NetworkingMethod) {
+                return true, patch, authPatch, nil
+            } else {
+                return false, nil, nil, nil
+            }
 }
 
 type ConnectorModelContainer struct {
@@ -365,7 +406,7 @@ func (c *ConnectorModelContainer) ReadFromResponseData(data connections.DetailsR
     }
 }
 
-func getDestinatonSchemaForConfig(serviceId, nameAttr, tableAttr, prefixAttr attr.Value) (map[string]interface{}, error) {
+func getDestinatonSchemaForConfig(serviceId, nameAttr, tableAttr, prefixAttr, tableGroupNameAttr attr.Value) (map[string]interface{}, error) {
 	service := serviceId.(basetypes.StringValue).ValueString()
 	if _, ok := common.GetDestinationSchemaFields()[service]; !ok {
 		return nil, fmt.Errorf("unknown connector service: `%v`", service)
@@ -380,6 +421,9 @@ func getDestinatonSchemaForConfig(serviceId, nameAttr, tableAttr, prefixAttr att
 		if !tableAttr.IsNull() {
 			return nil, fmt.Errorf("`destination_schema.table` field can't be set for `%v` connector", service)
 		}
+        if !tableGroupNameAttr.IsNull() {
+            return nil, fmt.Errorf("`destination_schema.table_group_name` field can't be set for `%v` connector", service)
+        }
 		prefix := prefixAttr.(types.String).ValueString()
 		return map[string]interface{}{
 			"schema_prefix": prefix,
@@ -391,48 +435,71 @@ func getDestinatonSchemaForConfig(serviceId, nameAttr, tableAttr, prefixAttr att
 		result := map[string]interface{}{
 			"schema": nameAttr.(types.String).ValueString(),
 		}
-		if common.GetDestinationSchemaFields()[service]["table"] {
-			if !tableAttr.IsNull() && tableAttr.(types.String).ValueString() != "" {
-				result["table"] = tableAttr.(types.String).ValueString()
-			}
-		}
+        if common.GetDestinationSchemaFields()[service]["table"] {
+            if !tableAttr.IsNull() && tableAttr.(types.String).ValueString() != "" {
+                result["table"] = tableAttr.(types.String).ValueString()
+            }
+        }
+
+        if common.GetDestinationSchemaFields()[service]["table_group_name"] {
+            if !tableGroupNameAttr.IsNull() && tableGroupNameAttr.(types.String).ValueString() != "" {
+                result["table_group_name"] = tableGroupNameAttr.(types.String).ValueString()
+            }
+        }
+
 		return result, nil
 	}
 }
 
-func getDestinationSchemaValue(service, schema string) types.Object {
+func getDestinationSchemaValue(service, schema string, destinationSchema types.Object ) types.Object {
     r, _ := types.ObjectValue(
         map[string]attr.Type{
-            "name":   types.StringType,
-            "table":  types.StringType,
-            "prefix": types.StringType,
+            "name":             types.StringType,
+            "table":            types.StringType,
+            "prefix":           types.StringType,
+            "table_group_name": types.StringType,
         },
-        getDestinationSchemaValuesMap(service, schema),
+        getDestinationSchemaValuesMap(service, schema, destinationSchema),
     )
     return r
 }
 
-func getDestinationSchemaValuesMap(service, schema string) map[string]attr.Value {
+func getDestinationSchemaValuesMap(service, schema string, destinationSchema types.Object) map[string]attr.Value {
     if _, ok := common.GetDestinationSchemaFields()[service]; !ok {
         panic(fmt.Errorf("unknown connector service: `%v`", service))
     }
 
     if common.GetDestinationSchemaFields()[service]["schema_prefix"] {
         return map[string]attr.Value{
-            "name":   types.StringNull(),
-            "table":  types.StringNull(),
-            "prefix": types.StringValue(schema),
+            "name":             types.StringNull(),
+            "table":            types.StringNull(),
+            "prefix":           types.StringValue(schema),
+            "table_group_name": types.StringNull(),
         }
     } else {
         result := map[string]attr.Value{
-            "table":  types.StringNull(),
-            "prefix": types.StringNull(),
+            "table":            types.StringNull(),
+            "prefix":           types.StringNull(),
+            "table_group_name": types.StringNull(),
         }
         s := strings.Split(schema, ".")
         result["name"] = types.StringValue(s[0])
-        if len(s) > 1 && common.GetDestinationSchemaFields()[service]["table"] {
-            result["table"] = types.StringValue(s[1])
+        if len(s) > 1 {
+            if common.GetDestinationSchemaFields()[service]["table_group_name"] &&
+                !destinationSchema.IsNull() && 
+                !destinationSchema.Attributes()["table_group_name"].IsNull() && 
+                !destinationSchema.Attributes()["table_group_name"].IsUnknown() {
+                result["table_group_name"] = types.StringValue(s[1])                
+            }
+
+            if common.GetDestinationSchemaFields()[service]["table"] &&
+               !destinationSchema.IsNull() && 
+               !destinationSchema.Attributes()["table"].IsNull() && 
+               !destinationSchema.Attributes()["table"].IsUnknown() {
+                result["table"] = types.StringValue(s[1])                
+            }
         }
+
         return result
     }
 }
