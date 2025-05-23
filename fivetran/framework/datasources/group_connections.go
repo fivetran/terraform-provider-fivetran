@@ -51,15 +51,13 @@ func (d *groupConnections) Read(ctx context.Context, req datasource.ReadRequest,
 	for {
 		var err error
 		var tmpResp sdk.GroupListConnectionsResponse
-		svc := d.GetClient().NewGroupListConnections()
-		
-		if respNextCursor == "" {
-			tmpResp, err = svc.Limit(limit).GroupID(data.Id.ValueString()).Do(ctx)
-		}
+		svc := d.GetClient().NewGroupListConnections().GroupID(data.Id.ValueString())
 
+		svc.Limit(limit)
 		if respNextCursor != "" {
-			tmpResp, err = svc.Limit(limit).GroupID(data.Id.ValueString()).Cursor(respNextCursor).Do(ctx)
+			svc.Cursor(respNextCursor)
 		}
+		tmpResp, err =  svc.Do(ctx)
 		
 		if err != nil {
 			resp.Diagnostics.AddError(

@@ -53,13 +53,11 @@ func (d *connectorFingerprints) Read(ctx context.Context, req datasource.ReadReq
 		var tmpResp sdk.FingerprintsListResponse
 		svc := d.GetClient().NewConnectionFingerprintsList().ConnectionID(data.Id.ValueString())
 		
-		if respNextCursor == "" {
-			tmpResp, err = svc.Limit(limit).Do(ctx)
-		}
-
-		if respNextCursor != "" {
-			tmpResp, err = svc.Limit(limit).Cursor(respNextCursor).Do(ctx)
-		}
+        svc.Limit(limit)
+        if respNextCursor != "" {
+            svc.Cursor(respNextCursor)
+        }
+        tmpResp, err = svc.Do(ctx)
 		
 		if err != nil {
 			resp.Diagnostics.AddError(

@@ -52,13 +52,11 @@ func (d *transformationProjects) Read(ctx context.Context, req datasource.ReadRe
 		var tmpResp sdk.TransformationProjectsListResponse
 		svc := d.GetClient().NewTransformationProjectsList()
 
-		if respNextCursor == "" {
-			tmpResp, err = svc.Limit(limit).Do(ctx)
-		}
-
-		if respNextCursor != "" {
-			tmpResp, err = svc.Limit(limit).Cursor(respNextCursor).Do(ctx)
-		}
+        svc.Limit(limit)
+        if respNextCursor != "" {
+            svc.Cursor(respNextCursor)
+        }
+        tmpResp, err = svc.Do(ctx)
 
 		if err != nil {
 			resp.Diagnostics.AddError(

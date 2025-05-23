@@ -53,13 +53,11 @@ func (d *privateLinks) Read(ctx context.Context, req datasource.ReadRequest, res
 		var tmpResp sdk.PrivateLinkListResponse
 		svc := d.GetClient().NewPrivateLinkList()
 		
-		if respNextCursor == "" {
-			tmpResp, err = svc.Limit(limit).Do(ctx)
-		}
-
-		if respNextCursor != "" {
-			tmpResp, err = svc.Limit(limit).Cursor(respNextCursor).Do(ctx)
-		}
+        svc.Limit(limit)
+        if respNextCursor != "" {
+            svc.Cursor(respNextCursor)
+        }
+        tmpResp, err = svc.Do(ctx)
 		
 		if err != nil {
 			resp.Diagnostics.AddError(
