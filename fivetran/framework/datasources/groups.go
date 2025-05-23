@@ -53,13 +53,11 @@ func (d *groups) Read(ctx context.Context, req datasource.ReadRequest, resp *dat
 		var tmpResp sdk.GroupsListResponse
 		svc := d.GetClient().NewGroupsList()
 		
-		if respNextCursor == "" {
-			tmpResp, err = svc.Limit(limit).Do(ctx)
-		}
-
-		if respNextCursor != "" {
-			tmpResp, err = svc.Limit(limit).Cursor(respNextCursor).Do(ctx)
-		}
+        svc.Limit(limit)
+        if respNextCursor != "" {
+            svc.Cursor(respNextCursor)
+        }
+        tmpResp, err = svc.Do(ctx)
 		
 		if err != nil {
 			resp.Diagnostics.AddError(

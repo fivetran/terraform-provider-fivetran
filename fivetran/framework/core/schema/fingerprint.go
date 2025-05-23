@@ -24,6 +24,18 @@ func fingerprintCertificateConnectorSchema() core.Schema {
 	}
 }
 
+func fingerprintCertificateConnectionSchema() core.Schema {
+	return core.Schema{
+		Fields: map[string]core.SchemaField{
+			"id": {
+				IsId:        true,
+				ValueType:   core.String,
+				Description: "The unique identifier for the target connection within the Fivetran system.",
+			},
+		},
+	}
+}
+
 func fingerprintCertificateDestinationSchema() core.Schema {
 	return core.Schema{
 		Fields: map[string]core.SchemaField{
@@ -81,7 +93,17 @@ func FingerprintConnectorResource() resourceSchema.Schema {
 
 func FingerprintConnectorDatasource() datasourceSchema.Schema {
 	return datasourceSchema.Schema{
+		DeprecationMessage: "This datasource is Deprecated, please migrate to actual resource",
 		Attributes: fingerprintCertificateConnectorSchema().GetDatasourceSchema(),
+		Blocks: map[string]datasourceSchema.Block{
+			"fingerprints": fingerprintDatasourceItem(),
+		},
+	}
+}
+
+func FingerprintConnectionDatasource() datasourceSchema.Schema {
+	return datasourceSchema.Schema{
+		Attributes: fingerprintCertificateConnectionSchema().GetDatasourceSchema(),
 		Blocks: map[string]datasourceSchema.Block{
 			"fingerprints": fingerprintDatasourceItem(),
 		},

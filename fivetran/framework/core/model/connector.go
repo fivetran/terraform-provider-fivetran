@@ -52,6 +52,15 @@ var (
     }
 )
 
+func readCommonResponse(r gfcommon.CommonResponse) attr.Value {
+    result, _ := types.ObjectValue(codeMessageAttrTypes,
+        map[string]attr.Value{
+            "code":    types.StringValue(r.Code),
+            "message": types.StringValue(r.Message),
+        })
+    return result
+}
+
 func (d *ConnectorDatasourceModel) ReadFromResponse(resp connections.DetailsWithCustomConfigNoTestsResponse) {
     responseContainer := ConnectorModelContainer{}
     responseContainer.ReadFromResponseData(resp.Data.DetailsResponseDataCommon, resp.Data.Config)
@@ -78,12 +87,6 @@ func (d *ConnectorDatasourceModel) ReadFromResponse(resp connections.DetailsWith
 	} else {
 		d.DailySyncTime = types.StringNull()
 	}
-
-    if resp.Data.DailySyncTime != "" {
-        d.DailySyncTime = types.StringValue(resp.Data.DailySyncTime)
-    } else {
-        d.DailySyncTime = types.StringNull()
-    }
 
     codeMessageAttrType := types.ObjectType{
         AttrTypes: codeMessageAttrTypes,
@@ -120,15 +123,6 @@ func (d *ConnectorDatasourceModel) ReadFromResponse(resp connections.DetailsWith
         },
     )
     d.Status = status
-}
-
-func readCommonResponse(r gfcommon.CommonResponse) attr.Value {
-    result, _ := types.ObjectValue(codeMessageAttrTypes,
-        map[string]attr.Value{
-            "code":    types.StringValue(r.Code),
-            "message": types.StringValue(r.Message),
-        })
-    return result
 }
 
 type ConnectorResourceModel struct {

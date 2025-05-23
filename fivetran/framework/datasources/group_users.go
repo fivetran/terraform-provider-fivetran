@@ -52,16 +52,14 @@ func (d *groupUsers) Read(ctx context.Context, req datasource.ReadRequest, resp 
 	for {
 		var err error
 		var tmpResp sdk.GroupListUsersResponse
-		svc := d.GetClient().NewGroupListUsers()
+		svc := d.GetClient().NewGroupListUsers().GroupID(data.Id.ValueString())
 		
-		if respNextCursor == "" {
-			tmpResp, err = svc.Limit(limit).GroupID(data.Id.ValueString()).Do(ctx)
-		}
-
+		svc.Limit(limit)
 		if respNextCursor != "" {
-			tmpResp, err = svc.Limit(limit).GroupID(data.Id.ValueString()).Cursor(respNextCursor).Do(ctx)
+			svc.Cursor(respNextCursor)
 		}
-		
+		tmpResp, err =  svc.Do(ctx)
+
 		if err != nil {
 			resp.Diagnostics.AddError(
 				"Read error.",

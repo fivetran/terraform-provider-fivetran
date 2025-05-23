@@ -54,13 +54,11 @@ func (d *TeamConnectorMemberships) ReadFromSource(ctx context.Context, client *f
         var err error
         var tmpResp teams.TeamConnectionMembershipsListResponse
 
-        if respNextCursor == "" {
-            tmpResp, err = svc.Limit(limit).Do(ctx)
-        }
-
+        svc.Limit(limit)
         if respNextCursor != "" {
-            tmpResp, err = svc.Limit(limit).Cursor(respNextCursor).Do(ctx)
+            svc.Cursor(respNextCursor)
         }
+        tmpResp, err = svc.Do(ctx)
         
         if err != nil {
             listResponse = teams.TeamConnectionMembershipsListResponse{}

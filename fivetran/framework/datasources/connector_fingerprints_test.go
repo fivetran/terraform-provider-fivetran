@@ -82,7 +82,6 @@ func TestDataSourceConnectorFingerprintsMock(t *testing.T) {
 							tfmock.AssertEqual(t, connectorFingerprintsGetHandler.Interactions, 2)
 							return nil
 						},
-						resource.TestCheckResourceAttr("data.fivetran_connector_fingerprints.test", "connector_id", "connector_id"),
 						resource.TestCheckResourceAttr("data.fivetran_connector_fingerprints.test", "id", "connector_id"),
 						resource.TestCheckResourceAttr("data.fivetran_connector_fingerprints.test", "fingerprints.#", "4"),
 						resource.TestCheckResourceAttr("data.fivetran_connector_fingerprints.test", "fingerprints.0.hash", "hash0"),

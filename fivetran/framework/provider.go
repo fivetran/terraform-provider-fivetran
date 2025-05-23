@@ -17,7 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-const Version = "1.7.0" // Current provider version
+const Version = "1.8.0" // Current provider version
 
 type fivetranProvider struct {
 	mockClient httputils.HttpClient
@@ -128,16 +128,19 @@ func (p *fivetranProvider) DataSources(ctx context.Context) []func() datasource.
 	return []func() datasource.DataSource{
 		datasources.User,
 		datasources.Users,
+		datasources.UserConnectionMemberships,
 		datasources.UserConnectorMemberships,
 		datasources.UserGroupMemberships,
 		datasources.Webhook,
 		datasources.Webhooks,
 		datasources.GroupSshKey,
 		datasources.GroupServiceAccount,
+		datasources.Connection,
 		datasources.Connector,
 		datasources.Destination,
 		datasources.Team,
 		datasources.Teams,
+		datasources.TeamConnectionMemberships,
 		datasources.TeamConnectorMemberships,
 		datasources.TeamGroupMemberships,
 		datasources.TeamUserMemberships,
@@ -145,10 +148,13 @@ func (p *fivetranProvider) DataSources(ctx context.Context) []func() datasource.
 		datasources.Roles,
 		datasources.Group,
 		datasources.Groups,
+		datasources.GroupConnections,
 		datasources.GroupConnectors,
 		datasources.GroupUsers,
 		datasources.ConnectorsMetadata,
+		datasources.ConnectionFingerprints,
 		datasources.ConnectorFingerprints,
+		datasources.ConnectionCertificates,
 		datasources.ConnectorCertificates,
 		datasources.DestinationFingerprints,
 		datasources.DestinationCertificates,
@@ -158,6 +164,7 @@ func (p *fivetranProvider) DataSources(ctx context.Context) []func() datasource.
 		datasources.PrivateLinks,
 		datasources.HybridDeploymentAgent,
 		datasources.HybridDeploymentAgents,
+		datasources.Connections,
 		datasources.Connectors,
 		datasources.Destinations,
 		datasources.ExternalLogs,

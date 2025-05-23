@@ -1,5 +1,5 @@
 ---
-page_title: "Data Source: fivetran_group_users"
+page_title: "Data Source: fivetran_group_connectors"
 ---
 
 # Data Source: fivetran_group_connectors
