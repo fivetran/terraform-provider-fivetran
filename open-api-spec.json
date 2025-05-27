@@ -18,11 +18,11 @@
   "tags": [
     {
       "name": "updated",
-      "description": "2025-05-16T00:46:07.053Z"
+      "description": "2025-05-23T06:08:48.508Z"
     },
     {
       "name": "hash",
-      "description": "c87f89c11735cad161123ef722104281cd1b686e0138a68539a2f1fe9f3cdf2e"
+      "description": "4ffb9c31cac209d6fed01782cc684bc0879a71817e270ef7c7d391ecd9f931ad"
     }
   ],
   "paths": {
@@ -12043,16 +12043,6 @@
               "manual"
             ]
           },
-          "local_processing_agent_id": {
-            "type": "string",
-            "description": "(Deprecated) The unique identifier for the hybrid deployment agent within the Fivetran system",
-            "example": "local_processing_agent_id"
-          },
-          "hybrid_deployment_agent_id": {
-            "type": "string",
-            "description": "The unique identifier for the hybrid deployment agent within the Fivetran system. If not specified, the agent ID from the destination will be used",
-            "example": "hybrid_deployment_agent_id"
-          },
           "connect_card_config": {
             "$ref": "#/components/schemas/ConnectCardConfig"
           },
@@ -12074,6 +12064,11 @@
               "SshTunnel",
               "ProxyAgent"
             ]
+          },
+          "hybrid_deployment_agent_id": {
+            "type": "string",
+            "description": "The unique identifier for the hybrid deployment agent within the Fivetran system. If not specified, the agent ID from the destination will be used",
+            "example": "hybrid_deployment_agent_id"
           }
         },
         "discriminator": {
@@ -12601,6 +12596,7 @@
             "ruddr": "#/components/schemas/ruddr_NewConnectorRequestV1",
             "rundeck": "#/components/schemas/rundeck_NewConnectorRequestV1",
             "s3": "#/components/schemas/s3_NewConnectorRequestV1",
+            "s3_compatible_storage": "#/components/schemas/s3_compatible_storage_NewConnectorRequestV1",
             "safebase": "#/components/schemas/safebase_NewConnectorRequestV1",
             "safetyculture": "#/components/schemas/safetyculture_NewConnectorRequestV1",
             "sage_hr": "#/components/schemas/sage_hr_NewConnectorRequestV1",
@@ -12724,7 +12720,6 @@
             "uppromote": "#/components/schemas/uppromote_NewConnectorRequestV1",
             "uservoice": "#/components/schemas/uservoice_NewConnectorRequestV1",
             "veeqo": "#/components/schemas/veeqo_NewConnectorRequestV1",
-            "veevavault": "#/components/schemas/veevavault_NewConnectorRequestV1",
             "venminder": "#/components/schemas/venminder_NewConnectorRequestV1",
             "vimeo": "#/components/schemas/vimeo_NewConnectorRequestV1",
             "visit_by_ges": "#/components/schemas/visit_by_ges_NewConnectorRequestV1",
@@ -12946,11 +12941,6 @@
               "manual"
             ]
           },
-          "local_processing_agent_id": {
-            "type": "string",
-            "description": "(Deprecated) The unique identifier for the hybrid deployment agent within the Fivetran system",
-            "example": "local_processing_agent_id"
-          },
           "private_link_id": {
             "type": "string",
             "description": "The unique identifier for the self-served private link that is used by the connection",
@@ -13170,11 +13160,6 @@
             "type": "string",
             "description": "The connection schedule configuration type. Supported values: auto, manual",
             "example": "auto"
-          },
-          "local_processing_agent_id": {
-            "type": "string",
-            "description": "(Deprecated) The unique identifier for the hybrid deployment agent within the Fivetran system",
-            "example": "local_processing_agent_id"
           },
           "connect_card_config": {
             "$ref": "#/components/schemas/ConnectCardConfig"
@@ -13710,6 +13695,7 @@
             "ruddr": "#/components/schemas/ruddr_ConnectorResponseV1",
             "rundeck": "#/components/schemas/rundeck_ConnectorResponseV1",
             "s3": "#/components/schemas/s3_ConnectorResponseV1",
+            "s3_compatible_storage": "#/components/schemas/s3_compatible_storage_ConnectorResponseV1",
             "safebase": "#/components/schemas/safebase_ConnectorResponseV1",
             "safetyculture": "#/components/schemas/safetyculture_ConnectorResponseV1",
             "sage_hr": "#/components/schemas/sage_hr_ConnectorResponseV1",
@@ -13833,7 +13819,6 @@
             "uppromote": "#/components/schemas/uppromote_ConnectorResponseV1",
             "uservoice": "#/components/schemas/uservoice_ConnectorResponseV1",
             "veeqo": "#/components/schemas/veeqo_ConnectorResponseV1",
-            "veevavault": "#/components/schemas/veevavault_ConnectorResponseV1",
             "venminder": "#/components/schemas/venminder_ConnectorResponseV1",
             "vimeo": "#/components/schemas/vimeo_ConnectorResponseV1",
             "visit_by_ges": "#/components/schemas/visit_by_ges_ConnectorResponseV1",
@@ -14152,9 +14137,6 @@
             "type": "string",
             "description": "The connection schedule config type. Supported values: auto, manual. Lets you disable or enable an automatic data sync on a schedule.",
             "example": "auto"
-          },
-          "local_processing_agent_id": {
-            "type": "string"
           },
           "connect_card_config": {
             "$ref": "#/components/schemas/ConnectCardConfig"
@@ -14870,6 +14852,7 @@
             "snowflake": "#/components/schemas/snowflake_NewDestinationRequest",
             "sql_server_rds_warehouse": "#/components/schemas/sql_server_rds_warehouse_NewDestinationRequest",
             "sql_server_warehouse": "#/components/schemas/sql_server_warehouse_NewDestinationRequest",
+            "surrealdb_destination": "#/components/schemas/surrealdb_destination_NewDestinationRequest",
             "teradata_destination": "#/components/schemas/teradata_destination_NewDestinationRequest"
           }
         }
@@ -15187,6 +15170,7 @@
             "snowflake": "#/components/schemas/snowflake_DestinationExtendedResponse",
             "sql_server_rds_warehouse": "#/components/schemas/sql_server_rds_warehouse_DestinationExtendedResponse",
             "sql_server_warehouse": "#/components/schemas/sql_server_warehouse_DestinationExtendedResponse",
+            "surrealdb_destination": "#/components/schemas/surrealdb_destination_DestinationExtendedResponse",
             "teradata_destination": "#/components/schemas/teradata_destination_DestinationExtendedResponse"
           }
         }
@@ -20214,6 +20198,24 @@
           }
         ]
       },
+      "surrealdb_destination_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "description": ""
+          }
+        }
+      },
+      "surrealdb_destination_NewDestinationRequest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewDestinationRequest"
+          },
+          {
+            "$ref": "#/components/schemas/surrealdb_destination_config_V1"
+          }
+        ]
+      },
       "teradata_destination_config_V1": {
         "properties": {
           "config": {
@@ -20549,6 +20551,16 @@
           },
           {
             "$ref": "#/components/schemas/sql_server_warehouse_config_V1"
+          }
+        ]
+      },
+      "surrealdb_destination_DestinationExtendedResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/DestinationExtendedResponse"
+          },
+          {
+            "$ref": "#/components/schemas/surrealdb_destination_config_V1"
           }
         ]
       },
@@ -25860,9 +25872,8 @@
                 "title": "",
                 "type": "object",
                 "description": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
-                "example": "NATIVE_UPDATE | TELEPORT | TRANSACTION_LOG | BINARY_LOG_READER | MIXED_TELEPORT_CSA",
+                "example": "NATIVE_UPDATE | TELEPORT | BINARY_LOG_READER | MIXED_TELEPORT_CSA",
                 "enum": [
-                  "TRANSACTION_LOG",
                   "BINARY_LOG_READER",
                   "MIXED_TELEPORT_CSA",
                   "NATIVE_UPDATE",
@@ -26040,9 +26051,8 @@
                 "title": "",
                 "type": "object",
                 "description": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
-                "example": "NATIVE_UPDATE | TELEPORT | TRANSACTION_LOG | BINARY_LOG_READER | MIXED_TELEPORT_CSA",
+                "example": "NATIVE_UPDATE | TELEPORT | BINARY_LOG_READER | MIXED_TELEPORT_CSA",
                 "enum": [
-                  "TRANSACTION_LOG",
                   "BINARY_LOG_READER",
                   "MIXED_TELEPORT_CSA",
                   "NATIVE_UPDATE",
@@ -33586,9 +33596,8 @@
                 "title": "",
                 "type": "object",
                 "description": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
-                "example": "NATIVE_UPDATE | TELEPORT | TRANSACTION_LOG | BINARY_LOG_READER | MIXED_TELEPORT_CSA",
+                "example": "NATIVE_UPDATE | TELEPORT | BINARY_LOG_READER | MIXED_TELEPORT_CSA",
                 "enum": [
-                  "TRANSACTION_LOG",
                   "BINARY_LOG_READER",
                   "MIXED_TELEPORT_CSA",
                   "NATIVE_UPDATE",
@@ -38285,9 +38294,8 @@
                 "title": "",
                 "type": "object",
                 "description": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
-                "example": "NATIVE_UPDATE | TELEPORT | TRANSACTION_LOG | BINARY_LOG_READER | MIXED_TELEPORT_CSA",
+                "example": "NATIVE_UPDATE | TELEPORT | BINARY_LOG_READER | MIXED_TELEPORT_CSA",
                 "enum": [
-                  "TRANSACTION_LOG",
                   "BINARY_LOG_READER",
                   "MIXED_TELEPORT_CSA",
                   "NATIVE_UPDATE",
@@ -41017,6 +41025,22 @@
                 "enum": [
                   "SelectedEvents",
                   "AllEvents"
+                ]
+              },
+              "historical_sync_limit_date": {
+                "title": "",
+                "type": "string",
+                "description": "The start date (YYYY-MM-DD) from which to sync historical data.",
+                "example": "2013-01-01"
+              },
+              "historical_sync_limit": {
+                "title": "",
+                "type": "object",
+                "description": "The time range for which historical data should be synced. Default value: `All Time`.",
+                "example": "ALL_TIME | DATE_LIMIT",
+                "enum": [
+                  "ALL_TIME",
+                  "DATE_LIMIT"
                 ]
               },
               "custom_events": {
@@ -44125,6 +44149,12 @@
                 "description": "Marketo SOAP API Endpoint.",
                 "example": "https://58-LBZ-000.mktoapi.com/soap/mktows/3_1"
               },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Marketo REST API Client Id.",
+                "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+              },
               "historic_sync_time_frame": {
                 "title": "",
                 "type": "object",
@@ -44137,6 +44167,22 @@
                   "TWO_YEARS",
                   "THREE_MONTHS",
                   "SIX_MONTHS"
+                ]
+              },
+              "historical_sync_limit_date": {
+                "title": "",
+                "type": "string",
+                "description": "The start date (YYYY-MM-DD) from which to sync historical data.",
+                "example": "2023-04-20"
+              },
+              "historical_sync_limit": {
+                "title": "",
+                "type": "object",
+                "description": "The time range for which historical data should be synced. Default value: `All Time`.",
+                "example": "ALL_TIME | DATE_LIMIT",
+                "enum": [
+                  "ALL_TIME",
+                  "DATE_LIMIT"
                 ]
               },
               "endpoint": {
@@ -44177,12 +44223,6 @@
                 "description": "Marketo REST API Client Secret.",
                 "format": "password",
                 "example": "your_api_secret"
-              },
-              "client_id": {
-                "title": "",
-                "type": "string",
-                "description": "Marketo REST API Client Id.",
-                "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
               }
             },
             "description": ""
@@ -46014,6 +46054,12 @@
                 "type": "string",
                 "description": "The NetSuite user's email address.",
                 "example": "netsuite_email"
+              },
+              "should_sync_reimport_tables": {
+                "title": "",
+                "type": "boolean",
+                "description": "Re-sync re-import tables during every sync",
+                "example": true
               }
             },
             "description": ""
@@ -47669,6 +47715,12 @@
                 "description": "Require TLS through Tunnel",
                 "example": true
               },
+              "enable_archive_log_only": {
+                "title": "",
+                "type": "boolean",
+                "description": "Default value: `false`. Set to `true` if you're using archive log only mode.",
+                "example": true
+              },
               "tunnel_user": {
                 "title": "",
                 "type": "string",
@@ -47681,6 +47733,12 @@
                 "description": "The port number.",
                 "format": "int32",
                 "example": 1521
+              },
+              "archive_log_format": {
+                "title": "",
+                "type": "string",
+                "description": "Archive log format.",
+                "example": "arc_EXAMPLE_%s_%t_%r_%z.log"
               },
               "tns": {
                 "title": "",
@@ -47699,6 +47757,12 @@
                 "type": "string",
                 "description": "The home directory of the Oracle database.",
                 "example": "/opt/oracle/product/19c/dbhome_1"
+              },
+              "archive_log_path": {
+                "title": "",
+                "type": "string",
+                "description": "Archive log path.",
+                "example": "/opt/fivetran/EXAMPLE_archivelog"
               },
               "agent_port": {
                 "title": "",
@@ -48130,6 +48194,12 @@
                 "description": "Require TLS through Tunnel",
                 "example": true
               },
+              "enable_archive_log_only": {
+                "title": "",
+                "type": "boolean",
+                "description": "Default value: `false`. Set to `true` if you're using archive log only mode.",
+                "example": true
+              },
               "tunnel_user": {
                 "title": "",
                 "type": "string",
@@ -48142,6 +48212,12 @@
                 "description": "The port number.",
                 "format": "int32",
                 "example": 1521
+              },
+              "archive_log_format": {
+                "title": "",
+                "type": "string",
+                "description": "Archive log format.",
+                "example": "arc_EXAMPLE_%s_%t_%r_%z.log"
               },
               "tns": {
                 "title": "",
@@ -48160,6 +48236,12 @@
                 "type": "string",
                 "description": "The home directory of the Oracle database.",
                 "example": "/opt/oracle/product/19c/dbhome_1"
+              },
+              "archive_log_path": {
+                "title": "",
+                "type": "string",
+                "description": "Archive log path.",
+                "example": "/opt/fivetran/EXAMPLE_archivelog"
               },
               "agent_port": {
                 "title": "",
@@ -48263,6 +48345,12 @@
                 "description": "The agent public certificate.",
                 "example": "CERTIFICATE"
               },
+              "enable_archive_log_only": {
+                "title": "",
+                "type": "boolean",
+                "description": "Default value: `false`. Set to `true` if you're using archive log only mode.",
+                "example": true
+              },
               "client_id": {
                 "title": "",
                 "type": "string",
@@ -48289,6 +48377,12 @@
                 "format": "password",
                 "example": "test_password"
               },
+              "archive_log_format": {
+                "title": "",
+                "type": "string",
+                "description": "Archive log format.",
+                "example": "arc_EXAMPLE_%s_%t_%r_%z.log"
+              },
               "host": {
                 "title": "",
                 "type": "string",
@@ -48300,6 +48394,12 @@
                 "type": "string",
                 "description": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
                 "example": "XXX.XXX.XXX.XXX"
+              },
+              "archive_log_path": {
+                "title": "",
+                "type": "string",
+                "description": "Archive log path.",
+                "example": "/opt/fivetran/EXAMPLE_archivelog"
               },
               "agent_port": {
                 "title": "",
@@ -52902,6 +53002,257 @@
           }
         ]
       },
+      "s3_compatible_storage_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "access_key_id": {
+                "title": "",
+                "type": "string",
+                "description": "Access Key ID",
+                "example": "access_key_id_value"
+              },
+              "quote_character_enabled": {
+                "title": "",
+                "type": "boolean",
+                "description": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character.",
+                "example": true
+              },
+              "prefix": {
+                "title": "",
+                "type": "string",
+                "description": "All files and folders under this folder path will be searched for files to sync.",
+                "example": "folder_path"
+              },
+              "json_delivery_mode": {
+                "title": "",
+                "type": "object",
+                "description": "Control how your JSON data is delivered into your destination",
+                "example": "Packed | Unpacked",
+                "enum": [
+                  "Packed",
+                  "Unpacked"
+                ]
+              },
+              "skip_after": {
+                "title": "",
+                "type": "integer",
+                "description": "We will skip over the number of lines specified at the end to avoid introducing aberrant data into your destination.",
+                "format": "int32",
+                "example": 0
+              },
+              "quote_char": {
+                "title": "",
+                "type": "string",
+                "description": "You can specify the enclosing character used in your CSVs here. Fivetran will consider \" as the quote character if this field is empty and quote_character_enabled is set to true.",
+                "example": "\\"
+              },
+              "empty_header": {
+                "title": "",
+                "type": "boolean",
+                "description": "If your CSVs are headerless, set this is as `true`. When `true`, we will generate generic column names following the convention of `column_0`, `column_1`, ... `column_n` to map the rows. Default value: `false`.",
+                "example": true
+              },
+              "use_pgp_encryption_options": {
+                "title": "",
+                "type": "boolean",
+                "description": "Set to `true` if files are encrypted using PGP in the S3-Compatible Storage bucket. Default value: `false`.",
+                "example": true
+              },
+              "skip_before": {
+                "title": "",
+                "type": "integer",
+                "description": "We will skip over the number of lines specified before syncing data.",
+                "format": "int32",
+                "example": 0
+              },
+              "endpoint_url": {
+                "title": "",
+                "type": "string",
+                "description": "S3-Compatible Storage Endpoint URL.",
+                "example": "endpoint_url_value"
+              },
+              "signer_public_key": {
+                "title": "",
+                "type": "string",
+                "description": "The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.",
+                "example": "<signer-public-key-used>"
+              },
+              "delimiter": {
+                "title": "",
+                "type": "string",
+                "description": "You can specify the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.",
+                "example": ","
+              },
+              "file_type": {
+                "title": "",
+                "type": "object",
+                "description": "If your files are saved with improper extensions, you can force them to be synced as the selected file type.",
+                "example": "csv | log | json | jsonl | infer | tsv | avro | parquet | xml | spreadsheet | unstructured",
+                "enum": [
+                  "log",
+                  "tsv",
+                  "xml",
+                  "csv",
+                  "spreadsheet",
+                  "json",
+                  "jsonl",
+                  "avro",
+                  "parquet"
+                ]
+              },
+              "on_error": {
+                "title": "",
+                "type": "object",
+                "description": "If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as `fail` unless you are certain that you have undesirable, malformed data.",
+                "example": "fail | skip",
+                "enum": [
+                  "fail",
+                  "skip"
+                ]
+              },
+              "archive_pattern": {
+                "title": "",
+                "type": "string",
+                "description": "Files inside compressed archives with filenames matching this regular expression will be synced.",
+                "example": "regex_pattern"
+              },
+              "pgp_secret_key": {
+                "title": "",
+                "type": "string",
+                "description": "The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.",
+                "format": "password",
+                "example": "<secret-key-used>"
+              },
+              "auth_type": {
+                "title": "",
+                "type": "object",
+                "description": "Access approach",
+                "example": "IAM_ROLE | ACCESS_KEY | PUBLIC_BUCKET",
+                "enum": [
+                  "PUBLIC_BUCKET",
+                  "ACCESS_KEY"
+                ]
+              },
+              "append_file_option": {
+                "title": "",
+                "type": "object",
+                "description": "If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
+                "example": "upsert_file | append_file | upsert_file_with_primary_keys",
+                "enum": [
+                  "upsert_file_with_primary_keys",
+                  "upsert_file",
+                  "append_file"
+                ]
+              },
+              "escape_char": {
+                "title": "",
+                "type": "string",
+                "description": "If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
+                "example": "string"
+              },
+              "list_strategy": {
+                "title": "",
+                "type": "object",
+                "description": "The listing strategy you want to use. Default value: `complete_listing`.",
+                "example": "complete_listing | time_based_pattern_listing",
+                "enum": [
+                  "complete_listing",
+                  "time_based_pattern_listing"
+                ]
+              },
+              "bucket": {
+                "title": "",
+                "type": "string",
+                "description": "The S3-Compatible Storage bucket name. Required for connector creation.",
+                "example": "bucket_name"
+              },
+              "line_separator": {
+                "title": "",
+                "type": "string",
+                "description": "You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.",
+                "example": ";"
+              },
+              "null_sequence": {
+                "title": "",
+                "type": "string",
+                "description": "If your CSVs use a special value indicating null, you can specify it here.",
+                "example": "string"
+              },
+              "access_key_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Access Key Secret",
+                "format": "password",
+                "example": "access_key_secret_value"
+              },
+              "files": {
+                "title": "",
+                "type": "array",
+                "description": "Mapped file name patterns to a destination table.",
+                "items": {
+                  "title": "",
+                  "type": "object",
+                  "properties": {
+                    "file_pattern": {
+                      "title": "",
+                      "type": "string",
+                      "description": "All files in your search path matching this regular expression will be synced per table.",
+                      "example": "string"
+                    },
+                    "table_name": {
+                      "title": "",
+                      "type": "string",
+                      "description": "All files matching the above pattern will be synced to this table.",
+                      "example": "string"
+                    }
+                  },
+                  "description": "Mapped file name patterns to a destination table."
+                }
+              },
+              "compression": {
+                "title": "",
+                "type": "object",
+                "description": "The compression format is used to let Fivetran know that even files without a compression extension should be decompressed using the selected compression format.",
+                "example": "bz2 | gz | gzip | zip | tar | tar_bz2 | tar_gz | uncompressed | infer",
+                "enum": [
+                  "zip",
+                  "gz",
+                  "tar_gz",
+                  "tar",
+                  "infer",
+                  "gzip",
+                  "uncompressed",
+                  "bz2",
+                  "tar_bz2"
+                ]
+              },
+              "pgp_pass_phrase": {
+                "title": "",
+                "type": "string",
+                "description": "The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.",
+                "format": "password",
+                "example": "<pass-phrase-used>"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "s3_compatible_storage_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/s3_compatible_storage_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema_table_group"
+          }
+        ]
+      },
       "safebase_config_V1": {
         "properties": {
           "config": {
@@ -53455,6 +53806,22 @@
                   "TWO_YEARS",
                   "THREE_MONTHS",
                   "SIX_MONTHS"
+                ]
+              },
+              "historical_sync_limit_date": {
+                "title": "",
+                "type": "string",
+                "description": "The start date (YYYY-MM-DD) from which to sync historical data.",
+                "example": "2000-12-15"
+              },
+              "historical_sync_limit": {
+                "title": "",
+                "type": "object",
+                "description": "The time range for which historical data should be synced. Default value: `All Time`.",
+                "example": "ALL_TIME | DATE_LIMIT",
+                "enum": [
+                  "ALL_TIME",
+                  "DATE_LIMIT"
                 ]
               },
               "is_sftp_creds_available": {
@@ -56475,6 +56842,7 @@
                 "enum": [
                   "",
                   ".au",
+                  ".us",
                   ".eu"
                 ]
               }
@@ -56968,9 +57336,8 @@
                 "title": "",
                 "type": "object",
                 "description": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
-                "example": "NATIVE_UPDATE | TELEPORT | TRANSACTION_LOG | BINARY_LOG_READER | MIXED_TELEPORT_CSA",
+                "example": "NATIVE_UPDATE | TELEPORT | BINARY_LOG_READER | MIXED_TELEPORT_CSA",
                 "enum": [
-                  "TRANSACTION_LOG",
                   "BINARY_LOG_READER",
                   "MIXED_TELEPORT_CSA",
                   "NATIVE_UPDATE",
@@ -57273,9 +57640,8 @@
                 "title": "",
                 "type": "object",
                 "description": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
-                "example": "NATIVE_UPDATE | TELEPORT | TRANSACTION_LOG | BINARY_LOG_READER | MIXED_TELEPORT_CSA",
+                "example": "NATIVE_UPDATE | TELEPORT | BINARY_LOG_READER | MIXED_TELEPORT_CSA",
                 "enum": [
-                  "TRANSACTION_LOG",
                   "BINARY_LOG_READER",
                   "MIXED_TELEPORT_CSA",
                   "NATIVE_UPDATE",
@@ -60156,48 +60522,6 @@
           }
         ]
       },
-      "veevavault_config_V1": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "properties": {
-              "password": {
-                "title": "",
-                "type": "string",
-                "description": "Your Veeva Vault password.",
-                "format": "password",
-                "example": "veevavault_password"
-              },
-              "base_url": {
-                "title": "",
-                "type": "string",
-                "description": "Your Veeva Vault base URL.",
-                "example": "your_veevavault_base_url"
-              },
-              "username": {
-                "title": "",
-                "type": "string",
-                "description": "Your Veeva Vault username.",
-                "example": "veevavault_username"
-              }
-            },
-            "description": ""
-          }
-        }
-      },
-      "veevavault_NewConnectorRequestV1": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NewConnectorRequestV1"
-          },
-          {
-            "$ref": "#/components/schemas/veevavault_config_V1"
-          },
-          {
-            "$ref": "#/components/schemas/schema_format_schema"
-          }
-        ]
-      },
       "venminder_config_V1": {
         "properties": {
           "config": {
@@ -61403,13 +61727,6 @@
                   "description": "The list of reports. Each report corresponds to a table within the schema to which connector will sync the data."
                 }
               },
-              "password": {
-                "title": "",
-                "type": "string",
-                "description": "Workday password.",
-                "format": "password",
-                "example": "workday_password"
-              },
               "primary_keys": {
                 "title": "",
                 "type": "array",
@@ -61424,17 +61741,11 @@
                   "example": "string"
                 }
               },
-              "domain_host_name": {
+              "authorization_url": {
                 "title": "",
                 "type": "string",
-                "description": "Workday host name.",
+                "description": "Authorization URL",
                 "example": "string"
-              },
-              "generate_fivetran_pk": {
-                "title": "",
-                "type": "boolean",
-                "description": "Select this option to generate a Primary Key for reports where no single column or combination of columns can be used to form a Primary Key.",
-                "example": true
               },
               "user_name": {
                 "title": "",
@@ -61447,6 +61758,41 @@
                 "type": "string",
                 "description": "URL for a live custom report.",
                 "example": "workday_report_url"
+              },
+              "auth_mode": {
+                "title": "",
+                "type": "object",
+                "description": "Authentication Mode",
+                "example": "BASIC | OAUTH",
+                "enum": [
+                  "BASIC",
+                  "OAUTH"
+                ]
+              },
+              "support_nested_columns": {
+                "title": "",
+                "type": "boolean",
+                "description": "This option is to unpack the nested columns and sync them separately. By default, we sync the nested columns as JSON objects.",
+                "example": true
+              },
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "Workday password.",
+                "format": "password",
+                "example": "workday_password"
+              },
+              "domain_host_name": {
+                "title": "",
+                "type": "string",
+                "description": "Workday host name.",
+                "example": "string"
+              },
+              "generate_fivetran_pk": {
+                "title": "",
+                "type": "boolean",
+                "description": "Select this option to generate a Primary Key for reports where no single column or combination of columns can be used to form a Primary Key.",
+                "example": true
               },
               "report_format_type": {
                 "title": "",
@@ -61463,12 +61809,6 @@
                 "type": "string",
                 "description": "Workday tenant name",
                 "example": "string"
-              },
-              "support_nested_columns": {
-                "title": "",
-                "type": "boolean",
-                "description": "This option is to unpack the nested columns and sync them separately. By default, we sync the nested columns as JSON objects.",
-                "example": true
               }
             },
             "description": ""
@@ -61807,6 +62147,17 @@
                   "app-us2.wrike.com",
                   "www.wrike.com",
                   "app-eu.wrike.com"
+                ]
+              },
+              "plan": {
+                "type": "object",
+                "description": "Your Wrike Subscription Plan.",
+                "enum": [
+                  "[customColumnIds,superParentIds,customItemTypeId,metadata,attachmentCount,customFields,space]",
+                  "[customColumnIds,superParentIds,customItemTypeId,metadata,attachmentCount,space,customFields]",
+                  "[customColumnIds,superParentIds,customItemTypeId,attachmentCount,space,customFields,metadata]",
+                  "[customColumnIds,superParentIds,customItemTypeId,metadata,space,customFields,attachmentCount]",
+                  "[customColumnIds,superParentIds,customItemTypeId,metadata,attachmentCount,space,customFields,contractType]"
                 ]
               }
             },
@@ -70474,6 +70825,16 @@
           }
         ]
       },
+      "s3_compatible_storage_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/s3_compatible_storage_config_V1"
+          }
+        ]
+      },
       "safebase_ConnectorResponseV1": {
         "allOf": [
           {
@@ -72045,16 +72406,6 @@
           }
         ]
       },
-      "veevavault_ConnectorResponseV1": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ConnectorResponseV1"
-          },
-          {
-            "$ref": "#/components/schemas/veevavault_config_V1"
-          }
-        ]
-      },
       "venminder_ConnectorResponseV1": {
         "allOf": [
           {
@@ -73126,15 +73477,15 @@
             ],
             "type": "object",
             "properties": {
-              "vpce_id": {
-                "type": "object",
-                "description": "The ID of your Virtual Private Cloud Endpoint.",
-                "example": "vpce_id"
-              },
               "account_url": {
                 "type": "object",
                 "description": "The URL of your account.",
                 "example": "account_url"
+              },
+              "vpce_id": {
+                "type": "object",
+                "description": "The ID of your Virtual Private Cloud Endpoint.",
+                "example": "vpce_id"
               }
             },
             "description": "Snowflake for AWS"
@@ -73161,15 +73512,15 @@
             ],
             "type": "object",
             "properties": {
-              "cluster_identifier": {
-                "type": "object",
-                "description": "The cluster identifier.",
-                "example": "cluster_identifier"
-              },
               "aws_account_id": {
                 "type": "object",
                 "description": "The ID of your AWS account.",
                 "example": "aws_account_id"
+              },
+              "cluster_identifier": {
+                "type": "object",
+                "description": "The cluster identifier.",
+                "example": "cluster_identifier"
               }
             },
             "description": "Redshift for AWS"
@@ -73225,15 +73576,15 @@
             ],
             "type": "object",
             "properties": {
-              "workspace_url": {
-                "type": "object",
-                "description": "workspace_url",
-                "example": "workspace_url"
-              },
               "connection_service_id": {
                 "type": "object",
                 "description": "The ID of your connection service.",
                 "example": "connection_service_id"
+              },
+              "workspace_url": {
+                "type": "object",
+                "description": "workspace_url",
+                "example": "workspace_url"
               }
             },
             "description": "Databricks for Azure"
@@ -73260,15 +73611,15 @@
             ],
             "type": "object",
             "properties": {
-              "pls_id": {
-                "type": "object",
-                "description": "The ID of your Private Link service.",
-                "example": "pls_id"
-              },
               "account_url": {
                 "type": "object",
                 "description": "The URL of your account.",
                 "example": "account_url"
+              },
+              "pls_id": {
+                "type": "object",
+                "description": "The ID of your Private Link service.",
+                "example": "pls_id"
               }
             },
             "description": "Snowflake for Azure"
@@ -73382,15 +73733,15 @@
             ],
             "type": "object",
             "properties": {
-              "sub_resource_name": {
-                "type": "object",
-                "description": "The name of subresource.",
-                "example": "sub_resource_name"
-              },
               "connection_service_id": {
                 "type": "object",
                 "description": "The ID of your connection service.",
                 "example": "connection_service_id"
+              },
+              "sub_resource_name": {
+                "type": "object",
+                "description": "The name of subresource.",
+                "example": "sub_resource_name"
               },
               "private_dns_records": {
                 "type": "object",
@@ -73422,15 +73773,15 @@
             ],
             "type": "object",
             "properties": {
-              "pls_id": {
-                "type": "object",
-                "description": "The ID of your Private Link service.",
-                "example": "pls_id"
-              },
               "account_url": {
                 "type": "object",
                 "description": "The URL of your account.",
                 "example": "account_url"
+              },
+              "pls_id": {
+                "type": "object",
+                "description": "The ID of your Private Link service.",
+                "example": "pls_id"
               }
             },
             "description": "Snowflake for GCP"

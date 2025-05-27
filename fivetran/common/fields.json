@@ -10080,6 +10080,7 @@
          "ruddr": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "rundeck": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "s3": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "s3_compatible_storage": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "safebase": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "safetyculture": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "sage_hr": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11902,6 +11903,7 @@
          "gcs": "Table group name",
          "google_drive": "Table group name",
          "s3": "Table group name",
+         "s3_compatible_storage": "Table group name",
          "sftp": "Table group name",
          "share_point": "Table group name"
       },
@@ -12505,7 +12507,7 @@
    "tunnel_host": {
       "readonly": false,
       "sensitive": false,
-      "nullable": false,
+      "nullable": true,
       "type": "string",
       "fields": null,
       "key_field": "",
@@ -12572,7 +12574,7 @@
    "tunnel_port": {
       "readonly": false,
       "sensitive": false,
-      "nullable": false,
+      "nullable": true,
       "type": "integer",
       "fields": null,
       "key_field": "",
@@ -12639,7 +12641,7 @@
    "tunnel_user": {
       "readonly": false,
       "sensitive": false,
-      "nullable": false,
+      "nullable": true,
       "type": "string",
       "fields": null,
       "key_field": "",

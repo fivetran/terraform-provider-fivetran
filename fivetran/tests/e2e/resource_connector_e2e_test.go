@@ -293,6 +293,89 @@ func TestResourceConnectorWithTableGroupNameE2E(t *testing.T) {
 	})
 }
 
+func TestResourceConnectorNullableConfigFieldsE2E(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectorResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+					resource "fivetran_group" "group" {
+						provider = fivetran-provider
+    					name = "sdhfkldwshkjshdkj"
+					}
+
+					resource "fivetran_connector" "test_connector" {
+						provider = fivetran-provider
+  						group_id = fivetran_group.group.id
+  						service  = "maria"
+  						run_setup_tests = false
+
+  						config {
+    						port             = "24020"
+    						host             = "host"
+    						update_method    = "BINLOG"
+    						replica_id       = "12345"
+    						tunnel_host      = "tunnel_host"
+    						tunnel_user 	 = "tunnel_user"
+    						tunnel_port		 = 2233
+    						connection_type  = "SshTunnel"
+  						}
+  						
+  						destination_schema {
+    						prefix = "maria"
+  						}
+					}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectorResourceCreate(t, "fivetran_connector.test_connector"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.connection_type", "SshTunnel"),
+					resource.TestCheckResourceAttrSet("fivetran_connector.test_connector", "config.tunnel_host"),
+					resource.TestCheckResourceAttrSet("fivetran_connector.test_connector", "config.tunnel_user"),
+					resource.TestCheckResourceAttrSet("fivetran_connector.test_connector", "config.tunnel_port"),
+				),
+			},
+			{
+				Config: `
+					resource "fivetran_group" "group" {
+						provider = fivetran-provider
+    					name = "sdhfkldwshkjshdkj"
+					}
+
+					resource "fivetran_connector" "test_connector" {
+						provider = fivetran-provider
+  						group_id = fivetran_group.group.id
+  						service  = "maria"
+  						run_setup_tests = false
+
+  						config {
+    						port             = "24020"
+    						host             = "host"
+    						update_method    = "BINLOG"
+    						replica_id       = "12345"
+    						tunnel_host      = null
+    						tunnel_user 	 = null
+    						tunnel_port		 = null
+    						connection_type  = "Directly"
+  						}
+  						
+  						destination_schema {
+    						prefix = "maria"
+  						}
+					}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectorResourceUpdate(t, "fivetran_connector.test_connector"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.connection_type", "Directly"),
+					resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "tunnel_host"),
+					resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "tunnel_user"),
+					resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "tunnel_port"),
+				),
+			},
+		},
+	})
+}
 
 func testFivetranConnectorResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
