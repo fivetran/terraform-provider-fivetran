@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.8.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.7.0...v1.8.0)
 
-In in order to synchronize internal terminology, we have implemented new datasources to replace the deprecated ones. The deprecated resources will be removed in version 1.8.0
-
+### Added
+In in order to synchronize internal terminology, we have implemented new datasources to replace the deprecated ones. The deprecated resources will be removed in version 2.0.0:
 - New data source `fivetran_connection` instead of deprecated `fivetran_connector`.
 - New data source `fivetran_connection_certificates` instead of deprecated `fivetran_connector_certificates`.
 - New data source `fivetran_connection_fingerprints` instead of deprecated `fivetran_connector_fingerprints`.
@@ -18,6 +18,27 @@ In in order to synchronize internal terminology, we have implemented new datasou
 - New data source `fivetran_group_connections` instead of deprecated `fivetran_group_connectors`.
 - New data source `fivetran_team_connection_membership` instead of deprecated `fivetran_team_connector_membership`.
 - New data source `fivetran_user_connection_memberships` instead of deprecated `fivetran_user_connector_memberships`.
+
+New connection services supported:
+- Supported service: `s3_compatible_storage`
+
+New connection config fields supported:
+- Added field `fivetran_connector.config.key_id` for services: `itunes_connect`.
+- Added field `fivetran_connector.config.issuer_id` for services: `itunes_connect`.
+- Added field `fivetran_connector.config.root_resource_id` for services: `oracle_fusion_field_service`.
+- Added field `fivetran_connector.config.historical_sync_limit_time_frame` for services: `pardot`.
+- Added field `fivetran_connector.config.directories` for services: `qualtrics`.
+- Added field `fivetran_connector.config.endpoint_url` for services: `s3_compatible_storage`.
+- Added field `fivetran_connector.config.historical_sync_limit_date` for services: `klaviyo`, `marketo`, `pardot`, `sailthru`, `salesforce_marketing_cloud`, `braze`, `iterable`.
+- Added field `fivetran_connector.config.reports.filters` for services: `google_analytics_4`.
+- Added field `fivetran_connector.config.authorization_url` for services: `tiktok_organic`, `workday`.
+- Added field `fivetran_connector.config.plan` for services: `wrike`.
+- Added field `fivetran_connector.config.directory_sync_mode` for services: `qualtrics`.
+- Added field `fivetran_connector.config.vendors_id` for services: `itunes_connect`.
+- Added field `fivetran_connector.config.should_sync_reimport_tables` for services: `netsuite_suiteanalytics`.
+
+New destination services supported:
+- Supported service: `surrealdb_destination`
 
 ## [1.7.0](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.6.5...v1.7.0)
 

@@ -520,6 +520,7 @@ rtb_house
 ruddr
 rundeck
 s3
+s3_compatible_storage
 safebase
 safetyculture
 sage_hr
@@ -643,7 +644,6 @@ upland
 uppromote
 uservoice
 veeqo
-veevavault
 venminder
 vimeo
 visit_by_ges
