@@ -5,6 +5,8 @@ page_title: "Resource: fivetran_proxy_agent"
 # Resource: fivetran_proxy_agent
 
 This resource allows you to create, update, and delete proxy agent.
+Note that Proxy Agents created after 2025-06-10 must be run using the Proxy Agent bundled in high-volume agent version 6.1.0/79 or later, else  connections will fail.
+EOL for versions bundled with eariler than 6.1.0/79 will occur on 2025-10-08.
 
 ## Example Usage
 
