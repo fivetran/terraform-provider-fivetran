@@ -15,32 +15,34 @@ import (
 )
 
 type ConnectionDatasourceModel struct {
-    Id          types.String `tfsdk:"id"`
-    Name        types.String `tfsdk:"name"`
-    ConnectedBy types.String `tfsdk:"connected_by"`
-    CreatedAt   types.String `tfsdk:"created_at"`
-    GroupId     types.String `tfsdk:"group_id"`
-    Service     types.String `tfsdk:"service"`
+    Id                      types.String `tfsdk:"id"`
+    Name                    types.String `tfsdk:"name"`
+    ConnectedBy             types.String `tfsdk:"connected_by"`
+    CreatedAt               types.String `tfsdk:"created_at"`
+    GroupId                 types.String `tfsdk:"group_id"`
+    Service                 types.String `tfsdk:"service"`
 
-    DestinationSchema types.Object `tfsdk:"destination_schema"`
+    DestinationSchema       types.Object `tfsdk:"destination_schema"`
 
-    SucceededAt     types.String `tfsdk:"succeeded_at"`
-    FailedAt        types.String `tfsdk:"failed_at"`
-    ServiceVersion  types.String `tfsdk:"service_version"`
-    SyncFrequency   types.Int64  `tfsdk:"sync_frequency"`
-    ScheduleType    types.String `tfsdk:"schedule_type"`
-    Paused          types.Bool   `tfsdk:"paused"`
-    PauseAfterTrial types.Bool   `tfsdk:"pause_after_trial"`
-    DailySyncTime   types.String `tfsdk:"daily_sync_time"`
+    SucceededAt             types.String `tfsdk:"succeeded_at"`
+    FailedAt                types.String `tfsdk:"failed_at"`
+    ServiceVersion          types.String `tfsdk:"service_version"`
+    SyncFrequency           types.Int64  `tfsdk:"sync_frequency"`
+    ScheduleType            types.String `tfsdk:"schedule_type"`
+    Paused                  types.Bool   `tfsdk:"paused"`
+    PauseAfterTrial         types.Bool   `tfsdk:"pause_after_trial"`
+    DailySyncTime           types.String `tfsdk:"daily_sync_time"`
     
     DataDelaySensitivity    types.String `tfsdk:"data_delay_sensitivity"`
     DataDelayThreshold      types.Int64  `tfsdk:"data_delay_threshold"`
 
-    ProxyAgentId             types.String `tfsdk:"proxy_agent_id"`
-    NetworkingMethod         types.String `tfsdk:"networking_method"`
-    HybridDeploymentAgentId  types.String `tfsdk:"hybrid_deployment_agent_id"`
-    PrivateLinkId            types.String `tfsdk:"private_link_id"`
-    Status types.Object `tfsdk:"status"`
+    ProxyAgentId            types.String `tfsdk:"proxy_agent_id"`
+    NetworkingMethod        types.String `tfsdk:"networking_method"`
+    HybridDeploymentAgentId types.String `tfsdk:"hybrid_deployment_agent_id"`
+    PrivateLinkId           types.String `tfsdk:"private_link_id"`
+    
+    Status                  types.Object `tfsdk:"status"`
+    Config                  types.Object `tfsdk:"config"`
 }
 
 func (d *ConnectionDatasourceModel) ReadFromResponse(resp connections.DetailsWithCustomConfigNoTestsResponse) {

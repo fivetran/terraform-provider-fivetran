@@ -1,0 +1,475 @@
+package resources
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/common"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
+	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
+	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-go/tftypes"
+)
+
+func Connection() resource.Resource {
+	return &connection{}
+}
+
+type connection struct {
+	core.ProviderResource
+}
+
+// Ensure the implementation satisfies the desired interfaces.
+var _ resource.ResourceWithConfigure = &connection{}
+var _ resource.ResourceWithUpgradeState = &connection{}
+var _ resource.ResourceWithImportState = &connection{}
+
+func (r *connection) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_connection"
+}
+
+func (r *connection) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = schema.Schema{
+		Attributes: fivetranSchema.ConnectionAttributesSchema().GetResourceSchema(),
+		Blocks:     fivetranSchema.ConnectionResourceBlocks(ctx),
+		Version:    1,
+	}
+}
+
+func (r *connection) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+}
+
+func (r *connection) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	if r.GetClient() == nil {
+		resp.Diagnostics.AddError(
+			"Unconfigured Fivetran Client",
+			"Please report this issue to the provider developers.",
+		)
+
+		return
+	}
+
+	var data model.ConnectionResourceModel
+
+	// Read Terraform plan data into the model
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	configMap, err := data.GetConfigMap(true)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to Create Connection Resource.",
+			fmt.Sprintf("%v;", err),
+		)
+
+		return
+	}
+	noConfig := configMap == nil
+	authMap, err := data.GetAuthMap(true)
+
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to Create Connection Resource.",
+			fmt.Sprintf("%v;", err),
+		)
+
+		return
+	}
+	noAuth := authMap == nil
+
+	destinationSchema, err := data.GetDestinatonSchemaForConfig()
+
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to Create Connection Resource.",
+			fmt.Sprintf("%v;", err),
+		)
+
+		return
+	}
+
+	if noConfig {
+		configMap = make(map[string]interface{})
+	}
+	for k, v := range destinationSchema {
+		configMap[k] = v
+	}
+
+	runSetupTestsPlan := core.GetBoolOrDefault(data.RunSetupTests, false)
+	trustCertificatesPlan := core.GetBoolOrDefault(data.TrustCertificates, false)
+	trustFingerprintsPlan := core.GetBoolOrDefault(data.TrustFingerprints, false)
+
+	svc := r.GetClient().NewConnectionCreate().
+		Paused(true). // on creation we always create paused connection
+		Service(data.Service.ValueString()).
+		GroupID(data.GroupId.ValueString()).
+		RunSetupTests(runSetupTestsPlan).
+		TrustCertificates(trustCertificatesPlan).
+		TrustFingerprints(trustFingerprintsPlan).
+		ConfigCustom(&configMap) // on creation we have config always with schema params
+
+	if data.ProxyAgentId.ValueString() != "" {
+		svc.ProxyAgentId(data.ProxyAgentId.ValueString())
+	}
+
+	if data.NetworkingMethod.ValueString() != "" {
+		svc.NetworkingMethod(data.NetworkingMethod.ValueString())
+	}
+
+	if data.PrivateLinkId.ValueString() != "" {
+		svc.PrivateLinkId(data.PrivateLinkId.ValueString())
+	}
+
+	if data.DataDelaySensitivity.ValueString() != "" {
+		svc.DataDelaySensitivity(data.DataDelaySensitivity.ValueString())
+	}
+
+	if !data.DataDelayThreshold.IsNull() {
+		value := int(data.DataDelayThreshold.ValueInt64())
+		svc.DataDelayThreshold(&value)
+	}
+
+	if data.HybridDeploymentAgentId.ValueString() != "" {
+		svc.HybridDeploymentAgentId(data.HybridDeploymentAgentId.ValueString())
+	}
+
+	if !noAuth {
+		svc.AuthCustom(&authMap)
+	}
+
+	response, err := svc.
+		DoCustom(ctx)
+
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to Create Connection Resource.",
+			fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
+		)
+
+		return
+	}
+
+	data.ReadFromCreateResponse(response)
+
+	data.RunSetupTests = types.BoolValue(runSetupTestsPlan)
+	data.TrustCertificates = types.BoolValue(trustCertificatesPlan)
+	data.TrustFingerprints = types.BoolValue(trustFingerprintsPlan)
+
+	if runSetupTestsPlan && response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
+		for _, tr := range response.Data.SetupTests {
+			if tr.Status != "PASSED" && tr.Status != "SKIPPED" {
+				resp.Diagnostics.AddWarning(
+					fmt.Sprintf("Connection setup test `%v` has status `%v`", tr.Title, tr.Status),
+					tr.Message,
+				)
+			}
+		}
+	}
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *connection) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	if r.GetClient() == nil {
+		resp.Diagnostics.AddError(
+			"Unconfigured Fivetran Client",
+			"Please report this issue to the provider developers.",
+		)
+
+		return
+	}
+
+	var data model.ConnectionResourceModel
+
+	// Read Terraform prior state data into the model
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+
+	// The only case when state of existing resource doesn't contain required fields - import operation
+	isImportOperation := data.GroupId.IsNull() || data.GroupId.IsUnknown() || data.Service.IsNull() || data.Service.IsUnknown()
+
+	id := data.Id.ValueString()
+
+	// Recovery from 1.1.13 bug
+	if data.Id.IsNull() || data.Id.IsUnknown() {
+		recoveredId, log := r.recoverId(ctx, data)
+		if recoveredId == "" {
+			resp.Diagnostics.AddError(
+				"Read error.",
+				"Unable to recover resource id from state.\n"+log,
+			)
+			return
+		}
+		id = recoveredId
+	}
+
+	response, err := r.GetClient().NewConnectionDetails().ConnectionID(id).DoCustom(ctx)
+
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Read error.",
+			fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
+		)
+		return
+	}
+
+	data.ReadFromResponse(response, isImportOperation)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *connection) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	if r.GetClient() == nil {
+		resp.Diagnostics.AddError(
+			"Unconfigured Fivetran Client",
+			"Please report this issue to the provider developers.",
+		)
+
+		return
+	}
+
+	var plan, state model.ConnectionResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+
+	runSetupTestsPlan := core.GetBoolOrDefault(plan.RunSetupTests, false)
+	trustCertificatesPlan := core.GetBoolOrDefault(plan.TrustCertificates, false)
+	trustFingerprintsPlan := core.GetBoolOrDefault(plan.TrustFingerprints, false)
+
+	runSetupTestsState := core.GetBoolOrDefault(state.RunSetupTests, false)
+	trustCertificatesState := core.GetBoolOrDefault(state.TrustCertificates, false)
+	trustFingerprintsState := core.GetBoolOrDefault(state.TrustFingerprints, false)
+
+
+
+	hasUpdates, patch, authPatch, err := plan.HasUpdates(plan, state)
+    if err != nil {
+        resp.Diagnostics.AddError(
+            "Unable to Update Connection Resource.",
+            fmt.Sprintf("%v; ", err),
+        )
+    }
+
+	updatePerformed := false
+	if hasUpdates {
+		svc := r.GetClient().NewConnectionUpdate().
+			RunSetupTests(runSetupTestsPlan).
+			TrustCertificates(trustCertificatesPlan).
+			TrustFingerprints(trustFingerprintsPlan).
+			ConnectionID(state.Id.ValueString())
+
+		if !plan.PrivateLinkId.Equal(state.PrivateLinkId) {
+			svc.PrivateLinkId(plan.PrivateLinkId.ValueString())
+		}
+
+		if !plan.HybridDeploymentAgentId.Equal(state.HybridDeploymentAgentId) {
+			svc.HybridDeploymentAgentId(plan.HybridDeploymentAgentId.ValueString())
+		}
+
+		if len(patch) > 0 {
+			svc.ConfigCustom(&patch)
+		}
+		if len(authPatch) > 0 {
+			svc.AuthCustom(&authPatch)
+		}
+
+		if !plan.ProxyAgentId.Equal(state.ProxyAgentId) {
+			svc.ProxyAgentId(plan.ProxyAgentId.ValueString())
+		}
+
+		if !plan.NetworkingMethod.Equal(state.NetworkingMethod) && plan.NetworkingMethod.ValueString() != "" {
+			svc.NetworkingMethod(plan.NetworkingMethod.ValueString())
+		}
+
+		if !plan.DataDelaySensitivity.Equal(state.DataDelaySensitivity) {
+			svc.DataDelaySensitivity(plan.DataDelaySensitivity.ValueString())
+		}
+
+		if !plan.DataDelayThreshold.IsNull() {
+			value := int(plan.DataDelayThreshold.ValueInt64())
+			svc.DataDelayThreshold(&value)
+		}
+
+		response, err := svc.DoCustom(ctx)
+
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to Update Connection Resource.",
+				fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
+			)
+			return
+		}
+		plan.ReadFromCreateResponse(response)
+
+		if runSetupTestsPlan && response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
+			for _, tr := range response.Data.SetupTests {
+				if tr.Status != "PASSED" && tr.Status != "SKIPPED" {
+					resp.Diagnostics.AddWarning(
+						fmt.Sprintf("Connection setup test `%v` has status `%v`", tr.Title, tr.Status),
+						tr.Message,
+					)
+				}
+			}
+		}
+
+		updatePerformed = true
+	} else {
+		// If values of testing fields changed we should run tests
+		if runSetupTestsPlan && runSetupTestsPlan != runSetupTestsState ||
+			trustCertificatesPlan && trustCertificatesPlan != trustCertificatesState ||
+			trustFingerprintsPlan && trustFingerprintsPlan != trustFingerprintsState {
+
+			response, err := r.GetClient().NewConnectionSetupTests().ConnectionID(state.Id.ValueString()).DoCustom(ctx)
+			if err != nil {
+				resp.Diagnostics.AddError(
+					"Unable to Update Connection Resource.",
+					fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
+				)
+				return
+			}
+			plan.ReadFromCreateResponse(response)
+			if response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
+				for _, tr := range response.Data.SetupTests {
+					if tr.Status != "PASSED" && tr.Status != "SKIPPED" {
+						resp.Diagnostics.AddWarning(
+							fmt.Sprintf("Connection setup test `%v` has status `%v`", tr.Title, tr.Status),
+							tr.Message,
+						)
+					}
+				}
+			}
+			updatePerformed = true
+		}
+	}
+
+	if !updatePerformed {
+		// re-read connection upstream with an additional request after update
+		response, err := r.GetClient().NewConnectionDetails().ConnectionID(state.Id.ValueString()).DoCustom(ctx)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to Read after Update Connection Resource.",
+				fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
+			)
+			return
+		}
+		plan.ReadFromResponse(response, false)
+	}
+
+	// Set up synthetic values
+	if plan.RunSetupTests.IsUnknown() {
+		plan.RunSetupTests = state.RunSetupTests
+	}
+	if plan.TrustCertificates.IsUnknown() {
+		plan.TrustCertificates = state.TrustCertificates
+	}
+	if plan.TrustFingerprints.IsUnknown() {
+		plan.TrustFingerprints = state.TrustFingerprints
+	}
+
+	// Save state
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+}
+
+func (r *connection) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	if r.GetClient() == nil {
+		resp.Diagnostics.AddError(
+			"Unconfigured Fivetran Client",
+			"Please report this issue to the provider developers.",
+		)
+
+		return
+	}
+
+	var data model.ConnectionResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+
+	deleteResponse, err := r.GetClient().NewConnectionDelete().ConnectionID(data.Id.ValueString()).Do(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to Delete Connection Resource.",
+			fmt.Sprintf("%v; code: %v; message: %v", err, deleteResponse.Code, deleteResponse.Message),
+		)
+		return
+	}
+}
+
+// in case if state was corrupted and computable values wasn't saved we could recover resource id using group_id and schema
+func (r *connection) recoverId(ctx context.Context, data model.ConnectionResourceModel) (string, string) {
+	id := ""
+	log := ""
+
+	groupId := data.GroupId.ValueString()
+	schemaName := ""
+	if !data.DestinationSchema.IsNull() && !data.DestinationSchema.IsUnknown() {
+		destinationSchema, err := data.GetDestinatonSchemaForConfig()
+		if err == nil {
+			log = log + "\n" + fmt.Sprintf("Destination schema: \n %v", destinationSchema)
+			if prefix, ok := destinationSchema["schema_prefix"]; ok && prefix != "" {
+				schemaName = prefix.(string)
+			} else {
+				if name, ok := destinationSchema["schema"]; ok && name != "" {
+					schemaName = name.(string)
+					if table, ok := destinationSchema["table"]; ok && table != "" {
+						schemaName = schemaName + "." + table.(string)
+					}
+				}
+			}
+		} else {
+			log = log + "\n" + err.Error()
+		}
+	}
+	
+	log = log + "\n" + fmt.Sprintf("Schema `%s`, group `%s", schemaName, groupId)
+	
+	if schemaName != "" && groupId != "" {
+		connectionsList, err := r.GetClient()
+			.NewListConnections()
+			.Limit(1000)
+			.Do(ctx)
+		found := false
+		if err == nil {
+			for _, c := range connectionsList.Data.Items {
+				if c.Schema == schemaName {
+					id = c.ID
+					found = true
+					break
+				}
+			}
+			
+			for !found && connectionsList.Data.NextCursor != "" {
+				connectionsList, err = r.GetClient()
+					.NewListConnections()
+					.Limit(1000)
+					.Cursor(connectionsList.Data.NextCursor)
+					.Do(ctx)
+				if err != nil {
+					log = log + "\n" + err.Error()
+					break
+				} else {
+					for _, c := range connectionsList.Data.Items {
+						if c.Schema == schemaName {
+							id = c.ID
+							found = true
+							break
+						}
+					}
+				}
+			}
+		} else {
+			log = log + "\n" + err.Error()
+		}
+		
+		if !found {
+			log = log + "\n" + fmt.Sprintf("Can't find connection with schema = `%s` in group with id = `%s", schemaName, groupId)
+		}
+	}
+	return id, log
+}
