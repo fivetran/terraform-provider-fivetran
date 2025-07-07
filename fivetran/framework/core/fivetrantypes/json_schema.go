@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -52,7 +51,6 @@ func (v JsonSchemaValue) StringSemanticEquals(_ context.Context, newValuable bas
 	}
 
 	result, err := jsonEqual(newValue.ValueString(), v.ValueString())
-
 	if err != nil {
 		diags.AddError(
 			"Semantic Equality Check Error",
@@ -65,6 +63,16 @@ func (v JsonSchemaValue) StringSemanticEquals(_ context.Context, newValuable bas
 	}
 
 	result, err = schemaEqual(newValue.ValueString(), v.ValueString())
+	if err != nil {
+		diags.AddError(
+			"Semantic Equality Check Error",
+			"An unexpected error occurred while performing semantic equality checks. "+
+				"Please report this to the provider developers.\n\n"+
+				"Error: "+err.Error(),
+		)
+
+		return false, diags
+	}
 
 	return result, diags
 }
@@ -164,38 +172,6 @@ func unmarshalSchema(schema string) (map[string]interface{}, error) {
 	}
 
 	return schemas, nil
-}
-
-func jsonEqual(s1, s2 string) (bool, error) {
-	s1, err := normalizeJSONString(s1)
-	if err != nil {
-		return false, err
-	}
-
-	s2, err = normalizeJSONString(s2)
-	if err != nil {
-		return false, err
-	}
-
-	return s1 == s2, nil
-}
-
-func normalizeJSONString(jsonStr string) (string, error) {
-	dec := json.NewDecoder(strings.NewReader(jsonStr))
-
-	dec.UseNumber()
-
-	var temp interface{}
-	if err := dec.Decode(&temp); err != nil {
-		return "", err
-	}
-
-	jsonBytes, err := json.Marshal(&temp)
-	if err != nil {
-		return "", err
-	}
-
-	return string(jsonBytes), nil
 }
 
 func (v JsonSchemaValue) Unmarshal(target any) diag.Diagnostics {
