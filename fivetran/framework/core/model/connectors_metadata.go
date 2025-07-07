@@ -3,7 +3,7 @@ package model
 import (
     "context"
 
-    "github.com/fivetran/go-fivetran/connections"
+    "github.com/fivetran/go-fivetran/metadata"
     "github.com/hashicorp/terraform-plugin-framework/types"
     "github.com/hashicorp/terraform-plugin-framework/attr"
 )
@@ -13,7 +13,7 @@ type ConnectorsMetadata struct {
     Sources  types.Set    `tfsdk:"sources"`
 }
 
-func (d *ConnectorsMetadata) ReadFromResponse(ctx context.Context, resp connections.ConnectionsSourceMetadataResponse) {
+func (d *ConnectorsMetadata) ReadFromResponse(ctx context.Context, resp metadata.ConnectorMetadataListResponse) {
     elementType := map[string]attr.Type{
         "id":            types.StringType,
         "name":          types.StringType,
