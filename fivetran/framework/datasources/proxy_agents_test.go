@@ -25,8 +25,6 @@ const (
         	"id": "id2",
         	"registered_at": "registered_at2",
         	"region": "region2",
-        	"token": "token2",
-        	"salt": "salt2",
         	"created_by": "created_by2",
         	"display_name": "display_name2"
     	}

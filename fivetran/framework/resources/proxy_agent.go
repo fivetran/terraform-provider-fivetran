@@ -116,12 +116,47 @@ func (r *proxy) Read(ctx context.Context, req resource.ReadRequest, resp *resour
 }
 
 func (r *proxy) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-    resp.Diagnostics.AddError(
-        "Modification does not support",
-        "Modification does not support",
-    )
+    if r.GetClient() == nil {
+        resp.Diagnostics.AddError(
+            "Unconfigured Fivetran Client",
+            "Please report this issue to the provider developers.",
+        )
 
-    return
+        return
+    }
+
+    var plan, state model.ProxyAgentResourceModel
+
+    resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+    resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+
+    svc := r.GetClient().NewProxyRegenerateSecrets()
+    svc.ProxyId(state.Id.ValueString())
+    
+    updateResponse, err := svc.Do(ctx)
+    if err != nil {
+        resp.Diagnostics.AddError(
+            "Unable to Update Proxy Agent Resource.",
+            fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
+        )
+        return
+    }
+
+    state.ReadFromCreateResponse(updateResponse)
+
+    readResponse, err := r.GetClient().NewProxyDetails().ProxyId(state.Id.ValueString()).Do(ctx)
+
+    if err != nil {
+        resp.Diagnostics.AddError(
+            "Unable to Create Proxy Agent Resource.",
+            fmt.Sprintf("%v; code: %v", err, readResponse.Code),
+        )
+        return
+    }
+
+    state.ReadFromResponse(readResponse)
+    
+    resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
 func (r *proxy) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

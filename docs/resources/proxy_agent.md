@@ -6,6 +6,8 @@ page_title: "Resource: fivetran_proxy_agent"
 
 This resource allows you to create, update, and delete proxy agent.
 
+-> NOTE: Proxy Agents created after 2025-06-10 must be run using the Proxy Agent bundled in high-volume agent version 6.1.0/79 or later, else  connections will fail. EOL for versions bundled with eariler than 6.1.0/79 will occur on 2025-10-08.
+
 ## Example Usage
 
 ```hcl
@@ -25,11 +27,15 @@ resource "fivetran_proxy_agent" "test_proxy_agent" {
 - `display_name` (String) Proxy agent name.
 - `group_region` (String) Data processing location. This is where Fivetran will operate and run computation on data.
 
+### Optional
+
+- `regeneration_counter` (Number) Determines whether regenerarion secrets needs to be performed.
+
 ### Read-Only
 
+- `client_cert` (String) Client certificate.
+- `client_private_key` (String) Client private key.
 - `created_by` (String) The actor who created the proxy agent.
 - `id` (String) The unique identifier for the proxy within your account.
-- `proxy_server_uri` (String) The proxy server URI.
 - `registred_at` (String) The timestamp of the time the proxy agent was created in your account.
-- `salt` (String) The salt.
 - `token` (String) The auth token.

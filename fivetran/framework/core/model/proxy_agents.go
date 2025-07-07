@@ -17,8 +17,6 @@ func (d *ProxyAgents) ReadFromResponse(ctx context.Context, resp proxy.ProxyList
 		"id":           types.StringType,
 		"registred_at": types.StringType,
 		"group_region": types.StringType,
-		"token":        types.StringType,
-		"salt":         types.StringType,
 		"created_by":   types.StringType,
 		"display_name": types.StringType,
 	}
@@ -34,8 +32,6 @@ func (d *ProxyAgents) ReadFromResponse(ctx context.Context, resp proxy.ProxyList
 		item["id"] = types.StringValue(v.Id)
 		item["registred_at"] = types.StringValue(v.RegisteredAt)
 		item["group_region"] = types.StringValue(v.Region)
-		item["token"] = types.StringValue(v.Token)
-		item["salt"] = types.StringValue(v.Salt)
 		item["created_by"] = types.StringValue(v.CreatedBy)
 		item["display_name"] = types.StringValue(v.DisplayName)
 		objectValue, _ := types.ObjectValue(elementType, item)

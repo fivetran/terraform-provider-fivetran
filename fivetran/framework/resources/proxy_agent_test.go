@@ -22,10 +22,11 @@ func setupMockClientProxyResource(t *testing.T) {
 	tfmock.MockClient().Reset()
 	proxyAgentResponse :=
 	`{
-        "agent_id": "agent_id",
-        "auth_token": "auth_token",
-        "proxy_server_uri": "proxy_server_uri"
-	}`
+    		"client_cert": "client_cert",
+    		"agent_id": "agent_id",
+    		"auth_token": "auth_token",
+    		"client_private_key": "client_private_key"
+  	}`
 
 	proxyAgentDetailsResponse :=
 	`{
@@ -76,7 +77,8 @@ func TestResourceProxyMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "display_name", "display_name"),
 			resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "group_region", "group_region"),
 			resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "token", "auth_token"),
-			resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "proxy_server_uri", "proxy_server_uri"),
+			resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "client_private_key", "client_private_key"),
+			resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "client_cert", "client_cert"),
 		),
 	}
 

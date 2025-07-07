@@ -7,7 +7,7 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
-    sdk "github.com/fivetran/go-fivetran/connections"
+    sdk "github.com/fivetran/go-fivetran/metadata"
 
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
 )
@@ -45,13 +45,13 @@ func (d *connectorsMetadata) Read(ctx context.Context, req datasource.ReadReques
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
 	var respNextCursor string
-	var listResponse sdk.ConnectionsSourceMetadataResponse
+	var listResponse sdk.ConnectorMetadataListResponse
 	limit := 1000
 
 	for {
 		var err error
-		var tmpResp sdk.ConnectionsSourceMetadataResponse
-		svc := d.GetClient().NewConnectionsSourceMetadata()
+		var tmpResp sdk.ConnectorMetadataListResponse
+		svc := d.GetClient().NewMetadataList()
 		
         svc.Limit(limit)
         if respNextCursor != "" {
@@ -64,7 +64,7 @@ func (d *connectorsMetadata) Read(ctx context.Context, req datasource.ReadReques
 				"Read error.",
 				fmt.Sprintf("%v; code: %v", err, tmpResp.Code),
 			)
-			listResponse = sdk.ConnectionsSourceMetadataResponse{}
+			listResponse = sdk.ConnectorMetadataListResponse{}
 		}
 
 		listResponse.Data.Items = append(listResponse.Data.Items, tmpResp.Data.Items...)
