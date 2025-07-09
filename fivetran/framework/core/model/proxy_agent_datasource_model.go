@@ -9,8 +9,6 @@ type ProxyAgentDatasourceModel struct {
 	Id           types.String `tfsdk:"id"`
 	RegisteredAt types.String `tfsdk:"registred_at"`
 	GroupRegion  types.String `tfsdk:"group_region"`
-	AuthToken    types.String `tfsdk:"token"`
-	Salt         types.String `tfsdk:"salt"`
 	CreatedBy    types.String `tfsdk:"created_by"`
 	DisplayName  types.String `tfsdk:"display_name"`
 }
@@ -36,6 +34,4 @@ func (d *ProxyAgentDatasourceModel) SetDisplayName(value string) {
 func (d *ProxyAgentDatasourceModel) ReadFromResponse(resp proxy.ProxyDetailsResponse) {
 	var model proxyAgentModel = d
 	readProxyAgentFromResponse(model, resp)
-	d.AuthToken = types.StringNull()
-    d.Salt = types.StringNull()
 }

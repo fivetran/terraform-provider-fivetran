@@ -27,5 +27,3 @@ data "fivetran_proxy_agent" "proxy_agent" {
 - `display_name` (String) Proxy agent name.
 - `group_region` (String) Data processing location. This is where Fivetran will operate and run computation on data.
 - `registred_at` (String) The timestamp of the time the proxy agent was created in your account.
-- `salt` (String) The salt.
-- `token` (String) The auth token.

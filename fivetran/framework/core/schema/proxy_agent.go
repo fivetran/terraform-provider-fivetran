@@ -36,21 +36,28 @@ func ProxyAgentSchema() core.Schema {
                 ValueType:   core.String,
                 Description: "The actor who created the proxy agent.",
             },
-            "proxy_server_uri": {
+            "client_cert": {
                 Readonly:    true,
                 ValueType:   core.String,
                 ResourceOnly:true,
-                Description: "The proxy server URI.",
+                Description: "Client certificate.",
+            },
+            "client_private_key": {
+                Readonly:    true,
+                ValueType:   core.String,
+                ResourceOnly:true,
+                Description: "Client private key.",
             },
             "token": {
+                ResourceOnly: true,
                 Readonly:    true,
                 ValueType:   core.String,
                 Description: "The auth token.",
             },
-            "salt": {
-                Readonly:    true,
-                ValueType:   core.String,
-                Description: "The salt.",
+            "regeneration_counter": {
+                ResourceOnly: true,
+                ValueType:    core.Integer,
+                Description:  "Determines whether regenerarion secrets needs to be performed.",
             },
         },
     }
