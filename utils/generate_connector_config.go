@@ -46,7 +46,7 @@ func main() {
 	fmt.Println("Updating schema fields")
 
 	updateFields(services, schemaContainer,
-		"fivetran/common/fields.json",
+		"fivetran/common/fields-updated.json",
 		"schema_format_schema_table.properties.config.properties",
 		"fivetran/common/fields-updated.json",
 		"config-changes-schema_format_schema_table.txt",
@@ -54,7 +54,7 @@ func main() {
 	)
 
 	updateFields(services, schemaContainer,
-		"fivetran/common/fields.json",
+		"fivetran/common/fields-updated.json",
 		"schema_format_schema_prefix.properties.config.properties",
 		"fivetran/common/fields-updated.json",
 		"config-changes-schema_format_schema_prefix.txt",
@@ -62,7 +62,7 @@ func main() {
 	)
 
 	updateFields(services, schemaContainer,
-		"fivetran/common/fields.json",
+		"fivetran/common/fields-updated.json",
 		"schema_format_schema_table_group.properties.config.properties",
 		"fivetran/common/fields-updated.json",
 		"config-changes-schema_format_schema_table_group.txt",
@@ -70,7 +70,7 @@ func main() {
 	)
 
 	updateFields(services, schemaContainer,
-		"fivetran/common/fields.json",
+		"fivetran/common/fields-updated.json",
 		"schema_format_schema.properties.config.properties",
 		"fivetran/common/fields-updated.json",
 		"config-changes-schema_format_schema.txt",
@@ -101,7 +101,7 @@ func main() {
 		"fivetran/common/destination-fields.json",
 		"_config_V1.properties.config.properties",
 		"fivetran/common/destination-fields-updated.json",
-		"destinatino-config-changes.txt",
+		"destination-config-changes.txt",
 		true,
 	)
 
@@ -122,7 +122,7 @@ func updateFields(
 	updated, changedFields := importFields(services, schemaContainer, fieldsExisting, schemaPropsPath, isDestination)
 
 	if updated {
-		writeChangelog(changedFields, changelogFile)
+		writeChangelog(changedFields, changelogFile, isDestination)
 		writeFields(fieldsExisting, updatedFieldsFile)
 	}
 }
@@ -142,8 +142,15 @@ func loadExistingFields(file string) map[string]common.ConfigField {
 	return fieldsExisting
 }
 
-func writeChangelog(changedFields map[string]common.ConfigField, clFile string) {
+func writeChangelog(changedFields map[string]common.ConfigField, clFile string, isDestination bool) {
 	var changeLog []string
+
+	var resourceType string
+	if isDestination {
+		resourceType = "fivetran_destination"
+	} else {
+		resourceType =  "fivetran_connector"
+	}
 
 	for fn, f := range changedFields {
 		if fn != "schema" && fn != "table" && fn != "schema_prefix" && fn != "table_group_name" {
@@ -151,17 +158,16 @@ func writeChangelog(changedFields map[string]common.ConfigField, clFile string) 
 			for k := range f.Description {
 				services = append(services, "`"+k+"`")
 			}
-			changeLog = append(changeLog, fmt.Sprintf("- Added field `fivetran_connector.config.%s` for services: %s.", fn, strings.Join(services, ", ")))
+			changeLog = append(changeLog, fmt.Sprintf("- Added field `%s.config.%s` for services: %s.", resourceType, fn, strings.Join(services, ", ")))
 		} else {
 			services := make([]string, 0, len(f.Description))
 			for k := range f.Description {
 				services = append(services, "`"+k+"`")
 			}
-			changeLog = append(changeLog, fmt.Sprintf("- Added field `fivetran_connector.destination_schema.%s` for services: %s.", fn, strings.Join(services, ", ")))
+			changeLog = append(changeLog, fmt.Sprintf("- Added field `%s.destination_schema.%s` for services: %s.", resourceType, fn, strings.Join(services, ", ")))
 		}
 	}
 
-	//"config-changes.txt"
 	err := os.WriteFile(clFile, []byte(strings.Join(changeLog, "\n")), 0644); 
 	if err != nil {
     	log.Fatal(err)
@@ -259,7 +265,7 @@ func importFields(
 			path = propPath
 		}
 
-		if isDestination || !checkSchemaAlignment(schemaContainer, service, path) {
+		if !isDestination && !checkSchemaAlignment(schemaContainer, service, path) {
 			continue
 		}
 

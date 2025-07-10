@@ -22,6 +22,9 @@ mysql_rds_warehouse
 mysql_warehouse
 new_s3_datalake
 onelake
+oracle_rac_warehouse
+oracle_rds_warehouse
+oracle_warehouse
 postgres_gcp_warehouse
 postgres_rds_warehouse
 postgres_warehouse
