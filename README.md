@@ -18,6 +18,7 @@ Make sure you read the Fivetran REST API [documentation](https://fivetran.com/do
 Or
 `unexpected new value: .config.field: inconsistent values for sensitive attribute`
 Check that the field causing the problem is actually applicable to the service specified in the resource
+- **For SAP ERP for HANA connectors, configuring specific table selections via `fivetran_connector_schema_config` in Terraform may result in a `Table with name [TABLE_NAME] not found in source schema [SCHEMA_NAME]` error.** This occurs because the SAP ERP for HANA connector initially starts with no schema preloaded, and a schema discovery process must complete successfully before tables can be configured. Even setting `validation_level = "NONE"` in Terraform does not resolve this underlying backend requirement. As a workaround, it is recommended to **create the `fivetran_connector` resource without the `fivetran_connector_schema_config` resource first.** Allow the connector to be created and initiate its schema discovery. **After the connector is established and the schema has been discovered (which may require a manual refresh in the Fivetran UI or an API call), then manage table selections and schema configurations directly within the Fivetran UI.**
 
 ## Support
 
