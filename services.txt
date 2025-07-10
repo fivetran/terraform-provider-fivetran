@@ -33,13 +33,17 @@ amplitude
 anaplan
 anvyl
 apache_kafka
+apollo
 appcues
 appfigures
 apple_search_ads
+applovin
 appsflyer
 asana
+ascend_by_partnerize
 ashby
 assembled
+asset_panda
 atlassian_jira_align
 atlassian_ops_genie
 attentive
@@ -140,6 +144,7 @@ coalesce
 coassemble
 cockroachdb
 codefresh
+coheris
 collibra
 column
 commercetools
@@ -160,6 +165,7 @@ criteo
 criteo_retail_media
 crossbeam
 crowddev
+crunchbase
 culture_amp
 customerio
 cvent
@@ -227,6 +233,7 @@ fone_dynamics
 forethought
 forj_community
 formstack
+fortnox
 fountain
 fourkites
 freightview
@@ -442,6 +449,7 @@ pagerduty
 pandadoc
 papershift
 pardot
+pardot_sandbox
 partnerize
 partnerstack_vendor
 paychex
@@ -481,6 +489,7 @@ productboard
 productive
 proofpoint_security_awareness
 prosperstack
+purple_dot
 pylon_support_platform
 qmatic_data_connect
 qualaroo
@@ -541,7 +550,6 @@ scorm
 security_journey
 segment
 sendgrid
-sensor_tower
 sentry
 servicenow
 servicetitan
@@ -643,7 +651,9 @@ unicommerce
 upland
 uppromote
 uservoice
+validio
 veeqo
+veeva_vault
 venminder
 vimeo
 visit_by_ges
@@ -654,7 +664,6 @@ vts
 vwo
 walmart_dsp
 walmart_marketplace
-wasabi_cloud_storage
 web_scraper
 webconnex
 webhooks
@@ -682,7 +691,7 @@ yahoo_gemini
 yahoo_search_ads_yahoo_japan
 yext
 yotpo
-yotpo_app
+yougov_brandindex
 yougov_sport
 younium
 youtube_analytics

@@ -46,3 +46,5 @@ destination-services-changelog.txt
 services-changelog.txt
 destination-services-new.txt
 config-changes-schema_format_schema.txt
+fivetran/common/destination-fields-updated.json
+destination-config-changes.txt

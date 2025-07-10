@@ -77,6 +77,9 @@ Optional:
 	- Service `maria_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `mysql_rds_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `mysql_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `oracle_rac_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `oracle_rds_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `oracle_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `panoply`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `periscope_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `postgres_gcp_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
@@ -85,32 +88,49 @@ Optional:
 	- Service `redshift`: Require TLS through Tunnel
 	- Service `sql_server_rds_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `sql_server_warehouse`: Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.
+- `application_id` (String) Field usage depends on `service` value: 
+	- Service `snowflake`: Application ID of your app created in Azure
 - `auth` (String) Field usage depends on `service` value: 
 	- Service `snowflake`: Password-based or key-based authentication type
 - `auth_type` (String) Field usage depends on `service` value: 
 	- Service `adls`: Authentication type
 	- Service `databricks`: Authentication type
+	- Service `managed_data_lake`: Authentication type
 	- Service `new_s3_datalake`: Authentication type
 	- Service `onelake`: Authentication type
 	- Service `redshift`: Authentication type. Default value: `PASSWORD`.
 - `aws_access_key_id` (String) Field usage depends on `service` value: 
 	- Service `new_s3_datalake`: AWS access key to access the S3 bucket and AWS Glue
+	- Service `redshift`: The unique access key ID of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.
+	- Service `snowflake`: The unique access key ID of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment, want to use an S3 bucket to stage your data, and `awsBucketAuthType` is set to `IAM_USER`.
+- `aws_bucket_auth_type` (String) Field usage depends on `service` value: 
+	- Service `snowflake`: Type of authentication configured for the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an S3 bucket to stage your data.
 - `aws_secret_access_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `new_s3_datalake`: AWS secret access key to access the S3 bucket and AWS Glue
+	- Service `redshift`: The secret access key of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.
+	- Service `snowflake`: The secret access key of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment , want to use an S3 bucket to stage your data, and `awsBucketAuthType` is set to `IAM_USER`.
 - `bootstrap_servers` (Set of String) Field usage depends on `service` value: 
 	- Service `confluent_cloud_wh`: Comma-separated list of Confluent Cloud servers in the `server:port` format.
 - `bucket` (String) Field usage depends on `service` value: 
 	- Service `big_query`: Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.
 	- Service `big_query_dts`: Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.
 	- Service `managed_big_query`: Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.
+	- Service `managed_data_lake`: (Immutable) The name of the bucket to be used as destination
 	- Service `new_s3_datalake`: (Immutable) The name of the bucket to be used as destination
+	- Service `redshift`: The name of the storage bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.
+	- Service `snowflake`: The name of the storage bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an S3 or GCS bucket to stage your data.
+- `bucket_region` (String) Field usage depends on `service` value: 
+	- Service `redshift`: The AWS Region of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.
+	- Service `snowflake`: The AWS Region of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an S3 bucket to stage your data.
 - `catalog` (String) Field usage depends on `service` value: 
 	- Service `adls`: Catalog name
 	- Service `databricks`: Catalog name
+	- Service `managed_data_lake`: Catalog name
 	- Service `new_s3_datalake`: Catalog name
 	- Service `onelake`: Catalog name
 - `client_id` (String) Field usage depends on `service` value: 
 	- Service `adls`: Client id of service principal
+	- Service `managed_data_lake`: Client id of service principal
 	- Service `onelake`: Client ID of service principal
 - `cloud_provider` (String) Field usage depends on `service` value: 
 	- Service `databricks`: Databricks deployment cloud
@@ -132,10 +152,14 @@ Optional:
 	- Service `azure_sql_database`: Connection method. Default value: `Directly`.
 	- Service `azure_sql_managed_db_warehouse`: Connection method. Default value: `Directly`.
 	- Service `databricks`: Connection method. Default value: `Directly`.
+	- Service `managed_data_lake`: connection type
 	- Service `maria_rds_warehouse`: Connection method. Default value: `Directly`.
 	- Service `maria_warehouse`: Connection method. Default value: `Directly`.
 	- Service `mysql_rds_warehouse`: Connection method. Default value: `Directly`.
 	- Service `mysql_warehouse`: Connection method. Default value: `Directly`.
+	- Service `oracle_rac_warehouse`: Connection method. Default value: `Directly`.
+	- Service `oracle_rds_warehouse`: Connection method. Default value: `Directly`.
+	- Service `oracle_warehouse`: Connection method. Default value: `Directly`.
 	- Service `panoply`: Connection method. Default value: `Directly`.
 	- Service `periscope_warehouse`: Connection method. Default value: `Directly`.
 	- Service `postgres_gcp_warehouse`: Connection method. Default value: `Directly`.
@@ -147,6 +171,7 @@ Optional:
 	- Service `sql_server_warehouse`: Connection method. Default value: `Directly`.
 - `container_name` (String) Field usage depends on `service` value: 
 	- Service `adls`: (Immutable) Container to store delta table files
+	- Service `managed_data_lake`: (Immutable) Container to store delta table files
 	- Service `onelake`: Workspace name to store delta table files
 - `controller_id` (String)
 - `create_external_tables` (Boolean) Field usage depends on `service` value: 
@@ -168,6 +193,9 @@ Optional:
 	- Service `maria_warehouse`: Database name
 	- Service `mysql_rds_warehouse`: Database name
 	- Service `mysql_warehouse`: Database name
+	- Service `oracle_rac_warehouse`: Database name
+	- Service `oracle_rds_warehouse`: Database name
+	- Service `oracle_warehouse`: Database name
 	- Service `panoply`: Database name
 	- Service `periscope_warehouse`: Database name
 	- Service `postgres_gcp_warehouse`: Database name
@@ -179,21 +207,36 @@ Optional:
 	- Service `sql_server_warehouse`: Database name
 - `databricks_connection_type` (String) Field usage depends on `service` value: 
 	- Service `adls`: Databricks Connection method. Default value: `Directly`.
+	- Service `managed_data_lake`: Databricks Connection method. Default value: `Directly`.
 	- Service `new_s3_datalake`: Databricks Connection method. Default value: `Directly`.
 	- Service `onelake`: Databricks Connection method. Default value: `Directly`.
-- `enable_external_storage_for_unstructured_files` (Boolean)
+- `directory_id` (String) Field usage depends on `service` value: 
+	- Service `snowflake`: Tenant ID of your app created in Azure
+- `enable_external_storage_for_unstructured_files` (Boolean) Field usage depends on `service` value: 
+	- Service `snowflake`: Set to `true` if you want to enable external storage for unstructured files.
 - `enable_remote_execution` (Boolean)
 - `enable_single_topic` (Boolean) Field usage depends on `service` value: 
 	- Service `confluent_cloud_wh`: Populate all tables in a single topic.
+- `enable_super_type` (Boolean) Field usage depends on `service` value: 
+	- Service `redshift`: Enable to convert JSON data type to SUPER
 - `external_location` (String) Field usage depends on `service` value: 
 	- Service `databricks`: External location to store Delta tables. Default value: `""`  (null). By default, the external tables will reside in the `/{schema}/{table}` path, and if you specify an external location in the `{externalLocation}/{schema}/{table}` path.
-- `external_stage_storage_provider` (String)
-- `external_storage_integration` (String)
-- `external_storage_parent_folder_uri` (String)
+- `external_stage_storage_provider` (String) Field usage depends on `service` value: 
+	- Service `snowflake`: External stage storage provider[Internal, S3, Azure,GCS]
+- `external_storage_cloud_provider` (String) Field usage depends on `service` value: 
+	- Service `snowflake`: The cloud service provider you want to use for staging data. Use this parameter only if you are using Hybrid Deployment.
+- `external_storage_integration` (String) Field usage depends on `service` value: 
+	- Service `snowflake`: External storage integration name
+- `external_storage_parent_folder_uri` (String) Field usage depends on `service` value: 
+	- Service `snowflake`: External storage parent folder URL
 - `fivetran_glue_role_arn` (String)
 - `fivetran_msk_role_arn` (String)
 - `fivetran_role_arn` (String) Field usage depends on `service` value: 
+	- Service `managed_data_lake`: (Immutable) ARN of the role which you created with different required policy mentioned in our setup guide
 	- Service `new_s3_datalake`: ARN of the role which you created with different required policy mentioned in our setup guide
+- `gcs_service_account_credentials` (Block, Optional) (see [below for nested schema](#nestedblock--config--gcs_service_account_credentials))
+- `gcs_service_account_credentials_path` (String) Field usage depends on `service` value: 
+	- Service `snowflake`: The path to the JSON file that contains the service account credentials for the GCS bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use a GCS bucket to stage your data.
 - `host` (String) Field usage depends on `service` value: 
 	- Service `aurora_postgres_warehouse`: Server name
 	- Service `aurora_warehouse`: Server name
@@ -205,6 +248,9 @@ Optional:
 	- Service `maria_warehouse`: Server name
 	- Service `mysql_rds_warehouse`: Server name
 	- Service `mysql_warehouse`: Server name
+	- Service `oracle_rac_warehouse`: Server name
+	- Service `oracle_rds_warehouse`: Server name
+	- Service `oracle_warehouse`: Server name
 	- Service `panoply`: Server name
 	- Service `periscope_warehouse`: Server name
 	- Service `postgres_gcp_warehouse`: Server name
@@ -217,6 +263,7 @@ Optional:
 - `http_path` (String) Field usage depends on `service` value: 
 	- Service `adls`: HTTP path
 	- Service `databricks`: HTTP path
+	- Service `managed_data_lake`: HTTP path
 	- Service `new_s3_datalake`: HTTP path
 	- Service `onelake`: HTTP path
 - `is_private_key_encrypted` (Boolean) Field usage depends on `service` value: 
@@ -226,6 +273,7 @@ Optional:
 - `is_redshift_serverless` (Boolean) Field usage depends on `service` value: 
 	- Service `redshift`: Is your destination Redshift Serverless
 - `lakehouse_guid` (String) Field usage depends on `service` value: 
+	- Service `managed_data_lake`: (Immutable) OneLake lakehouse GUID
 	- Service `onelake`: (Immutable) OneLake lakehouse GUID
 - `lakehouse_name` (String) Field usage depends on `service` value: 
 	- Service `onelake`: (Immutable) Name of your lakehouse
@@ -235,11 +283,13 @@ Optional:
 - `oauth2_client_id` (String) Field usage depends on `service` value: 
 	- Service `adls`: OAuth 2.0 client ID
 	- Service `databricks`: OAuth 2.0 client ID
+	- Service `managed_data_lake`: OAuth 2.0 client ID
 	- Service `new_s3_datalake`: OAuth 2.0 client ID
 	- Service `onelake`: OAuth 2.0 client ID
 - `oauth2_secret` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `adls`: OAuth 2.0 secret
 	- Service `databricks`: OAuth 2.0 secret
+	- Service `managed_data_lake`: OAuth 2.0 secret
 	- Service `new_s3_datalake`: OAuth 2.0 secret
 	- Service `onelake`: OAuth 2.0 secret
 - `passphrase` (String, Sensitive) Field usage depends on `service` value: 
@@ -255,6 +305,9 @@ Optional:
 	- Service `maria_warehouse`: Database user password
 	- Service `mysql_rds_warehouse`: Database user password
 	- Service `mysql_warehouse`: Database user password
+	- Service `oracle_rac_warehouse`: Database user password
+	- Service `oracle_rds_warehouse`: Database user password
+	- Service `oracle_warehouse`: Database user password
 	- Service `panoply`: Database user password
 	- Service `periscope_warehouse`: Database user password
 	- Service `postgres_gcp_warehouse`: Database user password
@@ -267,6 +320,7 @@ Optional:
 - `personal_access_token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `adls`: Personal access token
 	- Service `databricks`: Personal access token
+	- Service `managed_data_lake`: Personal access token
 	- Service `new_s3_datalake`: Personal access token
 	- Service `onelake`: Personal access token
 - `port` (Number) Field usage depends on `service` value: 
@@ -278,12 +332,16 @@ Optional:
 	- Service `azure_sql_database`: Server port number
 	- Service `azure_sql_managed_db_warehouse`: Server port number
 	- Service `databricks`: Server port number
+	- Service `managed_data_lake`: Server port number
 	- Service `maria_rds_warehouse`: Server port number
 	- Service `maria_warehouse`: Server port number
 	- Service `mysql_rds_warehouse`: Server port number
 	- Service `mysql_warehouse`: Server port number
 	- Service `new_s3_datalake`: Server port number
 	- Service `onelake`: Server port number
+	- Service `oracle_rac_warehouse`: Server port number
+	- Service `oracle_rds_warehouse`: Server port number
+	- Service `oracle_warehouse`: Server port number
 	- Service `panoply`: Server port number
 	- Service `periscope_warehouse`: Server port number
 	- Service `postgres_gcp_warehouse`: Server port number
@@ -295,6 +353,7 @@ Optional:
 	- Service `sql_server_warehouse`: Server port number
 - `prefix_path` (String) Field usage depends on `service` value: 
 	- Service `adls`: (Immutable) path/to/data within the container
+	- Service `managed_data_lake`: (Immutable) Prefix path of the bucket for which you have configured access policy. It is not required if access has been granted to entire Bucket in the access policy
 	- Service `new_s3_datalake`: (Immutable) Prefix path of the bucket for which you have configured access policy. It is not required if access has been granted to entire Bucket in the access policy
 	- Service `onelake`: (Immutable) path/to/data within your lakehouse inside the Files directory
 - `private_key` (String, Sensitive) Field usage depends on `service` value: 
@@ -302,6 +361,7 @@ Optional:
 - `project_id` (String) Field usage depends on `service` value: 
 	- Service `big_query`: BigQuery project ID
 - `region` (String) Field usage depends on `service` value: 
+	- Service `managed_data_lake`: (Immutable) Region of your AWS S3 bucket
 	- Service `new_s3_datalake`: Region of your AWS S3 bucket
 - `registry_name` (String)
 - `registry_sts_region` (String)
@@ -353,31 +413,46 @@ Optional:
 	- Service `managed_big_query`: Private key of the customer service account. If specified, your service account will be used to process the data instead of the Fivetran-managed service account.
 - `secret_value` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `adls`: Secret value for service principal
+	- Service `managed_data_lake`: Secret value for service principal
 	- Service `onelake`: Secret value for service principal
 - `security_protocol` (String) Field usage depends on `service` value: 
 	- Service `confluent_cloud_wh`: Security protocol for Confluent Cloud interaction.
 - `server_host_name` (String) Field usage depends on `service` value: 
 	- Service `adls`: Server Host name
 	- Service `databricks`: Server name
+	- Service `managed_data_lake`: Server host name
 	- Service `new_s3_datalake`: Server host name
 	- Service `onelake`: Server Host name
 - `should_maintain_tables_in_databricks` (Boolean) Field usage depends on `service` value: 
 	- Service `adls`: Should maintain tables in Databricks 
+	- Service `managed_data_lake`: Should maintain tables in Databricks 
 	- Service `new_s3_datalake`: Should maintain tables in Databricks 
 	- Service `onelake`: Should maintain tables in Databricks
+- `should_maintain_tables_in_glue` (Boolean) Field usage depends on `service` value: 
+	- Service `managed_data_lake`: Should maintain tables in Glue. Only applicable if storage provider is AWS
 - `snapshot_retention_period` (String) Field usage depends on `service` value: 
 	- Service `adls`: Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.
+	- Service `managed_data_lake`: Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.
 	- Service `new_s3_datalake`: Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.
 	- Service `onelake`: Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.
 - `snowflake_cloud` (String)
 - `snowflake_region` (String)
+- `storage_account_key` (String) Field usage depends on `service` value: 
+	- Service `azure_sql_data_warehouse`: The access key of the Azure storage account you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.
+	- Service `snowflake`: The access key of the Azure storage account you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an Azure Blob storage container to stage your data.
 - `storage_account_name` (String) Field usage depends on `service` value: 
 	- Service `adls`: (Immutable) Storage account for Azure Data Lake Storage Gen2 name
+	- Service `azure_sql_data_warehouse`: The name of the Azure storage account you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.
+	- Service `managed_data_lake`: (Immutable) Storage account for Azure Data Lake Storage Gen2 name
 	- Service `onelake`: (Immutable) Storage account for Azure Data Lake Storage Gen2 name
+	- Service `snowflake`: The name of the Azure storage account you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an Azure Blob storage container to stage your data.
+- `storage_provider` (String) Field usage depends on `service` value: 
+	- Service `managed_data_lake`: Storage Provider
 - `table_format` (String) Field usage depends on `service` value: 
 	- Service `new_s3_datalake`: (Immutable) The table format in which you want to sync your tables. Valid values are ICEBERG and DELTA_LAKE
 - `tenant_id` (String) Field usage depends on `service` value: 
 	- Service `adls`: Tenant id of service principal
+	- Service `managed_data_lake`: Tenant id of service principal
 	- Service `onelake`: Tenant ID of service principal
 - `tunnel_host` (String) Field usage depends on `service` value: 
 	- Service `aurora_postgres_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
@@ -390,6 +465,9 @@ Optional:
 	- Service `maria_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `mysql_rds_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `mysql_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `oracle_rac_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `oracle_rds_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `oracle_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `panoply`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `periscope_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `postgres_gcp_warehouse`: SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.
@@ -409,6 +487,9 @@ Optional:
 	- Service `maria_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `mysql_rds_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `mysql_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `oracle_rac_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `oracle_rds_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `oracle_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `panoply`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `periscope_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `postgres_gcp_warehouse`: SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.
@@ -428,6 +509,9 @@ Optional:
 	- Service `maria_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `mysql_rds_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `mysql_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `oracle_rac_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `oracle_rds_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+	- Service `oracle_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `panoply`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `periscope_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `postgres_gcp_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
@@ -436,6 +520,8 @@ Optional:
 	- Service `redshift`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `sql_server_rds_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
 	- Service `sql_server_warehouse`: SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.
+- `use_customer_staging` (Boolean) Field usage depends on `service` value: 
+	- Service `snowflake`: Set to `true` if you want to use an S3 bucket to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an S3 bucket to stage your data.
 - `user` (String) Field usage depends on `service` value: 
 	- Service `aurora_postgres_warehouse`: Database user name
 	- Service `aurora_warehouse`: Database user name
@@ -447,6 +533,9 @@ Optional:
 	- Service `maria_warehouse`: Database user name
 	- Service `mysql_rds_warehouse`: Database user name
 	- Service `mysql_warehouse`: Database user name
+	- Service `oracle_rac_warehouse`: Database user name
+	- Service `oracle_rds_warehouse`: Database user name
+	- Service `oracle_warehouse`: Database user name
 	- Service `panoply`: Database user name
 	- Service `periscope_warehouse`: Database user name
 	- Service `postgres_gcp_warehouse`: Database user name
@@ -457,6 +546,7 @@ Optional:
 	- Service `sql_server_rds_warehouse`: Database user name
 	- Service `sql_server_warehouse`: Database user name
 - `workspace_guid` (String) Field usage depends on `service` value: 
+	- Service `managed_data_lake`: (Immutable) OneLake workspace GUID
 	- Service `onelake`: (Immutable) OneLake workspace GUID
 - `workspace_name` (String) Field usage depends on `service` value: 
 	- Service `onelake`: OneLake workspace name
@@ -488,6 +578,10 @@ Read-Only:
 	- Service `sql_server_rds_warehouse`: Public Key
 	- Service `sql_server_warehouse`: Public Key
 
+<a id="nestedblock--config--gcs_service_account_credentials"></a>
+### Nested Schema for `config.gcs_service_account_credentials`
+
+
 
 <a id="nestedblock--timeouts"></a>
 ### Nested Schema for `timeouts`
@@ -506,8 +600,10 @@ The default value is `false` - this means that no setup tests will be performed 
 ## Import
 
 1. To import an existing `fivetran_destination` resource into your Terraform state, you need to get **Destination Group ID** on the destination page in your Fivetran dashboard.
-To retrieve existing groups, use the [fivetran_groups data source](/providers/fivetran/fivetran/latest/docs/data-sources/groups).
-2. Define an empty resource in your `.tf` configuration:
+
+2. To retrieve existing destinations, use the [fivetran_destinations data source](/docs/data-sources/destinations).
+
+3. Define an empty resource in your `.tf` configuration:
 
 ```hcl
 resource "fivetran_destination" "my_imported_destination" {
@@ -515,17 +611,17 @@ resource "fivetran_destination" "my_imported_destination" {
 }
 ```
 
-3. Run the `terraform import` command with the following parameters:
+4. Run the `terraform import` command with the following parameters:
 
 ```
 terraform import fivetran_destination.my_imported_destination {your Destination Group ID}
 ```
 
-4. Use the `terraform state show` command to get the values from the state:
+5. Use the `terraform state show` command to get the values from the state:
 
 ```
 terraform state show 'fivetran_destination.my_imported_destination'
 ```
-5. Copy the values and paste them to your `.tf` configuration.
+6. Copy the values and paste them to your `.tf` configuration.
 
 -> The `config` object in the state contains all properties defined in the schema. You need to remove properties from the `config` that are not related to destinations. See the [Fivetran REST API documentation](https://fivetran.com/docs/rest-api/destinations/config) for reference to find the properties you need to keep in the `config` section.

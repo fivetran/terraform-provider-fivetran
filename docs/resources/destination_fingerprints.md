@@ -13,11 +13,11 @@ resource "fivetran_destination_fingerprints" "my_destination_approved_fingerprin
     destination_id = fivetran_destination.my_destination.id
     fingerprint {
         hash = "jhgfJfgrI6yy..."
-        public_key= "ssh-rsa CCCCB3NzaC1yc2ECCASFWFWDFRWT5WAS ... fivetran user key"
+        public_key = "ssh-rsa CCCCB3NzaC1yc2ECCASFWFWDFRWT5WAS ... fivetran user key"
     }
     fingerprint {
         hash = "eUtPirI6yytWe..."
-        public_key= "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6 ... fivetran user key"
+        public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6 ... fivetran user key"
     }
 }
 ```
@@ -54,7 +54,7 @@ Read-Only:
 
 1. To import an existing `fivetran_destination_fingerprints` resource into your Terraform state, you need to get **Destination Group ID** on the destination page in your Fivetran dashboard.
 
-2. To retrieve existing groups, use the [fivetran_groups data source](/docs/data-sources/groups).
+2. To retrieve existing destinations, use the [fivetran_destinations data source](/docs/data-sources/destinations).
 
 3. Define an empty resource in your `.tf` configuration:
 

@@ -13,6 +13,7 @@ clickhouse
 confluent_cloud_wh
 databricks
 managed_big_query
+managed_data_lake
 maria_rds_warehouse
 maria_warehouse
 materialize
@@ -22,6 +23,9 @@ mysql_rds_warehouse
 mysql_warehouse
 new_s3_datalake
 onelake
+oracle_rac_warehouse
+oracle_rds_warehouse
+oracle_warehouse
 postgres_gcp_warehouse
 postgres_rds_warehouse
 postgres_warehouse
