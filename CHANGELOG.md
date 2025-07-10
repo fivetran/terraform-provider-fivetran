@@ -15,6 +15,66 @@ Fields
 - `client_private_key` (String) Client private key
 to `fivetran_proxy_agent` resource
 
+New connection services supported:
+- Supported service: `apollo`
+- Supported service: `ascend_by_partnerize`
+- Supported service: `asset_panda`
+- Supported service: `coheris`
+- Supported service: `crunchbase`
+- Supported service: `fortnox`
+- Supported service: `pardot_sandbox`
+- Supported service: `purple_dot`
+- Supported service: `validio`
+- Supported service: `veeva_vault`
+
+New connection config fields supported:
+- Added field `fivetran_connector.config.root_resource_id` for services: `oracle_fusion_field_service`.
+- Added field `fivetran_connector.config.tde_wallet_password` for services: `oracle_hva`, `oracle_sap_hva`, `oracle_sap_hva_netweaver`.
+- Added field `fivetran_connector.config.reports.query_id` for services: `google_display_and_video_360`.
+- Added field `fivetran_connector.config.directories` for services: `qualtrics`.
+- Added field `fivetran_connector.config.reports.update_config_on_each_sync` for services: `google_display_and_video_360`.
+- Added field `fivetran_connector.config.prioritise_bulk_export_over_rest` for services: `marketo`.
+- Added field `fivetran_connector.config.directory_sync_mode` for services: `qualtrics`.
+- Added field `fivetran_connector.config.custom_reports.action_report_time` for services: `snapchat_ads`.
+- Added field `fivetran_connector.config.binary_log_type` for services: `sql_server`.
+- Added field `fivetran_connector.config.reports.table_name` for services: `google_display_and_video_360`.
+- Added field `fivetran_connector.config.reports.advertisers` for services: `google_display_and_video_360`.
+- Added field `fivetran_connector.config.reports.partners` for services: `google_display_and_video_360`.
+- Added field `fivetran_connector.config.reports.config_method` for services: `google_display_and_video_360`.
+- Added field `fivetran_connector.config.authorization_url` for services: `tiktok_organic`, `workday`.
+- Added field `fivetran_connector.config.entra_app_id` for services: `aurora_postgres`, `azure_postgres`, `google_cloud_postgresql`, `heroku_postgres`, `postgres`, `postgres_rds`.
+- Added field `fivetran_connector.config.key_id` for services: `itunes_connect`.
+- Added field `fivetran_connector.config.entra_tenant_id` for services: `postgres`, `postgres_rds`, `aurora_postgres`, `azure_postgres`, `google_cloud_postgresql`, `heroku_postgres`.
+- Added field `fivetran_connector.config.issuer_id` for services: `itunes_connect`.
+- Added field `fivetran_connector.config.should_sync_reimport_tables` for services: `netsuite_suiteanalytics`.
+- Added field `fivetran_connector.config.enable_tde_encryption` for services: `oracle_hva`, `oracle_sap_hva`, `oracle_sap_hva_netweaver`.
+- Added field `fivetran_connector.config.secret_access_key` for services: `validio`.
+- Added field `fivetran_connector.config.historical_sync_limit_date` for services: `pardot_sandbox`, `sailthru`, `salesforce_marketing_cloud`, `braze`, `iterable`, `klaviyo`, `marketo`, `pardot`.
+- Added field `fivetran_connector.config.vendors_id` for services: `itunes_connect`.
+- Added field `fivetran_connector.config.historical_sync_limit_time_frame` for services: `pardot`, `pardot_sandbox`.
+- Added field `fivetran_connector.config.private_access_token` for services: `purple_dot`.
+- Added field `fivetran_connector.config.endpoint_url` for services: `s3_compatible_storage`.
+- Added field `fivetran_connector.config.look_back_window_for_gl_batch_endpoint` for services: `sage_intacct`.
+- Added field `fivetran_connector.config.plan` for services: `wrike`.
+- Added field `fivetran_connector.config.access_confirmation` for services: `ceridian_dayforce`.
+
+New destination services supported:
+- Supported service: `oracle_rac_warehouse`
+- Supported service: `oracle_rds_warehouse`
+- Supported service: `oracle_warehouse`
+
+New destination config fields supported:
+- Added field `fivetran_destination.config.use_customer_staging` for services: `snowflake`.
+- Added field `fivetran_destination.config.directory_id` for services: `snowflake`.
+- Added field `fivetran_destination.config.gcs_service_account_credentials` for services: `snowflake`.
+- Added field `fivetran_destination.config.aws_bucket_auth_type` for services: `snowflake`.
+- Added field `fivetran_destination.config.gcs_service_account_credentials_path` for services: `snowflake`.
+- Added field `fivetran_destination.config.storage_account_key` for services: `azure_sql_data_warehouse`, `snowflake`.
+- Added field `fivetran_destination.config.bucket_region` for services: `redshift`, `snowflake`.
+- Added field `fivetran_destination.config.enable_super_type` for services: `redshift`.
+- Added field `fivetran_destination.config.application_id` for services: `snowflake`.
+- Added field `fivetran_destination.config.external_storage_cloud_provider` for services: `snowflake`.
+
 ### Removed
 Fields `salt` and `proxy_server_uri` from `fivetran_proxy_agent` resource
 Field `salt`, `token` from `fivetran_proxy_agent` datasource.
