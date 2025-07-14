@@ -70,8 +70,10 @@ The default value is `false` - this means that no setup tests will be performed 
 ## Import
 
 1. To import an existing `fivetran_external_logging` resource into your Terraform state, you need to get **External Logging Group ID** on the external logging page in your Fivetran dashboard.
-To retrieve existing groups, use the [fivetran_groups data source](/docs/data-sources/groups).
-2. Define an empty resource in your `.tf` configuration:
+
+2. To retrieve existing destinations, use the [fivetran_destinations data source](/docs/data-sources/destinations).
+
+3. Define an empty resource in your `.tf` configuration:
 
 ```hcl
 resource "fivetran_external_logging" "my_imported_external_logging" {
@@ -79,17 +81,18 @@ resource "fivetran_external_logging" "my_imported_external_logging" {
 }
 ```
 
-3. Run the `terraform import` command with the following parameters:
+4. Run the `terraform import` command with the following parameters:
 
 ```
 terraform import fivetran_external_logging.my_imported_external_logging {your External Logging Group ID}
 ```
 
-4. Use the `terraform state show` command to get the values from the state:
+5. Use the `terraform state show` command to get the values from the state:
 
 ```
 terraform state show 'fivetran_external_logging.my_imported_external_logging'
 ```
-5. Copy the values and paste them to your `.tf` configuration.
+
+6. Copy the values and paste them to your `.tf` configuration.
 
 -> The `config` object in the state contains all properties defined in the schema. You need to remove properties from the `config` that are not related to destinations. See the [Fivetran REST API documentation](https://fivetran.com/docs/rest-api/log-service-management#logservicesetupconfigurations) for reference to find the properties you need to keep in the `config` section.

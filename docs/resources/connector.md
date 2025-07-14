@@ -383,6 +383,8 @@ Optional:
 	- Service `adobe_analytics_data_feed`: Azure Blob Storage public key
 - `academy_id` (String) Field usage depends on `service` value: 
 	- Service `workramp`: Your WorkRamp academy ID.
+- `access_confirmation` (String) Field usage depends on `service` value: 
+	- Service `ceridian_dayforce`: Your confirmation that you have granted Fivetran access to all the RESTful services and fields you want to sync. Possible values: `true`, `false`.
 - `access_id` (String) Field usage depends on `service` value: 
 	- Service `planful`: Your Planful access ID.
 - `access_key` (String, Sensitive) Field usage depends on `service` value: 
@@ -398,6 +400,8 @@ Optional:
 	- Service `cloudtalk`: Your CloudTalk Access Key ID.
 	- Service `nice`: Your NICE access key ID.
 	- Service `s3`: Access Key ID
+	- Service `s3_compatible_storage`: Access Key ID
+	- Service `validio`: Your Validio access key ID.
 	- Service `wasabi_cloud_storage`: Access Key ID
 - `access_key_secret` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `aws_cost_report`: Access Key Secret
@@ -406,6 +410,7 @@ Optional:
 	- Service `gongio`: Your Gongio Access Key Secret.
 	- Service `nice`: Your NICE access key secret.
 	- Service `s3`: Access Key Secret
+	- Service `s3_compatible_storage`: Access Key Secret
 	- Service `wasabi_cloud_storage`: Access Key Secret
 - `access_token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `7shifts`: Your 7shifts access token.
@@ -414,6 +419,7 @@ Optional:
 	- Service `bitly`: Your Bitly access token.
 	- Service `calabrio`: Your Calabrio access token.
 	- Service `coalesce`: Your Coalesce access token.
+	- Service `coheris`: Your Coheris access token.
 	- Service `coupa`: Your Coupa access token fetched using client_id and client_secret
 	- Service `deputy`: Your Deputy API access token.
 	- Service `getfeedback`: Your GetFeedback Access token.
@@ -473,6 +479,7 @@ Optional:
 	- Service `impact_partner`: Your Impact Partner account SID
 - `account_sync_mode` (String) Field usage depends on `service` value: 
 	- Service `itunes_connect`: Account Sync Mode
+	- Service `snapchat_ads`: Whether to sync all accounts or specific accounts. Default value: `AllAccounts`.
 - `account_token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `konnect_insights`: Your Konnect Insights Account Token.
 - `account_type` (String) Field usage depends on `service` value: 
@@ -490,6 +497,7 @@ Optional:
 	- Service `instagram_business`: Specific accounts to sync. Must be populated if `sync_mode` is set to `SpecificAccounts`.
 	- Service `itunes_connect`: Accounts
 	- Service `linkedin_ads`: Specific Account IDs to sync. Must be populated if `syncMode` is set to `SpecificAccounts`.
+	- Service `snapchat_ads`: Specific accounts IDs to sync. Must be populated if `accountSyncMode` is set to `SpecificAccounts`.
 	- Service `spotify_ads`: The list of Ad Account IDs to sync. Must be populated if `sync_mode` is set to `SPECIFIC_ACCOUNTS`.
 	- Service `tiktok_ads`: Specific accounts to sync.  Must be populated if `sync_mode` is set to `SpecificAccounts`.
 	- Service `twilio`: Specific Accounts to sync.  Must be populated if `sync_mode` is set to `SpecificAccounts`.
@@ -603,6 +611,7 @@ Optional:
 - `always_encrypted` (Boolean) Field usage depends on `service` value: 
 	- Service `aurora`: Require TLS through Tunnel
 	- Service `aurora_postgres`: Require TLS through Tunnel
+	- Service `aveva_pi`: Require TLS.
 	- Service `azure_cosmos_for_mongo`: Require TLS
 	- Service `azure_postgres`: Require TLS through Tunnel
 	- Service `azure_sql_db`: Require TLS through Tunnel.
@@ -654,6 +663,7 @@ Optional:
 	- Service `square`: The Square API access token of your application.
 - `api_environment` (String) Field usage depends on `service` value: 
 	- Service `afterpay`: Your Afterpay API environment.
+	- Service `tiktok_organic`: Your TikTok Organic API environment.
 - `api_id` (String) Field usage depends on `service` value: 
 	- Service `aircall`: Your Aircall API ID.
 - `api_key` (String, Sensitive) Field usage depends on `service` value: 
@@ -667,6 +677,7 @@ Optional:
 	- Service `algolia`: Your Algolia API key.
 	- Service `alida`: Your Alida API key.
 	- Service `anvyl`: Your Anvyl API key.
+	- Service `apollo`: Your Apollo API key.
 	- Service `appcues`: Your Appcues API key.
 	- Service `ashby`: Your Ashby API key.
 	- Service `assembled`: Your Assembled API key.
@@ -712,6 +723,7 @@ Optional:
 	- Service `contrast_security`: Your Contrast Security API Key.
 	- Service `copper`: Your Copper API key.
 	- Service `coupa`: Your Coupa API key.
+	- Service `crunchbase`: Your Crunchbase API key.
 	- Service `datadog`: Your Datadog API key.
 	- Service `dbt_cloud`: Your dbt Cloud service token.
 	- Service `dcl_logistics`: Your DCL Logistics API key.
@@ -784,6 +796,7 @@ Optional:
 	- Service `mandrill`: Your Mandrill API key.
 	- Service `maxio_chargify`: Enter Your API Key.
 	- Service `messagebird`: Your MessageBird API key.
+	- Service `moloco`: Your Moloco api_key
 	- Service `mountain`: Your MNTN API key.
 	- Service `myosh`: Your myosh API key.
 	- Service `okendo`: Your Okendo API key.
@@ -897,6 +910,7 @@ Optional:
 	- Service `aha`: Your Aha! API key.
 	- Service `aircall`: Your Aircall API token.
 	- Service `appsflyer`: API Token for AppsFlyer's PULL API.
+	- Service `aura_from_unity`: Your Aura from Unity API token.
 	- Service `awin`: Your Awin API Token.
 	- Service `backbone_plm`: Your Backbone PLM API token.
 	- Service `brex`: Your Brex API token
@@ -967,17 +981,19 @@ Optional:
 	- Service `kustomer`: Api Utilization Percentage
 - `api_version` (String) Field usage depends on `service` value: 
 	- Service `pardot`: API Version
+	- Service `pardot_sandbox`: API Version
 - `app_id` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `churnkey`: Your Churnkey APP ID.
 	- Service `open_exchange_rates`: Your Open Exchange Rates App Id.
 	- Service `rokt`: Your Rokt app ID.
+	- Service `tiktok_organic`: Your Tiktok Organic app ID.
 - `app_ids` (Set of String) Field usage depends on `service` value: 
 	- Service `pendo`: Specific App IDs to sync. Must be populated if `sync_mode` is set to `SpecificAppIds`.
 - `app_ids_appsflyer` (Block Set) (see [below for nested schema](#nestedblock--config--app_ids_appsflyer))
 - `app_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `loopio`: Your Loopio App Key.
 	- Service `servicetitan`: Your ServiceTitan app key.
-	- Service `yotpo`: Your Yotpo App Key
+	- Service `yotpo`: Your Yotpo app key.
 	- Service `yotpo_app`: Your Yotpo App key.
 - `app_reference` (String) Field usage depends on `service` value: 
 	- Service `brightpearl`: Your Brightpearl app reference.
@@ -993,11 +1009,13 @@ Optional:
 	- Service `azure_blob_storage`: If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.
 	- Service `box`: If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.
 	- Service `dropbox`: If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.
+	- Service `email`: If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.
 	- Service `ftp`: If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.
 	- Service `gcs`: If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.
 	- Service `google_drive`: If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.
 	- Service `kinesis`: If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.
 	- Service `s3`: If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.
+	- Service `s3_compatible_storage`: If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.
 	- Service `sftp`: If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.
 	- Service `share_point`: If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.
 	- Service `wasabi_cloud_storage`: If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.
@@ -1012,9 +1030,15 @@ Optional:
 - `apps` (Set of String) Field usage depends on `service` value: 
 	- Service `itunes_connect`: Specific apps to sync. Must be populated if `app_sync_mode` is set to `SpecificApps`.
 - `archive_log_format` (String) Field usage depends on `service` value: 
+	- Service `oracle_hva`: Archive log format.
+	- Service `oracle_sap_hva`: Archive log format.
+	- Service `oracle_sap_hva_netweaver`: Archive log format.
 	- Service `sql_server_hva`: Format for archive log file names
 	- Service `sql_server_sap_ecc_hva`: Format for archive log file names
 - `archive_log_path` (String) Field usage depends on `service` value: 
+	- Service `oracle_hva`: Archive log path.
+	- Service `oracle_sap_hva`: Archive log path.
+	- Service `oracle_sap_hva_netweaver`: Archive log path.
 	- Service `sql_server_hva`: Directory where archive logs are located
 	- Service `sql_server_sap_ecc_hva`: Directory where archive logs are located
 - `archive_pattern` (String) Field usage depends on `service` value: 
@@ -1028,6 +1052,7 @@ Optional:
 	- Service `google_drive`: Files inside of compressed archives with filenames matching this regular expression will be synced.
 	- Service `kinesis`: Optional. Files inside of compressed archives with filenames matching this regular expression will be synced.
 	- Service `s3`: Files inside compressed archives with filenames matching this regular expression will be synced.
+	- Service `s3_compatible_storage`: Files inside compressed archives with filenames matching this regular expression will be synced.
 	- Service `sftp`: Files inside of compressed archives with filenames matching this regular expression will be synced.
 	- Service `share_point`: Files inside of compressed archives with filenames matching this regular expression will be synced.
 	- Service `wasabi_cloud_storage`: Files inside compressed archives with filenames matching this regular expression will be synced.
@@ -1092,6 +1117,7 @@ Optional:
 	- Service `anaplan`: The Anaplan authentication method.
 	- Service `concur`: The Authentication Mode used by SAP Concur. It can be PasswordGrant or CompanyLevel auth mode
 	- Service `github`: Authorization type.
+	- Service `workday`: Authentication Mode
 - `auth_secret` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `webhooks`: The secret you want to use for HMAC/token-based auth methods
 - `auth_token` (String, Sensitive) Field usage depends on `service` value: 
@@ -1107,8 +1133,10 @@ Optional:
 	- Service `jira`: Authorization type.
 	- Service `mixpanel`: Authentication Method
 	- Service `pardot`: Authenticate using OAuth or HTTP Basic
+	- Service `pardot_sandbox`: Authenticate using OAuth or HTTP Basic
 	- Service `qualtrics`: Type of authentication being used by connector
 	- Service `s3`: Access approach
+	- Service `s3_compatible_storage`: Access approach
 	- Service `wasabi_cloud_storage`: The Wasabi Cloud Storage Access approach. Required for connector creation. Default value: `ACCESS_KEY`.
 - `auth_url_region` (String) Field usage depends on `service` value: 
 	- Service `amazon_dsp`: Your Amazon DSP auth grant URL region.
@@ -1123,12 +1151,17 @@ Optional:
 	- Service `oracle_fusion_cloud_apps_hcm`: The Oracle Fusion Cloud authentication method.
 	- Service `salesforce`: (Optional) Authentication type (default value = `STANDARD`)
 	- Service `salesforce_sandbox`: (Optional) Authentication type (default value = `STANDARD`)
+- `authorization_url` (String) Field usage depends on `service` value: 
+	- Service `tiktok_organic`: The authorization URL of the app registered in your TikTok developer account.
+	- Service `workday`: Authorization URL
 - `aws_region_code` (String) Field usage depends on `service` value: 
 	- Service `dynamodb`: The AWS region code for the DynamoDB instance, e.g. `us-east-1`.
 - `backint_configuration_path` (String)
 - `backint_executable_path` (String)
 - `backward_sync_limit` (String) Field usage depends on `service` value: 
 	- Service `shopify`: Limit of the Historical Sync Time for selected tables
+	- Service `stripe`: Limit of the Historical Sync Time for selected tables
+	- Service `stripe_test`: Limit of the Historical Sync Time for selected tables
 	- Service `zendesk`: Date Limit of the Historical Sync Time for selected tables. The format should be YYYY-MM-DD
 - `backward_sync_limit_date` (String) Field usage depends on `service` value: 
 	- Service `hubspot`: Date Limit of the Historical Sync Time for selected tables. The Format should be YYYY-MM-DD
@@ -1141,11 +1174,13 @@ Optional:
 - `base_url` (String) Field usage depends on `service` value: 
 	- Service `aha`: Your Aha! subdomain.
 	- Service `akeneo`: Your Akeneo base URL.
+	- Service `bigmarker`: Your BigMarker base URL.
 	- Service `billing_platform`: Your BillingPlatform subdomain.
 	- Service `boostr`: Your Boostr base URL.
 	- Service `brex`: Your Brex Base URL
 	- Service `centra`: Your Centra base URL.
 	- Service `coalesce`: Your Coalesce base URL.
+	- Service `coheris`: Your Coheris base URL.
 	- Service `cornerstone`: Your Cornerstone base URL.
 	- Service `culture_amp`: Your Culture Amp base URL.
 	- Service `datadog`: Your Datadog base url.
@@ -1164,6 +1199,7 @@ Optional:
 	- Service `salesforce`: (Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.
 	- Service `salesforce_sandbox`: (Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.
 	- Service `stickyio`: Your sticky.io base URL .
+	- Service `veeva_vault`: Base URL
 	- Service `veevavault`: Your Veeva Vault base URL.
 	- Service `vitally`: Your Vitally base URL.
 - `bearer_token` (String, Sensitive) Field usage depends on `service` value: 
@@ -1177,6 +1213,8 @@ Optional:
 	- Service `smarthr`: Your SmartHR access token.
 	- Service `sprout`: Your Sprout Social API Access Token.
 	- Service `zenefits`: Your Zenefits bearer token.
+- `binary_log_type` (String) Field usage depends on `service` value: 
+	- Service `sql_server`: Transaction log type. Possible values: `"ONLINE"`, `"BACK_AZURE"`. Default"  value is `"ONLINE"`.
 - `blob_sas_url` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `webhooks`: The blob SAS URL of your Azure container. Required if `bucket_service` is set to `AZURE`.
 - `blockchain` (String) Field usage depends on `service` value: 
@@ -1197,6 +1235,7 @@ Optional:
 	- Service `heap`: The S3 bucket name.
 	- Service `kinesis`: The name of the Kinesis bucket.
 	- Service `s3`: The S3 bucket name. Required for connector creation.
+	- Service `s3_compatible_storage`: The S3-Compatible Storage bucket name. Required for connector creation.
 	- Service `segment`: The name of the Segment bucket. Must be populated if `sync_type` is set to `S3`.
 	- Service `wasabi_cloud_storage`: The Wasabi Cloud Storage bucket name. Required for connector creation.
 - `bucket_name` (String) Field usage depends on `service` value: 
@@ -1213,6 +1252,7 @@ Optional:
 	- Service `deposco`: Your Deposco business unit.
 - `business_unit_id` (String) Field usage depends on `service` value: 
 	- Service `pardot`: Business Unit Id
+	- Service `pardot_sandbox`: Business Unit Id
 - `catalog` (String) Field usage depends on `service` value: 
 	- Service `databricks_db`: catalog to sync
 - `certificate` (String, Sensitive) Field usage depends on `service` value: 
@@ -1233,7 +1273,7 @@ Optional:
 	- Service `apache_kafka`: Kafka client certificate key.
 	- Service `heroku_kafka`: Heroku Kafka client certificate key.  Required for `TLS` security protocol.
 - `client_host` (String) Field usage depends on `service` value: 
-	- Service `ceridian_dayforce`: Your Ceridian Dayforce Client Host.
+	- Service `ceridian_dayforce`: Your Ceridian Dayforce client host.
 - `client_id` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `acumatica`: Your Acumatica client ID.
 	- Service `adobe_analytics`: Client ID from the OAuth Server-to-Server or Service Account (JWT) credentials of your Adobe Project.
@@ -1272,6 +1312,7 @@ Optional:
 	- Service `fillout`: Your Fillout client ID.
 	- Service `flexport`: The Flexport API Key.
 	- Service `formstack`: Your Formstack client ID.
+	- Service `fortnox`: Your Fortnox client ID.
 	- Service `genesys`: Your Genesys client ID.
 	- Service `hana_sap_hva_ecc_netweaver`: Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.
 	- Service `hana_sap_hva_s4_netweaver`: Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.
@@ -1294,6 +1335,7 @@ Optional:
 	- Service `navan`: Your Navan client ID.
 	- Service `nice`: Your NICE client ID.
 	- Service `on24`: Your ON24 client ID.
+	- Service `oracle_fusion_field_service`: Your Oracle Fusion Field Service client ID.
 	- Service `oracle_sap_hva_netweaver`: Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.
 	- Service `paychex`: Your Paychex client ID.
 	- Service `paypal`: `Client ID` of your PayPal client application.
@@ -1358,7 +1400,7 @@ Optional:
 	- Service `destini`: Your Destini Client Name.
 	- Service `medallia`: Medallia company name
 - `client_namespace` (String) Field usage depends on `service` value: 
-	- Service `ceridian_dayforce`: Your Ceridian Dayforce Client Namespace.
+	- Service `ceridian_dayforce`: Your Ceridian Dayforce client namespace.
 - `client_private_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `aurora`: Client Private Key in .pem format.
 	- Service `aurora_postgres`: Client Private Key in .pem format.
@@ -1428,6 +1470,7 @@ Optional:
 	- Service `fillout`: Your Fillout client secret
 	- Service `flexport`: The Flexport API Secret.
 	- Service `formstack`: Your Formstack client secret.
+	- Service `fortnox`: Your Fortnox client secret.
 	- Service `genesys`: Your Genesys client secret.
 	- Service `helpdesk`: Your HelpDesk client secret.
 	- Service `hilti_ontrack`: Your Hilti On!Track client secret.
@@ -1446,6 +1489,7 @@ Optional:
 	- Service `microsoft_teams`: Your Microsoft Teams client secret.
 	- Service `navan`: Your Navan client secret.
 	- Service `nice`: Your NICE client secret.
+	- Service `oracle_fusion_field_service`: Your Oracle Fusion Field Service client secret.
 	- Service `paychex`: Your Paychex client secret.
 	- Service `personio`: Your Personio secret.
 	- Service `piwik_pro`: Your Piwik PRO client secret.
@@ -1540,6 +1584,7 @@ Optional:
 	- Service `google_drive`: The compression format is used to let Fivetran know that even files without a compression extension should be decompressed using the selected compression format.
 	- Service `kinesis`: If your files are compressed, but do not have extensions indicating the compression method, you can force them to be uncompressed according to the selected compression algorithm. Leave the value as infer if your files are saved with the correct compression extensions.
 	- Service `s3`: The compression format is used to let Fivetran know that even files without a compression extension should be decompressed using the selected compression format.
+	- Service `s3_compatible_storage`: The compression format is used to let Fivetran know that even files without a compression extension should be decompressed using the selected compression format.
 	- Service `sftp`: The secrets that should be passed to the function at runtime.
 	- Service `share_point`: The compression format is used to let Fivetran know that even files without a compression extension should be decompressed using the selected compression format.
 	- Service `wasabi_cloud_storage`: The compression format is used to let Fivetran know that even files without a compression extension should be decompressed using the selected compression format.
@@ -1570,9 +1615,11 @@ Optional:
 	- Service `azure_service_bus`: The connection string used for authentication. Required if the authentication type is `ConnectionString` 
 	- Service `microsoft_dynamics_365_fno`: The blob storage container's connection string.
 	- Service `microsoft_dynamics_365_fo`: The blob storage container connection string.
+	- Service `sql_server`: The Azure Blob Storage container connection string.
 - `connection_type` (String) Field usage depends on `service` value: 
 	- Service `aurora`: Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
 	- Service `aurora_postgres`: Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
+	- Service `aveva_pi`: Possible values: `Directly`, `PrivateLink`
 	- Service `aws_cost_report`: Connection method. Default value: `Directly`.
 	- Service `aws_lambda`: Connection method. Default value: `Directly`.
 	- Service `azure_blob_storage`: Connection method. Default value: `Directly`.
@@ -1655,10 +1702,11 @@ Optional:
 	- Service `woocommerce`: Your WooCommerce Consumer secret.
 - `container_address` (String) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: IP address of the Azure Storage Container which is accessible from host machine.
-- `container_name` (String) Field usage depends on `service` value: 
+- `container_name` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: The name of the blob container.
 	- Service `microsoft_dynamics_365_fno`: The name of the blob container.
 	- Service `microsoft_dynamics_365_fo`: The name of the blob container.
+	- Service `sql_server`: The name of the Azure Blob Storage container.
 - `content_owner_id` (String) Field usage depends on `service` value: 
 	- Service `youtube_analytics`: Used only for Content Owner reports. The ID of the content owner for whom the API request is being made.
 - `contract_version` (String) Field usage depends on `service` value: 
@@ -1678,7 +1726,7 @@ Optional:
 	- Service `criteo`: Currency
 	- Service `rokt`: Your Rokt currency.
 - `custom_base_url` (String) Field usage depends on `service` value: 
-	- Service `coalesce`: Your Coalesce Custom Base URL.
+	- Service `coalesce`: Your Coalesce custom base URL.
 	- Service `datadog`: Your Datadog custom base url.
 	- Service `deposco`: Your Deposco custom base URL.
 - `custom_event_sync_mode` (String) Field usage depends on `service` value: 
@@ -1782,6 +1830,7 @@ Optional:
 	- Service `google_drive`: You can specify the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.
 	- Service `kinesis`: Optional. You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible. If your files sync with the wrong number of columns, consider setting this value
 	- Service `s3`: You can specify the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.
+	- Service `s3_compatible_storage`: You can specify the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.
 	- Service `sftp`: You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.
 	- Service `share_point`: You can specify the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.
 	- Service `wasabi_cloud_storage`: You can specify the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.
@@ -1798,6 +1847,10 @@ Optional:
 - `direct_capture_method` (String) Field usage depends on `service` value: 
 	- Service `oracle_hva`: Possible values:`DIRECT`, `BFILE`, `ASM`, `ARCHIVE_ONLY`
 	- Service `oracle_sap_hva`: Possible values:`DIRECT`, `BFILE`, `ASM`, `ARCHIVE_ONLY`
+- `directories` (Set of String) Field usage depends on `service` value: 
+	- Service `qualtrics`: Set of directories to be synced when syncMode is CUSTOM
+- `directory_sync_mode` (String) Field usage depends on `service` value: 
+	- Service `qualtrics`: Sync mode to be used for fetching select directories. The Allowed Values are ALL and CUSTOM. If CUSTOM add the directories to be synced in the `directories` field.
 - `distributed_connector_cluster_size` (Number) Field usage depends on `service` value: 
 	- Service `cosmos`: Specifies the total number of connectors in the Distributed Connector Cluster running in parallel.
 	- Service `dynamodb`: Specifies the total number of connectors in the Distributed Connector Cluster running in parallel.
@@ -1834,12 +1887,14 @@ Optional:
 - `elements` (Set of String)
 - `email` (String) Field usage depends on `service` value: 
 	- Service `appcues`: Your Appcues Email.
+	- Service `asset_panda`: Your Asset Panda email.
 	- Service `boostr`: Your Boostr email.
 	- Service `copper`: Your Copper email address.
 	- Service `email`: Send your emails to this address.
 	- Service `moloco`: Your Moloco account email.
 	- Service `netsuite_suiteanalytics`: The NetSuite user's email address.
 	- Service `pardot`: The email of the Pardot user.
+	- Service `pardot_sandbox`: The email of the Pardot user.
 	- Service `skuvault`: Your SkuVault email.
 	- Service `smadex`: Your Smadex account's email ID.
 	- Service `zendesk`: Zendesk email.
@@ -1861,12 +1916,16 @@ Optional:
 	- Service `google_drive`: Optional. If your CSV generating software doesn't provide header line for the documents, Fivetran can generate the generic column names and sync data rows with them.
 	- Service `kinesis`: Optional. If your CSV generating software doesn't provide header line for the documents, Fivetran can generate the generic column names and sync data rows with them.
 	- Service `s3`: If your CSVs are headerless, set this is as `true`. When `true`, we will generate generic column names following the convention of `column_0`, `column_1`, ... `column_n` to map the rows. Default value: `false`.
+	- Service `s3_compatible_storage`: If your CSVs are headerless, set this is as `true`. When `true`, we will generate generic column names following the convention of `column_0`, `column_1`, ... `column_n` to map the rows. Default value: `false`.
 	- Service `sftp`: Optional. If your CSV generating software doesn't provide header line for the documents, Fivetran can generate the generic column names and sync data rows with them.
 	- Service `share_point`: Optional. If your CSV generating software doesn't provide header line for the documents, Fivetran can generate the generic column names and sync data rows with them.
 	- Service `wasabi_cloud_storage`: If your CSVs are headerless, set this is as `true`. When `true`, we will generate generic column names following the convention of `column_0`, `column_1`, ... `column_n` to map the rows. Default value: `false`.
 - `enable_all_dimension_combinations` (Boolean) Field usage depends on `service` value: 
 	- Service `double_click_campaign_manager`: Whether to enable all reach dimension combinations in the report. Default value: `false`
 - `enable_archive_log_only` (Boolean) Field usage depends on `service` value: 
+	- Service `oracle_hva`: Default value: `false`. Set to `true` if you're using archive log only mode.
+	- Service `oracle_sap_hva`: Default value: `false`. Set to `true` if you're using archive log only mode.
+	- Service `oracle_sap_hva_netweaver`: Default value: `false`. Set to `true` if you're using archive log only mode.
 	- Service `sql_server_hva`: Use archive log only mode
 	- Service `sql_server_sap_ecc_hva`: Use archive log only mode
 - `enable_data_extensions_syncing` (Boolean)
@@ -1878,8 +1937,13 @@ Optional:
 - `enable_exports` (Boolean) Field usage depends on `service` value: 
 	- Service `braze`: Enable User Profile Exports
 - `enable_tde` (Boolean) Field usage depends on `service` value: 
+	- Service `sql_server`: Use transparent data encryption (TDE)
 	- Service `sql_server_hva`: Using Transparent Data Encryption (TDE)
 	- Service `sql_server_sap_ecc_hva`: Using Transparent Data Encryption (TDE)
+- `enable_tde_encryption` (Boolean) Field usage depends on `service` value: 
+	- Service `oracle_hva`: Default value: `false`. Set to `true` if you're using TDE encryption.
+	- Service `oracle_sap_hva`: Default value: `false`. Set to `true` if you're using TDE encryption.
+	- Service `oracle_sap_hva_netweaver`: Default value: `false`. Set to `true` if you're using TDE encryption.
 - `encoded_public_key` (String) Field usage depends on `service` value: 
 	- Service `apple_search_ads`: Use the public key to grant Fivetran access to Apple Search Ads api.
 - `encryption_key` (String, Sensitive) Field usage depends on `service` value: 
@@ -1890,6 +1954,8 @@ Optional:
 	- Service `marketo`: Marketo REST API endpoint.
 	- Service `snowplow`: Connection-specific collector endpoint. The collector endpoint will have the `webhooks.fivetran.com/snowplow/endpoint_ID` format. You will need it to configure Snowplow to connect with Fivetran.
 	- Service `webhooks`: You can send your events to https://webhooks.fivetran.com/webhooks/{endpoint}
+- `endpoint_url` (String) Field usage depends on `service` value: 
+	- Service `s3_compatible_storage`: S3-Compatible Storage Endpoint URL.
 - `engagement_attribution_window` (String) Field usage depends on `service` value: 
 	- Service `pinterest_ads`: The number of days to use as the conversion attribution window for an engagement (i.e. closeup or save) action.
 - `enriched_export` (String) Field usage depends on `service` value: 
@@ -1898,6 +1964,20 @@ Optional:
 	- Service `checkout`: Your Checkout.com entity ID.
 	- Service `zuora`: If `is_multi_entity_feature_enabled` is `true`, then it's `EntityId`.
 	- Service `zuora_sandbox`: If `is_multi_entity_feature_enabled` is `true`, then it's `EntityId`.
+- `entra_app_id` (String) Field usage depends on `service` value: 
+	- Service `aurora_postgres`: Registered Application ID (for Entra ID authentication).
+	- Service `azure_postgres`: Registered Application ID (for Entra ID authentication).
+	- Service `google_cloud_postgresql`: Registered Application ID (for Entra ID authentication).
+	- Service `heroku_postgres`: Registered Application ID (for Entra ID authentication).
+	- Service `postgres`: Registered Application ID (for Entra ID authentication).
+	- Service `postgres_rds`: Registered Application ID (for Entra ID authentication).
+- `entra_tenant_id` (String) Field usage depends on `service` value: 
+	- Service `aurora_postgres`: Azure Tenant ID (for Entra ID authentication).
+	- Service `azure_postgres`: Azure Tenant ID (for Entra ID authentication).
+	- Service `google_cloud_postgresql`: Azure Tenant ID (for Entra ID authentication).
+	- Service `heroku_postgres`: Azure Tenant ID (for Entra ID authentication).
+	- Service `postgres`: Azure Tenant ID (for Entra ID authentication).
+	- Service `postgres_rds`: Azure Tenant ID (for Entra ID authentication).
 - `environment` (String) Field usage depends on `service` value: 
 	- Service `bazaarvoice`: Your Bazaarvoice environment.
 	- Service `buildium`: Your Buildium environment.
@@ -1936,6 +2016,7 @@ Optional:
 	- Service `google_drive`: If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.
 	- Service `kinesis`: Optional. If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.
 	- Service `s3`: If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.
+	- Service `s3_compatible_storage`: If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.
 	- Service `sftp`: If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.
 	- Service `share_point`: If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.
 	- Service `wasabi_cloud_storage`: If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.
@@ -1977,6 +2058,7 @@ Optional:
 	- Service `google_drive`: If your files are saved with improper extensions, you can force them to be synced as the selected filetype.
 	- Service `kinesis`: If your files are saved with improper extensions, you can force them to by synced as the selected filetype. Leave the value as infer if your files have the correct extensions
 	- Service `s3`: If your files are saved with improper extensions, you can force them to be synced as the selected file type.
+	- Service `s3_compatible_storage`: If your files are saved with improper extensions, you can force them to be synced as the selected file type.
 	- Service `sftp`: If your files are saved with improper extensions, you can force them to by synced as the selected file type.
 	- Service `share_point`: If your files are saved with improper extensions, you can force them to be synced as the selected file type.
 	- Service `wasabi_cloud_storage`: If your files are saved with improper extensions, you can force them to be synced as the selected file type.
@@ -2048,14 +2130,37 @@ Optional:
 	- Service `sailthru`: Range of historical data you would like to include in the initial sync. Default value: `ALL_TIME`.
 	- Service `salesforce_marketing_cloud`: Range of data in history you would like to include in the initial sync. Default value: `ALL_TIME`.
 - `historical_sync_limit` (String) Field usage depends on `service` value: 
+	- Service `braze`: Range of data in history you would like to include in the initial sync. Valid values are `ALL_TIME` and `DATE_LIMIT`
 	- Service `concur`: Historical Sync Limit for the Sync
 	- Service `eloqua`: Range of data in history you would like to include in the initial sync. Default value: `ALL_TIME`.
+	- Service `iterable`: The time range for which historical data should be synced. Default value: `All Time`.
+	- Service `klaviyo`: The time range for which historical data should be synced. Default value: `All Time`.
+	- Service `marketo`: The time range for which historical data should be synced. Default value: `All Time`.
 	- Service `pardot`: The time range for which historical data should be synced. Default value: `All Time`.
+	- Service `pardot_sandbox`: The time range for which historical data should be synced. Default value: `All Time`.
+	- Service `sage_intacct`: Historical Sync Limit for the Sync
+	- Service `sailthru`: The time range for which historical data should be synced. Default value: `All Time`.
+	- Service `salesforce_marketing_cloud`: The time range for which historical data should be synced. Default value: `All Time`.
+- `historical_sync_limit_date` (String) Field usage depends on `service` value: 
+	- Service `braze`: The start date (in YYYY-MM-DD) from which to sync historical data. Only used when `historicalSyncLimit` is set to `DATE_LIMIT`.
+	- Service `iterable`: The start date (YYYY-MM-DD) from which to sync historical data.
+	- Service `klaviyo`: The start date (YYYY-MM-DD) from which to sync historical data.
+	- Service `marketo`: The start date (YYYY-MM-DD) from which to sync historical data.
+	- Service `pardot`: The start date (YYYY-MM-DD) from which to sync historical data.
+	- Service `pardot_sandbox`: The start date (YYYY-MM-DD) from which to sync historical data.
+	- Service `sailthru`: The start date (YYYY-MM-DD) from which to sync historical data.
+	- Service `salesforce_marketing_cloud`: The start date (YYYY-MM-DD) from which to sync historical data.
+- `historical_sync_limit_time_frame` (String) Field usage depends on `service` value: 
+	- Service `pardot`: The options for time range for which historical data should be synced. Default value: `All Time`.
+	- Service `pardot_sandbox`: The options for time range for which historical data should be synced. Default value: `All Time`.
 - `historical_sync_time_frame` (String) Field usage depends on `service` value: 
+	- Service `ascend_by_partnerize`: Your Ascend by Partnerize Historical sync time frame
 	- Service `hubspot`: Used to configure Historical sync timeframe for selected tables
 	- Service `rokt`: Your Rokt historical sync time frame.
 	- Service `shopify`: Used to configure Historical sync timeframe for selected tables
 	- Service `skimlinks`: Your Skimlinks Historical sync time frame.
+	- Service `stripe`: Used to configure Historical sync timeframe for selected tables
+	- Service `stripe_test`: Used to configure Historical sync timeframe for selected tables
 	- Service `vimeo`: Your Vimeo Historical sync time frame.
 	- Service `zendesk`: Used to configure Historical sync timeframe for selected tables
 - `home_folder` (String) Field usage depends on `service` value: 
@@ -2063,6 +2168,7 @@ Optional:
 - `host` (String) Field usage depends on `service` value: 
 	- Service `aurora`: DB instance host or IP address.
 	- Service `aurora_postgres`: DB instance host or IP address.
+	- Service `aveva_pi`: IP address of the AF Server
 	- Service `azure_postgres`: DB instance host or IP address.
 	- Service `azure_sql_db`: DB instance host or IP address.
 	- Service `azure_sql_managed_db`: DB instance host or IP address.
@@ -2175,6 +2281,7 @@ Optional:
 	- Service `twitter_ads`: Custom API credentials
 - `is_external_activities_endpoint_selected` (Boolean) Field usage depends on `service` value: 
 	- Service `pardot`: Whether the `EXTERNAL_ACTIVITY` table must be synced or not.
+	- Service `pardot_sandbox`: Whether the `EXTERNAL_ACTIVITY` table must be synced or not.
 - `is_ftps` (Boolean) Field usage depends on `service` value: 
 	- Service `adobe_analytics_data_feed`: Use Secure FTP (FTPS).
 - `is_keypair` (Boolean) Field usage depends on `service` value: 
@@ -2213,6 +2320,8 @@ Optional:
 	- Service `oracle_fusion_cloud_apps_crm`: The Oracle Fusion Cloud issuer name.
 	- Service `oracle_fusion_cloud_apps_fscm`: The Oracle Fusion Cloud issuer name.
 	- Service `oracle_fusion_cloud_apps_hcm`: The Oracle Fusion Cloud issuer name.
+- `issuer_id` (String) Field usage depends on `service` value: 
+	- Service `itunes_connect`: Your Issuer ID
 - `json_delivery_mode` (String) Field usage depends on `service` value: 
 	- Service `aws_cost_report`: Control how your JSON data is delivered into your destination
 	- Service `azure_blob_storage`: Control how your JSON data is delivered into your destination
@@ -2224,11 +2333,14 @@ Optional:
 	- Service `google_drive`: Control how your JSON data is delivered into your destination
 	- Service `kinesis`: Control how your JSON data is delivered into your destination
 	- Service `s3`: Control how your JSON data is delivered into your destination
+	- Service `s3_compatible_storage`: Control how your JSON data is delivered into your destination
 	- Service `sftp`: Control how your JSON data is delivered into your destination
 	- Service `share_point`: Control how your JSON data is delivered into your destination
 	- Service `wasabi_cloud_storage`: Specifies how Fivetran should handle your JSON data. Default value: `Packed`.
 - `key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `uservoice`: The UserVoice API key.
+- `key_id` (String) Field usage depends on `service` value: 
+	- Service `itunes_connect`: Your Key ID
 - `key_password` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `aws_msk`: If `security_protocol` is set to `TLS`, enter your `Key Password`.
 - `key_store_type` (String) Field usage depends on `service` value: 
@@ -2241,6 +2353,7 @@ Optional:
 	- Service `younium`: Your Younium legal entity ID.
 - `limit_for_api_calls_to_external_activities_endpoint` (Number) Field usage depends on `service` value: 
 	- Service `pardot`: API limit for the external activities endpoint.
+	- Service `pardot_sandbox`: API limit for the external activities endpoint.
 - `line_separator` (String) Field usage depends on `service` value: 
 	- Service `aws_cost_report`: You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.
 	- Service `azure_blob_storage`: You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.
@@ -2252,6 +2365,7 @@ Optional:
 	- Service `google_drive`: You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.
 	- Service `kinesis`: You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.
 	- Service `s3`: You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.
+	- Service `s3_compatible_storage`: You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.
 	- Service `sftp`: You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.
 	- Service `share_point`: You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.
 	- Service `wasabi_cloud_storage`: You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.
@@ -2263,6 +2377,7 @@ Optional:
 	- Service `aws_cost_report`: Optional. If you have a file structure where new files are always named in lexicographically increasing order such as files being named in increasing order of time, you can select codetime_based_pattern_listing/code.
 	- Service `kinesis`: Optional. If you have a file structure where new files are always named in lexicographically increasing order such as files being named in increasing order of time, you can select codetime_based_pattern_listing/code.
 	- Service `s3`: The listing strategy you want to use. Default value: `complete_listing`.
+	- Service `s3_compatible_storage`: The listing strategy you want to use. Default value: `complete_listing`.
 - `list_sync_mode` (String) Field usage depends on `service` value: 
 	- Service `google_analytics_4_export`: The Sync Mode
 - `log_journal` (String) Field usage depends on `service` value: 
@@ -2281,6 +2396,8 @@ Optional:
 - `login_password` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `concur`: The SAP Concur password.
 	- Service `sage_intacct`: The login password. It is a part of the login credentials.
+- `look_back_window_for_gl_batch_endpoint` (Number) Field usage depends on `service` value: 
+	- Service `sage_intacct`: Lookback window for GL Batch endpoint lookback sync
 - `manager_accounts` (Set of String) Field usage depends on `service` value: 
 	- Service `google_ads`: The list of the Manager Account IDs whose clients will be synced. Must be populated if `sync_mode` is set to `ManagerAccounts`.
 - `max_api_requests_per_day` (Number) Field usage depends on `service` value: 
@@ -2328,6 +2445,7 @@ Optional:
 	- Service `google_drive`: If your CSVs use a special value indicating null, you can specify it here.
 	- Service `kinesis`: Optional. If your CSVs use a special value indicating null, you can specify it here.
 	- Service `s3`: If your CSVs use a special value indicating null, you can specify it here.
+	- Service `s3_compatible_storage`: If your CSVs use a special value indicating null, you can specify it here.
 	- Service `sftp`: If your CSVs use a special value indicating null, you can specify it here.
 	- Service `share_point`: If your CSVs use a special value indicating null, you can specify it here.
 	- Service `wasabi_cloud_storage`: If your CSVs use a special value indicating null, you can specify it here.
@@ -2359,6 +2477,7 @@ Optional:
 	- Service `google_drive`: If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.
 	- Service `kinesis`: If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.
 	- Service `s3`: If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as `fail` unless you are certain that you have undesirable, malformed data.
+	- Service `s3_compatible_storage`: If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as `fail` unless you are certain that you have undesirable, malformed data.
 	- Service `sftp`: If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.
 	- Service `share_point`: If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as fail unless you are certain that you have undesirable, malformed data.
 	- Service `wasabi_cloud_storage`: If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as `fail` unless you are certain that you have undesirable, malformed data.
@@ -2422,6 +2541,7 @@ Optional:
 	- Service `alida`: Your Alida client secret.
 	- Service `anaplan`: Your Anaplan password. Must be populated if `auth_mode` is set to `Basic`.
 	- Service `appfigures`: Your Appfigures Password.
+	- Service `asset_panda`: Your Asset Panda password.
 	- Service `aurora`: The user's password.
 	- Service `aurora_postgres`: The user's password.
 	- Service `azure_cosmos_for_mongo`: Password used for source database authentication.
@@ -2431,7 +2551,7 @@ Optional:
 	- Service `boostr`: Your Boostr password.
 	- Service `brivo`: Your Brivo password.
 	- Service `cabcharge`: Your Cabcharge password.
-	- Service `ceridian_dayforce`: Your Ceridian Dayforce Password.
+	- Service `ceridian_dayforce`: Your Ceridian Dayforce password.
 	- Service `cin7`: Your Cin7 API Key.
 	- Service `clarity`: The user's password.
 	- Service `cockroachdb`: The user's password.
@@ -2460,7 +2580,7 @@ Optional:
 	- Service `hana_sap_hva_s4_netweaver`: The user's password.
 	- Service `heroku_postgres`: The user's password.
 	- Service `hilti_ontrack`: Your Hilti On!Track password.
-	- Service `impact`: Your Impact Account Token
+	- Service `impact`: Your Impact Brand Account Token
 	- Service `integral_ad_science`: Your integral_ad_science password.
 	- Service `itunes_connect`: Your password
 	- Service `jamf`: Your Jamf password.
@@ -2498,6 +2618,7 @@ Optional:
 	- Service `oracle_sap_hva_netweaver`: The user's password.
 	- Service `outbrain`: The Outbrain user's password.
 	- Service `pardot`: The Pardot user's password.
+	- Service `pardot_sandbox`: The Pardot user's password.
 	- Service `partnerize`: Your Partnerize account's password.
 	- Service `podio`: Your Podio account password.
 	- Service `postgres`: The user's password.
@@ -2535,6 +2656,7 @@ Optional:
 	- Service `ukg_pro_workforce_management`: Your UKG Pro Workforce Management password.
 	- Service `unicommerce`: Your uniware login password.
 	- Service `upland`: Your Upland Software Password.
+	- Service `veeva_vault`: Password
 	- Service `veevavault`: Your Veeva Vault password.
 	- Service `walmart_dsp`: Walmart DSP password. It is a part of the login credentials.
 	- Service `when_i_work`: Your When I Work password.
@@ -2543,6 +2665,7 @@ Optional:
 	- Service `workday_financial_management`: Workday password.
 	- Service `workday_hcm`: Workday password.
 	- Service `xandr`: Your Xandr password.
+	- Service `yougov_brandindex`: Your YouGov BrandIndex password.
 	- Service `younium`: Your Younium password.
 - `pat` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `github`: The `Personal Access Token` generated in Github.
@@ -2559,13 +2682,13 @@ Optional:
 	- Service `azure_blob_storage`: All files in your search path matching this regular expression will be synced.
 	- Service `box`: All files in your search path matching this regular expression will be synced.
 	- Service `dropbox`: All files in your search path matching this regular expression will be synced.
-	- Service `email`: All files in your search path matching this regular expression will be synced.
+	- Service `email`: All files in your search path matching this regular expression will be synced. We have discontinued this field, and will delete it by Oct 31, 2025.
 	- Service `ftp`: All files in your search path matching this regular expression will be synced.
-	- Service `gcs`: All files in your search path matching this regular expression will be synced.
-	- Service `google_drive`: All files in your search path matching this regular expression will be synced.
+	- Service `gcs`: All files in your search path matching this regular expression will be synced. We have discontinued this field, and will delete it by August 31, 2025.
+	- Service `google_drive`: All files in your search path matching this regular expression will be synced. We have discontinued this field, and will delete it by August 31, 2025.
 	- Service `kinesis`: Optional. All files in your search path matching this regular expression will be synced. This parameter is optional.
-	- Service `s3`: All files in your search path matching this regular expression will be synced.
-	- Service `sftp`: All files in your search path matching this regular expression will be synced.
+	- Service `s3`: All files in your search path matching this regular expression will be synced. We have discontinued this field, and will delete it by August 31, 2025.
+	- Service `sftp`: All files in your search path matching this regular expression will be synced. We have discontinued this field, and will delete it by August 31, 2025.
 	- Service `share_point`: All files in your search path matching this regular expression will be synced.
 	- Service `wasabi_cloud_storage`: All files in your search path matching this regular expression will be synced.
 - `pdb_name` (String) Field usage depends on `service` value: 
@@ -2595,6 +2718,7 @@ Optional:
 	- Service `ftp`: The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `gcs`: The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `s3`: The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.
+	- Service `s3_compatible_storage`: The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `sftp`: The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `wasabi_cloud_storage`: The PGP passphrase used to create the key. Must be populated if `use_pgp_encryption_options` is set to `true`.
 - `pgp_secret_key` (String, Sensitive) Field usage depends on `service` value: 
@@ -2602,10 +2726,13 @@ Optional:
 	- Service `ftp`: The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `gcs`: The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `s3`: The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.
+	- Service `s3_compatible_storage`: The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `sftp`: The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.
 	- Service `wasabi_cloud_storage`: The contents of your PGP secret key file. Must be populated if `use_pgp_encryption_options` is set to `true`.
 - `phone_number` (String) Field usage depends on `service` value: 
 	- Service `itunes_connect`: Register the number on AppleId Account Page for 2FA
+- `plan` (String) Field usage depends on `service` value: 
+	- Service `wrike`: Your Wrike Subscription Plan.
 - `plan_type` (String) Field usage depends on `service` value: 
 	- Service `justcall`: Your JustCall Plan Type.
 - `port` (Number) Field usage depends on `service` value: 
@@ -2685,6 +2812,7 @@ Optional:
 	- Service `marin`: Folder path to the Marin manifest file.
 	- Service `microsoft_dynamics_365_fo`: Folder name in which the exported dynamics 365 data resides.
 	- Service `s3`: All files and folders under this folder path will be searched for files to sync.
+	- Service `s3_compatible_storage`: All files and folders under this folder path will be searched for files to sync.
 	- Service `segment`: Folder path to the Segment files within the bucket. Must be populated if `sync_type` is set to `S3`.
 	- Service `sftp`: All files and folders under this folder path will be searched for files to sync.
 	- Service `share_point`: All files and folders under this folder path link will be searched for files to sync. This can be any shared folder link.
@@ -2693,6 +2821,10 @@ Optional:
 	- Service `care_quality_commission`: Your Care Quality Commission primary key.
 - `primary_keys` (Set of String) Field usage depends on `service` value: 
 	- Service `workday`: Primary Keys
+- `prioritise_bulk_export_over_rest` (Boolean) Field usage depends on `service` value: 
+	- Service `marketo`: Use BULK for both LEAD and ACTIITIES
+- `private_access_token` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `purple_dot`: Your PurpleDot Private access token.
 - `private_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `absorb_lms`: Your Absorb LMS REST API private key.
 	- Service `adobe_analytics`: The complete contents of your private key file including the start and end tags (`----BEGIN PRIVATE KEY----` to `----END PRIVATE KEY----`).
@@ -2701,6 +2833,7 @@ Optional:
 	- Service `apple_search_ads`: The contents of your secret key file. Must be populated if `is_auth2_enabled` is set to `false`.
 	- Service `braintree`: The contents of your secret key file.
 	- Service `braintree_sandbox`: The contents of your secret key file.
+	- Service `itunes_connect`: Your Private Key
 	- Service `netsuite_suiteanalytics`: Private Key
 	- Service `oracle_fusion_cloud_apps_crm`: The Oracle Fusion Cloud private key.
 	- Service `oracle_fusion_cloud_apps_fscm`: The Oracle Fusion Cloud private key.
@@ -2718,7 +2851,7 @@ Optional:
 	- Service `google_analytics`: Specific User Profile IDs to sync.  Must be populated if `syncMode` is set to `SpecificAccounts`.
 	- Service `google_analytics_mcf`: Specific User Profile IDs to sync.  Must be populated if `sync_mode` is set to `SPECIFIC_ACCOUNTS`.
 - `profiles_amazon_dsp` (String) Field usage depends on `service` value: 
-	- Service `amazon_dsp`: Comma-separated list of your Amazon DSP profiles.
+	- Service `amazon_dsp`: your Amazon DSP profiles pass it inside an Array list.
 - `project_access_token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `rollbar`: Your Rollbar project access token.
 - `project_credentials` (Block Set) (see [below for nested schema](#nestedblock--config--project_credentials))
@@ -2819,16 +2952,24 @@ Optional:
 	- Service `bigquery_db`: Specify a different project ID to account for quota and billing of Fivetran query workload
 - `quote_char` (String) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: You can specify the enclosing character used in your CSVs here. Fivetran will consider " as the quote character if this field is empty and quote_character_enabled is set to true.
+	- Service `box`: You can specify the enclosing character used in your CSVs here. Fivetran will consider " as the quote character if this field is empty and quote_character_enabled is set to true.
+	- Service `dropbox`: You can specify the enclosing character used in your CSVs here. Fivetran will consider " as the quote character if this field is empty and quote_character_enabled is set to true.
+	- Service `email`: You can specify the enclosing character used in your CSVs here. Fivetran will consider " as the quote character if this field is empty and quote_character_enabled is set to true.
 	- Service `gcs`: You can specify the enclosing character used in your CSVs here. Fivetran will consider " as the quote character if this field is empty and quote_character_enabled is set to true.
 	- Service `google_drive`: You can specify the enclosing character used in your CSVs here. Fivetran will consider " as the quote character if this field is empty and quote_character_enabled is set to true.
 	- Service `s3`: You can specify the enclosing character used in your CSVs here. Fivetran will consider " as the quote character if this field is empty and quote_character_enabled is set to true.
+	- Service `s3_compatible_storage`: You can specify the enclosing character used in your CSVs here. Fivetran will consider " as the quote character if this field is empty and quote_character_enabled is set to true.
 	- Service `sftp`: You can specify the enclosing character used in your CSVs here. Fivetran will consider " as the quote character if this field is empty and quote_character_enabled is set to true.
 	- Service `share_point`: You can specify the enclosing character used in your CSVs here. Fivetran will consider " as the quote character if this field is empty and quote_character_enabled is set to true.
 - `quote_character_enabled` (Boolean) Field usage depends on `service` value: 
-	- Service `azure_blob_storage`: If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered " as quote character.
+	- Service `azure_blob_storage`: If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered " as a quote character.
+	- Service `box`: If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered " as quote character.
+	- Service `dropbox`: If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered " as quote character.
+	- Service `email`: If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered " as quote character.
 	- Service `gcs`: If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered " as quote character.
 	- Service `google_drive`: If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered " as quote character.
 	- Service `s3`: If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered " as quote character.
+	- Service `s3_compatible_storage`: If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered " as quote character.
 	- Service `sftp`: If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered " as quote character.
 	- Service `share_point`: If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered " as quote character.
 - `rate_limit_plan` (String) Field usage depends on `service` value: 
@@ -2935,6 +3076,7 @@ Optional:
 	- Service `dynamics_365`: URL at which Dynamics 365 is accessed
 - `rest_api_limit` (Number) Field usage depends on `service` value: 
 	- Service `pardot`: The number of API calls that the connector should not exceed in a day. Default REST API call limit per day: 150,000.
+	- Service `pardot_sandbox`: The number of API calls that the connector should not exceed in a day. Default REST API call limit per day: 150,000.
 - `rfc_library_path` (String) Field usage depends on `service` value: 
 	- Service `hana_sap_hva_ecc_netweaver`: Directory path containing the SAP NetWeaver RFC SDK library files.
 	- Service `hana_sap_hva_s4_netweaver`: Directory path containing the SAP NetWeaver RFC SDK library files.
@@ -2960,6 +3102,8 @@ Optional:
 	- Service `appsflyer`: Rollback window
 - `rollback_window_size` (Number) Field usage depends on `service` value: 
 	- Service `bingads`: A period of time in days during which a conversion is recorded.
+- `root_resource_id` (String) Field usage depends on `service` value: 
+	- Service `oracle_fusion_field_service`: Your Oracle Fusion Field Service rootresourceId.
 - `s3_bucket` (String) Field usage depends on `service` value: 
 	- Service `webhooks`: The S3 bucket name. Required if `bucket_service` is set to `S3`.
 - `s3_export_bucket` (String) Field usage depends on `service` value: 
@@ -2994,6 +3138,7 @@ Optional:
 	- Service `itunes_connect`: Specific sales account to sync. Must be populated if `sales_account_sync_mode` is set to `SpecificSalesAccounts`.
 - `salesforce_security_token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `pardot`: The Pardot user's Salesforce SSO Account Security Token.
+	- Service `pardot_sandbox`: The Pardot user's Salesforce SSO Account Security Token.
 - `sandbox_account` (String) Field usage depends on `service` value: 
 	- Service `gocardless`: Your GoCardless account type.
 - `sap_schema` (String) Field usage depends on `service` value: 
@@ -3049,6 +3194,7 @@ Optional:
 	- Service `ebay`: Your eBay scopes.
 - `scopes` (String) Field usage depends on `service` value: 
 	- Service `cornerstone`: Your Cornerstone scopes.
+	- Service `fortnox`: Your Fortnox app scopes.
 - `seats` (Set of String) Field usage depends on `service` value: 
 	- Service `yahoo_dsp`: Specific Seats to sync. Must be populated if `sync_mode_seat` is set to `SPECIFIC_SEATS`.
 - `secret` (String, Sensitive) Field usage depends on `service` value: 
@@ -3058,10 +3204,13 @@ Optional:
 	- Service `loopio`: Your Loopio Secret.
 	- Service `mode`: Your Mode Secret.
 	- Service `playvox_workforce_management`: Your Playvox Workforce Management client secret.
+	- Service `tiktok_organic`: The secret of the app registered in your TikTok developer account.
 	- Service `twilio`: The Twilio API secret
 	- Service `uservoice`: The UserVoice API secret.
 	- Service `venminder`: Your Venminder secret.
 	- Service `vts`: Your VTS secret.
+- `secret_access_key` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `validio`: Your Validio secret access key.
 - `secret_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `afterpay`: Your Afterpay Secret Key.
 	- Service `appsflyer`: Your AWS secret key.
@@ -3163,6 +3312,8 @@ Optional:
 	- Service `salesforce_commerce_cloud`: The Salesforce eight-character string assigned to a realm for routing purposes.
 - `should_sync_events_with_deleted_profiles` (Boolean) Field usage depends on `service` value: 
 	- Service `klaviyo`: Sync events linked to deleted profiles
+- `should_sync_reimport_tables` (Boolean) Field usage depends on `service` value: 
+	- Service `netsuite_suiteanalytics`: Re-sync re-import tables during every sync
 - `show_records_with_no_metrics` (Boolean) Field usage depends on `service` value: 
 	- Service `apple_search_ads`: Turn the toggle on if you want the reports to also return records without metrics.
 - `sid` (String) Field usage depends on `service` value: 
@@ -3174,6 +3325,7 @@ Optional:
 	- Service `ftp`: The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.
 	- Service `gcs`: The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.
 	- Service `s3`: The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.
+	- Service `s3_compatible_storage`: The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.
 	- Service `sftp`: The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.
 	- Service `wasabi_cloud_storage`: The contents of the signer's public key file. Must be populated if `use_pgp_encryption_options` is set to `true` and PGP encrypted files are signed.
 - `site_address` (String) Field usage depends on `service` value: 
@@ -3197,6 +3349,7 @@ Optional:
 	- Service `google_drive`: We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.
 	- Service `kinesis`: Enter 1 or greater
 	- Service `s3`: We will skip over the number of lines specified at the end to avoid introducing aberrant data into your destination.
+	- Service `s3_compatible_storage`: We will skip over the number of lines specified at the end to avoid introducing aberrant data into your destination.
 	- Service `sftp`: We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.
 	- Service `share_point`: We will skip over the number of lines specified at the end so as to not introduce aberrant data into your destination.
 	- Service `wasabi_cloud_storage`: We will skip over the number of lines specified at the end to avoid introducing aberrant data into your destination.
@@ -3211,6 +3364,7 @@ Optional:
 	- Service `google_drive`: We will skip over the number of lines specified before syncing data.
 	- Service `kinesis`: Enter 1 or greater
 	- Service `s3`: We will skip over the number of lines specified before syncing data.
+	- Service `s3_compatible_storage`: We will skip over the number of lines specified before syncing data.
 	- Service `sftp`: We will skip over the number of lines specified before syncing data.
 	- Service `share_point`: We will skip over the number of lines specified before syncing data.
 	- Service `wasabi_cloud_storage`: We will skip over the number of lines specified before syncing data.
@@ -3294,6 +3448,7 @@ Optional:
 	- Service `nylas`: Your Nylas subdomain.
 	- Service `odoo`: Your Odoo subdomain.
 	- Service `okta`: Your Okta subdomain.
+	- Service `oracle_fusion_field_service`: Your Oracle Fusion Field Service subDomain.
 	- Service `picqer`: Your Picqer subdomain.
 	- Service `pinpoint`: Your Pinpoint sub domain name.
 	- Service `piwik_pro`: Your Piwik PRO subdomain.
@@ -3317,6 +3472,7 @@ Optional:
 	- Service `totango`: Your Totango Subdomain.
 	- Service `tymeshift`: Your Tymeshift subdomain.
 	- Service `upland`: Your Upland Software subDomain.
+	- Service `validio`: Your Validio subdomain.
 	- Service `wordpress`: Your WordPress subdomain.
 	- Service `workable`: Your Workable Subdomain.
 	- Service `wrike`: Your Wrike Subdomain.
@@ -3383,7 +3539,7 @@ Optional:
 	- Service `dynamodb`: Which packed mode setting to use. Default value: `UsePackedModeOnly`.
 	- Service `facebook`: Option to select connector should sync all accounts or specific accounts. [Possible sync_mode values](https://fivetran.com/docs/applications/facebook-ad-insights/api-config#syncmode).
 	- Service `facebook_ad_account`: Whether to sync all accounts or specific accounts. Default value: `AllAccounts`.
-	- Service `facebook_ads`: Option to select connector should sync all accounts or specific accounts. [Possible sync_mode values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#syncmode).
+	- Service `facebook_ads`: Option to select connector should sync all accounts or specific accounts. [Possible sync_mode values](https://fivetran.com/docs/connectors/applications/facebook-ads#syncmode).
 	- Service `facebook_pages`: Whether to sync all accounts or specific accounts. Default value: `AllPages`.
 	- Service `github`: Whether to sync all repositories or specific repositories.
 	- Service `google_ads`: Whether to sync all accounts or specific accounts.
@@ -3445,17 +3601,24 @@ Optional:
 - `target_host` (String) Field usage depends on `service` value: 
 	- Service `d2l_brightspace`: Your D2L Brightspace target host.
 - `tde_certificate` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `sql_server`: Certificate file path used to protect a database encryption key
 	- Service `sql_server_hva`: Certificate used to protect a database encryption key
 	- Service `sql_server_sap_ecc_hva`: Certificate used to protect a database encryption key
 - `tde_certificate_name` (String) Field usage depends on `service` value: 
 	- Service `sql_server_hva`: Name of the Certificate used to protect a database encryption key
 	- Service `sql_server_sap_ecc_hva`: Name of the Certificate used to protect a database encryption key
 - `tde_password` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `sql_server`: Password of the TDE private key
 	- Service `sql_server_hva`: Password of the TDE private key
 	- Service `sql_server_sap_ecc_hva`: Password of the TDE private key
 - `tde_private_key` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `sql_server`: Private key file path associated with the TDE certificate
 	- Service `sql_server_hva`: Private key associated with the TDE certificate
 	- Service `sql_server_sap_ecc_hva`: Private key associated with the TDE certificate
+- `tde_wallet_password` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `oracle_hva`: TDE wallet password. Required for password based wallet.
+	- Service `oracle_sap_hva`: TDE wallet password. Required for password based wallet.
+	- Service `oracle_sap_hva_netweaver`: TDE wallet password. Required for password based wallet.
 - `team_id` (String) Field usage depends on `service` value: 
 	- Service `asana`: Team ID
 - `technical_account_id` (String) Field usage depends on `service` value: 
@@ -3494,6 +3657,7 @@ Optional:
 	- Service `sap_s4hana`: testTableName
 - `time_zone` (String) Field usage depends on `service` value: 
 	- Service `pardot`: The time zone configured in your Pardot instance. An empty value defaults to `UTC+00:00`.
+	- Service `pardot_sandbox`: The time zone configured in your Pardot instance. An empty value defaults to `UTC+00:00`.
 - `timeframe_months` (String) Field usage depends on `service` value: 
 	- Service `adobe_analytics`: Number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once the connector has been created. Default value: `TWELVE` .
 	- Service `adroll`: Number of months' worth of reporting data you'd like to include in your initial sync. This cannot be modified once the connector is created. Default value: `TWELVE`.
@@ -3573,6 +3737,7 @@ Optional:
 - `tunnel_host` (String) Field usage depends on `service` value: 
 	- Service `aurora`: SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).
 	- Service `aurora_postgres`: SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).
+	- Service `aveva_pi`: SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).
 	- Service `azure_cosmos_for_mongo`: SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).
 	- Service `azure_postgres`: SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).
 	- Service `azure_sql_db`: SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).
@@ -3627,6 +3792,7 @@ Optional:
 - `tunnel_port` (Number) Field usage depends on `service` value: 
 	- Service `aurora`: SSH port, specify only to connect via an SSH tunnel.
 	- Service `aurora_postgres`: SSH port, specify only to connect via an SSH tunnel.
+	- Service `aveva_pi`: SSH port, specify only to connect via an SSH tunnel.
 	- Service `azure_cosmos_for_mongo`: SSH port, specify only to connect via an SSH tunnel.
 	- Service `azure_postgres`: SSH port, specify only to connect via an SSH tunnel.
 	- Service `azure_sql_db`: SSH port, specify only to connect via an SSH tunnel.
@@ -3681,6 +3847,7 @@ Optional:
 - `tunnel_user` (String) Field usage depends on `service` value: 
 	- Service `aurora`: SSH user, specify only to connect via an SSH tunnel.
 	- Service `aurora_postgres`: SSH user, specify only to connect via an SSH tunnel.
+	- Service `aveva_pi`: SSH user, specify only to connect via an SSH tunnel.
 	- Service `azure_cosmos_for_mongo`: SSH user, specify only to connect via an SSH tunnel.
 	- Service `azure_postgres`: SSH user, specify only to connect via an SSH tunnel.
 	- Service `azure_sql_db`: SSH user, specify only to connect via an SSH tunnel.
@@ -3789,6 +3956,7 @@ Optional:
 	- Service `ftp`: Set to `true` if files are encrypted using PGP in the S3 bucket. Default value: `false`.
 	- Service `gcs`: Set to `true` if files are encrypted using PGP in the GCS bucket. Default value: `false`.
 	- Service `s3`: Set to `true` if files are encrypted using PGP in the S3 bucket. Default value: `false`.
+	- Service `s3_compatible_storage`: Set to `true` if files are encrypted using PGP in the S3-Compatible Storage bucket. Default value: `false`.
 	- Service `sftp`: Set to `true` if files present in SFTP server are encrypted using PGP. Default value: `false`.
 	- Service `wasabi_cloud_storage`: Set to `true` if files are encrypted using PGP in the Wasabi Cloud Storage bucket. Default value: `false`.
 - `use_service_account` (Boolean) Field usage depends on `service` value: 
@@ -3804,6 +3972,7 @@ Optional:
 - `user` (String) Field usage depends on `service` value: 
 	- Service `aurora`: The user name.
 	- Service `aurora_postgres`: The user name.
+	- Service `aveva_pi`: Username for the user to authenticate as with the AF Server
 	- Service `azure_cosmos_for_mongo`: Username for source database access.
 	- Service `azure_postgres`: The user name.
 	- Service `azure_sql_db`: The user name.  For Azure Databases, the format must be `user@domain`.
@@ -3887,7 +4056,7 @@ Optional:
 	- Service `anaplan`: Your Anaplan user ID. Must be populated if `auth_mode` is set to `Basic`.
 	- Service `appfigures`: Your Appfigures Username.
 	- Service `aveva_pi`: Username for the user to authenticate as with the AF Server
-	- Service `ceridian_dayforce`: Your Ceridian Dayforce Username.
+	- Service `ceridian_dayforce`: Your Ceridian Dayforce username.
 	- Service `churnzero`: Your ChurnZero username.
 	- Service `cin7`: Your Cin7 API Username.
 	- Service `collibra`: Your collibra username.
@@ -3904,7 +4073,7 @@ Optional:
 	- Service `green_power_monitor`: Your GreenPowerMonitor username.
 	- Service `guru`: Your Guru username.
 	- Service `hilti_ontrack`: Your Hilti On!Track username.
-	- Service `impact`: Your Impact Account SID
+	- Service `impact`: Your Impact Brand Account SID
 	- Service `integral_ad_science`: Your integral_ad_science username.
 	- Service `itunes_connect`: Your Apple ID
 	- Service `jamf`: Your Jamf username.
@@ -3943,13 +4112,17 @@ Optional:
 	- Service `ukg_pro_workforce_management`: Your UKG Pro Workforce Management username.
 	- Service `unicommerce`: Your uniware login username.
 	- Service `upland`: Your Upland Software Username.
+	- Service `veeva_vault`: Username
 	- Service `veevavault`: Your Veeva Vault username.
 	- Service `when_i_work`: Your When I Work username.
 	- Service `wherefour`: Your Wherefour username.
 	- Service `workday_financial_management`: Workday username.
 	- Service `workday_hcm`: Username of your Workday Integration System User account
 	- Service `xandr`: Your Xandr username.
+	- Service `yougov_brandindex`: Your YouGov BrandIndex username.
 	- Service `younium`: Your Younium username.
+- `vendors_id` (Set of String) Field usage depends on `service` value: 
+	- Service `itunes_connect`: Your vendors id
 - `version` (String) Field usage depends on `service` value: 
 	- Service `criteo_retail_media`: Your Criteo Retail Media version.
 - `view_attribution_window` (String) Field usage depends on `service` value: 
@@ -4067,6 +4240,8 @@ Optional:
 
 Optional:
 
+- `action_report_time` (String) Field usage depends on `service` value: 
+	- Service `snapchat_ads`: [Determines if reports will be based on imression on coversion time](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports)
 - `add_metric_variants` (Boolean) Field usage depends on `service` value: 
 	- Service `snapchat_ads`: Add fields for separate \"swipe-up\" and \"view\" variants of selected metrics
 - `aggregate` (String) Field usage depends on `service` value: 
@@ -4088,7 +4263,7 @@ Optional:
 - `event_names` (Set of String) Field usage depends on `service` value: 
 	- Service `reddit_ads`: The list of events the conversion data will be synchronised for
 - `granularity` (String) Field usage depends on `service` value: 
-	- Service `snapchat_ads`: [Sets Granularity on custom report](https://fivetran.com/docs/connectors/applications/snapchat-ads/customr-reports#granularity).
+	- Service `snapchat_ads`: [Sets Granularity on custom report](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports#granularity).
 - `level` (String) Field usage depends on `service` value: 
 	- Service `reddit_ads`: Level of custom report.
 - `metrics` (Set of String) Field usage depends on `service` value: 
@@ -4118,29 +4293,29 @@ Optional:
 Optional:
 
 - `action_breakdowns` (Set of String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: List of action_breakdowns which connector will sync. [Possible action_breakdowns values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#actionbreakdowns).
+	- Service `facebook_ads`: List of action_breakdowns which connector will sync. [Possible action_breakdowns values](https://fivetran.com/docs/connectors/applications/facebook-ads#actionbreakdowns).
 - `action_report_time` (String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: The report time of action stats. [Possible action_report time values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#actionreporttime).
+	- Service `facebook_ads`: The report time of action stats. [Possible action_report time values](https://fivetran.com/docs/connectors/applications/facebook-ads#actionreporttime).
 - `aggregation` (String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: Options to select aggregation duration. [Possible aggregation values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#aggregation).
+	- Service `facebook_ads`: Options to select aggregation duration. [Possible aggregation values](https://fivetran.com/docs/connectors/applications/facebook-ads#aggregation).
 - `breakdowns` (Set of String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: List of breakdowns which connector will sync. [Possible breakdowns values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#breakdowns).
+	- Service `facebook_ads`: List of breakdowns which connector will sync. [Possible breakdowns values](https://fivetran.com/docs/connectors/applications/facebook-ads#breakdowns).
 - `click_attribution_window` (String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: Time period to attribute conversions based on clicks. [Possible click_attribution_window values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#clickattributionwindow).
+	- Service `facebook_ads`: Time period to attribute conversions based on clicks. [Possible click_attribution_window values](https://fivetran.com/docs/connectors/applications/facebook-ads#clickattributionwindow).
 - `config_type` (String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: Option to select Prebuilt Reports or Custom Reports. [Possible config_type values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#configtype).
+	- Service `facebook_ads`: Option to select Prebuilt Reports or Custom Reports. [Possible config_type values](https://fivetran.com/docs/connectors/applications/facebook-ads#configtype).
 - `engaged_view_attribution_window` (String) Field usage depends on `service` value: 
 	- Service `facebook_ads`: Time period to attribute conversions based on engaged views. [Possible view_attribution_window values](https://fivetran.com/docs/connectors/applications/facebook-ads#engagedviewattributionwindow).
 - `fields` (Set of String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: List of fields which connector will sync. [Possible field values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#fields).
+	- Service `facebook_ads`: List of fields which connector will sync. [Possible field values](https://fivetran.com/docs/connectors/applications/facebook-ads#fields).
 - `level` (String)
 - `prebuilt_report_name` (String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: The report name to which connector will sync the data. [Possible prebuilt_report values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#prebuiltreport).
+	- Service `facebook_ads`: The report name to which connector will sync the data. [Possible prebuilt_report values](https://fivetran.com/docs/connectors/applications/facebook-ads#prebuiltreport).
 - `table_name` (String) Field usage depends on `service` value: 
 	- Service `facebook_ads`: The table name within the schema to which the connector will sync the data. It must be unique within the connector and must comply with [Fivetran's naming conventions](https://fivetran.com/docs/getting-started/core-concepts#namingconventions).
 - `use_unified_attribution_setting` (Boolean)
 - `view_attribution_window` (String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: Time period to attribute conversions based on views. [Possible view_attribution_window values](https://fivetran.com/docs/connectors/applications/facebook-ads-insights/api-config#viewattributionwindow).
+	- Service `facebook_ads`: Time period to attribute conversions based on views. [Possible view_attribution_window values](https://fivetran.com/docs/connectors/applications/facebook-ads#viewattributionwindow).
 
 
 <a id="nestedblock--config--data_model_path_alias_list"></a>
@@ -4159,18 +4334,26 @@ Optional:
 
 Optional:
 
+- `email_subject` (String) Field usage depends on `service` value: 
+	- Service `email`: Only attachments from emails with this subject will be synced. Leave this field blank to sync all attachments.
 - `file_pattern` (String) Field usage depends on `service` value: 
-	- Service `azure_blob_storage`: All files in your search path matching this regular expression will be synced per table.
+	- Service `azure_blob_storage`: All files in your search path matching this regular expression will be synced per table. We have discontinued this field, and will delete it by August 31, 2025.
+	- Service `email`: All files in your search path matching this regular expression will be synced per table.
 	- Service `gcs`: All files in your search path matching this regular expression will be synced per table.
 	- Service `google_drive`: All files in your search path matching this regular expression will be synced per table.
 	- Service `s3`: All files in your search path matching this regular expression will be synced per table.
+	- Service `s3_compatible_storage`: All files in your search path matching this regular expression will be synced per table.
 	- Service `sftp`: All files in your search path matching this regular expression will be synced per table.
+	- Service `share_point`: All files in your search path matching this regular expression will be synced per table.
 - `table_name` (String) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: All files matching the above pattern will be synced to this table.
+	- Service `email`: All files matching the above pattern will be synced to this table.
 	- Service `gcs`: All files matching the above pattern will be synced to this table.
 	- Service `google_drive`: All files matching the above pattern will be synced to this table.
 	- Service `s3`: All files matching the above pattern will be synced to this table.
+	- Service `s3_compatible_storage`: All files matching the above pattern will be synced to this table.
 	- Service `sftp`: All files matching the above pattern will be synced to this table.
+	- Service `share_point`: All files matching the above pattern will be synced to this table.
 
 
 <a id="nestedblock--config--project_credentials"></a>
@@ -4196,11 +4379,11 @@ Optional:
 - `currency` (String) Field usage depends on `service` value: 
 	- Service `yahoo_dsp`: [Currency](https://developer.yahooinc.com/dsp/api/docs/reporting/payloadspec.html) used in a report. Default value: `USD`.
 - `dimensions` (Set of String) Field usage depends on `service` value: 
-	- Service `yahoo_dsp`: [Dimensions](https://developer.yahooinc.com/dsp/api/docs/reporting/dimensions.html) used in a report. Must be populated if `config_type` is set to `CUSTOM`.
+	- Service `yahoo_dsp`: [Dimensions](https://developer.yahooinc.com/dsp/api/docs/reporting/dimensions.html) used in a report. Must be populated if `config_type` is set to `CUSTOM`. PUBLISHER, DESKTOP_OS_DEPRECATED, LINE_TYPE, GOAL_TYPE, BID_REQUEST_AD_SIZE, CHANNEL_TYPE, SITE_NAME, and SITE_GROUP_NAME are deprecated dimension, and shouldn't be used anymore
 - `interval_type` (String) Field usage depends on `service` value: 
 	- Service `yahoo_dsp`: The [granularity](https://developer.yahooinc.com/dsp/api/docs/reporting/range-examples.html#interval-type-id) of data in a report. Default value: `DAY`.
 - `metrics` (Set of String) Field usage depends on `service` value: 
-	- Service `yahoo_dsp`: [Metrics](https://developer.yahooinc.com/dsp/api/docs/reporting/metrics.html) used in a report. Must be populated if `config_type` is set to `CUSTOM`.
+	- Service `yahoo_dsp`: [Metrics](https://developer.yahooinc.com/dsp/api/docs/reporting/metrics.html) used in a report. Must be populated if `config_type` is set to `CUSTOM`. PUBLISHER_EARNINGS, PUBLISHER_EARNINGS_PERCENTAGE, INVENTORY_ECPM_DEPRECATED, SEAT_TECH_FEE, and SEAT_DATA_FEE are deprecated and shouldn't be used anymore
 - `prebuilt_report_type` (String) Field usage depends on `service` value: 
 	- Service `yahoo_dsp`: Specific report type to sync. Must be populated if `config_type` is set to `PREBUILT`.
 - `report_name` (String) Field usage depends on `service` value: 
@@ -4231,16 +4414,21 @@ Optional:
 
 Optional:
 
+- `advertisers` (Set of String) Field usage depends on `service` value: 
+	- Service `google_display_and_video_360`: The list of advertisers to include into a sync. This parameter only takes effect when `config_method` is set to `CREATE_NEW`.
 - `aggregation` (String) Field usage depends on `service` value: 
 	- Service `google_search_console`: (Optional) Aggregation type. Supported only for the `SEARCH_RESULTS` report type
 - `attributes` (Set of String) Field usage depends on `service` value: 
 	- Service `google_search_ads_360`: The report attributes included to sync.
+- `config_method` (String) Field usage depends on `service` value: 
+	- Service `google_display_and_video_360`: The report configuration method. Specifies whether a new configuration is defined manually or an existing configuration is reused. The default value is `CREATE_NEW`.
 - `config_type` (String) Field usage depends on `service` value: 
 	- Service `google_analytics`: Whether to use the [Prebuilt Reports or Custom Reports](https://fivetran.com/docs/connectors/applications/google-analytics#schemainformation).
 	- Service `google_analytics_4`: Whether to use the Prebuilt Reports or Custom Reports.
 - `dimensions` (Set of String) Field usage depends on `service` value: 
 	- Service `google_analytics`: The report dimensions to include into a sync. The `date` dimension is mandatory for all the report types.
 	- Service `google_analytics_4`: The report dimensions to include into a sync.
+	- Service `google_display_and_video_360`: The report dimensions (filters) to include into a sync. The dimension names are provided in the API format. This is a required parameter when `config_method` is set to `CREATE_NEW`.
 	- Service `google_search_console`: The report dimensions included to sync.
 - `dynamic_parameter_field` (String) Field usage depends on `service` value: 
 	- Service `workday`: Dynamic parameter field name
@@ -4260,16 +4448,22 @@ Optional:
 - `metrics` (Set of String) Field usage depends on `service` value: 
 	- Service `google_analytics`: The report metrics to include into a sync.
 	- Service `google_analytics_4`: The report metrics to include into a sync.
+	- Service `google_display_and_video_360`: The report metrics to include into a sync. The metric names are provided in the API format. This is a required parameter when `config_method` is set to `CREATE_NEW`.
 	- Service `google_search_ads_360`: The report metrics included to sync.
+- `partners` (Set of String) Field usage depends on `service` value: 
+	- Service `google_display_and_video_360`: The list of partners to include into a sync. This parameter only takes effect when `config_method` is set to `CREATE_NEW`.
 - `prebuilt_report` (String) Field usage depends on `service` value: 
 	- Service `google_analytics`: The name of the Prebuilt Report from which the connector will sync the data.
 	- Service `google_analytics_4`: The name of the Prebuilt Report from which the connector will sync the data.
 - `primary_keys` (Set of String) Field usage depends on `service` value: 
 	- Service `workday`: Primary Keys
+- `query_id` (String) Field usage depends on `service` value: 
+	- Service `google_display_and_video_360`: The ID of the query whose configuration you want to reuse. This is a required parameter when `config_method` is set to `REUSE_EXISTING`.
 - `report_format_type` (String) Field usage depends on `service` value: 
 	- Service `workday`: This is to select report format from JSON and CSV. By default, report format is JSON.
 - `report_type` (String) Field usage depends on `service` value: 
 	- Service `google_ads`: The name of the Google Ads report from which the connector will sync the data. [Possible report_type values](https://developers.google.com/adwords/api/docs/appendix/reports#report-types).
+	- Service `google_display_and_video_360`: The type of the report to create. This is a required parameter when `config_method` is set to `CREATE_NEW`.
 	- Service `google_search_ads_360`: The type of report
 	- Service `google_search_console`: The type of report
 - `report_url` (String) Field usage depends on `service` value: 
@@ -4297,8 +4491,12 @@ Optional:
 	- Service `google_search_ads_360`: The name of a table within the schema to which connector syncs the data of a given report.
 	- Service `google_search_console`: The name of a table within the schema to which connector syncs the data of a given report.
 	- Service `workday`: The table name within the schema to which connector will sync the data of the specific report.
+- `table_name` (String) Field usage depends on `service` value: 
+	- Service `google_display_and_video_360`: The table name within the schema to which connector will sync the data of the specific report.
 - `time_aggregation_granularity` (String) Field usage depends on `service` value: 
 	- Service `google_analytics_4`: The report data aggregation time granularity.
+- `update_config_on_each_sync` (Boolean) Field usage depends on `service` value: 
+	- Service `google_display_and_video_360`: Specifies whether the configuration is updated before each sync or only when the connector settings are saved. This parameter only takes effect when `config_method` is set to `REUSE_EXISTING`. The default value is `true`.
 
 
 <a id="nestedblock--config--secrets_list"></a>
@@ -4351,7 +4549,7 @@ Optional:
 
 1. To import an existing `fivetran_connector` resource into your Terraform state, you need to get **Fivetran Connector ID** on the **Setup** tab of the connector page in your Fivetran dashboard.
 
-2. Retrieve all connectors in a particular group using the [fivetran_group_connectors data source](/providers/fivetran/fivetran/latest/docs/data-sources/group_connectors). To retrieve existing groups, use the [fivetran_groups data source](/providers/fivetran/fivetran/latest/docs/data-sources/groups).
+2. Retrieve all connectors in a particular group using the [fivetran_connectors data source](/docs/data-sources/connectors)
 
 3. Define an empty resource in your `.tf` configuration:
 

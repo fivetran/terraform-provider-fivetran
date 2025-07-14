@@ -18,6 +18,9 @@
          "maria_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
          "mysql_rds_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
          "mysql_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "oracle_rac_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "oracle_rds_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "oracle_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
          "panoply": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
          "periscope_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
          "postgres_gcp_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
@@ -26,6 +29,19 @@
          "redshift": "Require TLS through Tunnel",
          "sql_server_rds_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
          "sql_server_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`."
+      },
+      "api_field": ""
+   },
+   "application_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "snowflake": "Application ID of your app created in Azure"
       },
       "api_field": ""
    },
@@ -53,6 +69,7 @@
       "description": {
          "adls": "Authentication type",
          "databricks": "Authentication type",
+         "managed_data_lake": "Authentication type",
          "new_s3_datalake": "Authentication type",
          "onelake": "Authentication type",
          "panoply": "",
@@ -70,7 +87,22 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "new_s3_datalake": "AWS access key to access the S3 bucket and AWS Glue"
+         "new_s3_datalake": "AWS access key to access the S3 bucket and AWS Glue",
+         "redshift": "The unique access key ID of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.",
+         "snowflake": "The unique access key ID of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment, want to use an S3 bucket to stage your data, and `awsBucketAuthType` is set to `IAM_USER`."
+      },
+      "api_field": ""
+   },
+   "aws_bucket_auth_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "snowflake": "Type of authentication configured for the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an S3 bucket to stage your data."
       },
       "api_field": ""
    },
@@ -83,7 +115,9 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "new_s3_datalake": "AWS secret access key to access the S3 bucket and AWS Glue"
+         "new_s3_datalake": "AWS secret access key to access the S3 bucket and AWS Glue",
+         "redshift": "The secret access key of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.",
+         "snowflake": "The secret access key of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment , want to use an S3 bucket to stage your data, and `awsBucketAuthType` is set to `IAM_USER`."
       },
       "api_field": ""
    },
@@ -118,7 +152,24 @@
          "big_query": "Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
          "big_query_dts": "Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
          "managed_big_query": "Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
-         "new_s3_datalake": "(Immutable) The name of the bucket to be used as destination"
+         "managed_data_lake": "(Immutable) The name of the bucket to be used as destination",
+         "new_s3_datalake": "(Immutable) The name of the bucket to be used as destination",
+         "redshift": "The name of the storage bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.",
+         "snowflake": "The name of the storage bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an S3 or GCS bucket to stage your data."
+      },
+      "api_field": ""
+   },
+   "bucket_region": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "redshift": "The AWS Region of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.",
+         "snowflake": "The AWS Region of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an S3 bucket to stage your data."
       },
       "api_field": ""
    },
@@ -133,6 +184,7 @@
       "description": {
          "adls": "Catalog name",
          "databricks": "Catalog name",
+         "managed_data_lake": "Catalog name",
          "new_s3_datalake": "Catalog name",
          "onelake": "Catalog name"
       },
@@ -148,6 +200,7 @@
       "item_type": {},
       "description": {
          "adls": "Client id of service principal",
+         "managed_data_lake": "Client id of service principal",
          "onelake": "Client ID of service principal"
       },
       "api_field": ""
@@ -227,10 +280,14 @@
          "azure_sql_database": "Connection method. Default value: `Directly`.",
          "azure_sql_managed_db_warehouse": "Connection method. Default value: `Directly`.",
          "databricks": "Connection method. Default value: `Directly`.",
+         "managed_data_lake": "connection type",
          "maria_rds_warehouse": "Connection method. Default value: `Directly`.",
          "maria_warehouse": "Connection method. Default value: `Directly`.",
          "mysql_rds_warehouse": "Connection method. Default value: `Directly`.",
          "mysql_warehouse": "Connection method. Default value: `Directly`.",
+         "oracle_rac_warehouse": "Connection method. Default value: `Directly`.",
+         "oracle_rds_warehouse": "Connection method. Default value: `Directly`.",
+         "oracle_warehouse": "Connection method. Default value: `Directly`.",
          "panoply": "Connection method. Default value: `Directly`.",
          "periscope_warehouse": "Connection method. Default value: `Directly`.",
          "postgres_gcp_warehouse": "Connection method. Default value: `Directly`.",
@@ -253,6 +310,7 @@
       "item_type": {},
       "description": {
          "adls": "(Immutable) Container to store delta table files",
+         "managed_data_lake": "(Immutable) Container to store delta table files",
          "onelake": "Workspace name to store delta table files"
       },
       "api_field": ""
@@ -333,6 +391,9 @@
          "maria_warehouse": "Database name",
          "mysql_rds_warehouse": "Database name",
          "mysql_warehouse": "Database name",
+         "oracle_rac_warehouse": "Database name",
+         "oracle_rds_warehouse": "Database name",
+         "oracle_warehouse": "Database name",
          "panoply": "Database name",
          "periscope_warehouse": "Database name",
          "postgres_gcp_warehouse": "Database name",
@@ -355,8 +416,22 @@
       "item_type": {},
       "description": {
          "adls": "Databricks Connection method. Default value: `Directly`.",
+         "managed_data_lake": "Databricks Connection method. Default value: `Directly`.",
          "new_s3_datalake": "Databricks Connection method. Default value: `Directly`.",
          "onelake": "Databricks Connection method. Default value: `Directly`."
+      },
+      "api_field": ""
+   },
+   "directory_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "snowflake": "Tenant ID of your app created in Azure"
       },
       "api_field": ""
    },
@@ -369,7 +444,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "snowflake": ""
+         "snowflake": "Set to `true` if you want to enable external storage for unstructured files."
       },
       "api_field": ""
    },
@@ -399,6 +474,19 @@
          "aiven_kafka_wh": "",
          "aws_msk_wh": "",
          "confluent_cloud_wh": "Populate all tables in a single topic."
+      },
+      "api_field": ""
+   },
+   "enable_super_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "redshift": "Enable to convert JSON data type to SUPER"
       },
       "api_field": ""
    },
@@ -440,7 +528,20 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "snowflake": ""
+         "snowflake": "External stage storage provider[Internal, S3, Azure,GCS]"
+      },
+      "api_field": ""
+   },
+   "external_storage_cloud_provider": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "snowflake": "The cloud service provider you want to use for staging data. Use this parameter only if you are using Hybrid Deployment."
       },
       "api_field": ""
    },
@@ -453,7 +554,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "snowflake": ""
+         "snowflake": "External storage integration name"
       },
       "api_field": ""
    },
@@ -466,7 +567,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "snowflake": ""
+         "snowflake": "External storage parent folder URL"
       },
       "api_field": ""
    },
@@ -505,7 +606,21 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "managed_data_lake": "(Immutable) ARN of the role which you created with different required policy mentioned in our setup guide",
          "new_s3_datalake": "ARN of the role which you created with different required policy mentioned in our setup guide"
+      },
+      "api_field": ""
+   },
+   "gcs_service_account_credentials_path": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "snowflake": "The path to the JSON file that contains the service account credentials for the GCS bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use a GCS bucket to stage your data."
       },
       "api_field": ""
    },
@@ -528,6 +643,9 @@
          "maria_warehouse": "Server name",
          "mysql_rds_warehouse": "Server name",
          "mysql_warehouse": "Server name",
+         "oracle_rac_warehouse": "Server name",
+         "oracle_rds_warehouse": "Server name",
+         "oracle_warehouse": "Server name",
          "panoply": "Server name",
          "periscope_warehouse": "Server name",
          "postgres_gcp_warehouse": "Server name",
@@ -551,6 +669,7 @@
       "description": {
          "adls": "HTTP path",
          "databricks": "HTTP path",
+         "managed_data_lake": "HTTP path",
          "new_s3_datalake": "HTTP path",
          "onelake": "HTTP path"
       },
@@ -604,6 +723,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "managed_data_lake": "(Immutable) OneLake lakehouse GUID",
          "onelake": "(Immutable) OneLake lakehouse GUID"
       },
       "api_field": ""
@@ -660,6 +780,7 @@
       "description": {
          "adls": "OAuth 2.0 client ID",
          "databricks": "OAuth 2.0 client ID",
+         "managed_data_lake": "OAuth 2.0 client ID",
          "new_s3_datalake": "OAuth 2.0 client ID",
          "onelake": "OAuth 2.0 client ID"
       },
@@ -676,6 +797,7 @@
       "description": {
          "adls": "OAuth 2.0 secret",
          "databricks": "OAuth 2.0 secret",
+         "managed_data_lake": "OAuth 2.0 secret",
          "new_s3_datalake": "OAuth 2.0 secret",
          "onelake": "OAuth 2.0 secret"
       },
@@ -713,6 +835,9 @@
          "maria_warehouse": "Database user password",
          "mysql_rds_warehouse": "Database user password",
          "mysql_warehouse": "Database user password",
+         "oracle_rac_warehouse": "Database user password",
+         "oracle_rds_warehouse": "Database user password",
+         "oracle_warehouse": "Database user password",
          "panoply": "Database user password",
          "periscope_warehouse": "Database user password",
          "postgres_gcp_warehouse": "Database user password",
@@ -736,6 +861,7 @@
       "description": {
          "adls": "Personal access token",
          "databricks": "Personal access token",
+         "managed_data_lake": "Personal access token",
          "new_s3_datalake": "Personal access token",
          "onelake": "Personal access token"
       },
@@ -758,12 +884,16 @@
          "azure_sql_database": "Server port number",
          "azure_sql_managed_db_warehouse": "Server port number",
          "databricks": "Server port number",
+         "managed_data_lake": "Server port number",
          "maria_rds_warehouse": "Server port number",
          "maria_warehouse": "Server port number",
          "mysql_rds_warehouse": "Server port number",
          "mysql_warehouse": "Server port number",
          "new_s3_datalake": "Server port number",
          "onelake": "Server port number",
+         "oracle_rac_warehouse": "Server port number",
+         "oracle_rds_warehouse": "Server port number",
+         "oracle_warehouse": "Server port number",
          "panoply": "Server port number",
          "periscope_warehouse": "Server port number",
          "postgres_gcp_warehouse": "Server port number",
@@ -786,6 +916,7 @@
       "item_type": {},
       "description": {
          "adls": "(Immutable) path/to/data within the container",
+         "managed_data_lake": "(Immutable) Prefix path of the bucket for which you have configured access policy. It is not required if access has been granted to entire Bucket in the access policy",
          "new_s3_datalake": "(Immutable) Prefix path of the bucket for which you have configured access policy. It is not required if access has been granted to entire Bucket in the access policy",
          "onelake": "(Immutable) path/to/data within your lakehouse inside the Files directory"
       },
@@ -858,6 +989,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "managed_data_lake": "(Immutable) Region of your AWS S3 bucket",
          "new_s3_datalake": "Region of your AWS S3 bucket"
       },
       "api_field": ""
@@ -1106,6 +1238,7 @@
       "item_type": {},
       "description": {
          "adls": "Secret value for service principal",
+         "managed_data_lake": "Secret value for service principal",
          "onelake": "Secret value for service principal"
       },
       "api_field": ""
@@ -1136,6 +1269,7 @@
       "description": {
          "adls": "Server Host name",
          "databricks": "Server name",
+         "managed_data_lake": "Server host name",
          "new_s3_datalake": "Server host name",
          "onelake": "Server Host name"
       },
@@ -1151,8 +1285,22 @@
       "item_type": {},
       "description": {
          "adls": "Should maintain tables in Databricks ",
+         "managed_data_lake": "Should maintain tables in Databricks ",
          "new_s3_datalake": "Should maintain tables in Databricks ",
          "onelake": "Should maintain tables in Databricks "
+      },
+      "api_field": ""
+   },
+   "should_maintain_tables_in_glue": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "managed_data_lake": "Should maintain tables in Glue. Only applicable if storage provider is AWS"
       },
       "api_field": ""
    },
@@ -1166,6 +1314,7 @@
       "item_type": {},
       "description": {
          "adls": "Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.",
+         "managed_data_lake": "Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.",
          "new_s3_datalake": "Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.",
          "onelake": "Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`."
       },
@@ -1197,6 +1346,20 @@
       },
       "api_field": ""
    },
+   "storage_account_key": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "azure_sql_data_warehouse": "The access key of the Azure storage account you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.",
+         "snowflake": "The access key of the Azure storage account you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an Azure Blob storage container to stage your data."
+      },
+      "api_field": ""
+   },
    "storage_account_name": {
       "readonly": false,
       "sensitive": false,
@@ -1207,7 +1370,23 @@
       "item_type": {},
       "description": {
          "adls": "(Immutable) Storage account for Azure Data Lake Storage Gen2 name",
-         "onelake": "(Immutable) Storage account for Azure Data Lake Storage Gen2 name"
+         "azure_sql_data_warehouse": "The name of the Azure storage account you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.",
+         "managed_data_lake": "(Immutable) Storage account for Azure Data Lake Storage Gen2 name",
+         "onelake": "(Immutable) Storage account for Azure Data Lake Storage Gen2 name",
+         "snowflake": "The name of the Azure storage account you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an Azure Blob storage container to stage your data."
+      },
+      "api_field": ""
+   },
+   "storage_provider": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "managed_data_lake": "Storage Provider"
       },
       "api_field": ""
    },
@@ -1234,6 +1413,7 @@
       "item_type": {},
       "description": {
          "adls": "Tenant id of service principal",
+         "managed_data_lake": "Tenant id of service principal",
          "onelake": "Tenant ID of service principal"
       },
       "api_field": ""
@@ -1257,6 +1437,9 @@
          "maria_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "mysql_rds_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "mysql_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "oracle_rac_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "oracle_rds_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "oracle_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "panoply": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "periscope_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "postgres_gcp_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
@@ -1287,6 +1470,9 @@
          "maria_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "mysql_rds_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "mysql_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "oracle_rac_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "oracle_rds_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "oracle_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "panoply": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "periscope_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "postgres_gcp_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
@@ -1317,6 +1503,9 @@
          "maria_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "mysql_rds_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "mysql_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "oracle_rac_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "oracle_rds_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "oracle_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "panoply": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "periscope_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "postgres_gcp_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
@@ -1325,6 +1514,19 @@
          "redshift": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "sql_server_rds_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "sql_server_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`."
+      },
+      "api_field": ""
+   },
+   "use_customer_staging": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "snowflake": "Set to `true` if you want to use an S3 bucket to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an S3 bucket to stage your data."
       },
       "api_field": ""
    },
@@ -1347,6 +1549,9 @@
          "maria_warehouse": "Database user name",
          "mysql_rds_warehouse": "Database user name",
          "mysql_warehouse": "Database user name",
+         "oracle_rac_warehouse": "Database user name",
+         "oracle_rds_warehouse": "Database user name",
+         "oracle_warehouse": "Database user name",
          "panoply": "Database user name",
          "periscope_warehouse": "Database user name",
          "postgres_gcp_warehouse": "Database user name",
@@ -1368,6 +1573,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "managed_data_lake": "(Immutable) OneLake workspace GUID",
          "onelake": "(Immutable) OneLake workspace GUID"
       },
       "api_field": ""
