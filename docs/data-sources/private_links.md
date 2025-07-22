@@ -27,6 +27,7 @@ Read-Only:
 - `cloud_provider` (String) The cloud provider name.
 - `created_at` (String) The date and time the membership was created.
 - `created_by` (String) The unique identifier for the User within the Fivetran system.
+- `host` (String) The private link host.
 - `id` (String) The unique identifier for the private link within the Fivetran system.
 - `name` (String) The private link name within the account. The name must start with a letter or underscore and can only contain letters, numbers, or underscores. Maximum size of name is 23 characters.
 - `region` (String) Data processing location. This is where Fivetran will operate and run computation on data.

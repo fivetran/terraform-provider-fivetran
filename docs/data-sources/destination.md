@@ -212,8 +212,6 @@ Read-Only:
 - `fivetran_role_arn` (String) Field usage depends on `service` value: 
 	- Service `managed_data_lake`: (Immutable) ARN of the role which you created with different required policy mentioned in our setup guide
 	- Service `new_s3_datalake`: ARN of the role which you created with different required policy mentioned in our setup guide
-- `gcs_service_account_credentials` (Attributes) Field usage depends on `service` value: 
-	- Service `snowflake`: The service account credentials for the Google Cloud Storage (GCS) bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use a GCS bucket to stage your data. (see [below for nested schema](#nestedatt--config--gcs_service_account_credentials))
 - `gcs_service_account_credentials_path` (String) Field usage depends on `service` value: 
 	- Service `snowflake`: The path to the JSON file that contains the service account credentials for the GCS bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use a GCS bucket to stage your data.
 - `host` (String) Field usage depends on `service` value: 
@@ -548,6 +546,3 @@ Read-Only:
 	- Service `onelake`: (Immutable) OneLake workspace GUID
 - `workspace_name` (String) Field usage depends on `service` value: 
 	- Service `onelake`: OneLake workspace name
-
-<a id="nestedatt--config--gcs_service_account_credentials"></a>
-### Nested Schema for `config.gcs_service_account_credentials`

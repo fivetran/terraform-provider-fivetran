@@ -50,6 +50,7 @@ resource "fivetran_private_link" "test_pl" {
 - `cloud_provider` (String) The cloud provider name.
 - `created_at` (String) The date and time the membership was created.
 - `created_by` (String) The unique identifier for the User within the Fivetran system.
+- `host` (String) The private link host.
 - `id` (String) The unique identifier for the private link within the Fivetran system.
 - `state` (String) The state of the private link.
 - `state_summary` (String) The state of the private link.

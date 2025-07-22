@@ -24,7 +24,8 @@ const (
             "state": "state1",
             "state_summary": "state_summary1",
             "created_at": "created_at1",
-            "created_by": "created_by1"
+            "created_by": "created_by1",
+            "host": "host1"
         },
         {
             "id": "id2",
@@ -36,7 +37,8 @@ const (
             "state": "state2",
             "state_summary": "state_summary2",
             "created_at": "created_at2",
-            "created_by": "created_by2"
+            "created_by": "created_by2",
+            "host": "host2"
         }
         ],
         "next_cursor": null
@@ -81,6 +83,7 @@ func TestDataSourcePrivateLinksConfigMappingMock(t *testing.T) {
             resource.TestCheckResourceAttr("data.fivetran_private_links.test_pl", "items.0.state_summary", "state_summary1"),
             resource.TestCheckResourceAttr("data.fivetran_private_links.test_pl", "items.0.created_at", "created_at1"),
             resource.TestCheckResourceAttr("data.fivetran_private_links.test_pl", "items.0.created_by", "created_by1"),
+            resource.TestCheckResourceAttr("data.fivetran_private_links.test_pl", "items.0.host", "host1"),
 
             resource.TestCheckResourceAttr("data.fivetran_private_links.test_pl", "items.1.name", "name2"),
             resource.TestCheckResourceAttr("data.fivetran_private_links.test_pl", "items.1.region", "region2"),
@@ -90,6 +93,7 @@ func TestDataSourcePrivateLinksConfigMappingMock(t *testing.T) {
             resource.TestCheckResourceAttr("data.fivetran_private_links.test_pl", "items.1.state_summary", "state_summary2"),
             resource.TestCheckResourceAttr("data.fivetran_private_links.test_pl", "items.1.created_at", "created_at2"),
             resource.TestCheckResourceAttr("data.fivetran_private_links.test_pl", "items.1.created_by", "created_by2"),
+            resource.TestCheckResourceAttr("data.fivetran_private_links.test_pl", "items.1.host", "host2"),
         ),
     }
 

@@ -50,6 +50,10 @@ func PrivateLinkResource() resourceSchema.Schema {
                 Computed:    true,
                 Description: "The unique identifier for the User within the Fivetran system.",
             },
+            "host": resourceSchema.StringAttribute{
+                Computed:    true,
+                Description: "The private link host.",
+            },
             "config_map": resourceSchema.MapAttribute{
                 ElementType: types.StringType,
                 Required:    true,
@@ -111,6 +115,10 @@ func PrivateLinkDatasource() datasourceSchema.Schema {
                 Computed:    true,
                 Description: "The unique identifier for the User within the Fivetran system.",
             },
+            "host": datasourceSchema.StringAttribute{
+                Computed:    true,
+                Description: "The private link host.",
+            },
             "config_map": resourceSchema.MapAttribute{
                 ElementType: types.StringType,
                 Computed:    true,
@@ -161,6 +169,10 @@ func PrivateLinksDatasource() datasourceSchema.Schema {
                         "created_by": datasourceSchema.StringAttribute{
                             Computed:    true,
                             Description: "The unique identifier for the User within the Fivetran system.",
+                        },
+                        "host": datasourceSchema.StringAttribute{
+                            Computed:    true,
+                            Description: "The private link host.",
                         },
                     },
                 },
