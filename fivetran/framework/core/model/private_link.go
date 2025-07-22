@@ -47,6 +47,7 @@ func (d *PrivateLink) ReadFromResponse(ctx context.Context, resp privatelink.Pri
     d.StateSummary = types.StringValue(resp.Data.StateSummary)
     d.CreatedAt = types.StringValue(resp.Data.CreatedAt)
     d.CreatedBy = types.StringValue(resp.Data.CreatedBy)
+    d.Host = types.StringValue(resp.Data.Host)
 
     config := map[string]attr.Value{}
 
