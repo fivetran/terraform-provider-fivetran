@@ -27,6 +27,7 @@ data "fivetran_private_link" "private_link" {
 - `config_map` (Map of String) Configuration.
 - `created_at` (String) The date and time the membership was created.
 - `created_by` (String) The unique identifier for the User within the Fivetran system.
+- `host` (String) The private link host.
 - `name` (String) The private link name within the account. The name must start with a letter or underscore and can only contain letters, numbers, or underscores. Maximum size of name is 23 characters.
 - `region` (String) Data processing location. This is where Fivetran will operate and run computation on data.
 - `service` (String) Service type.

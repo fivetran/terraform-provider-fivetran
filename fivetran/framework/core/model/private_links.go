@@ -23,6 +23,7 @@ func (d *PrivateLinks) ReadFromResponse(ctx context.Context, resp privatelink.Pr
         "state_summary":   types.StringType,
         "created_by":      types.StringType,
         "created_at":      types.StringType,
+        "host":            types.StringType,
     }
 
     if resp.Data.Items == nil {
@@ -42,6 +43,7 @@ func (d *PrivateLinks) ReadFromResponse(ctx context.Context, resp privatelink.Pr
         item["state_summary"] = types.StringValue(v.StateSummary)
         item["created_at"] = types.StringValue(v.CreatedAt)
         item["created_by"] = types.StringValue(v.CreatedBy)
+        item["host"] = types.StringValue(v.Host)
 
         objectValue, _ := types.ObjectValue(elementType, item)
         items = append(items, objectValue)

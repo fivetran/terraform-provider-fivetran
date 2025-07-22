@@ -19,6 +19,7 @@ type PrivateLink struct {
     StateSummary    types.String `tfsdk:"state_summary"`
     CreatedAt       types.String `tfsdk:"created_at"`
     CreatedBy       types.String `tfsdk:"created_by"`
+    Host            types.String `tfsdk:"host"`
     ConfigMap       types.Map    `tfsdk:"config_map"`
 }
 
@@ -128,6 +129,7 @@ func (d *PrivateLink) ReadFromCustomResponse(ctx context.Context, resp privateli
     d.StateSummary = types.StringValue(resp.Data.StateSummary)
     d.CreatedAt = types.StringValue(resp.Data.CreatedAt)
     d.CreatedBy = types.StringValue(resp.Data.CreatedBy)
+    d.Host = types.StringValue(resp.Data.Host)
 
     config := map[string]attr.Value{}
     for k, v := range resp.Data.Config {
