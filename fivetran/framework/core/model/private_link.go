@@ -40,7 +40,6 @@ var PrivateLinkConfigType = map[string]attr.Type{
 func (d *PrivateLink) ReadFromResponse(ctx context.Context, resp privatelink.PrivateLinkResponse) {
     d.Id = types.StringValue(resp.Data.Id)
     d.Name = types.StringValue(resp.Data.Name)
-    d.Service = types.StringValue(resp.Data.Service)
     d.Region = types.StringValue(resp.Data.Region)
     d.CloudProvider = types.StringValue(resp.Data.CloudProvider)
     d.State = types.StringValue(resp.Data.State)
@@ -123,7 +122,6 @@ func (d *PrivateLink) ReadFromResponse(ctx context.Context, resp privatelink.Pri
 func (d *PrivateLink) ReadFromCustomResponse(ctx context.Context, resp privatelink.PrivateLinkCustomResponse) {
     d.Id = types.StringValue(resp.Data.Id)
     d.Name = types.StringValue(resp.Data.Name)
-    d.Service = types.StringValue(resp.Data.Service)
     d.Region = types.StringValue(resp.Data.Region)
     d.CloudProvider = types.StringValue(resp.Data.CloudProvider)
     d.State = types.StringValue(resp.Data.State)

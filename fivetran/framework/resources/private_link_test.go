@@ -24,7 +24,7 @@ func setupMockClientPrivateLinkResource(t *testing.T) {
         "id": "pl_id",
         "name": "name",
         "region": "region",
-        "service": "service",
+        "service": "service_changed",
         "account_id": "account_id",
         "cloud_provider": "cloud_provider",
         "state": "state",
