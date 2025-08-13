@@ -115,3 +115,31 @@ func (d *DestinationResourceModel) GetConfigMap(nullOnNull bool) (map[string]int
 	err := patchServiceSpecificFields(result, serviceName, serviceFields, allFields)
 	return result, err
 }
+
+func (d *DestinationResourceModel) HasUpdates(plan DestinationResourceModel, state DestinationResourceModel) (bool, map[string]interface{}, error) {
+    stateConfigMap, err := state.GetConfigMap(false)
+    // this is not expected - state should contain only known fields relative to service
+    // but we have to check error just in case
+    if err != nil {
+        return false, nil, err
+    }
+
+    planConfigMap, err := plan.GetConfigMap(false)
+    if err != nil {
+        return false, nil, err
+    }
+
+    patch := PrepareConfigAuthPatch(stateConfigMap, planConfigMap, plan.Service.ValueString(), common.GetConfigFieldsMap())
+
+    if len(patch) > 0 || 
+            !plan.TimeZoneOffset.Equal(state.TimeZoneOffset) ||
+            !plan.DaylightSavingTimeEnabled.Equal(state.DaylightSavingTimeEnabled) ||
+            !plan.Region.Equal(state.Region) ||
+            !plan.HybridDeploymentAgentId.Equal(state.HybridDeploymentAgentId) ||
+            !plan.NetworkingMethod.Equal(state.NetworkingMethod) ||
+            !plan.PrivateLinkId.Equal(state.PrivateLinkId) {
+                return true, patch, nil
+            } else {
+                return false, nil, nil
+            }
+}

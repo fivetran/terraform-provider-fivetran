@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/fivetran/terraform-provider-fivetran/fivetran/common"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
@@ -254,52 +253,40 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 	trustFingerprintsState := core.GetBoolOrDefault(state.TrustFingerprints, false)
 	daylightSavingTimeEnabledState := core.GetBoolOrDefault(state.DaylightSavingTimeEnabled, false)
 
-	stateConfigMap, err := state.GetConfigMap(false)
-	// this is not expected - state should contain only known fields relative to service
-	// but we have to check error just in case
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Unable to Update Destination Resource.",
-			fmt.Sprintf("%v; ", err),
-		)
-	}
-
-	planConfigMap, err := plan.GetConfigMap(false)
-
-	if err != nil {
-		if err != nil {
-			resp.Diagnostics.AddError(
-				"Unable to Update Destination Resource.",
-				fmt.Sprintf("%v; ", err),
-			)
-		}
-	}
-
-	timeZoneHasChange := !plan.TimeZoneOffset.Equal(state.TimeZoneOffset)
-	regionHasChange := !plan.Region.Equal(state.Region)
-
-	patch := model.PrepareConfigAuthPatch(stateConfigMap, planConfigMap, plan.Service.ValueString(), common.GetDestinationFieldsMap())
+	hasUpdates, patch, err := plan.HasUpdates(plan, state)
+    if err != nil {
+        resp.Diagnostics.AddError(
+            "Unable to Update Destination Resource.",
+            fmt.Sprintf("%v; ", err),
+        )
+    }
 
 	updatePerformed := false
-	if len(patch) > 0 || timeZoneHasChange || regionHasChange || daylightSavingTimeEnabledPlan != daylightSavingTimeEnabledState {
+	if hasUpdates {
 		svc := r.GetClient().NewDestinationUpdate().
-			RunSetupTests(runSetupTestsPlan).
-			TrustCertificates(trustCertificatesPlan).
-			TrustFingerprints(trustFingerprintsPlan).
-			DaylightSavingTimeEnabled(daylightSavingTimeEnabledPlan).
-			TimeZoneOffset(plan.TimeZoneOffset.ValueString()).
-			Region(plan.Region.ValueString()).
-			DestinationID(state.Id.ValueString())
+				RunSetupTests(runSetupTestsPlan).
+				TrustCertificates(trustCertificatesPlan).
+				TrustFingerprints(trustFingerprintsPlan).
+				Region(plan.Region.ValueString()).
+				DestinationID(state.Id.ValueString())
 
-		if plan.HybridDeploymentAgentId.ValueString() != "" {
+		if (!plan.TimeZoneOffset.Equal(state.TimeZoneOffset)) {
+			svc.TimeZoneOffset(plan.TimeZoneOffset.ValueString())
+		}
+
+		if (daylightSavingTimeEnabledPlan != daylightSavingTimeEnabledState) {
+			svc.DaylightSavingTimeEnabled(daylightSavingTimeEnabledPlan)
+		}
+
+		if (!plan.HybridDeploymentAgentId.IsUnknown() && !plan.HybridDeploymentAgentId.Equal(state.HybridDeploymentAgentId)) {
 			svc.HybridDeploymentAgentId(plan.HybridDeploymentAgentId.ValueString())
 		}
 
-		if plan.NetworkingMethod.ValueString() != "" {
+		if (!plan.NetworkingMethod.IsUnknown() && !plan.NetworkingMethod.Equal(state.NetworkingMethod)) {
 			svc.NetworkingMethod(plan.NetworkingMethod.ValueString())
 		}
 
-		if plan.PrivateLinkId.ValueString() != "" {
+		if (!plan.PrivateLinkId.IsUnknown() && !plan.PrivateLinkId.Equal(state.PrivateLinkId)) {
 			svc.PrivateLinkId(plan.PrivateLinkId.ValueString())
 		}
 
@@ -316,6 +303,7 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 			)
 			return
 		}
+		
 		updatePerformed = true
 		plan.ReadFromResponseWithTests(response)
 
@@ -355,6 +343,7 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 					}
 				}
 			}
+
 			// there were no changes in config so we can just copy it from state
 			plan.Config = state.Config
 			updatePerformed = true

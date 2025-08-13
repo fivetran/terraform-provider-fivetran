@@ -745,3 +745,192 @@ func TestResourceDestinationMock(t *testing.T) {
 		},
 	)
 }
+
+func TestResourceDestinationPrivateLinkChangeMock(t *testing.T) {
+	var destinationPostHandler *mock.Handler
+	var destinationPatchHandler *mock.Handler
+	var destinationDeleteHandler *mock.Handler
+	var testDestinationData map[string]interface{}
+
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_destination" "mydestination" {
+				provider = fivetran-provider
+
+				group_id = "test_group_id"
+				service = "postgres_rds_warehouse"
+				time_zone_offset = "0"
+				region = "GCP_US_EAST4"
+				trust_certificates = "true"
+				trust_fingerprints = "true"
+				daylight_saving_time_enabled = "true"
+				run_setup_tests = "false"
+				networking_method = "Directly"
+				hybrid_deployment_agent_id = "agent_id_1"
+				private_link_id = "private_link_id_1"
+
+				config {
+					host = "terraform-test.us-east-1.rds.amazonaws.com"
+					port = 5432
+					user = "postgres"
+					password = "password"
+					database = "fivetran"
+					connection_type = "Directly"
+				}
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, destinationPostHandler.Interactions, 1)
+				tfmock.AssertNotEmpty(t, testDestinationData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "service", "postgres_rds_warehouse"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "time_zone_offset", "0"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "region", "GCP_US_EAST4"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_certificates", "true"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_fingerprints", "true"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "daylight_saving_time_enabled", "true"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "run_setup_tests", "false"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "hybrid_deployment_agent_id", "agent_id_1"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "private_link_id", "private_link_id_1"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.host", "terraform-test.us-east-1.rds.amazonaws.com"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.port", "5432"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.user", "postgres"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.password", "password"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.database", "fivetran"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.connection_type", "Directly"),
+		),
+	}
+
+	step2 := resource.TestStep{
+		Config: `
+			resource "fivetran_destination" "mydestination" {
+				provider = fivetran-provider
+
+				group_id = "test_group_id"
+				service = "postgres_rds_warehouse"
+				time_zone_offset = "0"
+				region = "GCP_US_EAST4"
+				trust_certificates = "true"
+				trust_fingerprints = "true"
+				daylight_saving_time_enabled = "true"
+				run_setup_tests = "false"
+				networking_method = "Directly"
+				hybrid_deployment_agent_id = "agent_id_2"
+				private_link_id = "private_link_id_2"
+
+				config {
+					host = "test.host"
+					port = 5434
+					user = "postgres"
+					password = "password123"
+					database = "fivetran"
+					connection_type = "Directly"
+				}
+			}`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, destinationPatchHandler.Interactions, 1)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "time_zone_offset", "0"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "region", "GCP_US_EAST4"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_certificates", "true"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_fingerprints", "true"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "daylight_saving_time_enabled", "true"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "run_setup_tests", "false"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "hybrid_deployment_agent_id", "agent_id_2"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "private_link_id", "private_link_id_2"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.host", "test.host"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.port", "5434"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.user", "postgres"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.password", "password123"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.database", "fivetran"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.connection_type", "Directly"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+
+				onPostDestination := func(t *testing.T, req *http.Request) (*http.Response, error) {
+					tfmock.AssertEmpty(t, testDestinationData)
+
+					body := tfmock.RequestBodyToJson(t, req)
+
+					// Add response fields
+					body["id"] = "destination_id"
+					body["created_at"] = time.Now().Format("2006-01-02T15:04:05.000000Z")
+
+					testDestinationData = body
+
+					response := tfmock.FivetranSuccessResponse(t, req, http.StatusCreated,
+						"Destination has been created", body)
+
+					return response, nil
+				}
+
+				onPatchDestination := func(t *testing.T, req *http.Request) (*http.Response, error) {
+					tfmock.AssertNotEmpty(t, testDestinationData)
+
+					body := tfmock.RequestBodyToJson(t, req)
+
+					// Update saved values
+					tfmock.UpdateMapDeep(body, testDestinationData)
+
+					response := tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Destination has been updated", testDestinationData)
+
+					return response, nil
+				}
+
+				tfmock.MockClient().Reset()
+				testDestinationData = nil
+
+				destinationPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/destinations").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return onPostDestination(t, req)
+					},
+				)
+
+				tfmock.MockClient().When(http.MethodGet, "/v1/destinations/destination_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						tfmock.AssertNotEmpty(t, testDestinationData)
+						response := tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "", testDestinationData)
+						return response, nil
+					},
+				)
+
+				destinationPatchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/destinations/destination_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return onPatchDestination(t, req)
+					},
+				)
+
+				destinationDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/destinations/destination_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						tfmock.AssertNotEmpty(t, testDestinationData)
+						testDestinationData = nil
+						response := tfmock.FivetranSuccessResponse(t, req, 200,
+							"Destination with id 'destionation_id' has been deleted", nil)
+						return response, nil
+					},
+				)
+
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, destinationDeleteHandler.Interactions, 1)
+				tfmock.AssertEmpty(t, testDestinationData)
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
+				step2,
+			},
+		},
+	)
+}
