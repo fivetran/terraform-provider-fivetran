@@ -109,6 +109,116 @@ func TestResourceDestinationE2E(t *testing.T) {
 	})
 }
 
+func TestResourceDestinationHdE2E(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectorResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+					resource "fivetran_group" "group" {
+						provider = fivetran-provider
+    					name = "sdhfkldwshkjshdkj"
+					}
+
+					resource "fivetran_hybrid_deployment_agent" "hybrid_deployment_agent1" {
+    					provider = fivetran-provider
+    					display_name = "display_name_1"
+    					group_id = fivetran_group.group.id
+    					auth_type = "AUTO"
+                 		env_type = "DOCKER"
+					}
+
+					resource "fivetran_hybrid_deployment_agent" "hybrid_deployment_agent2" {
+						provider = fivetran-provider
+    					display_name = "display_name_2"
+    					group_id = fivetran_group.group.id
+    					auth_type = "AUTO"
+                 		env_type = "DOCKER"
+					}
+
+			    	resource "fivetran_destination" "testdestination" {
+						provider = fivetran-provider
+						group_id = fivetran_group.group.id
+						service = "postgres_rds_warehouse"
+						time_zone_offset = "0"
+						region = "GCP_US_EAST4"
+						daylight_saving_time_enabled = "true"
+						trust_certificates = "true"
+						trust_fingerprints = "true"
+						run_setup_tests = "false"
+      					hybrid_deployment_agent_id = fivetran_hybrid_deployment_agent.hybrid_deployment_agent1.id
+			
+						config {
+							host = "terraform-test.us-east-1.rds.amazonaws.com"
+							port = 5432
+							user = "postgres"
+							password = "password"
+							database = "fivetran"
+							connection_type = "Directly"
+						}
+					}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranDestinationResourceUpdate(t, "fivetran_destination.testdestination"),
+					resource.TestCheckResourceAttrSet("fivetran_destination.testdestination", "hybrid_deployment_agent_id"),
+				),
+			},
+			{
+				Config: `
+					resource "fivetran_group" "group" {
+						provider = fivetran-provider
+    					name = "sdhfkldwshkjshdkj"
+					}
+
+					resource "fivetran_hybrid_deployment_agent" "hybrid_deployment_agent1" {
+						provider = fivetran-provider
+    					display_name = "display_name_1"
+    					group_id = fivetran_group.group.id
+    					auth_type = "AUTO"
+                 		env_type = "DOCKER"
+					}
+
+					resource "fivetran_hybrid_deployment_agent" "hybrid_deployment_agent2" {
+						provider = fivetran-provider
+    					display_name = "display_name_2"
+    					group_id = fivetran_group.group.id
+    					auth_type = "AUTO"
+                 		env_type = "DOCKER"
+					}
+
+			    	resource "fivetran_destination" "testdestination" {
+						provider = fivetran-provider
+						group_id = fivetran_group.group.id
+						service = "postgres_rds_warehouse"
+						time_zone_offset = "0"
+						region = "GCP_US_EAST4"
+						daylight_saving_time_enabled = "true"
+						trust_certificates = "true"
+						trust_fingerprints = "true"
+						run_setup_tests = "false"
+      					hybrid_deployment_agent_id = fivetran_hybrid_deployment_agent.hybrid_deployment_agent2.id
+			
+						config {
+							host = "terraform-test.us-east-1.rds.amazonaws.com"
+							port = 5432
+							user = "postgres"
+							password = "password"
+							database = "fivetran"
+							connection_type = "Directly"
+						}
+					}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranDestinationResourceUpdate(t, "fivetran_destination.testdestination"),
+					resource.TestCheckResourceAttrSet("fivetran_destination.testdestination", "hybrid_deployment_agent_id"),
+				),
+			},
+		},
+	})
+}
+
 func testFivetranDestinationResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
