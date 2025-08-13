@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.9.3](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.2...v1.9.3)
 
-- Issue when provider produced inconsistent result after apply for field `private_link_id` in `fivetran_destination` resource
+- Issue when provider produced inconsistent result after apply for fields `private_link_id`, `hybrid_deployment_agent_id`, `networking_method` in `fivetran_destination` resource
 
 ## [1.9.2](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.1...v1.9.2)
 
