@@ -132,18 +132,20 @@ func getConnectorStateModel(version int) tftypes.Type {
 		if version == 5 {
 			base["destination_schema"] = tftypes.Object{
 				AttributeTypes: map[string]tftypes.Type{
-				"name":   			tftypes.String,
-				"table":  			tftypes.String,
-				"prefix": 			tftypes.String,
-				"table_group_name": tftypes.String,
-			},	
+					"name":   			tftypes.String,
+					"table":  			tftypes.String,
+					"prefix": 			tftypes.String,
+					"table_group_name": tftypes.String,
+				},
+			}	
 		} else {
 			base["destination_schema"] = tftypes.Object{
-			AttributeTypes: map[string]tftypes.Type{
-				"name":   tftypes.String,
-				"table":  tftypes.String,
-				"prefix": tftypes.String,
-			},
+				AttributeTypes: map[string]tftypes.Type{
+					"name":   tftypes.String,
+					"table":  tftypes.String,
+					"prefix": tftypes.String,
+				},
+			}
 		}
 		
 		base["run_setup_tests"] = tftypes.Bool
@@ -163,9 +165,10 @@ func getConnectorStateModel(version int) tftypes.Type {
 	} else {
 		base["destination_schema"] = tftypes.Set{ElementType: tftypes.Object{
 			AttributeTypes: map[string]tftypes.Type{
-				"name":   tftypes.String,
-				"table":  tftypes.String,
-				"prefix": tftypes.String,
+					"name":   tftypes.String,
+					"table":  tftypes.String,
+					"prefix": tftypes.String,
+				},
 			},
 		}
 		base["run_setup_tests"] = tftypes.String
