@@ -75,6 +75,12 @@ func (r *connector) UpgradeState(ctx context.Context) map[int64]resource.StateUp
 				upgradeConnectorState(ctx, req, resp, 3)
 			},
 		},
+		// State upgrade implementation from 4 (prior state version) to 5 (Schema.Version)
+		4: {
+			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
+				upgradeConnectorState(ctx, req, resp, 4)
+			},
+		},
 	}
 }
 
