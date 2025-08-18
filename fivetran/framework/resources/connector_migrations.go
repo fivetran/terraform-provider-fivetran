@@ -128,7 +128,7 @@ func getConnectorStateModel(version int) tftypes.Type {
 			},
 		},
 	}
-	if version == 4 || version == 3 || version == 5 {
+	if version >= 3 && version <= 5 {
 		if version == 5 {
 			base["destination_schema"] = tftypes.Object{
 				AttributeTypes: map[string]tftypes.Type{
