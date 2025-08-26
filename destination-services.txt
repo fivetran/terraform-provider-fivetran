@@ -26,6 +26,7 @@ onelake
 oracle_rac_warehouse
 oracle_rds_warehouse
 oracle_warehouse
+postgres_databricks_warehouse
 postgres_gcp_warehouse
 postgres_rds_warehouse
 postgres_warehouse

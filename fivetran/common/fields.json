@@ -353,6 +353,7 @@
          "eventsforce": "Your Eventsforce account name.",
          "freshdesk_contact_center": "Your Freshdesk Contact Center account name.",
          "happyfox": "Your HappyFox account name.",
+         "helpjuice": "",
          "maxio_saasoptics": "Your Maxio SaaSOptics account name.",
          "talkdesk": "Your Talkdesk Account Name.",
          "udemy_business": "Your Udemy Business account name."
@@ -1026,6 +1027,7 @@
          "dynamics_365_fo": "Require TLS through Tunnel.",
          "ehr": "Require TLS through Tunnel.",
          "elastic_cloud": "Default value: true. Set to false if TLS is not required when using an SSH tunnel.",
+         "epic_clarity": "Require TLS through Tunnel.",
          "es_self_hosted": "Default value: true. Set to false if TLS is not required when using an SSH tunnel.",
          "google_cloud_mysql": "Require TLS through Tunnel",
          "google_cloud_postgresql": "Require TLS through Tunnel",
@@ -1146,7 +1148,7 @@
          "apollo": "Your Apollo API key.",
          "appcues": "Your Appcues API key.",
          "applovin": "",
-         "ascend_by_partnerize": "",
+         "ascend_by_partnerize": "Your Ascend by Partnerize API Key",
          "ashby": "Your Ashby API key.",
          "assembled": "Your Assembled API key.",
          "atlassian_jira_align": "Your Jira Align API key.",
@@ -1188,6 +1190,7 @@
          "column": "Your Column API key.",
          "concord": "Your Concord API key.",
          "confluent_cloud": "API Key",
+         "consensus_demo_automation_platform": "Your Consensus Demo Automation Platform API key.",
          "contrast_security": "Your Contrast Security API Key.",
          "copper": "Your Copper API key.",
          "coupa": "Your Coupa API key.",
@@ -1221,6 +1224,7 @@
          "freshsuccess": "Your Freshsuccess API key.",
          "freshteam": "Your Freshteam API key.",
          "friendbuy": "Your Friendbuy API key.",
+         "fulfil": "",
          "fullstory": "Your Fullstory API key.",
          "gainsight_product_experience": "Your Gainsight Product Experience API key.",
          "gem": "Your Gem API key.",
@@ -1232,6 +1236,7 @@
          "happyfox": "Your HappyFox API key.",
          "healthie": "",
          "height": "Your Height API key.",
+         "helpjuice": "Your Helpjuice API key.",
          "helpshift": "Your Helpshift API Key.",
          "incidentio": "Your incident.io API key.",
          "infobip": "Your Infobip API key.",
@@ -1254,6 +1259,7 @@
          "liftoff": "Your Liftoff API key.",
          "linear": "Your Linear API key.",
          "linksquares": "Your LinkSquares API key.",
+         "listen360": "Your Listen360 API key.",
          "lob": "Your Lob API key.",
          "loop": "Your Loop API key.",
          "lucca": "Your Lucca API key.",
@@ -1300,7 +1306,7 @@
          "revops": "Your RevOps bearer token.",
          "ricochet360": "Your Ricochet360 API key.",
          "ringover": "Your Ringover API key.",
-         "rippling": "Your Rippling API key.",
+         "rippling": "Your Rippling API token.",
          "rocketlane": "Your Rocketlane API key.",
          "rootly": "Your Rootly API key.",
          "ruddr": "Your Ruddr API key.",
@@ -1432,6 +1438,20 @@
       },
       "api_field": ""
    },
+   "api_role": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "zuora": "The API role assigned to the integration user.",
+         "zuora_sandbox": "The API role assigned to the integration user."
+      },
+      "api_field": ""
+   },
    "api_secret": {
       "readonly": false,
       "sensitive": true,
@@ -1442,6 +1462,7 @@
       "item_type": {},
       "description": {
          "confluent_cloud": "API Secret",
+         "consensus_demo_automation_platform": "Your Consensus Demo Automation Platform API secret.",
          "forj_community": "Your Forj Community API secret.",
          "friendbuy": "Your Friendbuy API secret.",
          "justcall": "Your JustCall API secret.",
@@ -2352,6 +2373,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "amazon_selling_partner": "The earliest date to sync data from, in YYYY-MM-DD format. Cannot be before 1994-01-01 or in the future.",
          "shopify": "Limit of the Historical Sync Time for selected tables",
          "stripe": "Limit of the Historical Sync Time for selected tables",
          "stripe_test": "Limit of the Historical Sync Time for selected tables",
@@ -2368,7 +2390,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "hubspot": "Date Limit of the Historical Sync Time for selected tables. The Format should be YYYY-MM-DD"
+         "hubspot": "Date Limit of the Historical Sync Time for selected tables. The Format should be YYYY-MM-DD",
+         "mixpanel": "Date from which data needs to be synced."
       },
       "api_field": ""
    },
@@ -2485,6 +2508,21 @@
       "item_type": {},
       "description": {
          "sql_server": "Transaction log type. Possible values: `\"ONLINE\"`, `\"BACK_AZURE\"`. Default\"  value is `\"ONLINE\"`."
+      },
+      "api_field": ""
+   },
+   "binary_representation": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "azure_cosmos_for_mongo": "How binary data is represented in the database. Possible values: 'Base64' (default), 'Uuid'.",
+         "mongo": "How binary data is represented in the database. Possible values: 'Base64' (default), 'Uuid'.",
+         "mongo_sharded": "How binary data is represented in the database. Possible values: 'Base64' (default), 'Uuid'."
       },
       "api_field": ""
    },
@@ -2771,7 +2809,7 @@
       "item_type": {},
       "description": {
          "acumatica": "Your Acumatica client ID.",
-         "adobe_analytics": "Client ID from the OAuth Server-to-Server or Service Account (JWT) credentials of your Adobe Project.",
+         "adobe_analytics": "Client ID from the OAuth Server-to-Server credentials of your Adobe Project.",
          "adobe_workfront": "Your Adobe Workfront client ID.",
          "adp_workforce_now": "Your ADP Client ID.",
          "akamai": "Your Akamai client ID.",
@@ -2782,6 +2820,7 @@
          "billing_platform": "Your BillingPlatform client ID.",
          "bing_webmaster_tools": "Your Bing Webmaster Tools client ID.",
          "brightcove": "Your Brightcove client ID.",
+         "brightflag": "Your Brightflag  client ID.",
          "brightpearl": "Your Brightpearl client ID.",
          "brivo": "Your Brivo client ID.",
          "buildium": "Your Buildium API client ID.",
@@ -2789,6 +2828,7 @@
          "canvas_by_instructure": "Your Canvas by Instructure client ID.",
          "canvas_data_2_by_instructure": "Your Canvas Data 2 by Instructure client ID.",
          "castor_edc": "Your Castor EDC client Id.",
+         "classy": "Your Classy client ID.",
          "clazar": "Your Clazar client ID.",
          "cloudbeds": "Your Cloudbeds client ID.",
          "commercetools": "Your commercetools client ID.",
@@ -2798,6 +2838,7 @@
          "coupa": "Your Coupa client_id",
          "criteo": "Your Criteo Client ID.",
          "criteo_retail_media": "Your Criteo Retail Media client ID.",
+         "cube_software": "Your Cube Software Client ID.",
          "culture_amp": "Your Culture Amp client ID.",
          "cvent": "Your Cvent client ID.",
          "d2l_brightspace": "Your D2L Brightspace client ID.",
@@ -2923,7 +2964,9 @@
       "item_type": {},
       "description": {
          "destini": "Your Destini Client Name.",
-         "medallia": "Medallia company name"
+         "medallia": "Medallia company name",
+         "zuora": "The name of your organization as registered with Zuora Revenue.",
+         "zuora_sandbox": "The name of your organization as registered with Zuora Revenue."
       },
       "sensitive_exclusions": {
          "medallia": true
@@ -3027,7 +3070,7 @@
       "item_type": {},
       "description": {
          "acumatica": "Your Acumatica client secret.",
-         "adobe_analytics": "Client Secret from the OAuth Server-to-Server or Service Account (JWT) credentials of your Adobe Project.",
+         "adobe_analytics": "Client Secret from the OAuth Server-to-Server credentials of your Adobe Project.",
          "adobe_workfront": "Your Adobe Workfront client secret.",
          "adp_workforce_now": "Your ADP Client Secret.",
          "akamai": "Your Akamai client secret.",
@@ -3038,10 +3081,12 @@
          "billing_platform": "Your BillingPlatform client secret.",
          "bing_webmaster_tools": "Your Bing Webmaster Tools client secret.",
          "brightcove": "Your Brightcove client secret.",
+         "brightflag": "Your Brightflag client secret.",
          "brightpearl": "Your Brightpearl client secret.",
          "brivo": "Your Brivo client secret.",
          "canvas_by_instructure": "Your Canvas by Instructure client secret.",
          "castor_edc": "Your Castor EDC client secret.",
+         "classy": "Your Classy client secret.",
          "clazar": "Your Clazar client secret.",
          "cloudbeds": "Your Cloudbeds client secret.",
          "commercetools": "Your commercetools client secret.",
@@ -3051,6 +3096,7 @@
          "coupa": "Your Coupa client_id",
          "criteo": "Your Criteo client secret key.",
          "criteo_retail_media": "Your Criteo Retail Media client secret.",
+         "cube_software": "Your Cube Software Client Secret.",
          "culture_amp": "Your Culture Amp client secret.",
          "cvent": "Your Cvent client secret.",
          "d2l_brightspace": "Your D2L Brightspace client secret.",
@@ -3253,6 +3299,7 @@
       "item_type": {},
       "description": {
          "360learning": "Your 360Learning Company ID.",
+         "cube_software": "Your Cube Software Company ID.",
          "sage_intacct": "Company ID",
          "sap_success_factors": "Your SAP SuccessFactors Company ID."
       },
@@ -3524,6 +3571,7 @@
          "ehr": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
          "elastic_cloud": "Possible values:`Directly`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
          "email": "Connection method. Default value: `Directly`.",
+         "epic_clarity": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
          "es_self_hosted": "Possible values:`Directly`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
          "financial_force": "",
          "google_cloud_mysql": "Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
@@ -3816,6 +3864,21 @@
       },
       "api_field": ""
    },
+   "custom_dimension_key_ids": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "item_type": {
+         "double_click_publishers": "integer"
+      },
+      "description": {
+         "double_click_publishers": "The list of custom dimension key IDs included in the report. Custom dimension keys can only be selected with the CUSTOM_DIMENSION dimension."
+      },
+      "api_field": ""
+   },
    "custom_event_sync_mode": {
       "readonly": false,
       "sensitive": false,
@@ -3920,6 +3983,19 @@
          "azure_function": "The list of key-value pairs that can be used to specify custom information to the function at runtime.",
          "connector_sdk": "",
          "google_cloud_function": "The list of key-value pairs that can be used to specify custom information to the function at runtime."
+      },
+      "api_field": ""
+   },
+   "custom_rate_limit": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "toggl_track": "Your Toggl Track custom rate limit. Supports only numeric characters (0-9)."
       },
       "api_field": ""
    },
@@ -4600,6 +4676,7 @@
          "dynamics_365_fo": "The database name.",
          "ehr": "The database name.",
          "elastic_cloud": "",
+         "epic_clarity": "The database name.",
          "es_self_hosted": "",
          "google_cloud_mysql": "The database name.",
          "google_cloud_postgresql": "The database name.",
@@ -4997,6 +5074,7 @@
          "appcues": "Your Appcues Email.",
          "asset_panda": "Your Asset Panda email.",
          "boostr": "Your Boostr email.",
+         "consensus_demo_automation_platform": "The email address of the Consensus Demo Automation Platform account you want Fivetran to use to access your data.",
          "copper": "Your Copper email address.",
          "email": "Send your emails to this address.",
          "moloco": "Your Moloco account email.",
@@ -5199,7 +5277,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "marketo": "Marketo SOAP API Encryption Key."
+         "marketo": "Marketo SOAP API Encryption Key (Discontinued)."
       },
       "api_field": ""
    },
@@ -5536,6 +5614,28 @@
       "nullable": true,
       "type": "object_list",
       "fields": {
+         "archive_pattern": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "azure_blob_storage": "All Files inside of compressed archives with filenames matching this regular expression will be synced.",
+               "box": "All Files inside of compressed archives with filenames matching this regular expression will be synced.",
+               "email": "All Files inside of compressed archives with filenames matching this regular expression will be synced.",
+               "ftp": "All Files inside of compressed archives with filenames matching this regular expression will be synced.",
+               "gcs": "All Files inside of compressed archives with filenames matching this regular expression will be synced.",
+               "google_drive": "All Files inside of compressed archives with filenames matching this regular expression will be synced.",
+               "s3": "All Files inside of compressed archives with filenames matching this regular expression will be synced.",
+               "s3_compatible_storage": "All Files inside of compressed archives with filenames matching this regular expression will be synced.",
+               "sftp": "All Files inside of compressed archives with filenames matching this regular expression will be synced.",
+               "share_point": "All Files inside of compressed archives with filenames matching this regular expression will be synced."
+            },
+            "api_field": ""
+         },
          "email_subject": {
             "readonly": false,
             "sensitive": false,
@@ -5559,7 +5659,9 @@
             "item_type": {},
             "description": {
                "azure_blob_storage": "All files in your search path matching this regular expression will be synced per table. We have discontinued this field, and will delete it by August 31, 2025.",
+               "box": "All files in your search path matching this regular expression will be synced per table.",
                "email": "All files in your search path matching this regular expression will be synced per table.",
+               "ftp": "All files in your search path matching this regular expression will be synced per table.",
                "gcs": "All files in your search path matching this regular expression will be synced per table.",
                "google_drive": "All files in your search path matching this regular expression will be synced per table.",
                "s3": "All files in your search path matching this regular expression will be synced per table.",
@@ -5579,7 +5681,9 @@
             "item_type": {},
             "description": {
                "azure_blob_storage": "All files matching the above pattern will be synced to this table.",
+               "box": "All files matching the above pattern will be synced to this table.",
                "email": "All files matching the above pattern will be synced to this table.",
+               "ftp": "All files matching the above pattern will be synced to this table.",
                "gcs": "All files matching the above pattern will be synced to this table.",
                "google_drive": "All files matching the above pattern will be synced to this table.",
                "s3": "All files matching the above pattern will be synced to this table.",
@@ -5594,7 +5698,9 @@
       "item_type": {},
       "description": {
          "azure_blob_storage": "Mapped file name patterns to a destination table.",
+         "box": "Mapped file name patterns to a destination table.",
          "email": "Mapped file name patterns to a destination table.",
+         "ftp": "Mapped file name patterns to a destination table.",
          "gcs": "Mapped file name patterns to a destination table.",
          "google_drive": "Mapped file name patterns to a destination table.",
          "s3": "Mapped file name patterns to a destination table.",
@@ -6040,8 +6146,10 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "amazon_selling_partner": "The time frame for historical data synchronization. Default value: `ALL_TIME`.",
          "ascend_by_partnerize": "Your Ascend by Partnerize Historical sync time frame",
          "hubspot": "Used to configure Historical sync timeframe for selected tables",
+         "mixpanel": "Should sync all data or adhere to `backward_sync_limit_date`",
          "rokt": "Your Rokt historical sync time frame.",
          "shopify": "Used to configure Historical sync timeframe for selected tables",
          "skimlinks": "Your Skimlinks Historical sync time frame.",
@@ -6091,6 +6199,7 @@
          "dynamics_365_fo": "DB instance host or IP address.",
          "ehr": "DB instance host or IP address.",
          "elastic_cloud": "DB instance host or IP address.",
+         "epic_clarity": "DB instance host or IP address.",
          "es_self_hosted": "DB instance host or IP address.",
          "ftp": "FTP host address.",
          "google_cloud_mysql": "DB instance host or IP address.",
@@ -6163,7 +6272,9 @@
       "description": {
          "coassemble": "Your Coassemble Hostname.",
          "datadog": "Your Datadog host name.",
-         "ukg_pro_workforce_management": "Your UKG Pro Workforce Management hostname."
+         "ukg_pro_workforce_management": "Your UKG Pro Workforce Management hostname.",
+         "zuora": "The domain or URL of your Zuora Revenue instance.",
+         "zuora_sandbox": "The domain or URL of your Zuora Revenue instance."
       },
       "api_field": ""
    },
@@ -6295,6 +6406,19 @@
          "flywheel_digital": "Your Flywheel Digital instance.",
          "salesforce_marketing_cloud": "The Salesforce Marketing Cloud instance ID",
          "servicenow": "ServiceNow Instance ID."
+      },
+      "api_field": ""
+   },
+   "instance_code": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "workday_adaptive": "Instance code for Workday Adaptive Planning"
       },
       "api_field": ""
    },
@@ -6906,7 +7030,8 @@
       "description": {
          "rebound_returns": "Your ReBound Returns login.",
          "the_trade_desk": "The Trade Desk email. It is a part of the login credentials.",
-         "walmart_dsp": "Walmart DSP email. It is a part of the login credentials."
+         "walmart_dsp": "Walmart DSP email. It is a part of the login credentials.",
+         "workday_adaptive": "User email address"
       },
       "api_field": ""
    },
@@ -7528,6 +7653,7 @@
          "dynamics_365_fo": "The user's password.",
          "ehr": "The user's password.",
          "elastic_cloud": "The user's password.",
+         "epic_clarity": "The user's password.",
          "es_self_hosted": "The user's password.",
          "financial_force": "",
          "ftp": "FTP password.",
@@ -7623,17 +7749,21 @@
          "ukg_pro_workforce_management": "Your UKG Pro Workforce Management password.",
          "unicommerce": "Your uniware login password.",
          "upland": "Your Upland Software Password.",
+         "uptempo": "Your Uptempo password.",
          "veeva_vault": "Password",
          "veevavault": "Your Veeva Vault password.",
          "walmart_dsp": "Walmart DSP password. It is a part of the login credentials.",
          "when_i_work": "Your When I Work password.",
          "wherefour": "Your Wherefour password.",
          "workday": "Workday password.",
+         "workday_adaptive": "User password",
          "workday_financial_management": "Workday password.",
          "workday_hcm": "Workday password.",
          "xandr": "Your Xandr password.",
          "yougov_brandindex": "Your YouGov BrandIndex password.",
-         "younium": "Your Younium password."
+         "younium": "Your Younium password.",
+         "zuora": "The corresponding password for the API user.",
+         "zuora_sandbox": "The corresponding password for the API user."
       },
       "api_field": ""
    },
@@ -7921,6 +8051,7 @@
          "dynamics_365_fo": "The port number.",
          "ehr": "The port number.",
          "elastic_cloud": "The port number.",
+         "epic_clarity": "The port number.",
          "es_self_hosted": "The port number.",
          "ftp": "FTP port.",
          "google_cloud_mysql": "The port number.",
@@ -8510,6 +8641,7 @@
          "box": "You can specify the enclosing character used in your CSVs here. Fivetran will consider \" as the quote character if this field is empty and quote_character_enabled is set to true.",
          "dropbox": "You can specify the enclosing character used in your CSVs here. Fivetran will consider \" as the quote character if this field is empty and quote_character_enabled is set to true.",
          "email": "You can specify the enclosing character used in your CSVs here. Fivetran will consider \" as the quote character if this field is empty and quote_character_enabled is set to true.",
+         "ftp": "You can specify the enclosing character used in your CSVs here. Fivetran will consider \" as the quote character if this field is empty and quote_character_enabled is set to true.",
          "gcs": "You can specify the enclosing character used in your CSVs here. Fivetran will consider \" as the quote character if this field is empty and quote_character_enabled is set to true.",
          "google_drive": "You can specify the enclosing character used in your CSVs here. Fivetran will consider \" as the quote character if this field is empty and quote_character_enabled is set to true.",
          "s3": "You can specify the enclosing character used in your CSVs here. Fivetran will consider \" as the quote character if this field is empty and quote_character_enabled is set to true.",
@@ -8532,6 +8664,7 @@
          "box": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character.",
          "dropbox": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character.",
          "email": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character.",
+         "ftp": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character.",
          "gcs": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character.",
          "google_drive": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character.",
          "s3": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character.",
@@ -8550,6 +8683,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "toggl_track": "Your Toggl Track plan type.",
          "vimeo": "Your Vimeo rate limit plan."
       },
       "api_field": ""
@@ -8598,6 +8732,7 @@
          "awin": "Your Awin Region.",
          "aws_lambda": "The AWS region code for the DynamoDB instance.",
          "bigin_by_zoho_crm": "Your Bigin by Zoho CRM Region",
+         "brightflag": "Your Brightflag region.",
          "concur": "The region.",
          "cvent": "Your Cvent region.",
          "everflow": "Your Everflow region.",
@@ -9045,6 +9180,46 @@
       "nullable": false,
       "type": "object_list",
       "fields": {
+         "accounts": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "object_list",
+            "fields": {
+               "id": {
+                  "readonly": false,
+                  "sensitive": false,
+                  "nullable": true,
+                  "type": "string",
+                  "fields": null,
+                  "key_field": "",
+                  "item_type": {},
+                  "description": {
+                     "workday_adaptive": "Account ID to sync"
+                  },
+                  "api_field": ""
+               },
+               "include_descendants": {
+                  "readonly": false,
+                  "sensitive": false,
+                  "nullable": false,
+                  "type": "boolean",
+                  "fields": null,
+                  "key_field": "",
+                  "item_type": {},
+                  "description": {
+                     "workday_adaptive": "Flag to indicate if descendants are included or not"
+                  },
+                  "api_field": ""
+               }
+            },
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "workday_adaptive": "List of accounts to sync for the table, if applicable"
+            },
+            "api_field": ""
+         },
          "advertisers": {
             "readonly": false,
             "sensitive": false,
@@ -9115,6 +9290,49 @@
             },
             "api_field": ""
          },
+         "conversion_dimensions": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "item_type": {
+               "double_click_campaign_manager": "string"
+            },
+            "description": {
+               "double_click_campaign_manager": "Conversion Dimensions."
+            },
+            "api_field": ""
+         },
+         "currency": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "workday_adaptive": "List of currencies to sync for the table, if applicable"
+            },
+            "api_field": ""
+         },
+         "custom_floodlight_variables": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "item_type": {
+               "double_click_campaign_manager": "string"
+            },
+            "description": {
+               "double_click_campaign_manager": "Custom Floodlight variables enable you to capture information beyond the basics (visits and revenue) that you can collect with standard parameters in your tags."
+            },
+            "api_field": ""
+         },
          "dimensions": {
             "readonly": false,
             "sensitive": false,
@@ -9123,15 +9341,19 @@
             "fields": null,
             "key_field": "",
             "item_type": {
+               "double_click_campaign_manager": "string",
                "google_analytics": "string",
                "google_analytics_4": "string",
-               "google_display_and_video_360": "string"
+               "google_display_and_video_360": "string",
+               "workday_adaptive": "string"
             },
             "description": {
+               "double_click_campaign_manager": "Report dimensions to include in a sync. The `date` dimension is mandatory for all report types. The `advertiser` dimension is mandatory for the `REACH` report type",
                "google_analytics": "The report dimensions to include into a sync. The `date` dimension is mandatory for all the report types.",
                "google_analytics_4": "The report dimensions to include into a sync.",
                "google_display_and_video_360": "The report dimensions (filters) to include into a sync. The dimension names are provided in the API format. This is a required parameter when `config_method` is set to `CREATE_NEW`.",
-               "google_search_console": "The report dimensions included to sync."
+               "google_search_console": "The report dimensions included to sync.",
+               "workday_adaptive": "List of dimensions to sync for the table, if applicable"
             },
             "api_field": ""
          },
@@ -9145,6 +9367,19 @@
             "item_type": {},
             "description": {
                "workday": "Dynamic parameter field name"
+            },
+            "api_field": ""
+         },
+         "enable_all_dimension_combinations": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "boolean",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "double_click_campaign_manager": "Specifies whether to enable all reach dimension combinations in the report. Default value: `false`"
             },
             "api_field": ""
          },
@@ -9241,6 +9476,59 @@
             },
             "api_field": ""
          },
+         "include_zero_rows": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "boolean",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "workday_adaptive": "Include zero rows in the table sync"
+            },
+            "api_field": ""
+         },
+         "levels": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "object_list",
+            "fields": {
+               "id": {
+                  "readonly": false,
+                  "sensitive": false,
+                  "nullable": true,
+                  "type": "string",
+                  "fields": null,
+                  "key_field": "",
+                  "item_type": {},
+                  "description": {
+                     "workday_adaptive": "Level ID to sync"
+                  },
+                  "api_field": ""
+               },
+               "include_descendants": {
+                  "readonly": false,
+                  "sensitive": false,
+                  "nullable": false,
+                  "type": "boolean",
+                  "fields": null,
+                  "key_field": "",
+                  "item_type": {},
+                  "description": {
+                     "workday_adaptive": "Flag to indicate if descendants are included or not"
+                  },
+                  "api_field": ""
+               }
+            },
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "workday_adaptive": "List of levels to sync for the table, if applicable"
+            },
+            "api_field": ""
+         },
          "metrics": {
             "readonly": false,
             "sensitive": false,
@@ -9249,12 +9537,14 @@
             "fields": null,
             "key_field": "",
             "item_type": {
+               "double_click_campaign_manager": "string",
                "google_analytics": "string",
                "google_analytics_4": "string",
                "google_display_and_video_360": "string",
                "google_search_ads_360": "string"
             },
             "description": {
+               "double_click_campaign_manager": "Report metrics to include into a sync.",
                "google_analytics": "The report metrics to include into a sync.",
                "google_analytics_4": "The report metrics to include into a sync.",
                "google_display_and_video_360": "The report metrics to include into a sync. The metric names are provided in the API format. This is a required parameter when `config_method` is set to `CREATE_NEW`.",
@@ -9274,6 +9564,21 @@
             },
             "description": {
                "google_display_and_video_360": "The list of partners to include into a sync. This parameter only takes effect when `config_method` is set to `CREATE_NEW`."
+            },
+            "api_field": ""
+         },
+         "per_interaction_dimensions": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "item_type": {
+               "double_click_campaign_manager": "string"
+            },
+            "description": {
+               "double_click_campaign_manager": "Per Interaction Dimensions."
             },
             "api_field": ""
          },
@@ -9319,6 +9624,21 @@
             },
             "api_field": ""
          },
+         "report_configuration_ids": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "item_type": {
+               "double_click_campaign_manager": "string"
+            },
+            "description": {
+               "double_click_campaign_manager": "You can select only one Floodlight Configuration ID per account."
+            },
+            "api_field": ""
+         },
          "report_format_type": {
             "readonly": false,
             "sensitive": false,
@@ -9341,6 +9661,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
+               "double_click_campaign_manager": "Type of reporting data to sync. Default value: `STANDARD`.",
                "google_ads": "The name of the Google Ads report from which the connector will sync the data. [Possible report_type values](https://developers.google.com/adwords/api/docs/appendix/reports#report-types).",
                "google_display_and_video_360": "The type of the report to create. This is a required parameter when `config_method` is set to `CREATE_NEW`.",
                "google_search_ads_360": "The type of report",
@@ -9370,7 +9691,8 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "google_analytics_4": "The custom window size for rollback syncs."
+               "google_analytics_4": "The custom window size for rollback syncs.",
+               "google_search_ads_360": "The custom window size for rollback syncs (between 2 and 90)."
             },
             "api_field": ""
          },
@@ -9445,6 +9767,32 @@
             },
             "api_field": ""
          },
+         "start_month": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "workday_adaptive": "Start month for the table sync, in MM format"
+            },
+            "api_field": ""
+         },
+         "start_year": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "workday_adaptive": "Start year for the table sync, in YYYY format"
+            },
+            "api_field": ""
+         },
          "support_nested_columns": {
             "readonly": false,
             "sensitive": false,
@@ -9480,12 +9828,14 @@
             "key_field": "",
             "item_type": {},
             "description": {
+               "double_click_campaign_manager": "Destination table name. It must be unique within this connection and must comply with Fivetran's naming conventions.",
                "google_ads": "The table name within the schema to which connector will sync the data of the specific report.",
                "google_analytics": "The table name within the schema to which connector will sync the data of the specific report.",
                "google_analytics_4": "The table name within the schema to which connector will sync the data of the specific report.",
                "google_search_ads_360": "The name of a table within the schema to which connector syncs the data of a given report.",
                "google_search_console": "The name of a table within the schema to which connector syncs the data of a given report.",
-               "workday": "The table name within the schema to which connector will sync the data of the specific report."
+               "workday": "The table name within the schema to which connector will sync the data of the specific report.",
+               "workday_adaptive": "Table name to be synced"
             },
             "api_field": ""
          },
@@ -9527,18 +9877,48 @@
                "google_display_and_video_360": "Specifies whether the configuration is updated before each sync or only when the connector settings are saved. This parameter only takes effect when `config_method` is set to `REUSE_EXISTING`. The default value is `true`."
             },
             "api_field": ""
+         },
+         "version_sync_strategy": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "workday_adaptive": "Version sync strategy for the table, SYNC_ALL_AND_NEW_VERSIONS or SYNC_SELECT_VERSIONS"
+            },
+            "api_field": ""
+         },
+         "versions": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "item_type": {
+               "workday_adaptive": "string"
+            },
+            "description": {
+               "workday_adaptive": "List of versions to sync for the table, if versionSyncStrategy is SYNC_SELECT_VERSIONS"
+            },
+            "api_field": ""
          }
       },
       "key_field": "table",
       "item_type": {},
       "description": {
+         "double_click_campaign_manager": "List of reports",
          "google_ads": "The list of reports. Each report corresponds to a table within the schema to which connector will sync the data.",
          "google_analytics": "The list of reports. Each report corresponds to a table within the schema to which connector will sync the data.",
          "google_analytics_4": "The list of reports. Each report corresponds to a table within the schema to which connector will sync the data.",
          "google_display_and_video_360": "The list of reports. Each report corresponds to a table within the schema to which connector will sync the data.",
          "google_search_ads_360": "The list of reports. Each report corresponds to a table within the schema to which connector syncs the data.",
          "google_search_console": "The list of reports. Each report corresponds to a table within the schema to which connector syncs the data.",
-         "workday": "The list of reports. Each report corresponds to a table within the schema to which connector will sync the data."
+         "workday": "The list of reports. Each report corresponds to a table within the schema to which connector will sync the data.",
+         "workday_adaptive": "Custom Report"
       },
       "api_field": ""
    },
@@ -10153,6 +10533,7 @@
          "brevo": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "brex": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "brightcove": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "brightflag": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "brightpearl": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "brivo": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "bubble": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -10189,6 +10570,7 @@
          "circleci": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "cj_commission_detail": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "clari": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "classy": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "clazar": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "clickup": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "clockify": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -10212,6 +10594,7 @@
          "confluence": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "confluent_cloud": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "connector_sdk": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "consensus_demo_automation_platform": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "constant_contact": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "contrast_security": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "convex": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -10223,6 +10606,7 @@
          "crossbeam": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "crowddev": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "crunchbase": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "cube_software": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "culture_amp": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "customerio": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "cvent": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -10303,6 +10687,7 @@
          "friendbuy": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "front": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "ftp": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "fulfil": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "fullstory": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "g2": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "gainsight_customer_success": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -10351,6 +10736,7 @@
          "heartland_retail_pos": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "height": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "helpdesk": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "helpjuice": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "helpscout": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "helpshift": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "heroku_kafka": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -10413,6 +10799,7 @@
          "linkedin_ads": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "linkedin_company_pages": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "linksquares": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "listen360": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "livechat": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "livechat_partner": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "lob": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -10686,6 +11073,7 @@
          "unicommerce": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "upland": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "uppromote": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "uptempo": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "uservoice": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "validio": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "veeqo": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -10713,6 +11101,7 @@
          "wordpress": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "workable": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "workday": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "workday_adaptive": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "workday_financial_management": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "workday_hcm": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "workday_strategic_sourcing": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -10783,6 +11172,7 @@
          "documentdb": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
          "dynamics_365_fo": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
          "ehr": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
+         "epic_clarity": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
          "google_cloud_mysql": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
          "google_cloud_postgresql": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
          "google_cloud_sqlserver": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
@@ -11837,7 +12227,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "marketo": "Marketo SOAP API Endpoint."
+         "marketo": "Marketo SOAP API Endpoint (Discontinued)."
       },
       "api_field": ""
    },
@@ -11864,6 +12254,19 @@
       "item_type": {},
       "description": {
          "adobe_analytics_data_feed": "The data source."
+      },
+      "api_field": ""
+   },
+   "source_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "consensus_demo_automation_platform": "Your Consensus Demo Automation Platform source name."
       },
       "api_field": ""
    },
@@ -11947,6 +12350,7 @@
          "ezofficeinventory": "Your EZOfficeInventory Subdomain.",
          "fountain": "Your Fountain subdomain.",
          "freshchat": "Your Freshchat Sub Domain",
+         "fulfil": "",
          "gainsight_customer_success": "The subdomain of your Gainsight account.",
          "gainsight_product_experience": "Your Gainsight Product Experience subdomain.",
          "genesys": "Your Genesys subdomain.",
@@ -12031,6 +12435,7 @@
          "smarthr": "Your SmartHR subdomain.",
          "sonarqube": "Your Sonarqube subdomain.",
          "toast": "Your Toast domain.",
+         "uptempo": "Your Uptempo subdomain.",
          "vts": "Your VTS Subdomain.",
          "yext": "Your Yext subdomain. ",
          "zendesk_chat": "Your Zendesk domain."
@@ -12457,13 +12862,16 @@
       "item_type": {},
       "description": {
          "azure_blob_storage": "Table group name",
+         "box": "Table group name",
          "email": "Table group name",
+         "ftp": "Table group name",
          "gcs": "Table group name",
          "google_drive": "Table group name",
          "s3": "Table group name",
          "s3_compatible_storage": "Table group name",
          "sftp": "Table group name",
-         "share_point": "Table group name"
+         "share_point": "Table group name",
+         "workday": "Table group name"
       },
       "api_field": ""
    },
@@ -13106,6 +13514,7 @@
          "dynamics_365_fo": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
          "ehr": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
          "elastic_cloud": "SSH host, specify only to connect using an SSH tunnel (do not use a load balancer).",
+         "epic_clarity": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
          "es_self_hosted": "SSH host, specify only to connect using an SSH tunnel (do not use a load balancer).",
          "google_cloud_mysql": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
          "google_cloud_postgresql": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -13174,6 +13583,7 @@
          "dynamics_365_fo": "SSH port, specify only to connect via an SSH tunnel.",
          "ehr": "SSH port, specify only to connect via an SSH tunnel.",
          "elastic_cloud": "SSH port, specify only to connect using an SSH tunnel.",
+         "epic_clarity": "SSH port, specify only to connect via an SSH tunnel.",
          "es_self_hosted": "SSH port, specify only to connect using an SSH tunnel.",
          "google_cloud_mysql": "SSH port, specify only to connect via an SSH tunnel.",
          "google_cloud_postgresql": "SSH port, specify only to connect via an SSH tunnel.",
@@ -13242,6 +13652,7 @@
          "dynamics_365_fo": "SSH user, specify only to connect via an SSH tunnel.",
          "ehr": "SSH user, specify only to connect via an SSH tunnel.",
          "elastic_cloud": "SSH user, specify only to connect using an SSH tunnel.",
+         "epic_clarity": "SSH user, specify only to connect via an SSH tunnel.",
          "es_self_hosted": "SSH user, specify only to connect using an SSH tunnel.",
          "google_cloud_mysql": "SSH user, specify only to connect via an SSH tunnel.",
          "google_cloud_postgresql": "SSH user, specify only to connect via an SSH tunnel.",
@@ -13340,6 +13751,7 @@
          "clarity": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
          "dynamics_365_fo": "Update Method",
          "ehr": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
+         "epic_clarity": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
          "google_cloud_mysql": "The method to detect new or changed rows. Supported values:`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
          "google_cloud_postgresql": "The method to detect new or changed rows. Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. Supported values:`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
          "google_cloud_sqlserver": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
@@ -13533,6 +13945,7 @@
          "dynamics_365_fo": "The user name. The format must be `user@domain`.",
          "ehr": "The user name.  For Azure Databases, the format must be `user@domain`.",
          "elastic_cloud": "The user name.",
+         "epic_clarity": "The user name.  For Azure Databases, the format must be `user@domain`.",
          "es_self_hosted": "The user name.",
          "ftp": "FTP user.",
          "google_cloud_mysql": "The user name.",
@@ -13594,7 +14007,7 @@
          "coassemble": "Your Coassemble user ID.",
          "gmail": "(DEPRECATED) Your Gmail user ID.",
          "hibob": "Your HiBob Service User Token.",
-         "marketo": "Marketo SOAP API User Id.",
+         "marketo": "Marketo SOAP API User Id (Discontinued).",
          "okendo": "Your Okendo user ID.",
          "playvox": "Your Playvox User ID.",
          "sage_intacct": "User ID",
@@ -13734,6 +14147,7 @@
          "ukg_pro_workforce_management": "Your UKG Pro Workforce Management username.",
          "unicommerce": "Your uniware login username.",
          "upland": "Your Upland Software Username.",
+         "uptempo": "Your Uptempo username.",
          "veeva_vault": "Username",
          "veevavault": "Your Veeva Vault username.",
          "when_i_work": "Your When I Work username.",
@@ -13742,7 +14156,9 @@
          "workday_hcm": "Username of your Workday Integration System User account",
          "xandr": "Your Xandr username.",
          "yougov_brandindex": "Your YouGov BrandIndex username.",
-         "younium": "Your Younium username."
+         "younium": "Your Younium username.",
+         "zuora": "The API username with the necessary access permissions.",
+         "zuora_sandbox": "The API username with the necessary access permissions."
       },
       "sensitive_exclusions": {
          "compliance_checkpoint": true,

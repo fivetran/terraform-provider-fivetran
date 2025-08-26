@@ -5,7 +5,51 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.4...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.5...HEAD)
+
+## [1.9.5](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.4...v1.9.5)
+
+New connection services supported:
+- Supported service: `brightflag`
+- Supported service: `classy`
+- Supported service: `consensus_demo_automation_platform`
+- Supported service: `cube_software`
+- Supported service: `epic_clarity`
+- Supported service: `fulfil`
+- Supported service: `helpjuice`
+- Supported service: `listen360`
+- Supported service: `uptempo`
+- Supported service: `workday_adaptive`
+
+New connection config fields supported:
+- Added field `fivetran_connector.destination_schema.table_group_name` for services: `workday`.
+- Added field `fivetran_connector.config.reports.report_configuration_ids` for services: `double_click_campaign_manager`.
+- Added field `fivetran_connector.config.reports.accounts` for services: `workday_adaptive`.
+- Added field `fivetran_connector.config.reports.include_zero_rows` for services: `workday_adaptive`.
+- Added field `fivetran_connector.config.instance_code` for services: `workday_adaptive`.
+- Added field `fivetran_connector.config.source_name` for services: `consensus_demo_automation_platform`.
+- Added field `fivetran_connector.config.reports.enable_all_dimension_combinations` for services: `double_click_campaign_manager`.
+- Added field `fivetran_connector.config.reports.per_interaction_dimensions` for services: `double_click_campaign_manager`.
+- Added field `fivetran_connector.config.custom_rate_limit` for services: `toggl_track`.
+- Added field `fivetran_connector.config.reports.currency` for services: `workday_adaptive`.
+- Added field `fivetran_connector.config.reports.levels` for services: `workday_adaptive`.
+- Added field `fivetran_connector.config.reports.start_year` for services: `workday_adaptive`.
+- Added field `fivetran_connector.config.files.archive_pattern` for services: `azure_blob_storage`, `gcs`, `google_drive`, `s3`, `s3_compatible_storage`, `sftp`, `box`, `email`, `ftp`, `share_point`.
+- Added field `fivetran_connector.config.binary_representation` for services: `azure_cosmos_for_mongo`, `mongo`, `mongo_sharded`.
+- Added field `fivetran_connector.config.custom_dimension_key_ids` for services: `double_click_publishers`.
+- Added field `fivetran_connector.config.reports.conversion_dimensions` for services: `double_click_campaign_manager`.
+- Added field `fivetran_connector.config.reports.custom_floodlight_variables` for services: `double_click_campaign_manager`.
+- Added field `fivetran_connector.config.reports.version_sync_strategy` for services: `workday_adaptive`.
+- Added field `fivetran_connector.config.api_role` for services: `zuora`, `zuora_sandbox`.
+- Added field `fivetran_connector.config.reports.versions` for services: `workday_adaptive`.
+- Added field `fivetran_connector.config.reports.start_month` for services: `workday_adaptive`.
+
+New destination services supported:
+- Supported service: `postgres_databricks_warehouse`
+
+New destination config fields supported:
+- Added field `fivetran_destination.config.support_json_type` for services: `big_query`, `big_query_dts`, `managed_big_query`.
+- Added field `fivetran_destination.config.gcs_service_account_credentials` for services: `snowflake`.
 
 ## [1.9.4](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.3...v1.9.4)
 
