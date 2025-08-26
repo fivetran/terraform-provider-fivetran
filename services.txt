@@ -96,6 +96,7 @@ braze
 brevo
 brex
 brightcove
+brightflag
 brightpearl
 brivo
 buildium
@@ -130,6 +131,7 @@ cin7core
 circleci
 cj_commission_detail
 clari
+classy
 clazar
 clickup
 clockify
@@ -154,6 +156,7 @@ concur
 confluence
 confluent_cloud
 connector_sdk
+consensus_demo_automation_platform
 constant_contact
 contrast_security
 convex
@@ -166,6 +169,7 @@ criteo_retail_media
 crossbeam
 crowddev
 crunchbase
+cube_software
 culture_amp
 customerio
 cvent
@@ -203,12 +207,12 @@ dynamodb
 easypost
 ebay
 economic
-ehr
 elastic_cloud
 electronic_tenant_solutions
 eloqua
 email
 employment_hero
+epic_clarity
 es_self_hosted
 eventbrite
 eventsforce
@@ -248,6 +252,7 @@ freshteam
 friendbuy
 front
 ftp
+fulfil
 fullstory
 g2
 gainsight_customer_success
@@ -295,6 +300,7 @@ heap
 heartland_retail_pos
 height
 helpdesk
+helpjuice
 helpscout
 helpshift
 heroku_kafka
@@ -357,6 +363,7 @@ linear
 linkedin_ads
 linkedin_company_pages
 linksquares
+listen360
 livechat_partner
 lob
 looker_source
@@ -650,6 +657,7 @@ ukg_pro_workforce_management
 unicommerce
 upland
 uppromote
+uptempo
 uservoice
 validio
 veeqo
@@ -674,6 +682,7 @@ woocommerce
 wordpress
 workable
 workday
+workday_adaptive
 workday_financial_management
 workday_hcm
 workday_strategic_sourcing

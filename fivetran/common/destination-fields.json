@@ -23,6 +23,7 @@
          "oracle_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
          "panoply": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
          "periscope_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "postgres_databricks_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
          "postgres_gcp_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
          "postgres_rds_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
          "postgres_warehouse": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
@@ -69,7 +70,7 @@
       "description": {
          "adls": "Authentication type",
          "databricks": "Authentication type",
-         "managed_data_lake": "Authentication type",
+         "managed_data_lake": "Specifies the authentication types for Fivetran to connect to Databricks. Use this parameter only if you want to use Unity Catalog to manage your Delta Lake tables.",
          "new_s3_datalake": "Authentication type",
          "onelake": "Authentication type",
          "panoply": "",
@@ -152,7 +153,7 @@
          "big_query": "Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
          "big_query_dts": "Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
          "managed_big_query": "Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
-         "managed_data_lake": "(Immutable) The name of the bucket to be used as destination",
+         "managed_data_lake": "(Immutable) Name of the S3 or Google Cloud Storage (GCS) bucket you want to use to store your data. Use this parameter only if you want to deploy your data lake on Amazon Web Services (AWS) or GCS.",
          "new_s3_datalake": "(Immutable) The name of the bucket to be used as destination",
          "redshift": "The name of the storage bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.",
          "snowflake": "The name of the storage bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an S3 or GCS bucket to stage your data."
@@ -184,7 +185,7 @@
       "description": {
          "adls": "Catalog name",
          "databricks": "Catalog name",
-         "managed_data_lake": "Catalog name",
+         "managed_data_lake": "Name of the specific catalog in Unity Catalog that you want to use to manage your Delta Lake tables. Use this parameter only if you want to use Unity Catalog with your data lake.",
          "new_s3_datalake": "Catalog name",
          "onelake": "Catalog name"
       },
@@ -200,7 +201,7 @@
       "item_type": {},
       "description": {
          "adls": "Client id of service principal",
-         "managed_data_lake": "Client id of service principal",
+         "managed_data_lake": "Client ID of the service principal you created for Fivetran. Use this parameter only if you want to deploy your data lake on ADLS.",
          "onelake": "Client ID of service principal"
       },
       "api_field": ""
@@ -290,6 +291,7 @@
          "oracle_warehouse": "Connection method. Default value: `Directly`.",
          "panoply": "Connection method. Default value: `Directly`.",
          "periscope_warehouse": "Connection method. Default value: `Directly`.",
+         "postgres_databricks_warehouse": "Connection method. Default value: `Directly`.",
          "postgres_gcp_warehouse": "Connection method. Default value: `Directly`.",
          "postgres_rds_warehouse": "Connection method. Default value: `Directly`.",
          "postgres_warehouse": "Connection method. Default value: `Directly`.",
@@ -310,7 +312,7 @@
       "item_type": {},
       "description": {
          "adls": "(Immutable) Container to store delta table files",
-         "managed_data_lake": "(Immutable) Container to store delta table files",
+         "managed_data_lake": "(Immutable) Name of the ADLS container you want to use to store your data. Use this parameter only if you want to deploy your data lake on ADLS.",
          "onelake": "Workspace name to store delta table files"
       },
       "api_field": ""
@@ -396,6 +398,7 @@
          "oracle_warehouse": "Database name",
          "panoply": "Database name",
          "periscope_warehouse": "Database name",
+         "postgres_databricks_warehouse": "Database name",
          "postgres_gcp_warehouse": "Database name",
          "postgres_rds_warehouse": "Database name",
          "postgres_warehouse": "Database name",
@@ -416,7 +419,7 @@
       "item_type": {},
       "description": {
          "adls": "Databricks Connection method. Default value: `Directly`.",
-         "managed_data_lake": "Databricks Connection method. Default value: `Directly`.",
+         "managed_data_lake": "Specifies how you want Fivetran to connect to the Databricks account associated with Unity Catalog. Default value: `Directly`. Use this parameter only if you want to use Unity Catalog with your data lake.",
          "new_s3_datalake": "Databricks Connection method. Default value: `Directly`.",
          "onelake": "Databricks Connection method. Default value: `Directly`."
       },
@@ -606,7 +609,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "managed_data_lake": "(Immutable) ARN of the role which you created with different required policy mentioned in our setup guide",
+         "managed_data_lake": "(Immutable) ARN of the IAM role you created for the IAM policy associated with your S3 bucket or Glue catalog. Use this parameter only if you want to deploy your data lake on AWS.",
          "new_s3_datalake": "ARN of the role which you created with different required policy mentioned in our setup guide"
       },
       "api_field": ""
@@ -648,6 +651,7 @@
          "oracle_warehouse": "Server name",
          "panoply": "Server name",
          "periscope_warehouse": "Server name",
+         "postgres_databricks_warehouse": "Server name",
          "postgres_gcp_warehouse": "Server name",
          "postgres_rds_warehouse": "Server name",
          "postgres_warehouse": "Server name",
@@ -669,7 +673,7 @@
       "description": {
          "adls": "HTTP path",
          "databricks": "HTTP path",
-         "managed_data_lake": "HTTP path",
+         "managed_data_lake": "HTTP path of the Databricks account associated with Unity Catalog. Use this parameter only if you want to use Unity Catalog to manage your Delta Lake tables.",
          "new_s3_datalake": "HTTP path",
          "onelake": "HTTP path"
       },
@@ -780,7 +784,7 @@
       "description": {
          "adls": "OAuth 2.0 client ID",
          "databricks": "OAuth 2.0 client ID",
-         "managed_data_lake": "OAuth 2.0 client ID",
+         "managed_data_lake": "The OAuth 2.0 client ID you created for authenticating Fivetran. Use this parameter only if you want to use OAuth 2.0 as the authentication type for Fivetran to connect to Databricks.",
          "new_s3_datalake": "OAuth 2.0 client ID",
          "onelake": "OAuth 2.0 client ID"
       },
@@ -797,7 +801,7 @@
       "description": {
          "adls": "OAuth 2.0 secret",
          "databricks": "OAuth 2.0 secret",
-         "managed_data_lake": "OAuth 2.0 secret",
+         "managed_data_lake": "OAuth 2.0 secret you created for authenticating Fivetran. Use this parameter only if you want to use OAuth 2.0 as the authentication type for Fivetran to connect to Databricks.",
          "new_s3_datalake": "OAuth 2.0 secret",
          "onelake": "OAuth 2.0 secret"
       },
@@ -840,6 +844,7 @@
          "oracle_warehouse": "Database user password",
          "panoply": "Database user password",
          "periscope_warehouse": "Database user password",
+         "postgres_databricks_warehouse": "Database user password",
          "postgres_gcp_warehouse": "Database user password",
          "postgres_rds_warehouse": "Database user password",
          "postgres_warehouse": "Database user password",
@@ -861,7 +866,7 @@
       "description": {
          "adls": "Personal access token",
          "databricks": "Personal access token",
-         "managed_data_lake": "Personal access token",
+         "managed_data_lake": "The personal access token you created for authenticating Fivetran. Use this parameter only if you want to use a personal access token as the authentication type for Fivetran to connect to Databricks.",
          "new_s3_datalake": "Personal access token",
          "onelake": "Personal access token"
       },
@@ -884,7 +889,7 @@
          "azure_sql_database": "Server port number",
          "azure_sql_managed_db_warehouse": "Server port number",
          "databricks": "Server port number",
-         "managed_data_lake": "Server port number",
+         "managed_data_lake": "Server port number of the Databricks account associated with Unity Catalog. Use this parameter only if you want to use Unity Catalog to manage your Delta Lake tables.",
          "maria_rds_warehouse": "Server port number",
          "maria_warehouse": "Server port number",
          "mysql_rds_warehouse": "Server port number",
@@ -896,6 +901,7 @@
          "oracle_warehouse": "Server port number",
          "panoply": "Server port number",
          "periscope_warehouse": "Server port number",
+         "postgres_databricks_warehouse": "Server port number",
          "postgres_gcp_warehouse": "Server port number",
          "postgres_rds_warehouse": "Server port number",
          "postgres_warehouse": "Server port number",
@@ -916,7 +922,7 @@
       "item_type": {},
       "description": {
          "adls": "(Immutable) path/to/data within the container",
-         "managed_data_lake": "(Immutable) Prefix path of the bucket for which you have configured access policy. It is not required if access has been granted to entire Bucket in the access policy",
+         "managed_data_lake": "(Immutable) Prefix path or virtual folder path within your bucket or container where you want Fivetran to store your data. Skip this parameter for AWS-based data lakes if the IAM policy configured for your S3 bucket grants access to the entire bucket.",
          "new_s3_datalake": "(Immutable) Prefix path of the bucket for which you have configured access policy. It is not required if access has been granted to entire Bucket in the access policy",
          "onelake": "(Immutable) path/to/data within your lakehouse inside the Files directory"
       },
@@ -989,7 +995,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "managed_data_lake": "(Immutable) Region of your AWS S3 bucket",
+         "managed_data_lake": "(Immutable) AWS Region of your S3 bucket. Use this parameter only if you want to deploy your data lake on AWS.",
          "new_s3_datalake": "Region of your AWS S3 bucket"
       },
       "api_field": ""
@@ -1238,7 +1244,7 @@
       "item_type": {},
       "description": {
          "adls": "Secret value for service principal",
-         "managed_data_lake": "Secret value for service principal",
+         "managed_data_lake": "Secret value of the service principal you created for Fivetran. Use this parameter only if you want to deploy your data lake on ADLS.",
          "onelake": "Secret value for service principal"
       },
       "api_field": ""
@@ -1269,7 +1275,7 @@
       "description": {
          "adls": "Server Host name",
          "databricks": "Server name",
-         "managed_data_lake": "Server host name",
+         "managed_data_lake": "Server host name of the Databricks account associated with Unity Catalog. Use this parameter only if you want to use Unity Catalog to manage your Delta Lake tables.",
          "new_s3_datalake": "Server host name",
          "onelake": "Server Host name"
       },
@@ -1285,7 +1291,7 @@
       "item_type": {},
       "description": {
          "adls": "Should maintain tables in Databricks ",
-         "managed_data_lake": "Should maintain tables in Databricks ",
+         "managed_data_lake": "Specifies whether you want to manage your Delta Lake tables in Databricks Unity Catalog.",
          "new_s3_datalake": "Should maintain tables in Databricks ",
          "onelake": "Should maintain tables in Databricks "
       },
@@ -1300,7 +1306,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "managed_data_lake": "Should maintain tables in Glue. Only applicable if storage provider is AWS"
+         "managed_data_lake": "Specifies whether you want to manage your Iceberg tables in AWS Glue. Use this parameter only if you want to deploy your data lake on AWS."
       },
       "api_field": ""
    },
@@ -1314,7 +1320,7 @@
       "item_type": {},
       "description": {
          "adls": "Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.",
-         "managed_data_lake": "Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.",
+         "managed_data_lake": "Specifies how long you want us to retain your table snapshots. We delete the snapshots that are older than the retention period during our table maintenance operations. Default value: `ONE_WEEK`.",
          "new_s3_datalake": "Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.",
          "onelake": "Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`."
       },
@@ -1371,7 +1377,7 @@
       "description": {
          "adls": "(Immutable) Storage account for Azure Data Lake Storage Gen2 name",
          "azure_sql_data_warehouse": "The name of the Azure storage account you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.",
-         "managed_data_lake": "(Immutable) Storage account for Azure Data Lake Storage Gen2 name",
+         "managed_data_lake": "(Immutable) Name of your Azure Data Lake Storage Gen2 (ADLS Gen2) storage account. Use this parameter only if you want to deploy your data lake on ADLS.",
          "onelake": "(Immutable) Storage account for Azure Data Lake Storage Gen2 name",
          "snowflake": "The name of the Azure storage account you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an Azure Blob storage container to stage your data."
       },
@@ -1386,7 +1392,22 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "managed_data_lake": "Storage Provider"
+         "managed_data_lake": "The cloud storage provider you want to use for your data lake."
+      },
+      "api_field": ""
+   },
+   "support_json_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "big_query": "Stores JSON columns as JSON instead of STRING. This parameter is applicable only to destinations created before August 1, 2025.",
+         "big_query_dts": "Stores JSON columns as JSON instead of STRING. This parameter is applicable only to destinations created before August 1, 2025.",
+         "managed_big_query": "Stores JSON columns as JSON instead of STRING. This parameter is applicable only to destinations created before August 1, 2025."
       },
       "api_field": ""
    },
@@ -1413,7 +1434,7 @@
       "item_type": {},
       "description": {
          "adls": "Tenant id of service principal",
-         "managed_data_lake": "Tenant id of service principal",
+         "managed_data_lake": "Tenant ID of the service principal you created for Fivetran. Use this parameter only if you want to deploy your data lake on ADLS.",
          "onelake": "Tenant ID of service principal"
       },
       "api_field": ""
@@ -1442,6 +1463,7 @@
          "oracle_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "panoply": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "periscope_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "postgres_databricks_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "postgres_gcp_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "postgres_rds_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "postgres_warehouse": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
@@ -1475,6 +1497,7 @@
          "oracle_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "panoply": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "periscope_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "postgres_databricks_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "postgres_gcp_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "postgres_rds_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "postgres_warehouse": "SSH server port name. Must be populated if `connection_type` is set to `SshTunnel`.",
@@ -1508,6 +1531,7 @@
          "oracle_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "panoply": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "periscope_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+         "postgres_databricks_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "postgres_gcp_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "postgres_rds_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
          "postgres_warehouse": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
@@ -1554,6 +1578,7 @@
          "oracle_warehouse": "Database user name",
          "panoply": "Database user name",
          "periscope_warehouse": "Database user name",
+         "postgres_databricks_warehouse": "Database user name",
          "postgres_gcp_warehouse": "Database user name",
          "postgres_rds_warehouse": "Database user name",
          "postgres_warehouse": "Database user name",
