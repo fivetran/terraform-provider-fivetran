@@ -31,6 +31,7 @@ func main() {
 		"services.txt",
 		"services-changelog.txt",
 		"services-new.txt",
+		"New connection services supported:",
 	)
 
 
@@ -42,6 +43,7 @@ func main() {
 		"fivetran/common/fields-updated.json",
 		"config-changes.txt",
 		false,
+		"New connection config fields supported:",
 	)
 	fmt.Println("Updating schema fields")
 
@@ -51,6 +53,7 @@ func main() {
 		"fivetran/common/fields-updated.json",
 		"config-changes-schema_format_schema_table.txt",
 		false,
+		"New connection config fields supported:",
 	)
 
 	updateFields(services, schemaContainer,
@@ -59,6 +62,7 @@ func main() {
 		"fivetran/common/fields-updated.json",
 		"config-changes-schema_format_schema_prefix.txt",
 		false,
+		"New connection config fields supported:",
 	)
 
 	updateFields(services, schemaContainer,
@@ -67,6 +71,7 @@ func main() {
 		"fivetran/common/fields-updated.json",
 		"config-changes-schema_format_schema_table_group.txt",
 		false,
+		"New connection config fields supported:",
 	)
 
 	updateFields(services, schemaContainer,
@@ -75,6 +80,7 @@ func main() {
 		"fivetran/common/fields-updated.json",
 		"config-changes-schema_format_schema.txt",
 		false,
+		"New connection config fields supported:",
 	)
 
 	fmt.Println("Updating auth fields")
@@ -85,6 +91,7 @@ func main() {
 		"fivetran/common/auth-fields-updated.json",
 		"auth-changes.txt",
 		true,
+		"New connection auth fields supported:",
 	)
 
 	fmt.Println("Updating Destinations config fields")
@@ -95,6 +102,7 @@ func main() {
 		"destination-services.txt",
 		"destination-services-changelog.txt",
 		"destination-services-new.txt",
+		"New destination services supported:",
 	)
 
 	updateFields(destinationServices, schemaContainer,
@@ -103,6 +111,7 @@ func main() {
 		"fivetran/common/destination-fields-updated.json",
 		"destination-config-changes.txt",
 		true,
+		"New destination config fields supported:",
 	)
 
 	fmt.Println("Done!")
@@ -116,13 +125,14 @@ func updateFields(
 	updatedFieldsFile string,
 	changelogFile string,
 	isDestination bool,
+	title string,
 ) {
 	fieldsExisting := loadExistingFields(existingFieldsFile)
 
 	updated, changedFields := importFields(services, schemaContainer, fieldsExisting, schemaPropsPath, isDestination)
 
 	if updated {
-		writeChangelog(changedFields, changelogFile, isDestination)
+		writeChangelog(changedFields, changelogFile, isDestination, title)
 		writeFields(fieldsExisting, updatedFieldsFile)
 	}
 }
@@ -142,8 +152,9 @@ func loadExistingFields(file string) map[string]common.ConfigField {
 	return fieldsExisting
 }
 
-func writeChangelog(changedFields map[string]common.ConfigField, clFile string, isDestination bool) {
+func writeChangelog(changedFields map[string]common.ConfigField, clFile string, isDestination bool, title string) {
 	var changeLog []string
+	changeLog = append(changeLog, title)
 
 	var resourceType string
 	if isDestination {
@@ -203,7 +214,7 @@ func readLines(fileName string) (map[string]bool, error) {
 	return result, nil
 }
 
-func updateServices(schemaContainer *gabs.Container, servicesPath, servicesFile, changelogFile, newServicesFile string) []string {
+func updateServices(schemaContainer *gabs.Container, servicesPath, servicesFile, changelogFile, newServicesFile string, title string) []string {
 	servicesOld, err := readLines(servicesFile)
 
 	if err != nil {
@@ -213,7 +224,7 @@ func updateServices(schemaContainer *gabs.Container, servicesPath, servicesFile,
 	services := getAvailableServiceIds(schemaContainer, servicesPath)
 
 	newServices := make([]string, 0)
-
+	newServices = append(newServices, title)
 	for _, s := range services {
 		if _, ok := servicesOld[s]; !ok {
 			newServices = append(newServices, fmt.Sprintf("- Supported service: `%s`", s))
