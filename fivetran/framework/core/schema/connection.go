@@ -194,6 +194,14 @@ func ConnectionsDatasource() datasourceSchema.Schema {
 				Computed:    true,
 				Description: "The ID of this resource.",
 			},
+			"group_id": datasourceSchema.StringAttribute{
+				Optional:    true,
+				Description: "The ID of the group (destination) to filter connections by.",
+			},
+			"schema": datasourceSchema.StringAttribute{
+				Optional:    true,
+				Description: "The schema name to filter connections by.",
+			},
 		},
 		Blocks: map[string]datasourceSchema.Block{
 			"connections": datasourceSchema.SetNestedBlock{
