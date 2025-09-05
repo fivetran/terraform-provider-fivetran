@@ -7,7 +7,7 @@ subcategory: "Upgrade Guides"
 
 ## What's new in 1.5.0
 
-In version `1.5.0` of Fivetran Terraform provider, цe have implemented new resources for managing Transformations:
+In version `1.5.0` of Fivetran Terraform provider, we have implemented new resources for managing Transformations:
 
 ## Migration guide
 
