@@ -83,7 +83,7 @@ func setupMockClientConnectionsDataSourceConfigMapping(t *testing.T) {
 
 	connectionsDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connections").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
-			if req.URL.Query().Get("cursor") == "next_cursor" || req.URL.Query().Get("group_id") == "group_id" {
+			if req.URL.Query().Get("cursor") == "next_cursor" {
 				connectionsDataSourceMockData = tfmock.CreateMapFromJsonString(t, connectionsMappingResponse)
 			} else {
 				connectionsDataSourceMockData = tfmock.CreateMapFromJsonString(t, connectionsMappingResponseWithCursor)
