@@ -60,8 +60,8 @@ func (d *connections) Read(ctx context.Context, req datasource.ReadRequest, resp
 		if !data.GroupId.IsNull() {
 			svc.GroupID(data.GroupId.ValueString())
 		}
-		if !data.Schema.IsNull() {
-			svc.Schema(data.Schema.ValueString())
+		if !data.ConnectionName.IsNull() {
+			svc.Schema(data.ConnectionName.ValueString())
 		}
 		tmpResp, err = svc.Do(ctx)
 

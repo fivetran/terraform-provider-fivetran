@@ -198,9 +198,9 @@ func ConnectionsDatasource() datasourceSchema.Schema {
 				Optional:    true,
 				Description: "The ID of the group (destination) to filter connections by.",
 			},
-			"schema": datasourceSchema.StringAttribute{
+			"connection_name": datasourceSchema.StringAttribute{
 				Optional:    true,
-				Description: "The schema name to filter connections by.",
+				Description: "The connection name to filter connections by.",
 			},
 		},
 		Blocks: map[string]datasourceSchema.Block{

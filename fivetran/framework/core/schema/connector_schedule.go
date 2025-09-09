@@ -16,9 +16,22 @@ func GetConnectorScheduleResourceSchema() schema.Schema {
 				Description: "The unique resource identifier (equals to `connector_id`).",
 			},
 			"connector_id": schema.StringAttribute{
-				Required:      true,
-				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
+				Optional: true,
+				Computed: true,
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplaceIfConfigured()},
 				Description:   "The unique identifier for the connector within the Fivetran system.",
+			},
+			"group_id": schema.StringAttribute{
+				Optional: true,
+				Computed: true,
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplaceIfConfigured()},
+				Description:   "The unique identifier for the Group (Destination) within the Fivetran system.",
+			},
+			"connector_name": schema.StringAttribute{
+				Optional: true,
+				Computed: true,
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplaceIfConfigured()},
+				Description:   "The name used both as the connection's name within the Fivetran system and as the source schema's name within your destination.",
 			},
 			"sync_frequency": schema.StringAttribute{
 				Optional: true,
