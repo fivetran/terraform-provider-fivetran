@@ -21,9 +21,18 @@ func GetConnectorSchemaResourceSchema(ctx context.Context) schema.Schema {
 				Description: "The unique resource identifier (equals to `connector_id`).",
 			},
 			"connector_id": schema.StringAttribute{
-				Required:      true,
-				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplaceIfConfigured()},
 				Description:   "The unique identifier for the connector within the Fivetran system.",
+			},
+			"group_id": schema.StringAttribute{
+				Optional: true,
+				Description:   "The unique identifier for the Group (Destination) within the Fivetran system.",
+			},
+			"connector_name": schema.StringAttribute{
+				Optional: true,
+				Description:   "The name used both as the connection's name within the Fivetran system and as the source schema's name within your destination.",
 			},
 			"schema_change_handling": schema.StringAttribute{
 				Optional: true,
