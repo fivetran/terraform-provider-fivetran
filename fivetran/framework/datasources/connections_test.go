@@ -169,7 +169,7 @@ func TestDataSourceConnectionsFilteringByGroupIdAndSchema(t *testing.T) {
 		data "fivetran_connections" "test2" {
 			provider = fivetran-provider
 			group_id = "group_id"
-			connection_name = "gsheets.table"
+			schema_name = "gsheets.table"
 		}`,
 
 		Check: resource.ComposeAggregateTestCheckFunc(

@@ -155,6 +155,10 @@ func TestResourceConnectorScheduleByGroupIdAndConnectorNameE2E(t *testing.T) {
 				resource "fivetran_connector_schedule" "test_connector_schedule" {
 					provider = fivetran-provider
 
+					depends_on = [
+						fivetran_connector.test_connector
+					]
+
 					group_id = fivetran_group.test_group.id
 					connector_name = "fivetran_log_schema"
 					sync_frequency = 5
