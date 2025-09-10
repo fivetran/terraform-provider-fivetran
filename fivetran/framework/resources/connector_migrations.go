@@ -51,36 +51,56 @@ func upgradeConnectorState(ctx context.Context, req resource.UpgradeStateRequest
 	if fromVersion < 1 {
 		config = convertSetToBlock("config", rawState["config"], model.GetTfTypes(common.GetConfigFieldsMap(), 3), model.GetTfTypes(common.GetConfigFieldsMap(), fromVersion), resp.Diagnostics)
 		auth = convertSetToBlock("auth", rawState["auth"], model.GetTfTypes(common.GetAuthFieldsMap(), 3), model.GetTfTypes(common.GetAuthFieldsMap(), fromVersion), resp.Diagnostics)
+
+		if fromVersion < 5 {
+			destination_schema = convertSetToBlock("destination_schema", rawState["destination_schema"],
+					map[string]tftypes.Type{
+						"name":   tftypes.String,
+						"table":  tftypes.String,
+						"prefix": tftypes.String,
+					},
+					map[string]tftypes.Type{
+						"name":   tftypes.String,
+						"table":  tftypes.String,
+						"prefix": tftypes.String,
+					},
+					resp.Diagnostics)
+		} else {
+			destination_schema = convertSetToBlock("destination_schema", rawState["destination_schema"],
+					map[string]tftypes.Type{
+						"name":   tftypes.String,
+						"table":  tftypes.String,
+						"prefix": tftypes.String,
+						"table_group_name": tftypes.String,
+					},
+					map[string]tftypes.Type{
+						"name":   tftypes.String,
+						"table":  tftypes.String,
+						"prefix": tftypes.String,
+						"table_group_name": tftypes.String,
+					},
+					resp.Diagnostics)
+		}
 	}
 
 	if fromVersion < 5 {
-		destination_schema = convertSetToBlock("destination_schema", rawState["destination_schema"],
-				map[string]tftypes.Type{
-					"name":   tftypes.String,
-					"table":  tftypes.String,
-					"prefix": tftypes.String,
-				},
-				map[string]tftypes.Type{
-					"name":   tftypes.String,
-					"table":  tftypes.String,
-					"prefix": tftypes.String,
-				},
-				resp.Diagnostics)
-	} else {
-		destination_schema = convertSetToBlock("destination_schema", rawState["destination_schema"],
-				map[string]tftypes.Type{
-					"name":   tftypes.String,
-					"table":  tftypes.String,
-					"prefix": tftypes.String,
-					"table_group_name": tftypes.String,
-				},
-				map[string]tftypes.Type{
-					"name":   tftypes.String,
-					"table":  tftypes.String,
-					"prefix": tftypes.String,
-					"table_group_name": tftypes.String,
-				},
-				resp.Diagnostics)
+		destination_schema = transformObjectValue(destination_schema,
+					tftypes.Object{
+						AttributeTypes: map[string]tftypes.Type{
+							"name":   tftypes.String,
+							"table":  tftypes.String,
+							"prefix": tftypes.String,
+						},
+					},
+					tftypes.Object{
+						AttributeTypes: map[string]tftypes.Type{
+							"name":   tftypes.String,
+							"table":  tftypes.String,
+							"prefix": tftypes.String,
+							"table_group_name": tftypes.String,
+						},
+					},
+					resp.Diagnostics)
 	}
 
 	dynamicValue, err := tfprotov6.NewDynamicValue(
@@ -311,6 +331,7 @@ func transformValue(fieldName string, value tftypes.Value, oldType, newType tfty
 
 func transformObjectValue(value tftypes.Value, oldType, newType tftypes.Type, diags diag.Diagnostics) tftypes.Value {
 	itemOld := map[string]tftypes.Value{}
+	fmt.Printf("upgrade itemOld %v \n", itemOld)
 	if err := value.As(&itemOld); err != nil {
 		diags.AddError(
 			"Unable to Convert Prior State",
@@ -323,8 +344,14 @@ func transformObjectValue(value tftypes.Value, oldType, newType tftypes.Type, di
 	elemNewFieldTypes := newType.(tftypes.Object).AttributeTypes
 
 	itemNew := map[string]tftypes.Value{}
-	for k, v := range itemOld {
-		itemNew[k] = transformValue(k, v, elemOldFieldTypes[k], elemNewFieldTypes[k], diags)
+	for k, _ := range elemNewFieldTypes {
+		ev, ok := itemOld[k]
+		if ok {
+			itemNew[k] = transformValue(k, ev, elemOldFieldTypes[k], elemNewFieldTypes[k], diags)	
+		} else {
+			itemNew[k] = tftypes.NewValue(elemNewFieldTypes[k], nil)
+		}
+		
 	}
 
 	return tftypes.NewValue(newType, itemNew)
