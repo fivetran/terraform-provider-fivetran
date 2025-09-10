@@ -106,7 +106,7 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 	groupName := "TestResourceGroupE2E" + suffix + "created"
 	userName := "john.black" + suffix + "@testmail.com"
 	roleCreate := "Destination Reviewer"
-	roleUpdate := "Destination Administrator"
+	roleUpdate := "Manage Destination"
 
 	resourceWithUsersCreateConfig := fmt.Sprintf(groupResourceWithUsersConfig, userName, groupName, roleCreate)
 	resourceWithUsersUpdateConfig := fmt.Sprintf(groupResourceWithUsersConfig, userName, groupName, roleUpdate)
