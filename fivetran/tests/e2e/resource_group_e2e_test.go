@@ -105,7 +105,7 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 	suffix := strconv.Itoa(seededRand.Int())
 	groupName := "TestResourceGroupE2E" + suffix + "created"
 	userName := "john.black" + suffix + "@testmail.com"
-	roleCreate := "Destination Reviewer"
+	roleCreate := "View Destination"
 	roleUpdate := "Manage Destination"
 
 	resourceWithUsersCreateConfig := fmt.Sprintf(groupResourceWithUsersConfig, userName, groupName, roleCreate)
