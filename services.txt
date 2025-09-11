@@ -169,7 +169,7 @@ criteo_retail_media
 crossbeam
 crowddev
 crunchbase
-cube_software
+cube
 culture_amp
 customerio
 cvent
@@ -202,6 +202,7 @@ dropbox
 dropbox_sign
 dsv
 duoplane
+dutchie
 dynamics_365
 dynamodb
 easypost
@@ -428,6 +429,7 @@ oncehub
 one_drive
 open_data_dc
 open_exchange_rates
+openai
 opendistro
 opensearch
 optimizely
@@ -708,6 +710,7 @@ zendesk
 zendesk_chat
 zendesk_sell
 zendesk_sunshine
+zendesk_workforce_management
 zenefits
 zingtree
 zip

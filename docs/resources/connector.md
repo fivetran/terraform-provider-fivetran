@@ -737,6 +737,7 @@ Optional:
 	- Service `drata`: Your Drata API Key.
 	- Service `dropbox_sign`: Your Dropbox Sign API key.
 	- Service `duoplane`: Your Duoplane API key.
+	- Service `dutchie`: Your Dutchie API key.
 	- Service `easypost`: Your EasyPost API Key.
 	- Service `electronic_tenant_solutions`: Your Electronic Tenant Solutions API key.
 	- Service `eventsforce`: Your Eventsforce API secret key.
@@ -807,6 +808,7 @@ Optional:
 	- Service `okendo`: Your Okendo API key.
 	- Service `ometria`: Your Ometria API Key.
 	- Service `oncehub`: Your OnceHub API key.
+	- Service `openai`: Your OpenAI API key.
 	- Service `ordergroove`: Your Ordergroove API key.
 	- Service `ordway`: Your Ordway API key.
 	- Service `ortto`: Your Ortto API key.
@@ -975,6 +977,7 @@ Optional:
 	- Service `web_scraper`: Your Web Scraper API token.
 	- Service `zendesk`: Zendesk API tokens are auto-generated passwords in the Support admin interface.
 	- Service `zendesk_sunshine`: Zendesk API tokens are auto-generated passwords in the Support admin interface.
+	- Service `zendesk_workforce_management`: Your Zendesk Workforce Management API token.
 - `api_type` (String)
 - `api_url` (String) Field usage depends on `service` value: 
 	- Service `braze`: Your Braze API URL.
@@ -1127,6 +1130,8 @@ Optional:
 	- Service `concur`: The Authentication Mode used by SAP Concur. It can be PasswordGrant or CompanyLevel auth mode
 	- Service `github`: Authorization type.
 	- Service `workday`: Authentication Mode
+	- Service `workday_financial_management`: Authentication Mode
+	- Service `workday_hcm`: Authentication Mode
 - `auth_secret` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `webhooks`: The secret you want to use for HMAC/token-based auth methods
 - `auth_token` (String, Sensitive) Field usage depends on `service` value: 
@@ -1163,6 +1168,7 @@ Optional:
 - `authorization_url` (String) Field usage depends on `service` value: 
 	- Service `tiktok_organic`: The authorization URL of the app registered in your TikTok developer account.
 	- Service `workday`: Authorization URL
+- `aws_credentials` (Block, Optional) (see [below for nested schema](#nestedblock--config--aws_credentials))
 - `aws_region_code` (String) Field usage depends on `service` value: 
 	- Service `dynamodb`: The AWS region code for the DynamoDB instance, e.g. `us-east-1`.
 - `backint_configuration_path` (String)
@@ -1176,6 +1182,7 @@ Optional:
 - `backward_sync_limit_date` (String) Field usage depends on `service` value: 
 	- Service `hubspot`: Date Limit of the Historical Sync Time for selected tables. The Format should be YYYY-MM-DD
 	- Service `mixpanel`: Date from which data needs to be synced.
+	- Service `pendo`: The start date (YYYY-MM-DD) from which to sync historical data.
 - `base_currency` (String) Field usage depends on `service` value: 
 	- Service `open_exchange_rates`: Your Open Exchange Rates Base Currency.
 - `base_domain` (String) Field usage depends on `service` value: 
@@ -1302,7 +1309,7 @@ Optional:
 	- Service `billing_platform`: Your BillingPlatform client ID.
 	- Service `bing_webmaster_tools`: Your Bing Webmaster Tools client ID.
 	- Service `brightcove`: Your Brightcove client ID.
-	- Service `brightflag`: Your Brightflag  client ID.
+	- Service `brightflag`: Your Brightflag client ID.
 	- Service `brightpearl`: Your Brightpearl client ID.
 	- Service `brivo`: Your Brivo client ID.
 	- Service `buildium`: Your Buildium API client ID.
@@ -1320,6 +1327,7 @@ Optional:
 	- Service `coupa`: Your Coupa client_id
 	- Service `criteo`: Your Criteo Client ID.
 	- Service `criteo_retail_media`: Your Criteo Retail Media client ID.
+	- Service `cube`: Your Cube Client ID.
 	- Service `cube_software`: Your Cube Software Client ID.
 	- Service `culture_amp`: Your Culture Amp client ID.
 	- Service `cvent`: Your Cvent client ID.
@@ -1483,6 +1491,7 @@ Optional:
 	- Service `coupa`: Your Coupa client_id
 	- Service `criteo`: Your Criteo client secret key.
 	- Service `criteo_retail_media`: Your Criteo Retail Media client secret.
+	- Service `cube`: Your Cube Client Secret.
 	- Service `cube_software`: Your Cube Software Client Secret.
 	- Service `culture_amp`: Your Culture Amp client secret.
 	- Service `cvent`: Your Cvent client secret.
@@ -1583,6 +1592,7 @@ Optional:
 	- Service `ordway`: Your Ordway company name.
 - `company_id` (String) Field usage depends on `service` value: 
 	- Service `360learning`: Your 360Learning Company ID.
+	- Service `cube`: Your Cube Company ID.
 	- Service `cube_software`: Your Cube Software Company ID.
 	- Service `sage_intacct`: Company ID
 	- Service `sap_success_factors`: Your SAP SuccessFactors Company ID.
@@ -1936,6 +1946,7 @@ Optional:
 	- Service `cabcharge`: Your Cabcharge email ID.
 	- Service `ordway`: Your Ordway user email ID.
 	- Service `planful`: Your Planful email ID.
+	- Service `zendesk_workforce_management`: Your Zendesk Workforce Management email ID.
 - `empty_header` (Boolean) Field usage depends on `service` value: 
 	- Service `aws_cost_report`: Optional. If your CSV generating software doesn't provide header line for the documents, Fivetran can generate the generic column names and sync data rows with them.
 	- Service `azure_blob_storage`: Optional. If your CSV generating software doesn't provide header line for the documents, Fivetran can generate the generic column names and sync data rows with them.
@@ -2061,6 +2072,7 @@ Optional:
 	- Service `iterable`: List of events to sync. Should be specified when `sync_mode` is `SelectedEvents`
 - `export_storage_type` (String) Field usage depends on `service` value: 
 	- Service `adjust`: Your cloud storage.
+	- Service `amplitude`: Your cloud storage type
 	- Service `braze`: Export Storage. Required if `enable_exports` is `true`
 - `external_id` (String) Field usage depends on `service` value: 
 	- Service `appsflyer`: The external ID is a string that designates who can assume the role. For more information, click a href="http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html"here/a
@@ -2132,6 +2144,7 @@ Optional:
 - `gcs_bucket` (String) Field usage depends on `service` value: 
 	- Service `braze`: Your GCS bucket. Required if `GCS` is the `cloud_storage_type`
 	- Service `webhooks`: The GCS bucket name. Required if `bucket_service` is set to `GCS`.
+- `gcs_credentials` (Block, Optional) (see [below for nested schema](#nestedblock--config--gcs_credentials))
 - `gcs_export_bucket` (String) Field usage depends on `service` value: 
 	- Service `braze`: Your GCS bucket. Required if `GCS` is the `export_storage_type`
 - `gcs_export_folder` (String) Field usage depends on `service` value: 
@@ -2189,6 +2202,7 @@ Optional:
 	- Service `ascend_by_partnerize`: Your Ascend by Partnerize Historical sync time frame
 	- Service `hubspot`: Used to configure Historical sync timeframe for selected tables
 	- Service `mixpanel`: Should sync all data or adhere to `backward_sync_limit_date`
+	- Service `pendo`: The time range for which historical data should be synced. Default value: `All Time`.
 	- Service `rokt`: Your Rokt historical sync time frame.
 	- Service `shopify`: Used to configure Historical sync timeframe for selected tables
 	- Service `skimlinks`: Your Skimlinks Historical sync time frame.
@@ -3554,6 +3568,7 @@ Optional:
 	- Service `vts`: Your VTS Subdomain.
 	- Service `yext`: Your Yext subdomain. 
 	- Service `zendesk_chat`: Your Zendesk domain.
+	- Service `zendesk_workforce_management`: Your Zendesk Workforce Management subdomain.
 - `subscription` (String) Field usage depends on `service` value: 
 	- Service `retailnext`: Your RetailNext subscription.
 - `subscription_key` (String, Sensitive) Field usage depends on `service` value: 
@@ -4002,6 +4017,8 @@ Optional:
 	- Service `fountain`: Your Fountain URL format.
 - `use_api_keys` (Boolean) Field usage depends on `service` value: 
 	- Service `mandrill`: Whether to use multiple API keys for interaction.
+- `use_cloud_storage` (Boolean) Field usage depends on `service` value: 
+	- Service `amplitude`: Sync events from cloud storage
 - `use_customer_bucket` (Boolean) Field usage depends on `service` value: 
 	- Service `appsflyer`: Use Custom Bucket. Set it to 'true' if the data is being synced to your S3 bucket instead of an AppsFlyer-managed bucket.
 - `use_oracle_rac` (Boolean) Field usage depends on `service` value: 
@@ -4280,6 +4297,10 @@ Optional:
 	- Service `appsflyer`: Your App ID
 
 
+<a id="nestedblock--config--aws_credentials"></a>
+### Nested Schema for `config.aws_credentials`
+
+
 <a id="nestedblock--config--custom_payloads"></a>
 ### Nested Schema for `config.custom_payloads`
 
@@ -4397,6 +4418,7 @@ Optional:
 - `archive_pattern` (String) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: All Files inside of compressed archives with filenames matching this regular expression will be synced.
 	- Service `box`: All Files inside of compressed archives with filenames matching this regular expression will be synced.
+	- Service `dropbox`: All Files inside of compressed archives with filenames matching this regular expression will be synced.
 	- Service `email`: All Files inside of compressed archives with filenames matching this regular expression will be synced.
 	- Service `ftp`: All Files inside of compressed archives with filenames matching this regular expression will be synced.
 	- Service `gcs`: All Files inside of compressed archives with filenames matching this regular expression will be synced.
@@ -4410,6 +4432,7 @@ Optional:
 - `file_pattern` (String) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: All files in your search path matching this regular expression will be synced per table. We have discontinued this field, and will delete it by August 31, 2025.
 	- Service `box`: All files in your search path matching this regular expression will be synced per table.
+	- Service `dropbox`: All files in your search path matching this regular expression will be synced per table.
 	- Service `email`: All files in your search path matching this regular expression will be synced per table.
 	- Service `ftp`: All files in your search path matching this regular expression will be synced per table.
 	- Service `gcs`: All files in your search path matching this regular expression will be synced per table.
@@ -4421,6 +4444,7 @@ Optional:
 - `table_name` (String) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: All files matching the above pattern will be synced to this table.
 	- Service `box`: All files matching the above pattern will be synced to this table.
+	- Service `dropbox`: All files matching the above pattern will be synced to this table.
 	- Service `email`: All files matching the above pattern will be synced to this table.
 	- Service `ftp`: All files matching the above pattern will be synced to this table.
 	- Service `gcs`: All files matching the above pattern will be synced to this table.
@@ -4429,6 +4453,10 @@ Optional:
 	- Service `s3_compatible_storage`: All files matching the above pattern will be synced to this table.
 	- Service `sftp`: All files matching the above pattern will be synced to this table.
 	- Service `share_point`: All files matching the above pattern will be synced to this table.
+
+
+<a id="nestedblock--config--gcs_credentials"></a>
+### Nested Schema for `config.gcs_credentials`
 
 
 <a id="nestedblock--config--project_credentials"></a>
@@ -4440,6 +4468,8 @@ Optional:
 	- Service `amplitude`: The API key of the project.
 - `project` (String) Field usage depends on `service` value: 
 	- Service `amplitude`: The project name you wish to use with Fivetran.
+- `project_id` (String) Field usage depends on `service` value: 
+	- Service `amplitude`: The project ID you wish to use with Fivetran.
 - `secret_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `amplitude`: The secret key of the project.
 
@@ -4490,12 +4520,16 @@ Optional:
 Optional:
 
 - `accounts` (Block Set) (see [below for nested schema](#nestedblock--config--reports--accounts))
+- `ad_unit_view` (String) Field usage depends on `service` value: 
+	- Service `double_click_publishers`: Ad unit view for the report.
 - `advertisers` (Set of String) Field usage depends on `service` value: 
 	- Service `google_display_and_video_360`: The list of advertisers to include into a sync. This parameter only takes effect when `config_method` is set to `CREATE_NEW`.
 - `aggregation` (String) Field usage depends on `service` value: 
 	- Service `google_search_console`: (Optional) Aggregation type. Supported only for the `SEARCH_RESULTS` report type
 - `attributes` (Set of String) Field usage depends on `service` value: 
 	- Service `google_search_ads_360`: The report attributes included to sync.
+- `columns` (Set of String) Field usage depends on `service` value: 
+	- Service `double_click_publishers`: Columns provide all trafficking statistics and revenue information available for the chosen dimensions.
 - `config_method` (String) Field usage depends on `service` value: 
 	- Service `google_display_and_video_360`: The report configuration method. Specifies whether a new configuration is defined manually or an existing configuration is reused. The default value is `CREATE_NEW`.
 - `config_type` (String) Field usage depends on `service` value: 
@@ -4505,10 +4539,17 @@ Optional:
 	- Service `double_click_campaign_manager`: Conversion Dimensions.
 - `currency` (String) Field usage depends on `service` value: 
 	- Service `workday_adaptive`: List of currencies to sync for the table, if applicable
+- `custom_dimension_key_ids` (Set of String) Field usage depends on `service` value: 
+	- Service `double_click_publishers`: The list of custom dimension key IDs included in the report. Custom dimension keys can only be selected with the CUSTOM_DIMENSION dimension.
+- `custom_field_ids` (Set of String) Field usage depends on `service` value: 
+	- Service `double_click_publishers`: The list of custom field IDs included in the report. Custom fields can only be selected with their corresponding dimensions.
 - `custom_floodlight_variables` (Set of String) Field usage depends on `service` value: 
 	- Service `double_click_campaign_manager`: Custom Floodlight variables enable you to capture information beyond the basics (visits and revenue) that you can collect with standard parameters in your tags.
+- `dimension_attributes` (Set of String) Field usage depends on `service` value: 
+	- Service `double_click_publishers`: Dimension attributes provide additional fields associated with a dimension. Dimension attributes can only be selected with their corresponding dimensions.
 - `dimensions` (Set of String) Field usage depends on `service` value: 
 	- Service `double_click_campaign_manager`: Report dimensions to include in a sync. The `date` dimension is mandatory for all report types. The `advertiser` dimension is mandatory for the `REACH` report type
+	- Service `double_click_publishers`: Report dimensions to include in the sync. The `date` dimension is mandatory for all the report types.
 	- Service `google_analytics`: The report dimensions to include into a sync. The `date` dimension is mandatory for all the report types.
 	- Service `google_analytics_4`: The report dimensions to include into a sync.
 	- Service `google_display_and_video_360`: The report dimensions (filters) to include into a sync. The dimension names are provided in the API format. This is a required parameter when `config_method` is set to `CREATE_NEW`.
@@ -4586,6 +4627,7 @@ Optional:
 	- Service `workday`: Dynamic report parameters sync strategy
 - `table` (String) Field usage depends on `service` value: 
 	- Service `double_click_campaign_manager`: Destination table name. It must be unique within this connection and must comply with Fivetran's naming conventions.
+	- Service `double_click_publishers`: The name of the table within the schema storing the data for a given report.
 	- Service `google_ads`: The table name within the schema to which connector will sync the data of the specific report.
 	- Service `google_analytics`: The table name within the schema to which connector will sync the data of the specific report.
 	- Service `google_analytics_4`: The table name within the schema to which connector will sync the data of the specific report.
@@ -4609,6 +4651,8 @@ Optional:
 
 Optional:
 
+- `flag` (Boolean) Field usage depends on `service` value: 
+	- Service `workday_adaptive`: Flag to indicate if descendants are included or not
 - `id` (String) Field usage depends on `service` value: 
 	- Service `workday_adaptive`: Account ID to sync
 - `include_descendants` (Boolean) Field usage depends on `service` value: 
@@ -4620,6 +4664,8 @@ Optional:
 
 Optional:
 
+- `flag` (Boolean) Field usage depends on `service` value: 
+	- Service `workday_adaptive`: Flag to indicate if descendants are included or not
 - `id` (String) Field usage depends on `service` value: 
 	- Service `workday_adaptive`: Level ID to sync
 - `include_descendants` (Boolean) Field usage depends on `service` value: 

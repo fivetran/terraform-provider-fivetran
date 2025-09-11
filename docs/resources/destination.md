@@ -101,26 +101,32 @@ Optional:
 	- Service `onelake`: Authentication type
 	- Service `redshift`: Authentication type. Default value: `PASSWORD`.
 - `aws_access_key_id` (String) Field usage depends on `service` value: 
+	- Service `databricks`: Your user's access key ID
 	- Service `new_s3_datalake`: AWS access key to access the S3 bucket and AWS Glue
 	- Service `redshift`: The unique access key ID of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.
 	- Service `snowflake`: The unique access key ID of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment, want to use an S3 bucket to stage your data, and `awsBucketAuthType` is set to `IAM_USER`.
 - `aws_bucket_auth_type` (String) Field usage depends on `service` value: 
 	- Service `snowflake`: Type of authentication configured for the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an S3 bucket to stage your data.
 - `aws_secret_access_key` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `databricks`: Your user's secret access key
 	- Service `new_s3_datalake`: AWS secret access key to access the S3 bucket and AWS Glue
 	- Service `redshift`: The secret access key of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.
 	- Service `snowflake`: The secret access key of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment , want to use an S3 bucket to stage your data, and `awsBucketAuthType` is set to `IAM_USER`.
+- `azure_storage_account_auth_type` (String) Field usage depends on `service` value: 
+	- Service `databricks`: Authentication method for the Azure container you want to use as the external staging for Hybrid Deployment.
 - `bootstrap_servers` (Set of String) Field usage depends on `service` value: 
 	- Service `confluent_cloud_wh`: Comma-separated list of Confluent Cloud servers in the `server:port` format.
 - `bucket` (String) Field usage depends on `service` value: 
 	- Service `big_query`: Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.
 	- Service `big_query_dts`: Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.
+	- Service `databricks`: Your bucket
 	- Service `managed_big_query`: Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.
 	- Service `managed_data_lake`: (Immutable) Name of the S3 or Google Cloud Storage (GCS) bucket you want to use to store your data. Use this parameter only if you want to deploy your data lake on Amazon Web Services (AWS) or GCS.
 	- Service `new_s3_datalake`: (Immutable) The name of the bucket to be used as destination
 	- Service `redshift`: The name of the storage bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.
 	- Service `snowflake`: The name of the storage bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an S3 or GCS bucket to stage your data.
 - `bucket_region` (String) Field usage depends on `service` value: 
+	- Service `databricks`: Your bucket's region
 	- Service `redshift`: The AWS Region of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.
 	- Service `snowflake`: The AWS Region of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an S3 bucket to stage your data.
 - `catalog` (String) Field usage depends on `service` value: 
@@ -178,6 +184,8 @@ Optional:
 - `controller_id` (String)
 - `create_external_tables` (Boolean) Field usage depends on `service` value: 
 	- Service `databricks`: Whether to create external tables
+- `create_external_volumes` (Boolean) Field usage depends on `service` value: 
+	- Service `databricks`: Specifies whether you want Fivetran to create external volumes for unstructured data files.
 - `data_format` (String) Field usage depends on `service` value: 
 	- Service `confluent_cloud_wh`: Confluent Cloud message format.
 - `data_set_location` (String) Field usage depends on `service` value: 
@@ -232,11 +240,14 @@ Optional:
 	- Service `snowflake`: External storage integration name
 - `external_storage_parent_folder_uri` (String) Field usage depends on `service` value: 
 	- Service `snowflake`: External storage parent folder URL
+- `external_volume_location` (String) Field usage depends on `service` value: 
+	- Service `databricks`: Specifies the external volume path where you want Fivetran to create the unstructured files.
 - `fivetran_glue_role_arn` (String)
 - `fivetran_msk_role_arn` (String)
 - `fivetran_role_arn` (String) Field usage depends on `service` value: 
 	- Service `managed_data_lake`: (Immutable) ARN of the IAM role you created for the IAM policy associated with your S3 bucket or Glue catalog. Use this parameter only if you want to deploy your data lake on AWS.
 	- Service `new_s3_datalake`: ARN of the role which you created with different required policy mentioned in our setup guide
+- `gcs_service_account_credentials` (Block, Optional) (see [below for nested schema](#nestedblock--config--gcs_service_account_credentials))
 - `gcs_service_account_credentials_path` (String) Field usage depends on `service` value: 
 	- Service `snowflake`: The path to the JSON file that contains the service account credentials for the GCS bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use a GCS bucket to stage your data.
 - `host` (String) Field usage depends on `service` value: 
@@ -397,6 +408,8 @@ Optional:
 	- Service `snowflake`: If not specified, Fivetran will use the user's default role
 - `role_arn` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `redshift`: Role ARN with Redshift permissions. Required if authentication type is `IAM`.
+- `s3_bucket_auth_type` (String) Field usage depends on `service` value: 
+	- Service `databricks`: Authentication method for the S3 bucket you want to use as the external staging for Hybrid Deployment.
 - `sasl_mechanism` (String) Field usage depends on `service` value: 
 	- Service `confluent_cloud_wh`: Security protocol for Confluent Cloud interaction.
 - `sasl_plain_key` (String, Sensitive) Field usage depends on `service` value: 
@@ -442,12 +455,14 @@ Optional:
 	- Service `onelake`: Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.
 - `snowflake_cloud` (String)
 - `snowflake_region` (String)
-- `storage_account_key` (String) Field usage depends on `service` value: 
+- `storage_account_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `azure_sql_data_warehouse`: The access key of the Azure storage account you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.
+	- Service `databricks`: Your storage account key
 	- Service `snowflake`: The access key of the Azure storage account you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an Azure Blob storage container to stage your data.
 - `storage_account_name` (String) Field usage depends on `service` value: 
 	- Service `adls`: (Immutable) Storage account for Azure Data Lake Storage Gen2 name
 	- Service `azure_sql_data_warehouse`: The name of the Azure storage account you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.
+	- Service `databricks`: Your storage account name
 	- Service `managed_data_lake`: (Immutable) Name of your Azure Data Lake Storage Gen2 (ADLS Gen2) storage account. Use this parameter only if you want to deploy your data lake on ADLS.
 	- Service `onelake`: (Immutable) Storage account for Azure Data Lake Storage Gen2 name
 	- Service `snowflake`: The name of the Azure storage account you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an Azure Blob storage container to stage your data.
@@ -590,6 +605,10 @@ Read-Only:
 	- Service `redshift`: Public Key
 	- Service `sql_server_rds_warehouse`: Public Key
 	- Service `sql_server_warehouse`: Public Key
+
+<a id="nestedblock--config--gcs_service_account_credentials"></a>
+### Nested Schema for `config.gcs_service_account_credentials`
+
 
 
 <a id="nestedblock--timeouts"></a>

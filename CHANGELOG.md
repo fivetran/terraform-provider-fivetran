@@ -9,6 +9,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.9.6](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.5...v1.9.6)
 
+### Added
+New connection services supported:
+- Supported service: `cube`
+- Supported service: `dutchie`
+- Supported service: `openai`
+- Supported service: `zendesk_workforce_management`
+
+New connection config fields supported:
+- Added field `fivetran_connector.config.use_cloud_storage` for services: `amplitude`.
+- Added field `fivetran_connector.config.aws_credentials` for services: `amplitude`.
+- Added field `fivetran_connector.config.reports.dimension_attributes` for services: `double_click_publishers`.
+- Added field `fivetran_connector.config.reports.ad_unit_view` for services: `double_click_publishers`.
+- Added field `fivetran_connector.config.project_credentials.project_id` for services: `amplitude`.
+- Added field `fivetran_connector.config.reports.columns` for services: `double_click_publishers`.
+- Added field `fivetran_connector.config.reports.custom_dimension_key_ids` for services: `double_click_publishers`.
+- Added field `fivetran_connector.config.reports.custom_field_ids` for services: `double_click_publishers`.
+- Added field `fivetran_connector.config.reports.accounts.flag` for services: `workday_adaptive`.
+- Added field `fivetran_connector.config.reports.levels.flag` for services: `workday_adaptive`.
+- Added field `fivetran_connector.config.gcs_credentials` for services: `amplitude`.
+
+New destination config fields supported:
+- Added field `fivetran_destination.config.s3_bucket_auth_type` for services: `databricks`.
+- Added field `fivetran_destination.config.azure_storage_account_auth_type` for services: `databricks`.
+- Added field `fivetran_destination.config.external_volume_location` for services: `databricks`.
+- Added field `fivetran_destination.config.gcs_service_account_credentials` for services: `snowflake`.
+- Added field `fivetran_destination.config.create_external_volumes` for services: `databricks`.
+
 ### Fixed
 - Issue with `fivetran_connector` resource state migration error `panic: can't unmarshal tftypes.Object["name":tftypes.String, "prefix":tftypes.String, "table":tftypes.String] into *[]tftypes.Value expected []tftypes.Value 
  tftypes.Object["name":tftypes.String, "prefix":tftypes.String, "table":tftypes.String]` that occures on provider version upgrade.
