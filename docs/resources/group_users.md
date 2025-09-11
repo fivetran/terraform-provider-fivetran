@@ -14,12 +14,12 @@ resource "fivetran_group_users" "group_users" {
 
     user {
         email = "mail@example.com"
-        role = "Destination Analyst"
+        role = "Edit Destination"
     }
 
     user {
         email = "another_mail@example.com"
-        role = "Destination Analyst"
+        role = "Edit Destination"
     }
 }
 ```
@@ -52,7 +52,7 @@ Read-Only:
 
 - `id` (String) The unique identifier for the user within the account.
 
--## Import
+## Import
 
 1. To import an existing `fivetran_group_users` resource into your Terraform state, you need to get **Destination Group ID** on the destination page in your Fivetran dashboard.
 To retrieve existing groups, use the [fivetran_groups data source](/docs/data-sources/groups).

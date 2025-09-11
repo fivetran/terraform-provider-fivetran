@@ -16,13 +16,13 @@ resource "fivetran_user_connector_membership" "test_user_connector_membership" {
 
     connector {
         connector_id = "test_connector"
-        role = "Connector Administrator"
+        role = "Manage Connection"
         created_at = "2020-05-25T15:26:47.306509Z"
     }
 
     connector {
         connector_id = "test_connector"
-        role = "Connector Administrator"
+        role = "Manage Connection"
         created_at = "2020-05-25T15:26:47.306509Z"
     }
 }

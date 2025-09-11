@@ -37,7 +37,7 @@ Read-Only:
 - `hybrid_deployment_agent_id` (String) The hybrid deployment agent ID that refers to the controller created for the group the connection belongs to. If the value is specified, the system will try to associate the connection with an existing agent.
 - `id` (String) The unique identifier for the connector within the Fivetran system.
 - `name` (String) The name used both as the connector's name within the Fivetran system and as the source schema's name within your destination.
-- `networking_method` (String) Possible values: Directly, SshTunnel, ProxyAgent.
+- `networking_method` (String) Possible values: Directly, SshTunnel, ProxyAgent, PrivateLink.
 - `pause_after_trial` (Boolean) Specifies whether the connector should be paused after the free trial period has ended.
 - `paused` (Boolean) Specifies whether the connector is paused.
 - `private_link_id` (String) The private link ID.
