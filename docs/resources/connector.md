@@ -1168,7 +1168,6 @@ Optional:
 - `authorization_url` (String) Field usage depends on `service` value: 
 	- Service `tiktok_organic`: The authorization URL of the app registered in your TikTok developer account.
 	- Service `workday`: Authorization URL
-- `aws_credentials` (Block, Optional) (see [below for nested schema](#nestedblock--config--aws_credentials))
 - `aws_region_code` (String) Field usage depends on `service` value: 
 	- Service `dynamodb`: The AWS region code for the DynamoDB instance, e.g. `us-east-1`.
 - `backint_configuration_path` (String)
@@ -2144,7 +2143,6 @@ Optional:
 - `gcs_bucket` (String) Field usage depends on `service` value: 
 	- Service `braze`: Your GCS bucket. Required if `GCS` is the `cloud_storage_type`
 	- Service `webhooks`: The GCS bucket name. Required if `bucket_service` is set to `GCS`.
-- `gcs_credentials` (Block, Optional) (see [below for nested schema](#nestedblock--config--gcs_credentials))
 - `gcs_export_bucket` (String) Field usage depends on `service` value: 
 	- Service `braze`: Your GCS bucket. Required if `GCS` is the `export_storage_type`
 - `gcs_export_folder` (String) Field usage depends on `service` value: 
@@ -4297,10 +4295,6 @@ Optional:
 	- Service `appsflyer`: Your App ID
 
 
-<a id="nestedblock--config--aws_credentials"></a>
-### Nested Schema for `config.aws_credentials`
-
-
 <a id="nestedblock--config--custom_payloads"></a>
 ### Nested Schema for `config.custom_payloads`
 
@@ -4453,10 +4447,6 @@ Optional:
 	- Service `s3_compatible_storage`: All files matching the above pattern will be synced to this table.
 	- Service `sftp`: All files matching the above pattern will be synced to this table.
 	- Service `share_point`: All files matching the above pattern will be synced to this table.
-
-
-<a id="nestedblock--config--gcs_credentials"></a>
-### Nested Schema for `config.gcs_credentials`
 
 
 <a id="nestedblock--config--project_credentials"></a>

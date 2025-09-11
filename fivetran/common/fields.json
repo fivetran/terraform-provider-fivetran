@@ -2322,19 +2322,6 @@
       },
       "api_field": ""
    },
-   "aws_credentials": {
-      "readonly": false,
-      "sensitive": false,
-      "nullable": true,
-      "type": "object",
-      "fields": null,
-      "key_field": "",
-      "item_type": {},
-      "description": {
-         "amplitude": "Amazon S3 Credentials"
-      },
-      "api_field": ""
-   },
    "aws_region_code": {
       "readonly": false,
       "sensitive": false,
@@ -5962,19 +5949,6 @@
       "description": {
          "braze": "Your GCS bucket. Required if `GCS` is the `cloud_storage_type`",
          "webhooks": "The GCS bucket name. Required if `bucket_service` is set to `GCS`."
-      },
-      "api_field": ""
-   },
-   "gcs_credentials": {
-      "readonly": false,
-      "sensitive": false,
-      "nullable": true,
-      "type": "object",
-      "fields": null,
-      "key_field": "",
-      "item_type": {},
-      "description": {
-         "amplitude": "GCS Credentials"
       },
       "api_field": ""
    },

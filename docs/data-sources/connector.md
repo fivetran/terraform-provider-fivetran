@@ -860,8 +860,6 @@ Read-Only:
 - `authorization_url` (String) Field usage depends on `service` value: 
 	- Service `tiktok_organic`: The authorization URL of the app registered in your TikTok developer account.
 	- Service `workday`: Authorization URL
-- `aws_credentials` (Attributes) Field usage depends on `service` value: 
-	- Service `amplitude`: Amazon S3 Credentials (see [below for nested schema](#nestedatt--config--aws_credentials))
 - `aws_region_code` (String) Field usage depends on `service` value: 
 	- Service `dynamodb`: The AWS region code for the DynamoDB instance, e.g. `us-east-1`.
 - `backint_configuration_path` (String)
@@ -1856,8 +1854,6 @@ Read-Only:
 - `gcs_bucket` (String) Field usage depends on `service` value: 
 	- Service `braze`: Your GCS bucket. Required if `GCS` is the `cloud_storage_type`
 	- Service `webhooks`: The GCS bucket name. Required if `bucket_service` is set to `GCS`.
-- `gcs_credentials` (Attributes) Field usage depends on `service` value: 
-	- Service `amplitude`: GCS Credentials (see [below for nested schema](#nestedatt--config--gcs_credentials))
 - `gcs_export_bucket` (String) Field usage depends on `service` value: 
 	- Service `braze`: Your GCS bucket. Required if `GCS` is the `export_storage_type`
 - `gcs_export_folder` (String) Field usage depends on `service` value: 
@@ -4023,10 +4019,6 @@ Read-Only:
 	- Service `appsflyer`: Your App ID
 
 
-<a id="nestedatt--config--aws_credentials"></a>
-### Nested Schema for `config.aws_credentials`
-
-
 <a id="nestedatt--config--custom_payloads"></a>
 ### Nested Schema for `config.custom_payloads`
 
@@ -4179,10 +4171,6 @@ Read-Only:
 	- Service `s3_compatible_storage`: All files matching the above pattern will be synced to this table.
 	- Service `sftp`: All files matching the above pattern will be synced to this table.
 	- Service `share_point`: All files matching the above pattern will be synced to this table.
-
-
-<a id="nestedatt--config--gcs_credentials"></a>
-### Nested Schema for `config.gcs_credentials`
 
 
 <a id="nestedatt--config--project_credentials"></a>
