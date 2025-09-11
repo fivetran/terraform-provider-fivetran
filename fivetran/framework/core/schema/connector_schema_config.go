@@ -7,9 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
@@ -22,8 +20,6 @@ func GetConnectorSchemaResourceSchema(ctx context.Context) schema.Schema {
 			},
 			"connector_id": schema.StringAttribute{
 				Optional:    true,
-				Computed:    true,
-				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplaceIfConfigured()},
 				Description:   "The unique identifier for the connector within the Fivetran system.",
 			},
 			"group_id": schema.StringAttribute{

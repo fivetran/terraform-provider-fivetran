@@ -21,10 +21,6 @@ type ConnectorSchedule struct {
 func (d *ConnectorSchedule) ReadFromResponse(response connections.DetailsWithCustomConfigNoTestsResponse) {
 	d.Id = types.StringValue(response.Data.ID)
 	d.ConnectorId = types.StringValue(response.Data.ID)
-
-	d.GroupId = types.StringValue(response.Data.GroupID)
-	d.ConnectorName = types.StringValue(response.Data.Schema)
-
 	d.SyncFrequency = types.StringValue(helpers.IntPointerToStr(response.Data.SyncFrequency))
 	d.PauseAfterTrial = types.StringValue(helpers.BoolPointerToStr(response.Data.PauseAfterTrial))
 	d.Paused = types.StringValue(helpers.BoolPointerToStr(response.Data.Paused))
@@ -40,10 +36,6 @@ func (d *ConnectorSchedule) ReadFromResponse(response connections.DetailsWithCus
 func (d *ConnectorSchedule) ReadFromUpdateResponse(response connections.DetailsWithCustomConfigResponse) {
 	d.Id = types.StringValue(response.Data.ID)
 	d.ConnectorId = types.StringValue(response.Data.ID)
-
-	d.GroupId = types.StringValue(response.Data.GroupID)
-	d.ConnectorName = types.StringValue(response.Data.Schema)
-
 	d.PauseAfterTrial = types.StringValue(helpers.BoolPointerToStr(response.Data.PauseAfterTrial))
 	d.Paused = types.StringValue(helpers.BoolPointerToStr(response.Data.Paused))
 	d.SyncFrequency = types.StringValue(helpers.IntPointerToStr(response.Data.SyncFrequency))

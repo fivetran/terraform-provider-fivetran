@@ -3,8 +3,6 @@ package schema
 import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
@@ -17,20 +15,14 @@ func GetConnectorScheduleResourceSchema() schema.Schema {
 			},
 			"connector_id": schema.StringAttribute{
 				Optional: true,
-				Computed: true,
-				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplaceIfConfigured()},
 				Description:   "The unique identifier for the connector within the Fivetran system.",
 			},
 			"group_id": schema.StringAttribute{
 				Optional: true,
-				Computed: true,
-				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplaceIfConfigured()},
 				Description:   "The unique identifier for the Group (Destination) within the Fivetran system.",
 			},
 			"connector_name": schema.StringAttribute{
 				Optional: true,
-				Computed: true,
-				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplaceIfConfigured()},
 				Description:   "The name used both as the connection's name within the Fivetran system and as the source schema's name within your destination.",
 			},
 			"sync_frequency": schema.StringAttribute{
