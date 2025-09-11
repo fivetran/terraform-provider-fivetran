@@ -15,6 +15,7 @@ func GetConnectorScheduleResourceSchema() schema.Schema {
 			},
 			"connector_id": schema.StringAttribute{
 				Optional: true,
+				Computed: true,
 				Description:   "The unique identifier for the connector within the Fivetran system.",
 			},
 			"group_id": schema.StringAttribute{
