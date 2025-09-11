@@ -31,7 +31,7 @@ Read-Only:
 - `group_id` (String) The unique identifier for the Group within the Fivetran system.
 - `hybrid_deployment_agent_id` (String) The hybrid deployment agent ID that refers to the controller created for the group the connection belongs to. If the value is specified, the system will try to associate the connection with an existing agent.
 - `id` (String) The unique identifier for the destination within the Fivetran system.
-- `networking_method` (String) Possible values: Directly, SshTunnel, ProxyAgent.
+- `networking_method` (String) Possible values: Directly, SshTunnel, ProxyAgent, PrivateLink.
 - `private_link_id` (String) The private link ID.
 - `region` (String) Data processing location. This is where Fivetran will operate and run computation on data.
 - `service` (String) The destination type id within the Fivetran system.

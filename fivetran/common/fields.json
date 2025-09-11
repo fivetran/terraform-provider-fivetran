@@ -1205,6 +1205,7 @@
          "drata": "Your Drata API Key.",
          "dropbox_sign": "Your Dropbox Sign API key.",
          "duoplane": "Your Duoplane API key.",
+         "dutchie": "Your Dutchie API key.",
          "easypost": "Your EasyPost API Key.",
          "electronic_tenant_solutions": "Your Electronic Tenant Solutions API key.",
          "eventsforce": "Your Eventsforce API secret key.",
@@ -1278,6 +1279,7 @@
          "okendo": "Your Okendo API key.",
          "ometria": "Your Ometria API Key.",
          "oncehub": "Your OnceHub API key.",
+         "openai": "Your OpenAI API key.",
          "ordergroove": "Your Ordergroove API key.",
          "ordway": "Your Ordway API key.",
          "ortto": "Your Ortto API key.",
@@ -1569,7 +1571,8 @@
          "vwo": "Your VWO API token.",
          "web_scraper": "Your Web Scraper API token.",
          "zendesk": "Zendesk API tokens are auto-generated passwords in the Support admin interface.",
-         "zendesk_sunshine": "Zendesk API tokens are auto-generated passwords in the Support admin interface."
+         "zendesk_sunshine": "Zendesk API tokens are auto-generated passwords in the Support admin interface.",
+         "zendesk_workforce_management": "Your Zendesk Workforce Management API token."
       },
       "api_field": ""
    },
@@ -2199,7 +2202,9 @@
          "anaplan": "The Anaplan authentication method.",
          "concur": "The Authentication Mode used by SAP Concur. It can be PasswordGrant or CompanyLevel auth mode",
          "github": "Authorization type.",
-         "workday": "Authentication Mode"
+         "workday": "Authentication Mode",
+         "workday_financial_management": "Authentication Mode",
+         "workday_hcm": "Authentication Mode"
       },
       "api_field": ""
    },
@@ -2391,7 +2396,8 @@
       "item_type": {},
       "description": {
          "hubspot": "Date Limit of the Historical Sync Time for selected tables. The Format should be YYYY-MM-DD",
-         "mixpanel": "Date from which data needs to be synced."
+         "mixpanel": "Date from which data needs to be synced.",
+         "pendo": "The start date (YYYY-MM-DD) from which to sync historical data."
       },
       "api_field": ""
    },
@@ -2820,7 +2826,7 @@
          "billing_platform": "Your BillingPlatform client ID.",
          "bing_webmaster_tools": "Your Bing Webmaster Tools client ID.",
          "brightcove": "Your Brightcove client ID.",
-         "brightflag": "Your Brightflag  client ID.",
+         "brightflag": "Your Brightflag client ID.",
          "brightpearl": "Your Brightpearl client ID.",
          "brivo": "Your Brivo client ID.",
          "buildium": "Your Buildium API client ID.",
@@ -2838,6 +2844,7 @@
          "coupa": "Your Coupa client_id",
          "criteo": "Your Criteo Client ID.",
          "criteo_retail_media": "Your Criteo Retail Media client ID.",
+         "cube": "Your Cube Client ID.",
          "cube_software": "Your Cube Software Client ID.",
          "culture_amp": "Your Culture Amp client ID.",
          "cvent": "Your Cvent client ID.",
@@ -3096,6 +3103,7 @@
          "coupa": "Your Coupa client_id",
          "criteo": "Your Criteo client secret key.",
          "criteo_retail_media": "Your Criteo Retail Media client secret.",
+         "cube": "Your Cube Client Secret.",
          "cube_software": "Your Cube Software Client Secret.",
          "culture_amp": "Your Culture Amp client secret.",
          "cvent": "Your Cvent client secret.",
@@ -3299,6 +3307,7 @@
       "item_type": {},
       "description": {
          "360learning": "Your 360Learning Company ID.",
+         "cube": "Your Cube Company ID.",
          "cube_software": "Your Cube Software Company ID.",
          "sage_intacct": "Company ID",
          "sap_success_factors": "Your SAP SuccessFactors Company ID."
@@ -5112,7 +5121,8 @@
       "description": {
          "cabcharge": "Your Cabcharge email ID.",
          "ordway": "Your Ordway user email ID.",
-         "planful": "Your Planful email ID."
+         "planful": "Your Planful email ID.",
+         "zendesk_workforce_management": "Your Zendesk Workforce Management email ID."
       },
       "api_field": ""
    },
@@ -5529,6 +5539,7 @@
       "item_type": {},
       "description": {
          "adjust": "Your cloud storage.",
+         "amplitude": "Your cloud storage type",
          "braze": "Export Storage. Required if `enable_exports` is `true`"
       },
       "api_field": ""
@@ -5625,6 +5636,7 @@
             "description": {
                "azure_blob_storage": "All Files inside of compressed archives with filenames matching this regular expression will be synced.",
                "box": "All Files inside of compressed archives with filenames matching this regular expression will be synced.",
+               "dropbox": "All Files inside of compressed archives with filenames matching this regular expression will be synced.",
                "email": "All Files inside of compressed archives with filenames matching this regular expression will be synced.",
                "ftp": "All Files inside of compressed archives with filenames matching this regular expression will be synced.",
                "gcs": "All Files inside of compressed archives with filenames matching this regular expression will be synced.",
@@ -5660,6 +5672,7 @@
             "description": {
                "azure_blob_storage": "All files in your search path matching this regular expression will be synced per table. We have discontinued this field, and will delete it by August 31, 2025.",
                "box": "All files in your search path matching this regular expression will be synced per table.",
+               "dropbox": "All files in your search path matching this regular expression will be synced per table.",
                "email": "All files in your search path matching this regular expression will be synced per table.",
                "ftp": "All files in your search path matching this regular expression will be synced per table.",
                "gcs": "All files in your search path matching this regular expression will be synced per table.",
@@ -5682,6 +5695,7 @@
             "description": {
                "azure_blob_storage": "All files matching the above pattern will be synced to this table.",
                "box": "All files matching the above pattern will be synced to this table.",
+               "dropbox": "All files matching the above pattern will be synced to this table.",
                "email": "All files matching the above pattern will be synced to this table.",
                "ftp": "All files matching the above pattern will be synced to this table.",
                "gcs": "All files matching the above pattern will be synced to this table.",
@@ -5699,6 +5713,7 @@
       "description": {
          "azure_blob_storage": "Mapped file name patterns to a destination table.",
          "box": "Mapped file name patterns to a destination table.",
+         "dropbox": "Mapped file name patterns to a destination table.",
          "email": "Mapped file name patterns to a destination table.",
          "ftp": "Mapped file name patterns to a destination table.",
          "gcs": "Mapped file name patterns to a destination table.",
@@ -6150,6 +6165,7 @@
          "ascend_by_partnerize": "Your Ascend by Partnerize Historical sync time frame",
          "hubspot": "Used to configure Historical sync timeframe for selected tables",
          "mixpanel": "Should sync all data or adhere to `backward_sync_limit_date`",
+         "pendo": "The time range for which historical data should be synced. Default value: `All Time`.",
          "rokt": "Your Rokt historical sync time frame.",
          "shopify": "Used to configure Historical sync timeframe for selected tables",
          "skimlinks": "Your Skimlinks Historical sync time frame.",
@@ -8341,6 +8357,19 @@
             },
             "api_field": ""
          },
+         "project_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "amplitude": "The project ID you wish to use with Fivetran."
+            },
+            "api_field": ""
+         },
          "secret_key": {
             "readonly": false,
             "sensitive": true,
@@ -9186,6 +9215,19 @@
             "nullable": true,
             "type": "object_list",
             "fields": {
+               "flag": {
+                  "readonly": false,
+                  "sensitive": false,
+                  "nullable": false,
+                  "type": "boolean",
+                  "fields": null,
+                  "key_field": "",
+                  "item_type": {},
+                  "description": {
+                     "workday_adaptive": "Flag to indicate if descendants are included or not"
+                  },
+                  "api_field": ""
+               },
                "id": {
                   "readonly": false,
                   "sensitive": false,
@@ -9217,6 +9259,19 @@
             "item_type": {},
             "description": {
                "workday_adaptive": "List of accounts to sync for the table, if applicable"
+            },
+            "api_field": ""
+         },
+         "ad_unit_view": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "double_click_publishers": "Ad unit view for the report."
             },
             "api_field": ""
          },
@@ -9260,6 +9315,21 @@
             },
             "description": {
                "google_search_ads_360": "The report attributes included to sync."
+            },
+            "api_field": ""
+         },
+         "columns": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "item_type": {
+               "double_click_publishers": "string"
+            },
+            "description": {
+               "double_click_publishers": "Columns provide all trafficking statistics and revenue information available for the chosen dimensions."
             },
             "api_field": ""
          },
@@ -9318,6 +9388,36 @@
             },
             "api_field": ""
          },
+         "custom_dimension_key_ids": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "item_type": {
+               "double_click_publishers": "integer"
+            },
+            "description": {
+               "double_click_publishers": "The list of custom dimension key IDs included in the report. Custom dimension keys can only be selected with the CUSTOM_DIMENSION dimension."
+            },
+            "api_field": ""
+         },
+         "custom_field_ids": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "item_type": {
+               "double_click_publishers": "integer"
+            },
+            "description": {
+               "double_click_publishers": "The list of custom field IDs included in the report. Custom fields can only be selected with their corresponding dimensions."
+            },
+            "api_field": ""
+         },
          "custom_floodlight_variables": {
             "readonly": false,
             "sensitive": false,
@@ -9333,6 +9433,21 @@
             },
             "api_field": ""
          },
+         "dimension_attributes": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "item_type": {
+               "double_click_publishers": "string"
+            },
+            "description": {
+               "double_click_publishers": "Dimension attributes provide additional fields associated with a dimension. Dimension attributes can only be selected with their corresponding dimensions."
+            },
+            "api_field": ""
+         },
          "dimensions": {
             "readonly": false,
             "sensitive": false,
@@ -9342,6 +9457,7 @@
             "key_field": "",
             "item_type": {
                "double_click_campaign_manager": "string",
+               "double_click_publishers": "string",
                "google_analytics": "string",
                "google_analytics_4": "string",
                "google_display_and_video_360": "string",
@@ -9349,6 +9465,7 @@
             },
             "description": {
                "double_click_campaign_manager": "Report dimensions to include in a sync. The `date` dimension is mandatory for all report types. The `advertiser` dimension is mandatory for the `REACH` report type",
+               "double_click_publishers": "Report dimensions to include in the sync. The `date` dimension is mandatory for all the report types.",
                "google_analytics": "The report dimensions to include into a sync. The `date` dimension is mandatory for all the report types.",
                "google_analytics_4": "The report dimensions to include into a sync.",
                "google_display_and_video_360": "The report dimensions (filters) to include into a sync. The dimension names are provided in the API format. This is a required parameter when `config_method` is set to `CREATE_NEW`.",
@@ -9495,6 +9612,19 @@
             "nullable": true,
             "type": "object_list",
             "fields": {
+               "flag": {
+                  "readonly": false,
+                  "sensitive": false,
+                  "nullable": false,
+                  "type": "boolean",
+                  "fields": null,
+                  "key_field": "",
+                  "item_type": {},
+                  "description": {
+                     "workday_adaptive": "Flag to indicate if descendants are included or not"
+                  },
+                  "api_field": ""
+               },
                "id": {
                   "readonly": false,
                   "sensitive": false,
@@ -9829,6 +9959,7 @@
             "item_type": {},
             "description": {
                "double_click_campaign_manager": "Destination table name. It must be unique within this connection and must comply with Fivetran's naming conventions.",
+               "double_click_publishers": "The name of the table within the schema storing the data for a given report.",
                "google_ads": "The table name within the schema to which connector will sync the data of the specific report.",
                "google_analytics": "The table name within the schema to which connector will sync the data of the specific report.",
                "google_analytics_4": "The table name within the schema to which connector will sync the data of the specific report.",
@@ -9911,6 +10042,7 @@
       "item_type": {},
       "description": {
          "double_click_campaign_manager": "List of reports",
+         "double_click_publishers": "The list of reports. We create a table within the schema for each report.",
          "google_ads": "The list of reports. Each report corresponds to a table within the schema to which connector will sync the data.",
          "google_analytics": "The list of reports. Each report corresponds to a table within the schema to which connector will sync the data.",
          "google_analytics_4": "The list of reports. Each report corresponds to a table within the schema to which connector will sync the data.",
@@ -10606,6 +10738,7 @@
          "crossbeam": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "crowddev": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "crunchbase": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "cube": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "cube_software": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "culture_amp": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "customerio": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -10635,6 +10768,7 @@
          "dropbox_sign": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "dsv": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "duoplane": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "dutchie": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "dynamics_365": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "dynamodb": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "easypost": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -10857,6 +10991,7 @@
          "one_drive": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "open_data_dc": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "open_exchange_rates": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "openai": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "opendistro": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "opensearch": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "optimizely": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11129,6 +11264,7 @@
          "zendesk_chat": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "zendesk_sell": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "zendesk_sunshine": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "zendesk_workforce_management": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "zenefits": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "zingtree": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "zip": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -12438,7 +12574,8 @@
          "uptempo": "Your Uptempo subdomain.",
          "vts": "Your VTS Subdomain.",
          "yext": "Your Yext subdomain. ",
-         "zendesk_chat": "Your Zendesk domain."
+         "zendesk_chat": "Your Zendesk domain.",
+         "zendesk_workforce_management": "Your Zendesk Workforce Management subdomain."
       },
       "api_field": ""
    },
@@ -12861,16 +12998,17 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "azure_blob_storage": "Table group name",
-         "box": "Table group name",
-         "email": "Table group name",
-         "ftp": "Table group name",
-         "gcs": "Table group name",
-         "google_drive": "Table group name",
-         "s3": "Table group name",
-         "s3_compatible_storage": "Table group name",
-         "sftp": "Table group name",
-         "share_point": "Table group name",
+         "azure_blob_storage": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema.",
+         "box": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema.",
+         "dropbox": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema.",
+         "email": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema.",
+         "ftp": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema.",
+         "gcs": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema.",
+         "google_drive": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema.",
+         "s3": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema.",
+         "s3_compatible_storage": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema.",
+         "sftp": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema.",
+         "share_point": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema.",
          "workday": "Table group name"
       },
       "api_field": ""
@@ -13817,6 +13955,19 @@
       "item_type": {},
       "description": {
          "mandrill": "Whether to use multiple API keys for interaction."
+      },
+      "api_field": ""
+   },
+   "use_cloud_storage": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "amplitude": "Sync events from cloud storage"
       },
       "api_field": ""
    },

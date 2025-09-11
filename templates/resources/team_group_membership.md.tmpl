@@ -17,13 +17,13 @@ resource "fivetran_team_group_membership" "test_team_group_membership" {
     group {
         connector_id = "test_connector"
         group_id = "test_group"
-        role = "Destination Administrator"
+        role = "Manage Destination"
     }
 
     group {
         connector_id = "test_connector"
         group_id = "test_group"
-        role = "Destination Administrator"
+        role = "Manage Destination"
     }
 }
 ```

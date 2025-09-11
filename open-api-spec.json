@@ -18,11 +18,11 @@
   "tags": [
     {
       "name": "updated",
-      "description": "2025-08-22T12:05:14.317Z"
+      "description": "2025-09-10T05:21:41.292Z"
     },
     {
       "name": "hash",
-      "description": "0dd24059de04dfe70d98bcafa2898c8f9dc0836956bede24a7e19b6170bfa2b7"
+      "description": "f9fd0eb065a0f7e371e146eefb19708112bb1b419b6c3ccfd99a644ad55555b9"
     }
   ],
   "paths": {
@@ -3572,6 +3572,28 @@
         "description": "Returns a list of all accessible connections within your Fivetran account.",
         "operationId": "list_connections",
         "parameters": [
+          {
+            "name": "group_id",
+            "in": "query",
+            "description": "Specify the group identifier to filter connections by group",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "group_id"
+            },
+            "example": "group_id"
+          },
+          {
+            "name": "schema",
+            "in": "query",
+            "description": "Specify the schema name to filter connections by schema",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "schema"
+            },
+            "example": "schema"
+          },
           {
             "name": "cursor",
             "in": "query",
@@ -12323,7 +12345,7 @@
             "crossbeam": "#/components/schemas/crossbeam_NewConnectorRequestV1",
             "crowddev": "#/components/schemas/crowddev_NewConnectorRequestV1",
             "crunchbase": "#/components/schemas/crunchbase_NewConnectorRequestV1",
-            "cube_software": "#/components/schemas/cube_software_NewConnectorRequestV1",
+            "cube": "#/components/schemas/cube_NewConnectorRequestV1",
             "culture_amp": "#/components/schemas/culture_amp_NewConnectorRequestV1",
             "customerio": "#/components/schemas/customerio_NewConnectorRequestV1",
             "cvent": "#/components/schemas/cvent_NewConnectorRequestV1",
@@ -12356,6 +12378,7 @@
             "dropbox_sign": "#/components/schemas/dropbox_sign_NewConnectorRequestV1",
             "dsv": "#/components/schemas/dsv_NewConnectorRequestV1",
             "duoplane": "#/components/schemas/duoplane_NewConnectorRequestV1",
+            "dutchie": "#/components/schemas/dutchie_NewConnectorRequestV1",
             "dynamics_365": "#/components/schemas/dynamics_365_NewConnectorRequestV1",
             "dynamodb": "#/components/schemas/dynamodb_NewConnectorRequestV1",
             "easypost": "#/components/schemas/easypost_NewConnectorRequestV1",
@@ -12582,6 +12605,7 @@
             "one_drive": "#/components/schemas/one_drive_NewConnectorRequestV1",
             "open_data_dc": "#/components/schemas/open_data_dc_NewConnectorRequestV1",
             "open_exchange_rates": "#/components/schemas/open_exchange_rates_NewConnectorRequestV1",
+            "openai": "#/components/schemas/openai_NewConnectorRequestV1",
             "opendistro": "#/components/schemas/opendistro_NewConnectorRequestV1",
             "opensearch": "#/components/schemas/opensearch_NewConnectorRequestV1",
             "optimizely": "#/components/schemas/optimizely_NewConnectorRequestV1",
@@ -12862,6 +12886,7 @@
             "zendesk_chat": "#/components/schemas/zendesk_chat_NewConnectorRequestV1",
             "zendesk_sell": "#/components/schemas/zendesk_sell_NewConnectorRequestV1",
             "zendesk_sunshine": "#/components/schemas/zendesk_sunshine_NewConnectorRequestV1",
+            "zendesk_workforce_management": "#/components/schemas/zendesk_workforce_management_NewConnectorRequestV1",
             "zenefits": "#/components/schemas/zenefits_NewConnectorRequestV1",
             "zingtree": "#/components/schemas/zingtree_NewConnectorRequestV1",
             "zip": "#/components/schemas/zip_NewConnectorRequestV1",
@@ -13446,7 +13471,7 @@
             "crossbeam": "#/components/schemas/crossbeam_ConnectorResponseV1",
             "crowddev": "#/components/schemas/crowddev_ConnectorResponseV1",
             "crunchbase": "#/components/schemas/crunchbase_ConnectorResponseV1",
-            "cube_software": "#/components/schemas/cube_software_ConnectorResponseV1",
+            "cube": "#/components/schemas/cube_ConnectorResponseV1",
             "culture_amp": "#/components/schemas/culture_amp_ConnectorResponseV1",
             "customerio": "#/components/schemas/customerio_ConnectorResponseV1",
             "cvent": "#/components/schemas/cvent_ConnectorResponseV1",
@@ -13479,6 +13504,7 @@
             "dropbox_sign": "#/components/schemas/dropbox_sign_ConnectorResponseV1",
             "dsv": "#/components/schemas/dsv_ConnectorResponseV1",
             "duoplane": "#/components/schemas/duoplane_ConnectorResponseV1",
+            "dutchie": "#/components/schemas/dutchie_ConnectorResponseV1",
             "dynamics_365": "#/components/schemas/dynamics_365_ConnectorResponseV1",
             "dynamodb": "#/components/schemas/dynamodb_ConnectorResponseV1",
             "easypost": "#/components/schemas/easypost_ConnectorResponseV1",
@@ -13705,6 +13731,7 @@
             "one_drive": "#/components/schemas/one_drive_ConnectorResponseV1",
             "open_data_dc": "#/components/schemas/open_data_dc_ConnectorResponseV1",
             "open_exchange_rates": "#/components/schemas/open_exchange_rates_ConnectorResponseV1",
+            "openai": "#/components/schemas/openai_ConnectorResponseV1",
             "opendistro": "#/components/schemas/opendistro_ConnectorResponseV1",
             "opensearch": "#/components/schemas/opensearch_ConnectorResponseV1",
             "optimizely": "#/components/schemas/optimizely_ConnectorResponseV1",
@@ -13985,6 +14012,7 @@
             "zendesk_chat": "#/components/schemas/zendesk_chat_ConnectorResponseV1",
             "zendesk_sell": "#/components/schemas/zendesk_sell_ConnectorResponseV1",
             "zendesk_sunshine": "#/components/schemas/zendesk_sunshine_ConnectorResponseV1",
+            "zendesk_workforce_management": "#/components/schemas/zendesk_workforce_management_ConnectorResponseV1",
             "zenefits": "#/components/schemas/zenefits_ConnectorResponseV1",
             "zingtree": "#/components/schemas/zingtree_ConnectorResponseV1",
             "zip": "#/components/schemas/zip_ConnectorResponseV1",
@@ -15518,7 +15546,7 @@
           },
           "role": {
             "type": "string",
-            "description": "The group role that you would like to assign this new user to. Supported group roles: ‘Destination Administrator‘, ‘Destination Reviewer‘, ‘Destination Analyst‘, ‘Connector Creator‘, or a custom destination role",
+            "description": "The group role that you would like to assign this new user to. Supported group roles: ‘Manage Destination‘, ‘View Destination‘, ‘Edit Destination‘, ‘Create Connection‘, or a custom destination role",
             "example": "Owner"
           }
         }
@@ -15637,7 +15665,7 @@
           },
           "role": {
             "type": "string",
-            "description": "The group role that you would like to assign this new user to. Supported group roles: ‘Destination Administrator‘, ‘Destination Reviewer‘, ‘Destination Analyst‘, ‘Connector Creator‘, or a custom destination role",
+            "description": "The group role that you would like to assign this new user to. Supported group roles: ‘Manage Destination‘, ‘View Destination‘, ‘Edit Destination‘, ‘Create Connection‘, or a custom destination role",
             "example": "Account Administrator"
           },
           "active": {
@@ -16433,6 +16461,7 @@
               "AWS_US_EAST_2",
               "AWS_US_WEST_2",
               "AWS_AP_NORTHEAST_1",
+              "AWS_AP_NORTHEAST_2",
               "AWS_AP_SOUTHEAST_1",
               "AWS_AP_SOUTHEAST_2",
               "AWS_EU_CENTRAL_1",
@@ -16530,6 +16559,7 @@
               "AWS_US_EAST_2",
               "AWS_US_WEST_2",
               "AWS_AP_NORTHEAST_1",
+              "AWS_AP_NORTHEAST_2",
               "AWS_AP_SOUTHEAST_1",
               "AWS_AP_SOUTHEAST_2",
               "AWS_EU_CENTRAL_1",
@@ -16620,7 +16650,7 @@
           "replacement_role_name": {
             "type": "string",
             "description": "The name of the new role replacing the deprecated role",
-            "example": "Destination Administrator Replacement"
+            "example": "Manage Destination"
           },
           "is_custom": {
             "type": "boolean",
@@ -16849,7 +16879,7 @@
           "role": {
             "type": "string",
             "description": "The role that you would like to assign to the user ",
-            "example": "Connector Administrator"
+            "example": "Manage Connection"
           }
         }
       },
@@ -16920,7 +16950,7 @@
           "role": {
             "type": "string",
             "description": "The role that you would like to assign to the user ",
-            "example": "Destination Administrator"
+            "example": "Manage Destination"
           }
         }
       },
@@ -17771,11 +17801,10 @@
                 "title": "",
                 "type": "object",
                 "description": "",
-                "example": "AIVEN_KARAPACE | CONFLUENT_CLOUD | AWS_GLUE",
+                "example": "AIVEN_KARAPACE | CONFLUENT_CLOUD",
                 "enum": [
                   "AIVEN_KARAPACE",
-                  "CONFLUENT_CLOUD",
-                  "AWS_GLUE"
+                  "CONFLUENT_CLOUD"
                 ]
               },
               "data_format": {
@@ -17856,12 +17885,10 @@
                 "title": "",
                 "type": "object",
                 "description": "",
-                "example": "PLAIN | SCRAM_SHA_512 | SCRAM_SHA_256 | AWS_IAM",
+                "example": "SCRAM_SHA_512 | SCRAM_SHA_256",
                 "enum": [
-                  "PLAIN",
                   "SCRAM_SHA_512",
-                  "SCRAM_SHA_256",
-                  "AWS_IAM"
+                  "SCRAM_SHA_256"
                 ]
               },
               "security_protocol": {
@@ -18089,9 +18116,8 @@
                 "title": "",
                 "type": "object",
                 "description": "",
-                "example": "AIVEN_KARAPACE | CONFLUENT_CLOUD | AWS_GLUE",
+                "example": "CONFLUENT_CLOUD | AWS_GLUE",
                 "enum": [
-                  "AIVEN_KARAPACE",
                   "CONFLUENT_CLOUD",
                   "AWS_GLUE"
                 ]
@@ -18220,11 +18246,9 @@
                 "title": "",
                 "type": "object",
                 "description": "",
-                "example": "PLAIN | SCRAM_SHA_512 | SCRAM_SHA_256 | AWS_IAM",
+                "example": "SCRAM_SHA_512 | AWS_IAM",
                 "enum": [
-                  "PLAIN",
                   "SCRAM_SHA_512",
-                  "SCRAM_SHA_256",
                   "AWS_IAM"
                 ]
               },
@@ -18774,7 +18798,7 @@
                 "title": "",
                 "type": "object",
                 "description": "Confluent Cloud message format.",
-                "example": "AVRO",
+                "example": "JSON | AVRO",
                 "enum": [
                   "JSON",
                   "AVRO"
@@ -18848,7 +18872,7 @@
                 "title": "",
                 "type": "object",
                 "description": "Security protocol for Confluent Cloud interaction.",
-                "example": "PLAIN",
+                "example": "PLAIN | SCRAM_SHA_512 | SCRAM_SHA_256 | AWS_IAM",
                 "enum": [
                   "PLAIN",
                   "SCRAM_SHA_512",
@@ -18860,7 +18884,7 @@
                 "title": "",
                 "type": "object",
                 "description": "Security protocol for Confluent Cloud interaction.",
-                "example": "SASL",
+                "example": "SASL | SASL_PLAINTEXT",
                 "enum": [
                   "SASL",
                   "SASL_PLAINTEXT"
@@ -18909,6 +18933,12 @@
                 "description": "Whether to create external tables",
                 "example": true
               },
+              "storage_account_name": {
+                "title": "",
+                "type": "string",
+                "description": "Your storage account name",
+                "example": "string"
+              },
               "connection_type": {
                 "title": "",
                 "type": "object",
@@ -18919,12 +18949,12 @@
                   "PrivateLink"
                 ]
               },
-              "port": {
+              "aws_secret_access_key": {
                 "title": "",
-                "type": "integer",
-                "description": "Server port number",
-                "format": "int32",
-                "example": 443
+                "type": "string",
+                "description": "Your user's secret access key",
+                "format": "password",
+                "example": "string"
               },
               "catalog": {
                 "title": "",
@@ -18932,11 +18962,12 @@
                 "description": "Catalog name",
                 "example": "string"
               },
-              "http_path": {
+              "storage_account_key": {
                 "title": "",
                 "type": "string",
-                "description": "HTTP path",
-                "example": "sql/protocolv1/o/2873663545782684434-15262-272625-fives565"
+                "description": "Your storage account key",
+                "format": "password",
+                "example": "string"
               },
               "cloud_provider": {
                 "title": "",
@@ -18949,6 +18980,12 @@
                   "AWS"
                 ]
               },
+              "http_path": {
+                "title": "",
+                "type": "string",
+                "description": "HTTP path",
+                "example": "sql/protocolv1/o/2873663545782684434-15262-272625-fives565"
+              },
               "oauth2_secret": {
                 "title": "",
                 "type": "string",
@@ -18956,17 +18993,81 @@
                 "format": "password",
                 "example": "your_oauth_secret"
               },
+              "server_host_name": {
+                "title": "",
+                "type": "string",
+                "description": "Server name",
+                "example": "87a8z-3da23-3da8d-cloud.databricks.com"
+              },
+              "s3_bucket_auth_type": {
+                "title": "",
+                "type": "object",
+                "description": "Authentication method for the S3 bucket you want to use as the external staging for Hybrid Deployment.",
+                "example": "IAM_ROLE | IAM_USER",
+                "enum": [
+                  "IAM_ROLE",
+                  "IAM_USER"
+                ]
+              },
+              "bucket": {
+                "title": "",
+                "type": "string",
+                "description": "Your bucket",
+                "example": "string"
+              },
+              "external_storage_cloud_provider": {
+                "title": "",
+                "type": "object",
+                "description": "",
+                "example": "AZURE | GCP | AWS",
+                "enum": [
+                  "AZURE",
+                  "GCP",
+                  "AWS"
+                ]
+              },
+              "aws_access_key_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your user's access key ID",
+                "example": "string"
+              },
+              "port": {
+                "title": "",
+                "type": "integer",
+                "description": "Server port number",
+                "format": "int32",
+                "example": 443
+              },
+              "bucket_region": {
+                "title": "",
+                "type": "string",
+                "description": "Your bucket's region",
+                "example": "string"
+              },
+              "create_external_volumes": {
+                "title": "",
+                "type": "boolean",
+                "description": "Specifies whether you want Fivetran to create external volumes for unstructured data files.",
+                "example": true
+              },
+              "azure_storage_account_auth_type": {
+                "title": "",
+                "type": "string",
+                "description": "Authentication method for the Azure container you want to use as the external staging for Hybrid Deployment.",
+                "example": "Storage Account Key"
+              },
               "oauth2_client_id": {
                 "title": "",
                 "type": "string",
                 "description": "OAuth 2.0 client ID",
                 "example": "your_oauth_client_id"
               },
-              "server_host_name": {
+              "external_volume_location": {
                 "title": "",
                 "type": "string",
-                "description": "Server name",
-                "example": "87a8z-3da23-3da8d-cloud.databricks.com"
+                "description": "Specifies the external volume path where you want Fivetran to create the unstructured files.",
+                "example": "s3://bucket/prefix_path"
               },
               "personal_access_token": {
                 "title": "",
@@ -23800,6 +23901,33 @@
           "config": {
             "type": "object",
             "properties": {
+              "use_cloud_storage": {
+                "title": "",
+                "type": "boolean",
+                "description": "Sync events from cloud storage",
+                "example": true
+              },
+              "export_storage_type": {
+                "title": "Cloud Storage Type",
+                "type": "object",
+                "description": "Your cloud storage type",
+                "example": "GCS",
+                "enum": [
+                  "GCS"
+                ]
+              },
+              "aws_credentials": {
+                "title": "Amazon S3 Credentials",
+                "type": "object",
+                "properties": {},
+                "description": "Amazon S3 Credentials"
+              },
+              "gcs_credentials": {
+                "title": "GCS Credentials",
+                "type": "object",
+                "properties": {},
+                "description": "GCS Credentials"
+              },
               "project_credentials": {
                 "title": "",
                 "type": "array",
@@ -23821,6 +23949,12 @@
                       "description": "The API key of the project.",
                       "format": "password",
                       "example": "apiKey2"
+                    },
+                    "project_id": {
+                      "title": "",
+                      "type": "string",
+                      "description": "The project ID you wish to use with Fivetran.",
+                      "example": "projectId2"
                     },
                     "project": {
                       "title": "",
@@ -26166,6 +26300,12 @@
                 "description": "If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
                 "example": "string"
               },
+              "container_address": {
+                "title": "",
+                "type": "string",
+                "description": "IP address of the Azure Storage Container which is accessible from host machine.",
+                "example": "192.168.0.1"
+              },
               "connection_method": {
                 "title": "",
                 "type": "object",
@@ -26176,12 +26316,6 @@
                   "DIRECT",
                   "PRIVATE_LINK"
                 ]
-              },
-              "container_address": {
-                "title": "",
-                "type": "string",
-                "description": "IP address of the Azure Storage Container which is accessible from host machine.",
-                "example": "192.168.0.1"
               },
               "line_separator": {
                 "title": "",
@@ -26283,7 +26417,7 @@
               },
               "table_group_name": {
                 "type": "string",
-                "description": "Table group name"
+                "description": "Combined with the schema to form the Fivetran connection name `<schema>.<table_group_name>`. Lets you create multiple Merge Mode connections per schema."
               }
             }
           }
@@ -28723,7 +28857,7 @@
               "client_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Brightflag  client ID.",
+                "description": "Your Brightflag client ID.",
                 "example": "string"
               }
             },
@@ -31498,12 +31632,6 @@
           "config": {
             "type": "object",
             "properties": {
-              "enable_distributed_connector_mode": {
-                "title": "",
-                "type": "boolean",
-                "description": "Enable to allow the connector to join a cluster of connectors forming a Distributed Connector Cluster. This cluster allows parallel syncs from the same source to the same destination using multiple connectors.",
-                "example": true
-              },
               "sync_pack_mode": {
                 "title": "",
                 "type": "object",
@@ -31530,13 +31658,6 @@
                 "description": "The read-only primary or secondary account key for the database account. Required for the `ACCOUNT_KEY` data access method.",
                 "format": "password",
                 "example": "account_key"
-              },
-              "distributed_connector_cluster_size": {
-                "title": "",
-                "type": "integer",
-                "description": "Specifies the total number of connectors in the Distributed Connector Cluster running in parallel.",
-                "format": "int32",
-                "example": 0
               },
               "token_authenticated_database": {
                 "title": "",
@@ -32627,7 +32748,7 @@
           }
         ]
       },
-      "cube_software_config_V1": {
+      "cube_config_V1": {
         "properties": {
           "config": {
             "type": "object",
@@ -32635,34 +32756,34 @@
               "company_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Cube Software Company ID.",
-                "example": "your_cube_software_company_id"
+                "description": "Your Cube Company ID.",
+                "example": "your_cube_company_id"
               },
               "client_secret": {
                 "title": "",
                 "type": "string",
-                "description": "Your Cube Software Client Secret.",
+                "description": "Your Cube Client Secret.",
                 "format": "password",
-                "example": "your_cube_software_client_secret"
+                "example": "your_cube_client_secret"
               },
               "client_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Cube Software Client ID.",
-                "example": "your_cube_software_client_id"
+                "description": "Your Cube Client ID.",
+                "example": "your_cube_client_id"
               }
             },
             "description": ""
           }
         }
       },
-      "cube_software_NewConnectorRequestV1": {
+      "cube_NewConnectorRequestV1": {
         "allOf": [
           {
             "$ref": "#/components/schemas/NewConnectorRequestV1"
           },
           {
-            "$ref": "#/components/schemas/cube_software_config_V1"
+            "$ref": "#/components/schemas/cube_config_V1"
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
@@ -34277,12 +34398,113 @@
           "config": {
             "type": "object",
             "properties": {
+              "reports": {
+                "title": "",
+                "type": "array",
+                "description": "The list of reports. We create a table within the schema for each report.",
+                "items": {
+                  "title": "",
+                  "type": "object",
+                  "properties": {
+                    "dimension_attributes": {
+                      "title": "",
+                      "type": "array",
+                      "description": "Dimension attributes provide additional fields associated with a dimension. Dimension attributes can only be selected with their corresponding dimensions.",
+                      "example": [
+                        "string"
+                      ],
+                      "items": {
+                        "title": "",
+                        "type": "string",
+                        "description": "",
+                        "example": "string"
+                      }
+                    },
+                    "custom_field_ids": {
+                      "title": "",
+                      "type": "array",
+                      "description": "The list of custom field IDs included in the report. Custom fields can only be selected with their corresponding dimensions.",
+                      "example": [
+                        0
+                      ],
+                      "items": {
+                        "title": "",
+                        "type": "integer",
+                        "description": "",
+                        "format": "int32",
+                        "example": 0
+                      }
+                    },
+                    "ad_unit_view": {
+                      "title": "",
+                      "type": "object",
+                      "description": "Ad unit view for the report.",
+                      "example": "TOP_LEVEL",
+                      "enum": [
+                        "HIERARCHICAL",
+                        "TOP_LEVEL",
+                        "FLAT"
+                      ]
+                    },
+                    "columns": {
+                      "title": "",
+                      "type": "array",
+                      "description": "Columns provide all trafficking statistics and revenue information available for the chosen dimensions.",
+                      "example": [
+                        "string"
+                      ],
+                      "items": {
+                        "title": "",
+                        "type": "string",
+                        "description": "",
+                        "example": "string"
+                      }
+                    },
+                    "table": {
+                      "title": "",
+                      "type": "string",
+                      "description": "The name of the table within the schema storing the data for a given report.",
+                      "example": "line_item_report"
+                    },
+                    "dimensions": {
+                      "title": "",
+                      "type": "array",
+                      "description": "Report dimensions to include in the sync. The `date` dimension is mandatory for all the report types.",
+                      "example": [
+                        "string"
+                      ],
+                      "items": {
+                        "title": "",
+                        "type": "string",
+                        "description": "",
+                        "example": "string"
+                      }
+                    },
+                    "custom_dimension_key_ids": {
+                      "title": "",
+                      "type": "array",
+                      "description": "The list of custom dimension key IDs included in the report. Custom dimension keys can only be selected with the CUSTOM_DIMENSION dimension.",
+                      "example": [
+                        0
+                      ],
+                      "items": {
+                        "title": "",
+                        "type": "integer",
+                        "description": "",
+                        "format": "int32",
+                        "example": 0
+                      }
+                    }
+                  },
+                  "description": "The list of reports. We create a table within the schema for each report."
+                }
+              },
               "network_code": {
                 "title": "",
                 "type": "integer",
                 "description": "Network code is a unique, numeric identifier for your Ad Manager network.",
                 "format": "int32",
-                "example": 0
+                "example": 1234567
               },
               "custom_field_ids": {
                 "title": "",
@@ -34702,6 +34924,36 @@
                   "skip"
                 ]
               },
+              "files": {
+                "title": "",
+                "type": "array",
+                "description": "Mapped file name patterns to a destination table.",
+                "items": {
+                  "title": "",
+                  "type": "object",
+                  "properties": {
+                    "file_pattern": {
+                      "title": "",
+                      "type": "string",
+                      "description": "All files in your search path matching this regular expression will be synced per table.",
+                      "example": "string"
+                    },
+                    "table_name": {
+                      "title": "",
+                      "type": "string",
+                      "description": "All files matching the above pattern will be synced to this table.",
+                      "example": "string"
+                    },
+                    "archive_pattern": {
+                      "title": "",
+                      "type": "string",
+                      "description": "All Files inside of compressed archives with filenames matching this regular expression will be synced.",
+                      "example": "string"
+                    }
+                  },
+                  "description": "Mapped file name patterns to a destination table."
+                }
+              },
               "compression": {
                 "title": "",
                 "type": "object",
@@ -34773,7 +35025,7 @@
             "$ref": "#/components/schemas/dropbox_config_V1"
           },
           {
-            "$ref": "#/components/schemas/schema_format_schema_table"
+            "$ref": "#/components/schemas/schema_format_schema_table_group"
           },
           {
             "$ref": "#/components/schemas/dropbox_auth_V1"
@@ -34881,6 +35133,36 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_table"
+          }
+        ]
+      },
+      "dutchie_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Dutchie API key.",
+                "format": "password",
+                "example": "your_dutchie_api_key"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "dutchie_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/dutchie_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
           }
         ]
       },
@@ -48603,6 +48885,36 @@
           }
         ]
       },
+      "openai_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your OpenAI API key.",
+                "format": "password",
+                "example": "your_openai_api_key"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "openai_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/openai_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
       "opendistro_config_V1": {
         "properties": {
           "config": {
@@ -49586,18 +49898,6 @@
                 "description": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
                 "example": "XXX.XXX.XXX.XXX"
               },
-              "agent_ora_home": {
-                "title": "",
-                "type": "string",
-                "description": "The home directory of the Oracle database.",
-                "example": "/opt/oracle/product/19c/dbhome_1"
-              },
-              "archive_log_path": {
-                "title": "",
-                "type": "string",
-                "description": "Archive log path.",
-                "example": "/opt/fivetran/EXAMPLE_archivelog"
-              },
               "agent_port": {
                 "title": "",
                 "type": "integer",
@@ -49605,17 +49905,29 @@
                 "format": "int32",
                 "example": 4343
               },
-              "asm_oracle_home": {
+              "archive_log_path": {
                 "title": "",
                 "type": "string",
-                "description": "ASM Oracle Home path.",
-                "example": "/asm/oracle/home"
+                "description": "Archive log path.",
+                "example": "/opt/fivetran/EXAMPLE_archivelog"
+              },
+              "agent_ora_home": {
+                "title": "",
+                "type": "string",
+                "description": "The home directory of the Oracle database.",
+                "example": "/opt/oracle/product/19c/dbhome_1"
               },
               "user": {
                 "title": "",
                 "type": "string",
                 "description": "The user name.",
                 "example": "test_user"
+              },
+              "asm_oracle_home": {
+                "title": "",
+                "type": "string",
+                "description": "ASM Oracle Home path.",
+                "example": "/asm/oracle/home"
               },
               "asm_user": {
                 "title": "",
@@ -50073,18 +50385,6 @@
                 "description": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
                 "example": "XXX.XXX.XXX.XXX"
               },
-              "agent_ora_home": {
-                "title": "",
-                "type": "string",
-                "description": "The home directory of the Oracle database.",
-                "example": "/opt/oracle/product/19c/dbhome_1"
-              },
-              "archive_log_path": {
-                "title": "",
-                "type": "string",
-                "description": "Archive log path.",
-                "example": "/opt/fivetran/EXAMPLE_archivelog"
-              },
               "agent_port": {
                 "title": "",
                 "type": "integer",
@@ -50092,23 +50392,35 @@
                 "format": "int32",
                 "example": 4343
               },
+              "archive_log_path": {
+                "title": "",
+                "type": "string",
+                "description": "Archive log path.",
+                "example": "/opt/fivetran/EXAMPLE_archivelog"
+              },
+              "agent_ora_home": {
+                "title": "",
+                "type": "string",
+                "description": "The home directory of the Oracle database.",
+                "example": "/opt/oracle/product/19c/dbhome_1"
+              },
               "sap_user": {
                 "title": "",
                 "type": "string",
                 "description": "The Oracle schema name where the SAP tables reside.",
                 "example": "sap_test_user"
               },
-              "asm_oracle_home": {
-                "title": "",
-                "type": "string",
-                "description": "The Oracle ASM home directory.",
-                "example": "/asm/oracle/home"
-              },
               "user": {
                 "title": "",
                 "type": "string",
                 "description": "The username.",
                 "example": "test_user"
+              },
+              "asm_oracle_home": {
+                "title": "",
+                "type": "string",
+                "description": "The Oracle ASM home directory.",
+                "example": "/asm/oracle/home"
               },
               "asm_user": {
                 "title": "",
@@ -50139,17 +50451,17 @@
           "config": {
             "type": "object",
             "properties": {
-              "agent_user": {
-                "title": "",
-                "type": "string",
-                "description": "The agent's user.",
-                "example": "hvr"
-              },
               "instance_number": {
                 "title": "",
                 "type": "string",
                 "description": "Two-digit number (00-97) of the SAP instance within its host.",
                 "example": "00"
+              },
+              "agent_user": {
+                "title": "",
+                "type": "string",
+                "description": "The agent's user.",
+                "example": "hvr"
               },
               "connection_type": {
                 "title": "",
@@ -50250,18 +50562,18 @@
                 "description": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
                 "example": "XXX.XXX.XXX.XXX"
               },
-              "archive_log_path": {
-                "title": "",
-                "type": "string",
-                "description": "Archive log path.",
-                "example": "/opt/fivetran/EXAMPLE_archivelog"
-              },
               "agent_port": {
                 "title": "",
                 "type": "integer",
                 "description": "The port number of the agent.",
                 "format": "int32",
                 "example": 4343
+              },
+              "archive_log_path": {
+                "title": "",
+                "type": "string",
+                "description": "Archive log path.",
+                "example": "/opt/fivetran/EXAMPLE_archivelog"
               },
               "agent_host": {
                 "title": "",
@@ -51363,6 +51675,12 @@
                   "example": "string"
                 }
               },
+              "backward_sync_limit_date": {
+                "title": "",
+                "type": "string",
+                "description": "The start date (YYYY-MM-DD) from which to sync historical data.",
+                "example": "2000-12-15"
+              },
               "region": {
                 "title": "",
                 "type": "object",
@@ -51372,6 +51690,16 @@
                   "EU",
                   "US1",
                   "US"
+                ]
+              },
+              "historical_sync_time_frame": {
+                "title": "",
+                "type": "object",
+                "description": "The time range for which historical data should be synced. Default value: `All Time`.",
+                "example": "ALL_TIME | DATE_LIMIT",
+                "enum": [
+                  "ALL_TIME",
+                  "DATE_LIMIT"
                 ]
               }
             },
@@ -55026,18 +55354,18 @@
                 "format": "password",
                 "example": "arn::your_role_arn"
               },
+              "is_public": {
+                "title": "",
+                "type": "boolean",
+                "description": "Whether you are syncing from a public bucket. Default value: `false`.",
+                "example": true
+              },
               "access_key_secret": {
                 "title": "",
                 "type": "string",
                 "description": "Access Key Secret",
                 "format": "password",
                 "example": "access_key_secret_value"
-              },
-              "is_public": {
-                "title": "",
-                "type": "boolean",
-                "description": "Whether you are syncing from a public bucket. Default value: `false`.",
-                "example": true
               },
               "files": {
                 "title": "",
@@ -56877,18 +57205,18 @@
                 "description": "<strong>Optional.</strong> If your CSV generating software doesn't provide header line for the documents, Fivetran can generate the generic column names and sync data rows with them.",
                 "example": true
               },
-              "use_pgp_encryption_options": {
-                "title": "",
-                "type": "boolean",
-                "description": "Set to `true` if files present in SFTP server are encrypted using PGP. Default value: `false`.",
-                "example": true
-              },
               "password": {
                 "title": "",
                 "type": "string",
                 "description": "SFTP password.",
                 "format": "password",
                 "example": "password"
+              },
+              "use_pgp_encryption_options": {
+                "title": "",
+                "type": "boolean",
+                "description": "Set to `true` if files present in SFTP server are encrypted using PGP. Default value: `false`.",
+                "example": true
               },
               "skip_before": {
                 "title": "",
@@ -64055,160 +64383,6 @@
                         "SYNC_ALL_AND_NEW_VERSIONS"
                       ]
                     },
-                    "start_year": {
-                      "title": "",
-                      "type": "object",
-                      "description": "Start year for the table sync, in YYYY format",
-                      "example": "string",
-                      "enum": [
-                        "1976",
-                        "1975",
-                        "1974",
-                        "1973",
-                        "1972",
-                        "1971",
-                        "1970",
-                        "2025",
-                        "2024",
-                        "1979",
-                        "1978",
-                        "1977",
-                        "1909",
-                        "1908",
-                        "1990",
-                        "1987",
-                        "1986",
-                        "1985",
-                        "1984",
-                        "1983",
-                        "1982",
-                        "1981",
-                        "1980",
-                        "1907",
-                        "1906",
-                        "1905",
-                        "1904",
-                        "1903",
-                        "1902",
-                        "1901",
-                        "1989",
-                        "1900",
-                        "1988",
-                        "1919",
-                        "1910",
-                        "1998",
-                        "1997",
-                        "1996",
-                        "1995",
-                        "1994",
-                        "1993",
-                        "1992",
-                        "1991",
-                        "1918",
-                        "1917",
-                        "1916",
-                        "1915",
-                        "1914",
-                        "1913",
-                        "1912",
-                        "1911",
-                        "1999",
-                        "1921",
-                        "1920",
-                        "1929",
-                        "1928",
-                        "1927",
-                        "1926",
-                        "1925",
-                        "1924",
-                        "1923",
-                        "1922",
-                        "1932",
-                        "1931",
-                        "1930",
-                        "1939",
-                        "1938",
-                        "1937",
-                        "1936",
-                        "1935",
-                        "1934",
-                        "1933",
-                        "2001",
-                        "2000",
-                        "1943",
-                        "1942",
-                        "1941",
-                        "1940",
-                        "1949",
-                        "1948",
-                        "1947",
-                        "1946",
-                        "1945",
-                        "1944",
-                        "2012",
-                        "2011",
-                        "2010",
-                        "1954",
-                        "2009",
-                        "1953",
-                        "2008",
-                        "1952",
-                        "2007",
-                        "1951",
-                        "2006",
-                        "1950",
-                        "2005",
-                        "2004",
-                        "2003",
-                        "2002",
-                        "1959",
-                        "1958",
-                        "1957",
-                        "1956",
-                        "1955",
-                        "2023",
-                        "2022",
-                        "2021",
-                        "2020",
-                        "1965",
-                        "1964",
-                        "2019",
-                        "1963",
-                        "2018",
-                        "1962",
-                        "2017",
-                        "1961",
-                        "2016",
-                        "1960",
-                        "2015",
-                        "2014",
-                        "2013",
-                        "1969",
-                        "1968",
-                        "1967",
-                        "1966"
-                      ]
-                    },
-                    "start_month": {
-                      "title": "",
-                      "type": "object",
-                      "description": "Start month for the table sync, in MM format",
-                      "example": "string",
-                      "enum": [
-                        "Jul",
-                        "Oct",
-                        "Feb",
-                        "Apr",
-                        "Jun",
-                        "Aug",
-                        "Dec",
-                        "May",
-                        "Nov",
-                        "Jan",
-                        "Mar",
-                        "Sep"
-                      ]
-                    },
                     "currency": {
                       "title": "",
                       "type": "string",
@@ -64223,7 +64397,7 @@
                         "title": "",
                         "type": "object",
                         "properties": {
-                          "include_descendants": {
+                          "flag": {
                             "title": "",
                             "type": "boolean",
                             "description": "Flag to indicate if descendants are included or not",
@@ -64253,7 +64427,7 @@
                         "title": "",
                         "type": "object",
                         "properties": {
-                          "include_descendants": {
+                          "flag": {
                             "title": "",
                             "type": "boolean",
                             "description": "Flag to indicate if descendants are included or not",
@@ -64342,6 +64516,16 @@
                 "description": "Workday host name.",
                 "example": "your_workday_hostname"
               },
+              "auth_mode": {
+                "title": "",
+                "type": "object",
+                "description": "Authentication Mode",
+                "example": "BASIC | OAUTH",
+                "enum": [
+                  "BASIC",
+                  "OAUTH"
+                ]
+              },
               "tenant": {
                 "title": "",
                 "type": "string",
@@ -64420,6 +64604,16 @@
                 "type": "string",
                 "description": "Workday host name.",
                 "example": "your_workday_host_name"
+              },
+              "auth_mode": {
+                "title": "",
+                "type": "object",
+                "description": "Authentication Mode",
+                "example": "BASIC | OAUTH",
+                "enum": [
+                  "BASIC",
+                  "OAUTH"
+                ]
               },
               "tenant": {
                 "title": "",
@@ -66129,6 +66323,48 @@
           },
           {
             "$ref": "#/components/schemas/zendesk_sunshine_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
+      "zendesk_workforce_management_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "email_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Zendesk Workforce Management email ID.",
+                "example": "your_zendesk_workforce_management_email_id"
+              },
+              "api_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your Zendesk Workforce Management API token.",
+                "format": "password",
+                "example": "your_zendesk_workforce_management_api_token"
+              },
+              "subdomain": {
+                "title": "",
+                "type": "string",
+                "description": "Your Zendesk Workforce Management subdomain.",
+                "example": "your_zendesk_workforce_management_subdomain"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "zendesk_workforce_management_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/zendesk_workforce_management_config_V1"
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
@@ -68995,13 +69231,13 @@
           }
         ]
       },
-      "cube_software_ConnectorResponseV1": {
+      "cube_ConnectorResponseV1": {
         "allOf": [
           {
             "$ref": "#/components/schemas/ConnectorResponseV1"
           },
           {
-            "$ref": "#/components/schemas/cube_software_config_V1"
+            "$ref": "#/components/schemas/cube_config_V1"
           }
         ]
       },
@@ -69398,6 +69634,16 @@
           },
           {
             "$ref": "#/components/schemas/duoplane_config_V1"
+          }
+        ]
+      },
+      "dutchie_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/dutchie_config_V1"
           }
         ]
       },
@@ -72159,6 +72405,16 @@
           },
           {
             "$ref": "#/components/schemas/open_exchange_rates_config_V1"
+          }
+        ]
+      },
+      "openai_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/openai_config_V1"
           }
         ]
       },
@@ -75570,6 +75826,16 @@
           }
         ]
       },
+      "zendesk_workforce_management_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/zendesk_workforce_management_config_V1"
+          }
+        ]
+      },
       "zenefits_ConnectorResponseV1": {
         "allOf": [
           {
@@ -76162,15 +76428,15 @@
             ],
             "type": "object",
             "properties": {
-              "vpce_id": {
-                "type": "object",
-                "description": "The ID of your Virtual Private Cloud Endpoint.",
-                "example": "vpce_id"
-              },
               "account_url": {
                 "type": "object",
                 "description": "The URL of your account.",
                 "example": "account_url"
+              },
+              "vpce_id": {
+                "type": "object",
+                "description": "The ID of your Virtual Private Cloud Endpoint.",
+                "example": "vpce_id"
               }
             },
             "description": "Snowflake for AWS"
@@ -76197,15 +76463,15 @@
             ],
             "type": "object",
             "properties": {
-              "cluster_identifier": {
-                "type": "object",
-                "description": "The cluster identifier.",
-                "example": "cluster_identifier"
-              },
               "aws_account_id": {
                 "type": "object",
                 "description": "The ID of your AWS account.",
                 "example": "aws_account_id"
+              },
+              "cluster_identifier": {
+                "type": "object",
+                "description": "The cluster identifier.",
+                "example": "cluster_identifier"
               }
             },
             "description": "Redshift for AWS"
@@ -76261,15 +76527,15 @@
             ],
             "type": "object",
             "properties": {
-              "workspace_url": {
-                "type": "object",
-                "description": "Workspace Url",
-                "example": "workspace_url"
-              },
               "connection_service_id": {
                 "type": "object",
                 "description": "The ID of your connection service.",
                 "example": "connection_service_id"
+              },
+              "workspace_url": {
+                "type": "object",
+                "description": "Workspace Url",
+                "example": "workspace_url"
               }
             },
             "description": "Databricks for Azure"
@@ -76296,15 +76562,15 @@
             ],
             "type": "object",
             "properties": {
-              "pls_id": {
-                "type": "object",
-                "description": "The ID of your Private Link service.",
-                "example": "pls_id"
-              },
               "account_url": {
                 "type": "object",
                 "description": "The URL of your account.",
                 "example": "account_url"
+              },
+              "pls_id": {
+                "type": "object",
+                "description": "The ID of your Private Link service.",
+                "example": "pls_id"
               }
             },
             "description": "Snowflake for Azure"
@@ -76418,15 +76684,15 @@
             ],
             "type": "object",
             "properties": {
-              "sub_resource_name": {
-                "type": "object",
-                "description": "The name of subresource.",
-                "example": "sub_resource_name"
-              },
               "connection_service_id": {
                 "type": "object",
                 "description": "The ID of your connection service.",
                 "example": "connection_service_id"
+              },
+              "sub_resource_name": {
+                "type": "object",
+                "description": "The name of subresource.",
+                "example": "sub_resource_name"
               },
               "private_dns_records": {
                 "type": "object",
@@ -76458,15 +76724,15 @@
             ],
             "type": "object",
             "properties": {
-              "pls_id": {
-                "type": "object",
-                "description": "The ID of your Private Link service.",
-                "example": "pls_id"
-              },
               "account_url": {
                 "type": "object",
                 "description": "The URL of your account.",
                 "example": "account_url"
+              },
+              "pls_id": {
+                "type": "object",
+                "description": "The ID of your Private Link service.",
+                "example": "pls_id"
               }
             },
             "description": "Snowflake for GCP"
@@ -76522,15 +76788,15 @@
             ],
             "type": "object",
             "properties": {
-              "workspace_url": {
-                "type": "object",
-                "description": "Workspace Url",
-                "example": "workspace_url"
-              },
               "connection_service_id": {
                 "type": "object",
                 "description": "The ID of your connection service.",
                 "example": "connection_service_id"
+              },
+              "workspace_url": {
+                "type": "object",
+                "description": "Workspace Url",
+                "example": "workspace_url"
               }
             },
             "description": "Databricks for GCP"

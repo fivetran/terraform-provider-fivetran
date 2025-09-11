@@ -88,6 +88,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "databricks": "Your user's access key ID",
          "new_s3_datalake": "AWS access key to access the S3 bucket and AWS Glue",
          "redshift": "The unique access key ID of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.",
          "snowflake": "The unique access key ID of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment, want to use an S3 bucket to stage your data, and `awsBucketAuthType` is set to `IAM_USER`."
@@ -116,9 +117,23 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "databricks": "Your user's secret access key",
          "new_s3_datalake": "AWS secret access key to access the S3 bucket and AWS Glue",
          "redshift": "The secret access key of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.",
          "snowflake": "The secret access key of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment , want to use an S3 bucket to stage your data, and `awsBucketAuthType` is set to `IAM_USER`."
+      },
+      "api_field": ""
+   },
+   "azure_storage_account_auth_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "databricks": "Authentication method for the Azure container you want to use as the external staging for Hybrid Deployment."
       },
       "api_field": ""
    },
@@ -152,6 +167,7 @@
       "description": {
          "big_query": "Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
          "big_query_dts": "Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
+         "databricks": "Your bucket",
          "managed_big_query": "Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
          "managed_data_lake": "(Immutable) Name of the S3 or Google Cloud Storage (GCS) bucket you want to use to store your data. Use this parameter only if you want to deploy your data lake on Amazon Web Services (AWS) or GCS.",
          "new_s3_datalake": "(Immutable) The name of the bucket to be used as destination",
@@ -169,6 +185,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "databricks": "Your bucket's region",
          "redshift": "The AWS Region of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.",
          "snowflake": "The AWS Region of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an S3 bucket to stage your data."
       },
@@ -341,6 +358,19 @@
       "item_type": {},
       "description": {
          "databricks": "Whether to create external tables"
+      },
+      "api_field": ""
+   },
+   "create_external_volumes": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "databricks": "Specifies whether you want Fivetran to create external volumes for unstructured data files."
       },
       "api_field": ""
    },
@@ -544,6 +574,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "databricks": "",
          "snowflake": "The cloud service provider you want to use for staging data. Use this parameter only if you are using Hybrid Deployment."
       },
       "api_field": ""
@@ -571,6 +602,19 @@
       "item_type": {},
       "description": {
          "snowflake": "External storage parent folder URL"
+      },
+      "api_field": ""
+   },
+   "external_volume_location": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "databricks": "Specifies the external volume path where you want Fivetran to create the unstructured files."
       },
       "api_field": ""
    },
@@ -1101,6 +1145,19 @@
       },
       "api_field": ""
    },
+   "s3_bucket_auth_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "databricks": "Authentication method for the S3 bucket you want to use as the external staging for Hybrid Deployment."
+      },
+      "api_field": ""
+   },
    "sasl_mechanism": {
       "readonly": false,
       "sensitive": false,
@@ -1362,7 +1419,11 @@
       "item_type": {},
       "description": {
          "azure_sql_data_warehouse": "The access key of the Azure storage account you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.",
+         "databricks": "Your storage account key",
          "snowflake": "The access key of the Azure storage account you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an Azure Blob storage container to stage your data."
+      },
+      "sensitive_exclusions": {
+         "databricks": true
       },
       "api_field": ""
    },
@@ -1377,6 +1438,7 @@
       "description": {
          "adls": "(Immutable) Storage account for Azure Data Lake Storage Gen2 name",
          "azure_sql_data_warehouse": "The name of the Azure storage account you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.",
+         "databricks": "Your storage account name",
          "managed_data_lake": "(Immutable) Name of your Azure Data Lake Storage Gen2 (ADLS Gen2) storage account. Use this parameter only if you want to deploy your data lake on ADLS.",
          "onelake": "(Immutable) Storage account for Azure Data Lake Storage Gen2 name",
          "snowflake": "The name of the Azure storage account you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an Azure Blob storage container to stage your data."

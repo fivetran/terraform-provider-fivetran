@@ -16,12 +16,12 @@ resource "fivetran_team_user_membership" "test_team_user_membership" {
     
     user {
         user_id = "test_user"
-        role = "Connector Administrator"
+        role = "Manage Connection"
     }
 
     user {
         user_id = "test_user"
-        role = "Connector Administrator"
+        role = "Manage Connection"
     }
 }
 ```

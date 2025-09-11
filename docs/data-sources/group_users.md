@@ -31,7 +31,7 @@ data "fivetran_group_users" "group_users" {
 Required:
 
 - `email` (String) The email address that the user has associated with their user profile.
-- `role` (String) The group role that you would like to assign this new user to. Supported group roles: ‘Destination Administrator‘, ‘Destination Reviewer‘, ‘Destination Analyst‘, ‘Connector Creator‘, or a custom destination role
+- `role` (String) The group role that you would like to assign this new user to. Supported group roles: ‘Manage Destination‘, ‘View Destination‘, ‘Edit Destination‘, ‘Create Connection‘, or a custom destination role
 
 Read-Only:
 
