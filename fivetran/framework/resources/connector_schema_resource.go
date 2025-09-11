@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/connections"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
@@ -69,7 +70,7 @@ func (r *connectorSchema) reloadSchema(ctx context.Context, schemaChangeHandling
 	return schemaResponse
 }
 
-func (r *connectorSchema) createNewSchema(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (r *connectorSchema) createNewSchema(ctx context.Context, connectorID string, req resource.CreateRequest, resp *resource.CreateResponse) {
 	client := r.GetClient()
 	if client == nil {
 		resp.Diagnostics.AddError(
@@ -84,6 +85,7 @@ func (r *connectorSchema) createNewSchema(ctx context.Context, req resource.Crea
 
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	data.ConnectorId = types.StringValue(connectorID)
 
 	// Error while reading plan
 	if resp.Diagnostics.HasError() {
@@ -99,7 +101,6 @@ func (r *connectorSchema) createNewSchema(ctx context.Context, req resource.Crea
 		return
 	}
 
-	connectorID := data.ConnectorId.ValueString()
 	schemaChangeHandling := data.SchemaChangeHandling.ValueString()
 	localConfig := data.GetSchemaConfig()
 	svc := localConfig.PrepareCreateRequest(client.NewConnectionSchemaCreateService()).
@@ -117,7 +118,34 @@ func (r *connectorSchema) createNewSchema(ctx context.Context, req resource.Crea
 	}
 	data.ReadFromResponse(applyResponse, &resp.Diagnostics)
 	data.Id = types.StringValue(connectorID)
+	data.ConnectorId = types.StringValue(connectorID)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func findConnectorIdByGroupAndSchemaName(ctx context.Context, client *fivetran.Client, model *model.ConnectorSchemaResourceModel) (string, error) {
+
+	if model.GroupId.IsNull() || model.ConnectorName.IsNull() {
+		return "", fmt.Errorf("Either 'connector_id' or 'group_id'+'connector_name' are required to identify a connector (connection).")
+	}
+
+	list, err := client.NewConnectionsList().
+		GroupID(model.GroupId.ValueString()).
+		Schema(model.ConnectorName.ValueString()).
+		Do(ctx)
+
+	if err != nil {
+		return "", fmt.Errorf("%v; code: %v; message: %v", err, list.Code, list.Message)
+	}
+
+	if len(list.Data.Items) == 0 {
+		return "", fmt.Errorf("Connector with '%v' group_id and '%v' connector_name doesn't exist.", model.GroupId.ValueString(), model.ConnectorName.ValueString())
+	}
+
+	if len(list.Data.Items) > 1 {
+		return "", fmt.Errorf("Ambiguous connectors found with '%v' group_id and '%v' connector_name.", model.GroupId.ValueString(), model.ConnectorName.ValueString())
+	}
+
+	return list.Data.Items[0].ID, nil
 }
 
 func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -149,10 +177,24 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 
-	connectorID := data.ConnectorId.ValueString()
+	var connectorID = data.ConnectorId.ValueString()
 	schemaChangeHandling := data.SchemaChangeHandling.ValueString()
 
 	client := r.GetClient()
+
+	if connectorID == "" {
+		foundConnectorID, err := findConnectorIdByGroupAndSchemaName(ctx, client, &data)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to Create Connector Schema Resource.",
+				fmt.Sprintf("Error while finding connector ID. %v", err),
+			)
+			return
+		}
+
+		connectorID = foundConnectorID
+		data.ConnectorId = types.StringValue(foundConnectorID)
+	}
 
 	schemaResponse, err := client.NewConnectionSchemaDetails().ConnectionID(connectorID).Do(ctx)
 	// We might have to reload schema in case if there's no schema settings at all, or schema is out of sync with source
@@ -167,7 +209,7 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		} else {
 			if data.ValidationLevel.ValueString() == "NONE" {
 				// create new desired schema
-				r.createNewSchema(ctx, req, resp)
+				r.createNewSchema(ctx, connectorID, req, resp)
 				return
 			} else {
 				// reload because connector doens't have any schema settings yet
@@ -513,6 +555,7 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 
 	plan.ReadFromResponse(schemaResponse, &resp.Diagnostics)
 	plan.Id = types.StringValue(connectorID)
+	plan.ConnectorId = types.StringValue(connectorID)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 

@@ -194,6 +194,14 @@ func ConnectionsDatasource() datasourceSchema.Schema {
 				Computed:    true,
 				Description: "The ID of this resource.",
 			},
+			"group_id": datasourceSchema.StringAttribute{
+				Optional:    true,
+				Description: "The ID of the group (destination) to filter connections by.",
+			},
+			"schema_name": datasourceSchema.StringAttribute{
+				Optional:    true,
+				Description: "The name used both as the connection's name within the Fivetran system and as the source schema's name within your destination.",
+			},
 		},
 		Blocks: map[string]datasourceSchema.Block{
 			"connections": datasourceSchema.SetNestedBlock{

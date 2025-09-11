@@ -57,8 +57,14 @@ func (d *connections) Read(ctx context.Context, req datasource.ReadRequest, resp
         if respNextCursor != "" {
             svc.Cursor(respNextCursor)
         }
-        tmpResp, err = svc.Do(ctx)
-		
+		if !data.GroupId.IsNull() {
+			svc.GroupID(data.GroupId.ValueString())
+		}
+		if !data.SchemaName.IsNull() {
+			svc.Schema(data.SchemaName.ValueString())
+		}
+		tmpResp, err = svc.Do(ctx)
+
 		if err != nil {
 			resp.Diagnostics.AddError(
 				"Read error.",

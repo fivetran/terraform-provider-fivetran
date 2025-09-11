@@ -11,6 +11,8 @@ import (
 
 type Connections struct {
     Id            types.String `tfsdk:"id"` 
+    GroupId       types.String `tfsdk:"group_id"`
+    SchemaName    types.String `tfsdk:"schema_name"`
     Connections   types.Set    `tfsdk:"connections"`
 }
 

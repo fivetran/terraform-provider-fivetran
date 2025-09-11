@@ -13,6 +13,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Issue with `fivetran_connector` resource state migration error `panic: can't unmarshal tftypes.Object["name":tftypes.String, "prefix":tftypes.String, "table":tftypes.String] into *[]tftypes.Value expected []tftypes.Value 
  tftypes.Object["name":tftypes.String, "prefix":tftypes.String, "table":tftypes.String]` that occures on provider version upgrade.
 
+### Added
+
+Added ability to create `fivetran_connector_schedule` resource by group id and connector name. Creation of `fivetran_connector_schedule` requires that corresponding `fivetran_connector` already has been created - dependency on corresponding `fivetran_connector` resource instance could be specified with `depends_on` (e.g. as `depends_on = [fivetran_connector.some_connector_1]`):
+- Added field `fivetran_connector_schedule.group_id`
+- Added field `fivetran_connector_schedule.connector_name`
+
+Added ability to create `fivetran_connector_schema_config` resource by group id and connector name :
+- Added field `fivetran_connector_schema_config.group_id`
+- Added field `fivetran_connector_schema_config.connector_name`
+
+Filtering by group id and schema name (connector name) supported in `fivetran_connections` data source:
+- New data source field `fivetran_connections.group_id` to filter by group id.
+- New data source field `fivetran_connections.schema_name` to filter by schema name.
+
+## Updated
+- Made field `fivetran_connector_schedule.connector_id` optional
+- Made field `fivetran_connector_schema_config.connector_id` optional
+
 ## [1.9.5](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.4...v1.9.5)
 
 New connection services supported:

@@ -19,6 +19,8 @@ import (
 type ConnectorSchemaResourceModel struct {
 	Id                   types.String                  `tfsdk:"id"`
 	ConnectorId          types.String                  `tfsdk:"connector_id"`
+	GroupId              types.String                  `tfsdk:"group_id"`
+	ConnectorName        types.String                  `tfsdk:"connector_name"`
 	SchemaChangeHandling types.String                  `tfsdk:"schema_change_handling"`
 	Schemas              types.Map                     `tfsdk:"schemas"`
 	Schema               types.Set                     `tfsdk:"schema"`

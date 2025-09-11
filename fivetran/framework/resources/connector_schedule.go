@@ -48,8 +48,51 @@ func (r *connectorSchedule) Create(ctx context.Context, req resource.CreateReque
 		return
 	}
 
+	var connectionId = data.ConnectorId.ValueString()
+
+	if connectionId == "" {
+		if data.GroupId.IsNull() || data.ConnectorName.IsNull() {
+			resp.Diagnostics.AddError(
+				"Unable to Create Connector Schedule Resource.",
+				"Either 'connector_id' or 'group_id'+'connector_name' are required to identify a connector (connection).",
+			)
+			return
+		}
+
+		list, err := r.GetClient().NewConnectionsList().
+			GroupID(data.GroupId.ValueString()).
+			Schema(data.ConnectorName.ValueString()).
+			Do(ctx)
+
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to Create Connector Schedule Resource.",
+				fmt.Sprintf("%v; code: %v; message: %v", err, list.Code, list.Message),
+			)
+			return
+		}
+
+		if len(list.Data.Items) == 0 {
+			resp.Diagnostics.AddError(
+				"Unable to Create Connector Schedule Resource.",
+				"Connector with '" + data.GroupId.ValueString() + "' group_id and '"+data.ConnectorName.ValueString()+"' connector_name doesn't exist.",
+			)
+			return
+		}
+
+		if len(list.Data.Items) > 1 {
+			resp.Diagnostics.AddError(
+				"Unable to Create Connector Schedule Resource.",
+				"Ambiguous connectors found with '" + data.GroupId.ValueString() + "' group_id and '"+data.ConnectorName.ValueString()+"' connector_name.",
+			)
+			return
+		}
+
+		connectionId = list.Data.Items[0].ID
+	}
+
 	svc := r.GetClient().NewConnectionUpdate().
-		ConnectionID(data.ConnectorId.ValueString())
+		ConnectionID(connectionId)
 
 	if !data.SyncFrequency.IsNull() && !data.SyncFrequency.IsUnknown() && data.SyncFrequency.ValueString() != "" {
 		syncFrequency := helpers.StrToInt(data.SyncFrequency.ValueString())

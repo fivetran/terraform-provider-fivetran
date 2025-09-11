@@ -27,6 +27,8 @@ var (
 	schemaConsistentWithUpstreamGetHandler    *mock.Handler
 	schemaConsistentWithUpstreamPathchHandler *mock.Handler
 	schemaConsistentWithUpstreamData          map[string]interface{}
+
+	listConnectionsHandler *mock.Handler
 )
 
 const (
@@ -1225,6 +1227,125 @@ func TestConsistentWithUpstreamSchemaMappedMock(t *testing.T) {
 		resource.TestCase{
 			PreCheck: func() {
 				setupMockClientConsistentWithUpstreamResource(t)
+			},
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				// there is no possibility to destroy schema config - it alsways exists within the connector
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
+				step2,
+			},
+		},
+	)
+}
+
+func setupMockClientListConnections(t *testing.T) {
+
+	const connectionsMappingResponse = `
+	{
+    "items": [
+      {
+        "id": "connector_id",
+        "service": "string",
+        "schema": "schema_name",
+        "paused": false,
+        "daily_sync_time": "14:00",
+        "succeeded_at": "2024-12-01T15:43:29.013729Z",
+        "sync_frequency": 360,
+        "group_id": "group_id",
+        "connected_by": "user_id",
+        "service_version": 0,
+        "created_at": "2024-12-01T15:43:29.013729Z",
+        "failed_at": "2024-12-01T15:43:29.013729Z",
+        "private_link_id": "string",
+        "proxy_agent_id": "string",
+        "networking_method": "Directly",
+        "pause_after_trial": false,
+        "data_delay_threshold": 0,
+        "data_delay_sensitivity": "LOW",
+        "schedule_type": "auto",
+        "hybrid_deployment_agent_id": "string"
+      }
+    ],
+    "next_cursor": null
+  }
+`
+	listConnectionsHandler = mockClient.When(http.MethodGet, "/v1/connections").ThenCall(
+				func(req *http.Request) (*http.Response, error) {
+					var connectionsListData map[string]interface{}
+					if req.URL.Query().Get("group_id") == "group_id" && req.URL.Query().Get("schema") == "schema_name" {
+						connectionsListData = createMapFromJsonString(t, connectionsMappingResponse)
+					} else {
+						connectionsListData = nil
+					}
+
+					return fivetranSuccessResponse(t, req, http.StatusOK, "Success", connectionsListData), nil
+				},
+			)
+}
+
+// This test checks that schema config can be created by group id and connector name
+func TestResourceByGroupIdAndConnectorNameMock(t *testing.T) {
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+
+				group_id = "group_id"
+				connector_name = "schema_name"
+
+				schema_change_handling = "ALLOW_ALL"
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				assertEqual(t, listConnectionsHandler.Interactions, 1)
+				assertEqual(t, schemaEmptyDefaultReloadHandler.Interactions, 1)
+				assertEqual(t, schemaEmptyDefaultGetHandler.Interactions, 3)
+				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 0)
+				assertNotEmpty(t, schemaEmptyDefaultData) // schema initialised
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "connector_id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "group_id", "group_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "connector_name", "schema_name"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "ALLOW_ALL"),
+		),
+	}
+
+	step2 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+
+				group_id = "group_id"
+				connector_name = "schema_name"
+
+				schema_change_handling = "BLOCK_ALL"
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 1)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "connector_id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "group_id", "group_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "connector_name", "schema_name"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
+			resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientEmptyDefaultSchemaResource(t)
+				setupMockClientListConnections(t)
 			},
 			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
