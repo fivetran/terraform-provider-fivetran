@@ -140,7 +140,6 @@ func (d *PrivateLink) ReadFromCustomResponse(ctx context.Context, resp privateli
 			}
 			// Skip nil values and empty strings - don't add them to the config map
 		}
-		// Skip nil values - don't add them to the config map
 	}
 	d.ConfigMap, _ = types.MapValue(types.StringType, config)
 }
