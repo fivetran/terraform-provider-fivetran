@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.6...HEAD)
 
+### Fixed
+- Fixed panic when importing `fivetran_private_link` resources with null config values in API response. The provider now safely handles nil values in the config map during import operations.
+
 ## [1.9.6](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.5...v1.9.6)
 
 ### Added
