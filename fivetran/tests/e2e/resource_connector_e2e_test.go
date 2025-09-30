@@ -237,6 +237,7 @@ func TestResourceConnectorHdE2E(t *testing.T) {
         					password = "password1"
         					host = "host"
         					port = "123"
+        					update_method = "XMIN"
       					}
     				}
 		  `,
@@ -288,6 +289,7 @@ func TestResourceConnectorHdE2E(t *testing.T) {
         					password = "password1"
         					host = "host"
         					port = "123"
+        					update_method = "XMIN"
       					}
     				}
 		  `,
