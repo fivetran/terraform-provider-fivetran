@@ -13294,6 +13294,7 @@
          "microsoft_teams": "",
          "reltio": "Your Reltio tenant ID.",
          "servicetitan": "Your ServiceTitan tenant ID.",
+         "share_point": "`Tenant ID` of your Microsoft client application.",
          "visma": "Your Visma tenant ID."
       },
       "api_field": ""
