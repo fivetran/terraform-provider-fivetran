@@ -54,6 +54,7 @@ const (
 			key_id = "key_id"
 			team_id = "team_id"
 			client_secret = "client_secret"
+			tenant_id = "tenant_id"
 
 			client_access {
 				client_id = "client_id"
@@ -137,6 +138,7 @@ func setupMockClientConnectorResourceConfigMapping(t *testing.T) {
 			assertKeyExistsAndHasValue(t, auth, "key_id", "key_id")
 			assertKeyExistsAndHasValue(t, auth, "team_id", "team_id")
 			assertKeyExistsAndHasValue(t, auth, "client_secret", "client_secret")
+			assertKeyExistsAndHasValue(t, auth, "tenant_id", "tenant_id")
 
 			assertKeyExists(t, auth, "client_access")
 
@@ -193,6 +195,7 @@ func TestResourceConnectorConfigMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.client_access.client_secret", "client_secret"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.client_access.user_agent", "user_agent"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.client_access.developer_token", "developer_token"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.tenant_id", "tenant_id"),
 
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "google_sheets"),
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "schema.table"),

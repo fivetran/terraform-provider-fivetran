@@ -675,5 +675,18 @@
          "facebook_ads": "Access Token"
       },
       "api_field": ""
+   },
+   "tenant_id": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "share_point": "`Tenant ID` of your Microsoft client application."
+      },
+      "api_field": ""
    }
 }
