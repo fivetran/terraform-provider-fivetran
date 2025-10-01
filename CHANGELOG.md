@@ -5,7 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.8...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.9...HEAD)
+
+## [v1.9.9](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.8...v1.9.9)
+
+### Added
+
+New connection services supported:
+- Supported service: `charthop`
+- Supported service: `db2luw`
+- Supported service: `gofundme_pro`
+- Supported service: `paylocity`
+
+New connection config fields supported:
+- Added field `fivetran_connector.config.backup_log_format` for services: `sql_server`.
+- Added field `fivetran_connector.config.aws_credentials` for services: `amplitude`.
+- Added field `fivetran_connector.config.file_handling` for services: `sftp`, `share_point`, `box`, `google_drive`.
+- Added field `fivetran_connector.config.selected_range` for services: `share_point`, `box`, `dropbox`, `email`, `s3`, `s3_compatible_storage`, `sftp`.
+- Added field `fivetran_connector.config.include_inherited_columns` for services: `servicenow`.
+- Added field `fivetran_connector.config.webhook_name` for services: `ordway`.
+- Added field `fivetran_connector.config.backup_storage_type` for services: `sql_server`.
+- Added field `fivetran_connector.config.backup_log_path` for services: `sql_server`.
+- Added field `fivetran_connector.config.gcs_credentials` for services: `amplitude`.
+- Added field `fivetran_connector.config.sync_permissions` for services: `share_point`, `google_drive`.
+- Added field `fivetran_connector.config.export_native_types_as_pdf` for services: `google_drive`.
+- Added field `fivetran_connector.config.reports.filters` for services: `google_search_console`.
+
+New destination config fields supported:
+- Added field `fivetran_destination.config.gcs_service_account_credentials` for services: `snowflake`.
 
 ## [v1.9.9](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.8...v1.9.9)
 

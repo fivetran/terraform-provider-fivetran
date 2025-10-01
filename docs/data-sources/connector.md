@@ -310,6 +310,7 @@ Read-Only:
 	- Service `cockroachdb`: Require TLS
 	- Service `db2i_hva`: Require TLS through Tunnel
 	- Service `db2i_sap_hva`: Require TLS through Tunnel
+	- Service `db2luw`: Require TLS through Tunnel
 	- Service `documentdb`: Require TLS encryption.
 	- Service `dynamics_365_fo`: Require TLS through Tunnel.
 	- Service `ehr`: Require TLS through Tunnel.
@@ -808,6 +809,7 @@ Read-Only:
 	- Service `maria`: Database authentication method
 	- Service `maria_azure`: Database authentication method
 	- Service `maria_rds`: Database authentication method
+	- Service `microsoft_lists`: Authentication Method
 	- Service `mysql`: Database authentication method
 	- Service `mysql_azure`: Database authentication method
 	- Service `mysql_rds`: Database authentication method
@@ -860,10 +862,18 @@ Read-Only:
 - `authorization_url` (String) Field usage depends on `service` value: 
 	- Service `tiktok_organic`: The authorization URL of the app registered in your TikTok developer account.
 	- Service `workday`: Authorization URL
+- `aws_credentials` (Attributes) Field usage depends on `service` value: 
+	- Service `amplitude`: Amazon S3 Credentials (see [below for nested schema](#nestedatt--config--aws_credentials))
 - `aws_region_code` (String) Field usage depends on `service` value: 
 	- Service `dynamodb`: The AWS region code for the DynamoDB instance, e.g. `us-east-1`.
 - `backint_configuration_path` (String)
 - `backint_executable_path` (String)
+- `backup_log_format` (String) Field usage depends on `service` value: 
+	- Service `sql_server`: Filename pattern for transaction log backup files.
+- `backup_log_path` (String) Field usage depends on `service` value: 
+	- Service `sql_server`: Full path to the local directory containing transaction log backup files. Required if `backup_storage_type` is `ALTERNATE_LOCATION`
+- `backup_storage_type` (String) Field usage depends on `service` value: 
+	- Service `sql_server`: Location of transaction log backup files when using BACKUP binary log type. Possible values: `"AZURE"`, `"ALTERNATE_LOCATION"`.
 - `backward_sync_limit` (String) Field usage depends on `service` value: 
 	- Service `amazon_selling_partner`: The earliest date to sync data from, in YYYY-MM-DD format. Cannot be before 1994-01-01 or in the future.
 	- Service `shopify`: Limit of the Historical Sync Time for selected tables
@@ -923,7 +933,7 @@ Read-Only:
 	- Service `sprout`: Your Sprout Social API Access Token.
 	- Service `zenefits`: Your Zenefits bearer token.
 - `binary_log_type` (String) Field usage depends on `service` value: 
-	- Service `sql_server`: Transaction log type. Possible values: `"ONLINE"`, `"BACK_AZURE"`. Default"  value is `"ONLINE"`.
+	- Service `sql_server`: Source of transaction log data when using Binary Log Reader. Possible values: `"ONLINE"`, `"BACKUP"`. Default value is `"ONLINE"`.
 - `binary_representation` (String) Field usage depends on `service` value: 
 	- Service `azure_cosmos_for_mongo`: How binary data is represented in the database. Possible values: 'Base64' (default), 'Uuid'.
 	- Service `mongo`: How binary data is represented in the database. Possible values: 'Base64' (default), 'Uuid'.
@@ -950,6 +960,7 @@ Read-Only:
 	- Service `s3`: The S3 bucket name. Required for connector creation.
 	- Service `s3_compatible_storage`: The S3-Compatible Storage bucket name. Required for connector creation.
 	- Service `segment`: The name of the Segment bucket. Must be populated if `sync_type` is set to `S3`.
+	- Service `sql_server`: The name of the S3 bucket.
 	- Service `wasabi_cloud_storage`: The Wasabi Cloud Storage bucket name. Required for connector creation.
 - `bucket_name` (String) Field usage depends on `service` value: 
 	- Service `adjust`: Your AWS S3 or GCS bucket.
@@ -1031,6 +1042,7 @@ Read-Only:
 	- Service `formstack`: Your Formstack client ID.
 	- Service `fortnox`: Your Fortnox client ID.
 	- Service `genesys`: Your Genesys client ID.
+	- Service `gofundme_pro`: Client ID of the API application in your GoFundMe Pro account.
 	- Service `hana_sap_hva_ecc_netweaver`: Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.
 	- Service `hana_sap_hva_s4_netweaver`: Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.
 	- Service `helpdesk`: Your HelpDesk client ID.
@@ -1055,6 +1067,7 @@ Read-Only:
 	- Service `oracle_fusion_field_service`: Your Oracle Fusion Field Service client ID.
 	- Service `oracle_sap_hva_netweaver`: Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.
 	- Service `paychex`: Your Paychex client ID.
+	- Service `paylocity`: Your Paylocity client ID.
 	- Service `paypal`: `Client ID` of your PayPal client application.
 	- Service `paypal_sandbox`: `Client ID` of your PayPal client application.
 	- Service `personio`: Your Personio Client ID.
@@ -1195,6 +1208,7 @@ Read-Only:
 	- Service `formstack`: Your Formstack client secret.
 	- Service `fortnox`: Your Fortnox client secret.
 	- Service `genesys`: Your Genesys client secret.
+	- Service `gofundme_pro`: Client secret of the API application in your GoFundMe Pro account.
 	- Service `helpdesk`: Your HelpDesk client secret.
 	- Service `hilti_ontrack`: Your Hilti On!Track client secret.
 	- Service `ilevel`: Your iLevel Client Secret.
@@ -1214,6 +1228,7 @@ Read-Only:
 	- Service `nice`: Your NICE client secret.
 	- Service `oracle_fusion_field_service`: Your Oracle Fusion Field Service client secret.
 	- Service `paychex`: Your Paychex client secret.
+	- Service `paylocity`: Your Paylocity client secret.
 	- Service `personio`: Your Personio secret.
 	- Service `piwik_pro`: Your Piwik PRO client secret.
 	- Service `podio`: Your Podio client secret.
@@ -1285,6 +1300,7 @@ Read-Only:
 	- Service `360learning`: Your 360Learning Company ID.
 	- Service `cube`: Your Cube Company ID.
 	- Service `cube_software`: Your Cube Software Company ID.
+	- Service `paylocity`: Your Paylocity companyId.
 	- Service `sage_intacct`: Company ID
 	- Service `sap_success_factors`: Your SAP SuccessFactors Company ID.
 - `company_ids` (String) Field usage depends on `service` value: 
@@ -1357,6 +1373,7 @@ Read-Only:
 	- Service `cockroachdb`: Possible values:`Directly`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
 	- Service `db2i_hva`: Possible values:`SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and the following parameter's values are specified: `tunnel_host`, `tunnel_port`, `tunnel_user`.
 	- Service `db2i_sap_hva`: Possible values:`SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`.
+	- Service `db2luw`: Possible values:`SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and the following parameter's values are specified: `tunnel_host`, `tunnel_port`, `tunnel_user`.
 	- Service `documentdb`: Possible values:`SshTunnel`, `PrivateLink` . `SshTunnel` is used as a value if this parameter is omitted in the request and the following parameter's values are specified: `tunnel_host`, `tunnel_port`, `tunnel_user`.
 	- Service `dynamics_365_fo`: Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
 	- Service `ehr`: Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
@@ -1511,6 +1528,7 @@ Read-Only:
 	- Service `cockroachdb`: The database name.
 	- Service `db2i_hva`: The database name.
 	- Service `db2i_sap_hva`: The database name.
+	- Service `db2luw`: The database name.
 	- Service `dynamics_365_fo`: The database name.
 	- Service `ehr`: The database name.
 	- Service `epic_clarity`: The database name.
@@ -1769,6 +1787,8 @@ Read-Only:
 	- Service `survey_monkey`: The SurveyMonkey account region. Specify `true`, if your account is hosted in the EU region. Default value is `false`.
 - `events` (Set of String) Field usage depends on `service` value: 
 	- Service `iterable`: List of events to sync. Should be specified when `sync_mode` is `SelectedEvents`
+- `export_native_types_as_pdf` (Boolean) Field usage depends on `service` value: 
+	- Service `google_drive`: Optional. Set to true to export your Google Docs and Slides as PDF documents. By default, we export Google Docs and Slides as .docx and .pptx files, respectively.
 - `export_storage_type` (String) Field usage depends on `service` value: 
 	- Service `adjust`: Your cloud storage.
 	- Service `amplitude`: Your cloud storage type
@@ -1785,10 +1805,16 @@ Read-Only:
 	- Service `kinesis`: The external ID is a string that designates who can assume the role. For more information, click a href="http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html"here/a
 	- Service `s3`: Used for authentication along with the `role_arn`. If not provided, it uses connector's `group_id`. Use the [List All Groups endpoint](https://fivetran.com/docs/rest-api/groups#listallgroups) to find the `group_id`.
 	- Service `segment`: The external ID is a string that designates who can assume the role. For more information, see a href="http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html"Amazon's AWS Identity and Access Management User Guide/a.
+	- Service `sql_server`: The external ID to be used when assuming the IAM role.
 - `facility_codes` (String) Field usage depends on `service` value: 
 	- Service `unicommerce`: Your uniware facility codes.
 - `fields` (Set of String) Field usage depends on `service` value: 
 	- Service `facebook`: List of fields which connector will sync. [Possible field values](https://fivetran.com/docs/applications/facebook-ad-insights/api-config#fields).
+- `file_handling` (String) Field usage depends on `service` value: 
+	- Service `box`: Files will be processed and synced according to the selected file handling option. Supported values:`structured`- (Default) Extract structured data into destination tables for analysis. Commonly used.`unstructured`- Replicate files in their original format. Best for PDFs, images, and other unstructured content.  Learn more about unstructured file replication in our [documentation.](https://fivetran.com/docs/using-fivetran/features/unstructured-file-replication).
+	- Service `google_drive`: Files will be processed and synced according to the selected file handling option. Supported values:`structured`- (Default) Extract structured data into destination tables for analysis. Commonly used.`unstructured`- Replicate files in their original format. Best for PDFs, images, and other unstructured content.  Learn more about unstructured file replication in our [documentation.](https://fivetran.com/docs/using-fivetran/features/unstructured-file-replication).
+	- Service `sftp`: Files will be processed and synced according to the selected file handling option. Supported values:`structured`- (Default) Extract structured data into destination tables for analysis. Commonly used.`unstructured`- Replicate files in their original format. Best for PDFs, images, and other unstructured content.  Learn more about unstructured file replication in our [documentation.](https://fivetran.com/docs/using-fivetran/features/unstructured-file-replication).
+	- Service `share_point`: Files will be processed and synced according to the selected file handling option. Supported values:`structured`- (Default) Extract structured data into destination tables for analysis. Commonly used.`unstructured`- Replicate files in their original format. Best for PDFs, images, and other unstructured content.  Learn more about unstructured file replication in our [documentation.](https://fivetran.com/docs/using-fivetran/features/unstructured-file-replication).
 - `file_type` (String) Field usage depends on `service` value: 
 	- Service `aws_cost_report`: If your files are saved with improper extensions, you can force them to by synced as the selected filetype. Leave the value as infer if your files have the correct extensions
 	- Service `azure_blob_storage`: If your files are saved with improper extensions, you can force them to by synced as the selected file type.
@@ -1854,6 +1880,8 @@ Read-Only:
 - `gcs_bucket` (String) Field usage depends on `service` value: 
 	- Service `braze`: Your GCS bucket. Required if `GCS` is the `cloud_storage_type`
 	- Service `webhooks`: The GCS bucket name. Required if `bucket_service` is set to `GCS`.
+- `gcs_credentials` (Attributes) Field usage depends on `service` value: 
+	- Service `amplitude`: GCS Credentials (see [below for nested schema](#nestedatt--config--gcs_credentials))
 - `gcs_export_bucket` (String) Field usage depends on `service` value: 
 	- Service `braze`: Your GCS bucket. Required if `GCS` is the `export_storage_type`
 - `gcs_export_folder` (String) Field usage depends on `service` value: 
@@ -1934,6 +1962,7 @@ Read-Only:
 	- Service `databricks_db`: The host URL for your Databricks account.
 	- Service `db2i_hva`: A host address of the primary node. It should be a DB instance host/IP address with a port number.
 	- Service `db2i_sap_hva`: DB instance host or IP address.
+	- Service `db2luw`: A host address of the primary node. It should be a DB instance host/IP address with a port number.
 	- Service `documentdb`: Host IP address of the primary node. Ignored if `hosts` value is provided.
 	- Service `dynamics_365_fo`: DB instance host or IP address.
 	- Service `ehr`: DB instance host or IP address.
@@ -2011,6 +2040,8 @@ Read-Only:
 	- Service `statistics_netherlands_cbs`: Your Statistics Netherlands CBS catalog identifier.
 - `identity` (String) Field usage depends on `service` value: 
 	- Service `marketo`: Marketo REST API identity url.
+- `include_inherited_columns` (Boolean) Field usage depends on `service` value: 
+	- Service `servicenow`: Include inherited columns.
 - `include_ocapi_endpoints` (Boolean) Field usage depends on `service` value: 
 	- Service `salesforce_commerce_cloud`: Whether to sync data through OCAPI endpoints.
 - `instance` (String) Field usage depends on `service` value: 
@@ -2324,6 +2355,7 @@ Read-Only:
 	- Service `contrast_security`: Your Contrast Security API Password.
 	- Service `db2i_hva`: The user's password.
 	- Service `db2i_sap_hva`: The user's password.
+	- Service `db2luw`: The user's password.
 	- Service `deposco`: Your Deposco password.
 	- Service `documentdb`: The user's password.
 	- Service `dynamics_365_fo`: The user's password.
@@ -2516,6 +2548,7 @@ Read-Only:
 	- Service `databricks_db`: The port of your SQL warehouse.
 	- Service `db2i_hva`: The port number.
 	- Service `db2i_sap_hva`: The port number.
+	- Service `db2luw`: The port number.
 	- Service `documentdb`: Port of the primary node. Ignored if `hosts` value is provided.
 	- Service `dynamics_365_fo`: The port number.
 	- Service `ehr`: The port number.
@@ -2885,6 +2918,7 @@ Read-Only:
 	- Service `kinesis`: The Role ARN required for authentication.
 	- Service `s3`: The Role ARN required for authentication. Required for connector creation when syncing using private bucket.
 	- Service `segment`: The Role ARN required for authentication. Must be populated if `sync_type` is set to `S3`.
+	- Service `sql_server`: The ARN of the IAM role that has access to the S3 bucket.
 - `rollback_window` (Number) Field usage depends on `service` value: 
 	- Service `appsflyer`: Rollback window
 - `rollback_window_size` (Number) Field usage depends on `service` value: 
@@ -3034,6 +3068,13 @@ Read-Only:
 	- Service `salesforce_marketing_cloud`: Select the event types to be synced.
 - `selected_exports` (Set of String) Field usage depends on `service` value: 
 	- Service `anaplan`: The list of export IDs in the format `workspace_id_model_id_export_id` that the connector will sync. Must be populated if `sync_mode` is set to `SpecificExports`.
+- `selected_range` (String) Field usage depends on `service` value: 
+	- Service `box`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
+	- Service `dropbox`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
+	- Service `email`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
+	- Service `s3`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
+	- Service `sftp`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
+	- Service `share_point`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
 - `sender_id` (String) Field usage depends on `service` value: 
 	- Service `sage_intacct`: Your Sender ID
 - `sender_password` (String, Sensitive) Field usage depends on `service` value: 
@@ -3242,6 +3283,7 @@ Read-Only:
 	- Service `odoo`: Your Odoo subdomain.
 	- Service `okta`: Your Okta subdomain.
 	- Service `oracle_fusion_field_service`: Your Oracle Fusion Field Service subDomain.
+	- Service `paylocity`: Your Paylocity subDomain.
 	- Service `picqer`: Your Picqer subdomain.
 	- Service `pinpoint`: Your Pinpoint sub domain name.
 	- Service `piwik_pro`: Your Piwik PRO subdomain.
@@ -3373,6 +3415,9 @@ Read-Only:
 - `sync_pack_mode` (String) Field usage depends on `service` value: 
 	- Service `cosmos`: The packing mode type. Supported values:`STANDARD_UNPACKED_MODE`- Unpacks _one_ layer of nested fields and infers types.`PACKED_MODE`- Delivers packed data as a single destination column value.Learn more in our [Azure Cosmos DB Sync Pack Mode Options documentation](https://fivetran.com/docs/connectors/databases/cosmos#packmodeoptions).
 	- Service `documentdb`: Indicates whether synced data will be packed into a single entry(column), or unpacked with one layer of nested fields.
+- `sync_permissions` (Boolean) Field usage depends on `service` value: 
+	- Service `google_drive`: Optional. Set to true to sync per-user file access permissions to control visibility in downstream applications.
+	- Service `share_point`: Optional. Set to true to sync per-user file access permissions to control visibility in downstream applications.
 - `sync_pull_api` (Boolean) Field usage depends on `service` value: 
 	- Service `appsflyer`: These options are for Appsflyer's Pull API, and are only necessary for syncing events from Pull API.
 - `sync_type` (String) Field usage depends on `service` value: 
@@ -3443,6 +3488,7 @@ Read-Only:
 	- Service `crowddev`: Your  crowd.dev Tenant ID.
 	- Service `reltio`: Your Reltio tenant ID.
 	- Service `servicetitan`: Your ServiceTitan tenant ID.
+	- Service `share_point`: `Tenant ID` of your Microsoft client application.
 	- Service `visma`: Your Visma tenant ID.
 - `tenant_name` (String) Field usage depends on `service` value: 
 	- Service `mambu`: Your Mambu tenant name.
@@ -3544,6 +3590,7 @@ Read-Only:
 	- Service `cockroachdb`: SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).
 	- Service `db2i_hva`: SSH host, only specify when connecting via an SSH tunnel (do not use a load balancer). Required for connector creation.
 	- Service `db2i_sap_hva`: SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).
+	- Service `db2luw`: SSH host, only specify when connecting via an SSH tunnel (do not use a load balancer). Required for connector creation.
 	- Service `documentdb`: SSH host, only specify when connecting via an SSH tunnel (do not use a load balancer). Required for connector creation.
 	- Service `dynamics_365_fo`: SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).
 	- Service `ehr`: SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).
@@ -3600,6 +3647,7 @@ Read-Only:
 	- Service `cockroachdb`: SSH port, specify only to connect via an SSH tunnel.
 	- Service `db2i_hva`: SSH port, only specify when connecting via an SSH tunnel. Required for connector creation.
 	- Service `db2i_sap_hva`: SSH port, specify only to connect via an SSH tunnel.
+	- Service `db2luw`: SSH port, only specify when connecting via an SSH tunnel. Required for connector creation.
 	- Service `documentdb`: SSH port, only specify when connecting via an SSH tunnel. Required for connector creation.
 	- Service `dynamics_365_fo`: SSH port, specify only to connect via an SSH tunnel.
 	- Service `ehr`: SSH port, specify only to connect via an SSH tunnel.
@@ -3656,6 +3704,7 @@ Read-Only:
 	- Service `cockroachdb`: SSH user, specify only to connect via an SSH tunnel.
 	- Service `db2i_hva`: SSH user, specify only to connect via an SSH tunnel. Required for connector creation.
 	- Service `db2i_sap_hva`: SSH user, specify only to connect via an SSH tunnel.
+	- Service `db2luw`: SSH user, specify only to connect via an SSH tunnel. Required for connector creation.
 	- Service `documentdb`: SSH user, specify only to connect via an SSH tunnel. Required for connector creation.
 	- Service `dynamics_365_fo`: SSH user, specify only to connect via an SSH tunnel.
 	- Service `ehr`: SSH user, specify only to connect via an SSH tunnel.
@@ -3785,6 +3834,7 @@ Read-Only:
 	- Service `cockroachdb`: The user name.
 	- Service `db2i_hva`: The user name.
 	- Service `db2i_sap_hva`: The username.
+	- Service `db2luw`: The user name.
 	- Service `documentdb`: The user name.
 	- Service `dynamics_365_fo`: The user name. The format must be `user@domain`.
 	- Service `ehr`: The user name.  For Azure Databases, the format must be `user@domain`.
@@ -3947,6 +3997,8 @@ Read-Only:
 	- Service `appsflyer`: Webhook Url
 - `webhook_key` (String) Field usage depends on `service` value: 
 	- Service `xero`: Webhook Key
+- `webhook_name` (String) Field usage depends on `service` value: 
+	- Service `ordway`: Your Ordway Webhook name.
 - `webhook_url` (String) Field usage depends on `service` value: 
 	- Service `branch`: Webhook URL
 	- Service `pipedrive`: The registered URL for webhooks in your Pipedrive dashboard.
@@ -4017,6 +4069,10 @@ Read-Only:
 
 - `app_id` (String) Field usage depends on `service` value: 
 	- Service `appsflyer`: Your App ID
+
+
+<a id="nestedatt--config--aws_credentials"></a>
+### Nested Schema for `config.aws_credentials`
 
 
 <a id="nestedatt--config--custom_payloads"></a>
@@ -4173,6 +4229,10 @@ Read-Only:
 	- Service `share_point`: All files matching the above pattern will be synced to this table.
 
 
+<a id="nestedatt--config--gcs_credentials"></a>
+### Nested Schema for `config.gcs_credentials`
+
+
 <a id="nestedatt--config--project_credentials"></a>
 ### Nested Schema for `config.project_credentials`
 
@@ -4285,6 +4345,8 @@ Read-Only:
 - `filter_type` (String) Field usage depends on `service` value: 
 	- Service `google_analytics_4`: Filter type for reports request. Possible values are INCLUDE and EXCLUDE
 - `filter_value` (String)
+- `filters` (Attributes Set) Field usage depends on `service` value: 
+	- Service `google_search_console`: The list of filters to be applied to the report. (see [below for nested schema](#nestedatt--config--reports--filters))
 - `generate_fivetran_pk` (Boolean) Field usage depends on `service` value: 
 	- Service `workday`: Select this option to generate a Primary Key for reports where no single column or combination of columns can be used to form a Primary Key.
 - `include_zero_rows` (Boolean) Field usage depends on `service` value: 
@@ -4373,6 +4435,17 @@ Read-Only:
 	- Service `workday_adaptive`: Account ID to sync
 - `include_descendants` (Boolean) Field usage depends on `service` value: 
 	- Service `workday_adaptive`: Flag to indicate if descendants are included or not
+
+
+<a id="nestedatt--config--reports--filters"></a>
+### Nested Schema for `config.reports.filters`
+
+Read-Only:
+
+- `dimension` (String)
+- `expression` (String)
+- `filter_type` (String)
+- `match_type` (String)
 
 
 <a id="nestedatt--config--reports--levels"></a>

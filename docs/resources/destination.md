@@ -247,6 +247,7 @@ Optional:
 - `fivetran_role_arn` (String) Field usage depends on `service` value: 
 	- Service `managed_data_lake`: (Immutable) ARN of the IAM role you created for the IAM policy associated with your S3 bucket or Glue catalog. Use this parameter only if you want to deploy your data lake on AWS.
 	- Service `new_s3_datalake`: ARN of the role which you created with different required policy mentioned in our setup guide
+- `gcs_service_account_credentials` (Block, Optional) (see [below for nested schema](#nestedblock--config--gcs_service_account_credentials))
 - `gcs_service_account_credentials_path` (String) Field usage depends on `service` value: 
 	- Service `snowflake`: The path to the JSON file that contains the service account credentials for the GCS bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use a GCS bucket to stage your data.
 - `host` (String) Field usage depends on `service` value: 
@@ -604,6 +605,10 @@ Read-Only:
 	- Service `redshift`: Public Key
 	- Service `sql_server_rds_warehouse`: Public Key
 	- Service `sql_server_warehouse`: Public Key
+
+<a id="nestedblock--config--gcs_service_account_credentials"></a>
+### Nested Schema for `config.gcs_service_account_credentials`
+
 
 
 <a id="nestedblock--timeouts"></a>

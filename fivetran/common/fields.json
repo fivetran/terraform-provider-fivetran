@@ -1023,6 +1023,7 @@
          "db2": "",
          "db2i_hva": "Require TLS through Tunnel",
          "db2i_sap_hva": "Require TLS through Tunnel",
+         "db2luw": "Require TLS through Tunnel",
          "documentdb": "Require TLS encryption.",
          "dynamics_365_fo": "Require TLS through Tunnel.",
          "ehr": "Require TLS through Tunnel.",
@@ -1173,6 +1174,7 @@
          "canny": "Your Canny API key.",
          "chargebee_product_catalog_1": "Your Chargebee Product Catalog 1 API key.",
          "chargebee_product_catalog_2": "Your Chargebee API key.",
+         "charthop": "",
          "chartmogul": "Your ChartMogul API key.",
          "chorusai": "Your Chorus API key.",
          "churnkey": "Your Churnkey API Key.",
@@ -2179,6 +2181,7 @@
          "maria": "Database authentication method",
          "maria_azure": "Database authentication method",
          "maria_rds": "Database authentication method",
+         "microsoft_lists": "Authentication Method",
          "mysql": "Database authentication method",
          "mysql_azure": "Database authentication method",
          "mysql_rds": "Database authentication method",
@@ -2322,6 +2325,19 @@
       },
       "api_field": ""
    },
+   "aws_credentials": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "amplitude": "Amazon S3 Credentials"
+      },
+      "api_field": ""
+   },
    "aws_region_code": {
       "readonly": false,
       "sensitive": false,
@@ -2366,6 +2382,45 @@
          "hana_sap_hva_ecc_netweaver": "",
          "hana_sap_hva_s4": "",
          "hana_sap_hva_s4_netweaver": ""
+      },
+      "api_field": ""
+   },
+   "backup_log_format": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sql_server": "Filename pattern for transaction log backup files."
+      },
+      "api_field": ""
+   },
+   "backup_log_path": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sql_server": "Full path to the local directory containing transaction log backup files. Required if `backup_storage_type` is `ALTERNATE_LOCATION`"
+      },
+      "api_field": ""
+   },
+   "backup_storage_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sql_server": "Location of transaction log backup files when using BACKUP binary log type. Possible values: `\"AZURE\"`, `\"ALTERNATE_LOCATION\"`."
       },
       "api_field": ""
    },
@@ -2513,7 +2568,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "sql_server": "Transaction log type. Possible values: `\"ONLINE\"`, `\"BACK_AZURE\"`. Default\"  value is `\"ONLINE\"`."
+         "sql_server": "Source of transaction log data when using Binary Log Reader. Possible values: `\"ONLINE\"`, `\"BACKUP\"`. Default value is `\"ONLINE\"`."
       },
       "api_field": ""
    },
@@ -2607,6 +2662,7 @@
          "s3": "The S3 bucket name. Required for connector creation.",
          "s3_compatible_storage": "The S3-Compatible Storage bucket name. Required for connector creation.",
          "segment": "The name of the Segment bucket. Must be populated if `sync_type` is set to `S3`.",
+         "sql_server": "The name of the S3 bucket.",
          "wasabi_cloud_storage": "The Wasabi Cloud Storage bucket name. Required for connector creation."
       },
       "api_field": ""
@@ -2857,6 +2913,7 @@
          "formstack": "Your Formstack client ID.",
          "fortnox": "Your Fortnox client ID.",
          "genesys": "Your Genesys client ID.",
+         "gofundme_pro": "Client ID of the API application in your GoFundMe Pro account.",
          "hana_sap_hva_b1": "",
          "hana_sap_hva_ecc": "",
          "hana_sap_hva_ecc_netweaver": "Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.",
@@ -2884,6 +2941,7 @@
          "oracle_fusion_field_service": "Your Oracle Fusion Field Service client ID.",
          "oracle_sap_hva_netweaver": "Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.",
          "paychex": "Your Paychex client ID.",
+         "paylocity": "Your Paylocity client ID.",
          "paypal": "`Client ID` of your PayPal client application.",
          "paypal_sandbox": "`Client ID` of your PayPal client application.",
          "personio": "Your Personio Client ID.",
@@ -3116,6 +3174,7 @@
          "formstack": "Your Formstack client secret.",
          "fortnox": "Your Fortnox client secret.",
          "genesys": "Your Genesys client secret.",
+         "gofundme_pro": "Client secret of the API application in your GoFundMe Pro account.",
          "helpdesk": "Your HelpDesk client secret.",
          "hilti_ontrack": "Your Hilti On!Track client secret.",
          "ilevel": "Your iLevel Client Secret.",
@@ -3135,6 +3194,7 @@
          "nice": "Your NICE client secret.",
          "oracle_fusion_field_service": "Your Oracle Fusion Field Service client secret.",
          "paychex": "Your Paychex client secret.",
+         "paylocity": "Your Paylocity client secret.",
          "personio": "Your Personio secret.",
          "piwik_pro": "Your Piwik PRO client secret.",
          "podio": "Your Podio client secret.",
@@ -3309,6 +3369,7 @@
          "360learning": "Your 360Learning Company ID.",
          "cube": "Your Cube Company ID.",
          "cube_software": "Your Cube Software Company ID.",
+         "paylocity": "Your Paylocity companyId.",
          "sage_intacct": "Company ID",
          "sap_success_factors": "Your SAP SuccessFactors Company ID."
       },
@@ -3575,6 +3636,7 @@
          "db2": "",
          "db2i_hva": "Possible values:`SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and the following parameter's values are specified: `tunnel_host`, `tunnel_port`, `tunnel_user`.",
          "db2i_sap_hva": "Possible values:`SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`.",
+         "db2luw": "Possible values:`SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and the following parameter's values are specified: `tunnel_host`, `tunnel_port`, `tunnel_user`.",
          "documentdb": "Possible values:`SshTunnel`, `PrivateLink` . `SshTunnel` is used as a value if this parameter is omitted in the request and the following parameter's values are specified: `tunnel_host`, `tunnel_port`, `tunnel_user`.",
          "dynamics_365_fo": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
          "ehr": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
@@ -4682,6 +4744,7 @@
          "db2": "",
          "db2i_hva": "The database name.",
          "db2i_sap_hva": "The database name.",
+         "db2luw": "The database name.",
          "dynamics_365_fo": "The database name.",
          "ehr": "The database name.",
          "elastic_cloud": "",
@@ -5529,6 +5592,19 @@
       },
       "api_field": ""
    },
+   "export_native_types_as_pdf": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "google_drive": "Optional. Set to true to export your Google Docs and Slides as PDF documents. By default, we export Google Docs and Slides as .docx and .pptx files, respectively."
+      },
+      "api_field": ""
+   },
    "export_storage_type": {
       "readonly": false,
       "sensitive": false,
@@ -5563,7 +5639,8 @@
          "dynamodb": "This is the same as your `group_id`, used for authentication along with the `role_arn`.",
          "kinesis": "The external ID is a string that designates who can assume the role. For more information, click a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html\"here/a",
          "s3": "Used for authentication along with the `role_arn`. If not provided, it uses connector's `group_id`. Use the [List All Groups endpoint](https://fivetran.com/docs/rest-api/groups#listallgroups) to find the `group_id`.",
-         "segment": "The external ID is a string that designates who can assume the role. For more information, see a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html\"Amazon's AWS Identity and Access Management User Guide/a."
+         "segment": "The external ID is a string that designates who can assume the role. For more information, see a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html\"Amazon's AWS Identity and Access Management User Guide/a.",
+         "sql_server": "The external ID to be used when assuming the IAM role."
       },
       "api_field": ""
    },
@@ -5590,6 +5667,22 @@
       "item_type": {},
       "description": {
          "facebook": "List of fields which connector will sync. [Possible field values](https://fivetran.com/docs/applications/facebook-ad-insights/api-config#fields)."
+      },
+      "api_field": ""
+   },
+   "file_handling": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "box": "Files will be processed and synced according to the selected file handling option. Supported values:`structured`- (Default) Extract structured data into destination tables for analysis. Commonly used.`unstructured`- Replicate files in their original format. Best for PDFs, images, and other unstructured content.  Learn more about unstructured file replication in our [documentation.](https://fivetran.com/docs/using-fivetran/features/unstructured-file-replication).",
+         "google_drive": "Files will be processed and synced according to the selected file handling option. Supported values:`structured`- (Default) Extract structured data into destination tables for analysis. Commonly used.`unstructured`- Replicate files in their original format. Best for PDFs, images, and other unstructured content.  Learn more about unstructured file replication in our [documentation.](https://fivetran.com/docs/using-fivetran/features/unstructured-file-replication).",
+         "sftp": "Files will be processed and synced according to the selected file handling option. Supported values:`structured`- (Default) Extract structured data into destination tables for analysis. Commonly used.`unstructured`- Replicate files in their original format. Best for PDFs, images, and other unstructured content.  Learn more about unstructured file replication in our [documentation.](https://fivetran.com/docs/using-fivetran/features/unstructured-file-replication).",
+         "share_point": "Files will be processed and synced according to the selected file handling option. Supported values:`structured`- (Default) Extract structured data into destination tables for analysis. Commonly used.`unstructured`- Replicate files in their original format. Best for PDFs, images, and other unstructured content.  Learn more about unstructured file replication in our [documentation.](https://fivetran.com/docs/using-fivetran/features/unstructured-file-replication)."
       },
       "api_field": ""
    },
@@ -5952,6 +6045,19 @@
       },
       "api_field": ""
    },
+   "gcs_credentials": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "amplitude": "GCS Credentials"
+      },
+      "api_field": ""
+   },
    "gcs_export_bucket": {
       "readonly": false,
       "sensitive": false,
@@ -6211,6 +6317,7 @@
          "db2": "",
          "db2i_hva": "A host address of the primary node. It should be a DB instance host/IP address with a port number.",
          "db2i_sap_hva": "DB instance host or IP address.",
+         "db2luw": "A host address of the primary node. It should be a DB instance host/IP address with a port number.",
          "documentdb": "Host IP address of the primary node. Ignored if `hosts` value is provided.",
          "dynamics_365_fo": "DB instance host or IP address.",
          "ehr": "DB instance host or IP address.",
@@ -6392,6 +6499,19 @@
       "item_type": {},
       "description": {
          "marketo": "Marketo REST API identity url."
+      },
+      "api_field": ""
+   },
+   "include_inherited_columns": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "servicenow": "Include inherited columns."
       },
       "api_field": ""
    },
@@ -7663,6 +7783,7 @@
          "db2": "",
          "db2i_hva": "The user's password.",
          "db2i_sap_hva": "The user's password.",
+         "db2luw": "The user's password.",
          "delighted": "",
          "deposco": "Your Deposco password.",
          "documentdb": "The user's password.",
@@ -8063,6 +8184,7 @@
          "db2": "",
          "db2i_hva": "The port number.",
          "db2i_sap_hva": "The port number.",
+         "db2luw": "The port number.",
          "documentdb": "Port of the primary node. Ignored if `hosts` value is provided.",
          "dynamics_365_fo": "The port number.",
          "ehr": "The port number.",
@@ -9580,6 +9702,72 @@
             },
             "api_field": ""
          },
+         "filters": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "object_list",
+            "fields": {
+               "dimension": {
+                  "readonly": false,
+                  "sensitive": false,
+                  "nullable": false,
+                  "type": "string",
+                  "fields": null,
+                  "key_field": "",
+                  "item_type": {},
+                  "description": {
+                     "google_search_console": ""
+                  },
+                  "api_field": ""
+               },
+               "expression": {
+                  "readonly": false,
+                  "sensitive": false,
+                  "nullable": true,
+                  "type": "string",
+                  "fields": null,
+                  "key_field": "",
+                  "item_type": {},
+                  "description": {
+                     "google_search_console": ""
+                  },
+                  "api_field": ""
+               },
+               "filter_type": {
+                  "readonly": false,
+                  "sensitive": false,
+                  "nullable": false,
+                  "type": "string",
+                  "fields": null,
+                  "key_field": "",
+                  "item_type": {},
+                  "description": {
+                     "google_search_console": ""
+                  },
+                  "api_field": ""
+               },
+               "match_type": {
+                  "readonly": false,
+                  "sensitive": false,
+                  "nullable": false,
+                  "type": "string",
+                  "fields": null,
+                  "key_field": "",
+                  "item_type": {},
+                  "description": {
+                     "google_search_console": ""
+                  },
+                  "api_field": ""
+               }
+            },
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_search_console": "The list of filters to be applied to the report."
+            },
+            "api_field": ""
+         },
          "generate_fivetran_pk": {
             "readonly": false,
             "sensitive": false,
@@ -10177,7 +10365,8 @@
          "heap": "The Role ARN required for authentication.",
          "kinesis": "The Role ARN required for authentication.",
          "s3": "The Role ARN required for authentication. Required for connector creation when syncing using private bucket.",
-         "segment": "The Role ARN required for authentication. Must be populated if `sync_type` is set to `S3`."
+         "segment": "The Role ARN required for authentication. Must be populated if `sync_type` is set to `S3`.",
+         "sql_server": "The ARN of the IAM role that has access to the S3 bucket."
       },
       "api_field": ""
    },
@@ -10690,6 +10879,7 @@
          "chargebee_product_catalog_1": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "chargebee_product_catalog_2": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "chargedesk": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "charthop": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "chartmogul": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "checkout": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "checkr": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -10836,6 +11026,7 @@
          "globalmeet": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "gmail": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "gocardless": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "gofundme_pro": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "goldcast": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "gongio": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "google_ads": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11014,6 +11205,7 @@
          "partnerize": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "partnerstack_vendor": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "paychex": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "paylocity": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "paypal": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "paypal_sandbox": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "pendo": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11305,6 +11497,7 @@
          "db2": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
          "db2i_hva": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
          "db2i_sap_hva": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
+         "db2luw": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
          "documentdb": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
          "dynamics_365_fo": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
          "ehr": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
@@ -11645,6 +11838,25 @@
       },
       "description": {
          "anaplan": "The list of export IDs in the format `workspace_id_model_id_export_id` that the connector will sync. Must be populated if `sync_mode` is set to `SpecificExports`."
+      },
+      "api_field": ""
+   },
+   "selected_range": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "box": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.",
+         "dropbox": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.",
+         "email": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.",
+         "s3": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.",
+         "s3_compatible_storage": "",
+         "sftp": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.",
+         "share_point": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format."
       },
       "api_field": ""
    },
@@ -12510,6 +12722,7 @@
          "odoo": "Your Odoo subdomain.",
          "okta": "Your Okta subdomain.",
          "oracle_fusion_field_service": "Your Oracle Fusion Field Service subDomain.",
+         "paylocity": "Your Paylocity subDomain.",
          "picqer": "Your Picqer subdomain.",
          "pinpoint": "Your Pinpoint sub domain name.",
          "piwik_pro": "Your Piwik PRO subdomain.",
@@ -12840,6 +13053,20 @@
       "description": {
          "cosmos": "The packing mode type. Supported values:`STANDARD_UNPACKED_MODE`- Unpacks _one_ layer of nested fields and infers types.`PACKED_MODE`- Delivers packed data as a single destination column value.Learn more in our [Azure Cosmos DB Sync Pack Mode Options documentation](https://fivetran.com/docs/connectors/databases/cosmos#packmodeoptions).",
          "documentdb": "Indicates whether synced data will be packed into a single entry(column), or unpacked with one layer of nested fields."
+      },
+      "api_field": ""
+   },
+   "sync_permissions": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "google_drive": "Optional. Set to true to sync per-user file access permissions to control visibility in downstream applications.",
+         "share_point": "Optional. Set to true to sync per-user file access permissions to control visibility in downstream applications."
       },
       "api_field": ""
    },
@@ -13649,6 +13876,7 @@
          "db2": "",
          "db2i_hva": "SSH host, only specify when connecting via an SSH tunnel (do not use a load balancer). Required for connector creation.",
          "db2i_sap_hva": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+         "db2luw": "SSH host, only specify when connecting via an SSH tunnel (do not use a load balancer). Required for connector creation.",
          "documentdb": "SSH host, only specify when connecting via an SSH tunnel (do not use a load balancer). Required for connector creation.",
          "dynamics_365_fo": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
          "ehr": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -13718,6 +13946,7 @@
          "db2": "",
          "db2i_hva": "SSH port, only specify when connecting via an SSH tunnel. Required for connector creation.",
          "db2i_sap_hva": "SSH port, specify only to connect via an SSH tunnel.",
+         "db2luw": "SSH port, only specify when connecting via an SSH tunnel. Required for connector creation.",
          "documentdb": "SSH port, only specify when connecting via an SSH tunnel. Required for connector creation.",
          "dynamics_365_fo": "SSH port, specify only to connect via an SSH tunnel.",
          "ehr": "SSH port, specify only to connect via an SSH tunnel.",
@@ -13787,6 +14016,7 @@
          "db2": "",
          "db2i_hva": "SSH user, specify only to connect via an SSH tunnel. Required for connector creation.",
          "db2i_sap_hva": "SSH user, specify only to connect via an SSH tunnel.",
+         "db2luw": "SSH user, specify only to connect via an SSH tunnel. Required for connector creation.",
          "documentdb": "SSH user, specify only to connect via an SSH tunnel. Required for connector creation.",
          "dynamics_365_fo": "SSH user, specify only to connect via an SSH tunnel.",
          "ehr": "SSH user, specify only to connect via an SSH tunnel.",
@@ -14093,6 +14323,7 @@
          "db2": "",
          "db2i_hva": "The user name.",
          "db2i_sap_hva": "The username.",
+         "db2luw": "The user name.",
          "documentdb": "The user name.",
          "dynamics_365_fo": "The user name. The format must be `user@domain`.",
          "ehr": "The user name.  For Azure Databases, the format must be `user@domain`.",
@@ -14424,6 +14655,19 @@
       "item_type": {},
       "description": {
          "xero": "Webhook Key"
+      },
+      "api_field": ""
+   },
+   "webhook_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "ordway": "Your Ordway Webhook name."
       },
       "api_field": ""
    },
