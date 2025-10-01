@@ -1274,17 +1274,17 @@ func setupMockClientListConnections(t *testing.T) {
   }
 `
 	listConnectionsHandler = mockClient.When(http.MethodGet, "/v1/connections").ThenCall(
-				func(req *http.Request) (*http.Response, error) {
-					var connectionsListData map[string]interface{}
-					if req.URL.Query().Get("group_id") == "group_id" && req.URL.Query().Get("schema") == "schema_name" {
-						connectionsListData = createMapFromJsonString(t, connectionsMappingResponse)
-					} else {
-						connectionsListData = nil
-					}
+		func(req *http.Request) (*http.Response, error) {
+			var connectionsListData map[string]interface{}
+			if req.URL.Query().Get("group_id") == "group_id" && req.URL.Query().Get("schema") == "schema_name" {
+				connectionsListData = createMapFromJsonString(t, connectionsMappingResponse)
+			} else {
+				connectionsListData = nil
+			}
 
-					return fivetranSuccessResponse(t, req, http.StatusOK, "Success", connectionsListData), nil
-				},
-			)
+			return fivetranSuccessResponse(t, req, http.StatusOK, "Success", connectionsListData), nil
+		},
+	)
 }
 
 // This test checks that schema config can be created by group id and connector name
@@ -1356,6 +1356,379 @@ func TestResourceByGroupIdAndConnectorNameMock(t *testing.T) {
 			Steps: []resource.TestStep{
 				step1,
 				step2,
+			},
+		},
+	)
+}
+
+// Test to verify that is_primary_key field is computed-only and doesn't cause noisy plan diffs
+func TestResourceSchemaPrimaryKeyComputedMock(t *testing.T) {
+	var (
+		schemaPrimaryKeyGetHandler   *mock.Handler
+		schemaPrimaryKeyPatchHandler *mock.Handler
+		schemaPrimaryKeyData         map[string]interface{}
+	)
+
+	setupMockClientPrimaryKeyResource := func(t *testing.T) {
+		mockClient.Reset()
+		schemaPrimaryKeyData = nil
+
+		// Mock GET handler
+		schemaPrimaryKeyGetHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				if schemaPrimaryKeyData == nil {
+					schemaPrimaryKeyData = createMapFromJsonString(t, `
+					{
+						"enable_new_by_default": true,
+						"schema_change_handling": "ALLOW_ALL",
+						"schemas": {
+							"schema_1": {
+								"name_in_destination": "schema_1",
+								"enabled": true,
+								"tables": {
+									"table_1": {
+										"name_in_destination": "table_1",
+										"enabled": true,
+										"enabled_patch_settings": {
+											"allowed": true
+										},
+										"columns": {
+											"id": {
+												"name_in_destination": "id",
+												"enabled": true,
+												"hashed": false,
+												"is_primary_key": true,
+												"enabled_patch_settings": {
+													"allowed": true
+												}
+											},
+											"name": {
+												"name_in_destination": "name",
+												"enabled": true,
+												"hashed": false,
+												"is_primary_key": false,
+												"enabled_patch_settings": {
+													"allowed": true
+												}
+											}
+										}
+									},
+									"table_2": {
+										"name_in_destination": "table_2",
+										"enabled": true,
+										"enabled_patch_settings": {
+											"allowed": true
+										},
+										"columns": {
+											"id": {
+												"name_in_destination": "id",
+												"enabled": true,
+												"hashed": false,
+												"is_primary_key": true,
+												"enabled_patch_settings": {
+													"allowed": true
+												}
+											},
+											"value": {
+												"name_in_destination": "value",
+												"enabled": true,
+												"hashed": false,
+												"is_primary_key": false,
+												"enabled_patch_settings": {
+													"allowed": true
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					`)
+				}
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaPrimaryKeyData), nil
+			},
+		)
+
+		// Mock PATCH handler - verifies no is_primary_key field is sent in requests
+		schemaPrimaryKeyPatchHandler = mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				body := requestBodyToJson(t, req)
+
+				// Helper function to validate columns don't contain is_primary_key
+				validateColumns := func(columns map[string]interface{}) {
+					for columnName, columnVal := range columns {
+						columnMap, ok := columnVal.(map[string]interface{})
+						if !ok {
+							continue
+						}
+
+						// Assert that is_primary_key is NOT in any column
+						if _, exists := columnMap["is_primary_key"]; exists {
+							t.Errorf("is_primary_key should not be sent in PATCH requests, but was present in column %s", columnName)
+						}
+
+						// Verify hashed field is properly sent for the name column
+						if columnName == "name" {
+							if hashed, ok := columnMap["hashed"].(bool); !ok || !hashed {
+								t.Errorf("Expected hashed=true for name column, but got: %v", columnMap["hashed"])
+							}
+						}
+					}
+				}
+
+				// Walk through the schema structure and validate columns
+				schemas, ok := body["schemas"].(map[string]interface{})
+				if !ok {
+					return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaPrimaryKeyData), nil
+				}
+
+				for _, schemaVal := range schemas {
+					schemaMap, ok := schemaVal.(map[string]interface{})
+					if !ok {
+						continue
+					}
+
+					tables, ok := schemaMap["tables"].(map[string]interface{})
+					if !ok {
+						continue
+					}
+
+					for _, tableVal := range tables {
+						tableMap, ok := tableVal.(map[string]interface{})
+						if !ok {
+							continue
+						}
+
+						columns, ok := tableMap["columns"].(map[string]interface{})
+						if ok {
+							validateColumns(columns)
+						}
+					}
+				}
+
+				// Update the mock data with the change
+				schemaPrimaryKeyData = createMapFromJsonString(t, `
+				{
+					"enable_new_by_default": true,
+					"schema_change_handling": "ALLOW_ALL",
+					"schemas": {
+						"schema_1": {
+							"name_in_destination": "schema_1",
+							"enabled": true,
+							"tables": {
+								"table_1": {
+									"name_in_destination": "table_1",
+									"enabled": true,
+									"enabled_patch_settings": {
+										"allowed": true
+									},
+									"columns": {
+										"id": {
+											"name_in_destination": "id",
+											"enabled": true,
+											"hashed": false,
+											"is_primary_key": true,
+											"enabled_patch_settings": {
+												"allowed": true
+											}
+										},
+										"name": {
+											"name_in_destination": "name",
+											"enabled": true,
+											"hashed": true,
+											"is_primary_key": false,
+											"enabled_patch_settings": {
+												"allowed": true
+											}
+										}
+									}
+								},
+								"table_2": {
+									"name_in_destination": "table_2",
+									"enabled": true,
+									"enabled_patch_settings": {
+										"allowed": true
+									},
+									"columns": {
+										"id": {
+											"name_in_destination": "id",
+											"enabled": true,
+											"hashed": false,
+											"is_primary_key": true,
+											"enabled_patch_settings": {
+												"allowed": true
+											}
+										},
+										"value": {
+											"name_in_destination": "value",
+											"enabled": true,
+											"hashed": false,
+											"is_primary_key": false,
+											"enabled_patch_settings": {
+												"allowed": true
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				`)
+
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaPrimaryKeyData), nil
+			},
+		)
+	}
+
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "ALLOW_ALL"
+				schemas = {
+					"schema_1" = {
+						tables = {
+							"table_1" = {
+								columns = {
+									"id" = {
+										enabled = true
+									}
+									"name" = {
+										enabled = true
+									}
+								}
+							}
+							"table_2" = {
+								columns = {
+									"id" = {
+										enabled = true
+									}
+									"value" = {
+										enabled = true
+									}
+								}
+							}
+						}
+					}
+				}
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				assertEqual(t, schemaPrimaryKeyGetHandler.Interactions, 3)
+				assertNotEmpty(t, schemaPrimaryKeyData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "ALLOW_ALL"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.table_1.columns.id.enabled", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.table_1.columns.name.enabled", "true"),
+		),
+	}
+
+	// Step 2: Make a change to a column (hash it) without touching is_primary_key
+	// This verifies that is_primary_key values don't create diffs for unchanged columns
+	step2 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "ALLOW_ALL"
+				schemas = {
+					"schema_1" = {
+						tables = {
+							"table_1" = {
+								columns = {
+									"id" = {
+										enabled = true
+									}
+									"name" = {
+										enabled = true
+										hashed = true
+									}
+								}
+							}
+							"table_2" = {
+								columns = {
+									"id" = {
+										enabled = true
+									}
+									"value" = {
+										enabled = true
+									}
+								}
+							}
+						}
+					}
+				}
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				assertEqual(t, schemaPrimaryKeyPatchHandler.Interactions, 2)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.table_1.columns.name.hashed", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.table_1.columns.name.enabled", "true"),
+		),
+	}
+
+	// Step 3: Plan-only test to verify no changes are detected when config is unchanged
+	// This explicitly tests that is_primary_key values from API don't show up as plan diffs
+	step3 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "ALLOW_ALL"
+				schemas = {
+					"schema_1" = {
+						tables = {
+							"table_1" = {
+								columns = {
+									"id" = {
+										enabled = true
+									}
+									"name" = {
+										enabled = true
+										hashed = true
+									}
+								}
+							}
+							"table_2" = {
+								columns = {
+									"id" = {
+										enabled = true
+									}
+									"value" = {
+										enabled = true
+									}
+								}
+							}
+						}
+					}
+				}
+			}`,
+		PlanOnly:           true,
+		ExpectNonEmptyPlan: false, // Expect no changes - is_primary_key should not cause diffs
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientPrimaryKeyResource(t)
+			},
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
+				step2,
+				step3, // Plan-only step to verify no drift from is_primary_key
 			},
 		},
 	)

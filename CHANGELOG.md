@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.8...HEAD)
 
+## [v1.9.9](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.8...v1.9.9)
+
+### Fixed
+- Fixed noisy `terraform plan` output for `fivetran_connector_schema_config` resource. The `is_primary_key` field in column configuration is now computed-only (read-only), preventing Terraform from showing `+ is_primary_key = (known after apply)` diffs for all columns when making unrelated schema changes. This resolves issue where plans would show hundreds of lines of irrelevant changes. Note: `is_primary_key` can no longer be set in configuration as it's determined by the API based on the source database schema.
+
 ## [v1.9.8](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.7...v1.9.8)
 
 ### Added

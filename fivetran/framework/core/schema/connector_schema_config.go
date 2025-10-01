@@ -21,15 +21,15 @@ func GetConnectorSchemaResourceSchema(ctx context.Context) schema.Schema {
 			"connector_id": schema.StringAttribute{
 				Optional:    true,
 				Computed:    true,
-				Description:   "The unique identifier for the connector within the Fivetran system.",
+				Description: "The unique identifier for the connector within the Fivetran system.",
 			},
 			"group_id": schema.StringAttribute{
-				Optional: true,
-				Description:   "The unique identifier for the Group (Destination) within the Fivetran system.",
+				Optional:    true,
+				Description: "The unique identifier for the Group (Destination) within the Fivetran system.",
 			},
 			"connector_name": schema.StringAttribute{
-				Optional: true,
-				Description:   "The name used both as the connection's name within the Fivetran system and as the source schema's name within your destination.",
+				Optional:    true,
+				Description: "The name used both as the connection's name within the Fivetran system and as the source schema's name within your destination.",
 			},
 			"schema_change_handling": schema.StringAttribute{
 				Optional: true,
@@ -96,9 +96,8 @@ The value defines validation method.
 													Description: "The boolean value specifying whether a column should be hashed.",
 												},
 												"is_primary_key": schema.BoolAttribute{
-													Optional:    true,
 													Computed:    true,
-													Description: "",
+													Description: "Boolean value indicating if the column is a primary key. This field is read-only and computed by the API.",
 												},
 											},
 										},
@@ -196,8 +195,8 @@ func getColumnBlock() schema.SetNestedBlock {
 					Description: "The boolean value specifying whether a column should be hashed.",
 				},
 				"is_primary_key": schema.BoolAttribute{
-					Optional:    true,
-					Description: "",
+					Computed:    true,
+					Description: "Boolean value indicating if the column is a primary key. This field is read-only and computed by the API.",
 				},
 			},
 		},
