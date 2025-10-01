@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v1.9.9](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.8...v1.9.9)
 
+### Fixed
+- Fixed noisy `terraform plan` output for `fivetran_connector_schema_config` resource. The `is_primary_key` field in column configuration is now computed-only (read-only), preventing Terraform from showing `+ is_primary_key = (known after apply)` diffs for all columns when making unrelated schema changes. This resolves issue where plans would show hundreds of lines of irrelevant changes. Note: `is_primary_key` can no longer be set in configuration as it's determined by the API based on the source database schema.
+
 ### Added
 
 New connection services supported:
@@ -19,25 +22,15 @@ New connection services supported:
 
 New connection config fields supported:
 - Added field `fivetran_connector.config.backup_log_format` for services: `sql_server`.
-- Added field `fivetran_connector.config.aws_credentials` for services: `amplitude`.
 - Added field `fivetran_connector.config.file_handling` for services: `sftp`, `share_point`, `box`, `google_drive`.
 - Added field `fivetran_connector.config.selected_range` for services: `share_point`, `box`, `dropbox`, `email`, `s3`, `s3_compatible_storage`, `sftp`.
 - Added field `fivetran_connector.config.include_inherited_columns` for services: `servicenow`.
 - Added field `fivetran_connector.config.webhook_name` for services: `ordway`.
 - Added field `fivetran_connector.config.backup_storage_type` for services: `sql_server`.
 - Added field `fivetran_connector.config.backup_log_path` for services: `sql_server`.
-- Added field `fivetran_connector.config.gcs_credentials` for services: `amplitude`.
 - Added field `fivetran_connector.config.sync_permissions` for services: `share_point`, `google_drive`.
 - Added field `fivetran_connector.config.export_native_types_as_pdf` for services: `google_drive`.
 - Added field `fivetran_connector.config.reports.filters` for services: `google_search_console`.
-
-New destination config fields supported:
-- Added field `fivetran_destination.config.gcs_service_account_credentials` for services: `snowflake`.
-
-## [v1.9.9](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.8...v1.9.9)
-
-### Fixed
-- Fixed noisy `terraform plan` output for `fivetran_connector_schema_config` resource. The `is_primary_key` field in column configuration is now computed-only (read-only), preventing Terraform from showing `+ is_primary_key = (known after apply)` diffs for all columns when making unrelated schema changes. This resolves issue where plans would show hundreds of lines of irrelevant changes. Note: `is_primary_key` can no longer be set in configuration as it's determined by the API based on the source database schema.
 
 ## [v1.9.8](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.7...v1.9.8)
 
