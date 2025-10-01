@@ -119,6 +119,7 @@ chameleon
 chargebee_product_catalog_1
 chargebee_product_catalog_2
 chargedesk
+charthop
 chartmogul
 checkout
 checkr
@@ -131,7 +132,6 @@ cin7core
 circleci
 cj_commission_detail
 clari
-classy
 clazar
 clickup
 clockify
@@ -180,6 +180,7 @@ datastreamer_source
 db2
 db2i_hva
 db2i_sap_hva
+db2luw
 dbt_cloud
 dcl_logistics
 delighted
@@ -268,6 +269,7 @@ gladly
 globalmeet
 gmail
 gocardless
+gofundme_pro
 goldcast
 gongio
 google_ads
@@ -462,6 +464,7 @@ pardot_sandbox
 partnerize
 partnerstack_vendor
 paychex
+paylocity
 paypal
 paypal_sandbox
 pendo

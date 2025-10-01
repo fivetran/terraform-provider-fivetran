@@ -18,11 +18,11 @@
   "tags": [
     {
       "name": "updated",
-      "description": "2025-09-10T05:21:41.292Z"
+      "description": "2025-09-30T14:27:24.909Z"
     },
     {
       "name": "hash",
-      "description": "f9fd0eb065a0f7e371e146eefb19708112bb1b419b6c3ccfd99a644ad55555b9"
+      "description": "632c0b8f76c90f33eb4cc97e7ce89d605584f5cf769bd18a0ad36c6236a84241"
     }
   ],
   "paths": {
@@ -12295,6 +12295,7 @@
             "chargebee_product_catalog_1": "#/components/schemas/chargebee_product_catalog_1_NewConnectorRequestV1",
             "chargebee_product_catalog_2": "#/components/schemas/chargebee_product_catalog_2_NewConnectorRequestV1",
             "chargedesk": "#/components/schemas/chargedesk_NewConnectorRequestV1",
+            "charthop": "#/components/schemas/charthop_NewConnectorRequestV1",
             "chartmogul": "#/components/schemas/chartmogul_NewConnectorRequestV1",
             "checkout": "#/components/schemas/checkout_NewConnectorRequestV1",
             "checkr": "#/components/schemas/checkr_NewConnectorRequestV1",
@@ -12307,7 +12308,6 @@
             "circleci": "#/components/schemas/circleci_NewConnectorRequestV1",
             "cj_commission_detail": "#/components/schemas/cj_commission_detail_NewConnectorRequestV1",
             "clari": "#/components/schemas/clari_NewConnectorRequestV1",
-            "classy": "#/components/schemas/classy_NewConnectorRequestV1",
             "clazar": "#/components/schemas/clazar_NewConnectorRequestV1",
             "clickup": "#/components/schemas/clickup_NewConnectorRequestV1",
             "clockify": "#/components/schemas/clockify_NewConnectorRequestV1",
@@ -12356,6 +12356,7 @@
             "db2": "#/components/schemas/db2_NewConnectorRequestV1",
             "db2i_hva": "#/components/schemas/db2i_hva_NewConnectorRequestV1",
             "db2i_sap_hva": "#/components/schemas/db2i_sap_hva_NewConnectorRequestV1",
+            "db2luw": "#/components/schemas/db2luw_NewConnectorRequestV1",
             "dbt_cloud": "#/components/schemas/dbt_cloud_NewConnectorRequestV1",
             "dcl_logistics": "#/components/schemas/dcl_logistics_NewConnectorRequestV1",
             "delighted": "#/components/schemas/delighted_NewConnectorRequestV1",
@@ -12444,6 +12445,7 @@
             "globalmeet": "#/components/schemas/globalmeet_NewConnectorRequestV1",
             "gmail": "#/components/schemas/gmail_NewConnectorRequestV1",
             "gocardless": "#/components/schemas/gocardless_NewConnectorRequestV1",
+            "gofundme_pro": "#/components/schemas/gofundme_pro_NewConnectorRequestV1",
             "goldcast": "#/components/schemas/goldcast_NewConnectorRequestV1",
             "gongio": "#/components/schemas/gongio_NewConnectorRequestV1",
             "google_ads": "#/components/schemas/google_ads_NewConnectorRequestV1",
@@ -12638,6 +12640,7 @@
             "partnerize": "#/components/schemas/partnerize_NewConnectorRequestV1",
             "partnerstack_vendor": "#/components/schemas/partnerstack_vendor_NewConnectorRequestV1",
             "paychex": "#/components/schemas/paychex_NewConnectorRequestV1",
+            "paylocity": "#/components/schemas/paylocity_NewConnectorRequestV1",
             "paypal": "#/components/schemas/paypal_NewConnectorRequestV1",
             "paypal_sandbox": "#/components/schemas/paypal_sandbox_NewConnectorRequestV1",
             "pendo": "#/components/schemas/pendo_NewConnectorRequestV1",
@@ -13421,6 +13424,7 @@
             "chargebee_product_catalog_1": "#/components/schemas/chargebee_product_catalog_1_ConnectorResponseV1",
             "chargebee_product_catalog_2": "#/components/schemas/chargebee_product_catalog_2_ConnectorResponseV1",
             "chargedesk": "#/components/schemas/chargedesk_ConnectorResponseV1",
+            "charthop": "#/components/schemas/charthop_ConnectorResponseV1",
             "chartmogul": "#/components/schemas/chartmogul_ConnectorResponseV1",
             "checkout": "#/components/schemas/checkout_ConnectorResponseV1",
             "checkr": "#/components/schemas/checkr_ConnectorResponseV1",
@@ -13433,7 +13437,6 @@
             "circleci": "#/components/schemas/circleci_ConnectorResponseV1",
             "cj_commission_detail": "#/components/schemas/cj_commission_detail_ConnectorResponseV1",
             "clari": "#/components/schemas/clari_ConnectorResponseV1",
-            "classy": "#/components/schemas/classy_ConnectorResponseV1",
             "clazar": "#/components/schemas/clazar_ConnectorResponseV1",
             "clickup": "#/components/schemas/clickup_ConnectorResponseV1",
             "clockify": "#/components/schemas/clockify_ConnectorResponseV1",
@@ -13482,6 +13485,7 @@
             "db2": "#/components/schemas/db2_ConnectorResponseV1",
             "db2i_hva": "#/components/schemas/db2i_hva_ConnectorResponseV1",
             "db2i_sap_hva": "#/components/schemas/db2i_sap_hva_ConnectorResponseV1",
+            "db2luw": "#/components/schemas/db2luw_ConnectorResponseV1",
             "dbt_cloud": "#/components/schemas/dbt_cloud_ConnectorResponseV1",
             "dcl_logistics": "#/components/schemas/dcl_logistics_ConnectorResponseV1",
             "delighted": "#/components/schemas/delighted_ConnectorResponseV1",
@@ -13570,6 +13574,7 @@
             "globalmeet": "#/components/schemas/globalmeet_ConnectorResponseV1",
             "gmail": "#/components/schemas/gmail_ConnectorResponseV1",
             "gocardless": "#/components/schemas/gocardless_ConnectorResponseV1",
+            "gofundme_pro": "#/components/schemas/gofundme_pro_ConnectorResponseV1",
             "goldcast": "#/components/schemas/goldcast_ConnectorResponseV1",
             "gongio": "#/components/schemas/gongio_ConnectorResponseV1",
             "google_ads": "#/components/schemas/google_ads_ConnectorResponseV1",
@@ -13764,6 +13769,7 @@
             "partnerize": "#/components/schemas/partnerize_ConnectorResponseV1",
             "partnerstack_vendor": "#/components/schemas/partnerstack_vendor_ConnectorResponseV1",
             "paychex": "#/components/schemas/paychex_ConnectorResponseV1",
+            "paylocity": "#/components/schemas/paylocity_ConnectorResponseV1",
             "paypal": "#/components/schemas/paypal_ConnectorResponseV1",
             "paypal_sandbox": "#/components/schemas/paypal_sandbox_ConnectorResponseV1",
             "pendo": "#/components/schemas/pendo_ConnectorResponseV1",
@@ -14422,6 +14428,9 @@
               }
             },
             "description": "The set of schemas within your connection schema config."
+          },
+          "is_type_locked": {
+            "type": "boolean"
           },
           "schema_change_handling": {
             "type": "string",
@@ -15808,7 +15817,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "The unique ID of a Hybrid Deployment Agent.",
+            "description": "The unique identifier for the hybrid deployment agent within the Fivetran system.",
             "example": "agent_id"
           },
           "version": {
@@ -15951,7 +15960,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "The unique ID of a Hybrid Deployment Agent.",
+            "description": "The unique identifier for the hybrid deployment agent within the Fivetran system.",
             "example": "agent_id"
           },
           "version": {
@@ -28210,6 +28219,16 @@
           "config": {
             "type": "object",
             "properties": {
+              "file_handling": {
+                "title": "",
+                "type": "object",
+                "description": "Files will be processed and synced according to the selected file handling option. Supported values:<br>`structured`- (Default) Extract structured data into destination tables for analysis. Commonly used.<br>`unstructured`- Replicate files in their original format. Best for PDFs, images, and other unstructured content.  Learn more about unstructured file replication in our [documentation.](/docs/using-fivetran/features/unstructured-file-replication).",
+                "example": "structured",
+                "enum": [
+                  "unstructured",
+                  "structured"
+                ]
+              },
               "quote_character_enabled": {
                 "title": "",
                 "type": "boolean",
@@ -28232,6 +28251,12 @@
                 "type": "string",
                 "description": "All files and folders under this folder path will be searched for files to sync.",
                 "example": "folder_path"
+              },
+              "selected_range": {
+                "title": "",
+                "type": "string",
+                "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowName>` format.",
+                "example": "'Sheet1'!A1"
               },
               "pattern": {
                 "title": "",
@@ -29804,6 +29829,36 @@
           }
         ]
       },
+      "charthop_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "charthop_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/charthop_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
       "chartmogul_config_V1": {
         "properties": {
           "config": {
@@ -30227,42 +30282,6 @@
           },
           {
             "$ref": "#/components/schemas/clari_config_V1"
-          },
-          {
-            "$ref": "#/components/schemas/schema_format_schema"
-          }
-        ]
-      },
-      "classy_config_V1": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "properties": {
-              "client_secret": {
-                "title": "",
-                "type": "string",
-                "description": "Your Classy client secret.",
-                "format": "password",
-                "example": "your_classy_client_secret"
-              },
-              "client_id": {
-                "title": "",
-                "type": "string",
-                "description": "Your Classy client ID.",
-                "example": "your_classy_client_id"
-              }
-            },
-            "description": ""
-          }
-        }
-      },
-      "classy_NewConnectorRequestV1": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NewConnectorRequestV1"
-          },
-          {
-            "$ref": "#/components/schemas/classy_config_V1"
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
@@ -33480,6 +33499,97 @@
           }
         ]
       },
+      "db2luw_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "connection_type": {
+                "title": "",
+                "type": "object",
+                "description": "Possible values:`SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and the following parameter's values are specified: `tunnel_host`, `tunnel_port`, `tunnel_user`.",
+                "example": "Directly | PrivateLink | SshTunnel",
+                "enum": [
+                  "Directly",
+                  "PrivateLink",
+                  "SshTunnel"
+                ]
+              },
+              "always_encrypted": {
+                "title": "",
+                "type": "boolean",
+                "description": "Require TLS through Tunnel",
+                "example": true
+              },
+              "tunnel_user": {
+                "title": "",
+                "type": "string",
+                "description": "SSH user, specify only to connect via an SSH tunnel. Required for connector creation.",
+                "example": "string"
+              },
+              "tunnel_port": {
+                "title": "",
+                "type": "integer",
+                "description": "SSH port, only specify when connecting via an SSH tunnel. Required for connector creation.",
+                "format": "int32",
+                "example": 0
+              },
+              "database": {
+                "title": "",
+                "type": "string",
+                "description": "The database name.",
+                "example": "string"
+              },
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "The user's password.",
+                "format": "password",
+                "example": "string"
+              },
+              "port": {
+                "title": "",
+                "type": "integer",
+                "description": "The port number.",
+                "format": "int32",
+                "example": 0
+              },
+              "host": {
+                "title": "",
+                "type": "string",
+                "description": "A host address of the primary node. It should be a DB instance host/IP address with a port number.",
+                "example": "string"
+              },
+              "tunnel_host": {
+                "title": "",
+                "type": "string",
+                "description": "SSH host, only specify when connecting via an SSH tunnel (do not use a load balancer). Required for connector creation.",
+                "example": "string"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "The user name.",
+                "example": "string"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "db2luw_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/db2luw_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema_prefix"
+          }
+        ]
+      },
       "dbt_cloud_config_V1": {
         "properties": {
           "config": {
@@ -34820,6 +34930,12 @@
                 "description": "All files and folders under this folder path will be searched for files to sync.",
                 "example": "folder_path"
               },
+              "selected_range": {
+                "title": "",
+                "type": "string",
+                "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowName>` format.",
+                "example": "'Sheet1'!A1"
+              },
               "pattern": {
                 "title": "",
                 "type": "string",
@@ -35629,6 +35745,12 @@
                   "SshTunnel",
                   "ProxyAgent"
                 ]
+              },
+              "selected_range": {
+                "title": "",
+                "type": "string",
+                "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowName>` format.",
+                "example": "'Sheet1'!A1"
               },
               "pattern": {
                 "title": "",
@@ -37037,6 +37159,18 @@
                 "description": "The contents of your service account key file. Required for authentication.",
                 "format": "password",
                 "example": "your_service_account_key"
+              },
+              "sub_collections": {
+                "title": "",
+                "type": "array",
+                "description": "List of nested collections to sync. Only specified subCollections can be synced.",
+                "example": "[subCollection1, subCollection2]",
+                "items": {
+                  "title": "",
+                  "type": "string",
+                  "description": "",
+                  "example": "string"
+                }
               },
               "database_name": {
                 "title": "",
@@ -39065,6 +39199,42 @@
           }
         ]
       },
+      "gofundme_pro_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Client secret of the API application in your GoFundMe Pro account.",
+                "format": "password",
+                "example": "your_gofundme_pro_api_app_client_secret"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Client ID of the API application in your GoFundMe Pro account.",
+                "example": "your_gofundme_pro_api_app_client_id"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "gofundme_pro_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/gofundme_pro_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
       "goldcast_config_V1": {
         "properties": {
           "config": {
@@ -39274,7 +39444,7 @@
                   "developer_token": {
                     "title": "",
                     "type": "string",
-                    "description": "Your approved `Developer token` to connect to the Google Ads API.",
+                    "description": "Not required and ignored for new connectors. Used for backward compatibility for old connectors, see client_access section description.",
                     "example": "string"
                   },
                   "client_secret": {
@@ -39296,7 +39466,7 @@
                     "example": "my_company_name"
                   }
                 },
-                "description": ""
+                "description": "We use a Fivetran developer token to access the Google Ads API. If this is your first Google Ads connector with custom authorization, you should create a new Google API Console project. Each Google API Console project can be associated with the developer token from only one manager account. Once you make a Google Ads API request, the developer token is permanently paired to the Google API Console project. Otherwise, we can't bind the Fivetran developer token to your client. You can reuse the same project to create other Google Ads connectors."
               }
             },
             "description": ""
@@ -40540,22 +40710,21 @@
           "config": {
             "type": "object",
             "properties": {
+              "file_handling": {
+                "title": "",
+                "type": "object",
+                "description": "Files will be processed and synced according to the selected file handling option. Supported values:<br>`structured`- (Default) Extract structured data into destination tables for analysis. Commonly used.<br>`unstructured`- Replicate files in their original format. Best for PDFs, images, and other unstructured content.  Learn more about unstructured file replication in our [documentation.](/docs/using-fivetran/features/unstructured-file-replication).",
+                "example": "structured",
+                "enum": [
+                  "unstructured",
+                  "structured"
+                ]
+              },
               "quote_character_enabled": {
                 "title": "",
                 "type": "boolean",
                 "description": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character.",
                 "example": true
-              },
-              "append_file_option": {
-                "title": "",
-                "type": "object",
-                "description": "If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
-                "example": "upsert_file",
-                "enum": [
-                  "upsert_file_with_primary_keys",
-                  "upsert_file",
-                  "append_file"
-                ]
               },
               "prefix": {
                 "title": "",
@@ -40568,12 +40737,6 @@
                 "type": "string",
                 "description": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will delete it by August 31, 2025.",
                 "example": "file_pattern"
-              },
-              "escape_char": {
-                "title": "",
-                "type": "string",
-                "description": "If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
-                "example": "escape_char"
               },
               "json_delivery_mode": {
                 "title": "",
@@ -40598,12 +40761,6 @@
                 "description": "You can specify the enclosing character used in your CSVs here. Fivetran will consider \" as the quote character if this field is empty and quote_character_enabled is set to true.",
                 "example": "string"
               },
-              "line_separator": {
-                "title": "",
-                "type": "string",
-                "description": "You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.",
-                "example": ";"
-              },
               "skip_before": {
                 "title": "",
                 "type": "integer",
@@ -40617,16 +40774,10 @@
                 "description": "<strong>Optional.</strong> If your CSV generating software doesn't provide header line for the documents, Fivetran can generate the generic column names and sync data rows with them.",
                 "example": true
               },
-              "null_sequence": {
-                "title": "",
-                "type": "string",
-                "description": "If your CSVs use a special value indicating null, you can specify it here.",
-                "example": "string"
-              },
-              "is_single_table_mode": {
+              "sync_permissions": {
                 "title": "",
                 "type": "boolean",
-                "description": "Allows the creation of connector using Merge Mode strategy.",
+                "description": "<strong>Optional.</strong> Set to true to sync per-user file access permissions to control visibility in downstream applications.",
                 "example": true
               },
               "delimiter": {
@@ -40660,6 +40811,53 @@
                   "fail",
                   "skip"
                 ]
+              },
+              "archive_pattern": {
+                "title": "",
+                "type": "string",
+                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
+                "example": "regex_pattern"
+              },
+              "append_file_option": {
+                "title": "",
+                "type": "object",
+                "description": "If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
+                "example": "upsert_file",
+                "enum": [
+                  "upsert_file_with_primary_keys",
+                  "upsert_file",
+                  "append_file"
+                ]
+              },
+              "export_native_types_as_pdf": {
+                "title": "",
+                "type": "boolean",
+                "description": "<strong>Optional.</strong> Set to true to export your Google Docs and Slides as PDF documents. By default, we export Google Docs and Slides as .docx and .pptx files, respectively.",
+                "example": true
+              },
+              "escape_char": {
+                "title": "",
+                "type": "string",
+                "description": "If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
+                "example": "escape_char"
+              },
+              "line_separator": {
+                "title": "",
+                "type": "string",
+                "description": "You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.",
+                "example": ";"
+              },
+              "null_sequence": {
+                "title": "",
+                "type": "string",
+                "description": "If your CSVs use a special value indicating null, you can specify it here.",
+                "example": "string"
+              },
+              "is_single_table_mode": {
+                "title": "",
+                "type": "boolean",
+                "description": "Allows the creation of connector using Merge Mode strategy.",
+                "example": true
               },
               "files": {
                 "title": "",
@@ -40713,12 +40911,6 @@
                   "bz2",
                   "tar_bz2"
                 ]
-              },
-              "archive_pattern": {
-                "title": "",
-                "type": "string",
-                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
-                "example": "regex_pattern"
               }
             },
             "description": ""
@@ -41042,6 +41234,57 @@
                         "BY_PAGE"
                       ]
                     },
+                    "filters": {
+                      "title": "",
+                      "type": "array",
+                      "description": "The list of filters to be applied to the report.",
+                      "items": {
+                        "title": "",
+                        "type": "object",
+                        "properties": {
+                          "expression": {
+                            "title": "",
+                            "type": "string",
+                            "description": "",
+                            "example": "string"
+                          },
+                          "filter_type": {
+                            "title": "",
+                            "type": "object",
+                            "description": "",
+                            "example": "EXCLUDE | INCLUDE",
+                            "enum": [
+                              "EXCLUDE",
+                              "INCLUDE"
+                            ]
+                          },
+                          "match_type": {
+                            "title": "",
+                            "type": "object",
+                            "description": "",
+                            "example": "EQUALS | CONTAINS",
+                            "enum": [
+                              "EQUALS",
+                              "CONTAINS"
+                            ]
+                          },
+                          "dimension": {
+                            "title": "",
+                            "type": "object",
+                            "description": "",
+                            "example": "COUNTRY | QUERY | DEVICE | PAGE | SEARCH_APPEARANCE",
+                            "enum": [
+                              "COUNTRY",
+                              "QUERY",
+                              "DEVICE",
+                              "PAGE",
+                              "SEARCH_APPEARANCE"
+                            ]
+                          }
+                        },
+                        "description": ""
+                      }
+                    },
                     "report_type": {
                       "title": "",
                       "type": "object",
@@ -41203,17 +41446,17 @@
                   "OAuth"
                 ]
               },
-              "named_range": {
-                "title": "",
-                "type": "string",
-                "description": "The name of the named data range on the sheet that contains the data to be synced.",
-                "example": "range"
-              },
               "sheet_id": {
                 "title": "",
                 "type": "string",
                 "description": "The URL of the sheet that can be copied from the browser address bar, or the ID of the sheet that can be found in the sheet's URL between **/d/** and **/edit**.",
                 "example": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+              },
+              "named_range": {
+                "title": "",
+                "type": "string",
+                "description": "The name of the named data range on the sheet that contains the data to be synced.",
+                "example": "range"
               }
             },
             "description": ""
@@ -46801,6 +47044,19 @@
                 "description": "The Name of the SharePoint site. The Site Name is the `name` field in the Graph API response for sites.",
                 "example": "target_site_name"
               },
+              "auth_method": {
+                "title": "",
+                "type": "object",
+                "description": "Authentication Method",
+                "example": "AUTHORIZATION_CODE",
+                "enum": [
+                  "SERVICE_PRINCIPAL_SECRET",
+                  "MANAGED_IDENTITY_USER",
+                  "SERVICE_PRINCIPAL_CERTIFICATE",
+                  "MANAGED_IDENTITY_SYSTEM",
+                  "AUTHORIZATION_CODE"
+                ]
+              },
               "site_id": {
                 "title": "",
                 "type": "string",
@@ -46817,6 +47073,12 @@
           "auth": {
             "type": "object",
             "properties": {
+              "tenant_id": {
+                "title": "",
+                "type": "string",
+                "description": "`Tenant ID` of your Microsoft client application.",
+                "example": "41db1ebd-41a6-4dda-8029-5dd8f227d843"
+              },
               "refresh_token": {
                 "title": "",
                 "type": "string",
@@ -50684,6 +50946,12 @@
                 "description": "Your Ordway user email ID.",
                 "example": "your_ordway_email_id"
               },
+              "webhook_name": {
+                "title": "",
+                "type": "string",
+                "description": "Your Ordway Webhook name.",
+                "example": "your_ordway_webhook_name"
+              },
               "api_key": {
                 "title": "",
                 "type": "string",
@@ -51567,6 +51835,54 @@
           }
         ]
       },
+      "paylocity_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "company_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Paylocity companyId.",
+                "example": "your_paylocity_company_id"
+              },
+              "sub_domain": {
+                "title": "",
+                "type": "string",
+                "description": "Your Paylocity subDomain.",
+                "example": "your_paylocity_sub_domain"
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Paylocity client secret.",
+                "format": "password",
+                "example": "your_paylocity_client_secret"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Paylocity client ID.",
+                "example": "your_paylocity_client_id"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "paylocity_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/paylocity_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
       "paypal_config_V1": {
         "properties": {
           "config": {
@@ -51685,10 +52001,12 @@
                 "title": "",
                 "type": "object",
                 "description": "The Pendo account region.",
-                "example": "EU | US1 | US",
+                "example": "EU | US1 | AU | JPN | US",
                 "enum": [
                   "EU",
                   "US1",
+                  "AU",
+                  "JPN",
                   "US"
                 ]
               },
@@ -55313,6 +55631,12 @@
                   "CUSTOM_ESCAPE_CHAR"
                 ]
               },
+              "selected_range": {
+                "title": "",
+                "type": "string",
+                "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowName>` format.",
+                "example": "'Sheet1'!A1"
+              },
               "escape_char": {
                 "title": "",
                 "type": "string",
@@ -55587,6 +55911,12 @@
                   "upsert_file",
                   "append_file"
                 ]
+              },
+              "selected_range": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": "string"
               },
               "escape_char": {
                 "title": "",
@@ -57053,6 +57383,12 @@
                 "format": "password",
                 "example": "password"
               },
+              "include_inherited_columns": {
+                "title": "",
+                "type": "boolean",
+                "description": "Include inherited columns.",
+                "example": true
+              },
               "instance": {
                 "title": "",
                 "type": "string",
@@ -57158,6 +57494,16 @@
           "config": {
             "type": "object",
             "properties": {
+              "file_handling": {
+                "title": "",
+                "type": "object",
+                "description": "Files will be processed and synced according to the selected file handling option. Supported values:<br>`structured`- (Default) Extract structured data into destination tables for analysis. Commonly used.<br>`unstructured`- Replicate files in their original format. Best for PDFs, images, and other unstructured content.  Learn more about unstructured file replication in our [documentation.](/docs/using-fivetran/features/unstructured-file-replication).",
+                "example": "structured",
+                "enum": [
+                  "unstructured",
+                  "structured"
+                ]
+              },
               "quote_character_enabled": {
                 "title": "",
                 "type": "boolean",
@@ -57299,6 +57645,12 @@
                   "upsert_file",
                   "append_file"
                 ]
+              },
+              "selected_range": {
+                "title": "",
+                "type": "string",
+                "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowName>` format.",
+                "example": "'Sheet1'!A1"
               },
               "escape_char": {
                 "title": "",
@@ -57453,22 +57805,21 @@
                   "ALL_SITES"
                 ]
               },
+              "file_handling": {
+                "title": "",
+                "type": "object",
+                "description": "Files will be processed and synced according to the selected file handling option. Supported values:<br>`structured`- (Default) Extract structured data into destination tables for analysis. Commonly used.<br>`unstructured`- Replicate files in their original format. Best for PDFs, images, and other unstructured content.  Learn more about unstructured file replication in our [documentation.](/docs/using-fivetran/features/unstructured-file-replication).",
+                "example": "structured",
+                "enum": [
+                  "unstructured",
+                  "structured"
+                ]
+              },
               "quote_character_enabled": {
                 "title": "",
                 "type": "boolean",
                 "description": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character.",
                 "example": true
-              },
-              "append_file_option": {
-                "title": "",
-                "type": "object",
-                "description": "If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
-                "example": "upsert_file",
-                "enum": [
-                  "upsert_file_with_primary_keys",
-                  "upsert_file",
-                  "append_file"
-                ]
               },
               "prefix": {
                 "title": "",
@@ -57481,12 +57832,6 @@
                 "type": "string",
                 "description": "All files in your search path matching this regular expression will be synced.",
                 "example": "file_pattern"
-              },
-              "escape_char": {
-                "title": "",
-                "type": "string",
-                "description": "If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
-                "example": "escape_char"
               },
               "json_delivery_mode": {
                 "title": "",
@@ -57511,12 +57856,6 @@
                 "description": "You can specify the enclosing character used in your CSVs here. Fivetran will consider \" as the quote character if this field is empty and quote_character_enabled is set to true.",
                 "example": "string"
               },
-              "line_separator": {
-                "title": "",
-                "type": "string",
-                "description": "You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.",
-                "example": ";"
-              },
               "skip_before": {
                 "title": "",
                 "type": "integer",
@@ -57530,23 +57869,11 @@
                 "description": "<strong>Optional.</strong> If your CSV generating software doesn't provide header line for the documents, Fivetran can generate the generic column names and sync data rows with them.",
                 "example": true
               },
-              "null_sequence": {
-                "title": "",
-                "type": "string",
-                "description": "If your CSVs use a special value indicating null, you can specify it here.",
-                "example": "string"
-              },
-              "is_single_table_mode": {
+              "sync_permissions": {
                 "title": "",
                 "type": "boolean",
-                "description": "Allows the creation of connector using Merge Mode strategy.",
+                "description": "<strong>Optional.</strong> Set to true to sync per-user file access permissions to control visibility in downstream applications.",
                 "example": true
-              },
-              "share_url": {
-                "title": "",
-                "type": "string",
-                "description": "Your SharePoint folder URL. You can find the folder URL by following the steps mentioned [here](/docs/connectors/files/share-point/setup-guide).",
-                "example": "target_share_url"
               },
               "delimiter": {
                 "title": "",
@@ -57579,6 +57906,59 @@
                   "fail",
                   "skip"
                 ]
+              },
+              "archive_pattern": {
+                "title": "",
+                "type": "string",
+                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
+                "example": "regex_pattern"
+              },
+              "append_file_option": {
+                "title": "",
+                "type": "object",
+                "description": "If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
+                "example": "upsert_file",
+                "enum": [
+                  "upsert_file_with_primary_keys",
+                  "upsert_file",
+                  "append_file"
+                ]
+              },
+              "selected_range": {
+                "title": "",
+                "type": "string",
+                "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowName>` format.",
+                "example": "'Sheet1'!A1"
+              },
+              "escape_char": {
+                "title": "",
+                "type": "string",
+                "description": "If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
+                "example": "escape_char"
+              },
+              "line_separator": {
+                "title": "",
+                "type": "string",
+                "description": "You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.",
+                "example": ";"
+              },
+              "null_sequence": {
+                "title": "",
+                "type": "string",
+                "description": "If your CSVs use a special value indicating null, you can specify it here.",
+                "example": "string"
+              },
+              "is_single_table_mode": {
+                "title": "",
+                "type": "boolean",
+                "description": "Allows the creation of connector using Merge Mode strategy.",
+                "example": true
+              },
+              "share_url": {
+                "title": "",
+                "type": "string",
+                "description": "Your SharePoint folder URL. You can find the folder URL by following the steps mentioned [here](/docs/connectors/files/share-point/setup-guide).",
+                "example": "target_share_url"
               },
               "files": {
                 "title": "",
@@ -57626,12 +58006,6 @@
                   "bz2",
                   "tar_bz2"
                 ]
-              },
-              "archive_pattern": {
-                "title": "",
-                "type": "string",
-                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
-                "example": "regex_pattern"
               }
             },
             "description": ""
@@ -59808,24 +60182,6 @@
                 "format": "password",
                 "example": "c:\\certificates\\tde_cert.cer"
               },
-              "connection_type": {
-                "title": "",
-                "type": "object",
-                "description": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
-                "enum": [
-                  "Directly",
-                  "PrivateLink",
-                  "SshTunnel",
-                  "ProxyAgent"
-                ]
-              },
-              "enable_tde": {
-                "title": "",
-                "type": "boolean",
-                "description": "Use transparent data encryption (TDE)",
-                "example": true
-              },
               "update_method": {
                 "title": "",
                 "type": "object",
@@ -59837,11 +60193,28 @@
                   "TELEPORT"
                 ]
               },
-              "always_encrypted": {
+              "external_id": {
                 "title": "",
-                "type": "boolean",
-                "description": "Require TLS.",
-                "example": true
+                "type": "string",
+                "description": "The external ID to be used when assuming the IAM role.",
+                "example": "external_id"
+              },
+              "backup_log_format": {
+                "title": "",
+                "type": "string",
+                "description": "Filename pattern for transaction log backup files.",
+                "example": "The format backup_%d_%Y%M%D_%h%m%s.log translates to backup_<database_name>_YYYYMMDD_HHMMSS.log"
+              },
+              "backup_storage_type": {
+                "title": "",
+                "type": "object",
+                "description": "Location of transaction log backup files when using BACKUP binary log type. Possible values: `\"AZURE\"`, `\"ALTERNATE_LOCATION\"`.",
+                "example": "AZURE | ALTERNATE_LOCATION | AWS",
+                "enum": [
+                  "AZURE",
+                  "ALTERNATE_LOCATION",
+                  "AWS"
+                ]
               },
               "connection_string": {
                 "title": "",
@@ -59849,19 +60222,6 @@
                 "description": "The Azure Blob Storage container connection string.",
                 "format": "password",
                 "example": "BlobEndpoint=https://abc123.blob.core.windows.net/;TableEndpoint=https://abc123.table.core.windows.net/;SharedAccessSignature=xxxxxxxxx"
-              },
-              "tunnel_user": {
-                "title": "",
-                "type": "string",
-                "description": "SSH user, specify only to connect via an SSH tunnel.",
-                "example": "fivetran"
-              },
-              "tde_private_key": {
-                "title": "",
-                "type": "string",
-                "description": "Private key file path associated with the TDE certificate",
-                "format": "password",
-                "example": "c:\\certificates\\tde_cert.pvk"
               },
               "tunnel_port": {
                 "title": "",
@@ -59883,20 +60243,6 @@
                 "format": "password",
                 "example": "test_password"
               },
-              "container_name": {
-                "title": "",
-                "type": "string",
-                "description": "The name of the Azure Blob Storage container.",
-                "format": "password",
-                "example": "container_name"
-              },
-              "port": {
-                "title": "",
-                "type": "integer",
-                "description": "The port number.",
-                "format": "int32",
-                "example": 1433
-              },
               "tde_password": {
                 "title": "",
                 "type": "string",
@@ -59910,6 +60256,86 @@
                 "description": "DB instance host or IP address.",
                 "example": "sqlinstance.mycompany.com"
               },
+              "backup_log_path": {
+                "title": "",
+                "type": "string",
+                "description": "Full path to the local directory containing transaction log backup files. Required if `backup_storage_type` is `ALTERNATE_LOCATION`",
+                "example": "C:\\BackupLogs"
+              },
+              "binary_log_type": {
+                "title": "",
+                "type": "object",
+                "description": "Source of transaction log data when using Binary Log Reader. Possible values: `\"ONLINE\"`, `\"BACKUP\"`. Default value is `\"ONLINE\"`.",
+                "example": "BACKUP | ONLINE",
+                "enum": [
+                  "BACKUP",
+                  "ONLINE"
+                ]
+              },
+              "connection_type": {
+                "title": "",
+                "type": "object",
+                "description": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
+                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
+                "enum": [
+                  "Directly",
+                  "PrivateLink",
+                  "SshTunnel",
+                  "ProxyAgent"
+                ]
+              },
+              "enable_tde": {
+                "title": "",
+                "type": "boolean",
+                "description": "Use transparent data encryption (TDE)",
+                "example": true
+              },
+              "always_encrypted": {
+                "title": "",
+                "type": "boolean",
+                "description": "Require TLS.",
+                "example": true
+              },
+              "tunnel_user": {
+                "title": "",
+                "type": "string",
+                "description": "SSH user, specify only to connect via an SSH tunnel.",
+                "example": "fivetran"
+              },
+              "tde_private_key": {
+                "title": "",
+                "type": "string",
+                "description": "Private key file path associated with the TDE certificate",
+                "format": "password",
+                "example": "c:\\certificates\\tde_cert.pvk"
+              },
+              "bucket": {
+                "title": "",
+                "type": "string",
+                "description": "The name of the S3 bucket.",
+                "example": "bucket_name"
+              },
+              "container_name": {
+                "title": "",
+                "type": "string",
+                "description": "The name of the Azure Blob Storage container.",
+                "format": "password",
+                "example": "container_name"
+              },
+              "role_arn": {
+                "title": "",
+                "type": "string",
+                "description": "The ARN of the IAM role that has access to the S3 bucket.",
+                "format": "password",
+                "example": "arn:aws:iam::123456789012:role/rolename"
+              },
+              "port": {
+                "title": "",
+                "type": "integer",
+                "description": "The port number.",
+                "format": "int32",
+                "example": 1433
+              },
               "tunnel_host": {
                 "title": "",
                 "type": "string",
@@ -59921,16 +60347,6 @@
                 "type": "string",
                 "description": "The user name.  For Azure Databases, the format must be `user@domain`.",
                 "example": "test_user"
-              },
-              "binary_log_type": {
-                "title": "",
-                "type": "object",
-                "description": "Transaction log type. Possible values: `\"ONLINE\"`, `\"BACK_AZURE\"`. Default\"  value is `\"ONLINE\"`.",
-                "example": "BACKUP_AZURE | ONLINE",
-                "enum": [
-                  "BACKUP_AZURE",
-                  "ONLINE"
-                ]
               }
             },
             "description": ""
@@ -63078,22 +63494,22 @@
               "domain": {
                 "title": "",
                 "type": "string",
-                "description": "",
-                "example": "string"
+                "description": "Domain of your UserVoice site. If it ends with \".uservoice.com\", you can specify just the subdomain (\"mydomain.uservoice.com\" â \"mydomain\")",
+                "example": "uservoice_domain"
               },
               "secret": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "The UserVoice API secret.",
                 "format": "password",
-                "example": "string"
+                "example": "your_api_secret"
               },
               "key": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "The UserVoice API key.",
                 "format": "password",
-                "example": "string"
+                "example": "your_api_key"
               }
             },
             "description": ""
@@ -68693,6 +69109,16 @@
           }
         ]
       },
+      "charthop_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/charthop_config_V1"
+          }
+        ]
+      },
       "chartmogul_ConnectorResponseV1": {
         "allOf": [
           {
@@ -68810,16 +69236,6 @@
           },
           {
             "$ref": "#/components/schemas/clari_config_V1"
-          }
-        ]
-      },
-      "classy_ConnectorResponseV1": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ConnectorResponseV1"
-          },
-          {
-            "$ref": "#/components/schemas/classy_config_V1"
           }
         ]
       },
@@ -69395,6 +69811,35 @@
           },
           {
             "$ref": "#/components/schemas/db2i_sap_hva_readonly_config_V1"
+          }
+        ]
+      },
+      "db2luw_readonly_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "public_key": {
+                "title": "",
+                "type": "string",
+                "description": "Public Key",
+                "example": "string"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "db2luw_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/db2luw_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/db2luw_readonly_config_V1"
           }
         ]
       },
@@ -70434,6 +70879,16 @@
           },
           {
             "$ref": "#/components/schemas/gocardless_config_V1"
+          }
+        ]
+      },
+      "gofundme_pro_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/gofundme_pro_config_V1"
           }
         ]
       },
@@ -72907,6 +73362,16 @@
           },
           {
             "$ref": "#/components/schemas/paychex_config_V1"
+          }
+        ]
+      },
+      "paylocity_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/paylocity_config_V1"
           }
         ]
       },
