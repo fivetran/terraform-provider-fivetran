@@ -238,6 +238,9 @@ func getValue(
 				elements[fn] = getValue(et, value, lValue, cf.ItemFields, &cf, service)
 			} else {
 				lValue := lMap[fn]
+				if et == nil {
+					panic(fmt.Sprintf("Type for field '%v' is nil, local value: %v", fn, lValue))
+				}
 				elements[fn] = getValue(et, nil, lValue, cf.ItemFields, &cf, service)
 			}
 		}
