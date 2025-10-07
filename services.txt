@@ -189,6 +189,7 @@ deputy
 destini
 device_magic
 dialpad
+discourse
 dixa
 docebo
 documentdb
@@ -444,6 +445,7 @@ oracle_fusion_cloud_apps_hcm
 oracle_fusion_field_service
 oracle_hva
 oracle_moat_analytics
+oracle_netsuite_openair
 oracle_rac
 oracle_rds
 oracle_sap_hva
