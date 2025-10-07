@@ -1202,6 +1202,7 @@
          "dcl_logistics": "Your DCL Logistics API key.",
          "delighted": "API Key for your Delighted account",
          "destini": "Your Destini API Key.",
+         "discourse": "Your Discourse API key.",
          "donus": "Your Donus API key.",
          "doorloop": "Your DoorLoop API key.",
          "drata": "Your Drata API Key.",
@@ -1653,6 +1654,19 @@
       "item_type": {},
       "description": {
          "shipnetwork": "Your ShipNetwork API user secret."
+      },
+      "api_field": ""
+   },
+   "api_username": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "discourse": "Your Discourse API username."
       },
       "api_field": ""
    },
@@ -2334,7 +2348,11 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "dynamodb": "The AWS region code for the DynamoDB instance, e.g. `us-east-1`."
+         "aurora": "The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`.",
+         "dynamodb": "The AWS region code for the DynamoDB instance, e.g. `us-east-1`.",
+         "magento_mysql_rds": "The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`.",
+         "maria_rds": "The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`.",
+         "mysql_rds": "The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`."
       },
       "api_field": ""
    },
@@ -2887,7 +2905,7 @@
          "coupa": "Your Coupa client_id",
          "criteo": "Your Criteo Client ID.",
          "criteo_retail_media": "Your Criteo Retail Media client ID.",
-         "cube": "Your Cube Client ID.",
+         "cube": "Your Cube client ID.",
          "cube_software": "Your Cube Software Client ID.",
          "culture_amp": "Your Culture Amp client ID.",
          "cvent": "Your Cvent client ID.",
@@ -2926,6 +2944,7 @@
          "nice": "Your NICE client ID.",
          "on24": "Your ON24 client ID.",
          "oracle_fusion_field_service": "Your Oracle Fusion Field Service client ID.",
+         "oracle_netsuite_openair": "Your Oracle NetSuite OpenAir Client ID.",
          "oracle_sap_hva_netweaver": "Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.",
          "paychex": "Your Paychex client ID.",
          "paylocity": "Your Paylocity client ID.",
@@ -3148,7 +3167,7 @@
          "coupa": "Your Coupa client_id",
          "criteo": "Your Criteo client secret key.",
          "criteo_retail_media": "Your Criteo Retail Media client secret.",
-         "cube": "Your Cube Client Secret.",
+         "cube": "Your Cube client secret.",
          "cube_software": "Your Cube Software Client Secret.",
          "culture_amp": "Your Culture Amp client secret.",
          "cvent": "Your Cvent client secret.",
@@ -3180,6 +3199,7 @@
          "navan": "Your Navan client secret.",
          "nice": "Your NICE client secret.",
          "oracle_fusion_field_service": "Your Oracle Fusion Field Service client secret.",
+         "oracle_netsuite_openair": "Your Oracle NetSuite OpenAir Client Secret.",
          "paychex": "Your Paychex client secret.",
          "paylocity": "Your Paylocity client secret.",
          "personio": "Your Personio secret.",
@@ -3354,8 +3374,9 @@
       "item_type": {},
       "description": {
          "360learning": "Your 360Learning Company ID.",
-         "cube": "Your Cube Company ID.",
+         "cube": "Your Cube company ID.",
          "cube_software": "Your Cube Software Company ID.",
+         "oracle_netsuite_openair": "Your Oracle NetSuite OpenAir Company ID.",
          "paylocity": "Your Paylocity companyId.",
          "sage_intacct": "Company ID",
          "sap_success_factors": "Your SAP SuccessFactors Company ID."
@@ -4843,6 +4864,19 @@
       },
       "api_field": ""
    },
+   "default_host": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "discourse": "Your Discourse default host."
+      },
+      "api_field": ""
+   },
    "delimiter": {
       "readonly": false,
       "sensitive": false,
@@ -5467,6 +5501,7 @@
          "invoiced": "Your Invoiced environment.",
          "jibble": "Your Jibble environment.",
          "lucca": "Your Lucca environment.",
+         "oracle_netsuite_openair": "Your Oracle NetSuite OpenAir Environment.",
          "ordergroove": "Your Ordergroove environment.",
          "paddle": "Your Paddle environment.",
          "procore": "Your Procore account environment.",
@@ -10328,6 +10363,7 @@
       "item_type": {},
       "description": {
          "appsflyer": "S3 Role ARN",
+         "aurora": "The ARN of the IAM role with RDS permissions. Required if the authentication method is `AWS_IAM` in the SaaS Deployment model.",
          "aws_cloudtrail": "The Role ARN required for authentication.",
          "aws_cost": "The Role ARN required for authentication.",
          "aws_cost_report": "The Role ARN required for authentication.",
@@ -10338,6 +10374,9 @@
          "dynamodb": "Role ARN",
          "heap": "The Role ARN required for authentication.",
          "kinesis": "The Role ARN required for authentication.",
+         "magento_mysql_rds": "The ARN of the IAM role with RDS permissions. Required if the authentication method is `AWS_IAM` in the SaaS Deployment model.",
+         "maria_rds": "The ARN of the IAM role with RDS permissions. Required if the authentication method is `AWS_IAM` in the SaaS Deployment model.",
+         "mysql_rds": "The ARN of the IAM role with RDS permissions. Required if the authentication method is `AWS_IAM` in the SaaS Deployment model.",
          "s3": "The Role ARN required for authentication. Required for connector creation when syncing using private bucket.",
          "segment": "The Role ARN required for authentication. Must be populated if `sync_type` is set to `S3`.",
          "sql_server": "The ARN of the IAM role that has access to the S3 bucket."
@@ -10919,6 +10958,7 @@
          "destini": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "device_magic": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "dialpad": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "discourse": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "dixa": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "docebo": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "donus": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11162,6 +11202,7 @@
          "optimizely": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "oracle_fusion_field_service": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "oracle_moat_analytics": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "oracle_netsuite_openair": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "oracle_sap_hva_netweaver": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "orbit": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "ordergroove": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",

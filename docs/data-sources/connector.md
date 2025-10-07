@@ -423,6 +423,7 @@ Read-Only:
 	- Service `dcl_logistics`: Your DCL Logistics API key.
 	- Service `delighted`: API Key for your Delighted account
 	- Service `destini`: Your Destini API Key.
+	- Service `discourse`: Your Discourse API key.
 	- Service `donus`: Your Donus API key.
 	- Service `doorloop`: Your DoorLoop API key.
 	- Service `drata`: Your Drata API Key.
@@ -680,6 +681,8 @@ Read-Only:
 	- Service `shipnetwork`: Your ShipNetwork API user identifier.
 - `api_user_secret` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `shipnetwork`: Your ShipNetwork API user secret.
+- `api_username` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `discourse`: Your Discourse API username.
 - `api_utilization_percentage` (String) Field usage depends on `service` value: 
 	- Service `kustomer`: Api Utilization Percentage
 - `api_version` (String) Field usage depends on `service` value: 
@@ -863,7 +866,11 @@ Read-Only:
 	- Service `tiktok_organic`: The authorization URL of the app registered in your TikTok developer account.
 	- Service `workday`: Authorization URL
 - `aws_region_code` (String) Field usage depends on `service` value: 
+	- Service `aurora`: The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`.
 	- Service `dynamodb`: The AWS region code for the DynamoDB instance, e.g. `us-east-1`.
+	- Service `magento_mysql_rds`: The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`.
+	- Service `maria_rds`: The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`.
+	- Service `mysql_rds`: The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`.
 - `backint_configuration_path` (String)
 - `backint_executable_path` (String)
 - `backup_log_format` (String) Field usage depends on `service` value: 
@@ -1027,7 +1034,7 @@ Read-Only:
 	- Service `coupa`: Your Coupa client_id
 	- Service `criteo`: Your Criteo Client ID.
 	- Service `criteo_retail_media`: Your Criteo Retail Media client ID.
-	- Service `cube`: Your Cube Client ID.
+	- Service `cube`: Your Cube client ID.
 	- Service `cube_software`: Your Cube Software Client ID.
 	- Service `culture_amp`: Your Culture Amp client ID.
 	- Service `cvent`: Your Cvent client ID.
@@ -1063,6 +1070,7 @@ Read-Only:
 	- Service `nice`: Your NICE client ID.
 	- Service `on24`: Your ON24 client ID.
 	- Service `oracle_fusion_field_service`: Your Oracle Fusion Field Service client ID.
+	- Service `oracle_netsuite_openair`: Your Oracle NetSuite OpenAir Client ID.
 	- Service `oracle_sap_hva_netweaver`: Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.
 	- Service `paychex`: Your Paychex client ID.
 	- Service `paylocity`: Your Paylocity client ID.
@@ -1193,7 +1201,7 @@ Read-Only:
 	- Service `coupa`: Your Coupa client_id
 	- Service `criteo`: Your Criteo client secret key.
 	- Service `criteo_retail_media`: Your Criteo Retail Media client secret.
-	- Service `cube`: Your Cube Client Secret.
+	- Service `cube`: Your Cube client secret.
 	- Service `cube_software`: Your Cube Software Client Secret.
 	- Service `culture_amp`: Your Culture Amp client secret.
 	- Service `cvent`: Your Cvent client secret.
@@ -1225,6 +1233,7 @@ Read-Only:
 	- Service `navan`: Your Navan client secret.
 	- Service `nice`: Your NICE client secret.
 	- Service `oracle_fusion_field_service`: Your Oracle Fusion Field Service client secret.
+	- Service `oracle_netsuite_openair`: Your Oracle NetSuite OpenAir Client Secret.
 	- Service `paychex`: Your Paychex client secret.
 	- Service `paylocity`: Your Paylocity client secret.
 	- Service `personio`: Your Personio secret.
@@ -1296,8 +1305,9 @@ Read-Only:
 	- Service `ordway`: Your Ordway company name.
 - `company_id` (String) Field usage depends on `service` value: 
 	- Service `360learning`: Your 360Learning Company ID.
-	- Service `cube`: Your Cube Company ID.
+	- Service `cube`: Your Cube company ID.
 	- Service `cube_software`: Your Cube Software Company ID.
+	- Service `oracle_netsuite_openair`: Your Oracle NetSuite OpenAir Company ID.
 	- Service `paylocity`: Your Paylocity companyId.
 	- Service `sage_intacct`: Company ID
 	- Service `sap_success_factors`: Your SAP SuccessFactors Company ID.
@@ -1574,6 +1584,8 @@ Read-Only:
 	- Service `adobe_analytics`: The aggregation duration you want. Default value: `HOUR` .
 - `db` (String) Field usage depends on `service` value: 
 	- Service `myosh`: Your Myosh Server variables/db .
+- `default_host` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `discourse`: Your Discourse default host.
 - `delimiter` (String) Field usage depends on `service` value: 
 	- Service `aws_cost_report`: Optional. You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible. If your files sync with the wrong number of columns, consider setting this value
 	- Service `azure_blob_storage`: You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.
@@ -1745,6 +1757,7 @@ Read-Only:
 	- Service `invoiced`: Your Invoiced environment.
 	- Service `jibble`: Your Jibble environment.
 	- Service `lucca`: Your Lucca environment.
+	- Service `oracle_netsuite_openair`: Your Oracle NetSuite OpenAir Environment.
 	- Service `ordergroove`: Your Ordergroove environment.
 	- Service `paddle`: Your Paddle environment.
 	- Service `procore`: Your Procore account environment.
@@ -2902,6 +2915,7 @@ Read-Only:
 	- Service `snowflake_db`: Snowflake Connector role name
 - `role_arn` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `appsflyer`: S3 Role ARN
+	- Service `aurora`: The ARN of the IAM role with RDS permissions. Required if the authentication method is `AWS_IAM` in the SaaS Deployment model.
 	- Service `aws_cloudtrail`: The Role ARN required for authentication.
 	- Service `aws_cost`: The Role ARN required for authentication.
 	- Service `aws_cost_report`: The Role ARN required for authentication.
@@ -2912,6 +2926,9 @@ Read-Only:
 	- Service `dynamodb`: Role ARN
 	- Service `heap`: The Role ARN required for authentication.
 	- Service `kinesis`: The Role ARN required for authentication.
+	- Service `magento_mysql_rds`: The ARN of the IAM role with RDS permissions. Required if the authentication method is `AWS_IAM` in the SaaS Deployment model.
+	- Service `maria_rds`: The ARN of the IAM role with RDS permissions. Required if the authentication method is `AWS_IAM` in the SaaS Deployment model.
+	- Service `mysql_rds`: The ARN of the IAM role with RDS permissions. Required if the authentication method is `AWS_IAM` in the SaaS Deployment model.
 	- Service `s3`: The Role ARN required for authentication. Required for connector creation when syncing using private bucket.
 	- Service `segment`: The Role ARN required for authentication. Must be populated if `sync_type` is set to `S3`.
 	- Service `sql_server`: The ARN of the IAM role that has access to the S3 bucket.
