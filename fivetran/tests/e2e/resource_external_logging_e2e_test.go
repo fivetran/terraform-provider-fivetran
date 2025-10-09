@@ -66,6 +66,12 @@ func TestResourceExternalLoggingE2E(t *testing.T) {
         				primary_key = "PASSWORD"
     				}
 				}
+
+				data "fivetran_external_logging" "data_test_extlog" {
+					provider = fivetran-provider
+
+					id = fivetran_external_logging.test_extlog.id
+				}
 		  `,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranExternalLoggingResourceUpdate(t, "fivetran_external_logging.test_extlog"),
@@ -73,6 +79,12 @@ func TestResourceExternalLoggingE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "enabled", "true"),
 					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.workspace_id", "workspace_id_1"),
 					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.primary_key", "PASSWORD"),
+
+					resource.TestCheckResourceAttr("data.fivetran_external_logging.data_test_extlog", "service", "azure_monitor_log"),
+					resource.TestCheckResourceAttr("data.fivetran_external_logging.data_test_extlog", "enabled", "true"),
+					resource.TestCheckResourceAttr("data.fivetran_external_logging.data_test_extlog", "config.workspace_id", "workspace_id_1"),
+					resource.TestCheckResourceAttr("data.fivetran_external_logging.data_test_extlog", "config.port", "0"),
+					resource.TestCheckResourceAttr("data.fivetran_external_logging.data_test_extlog", "config.enable_ssl", "false"),
 				),
 			},
 		},

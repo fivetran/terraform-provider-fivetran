@@ -111,7 +111,7 @@ func (d *ExternalLogging) ReadFromResponse(ctx context.Context, resp externallog
         if resp.Data.Config.PrimaryKey != "******" {
             config["primary_key"] = types.StringValue(resp.Data.Config.PrimaryKey)
         } else {
-            config["primary_key"] = d.Config.Attributes()["primary_key"]
+            config["primary_key"] = CoalesceToStringNull(d.Config.Attributes()["primary_key"])
         }
     } else {
         config["primary_key"] = types.StringNull()
@@ -121,7 +121,7 @@ func (d *ExternalLogging) ReadFromResponse(ctx context.Context, resp externallog
         if resp.Data.Config.ApiKey != "******" {
             config["api_key"] = types.StringValue(resp.Data.Config.ApiKey)
         } else {
-            config["api_key"] = d.Config.Attributes()["api_key"]
+            config["api_key"] = CoalesceToStringNull(d.Config.Attributes()["api_key"])
         }
     } else {
         config["api_key"] = types.StringNull()
@@ -131,13 +131,21 @@ func (d *ExternalLogging) ReadFromResponse(ctx context.Context, resp externallog
         if resp.Data.Config.Token != "******" {
             config["token"] = types.StringValue(resp.Data.Config.Token)
         } else {
-            config["token"] = d.Config.Attributes()["token"]
+            config["token"] = CoalesceToStringNull(d.Config.Attributes()["token"])
         }
     } else {
         config["token"] = types.StringNull()
     }
 
     d.Config, _ = types.ObjectValue(ExternalLoggingTFConfigType, config)
+}
+
+func CoalesceToStringNull(value attr.Value) attr.Value {
+	if value == nil {
+        return types.StringNull()
+    }
+
+    return value
 }
 
 func (d *ExternalLogging) ReadFromCustomResponse(ctx context.Context, resp externallogging.ExternalLoggingCustomResponse) {
