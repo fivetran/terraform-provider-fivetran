@@ -266,10 +266,11 @@ func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}) base
 						}
 
 						// is_primary_key is computed-only, always populate from API response
+						// Default to false if not provided by API
 						if columnMap["is_primary_key"] != nil {
 							columnElements["is_primary_key"] = types.BoolValue(helpers.StrToBool(columnMap["is_primary_key"].(string)))
 						} else {
-							columnElements["is_primary_key"] = types.BoolNull()
+							columnElements["is_primary_key"] = types.BoolValue(false)
 						}
 						columnValue, _ := types.ObjectValue(columnsAttrTypes, columnElements)
 						columns[columnName] = columnValue
@@ -385,10 +386,11 @@ func (d *ConnectorSchemaResourceModel) getLegacySchemaItems(schemas []interface{
 							columnElements["hashed"] = types.BoolNull()
 						}
 						// is_primary_key is computed-only, always populate from API response
+						// Default to false if not provided by API
 						if columnMap["is_primary_key"] != nil {
 							columnElements["is_primary_key"] = types.BoolValue(helpers.StrToBool(columnMap["is_primary_key"].(string)))
 						} else {
-							columnElements["is_primary_key"] = types.BoolNull()
+							columnElements["is_primary_key"] = types.BoolValue(false)
 						}
 						columnValue, _ := types.ObjectValue(columnAttrTypes, columnElements)
 						columns = append(columns, columnValue)
