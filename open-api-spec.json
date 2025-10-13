@@ -18,11 +18,11 @@
   "tags": [
     {
       "name": "updated",
-      "description": "2025-10-03T17:17:55.790Z"
+      "description": "2025-10-07T19:38:07.216Z"
     },
     {
       "name": "hash",
-      "description": "fef5c208ab6f253878dd5a4fb1ece3b47247f75936297be2def1766f28950baf"
+      "description": "9b230218334425f4254f03ff85ae0c6d2ccf2989b2b188a610baec2464457d30"
     }
   ],
   "paths": {
@@ -47613,11 +47613,12 @@
                 "title": "",
                 "type": "object",
                 "description": "Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-                "example": "Directly | PrivateLink | SshTunnel",
+                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "hosts": {
@@ -47734,11 +47735,12 @@
                 "title": "",
                 "type": "object",
                 "description": "Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-                "example": "Directly | PrivateLink | SshTunnel",
+                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "hosts": {
@@ -64777,17 +64779,17 @@
                       "description": "Dynamic parameter field name",
                       "example": "string"
                     },
-                    "table": {
-                      "title": "",
-                      "type": "string",
-                      "description": "The table name within the schema to which connector will sync the data of the specific report.",
-                      "example": "string"
-                    },
                     "support_nested_columns": {
                       "title": "",
                       "type": "boolean",
                       "description": "This option is to unpack the nested columns and sync them separately. By default, we sync the nested columns as JSON objects.",
                       "example": true
+                    },
+                    "table": {
+                      "title": "",
+                      "type": "string",
+                      "description": "The table name within the schema to which connector will sync the data of the specific report.",
+                      "example": "string"
                     },
                     "start_date": {
                       "title": "",
