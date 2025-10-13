@@ -380,18 +380,18 @@ func (d *ConnectorSchemaResourceModel) getLegacySchemaItems(schemas []interface{
 							columnElements["enabled"] = types.BoolNull()
 						}
 
-						if _, ok := localColumn["hashed"]; ok {
-							columnElements["hashed"] = types.BoolValue(helpers.StrToBool(columnMap["hashed"].(string)))
-						} else {
-							columnElements["hashed"] = types.BoolNull()
-						}
-						// is_primary_key is computed-only, always populate from API response
-						// Default to false if not provided by API to prevent null values causing plan diffs
-						if columnMap["is_primary_key"] != nil {
-							columnElements["is_primary_key"] = types.BoolValue(helpers.StrToBool(columnMap["is_primary_key"].(string)))
-						} else {
-							columnElements["is_primary_key"] = types.BoolValue(false)
-						}
+					if _, ok := localColumn["hashed"]; ok {
+						columnElements["hashed"] = types.BoolValue(helpers.StrToBool(columnMap["hashed"].(string)))
+					} else {
+						columnElements["hashed"] = types.BoolNull()
+					}
+					// is_primary_key is computed-only, always populate from API response
+					// For legacy schema format, keep null if not provided to maintain backward compatibility
+					if columnMap["is_primary_key"] != nil {
+						columnElements["is_primary_key"] = types.BoolValue(helpers.StrToBool(columnMap["is_primary_key"].(string)))
+					} else {
+						columnElements["is_primary_key"] = types.BoolNull()
+					}
 						columnValue, _ := types.ObjectValue(columnAttrTypes, columnElements)
 						columns = append(columns, columnValue)
 					}
@@ -621,7 +621,7 @@ func mapRawSchemas(schemas []interface{}) map[string]interface{} {
 			lcMap := lc.(map[string]interface{})
 			mappedColumn := map[string]interface{}{}
 			for k, v := range lcMap {
-				if k != "name" && k != "is_primary_key" {
+				if k != "name" {
 					mappedColumn[k] = v
 				}
 			}
