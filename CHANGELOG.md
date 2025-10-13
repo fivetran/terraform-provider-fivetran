@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.10...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.11...HEAD)
+
+## [v1.9.11](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.10...v1.9.11)
+
+### Fixed
+- Fixed additional case of noisy `terraform plan` output for `fivetran_connector_schema_config` resource. When the API doesn't provide `is_primary_key` values, they now default to `false` instead of `null`, preventing `+ is_primary_key = (known after apply)` diffs from appearing in plans. This completes the fix for the noisy terraform plan issue.
 
 ## [v1.9.10](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.9...v1.9.10)
 
