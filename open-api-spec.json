@@ -18,11 +18,11 @@
   "tags": [
     {
       "name": "updated",
-      "description": "2025-09-30T14:27:24.909Z"
+      "description": "2025-10-07T19:38:07.216Z"
     },
     {
       "name": "hash",
-      "description": "632c0b8f76c90f33eb4cc97e7ce89d605584f5cf769bd18a0ad36c6236a84241"
+      "description": "9b230218334425f4254f03ff85ae0c6d2ccf2989b2b188a610baec2464457d30"
     }
   ],
   "paths": {
@@ -221,7 +221,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/MembershipRequest"
+                "$ref": "#/components/schemas/GroupMembershipRequest"
               }
             }
           }
@@ -12365,6 +12365,7 @@
             "destini": "#/components/schemas/destini_NewConnectorRequestV1",
             "device_magic": "#/components/schemas/device_magic_NewConnectorRequestV1",
             "dialpad": "#/components/schemas/dialpad_NewConnectorRequestV1",
+            "discourse": "#/components/schemas/discourse_NewConnectorRequestV1",
             "dixa": "#/components/schemas/dixa_NewConnectorRequestV1",
             "docebo": "#/components/schemas/docebo_NewConnectorRequestV1",
             "documentdb": "#/components/schemas/documentdb_NewConnectorRequestV1",
@@ -12620,6 +12621,7 @@
             "oracle_fusion_field_service": "#/components/schemas/oracle_fusion_field_service_NewConnectorRequestV1",
             "oracle_hva": "#/components/schemas/oracle_hva_NewConnectorRequestV1",
             "oracle_moat_analytics": "#/components/schemas/oracle_moat_analytics_NewConnectorRequestV1",
+            "oracle_netsuite_openair": "#/components/schemas/oracle_netsuite_openair_NewConnectorRequestV1",
             "oracle_rac": "#/components/schemas/oracle_rac_NewConnectorRequestV1",
             "oracle_rds": "#/components/schemas/oracle_rds_NewConnectorRequestV1",
             "oracle_sap_hva": "#/components/schemas/oracle_sap_hva_NewConnectorRequestV1",
@@ -13494,6 +13496,7 @@
             "destini": "#/components/schemas/destini_ConnectorResponseV1",
             "device_magic": "#/components/schemas/device_magic_ConnectorResponseV1",
             "dialpad": "#/components/schemas/dialpad_ConnectorResponseV1",
+            "discourse": "#/components/schemas/discourse_ConnectorResponseV1",
             "dixa": "#/components/schemas/dixa_ConnectorResponseV1",
             "docebo": "#/components/schemas/docebo_ConnectorResponseV1",
             "documentdb": "#/components/schemas/documentdb_ConnectorResponseV1",
@@ -13749,6 +13752,7 @@
             "oracle_fusion_field_service": "#/components/schemas/oracle_fusion_field_service_ConnectorResponseV1",
             "oracle_hva": "#/components/schemas/oracle_hva_ConnectorResponseV1",
             "oracle_moat_analytics": "#/components/schemas/oracle_moat_analytics_ConnectorResponseV1",
+            "oracle_netsuite_openair": "#/components/schemas/oracle_netsuite_openair_ConnectorResponseV1",
             "oracle_rac": "#/components/schemas/oracle_rac_ConnectorResponseV1",
             "oracle_rds": "#/components/schemas/oracle_rds_ConnectorResponseV1",
             "oracle_sap_hva": "#/components/schemas/oracle_sap_hva_ConnectorResponseV1",
@@ -17426,6 +17430,25 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "GroupMembershipRequest": {
+        "required": [
+          "id",
+          "role"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The membership entity unique identifier",
+            "example": "group_id"
+          },
+          "role": {
+            "type": "string",
+            "description": "The role that you would like to assign to the user ",
+            "example": "Manage Connection"
           }
         }
       },
@@ -25197,6 +25220,13 @@
                 "format": "password",
                 "example": "test_password"
               },
+              "role_arn": {
+                "title": "",
+                "type": "string",
+                "description": "The ARN of the IAM role with RDS permissions. Required if the authentication method is `AWS_IAM` in the SaaS Deployment model.",
+                "format": "password",
+                "example": "arn"
+              },
               "client_private_key": {
                 "title": "",
                 "type": "string",
@@ -25222,6 +25252,12 @@
                 "type": "string",
                 "description": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
                 "example": "XXX.XXX.XXX.XXX"
+              },
+              "aws_region_code": {
+                "title": "",
+                "type": "string",
+                "description": "The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`.",
+                "example": "us-east-1"
               },
               "user": {
                 "title": "",
@@ -32775,20 +32811,20 @@
               "company_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Cube Company ID.",
+                "description": "Your Cube company ID.",
                 "example": "your_cube_company_id"
               },
               "client_secret": {
                 "title": "",
                 "type": "string",
-                "description": "Your Cube Client Secret.",
+                "description": "Your Cube client secret.",
                 "format": "password",
                 "example": "your_cube_client_secret"
               },
               "client_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Cube Client ID.",
+                "description": "Your Cube client ID.",
                 "example": "your_cube_client_id"
               }
             },
@@ -33919,6 +33955,50 @@
           },
           {
             "$ref": "#/components/schemas/dialpad_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
+      "discourse_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_username": {
+                "title": "",
+                "type": "string",
+                "description": "Your Discourse API username.",
+                "format": "password",
+                "example": "your_discourse_api_username"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Discourse API key.",
+                "format": "password",
+                "example": "your_discourse_api_key"
+              },
+              "default_host": {
+                "title": "",
+                "type": "string",
+                "description": "Your Discourse default host.",
+                "format": "password",
+                "example": "your_discourse_default_host"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "discourse_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/discourse_config_V1"
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
@@ -43031,11 +43111,17 @@
                   "client_id": {
                     "title": "",
                     "type": "string",
-                    "description": "`Client ID` of your Facebook  client application.",
+                    "description": "`Client ID` of your Facebook client application.",
                     "example": "my_client_id"
                   }
                 },
                 "description": "Your application client access fields."
+              },
+              "system_user_access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": "string"
               }
             },
             "description": ""
@@ -45715,6 +45801,13 @@
                 "format": "password",
                 "example": "test_password"
               },
+              "role_arn": {
+                "title": "",
+                "type": "string",
+                "description": "The ARN of the IAM role with RDS permissions. Required if the authentication method is `AWS_IAM` in the SaaS Deployment model.",
+                "format": "password",
+                "example": "arn"
+              },
               "client_private_key": {
                 "title": "",
                 "type": "string",
@@ -45740,6 +45833,12 @@
                 "type": "string",
                 "description": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
                 "example": "XXX.XXX.XXX.XXX"
+              },
+              "aws_region_code": {
+                "title": "",
+                "type": "string",
+                "description": "The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`.",
+                "example": "us-east-1"
               },
               "user": {
                 "title": "",
@@ -46359,6 +46458,13 @@
                 "format": "password",
                 "example": "test_password"
               },
+              "role_arn": {
+                "title": "",
+                "type": "string",
+                "description": "The ARN of the IAM role with RDS permissions. Required if the authentication method is `AWS_IAM` in the SaaS Deployment model.",
+                "format": "password",
+                "example": "arn"
+              },
               "client_private_key": {
                 "title": "",
                 "type": "string",
@@ -46384,6 +46490,12 @@
                 "type": "string",
                 "description": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
                 "example": "XXX.XXX.XXX.XXX"
+              },
+              "aws_region_code": {
+                "title": "",
+                "type": "string",
+                "description": "The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`.",
+                "example": "us-east-1"
               },
               "user": {
                 "title": "",
@@ -47501,11 +47613,12 @@
                 "title": "",
                 "type": "object",
                 "description": "Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-                "example": "Directly | PrivateLink | SshTunnel",
+                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "hosts": {
@@ -47622,11 +47735,12 @@
                 "title": "",
                 "type": "object",
                 "description": "Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-                "example": "Directly | PrivateLink | SshTunnel",
+                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "hosts": {
@@ -48176,6 +48290,13 @@
                 "format": "password",
                 "example": "test_password"
               },
+              "role_arn": {
+                "title": "",
+                "type": "string",
+                "description": "The ARN of the IAM role with RDS permissions. Required if the authentication method is `AWS_IAM` in the SaaS Deployment model.",
+                "format": "password",
+                "example": "arn"
+              },
               "client_private_key": {
                 "title": "",
                 "type": "string",
@@ -48201,6 +48322,12 @@
                 "type": "string",
                 "description": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
                 "example": "XXX.XXX.XXX.XXX"
+              },
+              "aws_region_code": {
+                "title": "",
+                "type": "string",
+                "description": "The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`.",
+                "example": "us-east-1"
               },
               "user": {
                 "title": "",
@@ -50245,6 +50372,56 @@
           },
           {
             "$ref": "#/components/schemas/oracle_moat_analytics_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
+      "oracle_netsuite_openair_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "environment": {
+                "type": "object",
+                "description": "Your Oracle NetSuite OpenAir Environment.",
+                "enum": [
+                  "openair.com",
+                  "sandbox.openair.com"
+                ]
+              },
+              "company_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Oracle NetSuite OpenAir Company ID.",
+                "example": "your_oracle_netsuite_openair_company_id"
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Oracle NetSuite OpenAir Client Secret.",
+                "format": "password",
+                "example": "your_oracle_netsuite_openair_client_secret"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Oracle NetSuite OpenAir Client ID.",
+                "example": "your_oracle_netsuite_openair_client_id"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "oracle_netsuite_openair_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/oracle_netsuite_openair_config_V1"
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
@@ -64602,17 +64779,17 @@
                       "description": "Dynamic parameter field name",
                       "example": "string"
                     },
-                    "table": {
-                      "title": "",
-                      "type": "string",
-                      "description": "The table name within the schema to which connector will sync the data of the specific report.",
-                      "example": "string"
-                    },
                     "support_nested_columns": {
                       "title": "",
                       "type": "boolean",
                       "description": "This option is to unpack the nested columns and sync them separately. By default, we sync the nested columns as JSON objects.",
                       "example": true
+                    },
+                    "table": {
+                      "title": "",
+                      "type": "string",
+                      "description": "The table name within the schema to which connector will sync the data of the specific report.",
+                      "example": "string"
                     },
                     "start_date": {
                       "title": "",
@@ -68107,6 +68284,12 @@
                 "type": "string",
                 "description": "Public Key",
                 "example": "string"
+              },
+              "external_id": {
+                "title": "",
+                "type": "string",
+                "description": "Fivetran-generated External ID. Use it with the `role_arn` for authentication.",
+                "example": "external_id"
               }
             },
             "description": ""
@@ -69920,6 +70103,16 @@
           },
           {
             "$ref": "#/components/schemas/dialpad_config_V1"
+          }
+        ]
+      },
+      "discourse_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/discourse_config_V1"
           }
         ]
       },
@@ -72123,6 +72316,12 @@
                 "type": "string",
                 "description": "Public Key",
                 "example": "string"
+              },
+              "external_id": {
+                "title": "",
+                "type": "string",
+                "description": "Fivetran-generated External ID. Use it with the `role_arn` for authentication.",
+                "example": "external_id"
               }
             },
             "description": ""
@@ -72280,6 +72479,12 @@
                 "type": "string",
                 "description": "Public Key",
                 "example": "string"
+              },
+              "external_id": {
+                "title": "",
+                "type": "string",
+                "description": "Fivetran-generated External ID. Use it with the `role_arn` for authentication.",
+                "example": "external_id"
               }
             },
             "description": ""
@@ -72694,6 +72899,12 @@
                 "type": "string",
                 "description": "Public Key",
                 "example": "string"
+              },
+              "external_id": {
+                "title": "",
+                "type": "string",
+                "description": "Fivetran-generated External ID. Use it with the `role_arn` for authentication.",
+                "example": "external_id"
               }
             },
             "description": ""
@@ -73105,6 +73316,16 @@
           },
           {
             "$ref": "#/components/schemas/oracle_moat_analytics_config_V1"
+          }
+        ]
+      },
+      "oracle_netsuite_openair_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/oracle_netsuite_openair_config_V1"
           }
         ]
       },
@@ -76893,15 +77114,15 @@
             ],
             "type": "object",
             "properties": {
-              "account_url": {
-                "type": "object",
-                "description": "The URL of your account.",
-                "example": "account_url"
-              },
               "vpce_id": {
                 "type": "object",
                 "description": "The ID of your Virtual Private Cloud Endpoint.",
                 "example": "vpce_id"
+              },
+              "account_url": {
+                "type": "object",
+                "description": "The URL of your account.",
+                "example": "account_url"
               }
             },
             "description": "Snowflake for AWS"
@@ -76928,15 +77149,15 @@
             ],
             "type": "object",
             "properties": {
-              "aws_account_id": {
-                "type": "object",
-                "description": "The ID of your AWS account.",
-                "example": "aws_account_id"
-              },
               "cluster_identifier": {
                 "type": "object",
                 "description": "The cluster identifier.",
                 "example": "cluster_identifier"
+              },
+              "aws_account_id": {
+                "type": "object",
+                "description": "The ID of your AWS account.",
+                "example": "aws_account_id"
               }
             },
             "description": "Redshift for AWS"
@@ -76992,15 +77213,15 @@
             ],
             "type": "object",
             "properties": {
-              "connection_service_id": {
-                "type": "object",
-                "description": "The ID of your connection service.",
-                "example": "connection_service_id"
-              },
               "workspace_url": {
                 "type": "object",
                 "description": "Workspace Url",
                 "example": "workspace_url"
+              },
+              "connection_service_id": {
+                "type": "object",
+                "description": "The ID of your connection service.",
+                "example": "connection_service_id"
               }
             },
             "description": "Databricks for Azure"
@@ -77027,15 +77248,15 @@
             ],
             "type": "object",
             "properties": {
-              "account_url": {
-                "type": "object",
-                "description": "The URL of your account.",
-                "example": "account_url"
-              },
               "pls_id": {
                 "type": "object",
                 "description": "The ID of your Private Link service.",
                 "example": "pls_id"
+              },
+              "account_url": {
+                "type": "object",
+                "description": "The URL of your account.",
+                "example": "account_url"
               }
             },
             "description": "Snowflake for Azure"
@@ -77149,15 +77370,15 @@
             ],
             "type": "object",
             "properties": {
-              "connection_service_id": {
-                "type": "object",
-                "description": "The ID of your connection service.",
-                "example": "connection_service_id"
-              },
               "sub_resource_name": {
                 "type": "object",
                 "description": "The name of subresource.",
                 "example": "sub_resource_name"
+              },
+              "connection_service_id": {
+                "type": "object",
+                "description": "The ID of your connection service.",
+                "example": "connection_service_id"
               },
               "private_dns_records": {
                 "type": "object",
@@ -77189,15 +77410,15 @@
             ],
             "type": "object",
             "properties": {
-              "account_url": {
-                "type": "object",
-                "description": "The URL of your account.",
-                "example": "account_url"
-              },
               "pls_id": {
                 "type": "object",
                 "description": "The ID of your Private Link service.",
                 "example": "pls_id"
+              },
+              "account_url": {
+                "type": "object",
+                "description": "The URL of your account.",
+                "example": "account_url"
               }
             },
             "description": "Snowflake for GCP"
@@ -77253,15 +77474,15 @@
             ],
             "type": "object",
             "properties": {
-              "connection_service_id": {
-                "type": "object",
-                "description": "The ID of your connection service.",
-                "example": "connection_service_id"
-              },
               "workspace_url": {
                 "type": "object",
                 "description": "Workspace Url",
                 "example": "workspace_url"
+              },
+              "connection_service_id": {
+                "type": "object",
+                "description": "The ID of your connection service.",
+                "example": "connection_service_id"
               }
             },
             "description": "Databricks for GCP"

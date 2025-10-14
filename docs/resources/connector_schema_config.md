@@ -231,7 +231,10 @@ Optional:
 
 - `enabled` (Boolean) The boolean value specifying whether the sync of the column into the destination is enabled.
 - `hashed` (Boolean) The boolean value specifying whether a column should be hashed.
-- `is_primary_key` (Boolean)
+
+Read-Only:
+
+- `is_primary_key` (Boolean) Boolean value indicating if the column is a primary key. This field is read-only and computed by the API.
 
 
 
@@ -260,7 +263,10 @@ Optional:
 
 - `enabled` (Boolean) The boolean value specifying whether the sync of the column into the destination is enabled.
 - `hashed` (Boolean) The boolean value specifying whether a column should be hashed.
-- `is_primary_key` (Boolean)
+
+Read-Only:
+
+- `is_primary_key` (Boolean) Boolean value indicating if the column is a primary key. This field is read-only and computed by the API.
 
 
 
