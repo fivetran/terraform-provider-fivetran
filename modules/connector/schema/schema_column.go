@@ -45,9 +45,10 @@ func (c _column) prepareRequest() *connections.ConnectionSchemaConfigColumn {
 	if c.hashed != nil {
 		result.Hashed(*c.hashed)
 	}
-	if c.isPrimaryKey != nil {
-		result.IsPrimaryKey(*c.isPrimaryKey)
-	}
+	// is_primary_key is computed-only and should not be sent in API requests
+	// if c.isPrimaryKey != nil {
+	// 	result.IsPrimaryKey(*c.isPrimaryKey)
+	// }
 	return result
 }
 
@@ -57,9 +58,10 @@ func (c _column) prepareCreateRequest() *connections.ConnectionSchemaConfigColum
 	if c.hashed != nil {
 		result.Hashed(*c.hashed)
 	}
-	if c.isPrimaryKey != nil {
-		result.IsPrimaryKey(*c.isPrimaryKey)
-	}
+	// is_primary_key is computed-only and should not be sent in API requests
+	// if c.isPrimaryKey != nil {
+	// 	result.IsPrimaryKey(*c.isPrimaryKey)
+	// }
 	return result
 }
 

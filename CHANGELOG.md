@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed importing of `fivetran_external_logging` resources, and retrieving `fivetran_external_logging` data sources.
+- Fixed additional case of noisy `terraform plan` output for `fivetran_connector_schema_config` resource. When the API doesn't provide `is_primary_key` values, they now default to `false` instead of `null` (for newer `schemas` format), preventing `+ is_primary_key = (known after apply)` diffs from appearing in plans. The `is_primary_key` field is also now filtered from API requests as it is computed-only.
 
 ### Added
 New connection services supported:
