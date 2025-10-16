@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.10...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.11...HEAD)
+
+## [v1.9.11](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.10...v1.9.11)
+
+### Fixed
+- Fixed state reconciliation issue for SFTP connectors with `files` blocks containing null values for optional fields (`archive_pattern`, `email_subject`, `file_pattern`). The provider now uses `table_name` as the key field for matching file objects during state reconciliation, preventing "Provider produced inconsistent result after apply" errors.
 
 ## [v1.9.10](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.9...v1.9.10)
 
