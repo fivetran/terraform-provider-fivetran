@@ -2044,21 +2044,18 @@ func TestResourceSchemaPrimaryKeyNullDefaultMock(t *testing.T) {
 		ExpectNonEmptyPlan: false,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				// Verify that is_primary_key values are set to false (not null) in state
-				// This prevents "known after apply" in plan output
 				resource := s.RootModule().Resources["fivetran_connector_schema_config.test_schema"]
 				if resource == nil {
 					return fmt.Errorf("resource not found in state")
 				}
 
-				// Check that is_primary_key attributes exist and are set to false
 				columns := []string{"balance", "id", "label", "type"}
 				for _, col := range columns {
 					key := fmt.Sprintf("schemas.lendable.tables.account.columns.%s.is_primary_key", col)
 					if val, ok := resource.Primary.Attributes[key]; !ok {
 						return fmt.Errorf("is_primary_key not found for column %s", col)
-					} else if val != "false" {
-						return fmt.Errorf("is_primary_key for column %s should be 'false', got '%s'", col, val)
+					} else if val != "" {
+						return fmt.Errorf("is_primary_key for column %s should be null (empty string), got '%s'", col, val)
 					}
 				}
 
@@ -2310,13 +2307,13 @@ func TestResourceSchemaPrimaryKeyLargeSchemaNoNoiseMock(t *testing.T) {
 						key := fmt.Sprintf("schemas.public.tables.%s.columns.%s.is_primary_key", table, col)
 						if val, ok := resource.Primary.Attributes[key]; !ok {
 							return fmt.Errorf("is_primary_key not found for %s.%s", table, col)
-						} else if val != "false" {
-							return fmt.Errorf("is_primary_key for %s.%s should be 'false', got '%s'", table, col, val)
+						} else if val != "" {
+							return fmt.Errorf("is_primary_key for %s.%s should be null (empty string), got '%s'", table, col, val)
 						}
 					}
 				}
 
-				t.Logf("✓ SUCCESS: All 12 columns have is_primary_key=false in state")
+				t.Logf("✓ SUCCESS: All 12 columns have is_primary_key=null in state")
 				t.Logf("✓ SUCCESS: Plan shows NO changes (no is_primary_key noise)")
 				t.Logf("✓ This fix prevents the customer's issue of hundreds of noisy plan lines!")
 
