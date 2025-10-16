@@ -500,3 +500,134 @@ func testFivetranConnectorResourceDestroy(s *terraform.State) error {
 
 	return nil
 }
+
+func TestResourceConnectorFilesKeyFieldE2E(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectorResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+					resource "fivetran_group" "group" {
+						provider = fivetran-provider
+    					name = "test_group_files_key_field"
+					}
+
+					resource "fivetran_connector" "s3connector" {
+					    provider = fivetran-provider
+					    group_id  = fivetran_group.group.id
+    					service  = "s3"
+    					run_setup_tests  = false
+
+    					destination_schema {
+        					name = "test_files_key_field_schema"
+  					    } 
+
+  						config {
+      						bucket = "testbucket"
+      						is_public = true
+      						quote_character_enabled =  true
+      						delimiter = ","
+      						file_type = "csv"
+      						on_error = "fail"
+      						auth_type = "PUBLIC_BUCKET"
+      						append_file_option = "upsert_file"
+      						connection_type = "Directly"
+      						compression = "uncompressed"
+
+      						# Test files block with null values for optional fields
+      						# This simulates the SFTP connector scenario where only table_name is specified
+      						files {
+          						archive_pattern = null
+          						email_subject = null
+          						file_pattern = null
+          						table_name = "test_table_with_nulls"
+      						}
+    
+      						files {
+          						archive_pattern = "*.zip"
+          						email_subject = "test@example.com"
+          						file_pattern = "data.csv"
+          						table_name = "test_table_with_values"
+        					}
+
+      						# Test files block with only table_name (minimal configuration)
+      						files {
+          						table_name = "minimal_table"
+      						}
+    					}
+  					}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectorResourceCreate(t, "fivetran_connector.s3connector"),
+					resource.TestCheckResourceAttrSet("fivetran_connector.s3connector", "config.files.#"),
+					// Verify that the connector was created successfully despite having null values in files block
+					resource.TestCheckResourceAttr("fivetran_connector.s3connector", "service", "s3"),
+					resource.TestCheckResourceAttr("fivetran_connector.s3connector", "destination_schema.name", "test_files_key_field_schema"),
+				),
+			},
+			{
+				// Test update scenario - this is where the original bug occurred
+				// The provider should be able to reconcile state changes without errors
+				Config: `
+					resource "fivetran_group" "group" {
+						provider = fivetran-provider
+    					name = "test_group_files_key_field"
+					}
+
+					resource "fivetran_connector" "s3connector" {
+					    provider = fivetran-provider
+					    group_id  = fivetran_group.group.id
+    					service  = "s3"
+    					run_setup_tests  = false
+
+    					destination_schema {
+        					name = "test_files_key_field_schema"
+  					    } 
+
+  						config {
+      						bucket = "testbucket"
+      						is_public = true
+      						quote_character_enabled =  true
+      						delimiter = ","
+      						file_type = "csv"
+      						on_error = "fail"
+      						auth_type = "PUBLIC_BUCKET"
+      						append_file_option = "upsert_file"
+      						connection_type = "Directly"
+      						compression = "uncompressed"
+
+      						# Update the files block - this should not cause state reconciliation errors
+      						files {
+          						archive_pattern = null
+          						email_subject = null
+          						file_pattern = "updated_pattern.csv"
+          						table_name = "test_table_with_nulls"
+      						}
+    
+      						files {
+          						archive_pattern = "*.tar.gz"
+          						email_subject = "updated@example.com"
+          						file_pattern = "updated_data.csv"
+          						table_name = "test_table_with_values"
+        					}
+
+      						files {
+          						archive_pattern = null
+          						email_subject = null
+          						file_pattern = null
+          						table_name = "minimal_table"
+      						}
+    					}
+  					}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					// Verify that the update succeeded without state reconciliation errors
+					resource.TestCheckResourceAttr("fivetran_connector.s3connector", "service", "s3"),
+					resource.TestCheckResourceAttr("fivetran_connector.s3connector", "destination_schema.name", "test_files_key_field_schema"),
+				),
+			},
+		},
+	})
+}
