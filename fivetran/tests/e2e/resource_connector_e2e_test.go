@@ -535,6 +535,7 @@ func TestResourceConnectorFilesKeyFieldE2E(t *testing.T) {
       						append_file_option = "upsert_file"
       						connection_type = "Directly"
       						compression = "uncompressed"
+      						table = "test_table"
 
       						# Test files block with null values for optional fields
       						# This simulates the SFTP connector scenario where only table_name is specified
@@ -597,6 +598,7 @@ func TestResourceConnectorFilesKeyFieldE2E(t *testing.T) {
       						append_file_option = "upsert_file"
       						connection_type = "Directly"
       						compression = "uncompressed"
+      						table = "test_table"
 
       						# Update the files block - this should not cause state reconciliation errors
       						files {
