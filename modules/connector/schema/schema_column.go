@@ -45,10 +45,6 @@ func (c _column) prepareRequest() *connections.ConnectionSchemaConfigColumn {
 	if c.hashed != nil {
 		result.Hashed(*c.hashed)
 	}
-	// is_primary_key is computed-only and should not be sent in API requests
-	// if c.isPrimaryKey != nil {
-	// 	result.IsPrimaryKey(*c.isPrimaryKey)
-	// }
 	return result
 }
 
@@ -58,10 +54,6 @@ func (c _column) prepareCreateRequest() *connections.ConnectionSchemaConfigColum
 	if c.hashed != nil {
 		result.Hashed(*c.hashed)
 	}
-	// is_primary_key is computed-only and should not be sent in API requests
-	// if c.isPrimaryKey != nil {
-	// 	result.IsPrimaryKey(*c.isPrimaryKey)
-	// }
 	return result
 }
 
@@ -162,7 +154,8 @@ func (c _column) toStateObject(sch string, local *_column, diag *diag.Diagnostic
 	if local != nil && local.hashed != nil && c.hashed != nil {
 		result[HASHED] = helpers.BoolToStr(*c.hashed)
 	}
-	if local != nil && local.isPrimaryKey != nil && c.isPrimaryKey != nil {
+	// is_primary_key is computed-only, always include it in state if available from API
+	if c.isPrimaryKey != nil {
 		result[IS_PRIMARY_KEY] = helpers.BoolToStr(*c.isPrimaryKey)
 	}
 	return result, local != nil ||
