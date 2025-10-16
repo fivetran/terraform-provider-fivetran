@@ -5823,7 +5823,7 @@
             "api_field": ""
          }
       },
-      "key_field": "",
+      "key_field": "table_name",
       "item_type": {},
       "description": {
          "azure_blob_storage": "Mapped file name patterns to a destination table.",
