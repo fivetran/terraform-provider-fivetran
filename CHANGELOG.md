@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed `is_primary_key` handling in `fivetran_connector_schema_config` resource to prevent "Provider returned invalid result object after apply" errors. Added proper null handling when API doesn't provide `is_primary_key` values, ensuring all attributes have known values after apply operations.
+- Fixed state reconciliation issue for SFTP connectors with `files` blocks containing null values for optional fields (`archive_pattern`, `email_subject`, `file_pattern`). The provider now uses `table_name` as the key field for matching file objects during state reconciliation, preventing "Provider produced inconsistent result after apply" errors.
 
 ## [v1.9.10](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.9...v1.9.10)
 
