@@ -45,10 +45,6 @@ func (c _column) prepareRequest() *connections.ConnectionSchemaConfigColumn {
 	if c.hashed != nil {
 		result.Hashed(*c.hashed)
 	}
-	// is_primary_key is computed-only and should not be sent in API requests
-	// if c.isPrimaryKey != nil {
-	// 	result.IsPrimaryKey(*c.isPrimaryKey)
-	// }
 	return result
 }
 
@@ -58,10 +54,6 @@ func (c _column) prepareCreateRequest() *connections.ConnectionSchemaConfigColum
 	if c.hashed != nil {
 		result.Hashed(*c.hashed)
 	}
-	// is_primary_key is computed-only and should not be sent in API requests
-	// if c.isPrimaryKey != nil {
-	// 	result.IsPrimaryKey(*c.isPrimaryKey)
-	// }
 	return result
 }
 
@@ -77,15 +69,12 @@ func (c *_column) override(local *_column, sch string) error {
 		c.setHashed(local.hashed)
 		c.setIsPrimaryKey(local.isPrimaryKey)
 	} else {
-		// patch silently if possible
 		c.setEnabled(sch != BLOCK_ALL)
-		// do not manage hashed for disabled columns - it doesn't make any sense
 		if c.enabled {
 			if c.hashed != nil && *(c.hashed) {
 				c.setHashedToDefault()
 			}
 		} else {
-			// don't pass it in request
 			c.setHashed(nil)
 		}
 	}
@@ -93,7 +82,6 @@ func (c *_column) override(local *_column, sch string) error {
 }
 
 func (c *_column) readFromResourceData(source map[string]interface{}, sch string) {
-	// Set hashed only if it is configured
 	if hashed, ok := source[HASHED]; ok {
 		value := getBoolValue(hashed)
 		c.hashed = &value
@@ -139,7 +127,6 @@ func (c _column) toStateObject(sch string, local *_column, diag *diag.Diagnostic
 
 	result[ENABLED] = helpers.BoolToStr(c.enabled)
 
-	// In case if table patch is not allowed we have to preserve local value in state to avoid conflict
 	if local != nil {
 		if c.patchAllowed != nil && !*c.patchAllowed && c.enabled != local.enabled {
 			lockReason := "Unknown"
@@ -162,9 +149,9 @@ func (c _column) toStateObject(sch string, local *_column, diag *diag.Diagnostic
 	if local != nil && local.hashed != nil && c.hashed != nil {
 		result[HASHED] = helpers.BoolToStr(*c.hashed)
 	}
-	if local != nil && local.isPrimaryKey != nil && c.isPrimaryKey != nil {
+	if c.isPrimaryKey != nil {
 		result[IS_PRIMARY_KEY] = helpers.BoolToStr(*c.isPrimaryKey)
 	}
 	return result, local != nil ||
-		(c.enabled != (sch != BLOCK_ALL) && c.isPatchAllowed()) // if column is not aligned with sch it should not be included if patch not allowed
+		(c.enabled != (sch != BLOCK_ALL) && c.isPatchAllowed())
 }
