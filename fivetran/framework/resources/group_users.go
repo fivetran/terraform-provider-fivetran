@@ -120,6 +120,10 @@ func (r *groupUser) Read(ctx context.Context, req resource.ReadRequest, resp *re
     var data model.GroupUser
     resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
+    if data.GroupId.IsNull() || data.GroupId.IsUnknown() {
+        data.GroupId = data.Id
+    }
+
     stateUserMap := make(map[string]userType)
     for _, user := range data.User.Elements() {
         if userElement, ok := user.(basetypes.ObjectValue); ok {
@@ -140,15 +144,8 @@ func (r *groupUser) Read(ctx context.Context, req resource.ReadRequest, resp *re
 
         return
     }
-    var groupUserResponseFinal groups.GroupListUsersResponse
-    for _, localUser := range groupUserListResponse.Data.Items {
-        _, exists := stateUserMap[localUser.Email]
-        if exists {
-            groupUserResponseFinal.Data.Items = append(groupUserResponseFinal.Data.Items, localUser) 
-        }
-    }
 
-    data.ReadFromResponse(ctx, groupUserResponseFinal)
+    data.ReadFromResponse(ctx, groupUserListResponse)
 
     resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }

@@ -1,14 +1,15 @@
 package resources_test
 
 import (
-	"net/http"
-	"testing"
-	"strings"
-	"strconv"
 	"fmt"
-	
-	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
+	"net/http"
+	"runtime"
+	"strconv"
+	"strings"
+	"testing"
+
 	"github.com/fivetran/go-fivetran/tests/mock"
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
@@ -139,6 +140,42 @@ func TestResourceGroupUsersCleanupGroupOnCreate(t *testing.T) {
 	)
 }
 
+func composeImportStateCheck(fs ...resource.ImportStateCheckFunc) resource.ImportStateCheckFunc {
+	return func(s []*terraform.InstanceState) error {
+		for i, f := range fs {
+			if err := f(s); err != nil {
+				return fmt.Errorf("check %d/%d error: %s", i+1, len(fs), err)
+			}
+		}
+
+		return nil
+	}
+}
+
+func testImportCheckResourceAttr(instanceId, attributeName, value string) resource.ImportStateCheckFunc {
+	_, file, line, _ := runtime.Caller(1)
+
+	return func(s []*terraform.InstanceState) error {
+		for _, v := range s {
+			if v.ID != instanceId {
+				continue
+			}
+
+			if attrVal, ok := v.Attributes[attributeName]; ok {
+				if attrVal != value {
+					return fmt.Errorf("For %s with '%s' id, '%s' attribute value is expected: '%s', got: '%s'. At %s:%d", v.Ephemeral.Type, instanceId, attributeName, value, attrVal, file, line)
+				}
+
+				return nil
+			} else {
+				return fmt.Errorf("Attribute '%s' not found for %s with '%s' id. At %s:%d", attributeName, v.Ephemeral.Type, instanceId, file, line)
+			}
+		}
+
+		return fmt.Errorf("Not found: %s with '%s' id. At %s:%d", s[0].Ephemeral.Type, instanceId, file, line)
+	}
+}
+
 func TestResourceGroupUsersMock(t *testing.T) {
 	step1 := resource.TestStep{
 		Config: `
@@ -216,6 +253,27 @@ func TestResourceGroupUsersMock(t *testing.T) {
 			//resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "test_group_name"),
 		),
 	}
+	step4 := resource.TestStep{
+		ImportState:             true,
+		ResourceName:            "fivetran_group_users.testgroup_users",
+		ImportStateId:           "group_id",
+		ImportStateVerify:       true,
+		ImportStateVerifyIgnore: []string{"last_updated"},
+		ImportStateCheck: composeImportStateCheck(
+			func(s []*terraform.InstanceState) error {
+				tfmock.AssertEqual(t, len(groupUsersData), 2)
+				return nil
+			},
+			testImportCheckResourceAttr("group_id", "user.#", "2"),
+			testImportCheckResourceAttr("group_id", "user.0.id", "user_12"),
+			testImportCheckResourceAttr("group_id", "user.0.email", "email1@user.domain"),
+			testImportCheckResourceAttr("group_id", "user.0.role", "Read Only"),
+			testImportCheckResourceAttr("group_id", "user.1.id", "user_10"),
+			testImportCheckResourceAttr("group_id", "user.1.email", "email@user.domain"),
+			testImportCheckResourceAttr("group_id", "user.1.role", "Destination Administrator"),
+		),
+	}
+
 	resource.Test(
 		t,
 		resource.TestCase{
@@ -233,6 +291,7 @@ func TestResourceGroupUsersMock(t *testing.T) {
 				step1,
 				step2,
 				step3,
+				step4,
 			},
 		},
 	)
