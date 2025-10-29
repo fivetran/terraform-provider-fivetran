@@ -353,7 +353,7 @@
          "eventsforce": "Your Eventsforce account name.",
          "freshdesk_contact_center": "Your Freshdesk Contact Center account name.",
          "happyfox": "Your HappyFox account name.",
-         "helpjuice": "",
+         "helpjuice": "Your Helpjuice account name.",
          "maxio_saasoptics": "Your Maxio SaaSOptics account name.",
          "talkdesk": "Your Talkdesk Account Name.",
          "udemy_business": "Your Udemy Business account name."
@@ -1228,7 +1228,7 @@
          "freshsuccess": "Your Freshsuccess API key.",
          "freshteam": "Your Freshteam API key.",
          "friendbuy": "Your Friendbuy API key.",
-         "fulfil": "",
+         "fulfil": "Your Fulfil API key.",
          "fullstory": "Your Fullstory API key.",
          "gainsight_product_experience": "Your Gainsight Product Experience API key.",
          "gem": "Your Gem API key.",
@@ -2184,6 +2184,7 @@
       "description": {
          "aurora": "Database authentication method",
          "aurora_postgres": "Database authentication method",
+         "azure_blob_storage": "Authentication Method",
          "azure_postgres": "Database authentication method",
          "azure_sql_db": "Authentication Method.",
          "azure_sql_managed_db": "Authentication Method.",
@@ -2425,7 +2426,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "sql_server": "Location of transaction log backup files when using BACKUP binary log type. Possible values: `\"AZURE\"`, `\"ALTERNATE_LOCATION\"`."
+         "sql_server": "Location of transaction log backup files when using BACKUP binary log type. Possible values: `\"AZURE\"`, `\"ALTERNATE_LOCATION\"`, `\"AWS\"`."
       },
       "api_field": ""
    },
@@ -2561,6 +2562,19 @@
          "smarthr": "Your SmartHR access token.",
          "sprout": "Your Sprout Social API Access Token.",
          "zenefits": "Your Zenefits bearer token."
+      },
+      "api_field": ""
+   },
+   "binary_log_truncater": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sql_server": "Determine who is responble for truncating the online transaction log. Possible values: `\"FIVETRAN\"`, `\"CUSTOMER\"`, `\"SQL_SERVER_AGENT\"`. Default value is `\"FIVETRAN\"`."
       },
       "api_field": ""
    },
@@ -2891,6 +2905,7 @@
          "brightpearl": "Your Brightpearl client ID.",
          "brivo": "Your Brivo client ID.",
          "buildium": "Your Buildium API client ID.",
+         "bynder": "Your Bynder client ID.",
          "cabcharge": "Your Cabcharge client ID.",
          "canvas_by_instructure": "Your Canvas by Instructure client ID.",
          "canvas_data_2_by_instructure": "Your Canvas Data 2 by Instructure client ID.",
@@ -2906,7 +2921,7 @@
          "criteo": "Your Criteo Client ID.",
          "criteo_retail_media": "Your Criteo Retail Media client ID.",
          "cube": "Your Cube client ID.",
-         "cube_software": "Your Cube Software Client ID.",
+         "cube_software": "Your Cube client ID.",
          "culture_amp": "Your Culture Amp client ID.",
          "cvent": "Your Cvent client ID.",
          "d2l_brightspace": "Your D2L Brightspace client ID.",
@@ -2943,6 +2958,7 @@
          "navan": "Your Navan client ID.",
          "nice": "Your NICE client ID.",
          "on24": "Your ON24 client ID.",
+         "onetrust": "Your OneTrust client ID.",
          "oracle_fusion_field_service": "Your Oracle Fusion Field Service client ID.",
          "oracle_netsuite_openair": "Your Oracle NetSuite OpenAir Client ID.",
          "oracle_sap_hva_netweaver": "Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.",
@@ -2971,6 +2987,7 @@
          "sigma_computing_source": "Your Sigma Computing client ID.",
          "skillstx": "Your SkillsTX client ID.",
          "skimlinks": "Your Skimlinks client ID.",
+         "slack_app": "",
          "smartrecruiters": "Your SmartRecruiters client ID.",
          "splash": "Your Splash client ID.",
          "square": "The Application ID of your organization.",
@@ -3155,6 +3172,7 @@
          "brightflag": "Your Brightflag client secret.",
          "brightpearl": "Your Brightpearl client secret.",
          "brivo": "Your Brivo client secret.",
+         "bynder": "Your Bynder client secret.",
          "canvas_by_instructure": "Your Canvas by Instructure client secret.",
          "castor_edc": "Your Castor EDC client secret.",
          "classy": "Your Classy client secret.",
@@ -3168,7 +3186,7 @@
          "criteo": "Your Criteo client secret key.",
          "criteo_retail_media": "Your Criteo Retail Media client secret.",
          "cube": "Your Cube client secret.",
-         "cube_software": "Your Cube Software Client Secret.",
+         "cube_software": "Your Cube client secret.",
          "culture_amp": "Your Culture Amp client secret.",
          "cvent": "Your Cvent client secret.",
          "d2l_brightspace": "Your D2L Brightspace client secret.",
@@ -3198,6 +3216,7 @@
          "microsoft_teams": "Your Microsoft Teams client secret.",
          "navan": "Your Navan client secret.",
          "nice": "Your NICE client secret.",
+         "onetrust": "Your OneTrust client secret.",
          "oracle_fusion_field_service": "Your Oracle Fusion Field Service client secret.",
          "oracle_netsuite_openair": "Your Oracle NetSuite OpenAir Client Secret.",
          "paychex": "Your Paychex client secret.",
@@ -3222,6 +3241,7 @@
          "sigma_computing_source": "Your Sigma Computing client secret.",
          "skillstx": "Your SkillsTX client secret.",
          "skimlinks": "Your Skimlinks client secret.",
+         "slack_app": "",
          "smartrecruiters": "Your SmartRecruiters client secret.",
          "splash": "Your Splash client secret.",
          "square": "The Application Secret of your organization.",
@@ -3375,9 +3395,9 @@
       "description": {
          "360learning": "Your 360Learning Company ID.",
          "cube": "Your Cube company ID.",
-         "cube_software": "Your Cube Software Company ID.",
+         "cube_software": "Your Cube company ID.",
          "oracle_netsuite_openair": "Your Oracle NetSuite OpenAir Company ID.",
-         "paylocity": "Your Paylocity companyId.",
+         "paylocity": "Your Paylocity company ID.",
          "sage_intacct": "Company ID",
          "sap_success_factors": "Your SAP SuccessFactors Company ID."
       },
@@ -5077,6 +5097,19 @@
       },
       "api_field": ""
    },
+   "domain_prefix": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "lightspeed_retail_xseries": "Your Lightspeed Retail Xseries Subdomain."
+      },
+      "api_field": ""
+   },
    "domain_type": {
       "readonly": false,
       "sensitive": false,
@@ -5206,7 +5239,7 @@
          "cabcharge": "Your Cabcharge email ID.",
          "ordway": "Your Ordway user email ID.",
          "planful": "Your Planful email ID.",
-         "zendesk_workforce_management": "Your Zendesk Workforce Management email ID."
+         "zendesk_workforce_management": "Email ID associated with the Zendesk Workforce Management account you want Fivetran to use to access your data."
       },
       "api_field": ""
    },
@@ -6520,7 +6553,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "servicenow": "Include inherited columns."
+         "servicenow": "(Immutable) Include inherited columns."
       },
       "api_field": ""
    },
@@ -8016,7 +8049,7 @@
       "description": {
          "oracle": "Optional: Required only for containerized database.",
          "oracle_ebs": "Optional: Required only for containerized database.",
-         "oracle_hva": "(Multi-tenant databases only) The database's PDB name. Exclude this parameter for single-tenant databases.",
+         "oracle_hva": "(Multi-tenant databases only) The database's PDB name. Omit this parameter for single-tenant databases.",
          "oracle_rac": "Optional: Required only for containerized database.",
          "oracle_rds": "Optional: Required only for containerized database.",
          "oracle_sap_hva": "(Multi-tenant databases only) The database's PDB name. Exclude this parameter for single-tenant databases."
@@ -9009,11 +9042,11 @@
       "item_type": {},
       "description": {
          "aurora_postgres": "Replication slot name. Specify only for `\"updated_method\": \"WAL\"` or `\"WAL_PGOUTPUT\"`.",
-         "azure_postgres": "Replication slot name. Specify only for `\"updated_method\": \"WAL\"` or `\"WAL_PGOUTPUT\"`.",
-         "google_cloud_postgresql": "Replication slot name. Specify only for `\"updated_method\": \"WAL\"` or `\"WAL_PGOUTPUT\"`.",
-         "heroku_postgres": "Replication slot name. Specify only for `\"updated_method\": \"WAL\"` or `\"WAL_PGOUTPUT\"`.",
-         "postgres": "Replication slot name. Specify only for `\"updated_method\": \"WAL\"` or `\"WAL_PGOUTPUT\"`.",
-         "postgres_rds": "Replication slot name. Specify only for `\"updated_method\": \"WAL\"` or `\"WAL_PGOUTPUT\"`."
+         "azure_postgres": "Replication slot name. Specify only for `\"updated_method\": \"WAL_PGOUTPUT\"`.",
+         "google_cloud_postgresql": "Replication slot name. Specify only for `\"updated_method\": \"WAL_PGOUTPUT\"`.",
+         "heroku_postgres": "Replication slot name. Specify only for `\"updated_method\": \"WAL_PGOUTPUT\"`.",
+         "postgres": "Replication slot name. Specify only for `\"updated_method\": \"WAL_PGOUTPUT\"`.",
+         "postgres_rds": "Replication slot name. Specify only for `\"updated_method\": \"WAL_PGOUTPUT\"`."
       },
       "api_field": ""
    },
@@ -9519,6 +9552,21 @@
             },
             "api_field": ""
          },
+         "custom_column_ids": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "item_type": {
+               "google_search_ads_360": "string"
+            },
+            "description": {
+               "google_search_ads_360": "The report custom column IDs included to sync."
+            },
+            "api_field": ""
+         },
          "custom_dimension_key_ids": {
             "readonly": false,
             "sensitive": false,
@@ -9743,6 +9791,19 @@
                   },
                   "api_field": ""
                },
+               "filter_dimension": {
+                  "readonly": false,
+                  "sensitive": false,
+                  "nullable": true,
+                  "type": "string",
+                  "fields": null,
+                  "key_field": "",
+                  "item_type": {},
+                  "description": {
+                     "google_analytics_4": "The dimension name to filter on."
+                  },
+                  "api_field": ""
+               },
                "filter_type": {
                   "readonly": false,
                   "sensitive": false,
@@ -9752,7 +9813,36 @@
                   "key_field": "",
                   "item_type": {},
                   "description": {
+                     "google_analytics_4": "Filter type for reports request. Possible values are INCLUDE and EXCLUDE",
                      "google_search_console": ""
+                  },
+                  "api_field": ""
+               },
+               "filter_value": {
+                  "readonly": false,
+                  "sensitive": false,
+                  "nullable": true,
+                  "type": "string",
+                  "fields": null,
+                  "key_field": "",
+                  "item_type": {},
+                  "description": {
+                     "google_analytics_4": "The filter value."
+                  },
+                  "api_field": ""
+               },
+               "filter_values": {
+                  "readonly": false,
+                  "sensitive": false,
+                  "nullable": true,
+                  "type": "string_list",
+                  "fields": null,
+                  "key_field": "",
+                  "item_type": {
+                     "google_analytics_4": "string"
+                  },
+                  "description": {
+                     "google_analytics_4": "The filter values for EXACT match type."
                   },
                   "api_field": ""
                },
@@ -9765,6 +9855,7 @@
                   "key_field": "",
                   "item_type": {},
                   "description": {
+                     "google_analytics_4": "The filter match type.",
                      "google_search_console": ""
                   },
                   "api_field": ""
@@ -9773,6 +9864,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
+               "google_analytics_4": "The list of filters to apply to the report data.",
                "google_search_console": "The list of filters to be applied to the report."
             },
             "api_field": ""
@@ -10875,6 +10967,7 @@
          "buildkite": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "business_central": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "buzzsprout": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "bynder": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "cabcharge": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "calabrio": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "calendly": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11133,6 +11226,7 @@
          "lever": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "liftoff": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "light_speed_retail": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "lightspeed_retail_xseries": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "line_ads": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "linear": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "linkedin_ads": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11194,6 +11288,7 @@
          "on24": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "oncehub": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "one_drive": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "onetrust": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "open_data_dc": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "open_exchange_rates": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "openai": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11345,6 +11440,7 @@
          "skuvault": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "slab": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "slack": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "slack_app": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "smadex": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "smarthr": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "smartrecruiters": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -12633,6 +12729,19 @@
       },
       "api_field": ""
    },
+   "storage_account_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "azure_blob_storage": "The name of the Azure Storage account."
+      },
+      "api_field": ""
+   },
    "store_hash": {
       "readonly": false,
       "sensitive": false,
@@ -12736,8 +12845,9 @@
          "nylas": "Your Nylas subdomain.",
          "odoo": "Your Odoo subdomain.",
          "okta": "Your Okta subdomain.",
+         "onetrust": "Your OneTrust subdomain.",
          "oracle_fusion_field_service": "Your Oracle Fusion Field Service subDomain.",
-         "paylocity": "Your Paylocity subDomain.",
+         "paylocity": "Your Paylocity subdomain.",
          "picqer": "Your Picqer subdomain.",
          "pinpoint": "Your Pinpoint sub domain name.",
          "piwik_pro": "Your Piwik PRO subdomain.",
@@ -12778,6 +12888,7 @@
       "item_type": {},
       "description": {
          "bamboohr": "The subdomain used to access your account. If you access BambooHR at 'https://mycompany.bamboohr.com', then the subdomain is 'mycompany'.",
+         "bynder": "Your Bynder Subdomain.",
          "datadog": "Your Datadog subdomain.",
          "ebay": "Your eBay environment.",
          "freshdesk": "Your company's freshdesk subdomain (usually **company**.freshdesk.com).",
@@ -13098,6 +13209,19 @@
       },
       "api_field": ""
    },
+   "sync_tables": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "google_analytics_4_export": "Sync Table"
+      },
+      "api_field": ""
+   },
    "sync_type": {
       "readonly": false,
       "sensitive": false,
@@ -13218,6 +13342,7 @@
          "share_point": "Destination table. Table is permanent and cannot be changed after connection creation",
          "shiphero": "Destination table. Table is permanent and cannot be changed after connection creation",
          "sistrix": "Destination table. Table is permanent and cannot be changed after connection creation",
+         "slack": "Destination table. Table is permanent and cannot be changed after connection creation",
          "sugarcrm": "Destination table. Table is permanent and cannot be changed after connection creation",
          "teamtailor": "Destination table. Table is permanent and cannot be changed after connection creation",
          "tive": "Destination table. Table is permanent and cannot be changed after connection creation",
@@ -13349,6 +13474,19 @@
       },
       "api_field": ""
    },
+   "tde_certificate_path": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sql_server": "Certificate file path used to protect a database encryption key. Used when decrypting online logs"
+      },
+      "api_field": ""
+   },
    "tde_password": {
       "readonly": false,
       "sensitive": true,
@@ -13376,6 +13514,19 @@
          "sql_server": "Private key file path associated with the TDE certificate",
          "sql_server_hva": "Private key associated with the TDE certificate",
          "sql_server_sap_ecc_hva": "Private key associated with the TDE certificate"
+      },
+      "api_field": ""
+   },
+   "tde_private_key_path": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sql_server": "Private key file path associated with the TDE certificate. Used when decrypting online logs."
       },
       "api_field": ""
    },
@@ -14128,8 +14279,8 @@
       "item_type": {},
       "description": {
          "aurora": "The method to detect new or changed rows. Supported values:`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-         "aurora_postgres": "The method to detect new or changed rows. Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. Supported values:`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-         "azure_postgres": "The method to detect new or changed rows. Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. Supported values:`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
+         "aurora_postgres": "The method to detect new or changed rows. Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. Supported values:`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
+         "azure_postgres": "The method to detect new or changed rows. Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. Supported values:`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
          "azure_sql_db": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
          "azure_sql_managed_db": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
          "clarity": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
@@ -14137,9 +14288,9 @@
          "ehr": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
          "epic_clarity": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
          "google_cloud_mysql": "The method to detect new or changed rows. Supported values:`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-         "google_cloud_postgresql": "The method to detect new or changed rows. Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. Supported values:`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
+         "google_cloud_postgresql": "The method to detect new or changed rows. Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. Supported values:`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
          "google_cloud_sqlserver": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
-         "heroku_postgres": "The method to detect new or changed rows. Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. Supported values:`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
+         "heroku_postgres": "The method to detect new or changed rows. Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. Supported values:`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
          "magento_mysql": "The method to detect new or changed rows. Supported values:`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
          "magento_mysql_rds": "The method to detect new or changed rows. Supported values:`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
          "maria": "The method to detect new or changed rows. Supported values:`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
@@ -14154,8 +14305,8 @@
          "oracle_rac": "The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables.  - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
          "oracle_rds": "The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables.  - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
          "oracle_sap_hva": "The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-         "postgres": "The method to detect new or changed rows. Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. Supported values:`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-         "postgres_rds": "The method to detect new or changed rows. Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. Supported values:`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
+         "postgres": "The method to detect new or changed rows. Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. Supported values:`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the  write-ahead log (WAL) using a logical slot.This is more efficient than the query-based method, but requires more setup and monitoring.`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
+         "postgres_rds": "The method to detect new or changed rows. Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. Supported values:`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
          "redshift_db": "Default value: `Teleport`",
          "snowflake_db": "Default value: `Teleport`",
          "sql_server": "(Optional) The incremental update method the connector will use. The possible values are `\"TELEPORT\"` or `\"NATIVE_UPDATE\"`. The type defaults to `\"NATIVE_UPDATE\"` if the value is set to `null` or not specified.",
@@ -14241,6 +14392,19 @@
       "description": {
          "oracle_hva": "Default value: `false`. Set to `true` if you're using a RAC instance.",
          "oracle_sap_hva": "Default value: `false`. Set to `true` if you're using a RAC instance."
+      },
+      "api_field": ""
+   },
+   "use_pdb_only": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "oracle_hva": "Default value: `false`. Set to `true` to connect directly to a single PDB. When `true`, set `database` to the PDB name and omit the `pdbName` field. Use only for Direct or Archive Log Only capture. Not supported with TDE, ASM, or RAC."
       },
       "api_field": ""
    },
@@ -14738,6 +14902,19 @@
       "item_type": {},
       "description": {
          "mode": "Your Mode Workspace."
+      },
+      "api_field": ""
+   },
+   "workspace_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "fulfil": "Your Fulfil workspace ID."
       },
       "api_field": ""
    },

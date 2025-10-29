@@ -18,11 +18,11 @@
   "tags": [
     {
       "name": "updated",
-      "description": "2025-10-07T19:38:07.216Z"
+      "description": "2025-10-29T05:42:53.963Z"
     },
     {
       "name": "hash",
-      "description": "9b230218334425f4254f03ff85ae0c6d2ccf2989b2b188a610baec2464457d30"
+      "description": "c03e121b2aaf990051ffbfe93dc3fc23ed4eae1df73117a0efeb26a9ee02925e"
     }
   ],
   "paths": {
@@ -1653,7 +1653,7 @@
           "Connection Schema Management"
         ],
         "summary": "Retrieve Source Table Columns Config",
-        "description": "This function retrieves and returns the column configuration for a source table. It only works for an existing connection that is in a 'Connected' state.",
+        "description": "This function retrieves and returns the column configuration for a source table. It only works for an existing connection that is in a 'Connected' state.\n\nFor the NetSuite SuiteAnalytics and Salesforce and Salesforce Sandbox connectors, the 'schemas' map field will always have a single entry with the 'netsuite' or 'salesforce' key, respectively.\n",
         "operationId": "connection_column_config",
         "parameters": [
           {
@@ -1916,7 +1916,7 @@
           "Connection Schema Management"
         ],
         "summary": "Update a Connection Table Config",
-        "description": "Updates the table config within your database schema for an existing connection within your Fivetran account.",
+        "description": "Updates the table config within your database schema for an existing connection within your Fivetran account.\n\nFor the NetSuite SuiteAnalytics and Salesforce and Salesforce Sandbox connectors, the 'schemas' map field will always have a single entry with the 'netsuite' or 'salesforce' key, respectively.\n",
         "operationId": "modify_connection_table_config",
         "parameters": [
           {
@@ -4420,7 +4420,7 @@
           "Connection Schema Management"
         ],
         "summary": "Drop a Blocked Column From the Destination",
-        "description": "Marks a blocked column for deletion from your destination table. The column will be dropped during the next sync.",
+        "description": "Marks a blocked column for deletion from your destination table. The column will be dropped during the next sync.\n\nFor the NetSuite SuiteAnalytics and Salesforce and Salesforce Sandbox connectors, the 'schemas' map field will always have a single entry with the 'netsuite' or 'salesforce' key, respectively.\n",
         "operationId": "delete_column_connection_config",
         "parameters": [
           {
@@ -4519,7 +4519,7 @@
           "Connection Schema Management"
         ],
         "summary": "Update a Connection Column Config",
-        "description": "Updates the column config within your table for an existing connection within your Fivetran account.\n\n> NOTE: The response contains all known schemas and tables. Also, it contains columns whose state has ever been set by the user. For more information, see also the [Connection Schema config](https://fivetran.com/docs/rest-api/tutorials/connection-schema-configuration-use-cases) tutorial.\n",
+        "description": "Updates the column config within your table for an existing connection within your Fivetran account.\n\nFor the NetSuite SuiteAnalytics and Salesforce and Salesforce Sandbox connectors, the 'schemas' map field will always have a single entry with the 'netsuite' or 'salesforce' key, respectively.\n> NOTE: The response contains all known schemas and tables. Also, it contains columns whose state has ever been set by the user. For more information, see also the [Connection Schema config](https://fivetran.com/docs/rest-api/tutorials/connection-schema-configuration-use-cases) tutorial.\n",
         "operationId": "modify_connection_column_config",
         "parameters": [
           {
@@ -12279,6 +12279,7 @@
             "buildkite": "#/components/schemas/buildkite_NewConnectorRequestV1",
             "business_central": "#/components/schemas/business_central_NewConnectorRequestV1",
             "buzzsprout": "#/components/schemas/buzzsprout_NewConnectorRequestV1",
+            "bynder": "#/components/schemas/bynder_NewConnectorRequestV1",
             "cabcharge": "#/components/schemas/cabcharge_NewConnectorRequestV1",
             "calabrio": "#/components/schemas/calabrio_NewConnectorRequestV1",
             "calendly": "#/components/schemas/calendly_NewConnectorRequestV1",
@@ -12345,7 +12346,7 @@
             "crossbeam": "#/components/schemas/crossbeam_NewConnectorRequestV1",
             "crowddev": "#/components/schemas/crowddev_NewConnectorRequestV1",
             "crunchbase": "#/components/schemas/crunchbase_NewConnectorRequestV1",
-            "cube": "#/components/schemas/cube_NewConnectorRequestV1",
+            "cube_software": "#/components/schemas/cube_software_NewConnectorRequestV1",
             "culture_amp": "#/components/schemas/culture_amp_NewConnectorRequestV1",
             "customerio": "#/components/schemas/customerio_NewConnectorRequestV1",
             "cvent": "#/components/schemas/cvent_NewConnectorRequestV1",
@@ -12538,6 +12539,7 @@
             "lever": "#/components/schemas/lever_NewConnectorRequestV1",
             "liftoff": "#/components/schemas/liftoff_NewConnectorRequestV1",
             "light_speed_retail": "#/components/schemas/light_speed_retail_NewConnectorRequestV1",
+            "lightspeed_retail_xseries": "#/components/schemas/lightspeed_retail_xseries_NewConnectorRequestV1",
             "line_ads": "#/components/schemas/line_ads_NewConnectorRequestV1",
             "linear": "#/components/schemas/linear_NewConnectorRequestV1",
             "linkedin_ads": "#/components/schemas/linkedin_ads_NewConnectorRequestV1",
@@ -12606,6 +12608,7 @@
             "on24": "#/components/schemas/on24_NewConnectorRequestV1",
             "oncehub": "#/components/schemas/oncehub_NewConnectorRequestV1",
             "one_drive": "#/components/schemas/one_drive_NewConnectorRequestV1",
+            "onetrust": "#/components/schemas/onetrust_NewConnectorRequestV1",
             "open_data_dc": "#/components/schemas/open_data_dc_NewConnectorRequestV1",
             "open_exchange_rates": "#/components/schemas/open_exchange_rates_NewConnectorRequestV1",
             "openai": "#/components/schemas/openai_NewConnectorRequestV1",
@@ -12766,6 +12769,7 @@
             "skuvault": "#/components/schemas/skuvault_NewConnectorRequestV1",
             "slab": "#/components/schemas/slab_NewConnectorRequestV1",
             "slack": "#/components/schemas/slack_NewConnectorRequestV1",
+            "slack_app": "#/components/schemas/slack_app_NewConnectorRequestV1",
             "smadex": "#/components/schemas/smadex_NewConnectorRequestV1",
             "smarthr": "#/components/schemas/smarthr_NewConnectorRequestV1",
             "smartrecruiters": "#/components/schemas/smartrecruiters_NewConnectorRequestV1",
@@ -13410,6 +13414,7 @@
             "buildkite": "#/components/schemas/buildkite_ConnectorResponseV1",
             "business_central": "#/components/schemas/business_central_ConnectorResponseV1",
             "buzzsprout": "#/components/schemas/buzzsprout_ConnectorResponseV1",
+            "bynder": "#/components/schemas/bynder_ConnectorResponseV1",
             "cabcharge": "#/components/schemas/cabcharge_ConnectorResponseV1",
             "calabrio": "#/components/schemas/calabrio_ConnectorResponseV1",
             "calendly": "#/components/schemas/calendly_ConnectorResponseV1",
@@ -13476,7 +13481,7 @@
             "crossbeam": "#/components/schemas/crossbeam_ConnectorResponseV1",
             "crowddev": "#/components/schemas/crowddev_ConnectorResponseV1",
             "crunchbase": "#/components/schemas/crunchbase_ConnectorResponseV1",
-            "cube": "#/components/schemas/cube_ConnectorResponseV1",
+            "cube_software": "#/components/schemas/cube_software_ConnectorResponseV1",
             "culture_amp": "#/components/schemas/culture_amp_ConnectorResponseV1",
             "customerio": "#/components/schemas/customerio_ConnectorResponseV1",
             "cvent": "#/components/schemas/cvent_ConnectorResponseV1",
@@ -13669,6 +13674,7 @@
             "lever": "#/components/schemas/lever_ConnectorResponseV1",
             "liftoff": "#/components/schemas/liftoff_ConnectorResponseV1",
             "light_speed_retail": "#/components/schemas/light_speed_retail_ConnectorResponseV1",
+            "lightspeed_retail_xseries": "#/components/schemas/lightspeed_retail_xseries_ConnectorResponseV1",
             "line_ads": "#/components/schemas/line_ads_ConnectorResponseV1",
             "linear": "#/components/schemas/linear_ConnectorResponseV1",
             "linkedin_ads": "#/components/schemas/linkedin_ads_ConnectorResponseV1",
@@ -13737,6 +13743,7 @@
             "on24": "#/components/schemas/on24_ConnectorResponseV1",
             "oncehub": "#/components/schemas/oncehub_ConnectorResponseV1",
             "one_drive": "#/components/schemas/one_drive_ConnectorResponseV1",
+            "onetrust": "#/components/schemas/onetrust_ConnectorResponseV1",
             "open_data_dc": "#/components/schemas/open_data_dc_ConnectorResponseV1",
             "open_exchange_rates": "#/components/schemas/open_exchange_rates_ConnectorResponseV1",
             "openai": "#/components/schemas/openai_ConnectorResponseV1",
@@ -13897,6 +13904,7 @@
             "skuvault": "#/components/schemas/skuvault_ConnectorResponseV1",
             "slab": "#/components/schemas/slab_ConnectorResponseV1",
             "slack": "#/components/schemas/slack_ConnectorResponseV1",
+            "slack_app": "#/components/schemas/slack_app_ConnectorResponseV1",
             "smadex": "#/components/schemas/smadex_ConnectorResponseV1",
             "smarthr": "#/components/schemas/smarthr_ConnectorResponseV1",
             "smartrecruiters": "#/components/schemas/smartrecruiters_ConnectorResponseV1",
@@ -16497,7 +16505,8 @@
               "AZURE_CENTRALINDIA",
               "AZURE_GERMANYWESTCENTRAL",
               "AZURE_WESTUS3",
-              "AZURE_SWITZERLANDNORTH"
+              "AZURE_SWITZERLANDNORTH",
+              "AZURE_KOREACENTRAL"
             ]
           }
         }
@@ -16595,7 +16604,8 @@
               "AZURE_CENTRALINDIA",
               "AZURE_GERMANYWESTCENTRAL",
               "AZURE_WESTUS3",
-              "AZURE_SWITZERLANDNORTH"
+              "AZURE_SWITZERLANDNORTH",
+              "AZURE_KOREACENTRAL"
             ]
           },
           "created_by": {
@@ -19064,6 +19074,12 @@
                 "description": "Your user's access key ID",
                 "example": "string"
               },
+              "disable_vacuum": {
+                "title": "",
+                "type": "boolean",
+                "description": "Specifies whether you want Fivetran to disable Vacuum operations on Delta tables.",
+                "example": true
+              },
               "port": {
                 "title": "",
                 "type": "integer",
@@ -20751,6 +20767,16 @@
                 "description": "Require TLS through Tunnel",
                 "example": true
               },
+              "s3_bucket_auth_type": {
+                "title": "",
+                "type": "object",
+                "description": "Type of authentication configured for the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment",
+                "example": "IAM_ROLE | IAM_USER",
+                "enum": [
+                  "IAM_ROLE",
+                  "IAM_USER"
+                ]
+              },
               "tunnel_user": {
                 "title": "",
                 "type": "string",
@@ -20789,11 +20815,11 @@
                 "format": "password",
                 "example": "fresh_air_267@83"
               },
-              "aws_access_key_id": {
+              "role_arn": {
                 "title": "",
                 "type": "string",
-                "description": "The unique access key ID of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.",
-                "example": "string"
+                "description": "Role ARN with Redshift permissions. Required if authentication type is `IAM`.",
+                "example": "arn"
               },
               "enable_super_type": {
                 "title": "",
@@ -20801,16 +20827,10 @@
                 "description": "Enable to convert JSON data type to SUPER",
                 "example": true
               },
-              "role_arn": {
+              "aws_access_key_id": {
                 "title": "",
                 "type": "string",
-                "description": "Role ARN with Redshift permissions. Required if authentication type is `IAM`.",
-                "example": "arn"
-              },
-              "bucket_region": {
-                "title": "",
-                "type": "string",
-                "description": "The AWS Region of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.",
+                "description": "The unique access key ID of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.",
                 "example": "string"
               },
               "port": {
@@ -20819,6 +20839,12 @@
                 "description": "Server port number",
                 "format": "int32",
                 "example": 443
+              },
+              "bucket_region": {
+                "title": "",
+                "type": "string",
+                "description": "The AWS Region of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.",
+                "example": "string"
               },
               "host": {
                 "title": "",
@@ -25199,11 +25225,9 @@
                 "title": "",
                 "type": "object",
                 "description": "Database authentication method",
-                "example": "PASSWORD",
+                "example": "PASSWORD | AWS_IAM",
                 "enum": [
-                  "ENTRA_ID",
                   "PASSWORD",
-                  "CLIENT_CERTIFICATE",
                   "AWS_IAM"
                 ]
               },
@@ -25255,9 +25279,62 @@
               },
               "aws_region_code": {
                 "title": "",
-                "type": "string",
+                "type": "object",
                 "description": "The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`.",
-                "example": "us-east-1"
+                "example": "us-east-1",
+                "enum": [
+                  "me-central-1",
+                  "aws-cn-global",
+                  "us-isof-south-1",
+                  "ap-east-2",
+                  "us-west-1",
+                  "us-west-2",
+                  "af-south-1",
+                  "ap-northeast-3",
+                  "ap-northeast-2",
+                  "ap-northeast-1",
+                  "me-south-1",
+                  "sa-east-1",
+                  "cn-north-1",
+                  "ap-southeast-1",
+                  "ap-southeast-2",
+                  "ap-southeast-3",
+                  "ap-southeast-4",
+                  "ap-southeast-5",
+                  "us-east-1",
+                  "us-east-2",
+                  "ap-southeast-7",
+                  "aws-iso-e-global",
+                  "cn-northwest-1",
+                  "ap-south-2",
+                  "ap-south-1",
+                  "eu-south-1",
+                  "eu-south-2",
+                  "us-gov-east-1",
+                  "il-central-1",
+                  "ca-central-1",
+                  "mx-central-1",
+                  "eu-central-1",
+                  "eusc-de-east-1",
+                  "us-iso-west-1",
+                  "eu-central-2",
+                  "eu-isoe-west-1",
+                  "aws-global",
+                  "eu-north-1",
+                  "eu-west-3",
+                  "eu-west-2",
+                  "eu-west-1",
+                  "aws-iso-global",
+                  "ap-east-1",
+                  "ca-west-1",
+                  "us-gov-west-1",
+                  "us-iso-east-1",
+                  "aws-iso-b-global",
+                  "aws-iso-f-global",
+                  "aws-us-gov-global",
+                  "us-isob-east-1",
+                  "us-isof-east-1"
+                ]
               },
               "user": {
                 "title": "",
@@ -25309,7 +25386,7 @@
               "update_method": {
                 "title": "",
                 "type": "object",
-                "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.<br>`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.<br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
+                "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.<br>`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
                 "example": "XMIN | TELEPORT | WAL_PGOUTPUT",
                 "enum": [
                   "XMIN",
@@ -25952,42 +26029,57 @@
                 "description": "The AWS region code for the DynamoDB instance.",
                 "example": "us-east-1",
                 "enum": [
-                  "ap-south-2",
-                  "ap-south-1",
-                  "eu-south-1",
-                  "eu-south-2",
-                  "us-gov-east-1",
                   "me-central-1",
-                  "il-central-1",
-                  "ca-central-1",
-                  "eu-central-1",
-                  "us-iso-west-1",
-                  "eu-central-2",
+                  "aws-cn-global",
+                  "us-isof-south-1",
+                  "ap-east-2",
                   "us-west-1",
                   "us-west-2",
                   "af-south-1",
-                  "eu-west-3",
-                  "eu-north-1",
-                  "eu-west-2",
-                  "eu-west-1",
                   "ap-northeast-3",
                   "ap-northeast-2",
                   "ap-northeast-1",
                   "me-south-1",
                   "sa-east-1",
-                  "ap-east-1",
                   "cn-north-1",
-                  "us-gov-west-1",
-                  "ca-west-1",
                   "ap-southeast-1",
                   "ap-southeast-2",
-                  "us-iso-east-1",
                   "ap-southeast-3",
                   "ap-southeast-4",
+                  "ap-southeast-5",
                   "us-east-1",
                   "us-east-2",
+                  "ap-southeast-7",
                   "cn-northwest-1",
-                  "us-isob-east-1"
+                  "aws-iso-e-global",
+                  "ap-south-2",
+                  "ap-south-1",
+                  "eu-south-1",
+                  "eu-south-2",
+                  "us-gov-east-1",
+                  "il-central-1",
+                  "ca-central-1",
+                  "mx-central-1",
+                  "eu-central-1",
+                  "eusc-de-east-1",
+                  "us-iso-west-1",
+                  "eu-central-2",
+                  "eu-isoe-west-1",
+                  "aws-global",
+                  "eu-north-1",
+                  "eu-west-3",
+                  "eu-west-2",
+                  "eu-west-1",
+                  "aws-iso-global",
+                  "ap-east-1",
+                  "ca-west-1",
+                  "us-gov-west-1",
+                  "us-iso-east-1",
+                  "aws-iso-b-global",
+                  "aws-iso-f-global",
+                  "us-isob-east-1",
+                  "aws-us-gov-global",
+                  "us-isof-east-1"
                 ]
               },
               "secrets": {
@@ -26332,12 +26424,18 @@
                 "title": "",
                 "type": "object",
                 "description": "If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
-                "example": "upsert_file",
+                "example": "upsert_file_with_primary_keys | upsert_file | append_file",
                 "enum": [
                   "upsert_file_with_primary_keys",
                   "upsert_file",
                   "append_file"
                 ]
+              },
+              "storage_account_name": {
+                "title": "",
+                "type": "string",
+                "description": "The name of the Azure Storage account.",
+                "example": "storage_account_name"
               },
               "escape_char": {
                 "title": "",
@@ -26367,6 +26465,16 @@
                 "type": "string",
                 "description": "You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.",
                 "example": ";"
+              },
+              "auth_method": {
+                "title": "",
+                "type": "object",
+                "description": "Authentication Method",
+                "example": "SERVICE_PRINCIPAL_SECRET",
+                "enum": [
+                  "CONNECTION_STRING",
+                  "SERVICE_PRINCIPAL_SECRET"
+                ]
               },
               "null_sequence": {
                 "title": "",
@@ -26468,6 +26576,34 @@
           }
         }
       },
+      "azure_blob_storage_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "tenant_id": {
+                "title": "",
+                "type": "string",
+                "description": "`Tenant ID` of your Microsoft client application.",
+                "example": "41db1ebd-41a6-4dda-8029-5dd8f227d843"
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "`Client Secret` of your Microsoft client application.",
+                "example": "my_client_secret"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "`Client ID` of your Microsoft client application.",
+                "example": "my_client_id"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "azure_blob_storage_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -26478,6 +26614,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_table_group"
+          },
+          {
+            "$ref": "#/components/schemas/azure_blob_storage_auth_V1"
           }
         ]
       },
@@ -26857,7 +26996,7 @@
               "update_method": {
                 "title": "",
                 "type": "object",
-                "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.<br>`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.<br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
+                "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.<br>`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
                 "example": "XMIN | TELEPORT | WAL_PGOUTPUT",
                 "enum": [
                   "XMIN",
@@ -26954,7 +27093,7 @@
               "replication_slot": {
                 "title": "",
                 "type": "string",
-                "description": "Replication slot name. Specify only for `\"updated_method\": \"WAL\"` or `\"WAL_PGOUTPUT\"`.",
+                "description": "Replication slot name. Specify only for `\"updated_method\": \"WAL_PGOUTPUT\"`.",
                 "example": "test_replication_slot"
               },
               "user": {
@@ -28275,7 +28414,7 @@
                 "title": "",
                 "type": "object",
                 "description": "If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
-                "example": "upsert_file",
+                "example": "upsert_file_with_primary_keys | upsert_file | append_file",
                 "enum": [
                   "upsert_file_with_primary_keys",
                   "upsert_file",
@@ -29244,6 +29383,48 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_table"
+          }
+        ]
+      },
+      "bynder_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "subdomain": {
+                "title": "",
+                "type": "string",
+                "description": "Your Bynder Subdomain.",
+                "example": "your_bynder_subdomain"
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Bynder client secret.",
+                "format": "password",
+                "example": "your_bynder_client_secret"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Bynder client ID.",
+                "example": "your_bynder_client_id"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "bynder_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/bynder_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
           }
         ]
       },
@@ -32803,7 +32984,7 @@
           }
         ]
       },
-      "cube_config_V1": {
+      "cube_software_config_V1": {
         "properties": {
           "config": {
             "type": "object",
@@ -32832,13 +33013,13 @@
           }
         }
       },
-      "cube_NewConnectorRequestV1": {
+      "cube_software_NewConnectorRequestV1": {
         "allOf": [
           {
             "$ref": "#/components/schemas/NewConnectorRequestV1"
           },
           {
-            "$ref": "#/components/schemas/cube_config_V1"
+            "$ref": "#/components/schemas/cube_software_config_V1"
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
@@ -34997,7 +35178,7 @@
                 "title": "",
                 "type": "object",
                 "description": "If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
-                "example": "upsert_file",
+                "example": "upsert_file_with_primary_keys | upsert_file | append_file",
                 "enum": [
                   "upsert_file_with_primary_keys",
                   "upsert_file",
@@ -35801,10 +35982,9 @@
                 "title": "",
                 "type": "object",
                 "description": "If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
-                "example": "append_file",
+                "example": "upsert_file_with_primary_keys | append_file",
                 "enum": [
                   "upsert_file_with_primary_keys",
-                  "upsert_file",
                   "append_file"
                 ]
               },
@@ -36955,8 +37135,8 @@
               "access_token": {
                 "title": "",
                 "type": "string",
-                "description": "The long-lived `Access token` along with the `client_id` and `client_secret` parameters carry the information necessary to query the Facebook Ads API",
-                "example": "my_access_token"
+                "description": "The long-lived `Access token` along with the `client_id` and `client_secret` parameters carry the information necessary to query the Facebook Ads API. Use either `access_token` or `user_access_token`, not both at the same time.",
+                "example": "User access token"
               },
               "client_access": {
                 "type": "object",
@@ -36974,13 +37154,13 @@
                     "example": "my_client_id"
                   }
                 },
-                "description": "Your application client access fields.``"
+                "description": "Your application client access fields."
               },
               "user_access_token": {
                 "title": "",
                 "type": "string",
-                "description": "Access Token",
-                "example": "string"
+                "description": "System User Token. Use in combination with `client_id` and `client_secret`. Use either `user_access_token` (for system token) or `access_token` (for user access token), not both at the same time.",
+                "example": "System User Token"
               }
             },
             "description": ""
@@ -38297,8 +38477,9 @@
                 "title": "",
                 "type": "object",
                 "description": "If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
-                "example": "upsert_file | append_file",
+                "example": "upsert_file_with_primary_keys | upsert_file | append_file",
                 "enum": [
+                  "upsert_file_with_primary_keys",
                   "upsert_file",
                   "append_file"
                 ]
@@ -38411,17 +38592,17 @@
           "config": {
             "type": "object",
             "properties": {
+              "workspace_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Fulfil workspace ID.",
+                "example": "string"
+              },
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Your Fulfil API key.",
                 "format": "password",
-                "example": "string"
-              },
-              "sub_domain": {
-                "title": "",
-                "type": "string",
-                "description": "",
                 "example": "string"
               }
             },
@@ -38719,7 +38900,7 @@
                 "title": "",
                 "type": "object",
                 "description": "If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
-                "example": "upsert_file",
+                "example": "upsert_file_with_primary_keys | upsert_file | append_file",
                 "enum": [
                   "upsert_file_with_primary_keys",
                   "upsert_file",
@@ -39733,6 +39914,64 @@
                         "example": "string"
                       }
                     },
+                    "filters": {
+                      "title": "",
+                      "type": "array",
+                      "description": "The list of filters to apply to the report data.",
+                      "items": {
+                        "title": "",
+                        "type": "object",
+                        "properties": {
+                          "filter_value": {
+                            "title": "",
+                            "type": "string",
+                            "description": "The filter value.",
+                            "example": "string"
+                          },
+                          "filter_type": {
+                            "title": "",
+                            "type": "object",
+                            "description": "Filter type for reports request. Possible values are INCLUDE and EXCLUDE",
+                            "example": "EXCLUDE | INCLUDE",
+                            "enum": [
+                              "EXCLUDE",
+                              "INCLUDE"
+                            ]
+                          },
+                          "filter_values": {
+                            "title": "",
+                            "type": "array",
+                            "description": "The filter values for EXACT match type.",
+                            "example": [
+                              "string"
+                            ],
+                            "items": {
+                              "title": "",
+                              "type": "string",
+                              "description": "",
+                              "example": "string"
+                            }
+                          },
+                          "filter_dimension": {
+                            "title": "",
+                            "type": "string",
+                            "description": "The dimension name to filter on.",
+                            "example": "string"
+                          },
+                          "match_type": {
+                            "title": "",
+                            "type": "object",
+                            "description": "The filter match type.",
+                            "example": "EXACT | CONTAINS",
+                            "enum": [
+                              "EXACT",
+                              "CONTAINS"
+                            ]
+                          }
+                        },
+                        "description": "The list of filters to apply to the report data."
+                      }
+                    },
                     "config_type": {
                       "title": "",
                       "type": "object",
@@ -39908,6 +40147,17 @@
                 "type": "string",
                 "description": "The Dataset ID.",
                 "example": "test_dataset_id"
+              },
+              "sync_tables": {
+                "title": "",
+                "type": "object",
+                "description": "Sync Table",
+                "example": "DAILY_ONLY | FRESH_DAILY | STREAMING",
+                "enum": [
+                  "DAILY_ONLY",
+                  "FRESH_DAILY",
+                  "STREAMING"
+                ]
               }
             },
             "description": ""
@@ -40374,7 +40624,7 @@
               "update_method": {
                 "title": "",
                 "type": "object",
-                "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.<br>`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.<br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
+                "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.<br>`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
                 "example": "XMIN | TELEPORT | WAL_PGOUTPUT",
                 "enum": [
                   "XMIN",
@@ -40471,7 +40721,7 @@
               "replication_slot": {
                 "title": "",
                 "type": "string",
-                "description": "Replication slot name. Specify only for `\"updated_method\": \"WAL\"` or `\"WAL_PGOUTPUT\"`.",
+                "description": "Replication slot name. Specify only for `\"updated_method\": \"WAL_PGOUTPUT\"`.",
                 "example": "test_replication_slot"
               },
               "user": {
@@ -40902,7 +41152,7 @@
                 "title": "",
                 "type": "object",
                 "description": "If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
-                "example": "upsert_file",
+                "example": "upsert_file_with_primary_keys | upsert_file | append_file",
                 "enum": [
                   "upsert_file_with_primary_keys",
                   "upsert_file",
@@ -41154,6 +41404,20 @@
                       "type": "array",
                       "description": "The report segments included to sync.",
                       "example": "[\"segments.date\", \"segments.device\"]",
+                      "items": {
+                        "title": "",
+                        "type": "string",
+                        "description": "",
+                        "example": "string"
+                      }
+                    },
+                    "custom_column_ids": {
+                      "title": "",
+                      "type": "array",
+                      "description": "The report custom column IDs included to sync.",
+                      "example": [
+                        "string"
+                      ],
                       "items": {
                         "title": "",
                         "type": "string",
@@ -42173,8 +42437,8 @@
               "account_name": {
                 "title": "",
                 "type": "string",
-                "description": "",
-                "example": "string"
+                "description": "Your Helpjuice account name.",
+                "example": "your_helpjuice_account_name"
               }
             },
             "description": ""
@@ -42428,7 +42692,7 @@
               "update_method": {
                 "title": "",
                 "type": "object",
-                "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.<br>`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.<br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
+                "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.<br>`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
                 "example": "XMIN | TELEPORT",
                 "enum": [
                   "XMIN",
@@ -42526,7 +42790,7 @@
               "replication_slot": {
                 "title": "",
                 "type": "string",
-                "description": "Replication slot name. Specify only for `\"updated_method\": \"WAL\"` or `\"WAL_PGOUTPUT\"`.",
+                "description": "Replication slot name. Specify only for `\"updated_method\": \"WAL_PGOUTPUT\"`.",
                 "example": "test_replication_slot"
               },
               "user": {
@@ -44079,11 +44343,11 @@
                 "type": "object",
                 "description": "Your KeyPay region.",
                 "enum": [
-                  "au",
-                  "sg",
-                  "uk",
-                  "nz",
-                  "my"
+                  "com.my",
+                  "co.nz",
+                  "co.uk",
+                  "com.au",
+                  "com.sg"
                 ]
               }
             },
@@ -44988,6 +45252,67 @@
           }
         ]
       },
+      "lightspeed_retail_xseries_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "domain_prefix": {
+                "title": "",
+                "type": "string",
+                "description": "Your Lightspeed Retail Xseries Subdomain.",
+                "example": "your_lightspeed_retail_xseries_subdomain"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "lightspeed_retail_xseries_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "client_access": {
+                "title": "",
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "lightspeed_retail_xseries_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/lightspeed_retail_xseries_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/lightspeed_retail_xseries_auth_V1"
+          }
+        ]
+      },
       "line_ads_config_V1": {
         "properties": {
           "config": {
@@ -45780,11 +46105,9 @@
                 "title": "",
                 "type": "object",
                 "description": "Database authentication method",
-                "example": "PASSWORD",
+                "example": "PASSWORD | AWS_IAM",
                 "enum": [
-                  "ENTRA_ID",
                   "PASSWORD",
-                  "CLIENT_CERTIFICATE",
                   "AWS_IAM"
                 ]
               },
@@ -45836,9 +46159,62 @@
               },
               "aws_region_code": {
                 "title": "",
-                "type": "string",
+                "type": "object",
                 "description": "The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`.",
-                "example": "us-east-1"
+                "example": "us-east-1",
+                "enum": [
+                  "me-central-1",
+                  "aws-cn-global",
+                  "us-isof-south-1",
+                  "ap-east-2",
+                  "us-west-1",
+                  "us-west-2",
+                  "af-south-1",
+                  "ap-northeast-3",
+                  "ap-northeast-2",
+                  "ap-northeast-1",
+                  "me-south-1",
+                  "sa-east-1",
+                  "cn-north-1",
+                  "ap-southeast-1",
+                  "ap-southeast-2",
+                  "ap-southeast-3",
+                  "ap-southeast-4",
+                  "ap-southeast-5",
+                  "us-east-1",
+                  "us-east-2",
+                  "ap-southeast-7",
+                  "aws-iso-e-global",
+                  "cn-northwest-1",
+                  "ap-south-2",
+                  "ap-south-1",
+                  "eu-south-1",
+                  "eu-south-2",
+                  "us-gov-east-1",
+                  "il-central-1",
+                  "ca-central-1",
+                  "mx-central-1",
+                  "eu-central-1",
+                  "eusc-de-east-1",
+                  "us-iso-west-1",
+                  "eu-central-2",
+                  "eu-isoe-west-1",
+                  "aws-global",
+                  "eu-north-1",
+                  "eu-west-3",
+                  "eu-west-2",
+                  "eu-west-1",
+                  "aws-iso-global",
+                  "ap-east-1",
+                  "ca-west-1",
+                  "us-gov-west-1",
+                  "us-iso-east-1",
+                  "aws-iso-b-global",
+                  "aws-iso-f-global",
+                  "aws-us-gov-global",
+                  "us-isob-east-1",
+                  "us-isof-east-1"
+                ]
               },
               "user": {
                 "title": "",
@@ -46437,11 +46813,9 @@
                 "title": "",
                 "type": "object",
                 "description": "Database authentication method",
-                "example": "PASSWORD",
+                "example": "PASSWORD | AWS_IAM",
                 "enum": [
-                  "ENTRA_ID",
                   "PASSWORD",
-                  "CLIENT_CERTIFICATE",
                   "AWS_IAM"
                 ]
               },
@@ -46493,9 +46867,62 @@
               },
               "aws_region_code": {
                 "title": "",
-                "type": "string",
+                "type": "object",
                 "description": "The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`.",
-                "example": "us-east-1"
+                "example": "us-east-1",
+                "enum": [
+                  "me-central-1",
+                  "aws-cn-global",
+                  "us-isof-south-1",
+                  "ap-east-2",
+                  "us-west-1",
+                  "us-west-2",
+                  "af-south-1",
+                  "ap-northeast-3",
+                  "ap-northeast-2",
+                  "ap-northeast-1",
+                  "me-south-1",
+                  "sa-east-1",
+                  "cn-north-1",
+                  "ap-southeast-1",
+                  "ap-southeast-2",
+                  "ap-southeast-3",
+                  "ap-southeast-4",
+                  "ap-southeast-5",
+                  "us-east-1",
+                  "us-east-2",
+                  "ap-southeast-7",
+                  "aws-iso-e-global",
+                  "cn-northwest-1",
+                  "ap-south-2",
+                  "ap-south-1",
+                  "eu-south-1",
+                  "eu-south-2",
+                  "us-gov-east-1",
+                  "il-central-1",
+                  "ca-central-1",
+                  "mx-central-1",
+                  "eu-central-1",
+                  "eusc-de-east-1",
+                  "us-iso-west-1",
+                  "eu-central-2",
+                  "eu-isoe-west-1",
+                  "aws-global",
+                  "eu-north-1",
+                  "eu-west-3",
+                  "eu-west-2",
+                  "eu-west-1",
+                  "aws-iso-global",
+                  "ap-east-1",
+                  "ca-west-1",
+                  "us-gov-west-1",
+                  "us-iso-east-1",
+                  "aws-iso-b-global",
+                  "aws-iso-f-global",
+                  "aws-us-gov-global",
+                  "us-isob-east-1",
+                  "us-isof-east-1"
+                ]
               },
               "user": {
                 "title": "",
@@ -48269,11 +48696,9 @@
                 "title": "",
                 "type": "object",
                 "description": "Database authentication method",
-                "example": "PASSWORD",
+                "example": "PASSWORD | AWS_IAM",
                 "enum": [
-                  "ENTRA_ID",
                   "PASSWORD",
-                  "CLIENT_CERTIFICATE",
                   "AWS_IAM"
                 ]
               },
@@ -48325,9 +48750,62 @@
               },
               "aws_region_code": {
                 "title": "",
-                "type": "string",
+                "type": "object",
                 "description": "The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`.",
-                "example": "us-east-1"
+                "example": "us-east-1",
+                "enum": [
+                  "me-central-1",
+                  "aws-cn-global",
+                  "us-isof-south-1",
+                  "ap-east-2",
+                  "us-west-1",
+                  "us-west-2",
+                  "af-south-1",
+                  "ap-northeast-3",
+                  "ap-northeast-2",
+                  "ap-northeast-1",
+                  "me-south-1",
+                  "sa-east-1",
+                  "cn-north-1",
+                  "ap-southeast-1",
+                  "ap-southeast-2",
+                  "ap-southeast-3",
+                  "ap-southeast-4",
+                  "ap-southeast-5",
+                  "us-east-1",
+                  "us-east-2",
+                  "ap-southeast-7",
+                  "aws-iso-e-global",
+                  "cn-northwest-1",
+                  "ap-south-2",
+                  "ap-south-1",
+                  "eu-south-1",
+                  "eu-south-2",
+                  "us-gov-east-1",
+                  "il-central-1",
+                  "ca-central-1",
+                  "mx-central-1",
+                  "eu-central-1",
+                  "eusc-de-east-1",
+                  "us-iso-west-1",
+                  "eu-central-2",
+                  "eu-isoe-west-1",
+                  "aws-global",
+                  "eu-north-1",
+                  "eu-west-3",
+                  "eu-west-2",
+                  "eu-west-1",
+                  "aws-iso-global",
+                  "ap-east-1",
+                  "ca-west-1",
+                  "us-gov-west-1",
+                  "us-iso-east-1",
+                  "aws-iso-b-global",
+                  "aws-iso-f-global",
+                  "aws-us-gov-global",
+                  "us-isob-east-1",
+                  "us-isof-east-1"
+                ]
               },
               "user": {
                 "title": "",
@@ -49020,6 +49498,48 @@
           },
           {
             "$ref": "#/components/schemas/one_drive_auth_V1"
+          }
+        ]
+      },
+      "onetrust_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "sub_domain": {
+                "title": "",
+                "type": "string",
+                "description": "Your OneTrust subdomain.",
+                "example": "your_onetrust_subdomain"
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your OneTrust client secret.",
+                "format": "password",
+                "example": "onetrust_client_secret"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your OneTrust client ID.",
+                "example": "onetrust_client_id"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "onetrust_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/onetrust_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
           }
         ]
       },
@@ -50229,7 +50749,7 @@
               "pdb_name": {
                 "title": "",
                 "type": "string",
-                "description": "(Multi-tenant databases only) The database's PDB name. Exclude this parameter for single-tenant databases.",
+                "description": "(Multi-tenant databases only) The database's PDB name. Omit this parameter for single-tenant databases.",
                 "example": "pdb_name"
               },
               "use_oracle_rac": {
@@ -50311,6 +50831,12 @@
                 "type": "string",
                 "description": "The user name.",
                 "example": "test_user"
+              },
+              "use_pdb_only": {
+                "title": "",
+                "type": "boolean",
+                "description": "Default value: `false`. Set to `true` to connect directly to a single PDB. When `true`, set `database` to the PDB name and omit the `pdbName` field. Use only for Direct or Archive Log Only capture. Not supported with TDE, ASM, or RAC.",
+                "example": true
               },
               "asm_oracle_home": {
                 "title": "",
@@ -50756,11 +51282,12 @@
                 "title": "",
                 "type": "object",
                 "description": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-                "example": "Directly | PrivateLink | SshTunnel",
+                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "pdb_name": {
@@ -52020,13 +52547,13 @@
               "company_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Paylocity companyId.",
+                "description": "Your Paylocity company ID.",
                 "example": "your_paylocity_company_id"
               },
               "sub_domain": {
                 "title": "",
                 "type": "string",
-                "description": "Your Paylocity subDomain.",
+                "description": "Your Paylocity subdomain.",
                 "example": "your_paylocity_sub_domain"
               },
               "client_secret": {
@@ -53206,7 +53733,7 @@
               "update_method": {
                 "title": "",
                 "type": "object",
-                "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.<br>`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.<br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
+                "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the  write-ahead log (WAL) using a logical slot.This is more efficient than the query-based method, but requires more setup and monitoring.<br>`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
                 "example": "XMIN | TELEPORT | WAL_PGOUTPUT",
                 "enum": [
                   "XMIN",
@@ -53305,7 +53832,7 @@
               "replication_slot": {
                 "title": "",
                 "type": "string",
-                "description": "Replication slot name. Specify only for `\"updated_method\": \"WAL\"` or `\"WAL_PGOUTPUT\"`.",
+                "description": "Replication slot name. Specify only for `\"updated_method\": \"WAL_PGOUTPUT\"`.",
                 "example": "test_replication_slot"
               },
               "user": {
@@ -53358,7 +53885,7 @@
               "update_method": {
                 "title": "",
                 "type": "object",
-                "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.<br>`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.<br>`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
+                "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.<br>`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
                 "example": "XMIN | TELEPORT | WAL_PGOUTPUT",
                 "enum": [
                   "XMIN",
@@ -53457,7 +53984,7 @@
               "replication_slot": {
                 "title": "",
                 "type": "string",
-                "description": "Replication slot name. Specify only for `\"updated_method\": \"WAL\"` or `\"WAL_PGOUTPUT\"`.",
+                "description": "Replication slot name. Specify only for `\"updated_method\": \"WAL_PGOUTPUT\"`.",
                 "example": "test_replication_slot"
               },
               "user": {
@@ -54557,30 +55084,6 @@
                   "TWELVE",
                   "THREE"
                 ]
-              },
-              "sync_multiple_accounts": {
-                "title": "",
-                "type": "boolean",
-                "description": "When this parameter is set to `true`, we sync the data of the additional linked accounts. When this parameter is set to `false`, we sync only the data from the main account that was used for authorization",
-                "example": true
-              },
-              "accounts": {
-                "title": "",
-                "type": "array",
-                "description": "Accounts",
-                "items": {
-                  "title": "",
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "title": "",
-                      "type": "string",
-                      "description": "Reddit username of the additional linked account.",
-                      "example": "other_linked_account_name"
-                    }
-                  },
-                  "description": "Accounts"
-                }
               },
               "business_accounts": {
                 "title": "",
@@ -55779,7 +56282,7 @@
                 "title": "",
                 "type": "object",
                 "description": "If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
-                "example": "upsert_file",
+                "example": "upsert_file_with_primary_keys | upsert_file | append_file",
                 "enum": [
                   "upsert_file_with_primary_keys",
                   "upsert_file",
@@ -56082,7 +56585,7 @@
                 "title": "",
                 "type": "object",
                 "description": "If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
-                "example": "upsert_file",
+                "example": "upsert_file_with_primary_keys | upsert_file | append_file",
                 "enum": [
                   "upsert_file_with_primary_keys",
                   "upsert_file",
@@ -56487,13 +56990,6 @@
                   "ADVANCED"
                 ]
               },
-              "password": {
-                "title": "",
-                "type": "string",
-                "description": "",
-                "format": "password",
-                "example": "string"
-              },
               "sync_formula_fields": {
                 "title": "",
                 "type": "boolean",
@@ -56519,12 +57015,6 @@
                 "description": "Provide content of the `.key` private key (only when authentication_method = `ADVANCED`).",
                 "format": "password",
                 "example": "---"
-              },
-              "username": {
-                "title": "",
-                "type": "string",
-                "description": "",
-                "example": "string"
               }
             },
             "description": ""
@@ -56872,12 +57362,6 @@
                   "ADVANCED"
                 ]
               },
-              "password": {
-                "title": "",
-                "type": "string",
-                "format": "password",
-                "example": "string"
-              },
               "sync_formula_fields": {
                 "title": "",
                 "type": "boolean",
@@ -56903,11 +57387,6 @@
                 "description": "Provide content of the `.key` private key (only when authentication_method = `ADVANCED`).",
                 "format": "password",
                 "example": "---"
-              },
-              "username": {
-                "title": "",
-                "type": "string",
-                "example": "string"
               }
             },
             "description": ""
@@ -57563,7 +58042,7 @@
               "include_inherited_columns": {
                 "title": "",
                 "type": "boolean",
-                "description": "Include inherited columns.",
+                "description": "(Immutable) Include inherited columns.",
                 "example": true
               },
               "instance": {
@@ -57816,7 +58295,7 @@
                 "title": "",
                 "type": "object",
                 "description": "If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
-                "example": "upsert_file",
+                "example": "upsert_file_with_primary_keys | upsert_file | append_file",
                 "enum": [
                   "upsert_file_with_primary_keys",
                   "upsert_file",
@@ -58094,7 +58573,7 @@
                 "title": "",
                 "type": "object",
                 "description": "If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
-                "example": "upsert_file",
+                "example": "upsert_file_with_primary_keys | upsert_file | append_file",
                 "enum": [
                   "upsert_file_with_primary_keys",
                   "upsert_file",
@@ -59020,49 +59499,6 @@
           }
         }
       },
-      "slack_auth_V1": {
-        "properties": {
-          "auth": {
-            "type": "object",
-            "properties": {
-              "access_token": {
-                "title": "",
-                "type": "string",
-                "description": "Your Slack access token.",
-                "format": "password",
-                "example": "slack_access_token"
-              },
-              "refresh_token": {
-                "title": "",
-                "type": "string",
-                "description": "Your Slack refresh token.",
-                "format": "password",
-                "example": "slack_refresh_token"
-              },
-              "client_access": {
-                "title": "",
-                "type": "object",
-                "properties": {
-                  "client_secret": {
-                    "title": "",
-                    "type": "string",
-                    "description": "",
-                    "format": "password",
-                    "example": "string"
-                  },
-                  "client_id": {
-                    "title": "",
-                    "type": "string",
-                    "description": "",
-                    "example": "string"
-                  }
-                }
-              }
-            },
-            "description": ""
-          }
-        }
-      },
       "slack_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -59072,10 +59508,43 @@
             "$ref": "#/components/schemas/slack_config_V1"
           },
           {
-            "$ref": "#/components/schemas/schema_format_schema"
+            "$ref": "#/components/schemas/schema_format_schema_table"
+          }
+        ]
+      },
+      "slack_app_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "your_slack_client_secret"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": "your_slack_client_id"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "slack_app_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
           },
           {
-            "$ref": "#/components/schemas/slack_auth_V1"
+            "$ref": "#/components/schemas/slack_app_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
           }
         ]
       },
@@ -60352,12 +60821,19 @@
           "config": {
             "type": "object",
             "properties": {
-              "tde_certificate": {
+              "tde_certificate_path": {
                 "title": "",
                 "type": "string",
-                "description": "Certificate file path used to protect a database encryption key",
+                "description": "Certificate file path used to protect a database encryption key. Used when decrypting online logs",
                 "format": "password",
                 "example": "c:\\certificates\\tde_cert.cer"
+              },
+              "tde_private_key_path": {
+                "title": "",
+                "type": "string",
+                "description": "Private key file path associated with the TDE certificate. Used when decrypting online logs.",
+                "format": "password",
+                "example": "c:\\certificates\\tde_cert.pvk"
               },
               "update_method": {
                 "title": "",
@@ -60376,22 +60852,22 @@
                 "description": "The external ID to be used when assuming the IAM role.",
                 "example": "external_id"
               },
-              "backup_log_format": {
-                "title": "",
-                "type": "string",
-                "description": "Filename pattern for transaction log backup files.",
-                "example": "The format backup_%d_%Y%M%D_%h%m%s.log translates to backup_<database_name>_YYYYMMDD_HHMMSS.log"
-              },
               "backup_storage_type": {
                 "title": "",
                 "type": "object",
-                "description": "Location of transaction log backup files when using BACKUP binary log type. Possible values: `\"AZURE\"`, `\"ALTERNATE_LOCATION\"`.",
+                "description": "Location of transaction log backup files when using BACKUP binary log type. Possible values: `\"AZURE\"`, `\"ALTERNATE_LOCATION\"`, `\"AWS\"`.",
                 "example": "AZURE | ALTERNATE_LOCATION | AWS",
                 "enum": [
                   "AZURE",
                   "ALTERNATE_LOCATION",
                   "AWS"
                 ]
+              },
+              "backup_log_format": {
+                "title": "",
+                "type": "string",
+                "description": "Filename pattern for transaction log backup files.",
+                "example": "The format backup_%d_%Y%M%D_%h%m%s.log translates to backup_<database_name>_YYYYMMDD_HHMMSS.log"
               },
               "connection_string": {
                 "title": "",
@@ -60419,6 +60895,17 @@
                 "description": "The user's password.",
                 "format": "password",
                 "example": "test_password"
+              },
+              "binary_log_truncater": {
+                "title": "",
+                "type": "object",
+                "description": "Determine who is responble for truncating the online transaction log. Possible values: `\"FIVETRAN\"`, `\"CUSTOMER\"`, `\"SQL_SERVER_AGENT\"`. Default value is `\"FIVETRAN\"`.",
+                "example": "FIVETRAN",
+                "enum": [
+                  "FIVETRAN",
+                  "CUSTOMER",
+                  "SQL_SERVER_AGENT"
+                ]
               },
               "tde_password": {
                 "title": "",
@@ -60478,13 +60965,6 @@
                 "type": "string",
                 "description": "SSH user, specify only to connect via an SSH tunnel.",
                 "example": "fivetran"
-              },
-              "tde_private_key": {
-                "title": "",
-                "type": "string",
-                "description": "Private key file path associated with the TDE certificate",
-                "format": "password",
-                "example": "c:\\certificates\\tde_cert.pvk"
               },
               "bucket": {
                 "title": "",
@@ -60706,18 +61186,18 @@
                 "description": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
                 "example": "XXX.XXX.XXX.XXX"
               },
+              "archive_log_path": {
+                "title": "",
+                "type": "string",
+                "description": "Directory where archive logs are located",
+                "example": "string"
+              },
               "agent_port": {
                 "title": "",
                 "type": "integer",
                 "description": "The port that the agent has open for Fivetran's connection. Default value is 4343.",
                 "format": "int32",
                 "example": 4343
-              },
-              "archive_log_path": {
-                "title": "",
-                "type": "string",
-                "description": "Directory where archive logs are located",
-                "example": "string"
               },
               "user": {
                 "title": "",
@@ -61008,18 +61488,18 @@
                 "description": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
                 "example": "XXX.XXX.XXX.XXX"
               },
+              "archive_log_path": {
+                "title": "",
+                "type": "string",
+                "description": "Directory where archive logs are located",
+                "example": "string"
+              },
               "agent_port": {
                 "title": "",
                 "type": "integer",
                 "description": "The port that the agent has open for Fivetran's connection. Default value is 4343.",
                 "format": "int32",
                 "example": 4343
-              },
-              "archive_log_path": {
-                "title": "",
-                "type": "string",
-                "description": "Directory where archive logs are located",
-                "example": "string"
               },
               "user": {
                 "title": "",
@@ -66930,7 +67410,7 @@
               "email_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Zendesk Workforce Management email ID.",
+                "description": "Email ID associated with the Zendesk Workforce Management account you want Fivetran to use to access your data.",
                 "example": "your_zendesk_workforce_management_email_id"
               },
               "api_token": {
@@ -69132,6 +69612,16 @@
           }
         ]
       },
+      "bynder_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/bynder_config_V1"
+          }
+        ]
+      },
       "cabcharge_ConnectorResponseV1": {
         "allOf": [
           {
@@ -69830,13 +70320,13 @@
           }
         ]
       },
-      "cube_ConnectorResponseV1": {
+      "cube_software_ConnectorResponseV1": {
         "allOf": [
           {
             "$ref": "#/components/schemas/ConnectorResponseV1"
           },
           {
-            "$ref": "#/components/schemas/cube_config_V1"
+            "$ref": "#/components/schemas/cube_software_config_V1"
           }
         ]
       },
@@ -72147,6 +72637,16 @@
           }
         ]
       },
+      "lightspeed_retail_xseries_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/lightspeed_retail_xseries_config_V1"
+          }
+        ]
+      },
       "line_ads_ConnectorResponseV1": {
         "allOf": [
           {
@@ -73051,6 +73551,16 @@
           },
           {
             "$ref": "#/components/schemas/one_drive_config_V1"
+          }
+        ]
+      },
+      "onetrust_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/onetrust_config_V1"
           }
         ]
       },
@@ -75095,6 +75605,16 @@
           }
         ]
       },
+      "slack_app_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/slack_app_config_V1"
+          }
+        ]
+      },
       "smadex_ConnectorResponseV1": {
         "allOf": [
           {
@@ -77114,15 +77634,15 @@
             ],
             "type": "object",
             "properties": {
-              "vpce_id": {
-                "type": "object",
-                "description": "The ID of your Virtual Private Cloud Endpoint.",
-                "example": "vpce_id"
-              },
               "account_url": {
                 "type": "object",
                 "description": "The URL of your account.",
                 "example": "account_url"
+              },
+              "vpce_id": {
+                "type": "object",
+                "description": "The ID of your Virtual Private Cloud Endpoint.",
+                "example": "vpce_id"
               }
             },
             "description": "Snowflake for AWS"
@@ -77149,15 +77669,15 @@
             ],
             "type": "object",
             "properties": {
-              "cluster_identifier": {
-                "type": "object",
-                "description": "The cluster identifier.",
-                "example": "cluster_identifier"
-              },
               "aws_account_id": {
                 "type": "object",
                 "description": "The ID of your AWS account.",
                 "example": "aws_account_id"
+              },
+              "cluster_identifier": {
+                "type": "object",
+                "description": "The cluster identifier.",
+                "example": "cluster_identifier"
               }
             },
             "description": "Redshift for AWS"
@@ -77213,15 +77733,15 @@
             ],
             "type": "object",
             "properties": {
-              "workspace_url": {
-                "type": "object",
-                "description": "Workspace Url",
-                "example": "workspace_url"
-              },
               "connection_service_id": {
                 "type": "object",
                 "description": "The ID of your connection service.",
                 "example": "connection_service_id"
+              },
+              "workspace_url": {
+                "type": "object",
+                "description": "Workspace Url",
+                "example": "workspace_url"
               }
             },
             "description": "Databricks for Azure"
@@ -77248,15 +77768,15 @@
             ],
             "type": "object",
             "properties": {
-              "pls_id": {
-                "type": "object",
-                "description": "The ID of your Private Link service.",
-                "example": "pls_id"
-              },
               "account_url": {
                 "type": "object",
                 "description": "The URL of your account.",
                 "example": "account_url"
+              },
+              "pls_id": {
+                "type": "object",
+                "description": "The ID of your Private Link service.",
+                "example": "pls_id"
               }
             },
             "description": "Snowflake for Azure"
@@ -77370,15 +77890,15 @@
             ],
             "type": "object",
             "properties": {
-              "sub_resource_name": {
-                "type": "object",
-                "description": "The name of subresource.",
-                "example": "sub_resource_name"
-              },
               "connection_service_id": {
                 "type": "object",
                 "description": "The ID of your connection service.",
                 "example": "connection_service_id"
+              },
+              "sub_resource_name": {
+                "type": "object",
+                "description": "The name of subresource.",
+                "example": "sub_resource_name"
               },
               "private_dns_records": {
                 "type": "object",
@@ -77410,15 +77930,15 @@
             ],
             "type": "object",
             "properties": {
-              "pls_id": {
-                "type": "object",
-                "description": "The ID of your Private Link service.",
-                "example": "pls_id"
-              },
               "account_url": {
                 "type": "object",
                 "description": "The URL of your account.",
                 "example": "account_url"
+              },
+              "pls_id": {
+                "type": "object",
+                "description": "The ID of your Private Link service.",
+                "example": "pls_id"
               }
             },
             "description": "Snowflake for GCP"
@@ -77474,15 +77994,15 @@
             ],
             "type": "object",
             "properties": {
-              "workspace_url": {
-                "type": "object",
-                "description": "Workspace Url",
-                "example": "workspace_url"
-              },
               "connection_service_id": {
                 "type": "object",
                 "description": "The ID of your connection service.",
                 "example": "connection_service_id"
+              },
+              "workspace_url": {
+                "type": "object",
+                "description": "Workspace Url",
+                "example": "workspace_url"
               }
             },
             "description": "Databricks for GCP"
