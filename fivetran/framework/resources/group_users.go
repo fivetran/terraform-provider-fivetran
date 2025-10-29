@@ -120,7 +120,8 @@ func (r *groupUser) Read(ctx context.Context, req resource.ReadRequest, resp *re
     var data model.GroupUser
     resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
-    if data.GroupId.IsNull() || data.GroupId.IsUnknown() {
+    var isImporting = data.GroupId.IsNull() || data.GroupId.IsUnknown()
+    if isImporting {
         data.GroupId = data.Id
     }
 
@@ -144,8 +145,19 @@ func (r *groupUser) Read(ctx context.Context, req resource.ReadRequest, resp *re
 
         return
     }
+    var groupUserResponseFinal groups.GroupListUsersResponse
+    if isImporting {
+        groupUserResponseFinal = groupUserListResponse // do not clean up on import
+    } else {
+        for _, localUser := range groupUserListResponse.Data.Items {
+            _, exists := stateUserMap[localUser.Email]
+            if exists {
+                groupUserResponseFinal.Data.Items = append(groupUserResponseFinal.Data.Items, localUser)
+            }
+        }
+    }
 
-    data.ReadFromResponse(ctx, groupUserListResponse)
+    data.ReadFromResponse(ctx, groupUserResponseFinal)
 
     resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }

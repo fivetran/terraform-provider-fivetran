@@ -126,6 +126,25 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 				),
 			},
 			{
+				Config: `
+					resource "fivetran_group_users" "testgroup_users_imported" {
+						provider = fivetran-provider
+					}
+				`,
+				ImportState:             true,
+				ResourceName:            "fivetran_group_users.testgroup_users_imported",
+				ImportStateIdFunc:       func(s *terraform.State) (string, error) {
+					rs := GetResource(t, s, "fivetran_group.testgroup")
+					return rs.Primary.ID, nil
+				},
+				ImportStateCheck: ComposeImportStateCheck(
+					CheckImportResourceAttr("user.#", "2"), // terraform user + userName user
+					CheckImportResourceAttrSet("user.1.id"),
+					CheckImportResourceAttr("user.1.email", userName), // group users are sorted by createdAt, thus userName is second
+					CheckImportResourceAttr("user.1.role", roleCreate),
+				),
+			},
+			{
 				Config: resourceWithUsersUpdateConfig,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet("fivetran_group_users.testgroup_users", "user.0.id"),

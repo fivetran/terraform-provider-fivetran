@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"reflect"
+	"runtime"
 	"testing"
 
 	fivetranSdk "github.com/fivetran/go-fivetran"
@@ -17,6 +18,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 var client *fivetranSdk.Client
@@ -150,6 +153,7 @@ func isEmpty(actual interface{}) bool {
 }
 
 func AssertEqual(t *testing.T, actual interface{}, expected interface{}) {
+	t.Helper()
 	assertEqual(t, actual, expected)
 }
 
@@ -162,6 +166,7 @@ func assertEqual(t *testing.T, actual interface{}, expected interface{}) {
 }
 
 func AssertEmpty(t *testing.T, actual interface{}) {
+	t.Helper()
 	assertEmpty(t, actual)
 }
 
@@ -205,10 +210,12 @@ func assertKeyExists(t *testing.T, source map[string]interface{}, key string) in
 }
 
 func AssertKeyExists(t *testing.T, source map[string]interface{}, key string) interface{} {
+	t.Helper()
 	return assertKeyExists(t, source, key)
 }
 
 func AssertArrayItems(t *testing.T, source []interface{}, expected []interface{}) {
+	t.Helper()
 	assertArrayItems(t, source, expected)
 }
 
@@ -248,6 +255,7 @@ func assertKeyExistsAndHasValue(t *testing.T, source map[string]interface{}, key
 	}
 }
 func AssertKeyExistsAndHasValue(t *testing.T, source map[string]interface{}, key string, value interface{}) {
+	t.Helper()
 	assertKeyExistsAndHasValue(t, source, key, value)
 }
 
@@ -280,4 +288,40 @@ func updateMapDeep(source map[string]interface{}, target map[string]interface{})
 
 func UpdateMapDeep(source map[string]interface{}, target map[string]interface{}) {
 	updateMapDeep(source, target)
+}
+
+func ComposeImportStateCheck(fs ...resource.ImportStateCheckFunc) resource.ImportStateCheckFunc {
+	return func(s []*terraform.InstanceState) error {
+		for i, f := range fs {
+			if err := f(s); err != nil {
+				return fmt.Errorf("check %d/%d error: %s", i+1, len(fs), err)
+			}
+		}
+
+		return nil
+	}
+}
+
+func CheckImportResourceAttr(instanceId, attributeName, value string) resource.ImportStateCheckFunc {
+	_, file, line, _ := runtime.Caller(1)
+
+	return func(s []*terraform.InstanceState) error {
+		for _, v := range s {
+			if v.ID != instanceId {
+				continue
+			}
+
+			if attrVal, ok := v.Attributes[attributeName]; ok {
+				if attrVal != value {
+					return fmt.Errorf("For %s with '%s' id, '%s' attribute value is expected: '%s', got: '%s'. At %s:%d", v.Ephemeral.Type, instanceId, attributeName, value, attrVal, file, line)
+				}
+
+				return nil
+			} else {
+				return fmt.Errorf("Attribute '%s' not found for %s with '%s' id. At %s:%d", attributeName, v.Ephemeral.Type, instanceId, file, line)
+			}
+		}
+
+		return fmt.Errorf("Not found: %s with '%s' id. At %s:%d", s[0].Ephemeral.Type, instanceId, file, line)
+	}
 }
