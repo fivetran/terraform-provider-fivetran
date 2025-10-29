@@ -103,6 +103,7 @@ buildium
 buildkite
 business_central
 buzzsprout
+bynder
 cabcharge
 calabrio
 calendly
@@ -169,7 +170,7 @@ criteo_retail_media
 crossbeam
 crowddev
 crunchbase
-cube
+cube_software
 culture_amp
 customerio
 cvent
@@ -362,6 +363,7 @@ lessonly
 lever
 liftoff
 light_speed_retail
+lightspeed_retail_xseries
 line_ads
 linear
 linkedin_ads
@@ -430,6 +432,7 @@ ometria
 on24
 oncehub
 one_drive
+onetrust
 open_data_dc
 open_exchange_rates
 openai
@@ -590,6 +593,7 @@ skimlinks
 skuvault
 slab
 slack
+slack_app
 smadex
 smarthr
 smartrecruiters

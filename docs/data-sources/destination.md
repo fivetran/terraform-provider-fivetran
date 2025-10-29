@@ -196,6 +196,8 @@ Read-Only:
 	- Service `onelake`: Databricks Connection method. Default value: `Directly`.
 - `directory_id` (String) Field usage depends on `service` value: 
 	- Service `snowflake`: Tenant ID of your app created in Azure
+- `disable_vacuum` (Boolean) Field usage depends on `service` value: 
+	- Service `databricks`: Specifies whether you want Fivetran to disable Vacuum operations on Delta tables.
 - `enable_external_storage_for_unstructured_files` (Boolean) Field usage depends on `service` value: 
 	- Service `snowflake`: Set to `true` if you want to enable external storage for unstructured files.
 - `enable_remote_execution` (Boolean)
@@ -406,6 +408,7 @@ Read-Only:
 	- Service `redshift`: Role ARN with Redshift permissions. Required if authentication type is `IAM`.
 - `s3_bucket_auth_type` (String) Field usage depends on `service` value: 
 	- Service `databricks`: Authentication method for the S3 bucket you want to use as the external staging for Hybrid Deployment.
+	- Service `redshift`: Type of authentication configured for the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment
 - `sasl_mechanism` (String) Field usage depends on `service` value: 
 	- Service `confluent_cloud_wh`: Security protocol for Confluent Cloud interaction.
 - `sasl_plain_key` (String, Sensitive) Field usage depends on `service` value: 

@@ -155,6 +155,7 @@ Read-Only:
 	- Service `eventsforce`: Your Eventsforce account name.
 	- Service `freshdesk_contact_center`: Your Freshdesk Contact Center account name.
 	- Service `happyfox`: Your HappyFox account name.
+	- Service `helpjuice`: Your Helpjuice account name.
 	- Service `maxio_saasoptics`: Your Maxio SaaSOptics account name.
 	- Service `talkdesk`: Your Talkdesk Account Name.
 	- Service `udemy_business`: Your Udemy Business account name.
@@ -449,6 +450,7 @@ Read-Only:
 	- Service `freshsuccess`: Your Freshsuccess API key.
 	- Service `freshteam`: Your Freshteam API key.
 	- Service `friendbuy`: Your Friendbuy API key.
+	- Service `fulfil`: Your Fulfil API key.
 	- Service `fullstory`: Your Fullstory API key.
 	- Service `gainsight_product_experience`: Your Gainsight Product Experience API key.
 	- Service `gem`: Your Gem API key.
@@ -801,6 +803,7 @@ Read-Only:
 - `auth_method` (String) Field usage depends on `service` value: 
 	- Service `aurora`: Database authentication method
 	- Service `aurora_postgres`: Database authentication method
+	- Service `azure_blob_storage`: Authentication Method
 	- Service `azure_postgres`: Database authentication method
 	- Service `azure_sql_db`: Authentication Method.
 	- Service `azure_sql_managed_db`: Authentication Method.
@@ -878,7 +881,7 @@ Read-Only:
 - `backup_log_path` (String) Field usage depends on `service` value: 
 	- Service `sql_server`: Full path to the local directory containing transaction log backup files. Required if `backup_storage_type` is `ALTERNATE_LOCATION`
 - `backup_storage_type` (String) Field usage depends on `service` value: 
-	- Service `sql_server`: Location of transaction log backup files when using BACKUP binary log type. Possible values: `"AZURE"`, `"ALTERNATE_LOCATION"`.
+	- Service `sql_server`: Location of transaction log backup files when using BACKUP binary log type. Possible values: `"AZURE"`, `"ALTERNATE_LOCATION"`, `"AWS"`.
 - `backward_sync_limit` (String) Field usage depends on `service` value: 
 	- Service `amazon_selling_partner`: The earliest date to sync data from, in YYYY-MM-DD format. Cannot be before 1994-01-01 or in the future.
 	- Service `shopify`: Limit of the Historical Sync Time for selected tables
@@ -937,6 +940,8 @@ Read-Only:
 	- Service `smarthr`: Your SmartHR access token.
 	- Service `sprout`: Your Sprout Social API Access Token.
 	- Service `zenefits`: Your Zenefits bearer token.
+- `binary_log_truncater` (String) Field usage depends on `service` value: 
+	- Service `sql_server`: Determine who is responble for truncating the online transaction log. Possible values: `"FIVETRAN"`, `"CUSTOMER"`, `"SQL_SERVER_AGENT"`. Default value is `"FIVETRAN"`.
 - `binary_log_type` (String) Field usage depends on `service` value: 
 	- Service `sql_server`: Source of transaction log data when using Binary Log Reader. Possible values: `"ONLINE"`, `"BACKUP"`. Default value is `"ONLINE"`.
 - `binary_representation` (String) Field usage depends on `service` value: 
@@ -1020,6 +1025,7 @@ Read-Only:
 	- Service `brightpearl`: Your Brightpearl client ID.
 	- Service `brivo`: Your Brivo client ID.
 	- Service `buildium`: Your Buildium API client ID.
+	- Service `bynder`: Your Bynder client ID.
 	- Service `cabcharge`: Your Cabcharge client ID.
 	- Service `canvas_by_instructure`: Your Canvas by Instructure client ID.
 	- Service `canvas_data_2_by_instructure`: Your Canvas Data 2 by Instructure client ID.
@@ -1035,7 +1041,7 @@ Read-Only:
 	- Service `criteo`: Your Criteo Client ID.
 	- Service `criteo_retail_media`: Your Criteo Retail Media client ID.
 	- Service `cube`: Your Cube client ID.
-	- Service `cube_software`: Your Cube Software Client ID.
+	- Service `cube_software`: Your Cube client ID.
 	- Service `culture_amp`: Your Culture Amp client ID.
 	- Service `cvent`: Your Cvent client ID.
 	- Service `d2l_brightspace`: Your D2L Brightspace client ID.
@@ -1069,6 +1075,7 @@ Read-Only:
 	- Service `navan`: Your Navan client ID.
 	- Service `nice`: Your NICE client ID.
 	- Service `on24`: Your ON24 client ID.
+	- Service `onetrust`: Your OneTrust client ID.
 	- Service `oracle_fusion_field_service`: Your Oracle Fusion Field Service client ID.
 	- Service `oracle_netsuite_openair`: Your Oracle NetSuite OpenAir Client ID.
 	- Service `oracle_sap_hva_netweaver`: Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.
@@ -1189,6 +1196,7 @@ Read-Only:
 	- Service `brightflag`: Your Brightflag client secret.
 	- Service `brightpearl`: Your Brightpearl client secret.
 	- Service `brivo`: Your Brivo client secret.
+	- Service `bynder`: Your Bynder client secret.
 	- Service `canvas_by_instructure`: Your Canvas by Instructure client secret.
 	- Service `castor_edc`: Your Castor EDC client secret.
 	- Service `classy`: Your Classy client secret.
@@ -1202,7 +1210,7 @@ Read-Only:
 	- Service `criteo`: Your Criteo client secret key.
 	- Service `criteo_retail_media`: Your Criteo Retail Media client secret.
 	- Service `cube`: Your Cube client secret.
-	- Service `cube_software`: Your Cube Software Client Secret.
+	- Service `cube_software`: Your Cube client secret.
 	- Service `culture_amp`: Your Culture Amp client secret.
 	- Service `cvent`: Your Cvent client secret.
 	- Service `d2l_brightspace`: Your D2L Brightspace client secret.
@@ -1232,6 +1240,7 @@ Read-Only:
 	- Service `microsoft_teams`: Your Microsoft Teams client secret.
 	- Service `navan`: Your Navan client secret.
 	- Service `nice`: Your NICE client secret.
+	- Service `onetrust`: Your OneTrust client secret.
 	- Service `oracle_fusion_field_service`: Your Oracle Fusion Field Service client secret.
 	- Service `oracle_netsuite_openair`: Your Oracle NetSuite OpenAir Client Secret.
 	- Service `paychex`: Your Paychex client secret.
@@ -1306,9 +1315,9 @@ Read-Only:
 - `company_id` (String) Field usage depends on `service` value: 
 	- Service `360learning`: Your 360Learning Company ID.
 	- Service `cube`: Your Cube company ID.
-	- Service `cube_software`: Your Cube Software Company ID.
+	- Service `cube_software`: Your Cube company ID.
 	- Service `oracle_netsuite_openair`: Your Oracle NetSuite OpenAir Company ID.
-	- Service `paylocity`: Your Paylocity companyId.
+	- Service `paylocity`: Your Paylocity company ID.
 	- Service `sage_intacct`: Company ID
 	- Service `sap_success_factors`: Your SAP SuccessFactors Company ID.
 - `company_ids` (String) Field usage depends on `service` value: 
@@ -1644,6 +1653,8 @@ Read-Only:
 	- Service `calabrio`: Your Calabrio domain name
 	- Service `dynamics_365`: The custom domain name associated with Dynamics 365.
 	- Service `helpshift`: Your Helpshift domain name.
+- `domain_prefix` (String) Field usage depends on `service` value: 
+	- Service `lightspeed_retail_xseries`: Your Lightspeed Retail Xseries Subdomain.
 - `domain_type` (String) Field usage depends on `service` value: 
 	- Service `medallia`: Domain type of your Medallia URL
 - `dsv_service_auth` (String, Sensitive)
@@ -1673,7 +1684,7 @@ Read-Only:
 	- Service `cabcharge`: Your Cabcharge email ID.
 	- Service `ordway`: Your Ordway user email ID.
 	- Service `planful`: Your Planful email ID.
-	- Service `zendesk_workforce_management`: Your Zendesk Workforce Management email ID.
+	- Service `zendesk_workforce_management`: Email ID associated with the Zendesk Workforce Management account you want Fivetran to use to access your data.
 - `empty_header` (Boolean) Field usage depends on `service` value: 
 	- Service `aws_cost_report`: Optional. If your CSV generating software doesn't provide header line for the documents, Fivetran can generate the generic column names and sync data rows with them.
 	- Service `azure_blob_storage`: Optional. If your CSV generating software doesn't provide header line for the documents, Fivetran can generate the generic column names and sync data rows with them.
@@ -2050,7 +2061,7 @@ Read-Only:
 - `identity` (String) Field usage depends on `service` value: 
 	- Service `marketo`: Marketo REST API identity url.
 - `include_inherited_columns` (Boolean) Field usage depends on `service` value: 
-	- Service `servicenow`: Include inherited columns.
+	- Service `servicenow`: (Immutable) Include inherited columns.
 - `include_ocapi_endpoints` (Boolean) Field usage depends on `service` value: 
 	- Service `salesforce_commerce_cloud`: Whether to sync data through OCAPI endpoints.
 - `instance` (String) Field usage depends on `service` value: 
@@ -2504,7 +2515,7 @@ Read-Only:
 - `pdb_name` (String) Field usage depends on `service` value: 
 	- Service `oracle`: Optional: Required only for containerized database.
 	- Service `oracle_ebs`: Optional: Required only for containerized database.
-	- Service `oracle_hva`: (Multi-tenant databases only) The database's PDB name. Exclude this parameter for single-tenant databases.
+	- Service `oracle_hva`: (Multi-tenant databases only) The database's PDB name. Omit this parameter for single-tenant databases.
 	- Service `oracle_rac`: Optional: Required only for containerized database.
 	- Service `oracle_rds`: Optional: Required only for containerized database.
 	- Service `oracle_sap_hva`: (Multi-tenant databases only) The database's PDB name. Exclude this parameter for single-tenant databases.
@@ -2855,11 +2866,11 @@ Read-Only:
 	- Service `mysql_rds`: Unique ID within the MySQL replica set. Must be an integer different from all other master and replica servers within the same group.
 - `replication_slot` (String) Field usage depends on `service` value: 
 	- Service `aurora_postgres`: Replication slot name. Specify only for `"updated_method": "WAL"` or `"WAL_PGOUTPUT"`.
-	- Service `azure_postgres`: Replication slot name. Specify only for `"updated_method": "WAL"` or `"WAL_PGOUTPUT"`.
-	- Service `google_cloud_postgresql`: Replication slot name. Specify only for `"updated_method": "WAL"` or `"WAL_PGOUTPUT"`.
-	- Service `heroku_postgres`: Replication slot name. Specify only for `"updated_method": "WAL"` or `"WAL_PGOUTPUT"`.
-	- Service `postgres`: Replication slot name. Specify only for `"updated_method": "WAL"` or `"WAL_PGOUTPUT"`.
-	- Service `postgres_rds`: Replication slot name. Specify only for `"updated_method": "WAL"` or `"WAL_PGOUTPUT"`.
+	- Service `azure_postgres`: Replication slot name. Specify only for `"updated_method": "WAL_PGOUTPUT"`.
+	- Service `google_cloud_postgresql`: Replication slot name. Specify only for `"updated_method": "WAL_PGOUTPUT"`.
+	- Service `heroku_postgres`: Replication slot name. Specify only for `"updated_method": "WAL_PGOUTPUT"`.
+	- Service `postgres`: Replication slot name. Specify only for `"updated_method": "WAL_PGOUTPUT"`.
+	- Service `postgres_rds`: Replication slot name. Specify only for `"updated_method": "WAL_PGOUTPUT"`.
 - `report_configs` (Attributes Set) Field usage depends on `service` value: 
 	- Service `yahoo_dsp`: Specify the reports you want to sync. This is optional. (see [below for nested schema](#nestedatt--config--report_configs))
 - `report_configuration_ids` (Set of String) Field usage depends on `service` value: 
@@ -3238,6 +3249,8 @@ Read-Only:
 	- Service `adobe_analytics_data_feed`: The data source.
 - `source_name` (String) Field usage depends on `service` value: 
 	- Service `consensus_demo_automation_platform`: Your Consensus Demo Automation Platform source name.
+- `storage_account_name` (String) Field usage depends on `service` value: 
+	- Service `azure_blob_storage`: The name of the Azure Storage account.
 - `store_hash` (String) Field usage depends on `service` value: 
 	- Service `big_commerce`: The BigCommerce store hash.
 - `store_id` (String) Field usage depends on `service` value: 
@@ -3295,8 +3308,9 @@ Read-Only:
 	- Service `nylas`: Your Nylas subdomain.
 	- Service `odoo`: Your Odoo subdomain.
 	- Service `okta`: Your Okta subdomain.
+	- Service `onetrust`: Your OneTrust subdomain.
 	- Service `oracle_fusion_field_service`: Your Oracle Fusion Field Service subDomain.
-	- Service `paylocity`: Your Paylocity subDomain.
+	- Service `paylocity`: Your Paylocity subdomain.
 	- Service `picqer`: Your Picqer subdomain.
 	- Service `pinpoint`: Your Pinpoint sub domain name.
 	- Service `piwik_pro`: Your Piwik PRO subdomain.
@@ -3326,6 +3340,7 @@ Read-Only:
 	- Service `wrike`: Your Wrike Subdomain.
 - `subdomain` (String) Field usage depends on `service` value: 
 	- Service `bamboohr`: The subdomain used to access your account. If you access BambooHR at 'https://mycompany.bamboohr.com', then the subdomain is 'mycompany'.
+	- Service `bynder`: Your Bynder Subdomain.
 	- Service `datadog`: Your Datadog subdomain.
 	- Service `ebay`: Your eBay environment.
 	- Service `freshdesk`: Your company's freshdesk subdomain (usually **company**.freshdesk.com).
@@ -3433,6 +3448,8 @@ Read-Only:
 	- Service `share_point`: Optional. Set to true to sync per-user file access permissions to control visibility in downstream applications.
 - `sync_pull_api` (Boolean) Field usage depends on `service` value: 
 	- Service `appsflyer`: These options are for Appsflyer's Pull API, and are only necessary for syncing events from Pull API.
+- `sync_tables` (String) Field usage depends on `service` value: 
+	- Service `google_analytics_4_export`: Sync Table
 - `sync_type` (String) Field usage depends on `service` value: 
 	- Service `apache_kafka`: Kafka sync type.  Unpacked messages must be valid JSON.
 	- Service `aws_msk`: The sync type.  Unpacked messages must be valid JSON.
@@ -3462,6 +3479,8 @@ Read-Only:
 - `tde_certificate_name` (String) Field usage depends on `service` value: 
 	- Service `sql_server_hva`: Name of the Certificate used to protect a database encryption key
 	- Service `sql_server_sap_ecc_hva`: Name of the Certificate used to protect a database encryption key
+- `tde_certificate_path` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `sql_server`: Certificate file path used to protect a database encryption key. Used when decrypting online logs
 - `tde_password` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `sql_server`: Password of the TDE private key
 	- Service `sql_server_hva`: Password of the TDE private key
@@ -3470,6 +3489,8 @@ Read-Only:
 	- Service `sql_server`: Private key file path associated with the TDE certificate
 	- Service `sql_server_hva`: Private key associated with the TDE certificate
 	- Service `sql_server_sap_ecc_hva`: Private key associated with the TDE certificate
+- `tde_private_key_path` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `sql_server`: Private key file path associated with the TDE certificate. Used when decrypting online logs.
 - `tde_wallet_password` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `oracle_hva`: TDE wallet password. Required for password based wallet.
 	- Service `oracle_sap_hva`: TDE wallet password. Required for password based wallet.
@@ -3770,8 +3791,8 @@ Read-Only:
 	- Service `google_display_and_video_360`: Specifies whether the configuration is updated before each sync or only when the connector settings are saved. This parameter only takes effect when `config_method` is set to `REUSE_EXISTING`. The default value is `true`.
 - `update_method` (String) Field usage depends on `service` value: 
 	- Service `aurora`: The method to detect new or changed rows. Supported values:`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
-	- Service `aurora_postgres`: The method to detect new or changed rows. Specify only for `"service": "postgres"` or `"service": "postgres_rds"`. Supported values:`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
-	- Service `azure_postgres`: The method to detect new or changed rows. Specify only for `"service": "postgres"` or `"service": "postgres_rds"`. Supported values:`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
+	- Service `aurora_postgres`: The method to detect new or changed rows. Specify only for `"service": "postgres"` or `"service": "postgres_rds"`. Supported values:`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns
+	- Service `azure_postgres`: The method to detect new or changed rows. Specify only for `"service": "postgres"` or `"service": "postgres_rds"`. Supported values:`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns
 	- Service `azure_sql_db`: (Optional) The incremental update method the connector will use. The possible values are `"TELEPORT"` or `"NATIVE_UPDATE"`. The type defaults to `"NATIVE_UPDATE"` if the value is set to `null` or not specified.
 	- Service `azure_sql_managed_db`: (Optional) The incremental update method the connector will use. The possible values are `"TELEPORT"` or `"NATIVE_UPDATE"`. The type defaults to `"NATIVE_UPDATE"` if the value is set to `null` or not specified.
 	- Service `clarity`: (Optional) The incremental update method the connector will use. The possible values are `"TELEPORT"` or `"NATIVE_UPDATE"`. The type defaults to `"NATIVE_UPDATE"` if the value is set to `null` or not specified.
@@ -3779,9 +3800,9 @@ Read-Only:
 	- Service `ehr`: (Optional) The incremental update method the connector will use. The possible values are `"TELEPORT"` or `"NATIVE_UPDATE"`. The type defaults to `"NATIVE_UPDATE"` if the value is set to `null` or not specified.
 	- Service `epic_clarity`: (Optional) The incremental update method the connector will use. The possible values are `"TELEPORT"` or `"NATIVE_UPDATE"`. The type defaults to `"NATIVE_UPDATE"` if the value is set to `null` or not specified.
 	- Service `google_cloud_mysql`: The method to detect new or changed rows. Supported values:`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
-	- Service `google_cloud_postgresql`: The method to detect new or changed rows. Specify only for `"service": "postgres"` or `"service": "postgres_rds"`. Supported values:`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
+	- Service `google_cloud_postgresql`: The method to detect new or changed rows. Specify only for `"service": "postgres"` or `"service": "postgres_rds"`. Supported values:`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns
 	- Service `google_cloud_sqlserver`: (Optional) The incremental update method the connector will use. The possible values are `"TELEPORT"` or `"NATIVE_UPDATE"`. The type defaults to `"NATIVE_UPDATE"` if the value is set to `null` or not specified.
-	- Service `heroku_postgres`: The method to detect new or changed rows. Specify only for `"service": "postgres"` or `"service": "postgres_rds"`. Supported values:`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
+	- Service `heroku_postgres`: The method to detect new or changed rows. Specify only for `"service": "postgres"` or `"service": "postgres_rds"`. Supported values:`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns
 	- Service `magento_mysql`: The method to detect new or changed rows. Supported values:`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
 	- Service `magento_mysql_rds`: The method to detect new or changed rows. Supported values:`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
 	- Service `maria`: The method to detect new or changed rows. Supported values:`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
@@ -3796,8 +3817,8 @@ Read-Only:
 	- Service `oracle_rac`: The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables.  - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
 	- Service `oracle_rds`: The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables.  - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
 	- Service `oracle_sap_hva`: The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
-	- Service `postgres`: The method to detect new or changed rows. Specify only for `"service": "postgres"` or `"service": "postgres_rds"`. Supported values:`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
-	- Service `postgres_rds`: The method to detect new or changed rows. Specify only for `"service": "postgres"` or `"service": "postgres_rds"`. Supported values:`WAL` - this method replicates new, changed and deleted rows by tailing the write-ahead log (WAL) via a logical slot. This is more efficient than the XMIN method, but requires more setup and monitoring.`XMIN` - this method detects new or changed rows via the XMIN system column, but is not capable of detecting deleted rows.`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot.`TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
+	- Service `postgres`: The method to detect new or changed rows. Specify only for `"service": "postgres"` or `"service": "postgres_rds"`. Supported values:`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the  write-ahead log (WAL) using a logical slot.This is more efficient than the query-based method, but requires more setup and monitoring.`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns
+	- Service `postgres_rds`: The method to detect new or changed rows. Specify only for `"service": "postgres"` or `"service": "postgres_rds"`. Supported values:`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns
 	- Service `redshift_db`: Default value: `Teleport`
 	- Service `snowflake_db`: Default value: `Teleport`
 	- Service `sql_server`: (Optional) The incremental update method the connector will use. The possible values are `"TELEPORT"` or `"NATIVE_UPDATE"`. The type defaults to `"NATIVE_UPDATE"` if the value is set to `null` or not specified.
@@ -3817,6 +3838,8 @@ Read-Only:
 - `use_oracle_rac` (Boolean) Field usage depends on `service` value: 
 	- Service `oracle_hva`: Default value: `false`. Set to `true` if you're using a RAC instance.
 	- Service `oracle_sap_hva`: Default value: `false`. Set to `true` if you're using a RAC instance.
+- `use_pdb_only` (Boolean) Field usage depends on `service` value: 
+	- Service `oracle_hva`: Default value: `false`. Set to `true` to connect directly to a single PDB. When `true`, set `database` to the PDB name and omit the `pdbName` field. Use only for Direct or Archive Log Only capture. Not supported with TDE, ASM, or RAC.
 - `use_pgp_encryption_options` (Boolean) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: Set to `true` if files present in the Azure Blob Storage container are encrypted using PGP. Default value: `false`.
 	- Service `ftp`: Set to `true` if files are encrypted using PGP in the S3 bucket. Default value: `false`.
@@ -4023,6 +4046,8 @@ Read-Only:
 	- Service `moloco`: Your Moloco workplace ID.
 - `workspace` (String) Field usage depends on `service` value: 
 	- Service `mode`: Your Mode Workspace.
+- `workspace_id` (String) Field usage depends on `service` value: 
+	- Service `fulfil`: Your Fulfil workspace ID.
 - `workspace_name` (String) Field usage depends on `service` value: 
 	- Service `bigquery_db`: Workspace Dataset Name
 	- Service `snowflake_db`: The name of the database where the temporary tables will be created.
@@ -4319,6 +4344,8 @@ Read-Only:
 	- Service `double_click_campaign_manager`: Conversion Dimensions.
 - `currency` (String) Field usage depends on `service` value: 
 	- Service `workday_adaptive`: List of currencies to sync for the table, if applicable
+- `custom_column_ids` (Set of String) Field usage depends on `service` value: 
+	- Service `google_search_ads_360`: The report custom column IDs included to sync.
 - `custom_dimension_key_ids` (Set of String) Field usage depends on `service` value: 
 	- Service `double_click_publishers`: The list of custom dimension key IDs included in the report. Custom dimension keys can only be selected with the CUSTOM_DIMENSION dimension.
 - `custom_field_ids` (Set of String) Field usage depends on `service` value: 
@@ -4351,6 +4378,7 @@ Read-Only:
 	- Service `google_analytics_4`: Filter type for reports request. Possible values are INCLUDE and EXCLUDE
 - `filter_value` (String)
 - `filters` (Attributes Set) Field usage depends on `service` value: 
+	- Service `google_analytics_4`: The list of filters to apply to the report data.
 	- Service `google_search_console`: The list of filters to be applied to the report. (see [below for nested schema](#nestedatt--config--reports--filters))
 - `generate_fivetran_pk` (Boolean) Field usage depends on `service` value: 
 	- Service `workday`: Select this option to generate a Primary Key for reports where no single column or combination of columns can be used to form a Primary Key.
@@ -4449,8 +4477,16 @@ Read-Only:
 
 - `dimension` (String)
 - `expression` (String)
-- `filter_type` (String)
-- `match_type` (String)
+- `filter_dimension` (String) Field usage depends on `service` value: 
+	- Service `google_analytics_4`: The dimension name to filter on.
+- `filter_type` (String) Field usage depends on `service` value: 
+	- Service `google_analytics_4`: Filter type for reports request. Possible values are INCLUDE and EXCLUDE
+- `filter_value` (String) Field usage depends on `service` value: 
+	- Service `google_analytics_4`: The filter value.
+- `filter_values` (Set of String) Field usage depends on `service` value: 
+	- Service `google_analytics_4`: The filter values for EXACT match type.
+- `match_type` (String) Field usage depends on `service` value: 
+	- Service `google_analytics_4`: The filter match type.
 
 
 <a id="nestedatt--config--reports--levels"></a>

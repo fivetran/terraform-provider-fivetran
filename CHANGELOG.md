@@ -5,7 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.11...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.12...HEAD)
+
+## [v1.9.12](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.11...v1.9.12)
+
+### Added
+New connection services supported:
+- Supported service: `bynder`
+- Supported service: `cube_software`
+- Supported service: `lightspeed_retail_xseries`
+- Supported service: `onetrust`
+- Supported service: `slack_app`
+
+New connection config fields supported:
+- Added field `fivetran_connector.config.use_pdb_only` for services: `oracle_hva`.
+- Added field `fivetran_connector.config.tde_certificate_path` for services: `sql_server`.
+- Added field `fivetran_connector.config.workspace_id` for services: `fulfil`.
+- Added field `fivetran_connector.config.domain_prefix` for services: `lightspeed_retail_xseries`.
+- Added field `fivetran_connector.config.reports.filters.filter_value` for services: `google_analytics_4`.
+- Added field `fivetran_connector.config.binary_log_truncater` for services: `sql_server`.
+- Added field `fivetran_connector.config.reports.filters.filter_values` for services: `google_analytics_4`.
+- Added field `fivetran_connector.config.sync_tables` for services: `google_analytics_4_export`.
+- Added field `fivetran_connector.config.reports.custom_column_ids` for services: `google_search_ads_360`.
+- Added field `fivetran_connector.config.tde_private_key_path` for services: `sql_server`.
+- Added field `fivetran_connector.config.storage_account_name` for services: `azure_blob_storage`.
+- Added field `fivetran_connector.config.reports.filters.filter_dimension` for services: `google_analytics_4`.
+
+New destination config fields supported:
+- Added field `fivetran_destination.config.disable_vacuum` for services: `databricks`.
 
 ## [v1.9.11](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.10...v1.9.11)
 
