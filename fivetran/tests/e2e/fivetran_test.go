@@ -2,10 +2,12 @@ package e2e_test
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"testing"
 	"math/rand"
+	"runtime"
 	"time"
 
 	gofivetran "github.com/fivetran/go-fivetran"
@@ -13,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
@@ -277,5 +280,54 @@ func cleanupHybridDeploymentAgents() {
 
 	if list.Data.NextCursor != "" {
 		cleanupHybridDeploymentAgents()
+	}
+}
+
+
+func ComposeImportStateCheck(fs ...resource.ImportStateCheckFunc) resource.ImportStateCheckFunc {
+	return func(s []*terraform.InstanceState) error {
+		for i, f := range fs {
+			if err := f(s); err != nil {
+				return fmt.Errorf("check %d/%d error: %s", i+1, len(fs), err)
+			}
+		}
+
+		return nil
+	}
+}
+
+func CheckImportResourceAttr(attributeName, value string) resource.ImportStateCheckFunc {
+	_, file, line, _ := runtime.Caller(1)
+
+	return func(s []*terraform.InstanceState) error {
+		v := s[0]
+
+		if attrVal, ok := v.Attributes[attributeName]; ok {
+			if attrVal != value {
+				return fmt.Errorf("For %s, '%s' attribute value is expected: '%s', got: '%s'. At %s:%d", v.Ephemeral.Type, attributeName, value, attrVal, file, line)
+			}
+
+			return nil
+		} else {
+			return fmt.Errorf("Attribute '%s' not found for %s. At %s:%d", attributeName, v.Ephemeral.Type, file, line)
+		}
+	}
+}
+
+func CheckImportResourceAttrSet(attributeName string) resource.ImportStateCheckFunc {
+	_, file, line, _ := runtime.Caller(1)
+
+	return func(s []*terraform.InstanceState) error {
+		v := s[0]
+
+		if attrVal, ok := v.Attributes[attributeName]; ok {
+			if attrVal != "" {
+				return nil
+			}
+
+			return fmt.Errorf("For %s, '%s' attribute value is expected to be set, got: '%s'. At %s:%d", v.Ephemeral.Type, attributeName, attrVal, file, line)
+		} else {
+			return fmt.Errorf("Attribute '%s' not found for %s. At %s:%d", attributeName, v.Ephemeral.Type, file, line)
+		}
 	}
 }
