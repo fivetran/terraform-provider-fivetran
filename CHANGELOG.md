@@ -33,6 +33,8 @@ New connection config fields supported:
 
 New destination config fields supported:
 - Added field `fivetran_destination.config.disable_vacuum` for services: `databricks`.
+### Fixed
+- Fixed importing of a `fivetran_group_users` resource.
 
 ## [v1.9.11](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.10...v1.9.11)
 
