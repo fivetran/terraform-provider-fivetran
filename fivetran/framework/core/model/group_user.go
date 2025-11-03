@@ -46,7 +46,7 @@ func (d *GroupUser) ReadFromResponse(ctx context.Context, resp groups.GroupListU
     d.User, _ = types.SetValue(types.ObjectType{AttrTypes: elementType}, users)
 }
 
-func (d *GroupUser) ReadFromSource(ctx context.Context, client *fivetran.Client, groupId string) (groups.GroupListUsersResponse, error) {
+func (d *GroupUser) ReadFromSource(ctx context.Context, client *fivetran.Client, groupId string, tfUserId string) (groups.GroupListUsersResponse, error) {
     var respNextCursor string
     var listResponse groups.GroupListUsersResponse
     limit := 1000
@@ -79,16 +79,7 @@ func (d *GroupUser) ReadFromSource(ctx context.Context, client *fivetran.Client,
         respNextCursor = tmpResp.Data.NextCursor
     }
 
-    accountInfoSvc := client.AccountInfo()
-    accountInfoResp, err := accountInfoSvc.Do(ctx)
-    if err == nil {
-        var tfUserId string
-        if accountInfoResp.Data.UserId != "" {
-            tfUserId = accountInfoResp.Data.UserId
-        } else {
-            tfUserId = accountInfoResp.Data.SystemKeyId
-        }
-
+    if tfUserId != "" {
         var filteredItems []users.UserDetailsData
         for _, item := range listResponse.Data.Items {
             if item.ID != tfUserId {

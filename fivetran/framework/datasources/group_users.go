@@ -8,6 +8,7 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	sdk "github.com/fivetran/go-fivetran/groups"
+	fivetranUsers "github.com/fivetran/go-fivetran/users"
 
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
 )
@@ -76,6 +77,20 @@ func (d *groupUsers) Read(ctx context.Context, req datasource.ReadRequest, resp 
 
 		respNextCursor = tmpResp.Data.NextCursor
 	}
+
+    accountInfoSvc := d.GetClient().AccountInfo()
+    accountInfoResp, err := accountInfoSvc.Do(ctx)
+    if err == nil && accountInfoResp.Data.UserId != "" {
+        tfUserId := accountInfoResp.Data.UserId
+
+        var filteredItems []fivetranUsers.UserDetailsData
+        for _, item := range listResponse.Data.Items {
+            if item.ID != tfUserId {
+                filteredItems = append(filteredItems, item)
+            }
+        }
+        listResponse.Data.Items = filteredItems
+    }
 
 	data.ReadFromResponse(ctx, listResponse)
 

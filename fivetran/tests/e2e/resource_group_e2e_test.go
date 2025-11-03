@@ -43,6 +43,11 @@ var groupResourceWithUsersConfig = `
 							role = "%v"
 						}
 					}
+
+					data "fivetran_group_users" "testgroup_users" {
+						provider = fivetran-provider
+						id = fivetran_group_users.testgroup_users.group_id
+					}
 				`
 
 var groupResourceWithEmptyUsersConfig = `
@@ -123,6 +128,11 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 					resource.TestCheckResourceAttrSet("fivetran_group_users.testgroup_users", "user.0.id"),
 					resource.TestCheckResourceAttr("fivetran_group_users.testgroup_users", "user.0.role", roleCreate),
 					resource.TestCheckResourceAttr("fivetran_group_users.testgroup_users", "user.0.email", userName),
+
+					resource.TestCheckResourceAttr("data.fivetran_group_users.testgroup_users", "users.#", "1"),
+					resource.TestCheckResourceAttrSet("data.fivetran_group_users.testgroup_users", "users.0.id"),
+					resource.TestCheckResourceAttr("data.fivetran_group_users.testgroup_users", "users.0.role", roleCreate),
+					resource.TestCheckResourceAttr("data.fivetran_group_users.testgroup_users", "users.0.email", userName),
 				),
 			},
 			{
