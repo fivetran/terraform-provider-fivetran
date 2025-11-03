@@ -6,6 +6,7 @@ import (
 
     "github.com/fivetran/go-fivetran"
     "github.com/fivetran/go-fivetran/groups"
+	"github.com/fivetran/go-fivetran/users"
     "github.com/hashicorp/terraform-plugin-framework/types"
     "github.com/hashicorp/terraform-plugin-framework/attr"
 )
@@ -76,6 +77,25 @@ func (d *GroupUser) ReadFromSource(ctx context.Context, client *fivetran.Client,
         }
 
         respNextCursor = tmpResp.Data.NextCursor
+    }
+
+    accountInfoSvc := client.AccountInfo()
+    accountInfoResp, err := accountInfoSvc.Do(ctx)
+    if err == nil {
+        var tfUserId string
+        if accountInfoResp.Data.UserId != "" {
+            tfUserId = accountInfoResp.Data.UserId
+        } else {
+            tfUserId = accountInfoResp.Data.SystemKeyId
+        }
+
+        var filteredItems []users.UserDetailsData
+        for _, item := range listResponse.Data.Items {
+            if item.ID != tfUserId {
+                filteredItems = append(filteredItems, item)
+            }
+        }
+        listResponse.Data.Items = filteredItems
     }
 
     return listResponse, nil
