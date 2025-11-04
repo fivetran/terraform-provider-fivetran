@@ -43,6 +43,11 @@ var groupResourceWithUsersConfig = `
 							role = "%v"
 						}
 					}
+
+					data "fivetran_group_users" "testgroup_users" {
+						provider = fivetran-provider
+						id = fivetran_group_users.testgroup_users.group_id
+					}
 				`
 
 var groupResourceWithEmptyUsersConfig = `
@@ -123,6 +128,11 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 					resource.TestCheckResourceAttrSet("fivetran_group_users.testgroup_users", "user.0.id"),
 					resource.TestCheckResourceAttr("fivetran_group_users.testgroup_users", "user.0.role", roleCreate),
 					resource.TestCheckResourceAttr("fivetran_group_users.testgroup_users", "user.0.email", userName),
+
+					resource.TestCheckResourceAttr("data.fivetran_group_users.testgroup_users", "users.#", "1"),
+					resource.TestCheckResourceAttrSet("data.fivetran_group_users.testgroup_users", "users.0.id"),
+					resource.TestCheckResourceAttr("data.fivetran_group_users.testgroup_users", "users.0.role", roleCreate),
+					resource.TestCheckResourceAttr("data.fivetran_group_users.testgroup_users", "users.0.email", userName),
 				),
 			},
 			{
@@ -138,11 +148,37 @@ func TestResourceGroupWithUsersE2E(t *testing.T) {
 					return rs.Primary.ID, nil
 				},
 				ImportStateCheck: ComposeImportStateCheck(
-					CheckImportResourceAttr("user.#", "2"), // terraform user + userName user
-					CheckImportResourceAttrSet("user.1.id"),
-					CheckImportResourceAttr("user.1.email", userName), // group users are sorted by createdAt, thus userName is second
-					CheckImportResourceAttr("user.1.role", roleCreate),
+					CheckImportResourceAttr("user.#", "1"), // terraform user + userName user
+					CheckImportResourceAttrSet("user.0.id"),
+					CheckImportResourceAttr("user.0.email", userName), // group users are sorted by createdAt, thus userName is second
+					CheckImportResourceAttr("user.0.role", roleCreate),
 				),
+			},
+			{
+				Config: fmt.Sprintf(`
+					resource "fivetran_group_users" "testgroup_users_imported" {
+						provider = fivetran-provider
+						
+						user {
+							email = "%v"
+							role = "%v"
+						}
+					}
+				`, userName, roleCreate),
+				ImportState:             true,
+				ResourceName:            "fivetran_group_users.testgroup_users_imported",
+				ImportStateIdFunc:       func(s *terraform.State) (string, error) {
+					rs := GetResource(t, s, "fivetran_group.testgroup")
+					return rs.Primary.ID, nil
+				},
+				ImportStateCheck: ComposeImportStateCheck(
+					CheckImportResourceAttr("user.#", "1"), // userName user
+					CheckImportResourceAttrSet("user.0.id"),
+					CheckImportResourceAttr("user.0.email", userName), // group users are sorted by createdAt, thus userName is second
+					CheckImportResourceAttr("user.0.role", roleCreate),
+				),
+				ImportStateVerify: true,
+				ImportStateVerifyIgnore: []string{"last_updated"},
 			},
 			{
 				Config: resourceWithUsersUpdateConfig,

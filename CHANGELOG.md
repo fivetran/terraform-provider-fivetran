@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.13...HEAD)
+
+## [v1.9.13](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.12...v1.9.13)
+
+### Fixed
+- In importing of a `fivetran_group_users` resource exclude TF user (group admin) to allow for re-importing previously created resource.
+
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.12...HEAD)
 
 ## [v1.9.12](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.11...v1.9.12)
