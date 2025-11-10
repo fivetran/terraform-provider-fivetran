@@ -23,21 +23,40 @@ func TestResourceConnectorE2E(t *testing.T) {
 					name = "test_group_name"
 			    }
 
+            	resource "fivetran_proxy_agent" "test_proxy_agent" {
+                	provider = fivetran-provider
+
+                 	display_name = "test_proxy_agent1"
+                 	group_region = "GCP_US_EAST4"
+            	}
+
 			    resource "fivetran_connector" "test_connector" {
 					provider = fivetran-provider
 					group_id = fivetran_group.test_group.id
-					service = "fivetran_log"
+					service = "postgres"
 					
 					data_delay_sensitivity = "NORMAL"
 					data_delay_threshold = 0
 
 					destination_schema {
-						name = "fivetran_log_schema"
+						prefix = "fivetran_log_schema"
 					}
 					
 					trust_certificates = false
 					trust_fingerprints = false
 					run_setup_tests = false
+
+					networking_method  = "ProxyAgent"
+					proxy_agent_id = fivetran_proxy_agent.test_proxy_agent.id
+
+      				config {
+        				user = "user1"
+        				password = "password1"
+        				host = "host"
+        				port = "123"
+        				update_method = "QUERY_BASED"
+						connection_type  = "ProxyAgent"
+      				}
 				}
 
 				resource "fivetran_connector_schedule" "test_connector_schedule" {
@@ -51,13 +70,17 @@ func TestResourceConnectorE2E(t *testing.T) {
 		  `,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranConnectorResourceCreate(t, "fivetran_connector.test_connector"),
-					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "fivetran_log"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "postgres"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "fivetran_log_schema"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "false"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "false"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_sensitivity", "NORMAL"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_threshold", "0"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "networking_method", "ProxyAgent"),
+					resource.TestCheckResourceAttrSet("fivetran_connector.test_connector", "proxy_agent_id"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.connection_type", "ProxyAgent"),
+
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "schedule_type", "auto"),
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "sync_frequency", "5"),
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "paused", "true"),
@@ -71,21 +94,43 @@ func TestResourceConnectorE2E(t *testing.T) {
 					name = "test_group_name"
 			    }
 
+            	resource "fivetran_proxy_agent" "test_proxy_agent" {
+                	provider = fivetran-provider
+
+                 	display_name = "test_proxy_agent1"
+                 	group_region = "GCP_US_EAST4"
+            	}
+
 			    resource "fivetran_connector" "test_connector" {
 					provider = fivetran-provider
 					group_id = fivetran_group.test_group.id
-					service = "fivetran_log"
+					service = "postgres"
 					
 					data_delay_sensitivity = "NORMAL"
 					data_delay_threshold = 0
 
 					destination_schema {
-						name = "fivetran_log_schema"
+						prefix = "fivetran_log_schema"
 					}
 
 					trust_certificates = true
 					trust_fingerprints = true
 					run_setup_tests = true
+
+					networking_method  = "SshTunnel"
+					proxy_agent_id = null
+
+      				config {
+        				user = "user1"
+        				password = "password1"
+        				host = "host"
+        				port = "123"
+        				update_method = "QUERY_BASED"
+						tunnel_host      = "127.0.0.1"
+						tunnel_port      = 22
+						tunnel_user      = "fivetran"
+						connection_type  = null
+      				}
 				}
 
 				resource "fivetran_connector_schedule" "test_connector_schedule" {
@@ -102,18 +147,101 @@ func TestResourceConnectorE2E(t *testing.T) {
 
 					resource.TestCheckResourceAttrSet("fivetran_connector.test_connector", "id"),
 
-					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "fivetran_log"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "postgres"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "fivetran_log_schema"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_sensitivity", "NORMAL"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_threshold", "0"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "true"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "true"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "true"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "networking_method", "SshTunnel"),
+					resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "proxy_agent_id"),
+					resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "config.connection_type"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.tunnel_host", "127.0.0.1"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.tunnel_port", "22"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.tunnel_user", "fivetran"),
 
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "schedule_type", "auto"),
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "sync_frequency", "15"),
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "paused", "false"),
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "pause_after_trial", "false"),
+				),
+			},
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_name"
+			    }
+
+            	resource "fivetran_proxy_agent" "test_proxy_agent" {
+                	provider = fivetran-provider
+
+                 	display_name = "test_proxy_agent1"
+                 	group_region = "GCP_US_EAST4"
+            	}
+
+			    resource "fivetran_connector" "test_connector" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "postgres"
+					
+					data_delay_sensitivity = "NORMAL"
+					data_delay_threshold = 0
+
+					destination_schema {
+						prefix = "fivetran_log_schema"
+					}
+					
+					trust_certificates = false
+					trust_fingerprints = false
+					run_setup_tests = false
+
+					networking_method  = "ProxyAgent"
+					proxy_agent_id = fivetran_proxy_agent.test_proxy_agent.id
+
+      				config {
+        				user = "user1"
+        				password = "password1"
+        				host = "host"
+        				port = "123"
+        				update_method = "QUERY_BASED"
+						connection_type  = null
+						tunnel_host      = null
+						tunnel_port      = null
+						tunnel_user      = null
+      				}
+				}
+
+				resource "fivetran_connector_schedule" "test_connector_schedule" {
+					provider = fivetran-provider
+
+					connector_id = fivetran_connector.test_connector.id
+					sync_frequency = 5
+					paused = true
+					pause_after_trial = true
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectorResourceCreate(t, "fivetran_connector.test_connector"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "postgres"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "fivetran_log_schema"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_sensitivity", "NORMAL"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_threshold", "0"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "networking_method", "ProxyAgent"),
+					resource.TestCheckResourceAttrSet("fivetran_connector.test_connector", "proxy_agent_id"),
+					resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "config.connection_type"),
+					resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "config.tunnel_host"),
+					resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "config.tunnel_port"),
+					resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "config.tunnel_user"),
+
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "schedule_type", "auto"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "sync_frequency", "5"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "paused", "true"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "pause_after_trial", "true"),
 				),
 			},
 		},
