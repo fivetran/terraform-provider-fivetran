@@ -453,6 +453,7 @@ Optional:
 	- Service `rollbar`: Your Rollbar account access token.
 - `account_id` (String) Field usage depends on `service` value: 
 	- Service `appcues`: Your Appcues Account ID.
+	- Service `bizzabo_v2`: Your Bizzabo account ID.
 	- Service `brightcove`: Your Brightcove account ID.
 	- Service `cin7core`: Your Cin7 Core account ID.
 	- Service `dear`: Your Dear Account ID.
@@ -750,6 +751,7 @@ Optional:
 	- Service `everhour`: Your Everhour API Token.
 	- Service `expensein`: Your ExpenseIn API key.
 	- Service `factorial`: Your Factorial API key.
+	- Service `fireflies`: Your Fireflies API key.
 	- Service `firehydrant`: Your FireHydrant API key.
 	- Service `float`: Your Float API key.
 	- Service `forj_community`: Your Forj Community API key.
@@ -887,6 +889,7 @@ Optional:
 	- Service `webconnex`: Your Webconnex API key.
 	- Service `wicked_reports`: Your Wicked Reports API key.
 	- Service `workleap_officevibe`: Your Workleap Officevibe API key.
+	- Service `writesonic`: Your Writesonic API key
 	- Service `xsolla`: Your Xsolla API key.
 	- Service `yext`: Your Yext API key.
 	- Service `yougov_sport`: Your Yougov Sport API key.
@@ -974,6 +977,7 @@ Optional:
 	- Service `sensor_tower`: Your Sensor Tower API token.
 	- Service `sentry`: Your Sentry auth token.
 	- Service `simplecast`: Your Simplecast API token.
+	- Service `smartsheet`: API token generated from your Smartsheet account.
 	- Service `snyk`: Your Snyk API token.
 	- Service `textus`: Your TextUs API token.
 	- Service `toggl_track`: Your Toggl Track API token
@@ -1139,6 +1143,7 @@ Optional:
 	- Service `anaplan`: The Anaplan authentication method.
 	- Service `concur`: The Authentication Mode used by SAP Concur. It can be PasswordGrant or CompanyLevel auth mode
 	- Service `github`: Authorization type.
+	- Service `smartsheet`: Authorization type.
 	- Service `workday`: Authentication Mode
 	- Service `workday_financial_management`: Authentication Mode
 	- Service `workday_hcm`: Authentication Mode
@@ -1148,6 +1153,7 @@ Optional:
 	- Service `impact_partner`: Your Impact Partner auth token
 	- Service `zonka_feedback`: Your Zonka Feedback auth token.
 - `auth_type` (String) Field usage depends on `service` value: 
+	- Service `360learning`: Your 360Learning auth type.
 	- Service `airtable`: Type of authentication being used by connector
 	- Service `aws_cost_report`: Access approach
 	- Service `azure_service_bus`: The authentication mode to access the topic
@@ -1209,6 +1215,7 @@ Optional:
 - `base_id` (String) Field usage depends on `service` value: 
 	- Service `airtable`: ID of base in Airtable
 - `base_url` (String) Field usage depends on `service` value: 
+	- Service `360learning`: Your 360Learning base URL.
 	- Service `aha`: Your Aha! subdomain.
 	- Service `akeneo`: Your Akeneo base URL.
 	- Service `bigmarker`: Your BigMarker base URL.
@@ -1319,6 +1326,7 @@ Optional:
 - `client_host` (String) Field usage depends on `service` value: 
 	- Service `ceridian_dayforce`: Your Ceridian Dayforce client host.
 - `client_id` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `360learning`: Your 360Learning client ID.
 	- Service `acumatica`: Your Acumatica client ID.
 	- Service `adobe_analytics`: Client ID from the OAuth Server-to-Server credentials of your Adobe Project.
 	- Service `adobe_workfront`: Your Adobe Workfront client ID.
@@ -1330,6 +1338,7 @@ Optional:
 	- Service `bigin_by_zoho_crm`: Your Bigin by Zoho CRM Client Id
 	- Service `billing_platform`: Your BillingPlatform client ID.
 	- Service `bing_webmaster_tools`: Your Bing Webmaster Tools client ID.
+	- Service `bizzabo_v2`: Your Bizzabo client ID.
 	- Service `brightcove`: Your Brightcove client ID.
 	- Service `brightflag`: Your Brightflag client ID.
 	- Service `brightpearl`: Your Brightpearl client ID.
@@ -1363,7 +1372,9 @@ Optional:
 	- Service `formstack`: Your Formstack client ID.
 	- Service `fortnox`: Your Fortnox client ID.
 	- Service `genesys`: Your Genesys client ID.
+	- Service `github`: GitHub App Client ID
 	- Service `gofundme_pro`: Client ID of the API application in your GoFundMe Pro account.
+	- Service `h_level`: Your HighLevel Client Id.
 	- Service `hana_sap_hva_ecc_netweaver`: Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.
 	- Service `hana_sap_hva_s4_netweaver`: Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.
 	- Service `helpdesk`: Your HelpDesk client ID.
@@ -1411,6 +1422,7 @@ Optional:
 	- Service `sharetribe`: Your Sharetribe client ID.
 	- Service `shipnetwork`: Your ShipNetwork client ID.
 	- Service `showpad`: Your Showpad client ID.
+	- Service `siemens_building_x_openness`: Your Siemens Building X Openness Client ID.
 	- Service `sigma_computing_source`: Your Sigma Computing client ID.
 	- Service `skillstx`: Your SkillsTX client ID.
 	- Service `skimlinks`: Your Skimlinks client ID.
@@ -1491,6 +1503,7 @@ Optional:
 	- Service `postgres`: Client Certificate in .pem format.
 	- Service `postgres_rds`: Client Certificate in .pem format.
 - `client_secret` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `360learning`: Your 360Learning client secret.
 	- Service `acumatica`: Your Acumatica client secret.
 	- Service `adobe_analytics`: Client Secret from the OAuth Server-to-Server credentials of your Adobe Project.
 	- Service `adobe_workfront`: Your Adobe Workfront client secret.
@@ -1502,6 +1515,7 @@ Optional:
 	- Service `bigin_by_zoho_crm`: Your Bigin by Zoho CRM Client Secret
 	- Service `billing_platform`: Your BillingPlatform client secret.
 	- Service `bing_webmaster_tools`: Your Bing Webmaster Tools client secret.
+	- Service `bizzabo_v2`: Your Bizzabo client secret.
 	- Service `brightcove`: Your Brightcove client secret.
 	- Service `brightflag`: Your Brightflag client secret.
 	- Service `brightpearl`: Your Brightpearl client secret.
@@ -1533,6 +1547,7 @@ Optional:
 	- Service `fortnox`: Your Fortnox client secret.
 	- Service `genesys`: Your Genesys client secret.
 	- Service `gofundme_pro`: Client secret of the API application in your GoFundMe Pro account.
+	- Service `h_level`: Your HighLevel Client secret.
 	- Service `helpdesk`: Your HelpDesk client secret.
 	- Service `hilti_ontrack`: Your Hilti On!Track client secret.
 	- Service `ilevel`: Your iLevel Client Secret.
@@ -1572,6 +1587,7 @@ Optional:
 	- Service `servicetitan`: Your ServiceTitan secret key.
 	- Service `sharetribe`: Your Sharetribe client secret.
 	- Service `showpad`: Your Showpad client secret.
+	- Service `siemens_building_x_openness`: Your Siemens Building X Openness Client Secret.
 	- Service `sigma_computing_source`: Your Sigma Computing client secret.
 	- Service `skillstx`: Your SkillsTX client secret.
 	- Service `skimlinks`: Your Skimlinks client secret.
@@ -1623,7 +1639,7 @@ Optional:
 - `company` (String) Field usage depends on `service` value: 
 	- Service `ordway`: Your Ordway company name.
 - `company_id` (String) Field usage depends on `service` value: 
-	- Service `360learning`: Your 360Learning Company ID.
+	- Service `360learning`: Your 360Learning company ID.
 	- Service `cube`: Your Cube company ID.
 	- Service `cube_software`: Your Cube company ID.
 	- Service `oracle_netsuite_openair`: Your Oracle NetSuite OpenAir Company ID.
@@ -2130,6 +2146,8 @@ Optional:
 	- Service `s3`: Used for authentication along with the `role_arn`. If not provided, it uses connector's `group_id`. Use the [List All Groups endpoint](https://fivetran.com/docs/rest-api/groups#listallgroups) to find the `group_id`.
 	- Service `segment`: The external ID is a string that designates who can assume the role. For more information, see a href="http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html"Amazon's AWS Identity and Access Management User Guide/a.
 	- Service `sql_server`: The external ID to be used when assuming the IAM role.
+- `extraction_pattern` (String) Field usage depends on `service` value: 
+	- Service `s3`: A regular expression with a named capture group `(?table...)` to extract table names from file paths.
 - `facility_codes` (String) Field usage depends on `service` value: 
 	- Service `unicommerce`: Your uniware facility codes.
 - `fields` (Set of String) Field usage depends on `service` value: 
@@ -2139,6 +2157,8 @@ Optional:
 	- Service `google_drive`: Files will be processed and synced according to the selected file handling option. Supported values:`structured`- (Default) Extract structured data into destination tables for analysis. Commonly used.`unstructured`- Replicate files in their original format. Best for PDFs, images, and other unstructured content.  Learn more about unstructured file replication in our [documentation.](https://fivetran.com/docs/using-fivetran/features/unstructured-file-replication).
 	- Service `sftp`: Files will be processed and synced according to the selected file handling option. Supported values:`structured`- (Default) Extract structured data into destination tables for analysis. Commonly used.`unstructured`- Replicate files in their original format. Best for PDFs, images, and other unstructured content.  Learn more about unstructured file replication in our [documentation.](https://fivetran.com/docs/using-fivetran/features/unstructured-file-replication).
 	- Service `share_point`: Files will be processed and synced according to the selected file handling option. Supported values:`structured`- (Default) Extract structured data into destination tables for analysis. Commonly used.`unstructured`- Replicate files in their original format. Best for PDFs, images, and other unstructured content.  Learn more about unstructured file replication in our [documentation.](https://fivetran.com/docs/using-fivetran/features/unstructured-file-replication).
+- `file_mapping_method` (String) Field usage depends on `service` value: 
+	- Service `s3`: The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.
 - `file_type` (String) Field usage depends on `service` value: 
 	- Service `aws_cost_report`: If your files are saved with improper extensions, you can force them to by synced as the selected filetype. Leave the value as infer if your files have the correct extensions
 	- Service `azure_blob_storage`: If your files are saved with improper extensions, you can force them to by synced as the selected file type.
@@ -2333,12 +2353,14 @@ Optional:
 	- Service `zuora_sandbox`: The domain or URL of your Zuora Revenue instance.
 - `host_url` (String) Field usage depends on `service` value: 
 	- Service `adobe_commerce`: Your Adobe Commerce host url.
+	- Service `github`: The GHES instance host address. Only for on-premises installations.
 	- Service `sparkpost`: Your SparkPost host URL.
 - `host_user` (String) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: Username in the host machine.
 	- Service `azure_service_bus`: The username on the host machine which we use to connect to ASB via ssh
-- `hostname` (String) Field usage depends on `service` value: 
+- `hostname` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `akamai`: Your Akamai hostname.
+	- Service `discourse`: Your Discourse hostname.
 	- Service `ukg_pro`: Your UKG Pro hostname.
 - `hosts` (Set of String) Field usage depends on `service` value: 
 	- Service `azure_cosmos_for_mongo`: A list of host addresses for Azure Cosmos DB for Mongo DB.
@@ -2397,7 +2419,7 @@ Optional:
 - `is_private_key_encrypted` (Boolean) Field usage depends on `service` value: 
 	- Service `snowflake_db`: Indicates that a private key is encrypted. The default value: `false`. The field can be specified if authentication type is `KEY_PAIR`.
 - `is_private_link_required` (Boolean) Field usage depends on `service` value: 
-	- Service `aws_lambda`: We use PrivateLink by default if your AWS Lambda is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to AWS lambda over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options#awsprivatelink).
+	- Service `aws_lambda`: We use PrivateLink by default if your AWS Lambda is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to AWS lambda over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options/aws-private-link).
 	- Service `s3`: Set to `true` if you want to connect to S3 bucket over PrivateLink. Default value: `false`.
 - `is_public` (Boolean) Field usage depends on `service` value: 
 	- Service `aws_cost_report`: Whether you are syncing from a public bucket. Default value: `false`.
@@ -2483,6 +2505,8 @@ Optional:
 	- Service `s3_compatible_storage`: The listing strategy you want to use. Default value: `complete_listing`.
 - `list_sync_mode` (String) Field usage depends on `service` value: 
 	- Service `google_analytics_4_export`: The Sync Mode
+- `location_ids` (String) Field usage depends on `service` value: 
+	- Service `h_level`: Your HighLevel Location IDs.
 - `log_journal` (String) Field usage depends on `service` value: 
 	- Service `db2i_hva`: The log journal name.
 	- Service `db2i_sap_hva`: The log journal name.
@@ -2945,6 +2969,7 @@ Optional:
 	- Service `apple_search_ads`: The contents of your secret key file. Must be populated if `is_auth2_enabled` is set to `false`.
 	- Service `braintree`: The contents of your secret key file.
 	- Service `braintree_sandbox`: The contents of your secret key file.
+	- Service `github`: Your Private Key
 	- Service `itunes_connect`: Your Private Key
 	- Service `netsuite_suiteanalytics`: Private Key
 	- Service `oracle_fusion_cloud_apps_crm`: The Oracle Fusion Cloud private key.
@@ -2976,6 +3001,8 @@ Optional:
 	- Service `sentry`: Your Sentry project IDs.
 - `project_key` (String) Field usage depends on `service` value: 
 	- Service `commercetools`: Your commercetools project key.
+- `project_website_url` (String) Field usage depends on `service` value: 
+	- Service `writesonic`: Your Writesonic Project Website Url.
 - `projects` (Set of String) Field usage depends on `service` value: 
 	- Service `asana`: Specific Project IDs to sync. Must be populated if `syncMode` is set to `SpecificProjects`.
 	- Service `jira`: Specific projects to sync. Must be populated if `syncMode` is set to `CUSTOM`.
@@ -3369,6 +3396,7 @@ Optional:
 	- Service `box`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
 	- Service `dropbox`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
 	- Service `email`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
+	- Service `ftp`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
 	- Service `s3`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
 	- Service `sftp`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
 	- Service `share_point`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
@@ -3563,6 +3591,7 @@ Optional:
 	- Service `gainsight_product_experience`: Your Gainsight Product Experience subdomain.
 	- Service `genesys`: Your Genesys subdomain.
 	- Service `green_power_monitor`: Your GreenPowerMonitor subdomain.
+	- Service `h_level`: Your HighLevel subdomain.
 	- Service `heartland_retail_pos`: Your Heartland Retail POS subdomain.
 	- Service `infobip`: Your Infobip sub_domain.
 	- Service `insightly`: Your company's Insightly subdomain name.
@@ -3746,6 +3775,8 @@ Optional:
 	- Service `sql_server`: Certificate file path used to protect a database encryption key
 	- Service `sql_server_hva`: Certificate used to protect a database encryption key
 	- Service `sql_server_sap_ecc_hva`: Certificate used to protect a database encryption key
+- `tde_certificate_backup` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `sql_server`: Certificate file used to protect a database encryption key. Used when decrypting backup logs.
 - `tde_certificate_name` (String) Field usage depends on `service` value: 
 	- Service `sql_server_hva`: Name of the Certificate used to protect a database encryption key
 	- Service `sql_server_sap_ecc_hva`: Name of the Certificate used to protect a database encryption key
@@ -3759,6 +3790,8 @@ Optional:
 	- Service `sql_server`: Private key file path associated with the TDE certificate
 	- Service `sql_server_hva`: Private key associated with the TDE certificate
 	- Service `sql_server_sap_ecc_hva`: Private key associated with the TDE certificate
+- `tde_private_key_backup` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `sql_server`: Private key file associated with the TDE certificate. Used when decrypting backup logs.
 - `tde_private_key_path` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `sql_server`: Private key file path associated with the TDE certificate. Used when decrypting online logs.
 - `tde_wallet_password` (String, Sensitive) Field usage depends on `service` value: 

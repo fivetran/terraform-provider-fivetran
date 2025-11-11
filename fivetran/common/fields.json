@@ -302,6 +302,7 @@
       "item_type": {},
       "description": {
          "appcues": "Your Appcues Account ID.",
+         "bizzabo_v2": "Your Bizzabo account ID.",
          "brightcove": "Your Brightcove account ID.",
          "cin7core": "Your Cin7 Core account ID.",
          "dear": "Your Dear Account ID.",
@@ -1216,6 +1217,7 @@
          "everhour": "Your Everhour API Token.",
          "expensein": "Your ExpenseIn API key.",
          "factorial": "Your Factorial API key.",
+         "fireflies": "Your Fireflies API key.",
          "firehydrant": "Your FireHydrant API key.",
          "float": "Your Float API key.",
          "forj_community": "Your Forj Community API key.",
@@ -1355,6 +1357,7 @@
          "webconnex": "Your Webconnex API key.",
          "wicked_reports": "Your Wicked Reports API key.",
          "workleap_officevibe": "Your Workleap Officevibe API key.",
+         "writesonic": "Your Writesonic API key",
          "xsolla": "Your Xsolla API key.",
          "yext": "Your Yext API key.",
          "yougov_sport": "Your Yougov Sport API key.",
@@ -1566,6 +1569,7 @@
          "sensor_tower": "Your Sensor Tower API token.",
          "sentry": "Your Sentry auth token.",
          "simplecast": "Your Simplecast API token.",
+         "smartsheet": "API token generated from your Smartsheet account.",
          "snyk": "Your Snyk API token.",
          "textus": "Your TextUs API token.",
          "toggl_track": "Your Toggl Track API token",
@@ -2220,6 +2224,7 @@
          "anaplan": "The Anaplan authentication method.",
          "concur": "The Authentication Mode used by SAP Concur. It can be PasswordGrant or CompanyLevel auth mode",
          "github": "Authorization type.",
+         "smartsheet": "Authorization type.",
          "workday": "Authentication Mode",
          "workday_financial_management": "Authentication Mode",
          "workday_hcm": "Authentication Mode"
@@ -2262,6 +2267,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "360learning": "Your 360Learning auth type.",
          "airtable": "Type of authentication being used by connector",
          "aws_cost_report": "Access approach",
          "azure_service_bus": "The authentication mode to access the topic",
@@ -2510,6 +2516,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "360learning": "Your 360Learning base URL.",
          "aha": "Your Aha! subdomain.",
          "akeneo": "Your Akeneo base URL.",
          "bigmarker": "Your BigMarker base URL.",
@@ -2889,6 +2896,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "360learning": "Your 360Learning client ID.",
          "acumatica": "Your Acumatica client ID.",
          "adobe_analytics": "Client ID from the OAuth Server-to-Server credentials of your Adobe Project.",
          "adobe_workfront": "Your Adobe Workfront client ID.",
@@ -2900,6 +2908,7 @@
          "bigin_by_zoho_crm": "Your Bigin by Zoho CRM Client Id",
          "billing_platform": "Your BillingPlatform client ID.",
          "bing_webmaster_tools": "Your Bing Webmaster Tools client ID.",
+         "bizzabo_v2": "Your Bizzabo client ID.",
          "brightcove": "Your Brightcove client ID.",
          "brightflag": "Your Brightflag client ID.",
          "brightpearl": "Your Brightpearl client ID.",
@@ -2933,7 +2942,9 @@
          "formstack": "Your Formstack client ID.",
          "fortnox": "Your Fortnox client ID.",
          "genesys": "Your Genesys client ID.",
+         "github": "GitHub App Client ID",
          "gofundme_pro": "Client ID of the API application in your GoFundMe Pro account.",
+         "h_level": "Your HighLevel Client Id.",
          "hana_sap_hva_b1": "",
          "hana_sap_hva_ecc": "",
          "hana_sap_hva_ecc_netweaver": "Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.",
@@ -2984,6 +2995,7 @@
          "sharetribe": "Your Sharetribe client ID.",
          "shipnetwork": "Your ShipNetwork client ID.",
          "showpad": "Your Showpad client ID.",
+         "siemens_building_x_openness": "Your Siemens Building X Openness Client ID.",
          "sigma_computing_source": "Your Sigma Computing client ID.",
          "skillstx": "Your SkillsTX client ID.",
          "skimlinks": "Your Skimlinks client ID.",
@@ -3157,6 +3169,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "360learning": "Your 360Learning client secret.",
          "acumatica": "Your Acumatica client secret.",
          "adobe_analytics": "Client Secret from the OAuth Server-to-Server credentials of your Adobe Project.",
          "adobe_workfront": "Your Adobe Workfront client secret.",
@@ -3168,6 +3181,7 @@
          "bigin_by_zoho_crm": "Your Bigin by Zoho CRM Client Secret",
          "billing_platform": "Your BillingPlatform client secret.",
          "bing_webmaster_tools": "Your Bing Webmaster Tools client secret.",
+         "bizzabo_v2": "Your Bizzabo client secret.",
          "brightcove": "Your Brightcove client secret.",
          "brightflag": "Your Brightflag client secret.",
          "brightpearl": "Your Brightpearl client secret.",
@@ -3199,6 +3213,7 @@
          "fortnox": "Your Fortnox client secret.",
          "genesys": "Your Genesys client secret.",
          "gofundme_pro": "Client secret of the API application in your GoFundMe Pro account.",
+         "h_level": "Your HighLevel Client secret.",
          "helpdesk": "Your HelpDesk client secret.",
          "hilti_ontrack": "Your Hilti On!Track client secret.",
          "ilevel": "Your iLevel Client Secret.",
@@ -3238,6 +3253,7 @@
          "servicetitan": "Your ServiceTitan secret key.",
          "sharetribe": "Your Sharetribe client secret.",
          "showpad": "Your Showpad client secret.",
+         "siemens_building_x_openness": "Your Siemens Building X Openness Client Secret.",
          "sigma_computing_source": "Your Sigma Computing client secret.",
          "skillstx": "Your SkillsTX client secret.",
          "skimlinks": "Your Skimlinks client secret.",
@@ -3393,7 +3409,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "360learning": "Your 360Learning Company ID.",
+         "360learning": "Your 360Learning company ID.",
          "cube": "Your Cube company ID.",
          "cube_software": "Your Cube company ID.",
          "oracle_netsuite_openair": "Your Oracle NetSuite OpenAir Company ID.",
@@ -5699,6 +5715,19 @@
       },
       "api_field": ""
    },
+   "extraction_pattern": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "s3": "A regular expression with a named capture group `(?table...)` to extract table names from file paths."
+      },
+      "api_field": ""
+   },
    "facility_codes": {
       "readonly": false,
       "sensitive": false,
@@ -5738,6 +5767,19 @@
          "google_drive": "Files will be processed and synced according to the selected file handling option. Supported values:`structured`- (Default) Extract structured data into destination tables for analysis. Commonly used.`unstructured`- Replicate files in their original format. Best for PDFs, images, and other unstructured content.  Learn more about unstructured file replication in our [documentation.](https://fivetran.com/docs/using-fivetran/features/unstructured-file-replication).",
          "sftp": "Files will be processed and synced according to the selected file handling option. Supported values:`structured`- (Default) Extract structured data into destination tables for analysis. Commonly used.`unstructured`- Replicate files in their original format. Best for PDFs, images, and other unstructured content.  Learn more about unstructured file replication in our [documentation.](https://fivetran.com/docs/using-fivetran/features/unstructured-file-replication).",
          "share_point": "Files will be processed and synced according to the selected file handling option. Supported values:`structured`- (Default) Extract structured data into destination tables for analysis. Commonly used.`unstructured`- Replicate files in their original format. Best for PDFs, images, and other unstructured content.  Learn more about unstructured file replication in our [documentation.](https://fivetran.com/docs/using-fivetran/features/unstructured-file-replication)."
+      },
+      "api_field": ""
+   },
+   "file_mapping_method": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "s3": "The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern."
       },
       "api_field": ""
    },
@@ -6453,6 +6495,7 @@
       "item_type": {},
       "description": {
          "adobe_commerce": "Your Adobe Commerce host url.",
+         "github": "The GHES instance host address. Only for on-premises installations.",
          "sparkpost": "Your SparkPost host URL."
       },
       "api_field": ""
@@ -6481,7 +6524,11 @@
       "item_type": {},
       "description": {
          "akamai": "Your Akamai hostname.",
+         "discourse": "Your Discourse hostname.",
          "ukg_pro": "Your UKG Pro hostname."
+      },
+      "sensitive_exclusions": {
+         "discourse": true
       },
       "api_field": ""
    },
@@ -6785,7 +6832,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "aws_lambda": "We use PrivateLink by default if your AWS Lambda is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to AWS lambda over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options#awsprivatelink).",
+         "aws_lambda": "We use PrivateLink by default if your AWS Lambda is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to AWS lambda over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options/aws-private-link).",
          "s3": "Set to `true` if you want to connect to S3 bucket over PrivateLink. Default value: `false`."
       },
       "api_field": ""
@@ -7149,6 +7196,19 @@
       "item_type": {},
       "description": {
          "google_analytics_4_export": "The Sync Mode"
+      },
+      "api_field": ""
+   },
+   "location_ids": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "h_level": "Your HighLevel Location IDs."
       },
       "api_field": ""
    },
@@ -8406,6 +8466,7 @@
          "braintree": "The contents of your secret key file.",
          "braintree_sandbox": "The contents of your secret key file.",
          "financial_force": "",
+         "github": "Your Private Key",
          "itunes_connect": "Your Private Key",
          "netsuite_suiteanalytics": "Private Key",
          "oracle_fusion_cloud_apps_crm": "The Oracle Fusion Cloud private key.",
@@ -8597,6 +8658,19 @@
       "item_type": {},
       "description": {
          "commercetools": "Your commercetools project key."
+      },
+      "api_field": ""
+   },
+   "project_website_url": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "writesonic": "Your Writesonic Project Website Url."
       },
       "api_field": ""
    },
@@ -10949,6 +11023,7 @@
          "birdeye": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "bitly": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "bizzabo": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "bizzabo_v2": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "boostr": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "box": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "braintree": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11094,6 +11169,7 @@
          "fillout": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "financial_force": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "firebase": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "fireflies": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "firehydrant": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "fivetran_log": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "flexport": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11159,6 +11235,7 @@
          "grepsr": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "grin": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "guru": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "h_level": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "hana_sap_hva_ecc_netweaver": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "hana_sap_hva_s4_netweaver": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "happyfox": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11429,6 +11506,7 @@
          "shortcut": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "shortio": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "showpad": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "siemens_building_x_openness": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "sigma_computing_source": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "simplecast": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "simplesat": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11444,6 +11522,7 @@
          "smadex": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "smarthr": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "smartrecruiters": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "smartsheet": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "smartwaiver": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "snapchat_ads": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "snowplow": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11547,6 +11626,7 @@
          "workleap_officevibe": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "workramp": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "wrike": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "writesonic": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "xactly": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "xandr": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "xero": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11964,6 +12044,7 @@
          "box": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.",
          "dropbox": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.",
          "email": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.",
+         "ftp": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.",
          "s3": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.",
          "s3_compatible_storage": "",
          "sftp": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.",
@@ -12827,6 +12908,7 @@
          "gainsight_product_experience": "Your Gainsight Product Experience subdomain.",
          "genesys": "Your Genesys subdomain.",
          "green_power_monitor": "Your GreenPowerMonitor subdomain.",
+         "h_level": "Your HighLevel subdomain.",
          "heartland_retail_pos": "Your Heartland Retail POS subdomain.",
          "ilevel": "",
          "infobip": "Your Infobip sub_domain.",
@@ -13460,6 +13542,19 @@
       },
       "api_field": ""
    },
+   "tde_certificate_backup": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sql_server": "Certificate file used to protect a database encryption key. Used when decrypting backup logs."
+      },
+      "api_field": ""
+   },
    "tde_certificate_name": {
       "readonly": false,
       "sensitive": false,
@@ -13514,6 +13609,19 @@
          "sql_server": "Private key file path associated with the TDE certificate",
          "sql_server_hva": "Private key associated with the TDE certificate",
          "sql_server_sap_ecc_hva": "Private key associated with the TDE certificate"
+      },
+      "api_field": ""
+   },
+   "tde_private_key_backup": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sql_server": "Private key file associated with the TDE certificate. Used when decrypting backup logs."
       },
       "api_field": ""
    },

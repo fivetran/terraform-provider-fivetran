@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.14...HEAD)
+
+## [v1.9.14](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.13...v1.9.14)
+
+### Added
+New connection services supported:
+- Supported service: `bizzabo_v2`
+- Supported service: `fireflies`
+- Supported service: `h_level`
+- Supported service: `siemens_building_x_openness`
+- Supported service: `smartsheet`
+- Supported service: `writesonic`
+
+New connection config fields supported:
+- Added field `fivetran_connector.config.tde_certificate_backup` for services: `sql_server`.
+- Added field `fivetran_connector.config.tde_private_key_backup` for services: `sql_server`.
+- Added field `fivetran_connector.config.project_website_url` for services: `writesonic`.
+- Added field `fivetran_connector.config.aws_credentials` for services: `amplitude`.
+- Added field `fivetran_connector.config.gcs_credentials` for services: `amplitude`.
+- Added field `fivetran_connector.config.location_ids` for services: `h_level`.
+- Added field `fivetran_connector.config.extraction_pattern` for services: `s3`.
+- Added field `fivetran_connector.config.file_mapping_method` for services: `s3`.
+
+### Fixed
+- Modification of `fivetran_group_users` resource after it has been imported.
+- While changing `networking_method` of `fivetran_connector` resource from `"ProxyAgent"` to a different networking method, allow for config to have `proxy_agent_id = null` 
+
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.13...HEAD)
 
 ## [v1.9.13](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.12...v1.9.13)
