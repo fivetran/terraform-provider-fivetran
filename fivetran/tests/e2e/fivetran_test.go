@@ -296,38 +296,48 @@ func ComposeImportStateCheck(fs ...resource.ImportStateCheckFunc) resource.Impor
 	}
 }
 
-func CheckImportResourceAttr(attributeName, value string) resource.ImportStateCheckFunc {
+func CheckImportResourceAttr(resourceType, attributeName, value string) resource.ImportStateCheckFunc {
 	_, file, line, _ := runtime.Caller(1)
 
 	return func(s []*terraform.InstanceState) error {
-		v := s[0]
+		for _, v := range s {
+			if v.Ephemeral.Type == resourceType {
 
-		if attrVal, ok := v.Attributes[attributeName]; ok {
-			if attrVal != value {
-				return fmt.Errorf("For %s, '%s' attribute value is expected: '%s', got: '%s'. At %s:%d", v.Ephemeral.Type, attributeName, value, attrVal, file, line)
+				if attrVal, ok := v.Attributes[attributeName]; ok {
+					if attrVal != value {
+						return fmt.Errorf("For %s, '%s' attribute value is expected: '%s', got: '%s'. At %s:%d", v.Ephemeral.Type, attributeName, value, attrVal, file, line)
+					}
+
+					return nil
+				} else {
+					return fmt.Errorf("Attribute '%s' not found for %s. At %s:%d", attributeName, v.Ephemeral.Type, file, line)
+				}
 			}
-
-			return nil
-		} else {
-			return fmt.Errorf("Attribute '%s' not found for %s. At %s:%d", attributeName, v.Ephemeral.Type, file, line)
 		}
+
+		return fmt.Errorf("Resource with type '%s' not found in imported state. At %s:%d", resourceType, file, line)
 	}
 }
 
-func CheckImportResourceAttrSet(attributeName string) resource.ImportStateCheckFunc {
+func CheckImportResourceAttrSet(resourceType, attributeName string) resource.ImportStateCheckFunc {
 	_, file, line, _ := runtime.Caller(1)
 
 	return func(s []*terraform.InstanceState) error {
-		v := s[0]
+		for _, v := range s {
+			if v.Ephemeral.Type == resourceType {
 
-		if attrVal, ok := v.Attributes[attributeName]; ok {
-			if attrVal != "" {
-				return nil
+				if attrVal, ok := v.Attributes[attributeName]; ok {
+					if attrVal != "" {
+						return nil
+					}
+
+					return fmt.Errorf("For %s, '%s' attribute value is expected to be set, got: '%s'. At %s:%d", v.Ephemeral.Type, attributeName, attrVal, file, line)
+				} else {
+					return fmt.Errorf("Attribute '%s' not found for %s. At %s:%d", attributeName, v.Ephemeral.Type, file, line)
+				}
 			}
-
-			return fmt.Errorf("For %s, '%s' attribute value is expected to be set, got: '%s'. At %s:%d", v.Ephemeral.Type, attributeName, attrVal, file, line)
-		} else {
-			return fmt.Errorf("Attribute '%s' not found for %s. At %s:%d", attributeName, v.Ephemeral.Type, file, line)
 		}
+
+		return fmt.Errorf("Resource with type '%s' not found in imported state. At %s:%d", resourceType, file, line)
 	}
 }

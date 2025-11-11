@@ -219,7 +219,7 @@ func (r *groupUser) Update(ctx context.Context, req resource.UpdateRequest, resp
 			planUser, found := planUserMap[stateKey]
 
 			if !found {
-				if updateResponse, err := r.GetClient().NewGroupRemoveUser().GroupID(plan.GroupId.ValueString()).UserID(stateValue.id).Do(ctx); err != nil {
+				if updateResponse, err := r.GetClient().NewGroupRemoveUser().GroupID(plan.GroupId.ValueString()).UserID(stateValue.id).Do(ctx); err != nil && updateResponse.Code != "NotFound" {
 					resp.Diagnostics.AddError(
 						"Unable to Update Group User Resource.",
 						fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
@@ -227,7 +227,7 @@ func (r *groupUser) Update(ctx context.Context, req resource.UpdateRequest, resp
 					return
 				}
 			} else if planUser.role != stateValue.role {
-				if deleteResponse, err := r.GetClient().NewGroupRemoveUser().GroupID(plan.GroupId.ValueString()).UserID(stateValue.id).Do(ctx); err != nil {
+				if deleteResponse, err := r.GetClient().NewGroupRemoveUser().GroupID(plan.GroupId.ValueString()).UserID(stateValue.id).Do(ctx); err != nil && deleteResponse.Code != "NotFound" {
 					resp.Diagnostics.AddError(
 						"Unable to Update Group User Resource.",
 						fmt.Sprintf("%v; code: %v; message: %v", err, deleteResponse.Code, deleteResponse.Message),
@@ -310,7 +310,7 @@ func (r *groupUser) Delete(ctx context.Context, req resource.DeleteRequest, resp
 			svc.GroupID(data.GroupId.ValueString())
 			svc.UserID(userId)
 
-			if deleteResponse, err := svc.Do(ctx); err != nil {
+			if deleteResponse, err := svc.Do(ctx); err != nil && deleteResponse.Code != "NotFound" {
 				resp.Diagnostics.AddError(
 					"Unable to Delete Group User Resource.",
 					fmt.Sprintf("%v; code: %v; message: %v", err, deleteResponse.Code, deleteResponse.Message),
