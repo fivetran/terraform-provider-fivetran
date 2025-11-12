@@ -18,11 +18,11 @@
   "tags": [
     {
       "name": "updated",
-      "description": "2025-10-29T05:42:53.963Z"
+      "description": "2025-11-10T16:36:16.844Z"
     },
     {
       "name": "hash",
-      "description": "c03e121b2aaf990051ffbfe93dc3fc23ed4eae1df73117a0efeb26a9ee02925e"
+      "description": "4a7953c10f33d260689b4a5ea6a51eb1764f2cc01d8b958f60680d3e838131a8"
     }
   ],
   "paths": {
@@ -12262,6 +12262,7 @@
             "birdeye": "#/components/schemas/birdeye_NewConnectorRequestV1",
             "bitly": "#/components/schemas/bitly_NewConnectorRequestV1",
             "bizzabo": "#/components/schemas/bizzabo_NewConnectorRequestV1",
+            "bizzabo_v2": "#/components/schemas/bizzabo_v2_NewConnectorRequestV1",
             "boostr": "#/components/schemas/boostr_NewConnectorRequestV1",
             "box": "#/components/schemas/box_NewConnectorRequestV1",
             "braintree": "#/components/schemas/braintree_NewConnectorRequestV1",
@@ -12408,6 +12409,7 @@
             "factorial": "#/components/schemas/factorial_NewConnectorRequestV1",
             "fillout": "#/components/schemas/fillout_NewConnectorRequestV1",
             "firebase": "#/components/schemas/firebase_NewConnectorRequestV1",
+            "fireflies": "#/components/schemas/fireflies_NewConnectorRequestV1",
             "firehydrant": "#/components/schemas/firehydrant_NewConnectorRequestV1",
             "fivetran_log": "#/components/schemas/fivetran_log_NewConnectorRequestV1",
             "flexport": "#/components/schemas/flexport_NewConnectorRequestV1",
@@ -12474,6 +12476,7 @@
             "grepsr": "#/components/schemas/grepsr_NewConnectorRequestV1",
             "grin": "#/components/schemas/grin_NewConnectorRequestV1",
             "guru": "#/components/schemas/guru_NewConnectorRequestV1",
+            "h_level": "#/components/schemas/h_level_NewConnectorRequestV1",
             "happyfox": "#/components/schemas/happyfox_NewConnectorRequestV1",
             "harvest": "#/components/schemas/harvest_NewConnectorRequestV1",
             "healthie": "#/components/schemas/healthie_NewConnectorRequestV1",
@@ -12758,6 +12761,7 @@
             "shortcut": "#/components/schemas/shortcut_NewConnectorRequestV1",
             "shortio": "#/components/schemas/shortio_NewConnectorRequestV1",
             "showpad": "#/components/schemas/showpad_NewConnectorRequestV1",
+            "siemens_building_x_openness": "#/components/schemas/siemens_building_x_openness_NewConnectorRequestV1",
             "sigma_computing_source": "#/components/schemas/sigma_computing_source_NewConnectorRequestV1",
             "simplecast": "#/components/schemas/simplecast_NewConnectorRequestV1",
             "simplesat": "#/components/schemas/simplesat_NewConnectorRequestV1",
@@ -12773,6 +12777,7 @@
             "smadex": "#/components/schemas/smadex_NewConnectorRequestV1",
             "smarthr": "#/components/schemas/smarthr_NewConnectorRequestV1",
             "smartrecruiters": "#/components/schemas/smartrecruiters_NewConnectorRequestV1",
+            "smartsheet": "#/components/schemas/smartsheet_NewConnectorRequestV1",
             "smartwaiver": "#/components/schemas/smartwaiver_NewConnectorRequestV1",
             "snapchat_ads": "#/components/schemas/snapchat_ads_NewConnectorRequestV1",
             "snowflake_db": "#/components/schemas/snowflake_db_NewConnectorRequestV1",
@@ -12876,6 +12881,7 @@
             "workleap_officevibe": "#/components/schemas/workleap_officevibe_NewConnectorRequestV1",
             "workramp": "#/components/schemas/workramp_NewConnectorRequestV1",
             "wrike": "#/components/schemas/wrike_NewConnectorRequestV1",
+            "writesonic": "#/components/schemas/writesonic_NewConnectorRequestV1",
             "xactly": "#/components/schemas/xactly_NewConnectorRequestV1",
             "xandr": "#/components/schemas/xandr_NewConnectorRequestV1",
             "xero": "#/components/schemas/xero_NewConnectorRequestV1",
@@ -13397,6 +13403,7 @@
             "birdeye": "#/components/schemas/birdeye_ConnectorResponseV1",
             "bitly": "#/components/schemas/bitly_ConnectorResponseV1",
             "bizzabo": "#/components/schemas/bizzabo_ConnectorResponseV1",
+            "bizzabo_v2": "#/components/schemas/bizzabo_v2_ConnectorResponseV1",
             "boostr": "#/components/schemas/boostr_ConnectorResponseV1",
             "box": "#/components/schemas/box_ConnectorResponseV1",
             "braintree": "#/components/schemas/braintree_ConnectorResponseV1",
@@ -13543,6 +13550,7 @@
             "factorial": "#/components/schemas/factorial_ConnectorResponseV1",
             "fillout": "#/components/schemas/fillout_ConnectorResponseV1",
             "firebase": "#/components/schemas/firebase_ConnectorResponseV1",
+            "fireflies": "#/components/schemas/fireflies_ConnectorResponseV1",
             "firehydrant": "#/components/schemas/firehydrant_ConnectorResponseV1",
             "fivetran_log": "#/components/schemas/fivetran_log_ConnectorResponseV1",
             "flexport": "#/components/schemas/flexport_ConnectorResponseV1",
@@ -13609,6 +13617,7 @@
             "grepsr": "#/components/schemas/grepsr_ConnectorResponseV1",
             "grin": "#/components/schemas/grin_ConnectorResponseV1",
             "guru": "#/components/schemas/guru_ConnectorResponseV1",
+            "h_level": "#/components/schemas/h_level_ConnectorResponseV1",
             "happyfox": "#/components/schemas/happyfox_ConnectorResponseV1",
             "harvest": "#/components/schemas/harvest_ConnectorResponseV1",
             "healthie": "#/components/schemas/healthie_ConnectorResponseV1",
@@ -13893,6 +13902,7 @@
             "shortcut": "#/components/schemas/shortcut_ConnectorResponseV1",
             "shortio": "#/components/schemas/shortio_ConnectorResponseV1",
             "showpad": "#/components/schemas/showpad_ConnectorResponseV1",
+            "siemens_building_x_openness": "#/components/schemas/siemens_building_x_openness_ConnectorResponseV1",
             "sigma_computing_source": "#/components/schemas/sigma_computing_source_ConnectorResponseV1",
             "simplecast": "#/components/schemas/simplecast_ConnectorResponseV1",
             "simplesat": "#/components/schemas/simplesat_ConnectorResponseV1",
@@ -13908,6 +13918,7 @@
             "smadex": "#/components/schemas/smadex_ConnectorResponseV1",
             "smarthr": "#/components/schemas/smarthr_ConnectorResponseV1",
             "smartrecruiters": "#/components/schemas/smartrecruiters_ConnectorResponseV1",
+            "smartsheet": "#/components/schemas/smartsheet_ConnectorResponseV1",
             "smartwaiver": "#/components/schemas/smartwaiver_ConnectorResponseV1",
             "snapchat_ads": "#/components/schemas/snapchat_ads_ConnectorResponseV1",
             "snowflake_db": "#/components/schemas/snowflake_db_ConnectorResponseV1",
@@ -14011,6 +14022,7 @@
             "workleap_officevibe": "#/components/schemas/workleap_officevibe_ConnectorResponseV1",
             "workramp": "#/components/schemas/workramp_ConnectorResponseV1",
             "wrike": "#/components/schemas/wrike_ConnectorResponseV1",
+            "writesonic": "#/components/schemas/writesonic_ConnectorResponseV1",
             "xactly": "#/components/schemas/xactly_ConnectorResponseV1",
             "xandr": "#/components/schemas/xandr_ConnectorResponseV1",
             "xero": "#/components/schemas/xero_ConnectorResponseV1",
@@ -16478,6 +16490,7 @@
               "GCP_ASIA_SOUTHEAST2",
               "GCP_ASIA_SOUTH1",
               "GCP_ASIA_NORTHEAST1",
+              "GCP_ASIA_NORTHEAST3",
               "AWS_US_EAST_1",
               "AWS_US_EAST_2",
               "AWS_US_WEST_2",
@@ -16577,6 +16590,7 @@
               "GCP_ASIA_SOUTHEAST2",
               "GCP_ASIA_SOUTH1",
               "GCP_ASIA_NORTHEAST1",
+              "GCP_ASIA_NORTHEAST3",
               "AWS_US_EAST_1",
               "AWS_US_EAST_2",
               "AWS_US_WEST_2",
@@ -19932,7 +19946,7 @@
               "is_private_link_required": {
                 "title": "",
                 "type": "boolean",
-                "description": "We use PrivateLink by default if your s3 bucket is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to s3 bucket over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options#awsprivatelinkbeta).",
+                "description": "We use PrivateLink by default if your s3 bucket is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to s3 bucket over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options/aws-private-link).",
                 "example": true
               },
               "personal_access_token": {
@@ -22098,11 +22112,19 @@
           "config": {
             "type": "object",
             "properties": {
+              "auth_type": {
+                "type": "object",
+                "description": "Your 360Learning auth type.",
+                "enum": [
+                  "auth1",
+                  "auth2"
+                ]
+              },
               "company_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your 360Learning Company ID.",
-                "example": "your_comapny_id"
+                "description": "Your 360Learning company ID.",
+                "example": "your_company_id"
               },
               "api_key": {
                 "title": "",
@@ -22110,6 +22132,28 @@
                 "description": "Your 360Learning API Key.",
                 "format": "password",
                 "example": "your_360learning_api_key"
+              },
+              "base_url": {
+                "type": "object",
+                "description": "Your 360Learning base URL.",
+                "enum": [
+                  "us.360learning",
+                  "staging.360learning-dev",
+                  "360learning"
+                ]
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your 360Learning client secret.",
+                "format": "password",
+                "example": "your_360learning_client_secret"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your 360Learning client ID.",
+                "example": "your_360learning_client_id"
               }
             },
             "description": ""
@@ -26092,7 +26136,7 @@
               "is_private_link_required": {
                 "title": "",
                 "type": "boolean",
-                "description": "We use PrivateLink by default if your AWS Lambda is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to AWS lambda over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options#awsprivatelink).",
+                "description": "We use PrivateLink by default if your AWS Lambda is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to AWS lambda over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options/aws-private-link).",
                 "example": true
               }
             },
@@ -28341,6 +28385,48 @@
           },
           {
             "$ref": "#/components/schemas/bizzabo_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
+      "bizzabo_v2_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "account_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Bizzabo account ID.",
+                "example": "your_bizzabo_account_id"
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Bizzabo client secret.",
+                "format": "password",
+                "example": "bizzabo_client_secret"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Bizzabo client ID.",
+                "example": "bizzabo_client_id"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "bizzabo_v2_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/bizzabo_v2_config_V1"
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
@@ -34154,19 +34240,19 @@
                 "format": "password",
                 "example": "your_discourse_api_username"
               },
+              "hostname": {
+                "title": "",
+                "type": "string",
+                "description": "Your Discourse hostname.",
+                "format": "password",
+                "example": "your_discourse_hostname"
+              },
               "api_key": {
                 "title": "",
                 "type": "string",
                 "description": "Your Discourse API key.",
                 "format": "password",
                 "example": "your_discourse_api_key"
-              },
-              "default_host": {
-                "title": "",
-                "type": "string",
-                "description": "Your Discourse default host.",
-                "format": "password",
-                "example": "your_discourse_default_host"
               }
             },
             "description": ""
@@ -37456,6 +37542,36 @@
           }
         ]
       },
+      "fireflies_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Fireflies API key.",
+                "format": "password",
+                "example": "your_fireflies_api_key"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "fireflies_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/fireflies_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
       "firehydrant_config_V1": {
         "properties": {
           "config": {
@@ -37785,6 +37901,49 @@
           }
         }
       },
+      "fortnox_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "fortnox_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -37795,6 +37954,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/fortnox_auth_V1"
           }
         ]
       },
@@ -38432,12 +38594,12 @@
                 "title": "",
                 "type": "object",
                 "description": "If your files are saved with improper extensions, you can force them to by synced as the selected file type.",
-                "example": "infer | tsv | xml | csv | json | jsonl | avro | parquet",
+                "example": "tsv | xml | csv | spreadsheet | json | jsonl | avro | parquet",
                 "enum": [
-                  "infer",
                   "tsv",
                   "xml",
                   "csv",
+                  "spreadsheet",
                   "json",
                   "jsonl",
                   "avro",
@@ -38483,6 +38645,12 @@
                   "upsert_file",
                   "append_file"
                 ]
+              },
+              "selected_range": {
+                "title": "",
+                "type": "string",
+                "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowName>` format.",
+                "example": "'Sheet1'!A1"
               },
               "escape_char": {
                 "title": "",
@@ -38595,13 +38763,13 @@
               "workspace_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Fulfil workspace ID.",
+                "description": "",
                 "example": "string"
               },
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Fulfil API key.",
+                "description": "",
                 "format": "password",
                 "example": "string"
               }
@@ -39144,6 +39312,12 @@
                 "description": "Set to `true` to capture deletes.",
                 "example": true
               },
+              "host_url": {
+                "title": "",
+                "type": "string",
+                "description": "The GHES instance host address. Only for on-premises installations.",
+                "example": "github.mycompany.com/api/v3"
+              },
               "pats": {
                 "title": "",
                 "type": "array",
@@ -39173,6 +39347,13 @@
                   "example": "string"
                 }
               },
+              "private_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Private Key",
+                "format": "password",
+                "example": "string"
+              },
               "auth_mode": {
                 "title": "",
                 "type": "object",
@@ -39183,6 +39364,12 @@
                   "PersonalAccessToken",
                   "OAuth"
                 ]
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "GitHub App Client ID",
+                "example": "string"
               },
               "username": {
                 "title": "",
@@ -42128,6 +42315,56 @@
           },
           {
             "$ref": "#/components/schemas/guru_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
+      "h_level_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "location_ids": {
+                "title": "",
+                "type": "string",
+                "description": "Your HighLevel Location IDs.",
+                "example": "your_highlevel_location_ids"
+              },
+              "sub_domain": {
+                "type": "object",
+                "description": "Your HighLevel subdomain.",
+                "enum": [
+                  "leadconnectorhq",
+                  "gohighlevel"
+                ]
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your HighLevel Client secret.",
+                "format": "password",
+                "example": "your_highlevel_client_secret"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your HighLevel Client Id.",
+                "example": "your_highlevel_client_id"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "h_level_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/h_level_config_V1"
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
@@ -46244,22 +46481,6 @@
         "properties": {
           "config": {
             "type": "object",
-            "properties": {
-              "ecommerce_stores": {
-                "title": "",
-                "type": "array",
-                "description": "List of IDs of the Mailchimp E-Commerce Stores to Sync",
-                "example": [
-                  "string"
-                ],
-                "items": {
-                  "title": "",
-                  "type": "string",
-                  "description": "",
-                  "example": "string"
-                }
-              }
-            },
             "description": ""
           }
         }
@@ -56244,6 +56465,16 @@
                   "parquet"
                 ]
               },
+              "file_mapping_method": {
+                "title": "",
+                "type": "object",
+                "description": "The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.",
+                "example": "DEFINE_PER_TABLE",
+                "enum": [
+                  "EXTRACT_TABLES",
+                  "DEFINE_PER_TABLE"
+                ]
+              },
               "on_error": {
                 "title": "",
                 "type": "object",
@@ -56253,6 +56484,12 @@
                   "fail",
                   "skip"
                 ]
+              },
+              "extraction_pattern": {
+                "title": "",
+                "type": "string",
+                "description": "A regular expression with a named capture group `(?<table>...)` to extract table names from file paths.",
+                "example": "(?<table>\\w+)/.*"
               },
               "archive_pattern": {
                 "title": "",
@@ -59134,6 +59371,42 @@
           }
         ]
       },
+      "siemens_building_x_openness_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Siemens Building X Openness Client Secret.",
+                "format": "password",
+                "example": "string"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Siemens Building X Openness Client ID.",
+                "example": "string"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "siemens_building_x_openness_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/siemens_building_x_openness_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
       "sigma_computing_source_config_V1": {
         "properties": {
           "config": {
@@ -59661,6 +59934,77 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
+      "smartsheet_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_token": {
+                "title": "",
+                "type": "string",
+                "description": "API token generated from your Smartsheet account.",
+                "format": "password",
+                "example": "string"
+              },
+              "auth_mode": {
+                "title": "",
+                "type": "object",
+                "description": "Authorization type.",
+                "example": "OAuth2 | APIToken",
+                "enum": [
+                  "OAuth2",
+                  "APIToken"
+                ]
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "smartsheet_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": "string"
+              },
+              "realm_id": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": "string"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "smartsheet_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/smartsheet_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/smartsheet_auth_V1"
           }
         ]
       },
@@ -60936,6 +61280,13 @@
                   "ONLINE"
                 ]
               },
+              "tde_private_key_backup": {
+                "title": "",
+                "type": "string",
+                "description": "Private key file associated with the TDE certificate. Used when decrypting backup logs.",
+                "format": "password",
+                "example": "string"
+              },
               "connection_type": {
                 "title": "",
                 "type": "object",
@@ -60953,6 +61304,13 @@
                 "type": "boolean",
                 "description": "Use transparent data encryption (TDE)",
                 "example": true
+              },
+              "tde_certificate_backup": {
+                "title": "",
+                "type": "string",
+                "description": "Certificate file used to protect a database encryption key. Used when decrypting backup logs.",
+                "format": "password",
+                "example": "string"
               },
               "always_encrypted": {
                 "title": "",
@@ -62537,6 +62895,20 @@
           "auth": {
             "type": "object",
             "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
               "client_access": {
                 "title": "",
                 "type": "object",
@@ -62997,12 +63369,6 @@
           "config": {
             "type": "object",
             "properties": {
-              "authorization_url": {
-                "title": "",
-                "type": "string",
-                "description": "The authorization URL of the app registered in your TikTok developer account.",
-                "example": "your_tiktok_organic_app_authorization_url"
-              },
               "api_environment": {
                 "type": "object",
                 "description": "Your TikTok Organic API environment.",
@@ -63314,19 +63680,50 @@
                   "testflight",
                   "api"
                 ]
-              },
-              "client_secret": {
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "tremendous_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
                 "title": "",
                 "type": "string",
-                "description": "Your Tremendous client secret.",
+                "description": "Your Tremendous access token.",
                 "format": "password",
-                "example": "your_tremendous_client_secret"
+                "example": "string"
               },
-              "client_id": {
+              "refresh_token": {
                 "title": "",
                 "type": "string",
-                "description": "Your Tremendous client ID.",
-                "example": "your_tremendous_client_id"
+                "description": "Your Tremendous refresh token.",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "title": "",
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": "Your Tremendous client access."
               }
             },
             "description": ""
@@ -63343,6 +63740,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/tremendous_auth_V1"
           }
         ]
       },
@@ -65939,6 +66339,42 @@
           },
           {
             "$ref": "#/components/schemas/wrike_auth_V1"
+          }
+        ]
+      },
+      "writesonic_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Writesonic API key",
+                "format": "password",
+                "example": "your_writesonic_api_key"
+              },
+              "project_website_url": {
+                "title": "",
+                "type": "string",
+                "description": "Your Writesonic Project Website Url.",
+                "example": "your_writesonic_project_website_url"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "writesonic_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/writesonic_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
           }
         ]
       },
@@ -69398,6 +69834,16 @@
           }
         ]
       },
+      "bizzabo_v2_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/bizzabo_v2_config_V1"
+          }
+        ]
+      },
       "boostr_ConnectorResponseV1": {
         "allOf": [
           {
@@ -71175,6 +71621,16 @@
           }
         ]
       },
+      "fireflies_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/fireflies_config_V1"
+          }
+        ]
+      },
       "firehydrant_ConnectorResponseV1": {
         "allOf": [
           {
@@ -71927,6 +72383,16 @@
           },
           {
             "$ref": "#/components/schemas/guru_config_V1"
+          }
+        ]
+      },
+      "h_level_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/h_level_config_V1"
           }
         ]
       },
@@ -75495,6 +75961,16 @@
           }
         ]
       },
+      "siemens_building_x_openness_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/siemens_building_x_openness_config_V1"
+          }
+        ]
+      },
       "sigma_computing_source_ConnectorResponseV1": {
         "allOf": [
           {
@@ -75642,6 +76118,16 @@
           },
           {
             "$ref": "#/components/schemas/smartrecruiters_config_V1"
+          }
+        ]
+      },
+      "smartsheet_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/smartsheet_config_V1"
           }
         ]
       },
@@ -76820,6 +77306,16 @@
           },
           {
             "$ref": "#/components/schemas/wrike_config_V1"
+          }
+        ]
+      },
+      "writesonic_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/writesonic_config_V1"
           }
         ]
       },
