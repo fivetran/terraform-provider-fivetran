@@ -188,7 +188,7 @@ func (r *destination) Create(ctx context.Context, req resource.CreateRequest, re
 	// Preserve plan values for PrivateLink scenarios
 	// When using PrivateLink with Databricks, Fivetran's API may modify server_host_name and cloud_provider
 	// We need to preserve the user's original values to avoid Terraform state inconsistencies
-	preservePrivateLinkConfigValues(ctx, &data, planConfig, resp)
+	preservePrivateLinkValues(ctx, &data, &data, planConfig, resp)
 	
 	data.RunSetupTests = types.BoolValue(runSetupTestsPlan)
 	data.TrustCertificates = types.BoolValue(trustCertificatesPlan)
@@ -383,7 +383,7 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 	// Preserve plan values for PrivateLink scenarios
 	// When using PrivateLink with Databricks, Fivetran's API may modify server_host_name and cloud_provider
 	// We need to preserve the user's original values to avoid Terraform state inconsistencies
-	preservePrivateLinkConfigValues(ctx, &plan, planConfig, resp)
+	preservePrivateLinkValues(ctx, &plan, &state, planConfig, resp)
 
 	// Set up synthetic values
 	if plan.RunSetupTests.IsUnknown() {
@@ -423,15 +423,19 @@ func (r *destination) Delete(ctx context.Context, req resource.DeleteRequest, re
 	}
 }
 
-// preservePrivateLinkConfigValues preserves certain plan config values when using PrivateLink with Databricks.
-// When PrivateLink is configured, Fivetran's API may return modified values for server_host_name and cloud_provider,
-// which can cause Terraform to report "Provider produced inconsistent result after apply" errors.
-// This function restores the user's original plan values to maintain consistency.
-func preservePrivateLinkConfigValues(ctx context.Context, result *model.DestinationResourceModel, planConfig types.Object, resp interface{}) {
-	// Only process if using PrivateLink with Databricks
-	if result.NetworkingMethod.ValueString() != "PrivateLink" || result.Service.ValueString() != "databricks" {
+// preservePrivateLinkValues preserves certain plan values when using PrivateLink with Databricks.
+// When PrivateLink is configured, Fivetran's API may return modified values for server_host_name, cloud_provider,
+// networking_method, and private_link_id, which can cause Terraform to report "Provider produced inconsistent result 
+// after apply" errors. This function restores the user's original plan values to maintain consistency.
+func preservePrivateLinkValues(ctx context.Context, result *model.DestinationResourceModel, plan *model.DestinationResourceModel, planConfig types.Object, resp interface{}) {
+	// Only process if plan specifies PrivateLink with Databricks (check plan, not result, since result may be modified)
+	if plan.NetworkingMethod.ValueString() != "PrivateLink" || plan.Service.ValueString() != "databricks" {
 		return
 	}
+
+	// Preserve top-level networking fields
+	result.NetworkingMethod = plan.NetworkingMethod
+	result.PrivateLinkId = plan.PrivateLinkId
 
 	// Get plan config attributes
 	planConfigAttrs := planConfig.Attributes()

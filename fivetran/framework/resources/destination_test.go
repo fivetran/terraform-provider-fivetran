@@ -974,9 +974,10 @@ func TestResourceDestinationDatabricksPrivateLinkConfigPreservationMock(t *testi
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "service", "databricks"),
+			// These top-level fields should also be preserved
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "networking_method", "PrivateLink"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "private_link_id", "test_private_link_id"),
-			// These should preserve the original values, not the API-modified ones
+			// Config fields should preserve the original values, not the API-modified ones
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.server_host_name", "adb-1234567890123.19.azuredatabricks.net"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.cloud_provider", "AZURE"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.catalog", "test_catalog"),
@@ -1008,6 +1009,9 @@ func TestResourceDestinationDatabricksPrivateLinkConfigPreservationMock(t *testi
 					// This mimics the real-world bug where Fivetran's API changes these fields
 					config["server_host_name"] = "pls-prod-fivetran-eastus-pls-1.eastus.azure.fivetran.com"
 					config["cloud_provider"] = "AWS"
+					// API also changes top-level networking fields
+					body["networking_method"] = "Directly"
+					body["private_link_id"] = ""
 
 					testDestinationData = body
 

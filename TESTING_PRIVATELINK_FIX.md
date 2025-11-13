@@ -27,7 +27,7 @@ The fix preserves the user's original configuration values for `server_host_name
 ### Build the Provider
 
 ```bash
-cd /home/jhiza/git/terraform-provider-fivetran
+cd terraform-provider-fivetran
 make build
 ```
 
