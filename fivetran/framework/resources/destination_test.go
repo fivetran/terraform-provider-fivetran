@@ -934,3 +934,310 @@ func TestResourceDestinationPrivateLinkChangeMock(t *testing.T) {
 		},
 	)
 }
+
+func TestResourceDestinationDatabricksPrivateLinkConfigPreservationMock(t *testing.T) {
+	var destinationPostHandler *mock.Handler
+	var destinationDeleteHandler *mock.Handler
+	var testDestinationData map[string]interface{}
+
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_destination" "mydestination" {
+				provider = fivetran-provider
+
+				group_id = "test_group_id"
+				service = "databricks"
+				time_zone_offset = "0"
+				region = "AZURE_EASTUS"
+				trust_certificates = "true"
+				trust_fingerprints = "true"
+				daylight_saving_time_enabled = "true"
+				run_setup_tests = "false"
+				networking_method = "PrivateLink"
+				private_link_id = "test_private_link_id"
+
+				config {
+					auth_type = "PERSONAL_ACCESS_TOKEN"
+					catalog = "test_catalog"
+					server_host_name = "adb-1234567890123.19.azuredatabricks.net"
+					port = 443
+					http_path = "/sql/1.0/warehouses/test"
+					cloud_provider = "AZURE"
+					personal_access_token = "test_token"
+				}
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, destinationPostHandler.Interactions, 1)
+				tfmock.AssertNotEmpty(t, testDestinationData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "service", "databricks"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "networking_method", "PrivateLink"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "private_link_id", "test_private_link_id"),
+			// These should preserve the original values, not the API-modified ones
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.server_host_name", "adb-1234567890123.19.azuredatabricks.net"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.cloud_provider", "AZURE"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.catalog", "test_catalog"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.port", "443"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+
+				onPostDestination := func(t *testing.T, req *http.Request) (*http.Response, error) {
+					tfmock.AssertEmpty(t, testDestinationData)
+
+					body := tfmock.RequestBodyToJson(t, req)
+
+					// Verify the request has the correct values
+					config := body["config"].(map[string]interface{})
+					tfmock.AssertKeyExistsAndHasValue(t, config, "server_host_name", "adb-1234567890123.19.azuredatabricks.net")
+					tfmock.AssertKeyExistsAndHasValue(t, config, "cloud_provider", "AZURE")
+
+					// Add response fields
+					body["id"] = "destination_id"
+					body["created_at"] = time.Now().Format("2006-01-02T15:04:05.000000Z")
+					body["setup_status"] = "connected"
+
+					// Simulate PrivateLink behavior: API returns modified values
+					// This mimics the real-world bug where Fivetran's API changes these fields
+					config["server_host_name"] = "pls-prod-fivetran-eastus-pls-1.eastus.azure.fivetran.com"
+					config["cloud_provider"] = "AWS"
+
+					testDestinationData = body
+
+					response := tfmock.FivetranSuccessResponse(t, req, http.StatusCreated,
+						"Destination has been created", body)
+
+					return response, nil
+				}
+
+				tfmock.MockClient().Reset()
+				testDestinationData = nil
+
+				destinationPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/destinations").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return onPostDestination(t, req)
+					},
+				)
+
+				tfmock.MockClient().When(http.MethodGet, "/v1/destinations/destination_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						tfmock.AssertNotEmpty(t, testDestinationData)
+						response := tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "", testDestinationData)
+						return response, nil
+					},
+				)
+
+				destinationDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/destinations/destination_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						tfmock.AssertNotEmpty(t, testDestinationData)
+						testDestinationData = nil
+						response := tfmock.FivetranSuccessResponse(t, req, 200,
+							"Destination with id 'destination_id' has been deleted", nil)
+						return response, nil
+					},
+				)
+
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, destinationDeleteHandler.Interactions, 1)
+				tfmock.AssertEmpty(t, testDestinationData)
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
+			},
+		},
+	)
+}
+
+func TestResourceDestinationSetupTestsPreservesNetworkingFieldsMock(t *testing.T) {
+	var destinationPostHandler *mock.Handler
+	var destinationTestHandler *mock.Handler
+	var destinationDeleteHandler *mock.Handler
+	var testDestinationData map[string]interface{}
+
+	// Step 1: Create with run_setup_tests = false
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_destination" "mydestination" {
+				provider = fivetran-provider
+
+				group_id = "test_group_id"
+				service = "databricks"
+				time_zone_offset = "0"
+				region = "AZURE_EASTUS"
+				trust_certificates = "true"
+				trust_fingerprints = "true"
+				daylight_saving_time_enabled = "true"
+				run_setup_tests = "false"
+				networking_method = "PrivateLink"
+				private_link_id = "test_private_link_id"
+
+				config {
+					auth_type = "PERSONAL_ACCESS_TOKEN"
+					catalog = "test_catalog"
+					server_host_name = "adb-test.azuredatabricks.net"
+					port = 443
+					http_path = "/sql/1.0/warehouses/test"
+					cloud_provider = "AZURE"
+					personal_access_token = "test_token"
+				}
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, destinationPostHandler.Interactions, 1)
+				tfmock.AssertNotEmpty(t, testDestinationData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "private_link_id", "test_private_link_id"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "networking_method", "PrivateLink"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "run_setup_tests", "false"),
+		),
+	}
+
+	// Step 2: Change run_setup_tests to true - should preserve private_link_id
+	step2 := resource.TestStep{
+		Config: `
+			resource "fivetran_destination" "mydestination" {
+				provider = fivetran-provider
+
+				group_id = "test_group_id"
+				service = "databricks"
+				time_zone_offset = "0"
+				region = "AZURE_EASTUS"
+				trust_certificates = "true"
+				trust_fingerprints = "true"
+				daylight_saving_time_enabled = "true"
+				run_setup_tests = "true"
+				networking_method = "PrivateLink"
+				private_link_id = "test_private_link_id"
+
+				config {
+					auth_type = "PERSONAL_ACCESS_TOKEN"
+					catalog = "test_catalog"
+					server_host_name = "adb-test.azuredatabricks.net"
+					port = 443
+					http_path = "/sql/1.0/warehouses/test"
+					cloud_provider = "AZURE"
+					personal_access_token = "test_token"
+				}
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, destinationTestHandler.Interactions, 1)
+				return nil
+			},
+			// These should still be preserved even after running setup tests
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "private_link_id", "test_private_link_id"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "networking_method", "PrivateLink"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "run_setup_tests", "true"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+
+				onPostDestination := func(t *testing.T, req *http.Request) (*http.Response, error) {
+					tfmock.AssertEmpty(t, testDestinationData)
+
+					body := tfmock.RequestBodyToJson(t, req)
+
+					// Add response fields
+					body["id"] = "destination_id"
+					body["created_at"] = time.Now().Format("2006-01-02T15:04:05.000000Z")
+					body["setup_status"] = "connected"
+
+					testDestinationData = body
+
+					response := tfmock.FivetranSuccessResponse(t, req, http.StatusCreated,
+						"Destination has been created", body)
+
+					return response, nil
+				}
+
+				onTestDestination := func(t *testing.T, req *http.Request) (*http.Response, error) {
+					// Legacy response that doesn't include private_link_id in the data
+					legacyResponse := map[string]interface{}{
+						"id":                           "destination_id",
+						"group_id":                     "test_group_id",
+						"service":                      "databricks",
+						"region":                       "AZURE_EASTUS",
+						"time_zone_offset":             "0",
+						"setup_status":                 "connected",
+						"daylight_saving_time_enabled": true,
+						// Note: private_link_id and networking_method NOT included in legacy response
+						"setup_tests": []interface{}{
+							map[string]interface{}{
+								"title":   "Test Title",
+								"status":  "PASSED",
+								"message": "Test passed",
+							},
+						},
+					}
+
+					response := tfmock.FivetranSuccessResponse(t, req, http.StatusOK,
+						"Setup tests have been completed", legacyResponse)
+					return response, nil
+				}
+
+				tfmock.MockClient().Reset()
+				testDestinationData = nil
+
+				destinationPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/destinations").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return onPostDestination(t, req)
+					},
+				)
+
+				tfmock.MockClient().When(http.MethodGet, "/v1/destinations/destination_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						tfmock.AssertNotEmpty(t, testDestinationData)
+						response := tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "", testDestinationData)
+						return response, nil
+					},
+				)
+
+				destinationTestHandler = tfmock.MockClient().When(http.MethodPost, "/v1/destinations/destination_id/test").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return onTestDestination(t, req)
+					},
+				)
+
+				destinationDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/destinations/destination_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						tfmock.AssertNotEmpty(t, testDestinationData)
+						testDestinationData = nil
+						response := tfmock.FivetranSuccessResponse(t, req, 200,
+							"Destination with id 'destination_id' has been deleted", nil)
+						return response, nil
+					},
+				)
+
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, destinationDeleteHandler.Interactions, 1)
+				tfmock.AssertEmpty(t, testDestinationData)
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
+				step2,
+			},
+		},
+	)
+}
