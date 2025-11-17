@@ -227,13 +227,13 @@ func TestResourceGroupUsersMock(t *testing.T) {
 				tfmock.AssertEqual(t, len(groupUsersData), 2)
 				return nil
 			},
-			tfmock.CheckImportResourceAttr("group_id", "user.#", "2"),
-			tfmock.CheckImportResourceAttr("group_id", "user.0.id", "user_12"),
-			tfmock.CheckImportResourceAttr("group_id", "user.0.email", "email1@user.domain"),
-			tfmock.CheckImportResourceAttr("group_id", "user.0.role", "Read Only"),
-			tfmock.CheckImportResourceAttr("group_id", "user.1.id", "user_10"),
-			tfmock.CheckImportResourceAttr("group_id", "user.1.email", "email@user.domain"),
-			tfmock.CheckImportResourceAttr("group_id", "user.1.role", "Destination Administrator"),
+			tfmock.CheckImportResourceAttr("fivetran_group_users", "group_id", "user.#", "2"),
+			tfmock.CheckImportResourceAttr("fivetran_group_users", "group_id", "user.0.id", "user_12"),
+			tfmock.CheckImportResourceAttr("fivetran_group_users", "group_id", "user.0.email", "email1@user.domain"),
+			tfmock.CheckImportResourceAttr("fivetran_group_users", "group_id", "user.0.role", "Read Only"),
+			tfmock.CheckImportResourceAttr("fivetran_group_users", "group_id", "user.1.id", "user_10"),
+			tfmock.CheckImportResourceAttr("fivetran_group_users", "group_id", "user.1.email", "email@user.domain"),
+			tfmock.CheckImportResourceAttr("fivetran_group_users", "group_id", "user.1.role", "Destination Administrator"),
 		),
 	}
 

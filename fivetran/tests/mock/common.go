@@ -302,7 +302,7 @@ func ComposeImportStateCheck(fs ...resource.ImportStateCheckFunc) resource.Impor
 	}
 }
 
-func CheckImportResourceAttr(instanceId, attributeName, value string) resource.ImportStateCheckFunc {
+func CheckImportResourceAttr(resourceType, instanceId, attributeName, value string) resource.ImportStateCheckFunc {
 	_, file, line, _ := runtime.Caller(1)
 
 	return func(s []*terraform.InstanceState) error {
@@ -322,6 +322,6 @@ func CheckImportResourceAttr(instanceId, attributeName, value string) resource.I
 			}
 		}
 
-		return fmt.Errorf("Not found: %s with '%s' id. At %s:%d", s[0].Ephemeral.Type, instanceId, file, line)
+		return fmt.Errorf("Not found: %s with '%s' id. At %s:%d", resourceType, instanceId, file, line)
 	}
 }

@@ -97,6 +97,29 @@ func TestResourcePrivateLinkImportingE2E(t *testing.T) {
 
 						name = "%v"
 						region = "AWS_US_EAST_1"
+						service = "REDSHIFT_AWS"
+					}`, predefinedPrivateLinkName),
+				ImportState:            true,
+				ResourceName:            "fivetran_private_link.imported_pl",
+				ImportStateId: predefinedPrivateLinkId,
+			    
+				ImportStateCheck: ComposeImportStateCheck(
+					CheckImportResourceAttr("fivetran_private_link", "id", predefinedPrivateLinkId),
+					CheckImportResourceAttr("fivetran_private_link", "name", predefinedPrivateLinkName),
+					CheckImportResourceAttr("fivetran_private_link", "region", "AWS_US_EAST_1"),
+					CheckImportResourceAttr("fivetran_private_link", "service", "REDSHIFT_AWS"),
+				),
+			},
+			{
+				Config: fmt.Sprintf(`
+					resource "fivetran_private_link" "imported_pl" {
+						provider = fivetran-provider
+
+						name = "%v"
+						region = "AWS_US_EAST_1"
+						service = "REDSHIFT_AWS"
+						config_map = {
+						}
 					}`, predefinedPrivateLinkName),
 				ImportState:            true,
 				ImportStatePersist: 	true,
@@ -104,10 +127,10 @@ func TestResourcePrivateLinkImportingE2E(t *testing.T) {
 				ImportStateId: predefinedPrivateLinkId,
 			    
 				ImportStateCheck: ComposeImportStateCheck(
-					CheckImportResourceAttr("id", predefinedPrivateLinkId),
-					CheckImportResourceAttr("name", predefinedPrivateLinkName),
-					CheckImportResourceAttr("region", "AWS_US_EAST_1"),
-					CheckImportResourceAttr("service", "REDSHIFT_AWS"),
+					CheckImportResourceAttr("fivetran_private_link", "id", predefinedPrivateLinkId),
+					CheckImportResourceAttr("fivetran_private_link", "name", predefinedPrivateLinkName),
+					CheckImportResourceAttr("fivetran_private_link", "region", "AWS_US_EAST_1"),
+					CheckImportResourceAttr("fivetran_private_link", "service", "REDSHIFT_AWS"),
 				),
 			},
 			{

@@ -153,11 +153,11 @@ func TestResourcePrivateLinkImportMock(t *testing.T) {
 		ImportState:       true,
 		ImportStateId: 	"pl_id",
 		ImportStateCheck: tfmock.ComposeImportStateCheck(
-			tfmock.CheckImportResourceAttr("pl_id", "id", "pl_id"),
-			tfmock.CheckImportResourceAttr("pl_id", "name", "name"),
-			tfmock.CheckImportResourceAttr("pl_id", "region", "region"),
-			tfmock.CheckImportResourceAttr("pl_id", "service", "service"),
-			tfmock.CheckImportResourceAttr("pl_id", "config_map.connection_service_name", "connection_service_name"),
+			tfmock.CheckImportResourceAttr("fivetran_private_link", "pl_id", "id", "pl_id"),
+			tfmock.CheckImportResourceAttr("fivetran_private_link", "pl_id", "name", "name"),
+			tfmock.CheckImportResourceAttr("fivetran_private_link", "pl_id", "region", "region"),
+			tfmock.CheckImportResourceAttr("fivetran_private_link", "pl_id", "service", "service"),
+			tfmock.CheckImportResourceAttr("fivetran_private_link", "pl_id", "config_map.connection_service_name", "connection_service_name"),
 		),
 	}
 
@@ -177,11 +177,11 @@ func TestResourcePrivateLinkImportMock(t *testing.T) {
 		ImportStateId: 	"pl_id",
 		ImportStatePersist: true,
 		ImportStateCheck: tfmock.ComposeImportStateCheck(
-			tfmock.CheckImportResourceAttr("pl_id", "id", "pl_id"),
-			tfmock.CheckImportResourceAttr("pl_id", "name", "name"),
-			tfmock.CheckImportResourceAttr("pl_id", "region", "region"),
-			tfmock.CheckImportResourceAttr("pl_id", "service", "service"),
-			tfmock.CheckImportResourceAttr("pl_id", "config_map.connection_service_name", "connection_service_name"),
+			tfmock.CheckImportResourceAttr("fivetran_private_link", "pl_id", "id", "pl_id"),
+			tfmock.CheckImportResourceAttr("fivetran_private_link", "pl_id", "name", "name"),
+			tfmock.CheckImportResourceAttr("fivetran_private_link", "pl_id", "region", "region"),
+			tfmock.CheckImportResourceAttr("fivetran_private_link", "pl_id", "service", "service"),
+			tfmock.CheckImportResourceAttr("fivetran_private_link", "pl_id", "config_map.connection_service_name", "connection_service_name"),
 		),
 	}
 
