@@ -93,7 +93,7 @@ func cleanupAccount() {
 	cleanupConnections()
 	cleanupProxyAgents()
 	cleanupHybridDeploymentAgents()
-	cleanupPrivateLinks()
+	// cleanupPrivateLinks() 
 	cleanupExternalLogging()
 	cleanupDestinations()
 	cleanupGroups()
