@@ -22,6 +22,7 @@ type privateLink struct {
 // Ensure the implementation satisfies the desired interfaces.
 var _ resource.ResourceWithConfigure = &privateLink{}
 var _ resource.ResourceWithImportState = &privateLink{}
+var _ resource.ResourceWithModifyPlan = &privateLink{}
 
 func (r *privateLink) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_private_link"
@@ -33,6 +34,35 @@ func (r *privateLink) Schema(ctx context.Context, req resource.SchemaRequest, re
 
 func (r *privateLink) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+}
+
+func (r *privateLink) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	if req.State.Raw.IsNull() {
+		// Resource is being created
+		return
+	}
+	if req.Plan.Raw.IsNull() {
+		// Resource is being destroyed
+		return
+	}
+
+	var planData model.PrivateLink
+	diags := req.Plan.Get(ctx, &planData)
+	if diags.HasError() {
+		return
+	}
+
+	var stateData model.PrivateLink
+	diags = req.State.Get(ctx, &stateData)
+	if diags.HasError() {
+		return
+	}
+
+	if !planData.ConfigMap.IsNull() && len(planData.ConfigMap.Elements()) == 0 {
+		// allow for importing with empty config_map, same as mapplanmodifier.UseStateForUnknown but for empty map
+		planData.ConfigMap = stateData.ConfigMap
+		resp.Diagnostics = append(resp.Diagnostics, resp.Plan.Set(ctx, &planData)...)
+	} 
 }
 
 func (r *privateLink) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -137,7 +167,6 @@ func (r *privateLink) Update(ctx context.Context, req resource.UpdateRequest, re
 
 		state.ReadFromCustomResponse(ctx, updateResponse)
 	}
-
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }

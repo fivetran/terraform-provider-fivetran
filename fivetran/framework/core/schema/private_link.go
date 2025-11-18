@@ -3,6 +3,7 @@ package schema
 import (
     "github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
     "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+    "github.com/hashicorp/terraform-plugin-framework/resource/schema/mapplanmodifier"
     "github.com/hashicorp/terraform-plugin-framework/types"
     resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
     datasourceSchema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -13,6 +14,7 @@ func PrivateLinkResource() resourceSchema.Schema {
         Attributes: map[string]resourceSchema.Attribute{
             "id": resourceSchema.StringAttribute{
                 Computed:    true,
+                PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
                 Description: "The unique identifier for the private link within the Fivetran system.",
             },
             "region": resourceSchema.StringAttribute{
@@ -32,31 +34,38 @@ func PrivateLinkResource() resourceSchema.Schema {
             },
             "cloud_provider": resourceSchema.StringAttribute{
                 Computed:    true,
+                PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
                 Description: "The cloud provider name.",
             },
             "state": resourceSchema.StringAttribute{
                 Computed:    true,
+                PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
                 Description: "The state of the private link.",
             },
             "state_summary": resourceSchema.StringAttribute{
                 Computed:    true,
+                PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
                 Description: "The state of the private link.",
             },
             "created_at": resourceSchema.StringAttribute{
                 Computed:    true,
+                PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
                 Description: "The date and time the membership was created.",
             },
             "created_by": resourceSchema.StringAttribute{
                 Computed:    true,
+                PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
                 Description: "The unique identifier for the User within the Fivetran system.",
             },
             "host": resourceSchema.StringAttribute{
                 Computed:    true,
+                PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
                 Description: "The private link host.",
             },
             "config_map": resourceSchema.MapAttribute{
                 ElementType: types.StringType,
                 Required:    true,
+                PlanModifiers: []planmodifier.Map{mapplanmodifier.UseStateForUnknown()},
                 MarkdownDescription: `Configuration.
 
 #### Possible values  
