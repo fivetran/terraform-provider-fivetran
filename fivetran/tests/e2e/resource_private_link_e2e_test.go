@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	predefinedPrivateLinkId = "relied_arranging"
-	predefinedPrivateLinkName = "3558341719454956762"
+	predefinedPrivateLinkId = "<use the ID of an existing private link>"
+	predefinedPrivateLinkName = "<use the name of an existing private link>"
 
 )
 
