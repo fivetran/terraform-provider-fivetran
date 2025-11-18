@@ -325,3 +325,25 @@ func CheckImportResourceAttr(resourceType, instanceId, attributeName, value stri
 		return fmt.Errorf("Not found: %s with '%s' id. At %s:%d", resourceType, instanceId, file, line)
 	}
 }
+
+func CheckNoImportResourceAttr(resourceType, instanceId, attributeName string) resource.ImportStateCheckFunc {
+	_, file, line, _ := runtime.Caller(1)
+
+	return func(s []*terraform.InstanceState) error {
+		for _, v := range s {
+			if v.ID != instanceId {
+				continue
+			}
+
+			if attrVal, ok := v.Attributes[attributeName]; ok {
+				if attrVal != "" {
+					return fmt.Errorf("For %s with '%s' id, attribute '%s' found when not expected. Got: '%s'. At %s:%d", v.Ephemeral.Type, instanceId, attributeName, attrVal, file, line)
+				}
+			}
+				
+			return nil
+		}
+
+		return fmt.Errorf("Not found: %s with '%s' id. At %s:%d", resourceType, instanceId, file, line)
+	}
+}
