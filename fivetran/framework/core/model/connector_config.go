@@ -136,6 +136,9 @@ func attrTypeFromConfigField(cf common.ConfigField) attr.Type {
 }
 
 func getStringValue(value, local interface{}, currentField *common.ConfigField, service string) types.String {
+	if currentField != nil && currentField.GetIsSensitive(service) && local != nil {
+		return types.StringValue(local.(string))
+	}
 	if value == nil {
 		if local != nil && local.(string) == "" {
 			return types.StringValue("")
@@ -144,9 +147,6 @@ func getStringValue(value, local interface{}, currentField *common.ConfigField, 
 	}
 	if local == nil && !currentField.Readonly { // we should not set non-nullable value to the state if it's not configured by tf, we just ignore it
 		return types.StringNull()
-	}
-	if currentField != nil && currentField.GetIsSensitive(service) && local != nil {
-		return types.StringValue(local.(string))
 	}
 
 	// print any value as a string
@@ -191,7 +191,7 @@ func getIntValue(value, local interface{}, currentField *common.ConfigField) typ
 
 func getValue(
 	fieldType attr.Type,
-	value, local interface{},
+	value, local interface{},// value - api response value, local - tf state value
 	fieldsMap map[string]common.ConfigField,
 	currentField *common.ConfigField,
 	service string) attr.Value {
