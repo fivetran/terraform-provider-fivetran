@@ -72,7 +72,7 @@ func (r *externalLogging) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 
-	data.ReadFromCustomResponse(ctx, createResponse)
+	data.ReadFromCustomResponse(ctx, createResponse, nil)
 
 	runTests := core.GetBoolOrDefault(data.RunTests, false)
 	if runTests {
@@ -176,7 +176,7 @@ func (r *externalLogging) Update(ctx context.Context, req resource.UpdateRequest
 			return
 		}
 
-		state.ReadFromCustomResponse(ctx, updateResponse)
+		state.ReadFromCustomResponse(ctx, updateResponse, plan.Config.Attributes())
 	}
 
 	if runTests && runTests != runTestsState {
