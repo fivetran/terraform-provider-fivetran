@@ -230,35 +230,48 @@ func (d *ExternalLogging) ReadFromCustomResponse(ctx context.Context, resp exter
 
     if resp.Data.Config["primary_key"] != nil && resp.Data.Config["primary_key"] != "" && resp.Data.Config["primary_key"] != "******" {
         config["primary_key"] = types.StringValue(resp.Data.Config["primary_key"].(string))
+    } else if mapHasValue(planConfigForEmptySecretValuesAfterImport, "primary_key") {
+        config["primary_key"] = planConfigForEmptySecretValuesAfterImport["primary_key"]
     } else if !d.Config.Attributes()["primary_key"].IsNull() {
         config["primary_key"] = d.Config.Attributes()["primary_key"]
-    } else if planConfigForEmptySecretValuesAfterImport != nil && planConfigForEmptySecretValuesAfterImport["primary_key"] != nil {
-        config["primary_key"] = planConfigForEmptySecretValuesAfterImport["primary_key"]
     } else {
         config["primary_key"] = types.StringNull()
     }
      
     if resp.Data.Config["api_key"] != nil && resp.Data.Config["api_key"] != "" && resp.Data.Config["api_key"] != "******" {
         config["api_key"] = types.StringValue(resp.Data.Config["api_key"].(string))
+    } else if mapHasValue(planConfigForEmptySecretValuesAfterImport, "api_key") {
+        config["api_key"] = planConfigForEmptySecretValuesAfterImport["api_key"]
     } else if !d.Config.Attributes()["api_key"].IsNull() {
         config["api_key"] = d.Config.Attributes()["api_key"]
-    } else if planConfigForEmptySecretValuesAfterImport != nil && planConfigForEmptySecretValuesAfterImport["api_key"] != nil {
-        config["api_key"] = planConfigForEmptySecretValuesAfterImport["api_key"]
     } else {
         config["api_key"] = types.StringNull()
     }
 
     if resp.Data.Config["token"] != nil && resp.Data.Config["token"] != "" && resp.Data.Config["token"] != "******" {
         config["token"] = types.StringValue(resp.Data.Config["token"].(string))
+    } else if mapHasValue(planConfigForEmptySecretValuesAfterImport, "token") {
+        config["token"] = planConfigForEmptySecretValuesAfterImport["token"]
     } else if !d.Config.Attributes()["token"].IsNull() {
         config["token"] = d.Config.Attributes()["token"]
-    } else if planConfigForEmptySecretValuesAfterImport != nil && planConfigForEmptySecretValuesAfterImport["token"] != nil {
-        config["token"] = planConfigForEmptySecretValuesAfterImport["token"]
     } else {
         config["token"] = types.StringNull()
     }
 
     d.Config, _ = types.ObjectValue(ExternalLoggingTFConfigType, config)
+}
+
+func mapHasValue(valuesMap map[string]attr.Value, key string) bool {
+    if valuesMap == nil {
+        return false
+    }
+
+    value, exists := valuesMap[key]
+    if !exists {
+        return false
+    }
+
+    return !value.IsNull() && !value.IsUnknown()
 }
 
 func (d *ExternalLogging) GetConfig() map[string]interface{} {

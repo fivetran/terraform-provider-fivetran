@@ -142,14 +142,21 @@ func setupMockClientExternalLoggingConfigMapping(t *testing.T) {
 			tfmock.AssertKeyExistsAndHasValue(t, config, "hostname", "hostname")
 			tfmock.AssertKeyExistsAndHasValue(t, config, "project_id", "project_id")
 
-			if(patchInteractions < 2) {
+			switch patchInteractions {
+			case 1:
 				tfmock.AssertKeyDoesNotExist(t, config, "primary_key")
 				tfmock.AssertKeyDoesNotExist(t, config, "api_key")
 				tfmock.AssertKeyDoesNotExist(t, config, "token")
-			} else {
+			case 2:
 				tfmock.AssertKeyExistsAndHasValue(t, config, "primary_key", "primary_key_2")
 				tfmock.AssertKeyExistsAndHasValue(t, config, "api_key", "api_key_2")
 				tfmock.AssertKeyExistsAndHasValue(t, config, "token", "token_2")
+			case 3:
+				tfmock.AssertKeyExistsAndHasValue(t, config, "primary_key", "primary_key_3")
+				tfmock.AssertKeyExistsAndHasValue(t, config, "api_key", "api_key_3")
+				tfmock.AssertKeyExistsAndHasValue(t, config, "token", "token_3")
+			default:
+				t.Errorf("Unexpected number of patch interactions: %d", patchInteractions)
 			}
 
 			testExternalLoggingData = tfmock.CreateMapFromJsonString(t, externalLoggingMappingUpdatedResponse)
@@ -349,6 +356,48 @@ func TestResourceExternalLoggingMappingMock(t *testing.T) {
 		),
 	}
 
+	// updating sensitive fields when plan/state already has their values
+	step7 := resource.TestStep{
+		Config: `
+			resource "fivetran_external_logging" "test_extlog" {
+                provider = fivetran-provider
+
+	            group_id = "log_id"
+                service = "azure_monitor_log"
+                enabled = "false"
+
+                config {
+					api_key = "api_key_3"
+					token = "token_3"
+					primary_key = "primary_key_3"
+                    workspace_id = "workspace_id_1"
+                    role_arn = "role_arn"
+                    region = "region"
+                    log_group_name = "log_group_name"
+                    sub_domain = "sub_domain"
+                    enable_ssl = true
+                    channel = "channel"
+                    external_id = "external_id"
+                    host = "host"
+                    hostname = "hostname"
+                    port = 443
+                    project_id = "project_id"
+                }
+            }`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, externalLoggingMappingPostHandler.Interactions, 1)
+				tfmock.AssertEqual(t, externalLoggingMappingPatchHandler.Interactions, 3)
+				tfmock.AssertNotEmpty(t, testExternalLoggingData)
+				return nil
+			},			
+			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.workspace_id", "workspace_id_1"),
+			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.api_key", "api_key_3"),
+			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.token", "token_3"),
+			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.primary_key", "primary_key_3"),
+		),
+	}
+
 	resource.Test(
 		t,
 		resource.TestCase{
@@ -358,7 +407,7 @@ func TestResourceExternalLoggingMappingMock(t *testing.T) {
 			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
 				tfmock.AssertEqual(t, externalLoggingMappingPostHandler.Interactions, 1)
-				tfmock.AssertEqual(t, externalLoggingMappingPatchHandler.Interactions, 2)
+				tfmock.AssertEqual(t, externalLoggingMappingPatchHandler.Interactions, 3)
 				tfmock.AssertEqual(t, externalLoggingMappingDeleteHandler.Interactions, 2)
 				tfmock.AssertEmpty(t, testExternalLoggingData)
 				return nil
@@ -371,6 +420,7 @@ func TestResourceExternalLoggingMappingMock(t *testing.T) {
 				step4,
 				step5,
 				step6,
+				step7,
 			},
 		},
 	)
