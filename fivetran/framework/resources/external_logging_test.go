@@ -34,16 +34,16 @@ const (
         "enabled":            false,
         "config":{
             "workspace_id":   "workspace_id",
-            "primary_key":    "primary_key",
+            "primary_key":    "******",
             "role_arn":       "role_arn",
             "region":         "region",
             "log_group_name": "log_group_name",
             "sub_domain":     "sub_domain",
             "enable_ssl":     true,
             "channel":        "channel",
-            "token":          "token",
+            "token":          "******",
             "external_id":    "external_id",
-            "api_key":        "api_key",
+            "api_key":        "******",
             "host":           "host",
             "hostname":       "hostname",
             "port":           443,
@@ -60,16 +60,16 @@ const (
         "enabled":            false,
         "config":{
             "workspace_id":   "workspace_id_1",
-            "primary_key":    "primary_key",
+            "primary_key":    "******",
             "role_arn":       "role_arn",
             "region":         "region",
             "log_group_name": "log_group_name",
             "sub_domain":     "sub_domain",
             "enable_ssl":     true,
             "channel":        "channel",
-            "token":          "token",
+            "token":          "******",
             "external_id":    "external_id",
-            "api_key":        "api_key",
+            "api_key":        "******",
             "host":           "host",
             "hostname":       "hostname",
             "port":           443,
@@ -80,6 +80,9 @@ const (
 )
 
 func setupMockClientExternalLoggingConfigMapping(t *testing.T) {
+	var patchInteractions int
+	patchInteractions = 0
+
 	tfmock.MockClient().Reset()
 
 	externalLoggingMappingGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/external-logging/log_id").ThenCall(
@@ -117,16 +120,16 @@ func setupMockClientExternalLoggingConfigMapping(t *testing.T) {
 		},
 	)
 
-	externalLoggingMappingPatchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/external-logging").ThenCall(
+	externalLoggingMappingPatchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/external-logging/log_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
+			patchInteractions += 1
 			body := tfmock.RequestBodyToJson(t, req)
 
 			tfmock.AssertKeyExists(t, body, "config")
 
 			config := body["config"].(map[string]interface{})
 
-			tfmock.AssertKeyExistsAndHasValue(t, config, "workspace_id", "workspace_id")
-			tfmock.AssertKeyExistsAndHasValue(t, config, "primary_key", "primary_key")
+			tfmock.AssertKeyExistsAndHasValue(t, config, "workspace_id", "workspace_id_1")
 			tfmock.AssertKeyExistsAndHasValue(t, config, "role_arn", "role_arn")
 			tfmock.AssertKeyExistsAndHasValue(t, config, "region", "region")
 			tfmock.AssertKeyExistsAndHasValue(t, config, "port", float64(443))
@@ -134,15 +137,23 @@ func setupMockClientExternalLoggingConfigMapping(t *testing.T) {
 			tfmock.AssertKeyExistsAndHasValue(t, config, "sub_domain", "sub_domain")
 			tfmock.AssertKeyExistsAndHasValue(t, config, "enable_ssl", true)
 			tfmock.AssertKeyExistsAndHasValue(t, config, "channel", "channel")
-			tfmock.AssertKeyExistsAndHasValue(t, config, "token", "token")
 			tfmock.AssertKeyExistsAndHasValue(t, config, "external_id", "external_id")
-			tfmock.AssertKeyExistsAndHasValue(t, config, "api_key", "api_key")
 			tfmock.AssertKeyExistsAndHasValue(t, config, "host", "host")
 			tfmock.AssertKeyExistsAndHasValue(t, config, "hostname", "hostname")
 			tfmock.AssertKeyExistsAndHasValue(t, config, "project_id", "project_id")
 
-			testExternalLoggingData = tfmock.CreateMapFromJsonString(t, externalLoggingMappingResponse)
-			return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", testExternalLoggingData), nil
+			if(patchInteractions < 2) {
+				tfmock.AssertKeyDoesNotExist(t, config, "primary_key")
+				tfmock.AssertKeyDoesNotExist(t, config, "api_key")
+				tfmock.AssertKeyDoesNotExist(t, config, "token")
+			} else {
+				tfmock.AssertKeyExistsAndHasValue(t, config, "primary_key", "primary_key_2")
+				tfmock.AssertKeyExistsAndHasValue(t, config, "api_key", "api_key_2")
+				tfmock.AssertKeyExistsAndHasValue(t, config, "token", "token_2")
+			}
+
+			testExternalLoggingData = tfmock.CreateMapFromJsonString(t, externalLoggingMappingUpdatedResponse)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", testExternalLoggingData), nil
 		},
 	)
 
@@ -159,7 +170,7 @@ func setupMockClientExternalLoggingConfigMapping(t *testing.T) {
 func TestResourceExternalLoggingMappingMock(t *testing.T) {
 	step1 := resource.TestStep{
 		Config: `
-            resource "fivetran_external_logging" "test_extlog" {
+			resource "fivetran_external_logging" "test_extlog" {
                 provider = fivetran-provider
 
 	            group_id = "log_id"
@@ -195,6 +206,149 @@ func TestResourceExternalLoggingMappingMock(t *testing.T) {
 		),
 	}
 
+	// remove from config to test import verify in the next test step
+	step2 := resource.TestStep{
+		Config: `
+		`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, externalLoggingMappingDeleteHandler.Interactions, 1)
+				return nil
+			},
+		),
+	}
+
+	// import verify
+	step3 := resource.TestStep{
+		PreConfig: func() {
+			testExternalLoggingData = tfmock.CreateMapFromJsonString(t, externalLoggingMappingResponse)
+		},
+		Config: `
+				resource "fivetran_external_logging" "test_extlog" {
+					provider = fivetran-provider
+				}
+			`,
+		ResourceName:      "fivetran_external_logging.test_extlog",
+		ImportState:       true,
+		ImportStateId: 	"log_id",
+		ImportStatePersist: true,
+		ImportStateCheck: tfmock.ComposeImportStateCheck(
+			tfmock.CheckImportResourceAttr("fivetran_external_logging", "log_id", "id", "log_id"),
+			tfmock.CheckImportResourceAttr("fivetran_external_logging", "log_id", "group_id", "log_id"),
+			tfmock.CheckImportResourceAttr("fivetran_external_logging", "log_id", "service", "azure_monitor_log"),
+			tfmock.CheckImportResourceAttr("fivetran_external_logging", "log_id", "config.role_arn", "role_arn"),
+			tfmock.CheckNoImportResourceAttr("fivetran_external_logging", "log_id", "config.api_key"),
+		),
+	}
+
+	// sensitive fields being null after import do not trigger an update
+	step4 := resource.TestStep{
+		Config: `
+			resource "fivetran_external_logging" "test_extlog" {
+                provider = fivetran-provider
+
+	            group_id = "log_id"
+                service = "azure_monitor_log"
+                enabled = "false"
+
+                config {
+                    workspace_id = "workspace_id"
+                    role_arn = "role_arn"
+                    region = "region"
+                    log_group_name = "log_group_name"
+                    sub_domain = "sub_domain"
+                    enable_ssl = true
+                    channel = "channel"
+                    external_id = "external_id"
+                    host = "host"
+                    hostname = "hostname"
+                    port = 443
+                    project_id = "project_id"
+                }
+            }`,
+		PlanOnly: true,
+	}
+
+	// updating non-sensitive fields after importing is working
+	step5 := resource.TestStep{
+		Config: `
+			resource "fivetran_external_logging" "test_extlog" {
+                provider = fivetran-provider
+
+	            group_id = "log_id"
+                service = "azure_monitor_log"
+                enabled = "false"
+
+                config {
+                    workspace_id = "workspace_id_1"
+                    role_arn = "role_arn"
+                    region = "region"
+                    log_group_name = "log_group_name"
+                    sub_domain = "sub_domain"
+                    enable_ssl = true
+                    channel = "channel"
+                    external_id = "external_id"
+                    host = "host"
+                    hostname = "hostname"
+                    port = 443
+                    project_id = "project_id"
+                }
+            }`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, externalLoggingMappingPatchHandler.Interactions, 1)
+				tfmock.AssertNotEmpty(t, testExternalLoggingData)
+				return nil
+			},			
+			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.workspace_id", "workspace_id_1"),
+			resource.TestCheckNoResourceAttr("fivetran_external_logging.test_extlog", "config.api_key"),
+			resource.TestCheckNoResourceAttr("fivetran_external_logging.test_extlog", "config.token"),
+			resource.TestCheckNoResourceAttr("fivetran_external_logging.test_extlog", "config.primary_key"),
+		),
+	}
+
+	// updating sensitive fields after importing is working
+	step6 := resource.TestStep{
+		Config: `
+			resource "fivetran_external_logging" "test_extlog" {
+                provider = fivetran-provider
+
+	            group_id = "log_id"
+                service = "azure_monitor_log"
+                enabled = "false"
+
+                config {
+					api_key = "api_key_2"
+					token = "token_2"
+					primary_key = "primary_key_2"
+                    workspace_id = "workspace_id_1"
+                    role_arn = "role_arn"
+                    region = "region"
+                    log_group_name = "log_group_name"
+                    sub_domain = "sub_domain"
+                    enable_ssl = true
+                    channel = "channel"
+                    external_id = "external_id"
+                    host = "host"
+                    hostname = "hostname"
+                    port = 443
+                    project_id = "project_id"
+                }
+            }`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, externalLoggingMappingPostHandler.Interactions, 1)
+				tfmock.AssertEqual(t, externalLoggingMappingPatchHandler.Interactions, 2)
+				tfmock.AssertNotEmpty(t, testExternalLoggingData)
+				return nil
+			},			
+			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.workspace_id", "workspace_id_1"),
+			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.api_key", "api_key_2"),
+			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.token", "token_2"),
+			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.primary_key", "primary_key_2"),
+		),
+	}
+
 	resource.Test(
 		t,
 		resource.TestCase{
@@ -203,13 +357,20 @@ func TestResourceExternalLoggingMappingMock(t *testing.T) {
 			},
 			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
-				tfmock.AssertEqual(t, externalLoggingMappingDeleteHandler.Interactions, 1)
+				tfmock.AssertEqual(t, externalLoggingMappingPostHandler.Interactions, 1)
+				tfmock.AssertEqual(t, externalLoggingMappingPatchHandler.Interactions, 2)
+				tfmock.AssertEqual(t, externalLoggingMappingDeleteHandler.Interactions, 2)
 				tfmock.AssertEmpty(t, testExternalLoggingData)
 				return nil
 			},
 
 			Steps: []resource.TestStep{
 				step1,
+				step2,
+				step3,
+				step4,
+				step5,
+				step6,
 			},
 		},
 	)

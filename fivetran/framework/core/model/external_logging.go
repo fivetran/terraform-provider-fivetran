@@ -148,7 +148,8 @@ func CoalesceToStringNull(value attr.Value) attr.Value {
     return value
 }
 
-func (d *ExternalLogging) ReadFromCustomResponse(ctx context.Context, resp externallogging.ExternalLoggingCustomResponse) {
+func (d *ExternalLogging) ReadFromCustomResponse(ctx context.Context, resp externallogging.ExternalLoggingCustomResponse, 
+    planConfigForEmptySecretValuesAfterImport map[string]attr.Value) {
     d.Id = types.StringValue(resp.Data.Id)
     d.GroupId = types.StringValue(resp.Data.Id)
     d.Service = types.StringValue(resp.Data.Service)
@@ -231,6 +232,8 @@ func (d *ExternalLogging) ReadFromCustomResponse(ctx context.Context, resp exter
         config["primary_key"] = types.StringValue(resp.Data.Config["primary_key"].(string))
     } else if !d.Config.Attributes()["primary_key"].IsNull() {
         config["primary_key"] = d.Config.Attributes()["primary_key"]
+    } else if planConfigForEmptySecretValuesAfterImport != nil && planConfigForEmptySecretValuesAfterImport["primary_key"] != nil {
+        config["primary_key"] = planConfigForEmptySecretValuesAfterImport["primary_key"]
     } else {
         config["primary_key"] = types.StringNull()
     }
@@ -239,6 +242,8 @@ func (d *ExternalLogging) ReadFromCustomResponse(ctx context.Context, resp exter
         config["api_key"] = types.StringValue(resp.Data.Config["api_key"].(string))
     } else if !d.Config.Attributes()["api_key"].IsNull() {
         config["api_key"] = d.Config.Attributes()["api_key"]
+    } else if planConfigForEmptySecretValuesAfterImport != nil && planConfigForEmptySecretValuesAfterImport["api_key"] != nil {
+        config["api_key"] = planConfigForEmptySecretValuesAfterImport["api_key"]
     } else {
         config["api_key"] = types.StringNull()
     }
@@ -247,6 +252,8 @@ func (d *ExternalLogging) ReadFromCustomResponse(ctx context.Context, resp exter
         config["token"] = types.StringValue(resp.Data.Config["token"].(string))
     } else if !d.Config.Attributes()["token"].IsNull() {
         config["token"] = d.Config.Attributes()["token"]
+    } else if planConfigForEmptySecretValuesAfterImport != nil && planConfigForEmptySecretValuesAfterImport["token"] != nil {
+        config["token"] = planConfigForEmptySecretValuesAfterImport["token"]
     } else {
         config["token"] = types.StringNull()
     }

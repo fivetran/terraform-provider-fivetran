@@ -1,12 +1,13 @@
 package schema
 
 import (
-	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	datasourceSchema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 )
 
 func ExternalLoggingResource() resourceSchema.Schema {
@@ -32,6 +33,7 @@ func ExternalLoggingResource() resourceSchema.Schema {
 			},
 			"run_setup_tests": resourceSchema.BoolAttribute{
 				Optional:	 true,
+				PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
 				Description: "Specifies whether the setup tests should be run automatically. The default value is TRUE.",
 			},
 		},
