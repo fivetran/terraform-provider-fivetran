@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.16...HEAD)
+
+## [v1.9.16](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.15...v1.9.16)
+
+### Added
+New connection services supported:
+- Supported service: `bizzabo_app`
+- Supported service: `db2z`
+
+New connection config fields supported:
+- Added field `fivetran_connector.config.api_integration_type` for services: `onetrust`.
+- Added field `fivetran_connector.config.secured_signon_key` for services: `db2z`.
+- Added field `fivetran_connector.config.application_name` for services: `db2z`.
+
+### Fixed
+- After importing of `fivetran_external_logging` resource, allow for updating `config.api_key`, `config.token`, `config.primary_key`
+
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.15...HEAD)
 
 ## [v1.9.15](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.14...v1.9.15)
