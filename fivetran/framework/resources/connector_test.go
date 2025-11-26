@@ -177,8 +177,7 @@ const (
 		},
 		"config": {
 			"tenant": "tenant1",
-			"client_id": "client_id2",
-			"client_secret": null
+			"client_id": "client_id2"
 		}
 	}
 		`
