@@ -7,6 +7,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
@@ -96,9 +98,11 @@ The value defines validation method.
 													Description: "The boolean value specifying whether a column should be hashed.",
 												},
 												"is_primary_key": schema.BoolAttribute{
-													Optional:    true,
 													Computed:    true,
 													Description: "Boolean value indicating if the column is a primary key. This field is read-only and computed by the API.",
+													PlanModifiers: []planmodifier.Bool{
+														boolplanmodifier.UseStateForUnknown(),
+													},
 												},
 											},
 										},
@@ -196,9 +200,11 @@ func getColumnBlock() schema.SetNestedBlock {
 					Description: "The boolean value specifying whether a column should be hashed.",
 				},
 				"is_primary_key": schema.BoolAttribute{
-					Optional:    true,
 					Computed:    true,
 					Description: "Boolean value indicating if the column is a primary key. This field is read-only and computed by the API.",
+					PlanModifiers: []planmodifier.Bool{
+						boolplanmodifier.UseStateForUnknown(),
+					},
 				},
 			},
 		},
