@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.15...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.16...HEAD)
+
+## [v1.9.16](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.15...v1.9.16)
+
+### Fixed
+- Eliminated noisy terraform plan output for `is_primary_key` attribute in `fivetran_connector_schema_config` resource by adding `UseStateForUnknown` plan modifier. This prevents unnecessary `(known after apply)` diffs for all columns when adding or modifying tables in large schemas.
 
 ## [v1.9.15](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.14...v1.9.15)
 
