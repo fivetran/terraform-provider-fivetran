@@ -1005,6 +1005,314 @@ func TestResourceUpdateSensitiveFieldInConfigMock(t *testing.T) {
 	)
 }
 
+func TestResourceImportThenUpdateSensitiveFieldInConfigMock(t *testing.T) {
+
+	step1 := resource.TestStep{
+		Config: `
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+		}
+		`,
+		ImportState: true,
+		ResourceName: "fivetran_connector.test_connector",
+		ImportStateId: "connector_id",
+		ImportStatePersist: true,
+		PreConfig: func() {
+			connectorMockUpdatePostHandler.Interactions = 0
+			connectorMockUpdateGetHandler.Interactions = 0
+			connectorMockUpdatePatchHandler.Interactions = 0
+			postRequestJson = nil
+			patchRequestJson = nil
+			connectorMockData = tfmock.CreateMapFromJsonString(t, coilConnectorPatchResponse1)
+		},
+		ImportStateCheck: tfmock.ComposeImportStateCheck(
+			func(s []*terraform.InstanceState) error {
+				tfmock.AssertEqual(t, connectorMockUpdatePostHandler.Interactions, 0)
+				tfmock.AssertEqual(t, connectorMockUpdateGetHandler.Interactions, 1)
+				tfmock.AssertEqual(t, connectorMockUpdatePatchHandler.Interactions, 0)
+				return nil
+			},
+			tfmock.CheckImportResourceAttr("fivetran_connector", "connector_id", "service", "microsoft_entra_id"),
+			tfmock.CheckImportResourceAttr("fivetran_connector", "connector_id", "config.tenant", "tenant1"),
+			tfmock.CheckNoImportResourceAttr("fivetran_connector", "connector_id", "config.client_secret"), // sensitive field are not imported, as their values are unknown
+			tfmock.CheckImportResourceAttr("fivetran_connector", "connector_id", "config.client_id", "client_id1"),
+		),
+	}
+
+	step2 := resource.TestStep{
+		Config: `
+		locals {
+		  config = jsondecode("{\"tenant_id\":\"tenant1\",\"client_id\":\"client_id1\",\"client_secret\":\"client_secret3\"}")
+		}
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+
+			group_id = "group_id"
+			service           = "microsoft_entra_id"
+			networking_method = "Directly"
+			run_setup_tests   = true
+			destination_schema {
+				name = "microsoft_entra_id"
+			}
+			config {
+				tenant        = sensitive(local.config.tenant_id)
+				client_id     = sensitive(local.config.client_id)
+				client_secret = sensitive(local.config.client_secret)
+			}
+		}
+		`,
+		PreConfig: func() {
+			connectorMockUpdatePostHandler.Interactions = 0
+			connectorMockUpdateGetHandler.Interactions = 0
+			connectorMockUpdatePatchHandler.Interactions = 0
+			postRequestJson = nil
+			patchRequestJson = nil
+		},
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, connectorMockUpdatePostHandler.Interactions, 0)
+				tfmock.AssertEqual(t, connectorMockUpdateGetHandler.Interactions, 1)
+				tfmock.AssertEqual(t, connectorMockUpdatePatchHandler.Interactions, 1)
+				patchRequestConfig := patchRequestJson["config"].(map[string]interface{})
+				tfmock.AssertEqual(t, patchRequestConfig["client_secret"], "client_secret3")
+				tfmock.AssertEmpty(t, patchRequestConfig["client_id"])
+				tfmock.AssertEmpty(t, patchRequestConfig["tenant"])
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "microsoft_entra_id"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.tenant", "tenant1"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.client_secret", "client_secret3"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.client_id", "client_id1"),
+		),
+	}
+
+	step3 := resource.TestStep{
+		Config: `
+		locals {
+		  config = jsondecode("{\"tenant_id\":\"tenant1\",\"client_id\":\"client_id1\",\"client_secret\":\"client_secret4\"}")
+		}
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+
+			group_id = "group_id"
+			service           = "microsoft_entra_id"
+			networking_method = "Directly"
+			run_setup_tests   = true
+			destination_schema {
+				name = "microsoft_entra_id"
+			}
+			config {
+				tenant        = sensitive(local.config.tenant_id)
+				client_id     = sensitive(local.config.client_id)
+				client_secret = sensitive(local.config.client_secret)
+			}
+		}
+		`,
+		PreConfig: func() {
+			connectorMockUpdatePostHandler.Interactions = 0
+			connectorMockUpdateGetHandler.Interactions = 0
+			connectorMockUpdatePatchHandler.Interactions = 0
+			postRequestJson = nil
+			patchRequestJson = nil
+		},
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, connectorMockUpdatePostHandler.Interactions, 0)
+				tfmock.AssertEqual(t, connectorMockUpdateGetHandler.Interactions, 1)
+				tfmock.AssertEqual(t, connectorMockUpdatePatchHandler.Interactions, 1)
+				patchRequestConfig := patchRequestJson["config"].(map[string]interface{})
+				tfmock.AssertEqual(t, patchRequestConfig["client_secret"], "client_secret4")
+				tfmock.AssertEmpty(t, patchRequestConfig["client_id"])
+				tfmock.AssertEmpty(t, patchRequestConfig["tenant"])
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "microsoft_entra_id"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.tenant", "tenant1"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.client_secret", "client_secret4"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.client_id", "client_id1"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientConnectorResourceUpdateConfig(t)
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, connectorMockUpdateDelete.Interactions, 1)
+				tfmock.AssertEmpty(t, connectorMockData)
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
+				step2,
+				step3,
+			},
+		},
+	)
+}
+
+func TestResourceConsequentUpdatesOfSensitiveFieldInConfigMock(t *testing.T) {
+
+	step1 := resource.TestStep{
+		Config: `
+		locals {
+		  config = jsondecode("{\"tenant_id\":\"tenant1\",\"client_id\":\"client_id1\",\"client_secret\":\"client_secret5\"}")
+		}
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+
+			group_id = "group_id"
+			service           = "microsoft_entra_id"
+			networking_method = "Directly"
+			run_setup_tests   = true
+			destination_schema {
+				name = "microsoft_entra_id"
+			}
+			config {
+				tenant        = sensitive(local.config.tenant_id)
+				client_id     = sensitive(local.config.client_id)
+				client_secret = sensitive(local.config.client_secret)
+			}
+		}
+		`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, connectorMockUpdatePostHandler.Interactions, 1)
+				tfmock.AssertEqual(t, connectorMockUpdateGetHandler.Interactions, 0)
+				tfmock.AssertEqual(t, connectorMockUpdatePatchHandler.Interactions, 0)
+				postRequestConfig := postRequestJson["config"].(map[string]interface{})
+				tfmock.AssertEqual(t, postRequestConfig["client_secret"], "client_secret5")
+				tfmock.AssertEqual(t, postRequestConfig["client_id"], "client_id1")
+				tfmock.AssertEqual(t, postRequestConfig["tenant"], "tenant1")
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "microsoft_entra_id"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.tenant", "tenant1"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.client_secret", "client_secret5"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.client_id", "client_id1"),
+		),
+	}
+
+	step2 := resource.TestStep{
+		Config: `
+		locals {
+		  config = jsondecode("{\"tenant_id\":\"tenant1\",\"client_id\":\"client_id1\",\"client_secret\":\"client_secret6\"}")
+		}
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+
+			group_id = "group_id"
+			service           = "microsoft_entra_id"
+			networking_method = "Directly"
+			run_setup_tests   = true
+			destination_schema {
+				name = "microsoft_entra_id"
+			}
+			config {
+				tenant        = sensitive(local.config.tenant_id)
+				client_id     = sensitive(local.config.client_id)
+				client_secret = sensitive(local.config.client_secret)
+			}
+		}
+		`,
+		PreConfig: func() {
+			connectorMockUpdatePostHandler.Interactions = 0
+			connectorMockUpdateGetHandler.Interactions = 0
+			connectorMockUpdatePatchHandler.Interactions = 0
+			postRequestJson = nil
+			patchRequestJson = nil
+		},
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, connectorMockUpdatePostHandler.Interactions, 0)
+				tfmock.AssertEqual(t, connectorMockUpdateGetHandler.Interactions, 1)
+				tfmock.AssertEqual(t, connectorMockUpdatePatchHandler.Interactions, 1)
+				patchRequestConfig := patchRequestJson["config"].(map[string]interface{})
+				tfmock.AssertEqual(t, patchRequestConfig["client_secret"], "client_secret6")
+				tfmock.AssertEmpty(t, patchRequestConfig["client_id"])
+				tfmock.AssertEmpty(t, patchRequestConfig["tenant"])
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "microsoft_entra_id"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.tenant", "tenant1"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.client_secret", "client_secret6"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.client_id", "client_id1"),
+		),
+	}
+
+	step3 := resource.TestStep{
+		Config: `
+		locals {
+		  config = jsondecode("{\"tenant_id\":\"tenant1\",\"client_id\":\"client_id1\",\"client_secret\":\"client_secret7\"}")
+		}
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+
+			group_id = "group_id"
+			service           = "microsoft_entra_id"
+			networking_method = "Directly"
+			run_setup_tests   = true
+			destination_schema {
+				name = "microsoft_entra_id"
+			}
+			config {
+				tenant        = sensitive(local.config.tenant_id)
+				client_id     = sensitive(local.config.client_id)
+				client_secret = sensitive(local.config.client_secret)
+			}
+		}
+		`,
+		PreConfig: func() {
+			connectorMockUpdatePostHandler.Interactions = 0
+			connectorMockUpdateGetHandler.Interactions = 0
+			connectorMockUpdatePatchHandler.Interactions = 0
+			postRequestJson = nil
+			patchRequestJson = nil
+		},
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, connectorMockUpdatePostHandler.Interactions, 0)
+				tfmock.AssertEqual(t, connectorMockUpdateGetHandler.Interactions, 1)
+				tfmock.AssertEqual(t, connectorMockUpdatePatchHandler.Interactions, 1)
+				patchRequestConfig := patchRequestJson["config"].(map[string]interface{})
+				tfmock.AssertEqual(t, patchRequestConfig["client_secret"], "client_secret7")
+				tfmock.AssertEmpty(t, patchRequestConfig["client_id"])
+				tfmock.AssertEmpty(t, patchRequestConfig["tenant"])
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "microsoft_entra_id"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.tenant", "tenant1"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.client_secret", "client_secret7"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.client_id", "client_id1"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientConnectorResourceUpdateConfig(t)
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, connectorMockUpdateDelete.Interactions, 1)
+				tfmock.AssertEmpty(t, connectorMockData)
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
+				step2,
+				step3,
+			},
+		},
+	)
+}
+
 func TestResourceConnectorHybridDeploymentMock(t *testing.T) {
 	step1 := resource.TestStep{
 		Config: `
