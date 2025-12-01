@@ -78,7 +78,7 @@ func (d *DestinationDatasourceModel) SetConfig(value map[string]interface{}) {
         value,
         common.GetDestinationFieldsMap(),
         nil,
-        service).(basetypes.ObjectValue)
+        service, false).(basetypes.ObjectValue)
 }
 
 func (d *DestinationDatasourceModel) ReadFromResponse(resp destinations.DestinationDetailsCustomResponse) {
