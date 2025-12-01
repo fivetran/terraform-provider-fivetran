@@ -590,7 +590,8 @@ func (d *ConnectorSchemaResourceModel) getSchemas() []interface{} {
 									if !columnElement.Attributes()["hashed"].(basetypes.BoolValue).IsUnknown() {
 										column["hashed"] = columnElement.Attributes()["hashed"].(basetypes.BoolValue).ValueBool()
 									}
-									if !columnElement.Attributes()["is_primary_key"].(basetypes.BoolValue).IsUnknown() {
+									if !columnElement.Attributes()["is_primary_key"].(basetypes.BoolValue).IsUnknown() &&
+										!columnElement.Attributes()["is_primary_key"].(basetypes.BoolValue).IsNull() {
 										column["is_primary_key"] = columnElement.Attributes()["is_primary_key"].(basetypes.BoolValue).ValueBool()
 									}
 									columns = append(columns, column)

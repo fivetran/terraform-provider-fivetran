@@ -271,7 +271,7 @@ func (t _table) toStateObject(sch string, local *_table, diag *diag.Diagnostics,
 							"Table might be deleted from source or renamed.\n "+
 							"Please remove it from your configuration, or align its name with source schema.", k, t.name, schema),
 				)
-				columnState, include := v.toStateObject(sch, nil, diag, schema, k)
+			    columnState, include := v.toStateObject(sch, v, diag, schema, k)
 				if include {
 					columns = append(columns, columnState)
 				}
