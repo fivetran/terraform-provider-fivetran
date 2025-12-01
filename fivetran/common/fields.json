@@ -302,6 +302,7 @@
       "item_type": {},
       "description": {
          "appcues": "Your Appcues Account ID.",
+         "bizzabo_app": "Your Bizzabo account ID.",
          "bizzabo_v2": "Your Bizzabo account ID.",
          "brightcove": "Your Brightcove account ID.",
          "cin7core": "Your Cin7 Core account ID.",
@@ -1025,6 +1026,7 @@
          "db2i_hva": "Require TLS through Tunnel",
          "db2i_sap_hva": "Require TLS through Tunnel",
          "db2luw": "Require TLS through Tunnel",
+         "db2z": "Require TLS",
          "documentdb": "Require TLS encryption.",
          "dynamics_365_fo": "Require TLS through Tunnel.",
          "ehr": "Require TLS through Tunnel.",
@@ -1125,6 +1127,19 @@
       "item_type": {},
       "description": {
          "aircall": "Your Aircall API ID."
+      },
+      "api_field": ""
+   },
+   "api_integration_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "onetrust": "Your OneTrust API integration type."
       },
       "api_field": ""
    },
@@ -1577,7 +1592,7 @@
          "trisolute": "Your Trisolute API token.",
          "vwo": "Your VWO API token.",
          "web_scraper": "Your Web Scraper API token.",
-         "zendesk": "Zendesk API tokens are auto-generated passwords in the Support admin interface.",
+         "zendesk": "Deprecated: Use Confidential OAuth client authentication instead. Zendesk API tokens are auto-generated passwords in the Support admin interface.",
          "zendesk_sunshine": "Zendesk API tokens are auto-generated passwords in the Support admin interface.",
          "zendesk_workforce_management": "Your Zendesk Workforce Management API token."
       },
@@ -1903,6 +1918,19 @@
       },
       "api_field": ""
    },
+   "application_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "db2z": "Application name used to generate an RACF PassTicket for user authentication. Specify only when `authentication_method` is `LEGACY_PASS_TICKET`."
+      },
+      "api_field": ""
+   },
    "apps": {
       "readonly": false,
       "sensitive": false,
@@ -2200,6 +2228,7 @@
          "maria": "Database authentication method",
          "maria_azure": "Database authentication method",
          "maria_rds": "Database authentication method",
+         "microsoft_dynamics_365_fno": "Authentication Method",
          "microsoft_lists": "Authentication Method",
          "mysql": "Database authentication method",
          "mysql_azure": "Database authentication method",
@@ -2308,6 +2337,7 @@
       "item_type": {},
       "description": {
          "adobe_analytics": "Authentication Method",
+         "db2z": "User authentication method. Supported values:`PASSWORD`- Authenticate with the database server using an RACF user ID and password. If the parameter is omitted, this is the default value. `LEGACY_PASS_TICKET`- Authenticate with the database server using an RACF user ID and PassTicket.",
          "elastic_cloud": "The authentication method used to connect to your cluster.",
          "es_self_hosted": "The authentication method used to connect to your cluster.",
          "financial_force": "",
@@ -2581,7 +2611,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "sql_server": "Determine who is responble for truncating the online transaction log. Possible values: `\"FIVETRAN\"`, `\"CUSTOMER\"`, `\"SQL_SERVER_AGENT\"`. Default value is `\"FIVETRAN\"`."
+         "sql_server": "Determine who is responsible for truncating the online transaction log. Possible values: `\"FIVETRAN\"`, `\"USER_MANAGED\"`, `\"SQL_SERVER_AGENT\"`. Default value is `\"FIVETRAN\"`."
       },
       "api_field": ""
    },
@@ -2799,6 +2829,7 @@
       "item_type": {},
       "description": {
          "anaplan": "The contents of your PEM certificate file. Must be populated if `auth_mode` is set to `Certificate`.",
+         "db2z": "Db2 for z/OS host certificate",
          "financial_force": "",
          "qualtrics": "Your Client Certificate",
          "salesforce": "Provide content of the `.pem` certificate (only when authentication_method = `ADVANCED`).",
@@ -2908,13 +2939,14 @@
          "bigin_by_zoho_crm": "Your Bigin by Zoho CRM Client Id",
          "billing_platform": "Your BillingPlatform client ID.",
          "bing_webmaster_tools": "Your Bing Webmaster Tools client ID.",
+         "bizzabo_app": "Your Bizzabo client ID.",
          "bizzabo_v2": "Your Bizzabo client ID.",
          "brightcove": "Your Brightcove client ID.",
          "brightflag": "Your Brightflag client ID.",
          "brightpearl": "Your Brightpearl client ID.",
          "brivo": "Your Brivo client ID.",
          "buildium": "Your Buildium API client ID.",
-         "bynder": "Your Bynder client ID.",
+         "bynder": "Client ID of the OAuth app that you created in Bynder for the connection.",
          "cabcharge": "Your Cabcharge client ID.",
          "canvas_by_instructure": "Your Canvas by Instructure client ID.",
          "canvas_data_2_by_instructure": "Your Canvas Data 2 by Instructure client ID.",
@@ -3181,12 +3213,13 @@
          "bigin_by_zoho_crm": "Your Bigin by Zoho CRM Client Secret",
          "billing_platform": "Your BillingPlatform client secret.",
          "bing_webmaster_tools": "Your Bing Webmaster Tools client secret.",
+         "bizzabo_app": "Your Bizzabo client secret.",
          "bizzabo_v2": "Your Bizzabo client secret.",
          "brightcove": "Your Brightcove client secret.",
          "brightflag": "Your Brightflag client secret.",
          "brightpearl": "Your Brightpearl client secret.",
          "brivo": "Your Brivo client secret.",
-         "bynder": "Your Bynder client secret.",
+         "bynder": "Client secret of the OAuth app that you created in Bynder for the connection.",
          "canvas_by_instructure": "Your Canvas by Instructure client secret.",
          "castor_edc": "Your Castor EDC client secret.",
          "classy": "Your Classy client secret.",
@@ -3681,6 +3714,7 @@
          "db2i_hva": "Possible values:`SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and the following parameter's values are specified: `tunnel_host`, `tunnel_port`, `tunnel_user`.",
          "db2i_sap_hva": "Possible values:`SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`.",
          "db2luw": "Possible values:`SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and the following parameter's values are specified: `tunnel_host`, `tunnel_port`, `tunnel_user`.",
+         "db2z": "Possible values: `Directly`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
          "documentdb": "Possible values:`SshTunnel`, `PrivateLink` . `SshTunnel` is used as a value if this parameter is omitted in the request and the following parameter's values are specified: `tunnel_host`, `tunnel_port`, `tunnel_user`.",
          "dynamics_365_fo": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
          "ehr": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
@@ -4789,6 +4823,7 @@
          "db2i_hva": "The database name.",
          "db2i_sap_hva": "The database name.",
          "db2luw": "The database name.",
+         "db2z": "The database name.",
          "dynamics_365_fo": "The database name.",
          "ehr": "The database name.",
          "elastic_cloud": "",
@@ -5122,7 +5157,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "lightspeed_retail_xseries": "Your Lightspeed Retail Xseries Subdomain."
+         "lightspeed_retail_xseries": "Your Lightspeed Retail X-Series store domain prefix."
       },
       "api_field": ""
    },
@@ -6402,6 +6437,7 @@
          "db2i_hva": "A host address of the primary node. It should be a DB instance host/IP address with a port number.",
          "db2i_sap_hva": "DB instance host or IP address.",
          "db2luw": "A host address of the primary node. It should be a DB instance host/IP address with a port number.",
+         "db2z": "DB instance host or IP address.",
          "documentdb": "Host IP address of the primary node. Ignored if `hosts` value is provided.",
          "dynamics_365_fo": "DB instance host or IP address.",
          "ehr": "DB instance host or IP address.",
@@ -7886,6 +7922,7 @@
          "db2i_hva": "The user's password.",
          "db2i_sap_hva": "The user's password.",
          "db2luw": "The user's password.",
+         "db2z": "The user's password. Specify only when `authentication_method` is `PASSWORD`.",
          "delighted": "",
          "deposco": "Your Deposco password.",
          "documentdb": "The user's password.",
@@ -8287,6 +8324,7 @@
          "db2i_hva": "The port number.",
          "db2i_sap_hva": "The port number.",
          "db2luw": "The port number.",
+         "db2z": "The port number.",
          "documentdb": "Port of the primary node. Ignored if `hosts` value is provided.",
          "dynamics_365_fo": "The port number.",
          "ehr": "The port number.",
@@ -11023,6 +11061,7 @@
          "birdeye": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "bitly": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "bizzabo": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "bizzabo_app": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "bizzabo_v2": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "boostr": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "box": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11689,6 +11728,7 @@
          "db2i_hva": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
          "db2i_sap_hva": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
          "db2luw": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
+         "db2z": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
          "documentdb": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
          "dynamics_365_fo": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
          "ehr": "Destination schema prefix. Prefix for each replicated schema. For example with prefix 'x', source schemas 'foo' and 'bar' get replicated as 'x_foo' and 'x_bar'. The prefix is permanent and cannot be changed after connection creation",
@@ -11971,6 +12011,19 @@
       },
       "api_field": ""
    },
+   "secured_signon_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "db2z": "The application secret key registered in RACF for the application, used to generate a PassTicket when authentication_method is `LEGACY_PASS_TICKET`."
+      },
+      "api_field": ""
+   },
    "security_protocol": {
       "readonly": false,
       "sensitive": false,
@@ -12041,10 +12094,12 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "azure_blob_storage": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.",
          "box": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.",
          "dropbox": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.",
          "email": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.",
          "ftp": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.",
+         "gcs": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.",
          "s3": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.",
          "s3_compatible_storage": "",
          "sftp": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.",
@@ -12819,7 +12874,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "azure_blob_storage": "The name of the Azure Storage account."
+         "azure_blob_storage": "The name of the Azure Storage account.",
+         "microsoft_dynamics_365_fno": "The name of the Azure Storage account."
       },
       "api_field": ""
    },
@@ -12970,7 +13026,7 @@
       "item_type": {},
       "description": {
          "bamboohr": "The subdomain used to access your account. If you access BambooHR at 'https://mycompany.bamboohr.com', then the subdomain is 'mycompany'.",
-         "bynder": "Your Bynder Subdomain.",
+         "bynder": "Your Bynder subdomain.",
          "datadog": "Your Datadog subdomain.",
          "ebay": "Your eBay environment.",
          "freshdesk": "Your company's freshdesk subdomain (usually **company**.freshdesk.com).",
@@ -14151,6 +14207,7 @@
          "db2i_hva": "SSH host, only specify when connecting via an SSH tunnel (do not use a load balancer). Required for connector creation.",
          "db2i_sap_hva": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
          "db2luw": "SSH host, only specify when connecting via an SSH tunnel (do not use a load balancer). Required for connector creation.",
+         "db2z": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
          "documentdb": "SSH host, only specify when connecting via an SSH tunnel (do not use a load balancer). Required for connector creation.",
          "dynamics_365_fo": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
          "ehr": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
@@ -14221,6 +14278,7 @@
          "db2i_hva": "SSH port, only specify when connecting via an SSH tunnel. Required for connector creation.",
          "db2i_sap_hva": "SSH port, specify only to connect via an SSH tunnel.",
          "db2luw": "SSH port, only specify when connecting via an SSH tunnel. Required for connector creation.",
+         "db2z": "SSH port, specify only to connect via an SSH tunnel.",
          "documentdb": "SSH port, only specify when connecting via an SSH tunnel. Required for connector creation.",
          "dynamics_365_fo": "SSH port, specify only to connect via an SSH tunnel.",
          "ehr": "SSH port, specify only to connect via an SSH tunnel.",
@@ -14291,6 +14349,7 @@
          "db2i_hva": "SSH user, specify only to connect via an SSH tunnel. Required for connector creation.",
          "db2i_sap_hva": "SSH user, specify only to connect via an SSH tunnel.",
          "db2luw": "SSH user, specify only to connect via an SSH tunnel. Required for connector creation.",
+         "db2z": "SSH user, specify only to connect via an SSH tunnel.",
          "documentdb": "SSH user, specify only to connect via an SSH tunnel. Required for connector creation.",
          "dynamics_365_fo": "SSH user, specify only to connect via an SSH tunnel.",
          "ehr": "SSH user, specify only to connect via an SSH tunnel.",
@@ -14611,6 +14670,7 @@
          "db2i_hva": "The user name.",
          "db2i_sap_hva": "The username.",
          "db2luw": "The user name.",
+         "db2z": "The user name.",
          "documentdb": "The user name.",
          "dynamics_365_fo": "The user name. The format must be `user@domain`.",
          "ehr": "The user name.  For Azure Databases, the format must be `user@domain`.",

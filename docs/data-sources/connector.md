@@ -139,6 +139,7 @@ Read-Only:
 	- Service `rollbar`: Your Rollbar account access token.
 - `account_id` (String) Field usage depends on `service` value: 
 	- Service `appcues`: Your Appcues Account ID.
+	- Service `bizzabo_app`: Your Bizzabo account ID.
 	- Service `bizzabo_v2`: Your Bizzabo account ID.
 	- Service `brightcove`: Your Brightcove account ID.
 	- Service `cin7core`: Your Cin7 Core account ID.
@@ -313,6 +314,7 @@ Read-Only:
 	- Service `db2i_hva`: Require TLS through Tunnel
 	- Service `db2i_sap_hva`: Require TLS through Tunnel
 	- Service `db2luw`: Require TLS through Tunnel
+	- Service `db2z`: Require TLS
 	- Service `documentdb`: Require TLS encryption.
 	- Service `dynamics_365_fo`: Require TLS through Tunnel.
 	- Service `ehr`: Require TLS through Tunnel.
@@ -360,6 +362,8 @@ Read-Only:
 	- Service `tiktok_organic`: Your TikTok Organic API environment.
 - `api_id` (String) Field usage depends on `service` value: 
 	- Service `aircall`: Your Aircall API ID.
+- `api_integration_type` (String) Field usage depends on `service` value: 
+	- Service `onetrust`: Your OneTrust API integration type.
 - `api_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `15five`: Your 15five API key.
 	- Service `360learning`: Your 360Learning API Key.
@@ -673,7 +677,7 @@ Read-Only:
 	- Service `trisolute`: Your Trisolute API token.
 	- Service `vwo`: Your VWO API token.
 	- Service `web_scraper`: Your Web Scraper API token.
-	- Service `zendesk`: Zendesk API tokens are auto-generated passwords in the Support admin interface.
+	- Service `zendesk`: Deprecated: Use Confidential OAuth client authentication instead. Zendesk API tokens are auto-generated passwords in the Support admin interface.
 	- Service `zendesk_sunshine`: Zendesk API tokens are auto-generated passwords in the Support admin interface.
 	- Service `zendesk_workforce_management`: Your Zendesk Workforce Management API token.
 - `api_type` (String)
@@ -740,6 +744,8 @@ Read-Only:
 	- Service `datadog`: Your Datadog application key.
 	- Service `dear`: Your Dear Application key.
 	- Service `partnerize`: Your Partnerize user application key.
+- `application_name` (String) Field usage depends on `service` value: 
+	- Service `db2z`: Application name used to generate an RACF PassTicket for user authentication. Specify only when `authentication_method` is `LEGACY_PASS_TICKET`.
 - `apps` (Set of String) Field usage depends on `service` value: 
 	- Service `itunes_connect`: Specific apps to sync. Must be populated if `app_sync_mode` is set to `SpecificApps`.
 - `archive_log_format` (String) Field usage depends on `service` value: 
@@ -819,6 +825,7 @@ Read-Only:
 	- Service `maria`: Database authentication method
 	- Service `maria_azure`: Database authentication method
 	- Service `maria_rds`: Database authentication method
+	- Service `microsoft_dynamics_365_fno`: Authentication Method
 	- Service `microsoft_lists`: Authentication Method
 	- Service `mysql`: Database authentication method
 	- Service `mysql_azure`: Database authentication method
@@ -861,6 +868,7 @@ Read-Only:
 	- Service `amazon_dsp`: Your Amazon DSP auth grant URL region.
 - `authentication_method` (String) Field usage depends on `service` value: 
 	- Service `adobe_analytics`: Authentication Method
+	- Service `db2z`: User authentication method. Supported values:`PASSWORD`- Authenticate with the database server using an RACF user ID and password. If the parameter is omitted, this is the default value. `LEGACY_PASS_TICKET`- Authenticate with the database server using an RACF user ID and PassTicket.
 	- Service `elastic_cloud`: The authentication method used to connect to your cluster.
 	- Service `es_self_hosted`: The authentication method used to connect to your cluster.
 	- Service `opendistro`: The authentication method used to connect to your cluster.
@@ -948,7 +956,7 @@ Read-Only:
 	- Service `sprout`: Your Sprout Social API Access Token.
 	- Service `zenefits`: Your Zenefits bearer token.
 - `binary_log_truncater` (String) Field usage depends on `service` value: 
-	- Service `sql_server`: Determine who is responble for truncating the online transaction log. Possible values: `"FIVETRAN"`, `"CUSTOMER"`, `"SQL_SERVER_AGENT"`. Default value is `"FIVETRAN"`.
+	- Service `sql_server`: Determine who is responsible for truncating the online transaction log. Possible values: `"FIVETRAN"`, `"USER_MANAGED"`, `"SQL_SERVER_AGENT"`. Default value is `"FIVETRAN"`.
 - `binary_log_type` (String) Field usage depends on `service` value: 
 	- Service `sql_server`: Source of transaction log data when using Binary Log Reader. Possible values: `"ONLINE"`, `"BACKUP"`. Default value is `"ONLINE"`.
 - `binary_representation` (String) Field usage depends on `service` value: 
@@ -998,6 +1006,7 @@ Read-Only:
 	- Service `databricks_db`: catalog to sync
 - `certificate` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `anaplan`: The contents of your PEM certificate file. Must be populated if `auth_mode` is set to `Certificate`.
+	- Service `db2z`: Db2 for z/OS host certificate
 	- Service `qualtrics`: Your Client Certificate
 	- Service `salesforce`: Provide content of the `.pem` certificate (only when authentication_method = `ADVANCED`).
 	- Service `salesforce_sandbox`: Provide content of the `.pem` certificate (only when authentication_method = `ADVANCED`).
@@ -1028,13 +1037,14 @@ Read-Only:
 	- Service `bigin_by_zoho_crm`: Your Bigin by Zoho CRM Client Id
 	- Service `billing_platform`: Your BillingPlatform client ID.
 	- Service `bing_webmaster_tools`: Your Bing Webmaster Tools client ID.
+	- Service `bizzabo_app`: Your Bizzabo client ID.
 	- Service `bizzabo_v2`: Your Bizzabo client ID.
 	- Service `brightcove`: Your Brightcove client ID.
 	- Service `brightflag`: Your Brightflag client ID.
 	- Service `brightpearl`: Your Brightpearl client ID.
 	- Service `brivo`: Your Brivo client ID.
 	- Service `buildium`: Your Buildium API client ID.
-	- Service `bynder`: Your Bynder client ID.
+	- Service `bynder`: Client ID of the OAuth app that you created in Bynder for the connection.
 	- Service `cabcharge`: Your Cabcharge client ID.
 	- Service `canvas_by_instructure`: Your Canvas by Instructure client ID.
 	- Service `canvas_data_2_by_instructure`: Your Canvas Data 2 by Instructure client ID.
@@ -1205,12 +1215,13 @@ Read-Only:
 	- Service `bigin_by_zoho_crm`: Your Bigin by Zoho CRM Client Secret
 	- Service `billing_platform`: Your BillingPlatform client secret.
 	- Service `bing_webmaster_tools`: Your Bing Webmaster Tools client secret.
+	- Service `bizzabo_app`: Your Bizzabo client secret.
 	- Service `bizzabo_v2`: Your Bizzabo client secret.
 	- Service `brightcove`: Your Brightcove client secret.
 	- Service `brightflag`: Your Brightflag client secret.
 	- Service `brightpearl`: Your Brightpearl client secret.
 	- Service `brivo`: Your Brivo client secret.
-	- Service `bynder`: Your Bynder client secret.
+	- Service `bynder`: Client secret of the OAuth app that you created in Bynder for the connection.
 	- Service `canvas_by_instructure`: Your Canvas by Instructure client secret.
 	- Service `castor_edc`: Your Castor EDC client secret.
 	- Service `classy`: Your Classy client secret.
@@ -1407,6 +1418,7 @@ Read-Only:
 	- Service `db2i_hva`: Possible values:`SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and the following parameter's values are specified: `tunnel_host`, `tunnel_port`, `tunnel_user`.
 	- Service `db2i_sap_hva`: Possible values:`SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`.
 	- Service `db2luw`: Possible values:`SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and the following parameter's values are specified: `tunnel_host`, `tunnel_port`, `tunnel_user`.
+	- Service `db2z`: Possible values: `Directly`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
 	- Service `documentdb`: Possible values:`SshTunnel`, `PrivateLink` . `SshTunnel` is used as a value if this parameter is omitted in the request and the following parameter's values are specified: `tunnel_host`, `tunnel_port`, `tunnel_user`.
 	- Service `dynamics_365_fo`: Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
 	- Service `ehr`: Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
@@ -1562,6 +1574,7 @@ Read-Only:
 	- Service `db2i_hva`: The database name.
 	- Service `db2i_sap_hva`: The database name.
 	- Service `db2luw`: The database name.
+	- Service `db2z`: The database name.
 	- Service `dynamics_365_fo`: The database name.
 	- Service `ehr`: The database name.
 	- Service `epic_clarity`: The database name.
@@ -1670,7 +1683,7 @@ Read-Only:
 	- Service `dynamics_365`: The custom domain name associated with Dynamics 365.
 	- Service `helpshift`: Your Helpshift domain name.
 - `domain_prefix` (String) Field usage depends on `service` value: 
-	- Service `lightspeed_retail_xseries`: Your Lightspeed Retail Xseries Subdomain.
+	- Service `lightspeed_retail_xseries`: Your Lightspeed Retail X-Series store domain prefix.
 - `domain_type` (String) Field usage depends on `service` value: 
 	- Service `medallia`: Domain type of your Medallia URL
 - `dsv_service_auth` (String, Sensitive)
@@ -2003,6 +2016,7 @@ Read-Only:
 	- Service `db2i_hva`: A host address of the primary node. It should be a DB instance host/IP address with a port number.
 	- Service `db2i_sap_hva`: DB instance host or IP address.
 	- Service `db2luw`: A host address of the primary node. It should be a DB instance host/IP address with a port number.
+	- Service `db2z`: DB instance host or IP address.
 	- Service `documentdb`: Host IP address of the primary node. Ignored if `hosts` value is provided.
 	- Service `dynamics_365_fo`: DB instance host or IP address.
 	- Service `ehr`: DB instance host or IP address.
@@ -2400,6 +2414,7 @@ Read-Only:
 	- Service `db2i_hva`: The user's password.
 	- Service `db2i_sap_hva`: The user's password.
 	- Service `db2luw`: The user's password.
+	- Service `db2z`: The user's password. Specify only when `authentication_method` is `PASSWORD`.
 	- Service `deposco`: Your Deposco password.
 	- Service `documentdb`: The user's password.
 	- Service `dynamics_365_fo`: The user's password.
@@ -2593,6 +2608,7 @@ Read-Only:
 	- Service `db2i_hva`: The port number.
 	- Service `db2i_sap_hva`: The port number.
 	- Service `db2luw`: The port number.
+	- Service `db2z`: The port number.
 	- Service `documentdb`: Port of the primary node. Ignored if `hosts` value is provided.
 	- Service `dynamics_365_fo`: The port number.
 	- Service `ehr`: The port number.
@@ -3108,6 +3124,8 @@ Read-Only:
 	- Service `aws_lambda`: List of Secrets that should be passed to the function at runtime.
 	- Service `azure_function`: The list of secrets that should be passed to the function at runtime.
 	- Service `google_cloud_function`: The list of secrets that should be passed to the function at runtime. (see [below for nested schema](#nestedatt--config--secrets_list))
+- `secured_signon_key` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `db2z`: The application secret key registered in RACF for the application, used to generate a PassTicket when authentication_method is `LEGACY_PASS_TICKET`.
 - `security_protocol` (String) Field usage depends on `service` value: 
 	- Service `apache_kafka`: Security protocol for Kafka interaction.
 	- Service `aws_msk`: The security protocol for Kafka interaction.
@@ -3120,10 +3138,12 @@ Read-Only:
 - `selected_exports` (Set of String) Field usage depends on `service` value: 
 	- Service `anaplan`: The list of export IDs in the format `workspace_id_model_id_export_id` that the connector will sync. Must be populated if `sync_mode` is set to `SpecificExports`.
 - `selected_range` (String) Field usage depends on `service` value: 
+	- Service `azure_blob_storage`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
 	- Service `box`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
 	- Service `dropbox`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
 	- Service `email`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
 	- Service `ftp`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
+	- Service `gcs`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
 	- Service `s3`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
 	- Service `sftp`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
 	- Service `share_point`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowName` format.
@@ -3279,6 +3299,7 @@ Read-Only:
 	- Service `consensus_demo_automation_platform`: Your Consensus Demo Automation Platform source name.
 - `storage_account_name` (String) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: The name of the Azure Storage account.
+	- Service `microsoft_dynamics_365_fno`: The name of the Azure Storage account.
 - `store_hash` (String) Field usage depends on `service` value: 
 	- Service `big_commerce`: The BigCommerce store hash.
 - `store_id` (String) Field usage depends on `service` value: 
@@ -3369,7 +3390,7 @@ Read-Only:
 	- Service `wrike`: Your Wrike Subdomain.
 - `subdomain` (String) Field usage depends on `service` value: 
 	- Service `bamboohr`: The subdomain used to access your account. If you access BambooHR at 'https://mycompany.bamboohr.com', then the subdomain is 'mycompany'.
-	- Service `bynder`: Your Bynder Subdomain.
+	- Service `bynder`: Your Bynder subdomain.
 	- Service `datadog`: Your Datadog subdomain.
 	- Service `ebay`: Your eBay environment.
 	- Service `freshdesk`: Your company's freshdesk subdomain (usually **company**.freshdesk.com).
@@ -3658,6 +3679,7 @@ Read-Only:
 	- Service `db2i_hva`: SSH host, only specify when connecting via an SSH tunnel (do not use a load balancer). Required for connector creation.
 	- Service `db2i_sap_hva`: SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).
 	- Service `db2luw`: SSH host, only specify when connecting via an SSH tunnel (do not use a load balancer). Required for connector creation.
+	- Service `db2z`: SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).
 	- Service `documentdb`: SSH host, only specify when connecting via an SSH tunnel (do not use a load balancer). Required for connector creation.
 	- Service `dynamics_365_fo`: SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).
 	- Service `ehr`: SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).
@@ -3715,6 +3737,7 @@ Read-Only:
 	- Service `db2i_hva`: SSH port, only specify when connecting via an SSH tunnel. Required for connector creation.
 	- Service `db2i_sap_hva`: SSH port, specify only to connect via an SSH tunnel.
 	- Service `db2luw`: SSH port, only specify when connecting via an SSH tunnel. Required for connector creation.
+	- Service `db2z`: SSH port, specify only to connect via an SSH tunnel.
 	- Service `documentdb`: SSH port, only specify when connecting via an SSH tunnel. Required for connector creation.
 	- Service `dynamics_365_fo`: SSH port, specify only to connect via an SSH tunnel.
 	- Service `ehr`: SSH port, specify only to connect via an SSH tunnel.
@@ -3772,6 +3795,7 @@ Read-Only:
 	- Service `db2i_hva`: SSH user, specify only to connect via an SSH tunnel. Required for connector creation.
 	- Service `db2i_sap_hva`: SSH user, specify only to connect via an SSH tunnel.
 	- Service `db2luw`: SSH user, specify only to connect via an SSH tunnel. Required for connector creation.
+	- Service `db2z`: SSH user, specify only to connect via an SSH tunnel.
 	- Service `documentdb`: SSH user, specify only to connect via an SSH tunnel. Required for connector creation.
 	- Service `dynamics_365_fo`: SSH user, specify only to connect via an SSH tunnel.
 	- Service `ehr`: SSH user, specify only to connect via an SSH tunnel.
@@ -3904,6 +3928,7 @@ Read-Only:
 	- Service `db2i_hva`: The user name.
 	- Service `db2i_sap_hva`: The username.
 	- Service `db2luw`: The user name.
+	- Service `db2z`: The user name.
 	- Service `documentdb`: The user name.
 	- Service `dynamics_365_fo`: The user name. The format must be `user@domain`.
 	- Service `ehr`: The user name.  For Azure Databases, the format must be `user@domain`.

@@ -18,11 +18,11 @@
   "tags": [
     {
       "name": "updated",
-      "description": "2025-11-10T16:36:16.844Z"
+      "description": "2025-11-25T19:01:37.601Z"
     },
     {
       "name": "hash",
-      "description": "4a7953c10f33d260689b4a5ea6a51eb1764f2cc01d8b958f60680d3e838131a8"
+      "description": "76069c270992df4421c40005ec418803ef799c06311406101a7770bfcb729a51"
     }
   ],
   "paths": {
@@ -12169,6 +12169,15 @@
           },
           "destination_configuration": {
             "$ref": "#/components/schemas/DestinationConfiguration"
+          },
+          "destination_schema_names": {
+            "type": "string",
+            "description": "Defines how you want the schema names to appear in your destination. <br /> The available values are:  <br /> - FIVETRAN_NAMING - Use Fivetran naming conventions to simplify and standardize the schema, table and column names in the destination. <br /> - SOURCE_NAMING - Preserve source schema table and column names in the destination. <br /> You can modify your selection only before the initial sync. Learn more in [our documentation](https://fivetran.com/docs/core-concepts#namingconventions)",
+            "example": "SOURCE_NAMING",
+            "enum": [
+              "FIVETRAN_NAMING",
+              "SOURCE_NAMING"
+            ]
           }
         },
         "discriminator": {
@@ -12261,8 +12270,7 @@
             "bingads": "#/components/schemas/bingads_NewConnectorRequestV1",
             "birdeye": "#/components/schemas/birdeye_NewConnectorRequestV1",
             "bitly": "#/components/schemas/bitly_NewConnectorRequestV1",
-            "bizzabo": "#/components/schemas/bizzabo_NewConnectorRequestV1",
-            "bizzabo_v2": "#/components/schemas/bizzabo_v2_NewConnectorRequestV1",
+            "bizzabo_app": "#/components/schemas/bizzabo_app_NewConnectorRequestV1",
             "boostr": "#/components/schemas/boostr_NewConnectorRequestV1",
             "box": "#/components/schemas/box_NewConnectorRequestV1",
             "braintree": "#/components/schemas/braintree_NewConnectorRequestV1",
@@ -12359,6 +12367,7 @@
             "db2i_hva": "#/components/schemas/db2i_hva_NewConnectorRequestV1",
             "db2i_sap_hva": "#/components/schemas/db2i_sap_hva_NewConnectorRequestV1",
             "db2luw": "#/components/schemas/db2luw_NewConnectorRequestV1",
+            "db2z": "#/components/schemas/db2z_NewConnectorRequestV1",
             "dbt_cloud": "#/components/schemas/dbt_cloud_NewConnectorRequestV1",
             "dcl_logistics": "#/components/schemas/dcl_logistics_NewConnectorRequestV1",
             "delighted": "#/components/schemas/delighted_NewConnectorRequestV1",
@@ -13402,8 +13411,7 @@
             "bingads": "#/components/schemas/bingads_ConnectorResponseV1",
             "birdeye": "#/components/schemas/birdeye_ConnectorResponseV1",
             "bitly": "#/components/schemas/bitly_ConnectorResponseV1",
-            "bizzabo": "#/components/schemas/bizzabo_ConnectorResponseV1",
-            "bizzabo_v2": "#/components/schemas/bizzabo_v2_ConnectorResponseV1",
+            "bizzabo_app": "#/components/schemas/bizzabo_app_ConnectorResponseV1",
             "boostr": "#/components/schemas/boostr_ConnectorResponseV1",
             "box": "#/components/schemas/box_ConnectorResponseV1",
             "braintree": "#/components/schemas/braintree_ConnectorResponseV1",
@@ -13500,6 +13508,7 @@
             "db2i_hva": "#/components/schemas/db2i_hva_ConnectorResponseV1",
             "db2i_sap_hva": "#/components/schemas/db2i_sap_hva_ConnectorResponseV1",
             "db2luw": "#/components/schemas/db2luw_ConnectorResponseV1",
+            "db2z": "#/components/schemas/db2z_ConnectorResponseV1",
             "dbt_cloud": "#/components/schemas/dbt_cloud_ConnectorResponseV1",
             "dcl_logistics": "#/components/schemas/dcl_logistics_ConnectorResponseV1",
             "delighted": "#/components/schemas/delighted_ConnectorResponseV1",
@@ -26424,11 +26433,12 @@
                 "title": "",
                 "type": "object",
                 "description": "If your files are saved with improper extensions, you can force them to by synced as the selected file type.",
-                "example": "tsv | xml | csv | json | jsonl | avro | parquet",
+                "example": "tsv | xml | csv | spreadsheet | json | jsonl | avro | parquet",
                 "enum": [
                   "tsv",
                   "xml",
                   "csv",
+                  "spreadsheet",
                   "json",
                   "jsonl",
                   "avro",
@@ -26480,6 +26490,12 @@
                 "type": "string",
                 "description": "The name of the Azure Storage account.",
                 "example": "storage_account_name"
+              },
+              "selected_range": {
+                "title": "",
+                "type": "string",
+                "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowName>` format.",
+                "example": "'Sheet1'!A1"
               },
               "escape_char": {
                 "title": "",
@@ -27952,6 +27968,49 @@
           }
         }
       },
+      "bigin_by_zoho_crm_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "bigin_by_zoho_crm_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -27962,6 +28021,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/bigin_by_zoho_crm_auth_V1"
           }
         ]
       },
@@ -28361,37 +28423,7 @@
           }
         ]
       },
-      "bizzabo_config_V1": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "properties": {
-              "api_key": {
-                "title": "",
-                "type": "string",
-                "description": "Your Bizzabo API key.",
-                "format": "password",
-                "example": "your_bizzabo_api_key"
-              }
-            },
-            "description": ""
-          }
-        }
-      },
-      "bizzabo_NewConnectorRequestV1": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NewConnectorRequestV1"
-          },
-          {
-            "$ref": "#/components/schemas/bizzabo_config_V1"
-          },
-          {
-            "$ref": "#/components/schemas/schema_format_schema"
-          }
-        ]
-      },
-      "bizzabo_v2_config_V1": {
+      "bizzabo_app_config_V1": {
         "properties": {
           "config": {
             "type": "object",
@@ -28420,13 +28452,13 @@
           }
         }
       },
-      "bizzabo_v2_NewConnectorRequestV1": {
+      "bizzabo_app_NewConnectorRequestV1": {
         "allOf": [
           {
             "$ref": "#/components/schemas/NewConnectorRequestV1"
           },
           {
-            "$ref": "#/components/schemas/bizzabo_v2_config_V1"
+            "$ref": "#/components/schemas/bizzabo_app_config_V1"
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
@@ -29480,20 +29512,20 @@
               "subdomain": {
                 "title": "",
                 "type": "string",
-                "description": "Your Bynder Subdomain.",
+                "description": "Your Bynder subdomain.",
                 "example": "your_bynder_subdomain"
               },
               "client_secret": {
                 "title": "",
                 "type": "string",
-                "description": "Your Bynder client secret.",
+                "description": "Client secret of the OAuth app that you created in Bynder for the connection.",
                 "format": "password",
                 "example": "your_bynder_client_secret"
               },
               "client_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Bynder client ID.",
+                "description": "Client ID of the OAuth app that you created in Bynder for the connection.",
                 "example": "your_bynder_client_id"
               }
             },
@@ -29785,6 +29817,49 @@
           }
         }
       },
+      "canvas_by_instructure_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "canvas_by_instructure_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -29795,6 +29870,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/canvas_by_instructure_auth_V1"
           }
         ]
       },
@@ -31782,6 +31860,49 @@
           }
         }
       },
+      "constant_contact_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "constant_contact_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -31792,6 +31913,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/constant_contact_auth_V1"
           }
         ]
       },
@@ -33893,6 +34017,127 @@
           }
         ]
       },
+      "db2z_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "connection_type": {
+                "title": "",
+                "type": "object",
+                "description": "Possible values: `Directly`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
+                "example": "Directly | SshTunnel | ProxyAgent",
+                "enum": [
+                  "Directly",
+                  "SshTunnel",
+                  "ProxyAgent"
+                ]
+              },
+              "certificate": {
+                "title": "",
+                "type": "string",
+                "description": "Db2 for z/OS host certificate",
+                "format": "password",
+                "example": "string"
+              },
+              "always_encrypted": {
+                "title": "",
+                "type": "boolean",
+                "description": "Require TLS",
+                "example": true
+              },
+              "tunnel_user": {
+                "title": "",
+                "type": "string",
+                "description": "SSH user, specify only to connect via an SSH tunnel.",
+                "example": "string"
+              },
+              "authentication_method": {
+                "title": "",
+                "type": "object",
+                "description": "User authentication method. Supported values:<br>`PASSWORD`- Authenticate with the database server using an RACF user ID and password. If the parameter is omitted, this is the default value. <br>`LEGACY_PASS_TICKET`- Authenticate with the database server using an RACF user ID and PassTicket.",
+                "example": "PASSWORD | LEGACY_PASS_TICKET",
+                "enum": [
+                  "PASSWORD",
+                  "LEGACY_PASS_TICKET"
+                ]
+              },
+              "tunnel_port": {
+                "title": "",
+                "type": "integer",
+                "description": "SSH port, specify only to connect via an SSH tunnel.",
+                "format": "int32",
+                "example": 0
+              },
+              "database": {
+                "title": "",
+                "type": "string",
+                "description": "The database name.",
+                "example": "string"
+              },
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "The user's password. Specify only when `authentication_method` is `PASSWORD`.",
+                "format": "password",
+                "example": "string"
+              },
+              "application_name": {
+                "title": "",
+                "type": "string",
+                "description": "Application name used to generate an RACF PassTicket for user authentication. Specify only when `authentication_method` is `LEGACY_PASS_TICKET`.",
+                "example": "string"
+              },
+              "port": {
+                "title": "",
+                "type": "integer",
+                "description": "The port number.",
+                "format": "int32",
+                "example": 0
+              },
+              "host": {
+                "title": "",
+                "type": "string",
+                "description": "DB instance host or IP address.",
+                "example": "string"
+              },
+              "tunnel_host": {
+                "title": "",
+                "type": "string",
+                "description": "SSH host, specify only to connect via an SSH tunnel (do not use a load balancer).",
+                "example": "string"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "The user name.",
+                "example": "string"
+              },
+              "secured_signon_key": {
+                "title": "",
+                "type": "string",
+                "description": "The application secret key registered in RACF for the application, used to generate a PassTicket when authentication_method is `LEGACY_PASS_TICKET`.",
+                "format": "password",
+                "example": "string"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "db2z_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/db2z_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema_prefix"
+          }
+        ]
+      },
       "dbt_cloud_config_V1": {
         "properties": {
           "config": {
@@ -34215,6 +34460,49 @@
           }
         }
       },
+      "dialpad_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "dialpad_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -34225,6 +34513,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/dialpad_auth_V1"
           }
         ]
       },
@@ -37456,6 +37747,49 @@
           }
         }
       },
+      "fillout_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "fillout_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -37466,6 +37800,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/fillout_auth_V1"
           }
         ]
       },
@@ -39020,11 +39357,12 @@
                 "title": "",
                 "type": "object",
                 "description": "If your files are saved with improper extensions, you can force them to by synced as the selected file type.",
-                "example": "tsv | xml | csv | json | jsonl | avro | parquet",
+                "example": "tsv | xml | csv | spreadsheet | json | jsonl | avro | parquet",
                 "enum": [
                   "tsv",
                   "xml",
                   "csv",
+                  "spreadsheet",
                   "json",
                   "jsonl",
                   "avro",
@@ -39084,6 +39422,12 @@
                   "DELIMITED_ONLY",
                   "CUSTOM_ESCAPE_CHAR"
                 ]
+              },
+              "selected_range": {
+                "title": "",
+                "type": "string",
+                "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowName>` format.",
+                "example": "'Sheet1'!A1"
               },
               "escape_char": {
                 "title": "",
@@ -42203,9 +42547,9 @@
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Your Greenhouse API key.",
                 "format": "password",
-                "example": "string"
+                "example": "xxxxxxxxxxxxxxxx"
               }
             },
             "description": ""
@@ -42646,6 +42990,49 @@
           }
         }
       },
+      "helpdesk_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "helpdesk_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -42656,6 +43043,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/helpdesk_auth_V1"
           }
         ]
       },
@@ -43824,6 +44214,49 @@
           }
         }
       },
+      "ironclad_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "ironclad_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -43834,6 +44267,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/ironclad_auth_V1"
           }
         ]
       },
@@ -45497,8 +45933,8 @@
               "domain_prefix": {
                 "title": "",
                 "type": "string",
-                "description": "Your Lightspeed Retail Xseries Subdomain.",
-                "example": "your_lightspeed_retail_xseries_subdomain"
+                "description": "Your Lightspeed Retail X-Series store domain prefix.",
+                "example": "your_lightspeed_retail_xseries_store_domain_prefix"
               }
             },
             "description": ""
@@ -45510,6 +45946,20 @@
           "auth": {
             "type": "object",
             "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your Lightspeed Retail X-Series access token.",
+                "format": "password",
+                "example": "your_access_token"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your Lightspeed Retail X-Series refresh token.",
+                "format": "password",
+                "example": "your_refresh_token"
+              },
               "client_access": {
                 "title": "",
                 "type": "object",
@@ -45517,17 +45967,18 @@
                   "client_secret": {
                     "title": "",
                     "type": "string",
-                    "description": "",
+                    "description": "`Client Secret` of your Lightspeed Retail X-Series client application.",
                     "format": "password",
-                    "example": "string"
+                    "example": "my_client_secret"
                   },
                   "client_id": {
                     "title": "",
                     "type": "string",
-                    "description": "",
-                    "example": "string"
+                    "description": "`Client ID` of your Lightspeed Retail X-Series client application.",
+                    "example": "my_client_id"
                   }
-                }
+                },
+                "description": "Your Lightspeed Retail X-Series client access"
               }
             },
             "description": ""
@@ -47678,6 +48129,22 @@
           "config": {
             "type": "object",
             "properties": {
+              "auth_method": {
+                "title": "",
+                "type": "object",
+                "description": "Authentication Method",
+                "example": "SERVICE_PRINCIPAL_SECRET",
+                "enum": [
+                  "CONNECTION_STRING",
+                  "SERVICE_PRINCIPAL_SECRET"
+                ]
+              },
+              "storage_account_name": {
+                "title": "",
+                "type": "string",
+                "description": "The name of the Azure Storage account.",
+                "example": "storage_account_name"
+              },
               "container_name": {
                 "title": "",
                 "type": "string",
@@ -47696,6 +48163,34 @@
           }
         }
       },
+      "microsoft_dynamics_365_fno_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "tenant_id": {
+                "title": "",
+                "type": "string",
+                "description": "`Tenant ID` of your Microsoft client application.",
+                "example": "41db1ebd-41a6-4dda-8029-5dd8f227d843"
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "`Client Secret` of your Microsoft client application.",
+                "example": "my_client_secret"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "`Client ID` of your Microsoft client application.",
+                "example": "my_client_id"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "microsoft_dynamics_365_fno_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -47706,6 +48201,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/microsoft_dynamics_365_fno_auth_V1"
           }
         ]
       },
@@ -49745,6 +50243,14 @@
                 "type": "string",
                 "description": "Your OneTrust client ID.",
                 "example": "onetrust_client_id"
+              },
+              "api_integration_type": {
+                "type": "object",
+                "description": "Your OneTrust API integration type.",
+                "enum": [
+                  "consentmanager/v1/datasubjects/profiles",
+                  "api/cmp/v1/webscans"
+                ]
               }
             },
             "description": ""
@@ -54983,6 +55489,49 @@
           }
         }
       },
+      "quora_ads_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "quora_ads_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -54993,6 +55542,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/quora_ads_auth_V1"
           }
         ]
       },
@@ -59358,6 +59910,49 @@
           }
         }
       },
+      "showpad_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "showpad_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -59368,6 +59963,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/showpad_auth_V1"
           }
         ]
       },
@@ -61243,10 +61841,11 @@
               "binary_log_truncater": {
                 "title": "",
                 "type": "object",
-                "description": "Determine who is responble for truncating the online transaction log. Possible values: `\"FIVETRAN\"`, `\"CUSTOMER\"`, `\"SQL_SERVER_AGENT\"`. Default value is `\"FIVETRAN\"`.",
+                "description": "Determine who is responsible for truncating the online transaction log. Possible values: `\"FIVETRAN\"`, `\"USER_MANAGED\"`, `\"SQL_SERVER_AGENT\"`. Default value is `\"FIVETRAN\"`.",
                 "example": "FIVETRAN",
                 "enum": [
                   "FIVETRAN",
+                  "USER_MANAGED",
                   "CUSTOMER",
                   "SQL_SERVER_AGENT"
                 ]
@@ -63154,6 +63753,49 @@
           }
         }
       },
+      "thinkific_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "thinkific_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -63164,6 +63806,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/thinkific_auth_V1"
           }
         ]
       },
@@ -67625,7 +68270,7 @@
               "api_token": {
                 "title": "",
                 "type": "string",
-                "description": "Zendesk API tokens are auto-generated passwords in the Support admin interface.",
+                "description": "Deprecated: Use Confidential OAuth client authentication instead. Zendesk API tokens are auto-generated passwords in the Support admin interface.",
                 "format": "password",
                 "example": "api_token"
               },
@@ -67672,6 +68317,24 @@
                 "type": "string",
                 "description": "The long-lived `Access token` carries the information necessary to access API resources.",
                 "example": "my_access_token"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "`Client Secret` of your Zendesk Confidential OAuth client app.",
+                    "example": "my_client_secret"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "`Identifier` of your Zendesk Confidential OAuth client app.",
+                    "example": "my_client_id"
+                  }
+                },
+                "description": "Confidential OAuth client credentials for your application."
               }
             },
             "description": ""
@@ -69824,23 +70487,13 @@
           }
         ]
       },
-      "bizzabo_ConnectorResponseV1": {
+      "bizzabo_app_ConnectorResponseV1": {
         "allOf": [
           {
             "$ref": "#/components/schemas/ConnectorResponseV1"
           },
           {
-            "$ref": "#/components/schemas/bizzabo_config_V1"
-          }
-        ]
-      },
-      "bizzabo_v2_ConnectorResponseV1": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ConnectorResponseV1"
-          },
-          {
-            "$ref": "#/components/schemas/bizzabo_v2_config_V1"
+            "$ref": "#/components/schemas/bizzabo_app_config_V1"
           }
         ]
       },
@@ -70959,6 +71612,35 @@
           },
           {
             "$ref": "#/components/schemas/db2luw_readonly_config_V1"
+          }
+        ]
+      },
+      "db2z_readonly_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "public_key": {
+                "title": "",
+                "type": "string",
+                "description": "Public Key",
+                "example": "string"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "db2z_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/db2z_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/db2z_readonly_config_V1"
           }
         ]
       },
