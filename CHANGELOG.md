@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.16...HEAD)
 
+### Documentation
+- Fixed formatting of `config_map` possible values in `fivetran_private_link` resource documentation. All configuration fields now display on separate lines as bullet points instead of rendering as a continuous paragraph.
+
 ## [v1.9.16](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.15...v1.9.16)
 
 ### Fixed
