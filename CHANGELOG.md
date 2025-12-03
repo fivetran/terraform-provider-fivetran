@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.16...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.17...HEAD)
+
+## [v1.9.17](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.16...v1.9.17)
+
+### Fixed
+- `fivetran_connector_schema_config` when API responses return less columns than presented in Terrafrom State
 
 ## [v1.9.16](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.15...v1.9.16)
 
