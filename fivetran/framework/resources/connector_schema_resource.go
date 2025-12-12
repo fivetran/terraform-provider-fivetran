@@ -54,11 +54,6 @@ func (r *connectorSchema) reloadSchema(ctx context.Context, schemaChangeHandling
 	// Reload schema: we can't update schema if connector doesn't have it yet.
 	excludeMode := "PRESERVE"
 
-	// If we want to disable everything by default - we can do it in schema reload
-	if schemaChangeHandling == configSchema.BLOCK_ALL {
-		excludeMode = "EXCLUDE"
-	}
-
 	schemaResponse, err := client.NewConnectionSchemaReload().ExcludeMode(excludeMode).ConnectionID(connectorID).Do(ctx)
 	if err != nil {
 		diag.AddError(
