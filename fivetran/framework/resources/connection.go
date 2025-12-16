@@ -84,13 +84,16 @@ func (r *connection) Create(ctx context.Context, req resource.CreateRequest, res
 	trustCertificatesPlan := core.GetBoolOrDefault(data.TrustCertificates, false)
 	trustFingerprintsPlan := core.GetBoolOrDefault(data.TrustFingerprints, false)
 
+	emptyConfig := make(map[string]interface{})
+
 	svc := r.GetClient().NewConnectionCreate().
 		Paused(true). // on creation we always create paused connection
 		Service(data.Service.ValueString()).
 		GroupID(data.GroupId.ValueString()).
 		RunSetupTests(runSetupTestsPlan).
 		TrustCertificates(trustCertificatesPlan).
-		TrustFingerprints(trustFingerprintsPlan)
+		TrustFingerprints(trustFingerprintsPlan).
+		ConfigCustom(&emptyConfig)
 
 	if data.ProxyAgentId.ValueString() != "" {
 		svc.ProxyAgentId(data.ProxyAgentId.ValueString())

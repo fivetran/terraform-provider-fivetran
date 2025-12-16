@@ -142,7 +142,7 @@ type ConnectionDatasourceModel struct {
     Paused          types.Bool   `tfsdk:"paused"`
     PauseAfterTrial types.Bool   `tfsdk:"pause_after_trial"`
     DailySyncTime   types.String `tfsdk:"daily_sync_time"`
-    
+
     DataDelaySensitivity    types.String `tfsdk:"data_delay_sensitivity"`
     DataDelayThreshold      types.Int64  `tfsdk:"data_delay_threshold"`
 
@@ -150,6 +150,7 @@ type ConnectionDatasourceModel struct {
     NetworkingMethod         types.String `tfsdk:"networking_method"`
     HybridDeploymentAgentId  types.String `tfsdk:"hybrid_deployment_agent_id"`
     PrivateLinkId            types.String `tfsdk:"private_link_id"`
+    DestinationSchema        types.Object `tfsdk:"destination_schema"`
     Status types.Object `tfsdk:"status"`
 }
 
@@ -197,6 +198,8 @@ func (d *ConnectionDatasourceModel) ReadFromResponse(resp connections.DetailsWit
     } else {
         d.DailySyncTime = types.StringNull()
     }
+
+    d.DestinationSchema = getDestinationSchemaValue(resp.Data.Service, resp.Data.Schema, d.DestinationSchema)
 
     codeMessageAttrType := types.ObjectType{
         AttrTypes: codeMessageAttrTypes,
