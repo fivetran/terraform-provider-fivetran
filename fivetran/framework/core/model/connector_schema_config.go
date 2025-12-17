@@ -49,7 +49,7 @@ func (d *ConnectorSchemaResourceModel) getValidationLevels() (bool, bool) {
 	return validateTables, validateColumns
 }
 
-func (d *ConnectorSchemaResourceModel) ValidateSchemaElements(response connections.ConnectionSchemaDetailsResponse, client fivetran.Client, ctx context.Context) (error, bool) {
+func (d *ConnectorSchemaResourceModel) ValidateSchemaElements(response connections.ConnectionSchemaDetailsResponse, forceValidateColumns bool, client fivetran.Client, ctx context.Context) (error, bool) {
 	validateTables, validateColumns := d.getValidationLevels()
 	if validateTables {
 		return d.GetSchemaConfig().ValidateSchemas(
@@ -57,7 +57,7 @@ func (d *ConnectorSchemaResourceModel) ValidateSchemaElements(response connectio
 			response.Data.Schemas,
 			client,
 			ctx,
-			validateColumns)
+			validateColumns || forceValidateColumns)
 	}
 	return nil, false
 }

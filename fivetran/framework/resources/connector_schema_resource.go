@@ -40,7 +40,7 @@ func (r *connectorSchema) ImportState(ctx context.Context, req resource.ImportSt
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
-func (r *connectorSchema) reloadSchema(ctx context.Context, schemaChangeHandling, connectorID string, diag diag.Diagnostics) connections.ConnectionSchemaDetailsResponse {
+func (r *connectorSchema) reloadSchema(ctx context.Context, connectorID string, diag diag.Diagnostics) connections.ConnectionSchemaDetailsResponse {
 	client := r.GetClient()
 	if client == nil {
 		diag.AddError(
@@ -213,7 +213,7 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		}
 	} else {
 		// We might have to refresh schema, not all tables might be saved in current configuration
-		err, needReloadSchema := data.ValidateSchemaElements(schemaResponse, *client, ctx)
+		err, needReloadSchema := data.ValidateSchemaElements(schemaResponse, false, *client, ctx)
 		if err != nil {
 			// Reload as schema might be out of sync with the real source schema
 			needReload = needReloadSchema
@@ -228,12 +228,13 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 	}
 
 	if needReload {
-		schemaResponse = r.reloadSchema(ctx, schemaChangeHandling, connectorID, resp.Diagnostics)
+		schemaResponse = r.reloadSchema(ctx, connectorID, resp.Diagnostics)
 		if resp.Diagnostics.HasError() {
 			return
 		}
 		// validate request one more time after reload schema
-		err, _ = data.ValidateSchemaElements(schemaResponse, *client, ctx)
+		forceValidateColumns := schemaChangeHandling == configSchema.BLOCK_ALL
+		err, _ = data.ValidateSchemaElements(schemaResponse, forceValidateColumns, *client, ctx)
 		if err != nil {
 			resp.Diagnostics.AddError(
 				"Unable to create Connector Schema Resource.",
@@ -431,13 +432,16 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
+	forceColumnsPopulationAfterSchemaReloaded := false
 	if plan.ValidationLevel.ValueString() != "NONE" {
 		// Before applying changes we should validate existing state and planned changes and decide if we need to reload schema
-		err, _ := plan.ValidateSchemaElements(schemaResponse, *client, ctx)
+		err, _ := plan.ValidateSchemaElements(schemaResponse, false, *client, ctx)
 		if err != nil {
-			schemaResponse = r.reloadSchema(ctx, plan.SchemaChangeHandling.ValueString(), connectorID, resp.Diagnostics)
+			schemaResponse = r.reloadSchema(ctx, connectorID, resp.Diagnostics)
+			forceColumnsPopulationAfterSchemaReloaded = (plan.SchemaChangeHandling.ValueString() == configSchema.BLOCK_ALL)
 		}
-		err, _ = plan.ValidateSchemaElements(schemaResponse, *client, ctx)
+
+		err, _ = plan.ValidateSchemaElements(schemaResponse, forceColumnsPopulationAfterSchemaReloaded, *client, ctx)
 		if err != nil {
 			resp.Diagnostics.AddError(
 				"Unable to update Connector Schema Resource.",
@@ -510,6 +514,18 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 	// read data from response and merge with existing config
+
+	if forceColumnsPopulationAfterSchemaReloaded {
+		// response doesn't contain columns, need to go through tables and get columns
+		err, _ = plan.ValidateSchemaElements(schemaResponse, forceColumnsPopulationAfterSchemaReloaded, *client, ctx)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to update Connector Schema Resource.",
+				fmt.Sprintf("Schema configuration is not aligned with source schema after update. Details:\n %v;", err),
+			)
+			return
+		}
+	}
 
 	configAfterApply := configSchema.SchemaConfig{}
 	configAfterApply.ReadFromResponse(schemaResponse)
