@@ -178,7 +178,6 @@ d2l_brightspace
 databricks_db
 datadog
 datastreamer_source
-db2
 db2i_hva
 db2i_sap_hva
 db2luw
@@ -306,7 +305,6 @@ harvest
 healthie
 heap
 heartland_retail_pos
-height
 helpdesk
 helpjuice
 helpscout
@@ -476,6 +474,7 @@ paylocity
 paypal
 paypal_sandbox
 pendo
+peopleforce
 persona
 personio
 phoenix_ads

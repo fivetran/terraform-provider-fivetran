@@ -417,7 +417,7 @@ Optional:
 - `access_token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `7shifts`: Your 7shifts access token.
 	- Service `attio`: Your Attio bearer token
-	- Service `big_commerce`: API access token of your store.
+	- Service `big_commerce`: Your [API access token ](https://fivetran.com/docs/connectors/applications/big-commerce/setup-guide#createaccesstoken).
 	- Service `bitly`: Your Bitly access token.
 	- Service `calabrio`: Your Calabrio access token.
 	- Service `coalesce`: Your Coalesce access token.
@@ -689,6 +689,7 @@ Optional:
 	- Service `anvyl`: Your Anvyl API key.
 	- Service `apollo`: Your Apollo API key.
 	- Service `appcues`: Your Appcues API key.
+	- Service `applovin`: Your AppLovin API key.
 	- Service `ascend_by_partnerize`: Your Ascend by Partnerize API Key
 	- Service `ashby`: Your Ashby API key.
 	- Service `assembled`: Your Assembled API key.
@@ -714,6 +715,7 @@ Optional:
 	- Service `canny`: Your Canny API key.
 	- Service `chargebee_product_catalog_1`: Your Chargebee Product Catalog 1 API key.
 	- Service `chargebee_product_catalog_2`: Your Chargebee API key.
+	- Service `charthop`: Your ChartHop app API key.
 	- Service `chartmogul`: Your ChartMogul API key.
 	- Service `chorusai`: Your Chorus API key.
 	- Service `churnkey`: Your Churnkey API Key.
@@ -778,6 +780,7 @@ Optional:
 	- Service `grepsr`: Your Grepsr API Key.
 	- Service `grin`: Your Grin API key.
 	- Service `happyfox`: Your HappyFox API key.
+	- Service `healthie`: Your Healthie API key.
 	- Service `height`: Your Height API key.
 	- Service `helpjuice`: Your Helpjuice API key.
 	- Service `helpshift`: Your Helpshift API Key.
@@ -788,6 +791,7 @@ Optional:
 	- Service `invoiced`: Your Invoiced API key.
 	- Service `iterable`: Your Iterable API key.
 	- Service `ivanti`: Your Ivanti API Key.
+	- Service `jobnimbus`: Your JobNimbus API key.
 	- Service `jotform`: Your Jotform API key.
 	- Service `justcall`: Your JustCall API key.
 	- Service `katana`: Your Katana API key.
@@ -795,7 +799,7 @@ Optional:
 	- Service `keypay`: Your KeyPay API key.
 	- Service `kisi`: Your Kisi API key.
 	- Service `klaviyo`: Your Klaviyo API key.
-	- Service `learnupon`: Your Learnupon API key.
+	- Service `learnupon`: Your LearnUpon API key.
 	- Service `lemlist`: Your Lemlist API key.
 	- Service `lever`: Your Lever API key.
 	- Service `liftoff`: Your Liftoff API key.
@@ -829,6 +833,7 @@ Optional:
 	- Service `pandadoc`: Your PandaDoc API key.
 	- Service `papershift`: Your Papershift API Key
 	- Service `partnerize`: Your Partnerize user API key.
+	- Service `peopleforce`: Your Peopleforce API key.
 	- Service `persona`: Your Persona API key.
 	- Service `picqer`: Your Picqer API key.
 	- Service `pigment`: Your Pigment API key.
@@ -893,7 +898,7 @@ Optional:
 	- Service `webconnex`: Your Webconnex API key.
 	- Service `wicked_reports`: Your Wicked Reports API key.
 	- Service `workleap_officevibe`: Your Workleap Officevibe API key.
-	- Service `writesonic`: Your Writesonic API key
+	- Service `writesonic`: Your Writesonic API key.
 	- Service `xsolla`: Your Xsolla API key.
 	- Service `yext`: Your Yext API key.
 	- Service `yougov_sport`: Your Yougov Sport API key.
@@ -1027,11 +1032,14 @@ Optional:
 	- Service `brightpearl`: Your Brightpearl app reference.
 - `app_secret` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `rokt`: Your Rokt app secret.
-- `app_secret_token` (String, Sensitive)
+- `app_secret_token` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `economic`: Your E-conomic X-AppSecretToken goes here.
 - `app_specific_password` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `itunes_connect`: Your app-specific password
 - `app_sync_mode` (String) Field usage depends on `service` value: 
 	- Service `itunes_connect`: Whether to sync all apps or specific apps.
+- `app_url` (String) Field usage depends on `service` value: 
+	- Service `shopify`: App store url of your public app
 - `append_file_option` (String) Field usage depends on `service` value: 
 	- Service `aws_cost_report`: If you know that the source completely overwrites the same file with new data, you can append the changes instead of upserting based on filename and line number.
 	- Service `azure_blob_storage`: If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.
@@ -1192,12 +1200,14 @@ Optional:
 - `authorization_url` (String) Field usage depends on `service` value: 
 	- Service `tiktok_organic`: The authorization URL of the app registered in your TikTok developer account.
 	- Service `workday`: Authorization URL
+- `aws_credentials` (Block, Optional) (see [below for nested schema](#nestedblock--config--aws_credentials))
 - `aws_region_code` (String) Field usage depends on `service` value: 
 	- Service `aurora`: The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`.
 	- Service `dynamodb`: The AWS region code for the DynamoDB instance, e.g. `us-east-1`.
 	- Service `magento_mysql_rds`: The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`.
 	- Service `maria_rds`: The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`.
 	- Service `mysql_rds`: The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`.
+- `azure_credentials` (Block, Optional) (see [below for nested schema](#nestedblock--config--azure_credentials))
 - `backint_configuration_path` (String)
 - `backint_executable_path` (String)
 - `backup_log_format` (String) Field usage depends on `service` value: 
@@ -1332,6 +1342,10 @@ Optional:
 - `client_cert_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `apache_kafka`: Kafka client certificate key.
 	- Service `heroku_kafka`: Heroku Kafka client certificate key.  Required for `TLS` security protocol.
+- `client_certificate` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `share_point`: `Client Certificate` of your Microsoft client application.
+- `client_certificate_private_key` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `share_point`: `Certificate Private Key` of your Microsoft client application.
 - `client_host` (String) Field usage depends on `service` value: 
 	- Service `ceridian_dayforce`: Your Ceridian Dayforce client host.
 - `client_id` (String, Sensitive) Field usage depends on `service` value: 
@@ -1413,7 +1427,7 @@ Optional:
 	- Service `paychex`: Your Paychex client ID.
 	- Service `paylocity`: Your Paylocity client ID.
 	- Service `paypal`: `Client ID` of your PayPal client application.
-	- Service `paypal_sandbox`: `Client ID` of your PayPal client application.
+	- Service `paypal_sandbox`: Client ID of your PayPal client application.
 	- Service `personio`: Your Personio Client ID.
 	- Service `piwik_pro`: Your Piwik PRO client ID.
 	- Service `podio`: Your Podio client ID.
@@ -1431,11 +1445,13 @@ Optional:
 	- Service `servicetitan`: Your ServiceTitan client ID.
 	- Service `sharetribe`: Your Sharetribe client ID.
 	- Service `shipnetwork`: Your ShipNetwork client ID.
+	- Service `shopify`: Client ID of your public app
 	- Service `showpad`: Your Showpad client ID.
 	- Service `siemens_building_x_openness`: Your Siemens Building X Openness Client ID.
 	- Service `sigma_computing_source`: Your Sigma Computing client ID.
 	- Service `skillstx`: Your SkillsTX client ID.
 	- Service `skimlinks`: Your Skimlinks client ID.
+	- Service `slack_app`: Your Slack app Client ID.
 	- Service `smartrecruiters`: Your SmartRecruiters client ID.
 	- Service `splash`: Your Splash client ID.
 	- Service `square`: The Application ID of your organization.
@@ -1597,11 +1613,13 @@ Optional:
 	- Service `servicenow`: ServiceNow Client Secret.
 	- Service `servicetitan`: Your ServiceTitan secret key.
 	- Service `sharetribe`: Your Sharetribe client secret.
+	- Service `shopify`: Client secret of your public app
 	- Service `showpad`: Your Showpad client secret.
 	- Service `siemens_building_x_openness`: Your Siemens Building X Openness Client Secret.
 	- Service `sigma_computing_source`: Your Sigma Computing client secret.
 	- Service `skillstx`: Your SkillsTX client secret.
 	- Service `skimlinks`: Your Skimlinks client secret.
+	- Service `slack_app`: Your Slack app Client Secret.
 	- Service `smartrecruiters`: Your SmartRecruiters client secret.
 	- Service `splash`: Your Splash client secret.
 	- Service `square`: The Application Secret of your organization.
@@ -1818,6 +1836,8 @@ Optional:
 - `conversion_window_size` (Number) Field usage depends on `service` value: 
 	- Service `google_ads`: A period of time in days during which a conversion is recorded.
 - `convert_dats_type_to_date` (Boolean)
+- `country` (String) Field usage depends on `service` value: 
+	- Service `sistrix`: Your SISTRIX country code.
 - `csv_definition` (String) Field usage depends on `service` value: 
 	- Service `adjust`: CSV definition for the CSV export (https://help.adjust.com/en/article/csv-uploads#how-do-i-format-my-csv-definition).
 - `currency` (String) Field usage depends on `service` value: 
@@ -1840,6 +1860,8 @@ Optional:
 - `custom_payloads` (Block Set) (see [below for nested schema](#nestedblock--config--custom_payloads))
 - `custom_rate_limit` (String) Field usage depends on `service` value: 
 	- Service `toggl_track`: Your Toggl Track custom rate limit. Supports only numeric characters (0-9).
+- `custom_region` (String) Field usage depends on `service` value: 
+	- Service `learnupon`: Your LearnUpon custom region.
 - `custom_reports` (Block Set) (see [below for nested schema](#nestedblock--config--custom_reports))
 - `custom_tables` (Block Set) (see [below for nested schema](#nestedblock--config--custom_tables))
 - `custom_url` (String) Field usage depends on `service` value: 
@@ -1862,6 +1884,8 @@ Optional:
 - `data_center_id` (String) Field usage depends on `service` value: 
 	- Service `zonka_feedback`: Your Zonka Feedback data center ID.
 - `data_model_path_alias_list` (Block Set) (see [below for nested schema](#nestedblock--config--data_model_path_alias_list))
+- `data_region` (String) Field usage depends on `service` value: 
+	- Service `intercom`: The Intercom region for your app. Options - empty string (US/default), 'eu' (Europe), 'au' (Australia). Based on your Intercom app URL (app.intercom.io for US, app.eu.intercom.io for EU, app.au.intercom.io for AU). Cannot be changed after initial connection creation.
 - `data_set_name` (String) Field usage depends on `service` value: 
 	- Service `bigquery_db`: Data set name
 - `database` (String) Field usage depends on `service` value: 
@@ -1992,7 +2016,8 @@ Optional:
 - `dsv_subscription_key` (String, Sensitive)
 - `ecommerce_stores` (Set of String) Field usage depends on `service` value: 
 	- Service `mailchimp`: List of IDs of the Mailchimp E-Commerce Stores to Sync
-- `edition` (String)
+- `edition` (String) Field usage depends on `service` value: 
+	- Service `bigin_by_zoho_crm`: Your Bigin by Zoho CRM pricing plan
 - `elements` (Set of String)
 - `email` (String) Field usage depends on `service` value: 
 	- Service `appcues`: Your Appcues Email.
@@ -2096,6 +2121,7 @@ Optional:
 	- Service `concord`: Your Concord environment.
 	- Service `deposco`: Your Deposco environment.
 	- Service `dialpad`: Your Dialpad environment.
+	- Service `healthie`: Your Healthie environment.
 	- Service `invoiced`: Your Invoiced environment.
 	- Service `jibble`: Your Jibble environment.
 	- Service `lucca`: Your Lucca environment.
@@ -2111,6 +2137,7 @@ Optional:
 	- Service `vts`: Your VTS environment.
 	- Service `xactly`: Your Xactly environment.
 	- Service `younium`: Your Younium API environment.
+	- Service `zip`: Your Zip environment.
 	- Service `zuora`: Zuora Sandbox Environment. This accepts either of the two values Sandbox or Central Sandbox based on your subscription. The default environment is Sandbox.
 	- Service `zuora_sandbox`: Zuora Sandbox Environment. This accepts either of the two values Sandbox or Central Sandbox based on your subscription. The default environment is Sandbox.
 - `environment_host` (String) Field usage depends on `service` value: 
@@ -2146,6 +2173,7 @@ Optional:
 	- Service `adjust`: Your cloud storage.
 	- Service `amplitude`: Your cloud storage type
 	- Service `braze`: Export Storage. Required if `enable_exports` is `true`
+	- Service `pendo`: Denotes which storage option is chosen
 - `external_id` (String) Field usage depends on `service` value: 
 	- Service `appsflyer`: The external ID is a string that designates who can assume the role. For more information, click a href="http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html"here/a
 	- Service `aws_cloudtrail`: This is the same as your `group_id`, used for authentication along with the `role_arn`.
@@ -2160,7 +2188,9 @@ Optional:
 	- Service `segment`: The external ID is a string that designates who can assume the role. For more information, see a href="http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html"Amazon's AWS Identity and Access Management User Guide/a.
 	- Service `sql_server`: The external ID to be used when assuming the IAM role.
 - `extraction_pattern` (String) Field usage depends on `service` value: 
+	- Service `azure_blob_storage`: A regular expression with a named capture group `(?table...)` to extract table names from file paths.
 	- Service `s3`: A regular expression with a named capture group `(?table...)` to extract table names from file paths.
+	- Service `sftp`: A regular expression with a named capture group `(?table...)` to extract table names from file paths.
 - `facility_codes` (String) Field usage depends on `service` value: 
 	- Service `unicommerce`: Your uniware facility codes.
 - `fields` (Set of String) Field usage depends on `service` value: 
@@ -2171,7 +2201,9 @@ Optional:
 	- Service `sftp`: Files will be processed and synced according to the selected file handling option. Supported values:`structured`- (Default) Extract structured data into destination tables for analysis. Commonly used.`unstructured`- Replicate files in their original format. Best for PDFs, images, and other unstructured content.  Learn more about unstructured file replication in our [documentation.](https://fivetran.com/docs/using-fivetran/features/unstructured-file-replication).
 	- Service `share_point`: Files will be processed and synced according to the selected file handling option. Supported values:`structured`- (Default) Extract structured data into destination tables for analysis. Commonly used.`unstructured`- Replicate files in their original format. Best for PDFs, images, and other unstructured content.  Learn more about unstructured file replication in our [documentation.](https://fivetran.com/docs/using-fivetran/features/unstructured-file-replication).
 - `file_mapping_method` (String) Field usage depends on `service` value: 
+	- Service `azure_blob_storage`: The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.
 	- Service `s3`: The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.
+	- Service `sftp`: The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.
 - `file_type` (String) Field usage depends on `service` value: 
 	- Service `aws_cost_report`: If your files are saved with improper extensions, you can force them to by synced as the selected filetype. Leave the value as infer if your files have the correct extensions
 	- Service `azure_blob_storage`: If your files are saved with improper extensions, you can force them to by synced as the selected file type.
@@ -2226,6 +2258,7 @@ Optional:
 - `gcs_bucket` (String) Field usage depends on `service` value: 
 	- Service `braze`: Your GCS bucket. Required if `GCS` is the `cloud_storage_type`
 	- Service `webhooks`: The GCS bucket name. Required if `bucket_service` is set to `GCS`.
+- `gcs_credentials` (Block, Optional) (see [below for nested schema](#nestedblock--config--gcs_credentials))
 - `gcs_export_bucket` (String) Field usage depends on `service` value: 
 	- Service `braze`: Your GCS bucket. Required if `GCS` is the `export_storage_type`
 - `gcs_export_folder` (String) Field usage depends on `service` value: 
@@ -2434,6 +2467,7 @@ Optional:
 	- Service `snowflake_db`: Indicates that a private key is encrypted. The default value: `false`. The field can be specified if authentication type is `KEY_PAIR`.
 - `is_private_link_required` (Boolean) Field usage depends on `service` value: 
 	- Service `aws_lambda`: We use PrivateLink by default if your AWS Lambda is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to AWS lambda over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options/aws-private-link).
+	- Service `dynamodb`: We use PrivateLink by default if your DynamoDB instance is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to DynamoDB over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options/aws-private-link).
 	- Service `s3`: Set to `true` if you want to connect to S3 bucket over PrivateLink. Default value: `false`.
 - `is_public` (Boolean) Field usage depends on `service` value: 
 	- Service `aws_cost_report`: Whether you are syncing from a public bucket. Default value: `false`.
@@ -2704,6 +2738,7 @@ Optional:
 	- Service `db2i_sap_hva`: The user's password.
 	- Service `db2luw`: The user's password.
 	- Service `db2z`: The user's password. Specify only when `authentication_method` is `PASSWORD`.
+	- Service `delighted`: Pass an empty string
 	- Service `deposco`: Your Deposco password.
 	- Service `documentdb`: The user's password.
 	- Service `dynamics_365_fo`: The user's password.
@@ -3018,7 +3053,7 @@ Optional:
 - `project_key` (String) Field usage depends on `service` value: 
 	- Service `commercetools`: Your commercetools project key.
 - `project_website_url` (String) Field usage depends on `service` value: 
-	- Service `writesonic`: Your Writesonic Project Website Url.
+	- Service `writesonic`: Website URL of your Writesonic project.
 - `projects` (Set of String) Field usage depends on `service` value: 
 	- Service `asana`: Specific Project IDs to sync. Must be populated if `syncMode` is set to `SpecificProjects`.
 	- Service `jira`: Specific projects to sync. Must be populated if `syncMode` is set to `CUSTOM`.
@@ -3154,6 +3189,7 @@ Optional:
 	- Service `getfeedback`: Your GetFeedback region.
 	- Service `happyfox`: Your HappyFox region.
 	- Service `keypay`: Your KeyPay region.
+	- Service `learnupon`: Your LearnUpon region.
 	- Service `medallia_agile_research`: Your Medallia Agile region.
 	- Service `messagebird`: Your MessageBird Account region.
 	- Service `mixpanel`: Data Region
@@ -3264,6 +3300,7 @@ Optional:
 	- Service `sql_server`: The ARN of the IAM role that has access to the S3 bucket.
 - `rollback_window` (Number) Field usage depends on `service` value: 
 	- Service `appsflyer`: Rollback window
+	- Service `servicenow`: Set a rollback window between 0 and 7 days. The default is 0 days.
 - `rollback_window_size` (Number) Field usage depends on `service` value: 
 	- Service `bingads`: A period of time in days during which a conversion is recorded.
 - `root_resource_id` (String) Field usage depends on `service` value: 
@@ -3305,6 +3342,8 @@ Optional:
 	- Service `pardot_sandbox`: The Pardot user's Salesforce SSO Account Security Token.
 - `sandbox_account` (String) Field usage depends on `service` value: 
 	- Service `gocardless`: Your GoCardless account type.
+- `sap_router` (String) Field usage depends on `service` value: 
+	- Service `sap_hana_db`: SAP Router connection string (format: /H/hostname/S/port)
 - `sap_schema` (String) Field usage depends on `service` value: 
 	- Service `db2i_hva`: The SAP schema.
 	- Service `db2i_sap_hva`: SAP schema name.
@@ -3386,8 +3425,8 @@ Optional:
 	- Service `line_ads`: Your LINE Ads secret key.
 	- Service `mailjet`: Your Mailjet secret key.
 	- Service `partnerstack_vendor`: Your PartnerStack Vendor Secret key.
-	- Service `paypal`: `Client Secret` of your PayPal client application.
-	- Service `paypal_sandbox`: `Client Secret` of your PayPal client application.
+	- Service `paypal`: `Secret Key` of your PayPal client application.
+	- Service `paypal_sandbox`: Secret key of your PayPal client application.
 	- Service `phoenix_ads`: Your Phoenix Ads Secret key.
 	- Service `retailnext`: Your RetailNext secret key.
 	- Service `statsig`: Your Statsig secret key.
@@ -3573,7 +3612,7 @@ Optional:
 	- Service `azure_blob_storage`: The name of the Azure Storage account.
 	- Service `microsoft_dynamics_365_fno`: The name of the Azure Storage account.
 - `store_hash` (String) Field usage depends on `service` value: 
-	- Service `big_commerce`: The BigCommerce store hash.
+	- Service `big_commerce`: The [store hash](https://fivetran.com/docs/connectors/applications/big-commerce/setup-guide#createaccesstoken) in your API path.
 - `store_id` (String) Field usage depends on `service` value: 
 	- Service `reviewsio`: Your REVIEWS.io store ID
 - `sub_collections` (Set of String) Field usage depends on `service` value: 
@@ -3594,6 +3633,7 @@ Optional:
 	- Service `chargebee_product_catalog_1`: Your Chargebee Product Catalog 1 subdomain.
 	- Service `chargebee_product_catalog_2`: Your Chargebee subdomain.
 	- Service `checkr`: Your Checkr subdomain.
+	- Service `churnzero`: Your ChurnZero subdomain
 	- Service `clubspeed`: Your Clubspeed subdomain.
 	- Service `collibra`: Your collibra subdomain.
 	- Service `compliance_checkpoint`: Your Compliance Checkpoint subdomain.
@@ -3614,6 +3654,7 @@ Optional:
 	- Service `green_power_monitor`: Your GreenPowerMonitor subdomain.
 	- Service `h_level`: Your HighLevel subdomain.
 	- Service `heartland_retail_pos`: Your Heartland Retail POS subdomain.
+	- Service `ilevel`: Your iLevel Environment.
 	- Service `infobip`: Your Infobip sub_domain.
 	- Service `insightly`: Your company's Insightly subdomain name.
 	- Service `instructure`: The Sub domain in which your Instructure account is hosted.
@@ -3673,7 +3714,7 @@ Optional:
 	- Service `hex`: Your Hex subdomain.
 	- Service `jama_software`: Your Jama Software subdomain.
 	- Service `klarna`: Your Klarna subdomain.
-	- Service `learnupon`: Your Learnupon subdomain.
+	- Service `learnupon`: Your LearnUpon subdomain.
 	- Service `maxio_saasoptics`: Your Maxio SaaSOptics subdomain.
 	- Service `medallia`: Medallia subdomain
 	- Service `packiyo`: Your Packiyo subdomain.
@@ -3843,6 +3884,7 @@ Optional:
 	- Service `azure_sql_managed_db`: Azure AD tenant ID.
 	- Service `business_central`: `Tenant ID` of your Business Central application
 	- Service `crowddev`: Your  crowd.dev Tenant ID.
+	- Service `microsoft_teams`: Your Microsoft Teams tenant ID.
 	- Service `reltio`: Your Reltio tenant ID.
 	- Service `servicetitan`: Your ServiceTitan tenant ID.
 	- Service `share_point`: `Tenant ID` of your Microsoft client application.
@@ -4161,6 +4203,10 @@ Optional:
 	- Service `amplitude`: Sync events from cloud storage
 - `use_customer_bucket` (Boolean) Field usage depends on `service` value: 
 	- Service `appsflyer`: Use Custom Bucket. Set it to 'true' if the data is being synced to your S3 bucket instead of an AppsFlyer-managed bucket.
+- `use_customer_s3_bucket` (Boolean) Field usage depends on `service` value: 
+	- Service `sailthru`: Enable this if you want to sync Sailthru Connect using your own"  S3 bucket.
+- `use_data_sync` (Boolean) Field usage depends on `service` value: 
+	- Service `pendo`: Toggle field to determine whether connector is syncing from API or from Data Sync
 - `use_oracle_rac` (Boolean) Field usage depends on `service` value: 
 	- Service `oracle_hva`: Default value: `false`. Set to `true` if you're using a RAC instance.
 	- Service `oracle_sap_hva`: Default value: `false`. Set to `true` if you're using a RAC instance.
@@ -4174,6 +4220,8 @@ Optional:
 	- Service `s3_compatible_storage`: Set to `true` if files are encrypted using PGP in the S3-Compatible Storage bucket. Default value: `false`.
 	- Service `sftp`: Set to `true` if files present in SFTP server are encrypted using PGP. Default value: `false`.
 	- Service `wasabi_cloud_storage`: Set to `true` if files are encrypted using PGP in the Wasabi Cloud Storage bucket. Default value: `false`.
+- `use_sap_router` (Boolean) Field usage depends on `service` value: 
+	- Service `sap_hana_db`: Enable connection via SAP Router
 - `use_service_account` (Boolean) Field usage depends on `service` value: 
 	- Service `bigquery_db`: BigQuery use service account; default is false
 - `use_template_labels` (Boolean) Field usage depends on `service` value: 
@@ -4298,7 +4346,7 @@ Optional:
 	- Service `khoros_care`: Your Khoros Care username.
 	- Service `kissmetrics`: Your Kissmetrics API Username.
 	- Service `klarna`: Your Klarna Username.
-	- Service `learnupon`: Your Learnupon username.
+	- Service `learnupon`: Your LearnUpon username.
 	- Service `lessonly`: Your Lessonly username.
 	- Service `mailgun`: Your Mailgun API username.
 	- Service `myosh`: Your myosh username.
@@ -4445,6 +4493,35 @@ Optional:
 	- Service `appsflyer`: Your App ID
 
 
+<a id="nestedblock--config--aws_credentials"></a>
+### Nested Schema for `config.aws_credentials`
+
+Optional:
+
+- `bucket_name` (String) Field usage depends on `service` value: 
+	- Service `amplitude`: Your AWS S3 bucket name
+	- Service `pendo`: AWS bucket name
+- `home_folder` (String) Field usage depends on `service` value: 
+	- Service `amplitude`: Prefix to filter out the data
+	- Service `pendo`: AWS home folder
+- `s3_role_arn` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `amplitude`: Role ARN required for authentication
+	- Service `pendo`: AWS s3 Role Arn
+
+
+<a id="nestedblock--config--azure_credentials"></a>
+### Nested Schema for `config.azure_credentials`
+
+Optional:
+
+- `connection_string` (String) Field usage depends on `service` value: 
+	- Service `pendo`: Azure connection string
+- `container_name` (String) Field usage depends on `service` value: 
+	- Service `pendo`: Azure container name
+- `home_folder` (String) Field usage depends on `service` value: 
+	- Service `pendo`: Azure home folder
+
+
 <a id="nestedblock--config--custom_payloads"></a>
 ### Nested Schema for `config.custom_payloads`
 
@@ -4475,6 +4552,8 @@ Optional:
 	- Service `snapchat_ads`: [List of Core, Additional and Conversion Metrics Stats Fields](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports#basemetricsfields).
 - `breakdown` (String) Field usage depends on `service` value: 
 	- Service `snapchat_ads`: [Sets Breakdown on custom report](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports#breakdown).
+- `breakdowns` (Set of String) Field usage depends on `service` value: 
+	- Service `reddit_ads`: Breakdowns are now used instead of level and segmentation. They provide a filter for report data.
 - `breakout` (String) Field usage depends on `service` value: 
 	- Service `snapchat_ads`: [Sets Breakout on custom report](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports#breakout).
 - `conversions_report_included` (Boolean) Field usage depends on `service` value: 
@@ -4597,6 +4676,19 @@ Optional:
 	- Service `s3_compatible_storage`: All files matching the above pattern will be synced to this table.
 	- Service `sftp`: All files matching the above pattern will be synced to this table.
 	- Service `share_point`: All files matching the above pattern will be synced to this table.
+
+
+<a id="nestedblock--config--gcs_credentials"></a>
+### Nested Schema for `config.gcs_credentials`
+
+Optional:
+
+- `bucket_name` (String) Field usage depends on `service` value: 
+	- Service `amplitude`: Your GCS bucket name
+	- Service `pendo`: GCS bucket name
+- `home_folder` (String) Field usage depends on `service` value: 
+	- Service `amplitude`: Prefix to filter out the data
+	- Service `pendo`: GCS home folder
 
 
 <a id="nestedblock--config--project_credentials"></a>

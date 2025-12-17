@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.17...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.18...HEAD)
+
+## [v1.9.17](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.17...v1.9.18)
 
 ### Fixed
 - `fivetran_connector_schema_config` - Fixed noisy terraform plan output for `is_primary_key` attribute. The field is now only tracked in state for explicitly configured columns.
@@ -14,9 +16,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Infrastructure: Added `JsonConfigValue` custom type for flexible JSON configuration in resources
 - Infrastructure: JSON validation utilities for semantic comparison and normalization
 
+New connection services supported:
+- Supported service: `peopleforce`
+
+New connection config fields supported:
+- Added field `fivetran_connector.config.custom_region` for services: `learnupon`.
+- Added field `fivetran_connector.config.azure_credentials` for services: `pendo`.
+- Added field `fivetran_connector.config.use_customer_s3_bucket` for services: `sailthru`.
+- Added field `fivetran_connector.config.client_certificate_private_key` for services: `share_point`.
+- Added field `fivetran_connector.config.aws_credentials` for services: `amplitude`, `pendo`.
+- Added field `fivetran_connector.config.data_region` for services: `intercom`.
+- Added field `fivetran_connector.config.sap_router` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.client_certificate` for services: `share_point`.
+- Added field `fivetran_connector.config.gcs_credentials` for services: `amplitude`, `pendo`.
+- Added field `fivetran_connector.config.use_data_sync` for services: `pendo`.
+- Added field `fivetran_connector.config.app_url` for services: `shopify`.
+- Added field `fivetran_connector.config.country` for services: `sistrix`.
+- Added field `fivetran_connector.config.custom_reports.breakdowns` for services: `reddit_ads`.
+- Added field `fivetran_connector.config.use_sap_router` for services: `sap_hana_db`.
+
 ### Fixed
 - `fivetran_connector_schema_config` resource - when validation needed, always call `/connections/{id}/schemas/reload` with `"exclude_mode": "PRESERVE"`
-
 
 ## [v1.9.17](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.16...v1.9.17)
 

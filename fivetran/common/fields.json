@@ -222,7 +222,7 @@
       "description": {
          "7shifts": "Your 7shifts access token.",
          "attio": "Your Attio bearer token",
-         "big_commerce": "API access token of your store.",
+         "big_commerce": "Your [API access token ](https://fivetran.com/docs/connectors/applications/big-commerce/setup-guide#createaccesstoken).",
          "bitly": "Your Bitly access token.",
          "calabrio": "Your Calabrio access token.",
          "coalesce": "Your Coalesce access token.",
@@ -1164,7 +1164,7 @@
          "anvyl": "Your Anvyl API key.",
          "apollo": "Your Apollo API key.",
          "appcues": "Your Appcues API key.",
-         "applovin": "",
+         "applovin": "Your AppLovin API key.",
          "ascend_by_partnerize": "Your Ascend by Partnerize API Key",
          "ashby": "Your Ashby API key.",
          "assembled": "Your Assembled API key.",
@@ -1190,7 +1190,7 @@
          "canny": "Your Canny API key.",
          "chargebee_product_catalog_1": "Your Chargebee Product Catalog 1 API key.",
          "chargebee_product_catalog_2": "Your Chargebee API key.",
-         "charthop": "",
+         "charthop": "Your ChartHop app API key.",
          "chartmogul": "Your ChartMogul API key.",
          "chorusai": "Your Chorus API key.",
          "churnkey": "Your Churnkey API Key.",
@@ -1255,7 +1255,7 @@
          "grepsr": "Your Grepsr API Key.",
          "grin": "Your Grin API key.",
          "happyfox": "Your HappyFox API key.",
-         "healthie": "",
+         "healthie": "Your Healthie API key.",
          "height": "Your Height API key.",
          "helpjuice": "Your Helpjuice API key.",
          "helpshift": "Your Helpshift API Key.",
@@ -1266,7 +1266,7 @@
          "invoiced": "Your Invoiced API key.",
          "iterable": "Your Iterable API key.",
          "ivanti": "Your Ivanti API Key.",
-         "jobnimbus": "",
+         "jobnimbus": "Your JobNimbus API key.",
          "jotform": "Your Jotform API key.",
          "justcall": "Your JustCall API key.",
          "katana": "Your Katana API key.",
@@ -1274,7 +1274,7 @@
          "keypay": "Your KeyPay API key.",
          "kisi": "Your Kisi API key.",
          "klaviyo": "Your Klaviyo API key.",
-         "learnupon": "Your Learnupon API key.",
+         "learnupon": "Your LearnUpon API key.",
          "lemlist": "Your Lemlist API key.",
          "lever": "Your Lever API key.",
          "liftoff": "Your Liftoff API key.",
@@ -1308,6 +1308,7 @@
          "pandadoc": "Your PandaDoc API key.",
          "papershift": "Your Papershift API Key",
          "partnerize": "Your Partnerize user API key.",
+         "peopleforce": "Your Peopleforce API key.",
          "persona": "Your Persona API key.",
          "picqer": "Your Picqer API key.",
          "pigment": "Your Pigment API key.",
@@ -1372,7 +1373,7 @@
          "webconnex": "Your Webconnex API key.",
          "wicked_reports": "Your Wicked Reports API key.",
          "workleap_officevibe": "Your Workleap Officevibe API key.",
-         "writesonic": "Your Writesonic API key",
+         "writesonic": "Your Writesonic API key.",
          "xsolla": "Your Xsolla API key.",
          "yext": "Your Yext API key.",
          "yougov_sport": "Your Yougov Sport API key.",
@@ -1832,7 +1833,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "economic": ""
+         "economic": "Your E-conomic X-AppSecretToken goes here."
       },
       "api_field": ""
    },
@@ -1859,6 +1860,19 @@
       "item_type": {},
       "description": {
          "itunes_connect": "Whether to sync all apps or specific apps."
+      },
+      "api_field": ""
+   },
+   "app_url": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "shopify": "App store url of your public app"
       },
       "api_field": ""
    },
@@ -2376,6 +2390,63 @@
       },
       "api_field": ""
    },
+   "aws_credentials": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object",
+      "fields": {
+         "bucket_name": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "amplitude": "Your AWS S3 bucket name",
+               "pendo": "AWS bucket name"
+            },
+            "api_field": ""
+         },
+         "home_folder": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "amplitude": "Prefix to filter out the data",
+               "pendo": "AWS home folder"
+            },
+            "api_field": ""
+         },
+         "s3_role_arn": {
+            "readonly": false,
+            "sensitive": true,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "amplitude": "Role ARN required for authentication",
+               "pendo": "AWS s3 Role Arn"
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "[home_folder, bucket_name]",
+      "item_type": {},
+      "description": {
+         "amplitude": "Amazon S3 Credentials",
+         "pendo": "Configuration for AWS S3 Storage"
+      },
+      "api_field": ""
+   },
    "aws_region_code": {
       "readonly": false,
       "sensitive": false,
@@ -2390,6 +2461,59 @@
          "magento_mysql_rds": "The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`.",
          "maria_rds": "The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`.",
          "mysql_rds": "The AWS region code for your RDS instance. Required if the authentication method is `AWS_IAM`."
+      },
+      "api_field": ""
+   },
+   "azure_credentials": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object",
+      "fields": {
+         "connection_string": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "pendo": "Azure connection string"
+            },
+            "api_field": ""
+         },
+         "container_name": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "pendo": "Azure container name"
+            },
+            "api_field": ""
+         },
+         "home_folder": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "pendo": "Azure home folder"
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "pendo": "Configuration for Azure Blob Storage"
       },
       "api_field": ""
    },
@@ -2905,6 +3029,32 @@
       },
       "api_field": ""
    },
+   "client_certificate": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "share_point": "`Client Certificate` of your Microsoft client application."
+      },
+      "api_field": ""
+   },
+   "client_certificate_private_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "share_point": "`Certificate Private Key` of your Microsoft client application."
+      },
+      "api_field": ""
+   },
    "client_host": {
       "readonly": false,
       "sensitive": false,
@@ -3008,7 +3158,7 @@
          "paychex": "Your Paychex client ID.",
          "paylocity": "Your Paylocity client ID.",
          "paypal": "`Client ID` of your PayPal client application.",
-         "paypal_sandbox": "`Client ID` of your PayPal client application.",
+         "paypal_sandbox": "Client ID of your PayPal client application.",
          "personio": "Your Personio Client ID.",
          "piwik_pro": "Your Piwik PRO client ID.",
          "podio": "Your Podio client ID.",
@@ -3026,12 +3176,13 @@
          "servicetitan": "Your ServiceTitan client ID.",
          "sharetribe": "Your Sharetribe client ID.",
          "shipnetwork": "Your ShipNetwork client ID.",
+         "shopify": "Client ID of your public app",
          "showpad": "Your Showpad client ID.",
          "siemens_building_x_openness": "Your Siemens Building X Openness Client ID.",
          "sigma_computing_source": "Your Sigma Computing client ID.",
          "skillstx": "Your SkillsTX client ID.",
          "skimlinks": "Your Skimlinks client ID.",
-         "slack_app": "",
+         "slack_app": "Your Slack app Client ID.",
          "smartrecruiters": "Your SmartRecruiters client ID.",
          "splash": "Your Splash client ID.",
          "square": "The Application ID of your organization.",
@@ -3285,12 +3436,13 @@
          "servicenow": "ServiceNow Client Secret.",
          "servicetitan": "Your ServiceTitan secret key.",
          "sharetribe": "Your Sharetribe client secret.",
+         "shopify": "Client secret of your public app",
          "showpad": "Your Showpad client secret.",
          "siemens_building_x_openness": "Your Siemens Building X Openness Client Secret.",
          "sigma_computing_source": "Your Sigma Computing client secret.",
          "skillstx": "Your SkillsTX client secret.",
          "skimlinks": "Your Skimlinks client secret.",
-         "slack_app": "",
+         "slack_app": "Your Slack app Client Secret.",
          "smartrecruiters": "Your SmartRecruiters client secret.",
          "splash": "Your Splash client secret.",
          "square": "The Application Secret of your organization.",
@@ -3971,6 +4123,19 @@
       },
       "api_field": ""
    },
+   "country": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sistrix": "Your SISTRIX country code."
+      },
+      "api_field": ""
+   },
    "csv_definition": {
       "readonly": false,
       "sensitive": false,
@@ -4148,6 +4313,19 @@
       },
       "api_field": ""
    },
+   "custom_region": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "learnupon": "Your LearnUpon custom region."
+      },
+      "api_field": ""
+   },
    "custom_reports": {
       "readonly": false,
       "sensitive": false,
@@ -4216,6 +4394,19 @@
             "item_type": {},
             "description": {
                "snapchat_ads": "[Sets Breakdown on custom report](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports#breakdown)."
+            },
+            "api_field": ""
+         },
+         "breakdowns": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "reddit_ads": "Breakdowns are now used instead of level and segmentation. They provide a filter for report data."
             },
             "api_field": ""
          },
@@ -4788,6 +4979,19 @@
       },
       "api_field": ""
    },
+   "data_region": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "intercom": "The Intercom region for your app. Options - empty string (US/default), 'eu' (Europe), 'au' (Australia). Based on your Intercom app URL (app.intercom.io for US, app.eu.intercom.io for EU, app.au.intercom.io for AU). Cannot be changed after initial connection creation."
+      },
+      "api_field": ""
+   },
    "data_set_name": {
       "readonly": false,
       "sensitive": false,
@@ -5224,7 +5428,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "bigin_by_zoho_crm": ""
+         "bigin_by_zoho_crm": "Your Bigin by Zoho CRM pricing plan"
       },
       "api_field": ""
    },
@@ -5581,7 +5785,7 @@
          "concord": "Your Concord environment.",
          "deposco": "Your Deposco environment.",
          "dialpad": "Your Dialpad environment.",
-         "healthie": "",
+         "healthie": "Your Healthie environment.",
          "invoiced": "Your Invoiced environment.",
          "jibble": "Your Jibble environment.",
          "lucca": "Your Lucca environment.",
@@ -5597,7 +5801,7 @@
          "vts": "Your VTS environment.",
          "xactly": "Your Xactly environment.",
          "younium": "Your Younium API environment.",
-         "zip": "",
+         "zip": "Your Zip environment.",
          "zuora": "Zuora Sandbox Environment. This accepts either of the two values Sandbox or Central Sandbox based on your subscription. The default environment is Sandbox.",
          "zuora_sandbox": "Zuora Sandbox Environment. This accepts either of the two values Sandbox or Central Sandbox based on your subscription. The default environment is Sandbox."
       },
@@ -5722,7 +5926,8 @@
       "description": {
          "adjust": "Your cloud storage.",
          "amplitude": "Your cloud storage type",
-         "braze": "Export Storage. Required if `enable_exports` is `true`"
+         "braze": "Export Storage. Required if `enable_exports` is `true`",
+         "pendo": "Denotes which storage option is chosen"
       },
       "api_field": ""
    },
@@ -5759,7 +5964,9 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "s3": "A regular expression with a named capture group `(?table...)` to extract table names from file paths."
+         "azure_blob_storage": "A regular expression with a named capture group `(?table...)` to extract table names from file paths.",
+         "s3": "A regular expression with a named capture group `(?table...)` to extract table names from file paths.",
+         "sftp": "A regular expression with a named capture group `(?table...)` to extract table names from file paths."
       },
       "api_field": ""
    },
@@ -5814,7 +6021,9 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "s3": "The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern."
+         "azure_blob_storage": "The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.",
+         "s3": "The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.",
+         "sftp": "The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern."
       },
       "api_field": ""
    },
@@ -6174,6 +6383,49 @@
       "description": {
          "braze": "Your GCS bucket. Required if `GCS` is the `cloud_storage_type`",
          "webhooks": "The GCS bucket name. Required if `bucket_service` is set to `GCS`."
+      },
+      "api_field": ""
+   },
+   "gcs_credentials": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "object",
+      "fields": {
+         "bucket_name": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "amplitude": "Your GCS bucket name",
+               "pendo": "GCS bucket name"
+            },
+            "api_field": ""
+         },
+         "home_folder": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "amplitude": "Prefix to filter out the data",
+               "pendo": "GCS home folder"
+            },
+            "api_field": ""
+         }
+      },
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "amplitude": "GCS Credentials",
+         "pendo": "Configuration for GCS Bucket"
       },
       "api_field": ""
    },
@@ -6869,6 +7121,7 @@
       "item_type": {},
       "description": {
          "aws_lambda": "We use PrivateLink by default if your AWS Lambda is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to AWS lambda over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options/aws-private-link).",
+         "dynamodb": "We use PrivateLink by default if your DynamoDB instance is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to DynamoDB over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options/aws-private-link).",
          "s3": "Set to `true` if you want to connect to S3 bucket over PrivateLink. Default value: `false`."
       },
       "api_field": ""
@@ -7923,7 +8176,7 @@
          "db2i_sap_hva": "The user's password.",
          "db2luw": "The user's password.",
          "db2z": "The user's password. Specify only when `authentication_method` is `PASSWORD`.",
-         "delighted": "",
+         "delighted": "Pass an empty string",
          "deposco": "Your Deposco password.",
          "documentdb": "The user's password.",
          "dynamics_365_fo": "The user's password.",
@@ -8708,7 +8961,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "writesonic": "Your Writesonic Project Website Url."
+         "writesonic": "Website URL of your Writesonic project."
       },
       "api_field": ""
    },
@@ -9045,6 +9298,7 @@
          "getfeedback": "Your GetFeedback region.",
          "happyfox": "Your HappyFox region.",
          "keypay": "Your KeyPay region.",
+         "learnupon": "Your LearnUpon region.",
          "medallia_agile_research": "Your Medallia Agile region.",
          "messagebird": "Your MessageBird Account region.",
          "mixpanel": "Data Region",
@@ -10596,7 +10850,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "appsflyer": "Rollback window"
+         "appsflyer": "Rollback window",
+         "servicenow": "Set a rollback window between 0 and 7 days. The default is 0 days."
       },
       "api_field": ""
    },
@@ -10827,6 +11082,19 @@
       "item_type": {},
       "description": {
          "gocardless": "Your GoCardless account type."
+      },
+      "api_field": ""
+   },
+   "sap_router": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sap_hana_db": "SAP Router connection string (format: /H/hostname/S/port)"
       },
       "api_field": ""
    },
@@ -11435,6 +11703,7 @@
          "paypal": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "paypal_sandbox": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "pendo": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "peopleforce": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "persona": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "personio": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "phoenix_ads": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11937,8 +12206,8 @@
          "line_ads": "Your LINE Ads secret key.",
          "mailjet": "Your Mailjet secret key.",
          "partnerstack_vendor": "Your PartnerStack Vendor Secret key.",
-         "paypal": "`Client Secret` of your PayPal client application.",
-         "paypal_sandbox": "`Client Secret` of your PayPal client application.",
+         "paypal": "`Secret Key` of your PayPal client application.",
+         "paypal_sandbox": "Secret key of your PayPal client application.",
          "phoenix_ads": "Your Phoenix Ads Secret key.",
          "retailnext": "Your RetailNext secret key.",
          "statsig": "Your Statsig secret key.",
@@ -12888,7 +13157,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "big_commerce": "The BigCommerce store hash."
+         "big_commerce": "The [store hash](https://fivetran.com/docs/connectors/applications/big-commerce/setup-guide#createaccesstoken) in your API path."
       },
       "api_field": ""
    },
@@ -12944,7 +13213,7 @@
          "chargebee_product_catalog_1": "Your Chargebee Product Catalog 1 subdomain.",
          "chargebee_product_catalog_2": "Your Chargebee subdomain.",
          "checkr": "Your Checkr subdomain.",
-         "churnzero": "",
+         "churnzero": "Your ChurnZero subdomain",
          "clubspeed": "Your Clubspeed subdomain.",
          "collibra": "Your collibra subdomain.",
          "compliance_checkpoint": "Your Compliance Checkpoint subdomain.",
@@ -12966,7 +13235,7 @@
          "green_power_monitor": "Your GreenPowerMonitor subdomain.",
          "h_level": "Your HighLevel subdomain.",
          "heartland_retail_pos": "Your Heartland Retail POS subdomain.",
-         "ilevel": "",
+         "ilevel": "Your iLevel Environment.",
          "infobip": "Your Infobip sub_domain.",
          "insightly": "Your company's Insightly subdomain name.",
          "instructure": "The Sub domain in which your Instructure account is hosted.",
@@ -13037,7 +13306,7 @@
          "hex": "Your Hex subdomain.",
          "jama_software": "Your Jama Software subdomain.",
          "klarna": "Your Klarna subdomain.",
-         "learnupon": "Your Learnupon subdomain.",
+         "learnupon": "Your LearnUpon subdomain.",
          "maxio_saasoptics": "Your Maxio SaaSOptics subdomain.",
          "medallia": "Medallia subdomain",
          "packiyo": "Your Packiyo subdomain.",
@@ -13514,7 +13783,7 @@
          "s3_compatible_storage": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema.",
          "sftp": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema.",
          "share_point": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema.",
-         "workday": "Table group name"
+         "workday": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema."
       },
       "api_field": ""
    },
@@ -13848,7 +14117,7 @@
          "azure_sql_managed_db": "Azure AD tenant ID.",
          "business_central": "`Tenant ID` of your Business Central application",
          "crowddev": "Your  crowd.dev Tenant ID.",
-         "microsoft_teams": "",
+         "microsoft_teams": "Your Microsoft Teams tenant ID.",
          "reltio": "Your Reltio tenant ID.",
          "servicetitan": "Your ServiceTitan tenant ID.",
          "share_point": "`Tenant ID` of your Microsoft client application.",
@@ -14548,6 +14817,32 @@
       },
       "api_field": ""
    },
+   "use_customer_s3_bucket": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sailthru": "Enable this if you want to sync Sailthru Connect using your own\"  S3 bucket."
+      },
+      "api_field": ""
+   },
+   "use_data_sync": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "pendo": "Toggle field to determine whether connector is syncing from API or from Data Sync"
+      },
+      "api_field": ""
+   },
    "use_oracle_rac": {
       "readonly": false,
       "sensitive": false,
@@ -14591,6 +14886,19 @@
          "s3_compatible_storage": "Set to `true` if files are encrypted using PGP in the S3-Compatible Storage bucket. Default value: `false`.",
          "sftp": "Set to `true` if files present in SFTP server are encrypted using PGP. Default value: `false`.",
          "wasabi_cloud_storage": "Set to `true` if files are encrypted using PGP in the Wasabi Cloud Storage bucket. Default value: `false`."
+      },
+      "api_field": ""
+   },
+   "use_sap_router": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sap_hana_db": "Enable connection via SAP Router"
       },
       "api_field": ""
    },
@@ -14843,7 +15151,7 @@
          "khoros_care": "Your Khoros Care username.",
          "kissmetrics": "Your Kissmetrics API Username.",
          "klarna": "Your Klarna Username.",
-         "learnupon": "Your Learnupon username.",
+         "learnupon": "Your LearnUpon username.",
          "lessonly": "Your Lessonly username.",
          "mailgun": "Your Mailgun API username.",
          "myosh": "Your myosh username.",
