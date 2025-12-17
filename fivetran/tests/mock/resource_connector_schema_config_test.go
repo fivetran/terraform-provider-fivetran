@@ -2922,6 +2922,7 @@ func TestResourceSchemaReloadUsesPreserveModeMock(t *testing.T) {
 		schemaPatchHandler *mock.Handler
 		schemaReloadPostHandler   *mock.Handler
 		schemaResponseData map[string]interface{}
+		schemasPatchRequestBody map[string]interface{}
 		schemasReloadBody map[string]interface{}
 	)
 	
@@ -3048,7 +3049,103 @@ func TestResourceSchemaReloadUsesPreserveModeMock(t *testing.T) {
 				}
 			}`
 	
-	schemaGetResponseAllTablesWithChangedHashed :=  `
+	schemaGetResponseAllTablesAfterSchemaReload :=  `
+			{
+				"enable_new_by_default": false,
+				"schema_change_handling": "BLOCK_ALL",
+				"schemas": {
+					"public": {
+						"name_in_destination": "public",
+						"enabled": true,
+						"tables": {
+							"table_1": {
+								"name_in_destination": "table_1",
+								"enabled": false,
+								"supports_columns_config": true,
+								"sync_mode": "SOFT_DELETE",
+								"enabled_patch_settings": { "allowed": true },
+								"columns": {
+									"table_1_col_1": {
+										"name_in_destination": "table_1_col_1",
+										"enabled": true,
+										"hashed": false,
+										"enabled_patch_settings": {
+											"allowed": false,
+											"reason_code": "SYSTEM_COLUMN",
+											"reason": "Column does not support exclusion as it is a Primary Key"
+										}
+									}
+								}
+							},
+							"table_2": {
+								"name_in_destination": "table_2",
+								"enabled": true,
+								"supports_columns_config": true,
+								"sync_mode": "SOFT_DELETE",
+								"enabled_patch_settings": { "allowed": true },
+								"columns": {
+									"table_2_col_1": {
+										"name_in_destination": "table_2_col_1",
+										"enabled": true,
+										"hashed": false,
+										"enabled_patch_settings": { "allowed": true }
+									},
+									"table_2_col_2": {
+										"name_in_destination": "table_2_col_2",
+										"enabled": false,
+										"hashed": false,
+										"enabled_patch_settings": { "allowed": true }
+									},
+									"table_2_col_3": {
+										"name_in_destination": "table_2_col_3",
+										"enabled": true,
+										"hashed": true,
+										"enabled_patch_settings": { "allowed": true }
+									}
+								}
+							},
+							"table_3": {
+								"name_in_destination": "table_3",
+								"enabled": false,
+								"supports_columns_config": true,
+								"sync_mode": "SOFT_DELETE",
+								"enabled_patch_settings": { "allowed": true },
+								"columns": {
+									"table_3_col_1": {
+										"name_in_destination": "table_3_col_1",
+										"enabled": true,
+										"hashed": true,
+										"enabled_patch_settings": { "allowed": true }
+									},
+									"table_3_col_2": {
+										"name_in_destination": "table_3_col_2",
+										"enabled": true,
+										"hashed": false,
+										"enabled_patch_settings": { "allowed": true }
+									}
+								}
+							},
+							"table_4": {
+								"name_in_destination": "table_4",
+								"enabled": true,
+								"supports_columns_config": true,
+								"sync_mode": "SOFT_DELETE",
+								"enabled_patch_settings": { "allowed": true },
+								"columns": {
+									"table_4_col_1": {
+										"name_in_destination": "table_4_col_1",
+										"enabled": true,
+										"hashed": false,
+										"enabled_patch_settings": { "allowed": true }
+									}
+								}
+							}
+						}
+					}
+				}
+			}`
+	
+	schemaGetResponseAllTablesAfterPatch :=  `
 			{
 				"enable_new_by_default": false,
 				"schema_change_handling": "BLOCK_ALL",
@@ -3094,6 +3191,12 @@ func TestResourceSchemaReloadUsesPreserveModeMock(t *testing.T) {
 										"enabled": true,
 										"hashed": false,
 										"enabled_patch_settings": { "allowed": true }
+									},
+									"table_2_col_3": {
+										"name_in_destination": "table_2_col_3",
+										"enabled": false,
+										"hashed": true,
+										"enabled_patch_settings": { "allowed": true }
 									}
 								}
 							},
@@ -3108,6 +3211,27 @@ func TestResourceSchemaReloadUsesPreserveModeMock(t *testing.T) {
 										"name_in_destination": "table_3_col_1",
 										"enabled": true,
 										"hashed": true,
+										"enabled_patch_settings": { "allowed": true }
+									},
+									"table_3_col_2": {
+										"name_in_destination": "table_3_col_2",
+										"enabled": false,
+										"hashed": false,
+										"enabled_patch_settings": { "allowed": true }
+									}
+								}
+							},
+							"table_4": {
+								"name_in_destination": "table_4",
+								"enabled": false,
+								"supports_columns_config": true,
+								"sync_mode": "SOFT_DELETE",
+								"enabled_patch_settings": { "allowed": true },
+								"columns": {
+									"table_4_col_1": {
+										"name_in_destination": "table_4_col_1",
+										"enabled": true,
+										"hashed": false,
 										"enabled_patch_settings": { "allowed": true }
 									}
 								}
@@ -3130,6 +3254,10 @@ func TestResourceSchemaReloadUsesPreserveModeMock(t *testing.T) {
 		// Mock PATCH handler
 		schemaPatchHandler = mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
+				schemasPatchRequestBody = requestBodyToJson(t, req)
+
+				// return modified tables after PATCH /v1/schemas
+				schemaResponseData = createMapFromJsonString(t, schemaGetResponseAllTablesAfterPatch)
 				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaResponseData), nil
 			},
 		)
@@ -3139,7 +3267,7 @@ func TestResourceSchemaReloadUsesPreserveModeMock(t *testing.T) {
 				schemasReloadBody = requestBodyToJson(t, req)
 
 				// return all the tables after /v1/schemas/reload
-				schemaResponseData = createMapFromJsonString(t, schemaGetResponseAllTablesWithChangedHashed)
+				schemaResponseData = createMapFromJsonString(t, schemaGetResponseAllTablesAfterSchemaReload)
 				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaResponseData), nil
 			},
 		)
@@ -3149,6 +3277,7 @@ func TestResourceSchemaReloadUsesPreserveModeMock(t *testing.T) {
 		schemaGetHandler.Interactions = 0
 		schemaPatchHandler.Interactions = 0
 		schemaReloadPostHandler.Interactions = 0
+		schemasPatchRequestBody = nil
 		schemasReloadBody = nil
 	}
 
@@ -3267,9 +3396,51 @@ func TestResourceSchemaReloadUsesPreserveModeMock(t *testing.T) {
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 					assertEqual(t, schemasReloadBody["exclude_mode"], "PRESERVE")
+					
+					assertKeyExists(t, schemasPatchRequestBody, "schemas")
+				 	assertKeyExists(t, schemasPatchRequestBody["schemas"].(map[string]interface {}), "public")
+				 	patchSchema := schemasPatchRequestBody["schemas"].(map[string]interface {})["public"].(map[string]interface {})
+					assertKeyExists(t, patchSchema, "tables")
+					patchTables := patchSchema["tables"].(map[string]interface {})
+					assertEqual(t, len(patchTables), 3)
+					
+					AssertKeyDoesNotExist(t, patchTables, "table_1")
+
+					assertKeyExists(t, patchTables, "table_2")
+					table2Patch := patchTables["table_2"].(map[string]interface {})
+					AssertKeyDoesNotExist(t, table2Patch, "enabled")
+					assertKeyExists(t, table2Patch, "columns")
+					patchTable2Columns := table2Patch["columns"].(map[string]interface {})
+					assertEqual(t, len(patchTable2Columns), 2)
+
+					assertKeyExists(t, patchTable2Columns, "table_2_col_2")
+					table2Col2Patch := patchTable2Columns["table_2_col_2"].(map[string]interface {})
+					assertEqual(t, table2Col2Patch["enabled"], true)
+
+					assertKeyExists(t, patchTable2Columns, "table_2_col_3")
+					table2Col3Patch := patchTable2Columns["table_2_col_3"].(map[string]interface {})
+					assertEqual(t, table2Col3Patch["enabled"], false)
+					assertEqual(t, table2Col3Patch["is_primary_key"], nil)
+
+					assertKeyExists(t, patchTables, "table_3")
+					table3Patch := patchTables["table_3"].(map[string]interface {})
+					assertEqual(t, table3Patch["enabled"], true)
+					assertKeyExists(t, table3Patch, "columns")
+					patchTable3Columns := table3Patch["columns"].(map[string]interface {})
+					assertEqual(t, len(patchTable3Columns), 1)
+					AssertKeyExists(t, patchTable3Columns, "table_3_col_2")
+					table3Col2Patch := patchTable3Columns["table_3_col_2"].(map[string]interface {})
+					assertEqual(t, table3Col2Patch["enabled"], false)
+					assertEqual(t, table3Col2Patch["is_primary_key"], nil) 
+
+					assertKeyExists(t, patchTables, "table_4")
+					table4Patch := patchTables["table_4"].(map[string]interface {})
+					assertEqual(t, len(table4Patch), 1)
+					assertEqual(t, table4Patch["enabled"], false)
+
 					assertEqual(t, schemaReloadPostHandler.Interactions, 1)
 					assertEqual(t, schemaGetHandler.Interactions, 4)
-					assertEqual(t, schemaPatchHandler.Interactions, 0)
+					assertEqual(t, schemaPatchHandler.Interactions, 1)
 					return nil
 				},
 				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "id", "connector_id"),
