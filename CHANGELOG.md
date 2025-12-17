@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Infrastructure: Added `JsonConfigValue` custom type for flexible JSON configuration in resources
 - Infrastructure: JSON validation utilities for semantic comparison and normalization
 
+### Fixed
+- `fivetran_connector_schema_config` resource - when validation needed, always call `/connections/{id}/schemas/reload` with `"exclude_mode": "PRESERVE"`
+
+
 ## [v1.9.17](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.16...v1.9.17)
 
 ### Fixed

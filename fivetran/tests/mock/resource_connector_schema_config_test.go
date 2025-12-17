@@ -2732,7 +2732,7 @@ func TestResourceSchemaConsequentGetReturnsLessColumnsMock(t *testing.T) {
 				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.private.tables.table_1.columns.table_1_col_1.enabled", "true"),
 			),
 	}
-
+    // Step 2: API returns less schemas
 	step2 := resource.TestStep{
 		PreConfig: func() {
 			resetInvocationCounts()
@@ -2802,7 +2802,7 @@ func TestResourceSchemaConsequentGetReturnsLessColumnsMock(t *testing.T) {
 				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.table_3_col_1.hashed", "false"),
 			),
 	}
-
+	// Step 3: API returns less tables
 	step3 := resource.TestStep{
 		PreConfig: func() {
 			resetInvocationCounts()
@@ -2911,6 +2911,399 @@ func TestResourceSchemaConsequentGetReturnsLessColumnsMock(t *testing.T) {
 				step2,
 				step3,
 				step4,
+			},
+		},
+	)
+}
+
+func TestResourceSchemaReloadUsesPreserveModeMock(t *testing.T) {
+	var (
+		schemaGetHandler   *mock.Handler
+		schemaPatchHandler *mock.Handler
+		schemaReloadPostHandler   *mock.Handler
+		schemaResponseData map[string]interface{}
+		schemasReloadBody map[string]interface{}
+	)
+	
+	schemaGetResponseAllTables :=  `
+			{
+				"enable_new_by_default": false,
+				"schema_change_handling": "BLOCK_ALL",
+				"schemas": {
+					"public": {
+						"name_in_destination": "public",
+						"enabled": true,
+						"tables": {
+							"table_1": {
+								"name_in_destination": "table_1",
+								"enabled": false,
+								"supports_columns_config": true,
+								"sync_mode": "SOFT_DELETE",
+								"enabled_patch_settings": { "allowed": true },
+								"columns": {
+									"table_1_col_1": {
+										"name_in_destination": "table_1_col_1",
+										"enabled": true,
+										"hashed": false,
+										"enabled_patch_settings": {
+											"allowed": false,
+											"reason_code": "SYSTEM_COLUMN",
+											"reason": "Column does not support exclusion as it is a Primary Key"
+										}
+									}
+								}
+							},
+							"table_2": {
+								"name_in_destination": "table_2",
+								"enabled": true,
+								"supports_columns_config": true,
+								"sync_mode": "SOFT_DELETE",
+								"enabled_patch_settings": { "allowed": true },
+								"columns": {
+									"table_2_col_1": {
+										"name_in_destination": "table_2_col_1",
+										"enabled": true,
+										"hashed": false,
+										"enabled_patch_settings": { "allowed": true }
+									},
+									"table_2_col_2": {
+										"name_in_destination": "table_2_col_2",
+										"enabled": true,
+										"hashed": false,
+										"enabled_patch_settings": { "allowed": true }
+									}
+								}
+							},
+							"table_3": {
+								"name_in_destination": "table_3",
+								"enabled": true,
+								"supports_columns_config": true,
+								"sync_mode": "SOFT_DELETE",
+								"enabled_patch_settings": { "allowed": true },
+								"columns": {
+									"table_3_col_1": {
+										"name_in_destination": "table_3_col_1",
+										"enabled": true,
+										"hashed": false,
+										"enabled_patch_settings": { "allowed": true }
+									}
+								}
+							}
+						}
+					}
+				}
+			}`
+
+	schemaGetResponseAbsentTable :=  `
+			{
+				"enable_new_by_default": false,
+				"schema_change_handling": "BLOCK_ALL",
+				"schemas": {
+					"public": {
+						"name_in_destination": "public",
+						"enabled": true,
+						"tables": {
+							"table_1": {
+								"name_in_destination": "table_1",
+								"enabled": false,
+								"supports_columns_config": true,
+								"sync_mode": "SOFT_DELETE",
+								"enabled_patch_settings": { "allowed": true },
+								"columns": {
+									"table_1_col_1": {
+										"name_in_destination": "table_1_col_1",
+										"enabled": true,
+										"hashed": false,
+										"enabled_patch_settings": {
+											"allowed": false,
+											"reason_code": "SYSTEM_COLUMN",
+											"reason": "Column does not support exclusion as it is a Primary Key"
+										}
+									}
+								}
+							},
+							"table_2": {
+								"name_in_destination": "table_2",
+								"enabled": true,
+								"supports_columns_config": true,
+								"sync_mode": "SOFT_DELETE",
+								"enabled_patch_settings": { "allowed": true },
+								"columns": {
+									"table_2_col_1": {
+										"name_in_destination": "table_2_col_1",
+										"enabled": true,
+										"hashed": false,
+										"enabled_patch_settings": { "allowed": true }
+									},
+									"table_2_col_2": {
+										"name_in_destination": "table_2_col_2",
+										"enabled": true,
+										"hashed": false,
+										"enabled_patch_settings": { "allowed": true }
+									}
+								}
+							}
+						}
+					}
+				}
+			}`
+	
+	schemaGetResponseAllTablesWithChangedHashed :=  `
+			{
+				"enable_new_by_default": false,
+				"schema_change_handling": "BLOCK_ALL",
+				"schemas": {
+					"public": {
+						"name_in_destination": "public",
+						"enabled": true,
+						"tables": {
+							"table_1": {
+								"name_in_destination": "table_1",
+								"enabled": false,
+								"supports_columns_config": true,
+								"sync_mode": "SOFT_DELETE",
+								"enabled_patch_settings": { "allowed": true },
+								"columns": {
+									"table_1_col_1": {
+										"name_in_destination": "table_1_col_1",
+										"enabled": true,
+										"hashed": false,
+										"enabled_patch_settings": {
+											"allowed": false,
+											"reason_code": "SYSTEM_COLUMN",
+											"reason": "Column does not support exclusion as it is a Primary Key"
+										}
+									}
+								}
+							},
+							"table_2": {
+								"name_in_destination": "table_2",
+								"enabled": true,
+								"supports_columns_config": true,
+								"sync_mode": "SOFT_DELETE",
+								"enabled_patch_settings": { "allowed": true },
+								"columns": {
+									"table_2_col_1": {
+										"name_in_destination": "table_2_col_1",
+										"enabled": true,
+										"hashed": false,
+										"enabled_patch_settings": { "allowed": true }
+									},
+									"table_2_col_2": {
+										"name_in_destination": "table_2_col_2",
+										"enabled": true,
+										"hashed": false,
+										"enabled_patch_settings": { "allowed": true }
+									}
+								}
+							},
+							"table_3": {
+								"name_in_destination": "table_3",
+								"enabled": true,
+								"supports_columns_config": true,
+								"sync_mode": "SOFT_DELETE",
+								"enabled_patch_settings": { "allowed": true },
+								"columns": {
+									"table_3_col_1": {
+										"name_in_destination": "table_3_col_1",
+										"enabled": true,
+										"hashed": true,
+										"enabled_patch_settings": { "allowed": true }
+									}
+								}
+							}
+						}
+					}
+				}
+			}`
+
+	setupMockClient := func(t *testing.T) {
+		mockClient.Reset()
+
+		// Mock GET handler
+		schemaGetHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaResponseData), nil
+			},
+		)
+
+		// Mock PATCH handler
+		schemaPatchHandler = mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaResponseData), nil
+			},
+		)
+
+		schemaReloadPostHandler = mockClient.When(http.MethodPost, "/v1/connections/connector_id/schemas/reload").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				schemasReloadBody = requestBodyToJson(t, req)
+
+				// return all the tables after /v1/schemas/reload
+				schemaResponseData = createMapFromJsonString(t, schemaGetResponseAllTablesWithChangedHashed)
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaResponseData), nil
+			},
+		)
+	}
+
+	resetInvocationCounts := func() {
+		schemaGetHandler.Interactions = 0
+		schemaPatchHandler.Interactions = 0
+		schemaReloadPostHandler.Interactions = 0
+		schemasReloadBody = nil
+	}
+
+	step1 := resource.TestStep{
+		PreConfig: func() {
+			schemaResponseData = createMapFromJsonString(t, schemaGetResponseAllTables)
+		},
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "BLOCK_ALL"
+				schemas = {
+					"public" = {
+						enabled = true
+						tables = {
+							"table_2" = {
+								sync_mode = "SOFT_DELETE"
+								enabled = true
+								columns = {
+									"table_2_col_1" = { 
+										enabled = true
+										hashed = false
+									}
+									"table_2_col_2" = { 
+										enabled = true
+										hashed = false
+									}
+								}
+							}
+							"table_3" = {
+								sync_mode = "SOFT_DELETE"
+								enabled = true
+								columns = {
+									"table_3_col_1" = { 
+										enabled = true
+										hashed = false
+									}
+								}
+							}
+						}
+					}
+				}
+			}`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+					assertEqual(t, schemaGetHandler.Interactions, 3)
+					assertEqual(t, schemaPatchHandler.Interactions, 0)
+					assertEqual(t, schemaReloadPostHandler.Interactions, 0)
+					return nil
+				},
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "id", "connector_id"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "connector_id", "connector_id"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.%", "1"),
+
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.%", "2"),
+
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.sync_mode", "SOFT_DELETE"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.%", "2"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_1.enabled", "true"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_1.hashed", "false"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_2.enabled", "true"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_2.hashed", "false"),
+
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.sync_mode", "SOFT_DELETE"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.%", "1"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.table_3_col_1.enabled", "true"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.table_3_col_1.hashed", "false"),
+			),
+	}
+
+	// Step 2: API returns less tables
+	step2 := resource.TestStep{
+		PreConfig: func() {
+			resetInvocationCounts()
+			schemaResponseData = createMapFromJsonString(t, schemaGetResponseAbsentTable)
+		},
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "BLOCK_ALL"
+				schemas = {
+					"public" = {
+						enabled = true
+						tables = {
+							"table_2" = {
+								sync_mode = "SOFT_DELETE"
+								enabled = true
+								columns = {
+									"table_2_col_1" = { 
+										enabled = true
+										hashed = false
+									}
+									"table_2_col_2" = { 
+										enabled = true
+										hashed = false
+									}
+								}
+							}
+							"table_3" = {
+								sync_mode = "SOFT_DELETE"
+								enabled = true
+								columns = {
+									"table_3_col_1" = { 
+										enabled = true
+										hashed = true
+									}
+								}
+							}
+						}
+					}
+				}
+			}`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+					assertEqual(t, schemasReloadBody["exclude_mode"], "PRESERVE")
+					assertEqual(t, schemaReloadPostHandler.Interactions, 1)
+					assertEqual(t, schemaGetHandler.Interactions, 4)
+					assertEqual(t, schemaPatchHandler.Interactions, 0)
+					return nil
+				},
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "id", "connector_id"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "connector_id", "connector_id"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.%", "2"),
+
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.sync_mode", "SOFT_DELETE"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.%", "2"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_1.enabled", "true"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_1.hashed", "false"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_2.enabled", "true"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_2.hashed", "false"),
+
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.sync_mode", "SOFT_DELETE"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.%", "1"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.table_3_col_1.enabled", "true"),
+				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.table_3_col_1.hashed", "true"),
+			),
+		}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClient(t)
+			},
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
+				step2,
 			},
 		},
 	)
