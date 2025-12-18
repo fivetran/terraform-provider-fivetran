@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.17...HEAD)
 
 ### Fixed
-- `fivetran_connector_schema_config` - Fixed noisy terraform plan output for `is_primary_key` attribute. The field is now only tracked in state for explicitly configured columns, preventing unnecessary diffs when adding tables to large schemas with 100+ tables. This resolves RD-1034803.
+- `fivetran_connector_schema_config` - Fixed noisy terraform plan output for `is_primary_key` attribute. The field is now only tracked in state for explicitly configured columns.
 
 ### Added
 - Infrastructure: Added `JsonConfigValue` custom type for flexible JSON configuration in resources
