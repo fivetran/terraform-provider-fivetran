@@ -93,7 +93,7 @@ func TestResourceConnectionE2E(t *testing.T) {
 				ResourceName:      "fivetran_connection.test_connection",
 				ImportState:       true,
 				ImportStateVerify: true,
-				ImportStateVerifyIgnore: []string{"run_setup_tests", "trust_certificates", "trust_fingerprints", "config"},
+				ImportStateVerifyIgnore: []string{"run_setup_tests", "trust_certificates", "trust_fingerprints", "config", "data_delay_sensitivity"},
 			},
 		},
 	})

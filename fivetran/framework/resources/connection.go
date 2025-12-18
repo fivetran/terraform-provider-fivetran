@@ -223,12 +223,12 @@ func (r *connection) Update(ctx context.Context, req resource.UpdateRequest, res
 		svc.HybridDeploymentAgentId(plan.HybridDeploymentAgentId.ValueString())
 	}
 
-	if !plan.ProxyAgentId.Equal(state.ProxyAgentId) {
-		svc.ProxyAgentId(plan.ProxyAgentId.ValueString())
-	}
-
 	if !plan.NetworkingMethod.Equal(state.NetworkingMethod) && plan.NetworkingMethod.ValueString() != "" {
 		svc.NetworkingMethod(plan.NetworkingMethod.ValueString())
+	}
+
+	if !plan.ProxyAgentId.Equal(state.ProxyAgentId) {
+		svc.ProxyAgentId(plan.ProxyAgentId.ValueString())
 	}
 
 	if !plan.DataDelaySensitivity.Equal(state.DataDelaySensitivity) {
