@@ -2472,7 +2472,7 @@
       "fields": {
          "connection_string": {
             "readonly": false,
-            "sensitive": false,
+            "sensitive": true,
             "nullable": true,
             "type": "string",
             "fields": null,

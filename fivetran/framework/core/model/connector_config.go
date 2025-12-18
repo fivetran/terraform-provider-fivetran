@@ -121,8 +121,7 @@ func attrTypeFromConfigField(cf common.ConfigField) attr.Type {
 		return types.StringType
 	case common.StringList:
 		return types.SetType{ElemType: types.StringType}
-	case common.Object:
-	case common.ObjectList:
+	case common.Object, common.ObjectList:
 		subFields := make(map[string]attr.Type)
 		for fn, f := range cf.ItemFields {
 			subFields[fn] = attrTypeFromConfigField(f)
