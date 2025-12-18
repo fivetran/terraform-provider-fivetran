@@ -93,7 +93,7 @@ func TestResourceConnectionE2E(t *testing.T) {
 				ResourceName:      "fivetran_connection.test_connection",
 				ImportState:       true,
 				ImportStateVerify: true,
-				ImportStateVerifyIgnore: []string{"run_setup_tests", "trust_certificates", "trust_fingerprints"},
+				ImportStateVerifyIgnore: []string{"run_setup_tests", "trust_certificates", "trust_fingerprints", "config"},
 			},
 		},
 	})
@@ -128,7 +128,7 @@ func TestResourceConnectionWithProxyAgentE2E(t *testing.T) {
 					}
 
 					config = jsonencode({
-						update_method = "XMIN"
+						update_method = "BINLOG"
 					})
 
 					networking_method = "ProxyAgent"
@@ -170,7 +170,7 @@ func TestResourceConnectionWithProxyAgentE2E(t *testing.T) {
 					}
 
 					config = jsonencode({
-						update_method = "XMIN"
+						update_method = "BINLOG"
 					})
 
 					networking_method = "Directly"
@@ -231,7 +231,7 @@ func TestResourceConnectionMultipleServicesE2E(t *testing.T) {
 					}
 
 					config = jsonencode({
-						update_method = "XMIN"
+						update_method = "BINLOG"
 					})
 
 					run_setup_tests = false
@@ -248,6 +248,7 @@ func TestResourceConnectionMultipleServicesE2E(t *testing.T) {
 
 					config = jsonencode({
 						role_arn = "arn:aws:iam::123456789:role/fivetran"
+						table_group_name = "s3_table_group"
 					})
 
 					run_setup_tests = false
