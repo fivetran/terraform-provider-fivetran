@@ -36,7 +36,7 @@ func GetResourceConnectorConfigSchemaAttributes() map[string]resourceSchema.Attr
 	if len(configResourceSchemaAttrs) == 0 {
 		result := make(map[string]resourceSchema.Attribute)
 		for fn, f := range common.GetConfigFieldsMap() {
-			if f.FieldValueType != common.ObjectList {
+			if f.FieldValueType != common.ObjectList && f.FieldValueType != common.Object {
 				result[fn] = schemaAttributeFromConfigField(f, false).(resourceSchema.Attribute)
 			}
 		}
@@ -52,7 +52,7 @@ func GetResourceConnectorConfigSchemaBlocks() map[string]resourceSchema.Block {
 	if len(configResourceSchemaBlocks) == 0 {
 		result := make(map[string]resourceSchema.Block)
 		for fn, f := range common.GetConfigFieldsMap() {
-			if f.FieldValueType == common.ObjectList {
+			if f.FieldValueType == common.ObjectList || f.FieldValueType == common.Object {
 				result[fn] = schemaBlockFromConfigField(f)
 			}
 		}
