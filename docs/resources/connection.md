@@ -10,7 +10,7 @@ The `fivetran_connection` resource creates a connection with basic metadata (ser
 
 ## Example Usage
 
-### Basic PostgreSQL Connection
+### Basic PostgreSQL Connection with Minimal Config
 
 ```hcl
 resource "fivetran_group" "example" {
@@ -25,9 +25,36 @@ resource "fivetran_connection" "postgres" {
         prefix = "my_postgres"
     }
 
+    config = jsonencode({
+        update_method = "XMIN"
+    })
+
     run_setup_tests    = false
     trust_certificates = false
     trust_fingerprints = false
+}
+```
+
+### PostgreSQL Connection with Full Configuration
+
+```hcl
+resource "fivetran_connection" "postgres_full" {
+    group_id = fivetran_group.example.id
+    service  = "postgres"
+
+    destination_schema {
+        prefix = "my_postgres"
+    }
+
+    config = jsonencode({
+        update_method = "XMIN"
+        host          = "postgres.example.com"
+        port          = 5432
+        database      = "mydb"
+        user          = "fivetran_user"
+    })
+
+    run_setup_tests = false
 }
 ```
 
@@ -97,6 +124,7 @@ resource "fivetran_connection" "snowflake_connector" {
 ### Optional
 
 - `destination_schema` (Block, Optional) Configuration for the destination schema. See [destination_schema](#nested-schema-for-destination_schema) below.
+- `config` (String) Optional connection configuration as a JSON-encoded string. This config is merged with destination_schema fields and sent to the API during creation. The connection resource does not read this field back, allowing it to be managed separately by the `fivetran_connection_config` resource. Use this to provide service-specific required fields (e.g., `update_method` for Postgres/MySQL) or full connection configuration.
 - `run_setup_tests` (Boolean) Whether to run setup tests when creating the connection. Default: `false`. **Note:** This is a plan-only attribute and will not be stored in state.
 - `trust_certificates` (Boolean) Whether to automatically trust SSL certificates. Default: `false`. **Note:** This is a plan-only attribute.
 - `trust_fingerprints` (Boolean) Whether to automatically trust SSH fingerprints. Default: `false`. **Note:** This is a plan-only attribute.
