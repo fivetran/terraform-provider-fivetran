@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.18...HEAD)
 
-## [v1.9.17](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.17...v1.9.18)
+## [v1.9.18](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.17...v1.9.18)
 
 ### Fixed
 - `fivetran_connector_schema_config` - Fixed noisy terraform plan output for `is_primary_key` attribute. The field is now only tracked in state for explicitly configured columns.
