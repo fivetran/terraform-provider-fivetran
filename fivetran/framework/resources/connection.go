@@ -61,10 +61,7 @@ func (r *connection) Create(ctx context.Context, req resource.CreateRequest, res
 	}
 
 
-	/*
-	iterate through definetly assigned fields
 	destinationSchema, err := data.GetDestinatonSchemaForConfig()
-
 
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -75,16 +72,9 @@ func (r *connection) Create(ctx context.Context, req resource.CreateRequest, res
 		return
 	}
 
-	destinationSchema := make(map[string]interface{})
-	for k, v := range destinationSchema {
-		destinationSchema[k] = v
-	}
-	*/
 	runSetupTestsPlan := core.GetBoolOrDefault(data.RunSetupTests, false)
 	trustCertificatesPlan := core.GetBoolOrDefault(data.TrustCertificates, false)
 	trustFingerprintsPlan := core.GetBoolOrDefault(data.TrustFingerprints, false)
-
-	emptyConfig := make(map[string]interface{})
 
 	svc := r.GetClient().NewConnectionCreate().
 		Paused(true). // on creation we always create paused connection
@@ -93,7 +83,7 @@ func (r *connection) Create(ctx context.Context, req resource.CreateRequest, res
 		RunSetupTests(runSetupTestsPlan).
 		TrustCertificates(trustCertificatesPlan).
 		TrustFingerprints(trustFingerprintsPlan).
-		ConfigCustom(&emptyConfig)
+		ConfigCustom(&destinationSchema)
 
 	if data.ProxyAgentId.ValueString() != "" {
 		svc.ProxyAgentId(data.ProxyAgentId.ValueString())

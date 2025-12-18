@@ -2,11 +2,9 @@ package model
 
 import (
     "fmt"
-    //"strings"
 
     //gfcommon "github.com/fivetran/go-fivetran/common"
     "github.com/fivetran/go-fivetran/connections"
-    //"github.com/fivetran/terraform-provider-fivetran/fivetran/common"
     //"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
     "github.com/hashicorp/terraform-plugin-framework/attr"
     //"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -236,4 +234,31 @@ func (d *ConnectionDatasourceModel) ReadFromResponse(resp connections.DetailsWit
         },
     )
     d.Status = status
+}
+
+// GetDestinatonSchemaForConfig builds minimal config from destination_schema for connection creation
+func (d *ConnectionResourceModel) GetDestinatonSchemaForConfig() (map[string]interface{}, error) {
+    if d.DestinationSchema.IsNull() || d.DestinationSchema.IsUnknown() {
+        return nil, fmt.Errorf("Field `destination_schema` is required.")
+    }
+
+    service := d.Service.ValueString()
+    attrs := d.DestinationSchema.Attributes()
+    config := make(map[string]interface{})
+
+    // For services that use schema_prefix (postgres, mysql, etc.)
+    if prefixAttr := attrs["prefix"]; !prefixAttr.IsNull() && !prefixAttr.IsUnknown() {
+        config["schema_prefix"] = prefixAttr.(types.String).ValueString()
+    }
+
+    // For services that use schema (s3, etc.)
+    if nameAttr := attrs["name"]; !nameAttr.IsNull() && !nameAttr.IsUnknown() {
+        config["schema"] = nameAttr.(types.String).ValueString()
+    }
+
+    if len(config) == 0 {
+        return nil, fmt.Errorf("Either `destination_schema.prefix` or `destination_schema.name` must be set for service `%v`", service)
+    }
+
+    return config, nil
 }
