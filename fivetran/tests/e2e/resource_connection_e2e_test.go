@@ -32,6 +32,10 @@ func TestResourceConnectionE2E(t *testing.T) {
 						prefix = "postgres_connection"
 					}
 
+					config = jsonencode({
+						update_method = "XMIN"
+					})
+
 					run_setup_tests = false
 					trust_certificates = false
 					trust_fingerprints = false
@@ -64,6 +68,10 @@ func TestResourceConnectionE2E(t *testing.T) {
 					destination_schema {
 						prefix = "postgres_connection"
 					}
+
+					config = jsonencode({
+						update_method = "XMIN"
+					})
 
 					run_setup_tests = true
 					trust_certificates = true
@@ -119,6 +127,10 @@ func TestResourceConnectionWithProxyAgentE2E(t *testing.T) {
 						prefix = "mysql_proxy"
 					}
 
+					config = jsonencode({
+						update_method = "XMIN"
+					})
+
 					networking_method = "ProxyAgent"
 					proxy_agent_id = fivetran_proxy_agent.test_proxy_agent.id
 
@@ -156,6 +168,10 @@ func TestResourceConnectionWithProxyAgentE2E(t *testing.T) {
 					destination_schema {
 						prefix = "mysql_proxy"
 					}
+
+					config = jsonencode({
+						update_method = "XMIN"
+					})
 
 					networking_method = "Directly"
 					proxy_agent_id = null
@@ -198,6 +214,10 @@ func TestResourceConnectionMultipleServicesE2E(t *testing.T) {
 						prefix = "postgres_multi"
 					}
 
+					config = jsonencode({
+						update_method = "XMIN"
+					})
+
 					run_setup_tests = false
 				}
 
@@ -210,6 +230,10 @@ func TestResourceConnectionMultipleServicesE2E(t *testing.T) {
 						prefix = "mysql_multi"
 					}
 
+					config = jsonencode({
+						update_method = "XMIN"
+					})
+
 					run_setup_tests = false
 				}
 
@@ -221,6 +245,10 @@ func TestResourceConnectionMultipleServicesE2E(t *testing.T) {
 					destination_schema {
 						name = "s3_schema"
 					}
+
+					config = jsonencode({
+						role_arn = "arn:aws:iam::123456789:role/fivetran"
+					})
 
 					run_setup_tests = false
 				}

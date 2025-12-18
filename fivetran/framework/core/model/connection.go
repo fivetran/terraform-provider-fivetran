@@ -20,6 +20,7 @@ type ConnectionResourceModel struct {
     GroupId           types.String `tfsdk:"group_id"`
     Service           types.String `tfsdk:"service"`
     DestinationSchema types.Object `tfsdk:"destination_schema"`
+    Config            types.String `tfsdk:"config"`
 
     ProxyAgentId           types.String `tfsdk:"proxy_agent_id"`
     NetworkingMethod       types.String `tfsdk:"networking_method"`

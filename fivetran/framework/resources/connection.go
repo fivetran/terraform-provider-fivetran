@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
@@ -72,6 +73,24 @@ func (r *connection) Create(ctx context.Context, req resource.CreateRequest, res
 		return
 	}
 
+	// Merge user-provided config with destination_schema
+	configMap := destinationSchema
+	if !data.Config.IsNull() && !data.Config.IsUnknown() {
+		var userConfig map[string]interface{}
+		if err := json.Unmarshal([]byte(data.Config.ValueString()), &userConfig); err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to Parse Config JSON.",
+				fmt.Sprintf("Error parsing config: %v", err),
+			)
+			return
+		}
+		// Merge: user config takes priority, but we add destination_schema fields
+		configMap = userConfig
+		for k, v := range destinationSchema {
+			configMap[k] = v
+		}
+	}
+
 	runSetupTestsPlan := core.GetBoolOrDefault(data.RunSetupTests, false)
 	trustCertificatesPlan := core.GetBoolOrDefault(data.TrustCertificates, false)
 	trustFingerprintsPlan := core.GetBoolOrDefault(data.TrustFingerprints, false)
@@ -83,7 +102,7 @@ func (r *connection) Create(ctx context.Context, req resource.CreateRequest, res
 		RunSetupTests(runSetupTestsPlan).
 		TrustCertificates(trustCertificatesPlan).
 		TrustFingerprints(trustFingerprintsPlan).
-		ConfigCustom(&destinationSchema)
+		ConfigCustom(&configMap)
 
 	if data.ProxyAgentId.ValueString() != "" {
 		svc.ProxyAgentId(data.ProxyAgentId.ValueString())

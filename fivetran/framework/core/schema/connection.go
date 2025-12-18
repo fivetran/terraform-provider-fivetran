@@ -41,6 +41,11 @@ func ConnectionAttributesSchema() core.Schema {
 				ValueType:   core.String,
 				Description: "The connector type id within the Fivetran system.",
 			},
+			"config": {
+				ValueType:    core.String,
+				ResourceOnly: true,
+				Description:  "Optional connection configuration as a JSON string. This will be merged with destination_schema fields. The connection resource does not read this field back from the API, allowing it to be managed separately by fivetran_connection_config resource.",
+			},
 			"run_setup_tests": {
 				ValueType:    core.Boolean,
 				Description:  "Specifies whether the setup tests should be run automatically. The default value is FALSE.",
