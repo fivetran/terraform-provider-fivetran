@@ -149,7 +149,7 @@ func (c _column) toStateObject(sch string, local *_column, diag *diag.Diagnostic
 	if local != nil && local.hashed != nil && c.hashed != nil {
 		result[HASHED] = helpers.BoolToStr(*c.hashed)
 	}
-	if c.isPrimaryKey != nil {
+	if local != nil && c.isPrimaryKey != nil {
 		result[IS_PRIMARY_KEY] = helpers.BoolToStr(*c.isPrimaryKey)
 	}
 	return result, local != nil ||
