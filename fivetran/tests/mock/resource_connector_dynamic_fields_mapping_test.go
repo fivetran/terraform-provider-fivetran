@@ -164,6 +164,16 @@ func getTfConfigForFieldImpl(fieldName, service string, field common.ConfigField
 			return fmt.Sprintf("%v {\n\t%v\n}",
 				fieldName, subFieldsStr)
 		}
+	case common.Object:
+		if len(field.ItemFields) > 0 {
+			subFields := make([]string, 0)
+			for n, f := range field.ItemFields {
+				subFields = append(subFields, getTfConfigForFieldImpl(n, service, f))
+			}
+			subFieldsStr := strings.Join(subFields, "\n\t\t\t")
+			return fmt.Sprintf("%v {\n\t\t\t%v\n\t\t}",
+				fieldName, subFieldsStr)
+		}
 	}
 
 	return ""
@@ -211,6 +221,16 @@ func getJsonConfigForFieldImpl(fieldName, service string, field common.ConfigFie
 			}
 			subFieldsStr := strings.Join(subFields, ",\n\t")
 			return fmt.Sprintf("\"%v\": [{\n\t%v\n}]",
+				apiFieldName, subFieldsStr)
+		}
+	case common.Object:
+		if len(field.ItemFields) > 0 {
+			subFields := make([]string, 0)
+			for n, f := range field.ItemFields {
+				subFields = append(subFields, getJsonConfigForFieldImpl(n, service, f))
+			}
+			subFieldsStr := strings.Join(subFields, ",\n\t\t\t")
+			return fmt.Sprintf("\"%v\": {\n\t\t\t%v\n\t\t}",
 				apiFieldName, subFieldsStr)
 		}
 	}
@@ -271,7 +291,7 @@ func fetchFieldsBatchByService(fields []string) ([]string, []string, string) {
 				if sf, ok := serviceFields[fName]; ok {
 					if !sf.Readonly {
 						fieldsToTest = append(fieldsToTest, fName)
-					} else if debug{
+					} else if debug {
 						fmt.Printf("SKIP: field %v - readonly", f)
 					}
 				} else {
@@ -345,7 +365,7 @@ func TestResourceConnectorDynamicMapping(t *testing.T) {
 
 	for len(*restFields) > 0 {
 		stepFields, rest, service := fetchFieldsBatchByService(*restFields)
-		
+
 		if debug {
 			fmt.Printf("Service %s | Fields left to test: %v | Step fields count: %v | Fields rest %v \n", service, len(rest)+len(stepFields), len(stepFields), len(rest))
 			fmt.Printf("Testing fields for service %v : [\t\n%v]\n", service, strings.Join(stepFields, "\t\n "))
