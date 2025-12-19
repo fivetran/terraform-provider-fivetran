@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `fivetran_connector_schema_config` - Fixed noisy terraform plan output for `is_primary_key` attribute. The field is now only tracked in state for explicitly configured columns.
+- `fivetran_connector_schema_config` resource - when validation needed, always call `/connections/{id}/schemas/reload` with `"exclude_mode": "PRESERVE"`
 
 ### Added
 - Infrastructure: Added `JsonConfigValue` custom type for flexible JSON configuration in resources
@@ -35,8 +36,6 @@ New connection config fields supported:
 - Added field `fivetran_connector.config.custom_reports.breakdowns` for services: `reddit_ads`.
 - Added field `fivetran_connector.config.use_sap_router` for services: `sap_hana_db`.
 
-### Fixed
-- `fivetran_connector_schema_config` resource - when validation needed, always call `/connections/{id}/schemas/reload` with `"exclude_mode": "PRESERVE"`
 
 ## [v1.9.17](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.16...v1.9.17)
 
