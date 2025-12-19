@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Infrastructure: Added `JsonConfigValue` custom type for flexible JSON configuration in resources
 - Infrastructure: JSON validation utilities for semantic comparison and normalization
+- New resource: `fivetran_connection` for creating connections with basic metadata and networking configuration
 
 New connection services supported:
 - Supported service: `peopleforce`

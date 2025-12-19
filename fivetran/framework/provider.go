@@ -102,6 +102,7 @@ func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Reso
 		resources.UserGroupMembership,
 		resources.Webhook,
 		resources.Connector,
+		resources.Connection,
 		resources.ConnectorSchema,
 		resources.ConnectorSchedule,
 		resources.Destination,
