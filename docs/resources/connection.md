@@ -99,7 +99,7 @@ resource "fivetran_connection" "s3" {
 ### Connection with Data Delay Settings
 
 ```hcl
-resource "fivetran_connection" "snowflake_connector" {
+resource "fivetran_connection" "snowflake_connection" {
     group_id = fivetran_group.example.id
     service  = "snowflake"
 
@@ -119,7 +119,7 @@ resource "fivetran_connection" "snowflake_connector" {
 ### Required
 
 - `group_id` (String) The unique identifier for the destination group.
-- `service` (String) The connector service type (e.g., `postgres`, `mysql`, `s3`, `snowflake`). See [Fivetran connector types documentation](https://fivetran.com/docs/connectors) for available services.
+- `service` (String) The connection service type (e.g., `postgres`, `mysql`, `s3`, `snowflake`). See [Fivetran connection types documentation](https://fivetran.com/docs/connectors) for available services.
 
 ### Optional
 
@@ -147,10 +147,10 @@ resource "fivetran_connection" "snowflake_connector" {
 
 Optional:
 
-- `name` (String) The explicit schema name in the destination. Use this for connectors like S3 that allow explicit schema names.
-- `prefix` (String) The schema prefix in the destination. The connection name will be derived from this. Use this for most database connectors.
-- `table` (String) The table name for single-table connectors.
-- `table_group_name` (String) The table group name for multi-table connectors.
+- `name` (String) The explicit schema name in the destination. Use this for connections like S3 that allow explicit schema names.
+- `prefix` (String) The schema prefix in the destination. The connection name will be derived from this. Use this for most database connections.
+- `table` (String) The table name for single-table connections.
+- `table_group_name` (String) The table group name for multi-table connections.
 
 **Note:** Use either `name` or `prefix`, not both.
 
@@ -168,8 +168,8 @@ terraform import fivetran_connection.example connection_id_here
 
 - **Configuration Details:** This resource creates the connection structure. To configure connection-specific details (host, port, credentials, etc.), use the [`fivetran_connection_config`](connection_config.md) resource.
 - **Setup Tests:** When `run_setup_tests` is `true`, Fivetran will validate the connection configuration. Any test failures will appear as warnings in the Terraform output.
-- **Paused State:** Connections are created in a paused state by default. Use the connector schedule resource or the Fivetran UI to unpause the connection.
-- **Service Types:** See the [Fivetran documentation](https://fivetran.com/docs/connectors) for the complete list of available connector services.
+- **Paused State:** Connections are created in a paused state by default. Use the connection schedule resource or the Fivetran UI to unpause the connection.
+- **Service Types:** See the [Fivetran documentation](https://fivetran.com/docs/connectors) for the complete list of available connection services.
 
 ## See Also
 
