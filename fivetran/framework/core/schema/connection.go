@@ -3,6 +3,7 @@ package schema
 import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	datasourceSchema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
 func ConnectionAttributesSchema() core.Schema {
@@ -38,7 +39,12 @@ func ConnectionAttributesSchema() core.Schema {
 				Required:    true,
 				ForceNew:    true,
 				ValueType:   core.String,
-				Description: "The connector type id within the Fivetran system.",
+				Description: "The connection type id within the Fivetran system.",
+			},
+			"config": {
+				ValueType:    core.String,
+				ResourceOnly: true,
+				Description:  "Optional connection configuration as a JSON string. This will be merged with destination_schema fields. The connection resource does not read this field back from the API, allowing it to be managed separately by fivetran_connection_config resource.",
 			},
 			"run_setup_tests": {
 				ValueType:    core.Boolean,
@@ -68,7 +74,7 @@ func ConnectionAttributesSchema() core.Schema {
 			"service_version": {
 				DatasourceOnly: true,
 				ValueType:      core.String,
-				Description:    "The connector type version within the Fivetran system.",
+				Description:    "The connection type version within the Fivetran system.",
 			},
 			"sync_frequency": {
 				DatasourceOnly: true,
@@ -118,6 +124,54 @@ func ConnectionAttributesSchema() core.Schema {
 			"data_delay_threshold": {
 				ValueType:   core.Integer,
 				Description: "Custom sync delay notification threshold in minutes. The default value is 0. This parameter is only used when data_delay_sensitivity set to CUSTOM.",
+			},
+		},
+	}
+}
+
+func ConnectionResourceBlocks() map[string]resourceSchema.Block {
+	return map[string]resourceSchema.Block{
+		"destination_schema": resourceSchema.SingleNestedBlock{
+			Attributes: connectionDestinationSchema().GetResourceSchema(),
+		},
+	}
+}
+
+func ConnectionDatasourceBlocks() map[string]datasourceSchema.Block {
+	return map[string]datasourceSchema.Block{
+		"destination_schema": datasourceSchema.SingleNestedBlock{
+			Attributes: connectionDestinationSchema().GetDatasourceSchema(),
+		},
+		"status": connectorStatusBlock(),
+	}
+}
+
+func connectionDestinationSchema() core.Schema {
+	return core.Schema{
+		Fields: map[string]core.SchemaField{
+			"name": {
+				ForceNew:    true,
+				Required:    false,
+				ValueType:   core.String,
+				Description: "The connection schema name in destination. Has to be unique within the group (destination). Required for connection creation.",
+			},
+			"table": {
+				ForceNew:    true,
+				Required:    false,
+				ValueType:   core.String,
+				Description: "The table name unique within the schema to which connection will sync the data. Required for connection creation.",
+			},
+			"prefix": {
+				ForceNew:    true,
+				Required:    false,
+				ValueType:   core.String,
+				Description: "The connection schema prefix has to be unique within the group (destination). Each replicated schema is prefixed with the provided value. Required for connection creation.",
+			},
+			"table_group_name": {
+				ForceNew:    true,
+				Required:    false,
+				ValueType:   core.String,
+				Description: "Table group name.",
 			},
 		},
 	}
@@ -175,15 +229,6 @@ func connectionStatusBlock() datasourceSchema.SingleNestedBlock {
 				},
 			},
 		},
-	}
-}
-
-func ConnectionDatasourceBlocks() map[string]datasourceSchema.Block {
-	return map[string]datasourceSchema.Block{
-		"destination_schema": datasourceSchema.SingleNestedBlock{
-			Attributes: destinationSchemaAttributes().GetDatasourceSchema(),
-		},
-		"status": connectionStatusBlock(),
 	}
 }
 
