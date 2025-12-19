@@ -18,11 +18,11 @@
   "tags": [
     {
       "name": "updated",
-      "description": "2025-11-25T19:01:37.601Z"
+      "description": "2025-12-17T14:16:56.816Z"
     },
     {
       "name": "hash",
-      "description": "76069c270992df4421c40005ec418803ef799c06311406101a7770bfcb729a51"
+      "description": "ed6d73ad51c3ac17e2b6dac6dd02f08ae2f87c159e1849a3b0d695b799479e3f"
     }
   ],
   "paths": {
@@ -115,9 +115,9 @@
             "required": false,
             "schema": {
               "type": "string",
-              "example": "af3gu4hSDdF"
+              "example": "cursor_value"
             },
-            "example": "af3gu4hSDdF"
+            "example": "cursor_value"
           },
           {
             "name": "limit",
@@ -675,7 +675,7 @@
           {
             "name": "teamId",
             "in": "path",
-            "description": "The unique identifier for the team within the account",
+            "description": "The unique identifier for the team within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -690,14 +690,14 @@
             "required": false,
             "schema": {
               "type": "string",
-              "example": "vcDfgTEda6t"
+              "example": "cursor_value"
             },
-            "example": "vcDfgTEda6t"
+            "example": "cursor_value"
           },
           {
             "name": "limit",
             "in": "query",
-            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100",
+            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
             "required": false,
             "schema": {
               "type": "integer",
@@ -774,7 +774,7 @@
           {
             "name": "teamId",
             "in": "path",
-            "description": "The unique identifier for the team within the account",
+            "description": "The unique identifier for the team within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -796,7 +796,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/MembershipRequest"
+                "$ref": "#/components/schemas/MembershipRequest_add_team_membership_in_group"
               }
             }
           }
@@ -845,18 +845,18 @@
           {
             "name": "cursor",
             "in": "query",
-            "description": "The paging cursor. Read more about [pagination in our documentation](https://fivetran.com/docs/rest-api/pagination)",
+            "description": "Paging cursor, [read more about pagination](https://fivetran.com/docs/rest-api/pagination)",
             "required": false,
             "schema": {
               "type": "string",
-              "example": "ug5DFer4rnd7sl"
+              "example": "cursor_value"
             },
-            "example": "ug5DFer4rnd7sl"
+            "example": "cursor_value"
           },
           {
             "name": "limit",
             "in": "query",
-            "description": "The number of records to fetch per page, accepts a number in the range 1..1000. The default value is 100",
+            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
             "required": false,
             "schema": {
               "type": "integer",
@@ -1009,7 +1009,7 @@
           {
             "name": "teamId",
             "in": "path",
-            "description": "The unique identifier for the team within the account",
+            "description": "The unique identifier for the team within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -1020,7 +1020,7 @@
           {
             "name": "groupId",
             "in": "path",
-            "description": "The unique identifier for the group within the account",
+            "description": "The unique identifier for the group within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -1080,7 +1080,7 @@
           {
             "name": "teamId",
             "in": "path",
-            "description": "The unique identifier for the team within the account",
+            "description": "The unique identifier for the team within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -1091,7 +1091,7 @@
           {
             "name": "groupId",
             "in": "path",
-            "description": "The unique identifier for the group within the account",
+            "description": "The unique identifier for the group within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -1148,7 +1148,7 @@
           {
             "name": "teamId",
             "in": "path",
-            "description": "The unique identifier for the team within the account",
+            "description": "The unique identifier for the team within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -1159,7 +1159,7 @@
           {
             "name": "groupId",
             "in": "path",
-            "description": "The unique identifier for the group within the account",
+            "description": "The unique identifier for the group within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -1181,7 +1181,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateMembershipRequest"
+                "$ref": "#/components/schemas/UpdateMembershipRequest_update_team_membership_in_group"
               }
             }
           }
@@ -1380,9 +1380,9 @@
             "required": false,
             "schema": {
               "type": "string",
-              "example": "fErdGh2de354d"
+              "example": "cursor_value"
             },
-            "example": "fErdGh2de354d"
+            "example": "cursor_value"
           },
           {
             "name": "limit",
@@ -1577,7 +1577,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100",
+            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
             "required": false,
             "schema": {
               "type": "integer",
@@ -1653,13 +1653,13 @@
           "Connection Schema Management"
         ],
         "summary": "Retrieve Source Table Columns Config",
-        "description": "This function retrieves and returns the column configuration for a source table. It only works for an existing connection that is in a 'Connected' state.\n\nFor the NetSuite SuiteAnalytics and Salesforce and Salesforce Sandbox connectors, the 'schemas' map field will always have a single entry with the 'netsuite' or 'salesforce' key, respectively.\n",
+        "description": "Returns the real-time column list for one source table by querying the source. The response includes the current enabled and hashed flags, and the patchable fields. \n\n> Note: This endpoint works only for an existing connection that is in a 'Connected' state.\n",
         "operationId": "connection_column_config",
         "parameters": [
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -1758,9 +1758,9 @@
             "required": false,
             "schema": {
               "type": "string",
-              "example": "fErdGh2de354d"
+              "example": "cursor_value"
             },
-            "example": "fErdGh2de354d"
+            "example": "cursor_value"
           },
           {
             "name": "limit",
@@ -1867,7 +1867,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ApproveFingerprintRequest"
+                "$ref": "#/components/schemas/ApproveFingerprintRequest_approve_destination_fingerprint"
               }
             }
           }
@@ -1922,7 +1922,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -2162,7 +2162,7 @@
           {
             "name": "groupId",
             "in": "path",
-            "description": "The group ID",
+            "description": "The unique identifier for the group within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -2184,7 +2184,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/WebhookRequest"
+                "$ref": "#/components/schemas/WebhookRequest_create_group_webhook"
               }
             }
           }
@@ -2236,7 +2236,7 @@
           {
             "name": "teamId",
             "in": "path",
-            "description": "The unique identifier for the team within the account",
+            "description": "The unique identifier for the team within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -2247,7 +2247,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the account",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -2307,7 +2307,7 @@
           {
             "name": "teamId",
             "in": "path",
-            "description": "The unique identifier for the team within the account",
+            "description": "The unique identifier for the team within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -2318,7 +2318,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the account",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -2375,7 +2375,7 @@
           {
             "name": "teamId",
             "in": "path",
-            "description": "The unique identifier for the team within the account",
+            "description": "The unique identifier for the team within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -2386,7 +2386,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the account",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -2468,13 +2468,13 @@
           {
             "name": "userId",
             "in": "path",
-            "description": "The unique identifier for the user within the Fivetran system.",
+            "description": "The unique identifier for the user within the account.",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "user_id"
+              "example": "userId"
             },
-            "example": "user_id"
+            "example": "userId"
           },
           {
             "name": "Accept",
@@ -2527,7 +2527,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -2587,7 +2587,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -2647,7 +2647,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -2809,9 +2809,9 @@
             "required": false,
             "schema": {
               "type": "string",
-              "example": "Iu6zaC1yc2C6tf"
+              "example": "cursor_value"
             },
-            "example": "Iu6zaC1yc2C6tf"
+            "example": "cursor_value"
           },
           {
             "name": "limit",
@@ -2895,7 +2895,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -3113,13 +3113,13 @@
           "Connection Schema Management"
         ],
         "summary": "Retrieve a Connection Schema Config",
-        "description": "Returns the connection schema config for an existing connection within your Fivetran account.\n\n> NOTE: The response contains all known schemas and tables. Also, it contains columns whose state has ever been set by the user. For more information, see also the [Connection Schema config](https://fivetran.com/docs/rest-api/tutorials/connection-schema-configuration-use-cases) tutorial.\n\nFor the NetSuite SuiteAnalytics and Salesforce and Salesforce Sandbox connectors, the 'schemas' map field will always have a single entry with the 'netsuite' or 'salesforce' key, respectively. For the 'schema.name_in_destination` name field, these connectors always return the destination schema name you set in the connection setup form.\n\nFor more information about this API endpoint call for the Oracle Fusion Cloud Applications connectors, see our [Schema information documentation](https://fivetran.com/docs/connectors/applications/oracle-fusion-cloud-applications#schemainformation).\n",
+        "description": "\nReturns the top-level schema configuration for an existing connection within your Fivetran account. The response includes global flags, every schema, each table, and only the columns that were explicitly overridden. \n\nUse this endpoint to read the current data-selection tree for a connection, or to copy the configuration to another connection.\n\nFor more information, see the [Connection Schema config](https://fivetran.com/docs/rest-api/tutorials/connection-schema-configuration-use-cases) tutorial.\n\n> Note: Unedited columns (those following table defaults) are omitted from the response. For a real-time, exhaustive column list for a specific table, call the [Retrieve Source Table Columns Config](/docs/rest-api/api-reference/connection-schema/connection-column-config) endpoint. \n\nFor the NetSuite SuiteAnalytics, and Salesforce and Salesforce Sandbox connectors, the 'schemas' map field contains a single entry with the 'netsuite' or 'salesforce' key, respectively. For the 'schema.name_in_destination` name field, these connectors always return the destination schema name you set in the connection setup form.\n\nFor more information on using this API endpoint with the the Oracle Fusion Cloud Applications connectors, see the [Schema information documentation](https://fivetran.com/docs/connectors/applications/oracle-fusion-cloud-applications#schemainformation).\n",
         "operationId": "connection_schema_config",
         "parameters": [
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -3179,7 +3179,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -3201,7 +3201,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/StandardConfigUpdateRequest"
+                "$ref": "#/components/schemas/StandardConfigCreateRequest"
               }
             }
           }
@@ -3248,7 +3248,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -3334,9 +3334,9 @@
             "required": false,
             "schema": {
               "type": "string",
-              "example": "r8ae7gf9a7fgaf"
+              "example": "cursor_value"
             },
-            "example": "r8ae7gf9a7fgaf"
+            "example": "cursor_value"
           },
           {
             "name": "limit",
@@ -3443,7 +3443,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ApproveCertificateRequest"
+                "$ref": "#/components/schemas/ApproveCertificateRequest_approve_destination_certificate"
               }
             }
           }
@@ -3608,7 +3608,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100",
+            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
             "required": false,
             "schema": {
               "type": "integer",
@@ -3752,9 +3752,9 @@
             "required": false,
             "schema": {
               "type": "string",
-              "example": "trDfa54Ffs9hj"
+              "example": "cursor_value"
             },
-            "example": "trDfa54Ffs9hj"
+            "example": "cursor_value"
           },
           {
             "name": "limit",
@@ -4038,9 +4038,9 @@
             "required": false,
             "schema": {
               "type": "string",
-              "example": "eyJza2lwIjoyfQ"
+              "example": "cursor_value"
             },
-            "example": "eyJza2lwIjoyfQ"
+            "example": "cursor_value"
           },
           {
             "name": "limit",
@@ -4158,9 +4158,9 @@
             "required": false,
             "schema": {
               "type": "string",
-              "example": "Iu6zaC1yc2C6tf"
+              "example": "cursor_value"
             },
-            "example": "Iu6zaC1yc2C6tf"
+            "example": "cursor_value"
           },
           {
             "name": "limit",
@@ -4426,7 +4426,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -4525,7 +4525,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -4977,9 +4977,9 @@
             "required": false,
             "schema": {
               "type": "string",
-              "example": "vcDfgTEda6t"
+              "example": "cursor_value"
             },
-            "example": "vcDfgTEda6t"
+            "example": "cursor_value"
           },
           {
             "name": "limit",
@@ -5251,9 +5251,9 @@
             "required": false,
             "schema": {
               "type": "string",
-              "example": "u8ygk2k56g26k5gy"
+              "example": "cursor_value"
             },
-            "example": "u8ygk2k56g26k5gy"
+            "example": "cursor_value"
           },
           {
             "name": "limit",
@@ -5404,9 +5404,9 @@
             "required": false,
             "schema": {
               "type": "string",
-              "example": "r8ae7gf9a7fgaf"
+              "example": "cursor_value"
             },
-            "example": "r8ae7gf9a7fgaf"
+            "example": "cursor_value"
           },
           {
             "name": "limit",
@@ -5568,19 +5568,25 @@
           {
             "name": "cursor",
             "in": "query",
+            "description": "Paging cursor, [read more about pagination](https://fivetran.com/docs/rest-api/pagination)",
             "required": false,
             "schema": {
-              "type": "string"
-            }
+              "type": "string",
+              "example": "cursor_value"
+            },
+            "example": "cursor_value"
           },
           {
             "name": "limit",
             "in": "query",
+            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
             "required": false,
             "schema": {
               "type": "integer",
-              "format": "int32"
-            }
+              "format": "int32",
+              "example": 100
+            },
+            "example": 100
           },
           {
             "name": "Accept",
@@ -5849,9 +5855,9 @@
             "required": false,
             "schema": {
               "type": "string",
-              "example": "af3gu4hSDdF"
+              "example": "cursor_value"
             },
-            "example": "af3gu4hSDdF"
+            "example": "cursor_value"
           },
           {
             "name": "limit",
@@ -5955,7 +5961,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/MembershipRequest"
+                "$ref": "#/components/schemas/MembershipRequest_add_user_membership_in_connection"
               }
             }
           }
@@ -6154,7 +6160,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -6225,7 +6231,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -6631,7 +6637,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -6901,7 +6907,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100",
+            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
             "required": false,
             "schema": {
               "type": "integer",
@@ -7038,7 +7044,7 @@
           {
             "name": "teamId",
             "in": "path",
-            "description": "The unique identifier for the team within the account",
+            "description": "The unique identifier for the team within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -7049,7 +7055,7 @@
           {
             "name": "userId",
             "in": "path",
-            "description": "The unique identifier for the user within the account",
+            "description": "The unique identifier for the user within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -7109,7 +7115,7 @@
           {
             "name": "teamId",
             "in": "path",
-            "description": "The unique identifier for the team within the account",
+            "description": "The unique identifier for the team within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -7120,7 +7126,7 @@
           {
             "name": "userId",
             "in": "path",
-            "description": "The unique identifier for the user within the account",
+            "description": "The unique identifier for the user within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -7177,7 +7183,7 @@
           {
             "name": "teamId",
             "in": "path",
-            "description": "The unique identifier for the team within the account",
+            "description": "The unique identifier for the team within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -7188,7 +7194,7 @@
           {
             "name": "userId",
             "in": "path",
-            "description": "The unique identifier for the user within the account",
+            "description": "The unique identifier for the user within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -7210,7 +7216,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateMembershipRequest"
+                "$ref": "#/components/schemas/UpdateMembershipRequest_update_user_membership"
               }
             }
           }
@@ -7259,7 +7265,7 @@
           {
             "name": "teamId",
             "in": "path",
-            "description": "The unique identifier for the team within the account",
+            "description": "The unique identifier for the team within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -7319,7 +7325,7 @@
           {
             "name": "teamId",
             "in": "path",
-            "description": "The unique identifier for the team within the account",
+            "description": "The unique identifier for the team within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -7376,7 +7382,7 @@
           {
             "name": "teamId",
             "in": "path",
-            "description": "The unique identifier for the team within the account",
+            "description": "The unique identifier for the team within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -7935,7 +7941,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -8021,9 +8027,9 @@
             "required": false,
             "schema": {
               "type": "string",
-              "example": "Iu6zaC1yc2C6tf"
+              "example": "cursor_value"
             },
-            "example": "Iu6zaC1yc2C6tf"
+            "example": "cursor_value"
           },
           {
             "name": "limit",
@@ -8040,9 +8046,13 @@
           {
             "name": "active",
             "in": "query",
+            "description": "Indicates whether to return only enabled users (true) or not (false). By default, both enabled (allowed to log in) and suspended users are returned.",
+            "required": false,
             "schema": {
-              "type": "boolean"
-            }
+              "type": "boolean",
+              "example": true
+            },
+            "example": true
           },
           {
             "name": "Accept",
@@ -8321,14 +8331,14 @@
             "required": false,
             "schema": {
               "type": "string",
-              "example": "vcDfgTEda6t"
+              "example": "cursor_value"
             },
-            "example": "vcDfgTEda6t"
+            "example": "cursor_value"
           },
           {
             "name": "limit",
             "in": "query",
-            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100",
+            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
             "required": false,
             "schema": {
               "type": "integer",
@@ -8465,19 +8475,25 @@
           {
             "name": "cursor",
             "in": "query",
+            "description": "Paging cursor, [read more about pagination](https://fivetran.com/docs/rest-api/pagination)",
             "required": false,
             "schema": {
-              "type": "string"
-            }
+              "type": "string",
+              "example": "cursor_value"
+            },
+            "example": "cursor_value"
           },
           {
             "name": "limit",
             "in": "query",
+            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
             "required": false,
             "schema": {
               "type": "integer",
-              "format": "int32"
-            }
+              "format": "int32",
+              "example": 100
+            },
+            "example": 100
           },
           {
             "name": "Accept",
@@ -8607,7 +8623,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -8676,7 +8692,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -8763,9 +8779,9 @@
             "required": false,
             "schema": {
               "type": "string",
-              "example": "af3gu4hSDdF"
+              "example": "cursor_value"
             },
-            "example": "af3gu4hSDdF"
+            "example": "cursor_value"
           },
           {
             "name": "limit",
@@ -8782,9 +8798,13 @@
           {
             "name": "active",
             "in": "query",
+            "description": "Indicates whether to return only enabled users (true) or not (false). By default, both enabled (allowed to log in) and suspended users are returned.",
+            "required": false,
             "schema": {
-              "type": "boolean"
-            }
+              "type": "boolean",
+              "example": true
+            },
+            "example": true
           },
           {
             "name": "Accept",
@@ -9124,7 +9144,7 @@
           {
             "name": "teamId",
             "in": "path",
-            "description": "The unique identifier for the team within the account",
+            "description": "The unique identifier for the team within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -9139,14 +9159,14 @@
             "required": false,
             "schema": {
               "type": "string",
-              "example": "vcDfgTEda6t"
+              "example": "cursor_value"
             },
-            "example": "vcDfgTEda6t"
+            "example": "cursor_value"
           },
           {
             "name": "limit",
             "in": "query",
-            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100",
+            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
             "required": false,
             "schema": {
               "type": "integer",
@@ -9223,7 +9243,7 @@
           {
             "name": "teamId",
             "in": "path",
-            "description": "The unique identifier for the team within the account",
+            "description": "The unique identifier for the team within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -9294,7 +9314,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -9377,7 +9397,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -9459,7 +9479,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100",
+            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
             "required": false,
             "schema": {
               "type": "integer",
@@ -10150,7 +10170,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/WebhookRequest"
+                "$ref": "#/components/schemas/WebhookRequest_modify_webhook"
               }
             }
           }
@@ -10213,7 +10233,7 @@
           {
             "name": "groupId",
             "in": "path",
-            "description": "The unique identifier for the group within the account.",
+            "description": "The unique identifier for the group within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -10287,7 +10307,7 @@
           {
             "name": "groupId",
             "in": "path",
-            "description": "The unique identifier for the group within the account.",
+            "description": "The unique identifier for the group within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -10358,7 +10378,7 @@
           {
             "name": "groupId",
             "in": "path",
-            "description": "The unique identifier for the group within the account.",
+            "description": "The unique identifier for the group within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -10380,7 +10400,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateMembershipRequest"
+                "$ref": "#/components/schemas/UpdateMembershipRequest_update_user_membership_in_group"
               }
             }
           }
@@ -10429,7 +10449,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -10629,9 +10649,9 @@
             "required": false,
             "schema": {
               "type": "string",
-              "example": "eyJza2lwIjoyfQ"
+              "example": "cursor_value"
             },
-            "example": "eyJza2lwIjoyfQ"
+            "example": "cursor_value"
           },
           {
             "name": "limit",
@@ -10831,7 +10851,7 @@
           {
             "name": "destinationId",
             "in": "path",
-            "description": "The unique identifier for the destination within your Fivetran account.",
+            "description": "The unique identifier for the destination within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -10853,7 +10873,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RunSetupTestsRequest"
+                "$ref": "#/components/schemas/RunSetupTestsRequest_run_destination_setup_tests"
               },
               "examples": {
                 "run_setup_tests_request": {
@@ -10952,9 +10972,9 @@
             "required": false,
             "schema": {
               "type": "string",
-              "example": "lhg1345hk8vh"
+              "example": "cursor_value"
             },
-            "example": "lhg1345hk8vh"
+            "example": "cursor_value"
           },
           {
             "name": "limit",
@@ -11096,7 +11116,7 @@
           {
             "name": "teamId",
             "in": "path",
-            "description": "The unique identifier for the team within the account",
+            "description": "The unique identifier for the team within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -11111,14 +11131,14 @@
             "required": false,
             "schema": {
               "type": "string",
-              "example": "vcDfgTEda6t"
+              "example": "cursor_value"
             },
-            "example": "vcDfgTEda6t"
+            "example": "cursor_value"
           },
           {
             "name": "limit",
             "in": "query",
-            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100",
+            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
             "required": false,
             "schema": {
               "type": "integer",
@@ -11130,9 +11150,13 @@
           {
             "name": "active",
             "in": "query",
+            "description": "Indicates whether to return only enabled users (true) or not (false). By default, both enabled (allowed to log in) and suspended users are returned.",
+            "required": false,
             "schema": {
-              "type": "boolean"
-            }
+              "type": "boolean",
+              "example": true
+            },
+            "example": true
           },
           {
             "name": "Accept",
@@ -11202,7 +11226,7 @@
           {
             "name": "teamId",
             "in": "path",
-            "description": "The unique identifier for the team within the account",
+            "description": "The unique identifier for the team within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -11284,7 +11308,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the account.",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -11358,7 +11382,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the account.",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -11432,7 +11456,7 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the account.",
+            "description": "The unique identifier for the connection within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -11454,7 +11478,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateMembershipRequest"
+                "$ref": "#/components/schemas/UpdateMembershipRequest_update_user_membership_in_connection"
               }
             }
           }
@@ -11506,7 +11530,7 @@
           {
             "name": "destinationId",
             "in": "path",
-            "description": "The unique identifier for the destination within your Fivetran account.",
+            "description": "The unique identifier for the destination within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -11592,7 +11616,7 @@
           {
             "name": "destinationId",
             "in": "path",
-            "description": "The unique identifier for the destination within your Fivetran account.",
+            "description": "The unique identifier for the destination within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -11663,7 +11687,7 @@
           {
             "name": "destinationId",
             "in": "path",
-            "description": "The unique identifier for the destination within your Fivetran account.",
+            "description": "The unique identifier for the destination within the Fivetran system.",
             "required": true,
             "schema": {
               "type": "string",
@@ -11856,7 +11880,7 @@
           {
             "name": "teamId",
             "in": "path",
-            "description": "The unique identifier for the team within the account",
+            "description": "The unique identifier for the team within the account.",
             "required": true,
             "schema": {
               "type": "string",
@@ -12013,6 +12037,25 @@
             "type": "string",
             "description": "The certificate decoded public key.",
             "example": "Sun RSA public key, 2048 bits params: null modulus: 7685655455... public exponent: 65537"
+          }
+        }
+      },
+      "ApproveCertificateRequest_approve_destination_certificate": {
+        "required": [
+          "encoded_cert",
+          "hash"
+        ],
+        "type": "object",
+        "properties": {
+          "hash": {
+            "type": "string",
+            "description": "Hash of the certificate.",
+            "example": "jhg5UI7fgrI6yy..."
+          },
+          "encoded_cert": {
+            "type": "string",
+            "description": "The certificate encoded in base64.",
+            "example": "MIID9DCCAtygAwIBAgIBQjANBgkqhkiG9w0BAQUFADCBijELMAkGA1UEBhMCV..."
           }
         }
       },
@@ -12363,7 +12406,6 @@
             "databricks_db": "#/components/schemas/databricks_db_NewConnectorRequestV1",
             "datadog": "#/components/schemas/datadog_NewConnectorRequestV1",
             "datastreamer_source": "#/components/schemas/datastreamer_source_NewConnectorRequestV1",
-            "db2": "#/components/schemas/db2_NewConnectorRequestV1",
             "db2i_hva": "#/components/schemas/db2i_hva_NewConnectorRequestV1",
             "db2i_sap_hva": "#/components/schemas/db2i_sap_hva_NewConnectorRequestV1",
             "db2luw": "#/components/schemas/db2luw_NewConnectorRequestV1",
@@ -12491,7 +12533,6 @@
             "healthie": "#/components/schemas/healthie_NewConnectorRequestV1",
             "heap": "#/components/schemas/heap_NewConnectorRequestV1",
             "heartland_retail_pos": "#/components/schemas/heartland_retail_pos_NewConnectorRequestV1",
-            "height": "#/components/schemas/height_NewConnectorRequestV1",
             "helpdesk": "#/components/schemas/helpdesk_NewConnectorRequestV1",
             "helpjuice": "#/components/schemas/helpjuice_NewConnectorRequestV1",
             "helpscout": "#/components/schemas/helpscout_NewConnectorRequestV1",
@@ -12661,6 +12702,7 @@
             "paypal": "#/components/schemas/paypal_NewConnectorRequestV1",
             "paypal_sandbox": "#/components/schemas/paypal_sandbox_NewConnectorRequestV1",
             "pendo": "#/components/schemas/pendo_NewConnectorRequestV1",
+            "peopleforce": "#/components/schemas/peopleforce_NewConnectorRequestV1",
             "persona": "#/components/schemas/persona_NewConnectorRequestV1",
             "personio": "#/components/schemas/personio_NewConnectorRequestV1",
             "phoenix_ads": "#/components/schemas/phoenix_ads_NewConnectorRequestV1",
@@ -13504,7 +13546,6 @@
             "databricks_db": "#/components/schemas/databricks_db_ConnectorResponseV1",
             "datadog": "#/components/schemas/datadog_ConnectorResponseV1",
             "datastreamer_source": "#/components/schemas/datastreamer_source_ConnectorResponseV1",
-            "db2": "#/components/schemas/db2_ConnectorResponseV1",
             "db2i_hva": "#/components/schemas/db2i_hva_ConnectorResponseV1",
             "db2i_sap_hva": "#/components/schemas/db2i_sap_hva_ConnectorResponseV1",
             "db2luw": "#/components/schemas/db2luw_ConnectorResponseV1",
@@ -13632,7 +13673,6 @@
             "healthie": "#/components/schemas/healthie_ConnectorResponseV1",
             "heap": "#/components/schemas/heap_ConnectorResponseV1",
             "heartland_retail_pos": "#/components/schemas/heartland_retail_pos_ConnectorResponseV1",
-            "height": "#/components/schemas/height_ConnectorResponseV1",
             "helpdesk": "#/components/schemas/helpdesk_ConnectorResponseV1",
             "helpjuice": "#/components/schemas/helpjuice_ConnectorResponseV1",
             "helpscout": "#/components/schemas/helpscout_ConnectorResponseV1",
@@ -13802,6 +13842,7 @@
             "paypal": "#/components/schemas/paypal_ConnectorResponseV1",
             "paypal_sandbox": "#/components/schemas/paypal_sandbox_ConnectorResponseV1",
             "pendo": "#/components/schemas/pendo_ConnectorResponseV1",
+            "peopleforce": "#/components/schemas/peopleforce_ConnectorResponseV1",
             "persona": "#/components/schemas/persona_ConnectorResponseV1",
             "personio": "#/components/schemas/personio_ConnectorResponseV1",
             "phoenix_ads": "#/components/schemas/phoenix_ads_ConnectorResponseV1",
@@ -14446,29 +14487,23 @@
           }
         }
       },
-      "StandardConfigUpdateRequest": {
+      "StandardConfigCreateRequest": {
         "required": [
           "schemas"
         ],
         "type": "object",
         "properties": {
           "schemas": {
-            "title": "Schemas",
             "type": "object",
-            "properties": {
-              "schema": {
-                "$ref": "#/components/schemas/SchemaUpdateRequest"
-              }
+            "additionalProperties": {
+              "$ref": "#/components/schemas/SchemaUpdateRequest"
             },
             "description": "The set of schemas within your connection schema config."
-          },
-          "is_type_locked": {
-            "type": "boolean"
           },
           "schema_change_handling": {
             "type": "string",
             "description": "The possible values for the schema_change_handling parameter are as follows: <br /> ALLOW_ALL - all new schemas, tables, and columns which appear in the source after the initial setup are included in syncs <br /> ALLOW_COLUMNS - all new schemas and tables which appear in the source after the initial setup are excluded from syncs, but new columns are included <br /> BLOCK_ALL - all new schemas, tables, and columns which appear in the source after the initial setup are excluded from syncs",
-            "example": "BLOCK_ALL",
+            "example": "ALLOW_COLUMNS",
             "enum": [
               "ALLOW_ALL",
               "ALLOW_COLUMNS",
@@ -14515,8 +14550,38 @@
         "properties": {
           "exclude_mode": {
             "type": "string",
-            "description": "Specifies whether all schemas and tables will be enabled or disabled in the standard config. By specifying the `exclude_mode` parameter value, you can enable or disable syncing for all schemas and tables when reloading the connection schema config. \n\nWhen the default `PRESERVE` value is set, all selected schemas and tables in the standard config preserve their state.\n\nWhen the `EXCLUDE` value is set, the columns that haven't been updated by user yet are not excluded from the sync. Such columns may be present in the source and not displayed in the response, but they are considered to be included in the sync by default. If you enable syncing of their table, then all of these columns from the source will be synced in the next sync cycle. See also [Troubleshooting: How to enable syncs only for the columns you need](https://fivetran.com/docs/rest-api/tutorials/enable-sync-for-columns-you-need).\n",
+            "description": "Specifies whether all schemas and tables will be enabled or disabled in the standard config. By specifying the `exclude_mode` parameter value, you can enable or disable syncing for all schemas and tables when reloading the connection schema config.\n\nWhen the default `PRESERVE` value is set, all selected schemas and tables in the standard config preserve their state.\n\nWhen the `EXCLUDE` value is set, the columns that haven't been updated by user yet are not excluded from the sync. Such columns may be present in the source and not displayed in the response, but they are considered to be included in the sync by default. If you enable syncing of their table, then all of these columns from the source will be synced in the next sync cycle. See also [Troubleshooting: How to enable syncs only for the columns you need](https://fivetran.com/docs/rest-api/tutorials/enable-sync-for-columns-you-need).\n",
             "example": "PRESERVE"
+          }
+        }
+      },
+      "StandardConfigUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "schemas": {
+            "title": "Schemas",
+            "type": "object",
+            "properties": {
+              "schema": {
+                "$ref": "#/components/schemas/SchemaUpdateRequest"
+              }
+            },
+            "description": "The set of schemas within your connection schema config."
+          },
+          "is_type_locked": {
+            "type": "boolean",
+            "description": "The boolean value specifying whether the connection’s destination data types are locked to the types determined from the source. If enabled before or immediately after the initial sync, the [type lock](https://fivetran.com/docs/using-fivetran/features/type-locking) captures the types determined at the initial sync; if enabled later, it captures the types determined on the first sync after enabling. Re-enabling an already-enabled lock does not change previously locked types.",
+            "example": false
+          },
+          "schema_change_handling": {
+            "type": "string",
+            "description": "The possible values for the schema_change_handling parameter are as follows: <br /> ALLOW_ALL - all new schemas, tables, and columns which appear in the source after the initial setup are included in syncs <br /> ALLOW_COLUMNS - all new schemas and tables which appear in the source after the initial setup are excluded from syncs, but new columns are included <br /> BLOCK_ALL - all new schemas, tables, and columns which appear in the source after the initial setup are excluded from syncs",
+            "example": "BLOCK_ALL",
+            "enum": [
+              "ALLOW_ALL",
+              "ALLOW_COLUMNS",
+              "BLOCK_ALL"
+            ]
           }
         }
       },
@@ -15521,6 +15586,17 @@
           }
         }
       },
+      "RunSetupTestsRequest_run_destination_setup_tests": {
+        "type": "object",
+        "properties": {
+          "trust_certificates": {
+            "type": "boolean"
+          },
+          "trust_fingerprints": {
+            "type": "boolean"
+          }
+        }
+      },
       "ApproveFingerprintRequest": {
         "required": [
           "hash",
@@ -15575,6 +15651,25 @@
             "description": "Date when fingerprint has been validated and approved.",
             "format": "date-time",
             "example": "2024-01-01T00:00:00Z"
+          }
+        }
+      },
+      "ApproveFingerprintRequest_approve_destination_fingerprint": {
+        "required": [
+          "hash",
+          "public_key"
+        ],
+        "type": "object",
+        "properties": {
+          "hash": {
+            "type": "string",
+            "description": "Hash of the fingerprint.",
+            "example": "eUtPirI6yy..."
+          },
+          "public_key": {
+            "type": "string",
+            "description": "The SSH public key.",
+            "example": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6 ... fivetran user key"
           }
         }
       },
@@ -16500,6 +16595,7 @@
               "GCP_ASIA_SOUTH1",
               "GCP_ASIA_NORTHEAST1",
               "GCP_ASIA_NORTHEAST3",
+              "GCP_ME_CENTRAL2",
               "AWS_US_EAST_1",
               "AWS_US_EAST_2",
               "AWS_US_WEST_2",
@@ -16600,6 +16696,7 @@
               "GCP_ASIA_SOUTH1",
               "GCP_ASIA_NORTHEAST1",
               "GCP_ASIA_NORTHEAST3",
+              "GCP_ME_CENTRAL2",
               "AWS_US_EAST_1",
               "AWS_US_EAST_2",
               "AWS_US_WEST_2",
@@ -16919,13 +17016,13 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "The membership entity unique identifier",
+            "description": "The connection unique identifier",
             "example": "connection_id"
           },
           "role": {
             "type": "string",
-            "description": "The role that you would like to assign to the user ",
-            "example": "Manage Connection"
+            "description": "The team's role",
+            "example": "View Connection"
           }
         }
       },
@@ -16995,8 +17092,8 @@
         "properties": {
           "role": {
             "type": "string",
-            "description": "The role that you would like to assign to the user ",
-            "example": "Manage Destination"
+            "description": "The team's role",
+            "example": "Edit Connection"
           }
         }
       },
@@ -17081,9 +17178,58 @@
           }
         }
       },
+      "MembershipRequest_add_team_membership_in_group": {
+        "required": [
+          "id",
+          "role"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The group unique identifier",
+            "example": "group_id"
+          },
+          "role": {
+            "type": "string",
+            "description": "The team's role",
+            "example": "Manage Destination"
+          }
+        }
+      },
+      "UpdateMembershipRequest_update_team_membership_in_group": {
+        "required": [
+          "role"
+        ],
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "description": "The user's role within the team",
+            "example": "Manage Destination"
+          }
+        }
+      },
+      "UpdateMembershipRequest_update_user_membership": {
+        "required": [
+          "role"
+        ],
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "description": "The user's role within the team",
+            "example": "Team Member"
+          }
+        }
+      },
       "NewTransformationProjectRequest": {
         "type": "object",
         "properties": {
+          "group_id": {
+            "type": "string",
+            "description": "The unique identifier for the group within the Fivetran system"
+          },
           "type": {
             "type": "string",
             "description": "Transformation project type",
@@ -17094,10 +17240,6 @@
           "run_tests": {
             "type": "boolean",
             "description": "The boolean flag specifies if the project should be tested after creation or update operation"
-          },
-          "group_id": {
-            "type": "string",
-            "description": "The unique identifier for the group within the Fivetran system"
           }
         },
         "discriminator": {
@@ -17392,9 +17534,20 @@
             "format": "date-time",
             "example": "2024-01-02T00:00:00.743708Z"
           },
+          "created_by_id": {
+            "type": "string",
+            "description": "The unique identifier for the actor (user or system key) within the Fivetran system",
+            "example": "user_id"
+          },
           "last_started_at": {
             "type": "string",
             "description": "The timestamp when the transformation was started last time",
+            "format": "date-time",
+            "example": "2024-01-02T00:00:00.000001Z"
+          },
+          "last_ended_at": {
+            "type": "string",
+            "description": "The timestamp when the transformation was ended last time",
             "format": "date-time",
             "example": "2024-01-02T00:00:00.000001Z"
           },
@@ -17405,17 +17558,6 @@
             "items": {
               "type": "string"
             }
-          },
-          "created_by_id": {
-            "type": "string",
-            "description": "The unique identifier for the actor (user or system key) within the Fivetran system",
-            "example": "user_id"
-          },
-          "last_ended_at": {
-            "type": "string",
-            "description": "The timestamp when the transformation was ended last time",
-            "format": "date-time",
-            "example": "2024-01-02T00:00:00.000001Z"
           }
         },
         "discriminator": {
@@ -17552,6 +17694,43 @@
             "type": "string",
             "description": "The first name of the user.",
             "example": "Jane"
+          }
+        }
+      },
+      "MembershipRequest_add_user_membership_in_connection": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The membership entity unique identifier",
+            "example": "connection_id"
+          },
+          "role": {
+            "type": "string",
+            "description": "The role that you would like to assign to the user ",
+            "example": "Manage Connection"
+          }
+        }
+      },
+      "UpdateMembershipRequest_update_user_membership_in_connection": {
+        "required": [
+          "role"
+        ],
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "description": "The role that you would like to assign to the user "
+          }
+        }
+      },
+      "UpdateMembershipRequest_update_user_membership_in_group": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "description": "The role that you would like to assign to the user ",
+            "example": "Manage Destination"
           }
         }
       },
@@ -17695,6 +17874,72 @@
             "type": "string",
             "description": "Additional information or result message from the webhook test.",
             "example": "Success"
+          }
+        }
+      },
+      "WebhookRequest_create_group_webhook": {
+        "required": [
+          "events",
+          "url"
+        ],
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The endpoint URL where webhook events will be delivered.",
+            "example": "https://your-host.your-domain/webhook"
+          },
+          "events": {
+            "type": "array",
+            "description": "List of event types that trigger the webhook.",
+            "example": [
+              "sync_start",
+              "sync_end"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Indicates if the webhook is enabled to send events immediately upon occurrence.",
+            "example": true
+          },
+          "secret": {
+            "type": "string",
+            "description": "A secret string used to sign webhook payloads for verification.",
+            "example": "your_webhook_secret"
+          }
+        }
+      },
+      "WebhookRequest_modify_webhook": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The endpoint URL where webhook events will be delivered.",
+            "example": "https://your-host.your-domain/webhook"
+          },
+          "events": {
+            "type": "array",
+            "description": "List of event types that trigger the webhook.",
+            "example": [
+              "sync_start",
+              "sync_end"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Indicates if the webhook is enabled to send events immediately upon occurrence.",
+            "example": true
+          },
+          "secret": {
+            "type": "string",
+            "description": "A secret string used to sign webhook payloads for verification.",
+            "example": "your_webhook_secret"
           }
         }
       },
@@ -24030,13 +24275,46 @@
               "aws_credentials": {
                 "title": "Amazon S3 Credentials",
                 "type": "object",
-                "properties": {},
+                "properties": {
+                  "bucket_name": {
+                    "title": "Bucket Name",
+                    "type": "string",
+                    "description": "Your AWS S3 bucket name",
+                    "example": "string"
+                  },
+                  "s3_role_arn": {
+                    "title": "Role ARN",
+                    "type": "string",
+                    "description": "Role ARN required for authentication",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "home_folder": {
+                    "title": "Home Folder",
+                    "type": "string",
+                    "description": "Prefix to filter out the data",
+                    "example": "string"
+                  }
+                },
                 "description": "Amazon S3 Credentials"
               },
               "gcs_credentials": {
                 "title": "GCS Credentials",
                 "type": "object",
-                "properties": {},
+                "properties": {
+                  "bucket_name": {
+                    "title": "Bucket Name",
+                    "type": "string",
+                    "description": "Your GCS bucket name",
+                    "example": "string"
+                  },
+                  "home_folder": {
+                    "title": "Home Folder",
+                    "type": "string",
+                    "description": "Prefix to filter out the data",
+                    "example": "string"
+                  }
+                },
                 "description": "GCS Credentials"
               },
               "project_credentials": {
@@ -24457,12 +24735,6 @@
                 "description": "Your Appcues Secret.",
                 "format": "password",
                 "example": "your_appcues_secret"
-              },
-              "email": {
-                "title": "",
-                "type": "string",
-                "description": "Your Appcues Email.",
-                "example": "your_appcues_email"
               }
             },
             "description": ""
@@ -24640,9 +24912,9 @@
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Your AppLovin API key.",
                 "format": "password",
-                "example": "string"
+                "example": "your_applovin_api_key"
               }
             },
             "description": ""
@@ -26445,6 +26717,16 @@
                   "parquet"
                 ]
               },
+              "file_mapping_method": {
+                "title": "",
+                "type": "object",
+                "description": "The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.",
+                "example": "DEFINE_PER_TABLE",
+                "enum": [
+                  "EXTRACT_TABLES",
+                  "DEFINE_PER_TABLE"
+                ]
+              },
               "on_error": {
                 "title": "",
                 "type": "object",
@@ -26454,6 +26736,12 @@
                   "fail",
                   "skip"
                 ]
+              },
+              "extraction_pattern": {
+                "title": "",
+                "type": "string",
+                "description": "A regular expression with a named capture group `(?<table>...)` to extract table names from file paths.",
+                "example": "(?<table>\\w+)/.*"
               },
               "archive_pattern": {
                 "title": "",
@@ -26530,7 +26818,7 @@
                 "title": "",
                 "type": "object",
                 "description": "Authentication Method",
-                "example": "SERVICE_PRINCIPAL_SECRET",
+                "example": "CONNECTION_STRING | SERVICE_PRINCIPAL_SECRET",
                 "enum": [
                   "CONNECTION_STRING",
                   "SERVICE_PRINCIPAL_SECRET"
@@ -27897,15 +28185,15 @@
               "access_token": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Your [API access token ](/docs/connectors/applications/big-commerce/setup-guide#createaccesstoken).",
                 "format": "password",
-                "example": "string"
+                "example": "your_api_access_token"
               },
               "store_hash": {
                 "title": "",
                 "type": "string",
-                "description": "",
-                "example": "string"
+                "description": "The [store hash](/docs/connectors/applications/big-commerce/setup-guide#createaccesstoken) in your API path.",
+                "example": "your_store_hash"
               }
             },
             "description": ""
@@ -27932,7 +28220,7 @@
             "properties": {
               "edition": {
                 "type": "object",
-                "description": "",
+                "description": "Your Bigin by Zoho CRM pricing plan",
                 "enum": [
                   "5000",
                   "100000"
@@ -30218,9 +30506,9 @@
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Your ChartHop app API key.",
                 "format": "password",
-                "example": "string"
+                "example": "your_charthop_app_api_key"
               }
             },
             "description": ""
@@ -30439,7 +30727,8 @@
               "sub_domain": {
                 "title": "",
                 "type": "string",
-                "example": "string"
+                "description": "Your ChurnZero subdomain",
+                "example": "your_churnzero_subdomain"
               },
               "username": {
                 "title": "",
@@ -33553,97 +33842,6 @@
           }
         ]
       },
-      "db2_config_V1": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "properties": {
-              "tunnel_port": {
-                "title": "",
-                "type": "integer",
-                "description": "",
-                "format": "int32",
-                "example": 0
-              },
-              "database": {
-                "title": "",
-                "type": "string",
-                "description": "",
-                "example": "string"
-              },
-              "password": {
-                "title": "",
-                "type": "string",
-                "description": "",
-                "format": "password",
-                "example": "string"
-              },
-              "connection_type": {
-                "title": "",
-                "type": "object",
-                "description": "",
-                "example": "Directly | PrivateLink | SshTunnel",
-                "enum": [
-                  "Directly",
-                  "PrivateLink",
-                  "SshTunnel"
-                ]
-              },
-              "port": {
-                "title": "",
-                "type": "integer",
-                "description": "",
-                "format": "int32",
-                "example": 0
-              },
-              "host": {
-                "title": "",
-                "type": "string",
-                "description": "",
-                "example": "string"
-              },
-              "tunnel_host": {
-                "title": "",
-                "type": "string",
-                "description": "",
-                "example": "string"
-              },
-              "always_encrypted": {
-                "title": "",
-                "type": "boolean",
-                "description": "",
-                "example": true
-              },
-              "user": {
-                "title": "",
-                "type": "string",
-                "description": "",
-                "example": "string"
-              },
-              "tunnel_user": {
-                "title": "",
-                "type": "string",
-                "description": "",
-                "example": "string"
-              }
-            },
-            "description": ""
-          }
-        }
-      },
-      "db2_NewConnectorRequestV1": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NewConnectorRequestV1"
-          },
-          {
-            "$ref": "#/components/schemas/db2_config_V1"
-          },
-          {
-            "$ref": "#/components/schemas/schema_format_schema_prefix"
-          }
-        ]
-      },
       "db2i_hva_config_V1": {
         "properties": {
           "config": {
@@ -34228,16 +34426,16 @@
               "password": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Pass an empty string",
                 "format": "password",
                 "example": "string"
               },
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "API Key for your Delighted account",
                 "format": "password",
-                "example": "string"
+                "example": "******"
               }
             },
             "description": ""
@@ -36044,6 +36242,12 @@
                 "type": "string",
                 "description": "The AWS region code for the DynamoDB instance, e.g. `us-east-1`.",
                 "example": "aws_region_code"
+              },
+              "is_private_link_required": {
+                "title": "",
+                "type": "boolean",
+                "description": "We use PrivateLink by default if your DynamoDB instance is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to DynamoDB over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options/aws-private-link).",
+                "example": true
               }
             },
             "description": ""
@@ -36151,7 +36355,7 @@
               "app_secret_token": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Your E-conomic X-AppSecretToken goes here.",
                 "format": "password",
                 "example": "string"
               },
@@ -39100,15 +39304,15 @@
               "workspace_id": {
                 "title": "",
                 "type": "string",
-                "description": "",
-                "example": "string"
+                "description": "Your Fulfil workspace ID.",
+                "example": "your_fulfil_workspace_id"
               },
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Your Fulfil API key.",
                 "format": "password",
-                "example": "string"
+                "example": "your_fulfil_api_key"
               }
             },
             "description": ""
@@ -40236,7 +40440,7 @@
                   "developer_token": {
                     "title": "",
                     "type": "string",
-                    "description": "Not required and ignored for new connectors. Used for backward compatibility for old connectors, see client_access section description.",
+                    "description": "Not required. You can provide your own developer token with your custom client.",
                     "example": "string"
                   },
                   "client_secret": {
@@ -40258,7 +40462,7 @@
                     "example": "my_company_name"
                   }
                 },
-                "description": "We use a Fivetran developer token to access the Google Ads API. If this is your first Google Ads connector with custom authorization, you should create a new Google API Console project. Each Google API Console project can be associated with the developer token from only one manager account. Once you make a Google Ads API request, the developer token is permanently paired to the Google API Console project. Otherwise, we can't bind the Fivetran developer token to your client. You can reuse the same project to create other Google Ads connectors."
+                "description": "We use a Fivetran developer token to access the Google Ads API. If this is your first Google Ads connector with custom authorization, you should create a new Google API Console project. Each Google API Console project can be associated with the developer token from only one manager account. Once you make a Google Ads API request, the developer token is permanently paired to the Google API Console project. Otherwise, we can't bind the Fivetran developer token to your client. You can reuse the same project to create other Google Ads connectors. You can use your own developer token with your custom client if you have one, but it's not required"
               }
             },
             "description": ""
@@ -41404,7 +41608,7 @@
                       "title": "",
                       "type": "object",
                       "description": "The report configuration method. Specifies whether a new configuration is defined manually or an existing configuration is reused. The default value is `CREATE_NEW`.",
-                      "example": "CREATE_NEW",
+                      "example": "CREATE_NEW | REUSE_EXISTING",
                       "enum": [
                         "CREATE_NEW",
                         "REUSE_EXISTING"
@@ -42204,16 +42408,17 @@
                       "type": "array",
                       "description": "The report dimensions included to sync.",
                       "example": [
-                        "DATE | COUNTRY | QUERY | DEVICE | PAGE | SEARCH_APPEARANCE"
+                        "DATE | COUNTRY | HOUR | QUERY | DEVICE | PAGE | SEARCH_APPEARANCE"
                       ],
                       "items": {
                         "title": "",
                         "type": "object",
                         "description": "",
-                        "example": "DATE | COUNTRY | QUERY | DEVICE | PAGE | SEARCH_APPEARANCE",
+                        "example": "DATE | COUNTRY | HOUR | QUERY | DEVICE | PAGE | SEARCH_APPEARANCE",
                         "enum": [
                           "DATE",
                           "COUNTRY",
+                          "HOUR",
                           "QUERY",
                           "DEVICE",
                           "PAGE",
@@ -42809,7 +43014,7 @@
             "properties": {
               "environment": {
                 "type": "object",
-                "description": "",
+                "description": "Your Healthie environment.",
                 "enum": [
                   "staging-api",
                   "api"
@@ -42818,7 +43023,7 @@
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Your Healthie API key.",
                 "format": "password",
                 "example": "string"
               }
@@ -42934,36 +43139,6 @@
           },
           {
             "$ref": "#/components/schemas/heartland_retail_pos_auth_V1"
-          }
-        ]
-      },
-      "height_config_V1": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "properties": {
-              "api_key": {
-                "title": "",
-                "type": "string",
-                "description": "Your Height API key.",
-                "format": "password",
-                "example": "xxxxxxxxxxxxxxxx"
-              }
-            },
-            "description": ""
-          }
-        }
-      },
-      "height_NewConnectorRequestV1": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NewConnectorRequestV1"
-          },
-          {
-            "$ref": "#/components/schemas/height_config_V1"
-          },
-          {
-            "$ref": "#/components/schemas/schema_format_schema"
           }
         ]
       },
@@ -43101,7 +43276,6 @@
               "access_token": {
                 "title": "",
                 "type": "string",
-                "description": "",
                 "format": "password",
                 "example": "string"
               },
@@ -43110,7 +43284,7 @@
                 "type": "string",
                 "description": "The long-lived `refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.",
                 "format": "password",
-                "example": "string"
+                "example": "my_refresh_token"
               },
               "client_access": {
                 "title": "",
@@ -43721,6 +43895,7 @@
             "properties": {
               "sub_domain": {
                 "type": "object",
+                "description": "Your iLevel Environment.",
                 "enum": [
                   "api.ilevelsolutions.com",
                   "sandapi.ilevelsolutions.com",
@@ -44111,6 +44286,19 @@
         "properties": {
           "config": {
             "type": "object",
+            "properties": {
+              "data_region": {
+                "title": "Data Region",
+                "type": "object",
+                "description": "The Intercom region for your app. Options - empty string (US/default), 'eu' (Europe), 'au' (Australia). Based on your Intercom app URL (app.intercom.io for US, app.eu.intercom.io for EU, app.au.intercom.io for AU). Cannot be changed after initial connection creation.",
+                "example": "eu",
+                "enum": [
+                  "",
+                  "eu",
+                  "au"
+                ]
+              }
+            },
             "description": ""
           }
         }
@@ -44791,7 +44979,7 @@
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Your JobNimbus API key.",
                 "format": "password",
                 "example": "string"
               }
@@ -45737,20 +45925,35 @@
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Learnupon API key.",
+                "description": "Your LearnUpon API key.",
                 "format": "password",
                 "example": "your_learnupon_api_key"
+              },
+              "custom_region": {
+                "title": "",
+                "type": "string",
+                "description": "Your LearnUpon custom region.",
+                "example": "your_learnupon_custom_region"
               },
               "subdomain": {
                 "title": "",
                 "type": "string",
-                "description": "Your Learnupon subdomain.",
+                "description": "Your LearnUpon subdomain.",
                 "example": "your_learnupon_subdomain"
+              },
+              "region": {
+                "type": "object",
+                "description": "Your LearnUpon region.",
+                "enum": [
+                  "learnuponau.com",
+                  "",
+                  "learnupon.com"
+                ]
               },
               "username": {
                 "title": "",
                 "type": "string",
-                "description": "Your Learnupon username.",
+                "description": "Your LearnUpon username.",
                 "example": "your_learnupon_username"
               }
             },
@@ -45845,9 +46048,9 @@
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Your Lever API key.",
                 "format": "password",
-                "example": "string"
+                "example": "xxxxxxxxxxxxxxxx"
               }
             },
             "description": ""
@@ -47132,9 +47335,9 @@
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Your Mandrill API key.",
                 "format": "password",
-                "example": "string"
+                "example": "xxxxxxxxxxxxxxxx"
               }
             },
             "description": ""
@@ -47792,9 +47995,9 @@
               "token": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Your Matomo auth token.",
                 "format": "password",
-                "example": "string"
+                "example": "your_matomo_token"
               }
             },
             "description": ""
@@ -48005,6 +48208,7 @@
                 "description": "Your Medallia Agile region.",
                 "enum": [
                   "eu",
+                  "eu2",
                   "ca",
                   "us",
                   "ap"
@@ -48133,7 +48337,7 @@
                 "title": "",
                 "type": "object",
                 "description": "Authentication Method",
-                "example": "SERVICE_PRINCIPAL_SECRET",
+                "example": "CONNECTION_STRING | SERVICE_PRINCIPAL_SECRET",
                 "enum": [
                   "CONNECTION_STRING",
                   "SERVICE_PRINCIPAL_SECRET"
@@ -48432,8 +48636,8 @@
               "tenant_id": {
                 "title": "",
                 "type": "string",
-                "description": "",
-                "example": "string"
+                "description": "Your Microsoft Teams tenant ID.",
+                "example": "your_microsoft_teams_tenant_id"
               },
               "client_secret": {
                 "title": "",
@@ -53322,15 +53526,15 @@
               "secret_key": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "`Secret Key` of your PayPal client application.",
                 "format": "password",
-                "example": "string"
+                "example": "my_secret_key"
               },
               "client_id": {
                 "title": "",
                 "type": "string",
                 "description": "`Client ID` of your PayPal client application.",
-                "example": "string"
+                "example": "my_client_id"
               }
             },
             "description": ""
@@ -53358,14 +53562,14 @@
               "secret_key": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Secret key of your PayPal client application.",
                 "format": "password",
-                "example": "string"
+                "example": "my_secret_key"
               },
               "client_id": {
                 "title": "",
                 "type": "string",
-                "description": "`Client ID` of your PayPal client application.",
+                "description": "Client ID of your PayPal client application.",
                 "example": "my_client_id"
               }
             },
@@ -53401,12 +53605,49 @@
                   "SpecificAppIds"
                 ]
               },
+              "export_storage_type": {
+                "title": "",
+                "type": "object",
+                "description": "Denotes which storage option is chosen",
+                "example": "AZURE | GCS | AWS_S3",
+                "enum": [
+                  "AZURE",
+                  "GCS",
+                  "AWS_S3"
+                ]
+              },
               "integration_key": {
                 "title": "",
                 "type": "string",
                 "description": "The integration key of the Pendo account.",
                 "format": "password",
                 "example": "pendo_integration_key"
+              },
+              "aws_credentials": {
+                "title": "",
+                "type": "object",
+                "properties": {
+                  "bucket_name": {
+                    "title": "",
+                    "type": "string",
+                    "description": "AWS bucket name",
+                    "example": "string"
+                  },
+                  "s3_role_arn": {
+                    "title": "",
+                    "type": "string",
+                    "description": "AWS s3 Role Arn",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "home_folder": {
+                    "title": "",
+                    "type": "string",
+                    "description": "AWS home folder",
+                    "example": "string"
+                  }
+                },
+                "description": "Configuration for AWS S3 Storage"
               },
               "app_ids": {
                 "title": "",
@@ -53422,11 +53663,36 @@
                   "example": "string"
                 }
               },
+              "use_data_sync": {
+                "title": "",
+                "type": "boolean",
+                "description": "Toggle field to determine whether connector is syncing from API or from Data Sync",
+                "example": true
+              },
               "backward_sync_limit_date": {
                 "title": "",
                 "type": "string",
                 "description": "The start date (YYYY-MM-DD) from which to sync historical data.",
                 "example": "2000-12-15"
+              },
+              "gcs_credentials": {
+                "title": "",
+                "type": "object",
+                "properties": {
+                  "bucket_name": {
+                    "title": "",
+                    "type": "string",
+                    "description": "GCS bucket name",
+                    "example": "string"
+                  },
+                  "home_folder": {
+                    "title": "",
+                    "type": "string",
+                    "description": "GCS home folder",
+                    "example": "string"
+                  }
+                },
+                "description": "Configuration for GCS Bucket"
               },
               "region": {
                 "title": "",
@@ -53450,6 +53716,31 @@
                   "ALL_TIME",
                   "DATE_LIMIT"
                 ]
+              },
+              "azure_credentials": {
+                "title": "",
+                "type": "object",
+                "properties": {
+                  "container_name": {
+                    "title": "",
+                    "type": "string",
+                    "description": "Azure container name",
+                    "example": "string"
+                  },
+                  "home_folder": {
+                    "title": "",
+                    "type": "string",
+                    "description": "Azure home folder",
+                    "example": "string"
+                  },
+                  "connection_string": {
+                    "title": "",
+                    "type": "string",
+                    "description": "Azure connection string",
+                    "example": "string"
+                  }
+                },
+                "description": "Configuration for Azure Blob Storage"
               }
             },
             "description": ""
@@ -53463,6 +53754,36 @@
           },
           {
             "$ref": "#/components/schemas/pendo_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
+      "peopleforce_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Peopleforce API key.",
+                "format": "password",
+                "example": "your_peopleforce_api_key"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "peopleforce_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/peopleforce_config_V1"
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
@@ -55772,9 +56093,9 @@
               "api_token": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "The Recharge API token.",
                 "format": "password",
-                "example": "string"
+                "example": "recharge_token"
               }
             },
             "description": ""
@@ -55802,9 +56123,9 @@
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "The Recurly API key.",
                 "format": "password",
-                "example": "string"
+                "example": "recurly_api_key"
               },
               "sub_domain": {
                 "title": "",
@@ -55929,6 +56250,34 @@
                         "NONE",
                         "CAMPAIGN"
                       ]
+                    },
+                    "breakdowns": {
+                      "title": "",
+                      "type": "array",
+                      "description": "Breakdowns are now used instead of level and segmentation. They provide a filter for report data.",
+                      "example": "KEYWORD",
+                      "items": {
+                        "title": "",
+                        "type": "object",
+                        "description": "",
+                        "example": "CAMPAIGN_ID | AD_ID | OS_TYPE | KEYWORD | INTEREST | REGION | AD_ACCOUNT_ID | PLACEMENT | COMMUNITY | COUNTRY | DMA | GENDER | AD_GROUP_ID | GALLERY_ITEM_ID",
+                        "enum": [
+                          "CAMPAIGN_ID",
+                          "AD_ID",
+                          "OS_TYPE",
+                          "KEYWORD",
+                          "INTEREST",
+                          "REGION",
+                          "AD_ACCOUNT_ID",
+                          "PLACEMENT",
+                          "COMMUNITY",
+                          "COUNTRY",
+                          "DMA",
+                          "GENDER",
+                          "AD_GROUP_ID",
+                          "GALLERY_ITEM_ID"
+                        ]
+                      }
                     },
                     "report_fields": {
                       "title": "",
@@ -57021,7 +57370,7 @@
                 "title": "",
                 "type": "object",
                 "description": "The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.",
-                "example": "DEFINE_PER_TABLE",
+                "example": "EXTRACT_TABLES | DEFINE_PER_TABLE",
                 "enum": [
                   "EXTRACT_TABLES",
                   "DEFINE_PER_TABLE"
@@ -57669,6 +58018,28 @@
           "config": {
             "type": "object",
             "properties": {
+              "packing_mode": {
+                "title": "",
+                "type": "object",
+                "description": "Packing mode for LIST_STATE and USER tables.",
+                "example": "UNPACKED | PACKED",
+                "enum": [
+                  "UNPACKED",
+                  "PACKED"
+                ]
+              },
+              "s3path": {
+                "title": "",
+                "type": "string",
+                "description": "Copy and use this to configure Sailthru Connect in your sailthru account.",
+                "example": "string"
+              },
+              "use_customer_s3_bucket": {
+                "title": "",
+                "type": "boolean",
+                "description": "Enable this if you want to sync Sailthru Connect using your own\"  S3 bucket.",
+                "example": true
+              },
               "historic_sync_time_frame": {
                 "title": "",
                 "type": "object",
@@ -57689,16 +58060,6 @@
                 "description": "The start date (YYYY-MM-DD) from which to sync historical data.",
                 "example": "2008-03-25"
               },
-              "packing_mode": {
-                "title": "",
-                "type": "object",
-                "description": "Packing mode for LIST_STATE and USER tables.",
-                "example": "UNPACKED | PACKED",
-                "enum": [
-                  "UNPACKED",
-                  "PACKED"
-                ]
-              },
               "historical_sync_limit": {
                 "title": "",
                 "type": "object",
@@ -57713,12 +58074,7 @@
                 "title": "",
                 "type": "string",
                 "description": "Role ARN of the IAM role created for Fivetran.",
-                "example": "string"
-              },
-              "s3path": {
-                "title": "",
-                "type": "string",
-                "description": "Copy and use this to configure Sailthru Connect in your sailthru account.",
+                "format": "password",
                 "example": "string"
               },
               "s3bucket": {
@@ -58524,6 +58880,12 @@
                 "format": "int32",
                 "example": 0
               },
+              "use_sap_router": {
+                "title": "Use SAP Router",
+                "type": "boolean",
+                "description": "Enable connection via SAP Router",
+                "example": true
+              },
               "host": {
                 "title": "",
                 "type": "string",
@@ -58547,6 +58909,12 @@
                 "type": "string",
                 "description": "",
                 "example": "string"
+              },
+              "sap_router": {
+                "title": "SAP Router",
+                "type": "string",
+                "description": "SAP Router connection string (format: /H/hostname/S/port)",
+                "example": "/H/hostname/S/3299"
               },
               "user": {
                 "title": "",
@@ -58834,6 +59202,13 @@
                 "description": "(Immutable) Include inherited columns.",
                 "example": true
               },
+              "rollback_window": {
+                "title": "",
+                "type": "integer",
+                "description": "Set a rollback window between 0 and 7 days. The default is 0 days.",
+                "format": "int32",
+                "example": 0
+              },
               "instance": {
                 "title": "",
                 "type": "string",
@@ -59057,6 +59432,16 @@
                 "description": "SFTP host address.",
                 "example": "sftp.company.com"
               },
+              "file_mapping_method": {
+                "title": "",
+                "type": "object",
+                "description": "The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.",
+                "example": "DEFINE_PER_TABLE",
+                "enum": [
+                  "EXTRACT_TABLES",
+                  "DEFINE_PER_TABLE"
+                ]
+              },
               "on_error": {
                 "title": "",
                 "type": "object",
@@ -59066,6 +59451,12 @@
                   "fail",
                   "skip"
                 ]
+              },
+              "extraction_pattern": {
+                "title": "",
+                "type": "string",
+                "description": "A regular expression with a named capture group `(?<table>...)` to extract table names from file paths.",
+                "example": "(?<table>\\w+)/.*"
               },
               "archive_pattern": {
                 "title": "",
@@ -59278,6 +59669,13 @@
                 "description": "All files in your search path matching this regular expression will be synced.",
                 "example": "file_pattern"
               },
+              "client_certificate_private_key": {
+                "title": "",
+                "type": "string",
+                "description": "`Certificate Private Key` of your Microsoft client application.",
+                "format": "password",
+                "example": "certificate_private_key"
+              },
               "json_delivery_mode": {
                 "title": "",
                 "type": "object",
@@ -59319,6 +59717,13 @@
                 "type": "boolean",
                 "description": "<strong>Optional.</strong> Set to true to sync per-user file access permissions to control visibility in downstream applications.",
                 "example": true
+              },
+              "client_certificate": {
+                "title": "",
+                "type": "string",
+                "description": "`Client Certificate` of your Microsoft client application.",
+                "format": "password",
+                "example": "client_certificate"
               },
               "delimiter": {
                 "title": "",
@@ -59719,10 +60124,23 @@
                 "description": "The Shopify shop name. Can be found in the URL before **.myshopify.com**.",
                 "example": "my_shop"
               },
+              "app_url": {
+                "title": "",
+                "type": "string",
+                "description": "App store url of your public app",
+                "example": "string"
+              },
               "api_access_token": {
                 "title": "",
                 "type": "string",
                 "description": "API access token of your custom app.",
+                "format": "password",
+                "example": "string"
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Client secret of your public app",
                 "format": "password",
                 "example": "string"
               },
@@ -59735,6 +60153,12 @@
                   "ALL_TIME",
                   "DATE_LIMIT"
                 ]
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Client ID of your public app",
+                "example": "string"
               },
               "backward_sync_limit": {
                 "title": "",
@@ -60014,13 +60438,17 @@
                 "type": "object",
                 "description": "Your Sigma Computing api server.",
                 "enum": [
+                  "api.us-a.aws",
                   "api.uk.aws",
+                  "api.uk.azure",
                   "api.ca.aws",
+                  "api.ca.azure",
                   "api",
                   "api.eu.aws",
                   "api.au.aws",
                   "aws-api",
-                  "api.us.azure"
+                  "api.us.azure",
+                  "api.eu.azure"
                 ]
               },
               "client_secret": {
@@ -60140,6 +60568,65 @@
           "config": {
             "type": "object",
             "properties": {
+              "country": {
+                "type": "object",
+                "description": "Your SISTRIX country code.",
+                "enum": [
+                  "de",
+                  "pt",
+                  "dk",
+                  "hr",
+                  "ua",
+                  "hu",
+                  "uk",
+                  "id",
+                  "ie",
+                  "us",
+                  "eg",
+                  "ae",
+                  "in",
+                  "mt",
+                  "za",
+                  "it",
+                  "mx",
+                  "my",
+                  "es",
+                  "ve",
+                  "ar",
+                  "at",
+                  "au",
+                  "vn",
+                  "ng",
+                  "ro",
+                  "nl",
+                  "no",
+                  "be",
+                  "fi",
+                  "ru",
+                  "bg",
+                  "jp",
+                  "fr",
+                  "nz",
+                  "br",
+                  "se",
+                  "sg",
+                  "si",
+                  "sk",
+                  "ca",
+                  "ch",
+                  "cl",
+                  "gr",
+                  "co",
+                  "th",
+                  "pe",
+                  "cy",
+                  "cz",
+                  "ph",
+                  "pk",
+                  "pl",
+                  "tr"
+                ]
+              },
               "api_key": {
                 "title": "",
                 "type": "string",
@@ -60391,14 +60878,14 @@
               "client_secret": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Your Slack app Client Secret.",
                 "format": "password",
                 "example": "your_slack_client_secret"
               },
               "client_id": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Your Slack app Client ID.",
                 "example": "your_slack_client_id"
               }
             },
@@ -60478,7 +60965,7 @@
               "subdomain": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Your SmartHR subdomain.",
                 "example": "string"
               }
             },
@@ -66451,7 +66938,7 @@
             "$ref": "#/components/schemas/workday_config_V1"
           },
           {
-            "$ref": "#/components/schemas/schema_format_schema"
+            "$ref": "#/components/schemas/schema_format_schema_table_group"
           },
           {
             "$ref": "#/components/schemas/workday_auth_V1"
@@ -66995,14 +67482,14 @@
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Writesonic API key",
+                "description": "Your Writesonic API key.",
                 "format": "password",
                 "example": "your_writesonic_api_key"
               },
               "project_website_url": {
                 "title": "",
                 "type": "string",
-                "description": "Your Writesonic Project Website Url.",
+                "description": "Website URL of your Writesonic project.",
                 "example": "your_writesonic_project_website_url"
               }
             },
@@ -68365,21 +68852,21 @@
               "subdomain": {
                 "title": "",
                 "type": "string",
-                "description": "",
-                "example": "string"
+                "description": "Your Zendesk domain.",
+                "example": "zendesk_domain"
               },
               "client_secret": {
                 "title": "",
                 "type": "string",
                 "description": "Your Zendesk client secret.",
                 "format": "password",
-                "example": "string"
+                "example": "test_client_secret"
               },
               "client_id": {
                 "title": "",
                 "type": "string",
                 "description": "Your Zendesk client ID.",
-                "example": "string"
+                "example": "test_client_id"
               }
             },
             "description": ""
@@ -68396,7 +68883,7 @@
                 "type": "string",
                 "description": "The long-lived `Access token` carries the information necessary to access API resources.",
                 "format": "password",
-                "example": "string"
+                "example": "my_access_token"
               }
             },
             "description": ""
@@ -68611,8 +69098,8 @@
               "environment": {
                 "title": "",
                 "type": "string",
-                "description": "",
-                "example": "string"
+                "description": "Your Zip environment.",
+                "example": "your_zip_environment"
               },
               "api_key": {
                 "title": "",
@@ -71499,35 +71986,6 @@
           }
         ]
       },
-      "db2_readonly_config_V1": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "properties": {
-              "public_key": {
-                "title": "",
-                "type": "string",
-                "description": "",
-                "example": "string"
-              }
-            },
-            "description": ""
-          }
-        }
-      },
-      "db2_ConnectorResponseV1": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ConnectorResponseV1"
-          },
-          {
-            "$ref": "#/components/schemas/db2_config_V1"
-          },
-          {
-            "$ref": "#/components/schemas/db2_readonly_config_V1"
-          }
-        ]
-      },
       "db2i_hva_readonly_config_V1": {
         "properties": {
           "config": {
@@ -73128,16 +73586,6 @@
           }
         ]
       },
-      "height_ConnectorResponseV1": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ConnectorResponseV1"
-          },
-          {
-            "$ref": "#/components/schemas/height_config_V1"
-          }
-        ]
-      },
       "helpdesk_ConnectorResponseV1": {
         "allOf": [
           {
@@ -73412,6 +73860,17 @@
           "config": {
             "type": "object",
             "properties": {
+              "project_type": {
+                "title": "",
+                "type": "object",
+                "description": "The type of Iterable project associated with the API key.",
+                "example": "USER_ID_BASED_PROJECT | HYBRID_PROJECT | EMAIL_BASED_PROJECT",
+                "enum": [
+                  "USER_ID_BASED_PROJECT",
+                  "HYBRID_PROJECT",
+                  "EMAIL_BASED_PROJECT"
+                ]
+              },
               "endpoint": {
                 "title": "",
                 "type": "string",
@@ -75281,6 +75740,16 @@
           },
           {
             "$ref": "#/components/schemas/pendo_config_V1"
+          }
+        ]
+      },
+      "peopleforce_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/peopleforce_config_V1"
           }
         ]
       },
