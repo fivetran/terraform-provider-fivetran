@@ -48,7 +48,7 @@ resource "fivetran_connection" "postgres_full" {
 
     config = jsonencode({
         update_method = "XMIN"
-        host          = "postgres.example.com"
+        host          = local.database_config.host
         port          = 5432
         database      = "mydb"
         user          = "fivetran_user"
