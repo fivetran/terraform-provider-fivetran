@@ -14,7 +14,7 @@ func TestResourceConnectionConfigE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
 		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
-		CheckDestroy:             testFivetranConnectionResourceDestroy,
+		CheckDestroy:             testFivetranConnectionConfigResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `
@@ -133,7 +133,7 @@ func TestResourceConnectionConfigOnlyConfigE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
 		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
-		CheckDestroy:             testFivetranConnectionResourceDestroy,
+		CheckDestroy:             testFivetranConnectionConfigResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `
@@ -190,7 +190,7 @@ func TestResourceConnectionConfigOnlyAuthE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
 		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
-		CheckDestroy:             testFivetranConnectionResourceDestroy,
+		CheckDestroy:             testFivetranConnectionConfigResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `
@@ -244,7 +244,7 @@ func TestResourceConnectionConfigMultipleConnectorTypesE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
 		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
-		CheckDestroy:             testFivetranConnectionResourceDestroy,
+		CheckDestroy:             testFivetranConnectionConfigResourceDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: `
@@ -381,7 +381,7 @@ func testFivetranConnectionConfigResourceUpdate(t *testing.T, resourceName strin
 	}
 }
 
-func testFivetranConnectionResourceDestroy(s *terraform.State) error {
+func testFivetranConnectionConfigResourceDestroy(s *terraform.State) error {
 	for _, rs := range s.RootModule().Resources {
 		if rs.Type != "fivetran_connector" && rs.Type != "fivetran_connection_config" {
 			continue
