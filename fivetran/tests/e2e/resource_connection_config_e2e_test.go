@@ -23,7 +23,7 @@ func TestResourceConnectionConfigE2E(t *testing.T) {
 					name = "test_group_connection_config"
 			    }
 
-			    resource "fivetran_connector" "test_connector" {
+			    resource "fivetran_connection" "test_connection" {
 					provider = fivetran-provider
 					group_id = fivetran_group.test_group.id
 					service = "postgres"
@@ -31,24 +31,11 @@ func TestResourceConnectionConfigE2E(t *testing.T) {
 					destination_schema {
 						prefix = "postgres_test"
 					}
-
-					trust_certificates = false
-					trust_fingerprints = false
-					run_setup_tests = false
-
-      				config {
-        				update_method = "QUERY_BASED"
-        				user = "initial_user"
-        				password = "initial_password"
-        				host = "initial.example.com"
-        				port = "5432"
-        				database = "initial_db"
-      				}
 				}
 
 				resource "fivetran_connection_config" "test_config" {
 					provider = fivetran-provider
-					connection_id = fivetran_connector.test_connector.id
+					connection_id = fivetran_connection.test_connection.id
 
 					config = jsonencode({
 						update_method = "QUERY_BASED"
@@ -77,7 +64,7 @@ func TestResourceConnectionConfigE2E(t *testing.T) {
 					name = "test_group_connection_config"
 			    }
 
-			    resource "fivetran_connector" "test_connector" {
+			    resource "fivetran_connection" "test_connection" {
 					provider = fivetran-provider
 					group_id = fivetran_group.test_group.id
 					service = "postgres"
@@ -85,24 +72,11 @@ func TestResourceConnectionConfigE2E(t *testing.T) {
 					destination_schema {
 						prefix = "postgres_test"
 					}
-
-					trust_certificates = false
-					trust_fingerprints = false
-					run_setup_tests = false
-
-      				config {
-        				update_method = "QUERY_BASED"
-        				user = "initial_user"
-        				password = "initial_password"
-        				host = "initial.example.com"
-        				port = "5432"
-        				database = "initial_db"
-      				}
 				}
 
 				resource "fivetran_connection_config" "test_config" {
 					provider = fivetran-provider
-					connection_id = fivetran_connector.test_connector.id
+					connection_id = fivetran_connection.test_connection.id
 
 					config = jsonencode({
 						update_method = "QUERY_BASED"
@@ -146,7 +120,7 @@ func TestResourceConnectionConfigOnlyConfigE2E(t *testing.T) {
 					name = "test_group_config_only"
 			    }
 
-			    resource "fivetran_connector" "test_connector" {
+			    resource "fivetran_connection" "test_connection" {
 					provider = fivetran-provider
 					group_id = fivetran_group.test_group.id
 					service = "postgres"
@@ -154,24 +128,11 @@ func TestResourceConnectionConfigOnlyConfigE2E(t *testing.T) {
 					destination_schema {
 						prefix = "postgres_config_only"
 					}
-
-					trust_certificates = false
-					trust_fingerprints = false
-					run_setup_tests = false
-
-      				config {
-        				update_method = "QUERY_BASED"
-        				user = "initial_user"
-        				password = "initial_password"
-        				host = "initial.example.com"
-        				port = "5432"
-        				database = "initial_db"
-      				}
 				}
 
 				resource "fivetran_connection_config" "test_config" {
 					provider = fivetran-provider
-					connection_id = fivetran_connector.test_connector.id
+					connection_id = fivetran_connection.test_connection.id
 
 					config = jsonencode({
 						user = "config_only_user"
@@ -204,7 +165,7 @@ func TestResourceConnectionConfigOnlyAuthE2E(t *testing.T) {
 					name = "test_group_auth_only"
 			    }
 
-			    resource "fivetran_connector" "test_connector" {
+			    resource "fivetran_connection" "test_connection" {
 					provider = fivetran-provider
 					group_id = fivetran_group.test_group.id
 					service = "postgres"
@@ -212,24 +173,11 @@ func TestResourceConnectionConfigOnlyAuthE2E(t *testing.T) {
 					destination_schema {
 						prefix = "postgres_auth_only"
 					}
-
-					trust_certificates = false
-					trust_fingerprints = false
-					run_setup_tests = false
-
-      				config {
-        				update_method = "QUERY_BASED"
-        				user = "initial_user"
-        				password = "initial_password"
-        				host = "initial.example.com"
-        				port = "5432"
-        				database = "initial_db"
-      				}
 				}
 
 				resource "fivetran_connection_config" "test_config" {
 					provider = fivetran-provider
-					connection_id = fivetran_connector.test_connector.id
+					connection_id = fivetran_connection.test_connection.id
 
 					auth = jsonencode({
 						password = "auth_only_password"
@@ -259,7 +207,7 @@ func TestResourceConnectionConfigMultipleConnectorTypesE2E(t *testing.T) {
 					name = "test_group_multi_connector"
 			    }
 
-			    resource "fivetran_connector" "mysql_connector" {
+			    resource "fivetran_connection" "mysql_connection" {
 					provider = fivetran-provider
 					group_id = fivetran_group.test_group.id
 					service = "mysql"
@@ -267,23 +215,11 @@ func TestResourceConnectionConfigMultipleConnectorTypesE2E(t *testing.T) {
 					destination_schema {
 						prefix = "mysql_test"
 					}
-
-					trust_certificates = false
-					trust_fingerprints = false
-					run_setup_tests = false
-
-      				config {
-        				user = "mysql_user"
-        				password = "mysql_password"
-        				host = "mysql.example.com"
-        				port = "3306"
-        				database = "mysql_db"
-      				}
 				}
 
 				resource "fivetran_connection_config" "mysql_config" {
 					provider = fivetran-provider
-					connection_id = fivetran_connector.mysql_connector.id
+					connection_id = fivetran_connection.mysql_connection.id
 
 					config = jsonencode({
 						update_method = "BINLOG"
@@ -298,7 +234,7 @@ func TestResourceConnectionConfigMultipleConnectorTypesE2E(t *testing.T) {
 					})
 				}
 
-			    resource "fivetran_connector" "postgres_connector" {
+			    resource "fivetran_connection" "postgres_connection" {
 					provider = fivetran-provider
 					group_id = fivetran_group.test_group.id
 					service = "postgres"
@@ -306,24 +242,11 @@ func TestResourceConnectionConfigMultipleConnectorTypesE2E(t *testing.T) {
 					destination_schema {
 						prefix = "postgres_multi_test"
 					}
-
-					trust_certificates = false
-					trust_fingerprints = false
-					run_setup_tests = false
-
-      				config {
-        				update_method = "QUERY_BASED"
-        				user = "postgres_user"
-        				password = "postgres_password"
-        				host = "postgres.example.com"
-        				port = "5432"
-        				database = "postgres_db"
-      				}
 				}
 
 				resource "fivetran_connection_config" "postgres_config" {
 					provider = fivetran-provider
-					connection_id = fivetran_connector.postgres_connector.id
+					connection_id = fivetran_connection.postgres_connection.id
 
 					config = jsonencode({
 						update_method = "QUERY_BASED"
@@ -392,12 +315,12 @@ func testFivetranConnectionConfigResourceUpdate(t *testing.T, resourceName strin
 
 func testFivetranConnectionConfigResourceDestroy(s *terraform.State) error {
 	for _, rs := range s.RootModule().Resources {
-		if rs.Type != "fivetran_connector" && rs.Type != "fivetran_connection_config" {
+		if rs.Type != "fivetran_connection" && rs.Type != "fivetran_connection_config" {
 			continue
 		}
 
 		var connectionId string
-		if rs.Type == "fivetran_connector" {
+		if rs.Type == "fivetran_connection" {
 			connectionId = rs.Primary.ID
 		} else if rs.Type == "fivetran_connection_config" {
 			connectionId = rs.Primary.Attributes["connection_id"]
