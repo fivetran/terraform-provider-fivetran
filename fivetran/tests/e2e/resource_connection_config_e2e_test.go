@@ -280,6 +280,7 @@ func TestResourceConnectionConfigMultipleConnectorTypesE2E(t *testing.T) {
 					connection_id = fivetran_connector.mysql_connector.id
 
 					config = jsonencode({
+						update_method = "BINLOG"
 						user = "mysql_updated_user"
 						host = "mysql-updated.example.com"
 						port = 3306
