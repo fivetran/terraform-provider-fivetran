@@ -37,7 +37,7 @@ func TestResourceConnectionConfigE2E(t *testing.T) {
 					run_setup_tests = false
 
       				config {
-        				update_method = "XMIN"
+        				update_method = "QUERY_BASED"
         				user = "initial_user"
         				password = "initial_password"
         				host = "initial.example.com"
@@ -51,7 +51,7 @@ func TestResourceConnectionConfigE2E(t *testing.T) {
 					connection_id = fivetran_connector.test_connector.id
 
 					config = jsonencode({
-						update_method = "XMIN"
+						update_method = "QUERY_BASED"
 						user = "updated_user"
 						host = "updated.example.com"
 						port = 5432
@@ -91,7 +91,7 @@ func TestResourceConnectionConfigE2E(t *testing.T) {
 					run_setup_tests = false
 
       				config {
-        				update_method = "XMIN"
+        				update_method = "QUERY_BASED"
         				user = "initial_user"
         				password = "initial_password"
         				host = "initial.example.com"
@@ -105,6 +105,7 @@ func TestResourceConnectionConfigE2E(t *testing.T) {
 					connection_id = fivetran_connector.test_connector.id
 
 					config = jsonencode({
+						update_method = "QUERY_BASED"
 						user = "updated_user_v2"
 						host = "updated2.example.com"
 						port = 5433
@@ -159,7 +160,7 @@ func TestResourceConnectionConfigOnlyConfigE2E(t *testing.T) {
 					run_setup_tests = false
 
       				config {
-        				update_method = "XMIN"
+        				update_method = "QUERY_BASED"
         				user = "initial_user"
         				password = "initial_password"
         				host = "initial.example.com"
@@ -217,7 +218,7 @@ func TestResourceConnectionConfigOnlyAuthE2E(t *testing.T) {
 					run_setup_tests = false
 
       				config {
-        				update_method = "XMIN"
+        				update_method = "QUERY_BASED"
         				user = "initial_user"
         				password = "initial_password"
         				host = "initial.example.com"
@@ -311,7 +312,7 @@ func TestResourceConnectionConfigMultipleConnectorTypesE2E(t *testing.T) {
 					run_setup_tests = false
 
       				config {
-        				update_method = "XMIN"
+        				update_method = "QUERY_BASED"
         				user = "postgres_user"
         				password = "postgres_password"
         				host = "postgres.example.com"
@@ -325,7 +326,7 @@ func TestResourceConnectionConfigMultipleConnectorTypesE2E(t *testing.T) {
 					connection_id = fivetran_connector.postgres_connector.id
 
 					config = jsonencode({
-						update_method = "XMIN"
+						update_method = "QUERY_BASED"
 						user = "postgres_updated_user"
 						host = "postgres-updated.example.com"
 						port = 5432
