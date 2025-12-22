@@ -64,7 +64,7 @@ func (r *connectionConfig) Create(ctx context.Context, req resource.CreateReques
 	svc := r.GetClient().NewConnectionUpdate().
 		ConnectionID(data.ConnectionId.ValueString()).
 		RunSetupTests(true)
-		
+
 	if authMap != nil {
 		svc.AuthCustom(&authMap)
 	}
@@ -84,7 +84,6 @@ func (r *connectionConfig) Create(ctx context.Context, req resource.CreateReques
 
 		return
 	}
-	data.ReadFromUpdateResponse(response)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
@@ -106,17 +105,16 @@ func (r *connectionConfig) Read(ctx context.Context, req resource.ReadRequest, r
 	response, err := r.GetClient().
 		NewConnectionDetails().
 		ConnectionID(data.ConnectionId.ValueString()).
-		DoCustom(ctx)
+		Do(ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Read error.",
-			fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
+			fmt.Sprintf("%v; code: %v", err, response.Code),
 		)
 		return
 	}
 
-	data.ReadFromResponse(response)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
@@ -152,12 +150,12 @@ func (r *connectionConfig) Update(ctx context.Context, req resource.UpdateReques
 	svc := r.GetClient().NewConnectionUpdate().
 		ConnectionID(state.ConnectionId.ValueString()).
 		RunSetupTests(true)
-		
-	if authMap != nil && !plan.Auth.Equal(state.Auth){
+
+	if authMap != nil && !plan.Auth.Equal(state.Auth) {
 		svc.AuthCustom(&authMap)
 	}
 
-	if configMap != nil && !plan.Config.Equal(state.Config){
+	if configMap != nil && !plan.Config.Equal(state.Config) {
 		svc.ConfigCustom(&configMap)
 	}
 
@@ -170,7 +168,6 @@ func (r *connectionConfig) Update(ctx context.Context, req resource.UpdateReques
 		)
 		return
 	}
-	plan.ReadFromUpdateResponse(response)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
