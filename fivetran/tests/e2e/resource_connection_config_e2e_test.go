@@ -37,6 +37,7 @@ func TestResourceConnectionConfigE2E(t *testing.T) {
 					run_setup_tests = false
 
       				config {
+        				update_method = "XMIN"
         				user = "initial_user"
         				password = "initial_password"
         				host = "initial.example.com"
@@ -50,6 +51,7 @@ func TestResourceConnectionConfigE2E(t *testing.T) {
 					connection_id = fivetran_connector.test_connector.id
 
 					config = jsonencode({
+						update_method = "XMIN"
 						user = "updated_user"
 						host = "updated.example.com"
 						port = 5432
@@ -89,6 +91,7 @@ func TestResourceConnectionConfigE2E(t *testing.T) {
 					run_setup_tests = false
 
       				config {
+        				update_method = "XMIN"
         				user = "initial_user"
         				password = "initial_password"
         				host = "initial.example.com"
@@ -156,6 +159,7 @@ func TestResourceConnectionConfigOnlyConfigE2E(t *testing.T) {
 					run_setup_tests = false
 
       				config {
+        				update_method = "XMIN"
         				user = "initial_user"
         				password = "initial_password"
         				host = "initial.example.com"
@@ -213,6 +217,7 @@ func TestResourceConnectionConfigOnlyAuthE2E(t *testing.T) {
 					run_setup_tests = false
 
       				config {
+        				update_method = "XMIN"
         				user = "initial_user"
         				password = "initial_password"
         				host = "initial.example.com"
@@ -306,6 +311,7 @@ func TestResourceConnectionConfigMultipleConnectorTypesE2E(t *testing.T) {
 					run_setup_tests = false
 
       				config {
+        				update_method = "XMIN"
         				user = "postgres_user"
         				password = "postgres_password"
         				host = "postgres.example.com"
@@ -319,6 +325,7 @@ func TestResourceConnectionConfigMultipleConnectorTypesE2E(t *testing.T) {
 					connection_id = fivetran_connector.postgres_connector.id
 
 					config = jsonencode({
+						update_method = "XMIN"
 						user = "postgres_updated_user"
 						host = "postgres-updated.example.com"
 						port = 5432
