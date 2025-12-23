@@ -27,7 +27,7 @@ func (t JsonConfigType) String() string {
 }
 
 func (t JsonConfigType) ValueType(ctx context.Context) attr.Value {
-	return JsonSchemaValue{}
+	return JsonConfigValue{}
 }
 
 func (t JsonConfigType) Equal(o attr.Type) bool {
@@ -90,7 +90,7 @@ func (t JsonConfigType) Validate(ctx context.Context, in tftypes.Value, path pat
 }
 
 func (t JsonConfigType) ValueFromString(ctx context.Context, in basetypes.StringValue) (basetypes.StringValuable, diag.Diagnostics) {
-	return JsonSchemaValue{
+	return JsonConfigValue{
 		StringValue: in,
 	}, nil
 }
