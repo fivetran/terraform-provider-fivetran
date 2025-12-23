@@ -84,6 +84,10 @@ func (r *connectionConfig) Create(ctx context.Context, req resource.CreateReques
 
 		return
 	}
+
+	// Set id to connection_id
+	data.Id = data.ConnectionId
+
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
@@ -119,6 +123,9 @@ func (r *connectionConfig) Read(ctx context.Context, req resource.ReadRequest, r
 		)
 		return
 	}
+
+	// Set id to connection_id
+	data.Id = data.ConnectionId
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -173,6 +180,9 @@ func (r *connectionConfig) Update(ctx context.Context, req resource.UpdateReques
 		)
 		return
 	}
+
+	// Set id to connection_id
+	plan.Id = plan.ConnectionId
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }

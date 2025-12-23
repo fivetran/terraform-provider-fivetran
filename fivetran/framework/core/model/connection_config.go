@@ -11,6 +11,7 @@ import (
 )
 
 type ConnectionConfigModel struct {
+	Id           types.String                  `tfsdk:"id"`
 	ConnectionId types.String                  `tfsdk:"connection_id"`
 	Config       fivetrantypes.JsonConfigValue `tfsdk:"config"`
 	Auth         fivetrantypes.JsonConfigValue `tfsdk:"auth"`
