@@ -108,6 +108,11 @@ func (r *connectionConfig) Read(ctx context.Context, req resource.ReadRequest, r
 		Do(ctx)
 
 	if err != nil {
+		// If connection not found, remove from state
+		if response.Code == "NotFound_Connector" || response.Code == "NotFound_Connection" {
+			resp.State.RemoveResource(ctx)
+			return
+		}
 		resp.Diagnostics.AddError(
 			"Read error.",
 			fmt.Sprintf("%v; code: %v", err, response.Code),

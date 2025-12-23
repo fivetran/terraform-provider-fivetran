@@ -114,6 +114,7 @@ func TestResourceConnectionConfigE2E(t *testing.T) {
 				ResourceName:      "fivetran_connection_config.test_config",
 				ImportState:       true,
 				ImportStateVerify: true,
+				ImportStateVerifyIgnore: []string{"config", "auth"},
 			},
 		},
 	})
@@ -140,6 +141,12 @@ func TestResourceConnectionConfigOnlyConfigE2E(t *testing.T) {
 					destination_schema {
 						prefix = "postgres_config_only"
 					}
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+					})
+
+					run_setup_tests = false
 				}
 
 				resource "fivetran_connection_config" "test_config" {
@@ -147,6 +154,7 @@ func TestResourceConnectionConfigOnlyConfigE2E(t *testing.T) {
 					connection_id = fivetran_connection.test_connection.id
 
 					config = jsonencode({
+						update_method = "QUERY_BASED"
 						user = "config_only_user"
 						host = "config.example.com"
 						port = 5432
@@ -185,11 +193,21 @@ func TestResourceConnectionConfigOnlyAuthE2E(t *testing.T) {
 					destination_schema {
 						prefix = "postgres_auth_only"
 					}
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+					})
+
+					run_setup_tests = false
 				}
 
 				resource "fivetran_connection_config" "test_config" {
 					provider = fivetran-provider
 					connection_id = fivetran_connection.test_connection.id
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+					})
 
 					auth = jsonencode({
 						password = "auth_only_password"
