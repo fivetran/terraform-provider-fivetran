@@ -31,6 +31,12 @@ func TestResourceConnectionConfigE2E(t *testing.T) {
 					destination_schema {
 						prefix = "postgres_test"
 					}
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+					})
+
+					run_setup_tests = false
 				}
 
 				resource "fivetran_connection_config" "test_config" {
@@ -72,6 +78,12 @@ func TestResourceConnectionConfigE2E(t *testing.T) {
 					destination_schema {
 						prefix = "postgres_test"
 					}
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+					})
+
+					run_setup_tests = false
 				}
 
 				resource "fivetran_connection_config" "test_config" {
@@ -215,6 +227,12 @@ func TestResourceConnectionConfigMultipleConnectorTypesE2E(t *testing.T) {
 					destination_schema {
 						prefix = "mysql_test"
 					}
+
+					config = jsonencode({
+						update_method = "BINLOG"
+					})
+
+					run_setup_tests = false
 				}
 
 				resource "fivetran_connection_config" "mysql_config" {
@@ -242,6 +260,12 @@ func TestResourceConnectionConfigMultipleConnectorTypesE2E(t *testing.T) {
 					destination_schema {
 						prefix = "postgres_multi_test"
 					}
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+					})
+
+					run_setup_tests = false
 				}
 
 				resource "fivetran_connection_config" "postgres_config" {
