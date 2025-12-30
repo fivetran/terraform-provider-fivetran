@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.18...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.19...HEAD)
+
+## [v1.9.19](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.18...v1.9.19)
+
+### Fixed
+- `fivetran_connector` - Fixed managing connector resources with `service = "google_display_and_video_360"`.
 
 ## [v1.9.18](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.17...v1.9.18)
 
