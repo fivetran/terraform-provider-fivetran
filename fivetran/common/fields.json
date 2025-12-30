@@ -10693,7 +10693,7 @@
             "api_field": ""
          }
       },
-      "key_field": "table",
+      "key_field": "table|table_name",
       "item_type": {},
       "description": {
          "double_click_campaign_manager": "List of reports",

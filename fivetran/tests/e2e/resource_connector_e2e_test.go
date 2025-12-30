@@ -575,6 +575,164 @@ func TestResourceConnectorNullableConfigFieldsE2E(t *testing.T) {
 	})
 }
 
+func TestGoogleVideo360ReportsE2E(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectionResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_multi"
+			    }
+
+				locals {
+
+					reports = {
+						"standard_report_daily" = {
+							config_method = "CREATE_NEW"
+							report_type   = "STANDARD"
+							partners      = []
+							dimensions = [
+								"FILTER_ADVERTISER",
+								"FILTER_DATE"
+							]
+							metrics = [
+								"METRIC_CLICKS"
+							]
+							update_config_on_each_sync = true
+						}
+					}
+				}
+
+			    resource "fivetran_connector" "google_video_360_connection" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "google_display_and_video_360"
+					run_setup_tests = false
+					destination_schema {
+						name = "google_display_and_video_360" 
+					}
+					config {
+						timeframe_months = "TWELVE"
+
+						dynamic "reports" {
+							for_each = local.reports
+
+							content {
+								table_name                 = reports.key
+								
+								config_method              = reports.value.config_method
+								partners                   = reports.value.partners
+								report_type                = reports.value.report_type
+								dimensions                 = reports.value.dimensions
+								metrics                    = reports.value.metrics
+								update_config_on_each_sync = reports.value.update_config_on_each_sync
+							}
+						}
+					}
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectorResourceCreate(t, "fivetran_connector.google_video_360_connection"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_video_360_connection", "service", "google_display_and_video_360"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "config.reports.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "config.reports.0.table", "standard_report_daily"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "config.reports.0.dimensions.#", "2"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "config.reports.0.dimensions.0", "FILTER_ADVERTISER"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "config.reports.0.dimensions.1", "FILTER_DATE"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "config.reports.0.metrics.0", "METRIC_CLICKS"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "config.reports.0.per_interaction_dimensions.#", "0"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "config.reports.0.report_configuration_ids.#", "0"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "config.reports.0.report_type", "STANDARD"),
+				),
+			},
+		},
+	})
+}
+
+func TestGoogleCampaignManagerReportsE2E(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectionResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_multi"
+			    }
+
+				locals {
+
+					reports = {
+						"standard_report_daily" = {
+							config_method = "CREATE_NEW"
+							report_type   = "STANDARD"
+							dimensions = [
+								"FILTER_ADVERTISER",
+								"FILTER_DATE"
+							]
+							metrics = [
+								"METRIC_CLICKS"
+							]
+						}
+					}
+				}
+
+			    resource "fivetran_connector" "google_campaign_manager_connection" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "double_click_campaign_manager"
+					run_setup_tests = false
+					destination_schema {
+						name = "double_click_campaign_manager" 
+					}
+					config {
+						timeframe_months = "TWELVE"
+
+						dynamic "reports" {
+							for_each = local.reports
+
+							content {
+								table                 = reports.key
+								conversion_dimensions = reports.value.dimensions
+								custom_floodlight_variables = []
+								dimensions                 = reports.value.dimensions
+								enable_all_dimension_combinations = false
+								metrics                    = reports.value.metrics
+								per_interaction_dimensions = []
+								report_configuration_ids  = []
+								report_type                = reports.value.report_type
+							}
+						}
+					}
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectorResourceCreate(t, "fivetran_connector.google_campaign_manager_connection"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "service", "double_click_campaign_manager"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "config.timeframe_months", "TWELVE"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "config.reports.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "config.reports.0.table", "standard_report_daily"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "config.reports.0.conversion_dimensions.0", "FILTER_ADVERTISER"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "config.reports.0.dimensions.#", "2"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "config.reports.0.dimensions.0", "FILTER_ADVERTISER"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "config.reports.0.dimensions.1", "FILTER_DATE"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "config.reports.0.enable_all_dimension_combinations", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "config.reports.0.metrics.0", "METRIC_CLICKS"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "config.reports.0.per_interaction_dimensions.#", "0"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "config.reports.0.report_configuration_ids.#", "0"),
+					resource.TestCheckResourceAttr("fivetran_connector.google_campaign_manager_connection", "config.reports.0.report_type", "STANDARD"),
+				),
+			},
+		},
+	})
+}
+
 func testFivetranConnectorResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)
