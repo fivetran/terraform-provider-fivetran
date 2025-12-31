@@ -388,7 +388,7 @@ func appendSensitiveExclusion(newField, existingField *common.ConfigField, servi
 
 func ableToMergeFields(a, b common.ConfigField) bool {
 	if a.FieldValueType != b.FieldValueType {
-		// can't merge fields of different types
+		// can't merge fields of different types (merging fields with different sensitivity is supported via SensitiveExclusions)
 		return false
 	}
 	if a.FieldValueType != common.ObjectList {
