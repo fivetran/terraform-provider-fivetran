@@ -151,10 +151,10 @@ type ConnectorResourceModel struct {
     TrustFingerprints types.Bool `tfsdk:"trust_fingerprints"`
 }
 
-func (d *ConnectorResourceModel) ReadFromResponse(resp connections.DetailsWithCustomConfigNoTestsResponse, forceReadConfig bool) diag.Diagnostics {
+func (d *ConnectorResourceModel) ReadFromResponse(resp connections.DetailsWithCustomConfigNoTestsResponse, isImporting bool) diag.Diagnostics {
     responseContainer := ConnectorModelContainer{}
     responseContainer.ReadFromResponseData(resp.Data.DetailsResponseDataCommon, resp.Data.Config)
-    d.ReadFromContainer(responseContainer, forceReadConfig)
+    d.ReadFromContainer(responseContainer, isImporting)
     return nil
 }
 
@@ -205,7 +205,7 @@ func (d *ConnectorResourceModel) GetDestinatonSchemaForConfig() (map[string]inte
     )
 }
 
-func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, forceReadConfig bool) {
+func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, isImporting bool) {
 	d.Id = types.StringValue(c.Id)
 	d.Name = types.StringValue(c.Schema)
 	d.ConnectedBy = types.StringValue(c.ConnectedBy)
@@ -248,12 +248,12 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, fo
 		d.NetworkingMethod = types.StringValue(c.NetworkingMethod)
 	}
 
-	if forceReadConfig || (!d.Config.IsNull() && !d.Config.IsUnknown()) {
+	if isImporting || (!d.Config.IsNull() && !d.Config.IsUnknown()) {
 		d.Config = getValue(
 			types.ObjectType{AttrTypes: getAttrTypes(common.GetConfigFieldsMap())},
 			c.Config,
 			getValueFromAttrValue(d.Config, common.GetConfigFieldsMap(), nil, c.Service).(map[string]interface{}),
-			common.GetConfigFieldsMap(), nil, c.Service).(basetypes.ObjectValue)
+			common.GetConfigFieldsMap(), nil, c.Service, isImporting).(basetypes.ObjectValue)
 	}
 }
 
@@ -306,7 +306,7 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
         c.Config,
         common.GetConfigFieldsMap(),
         nil,
-        c.Service).(basetypes.ObjectValue)
+        c.Service, false).(basetypes.ObjectValue)
 }
 
 func (d *ConnectorResourceModel) HasUpdates(plan ConnectorResourceModel, state ConnectorResourceModel) (bool, map[string]interface{}, map[string]interface{}, error) {

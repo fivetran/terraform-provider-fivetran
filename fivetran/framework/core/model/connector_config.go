@@ -135,26 +135,27 @@ func attrTypeFromConfigField(cf common.ConfigField) attr.Type {
 	return nil
 }
 
-func getStringValue(value, local interface{}, currentField *common.ConfigField, service string) types.String {
+func getStringValue(value, local interface{}, currentField *common.ConfigField, service string, isImporting bool) types.String {
+	if currentField != nil && currentField.GetIsSensitive(service) && local != nil {
+		return types.StringValue(local.(string))
+	}
 	if value == nil {
 		if local != nil && local.(string) == "" {
 			return types.StringValue("")
 		}
 		return types.StringNull()
 	}
-	if local == nil && !currentField.Readonly { // we should not set non-nullable value to the state if it's not configured by tf, we just ignore it
+	if local == nil && !currentField.Readonly &&  // we should not set non-nullable value to the state if it's not configured by tf, we just ignore it
+		(!isImporting || currentField.GetIsSensitive(service)) {
 		return types.StringNull()
-	}
-	if currentField != nil && currentField.GetIsSensitive(service) && local != nil {
-		return types.StringValue(local.(string))
 	}
 
 	// print any value as a string
 	return types.StringValue(fmt.Sprintf("%v", value))
 }
 
-func getBoolValue(value, local interface{}, currentField *common.ConfigField) types.Bool {
-	if value == nil || (local == nil && !currentField.Readonly) { // we should not set value to the state if it's not configured by tf
+func getBoolValue(value, local interface{}, currentField *common.ConfigField, isImporting bool) types.Bool {
+	if value == nil || (local == nil && !currentField.Readonly && !isImporting) { // we should not set value to the state if it's not configured by tf
 		return types.BoolNull()
 	}
 	if fValue, ok := value.(bool); ok {
@@ -169,8 +170,8 @@ func getBoolValue(value, local interface{}, currentField *common.ConfigField) ty
 	panic(fmt.Sprintf("Unable to read boolean value from %v", value))
 }
 
-func getIntValue(value, local interface{}, currentField *common.ConfigField) types.Int64 {
-	if value == nil || (local == nil && !currentField.Readonly) { // we should not set value to the state if it's not configured by tf
+func getIntValue(value, local interface{}, currentField *common.ConfigField, isImporting bool) types.Int64 {
+	if value == nil || (local == nil && !currentField.Readonly && !isImporting) { // we should not set value to the state if it's not configured by tf
 		return types.Int64Null()
 	}
 	// value in json decoded response is always float64 for any kind of numbers
@@ -191,18 +192,18 @@ func getIntValue(value, local interface{}, currentField *common.ConfigField) typ
 
 func getValue(
 	fieldType attr.Type,
-	value, local interface{},
+	value, local interface{},// value - api response value, local - tf state value
 	fieldsMap map[string]common.ConfigField,
 	currentField *common.ConfigField,
-	service string) attr.Value {
+	service string, isImporting bool) attr.Value {
 	if fieldType.Equal(types.StringType) {
-		return getStringValue(value, local, currentField, service)
+		return getStringValue(value, local, currentField, service, isImporting)
 	}
 	if fieldType.Equal(types.BoolType) {
-		return getBoolValue(value, local, currentField)
+		return getBoolValue(value, local, currentField, isImporting)
 	}
 	if fieldType.Equal(types.Int64Type) {
-		return getIntValue(value, local, currentField)
+		return getIntValue(value, local, currentField, isImporting)
 	}
 	if complexType, ok := fieldType.(attr.TypeWithAttributeTypes); ok {
 		if value == nil {
@@ -219,7 +220,7 @@ func getValue(
 
 			if _, ok := fieldsMap[fn+"_"+service]; ok {
 				// this field should be handled as service specific field, set this attr as nil
-				elements[fn] = getValue(et, nil, nil, cf.ItemFields, &cf, service)
+				elements[fn] = getValue(et, nil, nil, cf.ItemFields, &cf, service, isImporting)
 				continue
 			}
 			efn := fn
@@ -227,20 +228,20 @@ func getValue(
 				efn = cf.ApiField
 				// field is not related to this particular service, set this attr as nil
 				if !strings.HasSuffix(fn, service) {
-					elements[fn] = getValue(et, nil, nil, cf.ItemFields, &cf, service)
+					elements[fn] = getValue(et, nil, nil, cf.ItemFields, &cf, service, isImporting)
 					continue
 				}
 			}
 			// get upstream value
 			if value, ok := vMap[efn]; ok {
 				lValue := lMap[fn]
-				elements[fn] = getValue(et, value, lValue, cf.ItemFields, &cf, service)
+				elements[fn] = getValue(et, value, lValue, cf.ItemFields, &cf, service, isImporting)
 			} else {
 				lValue := lMap[fn]
 				if et == nil {
 					panic(fmt.Sprintf("Type for field '%v' is nil, local value: %v", fn, lValue))
 				}
-				elements[fn] = getValue(et, nil, lValue, cf.ItemFields, &cf, service)
+				elements[fn] = getValue(et, nil, lValue, cf.ItemFields, &cf, service, isImporting)
 			}
 		}
 		objectValue, _ := types.ObjectValue(complexType.AttributeTypes(), elements)
@@ -254,7 +255,7 @@ func getValue(
 				items := []attr.Value{}
 				for _, v := range localArray {
 					items = append(items,
-						getValue(collectionType.ElementType(), v, v, fieldsMap, currentField, service),
+						getValue(collectionType.ElementType(), v, v, fieldsMap, currentField, service, isImporting),
 					)
 				}
 				if _, ok := collectionType.(basetypes.SetTypable); ok {
@@ -304,7 +305,7 @@ func getValue(
 						if keyV, ok := vMap[keyField]; ok {
 							if keyL == keyV {
 								items = append(items,
-									getValue(collectionType.ElementType(), v, li, fieldsMap, currentField, service),
+									getValue(collectionType.ElementType(), v, li, fieldsMap, currentField, service, isImporting),
 								)
 							}
 						}
@@ -312,7 +313,7 @@ func getValue(
 				}
 			} else {
 				items = append(items,
-					getValue(collectionType.ElementType(), v, v, fieldsMap, currentField, service),
+					getValue(collectionType.ElementType(), v, v, fieldsMap, currentField, service, isImporting),
 				)
 			}
 		}
