@@ -145,6 +145,199 @@ func TestReadonlyFieldSetMock(t *testing.T) {
 	)
 }
 
+func TestResourceMDLSDestinationMock(t *testing.T) {
+	var getDestinationResponse map[string]interface{}
+	var postDestinationResponse map[string]interface{}
+	var testDestinationData map[string]interface{}
+	var destinationGetHandler *mock.Handler
+	var destinationPostHandler *mock.Handler
+	var destinationDeleteHandler *mock.Handler
+	var testHandler *mock.Handler
+
+	postDestinationResponse = tfmock.CreateMapFromJsonString(t, `
+	{
+		"id": "group_id",
+		"groupId": "group_id",
+		"service": "managed_data_lake",
+		"region": "AWS_US_EAST_1",
+		"timeZoneOffset": "0",
+		"setupStatus": "incomplete",
+		"daylightSavingTimeEnabled": true,
+		"privateLinkId": null,
+		"networkingMethod": "Directly",
+		"proxyAgentId": null,
+		"setupTests": [
+		{
+			"title": "AWS Read and write access test",
+			"status": "FAILED",
+			"message": "User: arn:aws:iam::1234567890:user/gcp_donkey is not authorized to perform: sts:AssumeRole on resource: arn:aws:iam::1234567890:role/smth-us-east-1 (Service: AWSSecurityTokenService; Status Code: 403; Error Code: AccessDenied; Request ID: 0000000-0000-0000-0000-000000000; Proxy: null)"
+		},
+		{
+			"title": "Input fields validation test",
+			"status": "PASSED",
+			"message": ""
+		}
+		],
+		"config": {
+			"storage_provider": "AWS",
+			"bucket": "smth-us-east-1-smth",
+			"fivetran_role_arn": "arn:aws:iam::1234567890:role/smth-us-east-1",
+			"prefix_path": "prefix-path",
+			"region": "us-east-1",
+			"snapshot_retention_period": "ONE_WEEK",
+			"should_maintain_tables_in_databricks": false,
+			"port": 443,
+			"auth_type": "OAUTH2",
+			"databricks_connection_type": "DIRECTLY",
+			"should_maintain_tables_in_one_lake": false,
+			"connection_type": "DIRECTLY",
+			"should_maintain_tables_in_glue": false,
+			"should_maintain_tables_in_bqms": false
+		}
+	}
+	`)
+
+	getDestinationResponse = tfmock.CreateMapFromJsonString(t, `
+	{
+		"id": "group_id",
+		"groupId": "group_id",
+		"service": "managed_data_lake",
+		"region": "AWS_US_EAST_1",
+		"timeZoneOffset": "0",
+		"setupStatus": "connected",
+		"daylightSavingTimeEnabled": true,
+		"privateLinkId": null,
+		"networkingMethod": "Directly",
+		"proxyAgentId": null,
+		"config": {
+			"storage_provider": "AWS",
+			"bucket": "smth-us-east-1-smth",
+			"fivetran_role_arn": "arn:aws:iam::1234567890:role/smth-us-east-1",
+			"prefix_path": "prefix-path",
+			"region": "us-east-1",
+			"snapshot_retention_period": "ONE_WEEK",
+			"should_maintain_tables_in_databricks": false,
+			"port": 443,
+			"auth_type": "OAUTH2",
+			"databricks_connection_type": "DIRECTLY",
+			"should_maintain_tables_in_one_lake": false,
+			"connection_type": "PRIVATE_LINK",
+			"should_maintain_tables_in_glue": false,
+			"should_maintain_tables_in_bqms": false,
+			"polaris_catalog_configuration": {
+				"polarisServerEndpoint": "https://smth.us-east-1.aws.polaris.fivetran.com/api/catalog",
+				"polarisCatalog": "group_id",
+				"clientId": "abc1234567890",
+				"clientSecret": "********"
+			}
+		}
+	}
+	`)
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				tfmock.MockClient().Reset()
+
+				destinationPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/destinations").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+
+						testDestinationData = postDestinationResponse 
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", postDestinationResponse), nil
+					},
+				)
+
+				testHandler = tfmock.MockClient().When(http.MethodPost, "/v1/destinations/group_id/test").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						response := tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Setup tests have been completed", testDestinationData)
+						return response, nil
+					},
+				)
+
+				destinationGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/destinations/group_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", getDestinationResponse), nil
+					},
+				)
+
+				destinationDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/destinations/group_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						getDestinationResponse = nil
+						response := tfmock.FivetranSuccessResponse(t, req, 200,
+							"Destination with id 'group_id' has been deleted", nil)
+						return response, nil
+					},
+				)
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, destinationDeleteHandler.Interactions, 1)
+				tfmock.AssertEmpty(t, getDestinationResponse)
+				return nil
+			},
+			Steps: []resource.TestStep{
+				{
+					Config: ` resource "fivetran_destination" "mydestination" {
+						provider = fivetran-provider
+						
+						group_id = "group_id"
+						service= "managed_data_lake"
+						region= "AWS_US_EAST_1"
+						time_zone_offset= "0"
+						daylight_saving_time_enabled= true
+						networking_method= "Directly"
+						config {
+							storage_provider= "AWS"
+							bucket= "smth-us-east-1-smth"
+							fivetran_role_arn= "arn:aws:iam::1234567890:role/smth-us-east-1"
+							prefix_path= "prefix-path"
+							region= "us-east-1"
+							snapshot_retention_period= "ONE_WEEK"
+							port= 443
+							auth_type= "OAUTH2"
+							databricks_connection_type= "DIRECTLY"
+							connection_type= "PRIVATE_LINK"
+						}
+					}`,
+					// ImportState:       true,
+					// ImportStateId:     "group_id",
+					// ResourceName:      "fivetran_destination.mydestination",
+					//ImportStateVerify: true,
+					// ImportStateVerifyIgnore: []string{
+					// 	"config.password", // Password is masked in API response
+					// 	"run_setup_tests", // This is a Terraform-only field
+					// },
+					Check: resource.ComposeAggregateTestCheckFunc(
+						func(s *terraform.State) error {
+							tfmock.AssertEqual(t, destinationGetHandler.Interactions, 1)
+							tfmock.AssertEqual(t, destinationPostHandler.Interactions, 1)
+							tfmock.AssertEqual(t, testHandler.Interactions, 1)
+							tfmock.AssertNotEmpty(t, getDestinationResponse)
+							return nil
+						},
+						resource.TestCheckResourceAttr("fivetran_destination.mydestination", "id", "destination_id"),
+						resource.TestCheckResourceAttr("fivetran_destination.mydestination", "group_id", "group_id"),
+						resource.TestCheckResourceAttr("fivetran_destination.mydestination", "service", "snowflake"),
+						resource.TestCheckResourceAttr("fivetran_destination.mydestination", "region", "GCP_US_EAST4"),
+						resource.TestCheckResourceAttr("fivetran_destination.mydestination", "time_zone_offset", "0"),
+						resource.TestCheckResourceAttr("fivetran_destination.mydestination", "daylight_saving_time_enabled", "true"),
+						resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_certificates", "true"),
+						resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_fingerprints", "true"),
+						resource.TestCheckResourceAttr("fivetran_destination.mydestination", "networking_method", "Directly"),
+						resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.host", "import-test.snowflake.com"),
+						resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.port", "443"),
+						resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.database", "import_database"),
+						resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.auth", "PASSWORD"),
+						resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.user", "import_user"),
+						resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.connection_type", "Directly"),
+					),
+				},
+			},
+		},
+	)
+}
+
 func TestResourceDestinationMappingMock(t *testing.T) {
 	var testDestinationData map[string]interface{}
 	var destinationMappingGetHandler *mock.Handler
