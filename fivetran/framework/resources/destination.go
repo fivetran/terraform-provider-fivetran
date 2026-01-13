@@ -140,7 +140,7 @@ func (r *destination) Create(ctx context.Context, req resource.CreateRequest, re
 			TrustCertificates(trustCertificatesPlan).
 			TrustFingerprints(trustFingerprintsPlan)
 
-		stResponse, err := rsts.Do(ctx)
+		stResponse, err := rsts.DoCustom(ctx)
 
 		if err != nil {
 			resp.Diagnostics.AddError(
