@@ -145,7 +145,7 @@ func TestReadonlyFieldSetMock(t *testing.T) {
 	)
 }
 
-func TestResourceMDLSDestinationMock(t *testing.T) {
+func TestResourceMDLSDestinationMock(t *testing.T){ 
 	var getDestinationResponse map[string]interface{}
 	var postDestinationResponse map[string]interface{}
 	var testDestinationData map[string]interface{}
@@ -347,9 +347,15 @@ func TestResourceMDLSDestinationMock(t *testing.T) {
 						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "daylight_saving_time_enabled", "true"),
 						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "networking_method", "Directly"),
 
-						tfmock.CheckNoImportResourceAttr("fivetran_destination", "group_id", "config"),
-						tfmock.CheckNoImportResourceAttr("fivetran_destination", "group_id", "config.bucket"),
-						
+						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.bucket", "smth-us-east-1-smth"),
+						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.fivetran_role_arn", "arn:aws:iam::1234567890:role/smth-us-east-1"),
+						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.prefix_path", "prefix-path"),
+						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.region", "us-east-1"),
+						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.storage_provider", "AWS"),
+						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.snapshot_retention_period", "ONE_WEEK"),
+						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.port", "443"),
+						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.auth_type", "OAUTH2"),
+						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.databricks_connection_type", "DIRECTLY"),
 					),
 				},
 
@@ -407,17 +413,15 @@ func TestResourceMDLSDestinationMock(t *testing.T) {
 						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "daylight_saving_time_enabled", "true"),
 						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "networking_method", "Directly"),
 
-						// Importing of config is not implemented
-						// tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.bucket", "smth-us-east-1-smth"),
-						// tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.fivetran_role_arn", "arn:aws:iam::1234567890:role/smth-us-east-1"),
-						// tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.prefix_path", "prefix-path"),
-						// tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.region", "us-east-1"),
-						// tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.storage_provider", "AWS"),
-						// tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.snapshot_retention_period", "ONE_WEEK"),
-						// tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.port", "443"),
-						// tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.auth_type", "OAUTH2"),
-						// tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.databricks_connection_type", "DIRECTLY"),
-						
+						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.bucket", "smth-us-east-1-smth"),
+						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.fivetran_role_arn", "arn:aws:iam::1234567890:role/smth-us-east-1"),
+						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.prefix_path", "prefix-path"),
+						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.region", "us-east-1"),
+						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.storage_provider", "AWS"),
+						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.snapshot_retention_period", "ONE_WEEK"),
+						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.port", "443"),
+						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.auth_type", "OAUTH2"),
+						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.databricks_connection_type", "DIRECTLY"),
 					),
 				},			
 			},

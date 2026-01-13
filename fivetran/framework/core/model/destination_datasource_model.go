@@ -63,7 +63,7 @@ func (d *DestinationDatasourceModel) SetNetworkingMethod(value string) {
         d.NetworkingMethod = types.StringValue(value)
     }
 }
-func (d *DestinationDatasourceModel) SetConfig(value map[string]interface{}) {
+func (d *DestinationDatasourceModel) SetConfig(value map[string]interface{}, _ bool) {
     if d.Service.IsNull() || d.Service.IsUnknown() {
         panic("Service type is null. Can't handle config without service type.")
     }
@@ -83,5 +83,5 @@ func (d *DestinationDatasourceModel) SetConfig(value map[string]interface{}) {
 
 func (d *DestinationDatasourceModel) ReadFromResponse(resp destinations.DestinationDetailsCustomResponse) {
     var model destinationModel = d
-    readFromResponse(model, resp.Data.DestinationDetailsBase, resp.Data.Config)
+    readFromResponse(model, resp.Data.DestinationDetailsBase, resp.Data.Config, true)
 }
