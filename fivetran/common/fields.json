@@ -9785,7 +9785,7 @@
                   "api_field": ""
                }
             },
-            "key_field": "",
+            "key_field": "id",
             "item_type": {},
             "description": {
                "workday_adaptive": "List of accounts to sync for the table, if applicable"

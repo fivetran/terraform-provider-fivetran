@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `fivetran_destination` resource with `service= "managed_data_lake"`
+- `fivetran_connector` resource with `service= "workday_adaptive"`
 
 ## [v1.9.19](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.18...v1.9.19)
 

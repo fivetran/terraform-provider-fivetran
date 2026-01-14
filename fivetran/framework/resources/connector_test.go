@@ -513,6 +513,142 @@ const (
 		}
 	}
 	`
+
+	workdayConnectorPostResponse = `
+	{
+		"id": "connection_id",
+		"group_id": "group_id",
+		"service": "workday_adaptive",
+		"service_version": 0,
+		"schema": "workday_adaptive",
+		"connected_by": "user_id",
+		"created_at": "2026-01-01T05:27:48Z",
+		"succeeded_at": null,
+		"failed_at": null,
+		"paused": true,
+		"pause_after_trial": false,
+		"sync_frequency": 360,
+		"data_delay_threshold": 0,
+		"data_delay_sensitivity": "NORMAL",
+		"private_link_id": null,
+		"networking_method": "Directly",
+		"proxy_agent_id": null,
+		"schedule_type": "auto",
+		"status": {
+			"setup_state": "connected",
+			"schema_status": "ready",
+			"sync_state": "paused",
+			"update_state": "on_schedule",
+			"is_historical_sync": true,
+			"tasks": [],
+			"warnings": []
+		},
+		"setup_tests": [
+			{
+			"title": "Validating report parameters",
+			"status": "PASSED",
+			"message": ""
+			},
+			{
+			"title": "Validating adaptive credentials",
+			"status": "PASSED",
+			"message": ""
+			}
+		],
+		"config": {
+			"login": "mail@mail.com",
+			"password": "******",
+			"instance_code": "INSTANCE_CODE1",
+			"reports": [
+				{
+					"table": "table_1",
+					"version_sync_strategy": "SYNC_SELECT_VERSIONS",
+					"versions": ["2945"],
+					"accounts": [
+						{ "id": "3", "flag": true, "include_descendants": true },
+						{ "id": "4", "flag": true }
+					],
+					"dimensions": ["3", "4"],
+					"include_zero_rows": true
+				}
+			]
+		}
+	}
+	`
+
+	workdayConnectorPatchResponse = `
+	{
+		"id": "connection_id",
+		"group_id": "group_id",
+		"service": "workday_adaptive",
+		"service_version": 0,
+		"schema": "workday_adaptive",
+		"connected_by": "user_id",
+		"created_at": "2026-01-01T05:27:48Z",
+		"succeeded_at": null,
+		"failed_at": null,
+		"paused": true,
+		"pause_after_trial": false,
+		"sync_frequency": 360,
+		"data_delay_threshold": 0,
+		"data_delay_sensitivity": "NORMAL",
+		"private_link_id": null,
+		"networking_method": "Directly",
+		"proxy_agent_id": null,
+		"schedule_type": "auto",
+		"status": {
+			"setup_state": "connected",
+			"schema_status": "ready",
+			"sync_state": "paused",
+			"update_state": "on_schedule",
+			"is_historical_sync": true,
+			"tasks": [],
+			"warnings": []
+		},
+		"setup_tests": [
+			{
+			"title": "Validating report parameters",
+			"status": "PASSED",
+			"message": ""
+			},
+			{
+			"title": "Validating adaptive credentials",
+			"status": "PASSED",
+			"message": ""
+			}
+		],
+		"config": {
+			"login": "mail@mail.com",
+			"password": "******",
+			"instance_code": "INSTANCE_CODE1",
+			"reports": [
+				{
+					"table": "table_1",
+					"version_sync_strategy": "SYNC_SELECT_VERSIONS",
+					"versions": ["2945"],
+					"accounts": [
+						{ "id": "3", "flag": true, "include_descendants": false },
+						{ "id": "4", "flag": true },
+						{ "id": "5", "flag": true }
+					],
+					"dimensions": ["3", "4"],
+					"include_zero_rows": true
+				},
+				{
+					"table": "table_2",
+					"version_sync_strategy": "SYNC_SELECT_VERSIONS",
+					"versions": ["2945"],
+					"accounts": [
+						{ "id": "11", "flag": true },
+						{ "id": "12", "flag": true }
+					],
+					"dimensions": ["11"],
+					"include_zero_rows": true
+				}
+			]
+		}
+	}
+	`
 )
 
 func setupMockClientConnectorResourceListMappingConfig(t *testing.T) {
@@ -620,6 +756,40 @@ func setupMockClientConnectorResourceUpdateHd(t *testing.T) {
 	)
 
 	connectorMockUpdateDelete = tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			connectorMockData = nil
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
+		},
+	)
+}
+
+func setupMockClientConnectorResourceWorkday(t *testing.T) {
+	tfmock.MockClient().Reset()
+	connectorMockData = nil
+
+	connectorMockUpdateGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connections/connection_id").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
+		},
+	)
+
+	connectorMockUpdatePostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/connections").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			// body = tfmock.RequestBodyToJson(t, req))
+			connectorMockData = tfmock.CreateMapFromJsonString(t, workdayConnectorPostResponse)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", connectorMockData), nil
+		},
+	)
+
+	connectorMockUpdatePatchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/connections/connection_id").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			// body = tfmock.RequestBodyToJson(t, req))
+			connectorMockData = tfmock.CreateMapFromJsonString(t, workdayConnectorPatchResponse)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
+		},
+	)
+
+	connectorMockUpdateDelete = tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connection_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			connectorMockData = nil
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
@@ -2419,5 +2589,149 @@ func TestConnectorConfigEmptyListConversionMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "id", "connector_id"),
 		),
 		nil,
+	)
+}
+
+func TestResourceConnectorWorkdayServiceMock(t *testing.T) {
+	step1 := resource.TestStep{
+		Config: `
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+
+			group_id = "group_id"
+			service = "workday_adaptive"
+			data_delay_sensitivity = "NORMAL"
+			networking_method = "Directly"
+			destination_schema {
+			  	name = "workday_adaptive"
+			}
+			config {
+				login = "mail@mail.com"
+				password = "password"
+				instance_code = "INSTANCE_CODE1"
+				reports {
+				    table = "table_1"
+					version_sync_strategy = "SYNC_SELECT_VERSIONS"
+					include_zero_rows = true
+					versions = ["2945"]
+					accounts  { 
+					  include_descendants = true
+					  id = "3"
+					  flag = true 
+					}
+					accounts { 
+					  id = "4"
+					  flag = true 
+					}
+					dimensions = ["3","4"]
+				}
+			}
+		}
+		`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, connectorMockUpdatePostHandler.Interactions, 1)
+				tfmock.AssertEqual(t, connectorMockUpdateGetHandler.Interactions, 0)
+				tfmock.AssertEqual(t, connectorMockUpdatePatchHandler.Interactions, 0)
+				tfmock.AssertNotEmpty(t, connectorMockData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "workday_adaptive"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.reports.#", "1"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.reports.0.table", "table_1"),
+		),
+	}
+
+	step2 := resource.TestStep{
+		PreConfig: func() {
+			connectorMockUpdatePostHandler.Interactions = 0
+			connectorMockUpdateGetHandler.Interactions = 0
+			connectorMockUpdatePatchHandler.Interactions = 0
+		},
+		Config: `
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+
+			group_id = "group_id"
+			service = "workday_adaptive"
+			data_delay_sensitivity = "NORMAL"
+			networking_method = "Directly"
+			destination_schema {
+			  	name = "workday_adaptive"
+			}
+			config {
+				login = "mail@mail.com"
+				password = "password"
+				instance_code = "INSTANCE_CODE1"
+				reports {
+				    table = "table_1"
+					version_sync_strategy = "SYNC_SELECT_VERSIONS"
+					include_zero_rows = true
+					versions = ["2945"]
+					accounts  { 
+					  include_descendants = false
+					  id = "3"
+					  flag = true 
+					}
+					accounts { 
+					  id = "4"
+					  flag = true 
+					}
+					accounts  { 
+					  id = "5"
+					  flag = true 
+					}
+					dimensions = ["3","4"]
+				}
+				reports {
+				    table = "table_2"
+					version_sync_strategy = "SYNC_SELECT_VERSIONS"
+					include_zero_rows = true
+					versions = ["2945"]
+					accounts  { 
+					  id = "11"
+					  flag = true 
+					}
+					accounts { 
+					  id = "12"
+					  flag = true 
+					}
+					dimensions = ["11"]
+				}
+			}
+		}
+		`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, connectorMockUpdatePostHandler.Interactions, 0)
+				tfmock.AssertEqual(t, connectorMockUpdateGetHandler.Interactions, 1)
+				tfmock.AssertEqual(t, connectorMockUpdatePatchHandler.Interactions, 1)
+				tfmock.AssertNotEmpty(t, connectorMockData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "workday_adaptive"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.reports.#", "2"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientConnectorResourceWorkday(t)
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, connectorMockUpdateDelete.Interactions, 1)
+				tfmock.AssertEmpty(t, connectorMockData)
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
+				step2,
+			},
+		},
 	)
 }
