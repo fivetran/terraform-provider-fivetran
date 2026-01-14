@@ -69,7 +69,7 @@ func (d *DestinationResourceModel) SetPrivateLinkId(value string) {
         d.PrivateLinkId = types.StringNull()
     }
 }
-func (d *DestinationResourceModel) SetConfig(value map[string]interface{}) {
+func (d *DestinationResourceModel) SetConfig(value map[string]interface{}, isImporting bool) {
 	if d.Service.IsNull() || d.Service.IsUnknown() {
 		panic("Service type is null. Can't handle config without service type.")
 	}
@@ -86,22 +86,22 @@ func (d *DestinationResourceModel) SetConfig(value map[string]interface{}) {
 		getValueFromAttrValue(config, common.GetDestinationFieldsMap(), nil, service).(map[string]interface{}),
 		common.GetDestinationFieldsMap(),
 		nil,
-		service).(basetypes.ObjectValue)
+		service, isImporting).(basetypes.ObjectValue)
 }
 
-func (d *DestinationResourceModel) ReadFromResponse(resp destinations.DestinationDetailsCustomResponse) {
+func (d *DestinationResourceModel) ReadFromResponse(resp destinations.DestinationDetailsCustomResponse, isImporting bool) {
 	var model destinationModel = d
-	readFromResponse(model, resp.Data.DestinationDetailsBase, resp.Data.Config)
+	readFromResponse(model, resp.Data.DestinationDetailsBase, resp.Data.Config, isImporting)
 }
 
 func (d *DestinationResourceModel) ReadFromResponseWithTests(resp destinations.DestinationDetailsWithSetupTestsCustomResponse) {
 	var model destinationModel = d
-	readFromResponse(model, resp.Data.DestinationDetailsBase, resp.Data.Config)
+	readFromResponse(model, resp.Data.DestinationDetailsBase, resp.Data.Config, false)
 }
 
 func (d *DestinationResourceModel) ReadFromLegacyResponse(resp destinations.DestinationDetailsWithSetupTestsResponse) {
 	var model destinationModel = d
-	readFromResponse(model, resp.Data.DestinationDetailsBase, map[string]interface{}{})
+	readFromResponse(model, resp.Data.DestinationDetailsBase, map[string]interface{}{}, false)
 }
 
 func (d *DestinationResourceModel) GetConfigMap(nullOnNull bool) (map[string]interface{}, error) {

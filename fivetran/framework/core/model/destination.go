@@ -15,10 +15,10 @@ type destinationModel interface {
 	SetHybridDeploymentAgentId(string)
 	SetNetworkingMethod(string)
     SetPrivateLinkId(string)
-	SetConfig(map[string]interface{})
+	SetConfig(map[string]interface{}, bool)
 }
 
-func readFromResponse(d destinationModel, resp destinations.DestinationDetailsBase, config map[string]interface{}) {
+func readFromResponse(d destinationModel, resp destinations.DestinationDetailsBase, config map[string]interface{}, isImporting bool) {
 	d.SetId(resp.ID)
 	d.SetGroupId(resp.GroupID)
 	d.SetService(resp.Service)
@@ -29,5 +29,5 @@ func readFromResponse(d destinationModel, resp destinations.DestinationDetailsBa
 	d.SetHybridDeploymentAgentId(resp.HybridDeploymentAgentId)
 	d.SetNetworkingMethod(resp.NetworkingMethod)
 	d.SetPrivateLinkId(resp.PrivateLinkId)
-	d.SetConfig(config)
+	d.SetConfig(config, isImporting)
 }
