@@ -61,9 +61,15 @@ func (r *connectionConfig) Create(ctx context.Context, req resource.CreateReques
 		return
 	}
 
+	runSetupTests := core.GetBoolOrDefault(data.RunSetupTests, true)
+	trustCertificates := core.GetBoolOrDefault(data.TrustCertificates, false)
+	trustFingerprints := core.GetBoolOrDefault(data.TrustFingerprints, false)
+
 	svc := r.GetClient().NewConnectionUpdate().
 		ConnectionID(data.ConnectionId.ValueString()).
-		RunSetupTests(true)
+		RunSetupTests(runSetupTests).
+		TrustCertificates(trustCertificates).
+		TrustFingerprints(trustFingerprints)
 
 	if authMap != nil {
 		svc.AuthCustom(&authMap)
@@ -157,9 +163,15 @@ func (r *connectionConfig) Update(ctx context.Context, req resource.UpdateReques
 		return
 	}
 
+	runSetupTests := core.GetBoolOrDefault(plan.RunSetupTests, true)
+	trustCertificates := core.GetBoolOrDefault(plan.TrustCertificates, false)
+	trustFingerprints := core.GetBoolOrDefault(plan.TrustFingerprints, false)
+
 	svc := r.GetClient().NewConnectionUpdate().
 		ConnectionID(state.ConnectionId.ValueString()).
-		RunSetupTests(true)
+		RunSetupTests(runSetupTests).
+		TrustCertificates(trustCertificates).
+		TrustFingerprints(trustFingerprints)
 
 	if authMap != nil && !plan.Auth.Equal(state.Auth) {
 		svc.AuthCustom(&authMap)
