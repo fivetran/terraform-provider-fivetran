@@ -5,7 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.18...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.20...HEAD)
+
+## [v1.9.20](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.19...v1.9.20)
+
+### Fixed
+- `fivetran_destination` resource with `service= "managed_data_lake"`
+- `fivetran_connector` resource with `service= "workday_adaptive"`
+
+## [v1.9.19](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.18...v1.9.19)
+
+### Fixed
+- `fivetran_connector` - Fixed managing connector resources with `service = "google_display_and_video_360"`.
 
 ## [v1.9.18](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.17...v1.9.18)
 
@@ -17,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Infrastructure: Added `JsonConfigValue` custom type for flexible JSON configuration in resources
 - Infrastructure: JSON validation utilities for semantic comparison and normalization
 - New resource: `fivetran_connection` for creating connections with basic metadata and networking configuration
+- New resource: `fivetran_connection_config` for managing connection configuration (config and auth fields) with semantic JSON equality
 
 New connection services supported:
 - Supported service: `peopleforce`
