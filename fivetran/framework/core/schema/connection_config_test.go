@@ -32,5 +32,5 @@ func TestConnectionConfigResourceSchema(t *testing.T) {
 		}
 	}
 
-	t.Logf("✅ Schema has all %d expected fields", len(allExpectedFields))
+	t.Logf("Schema has all %d expected fields", len(allExpectedFields))
 }
