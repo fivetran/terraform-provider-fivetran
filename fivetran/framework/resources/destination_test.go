@@ -190,7 +190,7 @@ func TestResourceMDLSDestinationMock(t *testing.T){
 			"auth_type": "OAUTH2",
 			"databricks_connection_type": "DIRECTLY",
 			"should_maintain_tables_in_one_lake": false,
-			"connection_type": "DIRECTLY",
+			"connection_type": "PRIVATE_LINK",
 			"should_maintain_tables_in_glue": false,
 			"should_maintain_tables_in_bqms": false
 		}
@@ -301,7 +301,7 @@ func TestResourceMDLSDestinationMock(t *testing.T){
 							#port= 443
 							#auth_type= "OAUTH2"
 							#databricks_connection_type= "DIRECTLY"
-							#connection_type= "PRIVATE_LINK"
+							connection_type= "PrivateLink"
 						}
 					}`,
 					Check: resource.ComposeAggregateTestCheckFunc(
@@ -325,6 +325,7 @@ func TestResourceMDLSDestinationMock(t *testing.T){
 						resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.fivetran_role_arn", "arn:aws:iam::1234567890:role/smth-us-east-1"),
 						resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.prefix_path", "prefix-path"),
 						resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.region", "us-east-1"),
+						resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.connection_type", "PrivateLink"),
 					),
 				},
 
@@ -356,6 +357,7 @@ func TestResourceMDLSDestinationMock(t *testing.T){
 						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.port", "443"),
 						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.auth_type", "OAUTH2"),
 						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.databricks_connection_type", "DIRECTLY"),
+						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.connection_type", "PRIVATE_LINK"),
 					),
 				},
 
