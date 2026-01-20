@@ -310,7 +310,6 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 			)
 			return
 		}
-		plan.ReadFromCreateResponse(response)
 		if response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
 			for _, tr := range response.Data.SetupTests {
 				if tr.Status != "PASSED" && tr.Status != "SKIPPED" {
@@ -320,6 +319,9 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 					)
 				}
 			}
+		}
+		if !hasUpdates {
+			plan.ReadFromCreateResponse(response)
 		}
 		updatePerformed = true
 	}
@@ -346,7 +348,7 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 		if !plan.ProxyAgentId.Equal(state.ProxyAgentId) {
 			if !plan.ProxyAgentId.IsNull() {
 				svc.ProxyAgentId(plan.ProxyAgentId.ValueString())
-			}
+		}
 		}
 
 		if !plan.NetworkingMethod.Equal(state.NetworkingMethod) && plan.NetworkingMethod.ValueString() != "" {
