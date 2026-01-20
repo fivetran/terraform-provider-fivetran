@@ -3,6 +3,7 @@ package e2e_test
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -788,74 +789,82 @@ func testFivetranConnectorResourceDestroy(s *terraform.State) error {
 }
 
 func TestResourceConnectorPlanOnlyAttributesE2E(t *testing.T) {
+	suffix := strconv.Itoa(seededRand.Int())
+	groupName := "test_group_plan_only_" + suffix
+	schemaPrefix := "pg_plan_only_" + suffix
+
+	config1 := fmt.Sprintf(`
+		resource "fivetran_group" "test_group" {
+			provider = fivetran-provider
+			name = "%s"
+		}
+
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+			group_id = fivetran_group.test_group.id
+			service = "postgres"
+
+			destination_schema {
+				prefix = "%s"
+			}
+
+			config {
+				user = "test_user"
+				password = "test_password"
+				host = "test.example.com"
+				port = "5432"
+				update_method = "QUERY_BASED"
+			}
+
+			run_setup_tests = false
+			trust_certificates = false
+			trust_fingerprints = false
+		}
+	`, groupName, schemaPrefix)
+
+	config2 := fmt.Sprintf(`
+		resource "fivetran_group" "test_group" {
+			provider = fivetran-provider
+			name = "%s"
+		}
+
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+			group_id = fivetran_group.test_group.id
+			service = "postgres"
+
+			destination_schema {
+				prefix = "%s"
+			}
+
+			config {
+				user = "test_user"
+				password = "test_password"
+				host = "test.example.com"
+				port = "5432"
+				update_method = "QUERY_BASED"
+			}
+
+			run_setup_tests = true
+			trust_certificates = false
+			trust_fingerprints = false
+		}
+	`, groupName, schemaPrefix)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
 		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 		CheckDestroy:             testFivetranConnectorResourceDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: `
-				resource "fivetran_group" "test_group" {
-					provider = fivetran-provider
-					name = "test_group_plan_only"
-			    }
-
-			    resource "fivetran_connector" "test_connector" {
-					provider = fivetran-provider
-					group_id = fivetran_group.test_group.id
-					service = "postgres"
-
-					destination_schema {
-						prefix = "postgres_plan_only"
-					}
-
-					config {
-						user = "test_user"
-						password = "test_password"
-						host = "test.example.com"
-						port = "5432"
-						update_method = "QUERY_BASED"
-					}
-
-					run_setup_tests = false
-					trust_certificates = false
-					trust_fingerprints = false
-				}
-		  `,
+				Config: config1,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranConnectorResourceCreate(t, "fivetran_connector.test_connector"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
 				),
 			},
 			{
-				Config: `
-				resource "fivetran_group" "test_group" {
-					provider = fivetran-provider
-					name = "test_group_plan_only"
-			    }
-
-			    resource "fivetran_connector" "test_connector" {
-					provider = fivetran-provider
-					group_id = fivetran_group.test_group.id
-					service = "postgres"
-
-					destination_schema {
-						prefix = "postgres_plan_only"
-					}
-
-					config {
-						user = "test_user"
-						password = "test_password"
-						host = "test.example.com"
-						port = "5432"
-						update_method = "QUERY_BASED"
-					}
-
-					run_setup_tests = true
-					trust_certificates = false
-					trust_fingerprints = false
-				}
-		  `,
+				Config: config2,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "true"),
 				),
