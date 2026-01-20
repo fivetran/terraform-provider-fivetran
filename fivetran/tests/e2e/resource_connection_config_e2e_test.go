@@ -3,6 +3,7 @@ package e2e_test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -114,7 +115,7 @@ func TestResourceConnectionConfigE2E(t *testing.T) {
 				ResourceName:      "fivetran_connection_config.test_config",
 				ImportState:       true,
 				ImportStateVerify: true,
-				ImportStateVerifyIgnore: []string{"config", "auth"},
+				ImportStateVerifyIgnore: []string{"config", "auth", "run_setup_tests", "trust_certificates", "trust_fingerprints"},
 			},
 		},
 	})
@@ -258,6 +259,411 @@ func testFivetranConnectionConfigResourceUpdate(t *testing.T, resourceName strin
 
 		return nil
 	}
+}
+
+func TestResourceConnectionConfigWithNewFieldsE2E(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectionConfigResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_new_fields"
+			    }
+
+			    resource "fivetran_connection" "test_connection" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "postgres"
+
+					destination_schema {
+						prefix = "postgres_new_fields"
+					}
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+					})
+
+					run_setup_tests = false
+				}
+
+				resource "fivetran_connection_config" "test_config" {
+					provider = fivetran-provider
+					connection_id = fivetran_connection.test_connection.id
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+						user = "test_user"
+						host = "test.example.com"
+						port = 5432
+						database = "test_db"
+					})
+
+					auth = jsonencode({
+						password = "test_password"
+					})
+
+					run_setup_tests = false
+					trust_certificates = true
+					trust_fingerprints = true
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectionConfigResourceCreate(t, "fivetran_connection_config.test_config"),
+					resource.TestCheckResourceAttrSet("fivetran_connection_config.test_config", "connection_id"),
+					resource.TestCheckResourceAttr("fivetran_connection_config.test_config", "run_setup_tests", "false"),
+					resource.TestCheckResourceAttr("fivetran_connection_config.test_config", "trust_certificates", "true"),
+					resource.TestCheckResourceAttr("fivetran_connection_config.test_config", "trust_fingerprints", "true"),
+				),
+			},
+		},
+	})
+}
+
+func TestResourceConnectionConfigSemanticJSONE2E(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectionConfigResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_semantic_json"
+			    }
+
+			    resource "fivetran_connection" "test_connection" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "postgres"
+
+					destination_schema {
+						prefix = "postgres_semantic"
+					}
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+					})
+
+					run_setup_tests = false
+				}
+
+				resource "fivetran_connection_config" "test_config" {
+					provider = fivetran-provider
+					connection_id = fivetran_connection.test_connection.id
+
+					config = jsonencode({
+						host = "test.example.com"
+						port = 5432
+						database = "test_db"
+						update_method = "QUERY_BASED"
+					})
+
+					auth = jsonencode({
+						password = "test_password"
+					})
+
+					run_setup_tests = false
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectionConfigResourceCreate(t, "fivetran_connection_config.test_config"),
+				),
+			},
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_semantic_json"
+			    }
+
+			    resource "fivetran_connection" "test_connection" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "postgres"
+
+					destination_schema {
+						prefix = "postgres_semantic"
+					}
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+					})
+
+					run_setup_tests = false
+				}
+
+				resource "fivetran_connection_config" "test_config" {
+					provider = fivetran-provider
+					connection_id = fivetran_connection.test_connection.id
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+						database = "test_db"
+						port = 5432
+						host = "test.example.com"
+					})
+
+					auth = jsonencode({
+						password = "test_password"
+					})
+
+					run_setup_tests = false
+				}
+		  `,
+				PlanOnly:           true,
+				ExpectNonEmptyPlan: false,
+			},
+		},
+	})
+}
+
+func TestResourceConnectionConfigEmptyValidationE2E(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectionConfigResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_empty_validation"
+			    }
+
+			    resource "fivetran_connection" "test_connection" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "postgres"
+
+					destination_schema {
+						prefix = "postgres_empty_test"
+					}
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+					})
+
+					run_setup_tests = false
+				}
+
+				resource "fivetran_connection_config" "test_config" {
+					provider = fivetran-provider
+					connection_id = fivetran_connection.test_connection.id
+				}
+		  `,
+				ExpectError: regexp.MustCompile("at least one of 'config' or 'auth' must be specified"),
+			},
+		},
+	})
+}
+
+func TestResourceConnectionConfigCredentialRotationE2E(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectionConfigResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_cred_rotation"
+			    }
+
+			    resource "fivetran_connection" "test_connection" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "postgres"
+
+					destination_schema {
+						prefix = "postgres_rotation"
+					}
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+					})
+
+					run_setup_tests = false
+				}
+
+				resource "fivetran_connection_config" "test_config" {
+					provider = fivetran-provider
+					connection_id = fivetran_connection.test_connection.id
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+						user = "initial_user"
+						host = "test.example.com"
+						port = 5432
+						database = "test_db"
+					})
+
+					auth = jsonencode({
+						password = "initial_password"
+					})
+
+					run_setup_tests = false
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectionConfigResourceCreate(t, "fivetran_connection_config.test_config"),
+				),
+			},
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_cred_rotation"
+			    }
+
+			    resource "fivetran_connection" "test_connection" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "postgres"
+
+					destination_schema {
+						prefix = "postgres_rotation"
+					}
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+					})
+
+					run_setup_tests = false
+				}
+
+				resource "fivetran_connection_config" "test_config" {
+					provider = fivetran-provider
+					connection_id = fivetran_connection.test_connection.id
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+						user = "initial_user"
+						host = "test.example.com"
+						port = 5432
+						database = "test_db"
+					})
+
+					auth = jsonencode({
+						password = "rotated_password"
+					})
+
+					run_setup_tests = false
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectionConfigResourceUpdate(t, "fivetran_connection_config.test_config"),
+				),
+			},
+		},
+	})
+}
+
+func TestResourceConnectionConfigConfigUpdateOnlyE2E(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectionConfigResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_config_update"
+			    }
+
+			    resource "fivetran_connection" "test_connection" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "postgres"
+
+					destination_schema {
+						prefix = "postgres_config_update"
+					}
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+					})
+
+					run_setup_tests = false
+				}
+
+				resource "fivetran_connection_config" "test_config" {
+					provider = fivetran-provider
+					connection_id = fivetran_connection.test_connection.id
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+						user = "test_user"
+						host = "old-host.example.com"
+						port = 5432
+						database = "test_db"
+					})
+
+					auth = jsonencode({
+						password = "test_password"
+					})
+
+					run_setup_tests = false
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectionConfigResourceCreate(t, "fivetran_connection_config.test_config"),
+				),
+			},
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_config_update"
+			    }
+
+			    resource "fivetran_connection" "test_connection" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "postgres"
+
+					destination_schema {
+						prefix = "postgres_config_update"
+					}
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+					})
+
+					run_setup_tests = false
+				}
+
+				resource "fivetran_connection_config" "test_config" {
+					provider = fivetran-provider
+					connection_id = fivetran_connection.test_connection.id
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+						user = "test_user"
+						host = "new-host.example.com"
+						port = 5433
+						database = "new_test_db"
+					})
+
+					auth = jsonencode({
+						password = "test_password"
+					})
+
+					run_setup_tests = false
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectionConfigResourceUpdate(t, "fivetran_connection_config.test_config"),
+				),
+			},
+		},
+	})
 }
 
 func testFivetranConnectionConfigResourceDestroy(s *terraform.State) error {

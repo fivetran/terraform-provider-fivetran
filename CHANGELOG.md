@@ -5,7 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.20...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.21...HEAD)
+
+## [v1.9.21](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.20...v1.9.21)
+
+### Fixed
+- `fivetran_connection_config` - Added missing plan-only attributes: `run_setup_tests`, `trust_certificates`, and `trust_fingerprints`
+- `fivetran_connection_config` - Added validation to require at least one of `config` or `auth` fields
+- `fivetran_connection_config` - Fixed hardcoded default values to respect user-provided attribute values
+
+### Added
+- `fivetran_connection_config` - New attribute `run_setup_tests` to control whether setup tests run when applying configuration (defaults to true)
+- `fivetran_connection_config` - New attribute `trust_certificates` to automatically trust SSL certificates (defaults to false)
+- `fivetran_connection_config` - New attribute `trust_fingerprints` to automatically trust SSH fingerprints (defaults to false)
 
 ## [v1.9.20](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.19...v1.9.20)
 
