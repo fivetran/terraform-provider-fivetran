@@ -3,6 +3,7 @@ package e2e_test
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -785,4 +786,124 @@ func testFivetranConnectorResourceDestroy(s *terraform.State) error {
 	}
 
 	return nil
+}
+
+func TestResourceConnectorPlanOnlyAttributesE2E(t *testing.T) {
+	suffix := strconv.Itoa(seededRand.Int())
+	groupName := "test_group_plan_" + suffix
+	schemaPrefix := "pg_plan_only_" + suffix
+
+	config1 := fmt.Sprintf(`
+		resource "fivetran_group" "test_group" {
+			provider = fivetran-provider
+			name = "%s"
+		}
+
+		resource "fivetran_destination" "test_destination" {
+			provider = fivetran-provider
+			group_id = fivetran_group.test_group.id
+			service = "big_query"
+			time_zone_offset = "-5"
+			region = "GCP_US_EAST4"
+
+			config {
+				project_id = "%s"
+				data_set_location = "US"
+			}
+		}
+
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+			group_id = fivetran_group.test_group.id
+			service = "postgres"
+
+			destination_schema {
+				prefix = "%s"
+			}
+
+			config {
+				user = "test_user"
+				password = "test_password"
+				host = "test.example.com"
+				port = "5432"
+				update_method = "QUERY_BASED"
+			}
+
+			run_setup_tests = false
+			trust_certificates = false
+			trust_fingerprints = false
+
+			depends_on = [fivetran_destination.test_destination]
+		}
+	`, groupName, BqProjectId, schemaPrefix)
+
+	config2 := fmt.Sprintf(`
+		resource "fivetran_group" "test_group" {
+			provider = fivetran-provider
+			name = "%s"
+		}
+
+		resource "fivetran_destination" "test_destination" {
+			provider = fivetran-provider
+			group_id = fivetran_group.test_group.id
+			service = "big_query"
+			time_zone_offset = "-5"
+			region = "GCP_US_EAST4"
+
+			config {
+				project_id = "%s"
+				data_set_location = "US"
+			}
+		}
+
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+			group_id = fivetran_group.test_group.id
+			service = "postgres"
+
+			destination_schema {
+				prefix = "%s"
+			}
+
+			config {
+				user = "test_user"
+				password = "test_password"
+				host = "test.example.com"
+				port = "5432"
+				update_method = "QUERY_BASED"
+			}
+
+			run_setup_tests = true
+			trust_certificates = false
+			trust_fingerprints = false
+
+			depends_on = [fivetran_destination.test_destination]
+		}
+	`, groupName, BqProjectId, schemaPrefix)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectorResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: config1,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectorResourceCreate(t, "fivetran_connector.test_connector"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "postgres"),
+					resource.TestCheckResourceAttrSet("fivetran_connector.test_connector", "id"),
+				),
+			},
+			{
+				Config: config2,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectorResourceUpdate(t, "fivetran_connector.test_connector"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "true"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "postgres"),
+					resource.TestCheckResourceAttrSet("fivetran_connector.test_connector", "id"),
+				),
+			},
+		},
+	})
 }
