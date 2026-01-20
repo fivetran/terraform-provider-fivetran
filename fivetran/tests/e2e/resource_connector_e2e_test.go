@@ -790,18 +790,12 @@ func testFivetranConnectorResourceDestroy(s *terraform.State) error {
 
 func TestResourceConnectorPlanOnlyAttributesE2E(t *testing.T) {
 	suffix := strconv.Itoa(seededRand.Int())
-	groupName := "test_group_plan_only_" + suffix
 	schemaPrefix := "pg_plan_only_" + suffix
 
 	config1 := fmt.Sprintf(`
-		resource "fivetran_group" "test_group" {
-			provider = fivetran-provider
-			name = "%s"
-		}
-
 		resource "fivetran_connector" "test_connector" {
 			provider = fivetran-provider
-			group_id = fivetran_group.test_group.id
+			group_id = "%s"
 			service = "postgres"
 
 			destination_schema {
@@ -820,17 +814,12 @@ func TestResourceConnectorPlanOnlyAttributesE2E(t *testing.T) {
 			trust_certificates = false
 			trust_fingerprints = false
 		}
-	`, groupName, schemaPrefix)
+	`, PredefinedGroupId, schemaPrefix)
 
 	config2 := fmt.Sprintf(`
-		resource "fivetran_group" "test_group" {
-			provider = fivetran-provider
-			name = "%s"
-		}
-
 		resource "fivetran_connector" "test_connector" {
 			provider = fivetran-provider
-			group_id = fivetran_group.test_group.id
+			group_id = "%s"
 			service = "postgres"
 
 			destination_schema {
@@ -849,7 +838,7 @@ func TestResourceConnectorPlanOnlyAttributesE2E(t *testing.T) {
 			trust_certificates = false
 			trust_fingerprints = false
 		}
-	`, groupName, schemaPrefix)
+	`, PredefinedGroupId, schemaPrefix)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
