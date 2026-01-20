@@ -790,12 +790,31 @@ func testFivetranConnectorResourceDestroy(s *terraform.State) error {
 
 func TestResourceConnectorPlanOnlyAttributesE2E(t *testing.T) {
 	suffix := strconv.Itoa(seededRand.Int())
+	groupName := "test_group_plan_" + suffix
 	schemaPrefix := "pg_plan_only_" + suffix
 
 	config1 := fmt.Sprintf(`
+		resource "fivetran_group" "test_group" {
+			provider = fivetran-provider
+			name = "%s"
+		}
+
+		resource "fivetran_destination" "test_destination" {
+			provider = fivetran-provider
+			group_id = fivetran_group.test_group.id
+			service = "big_query"
+			time_zone_offset = "-5"
+			region = "GCP_US_EAST4"
+
+			config {
+				project_id = "%s"
+				data_set_location = "US"
+			}
+		}
+
 		resource "fivetran_connector" "test_connector" {
 			provider = fivetran-provider
-			group_id = "%s"
+			group_id = fivetran_group.test_group.id
 			service = "postgres"
 
 			destination_schema {
@@ -813,13 +832,33 @@ func TestResourceConnectorPlanOnlyAttributesE2E(t *testing.T) {
 			run_setup_tests = false
 			trust_certificates = false
 			trust_fingerprints = false
+
+			depends_on = [fivetran_destination.test_destination]
 		}
-	`, PredefinedGroupId, schemaPrefix)
+	`, groupName, BqProjectId, schemaPrefix)
 
 	config2 := fmt.Sprintf(`
+		resource "fivetran_group" "test_group" {
+			provider = fivetran-provider
+			name = "%s"
+		}
+
+		resource "fivetran_destination" "test_destination" {
+			provider = fivetran-provider
+			group_id = fivetran_group.test_group.id
+			service = "big_query"
+			time_zone_offset = "-5"
+			region = "GCP_US_EAST4"
+
+			config {
+				project_id = "%s"
+				data_set_location = "US"
+			}
+		}
+
 		resource "fivetran_connector" "test_connector" {
 			provider = fivetran-provider
-			group_id = "%s"
+			group_id = fivetran_group.test_group.id
 			service = "postgres"
 
 			destination_schema {
@@ -837,8 +876,10 @@ func TestResourceConnectorPlanOnlyAttributesE2E(t *testing.T) {
 			run_setup_tests = true
 			trust_certificates = false
 			trust_fingerprints = false
+
+			depends_on = [fivetran_destination.test_destination]
 		}
-	`, PredefinedGroupId, schemaPrefix)
+	`, groupName, BqProjectId, schemaPrefix)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
