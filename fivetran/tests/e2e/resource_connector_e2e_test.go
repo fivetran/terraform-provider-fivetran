@@ -891,12 +891,17 @@ func TestResourceConnectorPlanOnlyAttributesE2E(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranConnectorResourceCreate(t, "fivetran_connector.test_connector"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "postgres"),
+					resource.TestCheckResourceAttrSet("fivetran_connector.test_connector", "id"),
 				),
 			},
 			{
 				Config: config2,
 				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectorResourceUpdate(t, "fivetran_connector.test_connector"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "true"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "postgres"),
+					resource.TestCheckResourceAttrSet("fivetran_connector.test_connector", "id"),
 				),
 			},
 		},
