@@ -786,3 +786,80 @@ func testFivetranConnectorResourceDestroy(s *terraform.State) error {
 
 	return nil
 }
+
+func TestResourceConnectorPlanOnlyAttributesE2E(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectorResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_plan_only"
+			    }
+
+			    resource "fivetran_connector" "test_connector" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "postgres"
+
+					destination_schema {
+						prefix = "postgres_plan_only"
+					}
+
+					config {
+						user = "test_user"
+						password = "test_password"
+						host = "test.example.com"
+						port = "5432"
+						update_method = "QUERY_BASED"
+					}
+
+					run_setup_tests = false
+					trust_certificates = false
+					trust_fingerprints = false
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectorResourceCreate(t, "fivetran_connector.test_connector"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
+				),
+			},
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_plan_only"
+			    }
+
+			    resource "fivetran_connector" "test_connector" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "postgres"
+
+					destination_schema {
+						prefix = "postgres_plan_only"
+					}
+
+					config {
+						user = "test_user"
+						password = "test_password"
+						host = "test.example.com"
+						port = "5432"
+						update_method = "QUERY_BASED"
+					}
+
+					run_setup_tests = true
+					trust_certificates = false
+					trust_fingerprints = false
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "true"),
+				),
+			},
+		},
+	})
+}
