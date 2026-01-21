@@ -279,17 +279,21 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
-	runSetupTestsPlan := core.GetBoolOrDefault(plan.RunSetupTests, false)
-	trustCertificatesPlan := core.GetBoolOrDefault(plan.TrustCertificates, false)
-	trustFingerprintsPlan := core.GetBoolOrDefault(plan.TrustFingerprints, false)
+	runSetupTestsPlanValue := core.GetBoolOrDefault(plan.RunSetupTests, false)
+	trustCertificatesPlanValue := core.GetBoolOrDefault(plan.TrustCertificates, false)
+	trustFingerprintsPlanValue := core.GetBoolOrDefault(plan.TrustFingerprints, false)
 
-	runSetupTestsState := core.GetBoolOrDefault(state.RunSetupTests, false)
-	trustCertificatesState := core.GetBoolOrDefault(state.TrustCertificates, false)
-	trustFingerprintsState := core.GetBoolOrDefault(state.TrustFingerprints, false)
+	runSetupTestsStateValue := core.GetBoolOrDefault(state.RunSetupTests, false)
+	trustCertificatesStateValue := core.GetBoolOrDefault(state.TrustCertificates, false)
+	trustFingerprintsStateValue := core.GetBoolOrDefault(state.TrustFingerprints, false)
 
-	planOnlyAttributesChanged := (runSetupTestsPlan && runSetupTestsPlan != runSetupTestsState) ||
-		(trustCertificatesPlan && trustCertificatesPlan != trustCertificatesState) ||
-		(trustFingerprintsPlan && trustFingerprintsPlan != trustFingerprintsState)
+	runSetupTestsChanged := !plan.RunSetupTests.IsNull() && !plan.RunSetupTests.IsUnknown() && runSetupTestsPlanValue != runSetupTestsStateValue
+	trustCertificatesChanged := !plan.TrustCertificates.IsNull() && !plan.TrustCertificates.IsUnknown() && trustCertificatesPlanValue != trustCertificatesStateValue
+	trustFingerprintsChanged := !plan.TrustFingerprints.IsNull() && !plan.TrustFingerprints.IsUnknown() && trustFingerprintsPlanValue != trustFingerprintsStateValue
+
+	planOnlyAttributesChanged := (runSetupTestsChanged && runSetupTestsPlanValue) ||
+		(trustCertificatesChanged && trustCertificatesPlanValue) ||
+		(trustFingerprintsChanged && trustFingerprintsPlanValue)
 
 	hasUpdates, patch, authPatch, err := plan.HasUpdates(plan, state)
     if err != nil {
