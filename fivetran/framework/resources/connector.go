@@ -321,23 +321,41 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 			}
 		}
 		if !hasUpdates {
-			runSetupTestsFromPlan := plan.RunSetupTests
-			trustCertificatesFromPlan := plan.TrustCertificates
-			trustFingerprintsFromPlan := plan.TrustFingerprints
+			runSetupTestsToPreserve := plan.RunSetupTests
+			if runSetupTestsToPreserve.IsNull() || runSetupTestsToPreserve.IsUnknown() {
+				runSetupTestsToPreserve = state.RunSetupTests
+			}
+			trustCertificatesToPreserve := plan.TrustCertificates
+			if trustCertificatesToPreserve.IsNull() || trustCertificatesToPreserve.IsUnknown() {
+				trustCertificatesToPreserve = state.TrustCertificates
+			}
+			trustFingerprintsToPreserve := plan.TrustFingerprints
+			if trustFingerprintsToPreserve.IsNull() || trustFingerprintsToPreserve.IsUnknown() {
+				trustFingerprintsToPreserve = state.TrustFingerprints
+			}
 
 			plan.ReadFromCreateResponse(response)
 
-			plan.RunSetupTests = runSetupTestsFromPlan
-			plan.TrustCertificates = trustCertificatesFromPlan
-			plan.TrustFingerprints = trustFingerprintsFromPlan
+			plan.RunSetupTests = runSetupTestsToPreserve
+			plan.TrustCertificates = trustCertificatesToPreserve
+			plan.TrustFingerprints = trustFingerprintsToPreserve
 		}
 		updatePerformed = true
 	}
 
 	if hasUpdates {
-		runSetupTestsFromPlan := plan.RunSetupTests
-		trustCertificatesFromPlan := plan.TrustCertificates
-		trustFingerprintsFromPlan := plan.TrustFingerprints
+		runSetupTestsToPreserve := plan.RunSetupTests
+		if runSetupTestsToPreserve.IsNull() || runSetupTestsToPreserve.IsUnknown() {
+			runSetupTestsToPreserve = state.RunSetupTests
+		}
+		trustCertificatesToPreserve := plan.TrustCertificates
+		if trustCertificatesToPreserve.IsNull() || trustCertificatesToPreserve.IsUnknown() {
+			trustCertificatesToPreserve = state.TrustCertificates
+		}
+		trustFingerprintsToPreserve := plan.TrustFingerprints
+		if trustFingerprintsToPreserve.IsNull() || trustFingerprintsToPreserve.IsUnknown() {
+			trustFingerprintsToPreserve = state.TrustFingerprints
+		}
 
 		svc := r.GetClient().NewConnectionUpdate().
 			ConnectionID(state.Id.ValueString())
@@ -387,17 +405,26 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 		}
 		plan.ReadFromCreateResponse(response)
 
-		plan.RunSetupTests = runSetupTestsFromPlan
-		plan.TrustCertificates = trustCertificatesFromPlan
-		plan.TrustFingerprints = trustFingerprintsFromPlan
+		plan.RunSetupTests = runSetupTestsToPreserve
+		plan.TrustCertificates = trustCertificatesToPreserve
+		plan.TrustFingerprints = trustFingerprintsToPreserve
 
 		updatePerformed = true
 	}
 
 	if !updatePerformed {
-		runSetupTestsFromPlan := plan.RunSetupTests
-		trustCertificatesFromPlan := plan.TrustCertificates
-		trustFingerprintsFromPlan := plan.TrustFingerprints
+		runSetupTestsToPreserve := plan.RunSetupTests
+		if runSetupTestsToPreserve.IsNull() || runSetupTestsToPreserve.IsUnknown() {
+			runSetupTestsToPreserve = state.RunSetupTests
+		}
+		trustCertificatesToPreserve := plan.TrustCertificates
+		if trustCertificatesToPreserve.IsNull() || trustCertificatesToPreserve.IsUnknown() {
+			trustCertificatesToPreserve = state.TrustCertificates
+		}
+		trustFingerprintsToPreserve := plan.TrustFingerprints
+		if trustFingerprintsToPreserve.IsNull() || trustFingerprintsToPreserve.IsUnknown() {
+			trustFingerprintsToPreserve = state.TrustFingerprints
+		}
 
 		// re-read connector upstream with an additional request after update
 		response, err := r.GetClient().NewConnectionDetails().ConnectionID(state.Id.ValueString()).DoCustom(ctx)
@@ -410,9 +437,9 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 		}
 		plan.ReadFromResponse(response, false)
 
-		plan.RunSetupTests = runSetupTestsFromPlan
-		plan.TrustCertificates = trustCertificatesFromPlan
-		plan.TrustFingerprints = trustFingerprintsFromPlan
+		plan.RunSetupTests = runSetupTestsToPreserve
+		plan.TrustCertificates = trustCertificatesToPreserve
+		plan.TrustFingerprints = trustFingerprintsToPreserve
 	}
 
 	// Set up synthetic values
