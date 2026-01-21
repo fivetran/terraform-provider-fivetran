@@ -714,6 +714,12 @@ func setupMockClientConnectorResourceUpdate(t *testing.T) {
 		},
 	)
 
+	tfmock.MockClient().When(http.MethodPost, "/v1/connections/connector_id/test").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
+		},
+	)
+
 	connectorMockUpdateDelete = tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			connectorMockData = nil
@@ -751,6 +757,12 @@ func setupMockClientConnectorResourceUpdateHd(t *testing.T) {
 		func(req *http.Request) (*http.Response, error) {
 			checkPatternNotRepresentedIfNotSet(t, tfmock.RequestBodyToJson(t, req))
 			connectorMockData = tfmock.CreateMapFromJsonString(t, connectorUpdateResponseHd2)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
+		},
+	)
+
+	tfmock.MockClient().When(http.MethodPost, "/v1/connections/connector_id/test").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
 		},
 	)
@@ -969,6 +981,12 @@ func setupMockClientConnectorResourceUpdateConfig(t *testing.T) {
 			 } else {
 				connectorMockData = tfmock.CreateMapFromJsonString(t, coilConnectorPatchResponse2)
 			 }
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
+		},
+	)
+
+	tfmock.MockClient().When(http.MethodPost, "/v1/connections/connector_id/test").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
 		},
 	)
@@ -2028,6 +2046,12 @@ func TestResourceConnectorMock(t *testing.T) {
 						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
 					},
 				)
+
+			tfmock.MockClient().When(http.MethodPost, "/v1/connections/connector_id/test").ThenCall(
+				func(req *http.Request) (*http.Response, error) {
+					return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
+				},
+			)
 			},
 			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
