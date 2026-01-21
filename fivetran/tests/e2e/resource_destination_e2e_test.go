@@ -32,6 +32,7 @@ func TestResourceDestinationE2E(t *testing.T) {
 					trust_certificates = "true"
 					trust_fingerprints = "true"
 					run_setup_tests = "false"
+					networking_method = "Directly"
 			
 					config {
 						host = "terraform-test.us-east-1.rds.amazonaws.com"
@@ -52,6 +53,7 @@ func TestResourceDestinationE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "trust_fingerprints", "true"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "daylight_saving_time_enabled", "true"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "run_setup_tests", "false"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "networking_method", "Directly"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "config.host", "terraform-test.us-east-1.rds.amazonaws.com"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "config.port", "5432"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "config.user", "postgres"),

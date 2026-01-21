@@ -135,8 +135,10 @@ func attrTypeFromConfigField(cf common.ConfigField) attr.Type {
 	return nil
 }
 
-func getStringValue(value, local interface{}, currentField *common.ConfigField, service string, isImporting bool) types.String {
-	if currentField != nil && currentField.GetIsSensitive(service) && local != nil {
+func getStringValue(value, local interface{}, currentField *common.ConfigField, service string, isImporting bool, fixForDestinationDifferentCase bool) types.String {
+	if currentField != nil &&
+		local != nil &&
+		(currentField.GetIsSensitive(service) || localPascalCaseEqualsUpstreamUpperSnakeCase(fixForDestinationDifferentCase, value, local)) {
 		return types.StringValue(local.(string))
 	}
 	if value == nil {
@@ -195,9 +197,9 @@ func getValue(
 	value, local interface{},// value - api response value, local - tf state value
 	fieldsMap map[string]common.ConfigField,
 	currentField *common.ConfigField,
-	service string, isImporting bool) attr.Value {
+	service string, isImporting bool, fixForDestinationDifferentCase bool) attr.Value {
 	if fieldType.Equal(types.StringType) {
-		return getStringValue(value, local, currentField, service, isImporting)
+		return getStringValue(value, local, currentField, service, isImporting, fixForDestinationDifferentCase)
 	}
 	if fieldType.Equal(types.BoolType) {
 		return getBoolValue(value, local, currentField, isImporting)
@@ -220,7 +222,7 @@ func getValue(
 
 			if _, ok := fieldsMap[fn+"_"+service]; ok {
 				// this field should be handled as service specific field, set this attr as nil
-				elements[fn] = getValue(et, nil, nil, cf.ItemFields, &cf, service, isImporting)
+				elements[fn] = getValue(et, nil, nil, cf.ItemFields, &cf, service, isImporting, fixForDestinationDifferentCase)
 				continue
 			}
 			efn := fn
@@ -228,20 +230,20 @@ func getValue(
 				efn = cf.ApiField
 				// field is not related to this particular service, set this attr as nil
 				if !strings.HasSuffix(fn, service) {
-					elements[fn] = getValue(et, nil, nil, cf.ItemFields, &cf, service, isImporting)
+					elements[fn] = getValue(et, nil, nil, cf.ItemFields, &cf, service, isImporting, fixForDestinationDifferentCase)
 					continue
 				}
 			}
 			// get upstream value
 			if value, ok := vMap[efn]; ok {
 				lValue := lMap[fn]
-				elements[fn] = getValue(et, value, lValue, cf.ItemFields, &cf, service, isImporting)
+				elements[fn] = getValue(et, value, lValue, cf.ItemFields, &cf, service, isImporting, fixForDestinationDifferentCase)
 			} else {
 				lValue := lMap[fn]
 				if et == nil {
 					panic(fmt.Sprintf("Type for field '%v' is nil, local value: %v", fn, lValue))
 				}
-				elements[fn] = getValue(et, nil, lValue, cf.ItemFields, &cf, service, isImporting)
+				elements[fn] = getValue(et, nil, lValue, cf.ItemFields, &cf, service, isImporting, fixForDestinationDifferentCase)
 			}
 		}
 		objectValue, _ := types.ObjectValue(complexType.AttributeTypes(), elements)
@@ -255,7 +257,7 @@ func getValue(
 				items := []attr.Value{}
 				for _, v := range localArray {
 					items = append(items,
-						getValue(collectionType.ElementType(), v, v, fieldsMap, currentField, service, isImporting),
+						getValue(collectionType.ElementType(), v, v, fieldsMap, currentField, service, isImporting, fixForDestinationDifferentCase),
 					)
 				}
 				if _, ok := collectionType.(basetypes.SetTypable); ok {
@@ -305,7 +307,7 @@ func getValue(
 						if keyV, ok := vMap[keyField]; ok {
 							if keyL == keyV {
 								items = append(items,
-									getValue(collectionType.ElementType(), v, li, fieldsMap, currentField, service, isImporting),
+									getValue(collectionType.ElementType(), v, li, fieldsMap, currentField, service, isImporting, fixForDestinationDifferentCase),
 								)
 							}
 						}
@@ -313,7 +315,7 @@ func getValue(
 				}
 			} else {
 				items = append(items,
-					getValue(collectionType.ElementType(), v, v, fieldsMap, currentField, service, isImporting),
+					getValue(collectionType.ElementType(), v, v, fieldsMap, currentField, service, isImporting, fixForDestinationDifferentCase),
 				)
 			}
 		}
@@ -431,4 +433,30 @@ func patchServiceSpecificFields(
 		}
 	}
 	return nil
+}
+
+func localPascalCaseEqualsUpstreamUpperSnakeCase(fixForDestinationDifferentCase bool, value, local interface{}) bool {
+	if !fixForDestinationDifferentCase || value == nil || local == nil {
+		return false
+	}
+	
+	valueStr, valueOk := value.(string)
+	localStr, localOk := local.(string)
+	
+	if !valueOk || !localOk {
+		return false
+	}
+	
+	// Convert local PascalCase to UPPER_SNAKE_CASE
+	var converted strings.Builder
+	for i, r := range localStr {
+		if i > 0 && r >= 'A' && r <= 'Z' {
+			converted.WriteRune('_')
+		}
+		converted.WriteRune(r)
+	}
+	
+	localUpperSnake := strings.ToUpper(converted.String())
+	
+	return localUpperSnake == valueStr
 }

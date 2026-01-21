@@ -86,7 +86,7 @@ func (d *DestinationResourceModel) SetConfig(value map[string]interface{}, isImp
 		getValueFromAttrValue(config, common.GetDestinationFieldsMap(), nil, service).(map[string]interface{}),
 		common.GetDestinationFieldsMap(),
 		nil,
-		service, isImporting).(basetypes.ObjectValue)
+		service, isImporting, true).(basetypes.ObjectValue)
 }
 
 func (d *DestinationResourceModel) ReadFromResponse(resp destinations.DestinationDetailsCustomResponse, isImporting bool) {

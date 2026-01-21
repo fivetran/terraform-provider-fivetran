@@ -253,7 +253,7 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, is
 			types.ObjectType{AttrTypes: getAttrTypes(common.GetConfigFieldsMap())},
 			c.Config,
 			getValueFromAttrValue(d.Config, common.GetConfigFieldsMap(), nil, c.Service).(map[string]interface{}),
-			common.GetConfigFieldsMap(), nil, c.Service, isImporting).(basetypes.ObjectValue)
+			common.GetConfigFieldsMap(), nil, c.Service, isImporting, false).(basetypes.ObjectValue)
 	}
 }
 
@@ -306,7 +306,7 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
         c.Config,
         common.GetConfigFieldsMap(),
         nil,
-        c.Service, false).(basetypes.ObjectValue)
+        c.Service, false, false).(basetypes.ObjectValue)
 }
 
 func (d *ConnectorResourceModel) HasUpdates(plan ConnectorResourceModel, state ConnectorResourceModel) (bool, map[string]interface{}, map[string]interface{}, error) {

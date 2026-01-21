@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `fivetran_connection_config` - Added missing plan-only attributes: `run_setup_tests`, `trust_certificates`, and `trust_fingerprints`
 - `fivetran_connection_config` - Added validation to require at least one of `config` or `auth` fields
 - `fivetran_connection_config` - Fixed hardcoded default values to respect user-provided attribute values
+- `fivetran_destination` - API may return config enum field values in UPPER_SNAKE_CASE, while they are in Pascal case in Terraform Config, compare such values ignoring case
 
 ### Added
 - `fivetran_connection_config` - New attribute `run_setup_tests` to control whether setup tests run when applying configuration (defaults to true)
