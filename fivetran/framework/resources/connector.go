@@ -321,12 +321,24 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 			}
 		}
 		if !hasUpdates {
+			runSetupTestsFromPlan := plan.RunSetupTests
+			trustCertificatesFromPlan := plan.TrustCertificates
+			trustFingerprintsFromPlan := plan.TrustFingerprints
+
 			plan.ReadFromCreateResponse(response)
+
+			plan.RunSetupTests = runSetupTestsFromPlan
+			plan.TrustCertificates = trustCertificatesFromPlan
+			plan.TrustFingerprints = trustFingerprintsFromPlan
 		}
 		updatePerformed = true
 	}
 
 	if hasUpdates {
+		runSetupTestsFromPlan := plan.RunSetupTests
+		trustCertificatesFromPlan := plan.TrustCertificates
+		trustFingerprintsFromPlan := plan.TrustFingerprints
+
 		svc := r.GetClient().NewConnectionUpdate().
 			ConnectionID(state.Id.ValueString())
 
@@ -375,10 +387,18 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 		}
 		plan.ReadFromCreateResponse(response)
 
+		plan.RunSetupTests = runSetupTestsFromPlan
+		plan.TrustCertificates = trustCertificatesFromPlan
+		plan.TrustFingerprints = trustFingerprintsFromPlan
+
 		updatePerformed = true
 	}
 
 	if !updatePerformed {
+		runSetupTestsFromPlan := plan.RunSetupTests
+		trustCertificatesFromPlan := plan.TrustCertificates
+		trustFingerprintsFromPlan := plan.TrustFingerprints
+
 		// re-read connector upstream with an additional request after update
 		response, err := r.GetClient().NewConnectionDetails().ConnectionID(state.Id.ValueString()).DoCustom(ctx)
 		if err != nil {
@@ -389,6 +409,10 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 			return
 		}
 		plan.ReadFromResponse(response, false)
+
+		plan.RunSetupTests = runSetupTestsFromPlan
+		plan.TrustCertificates = trustCertificatesFromPlan
+		plan.TrustFingerprints = trustFingerprintsFromPlan
 	}
 
 	// Set up synthetic values
