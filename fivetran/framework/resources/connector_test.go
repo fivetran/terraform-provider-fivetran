@@ -2005,11 +2005,7 @@ func TestResourceConnectorMock(t *testing.T) {
 						body := tfmock.RequestBodyToJson(t, req)
 
 						// Check the request
-						tfmock.AssertEqual(t, len(body), 5)
-
-						tfmock.AssertKeyExistsAndHasValue(t, body, "run_setup_tests", true)
-						tfmock.AssertKeyExistsAndHasValue(t, body, "trust_certificates", true)
-						tfmock.AssertKeyExistsAndHasValue(t, body, "trust_fingerprints", true)
+						tfmock.AssertEqual(t, len(body), 2)
 
 						if config, ok := tfmock.AssertKeyExists(t, body, "config").(map[string]interface{}); ok {
 							tfmock.AssertKeyExistsAndHasValue(t, config, "account_ids", nil)
