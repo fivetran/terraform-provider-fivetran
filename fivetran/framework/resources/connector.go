@@ -250,6 +250,11 @@ func (r *connector) Read(ctx context.Context, req resource.ReadRequest, resp *re
 		id = recoveredId
 	}
 
+	// Preserve plan-only attributes before reading API response
+	runSetupTestsToPreserve := data.RunSetupTests
+	trustCertificatesToPreserve := data.TrustCertificates
+	trustFingerprintsToPreserve := data.TrustFingerprints
+
 	response, err := r.GetClient().NewConnectionDetails().ConnectionID(id).DoCustom(ctx)
 
 	if err != nil {
@@ -261,6 +266,12 @@ func (r *connector) Read(ctx context.Context, req resource.ReadRequest, resp *re
 	}
 
 	data.ReadFromResponse(response, isImportOperation)
+
+	// Restore plan-only attributes after reading API response
+	data.RunSetupTests = runSetupTestsToPreserve
+	data.TrustCertificates = trustCertificatesToPreserve
+	data.TrustFingerprints = trustFingerprintsToPreserve
+
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
