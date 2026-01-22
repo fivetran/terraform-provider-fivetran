@@ -720,6 +720,12 @@ func setupMockClientConnectorResourceUpdate(t *testing.T) {
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
 		},
 	)
+
+	tfmock.MockClient().When(http.MethodPost, "/v1/connections/connector_id/test").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
+		},
+	)
 }
 
 func setupMockClientConnectorResourceUpdateHd(t *testing.T) {
@@ -758,6 +764,12 @@ func setupMockClientConnectorResourceUpdateHd(t *testing.T) {
 	connectorMockUpdateDelete = tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			connectorMockData = nil
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
+		},
+	)
+
+	tfmock.MockClient().When(http.MethodPost, "/v1/connections/connector_id/test").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
 		},
 	)
@@ -976,6 +988,12 @@ func setupMockClientConnectorResourceUpdateConfig(t *testing.T) {
 	connectorMockUpdateDelete = tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			connectorMockData = nil
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
+		},
+	)
+
+	tfmock.MockClient().When(http.MethodPost, "/v1/connections/connector_id/test").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
 		},
 	)
