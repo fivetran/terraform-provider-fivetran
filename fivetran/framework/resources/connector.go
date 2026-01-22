@@ -250,6 +250,11 @@ func (r *connector) Read(ctx context.Context, req resource.ReadRequest, resp *re
 		id = recoveredId
 	}
 
+	// Preserve plan-only attributes before reading API response
+	runSetupTests := data.RunSetupTests
+	trustCertificates := data.TrustCertificates
+	trustFingerprints := data.TrustFingerprints
+
 	response, err := r.GetClient().NewConnectionDetails().ConnectionID(id).DoCustom(ctx)
 
 	if err != nil {
@@ -261,6 +266,12 @@ func (r *connector) Read(ctx context.Context, req resource.ReadRequest, resp *re
 	}
 
 	data.ReadFromResponse(response, isImportOperation)
+
+	// Restore plan-only attributes after reading API response
+	data.RunSetupTests = runSetupTests
+	data.TrustCertificates = trustCertificates
+	data.TrustFingerprints = trustFingerprints
+
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
@@ -287,7 +298,10 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 	trustCertificatesState := core.GetBoolOrDefault(state.TrustCertificates, false)
 	trustFingerprintsState := core.GetBoolOrDefault(state.TrustFingerprints, false)
 
-
+	// Check if plan-only attributes changed and user wants to run tests
+	planOnlyAttributesChanged := (runSetupTestsPlan && runSetupTestsPlan != runSetupTestsState) ||
+		(trustCertificatesPlan && trustCertificatesPlan != trustCertificatesState) ||
+		(trustFingerprintsPlan && trustFingerprintsPlan != trustFingerprintsState)
 
 	hasUpdates, patch, authPatch, err := plan.HasUpdates(plan, state)
     if err != nil {
@@ -299,10 +313,8 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 
 	updatePerformed := false
 	if hasUpdates {
+		// PATCH endpoint doesn't support plan-only attributes, so don't include them
 		svc := r.GetClient().NewConnectionUpdate().
-			RunSetupTests(runSetupTestsPlan).
-			TrustCertificates(trustCertificatesPlan).
-			TrustFingerprints(trustFingerprintsPlan).
 			ConnectionID(state.Id.ValueString())
 
 		if !plan.PrivateLinkId.Equal(state.PrivateLinkId) {
@@ -350,7 +362,25 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 		}
 		plan.ReadFromCreateResponse(response)
 
-		if runSetupTestsPlan && response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
+		// Preserve plan-only attributes after reading API response
+		plan.RunSetupTests = types.BoolValue(runSetupTestsPlan)
+		plan.TrustCertificates = types.BoolValue(trustCertificatesPlan)
+		plan.TrustFingerprints = types.BoolValue(trustFingerprintsPlan)
+
+		updatePerformed = true
+	}
+
+	// If plan-only attributes changed, use dedicated /setup-tests endpoint
+	if planOnlyAttributesChanged {
+		response, err := r.GetClient().NewConnectionSetupTests().ConnectionID(state.Id.ValueString()).DoCustom(ctx)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to Update Connector Resource.",
+				fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
+			)
+			return
+		}
+		if response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
 			for _, tr := range response.Data.SetupTests {
 				if tr.Status != "PASSED" && tr.Status != "SKIPPED" {
 					resp.Diagnostics.AddWarning(
@@ -360,35 +390,14 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 				}
 			}
 		}
-
-		updatePerformed = true
-	} else {
-		// If values of testing fields changed we should run tests
-		if runSetupTestsPlan && runSetupTestsPlan != runSetupTestsState ||
-			trustCertificatesPlan && trustCertificatesPlan != trustCertificatesState ||
-			trustFingerprintsPlan && trustFingerprintsPlan != trustFingerprintsState {
-
-			response, err := r.GetClient().NewConnectionSetupTests().ConnectionID(state.Id.ValueString()).DoCustom(ctx)
-			if err != nil {
-				resp.Diagnostics.AddError(
-					"Unable to Update Connector Resource.",
-					fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
-				)
-				return
-			}
+		if !updatePerformed {
 			plan.ReadFromCreateResponse(response)
-			if response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
-				for _, tr := range response.Data.SetupTests {
-					if tr.Status != "PASSED" && tr.Status != "SKIPPED" {
-						resp.Diagnostics.AddWarning(
-							fmt.Sprintf("Connector setup test `%v` has status `%v`", tr.Title, tr.Status),
-							tr.Message,
-						)
-					}
-				}
-			}
-			updatePerformed = true
+			// Preserve plan-only attributes after reading API response
+			plan.RunSetupTests = types.BoolValue(runSetupTestsPlan)
+			plan.TrustCertificates = types.BoolValue(trustCertificatesPlan)
+			plan.TrustFingerprints = types.BoolValue(trustFingerprintsPlan)
 		}
+		updatePerformed = true
 	}
 
 	if !updatePerformed {
@@ -402,6 +411,10 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 			return
 		}
 		plan.ReadFromResponse(response, false)
+		// Preserve plan-only attributes after reading API response
+		plan.RunSetupTests = types.BoolValue(runSetupTestsPlan)
+		plan.TrustCertificates = types.BoolValue(trustCertificatesPlan)
+		plan.TrustFingerprints = types.BoolValue(trustFingerprintsPlan)
 	}
 
 	// Set up synthetic values

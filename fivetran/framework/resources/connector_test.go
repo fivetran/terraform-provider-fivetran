@@ -1987,11 +1987,7 @@ func TestResourceConnectorMock(t *testing.T) {
 						body := tfmock.RequestBodyToJson(t, req)
 
 						// Check the request
-						tfmock.AssertEqual(t, len(body), 5)
-
-						tfmock.AssertKeyExistsAndHasValue(t, body, "run_setup_tests", true)
-						tfmock.AssertKeyExistsAndHasValue(t, body, "trust_certificates", true)
-						tfmock.AssertKeyExistsAndHasValue(t, body, "trust_fingerprints", true)
+						tfmock.AssertEqual(t, len(body), 2)
 
 						if config, ok := tfmock.AssertKeyExists(t, body, "config").(map[string]interface{}); ok {
 							tfmock.AssertKeyExistsAndHasValue(t, config, "account_ids", nil)
@@ -2028,6 +2024,12 @@ func TestResourceConnectorMock(t *testing.T) {
 						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
 					},
 				)
+
+			tfmock.MockClient().When(http.MethodPost, "/v1/connections/connector_id/test").ThenCall(
+				func(req *http.Request) (*http.Response, error) {
+					return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
+				},
+			)
 			},
 			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
