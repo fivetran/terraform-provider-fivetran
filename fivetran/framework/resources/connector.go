@@ -351,7 +351,7 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 		if !plan.ProxyAgentId.Equal(state.ProxyAgentId) {
 			if !plan.ProxyAgentId.IsNull() {
 				svc.ProxyAgentId(plan.ProxyAgentId.ValueString())
-		}
+			}
 		}
 
 		if !plan.NetworkingMethod.Equal(state.NetworkingMethod) && plan.NetworkingMethod.ValueString() != "" {
