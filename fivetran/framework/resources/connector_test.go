@@ -720,6 +720,12 @@ func setupMockClientConnectorResourceUpdate(t *testing.T) {
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
 		},
 	)
+
+	tfmock.MockClient().When(http.MethodPost, "/v1/connections/connector_id/test").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
+		},
+	)
 }
 
 func setupMockClientConnectorResourceUpdateHd(t *testing.T) {
@@ -758,6 +764,12 @@ func setupMockClientConnectorResourceUpdateHd(t *testing.T) {
 	connectorMockUpdateDelete = tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			connectorMockData = nil
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
+		},
+	)
+
+	tfmock.MockClient().When(http.MethodPost, "/v1/connections/connector_id/test").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
 		},
 	)
@@ -976,6 +988,12 @@ func setupMockClientConnectorResourceUpdateConfig(t *testing.T) {
 	connectorMockUpdateDelete = tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			connectorMockData = nil
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
+		},
+	)
+
+	tfmock.MockClient().When(http.MethodPost, "/v1/connections/connector_id/test").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
 		},
 	)
@@ -1987,11 +2005,9 @@ func TestResourceConnectorMock(t *testing.T) {
 						body := tfmock.RequestBodyToJson(t, req)
 
 						// Check the request
-						tfmock.AssertEqual(t, len(body), 5)
+						tfmock.AssertEqual(t, len(body), 3)
 
-						tfmock.AssertKeyExistsAndHasValue(t, body, "run_setup_tests", true)
-						tfmock.AssertKeyExistsAndHasValue(t, body, "trust_certificates", true)
-						tfmock.AssertKeyExistsAndHasValue(t, body, "trust_fingerprints", true)
+						tfmock.AssertKeyExistsAndHasValue(t, body, "run_setup_tests", false)
 
 						if config, ok := tfmock.AssertKeyExists(t, body, "config").(map[string]interface{}); ok {
 							tfmock.AssertKeyExistsAndHasValue(t, config, "account_ids", nil)
@@ -2028,6 +2044,12 @@ func TestResourceConnectorMock(t *testing.T) {
 						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
 					},
 				)
+
+			tfmock.MockClient().When(http.MethodPost, "/v1/connections/connector_id/test").ThenCall(
+				func(req *http.Request) (*http.Response, error) {
+					return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
+				},
+			)
 			},
 			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
@@ -2142,6 +2164,12 @@ func testConnectorCreateUpdate(t *testing.T,
 				)
 
 				responseData = tfmock.CreateMapFromJsonString(t, responseJson)
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
+			},
+		)
+
+		tfmock.MockClient().When(http.MethodPost, "/v1/connections/connector_id/test").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
 				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
 			},
 		)
