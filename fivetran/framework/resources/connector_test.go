@@ -2169,6 +2169,12 @@ func testConnectorCreateUpdate(t *testing.T,
 				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
 			},
 		)
+
+		tfmock.MockClient().When(http.MethodPost, "/v1/connections/connector_id/test").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
+			},
+		)
 	}
 
 	resource.Test(
