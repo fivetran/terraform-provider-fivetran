@@ -372,9 +372,13 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 		updatePerformed = true
 	}
 
-	// If plan-only attributes changed, use dedicated /setup-tests endpoint
-	if planOnlyAttributesChanged {
-		response, err := r.GetClient().NewConnectionSetupTests().ConnectionID(state.Id.ValueString()).DoCustom(ctx)
+	// Run setup tests if plan-only attributes changed OR if config/auth changed and run_setup_tests=true
+	if planOnlyAttributesChanged || (updatePerformed && runSetupTestsPlan) {
+		response, err := r.GetClient().NewConnectionSetupTests().
+			ConnectionID(state.Id.ValueString()).
+			TrustCertificates(trustCertificatesPlan).
+			TrustFingerprints(trustFingerprintsPlan).
+			DoCustom(ctx)
 		if err != nil {
 			resp.Diagnostics.AddError(
 				"Unable to Update Connector Resource.",
