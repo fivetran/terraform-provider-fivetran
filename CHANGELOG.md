@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.9.21](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.20...v1.9.21)
 
 ### Fixed
+- `fivetran_connector` - Fixed plan-only attributes (`run_setup_tests`, `trust_certificates`, `trust_fingerprints`) not being applied when changed without config/auth changes
 - `fivetran_connection_config` - Added missing plan-only attributes: `run_setup_tests`, `trust_certificates`, and `trust_fingerprints`
 - `fivetran_connection_config` - Added validation to require at least one of `config` or `auth` fields
 - `fivetran_connection_config` - Fixed hardcoded default values to respect user-provided attribute values
