@@ -315,8 +315,6 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 	if hasUpdates {
 		svc := r.GetClient().NewConnectionUpdate().
 			RunSetupTests(false).
-			TrustCertificates(false).
-			TrustFingerprints(false).
 			ConnectionID(state.Id.ValueString())
 
 		if !plan.PrivateLinkId.Equal(state.PrivateLinkId) {
