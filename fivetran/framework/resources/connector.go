@@ -313,8 +313,10 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 
 	updatePerformed := false
 	if hasUpdates {
-		// PATCH endpoint doesn't support plan-only attributes, so don't include them
 		svc := r.GetClient().NewConnectionUpdate().
+			RunSetupTests(false).
+			TrustCertificates(false).
+			TrustFingerprints(false).
 			ConnectionID(state.Id.ValueString())
 
 		if !plan.PrivateLinkId.Equal(state.PrivateLinkId) {
