@@ -4241,7 +4241,7 @@ Read-Only:
 
 Read-Only:
 
-- `connection_string` (String) Field usage depends on `service` value: 
+- `connection_string` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `pendo`: Azure connection string
 - `container_name` (String) Field usage depends on `service` value: 
 	- Service `pendo`: Azure container name
@@ -4621,8 +4621,6 @@ Read-Only:
 	- Service `workday_adaptive`: Flag to indicate if descendants are included or not
 - `id` (String) Field usage depends on `service` value: 
 	- Service `workday_adaptive`: Account ID to sync
-- `include_descendants` (Boolean) Field usage depends on `service` value: 
-	- Service `workday_adaptive`: Flag to indicate if descendants are included or not
 
 
 <a id="nestedatt--config--reports--filters"></a>
