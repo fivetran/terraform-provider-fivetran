@@ -9770,19 +9770,6 @@
                      "workday_adaptive": "Account ID to sync"
                   },
                   "api_field": ""
-               },
-               "include_descendants": {
-                  "readonly": false,
-                  "sensitive": false,
-                  "nullable": false,
-                  "type": "boolean",
-                  "fields": null,
-                  "key_field": "",
-                  "item_type": {},
-                  "description": {
-                     "workday_adaptive": "Flag to indicate if descendants are included or not"
-                  },
-                  "api_field": ""
                }
             },
             "key_field": "id",

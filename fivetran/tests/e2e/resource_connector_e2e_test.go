@@ -654,6 +654,71 @@ func TestGoogleVideo360ReportsE2E(t *testing.T) {
 	})
 }
 
+func TestWorkdayAdaptiveReportsE2E(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectionResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_workday_adaptive"
+			    }
+
+			    resource "fivetran_connector" "workday_adaptive_connection" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "workday_adaptive"
+					run_setup_tests = false
+					destination_schema {
+						name = "workday_adaptive" 
+					}
+					config {
+						login = "mail@mail.com"
+						password = "password"
+						instance_code = "INSTANCE_CODE1"
+						reports {
+							table = "table_1"
+							version_sync_strategy = "SYNC_SELECT_VERSIONS"
+							include_zero_rows = true
+							versions = ["2945"]
+							accounts  { 
+							  id = "3"
+							  flag = true 
+							}
+							accounts { 
+							  id = "4"
+							  flag = true 
+							}
+							dimensions = ["3","4"]
+						}
+					}
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectorResourceCreate(t, "fivetran_connector.workday_adaptive_connection"),
+					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "service", "workday_adaptive"),
+					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.login", "mail@mail.com"),
+					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.password", "password"),
+					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.instance_code", "INSTANCE_CODE1"),
+					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.reports.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.reports.0.table", "table_1"),
+					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.reports.0.version_sync_strategy", "SYNC_SELECT_VERSIONS"),
+					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.reports.0.include_zero_rows", "true"),
+					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.reports.0.versions.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.reports.0.versions.0", "2945"),
+					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.reports.0.accounts.#", "2"),
+					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.reports.0.dimensions.#", "2"),
+					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.reports.0.dimensions.0", "3"),
+					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.reports.0.dimensions.1", "4"),
+				),
+			},
+		},
+	})
+}
+
 func TestGoogleCampaignManagerReportsE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
