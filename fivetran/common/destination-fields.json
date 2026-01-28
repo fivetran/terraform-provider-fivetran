@@ -423,7 +423,7 @@
          "maria_warehouse": "Database name",
          "mysql_rds_warehouse": "Database name",
          "mysql_warehouse": "Database name",
-         "oracle_rac_warehouse": "Database name",
+         "oracle_rac_warehouse": "Service Name",
          "oracle_rds_warehouse": "Database name",
          "oracle_warehouse": "Database name",
          "panoply": "Database name",
@@ -452,6 +452,19 @@
          "managed_data_lake": "Specifies how you want Fivetran to connect to the Databricks account associated with Unity Catalog. Default value: `Directly`. Use this parameter only if you want to use Unity Catalog with your data lake.",
          "new_s3_datalake": "Databricks Connection method. Default value: `Directly`.",
          "onelake": "Databricks Connection method. Default value: `Directly`."
+      },
+      "api_field": ""
+   },
+   "default_virtual_warehouse": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "snowflake": "The virtual warehouse to use for running queries."
       },
       "api_field": ""
    },
@@ -784,7 +797,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "managed_data_lake": "(Immutable) OneLake lakehouse GUID",
+         "managed_data_lake": "(Immutable) OneLake lakehouse GUID.",
          "onelake": "(Immutable) OneLake lakehouse GUID"
       },
       "api_field": ""
@@ -861,6 +874,45 @@
          "managed_data_lake": "OAuth 2.0 secret you created for authenticating Fivetran. Use this parameter only if you want to use OAuth 2.0 as the authentication type for Fivetran to connect to Databricks.",
          "new_s3_datalake": "OAuth 2.0 secret",
          "onelake": "OAuth 2.0 secret"
+      },
+      "api_field": ""
+   },
+   "onelake_client_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "managed_data_lake": "(Immutable) Client ID of OneLake service principal."
+      },
+      "api_field": ""
+   },
+   "onelake_client_secret": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "managed_data_lake": "Secret value for OneLake service principal."
+      },
+      "api_field": ""
+   },
+   "onelake_tenant_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "managed_data_lake": "(Immutable) Tenant ID of OneLake service principal"
       },
       "api_field": ""
    },
@@ -1381,6 +1433,19 @@
       },
       "api_field": ""
    },
+   "should_maintain_tables_in_one_lake": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "managed_data_lake": "Specifies whether you want to create shortcut for you table in OneLake. Use this parameter only if you want to deploy your data lake on ADLS."
+      },
+      "api_field": ""
+   },
    "snapshot_retention_period": {
       "readonly": false,
       "sensitive": false,
@@ -1674,7 +1739,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "managed_data_lake": "(Immutable) OneLake workspace GUID",
+         "managed_data_lake": "(Immutable) OneLake workspace GUID.",
          "onelake": "(Immutable) OneLake workspace GUID"
       },
       "api_field": ""
