@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.21...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.22...HEAD)
+
+## [v1.9.22](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.22...v1.9.21)
+
+### Fixed
+- `fivetran_connector` resource with `service= "workday_adaptive"`, removed unsupported by API field from `.config.reports.accounts`
 
 ## [v1.9.21](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.20...v1.9.21)
 
