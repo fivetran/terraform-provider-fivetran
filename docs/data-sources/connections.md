@@ -48,7 +48,7 @@ Read-Only:
 - `private_link_id` (String) The private link ID.
 - `proxy_agent_id` (String) The proxy agent ID.
 - `schedule_type` (String) The connection schedule configuration type. Supported values: auto, manual.
-- `service` (String) The connection type id within the Fivetran system.
-- `service_version` (String) The connection type version within the Fivetran system.
+- `service` (String) The connector type id within the Fivetran system.
+- `service_version` (String) The connector type version within the Fivetran system.
 - `succeeded_at` (String) The timestamp of the time the connection sync succeeded last time.
 - `sync_frequency` (Number) The connection sync frequency in minutes.
