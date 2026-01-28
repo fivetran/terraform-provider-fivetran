@@ -11,6 +11,7 @@ adjust
 adobe_analytics
 adobe_analytics_data_feed
 adobe_commerce
+adobe_experience_platform
 adobe_workfront
 adp_workforce_now
 adroll
@@ -22,6 +23,7 @@ aircall
 airtable
 akamai
 akeneo
+alation
 alchemer
 algolia
 alida
@@ -30,6 +32,7 @@ amazon_attribution
 amazon_dsp
 amazon_selling_partner
 amplitude
+amqp
 anaplan
 anvyl
 apache_kafka
@@ -109,6 +112,7 @@ calabrio
 calendly
 callrail
 campaignmonitor
+campfire
 canny
 canvas_by_instructure
 canvas_data_2_by_instructure
@@ -165,6 +169,7 @@ copper
 cornerstone
 cosmos
 coupa
+credly
 criteo
 criteo_retail_media
 crossbeam
@@ -317,6 +322,7 @@ higher_logic_vanilla
 hilti_ontrack
 hopin
 hubspot
+ibacos
 ilevel
 impact
 impact_partner
@@ -572,6 +578,7 @@ sendgrid
 sentry
 servicenow
 servicetitan
+servicetrade
 sftp
 share_point
 shareasale
@@ -621,6 +628,7 @@ sql_server_sap_ecc_hva
 square
 squarespace
 stackadapt
+stackadapt_graphql
 standard_metrics
 starrez
 statistics_netherlands_cbs
