@@ -565,7 +565,7 @@ const (
 					"version_sync_strategy": "SYNC_SELECT_VERSIONS",
 					"versions": ["2945"],
 					"accounts": [
-						{ "id": "3", "flag": true, "include_descendants": true },
+						{ "id": "3", "flag": true },
 						{ "id": "4", "flag": true }
 					],
 					"dimensions": ["3", "4"],
@@ -627,7 +627,7 @@ const (
 					"version_sync_strategy": "SYNC_SELECT_VERSIONS",
 					"versions": ["2945"],
 					"accounts": [
-						{ "id": "3", "flag": true, "include_descendants": false },
+						{ "id": "3", "flag": true },
 						{ "id": "4", "flag": true },
 						{ "id": "5", "flag": true }
 					],
@@ -2643,7 +2643,6 @@ func TestResourceConnectorWorkdayServiceMock(t *testing.T) {
 					include_zero_rows = true
 					versions = ["2945"]
 					accounts  { 
-					  include_descendants = true
 					  id = "3"
 					  flag = true 
 					}
@@ -2697,7 +2696,6 @@ func TestResourceConnectorWorkdayServiceMock(t *testing.T) {
 					include_zero_rows = true
 					versions = ["2945"]
 					accounts  { 
-					  include_descendants = false
 					  id = "3"
 					  flag = true 
 					}
