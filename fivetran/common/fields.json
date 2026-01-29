@@ -1187,6 +1187,7 @@
          "buildium": "Your Buildium private API key.",
          "callrail": "Your CallRail API key.",
          "campaignmonitor": "Your Campaign Monitor API key.",
+         "campfire": "Your Campfire API key.",
          "canny": "Your Canny API key.",
          "chargebee_product_catalog_1": "Your Chargebee Product Catalog 1 API key.",
          "chargebee_product_catalog_2": "Your Chargebee API key.",
@@ -1308,7 +1309,7 @@
          "pandadoc": "Your PandaDoc API key.",
          "papershift": "Your Papershift API Key",
          "partnerize": "Your Partnerize user API key.",
-         "peopleforce": "Your Peopleforce API key.",
+         "peopleforce": "Your PeopleForce API key.",
          "persona": "Your Persona API key.",
          "picqer": "Your Picqer API key.",
          "pigment": "Your Pigment API key.",
@@ -1351,6 +1352,7 @@
          "sparkpost": "Your SparkPost API key.",
          "squarespace": "Your Squarespace API key.",
          "stackadapt": "Your StackAdapt API key.",
+         "stackadapt_graphql": "Your StackAdapt API key.",
          "statuspage": "Your Statuspage API Key.",
          "stripe": "Restricted API key",
          "stripe_test": "Restricted API key",
@@ -1363,6 +1365,7 @@
          "transcend": "Your Transcend API key.",
          "trello": "Your TRELLO api key.",
          "triple_whale": "Your Triple Whale API key.",
+         "upland": "Your Upland Software API key.",
          "uppromote": "Your UpPromote API key.",
          "veeqo": "Your Veeqo API key.",
          "venminder": "Your Venminder API key.",
@@ -1489,6 +1492,7 @@
          "consensus_demo_automation_platform": "Your Consensus Demo Automation Platform API secret.",
          "forj_community": "Your Forj Community API secret.",
          "friendbuy": "Your Friendbuy API secret.",
+         "integrate": "Your Integrate API secret.",
          "justcall": "Your JustCall API secret.",
          "liftoff": "Your Liftoff API secret.",
          "mixpanel": "Mixpanel API Secret.",
@@ -2312,6 +2316,7 @@
       "description": {
          "360learning": "Your 360Learning auth type.",
          "airtable": "Type of authentication being used by connector",
+         "amqp": "Authentication method (BasicAuth or MutualTLS).",
          "aws_cost_report": "Access approach",
          "azure_service_bus": "The authentication mode to access the topic",
          "dynamics_365": "Authentication mechanism. Either one of `OAUTH2`, or `SERVICE_PRINCIPAL`. Default value `OAUTH2`",
@@ -2324,6 +2329,7 @@
          "qualtrics": "Type of authentication being used by connector",
          "s3": "Access approach",
          "s3_compatible_storage": "Access approach",
+         "upland": "Authentication method you want to use for your connection.",
          "wasabi_cloud_storage": "The Wasabi Cloud Storage Access approach. Required for connector creation. Default value: `ACCESS_KEY`."
       },
       "api_field": ""
@@ -3038,6 +3044,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "amqp": "Client certificate for mutual TLS authentication.",
          "share_point": "`Client Certificate` of your Microsoft client application."
       },
       "api_field": ""
@@ -3080,12 +3087,14 @@
          "360learning": "Your 360Learning client ID.",
          "acumatica": "Your Acumatica client ID.",
          "adobe_analytics": "Client ID from the OAuth Server-to-Server credentials of your Adobe Project.",
+         "adobe_experience_platform": "Your Adobe Experience Platform client ID.",
          "adobe_workfront": "Your Adobe Workfront client ID.",
          "adp_workforce_now": "Your ADP Client ID.",
          "akamai": "Your Akamai client ID.",
          "akeneo": "Your Akeneo client ID.",
+         "alation": "Your Alation Client ID.",
          "auth0": "Your Auth0 client ID.",
-         "autodesk_bim_360": "Your Autodesk BIM 360 client ID.",
+         "autodesk_bim_360": "Your Autodesk BIM 360 \u0026 Construction Cloud client ID.",
          "bigin_by_zoho_crm": "Your Bigin by Zoho CRM Client Id",
          "billing_platform": "Your BillingPlatform client ID.",
          "bing_webmaster_tools": "Your Bing Webmaster Tools client ID.",
@@ -3109,6 +3118,7 @@
          "constant_contact": "Your Constant Contact client ID.",
          "cornerstone": "Your Cornerstone client ID.",
          "coupa": "Your Coupa client_id",
+         "credly": "Enter your Credly Client ID",
          "criteo": "Your Criteo Client ID.",
          "criteo_retail_media": "Your Criteo Retail Media client ID.",
          "cube": "Your Cube client ID.",
@@ -3134,6 +3144,7 @@
          "hana_sap_hva_s4_netweaver": "Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.",
          "helpdesk": "Your HelpDesk client ID.",
          "hilti_ontrack": "Your Hilti On!Track client ID.",
+         "ibacos": "Your Ibacos Client ID.",
          "ilevel": "Your iLevel Client ID.",
          "instructure": "Your Instructure client ID.",
          "integral_ad_science": "Your integral_ad_science client id.",
@@ -3153,7 +3164,7 @@
          "on24": "Your ON24 client ID.",
          "onetrust": "Your OneTrust client ID.",
          "oracle_fusion_field_service": "Your Oracle Fusion Field Service client ID.",
-         "oracle_netsuite_openair": "Your Oracle NetSuite OpenAir Client ID.",
+         "oracle_netsuite_openair": "Your NetSuite SuiteProjects Pro client ID.",
          "oracle_sap_hva_netweaver": "Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.",
          "paychex": "Your Paychex client ID.",
          "paylocity": "Your Paylocity client ID.",
@@ -3178,7 +3189,7 @@
          "shipnetwork": "Your ShipNetwork client ID.",
          "shopify": "Client ID of your public app",
          "showpad": "Your Showpad client ID.",
-         "siemens_building_x_openness": "Your Siemens Building X Openness Client ID.",
+         "siemens_building_x_openness": "Your Siemens Building X Openness client ID.",
          "sigma_computing_source": "Your Sigma Computing client ID.",
          "skillstx": "Your SkillsTX client ID.",
          "skimlinks": "Your Skimlinks client ID.",
@@ -3278,6 +3289,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "amqp": "Client private key for mutual TLS authentication.",
          "aurora": "Client Private Key in .pem format.",
          "aurora_postgres": "Client Private Key in .pem format.",
          "azure_postgres": "Client Private Key in .pem format.",
@@ -3296,6 +3308,7 @@
          "postgres_rds": "Client Private Key in .pem format."
       },
       "sensitive_exclusions": {
+         "amqp": true,
          "aurora": true,
          "aurora_postgres": true,
          "azure_postgres": true,
@@ -3355,12 +3368,14 @@
          "360learning": "Your 360Learning client secret.",
          "acumatica": "Your Acumatica client secret.",
          "adobe_analytics": "Client Secret from the OAuth Server-to-Server credentials of your Adobe Project.",
+         "adobe_experience_platform": "Your Adobe Experience Platform client secret.",
          "adobe_workfront": "Your Adobe Workfront client secret.",
          "adp_workforce_now": "Your ADP Client Secret.",
          "akamai": "Your Akamai client secret.",
          "akeneo": "Your Akeneo client secret.",
+         "alation": "Your Alation Client Secret.",
          "auth0": "Your Auth0 client secret.",
-         "autodesk_bim_360": "Your Autodesk BIM 360 client secret.",
+         "autodesk_bim_360": "Your Autodesk BIM 360 \u0026 Construction Cloud client secret.",
          "bigin_by_zoho_crm": "Your Bigin by Zoho CRM Client Secret",
          "billing_platform": "Your BillingPlatform client secret.",
          "bing_webmaster_tools": "Your Bing Webmaster Tools client secret.",
@@ -3381,6 +3396,7 @@
          "constant_contact": "Your Constant Contact client secret.",
          "cornerstone": "Your Cornerstone client secret.",
          "coupa": "Your Coupa client_id",
+         "credly": "Enter your Credly Client Secret",
          "criteo": "Your Criteo client secret key.",
          "criteo_retail_media": "Your Criteo Retail Media client secret.",
          "cube": "Your Cube client secret.",
@@ -3400,6 +3416,7 @@
          "h_level": "Your HighLevel Client secret.",
          "helpdesk": "Your HelpDesk client secret.",
          "hilti_ontrack": "Your Hilti On!Track client secret.",
+         "ibacos": "Your Ibacos Client secret.",
          "ilevel": "Your iLevel Client Secret.",
          "instructure": "Your Instructure client secret.",
          "integral_ad_science": "Your integral_ad_science client secret.",
@@ -3417,7 +3434,7 @@
          "nice": "Your NICE client secret.",
          "onetrust": "Your OneTrust client secret.",
          "oracle_fusion_field_service": "Your Oracle Fusion Field Service client secret.",
-         "oracle_netsuite_openair": "Your Oracle NetSuite OpenAir Client Secret.",
+         "oracle_netsuite_openair": "Your NetSuite SuiteProjects Pro client secret.",
          "paychex": "Your Paychex client secret.",
          "paylocity": "Your Paylocity client secret.",
          "personio": "Your Personio secret.",
@@ -3438,7 +3455,7 @@
          "sharetribe": "Your Sharetribe client secret.",
          "shopify": "Client secret of your public app",
          "showpad": "Your Showpad client secret.",
-         "siemens_building_x_openness": "Your Siemens Building X Openness Client Secret.",
+         "siemens_building_x_openness": "Your Siemens Building X Openness client secret.",
          "sigma_computing_source": "Your Sigma Computing client secret.",
          "skillstx": "Your SkillsTX client secret.",
          "skimlinks": "Your Skimlinks client secret.",
@@ -3597,7 +3614,7 @@
          "360learning": "Your 360Learning company ID.",
          "cube": "Your Cube company ID.",
          "cube_software": "Your Cube company ID.",
-         "oracle_netsuite_openair": "Your Oracle NetSuite OpenAir Company ID.",
+         "oracle_netsuite_openair": "Your NetSuite SuiteProjects Pro company ID.",
          "paylocity": "Your Paylocity company ID.",
          "sage_intacct": "Company ID",
          "sap_success_factors": "Your SAP SuccessFactors Company ID."
@@ -3627,7 +3644,7 @@
       "item_type": {},
       "description": {
          "khoros_care": "Your Khoros Care companyKey.",
-         "upland": "Your Upland Software Company Key."
+         "upland": "Your Upland Software company key."
       },
       "api_field": ""
    },
@@ -5307,6 +5324,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "adobe_experience_platform": "Your Adobe Experience Platform environment.",
          "auth0": "Your Auth0 domain.",
          "bubble": "Your Bubble app name or domain name.",
          "confluence": "Your Confluence domain.",
@@ -5378,6 +5396,19 @@
       },
       "api_field": ""
    },
+   "dsv_password": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "dsv": "Your DSV Password."
+      },
+      "api_field": ""
+   },
    "dsv_service_auth": {
       "readonly": false,
       "sensitive": true,
@@ -5401,6 +5432,19 @@
       "item_type": {},
       "description": {
          "dsv": ""
+      },
+      "api_field": ""
+   },
+   "dsv_username": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "dsv": "Your DSV Username"
       },
       "api_field": ""
    },
@@ -5429,6 +5473,36 @@
       "item_type": {},
       "description": {
          "bigin_by_zoho_crm": "Your Bigin by Zoho CRM pricing plan"
+      },
+      "api_field": ""
+   },
+   "effective_date_disabled": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "oracle_fusion_cloud_apps_crm": "Select this option to extract all historical records without applying a date filter. Console allows setting this option for all datastores in the connector.",
+         "oracle_fusion_cloud_apps_fscm": "Select this option to extract all historical records without applying a date filter. Console allows setting this option for all datastores in the connector.",
+         "oracle_fusion_cloud_apps_hcm": "Select this option to extract all historical records without applying a date filter. Console allows setting this option for all datastores in the connector."
+      },
+      "api_field": ""
+   },
+   "ekm_key_identifiers": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "item_type": {
+         "sql_server": "string"
+      },
+      "description": {
+         "sql_server": "The list of Azure Key Vault key identifiers used for TDE. Each identifier should be in the format `https://vault-name.vault.azure.net/keys/key-name` or `https://vault-name.vault.azure.net/keys/key-name/version`."
       },
       "api_field": ""
    },
@@ -5785,17 +5859,19 @@
          "concord": "Your Concord environment.",
          "deposco": "Your Deposco environment.",
          "dialpad": "Your Dialpad environment.",
+         "dsv": "Your API Development Environment.",
          "healthie": "Your Healthie environment.",
          "invoiced": "Your Invoiced environment.",
          "jibble": "Your Jibble environment.",
          "lucca": "Your Lucca environment.",
-         "oracle_netsuite_openair": "Your Oracle NetSuite OpenAir Environment.",
+         "oracle_netsuite_openair": "Your NetSuite SuiteProjects Pro environment.",
          "ordergroove": "Your Ordergroove environment.",
          "paddle": "Your Paddle environment.",
          "procore": "Your Procore account environment.",
          "reltio": "Your Reltio environment.",
          "servicetitan": "Your ServiceTitan environment.",
          "smarthr": "Your SmartHR environment.",
+         "stackadapt_graphql": "Your StackAdapt environment.",
          "trelica": "Your Trelica environment.",
          "tremendous": "Your Tremendous environment.",
          "vts": "Your VTS environment.",
@@ -5965,6 +6041,7 @@
       "item_type": {},
       "description": {
          "azure_blob_storage": "A regular expression with a named capture group `(?table...)` to extract table names from file paths.",
+         "gcs": "A regular expression with a named capture group `(?table...)` to extract table names from file paths.",
          "s3": "A regular expression with a named capture group `(?table...)` to extract table names from file paths.",
          "sftp": "A regular expression with a named capture group `(?table...)` to extract table names from file paths."
       },
@@ -6022,6 +6099,7 @@
       "item_type": {},
       "description": {
          "azure_blob_storage": "The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.",
+         "gcs": "The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.",
          "s3": "The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.",
          "sftp": "The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern."
       },
@@ -6481,6 +6559,19 @@
       },
       "api_field": ""
    },
+   "group": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sap_hana_db": "SAP Logon Group name for load balancing"
+      },
+      "api_field": ""
+   },
    "group_id": {
       "readonly": false,
       "sensitive": false,
@@ -6585,7 +6676,7 @@
          "concur": "Historical Sync Limit for the Sync",
          "eloqua": "Range of data in history you would like to include in the initial sync. Default value: `ALL_TIME`.",
          "iterable": "The time range for which historical data should be synced. Default value: `All Time`.",
-         "klaviyo": "The time range for which historical data should be synced. Default value: `All Time`.",
+         "klaviyo": "The time range for which historical data should be synced. Default value: `ALL_TIME`.",
          "marketo": "The time range for which historical data should be synced. Default value: `All Time`.",
          "pardot": "The time range for which historical data should be synced. Default value: `All Time`.",
          "pardot_sandbox": "The time range for which historical data should be synced. Default value: `All Time`.",
@@ -6675,6 +6766,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "amqp": "AMQP broker host address.",
          "aurora": "DB instance host or IP address.",
          "aurora_postgres": "DB instance host or IP address.",
          "aveva_pi": "IP address of the AF Server",
@@ -7260,6 +7352,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "amqp": "JSON delivery mode (Packed or Unpacked).",
          "aws_cost_report": "Control how your JSON data is delivered into your destination",
          "azure_blob_storage": "Control how your JSON data is delivered into your destination",
          "box": "Control how your JSON data is delivered into your destination",
@@ -7645,6 +7738,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "amqp": "Message type (Text or JSON).",
          "apache_kafka": "Kafka message type.",
          "aws_msk": "The Message type.",
          "azure_event_hub": "Message type.",
@@ -7690,6 +7784,32 @@
       },
       "api_field": ""
    },
+   "ms_host": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sap_hana_db": "SAP Message Server host name"
+      },
+      "api_field": ""
+   },
+   "ms_serv": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sap_hana_db": "SAP Message Server service port number"
+      },
+      "api_field": ""
+   },
    "named_range": {
       "readonly": false,
       "sensitive": false,
@@ -7712,6 +7832,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "amqp": "AMQP namespace or virtual host.",
          "azure_service_bus": "The ASB namespace which we have to sync. Required for `AzureActiveDirectory` authentication."
       },
       "api_field": ""
@@ -7766,6 +7887,19 @@
          "sftp": "If your CSVs use a special value indicating null, you can specify it here.",
          "share_point": "If your CSVs use a special value indicating null, you can specify it here.",
          "wasabi_cloud_storage": "If your CSVs use a special value indicating null, you can specify it here."
+      },
+      "api_field": ""
+   },
+   "oauth_subscription_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "dsv": "Your OAuth subscription key."
       },
       "api_field": ""
    },
@@ -7915,6 +8049,19 @@
       },
       "api_field": ""
    },
+   "org_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "adobe_experience_platform": "Your Adobe Experience Platform organization ID."
+      },
+      "api_field": ""
+   },
    "organization": {
       "readonly": false,
       "sensitive": false,
@@ -7994,6 +8141,19 @@
       "description": {
          "apple_search_ads": "Organizations",
          "snapchat_ads": "Specific organizations IDs to sync. Must be populated if `syncMode` is set to `SpecificOrganizations`."
+      },
+      "api_field": ""
+   },
+   "package_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "connector_sdk": ""
       },
       "api_field": ""
    },
@@ -8151,6 +8311,7 @@
          "adobe_commerce": "Your Adobe Commerce password.",
          "akeneo": "Your Akeneo password.",
          "alida": "Your Alida client secret.",
+         "amqp": "Password for basic authentication.",
          "anaplan": "Your Anaplan password. Must be populated if `auth_mode` is set to `Basic`.",
          "appfigures": "Your Appfigures Password.",
          "asset_panda": "Your Asset Panda password.",
@@ -8254,6 +8415,7 @@
          "sap_s4hana": "Your SAP S/4 password.",
          "scorm": "Your Scorm Secret Key.",
          "servicenow": "Your account password.",
+         "servicetrade": "Your ServiceTrade password.",
          "sftp": "SFTP password.",
          "shiphero": "Your ShipHero password.",
          "shipstation": "Your ShipStation password.",
@@ -8277,7 +8439,7 @@
          "ukg_pro": "Your UKG Pro password.",
          "ukg_pro_workforce_management": "Your UKG Pro Workforce Management password.",
          "unicommerce": "Your uniware login password.",
-         "upland": "Your Upland Software Password.",
+         "upland": "Your Upland Software password.",
          "uptempo": "Your Uptempo password.",
          "veeva_vault": "Password",
          "veevavault": "Your Veeva Vault password.",
@@ -8564,6 +8726,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "amqp": "AMQP broker port.",
          "aurora": "The port number.",
          "aurora_postgres": "The port number.",
          "aveva_pi": "Port number at which the AF Server is running",
@@ -9142,7 +9305,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "connector_sdk": ""
+         "connector_sdk": "The Python version to be used at runtime."
       },
       "api_field": ""
    },
@@ -9170,6 +9333,19 @@
       "description": {
          "alchemer": "Your Alchemer API key.",
          "birdeye": "Your Birdeye query-param-value."
+      },
+      "api_field": ""
+   },
+   "queue_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "amqp": "AMQP queue name to consume messages from."
       },
       "api_field": ""
    },
@@ -9229,6 +9405,19 @@
          "s3_compatible_storage": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character.",
          "sftp": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character.",
          "share_point": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character."
+      },
+      "api_field": ""
+   },
+   "r3_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sap_hana_db": "SAP System ID (SID)"
       },
       "api_field": ""
    },
@@ -9306,6 +9495,7 @@
          "on24": "Your ON24 region.",
          "pendo": "The Pendo account region.",
          "proofpoint_security_awareness": "Your Proofpoint Security Awareness Region.",
+         "recurly": "Your Recurly region.",
          "ringover": "Your Ringover region.",
          "samsara": "The region of your Samsara account. For instance, if your region is `EUROPE`, provide `eu.samsara` in the `Region` field. If your region is not in Europe, provide `samsara`.",
          "snyk": "Your Snyk region.",
@@ -9892,6 +10082,19 @@
             },
             "api_field": ""
          },
+         "conversion_metric_id": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "klaviyo": "The ID of the conversion metric."
+            },
+            "api_field": ""
+         },
          "currency": {
             "readonly": false,
             "sensitive": false,
@@ -10248,6 +10451,19 @@
             },
             "api_field": ""
          },
+         "interval": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "klaviyo": "The interval used in the API calls to retrieve the reports."
+            },
+            "api_field": ""
+         },
          "levels": {
             "readonly": false,
             "sensitive": false,
@@ -10321,6 +10537,19 @@
                "google_analytics_4": "The report metrics to include into a sync.",
                "google_display_and_video_360": "The report metrics to include into a sync. The metric names are provided in the API format. This is a required parameter when `config_method` is set to `CREATE_NEW`.",
                "google_search_ads_360": "The report metrics included to sync."
+            },
+            "api_field": ""
+         },
+         "name": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "klaviyo": "The name of the custom report. The same name is used to name the table in the destination."
             },
             "api_field": ""
          },
@@ -10463,6 +10692,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
+               "double_click_campaign_manager": "The custom window size for rollback syncs (between 1 and 90).",
                "google_analytics_4": "The custom window size for rollback syncs.",
                "google_search_ads_360": "The custom window size for rollback syncs (between 2 and 90)."
             },
@@ -10565,6 +10795,21 @@
             },
             "api_field": ""
          },
+         "statistics": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "item_type": {
+               "klaviyo": "string"
+            },
+            "description": {
+               "klaviyo": "The list of statistics to be retrieved."
+            },
+            "api_field": ""
+         },
          "support_nested_columns": {
             "readonly": false,
             "sensitive": false,
@@ -10638,6 +10883,19 @@
             },
             "api_field": ""
          },
+         "type": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "klaviyo": "The type of the custom report."
+            },
+            "api_field": ""
+         },
          "update_config_on_each_sync": {
             "readonly": false,
             "sensitive": false,
@@ -10691,6 +10949,7 @@
          "google_display_and_video_360": "The list of reports. Each report corresponds to a table within the schema to which connector will sync the data.",
          "google_search_ads_360": "The list of reports. Each report corresponds to a table within the schema to which connector syncs the data.",
          "google_search_console": "The list of reports. Each report corresponds to a table within the schema to which connector syncs the data.",
+         "klaviyo": "*  custom report(s)",
          "workday": "The list of reports. Each report corresponds to a table within the schema to which connector will sync the data.",
          "workday_adaptive": "Custom Report"
       },
@@ -11072,6 +11331,19 @@
       },
       "api_field": ""
    },
+   "sandbox_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "adobe_experience_platform": "Your Adobe Experience Platform sandbox name."
+      },
+      "api_field": ""
+   },
    "sap_router": {
       "readonly": false,
       "sensitive": false,
@@ -11247,6 +11519,7 @@
          "adobe_analytics": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "adobe_analytics_data_feed": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "adobe_commerce": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "adobe_experience_platform": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "adobe_workfront": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "adp_workforce_now": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "adroll": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11257,6 +11530,7 @@
          "aircall": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "akamai": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "akeneo": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "alation": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "alchemer": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "algolia": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "alida": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11265,6 +11539,7 @@
          "amazon_dsp": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "amazon_selling_partner": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "amplitude": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "amqp": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "anaplan": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "anvyl": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "apache_kafka": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11342,6 +11617,7 @@
          "calendly": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "callrail": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "campaignmonitor": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "campfire": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "canny": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "canvas_by_instructure": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "canvas_data_2_by_instructure": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11398,6 +11674,7 @@
          "copper": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "cornerstone": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "coupa": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "credly": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "criteo": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "criteo_retail_media": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "crossbeam": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11549,6 +11826,7 @@
          "hilti_ontrack": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "hopin": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "hubspot": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "ibacos": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "ilevel": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "impact": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "impact_partner": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11789,6 +12067,7 @@
          "sentry": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "servicenow": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "servicetitan": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "servicetrade": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "sftp": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "share_point": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "shareasale": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11833,6 +12112,7 @@
          "square": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "squarespace": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "stackadapt": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "stackadapt_graphql": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "standard_metrics": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "starrez": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "statistics_netherlands_cbs": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11956,6 +12236,19 @@
          "zoom": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "zuora": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "zuora_sandbox": "Destination schema name. Schema name is permanent and cannot be changed after connection creation"
+      },
+      "api_field": ""
+   },
+   "schema_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sap_hana_db": "SAP schema name"
       },
       "api_field": ""
    },
@@ -12235,7 +12528,7 @@
             "description": {
                "aws_lambda": "Secret Key.",
                "azure_function": "Key",
-               "connector_sdk": "",
+               "connector_sdk": "Key",
                "google_cloud_function": "Key"
             },
             "api_field": ""
@@ -12251,7 +12544,7 @@
             "description": {
                "aws_lambda": "Secret Value.",
                "azure_function": "Value",
-               "connector_sdk": "",
+               "connector_sdk": "Value",
                "google_cloud_function": "Value"
             },
             "api_field": ""
@@ -12262,7 +12555,7 @@
       "description": {
          "aws_lambda": "List of Secrets that should be passed to the function at runtime.",
          "azure_function": "The list of secrets that should be passed to the function at runtime.",
-         "connector_sdk": "",
+         "connector_sdk": "The list of secrets that should be passed to the function at runtime.",
          "google_cloud_function": "The list of secrets that should be passed to the function at runtime."
       },
       "api_field": ""
@@ -13264,7 +13557,7 @@
          "thinkific": "Your Thinkific subdomain.",
          "totango": "Your Totango Subdomain.",
          "tymeshift": "Your Tymeshift subdomain.",
-         "upland": "Your Upland Software subDomain.",
+         "upland": "Your Upland Software subdomain.",
          "validio": "Your Validio subdomain.",
          "wordpress": "Your WordPress subdomain.",
          "workable": "Your Workable Subdomain.",
@@ -13281,6 +13574,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "adobe_experience_platform": "Your Adobe Experience Platform subdomain.",
+         "alation": "Your Alation subdomain.",
          "bamboohr": "The subdomain used to access your account. If you access BambooHR at 'https://mycompany.bamboohr.com', then the subdomain is 'mycompany'.",
          "bynder": "Your Bynder subdomain.",
          "datadog": "Your Datadog subdomain.",
@@ -13291,6 +13586,7 @@
          "freshsuccess": "Your Freshsuccess subdomain.",
          "gorgias": "Your Gorgias subdomain.",
          "hex": "Your Hex subdomain.",
+         "ibacos": "Your Ibacos subdomain.",
          "jama_software": "Your Jama Software subdomain.",
          "klarna": "Your Klarna subdomain.",
          "learnupon": "Your LearnUpon subdomain.",
@@ -13950,6 +14246,19 @@
       },
       "api_field": ""
    },
+   "tde_setting": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sql_server": "Transparent Data Encryption (TDE) setting. Possible values: `\"OFF\"`, `\"CERTIFICATE\"`. Default value is `\"OFF\"`."
+      },
+      "api_field": ""
+   },
    "tde_wallet_password": {
       "readonly": false,
       "sensitive": true,
@@ -14401,6 +14710,19 @@
       },
       "api_field": ""
    },
+   "tracking_subscription_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "dsv": "Your DSV Tracking subscription key."
+      },
+      "api_field": ""
+   },
    "trust_store_type": {
       "readonly": false,
       "sensitive": false,
@@ -14830,6 +15152,19 @@
       },
       "api_field": ""
    },
+   "use_message_server": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sap_hana_db": "Enable connection via SAP Message Server for load balancing"
+      },
+      "api_field": ""
+   },
    "use_oracle_rac": {
       "readonly": false,
       "sensitive": false,
@@ -15110,6 +15445,7 @@
          "adobe_commerce": "Your Adobe Commerce username.",
          "akeneo": "Your Akeneo username.",
          "alida": "Your Alida client ID.",
+         "amqp": "Username for basic authentication.",
          "anaplan": "Your Anaplan user ID. Must be populated if `auth_mode` is set to `Basic`.",
          "appfigures": "Your Appfigures Username.",
          "aveva_pi": "Username for the user to authenticate as with the AF Server",
@@ -15158,6 +15494,7 @@
          "sap_business_by_design": "The SAP Business ByDesign username.",
          "scorm": "Your Scorm App ID.",
          "servicenow": "Your ServiceNow User ID (username).",
+         "servicetrade": "Your ServiceTrade username.",
          "shiphero": "Your ShipHero username.",
          "shipstation": "Your ShipStation username.",
          "shopware": "Your Shopware username.",
@@ -15171,7 +15508,7 @@
          "ukg_pro": "Your UKG Pro username.",
          "ukg_pro_workforce_management": "Your UKG Pro Workforce Management username.",
          "unicommerce": "Your uniware login username.",
-         "upland": "Your Upland Software Username.",
+         "upland": "Your Upland Software username.",
          "uptempo": "Your Uptempo username.",
          "veeva_vault": "Username",
          "veevavault": "Your Veeva Vault username.",

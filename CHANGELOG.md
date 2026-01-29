@@ -9,6 +9,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v1.9.22](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.22...v1.9.21)
 
+### Added
+New connection services supported:
+- Supported service: `adobe_experience_platform`
+- Supported service: `alation`
+- Supported service: `amqp`
+- Supported service: `campfire`
+- Supported service: `credly`
+- Supported service: `ibacos`
+- Supported service: `servicetrade`
+- Supported service: `stackadapt_graphql`
+New connection config fields supported:
+- Added field `fivetran_connector.config.org_id` for services: `adobe_experience_platform`.
+- Added field `fivetran_connector.config.dsv_username` for services: `dsv`.
+- Added field `fivetran_connector.config.reports.interval` for services: `klaviyo`.
+- Added field `fivetran_connector.config.reports.type` for services: `klaviyo`.
+- Added field `fivetran_connector.config.ms_serv` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.sandbox_name` for services: `adobe_experience_platform`.
+- Added field `fivetran_connector.config.tracking_subscription_key` for services: `dsv`.
+- Added field `fivetran_connector.config.dsv_password` for services: `dsv`.
+- Added field `fivetran_connector.config.reports.conversion_metric_id` for services: `klaviyo`.
+- Added field `fivetran_connector.config.reports.statistics` for services: `klaviyo`.
+- Added field `fivetran_connector.config.use_message_server` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.queue_name` for services: `amqp`.
+- Added field `fivetran_connector.config.oauth_subscription_key` for services: `dsv`.
+- Added field `fivetran_connector.config.schema_name` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.r3_name` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.ms_host` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.package_id` for services: `connector_sdk`.
+- Added field `fivetran_connector.config.reports.name` for services: `klaviyo`.
+- Added field `fivetran_connector.config.effective_date_disabled` for services: `oracle_fusion_cloud_apps_crm`, `oracle_fusion_cloud_apps_fscm`, `oracle_fusion_cloud_apps_hcm`.
+- Added field `fivetran_connector.config.group` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.tde_setting` for services: `sql_server`.
+- Added field `fivetran_connector.config.ekm_key_identifiers` for services: `sql_server`.
+New destination config fields supported:
+- Added field `fivetran_destination.config.onelake_client_secret` for services: `managed_data_lake`.
+- Added field `fivetran_destination.config.onelake_tenant_id` for services: `managed_data_lake`.
+- Added field `fivetran_destination.config.onelake_client_id` for services: `managed_data_lake`.
+- Added field `fivetran_destination.config.should_maintain_tables_in_one_lake` for services: `managed_data_lake`.
+- Added field `fivetran_destination.config.default_virtual_warehouse` for services: `snowflake`.
+
 ### Fixed
 - `fivetran_connector` resource with `service= "workday_adaptive"`, removed unsupported by API field from `.config.reports.accounts`
 
