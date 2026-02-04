@@ -1,298 +1,160 @@
 package model
 
 import (
-    "context"
+	"context"
 
-    externallogging "github.com/fivetran/go-fivetran/external_logging"
-    "github.com/hashicorp/terraform-plugin-framework/types"
-    "github.com/hashicorp/terraform-plugin-framework/types/basetypes"
-    "github.com/hashicorp/terraform-plugin-framework/attr"
+	externallogging "github.com/fivetran/go-fivetran/external_logging"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
 type ExternalLogging struct {
-    Id         types.String `tfsdk:"id"`
-    GroupId    types.String `tfsdk:"group_id"`
-    Service    types.String `tfsdk:"service"`
-    Enabled    types.Bool   `tfsdk:"enabled"`
-    RunTests   types.Bool   `tfsdk:"run_setup_tests"`
-    Config     types.Object `tfsdk:"config"`
+	Id       types.String `tfsdk:"id"`
+	GroupId  types.String `tfsdk:"group_id"`
+	Service  types.String `tfsdk:"service"`
+	Enabled  types.Bool   `tfsdk:"enabled"`
+	RunTests types.Bool   `tfsdk:"run_setup_tests"`
+	Config   types.Object `tfsdk:"config"`
 }
 
 var ExternalLoggingTFConfigType = map[string]attr.Type{
-        "workspace_id":     types.StringType,
-        "port":             types.Int64Type,
-        "log_group_name":   types.StringType,
-        "role_arn":         types.StringType,
-        "external_id":      types.StringType,
-        "region":           types.StringType,
-        "sub_domain":       types.StringType,
-        "host":             types.StringType,
-        "hostname":         types.StringType,
-        "enable_ssl":       types.BoolType,
-        "channel":          types.StringType,
-        "project_id":       types.StringType,
-        "primary_key":      types.StringType,
-        "api_key":          types.StringType,
-        "token":            types.StringType,
-}
-
-func (d *ExternalLogging) ReadFromResponse(ctx context.Context, resp externallogging.ExternalLoggingResponse) {
-    d.Id = types.StringValue(resp.Data.Id)
-    d.GroupId = types.StringValue(resp.Data.Id)
-    d.Service = types.StringValue(resp.Data.Service)
-    d.Enabled = types.BoolValue(resp.Data.Enabled)
-
-    config := map[string]attr.Value{}
-
-    if resp.Data.Config.WorkspaceId != "" {
-        config["workspace_id"] = types.StringValue(resp.Data.Config.WorkspaceId)
-    } else {
-        config["workspace_id"] = types.StringNull()
-    }
-
-    if resp.Data.Config.LogGroupName != "" {
-        config["log_group_name"] = types.StringValue(resp.Data.Config.LogGroupName)
-    } else {
-        config["log_group_name"] = types.StringNull()
-    }
-
-    if resp.Data.Config.RoleArn != "" {
-        config["role_arn"] = types.StringValue(resp.Data.Config.RoleArn)
-    } else {
-        config["role_arn"] = types.StringNull()
-    }
-
-    if resp.Data.Config.ExternalId != "" {
-        config["external_id"] = types.StringValue(resp.Data.Config.ExternalId)
-    } else {
-        config["external_id"] = types.StringNull()
-    }
-
-    if resp.Data.Config.Region != "" {
-        config["region"] = types.StringValue(resp.Data.Config.Region)  
-    } else {
-        config["region"] = types.StringNull()
-    }
-
-    if resp.Data.Config.SubDomain != "" {
-        config["sub_domain"] = types.StringValue(resp.Data.Config.SubDomain)
-    } else {
-        config["sub_domain"] = types.StringNull()
-    }
-
-    if resp.Data.Config.Host != "" {
-        config["host"] = types.StringValue(resp.Data.Config.Host)
-    } else {
-        config["host"] = types.StringNull()
-    }
-
-    if resp.Data.Config.Hostname != "" {
-        config["hostname"] = types.StringValue(resp.Data.Config.Hostname)
-    } else {
-        config["hostname"] = types.StringNull()
-    }
-
-    if resp.Data.Config.Channel != "" {
-        config["channel"] = types.StringValue(resp.Data.Config.Channel)
-    } else {
-        config["channel"] = types.StringNull()
-    }
-
-    if resp.Data.Config.ProjectId != "" {
-        config["project_id"] = types.StringValue(resp.Data.Config.ProjectId)
-    } else {
-        config["project_id"] = types.StringNull()
-    }
-
-    config["enable_ssl"] = types.BoolValue(resp.Data.Config.EnableSsl)    
-    config["port"] = types.Int64Value(int64(resp.Data.Config.Port))
-
-    if resp.Data.Config.PrimaryKey != "" {
-        if resp.Data.Config.PrimaryKey != "******" {
-            config["primary_key"] = types.StringValue(resp.Data.Config.PrimaryKey)
-        } else {
-            config["primary_key"] = CoalesceToStringNull(d.Config.Attributes()["primary_key"])
-        }
-    } else {
-        config["primary_key"] = types.StringNull()
-    }
-    
-    if resp.Data.Config.ApiKey != "" {
-        if resp.Data.Config.ApiKey != "******" {
-            config["api_key"] = types.StringValue(resp.Data.Config.ApiKey)
-        } else {
-            config["api_key"] = CoalesceToStringNull(d.Config.Attributes()["api_key"])
-        }
-    } else {
-        config["api_key"] = types.StringNull()
-    }
-
-    if resp.Data.Config.Token != "" {
-        if resp.Data.Config.Token != "******" {
-            config["token"] = types.StringValue(resp.Data.Config.Token)
-        } else {
-            config["token"] = CoalesceToStringNull(d.Config.Attributes()["token"])
-        }
-    } else {
-        config["token"] = types.StringNull()
-    }
-
-    d.Config, _ = types.ObjectValue(ExternalLoggingTFConfigType, config)
+	"workspace_id":        types.StringType,
+	"port":                types.Int64Type,
+	"log_group_name":      types.StringType,
+	"role_arn":            types.StringType,
+	"external_id":         types.StringType,
+	"region":              types.StringType,
+	"sub_domain":          types.StringType,
+	"host":                types.StringType,
+	"hostname":            types.StringType,
+	"enable_ssl":          types.BoolType,
+	"channel":             types.StringType,
+	"project_id":          types.StringType,
+	"primary_key":         types.StringType,
+	"api_key":             types.StringType,
+	"token":               types.StringType,
+	"access_key_id":       types.StringType,
+	"service_account_key": types.StringType,
+	"access_key_secret":   types.StringType,
 }
 
 func CoalesceToStringNull(value attr.Value) attr.Value {
 	if value == nil {
-        return types.StringNull()
-    }
+		return types.StringNull()
+	}
 
-    return value
+	return value
 }
 
-func (d *ExternalLogging) ReadFromCustomResponse(ctx context.Context, resp externallogging.ExternalLoggingCustomResponse, 
-    planConfigForEmptySecretValuesAfterImport map[string]attr.Value) {
-    d.Id = types.StringValue(resp.Data.Id)
-    d.GroupId = types.StringValue(resp.Data.Id)
-    d.Service = types.StringValue(resp.Data.Service)
-    d.Enabled = types.BoolValue(resp.Data.Enabled)
+func (d *ExternalLogging) ReadFromCustomResponse(
+	ctx context.Context,
+	resp externallogging.ExternalLoggingCustomResponse,
+	planConfigForEmptySecretValuesAfterImport map[string]attr.Value) {
+	d.Id = types.StringValue(resp.Data.Id)
+	d.GroupId = types.StringValue(resp.Data.Id)
+	d.Service = types.StringValue(resp.Data.Service)
+	d.Enabled = types.BoolValue(resp.Data.Enabled)
 
-    config := map[string]attr.Value{}
-    if resp.Data.Config["workspace_id"] != nil && resp.Data.Config["workspace_id"] != "" {
-        config["workspace_id"] = types.StringValue(resp.Data.Config["workspace_id"].(string))
-    } else {
-        config["workspace_id"] = types.StringNull()
-    }
-    
-    if resp.Data.Config["log_group_name"] != nil && resp.Data.Config["log_group_name"] != "" {
-        config["log_group_name"] = types.StringValue(resp.Data.Config["log_group_name"].(string))
-    } else {
-        config["log_group_name"] = types.StringNull()
-    }
-    
-    if resp.Data.Config["role_arn"] != nil && resp.Data.Config["role_arn"] != "" {
-        config["role_arn"] = types.StringValue(resp.Data.Config["role_arn"].(string))
-    } else {
-        config["role_arn"] = types.StringNull()
-    }
+	config := map[string]attr.Value{}
 
-    if resp.Data.Config["external_id"] != nil && resp.Data.Config["external_id"] != "" {
-        config["external_id"] = types.StringValue(resp.Data.Config["external_id"].(string))
-    } else {
-        config["external_id"] = types.StringNull()
-    }
-    
-    if resp.Data.Config["region"] != nil && resp.Data.Config["region"] != "" {
-        config["region"] = types.StringValue(resp.Data.Config["region"].(string))
-    } else {
-        config["region"] = types.StringNull()
-    }
-    
-    if resp.Data.Config["sub_domain"] != nil && resp.Data.Config["sub_domain"] != "" {
-        config["sub_domain"] = types.StringValue(resp.Data.Config["sub_domain"].(string))
-    } else {
-        config["sub_domain"] = types.StringNull()
-    }
-    
-    if resp.Data.Config["host"] != nil && resp.Data.Config["host"] != "" {
-        config["host"] = types.StringValue(resp.Data.Config["host"].(string))
-    } else {
-        config["host"] = types.StringNull()
-    }
-    
-    if resp.Data.Config["hostname"] != nil && resp.Data.Config["hostname"] != "" {
-        config["hostname"] = types.StringValue(resp.Data.Config["hostname"].(string))
-    } else {
-        config["hostname"] = types.StringNull()
-    }
-    
-    if resp.Data.Config["channel"] != nil && resp.Data.Config["channel"] != "" {
-        config["channel"] = types.StringValue(resp.Data.Config["channel"].(string))
-    } else {
-        config["channel"] = types.StringNull()
-    }
-    
-    if resp.Data.Config["project_id"] != nil && resp.Data.Config["project_id"] != "" {
-        config["project_id"] = types.StringValue(resp.Data.Config["project_id"].(string))
-    } else {
-        config["project_id"] = types.StringNull()
-    }
+	readStringValue(resp, &config, "workspace_id")
+	readStringValue(resp, &config, "log_group_name")
+	readStringValue(resp, &config, "role_arn")
+	readStringValue(resp, &config, "external_id")
+	readStringValue(resp, &config, "region")
+	readStringValue(resp, &config, "sub_domain")
+	readStringValue(resp, &config, "host")
+	readStringValue(resp, &config, "hostname")
+	readStringValue(resp, &config, "channel")
+	readStringValue(resp, &config, "project_id")
+	readStringValue(resp, &config, "access_key_id")
+	readStringValue(resp, &config, "service_account_key")
 
-    if resp.Data.Config["enable_ssl"] != nil {
-        config["enable_ssl"] = types.BoolValue(resp.Data.Config["enable_ssl"].(bool))    
-    } else {
-        config["enable_ssl"] = types.BoolValue(false)
-    }
+	readBoolValue(resp, &config, "enable_ssl")
 
-    if resp.Data.Config["port"] != nil {
-        config["port"] = types.Int64Value(int64(resp.Data.Config["port"].(float64)))
-    } else {
-        config["port"] = types.Int64Value(0)
-    }
+	readIntValue(resp, &config, "port")
 
-    if resp.Data.Config["primary_key"] != nil && resp.Data.Config["primary_key"] != "" && resp.Data.Config["primary_key"] != "******" {
-        config["primary_key"] = types.StringValue(resp.Data.Config["primary_key"].(string))
-    } else if mapHasValue(planConfigForEmptySecretValuesAfterImport, "primary_key") {
-        config["primary_key"] = planConfigForEmptySecretValuesAfterImport["primary_key"]
-    } else if !d.Config.Attributes()["primary_key"].IsNull() {
-        config["primary_key"] = d.Config.Attributes()["primary_key"]
-    } else {
-        config["primary_key"] = types.StringNull()
-    }
-     
-    if resp.Data.Config["api_key"] != nil && resp.Data.Config["api_key"] != "" && resp.Data.Config["api_key"] != "******" {
-        config["api_key"] = types.StringValue(resp.Data.Config["api_key"].(string))
-    } else if mapHasValue(planConfigForEmptySecretValuesAfterImport, "api_key") {
-        config["api_key"] = planConfigForEmptySecretValuesAfterImport["api_key"]
-    } else if !d.Config.Attributes()["api_key"].IsNull() {
-        config["api_key"] = d.Config.Attributes()["api_key"]
-    } else {
-        config["api_key"] = types.StringNull()
-    }
+	d.readSensitiveStringValue(resp, &config, planConfigForEmptySecretValuesAfterImport, "primary_key")
+	d.readSensitiveStringValue(resp, &config, planConfigForEmptySecretValuesAfterImport, "api_key")
+	d.readSensitiveStringValue(resp, &config, planConfigForEmptySecretValuesAfterImport, "token")
+	d.readSensitiveStringValue(resp, &config, planConfigForEmptySecretValuesAfterImport, "access_key_secret")
 
-    if resp.Data.Config["token"] != nil && resp.Data.Config["token"] != "" && resp.Data.Config["token"] != "******" {
-        config["token"] = types.StringValue(resp.Data.Config["token"].(string))
-    } else if mapHasValue(planConfigForEmptySecretValuesAfterImport, "token") {
-        config["token"] = planConfigForEmptySecretValuesAfterImport["token"]
-    } else if !d.Config.Attributes()["token"].IsNull() {
-        config["token"] = d.Config.Attributes()["token"]
-    } else {
-        config["token"] = types.StringNull()
-    }
+	d.Config, _ = types.ObjectValue(ExternalLoggingTFConfigType, config)
+}
 
-    d.Config, _ = types.ObjectValue(ExternalLoggingTFConfigType, config)
+func readIntValue(resp externallogging.ExternalLoggingCustomResponse, config *map[string]attr.Value, key string) {
+	if resp.Data.Config[key] != nil {
+		(*config)[key] = types.Int64Value(int64(resp.Data.Config[key].(float64)))
+	} else {
+		(*config)[key] = types.Int64Value(0)
+	}
+}
+
+func readBoolValue(resp externallogging.ExternalLoggingCustomResponse, config *map[string]attr.Value, key string) {
+	if resp.Data.Config[key] != nil {
+		(*config)[key] = types.BoolValue(resp.Data.Config[key].(bool))
+	} else {
+		(*config)[key] = types.BoolValue(false)
+	}
+}
+
+func (d *ExternalLogging) readSensitiveStringValue(
+	resp externallogging.ExternalLoggingCustomResponse,
+	config *map[string]attr.Value,
+	planConfigForEmptySecretValuesAfterImport map[string]attr.Value,
+	key string) {
+	if resp.Data.Config[key] != nil && resp.Data.Config[key] != "" && resp.Data.Config[key] != "******" {
+		(*config)[key] = types.StringValue(resp.Data.Config[key].(string))
+	} else if mapHasValue(planConfigForEmptySecretValuesAfterImport, key) {
+		(*config)[key] = planConfigForEmptySecretValuesAfterImport[key]
+	} else if mapHasValue(d.Config.Attributes(), key) && !d.Config.Attributes()[key].IsNull() {
+		(*config)[key] = d.Config.Attributes()[key]
+	} else {
+		(*config)[key] = types.StringNull()
+	}
+}
+
+func readStringValue(resp externallogging.ExternalLoggingCustomResponse, config *map[string]attr.Value, key string) {
+	if resp.Data.Config[key] != nil && resp.Data.Config[key] != "" {
+		(*config)[key] = types.StringValue(resp.Data.Config[key].(string))
+	} else {
+		(*config)[key] = types.StringNull()
+	}
 }
 
 func mapHasValue(valuesMap map[string]attr.Value, key string) bool {
-    if valuesMap == nil {
-        return false
-    }
+	if valuesMap == nil {
+		return false
+	}
 
-    value, exists := valuesMap[key]
-    if !exists {
-        return false
-    }
+	value, exists := valuesMap[key]
+	if !exists {
+		return false
+	}
 
-    return !value.IsNull() && !value.IsUnknown()
+	return !value.IsNull() && !value.IsUnknown()
 }
 
 func (d *ExternalLogging) GetConfig() map[string]interface{} {
-    attr := d.Config.Attributes()
+	attr := d.Config.Attributes()
 
-    config := make(map[string]interface{})
-    for k, v := range attr{
-        if !v.IsUnknown() && !v.IsNull() {
-            if t, ok := v.(basetypes.Int64Value); ok {
-                config[k] = t.ValueInt64()
-            }
+	config := make(map[string]interface{})
+	for k, v := range attr {
+		if !v.IsUnknown() && !v.IsNull() {
+			if t, ok := v.(basetypes.Int64Value); ok {
+				config[k] = t.ValueInt64()
+			}
 
-            if t, ok := v.(basetypes.BoolValue); ok {
-                config[k] = t.ValueBool()
-            }
+			if t, ok := v.(basetypes.BoolValue); ok {
+				config[k] = t.ValueBool()
+			}
 
-            if t, ok := v.(basetypes.StringValue); ok {
-                config[k] = t.ValueString()
-            }
-        }
-    }
+			if t, ok := v.(basetypes.StringValue); ok {
+				config[k] = t.ValueString()
+			}
+		}
+	}
 
-    return config
+	return config
 }

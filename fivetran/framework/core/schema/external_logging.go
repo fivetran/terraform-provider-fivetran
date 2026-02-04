@@ -11,36 +11,36 @@ import (
 )
 
 func ExternalLoggingResource() resourceSchema.Schema {
-	return resourceSchema.Schema {
+	return resourceSchema.Schema{
 		Attributes: map[string]resourceSchema.Attribute{
 			"id": resourceSchema.StringAttribute{
 				Computed:    true,
 				Description: "The unique identifier for the log service within the Fivetran system.",
 			},
 			"group_id": resourceSchema.StringAttribute{
-				Required:    true,
+				Required:      true,
 				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
-				Description: "The unique identifier for the log service within the Fivetran system.",
+				Description:   "The unique identifier for the log service within the Fivetran system.",
 			},
 			"service": resourceSchema.StringAttribute{
-				Required:    true,
+				Required:      true,
 				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
-				Description: "The name for the log service type within the Fivetran system. We support the following log services: azure_monitor_log, cloudwatch, datadog_log, new_relic_log, splunkLog, stackdriver.",
+				Description:   "The name for the log service type within the Fivetran system. We support the following log services: azure_monitor_log, cloudwatch, datadog_log, new_relic_log, splunkLog, stackdriver.",
 			},
 			"enabled": resourceSchema.BoolAttribute{
-				Optional:	 true,
+				Optional:    true,
 				Description: "The boolean value specifying whether the log service is enabled.",
 			},
 			"run_setup_tests": resourceSchema.BoolAttribute{
-				Optional:	 true,
+				Optional:      true,
 				PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
-				Description: "Specifies whether the setup tests should be run automatically. The default value is TRUE.",
+				Description:   "Specifies whether the setup tests should be run automatically. The default value is TRUE.",
 			},
 		},
 		Blocks: map[string]resourceSchema.Block{
 			"config": resourceSchema.SingleNestedBlock{
 				Attributes: map[string]resourceSchema.Attribute{
-					"workspace_id": resourceSchema.StringAttribute{ 
+					"workspace_id": resourceSchema.StringAttribute{
 						Optional:    true,
 						Description: "Workspace ID",
 					},
@@ -105,7 +105,20 @@ func ExternalLoggingResource() resourceSchema.Schema {
 					},
 					"project_id": resourceSchema.StringAttribute{
 						Optional:    true,
-						Description: "Project Id for Google Cloud Logging",
+						Description: "Google Project Id for Stackdriver",
+					},
+					"access_key_id": resourceSchema.StringAttribute{
+						Optional:    true,
+						Description: "Access Key Id for Cloudwatch",
+					},
+					"access_key_secret": resourceSchema.StringAttribute{
+						Optional:    true,
+						Sensitive:   true,
+						Description: "Access Key Secret for Cloudwatch",
+					},
+					"service_account_key": resourceSchema.StringAttribute{
+						Optional:    true,
+						Description: "Service Account Key for Stackdriver",
 					},
 				},
 			},
@@ -113,9 +126,8 @@ func ExternalLoggingResource() resourceSchema.Schema {
 	}
 }
 
-
 func ExternalLoggingDatasource() datasourceSchema.Schema {
-	return datasourceSchema.Schema {
+	return datasourceSchema.Schema{
 		Attributes: map[string]datasourceSchema.Attribute{
 			"id": datasourceSchema.StringAttribute{
 				Required:    true,
@@ -130,18 +142,18 @@ func ExternalLoggingDatasource() datasourceSchema.Schema {
 				Description: "The name for the log service type within the Fivetran system. We support the following log services: azure_monitor_log, cloudwatch, datadog_log, new_relic_log, splunkLog, stackdriver.",
 			},
 			"enabled": datasourceSchema.BoolAttribute{
-				Computed:	 true,
+				Computed:    true,
 				Description: "The boolean value specifying whether the log service is enabled.",
 			},
 			"run_setup_tests": datasourceSchema.BoolAttribute{
-				Optional:	 true,
+				Optional:    true,
 				Description: "Specifies whether the setup tests should be run automatically. The default value is TRUE.",
 			},
 		},
 		Blocks: map[string]datasourceSchema.Block{
 			"config": datasourceSchema.SingleNestedBlock{
 				Attributes: map[string]datasourceSchema.Attribute{
-					"workspace_id": datasourceSchema.StringAttribute{ 
+					"workspace_id": datasourceSchema.StringAttribute{
 						Optional:    true,
 						Description: "Workspace ID",
 					},
@@ -231,7 +243,7 @@ func ExternalLogsDatasource() datasourceSchema.Schema {
 							Description: "The name for the log service type within the Fivetran system. We support the following log services: azure_monitor_log, cloudwatch, datadog_log, new_relic_log, splunkLog, stackdriver.",
 						},
 						"enabled": datasourceSchema.BoolAttribute{
-							Computed:	 true,
+							Computed:    true,
 							Description: "The boolean value specifying whether the log service is enabled.",
 						},
 					},

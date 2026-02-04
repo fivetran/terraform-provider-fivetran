@@ -4,20 +4,20 @@ import (
 	"net/http"
 	"testing"
 	"time"
-	
-	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
+
 	"github.com/fivetran/go-fivetran/tests/mock"
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 var (
-	externalLoggingPostHandler   		*mock.Handler
-	externalLoggingPatchHandler  		*mock.Handler
-	externalLoggingTestHandler   		*mock.Handler
-	externalLoggingDeleteHandler 		*mock.Handler
-	testExternalLoggingData      		map[string]interface{}
-	testExternalLoggingPatchedData      map[string]interface{}
+	externalLoggingPostHandler     *mock.Handler
+	externalLoggingPatchHandler    *mock.Handler
+	externalLoggingTestHandler     *mock.Handler
+	externalLoggingDeleteHandler   *mock.Handler
+	testExternalLoggingData        map[string]interface{}
+	testExternalLoggingPatchedData map[string]interface{}
 
 	externalLoggingMappingGetHandler    *mock.Handler
 	externalLoggingMappingPostHandler   *mock.Handler
@@ -52,7 +52,7 @@ const (
     }
     `
 
-    externalLoggingMappingUpdatedResponse = `
+	externalLoggingMappingUpdatedResponse = `
     {
         "id":                 "log_id",
         "group_id":           "log_id",
@@ -235,9 +235,9 @@ func TestResourceExternalLoggingMappingMock(t *testing.T) {
 					provider = fivetran-provider
 				}
 			`,
-		ResourceName:      "fivetran_external_logging.test_extlog",
-		ImportState:       true,
-		ImportStateId: 	"log_id",
+		ResourceName:       "fivetran_external_logging.test_extlog",
+		ImportState:        true,
+		ImportStateId:      "log_id",
 		ImportStatePersist: true,
 		ImportStateCheck: tfmock.ComposeImportStateCheck(
 			tfmock.CheckImportResourceAttr("fivetran_external_logging", "log_id", "id", "log_id"),
@@ -306,7 +306,7 @@ func TestResourceExternalLoggingMappingMock(t *testing.T) {
 				tfmock.AssertEqual(t, externalLoggingMappingPatchHandler.Interactions, 1)
 				tfmock.AssertNotEmpty(t, testExternalLoggingData)
 				return nil
-			},			
+			},
 			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.workspace_id", "workspace_id_1"),
 			resource.TestCheckNoResourceAttr("fivetran_external_logging.test_extlog", "config.api_key"),
 			resource.TestCheckNoResourceAttr("fivetran_external_logging.test_extlog", "config.token"),
@@ -348,7 +348,7 @@ func TestResourceExternalLoggingMappingMock(t *testing.T) {
 				tfmock.AssertEqual(t, externalLoggingMappingPatchHandler.Interactions, 2)
 				tfmock.AssertNotEmpty(t, testExternalLoggingData)
 				return nil
-			},			
+			},
 			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.workspace_id", "workspace_id_1"),
 			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.api_key", "api_key_2"),
 			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.token", "token_2"),
@@ -390,7 +390,7 @@ func TestResourceExternalLoggingMappingMock(t *testing.T) {
 				tfmock.AssertEqual(t, externalLoggingMappingPatchHandler.Interactions, 3)
 				tfmock.AssertNotEmpty(t, testExternalLoggingData)
 				return nil
-			},			
+			},
 			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.workspace_id", "workspace_id_1"),
 			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.api_key", "api_key_3"),
 			resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.token", "token_3"),
