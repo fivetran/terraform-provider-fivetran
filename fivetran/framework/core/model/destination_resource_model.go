@@ -80,12 +80,11 @@ func (d *DestinationResourceModel) SetConfig(value map[string]interface{}, isImp
 
 	service := d.Service.ValueString()
 	config := d.Config
-	destinationFieldsMap := common.GetDestinationFieldsMap()
 	d.Config = getValue(
-		types.ObjectType{AttrTypes: getAttrTypes(destinationFieldsMap)},
+		types.ObjectType{AttrTypes: getAttrTypes(common.GetDestinationFieldsMap())},
 		value,
-		getValueFromAttrValue(config, destinationFieldsMap, nil, service).(map[string]interface{}),
-		destinationFieldsMap,
+		getValueFromAttrValue(config, common.GetDestinationFieldsMap(), nil, service).(map[string]interface{}),
+		common.GetDestinationFieldsMap(),
 		nil,
 		service, isImporting, true).(basetypes.ObjectValue)
 }
