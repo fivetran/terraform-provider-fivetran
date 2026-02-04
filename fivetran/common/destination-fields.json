@@ -684,19 +684,6 @@
       },
       "api_field": ""
    },
-   "gcs_service_account_credentials": {
-      "readonly": false,
-      "sensitive": false,
-      "nullable": true,
-      "type": "object",
-      "fields": null,
-      "key_field": "",
-      "item_type": {},
-      "description": {
-         "snowflake": "The service account credentials for the Google Cloud Storage (GCS) bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use a GCS bucket to stage your data."
-      },
-      "api_field": ""
-   },
    "gcs_service_account_credentials_path": {
       "readonly": false,
       "sensitive": false,
@@ -991,72 +978,6 @@
          "managed_data_lake": "The personal access token you created for authenticating Fivetran. Use this parameter only if you want to use a personal access token as the authentication type for Fivetran to connect to Databricks.",
          "new_s3_datalake": "Personal access token",
          "onelake": "Personal access token"
-      },
-      "api_field": ""
-   },
-   "polaris_catalog_configuration": {
-      "readonly": false,
-      "sensitive": false,
-      "nullable": true,
-      "type": "object",
-      "fields": {
-         "client_id": {
-            "readonly": false,
-            "sensitive": false,
-            "nullable": true,
-            "type": "string",
-            "fields": null,
-            "key_field": "",
-            "item_type": {},
-            "description": {
-               "managed_data_lake": "Client ID"
-            },
-            "api_field": ""
-         },
-         "client_secret": {
-            "readonly": false,
-            "sensitive": false,
-            "nullable": true,
-            "type": "string",
-            "fields": null,
-            "key_field": "",
-            "item_type": {},
-            "description": {
-               "managed_data_lake": "Client Secret"
-            },
-            "api_field": ""
-         },
-         "polaris_catalog": {
-            "readonly": false,
-            "sensitive": false,
-            "nullable": true,
-            "type": "string",
-            "fields": null,
-            "key_field": "",
-            "item_type": {},
-            "description": {
-               "managed_data_lake": "Polaris Catalog"
-            },
-            "api_field": ""
-         },
-         "polaris_server_endpoint": {
-            "readonly": false,
-            "sensitive": false,
-            "nullable": true,
-            "type": "string",
-            "fields": null,
-            "key_field": "",
-            "item_type": {},
-            "description": {
-               "managed_data_lake": "Polaris Server Endpoint"
-            },
-            "api_field": ""
-         }
-      },
-      "key_field": "",
-      "item_type": {},
-      "description": {
-         "managed_data_lake": "Polaris Catalog Base Configuration. Universal connection settings for any query engine or analytics tool."
       },
       "api_field": ""
    },

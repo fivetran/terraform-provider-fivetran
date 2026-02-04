@@ -45,21 +45,24 @@ resource "fivetran_external_logging" "extlog" {
 
 Optional:
 
-- `api_key` (String, Sensitive) API Key
-- `channel` (String) Channel
+- `access_key_id` (String)
+- `access_key_secret` (String, Sensitive)
+- `api_key` (String, Sensitive)
+- `channel` (String)
 - `enable_ssl` (Boolean) Enable SSL
-- `external_id` (String) external_id
-- `host` (String) Server name
-- `hostname` (String) Server name
-- `log_group_name` (String) Log Group Name
+- `external_id` (String)
+- `host` (String)
+- `hostname` (String)
+- `log_group_name` (String)
 - `port` (Number) Port
-- `primary_key` (String, Sensitive) Primary Key
-- `project_id` (String) Project Id for Google Cloud Logging
-- `region` (String) Region
-- `role_arn` (String) Role Arn
-- `sub_domain` (String) Sub Domain
-- `token` (String, Sensitive) Token
-- `workspace_id` (String) Workspace ID
+- `primary_key` (String, Sensitive)
+- `project_id` (String)
+- `region` (String)
+- `role_arn` (String)
+- `service_account_key` (String)
+- `sub_domain` (String)
+- `token` (String, Sensitive)
+- `workspace_id` (String)
 
 ## Setup tests
 

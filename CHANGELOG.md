@@ -9,10 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Updated
 
-New destination config fields supported:
-- Added field `fivetran_destination.config.polaris_catalog_configuration` for services: `managed_data_lake`.
-- Added field `fivetran_destination.config.gcs_service_account_credentials` for services: `snowflake`.
-
 New external logging config fields supported:
 - Added field `fivetran_external_logging.config.access_key_secret` for services: `cloudwatch`.
 - Added field `fivetran_external_logging.config.service_account_key` for services: `stackdriver`.
