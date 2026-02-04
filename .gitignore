@@ -41,10 +41,13 @@ config-changes-schema_format_schema_prefix.txt
 config-changes-schema_format_schema_table.txt
 config-changes-schema_format_schema_table_group.txt
 services-new.txt
-fivetran/common/fields-updated.json
+fivetran/common/*-updated.json
 destination-services-changelog.txt
+external-logging-services-changelog.txt
 services-changelog.txt
 destination-services-new.txt
+external-logging-services-new.txt
 config-changes-schema_format_schema.txt
 fivetran/common/destination-fields-updated.json
 destination-config-changes.txt
+external-logging-config-changes.txt

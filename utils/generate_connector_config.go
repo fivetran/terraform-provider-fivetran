@@ -34,7 +34,6 @@ func main() {
 		"New connection services supported:",
 	)
 
-
 	fmt.Println("Updating config fields")
 
 	updateFields(services, schemaContainer,
@@ -42,6 +41,7 @@ func main() {
 		"_config_V1.properties.config.properties",
 		"fivetran/common/fields-updated.json",
 		"config-changes.txt",
+		false,
 		false,
 		"New connection config fields supported:",
 	)
@@ -53,6 +53,7 @@ func main() {
 		"fivetran/common/fields-updated.json",
 		"config-changes-schema_format_schema_table.txt",
 		false,
+		false,
 		"New connection config fields supported:",
 	)
 
@@ -61,6 +62,7 @@ func main() {
 		"schema_format_schema_prefix.properties.config.properties",
 		"fivetran/common/fields-updated.json",
 		"config-changes-schema_format_schema_prefix.txt",
+		false,
 		false,
 		"New connection config fields supported:",
 	)
@@ -71,6 +73,7 @@ func main() {
 		"fivetran/common/fields-updated.json",
 		"config-changes-schema_format_schema_table_group.txt",
 		false,
+		false,
 		"New connection config fields supported:",
 	)
 
@@ -79,6 +82,7 @@ func main() {
 		"schema_format_schema.properties.config.properties",
 		"fivetran/common/fields-updated.json",
 		"config-changes-schema_format_schema.txt",
+		false,
 		false,
 		"New connection config fields supported:",
 	)
@@ -91,6 +95,7 @@ func main() {
 		"fivetran/common/auth-fields-updated.json",
 		"auth-changes.txt",
 		true,
+		false,
 		"New connection auth fields supported:",
 	)
 
@@ -111,7 +116,26 @@ func main() {
 		"fivetran/common/destination-fields-updated.json",
 		"destination-config-changes.txt",
 		true,
+		false,
 		"New destination config fields supported:",
+	)
+
+	loggingServices := updateServices(
+		schemaContainer,
+		"components.schemas.AddLogRequest.discriminator.mapping",
+		"external-logging-services.txt",
+		"external-logging-services-changelog.txt",
+		"external-logging-services-new.txt",
+		"New external logging services supported:",
+	)
+	updateFields(loggingServices, schemaContainer,
+		"fivetran/common/external-logging-fields.json",
+		"_config_V1.properties.config.properties",
+		"fivetran/common/external-logging-fields-updated.json",
+		"external-logging-config-changes.txt",
+		false,
+		true,
+		"New external logging config fields supported:",
 	)
 
 	fmt.Println("Done!")
@@ -125,14 +149,15 @@ func updateFields(
 	updatedFieldsFile string,
 	changelogFile string,
 	isDestination bool,
+	isLogging bool,
 	title string,
 ) {
 	fieldsExisting := loadExistingFields(existingFieldsFile)
 
-	updated, changedFields := importFields(services, schemaContainer, fieldsExisting, schemaPropsPath, isDestination)
+	updated, changedFields := importFields(services, schemaContainer, fieldsExisting, schemaPropsPath, isDestination, isLogging)
 
 	if updated {
-		writeChangelog(changedFields, changelogFile, isDestination, title)
+		writeChangelog(changedFields, changelogFile, isDestination, isLogging, title)
 		writeFields(fieldsExisting, updatedFieldsFile)
 	}
 }
@@ -152,15 +177,17 @@ func loadExistingFields(file string) map[string]common.ConfigField {
 	return fieldsExisting
 }
 
-func writeChangelog(changedFields map[string]common.ConfigField, clFile string, isDestination bool, title string) {
+func writeChangelog(changedFields map[string]common.ConfigField, clFile string, isDestination bool, isLogging bool, title string) {
 	var changeLog []string
 	changeLog = append(changeLog, title)
 
 	var resourceType string
 	if isDestination {
 		resourceType = "fivetran_destination"
+	} else if isLogging {
+		resourceType = "fivetran_external_logging"
 	} else {
-		resourceType =  "fivetran_connector"
+		resourceType = "fivetran_connector"
 	}
 
 	for fn, f := range changedFields {
@@ -179,9 +206,9 @@ func writeChangelog(changedFields map[string]common.ConfigField, clFile string, 
 		}
 	}
 
-	err := os.WriteFile(clFile, []byte(strings.Join(changeLog, "\n")), 0644); 
+	err := os.WriteFile(clFile, []byte(strings.Join(changeLog, "\n")), 0644)
 	if err != nil {
-    	log.Fatal(err)
+		log.Fatal(err)
 	}
 }
 
@@ -264,7 +291,8 @@ func importFields(
 	schemaContainer *gabs.Container,
 	existingFields map[string]common.ConfigField,
 	propPath string,
-	isDestination bool) (bool, map[string]common.ConfigField) {
+	isDestination bool,
+	isLogging bool) (bool, map[string]common.ConfigField) {
 	updated := false
 	changeLog := make(map[string]common.ConfigField)
 
@@ -276,7 +304,7 @@ func importFields(
 			path = propPath
 		}
 
-		if !isDestination && !checkSchemaAlignment(schemaContainer, service, path) {
+		if !isLogging && !isDestination && !checkSchemaAlignment(schemaContainer, service, path) {
 			continue
 		}
 

@@ -18,21 +18,24 @@ const (
         "service":            "azure_monitor_log",
         "enabled":            false,
         "config":{
-            "workspace_id":   "workspace_id",
-            "primary_key":    "primary_key",
-            "role_arn":       "role_arn",
-            "region":         "region",
-            "log_group_name": "log_group_name",
-            "sub_domain":     "sub_domain",
-            "enable_ssl":     true,
-            "channel":        "channel",
-            "token":          "token",
-            "external_id":    "external_id",
-            "api_key":        "api_key",
-            "host":           "host",
-            "hostname":       "hostname",
-            "port":           443,
-            "project_id":     "project_id"
+            "workspace_id":   	   "workspace_id",
+            "primary_key":    	   "primary_key",
+            "role_arn":            "role_arn",
+            "region":              "region",
+            "log_group_name":      "log_group_name",
+            "sub_domain":          "sub_domain",
+            "enable_ssl":          true,
+            "channel":             "channel",
+            "token":               "token",
+            "external_id":         "external_id",
+            "api_key":             "api_key",
+            "host":                "host",
+            "hostname":            "hostname",
+            "port":                443,
+            "project_id":          "project_id",
+			"access_key_secret":   "access_key_secret",
+			"access_key_id":       "access_key_id",
+			"service_account_key": "service_account_key"
         }
     }
     `
@@ -87,6 +90,9 @@ func TestDataSourceExternalLoggingConfigMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.host", "host"),
 			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.hostname", "hostname"),
 			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.project_id", "project_id"),
+			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.access_key_secret", "access_key_secret"),
+			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.access_key_id", "access_key_id"),
+			resource.TestCheckResourceAttr("data.fivetran_external_logging.test_extlog", "config.service_account_key", "service_account_key"),
 		),
 	}
 

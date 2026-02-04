@@ -4,6 +4,7 @@ import (
 	"context"
 
 	externallogging "github.com/fivetran/go-fivetran/external_logging"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/common"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
@@ -18,25 +19,15 @@ type ExternalLogging struct {
 	Config   types.Object `tfsdk:"config"`
 }
 
-var ExternalLoggingTFConfigType = map[string]attr.Type{
-	"workspace_id":        types.StringType,
-	"port":                types.Int64Type,
-	"log_group_name":      types.StringType,
-	"role_arn":            types.StringType,
-	"external_id":         types.StringType,
-	"region":              types.StringType,
-	"sub_domain":          types.StringType,
-	"host":                types.StringType,
-	"hostname":            types.StringType,
-	"enable_ssl":          types.BoolType,
-	"channel":             types.StringType,
-	"project_id":          types.StringType,
-	"primary_key":         types.StringType,
-	"api_key":             types.StringType,
-	"token":               types.StringType,
-	"access_key_id":       types.StringType,
-	"service_account_key": types.StringType,
-	"access_key_secret":   types.StringType,
+func isSensitiveExternalLoggingAttribute(attribute string) bool {
+	if attr, ok := common.GetExternalLoggingFieldsMap()[attribute]; ok {
+		return attr.Sensitive
+	}
+	return true
+}
+
+func getExternalLoggingTFConfigType() map[string]attr.Type {
+	return getAttrTypes(common.GetExternalLoggingFieldsMap())
 }
 
 func CoalesceToStringNull(value attr.Value) attr.Value {
@@ -58,29 +49,28 @@ func (d *ExternalLogging) ReadFromCustomResponse(
 
 	config := map[string]attr.Value{}
 
-	readStringValue(resp, &config, "workspace_id")
-	readStringValue(resp, &config, "log_group_name")
-	readStringValue(resp, &config, "role_arn")
-	readStringValue(resp, &config, "external_id")
-	readStringValue(resp, &config, "region")
-	readStringValue(resp, &config, "sub_domain")
-	readStringValue(resp, &config, "host")
-	readStringValue(resp, &config, "hostname")
-	readStringValue(resp, &config, "channel")
-	readStringValue(resp, &config, "project_id")
-	readStringValue(resp, &config, "access_key_id")
-	readStringValue(resp, &config, "service_account_key")
+	for key, _ := range getExternalLoggingTFConfigType() {
+		d.readValue(resp, &config, planConfigForEmptySecretValuesAfterImport, key)
+	}
+	d.Config, _ = types.ObjectValue(getExternalLoggingTFConfigType(), config)
+}
 
-	readBoolValue(resp, &config, "enable_ssl")
-
-	readIntValue(resp, &config, "port")
-
-	d.readSensitiveStringValue(resp, &config, planConfigForEmptySecretValuesAfterImport, "primary_key")
-	d.readSensitiveStringValue(resp, &config, planConfigForEmptySecretValuesAfterImport, "api_key")
-	d.readSensitiveStringValue(resp, &config, planConfigForEmptySecretValuesAfterImport, "token")
-	d.readSensitiveStringValue(resp, &config, planConfigForEmptySecretValuesAfterImport, "access_key_secret")
-
-	d.Config, _ = types.ObjectValue(ExternalLoggingTFConfigType, config)
+func (d *ExternalLogging) readValue(
+	resp externallogging.ExternalLoggingCustomResponse,
+	config *map[string]attr.Value,
+	planConfigForEmptySecretValuesAfterImport map[string]attr.Value,
+	key string) {
+	if isSensitiveExternalLoggingAttribute(key) {
+		d.readSensitiveStringValue(resp, config, planConfigForEmptySecretValuesAfterImport, key)
+	} else if t, ok := getExternalLoggingTFConfigType()[key]; ok {
+		if t == types.StringType {
+			readStringValue(resp, config, key)
+		} else if t == types.Int64Type {
+			readIntValue(resp, config, key)
+		} else if t == types.BoolType {
+			readBoolValue(resp, config, key)
+		}
+	}
 }
 
 func readIntValue(resp externallogging.ExternalLoggingCustomResponse, config *map[string]attr.Value, key string) {
