@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.22...HEAD)
 
+### Documentation
+- Added comprehensive migration guide for transitioning from `fivetran_connector` to `fivetran_connection` + `fivetran_connection_config`
+- Updated `fivetran_connector` resource documentation with information about alternative resources
+- Updated `fivetran_connection` resource documentation with migration section and examples
+- Updated `fivetran_connection_config` resource documentation with common use cases (credential rotation, secrets management integration)
+
 ## [v1.9.22](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.22...v1.9.21)
 
 ### Added

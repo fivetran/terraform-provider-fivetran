@@ -119,6 +119,173 @@ resource "fivetran_connection_config" "postgres_secure" {
 }
 ```
 
+## Common Use Cases
+
+### Credential Rotation
+
+One of the primary benefits of `fivetran_connection_config` is the ability to rotate credentials independently without touching the connection structure:
+
+```hcl
+# Rotate database credentials without modifying connection settings
+resource "fivetran_connection_config" "postgres" {
+    connection_id = fivetran_connection.postgres.id
+
+    config = jsonencode({
+        host          = "db.example.com"  # Unchanged
+        port          = 5432               # Unchanged
+        database      = "mydb"             # Unchanged
+        update_method = "XMIN"             # Unchanged
+    })
+
+    auth = jsonencode({
+        user     = var.new_db_user        # Updated credential
+        password = var.new_db_password    # Updated credential
+    })
+
+    run_setup_tests = true  # Validates new credentials
+}
+```
+
+Running `terraform plan` will show only the `auth` field changing, making credential rotation safer and more transparent.
+
+### Configuration Updates
+
+Update connection settings without exposing or modifying credentials:
+
+```hcl
+# Change database host without touching credentials
+resource "fivetran_connection_config" "postgres" {
+    connection_id = fivetran_connection.postgres.id
+
+    config = jsonencode({
+        host          = "new-db.example.com"  # Updated
+        port          = 5433                   # Updated
+        database      = "mydb"
+        update_method = "XMIN"
+    })
+
+    auth = jsonencode({
+        user     = var.db_user      # Unchanged - credentials stay secure
+        password = var.db_password  # Unchanged
+    })
+
+    run_setup_tests = true
+}
+```
+
+### Integration with Secrets Management
+
+Easily integrate with AWS Secrets Manager, HashiCorp Vault, or other secrets management systems:
+
+```hcl
+# AWS Secrets Manager example
+data "aws_secretsmanager_secret_version" "db_creds" {
+  secret_id = "prod/fivetran/postgres"
+}
+
+locals {
+  db_secret = jsondecode(data.aws_secretsmanager_secret_version.db_creds.secret_string)
+}
+
+resource "fivetran_connection_config" "postgres" {
+    connection_id = fivetran_connection.postgres.id
+
+    config = jsonencode({
+        host          = local.db_secret["host"]
+        port          = local.db_secret["port"]
+        database      = local.db_secret["database"]
+        user          = local.db_secret["username"]
+        update_method = "XMIN"
+    })
+
+    auth = jsonencode({
+        password = local.db_secret["password"]
+    })
+
+    run_setup_tests = true
+}
+```
+
+### Separate Teams/Workflows
+
+Enable different teams to manage different aspects:
+
+```hcl
+# Platform team manages connection structure
+resource "fivetran_connection" "postgres" {
+    group_id = fivetran_group.example.id
+    service  = "postgres"
+
+    destination_schema {
+        prefix = "my_postgres"
+    }
+
+    networking_method = "ProxyAgent"
+    proxy_agent_id    = fivetran_proxy_agent.platform.id
+}
+
+# Database team manages credentials (separate Terraform workspace)
+resource "fivetran_connection_config" "postgres" {
+    connection_id = data.terraform_remote_state.platform.outputs.postgres_connection_id
+
+    config = jsonencode({
+        host          = var.db_host
+        port          = var.db_port
+        database      = var.db_name
+        user          = var.db_user
+        update_method = "XMIN"
+    })
+
+    auth = jsonencode({
+        password = var.db_password
+    })
+
+    run_setup_tests = true
+}
+```
+
+### Environment-Specific Configuration
+
+Easily manage different configurations across environments while keeping the connection structure consistent:
+
+```hcl
+# Development environment
+resource "fivetran_connection_config" "postgres_dev" {
+    connection_id = fivetran_connection.postgres_dev.id
+
+    config = jsonencode({
+        host          = "dev-db.example.com"
+        port          = 5432
+        database      = "dev_db"
+        user          = var.dev_db_user
+        update_method = "XMIN"
+    })
+
+    auth = jsonencode({
+        password = var.dev_db_password
+    })
+}
+
+# Production environment (different credentials, host, but same structure)
+resource "fivetran_connection_config" "postgres_prod" {
+    connection_id = fivetran_connection.postgres_prod.id
+
+    config = jsonencode({
+        host          = "prod-db.example.com"
+        port          = 5432
+        database      = "prod_db"
+        user          = var.prod_db_user
+        update_method = "XMIN"
+    })
+
+    auth = jsonencode({
+        password = var.prod_db_password
+    })
+
+    run_setup_tests = true  # Extra validation for production
+}
+```
+
 ## Schema
 
 ### Required
@@ -158,4 +325,6 @@ terraform import fivetran_connection_config.example connection_id_here
 ## See Also
 
 - [`fivetran_connection`](connection.md) - Create the connection structure
+- [`fivetran_connector`](connector.md) - Legacy connector resource (planned for deprecation)
+- [Migration Guide](../guides/migrating-from-connector-to-connection.md) - Migrate from fivetran_connector
 - [Fivetran API Documentation](https://fivetran.com/docs/rest-api/connectors) - Connection configuration reference
