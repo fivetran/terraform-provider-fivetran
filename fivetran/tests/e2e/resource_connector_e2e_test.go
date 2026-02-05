@@ -870,7 +870,7 @@ func TestResourceConnectorPlanOnlyAttributesE2E(t *testing.T) {
 			service = "big_query"
 			time_zone_offset = "-5"
 			region = "GCP_US_EAST4"
-
+			run_setup_tests = false
 			config {
 				project_id = "%s"
 				data_set_location = "US"
@@ -914,7 +914,7 @@ func TestResourceConnectorPlanOnlyAttributesE2E(t *testing.T) {
 			service = "big_query"
 			time_zone_offset = "-5"
 			region = "GCP_US_EAST4"
-
+			run_setup_tests = false
 			config {
 				project_id = "%s"
 				data_set_location = "US"

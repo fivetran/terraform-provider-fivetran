@@ -58,13 +58,18 @@ var (
 	//go:embed destination-fields.json
 	destinationFieldsJson []byte
 
-	configFields      = make(map[string]ConfigField)
-	authFields        = make(map[string]ConfigField)
-	destinationFields = make(map[string]ConfigField)
+	//go:embed external-logging-fields.json
+	externalLoggingFieldsJson []byte
 
-	configFieldsByService      = make(map[string]map[string]ConfigField)
-	authFieldsByService        = make(map[string]map[string]ConfigField)
-	destinationFieldsByService = make(map[string]map[string]ConfigField)
+	configFields          = make(map[string]ConfigField)
+	authFields            = make(map[string]ConfigField)
+	destinationFields     = make(map[string]ConfigField)
+	externalLoggingFields = make(map[string]ConfigField)
+
+	configFieldsByService          = make(map[string]map[string]ConfigField)
+	authFieldsByService            = make(map[string]map[string]ConfigField)
+	destinationFieldsByService     = make(map[string]map[string]ConfigField)
+	externalLoggingFieldsByService = make(map[string]map[string]ConfigField)
 
 	destinationSchemaFields = make(map[string]map[string]bool)
 )
@@ -100,6 +105,23 @@ func GetDestinationFieldsForService(service string) map[string]ConfigField {
 		return r
 	}
 	return map[string]ConfigField{}
+}
+
+func GetExternalLoggingFieldsForService(service string) map[string]ConfigField {
+	if len(externalLoggingFieldsByService) == 0 {
+		panic("Fields for external logging config are not loaded")
+	}
+	if r, ok := externalLoggingFieldsByService[service]; ok {
+		return r
+	}
+	return map[string]ConfigField{}
+}
+
+func GetExternalLoggingFieldsMap() map[string]ConfigField {
+	if len(externalLoggingFields) == 0 {
+		panic("Fields for external logging are not loaded")
+	}
+	return externalLoggingFields
 }
 
 func GetDestinationSchemaFields() map[string]map[string]bool {
@@ -144,11 +166,21 @@ func LoadConfigFieldsMap() {
 	fillFieldsByService()
 }
 
-func LocaDestinationFieldsMap() {
+func LoadDestinationFieldsMap() {
 	if len(destinationFields) == 0 {
 		readDestinationFieldsFromJson(&destinationFields)
 	}
 	fillDestinationFieldsByService()
+}
+
+func LoadExternalLoggingFieldsMap() {
+	if len(externalLoggingFields) == 0 {
+		err := json.Unmarshal(externalLoggingFieldsJson, &externalLoggingFields)
+		if err != nil {
+			panic(err)
+		}
+	}
+	fillExternalLoggingFieldsByService()
 }
 
 func readAuthFieldsFromJson(target *map[string]ConfigField) {
@@ -186,6 +218,10 @@ func handleDestinationSchemaField(fieldName string) {
 		}
 		delete(configFields, fieldName)
 	}
+}
+
+func fillExternalLoggingFieldsByService() {
+	externalLoggingFieldsByService = breakByService(externalLoggingFields)
 }
 
 func fillDestinationFieldsByService() {

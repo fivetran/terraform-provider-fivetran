@@ -32,7 +32,8 @@ type fivetranProviderModel struct {
 func FivetranProvider() provider.Provider {
 	common.LoadConfigFieldsMap()
 	common.LoadAuthFieldsMap()
-	common.LocaDestinationFieldsMap()
+	common.LoadDestinationFieldsMap()
+	common.LoadExternalLoggingFieldsMap()
 	return &fivetranProvider{mockClient: nil}
 }
 
@@ -40,7 +41,8 @@ func FivetranProvider() provider.Provider {
 func FivetranProviderMock(client httputils.HttpClient) provider.Provider {
 	common.LoadConfigFieldsMap()
 	common.LoadAuthFieldsMap()
-	common.LocaDestinationFieldsMap()
+	common.LoadDestinationFieldsMap()
+	common.LoadExternalLoggingFieldsMap()
 	return &fivetranProvider{mockClient: client}
 }
 

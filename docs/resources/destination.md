@@ -347,7 +347,6 @@ Optional:
 	- Service `managed_data_lake`: The personal access token you created for authenticating Fivetran. Use this parameter only if you want to use a personal access token as the authentication type for Fivetran to connect to Databricks.
 	- Service `new_s3_datalake`: Personal access token
 	- Service `onelake`: Personal access token
-- `polaris_catalog_configuration` (Block, Optional) (see [below for nested schema](#nestedblock--config--polaris_catalog_configuration))
 - `port` (Number) Field usage depends on `service` value: 
 	- Service `adls`: Server port number
 	- Service `aurora_postgres_warehouse`: Server port number

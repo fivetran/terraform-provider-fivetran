@@ -7,6 +7,7 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 )
@@ -76,26 +77,7 @@ func (r *externalLogging) Create(ctx context.Context, req resource.CreateRequest
 
 	runTests := core.GetBoolOrDefault(data.RunTests, false)
 	if runTests {
-		testsSvc := r.GetClient().NewExternalLoggingSetupTests().ExternalLoggingId(data.Id.ValueString())
-		response, err := testsSvc.Do(ctx)
-		if err != nil {
-			resp.Diagnostics.AddError(
-				"Unable to Start External Logging Tests.",
-				fmt.Sprintf("%v; code: %v", err, response.Code),
-			)
-		}
-
-		if response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
-			for _, tr := range response.Data.SetupTests {
-				if tr.Status != "PASSED" && tr.Status != "SKIPPED" {
-					resp.Diagnostics.AddWarning(
-						fmt.Sprintf("Destination setup test `%v` has status `%v`", tr.Title, tr.Status),
-						tr.Message,
-					)
-				}
-			}
-		}
-
+		runSetupTests(ctx, r, data.Id.ValueString(), resp.Diagnostics)
 		// nothing to read
 	}
 
@@ -117,7 +99,7 @@ func (r *externalLogging) Read(ctx context.Context, req resource.ReadRequest, re
 	// Read Terraform prior state data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
-	readResponse, err := r.GetClient().NewExternalLoggingDetails().ExternalLoggingId(data.Id.ValueString()).Do(ctx)
+	readResponse, err := r.GetClient().NewExternalLoggingDetails().ExternalLoggingId(data.Id.ValueString()).DoCustom(ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -127,7 +109,7 @@ func (r *externalLogging) Read(ctx context.Context, req resource.ReadRequest, re
 		return
 	}
 
-	data.ReadFromResponse(ctx, readResponse)
+	data.ReadFromCustomResponse(ctx, readResponse, nil)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -147,8 +129,7 @@ func (r *externalLogging) Update(ctx context.Context, req resource.UpdateRequest
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
-	runTests := core.GetBoolOrDefault(plan.RunTests, false)
-	runTestsState := core.GetBoolOrDefault(state.RunTests, false)
+	runTests := core.GetBoolOrDefault(plan.RunTests, core.GetBoolOrDefault(state.RunTests, false))
 	enabledPlan := core.GetBoolOrDefault(plan.Enabled, true)
 	enabledState := core.GetBoolOrDefault(state.Enabled, true)
 
@@ -179,31 +160,34 @@ func (r *externalLogging) Update(ctx context.Context, req resource.UpdateRequest
 		state.ReadFromCustomResponse(ctx, updateResponse, plan.Config.Attributes())
 	}
 
-	if runTests && runTests != runTestsState {
-		testsSvc := r.GetClient().NewExternalLoggingSetupTests().ExternalLoggingId(state.Id.ValueString())
-		response, err := testsSvc.Do(ctx)
-		if err != nil {
-			resp.Diagnostics.AddError(
-				"Unable to Start External Logging Tests.",
-				fmt.Sprintf("%v; code: %v", err, response.Code),
-			)
-		}
-
-		if response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
-			for _, tr := range response.Data.SetupTests {
-				if tr.Status != "PASSED" && tr.Status != "SKIPPED" {
-					resp.Diagnostics.AddWarning(
-						fmt.Sprintf("Destination setup test `%v` has status `%v`", tr.Title, tr.Status),
-						tr.Message,
-					)
-				}
-			}
-		}
-		// nothing to read
+	if runTests {
+		runSetupTests(ctx, r, state.Id.ValueString(), resp.Diagnostics)
 		state.RunTests = plan.RunTests
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+}
+
+func runSetupTests(ctx context.Context, r *externalLogging, id string, diagnostics diag.Diagnostics) {
+	testsSvc := r.GetClient().NewExternalLoggingSetupTests().ExternalLoggingId(id)
+	response, err := testsSvc.Do(ctx)
+	if err != nil {
+		diagnostics.AddError(
+			"Unable to Start External Logging Tests.",
+			fmt.Sprintf("%v; code: %v", err, response.Code),
+		)
+	}
+
+	if response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
+		for _, tr := range response.Data.SetupTests {
+			if tr.Status != "PASSED" && tr.Status != "SKIPPED" {
+				diagnostics.AddWarning(
+					fmt.Sprintf("Destination setup test `%v` has status `%v`", tr.Title, tr.Status),
+					tr.Message,
+				)
+			}
+		}
+	}
 }
 
 func (r *externalLogging) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

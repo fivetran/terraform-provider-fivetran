@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.22...HEAD)
 
+### Updated
+
+New external logging config fields supported:
+- Added field `fivetran_external_logging.config.access_key_secret` for services: `cloudwatch`.
+- Added field `fivetran_external_logging.config.service_account_key` for services: `stackdriver`.
+- Added field `fivetran_external_logging.config.access_key_id` for services: `cloudwatch`.
+
 ## [v1.9.22](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.22...v1.9.21)
 
 ### Added

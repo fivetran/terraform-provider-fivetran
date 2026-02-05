@@ -23,11 +23,11 @@ data "fivetran_external_logging" "extlog" {
 
 ### Optional
 
-- `config` (Block, Optional) (see [below for nested schema](#nestedblock--config))
 - `run_setup_tests` (Boolean) Specifies whether the setup tests should be run automatically. The default value is TRUE.
 
 ### Read-Only
 
+- `config` (Block, Read-only) (see [below for nested schema](#nestedblock--config))
 - `enabled` (Boolean) The boolean value specifying whether the log service is enabled.
 - `group_id` (String) The unique identifier for the log service within the Fivetran system.
 - `service` (String) The name for the log service type within the Fivetran system. We support the following log services: azure_monitor_log, cloudwatch, datadog_log, new_relic_log, splunkLog, stackdriver.
@@ -35,20 +35,23 @@ data "fivetran_external_logging" "extlog" {
 <a id="nestedblock--config"></a>
 ### Nested Schema for `config`
 
-Optional:
+Read-Only:
 
-- `api_key` (String, Sensitive) API Key
-- `channel` (String) Channel
-- `enable_ssl` (Boolean) Enable SSL
-- `external_id` (String) external_id
-- `host` (String) Server name
-- `hostname` (String) Server name
-- `log_group_name` (String) Log Group Name
-- `port` (Number) Port
-- `primary_key` (String, Sensitive) Primary Key
-- `project_id` (String) Project Id for Google Cloud Logging
-- `region` (String) Region
-- `role_arn` (String) Role Arn
-- `sub_domain` (String) Sub Domain
-- `token` (String, Sensitive) Token
-- `workspace_id` (String) Workspace ID
+- `access_key_id` (String)
+- `access_key_secret` (String, Sensitive)
+- `api_key` (String, Sensitive)
+- `channel` (String)
+- `enable_ssl` (Boolean)
+- `external_id` (String)
+- `host` (String)
+- `hostname` (String)
+- `log_group_name` (String)
+- `port` (Number)
+- `primary_key` (String, Sensitive)
+- `project_id` (String)
+- `region` (String)
+- `role_arn` (String)
+- `service_account_key` (String)
+- `sub_domain` (String)
+- `token` (String, Sensitive)
+- `workspace_id` (String)
