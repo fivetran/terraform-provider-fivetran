@@ -2313,9 +2313,9 @@ func TestResourceSchemaPrimaryKeyLargeSchemaNoNoiseMock(t *testing.T) {
 					}
 				}
 
-				t.Logf("✓ SUCCESS: All 12 columns have is_primary_key=null in state")
-				t.Logf("✓ SUCCESS: Plan shows NO changes (no is_primary_key noise)")
-				t.Logf("✓ This fix prevents the customer's issue of hundreds of noisy plan lines!")
+				t.Logf("SUCCESS: All 12 columns have is_primary_key=null in state")
+				t.Logf("SUCCESS: Plan shows NO changes (no is_primary_key noise)")
+				t.Logf("This fix prevents the customer's issue of hundreds of noisy plan lines!")
 
 				return nil
 			},
@@ -2434,7 +2434,7 @@ func TestResourceSchemaPrimaryKeyNoConfiguredColumnsNoNoiseMock(t *testing.T) {
 					}
 				}
 
-				t.Logf("✓ Step 1: is_primary_key NOT in state for unconfigured columns")
+				t.Logf("Step 1: is_primary_key NOT in state for unconfigured columns")
 				return nil
 			},
 		),
@@ -2544,8 +2544,8 @@ func TestResourceSchemaPrimaryKeyNoConfiguredColumnsNoNoiseMock(t *testing.T) {
 					}
 				}
 
-				t.Logf("✓ Step 3 SUCCESS: NO is_primary_key noise when adding table")
-				t.Logf("✓ This validates the fix for RD-1034803 customer scenario")
+				t.Logf("Step 3 SUCCESS: NO is_primary_key noise when adding table")
+				t.Logf("This validates the fix for RD-1034803 customer scenario")
 				return nil
 			},
 		),
@@ -4261,6 +4261,154 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMo
 		resource.TestCase{
 			PreCheck: func() {
 				setupMockClient(t)
+			},
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
+				step2,
+			},
+		},
+	)
+}
+
+func TestResourceSchemaOmitSchemaChangeHandlingMock(t *testing.T) {
+	var (
+		schemaGetHandler   *mock.Handler
+		schemaPatchHandler *mock.Handler
+		schemaData         map[string]interface{}
+		patchRequestBody   map[string]interface{}
+	)
+
+	schemaGetResponse := `
+	{
+		"enable_new_by_default": true,
+		"schema_change_handling": "BLOCK_ALL",
+		"schemas": {
+			"schema_1": {
+				"name_in_destination": "schema_1",
+				"enabled": true,
+				"tables": {
+					"table_1": {
+						"name_in_destination": "table_1",
+						"enabled": true,
+						"sync_mode": "SOFT_DELETE",
+						"enabled_patch_settings": {"allowed": true},
+						"columns": {
+							"pk_col": {
+								"name_in_destination": "pk_col",
+								"enabled": true,
+								"hashed": false,
+								"is_primary_key": true,
+								"enabled_patch_settings": {
+									"allowed": false,
+									"reason_code": "SYSTEM_COLUMN",
+									"reason": "Column does not support exclusion as it is a Primary Key"
+								}
+							},
+							"data_col": {
+								"name_in_destination": "data_col",
+								"enabled": false,
+								"hashed": false,
+								"is_primary_key": false,
+								"enabled_patch_settings": {"allowed": true}
+							}
+						}
+					}
+				}
+			}
+		}
+	}`
+
+	setup := func(t *testing.T) {
+		mockClient.Reset()
+		schemaData = createMapFromJsonString(t, schemaGetResponse)
+
+		_ = schemaGetHandler
+		_ = schemaPatchHandler
+		schemaGetHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaData), nil
+			},
+		)
+
+		schemaPatchHandler = mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				patchRequestBody = requestBodyToJson(t, req)
+
+				// Apply the PATCH to schemaData
+				if sch, ok := patchRequestBody["schema_change_handling"]; ok {
+					schemaData["schema_change_handling"] = sch
+				}
+
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaData), nil
+			},
+		)
+	}
+
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+			}`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				resource := s.RootModule().Resources["fivetran_connector_schema_config.test_schema"]
+				if resource == nil {
+					return fmt.Errorf("resource not found in state")
+				}
+
+				// Check if schema_change_handling is in state
+				if val, ok := resource.Primary.Attributes["schema_change_handling"]; ok {
+					t.Logf("Step 1: schema_change_handling in state = %s", val)
+					if val != "BLOCK_ALL" {
+						return fmt.Errorf("expected BLOCK_ALL from API, got %s", val)
+					}
+				} else {
+					t.Logf("Step 1: schema_change_handling NOT in state (field omitted in config)")
+					t.Logf("  This means Terraform will not manage this field")
+					t.Logf("  API retains BLOCK_ALL, causing columns to be disabled by default")
+				}
+				return nil
+			},
+		),
+	}
+
+	step2 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "ALLOW_ALL"
+			}`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				if patchRequestBody != nil {
+					if sch, ok := patchRequestBody["schema_change_handling"]; ok {
+						if sch != "ALLOW_ALL" {
+							return fmt.Errorf("expected ALLOW_ALL, got %v", sch)
+						}
+						t.Logf("Step 2: schema_change_handling=ALLOW_ALL sent in PATCH")
+					} else {
+						t.Logf("  PATCH sent but schema_change_handling not included")
+					}
+				} else {
+					t.Logf("  No PATCH sent")
+				}
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "ALLOW_ALL"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setup(t)
 			},
 			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
