@@ -207,6 +207,7 @@ func TestResourceMDLSDestinationMock(t *testing.T){
 		"setup_status": "connected",
 		"daylight_saving_time_enabled": true,
 		"private_link_id": null,
+		"proxy_agent_id": null,
 		"networking_method": "Directly",
 		"proxy_agent_id": null,
 		"config": {
@@ -1055,6 +1056,7 @@ func TestResourceDestinationPrivateLinkChangeMock(t *testing.T) {
 				networking_method = "Directly"
 				hybrid_deployment_agent_id = "agent_id_1"
 				private_link_id = "private_link_id_1"
+				proxy_agent_id = "proxy_agent_id_1"
 
 				config {
 					host = "terraform-test.us-east-1.rds.amazonaws.com"
@@ -1081,6 +1083,7 @@ func TestResourceDestinationPrivateLinkChangeMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "run_setup_tests", "false"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "hybrid_deployment_agent_id", "agent_id_1"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "private_link_id", "private_link_id_1"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "proxy_agent_id", "proxy_agent_id_1"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.host", "terraform-test.us-east-1.rds.amazonaws.com"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.port", "5432"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.user", "postgres"),
@@ -1106,6 +1109,7 @@ func TestResourceDestinationPrivateLinkChangeMock(t *testing.T) {
 				networking_method = "Directly"
 				hybrid_deployment_agent_id = "agent_id_2"
 				private_link_id = "private_link_id_2"
+				proxy_agent_id = "proxy_agent_id_2"
 
 				config {
 					host = "test.host"
@@ -1129,6 +1133,7 @@ func TestResourceDestinationPrivateLinkChangeMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "run_setup_tests", "false"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "hybrid_deployment_agent_id", "agent_id_2"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "private_link_id", "private_link_id_2"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "proxy_agent_id", "proxy_agent_id_2"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.host", "test.host"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.port", "5434"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.user", "postgres"),

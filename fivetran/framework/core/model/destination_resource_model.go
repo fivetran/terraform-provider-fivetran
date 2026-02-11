@@ -21,6 +21,7 @@ type DestinationResourceModel struct {
 	HybridDeploymentAgentId   types.String   `tfsdk:"hybrid_deployment_agent_id"`
 	NetworkingMethod          types.String   `tfsdk:"networking_method"`
 	PrivateLinkId             types.String   `tfsdk:"private_link_id"`
+	ProxyAgentId			  types.String   `tfsdk:"proxy_agent_id"`
 
 	RunSetupTests     types.Bool `tfsdk:"run_setup_tests"`
 	TrustCertificates types.Bool `tfsdk:"trust_certificates"`
@@ -67,6 +68,13 @@ func (d *DestinationResourceModel) SetPrivateLinkId(value string) {
 		d.PrivateLinkId = types.StringValue(value)
 	} else {
 		d.PrivateLinkId = types.StringNull()
+	}
+}
+func (d *DestinationResourceModel) SetProxyAgentId(value string) {
+	if value != "" {
+		d.ProxyAgentId = types.StringValue(value)
+	} else {
+		d.ProxyAgentId = types.StringNull()
 	}
 }
 func (d *DestinationResourceModel) SetConfig(value map[string]interface{}, isImporting bool) {
@@ -137,7 +145,8 @@ func (d *DestinationResourceModel) HasUpdates(plan DestinationResourceModel, sta
 		!plan.Region.Equal(state.Region) ||
 		!plan.HybridDeploymentAgentId.Equal(state.HybridDeploymentAgentId) ||
 		!plan.NetworkingMethod.Equal(state.NetworkingMethod) ||
-		!plan.PrivateLinkId.Equal(state.PrivateLinkId) {
+		!plan.PrivateLinkId.Equal(state.PrivateLinkId) ||
+		!plan.ProxyAgentId.Equal(state.ProxyAgentId) {
 		return true, patch, nil
 	} else {
 		return false, nil, nil

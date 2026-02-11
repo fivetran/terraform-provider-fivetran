@@ -18,6 +18,7 @@ type DestinationDatasourceModel struct {
     HybridDeploymentAgentId      types.String `tfsdk:"hybrid_deployment_agent_id"`
     NetworkingMethod             types.String `tfsdk:"networking_method"`
     PrivateLinkId                types.String `tfsdk:"private_link_id"`
+    ProxyAgentId                 types.String `tfsdk:"proxy_agent_id"`
 	Config        				 types.Object `tfsdk:"config"`
 }
 
@@ -49,6 +50,13 @@ func (d *DestinationDatasourceModel) SetPrivateLinkId(value string) {
         d.PrivateLinkId = types.StringValue(value)
     } else {
         d.PrivateLinkId = types.StringNull()
+    }
+}
+func (d *DestinationDatasourceModel) SetProxyAgentId(value string) {
+    if value != "" {
+        d.ProxyAgentId = types.StringValue(value)
+    } else {
+        d.ProxyAgentId = types.StringNull()
     }
 }
 func (d *DestinationDatasourceModel) SetHybridDeploymentAgentId(value string) {

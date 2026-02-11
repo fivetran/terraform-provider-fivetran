@@ -75,6 +75,10 @@ func DestinationAttributesSchema() core.Schema {
 				ValueType:   	core.StringEnum,
 				Description: 	"Possible values: Directly, SshTunnel, ProxyAgent, PrivateLink.",
 			},
+			"proxy_agent_id": {
+				ValueType:   core.String,
+				Description: "The proxy agent ID.",
+			},
 		},
 	}
 }
