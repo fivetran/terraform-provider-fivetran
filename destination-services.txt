@@ -1,4 +1,3 @@
-adls
 aiven_kafka_wh
 aurora_postgres_warehouse
 aurora_warehouse
@@ -21,7 +20,6 @@ milvus
 motherduck
 mysql_rds_warehouse
 mysql_warehouse
-new_s3_datalake
 onelake
 oracle_rac_warehouse
 oracle_rds_warehouse

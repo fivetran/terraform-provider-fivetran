@@ -12,6 +12,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added field: `proxy_agent_id`, to `fivetran_destination` resource and `fivetran_destination` data source
 
+New connection services supported:
+- Supported service: `national_heavy_vehicle_regulator`
+- Supported service: `refiner`
+- Supported service: `tiktok_organic_app`
+New connection config fields supported:
+- Added field `fivetran_connector.config.business_category` for services: `tiktok_organic_app`.
+- Added field `fivetran_connector.config.sync_nested_files` for services: `google_drive`, `sftp`, `share_point`.
+- Added field `fivetran_connector.config.source_file_type` for services: `microsoft_dynamics_365_fno`.
+New destination config fields supported:
+- Added field `fivetran_destination.config.auth_method` for services: `aurora_postgres_warehouse`, `azure_postgres_warehouse`, `postgres_databricks_warehouse`, `postgres_gcp_warehouse`, `postgres_rds_warehouse`, `postgres_warehouse`.
+- Added field `fivetran_destination.config.aws_region_code` for services: `postgres_gcp_warehouse`, `postgres_rds_warehouse`, `postgres_warehouse`, `aurora_postgres_warehouse`, `azure_postgres_warehouse`, `postgres_databricks_warehouse`.
+
 ### Updated
 
 New external logging config fields supported:

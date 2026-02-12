@@ -66,6 +66,13 @@ Read-Only:
 	- Service `snowflake`: Application ID of your app created in Azure
 - `auth` (String) Field usage depends on `service` value: 
 	- Service `snowflake`: Password-based or key-based authentication type
+- `auth_method` (String) Field usage depends on `service` value: 
+	- Service `aurora_postgres_warehouse`: Authentication method. Default value: `PASSWORD`.
+	- Service `azure_postgres_warehouse`: Authentication method. Default value: `PASSWORD`.
+	- Service `postgres_databricks_warehouse`: Authentication method. Default value: `PASSWORD`.
+	- Service `postgres_gcp_warehouse`: Authentication method. Default value: `PASSWORD`.
+	- Service `postgres_rds_warehouse`: Authentication method. Default value: `PASSWORD`.
+	- Service `postgres_warehouse`: Authentication method. Default value: `PASSWORD`.
 - `auth_type` (String) Field usage depends on `service` value: 
 	- Service `adls`: Authentication type
 	- Service `databricks`: Authentication type
@@ -80,6 +87,13 @@ Read-Only:
 	- Service `snowflake`: The unique access key ID of the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment, want to use an S3 bucket to stage your data, and `awsBucketAuthType` is set to `IAM_USER`.
 - `aws_bucket_auth_type` (String) Field usage depends on `service` value: 
 	- Service `snowflake`: Type of authentication configured for the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an S3 bucket to stage your data.
+- `aws_region_code` (String) Field usage depends on `service` value: 
+	- Service `aurora_postgres_warehouse`: AWS region where the Aurora cluster is located. Required when `auth_method` is set to `AWS_IAM`.
+	- Service `azure_postgres_warehouse`: AWS region code. Required when `auth_method` is set to `AWS_IAM`.
+	- Service `postgres_databricks_warehouse`: AWS region code. Required when `auth_method` is set to `AWS_IAM`.
+	- Service `postgres_gcp_warehouse`: AWS region code. Required when `auth_method` is set to `AWS_IAM`.
+	- Service `postgres_rds_warehouse`: AWS region where the RDS instance is located. Required when `auth_method` is set to `AWS_IAM`.
+	- Service `postgres_warehouse`: AWS region code. Required when `auth_method` is set to `AWS_IAM`.
 - `aws_secret_access_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `databricks`: Your user's secret access key
 	- Service `new_s3_datalake`: AWS secret access key to access the S3 bucket and AWS Glue
@@ -208,9 +222,15 @@ Read-Only:
 - `enable_super_type` (Boolean) Field usage depends on `service` value: 
 	- Service `redshift`: Enable to convert JSON data type to SUPER
 - `external_id` (String) Field usage depends on `service` value: 
+	- Service `aurora_postgres_warehouse`: AWS external ID for authentication. Required when `auth_method` is set to `AWS_IAM`.
 	- Service `aws_msk_wh`: Fivetran generated External ID
+	- Service `azure_postgres_warehouse`: AWS external ID for authentication. Required when `auth_method` is set to `AWS_IAM`.
 	- Service `panoply`: Fivetran generated External ID
 	- Service `periscope_warehouse`: Fivetran generated External ID
+	- Service `postgres_databricks_warehouse`: AWS external ID for authentication. Required when `auth_method` is set to `AWS_IAM`.
+	- Service `postgres_gcp_warehouse`: AWS external ID for authentication. Required when `auth_method` is set to `AWS_IAM`.
+	- Service `postgres_rds_warehouse`: AWS external ID for authentication. Required when `auth_method` is set to `AWS_IAM`.
+	- Service `postgres_warehouse`: AWS external ID for authentication. Required when `auth_method` is set to `AWS_IAM`.
 	- Service `redshift`: Fivetran generated External ID
 - `external_location` (String) Field usage depends on `service` value: 
 	- Service `databricks`: External location to store Delta tables. Default value: `""`  (null). By default, the external tables will reside in the `/{schema}/{table}` path, and if you specify an external location in the `{externalLocation}/{schema}/{table}` path.
@@ -413,6 +433,12 @@ Read-Only:
 - `role` (String) Field usage depends on `service` value: 
 	- Service `snowflake`: If not specified, Fivetran will use the user's default role
 - `role_arn` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `aurora_postgres_warehouse`: AWS IAM role ARN for authentication. Required when `auth_method` is set to `AWS_IAM`.
+	- Service `azure_postgres_warehouse`: AWS IAM role ARN for authentication. Required when `auth_method` is set to `AWS_IAM`.
+	- Service `postgres_databricks_warehouse`: AWS IAM role ARN for authentication. Required when `auth_method` is set to `AWS_IAM`.
+	- Service `postgres_gcp_warehouse`: AWS IAM role ARN for authentication. Required when `auth_method` is set to `AWS_IAM`.
+	- Service `postgres_rds_warehouse`: AWS IAM role ARN for authentication. Required when `auth_method` is set to `AWS_IAM`.
+	- Service `postgres_warehouse`: AWS IAM role ARN for authentication. Required when `auth_method` is set to `AWS_IAM`.
 	- Service `redshift`: Role ARN with Redshift permissions. Required if authentication type is `IAM`.
 - `s3_bucket_auth_type` (String) Field usage depends on `service` value: 
 	- Service `databricks`: Authentication method for the S3 bucket you want to use as the external staging for Hybrid Deployment.

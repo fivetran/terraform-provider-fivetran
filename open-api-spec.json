@@ -18,11 +18,11 @@
   "tags": [
     {
       "name": "updated",
-      "description": "2026-01-28T05:17:58.299Z"
+      "description": "2026-02-11T09:35:15.937Z"
     },
     {
       "name": "hash",
-      "description": "7f512e6ff1d20d6e0737b3a2d50a721a7b3936d3caf2acf2117f31e1e829d4e7"
+      "description": "6527a79af4a0464eff7065161beafcbb3db9f6774e21be30c7f02075cebcd5ef"
     }
   ],
   "paths": {
@@ -75,7 +75,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "User with id 'string' has been deleted"
                     }
                   }
                 }
@@ -160,7 +160,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "User memberships in groups retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -245,7 +245,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Group membership has been created"
                     },
                     "data": {
                       "$ref": "#/components/schemas/MembershipResponse"
@@ -313,7 +313,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Group details retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/GroupResponse"
@@ -373,7 +373,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Group with id 'string' has been deleted"
                     }
                   }
                 }
@@ -439,7 +439,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Group has been updated"
                     },
                     "data": {
                       "$ref": "#/components/schemas/GroupResponse"
@@ -490,7 +490,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Account information retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/AccountInfoResponse"
@@ -570,7 +570,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Hybrid deployment agents retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -644,7 +644,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Hybrid deployment agent has been created"
                     },
                     "data": {
                       "$ref": "#/components/schemas/HybridDeploymentAgentCreateResponse"
@@ -735,7 +735,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Team group memberships retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -820,7 +820,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Group membership has been created"
                     },
                     "data": {
                       "$ref": "#/components/schemas/MembershipResponse"
@@ -894,7 +894,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connectors list retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -981,7 +981,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Hybrid deployment agent re-authentication successful"
                     },
                     "data": {
                       "$ref": "#/components/schemas/HybridDeploymentAgentCreateResponse"
@@ -1057,7 +1057,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Team group membership retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/MembershipResponse"
@@ -1128,7 +1128,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Group membership has been deleted"
                     }
                   }
                 }
@@ -1205,7 +1205,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Group membership has been updated"
                     },
                     "data": {
                       "$ref": "#/components/schemas/MembershipResponse"
@@ -1286,7 +1286,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "System key with id 'string' has been rotated"
                     },
                     "data": {
                       "$ref": "#/components/schemas/SystemKeyResponse"
@@ -1425,7 +1425,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connection fingerprints retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -1496,29 +1496,14 @@
         },
         "responses": {
           "200": {
+            "description": "Successful response"
+          },
+          "201": {
             "description": "Successful response",
             "content": {
               "application/json": {
                 "schema": {
-                  "required": [
-                    "code",
-                    "data"
-                  ],
-                  "properties": {
-                    "code": {
-                      "type": "string",
-                      "description": "Response status code",
-                      "example": "Success"
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Response status text",
-                      "example": "Operation performed."
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/FingerprintDetailsResponse"
-                    }
-                  }
+                  "$ref": "#/components/schemas/FingerprintDetailsResponse"
                 }
               }
             }
@@ -1615,7 +1600,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Transformation package metadata list retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -1718,7 +1703,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Column configuration retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/TableColumnsConfigResponse"
@@ -1803,7 +1788,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Destination fingerprints retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -1874,29 +1859,14 @@
         },
         "responses": {
           "200": {
+            "description": "Successful response"
+          },
+          "201": {
             "description": "Successful response",
             "content": {
               "application/json": {
                 "schema": {
-                  "required": [
-                    "code",
-                    "data"
-                  ],
-                  "properties": {
-                    "code": {
-                      "type": "string",
-                      "description": "Response status code",
-                      "example": "Success"
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Response status text",
-                      "example": "Operation performed."
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/FingerprintDetailsResponse"
-                    }
-                  }
+                  "$ref": "#/components/schemas/FingerprintDetailsResponse"
                 }
               }
             }
@@ -1990,7 +1960,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Table configuration has been modified"
                     },
                     "data": {
                       "$ref": "#/components/schemas/StandardConfigResponse"
@@ -2063,7 +2033,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connection certificate details retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/CertificateDetailsResponse"
@@ -2137,7 +2107,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Certificate 'string' has been revoked for connection 'string'"
                     }
                   }
                 }
@@ -2208,7 +2178,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Group webhook has been created"
                     },
                     "data": {
                       "$ref": "#/components/schemas/WebhookResponse"
@@ -2284,7 +2254,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Team connection membership retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/MembershipResponse"
@@ -2355,7 +2325,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connection membership has been deleted"
                     }
                   }
                 }
@@ -2432,7 +2402,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connection membership has been updated"
                     },
                     "data": {
                       "$ref": "#/components/schemas/MembershipResponse"
@@ -2505,7 +2475,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "User with id 'string' has been removed from the group"
                     }
                   }
                 }
@@ -2564,7 +2534,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connection details retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/ConnectorResponseV1"
@@ -2624,7 +2594,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connection with id 'string' has been deleted"
                     }
                   }
                 }
@@ -2641,7 +2611,7 @@
           "Connection Management"
         ],
         "summary": "Update a Connection",
-        "description": "Updates connection parameters for an existing connection within your Fivetran account.",
+        "description": "Updates connection parameters for an existing connection within your Fivetran account.\n\nThis endpoint requires at least one persistent configuration parameter to be specified (e.g., `sync_frequency`, `paused`, `config`, `auth`, `daily_sync_time`, `schema_status`).\n\n> IMPORTANT: Parameters like `trust_certificates`, `trust_fingerprints`, and `run_setup_tests` are test-control parameters that affect only the behavior of setup tests during the update and do not persist in the connection configuration; they cannot be used on their own. If you want to run setup tests without making configuration changes, use the POST `/v1/connections/{connectionId}/test` endpoint instead.\n",
         "operationId": "modify_connection",
         "parameters": [
           {
@@ -2693,7 +2663,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connection has been updated"
                     },
                     "data": {
                       "$ref": "#/components/schemas/ConnectorResponseV1"
@@ -2758,7 +2728,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Transformation project test completed successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/TransformationProjectDetailsResponse"
@@ -2854,7 +2824,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Group connections retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -2941,7 +2911,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Column(s) successfully marked for deletion"
                     }
                   }
                 }
@@ -3020,7 +2990,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Destination certificate details retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/CertificateDetailsResponse"
@@ -3094,7 +3064,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Certificate 'string' has been revoked for destination 'string'"
                     }
                   }
                 }
@@ -3156,7 +3126,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Schema configuration retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/StandardConfigResponse"
@@ -3225,7 +3195,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Schema configuration pre-created successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/StandardConfigResponse"
@@ -3294,7 +3264,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Schema configuration has been modified"
                     },
                     "data": {
                       "$ref": "#/components/schemas/StandardConfigResponse"
@@ -3379,7 +3349,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Destination certificates retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -3467,7 +3437,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "The certificate has been approved."
                     },
                     "data": {
                       "$ref": "#/components/schemas/CertificateDetailsResponse"
@@ -3535,7 +3505,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Proxy agent secrets have been regenerated"
                     },
                     "data": {
                       "$ref": "#/components/schemas/ProxyAgentCreatedResponse"
@@ -3624,7 +3594,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connector SDK packages retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -3707,7 +3677,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Package created successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/ConnectorSdkPackageResponse"
@@ -3806,7 +3776,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connections list retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -3839,7 +3809,7 @@
           "Connection Management"
         ],
         "summary": "Create a Connection",
-        "description": "Creates a new connection within a specified group in your Fivetran account. Runs setup tests and returns testing results.",
+        "description": "Creates a new connection within a specified group in your Fivetran account. Runs setup tests and returns testing results. <br />\n> IMPORTANT: The `destination_schema_names` field will soon become a required field. Make sure to include it in your API requests when creating new connections to prevent future disruptions.\n ",
         "operationId": "create_connection",
         "parameters": [
           {
@@ -3880,7 +3850,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connection has been created"
                     },
                     "data": {
                       "$ref": "#/components/schemas/ConnectorResponseV1"
@@ -3957,7 +3927,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Webhooks retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -4033,7 +4003,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "The certificate has been approved."
                     }
                   }
                 }
@@ -4093,7 +4063,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Group SSH public key retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/GroupSshKeyResponse"
@@ -4155,7 +4125,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Transformation package metadata details retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/TransformationPackageMetadataResponse"
@@ -4243,7 +4213,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Proxy agent connections retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -4363,7 +4333,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Groups retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -4437,7 +4407,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Group has been created"
                     },
                     "data": {
                       "$ref": "#/components/schemas/GroupResponse"
@@ -4499,7 +4469,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Successfully reset credentials the agent with id = string"
                     }
                   }
                 }
@@ -4561,7 +4531,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Setup tests have been completed"
                     },
                     "data": {
                       "$ref": "#/components/schemas/LoggingServiceSetupTestResponse"
@@ -4656,7 +4626,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Column successfully marked for deletion"
                     }
                   }
                 }
@@ -4764,7 +4734,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Column configuration has been modified"
                     },
                     "data": {
                       "$ref": "#/components/schemas/StandardConfigResponse"
@@ -4837,7 +4807,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connection fingerprint details retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/FingerprintDetailsResponse"
@@ -4911,7 +4881,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Fingerprint with hash 'string' has been revoked for connection with id 'string'"
                     }
                   }
                 }
@@ -4973,7 +4943,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Private link details retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/PrivateLinkResponse"
@@ -5036,7 +5006,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Private link with id 'string' is marked for deletion"
                     }
                   }
                 }
@@ -5105,7 +5075,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Private link has been updated"
                     },
                     "data": {
                       "$ref": "#/components/schemas/PrivateLinkResponse"
@@ -5182,7 +5152,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "System keys retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -5328,7 +5298,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "System key has been created"
                     },
                     "data": {
                       "$ref": "#/components/schemas/SystemKeyResponse"
@@ -5456,7 +5426,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Roles list retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -5523,7 +5493,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connector metadata retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/MetadataResponse"
@@ -5609,7 +5579,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connection certificates retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -5697,7 +5667,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "The certificate has been approved."
                     },
                     "data": {
                       "$ref": "#/components/schemas/CertificateDetailsResponse"
@@ -5777,7 +5747,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Destinations list retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -5892,7 +5862,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Destination has been created"
                     },
                     "data": {
                       "$ref": "#/components/schemas/DestinationExtendedResponse"
@@ -6060,7 +6030,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "User memberships in connections retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -6145,7 +6115,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connection membership has been created"
                     },
                     "data": {
                       "$ref": "#/components/schemas/MembershipResponse"
@@ -6221,7 +6191,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Destination fingerprint details retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/FingerprintDetailsResponse"
@@ -6295,7 +6265,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Fingerprint with hash = 'string' has been revoked for destination id = 'string'"
                     }
                   }
                 }
@@ -6366,7 +6336,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Sync has been successfully triggered for connection with id 'string'"
                     }
                   }
                 }
@@ -6448,7 +6418,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Database schema configuration has been modified"
                     },
                     "data": {
                       "$ref": "#/components/schemas/StandardConfigResponse"
@@ -6510,7 +6480,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "System key details retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/SystemKeyResponse"
@@ -6615,7 +6585,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "System key with id 'string' has been deleted"
                     }
                   }
                 },
@@ -6726,7 +6696,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "System key has been updated"
                     },
                     "data": {
                       "$ref": "#/components/schemas/SystemKeyResponse"
@@ -6843,7 +6813,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Sync has been successfully triggered for connection with id 'string'"
                     }
                   }
                 }
@@ -6905,7 +6875,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "External logging service details retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/LogExtendedResponse"
@@ -6965,7 +6935,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "External logging service with id 'string' has been deleted"
                     }
                   }
                 }
@@ -7031,7 +7001,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "External logging service has been updated"
                     },
                     "data": {
                       "$ref": "#/components/schemas/LogExtendedResponse"
@@ -7105,7 +7075,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Transformation projects retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -7179,7 +7149,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Transformation project created successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/TransformationProjectDetailsResponse"
@@ -7252,7 +7222,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Team user details retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/TeamMembershipResponse"
@@ -7323,7 +7293,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "User has been removed from the team"
                     }
                   }
                 }
@@ -7400,7 +7370,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "User role has been updated"
                     },
                     "data": {
                       "$ref": "#/components/schemas/TeamMembershipResponse"
@@ -7462,7 +7432,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Team details retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/TeamResponse"
@@ -7522,7 +7492,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Team has been deleted"
                     }
                   }
                 }
@@ -7588,7 +7558,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Team has been updated"
                     },
                     "data": {
                       "$ref": "#/components/schemas/TeamResponse"
@@ -7650,7 +7620,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Transformation details retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/TransformationResponse"
@@ -7713,7 +7683,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Transformation with id 'string' has been deleted"
                     }
                   }
                 }
@@ -7782,7 +7752,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Transformation updated successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/TransformationResponse"
@@ -7845,7 +7815,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Account webhook has been created"
                     },
                     "data": {
                       "$ref": "#/components/schemas/WebhookResponse"
@@ -7907,7 +7877,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connector SDK package details retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/ConnectorSdkPackageResponse"
@@ -7970,7 +7940,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Package deleted successfully"
                     }
                   }
                 }
@@ -8051,7 +8021,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Package updated successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/ConnectorSdkPackageResponse"
@@ -8111,7 +8081,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Account external logging service details retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/LogExtendedResponse"
@@ -8169,7 +8139,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Account external logging service has been added"
                     },
                     "data": {
                       "$ref": "#/components/schemas/LogExtendedResponse"
@@ -8218,7 +8188,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Account external logging service has been deleted"
                     }
                   }
                 }
@@ -8273,7 +8243,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Account external logging service has been updated"
                     },
                     "data": {
                       "$ref": "#/components/schemas/LogExtendedResponse"
@@ -8335,7 +8305,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Transformation package has been upgraded"
                     }
                   }
                 }
@@ -8469,7 +8439,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Agent string successfully deleted"
                     }
                   }
                 },
@@ -8575,7 +8545,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connection Connect Card has been created"
                     },
                     "data": {
                       "$ref": "#/components/schemas/ConnectorConnectCardResponse"
@@ -8671,7 +8641,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Group users retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -8756,7 +8726,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "User has been added to the group"
                     }
                   }
                 }
@@ -8815,7 +8785,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "User details retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/UserResponse"
@@ -8887,7 +8857,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "User has been updated"
                     },
                     "data": {
                       "$ref": "#/components/schemas/UserResponse"
@@ -8964,7 +8934,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Teams retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -9038,7 +9008,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Team has been created"
                     },
                     "data": {
                       "$ref": "#/components/schemas/TeamResponse"
@@ -9112,7 +9082,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "External logging services retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -9186,7 +9156,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "External logging service has been added"
                     },
                     "data": {
                       "$ref": "#/components/schemas/LogExtendedResponse"
@@ -9248,7 +9218,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connection state retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/ConnectorStateResponse"
@@ -9326,7 +9296,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connection state has been updated"
                     },
                     "data": {
                       "$ref": "#/components/schemas/ConnectorStateResponse"
@@ -9423,7 +9393,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Users list retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -9497,7 +9467,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "User has been created"
                     },
                     "data": {
                       "$ref": "#/components/schemas/UserResponse"
@@ -9562,7 +9532,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "User role in account has been removed"
                     }
                   }
                 }
@@ -9680,7 +9650,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Webhook test completed successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/WebhookTestResponse"
@@ -9754,7 +9724,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Transformation with id 'string' has been started"
                     }
                   }
                 }
@@ -9839,7 +9809,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Team connection memberships retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -9924,7 +9894,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connection membership has been created"
                     },
                     "data": {
                       "$ref": "#/components/schemas/MembershipResponse"
@@ -10010,7 +9980,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Re-sync has been triggered successfully"
                     }
                   }
                 }
@@ -10078,7 +10048,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Schema configuration has been reloaded"
                     },
                     "data": {
                       "$ref": "#/components/schemas/StandardConfigResponse"
@@ -10189,7 +10159,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Transformations list retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -10263,7 +10233,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Transformation created successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/TransformationResponse"
@@ -10323,7 +10293,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "HVR hub has been registered"
                     },
                     "data": {
                       "$ref": "#/components/schemas/HvrHubRegistrationResponse"
@@ -10385,7 +10355,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Transformation with id 'string' has been canceled"
                     }
                   }
                 }
@@ -10447,7 +10417,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Transformation project details retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/TransformationProjectDetailsResponse"
@@ -10507,7 +10477,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Transformation project deleted successfully"
                     }
                   }
                 }
@@ -10573,7 +10543,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Transformation project updated successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/TransformationProjectDetailsResponse"
@@ -10635,7 +10605,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Group service account retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/GroupServiceAccountResponse"
@@ -10697,7 +10667,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Webhook details retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/WebhookResponse"
@@ -10760,7 +10730,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Webhook with id 'string' has been deleted"
                     }
                   }
                 }
@@ -10829,7 +10799,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Webhook has been updated"
                     },
                     "data": {
                       "$ref": "#/components/schemas/WebhookResponse"
@@ -10905,7 +10875,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "User membership in group retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/MembershipResponse"
@@ -10979,7 +10949,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Group membership has been deleted"
                     }
                   }
                 }
@@ -11059,7 +11029,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Group membership has been updated"
                     }
                   }
                 }
@@ -11078,7 +11048,7 @@
           "Connection Management"
         ],
         "summary": "Run Connection Setup Tests",
-        "description": "Runs the setup tests for an existing connection within your Fivetran account.",
+        "description": "Runs the setup tests for an existing connection within your Fivetran account. Use this parameter to test the connection without making any configuration changes. You can optionally include `trust_certificates` or `trust_fingerprints` parameters to automatically approve certificates or fingerprints during the test run.",
         "operationId": "run_setup_tests",
         "parameters": [
           {
@@ -11130,7 +11100,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Setup tests have been completed"
                     },
                     "data": {
                       "$ref": "#/components/schemas/ConnectorResponseV1"
@@ -11195,7 +11165,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Hybrid deployment agent details retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/HybridDeploymentAgentWithUsageResponse"
@@ -11255,7 +11225,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Hybrid deployment agent with id = string has been deleted."
                     }
                   }
                 }
@@ -11329,7 +11299,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Proxy agent retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -11431,7 +11401,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Proxy agent has been created"
                     },
                     "data": {
                       "$ref": "#/components/schemas/ProxyAgentCreatedResponse"
@@ -11540,7 +11510,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Setup tests have been completed"
                     },
                     "data": {
                       "$ref": "#/components/schemas/DestinationExtendedResponse"
@@ -11652,7 +11622,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Private links retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -11726,7 +11696,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Private link has been created"
                     },
                     "data": {
                       "$ref": "#/components/schemas/PrivateLinkResponse"
@@ -11822,7 +11792,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Team users retrieved successfully"
                     },
                     "data": {
                       "required": [
@@ -11907,7 +11877,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "User has been added to the team"
                     },
                     "data": {
                       "$ref": "#/components/schemas/TeamMembershipResponse"
@@ -11980,7 +11950,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "User membership in connection retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/MembershipResponse"
@@ -12054,7 +12024,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connection membership has been deleted"
                     },
                     "data": {
                       "$ref": "#/components/schemas/MembershipResponse"
@@ -12137,7 +12107,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connection membership has been updated"
                     },
                     "data": {
                       "$ref": "#/components/schemas/MembershipResponse"
@@ -12202,7 +12172,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Destination details retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/DestinationExtendedResponse"
@@ -12288,7 +12258,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Destination with id 'string' has been deleted"
                     }
                   }
                 },
@@ -12384,7 +12354,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Destination has been updated"
                     },
                     "data": {
                       "$ref": "#/components/schemas/DestinationExtendedResponse"
@@ -12490,7 +12460,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Connector configuration retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/MetadataResponse"
@@ -12552,7 +12522,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Operation performed."
+                      "example": "Team role in account has been removed"
                     }
                   }
                 }
@@ -12744,17 +12714,17 @@
           },
           "trust_certificates": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
+            "description": "Specifies whether we should trust the certificate automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic certificate trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a certificate is not trusted automatically during testing, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
             "example": true
           },
           "trust_fingerprints": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
+            "description": "Specifies whether we should trust the SSH fingerprint automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic fingerprint trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a fingerprint is not trusted automatically during testing, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
             "example": true
           },
           "run_setup_tests": {
             "type": "boolean",
-            "description": "Specifies whether the setup tests should be run automatically. The default value is TRUE.",
+            "description": "Specifies whether the setup tests should be run automatically after updating the connection. The default value is TRUE. When using this parameter in a PATCH request, you must also include at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). This parameter can be combined with `trust_certificates` or `trust_fingerprints` to automatically approve `certificates/fingerprints` during the test run. To run setup tests without making configuration changes, use the POST `/v1/connections/{connectionId}/test` endpoint instead.",
             "example": true
           },
           "paused": {
@@ -12850,7 +12820,7 @@
           },
           "destination_schema_names": {
             "type": "string",
-            "description": "Defines how you want the schema names to appear in your destination. <br /> The available values are:  <br /> - FIVETRAN_NAMING - Use Fivetran naming conventions to simplify and standardize the schema, table and column names in the destination. <br /> - SOURCE_NAMING - Preserve source schema table and column names in the destination. <br /> You can modify your selection only before the initial sync. Learn more in [our documentation](https://fivetran.com/docs/core-concepts#namingconventions) <br /><br />\nImportant: <br /> This field will soon become a required field. Update your connections to include this field. Planning ahead now will help ensure your applications remain compatible and avoid disruptions when this change takes effect.",
+            "description": "Defines how you want the schema names to appear in your destination. <br /> The available values are:  <br /> - FIVETRAN_NAMING - Use Fivetran naming conventions to simplify and standardize the schema, table and column names in the destination. <br /> - SOURCE_NAMING - Preserve source schema table and column names in the destination. <br /> You can modify your selection only before the initial sync. Learn more in [our documentation](https://fivetran.com/docs/core-concepts#namingconventions) <br />\n> IMPORTANT: This field will soon become a required field. Make sure to include it in your API requests when creating new connections to prevent future disruptions.",
             "example": "SOURCE_NAMING",
             "enum": [
               "FIVETRAN_NAMING",
@@ -13014,7 +12984,6 @@
             "coassemble": "#/components/schemas/coassemble_NewConnectorRequestV1",
             "cockroachdb": "#/components/schemas/cockroachdb_NewConnectorRequestV1",
             "codefresh": "#/components/schemas/codefresh_NewConnectorRequestV1",
-            "coheris": "#/components/schemas/coheris_NewConnectorRequestV1",
             "collibra": "#/components/schemas/collibra_NewConnectorRequestV1",
             "column": "#/components/schemas/column_NewConnectorRequestV1",
             "commercetools": "#/components/schemas/commercetools_NewConnectorRequestV1",
@@ -13270,7 +13239,6 @@
             "megaphone": "#/components/schemas/megaphone_NewConnectorRequestV1",
             "mention": "#/components/schemas/mention_NewConnectorRequestV1",
             "microsoft_dynamics_365_fno": "#/components/schemas/microsoft_dynamics_365_fno_NewConnectorRequestV1",
-            "microsoft_dynamics_365_fo": "#/components/schemas/microsoft_dynamics_365_fo_NewConnectorRequestV1",
             "microsoft_entra_id": "#/components/schemas/microsoft_entra_id_NewConnectorRequestV1",
             "microsoft_lists": "#/components/schemas/microsoft_lists_NewConnectorRequestV1",
             "microsoft_power_bi": "#/components/schemas/microsoft_power_bi_NewConnectorRequestV1",
@@ -13290,6 +13258,7 @@
             "mysql_azure": "#/components/schemas/mysql_azure_NewConnectorRequestV1",
             "mysql_rds": "#/components/schemas/mysql_rds_NewConnectorRequestV1",
             "namely": "#/components/schemas/namely_NewConnectorRequestV1",
+            "national_heavy_vehicle_regulator": "#/components/schemas/national_heavy_vehicle_regulator_NewConnectorRequestV1",
             "navan": "#/components/schemas/navan_NewConnectorRequestV1",
             "netsuite_suiteanalytics": "#/components/schemas/netsuite_suiteanalytics_NewConnectorRequestV1",
             "nice": "#/components/schemas/nice_NewConnectorRequestV1",
@@ -13393,6 +13362,7 @@
             "recurly": "#/components/schemas/recurly_NewConnectorRequestV1",
             "reddit_ads": "#/components/schemas/reddit_ads_NewConnectorRequestV1",
             "referralhero": "#/components/schemas/referralhero_NewConnectorRequestV1",
+            "refiner": "#/components/schemas/refiner_NewConnectorRequestV1",
             "reltio": "#/components/schemas/reltio_NewConnectorRequestV1",
             "replyio": "#/components/schemas/replyio_NewConnectorRequestV1",
             "resource_management_by_smartsheet": "#/components/schemas/resource_management_by_smartsheet_NewConnectorRequestV1",
@@ -13490,7 +13460,6 @@
             "sql_server_sap_ecc_hva": "#/components/schemas/sql_server_sap_ecc_hva_NewConnectorRequestV1",
             "square": "#/components/schemas/square_NewConnectorRequestV1",
             "squarespace": "#/components/schemas/squarespace_NewConnectorRequestV1",
-            "stackadapt": "#/components/schemas/stackadapt_NewConnectorRequestV1",
             "stackadapt_graphql": "#/components/schemas/stackadapt_graphql_NewConnectorRequestV1",
             "standard_metrics": "#/components/schemas/standard_metrics_NewConnectorRequestV1",
             "starrez": "#/components/schemas/starrez_NewConnectorRequestV1",
@@ -13521,7 +13490,7 @@
             "thinkific": "#/components/schemas/thinkific_NewConnectorRequestV1",
             "ticket_tailor": "#/components/schemas/ticket_tailor_NewConnectorRequestV1",
             "tiktok_ads": "#/components/schemas/tiktok_ads_NewConnectorRequestV1",
-            "tiktok_organic": "#/components/schemas/tiktok_organic_NewConnectorRequestV1",
+            "tiktok_organic_app": "#/components/schemas/tiktok_organic_app_NewConnectorRequestV1",
             "tive": "#/components/schemas/tive_NewConnectorRequestV1",
             "toggl_track": "#/components/schemas/toggl_track_NewConnectorRequestV1",
             "totango": "#/components/schemas/totango_NewConnectorRequestV1",
@@ -13649,12 +13618,12 @@
         "properties": {
           "trust_certificates": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
+            "description": "Specifies whether we should trust the certificate automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic certificate trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a certificate is not trusted automatically during testing, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
             "example": true
           },
           "trust_fingerprints": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
+            "description": "Specifies whether we should trust the SSH fingerprint automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic fingerprint trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a fingerprint is not trusted automatically during testing, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
             "example": true
           }
         }
@@ -13684,12 +13653,12 @@
           },
           "trust_certificates": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
+            "description": "Specifies whether we should trust the certificate automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic certificate trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a certificate is not trusted automatically during testing, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
             "example": true
           },
           "trust_fingerprints": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
+            "description": "Specifies whether we should trust the SSH fingerprint automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic fingerprint trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a fingerprint is not trusted automatically during testing, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
             "example": true
           },
           "networking_method": {
@@ -13708,7 +13677,7 @@
           },
           "run_setup_tests": {
             "type": "boolean",
-            "description": "Specifies whether the setup tests should be run automatically. The default value is TRUE.",
+            "description": "Specifies whether the setup tests should be run automatically after updating the connection. The default value is TRUE. When using this parameter in a PATCH request, you must also include at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). This parameter can be combined with `trust_certificates` or `trust_fingerprints` to automatically approve `certificates/fingerprints` during the test run. To run setup tests without making configuration changes, use the POST `/v1/connections/{connectionId}/test` endpoint instead.",
             "example": true
           },
           "sync_frequency": {
@@ -14162,7 +14131,6 @@
             "coassemble": "#/components/schemas/coassemble_ConnectorResponseV1",
             "cockroachdb": "#/components/schemas/cockroachdb_ConnectorResponseV1",
             "codefresh": "#/components/schemas/codefresh_ConnectorResponseV1",
-            "coheris": "#/components/schemas/coheris_ConnectorResponseV1",
             "collibra": "#/components/schemas/collibra_ConnectorResponseV1",
             "column": "#/components/schemas/column_ConnectorResponseV1",
             "commercetools": "#/components/schemas/commercetools_ConnectorResponseV1",
@@ -14418,7 +14386,6 @@
             "megaphone": "#/components/schemas/megaphone_ConnectorResponseV1",
             "mention": "#/components/schemas/mention_ConnectorResponseV1",
             "microsoft_dynamics_365_fno": "#/components/schemas/microsoft_dynamics_365_fno_ConnectorResponseV1",
-            "microsoft_dynamics_365_fo": "#/components/schemas/microsoft_dynamics_365_fo_ConnectorResponseV1",
             "microsoft_entra_id": "#/components/schemas/microsoft_entra_id_ConnectorResponseV1",
             "microsoft_lists": "#/components/schemas/microsoft_lists_ConnectorResponseV1",
             "microsoft_power_bi": "#/components/schemas/microsoft_power_bi_ConnectorResponseV1",
@@ -14438,6 +14405,7 @@
             "mysql_azure": "#/components/schemas/mysql_azure_ConnectorResponseV1",
             "mysql_rds": "#/components/schemas/mysql_rds_ConnectorResponseV1",
             "namely": "#/components/schemas/namely_ConnectorResponseV1",
+            "national_heavy_vehicle_regulator": "#/components/schemas/national_heavy_vehicle_regulator_ConnectorResponseV1",
             "navan": "#/components/schemas/navan_ConnectorResponseV1",
             "netsuite_suiteanalytics": "#/components/schemas/netsuite_suiteanalytics_ConnectorResponseV1",
             "nice": "#/components/schemas/nice_ConnectorResponseV1",
@@ -14541,6 +14509,7 @@
             "recurly": "#/components/schemas/recurly_ConnectorResponseV1",
             "reddit_ads": "#/components/schemas/reddit_ads_ConnectorResponseV1",
             "referralhero": "#/components/schemas/referralhero_ConnectorResponseV1",
+            "refiner": "#/components/schemas/refiner_ConnectorResponseV1",
             "reltio": "#/components/schemas/reltio_ConnectorResponseV1",
             "replyio": "#/components/schemas/replyio_ConnectorResponseV1",
             "resource_management_by_smartsheet": "#/components/schemas/resource_management_by_smartsheet_ConnectorResponseV1",
@@ -14638,7 +14607,6 @@
             "sql_server_sap_ecc_hva": "#/components/schemas/sql_server_sap_ecc_hva_ConnectorResponseV1",
             "square": "#/components/schemas/square_ConnectorResponseV1",
             "squarespace": "#/components/schemas/squarespace_ConnectorResponseV1",
-            "stackadapt": "#/components/schemas/stackadapt_ConnectorResponseV1",
             "stackadapt_graphql": "#/components/schemas/stackadapt_graphql_ConnectorResponseV1",
             "standard_metrics": "#/components/schemas/standard_metrics_ConnectorResponseV1",
             "starrez": "#/components/schemas/starrez_ConnectorResponseV1",
@@ -14669,7 +14637,7 @@
             "thinkific": "#/components/schemas/thinkific_ConnectorResponseV1",
             "ticket_tailor": "#/components/schemas/ticket_tailor_ConnectorResponseV1",
             "tiktok_ads": "#/components/schemas/tiktok_ads_ConnectorResponseV1",
-            "tiktok_organic": "#/components/schemas/tiktok_organic_ConnectorResponseV1",
+            "tiktok_organic_app": "#/components/schemas/tiktok_organic_app_ConnectorResponseV1",
             "tive": "#/components/schemas/tive_ConnectorResponseV1",
             "toggl_track": "#/components/schemas/toggl_track_ConnectorResponseV1",
             "totango": "#/components/schemas/totango_ConnectorResponseV1",
@@ -15776,7 +15744,6 @@
         "discriminator": {
           "propertyName": "service",
           "mapping": {
-            "adls": "#/components/schemas/adls_NewDestinationRequest",
             "aiven_kafka_wh": "#/components/schemas/aiven_kafka_wh_NewDestinationRequest",
             "aurora_postgres_warehouse": "#/components/schemas/aurora_postgres_warehouse_NewDestinationRequest",
             "aurora_warehouse": "#/components/schemas/aurora_warehouse_NewDestinationRequest",
@@ -15799,7 +15766,6 @@
             "motherduck": "#/components/schemas/motherduck_NewDestinationRequest",
             "mysql_rds_warehouse": "#/components/schemas/mysql_rds_warehouse_NewDestinationRequest",
             "mysql_warehouse": "#/components/schemas/mysql_warehouse_NewDestinationRequest",
-            "new_s3_datalake": "#/components/schemas/new_s3_datalake_NewDestinationRequest",
             "onelake": "#/components/schemas/onelake_NewDestinationRequest",
             "oracle_rac_warehouse": "#/components/schemas/oracle_rac_warehouse_NewDestinationRequest",
             "oracle_rds_warehouse": "#/components/schemas/oracle_rds_warehouse_NewDestinationRequest",
@@ -16096,7 +16062,6 @@
         "discriminator": {
           "propertyName": "service",
           "mapping": {
-            "adls": "#/components/schemas/adls_DestinationExtendedResponse",
             "aiven_kafka_wh": "#/components/schemas/aiven_kafka_wh_DestinationExtendedResponse",
             "aurora_postgres_warehouse": "#/components/schemas/aurora_postgres_warehouse_DestinationExtendedResponse",
             "aurora_warehouse": "#/components/schemas/aurora_warehouse_DestinationExtendedResponse",
@@ -16119,7 +16084,6 @@
             "motherduck": "#/components/schemas/motherduck_DestinationExtendedResponse",
             "mysql_rds_warehouse": "#/components/schemas/mysql_rds_warehouse_DestinationExtendedResponse",
             "mysql_warehouse": "#/components/schemas/mysql_warehouse_DestinationExtendedResponse",
-            "new_s3_datalake": "#/components/schemas/new_s3_datalake_DestinationExtendedResponse",
             "onelake": "#/components/schemas/onelake_DestinationExtendedResponse",
             "oracle_rac_warehouse": "#/components/schemas/oracle_rac_warehouse_DestinationExtendedResponse",
             "oracle_rds_warehouse": "#/components/schemas/oracle_rds_warehouse_DestinationExtendedResponse",
@@ -18681,158 +18645,6 @@
           }
         }
       },
-      "adls_config_V1": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "properties": {
-              "tenant_id": {
-                "title": "",
-                "type": "string",
-                "description": "Tenant id of service principal",
-                "example": "service_principal_tenant_id"
-              },
-              "auth_type": {
-                "title": "",
-                "type": "object",
-                "description": "Authentication type",
-                "example": "PERSONAL_ACCESS_TOKEN | OAUTH2",
-                "enum": [
-                  "PERSONAL_ACCESS_TOKEN",
-                  "OAUTH2"
-                ]
-              },
-              "storage_account_name": {
-                "title": "",
-                "type": "string",
-                "description": "(Immutable) Storage account for Azure Data Lake Storage Gen2 name",
-                "example": "adls_storage_account_name"
-              },
-              "connection_type": {
-                "title": "",
-                "type": "object",
-                "description": "Connection method. Default value: `Directly`.",
-                "example": "Directly | PrivateLink",
-                "enum": [
-                  "Directly",
-                  "PrivateLink"
-                ]
-              },
-              "catalog": {
-                "title": "",
-                "type": "string",
-                "description": "Catalog name",
-                "example": "string"
-              },
-              "should_maintain_tables_in_databricks": {
-                "title": "",
-                "type": "boolean",
-                "description": "Should maintain tables in Databricks ",
-                "example": true
-              },
-              "http_path": {
-                "title": "",
-                "type": "string",
-                "description": "HTTP path",
-                "example": "string"
-              },
-              "oauth2_secret": {
-                "title": "",
-                "type": "string",
-                "description": "OAuth 2.0 secret",
-                "format": "password",
-                "example": "string"
-              },
-              "snapshot_retention_period": {
-                "title": "",
-                "type": "object",
-                "description": "Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.",
-                "example": "TWO_WEEKS | SIX_WEEKS | RETAIN_ALL_SNAPSHOTS | ONE_WEEK | FOUR_WEEKS | ONE_DAY",
-                "enum": [
-                  "TWO_WEEKS",
-                  "SIX_WEEKS",
-                  "RETAIN_ALL_SNAPSHOTS",
-                  "ONE_WEEK",
-                  "FOUR_WEEKS",
-                  "ONE_DAY"
-                ]
-              },
-              "server_host_name": {
-                "title": "",
-                "type": "string",
-                "description": "Server Host name",
-                "example": "string"
-              },
-              "client_id": {
-                "title": "",
-                "type": "string",
-                "description": "Client id of service principal",
-                "example": "service_principal_client_id"
-              },
-              "prefix_path": {
-                "title": "",
-                "type": "string",
-                "description": "(Immutable) path/to/data within the container",
-                "example": "adls_container_path_prefix"
-              },
-              "container_name": {
-                "title": "",
-                "type": "string",
-                "description": "(Immutable) Container to store delta table files",
-                "example": "adls_container_name"
-              },
-              "databricks_connection_type": {
-                "title": "",
-                "type": "object",
-                "description": "Databricks Connection method. Default value: `Directly`.",
-                "example": "Directly | PrivateLink",
-                "enum": [
-                  "Directly",
-                  "PrivateLink"
-                ]
-              },
-              "port": {
-                "title": "",
-                "type": "integer",
-                "description": "Server port number",
-                "format": "int32",
-                "example": 0
-              },
-              "secret_value": {
-                "title": "",
-                "type": "string",
-                "description": "Secret value for service principal",
-                "format": "password",
-                "example": "service_principal_secret_value"
-              },
-              "oauth2_client_id": {
-                "title": "",
-                "type": "string",
-                "description": "OAuth 2.0 client ID",
-                "example": "string"
-              },
-              "personal_access_token": {
-                "title": "",
-                "type": "string",
-                "description": "Personal access token",
-                "format": "password",
-                "example": "string"
-              }
-            },
-            "description": ""
-          }
-        }
-      },
-      "adls_NewDestinationRequest": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NewDestinationRequest"
-          },
-          {
-            "$ref": "#/components/schemas/adls_config_V1"
-          }
-        ]
-      },
       "aiven_kafka_wh_config_V1": {
         "properties": {
           "config": {
@@ -18976,6 +18788,36 @@
           "config": {
             "type": "object",
             "properties": {
+              "connection_type": {
+                "title": "",
+                "type": "object",
+                "description": "Connection method. Default value: `Directly`.",
+                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
+                "enum": [
+                  "Directly",
+                  "PrivateLink",
+                  "SshTunnel",
+                  "ProxyAgent"
+                ]
+              },
+              "external_id": {
+                "title": "",
+                "type": "string",
+                "description": "AWS external ID for authentication. Required when `auth_method` is set to `AWS_IAM`.",
+                "example": "external-id-12345"
+              },
+              "always_encrypted": {
+                "title": "",
+                "type": "boolean",
+                "description": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+                "example": true
+              },
+              "tunnel_user": {
+                "title": "",
+                "type": "string",
+                "description": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+                "example": "Fivetran"
+              },
               "tunnel_port": {
                 "title": "",
                 "type": "integer",
@@ -18996,17 +18838,21 @@
                 "format": "password",
                 "example": "fresh_air_267@83"
               },
-              "connection_type": {
+              "auth_method": {
                 "title": "",
                 "type": "object",
-                "description": "Connection method. Default value: `Directly`.",
-                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
+                "description": "Authentication method. Default value: `PASSWORD`.",
+                "example": "PASSWORD | AWS_IAM",
                 "enum": [
-                  "Directly",
-                  "PrivateLink",
-                  "SshTunnel",
-                  "ProxyAgent"
+                  "PASSWORD",
+                  "AWS_IAM"
                 ]
+              },
+              "role_arn": {
+                "title": "",
+                "type": "string",
+                "description": "AWS IAM role ARN for authentication. Required when `auth_method` is set to `AWS_IAM`.",
+                "example": "arn:aws:iam::123456789012:role/MyRole"
               },
               "port": {
                 "title": "",
@@ -19027,23 +18873,70 @@
                 "description": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
                 "example": "ssh.server.com"
               },
-              "always_encrypted": {
+              "aws_region_code": {
                 "title": "",
-                "type": "boolean",
-                "description": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
-                "example": true
+                "type": "object",
+                "description": "AWS region where the Aurora cluster is located. Required when `auth_method` is set to `AWS_IAM`.",
+                "example": "us-east-1",
+                "enum": [
+                  "me-central-1",
+                  "aws-cn-global",
+                  "us-isof-south-1",
+                  "ap-east-2",
+                  "us-west-1",
+                  "us-west-2",
+                  "af-south-1",
+                  "ap-northeast-3",
+                  "ap-northeast-2",
+                  "ap-northeast-1",
+                  "me-south-1",
+                  "sa-east-1",
+                  "cn-north-1",
+                  "ap-southeast-1",
+                  "ap-southeast-2",
+                  "ap-southeast-3",
+                  "ap-southeast-4",
+                  "ap-southeast-5",
+                  "us-east-1",
+                  "us-east-2",
+                  "ap-southeast-7",
+                  "aws-iso-e-global",
+                  "cn-northwest-1",
+                  "ap-south-2",
+                  "ap-south-1",
+                  "eu-south-1",
+                  "eu-south-2",
+                  "us-gov-east-1",
+                  "il-central-1",
+                  "ca-central-1",
+                  "mx-central-1",
+                  "eu-central-1",
+                  "eusc-de-east-1",
+                  "us-iso-west-1",
+                  "eu-central-2",
+                  "eu-isoe-west-1",
+                  "aws-global",
+                  "eu-north-1",
+                  "eu-west-3",
+                  "eu-west-2",
+                  "eu-west-1",
+                  "aws-iso-global",
+                  "ap-east-1",
+                  "ca-west-1",
+                  "us-gov-west-1",
+                  "us-iso-east-1",
+                  "aws-iso-b-global",
+                  "aws-iso-f-global",
+                  "aws-us-gov-global",
+                  "us-isob-east-1",
+                  "us-isof-east-1"
+                ]
               },
               "user": {
                 "title": "",
                 "type": "string",
                 "description": "Database user name",
                 "example": "admin"
-              },
-              "tunnel_user": {
-                "title": "",
-                "type": "string",
-                "description": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
-                "example": "Fivetran"
               }
             },
             "description": ""
@@ -19337,6 +19230,36 @@
           "config": {
             "type": "object",
             "properties": {
+              "connection_type": {
+                "title": "",
+                "type": "object",
+                "description": "",
+                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
+                "enum": [
+                  "Directly",
+                  "PrivateLink",
+                  "SshTunnel",
+                  "ProxyAgent"
+                ]
+              },
+              "external_id": {
+                "title": "",
+                "type": "string",
+                "description": "AWS external ID for authentication. Required when `auth_method` is set to `AWS_IAM`.",
+                "example": "external-id-12345"
+              },
+              "always_encrypted": {
+                "title": "",
+                "type": "boolean",
+                "description": "",
+                "example": true
+              },
+              "tunnel_user": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": "string"
+              },
               "tunnel_port": {
                 "title": "",
                 "type": "integer",
@@ -19357,17 +19280,23 @@
                 "format": "password",
                 "example": "string"
               },
-              "connection_type": {
+              "auth_method": {
                 "title": "",
                 "type": "object",
-                "description": "",
-                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
+                "description": "Authentication method. Default value: `PASSWORD`.",
+                "example": "ENTRA_ID",
                 "enum": [
-                  "Directly",
-                  "PrivateLink",
-                  "SshTunnel",
-                  "ProxyAgent"
+                  "ENTRA_ID",
+                  "PASSWORD",
+                  "CLIENT_CERTIFICATE",
+                  "AWS_IAM"
                 ]
+              },
+              "role_arn": {
+                "title": "",
+                "type": "string",
+                "description": "AWS IAM role ARN for authentication. Required when `auth_method` is set to `AWS_IAM`.",
+                "example": "arn:aws:iam::123456789012:role/MyRole"
               },
               "port": {
                 "title": "",
@@ -19388,19 +19317,13 @@
                 "description": "",
                 "example": "string"
               },
-              "always_encrypted": {
-                "title": "",
-                "type": "boolean",
-                "description": "",
-                "example": true
-              },
-              "user": {
+              "aws_region_code": {
                 "title": "",
                 "type": "string",
-                "description": "",
-                "example": "string"
+                "description": "AWS region code. Required when `auth_method` is set to `AWS_IAM`.",
+                "example": "us-east-1"
               },
-              "tunnel_user": {
+              "user": {
                 "title": "",
                 "type": "string",
                 "description": "",
@@ -20864,164 +20787,6 @@
           }
         ]
       },
-      "new_s3_datalake_config_V1": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "properties": {
-              "table_format": {
-                "title": "",
-                "type": "object",
-                "description": "(Immutable) The table format in which you want to sync your tables. Valid values are ICEBERG and DELTA_LAKE",
-                "example": "ICEBERG | DELTA_LAKE",
-                "enum": [
-                  "ICEBERG",
-                  "DELTA_LAKE"
-                ]
-              },
-              "auth_type": {
-                "title": "",
-                "type": "object",
-                "description": "Authentication type",
-                "example": "PERSONAL_ACCESS_TOKEN | OAUTH2",
-                "enum": [
-                  "PERSONAL_ACCESS_TOKEN",
-                  "OAUTH2"
-                ]
-              },
-              "aws_secret_access_key": {
-                "title": "",
-                "type": "string",
-                "description": "AWS secret access key to access the S3 bucket and AWS Glue",
-                "format": "password",
-                "example": "aws_secret_access_key"
-              },
-              "catalog": {
-                "title": "",
-                "type": "string",
-                "description": "Catalog name",
-                "example": "test_catalog"
-              },
-              "should_maintain_tables_in_databricks": {
-                "title": "",
-                "type": "boolean",
-                "description": "Should maintain tables in Databricks ",
-                "example": true
-              },
-              "http_path": {
-                "title": "",
-                "type": "string",
-                "description": "HTTP path",
-                "example": "sql/protocolv1/o/2873663545782684434-15262-272625-fives565"
-              },
-              "oauth2_secret": {
-                "title": "",
-                "type": "string",
-                "description": "OAuth 2.0 secret",
-                "format": "password",
-                "example": "string"
-              },
-              "fivetran_role_arn": {
-                "title": "",
-                "type": "string",
-                "description": "ARN of the role which you created with different required policy mentioned in our setup guide",
-                "example": "iam_role_arn"
-              },
-              "snapshot_retention_period": {
-                "title": "",
-                "type": "object",
-                "description": "Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.",
-                "example": "TWO_WEEKS | SIX_WEEKS | RETAIN_ALL_SNAPSHOTS | ONE_WEEK | FOUR_WEEKS | ONE_DAY",
-                "enum": [
-                  "TWO_WEEKS",
-                  "SIX_WEEKS",
-                  "RETAIN_ALL_SNAPSHOTS",
-                  "ONE_WEEK",
-                  "FOUR_WEEKS",
-                  "ONE_DAY"
-                ]
-              },
-              "server_host_name": {
-                "title": "",
-                "type": "string",
-                "description": "Server host name",
-                "example": "87a8z-3da23-3da8d-cloud.databricks.com"
-              },
-              "prefix_path": {
-                "title": "",
-                "type": "string",
-                "description": "(Immutable) Prefix path of the bucket for which you have configured access policy. It is not required if access has been granted to entire Bucket in the access policy",
-                "example": "s3_bucket_path_prefix"
-              },
-              "bucket": {
-                "title": "",
-                "type": "string",
-                "description": "(Immutable) The name of the bucket to be used as destination",
-                "example": "s3_bucket_name"
-              },
-              "aws_access_key_id": {
-                "title": "",
-                "type": "string",
-                "description": "AWS access key to access the S3 bucket and AWS Glue",
-                "example": "aws_access_key_id"
-              },
-              "databricks_connection_type": {
-                "title": "",
-                "type": "object",
-                "description": "Databricks Connection method. Default value: `Directly`.",
-                "example": "Directly | PrivateLink",
-                "enum": [
-                  "Directly",
-                  "PrivateLink"
-                ]
-              },
-              "port": {
-                "title": "",
-                "type": "integer",
-                "description": "Server port number",
-                "format": "int32",
-                "example": 443
-              },
-              "region": {
-                "title": "",
-                "type": "string",
-                "description": "Region of your AWS S3 bucket",
-                "example": "s3_bucket_region"
-              },
-              "oauth2_client_id": {
-                "title": "",
-                "type": "string",
-                "description": "OAuth 2.0 client ID",
-                "example": "string"
-              },
-              "is_private_link_required": {
-                "title": "",
-                "type": "boolean",
-                "description": "We use PrivateLink by default if your s3 bucket is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to s3 bucket over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options/aws-private-link).",
-                "example": true
-              },
-              "personal_access_token": {
-                "title": "",
-                "type": "string",
-                "description": "Personal access token",
-                "format": "password",
-                "example": "your_databricks_personal_access_token"
-              }
-            },
-            "description": ""
-          }
-        }
-      },
-      "new_s3_datalake_NewDestinationRequest": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NewDestinationRequest"
-          },
-          {
-            "$ref": "#/components/schemas/new_s3_datalake_config_V1"
-          }
-        ]
-      },
       "onelake_config_V1": {
         "properties": {
           "config": {
@@ -21432,6 +21197,34 @@
           "config": {
             "type": "object",
             "properties": {
+              "connection_type": {
+                "title": "",
+                "type": "object",
+                "description": "Connection method. Default value: `Directly`.",
+                "example": "Directly | SshTunnel",
+                "enum": [
+                  "Directly",
+                  "SshTunnel"
+                ]
+              },
+              "external_id": {
+                "title": "",
+                "type": "string",
+                "description": "AWS external ID for authentication. Required when `auth_method` is set to `AWS_IAM`.",
+                "example": "external-id-12345"
+              },
+              "always_encrypted": {
+                "title": "",
+                "type": "boolean",
+                "description": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+                "example": true
+              },
+              "tunnel_user": {
+                "title": "",
+                "type": "string",
+                "description": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+                "example": "Fivetran"
+              },
               "tunnel_port": {
                 "title": "",
                 "type": "integer",
@@ -21452,15 +21245,23 @@
                 "format": "password",
                 "example": "fresh_air_267@83"
               },
-              "connection_type": {
+              "auth_method": {
                 "title": "",
                 "type": "object",
-                "description": "Connection method. Default value: `Directly`.",
-                "example": "Directly | SshTunnel",
+                "description": "Authentication method. Default value: `PASSWORD`.",
+                "example": "ENTRA_ID",
                 "enum": [
-                  "Directly",
-                  "SshTunnel"
+                  "ENTRA_ID",
+                  "PASSWORD",
+                  "CLIENT_CERTIFICATE",
+                  "AWS_IAM"
                 ]
+              },
+              "role_arn": {
+                "title": "",
+                "type": "string",
+                "description": "AWS IAM role ARN for authentication. Required when `auth_method` is set to `AWS_IAM`.",
+                "example": "arn:aws:iam::123456789012:role/MyRole"
               },
               "port": {
                 "title": "",
@@ -21481,23 +21282,17 @@
                 "description": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
                 "example": "ssh.server.com"
               },
-              "always_encrypted": {
+              "aws_region_code": {
                 "title": "",
-                "type": "boolean",
-                "description": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
-                "example": true
+                "type": "string",
+                "description": "AWS region code. Required when `auth_method` is set to `AWS_IAM`.",
+                "example": "us-east-1"
               },
               "user": {
                 "title": "",
                 "type": "string",
                 "description": "Database user name",
                 "example": "admin"
-              },
-              "tunnel_user": {
-                "title": "",
-                "type": "string",
-                "description": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
-                "example": "Fivetran"
               }
             },
             "description": ""
@@ -21519,6 +21314,36 @@
           "config": {
             "type": "object",
             "properties": {
+              "connection_type": {
+                "title": "",
+                "type": "object",
+                "description": "Connection method. Default value: `Directly`.",
+                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
+                "enum": [
+                  "Directly",
+                  "PrivateLink",
+                  "SshTunnel",
+                  "ProxyAgent"
+                ]
+              },
+              "external_id": {
+                "title": "",
+                "type": "string",
+                "description": "AWS external ID for authentication. Required when `auth_method` is set to `AWS_IAM`.",
+                "example": "external-id-12345"
+              },
+              "always_encrypted": {
+                "title": "",
+                "type": "boolean",
+                "description": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+                "example": true
+              },
+              "tunnel_user": {
+                "title": "",
+                "type": "string",
+                "description": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+                "example": "Fivetran"
+              },
               "tunnel_port": {
                 "title": "",
                 "type": "integer",
@@ -21539,17 +21364,23 @@
                 "format": "password",
                 "example": "fresh_air_267@83"
               },
-              "connection_type": {
+              "auth_method": {
                 "title": "",
                 "type": "object",
-                "description": "Connection method. Default value: `Directly`.",
-                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
+                "description": "Authentication method. Default value: `PASSWORD`.",
+                "example": "ENTRA_ID",
                 "enum": [
-                  "Directly",
-                  "PrivateLink",
-                  "SshTunnel",
-                  "ProxyAgent"
+                  "ENTRA_ID",
+                  "PASSWORD",
+                  "CLIENT_CERTIFICATE",
+                  "AWS_IAM"
                 ]
+              },
+              "role_arn": {
+                "title": "",
+                "type": "string",
+                "description": "AWS IAM role ARN for authentication. Required when `auth_method` is set to `AWS_IAM`.",
+                "example": "arn:aws:iam::123456789012:role/MyRole"
               },
               "port": {
                 "title": "",
@@ -21570,23 +21401,17 @@
                 "description": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
                 "example": "ssh.server.com"
               },
-              "always_encrypted": {
+              "aws_region_code": {
                 "title": "",
-                "type": "boolean",
-                "description": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
-                "example": true
+                "type": "string",
+                "description": "AWS region code. Required when `auth_method` is set to `AWS_IAM`.",
+                "example": "us-east-1"
               },
               "user": {
                 "title": "",
                 "type": "string",
                 "description": "Database user name",
                 "example": "admin"
-              },
-              "tunnel_user": {
-                "title": "",
-                "type": "string",
-                "description": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
-                "example": "Fivetran"
               }
             },
             "description": ""
@@ -21608,6 +21433,36 @@
           "config": {
             "type": "object",
             "properties": {
+              "connection_type": {
+                "title": "",
+                "type": "object",
+                "description": "Connection method. Default value: `Directly`.",
+                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
+                "enum": [
+                  "Directly",
+                  "PrivateLink",
+                  "SshTunnel",
+                  "ProxyAgent"
+                ]
+              },
+              "external_id": {
+                "title": "",
+                "type": "string",
+                "description": "AWS external ID for authentication. Required when `auth_method` is set to `AWS_IAM`.",
+                "example": "external-id-12345"
+              },
+              "always_encrypted": {
+                "title": "",
+                "type": "boolean",
+                "description": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+                "example": true
+              },
+              "tunnel_user": {
+                "title": "",
+                "type": "string",
+                "description": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+                "example": "Fivetran"
+              },
               "tunnel_port": {
                 "title": "",
                 "type": "integer",
@@ -21628,17 +21483,21 @@
                 "format": "password",
                 "example": "fresh_air_267@83"
               },
-              "connection_type": {
+              "auth_method": {
                 "title": "",
                 "type": "object",
-                "description": "Connection method. Default value: `Directly`.",
-                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
+                "description": "Authentication method. Default value: `PASSWORD`.",
+                "example": "PASSWORD | AWS_IAM",
                 "enum": [
-                  "Directly",
-                  "PrivateLink",
-                  "SshTunnel",
-                  "ProxyAgent"
+                  "PASSWORD",
+                  "AWS_IAM"
                 ]
+              },
+              "role_arn": {
+                "title": "",
+                "type": "string",
+                "description": "AWS IAM role ARN for authentication. Required when `auth_method` is set to `AWS_IAM`.",
+                "example": "arn:aws:iam::123456789012:role/MyRole"
               },
               "port": {
                 "title": "",
@@ -21659,23 +21518,70 @@
                 "description": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
                 "example": "ssh.server.com"
               },
-              "always_encrypted": {
+              "aws_region_code": {
                 "title": "",
-                "type": "boolean",
-                "description": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
-                "example": true
+                "type": "object",
+                "description": "AWS region where the RDS instance is located. Required when `auth_method` is set to `AWS_IAM`.",
+                "example": "us-east-1",
+                "enum": [
+                  "me-central-1",
+                  "aws-cn-global",
+                  "us-isof-south-1",
+                  "ap-east-2",
+                  "us-west-1",
+                  "us-west-2",
+                  "af-south-1",
+                  "ap-northeast-3",
+                  "ap-northeast-2",
+                  "ap-northeast-1",
+                  "me-south-1",
+                  "sa-east-1",
+                  "cn-north-1",
+                  "ap-southeast-1",
+                  "ap-southeast-2",
+                  "ap-southeast-3",
+                  "ap-southeast-4",
+                  "ap-southeast-5",
+                  "us-east-1",
+                  "us-east-2",
+                  "ap-southeast-7",
+                  "aws-iso-e-global",
+                  "cn-northwest-1",
+                  "ap-south-2",
+                  "ap-south-1",
+                  "eu-south-1",
+                  "eu-south-2",
+                  "us-gov-east-1",
+                  "il-central-1",
+                  "ca-central-1",
+                  "mx-central-1",
+                  "eu-central-1",
+                  "eusc-de-east-1",
+                  "us-iso-west-1",
+                  "eu-central-2",
+                  "eu-isoe-west-1",
+                  "aws-global",
+                  "eu-north-1",
+                  "eu-west-3",
+                  "eu-west-2",
+                  "eu-west-1",
+                  "aws-iso-global",
+                  "ap-east-1",
+                  "ca-west-1",
+                  "us-gov-west-1",
+                  "us-iso-east-1",
+                  "aws-iso-b-global",
+                  "aws-iso-f-global",
+                  "aws-us-gov-global",
+                  "us-isob-east-1",
+                  "us-isof-east-1"
+                ]
               },
               "user": {
                 "title": "",
                 "type": "string",
                 "description": "Database user name",
                 "example": "admin"
-              },
-              "tunnel_user": {
-                "title": "",
-                "type": "string",
-                "description": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
-                "example": "Fivetran"
               }
             },
             "description": ""
@@ -21697,6 +21603,36 @@
           "config": {
             "type": "object",
             "properties": {
+              "connection_type": {
+                "title": "",
+                "type": "object",
+                "description": "Connection method. Default value: `Directly`.",
+                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
+                "enum": [
+                  "Directly",
+                  "PrivateLink",
+                  "SshTunnel",
+                  "ProxyAgent"
+                ]
+              },
+              "external_id": {
+                "title": "",
+                "type": "string",
+                "description": "AWS external ID for authentication. Required when `auth_method` is set to `AWS_IAM`.",
+                "example": "external-id-12345"
+              },
+              "always_encrypted": {
+                "title": "",
+                "type": "boolean",
+                "description": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
+                "example": true
+              },
+              "tunnel_user": {
+                "title": "",
+                "type": "string",
+                "description": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
+                "example": "Fivetran"
+              },
               "tunnel_port": {
                 "title": "",
                 "type": "integer",
@@ -21717,17 +21653,23 @@
                 "format": "password",
                 "example": "fresh_air_267@83"
               },
-              "connection_type": {
+              "auth_method": {
                 "title": "",
                 "type": "object",
-                "description": "Connection method. Default value: `Directly`.",
-                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
+                "description": "Authentication method. Default value: `PASSWORD`.",
+                "example": "ENTRA_ID",
                 "enum": [
-                  "Directly",
-                  "PrivateLink",
-                  "SshTunnel",
-                  "ProxyAgent"
+                  "ENTRA_ID",
+                  "PASSWORD",
+                  "CLIENT_CERTIFICATE",
+                  "AWS_IAM"
                 ]
+              },
+              "role_arn": {
+                "title": "",
+                "type": "string",
+                "description": "AWS IAM role ARN for authentication. Required when `auth_method` is set to `AWS_IAM`.",
+                "example": "arn:aws:iam::123456789012:role/MyRole"
               },
               "port": {
                 "title": "",
@@ -21748,23 +21690,17 @@
                 "description": "SSH server name. Must be populated if `connection_type` is set to `SshTunnel`.",
                 "example": "ssh.server.com"
               },
-              "always_encrypted": {
+              "aws_region_code": {
                 "title": "",
-                "type": "boolean",
-                "description": "Specifies whether TLS is required. Must be populated if `connection_type` is set to `SshTunnel`.",
-                "example": true
+                "type": "string",
+                "description": "AWS region code. Required when `auth_method` is set to `AWS_IAM`.",
+                "example": "us-east-1"
               },
               "user": {
                 "title": "",
                 "type": "string",
                 "description": "Database user name",
                 "example": "admin"
-              },
-              "tunnel_user": {
-                "title": "",
-                "type": "string",
-                "description": "SSH user name. Must be populated if `connection_type` is set to `SshTunnel`.",
-                "example": "Fivetran"
               }
             },
             "description": ""
@@ -22408,16 +22344,6 @@
           }
         ]
       },
-      "adls_DestinationExtendedResponse": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/DestinationExtendedResponse"
-          },
-          {
-            "$ref": "#/components/schemas/adls_config_V1"
-          }
-        ]
-      },
       "aiven_kafka_wh_DestinationExtendedResponse": {
         "allOf": [
           {
@@ -22635,16 +22561,6 @@
           },
           {
             "$ref": "#/components/schemas/mysql_warehouse_config_V1"
-          }
-        ]
-      },
-      "new_s3_datalake_DestinationExtendedResponse": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/DestinationExtendedResponse"
-          },
-          {
-            "$ref": "#/components/schemas/new_s3_datalake_config_V1"
           }
         ]
       },
@@ -24002,6 +23918,49 @@
           }
         }
       },
+      "adobe_workfront_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "adobe_workfront_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -24012,6 +23971,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/adobe_workfront_auth_V1"
           }
         ]
       },
@@ -24931,6 +24893,49 @@
           }
         }
       },
+      "amazon_attribution_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "amazon_attribution_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -24941,6 +24946,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/amazon_attribution_auth_V1"
           }
         ]
       },
@@ -25107,29 +25115,11 @@
                 "description": "The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.",
                 "example": "my_refresh_token"
               },
-              "role_arn": {
-                "title": "",
-                "type": "string",
-                "description": "`IAM Role ARN` of your AWS Account.",
-                "example": "my_iam_role_arn"
-              },
-              "aws_access_key": {
-                "title": "",
-                "type": "string",
-                "description": "`AWS Access Key` of your AWS Account User.",
-                "example": "my_aws_access_key"
-              },
               "client_secret": {
                 "title": "",
                 "type": "string",
                 "description": "`Client Secret` of your Amazon Seller/Vendor Central client application.",
                 "example": "my_client_secret"
-              },
-              "aws_secret_key": {
-                "title": "",
-                "type": "string",
-                "description": "`AWS Secret Key` of your AWS Account User.",
-                "example": "my_aws_secret_key"
               },
               "client_id": {
                 "title": "",
@@ -26934,6 +26924,49 @@
           }
         }
       },
+      "autodesk_bim_360_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "autodesk_bim_360_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -26944,6 +26977,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/autodesk_bim_360_auth_V1"
           }
         ]
       },
@@ -30892,6 +30928,49 @@
           }
         }
       },
+      "bynder_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "bynder_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -30902,6 +30981,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/bynder_auth_V1"
           }
         ]
       },
@@ -32267,6 +32349,49 @@
           }
         }
       },
+      "cloudbeds_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "cloudbeds_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -32277,6 +32402,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/cloudbeds_auth_V1"
           }
         ]
       },
@@ -32634,42 +32762,6 @@
           },
           {
             "$ref": "#/components/schemas/codefresh_config_V1"
-          },
-          {
-            "$ref": "#/components/schemas/schema_format_schema"
-          }
-        ]
-      },
-      "coheris_config_V1": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "properties": {
-              "access_token": {
-                "title": "",
-                "type": "string",
-                "description": "Your Coheris access token.",
-                "format": "password",
-                "example": "your_coheris_access_token"
-              },
-              "base_url": {
-                "title": "",
-                "type": "string",
-                "description": "Your Coheris base URL.",
-                "example": "your_coheris_base_url"
-              }
-            },
-            "description": ""
-          }
-        }
-      },
-      "coheris_NewConnectorRequestV1": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NewConnectorRequestV1"
-          },
-          {
-            "$ref": "#/components/schemas/coheris_config_V1"
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
@@ -34519,6 +34611,20 @@
           "auth": {
             "type": "object",
             "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
               "client_access": {
                 "title": "",
                 "type": "object",
@@ -34655,6 +34761,49 @@
           }
         }
       },
+      "cube_software_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "cube_software_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -34665,6 +34814,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/cube_software_auth_V1"
           }
         ]
       },
@@ -37577,6 +37729,49 @@
           }
         }
       },
+      "ebay_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "ebay_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -37587,6 +37782,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/ebay_auth_V1"
           }
         ]
       },
@@ -40924,7 +41122,7 @@
                 "title": "",
                 "type": "object",
                 "description": "The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.",
-                "example": "DEFINE_PER_TABLE",
+                "example": "EXTRACT_TABLES | DEFINE_PER_TABLE",
                 "enum": [
                   "EXTRACT_TABLES",
                   "DEFINE_PER_TABLE"
@@ -43128,6 +43326,12 @@
           "config": {
             "type": "object",
             "properties": {
+              "quote_character_enabled": {
+                "title": "",
+                "type": "boolean",
+                "description": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character.",
+                "example": true
+              },
               "file_handling": {
                 "title": "",
                 "type": "object",
@@ -43137,12 +43341,6 @@
                   "unstructured",
                   "structured"
                 ]
-              },
-              "quote_character_enabled": {
-                "title": "",
-                "type": "boolean",
-                "description": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character.",
-                "example": true
               },
               "prefix": {
                 "title": "",
@@ -43198,12 +43396,6 @@
                 "description": "<strong>Optional.</strong> Set to true to sync per-user file access permissions to control visibility in downstream applications.",
                 "example": true
               },
-              "delimiter": {
-                "title": "",
-                "type": "string",
-                "description": "You can specify the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.",
-                "example": "|"
-              },
               "file_type": {
                 "title": "",
                 "type": "object",
@@ -43219,6 +43411,12 @@
                   "avro",
                   "parquet"
                 ]
+              },
+              "delimiter": {
+                "title": "",
+                "type": "string",
+                "description": "You can specify the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible.",
+                "example": "|"
               },
               "on_error": {
                 "title": "",
@@ -43329,6 +43527,12 @@
                   "bz2",
                   "tar_bz2"
                 ]
+              },
+              "sync_nested_files": {
+                "title": "",
+                "type": "boolean",
+                "description": "<strong>Optional.</strong> Set to true to sync files from nested folders within the specified folder.",
+                "example": true
               }
             },
             "description": ""
@@ -44231,7 +44435,7 @@
               "location_ids": {
                 "title": "",
                 "type": "string",
-                "description": "Your HighLevel Location IDs.",
+                "description": "Your HighLevel location IDs.",
                 "example": "your_highlevel_location_ids"
               },
               "sub_domain": {
@@ -44245,14 +44449,14 @@
               "client_secret": {
                 "title": "",
                 "type": "string",
-                "description": "Your HighLevel Client secret.",
+                "description": "Your HighLevel client secret.",
                 "format": "password",
                 "example": "your_highlevel_client_secret"
               },
               "client_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your HighLevel Client Id.",
+                "description": "Your HighLevel client ID.",
                 "example": "your_highlevel_client_id"
               }
             },
@@ -45906,20 +46110,6 @@
           "config": {
             "type": "object",
             "properties": {
-              "historic_sync_time_frame": {
-                "title": "",
-                "type": "object",
-                "description": "The time range for which historical data should be synced. Default value: `All Time`.",
-                "example": "ONE_YEAR | ALL_TIME | FIVE_YEARS | TWO_YEARS | THREE_MONTHS | SIX_MONTHS",
-                "enum": [
-                  "ONE_YEAR",
-                  "ALL_TIME",
-                  "FIVE_YEARS",
-                  "TWO_YEARS",
-                  "THREE_MONTHS",
-                  "SIX_MONTHS"
-                ]
-              },
               "sync_mode": {
                 "title": "",
                 "type": "object",
@@ -49781,6 +49971,16 @@
           "config": {
             "type": "object",
             "properties": {
+              "source_file_type": {
+                "title": "",
+                "type": "object",
+                "description": "The file type of the source files. Supported file types are `CSV` and `PARQUET`.",
+                "example": "PARQUET | CSV",
+                "enum": [
+                  "PARQUET",
+                  "CSV"
+                ]
+              },
               "auth_method": {
                 "title": "",
                 "type": "object",
@@ -49856,48 +50056,6 @@
           },
           {
             "$ref": "#/components/schemas/microsoft_dynamics_365_fno_auth_V1"
-          }
-        ]
-      },
-      "microsoft_dynamics_365_fo_config_V1": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "properties": {
-              "container_name": {
-                "title": "",
-                "type": "string",
-                "description": "The name of the blob container.",
-                "example": "container_name"
-              },
-              "prefix": {
-                "title": "",
-                "type": "string",
-                "description": "Folder name in which the exported dynamics 365 data resides.",
-                "example": "folder_name"
-              },
-              "connection_string": {
-                "title": "",
-                "type": "string",
-                "description": "The blob storage container connection string.",
-                "format": "password",
-                "example": "BlobEndpoint=https://abc123.blob.core.windows.net/;TableEndpoint=https://abc123.table.core.windows.net/;SharedAccessSignature=xxxxxxxxx"
-              }
-            },
-            "description": ""
-          }
-        }
-      },
-      "microsoft_dynamics_365_fo_NewConnectorRequestV1": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NewConnectorRequestV1"
-          },
-          {
-            "$ref": "#/components/schemas/microsoft_dynamics_365_fo_config_V1"
-          },
-          {
-            "$ref": "#/components/schemas/schema_format_schema"
           }
         ]
       },
@@ -51221,6 +51379,20 @@
           "auth": {
             "type": "object",
             "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
               "client_access": {
                 "title": "",
                 "type": "object",
@@ -51258,6 +51430,44 @@
           },
           {
             "$ref": "#/components/schemas/namely_auth_V1"
+          }
+        ]
+      },
+      "national_heavy_vehicle_regulator_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "hostname": {
+                "type": "object",
+                "description": "Your National Heavy Vehicle Regulator hostname.",
+                "enum": [
+                  "api-mobile.nhvr.gov.au",
+                  "api-public.nhvr.gov.au"
+                ]
+              },
+              "subscription_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your National Heavy Vehicle Regulator subscription key.",
+                "format": "password",
+                "example": "your_national_heavy_vehicle_regulator_subscription_key"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "national_heavy_vehicle_regulator_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/national_heavy_vehicle_regulator_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
           }
         ]
       },
@@ -51598,6 +51808,49 @@
           }
         }
       },
+      "odoo_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "odoo_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -51608,6 +51861,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/odoo_auth_V1"
           }
         ]
       },
@@ -57210,6 +57466,21 @@
         "properties": {
           "config": {
             "type": "object",
+            "properties": {
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Client Secret of your QuickBooks client application.",
+                "format": "password",
+                "example": "my_client_secret"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Client ID of your QuickBooks client application.",
+                "example": "my_client_id"
+              }
+            },
             "description": ""
           }
         }
@@ -57896,6 +58167,36 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_table"
+          }
+        ]
+      },
+      "refiner_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Refiner API key.",
+                "format": "password",
+                "example": "your_refiner_api_key"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "refiner_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/refiner_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
           }
         ]
       },
@@ -61149,6 +61450,12 @@
                 "description": "SFTP user.",
                 "example": "user_name"
               },
+              "sync_nested_files": {
+                "title": "",
+                "type": "boolean",
+                "description": "<strong>Optional.</strong> Set to true to sync files from nested folders within the specified folder.",
+                "example": true
+              },
               "pgp_pass_phrase": {
                 "title": "",
                 "type": "string",
@@ -61405,6 +61712,12 @@
                   "bz2",
                   "tar_bz2"
                 ]
+              },
+              "sync_nested_files": {
+                "title": "",
+                "type": "boolean",
+                "description": "<strong>Optional.</strong> Set to true to sync files from nested folders within the specified folder.",
+                "example": true
               }
             },
             "description": ""
@@ -63892,11 +64205,10 @@
                 "title": "",
                 "type": "object",
                 "description": "Determine who is responsible for truncating the online transaction log. Possible values: `\"FIVETRAN\"`, `\"USER_MANAGED\"`, `\"SQL_SERVER_AGENT\"`. Default value is `\"FIVETRAN\"`.",
-                "example": "FIVETRAN",
+                "example": "FIVETRAN | USER_MANAGED | SQL_SERVER_AGENT",
                 "enum": [
                   "FIVETRAN",
                   "USER_MANAGED",
-                  "CUSTOMER",
                   "SQL_SERVER_AGENT"
                 ]
               },
@@ -64609,36 +64921,6 @@
           },
           {
             "$ref": "#/components/schemas/squarespace_config_V1"
-          },
-          {
-            "$ref": "#/components/schemas/schema_format_schema"
-          }
-        ]
-      },
-      "stackadapt_config_V1": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "properties": {
-              "api_key": {
-                "title": "",
-                "type": "string",
-                "description": "Your StackAdapt API key.",
-                "format": "password",
-                "example": "your_stackadapt_api_key"
-              }
-            },
-            "description": ""
-          }
-        }
-      },
-      "stackadapt_NewConnectorRequestV1": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NewConnectorRequestV1"
-          },
-          {
-            "$ref": "#/components/schemas/stackadapt_config_V1"
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
@@ -66107,11 +66389,42 @@
           }
         ]
       },
-      "tiktok_organic_config_V1": {
+      "tiktok_organic_app_config_V1": {
         "properties": {
           "config": {
             "type": "object",
             "properties": {
+              "business_category": {
+                "type": "object",
+                "description": "The TikTok business category whose data you want to sync.",
+                "enum": [
+                  "CLOTHING_AND_ACCESSORIES",
+                  "FINANCE_AND_INVESTING",
+                  "HEALTH_AND_WELLNESS",
+                  "SHOPPING_AND_RETAIL",
+                  "BABY",
+                  "PROFESSIONAL_SERVICES",
+                  "GAMING",
+                  "PETS",
+                  "EDUCATION_AND_TRAINING",
+                  "PUBLIC_ADMINISTRATION",
+                  "PERSONAL_BLOG",
+                  "SPORTS_FITNESS_AND_OUTDOORS",
+                  "ELECTRONICS",
+                  "REAL_ESTATE",
+                  "TRAVEL_AND_TOURISM",
+                  "MACHINERY_AND_EQUIPMENT",
+                  "RESTAURANTS_AND_BARS",
+                  "ART_AND_CRAFTS",
+                  "HOME_FURNITURE_AND_APPLIANCES",
+                  "OTHERS",
+                  "BEAUTY",
+                  "SOFTWARE_AND_APPS",
+                  "FOOD_AND_BEVERAGE",
+                  "MEDIA_AND_ENTERTAINMENT",
+                  "AUTOMOTIVE_AND_TRANSPORTATION"
+                ]
+              },
               "api_environment": {
                 "type": "object",
                 "description": "Your TikTok Organic API environment.",
@@ -66119,35 +66432,69 @@
                   "business-api.tiktok.com",
                   "sandbox-ads.tiktok.com"
                 ]
-              },
-              "secret": {
-                "title": "",
-                "type": "string",
-                "description": "The secret of the app registered in your TikTok developer account.",
-                "format": "password",
-                "example": "your_tiktok_organic_app_secret"
-              },
-              "app_id": {
-                "title": "",
-                "type": "string",
-                "description": "Your Tiktok Organic app ID.",
-                "example": "your_tiktok_organic_app_id"
               }
             },
             "description": ""
           }
         }
       },
-      "tiktok_organic_NewConnectorRequestV1": {
+      "tiktok_organic_app_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your TikTok Organic access token.",
+                "format": "password",
+                "example": "your_access_token"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your TikTok Organic refresh token.",
+                "format": "password",
+                "example": "your_refresh_token"
+              },
+              "client_access": {
+                "title": "",
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": "Your TikTok Organic client access."
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "tiktok_organic_app_NewConnectorRequestV1": {
         "allOf": [
           {
             "$ref": "#/components/schemas/NewConnectorRequestV1"
           },
           {
-            "$ref": "#/components/schemas/tiktok_organic_config_V1"
+            "$ref": "#/components/schemas/tiktok_organic_app_config_V1"
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/tiktok_organic_app_auth_V1"
           }
         ]
       },
@@ -67547,6 +67894,49 @@
           }
         }
       },
+      "vimeo_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "vimeo_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -67557,6 +67947,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/vimeo_auth_V1"
           }
         ]
       },
@@ -68587,13 +68980,13 @@
                     "include_zero_rows": {
                       "title": "",
                       "type": "boolean",
-                      "description": "Include zero rows in the table sync",
+                      "description": "Include zero rows in the table sync.",
                       "example": true
                     },
                     "versions": {
                       "title": "",
                       "type": "array",
-                      "description": "List of versions to sync for the table, if versionSyncStrategy is SYNC_SELECT_VERSIONS",
+                      "description": "List of versions to sync for the table, if versionSyncStrategy is `SYNC_SELECT_VERSIONS`.",
                       "example": [
                         "string"
                       ],
@@ -68607,7 +69000,7 @@
                     "version_sync_strategy": {
                       "title": "",
                       "type": "object",
-                      "description": "Version sync strategy for the table, SYNC_ALL_AND_NEW_VERSIONS or SYNC_SELECT_VERSIONS",
+                      "description": "Version sync strategy for the table, `SYNC_ALL_AND_NEW_VERSIONS` or `SYNC_SELECT_VERSIONS`.",
                       "example": "SYNC_SELECT_VERSIONS | SYNC_ALL_AND_NEW_VERSIONS",
                       "enum": [
                         "SYNC_SELECT_VERSIONS",
@@ -68617,13 +69010,13 @@
                     "currency": {
                       "title": "",
                       "type": "string",
-                      "description": "List of currencies to sync for the table, if applicable",
+                      "description": "List of currencies to sync for the table, if applicable.",
                       "example": "string"
                     },
                     "accounts": {
                       "title": "",
                       "type": "array",
-                      "description": "List of accounts to sync for the table, if applicable",
+                      "description": "List of accounts to sync for the table, if applicable.",
                       "items": {
                         "title": "",
                         "type": "object",
@@ -68631,29 +69024,29 @@
                           "flag": {
                             "title": "",
                             "type": "boolean",
-                            "description": "Flag to indicate if descendants are included or not",
+                            "description": "Flag to indicate if descendants are included or not.",
                             "example": true
                           },
                           "id": {
                             "title": "",
                             "type": "string",
-                            "description": "Account ID to sync",
-                            "example": "string"
+                            "description": "Account ID and `isAssumption` flag (`true` or `false`) are separated by a comma. The `isAssumption` flag indicates whether the account is used for assumptions.",
+                            "example": "1,false"
                           }
                         },
-                        "description": "List of accounts to sync for the table, if applicable"
+                        "description": "List of accounts to sync for the table, if applicable."
                       }
                     },
                     "table": {
                       "title": "",
                       "type": "string",
-                      "description": "Table name to be synced",
+                      "description": "Table name to be synced.",
                       "example": "string"
                     },
                     "levels": {
                       "title": "",
                       "type": "array",
-                      "description": "List of levels to sync for the table, if applicable",
+                      "description": "List of levels to sync for the table, if applicable.",
                       "items": {
                         "title": "",
                         "type": "object",
@@ -68661,23 +69054,23 @@
                           "flag": {
                             "title": "",
                             "type": "boolean",
-                            "description": "Flag to indicate if descendants are included or not",
+                            "description": "Flag to indicate if descendants are included or not.",
                             "example": true
                           },
                           "id": {
                             "title": "",
                             "type": "string",
-                            "description": "Level ID to sync",
+                            "description": "Level ID to sync.",
                             "example": "string"
                           }
                         },
-                        "description": "List of levels to sync for the table, if applicable"
+                        "description": "List of levels to sync for the table, if applicable."
                       }
                     },
                     "dimensions": {
                       "title": "",
                       "type": "array",
-                      "description": "List of dimensions to sync for the table, if applicable",
+                      "description": "List of dimensions to sync for the table, if applicable.",
                       "example": [
                         "string"
                       ],
@@ -68702,7 +69095,7 @@
               "instance_code": {
                 "title": "",
                 "type": "string",
-                "description": "Instance code for Workday Adaptive Planning",
+                "description": "Instance code for Workday Adaptive Planning.",
                 "example": "string"
               },
               "login": {
@@ -69402,6 +69795,49 @@
           }
         }
       },
+      "yahoo_display_ads_on_yahoo_japan_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "yahoo_display_ads_on_yahoo_japan_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -69412,6 +69848,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/yahoo_display_ads_on_yahoo_japan_auth_V1"
           }
         ]
       },
@@ -70806,6 +71245,49 @@
           }
         }
       },
+      "zoho_books_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "zoho_books_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -70816,6 +71298,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/zoho_books_auth_V1"
           }
         ]
       },
@@ -70854,6 +71339,49 @@
           }
         }
       },
+      "zoho_campaigns_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "zoho_campaigns_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -70864,6 +71392,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/zoho_campaigns_auth_V1"
           }
         ]
       },
@@ -70974,6 +71505,49 @@
           }
         }
       },
+      "zoho_desk_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "zoho_desk_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -70984,6 +71558,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/zoho_desk_auth_V1"
           }
         ]
       },
@@ -71028,6 +71605,49 @@
           }
         }
       },
+      "zoho_inventory_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "zoho_inventory_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -71038,6 +71658,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/zoho_inventory_auth_V1"
           }
         ]
       },
@@ -73399,16 +74022,6 @@
           },
           {
             "$ref": "#/components/schemas/codefresh_config_V1"
-          }
-        ]
-      },
-      "coheris_ConnectorResponseV1": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ConnectorResponseV1"
-          },
-          {
-            "$ref": "#/components/schemas/coheris_config_V1"
           }
         ]
       },
@@ -76486,16 +77099,6 @@
           }
         ]
       },
-      "microsoft_dynamics_365_fo_ConnectorResponseV1": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ConnectorResponseV1"
-          },
-          {
-            "$ref": "#/components/schemas/microsoft_dynamics_365_fo_config_V1"
-          }
-        ]
-      },
       "microsoft_entra_id_ConnectorResponseV1": {
         "allOf": [
           {
@@ -76784,6 +77387,16 @@
           },
           {
             "$ref": "#/components/schemas/namely_config_V1"
+          }
+        ]
+      },
+      "national_heavy_vehicle_regulator_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/national_heavy_vehicle_regulator_config_V1"
           }
         ]
       },
@@ -78043,6 +78656,16 @@
           },
           {
             "$ref": "#/components/schemas/referralhero_config_V1"
+          }
+        ]
+      },
+      "refiner_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/refiner_config_V1"
           }
         ]
       },
@@ -79323,16 +79946,6 @@
           }
         ]
       },
-      "stackadapt_ConnectorResponseV1": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ConnectorResponseV1"
-          },
-          {
-            "$ref": "#/components/schemas/stackadapt_config_V1"
-          }
-        ]
-      },
       "stackadapt_graphql_ConnectorResponseV1": {
         "allOf": [
           {
@@ -79633,13 +80246,13 @@
           }
         ]
       },
-      "tiktok_organic_ConnectorResponseV1": {
+      "tiktok_organic_app_ConnectorResponseV1": {
         "allOf": [
           {
             "$ref": "#/components/schemas/ConnectorResponseV1"
           },
           {
-            "$ref": "#/components/schemas/tiktok_organic_config_V1"
+            "$ref": "#/components/schemas/tiktok_organic_app_config_V1"
           }
         ]
       },
@@ -81238,7 +81851,7 @@
       "postgres_warehouse_azure_private_link_config_V1": {
         "properties": {
           "config": {
-            "title": "postgres_warehouse",
+            "title": "azure_postgres_warehouse",
             "required": [
               "connection_service_id"
             ],

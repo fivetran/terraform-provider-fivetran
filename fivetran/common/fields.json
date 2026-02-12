@@ -1113,7 +1113,8 @@
       "item_type": {},
       "description": {
          "afterpay": "Your Afterpay API environment.",
-         "tiktok_organic": "Your TikTok Organic API environment."
+         "tiktok_organic": "Your TikTok Organic API environment.",
+         "tiktok_organic_app": "Your TikTok Organic API environment."
       },
       "api_field": ""
    },
@@ -1324,6 +1325,7 @@
          "quorum": "Your Quorum API key.",
          "rebound_returns": "Your ReBound Returns API key.",
          "recurly": "The Recurly API key.",
+         "refiner": "Your Refiner API key.",
          "replyio": "Your Reply API key.",
          "revenuecat": "Your RevenueCat API key.",
          "reviewsio": "Your REVIEWS.io API key.",
@@ -2896,6 +2898,19 @@
       },
       "api_field": ""
    },
+   "business_category": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "tiktok_organic_app": "The TikTok business category whose data you want to sync."
+      },
+      "api_field": ""
+   },
    "business_id": {
       "readonly": false,
       "sensitive": true,
@@ -3136,7 +3151,7 @@
          "genesys": "Your Genesys client ID.",
          "github": "GitHub App Client ID",
          "gofundme_pro": "Client ID of the API application in your GoFundMe Pro account.",
-         "h_level": "Your HighLevel Client Id.",
+         "h_level": "Your HighLevel client ID.",
          "hana_sap_hva_b1": "",
          "hana_sap_hva_ecc": "",
          "hana_sap_hva_ecc_netweaver": "Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.",
@@ -3176,6 +3191,7 @@
          "power_reviews_enterprise": "Your PowerReviews Enterprise Client ID.",
          "prisma_cloud": "Your Prisma Cloud access key ID.",
          "procore": "Your Procore client ID.",
+         "quickbooks": "Client ID of your QuickBooks client application.",
          "quora_ads": "Your Quora Ads client ID.",
          "reltio": "Your Reltio client ID.",
          "salesforce_commerce_cloud": "The Salesforce Commerce Cloud Client ID.",
@@ -3413,7 +3429,7 @@
          "fortnox": "Your Fortnox client secret.",
          "genesys": "Your Genesys client secret.",
          "gofundme_pro": "Client secret of the API application in your GoFundMe Pro account.",
-         "h_level": "Your HighLevel Client secret.",
+         "h_level": "Your HighLevel client secret.",
          "helpdesk": "Your HelpDesk client secret.",
          "hilti_ontrack": "Your Hilti On!Track client secret.",
          "ibacos": "Your Ibacos Client secret.",
@@ -3443,6 +3459,7 @@
          "power_reviews_enterprise": "Your PowerReviews Enterprise Client Secret.",
          "prisma_cloud": "Your Prisma Cloud secret access Key.",
          "procore": "Your Procore client secret.",
+         "quickbooks": "Client Secret of your QuickBooks client application.",
          "quora_ads": "Your Quora Ads client secret.",
          "reltio": "Your Reltio client secret.",
          "salesforce_commerce_cloud": "The Salesforce Commerce Cloud Client secret.",
@@ -6905,6 +6922,7 @@
       "description": {
          "akamai": "Your Akamai hostname.",
          "discourse": "Your Discourse hostname.",
+         "national_heavy_vehicle_regulator": "Your National Heavy Vehicle Regulator hostname.",
          "ukg_pro": "Your UKG Pro hostname."
       },
       "sensitive_exclusions": {
@@ -7023,7 +7041,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "workday_adaptive": "Instance code for Workday Adaptive Planning"
+         "workday_adaptive": "Instance code for Workday Adaptive Planning."
       },
       "api_field": ""
    },
@@ -7590,7 +7608,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "h_level": "Your HighLevel Location IDs."
+         "h_level": "Your HighLevel location IDs."
       },
       "api_field": ""
    },
@@ -9944,7 +9962,7 @@
                   "key_field": "",
                   "item_type": {},
                   "description": {
-                     "workday_adaptive": "Flag to indicate if descendants are included or not"
+                     "workday_adaptive": "Flag to indicate if descendants are included or not."
                   },
                   "api_field": ""
                },
@@ -9957,7 +9975,7 @@
                   "key_field": "",
                   "item_type": {},
                   "description": {
-                     "workday_adaptive": "Account ID to sync"
+                     "workday_adaptive": "Account ID and `isAssumption` flag (`true` or `false`) are separated by a comma. The `isAssumption` flag indicates whether the account is used for assumptions."
                   },
                   "api_field": ""
                }
@@ -9965,7 +9983,7 @@
             "key_field": "id",
             "item_type": {},
             "description": {
-               "workday_adaptive": "List of accounts to sync for the table, if applicable"
+               "workday_adaptive": "List of accounts to sync for the table, if applicable."
             },
             "api_field": ""
          },
@@ -10104,7 +10122,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "workday_adaptive": "List of currencies to sync for the table, if applicable"
+               "workday_adaptive": "List of currencies to sync for the table, if applicable."
             },
             "api_field": ""
          },
@@ -10205,7 +10223,7 @@
                "google_analytics_4": "The report dimensions to include into a sync.",
                "google_display_and_video_360": "The report dimensions (filters) to include into a sync. The dimension names are provided in the API format. This is a required parameter when `config_method` is set to `CREATE_NEW`.",
                "google_search_console": "The report dimensions included to sync.",
-               "workday_adaptive": "List of dimensions to sync for the table, if applicable"
+               "workday_adaptive": "List of dimensions to sync for the table, if applicable."
             },
             "api_field": ""
          },
@@ -10447,7 +10465,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "workday_adaptive": "Include zero rows in the table sync"
+               "workday_adaptive": "Include zero rows in the table sync."
             },
             "api_field": ""
          },
@@ -10479,7 +10497,7 @@
                   "key_field": "",
                   "item_type": {},
                   "description": {
-                     "workday_adaptive": "Flag to indicate if descendants are included or not"
+                     "workday_adaptive": "Flag to indicate if descendants are included or not."
                   },
                   "api_field": ""
                },
@@ -10492,7 +10510,7 @@
                   "key_field": "",
                   "item_type": {},
                   "description": {
-                     "workday_adaptive": "Level ID to sync"
+                     "workday_adaptive": "Level ID to sync."
                   },
                   "api_field": ""
                },
@@ -10513,7 +10531,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "workday_adaptive": "List of levels to sync for the table, if applicable"
+               "workday_adaptive": "List of levels to sync for the table, if applicable."
             },
             "api_field": ""
          },
@@ -10853,7 +10871,7 @@
                "google_search_ads_360": "The name of a table within the schema to which connector syncs the data of a given report.",
                "google_search_console": "The name of a table within the schema to which connector syncs the data of a given report.",
                "workday": "The table name within the schema to which connector will sync the data of the specific report.",
-               "workday_adaptive": "Table name to be synced"
+               "workday_adaptive": "Table name to be synced."
             },
             "api_field": ""
          },
@@ -10918,7 +10936,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "workday_adaptive": "Version sync strategy for the table, SYNC_ALL_AND_NEW_VERSIONS or SYNC_SELECT_VERSIONS"
+               "workday_adaptive": "Version sync strategy for the table, `SYNC_ALL_AND_NEW_VERSIONS` or `SYNC_SELECT_VERSIONS`."
             },
             "api_field": ""
          },
@@ -10933,7 +10951,7 @@
                "workday_adaptive": "string"
             },
             "description": {
-               "workday_adaptive": "List of versions to sync for the table, if versionSyncStrategy is SYNC_SELECT_VERSIONS"
+               "workday_adaptive": "List of versions to sync for the table, if versionSyncStrategy is `SYNC_SELECT_VERSIONS`."
             },
             "api_field": ""
          }
@@ -11925,6 +11943,7 @@
          "mux": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "myosh": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "namely": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "national_heavy_vehicle_regulator": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "navan": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "netsuite_suiteanalytics": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "nice": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -12016,6 +12035,7 @@
          "recurly": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "reddit_ads": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "referralhero": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "refiner": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "reltio": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "replyio": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "resource_management_by_smartsheet": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -12143,6 +12163,7 @@
          "ticket_tailor": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "tiktok_ads": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "tiktok_organic": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "tiktok_organic_app": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "tive": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "toast": "Destination schema. Schema is permanent and cannot be changed after connection creation",
          "toggl_track": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -13401,6 +13422,19 @@
       },
       "api_field": ""
    },
+   "source_file_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "microsoft_dynamics_365_fno": "The file type of the source files. Supported file types are `CSV` and `PARQUET`."
+      },
+      "api_field": ""
+   },
    "source_name": {
       "readonly": false,
       "sensitive": false,
@@ -13644,7 +13678,8 @@
       "item_type": {},
       "description": {
          "cabcharge": "Your Cabcharge subscription key.",
-         "dsv": "Your DSV subscription key."
+         "dsv": "Your DSV subscription key.",
+         "national_heavy_vehicle_regulator": "Your National Heavy Vehicle Regulator subscription key."
       },
       "api_field": ""
    },
@@ -13855,6 +13890,21 @@
       "item_type": {},
       "description": {
          "reddit_ads": "When this parameter is set to `true`, we sync the data of the additional linked accounts. When this parameter is set to `false`, we sync only the data from the main account that was used for authorization"
+      },
+      "api_field": ""
+   },
+   "sync_nested_files": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "google_drive": "Optional. Set to true to sync files from nested folders within the specified folder.",
+         "sftp": "Optional. Set to true to sync files from nested folders within the specified folder.",
+         "share_point": "Optional. Set to true to sync files from nested folders within the specified folder."
       },
       "api_field": ""
    },

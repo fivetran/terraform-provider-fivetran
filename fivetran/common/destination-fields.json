@@ -59,6 +59,24 @@
       },
       "api_field": ""
    },
+   "auth_method": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aurora_postgres_warehouse": "Authentication method. Default value: `PASSWORD`.",
+         "azure_postgres_warehouse": "Authentication method. Default value: `PASSWORD`.",
+         "postgres_databricks_warehouse": "Authentication method. Default value: `PASSWORD`.",
+         "postgres_gcp_warehouse": "Authentication method. Default value: `PASSWORD`.",
+         "postgres_rds_warehouse": "Authentication method. Default value: `PASSWORD`.",
+         "postgres_warehouse": "Authentication method. Default value: `PASSWORD`."
+      },
+      "api_field": ""
+   },
    "auth_type": {
       "readonly": false,
       "sensitive": false,
@@ -105,6 +123,24 @@
       "item_type": {},
       "description": {
          "snowflake": "Type of authentication configured for the S3 bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an S3 bucket to stage your data."
+      },
+      "api_field": ""
+   },
+   "aws_region_code": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aurora_postgres_warehouse": "AWS region where the Aurora cluster is located. Required when `auth_method` is set to `AWS_IAM`.",
+         "azure_postgres_warehouse": "AWS region code. Required when `auth_method` is set to `AWS_IAM`.",
+         "postgres_databricks_warehouse": "AWS region code. Required when `auth_method` is set to `AWS_IAM`.",
+         "postgres_gcp_warehouse": "AWS region code. Required when `auth_method` is set to `AWS_IAM`.",
+         "postgres_rds_warehouse": "AWS region where the RDS instance is located. Required when `auth_method` is set to `AWS_IAM`.",
+         "postgres_warehouse": "AWS region code. Required when `auth_method` is set to `AWS_IAM`."
       },
       "api_field": ""
    },
@@ -558,9 +594,15 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "aurora_postgres_warehouse": "AWS external ID for authentication. Required when `auth_method` is set to `AWS_IAM`.",
          "aws_msk_wh": "Fivetran generated External ID",
+         "azure_postgres_warehouse": "AWS external ID for authentication. Required when `auth_method` is set to `AWS_IAM`.",
          "panoply": "Fivetran generated External ID",
          "periscope_warehouse": "Fivetran generated External ID",
+         "postgres_databricks_warehouse": "AWS external ID for authentication. Required when `auth_method` is set to `AWS_IAM`.",
+         "postgres_gcp_warehouse": "AWS external ID for authentication. Required when `auth_method` is set to `AWS_IAM`.",
+         "postgres_rds_warehouse": "AWS external ID for authentication. Required when `auth_method` is set to `AWS_IAM`.",
+         "postgres_warehouse": "AWS external ID for authentication. Required when `auth_method` is set to `AWS_IAM`.",
          "redshift": "Fivetran generated External ID"
       },
       "api_field": ""
@@ -1204,8 +1246,14 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "aurora_postgres_warehouse": "AWS IAM role ARN for authentication. Required when `auth_method` is set to `AWS_IAM`.",
+         "azure_postgres_warehouse": "AWS IAM role ARN for authentication. Required when `auth_method` is set to `AWS_IAM`.",
          "panoply": "",
          "periscope_warehouse": "",
+         "postgres_databricks_warehouse": "AWS IAM role ARN for authentication. Required when `auth_method` is set to `AWS_IAM`.",
+         "postgres_gcp_warehouse": "AWS IAM role ARN for authentication. Required when `auth_method` is set to `AWS_IAM`.",
+         "postgres_rds_warehouse": "AWS IAM role ARN for authentication. Required when `auth_method` is set to `AWS_IAM`.",
+         "postgres_warehouse": "AWS IAM role ARN for authentication. Required when `auth_method` is set to `AWS_IAM`.",
          "redshift": "Role ARN with Redshift permissions. Required if authentication type is `IAM`."
       },
       "api_field": ""
