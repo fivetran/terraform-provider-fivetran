@@ -116,6 +116,10 @@ func (r *destination) Create(ctx context.Context, req resource.CreateRequest, re
 		svc.PrivateLinkId(data.PrivateLinkId.ValueString())
 	}
 
+	if data.ProxyAgentId.ValueString() != "" {
+		svc.ProxyAgentId(data.ProxyAgentId.ValueString())
+	}
+
 	response, err := svc.
 		DoCustom(ctx)
 
@@ -291,6 +295,10 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 
 		if (!plan.PrivateLinkId.IsUnknown() && !plan.PrivateLinkId.Equal(state.PrivateLinkId)) {
 			svc.PrivateLinkId(plan.PrivateLinkId.ValueString())
+		}
+
+		if (!plan.ProxyAgentId.IsUnknown() && !plan.ProxyAgentId.Equal(state.ProxyAgentId)) {
+			svc.ProxyAgentId(plan.ProxyAgentId.ValueString())
 		}
 
 		if len(patch) > 0 {

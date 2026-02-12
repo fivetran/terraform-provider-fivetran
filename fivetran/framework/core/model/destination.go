@@ -15,6 +15,7 @@ type destinationModel interface {
 	SetHybridDeploymentAgentId(string)
 	SetNetworkingMethod(string)
     SetPrivateLinkId(string)
+	SetProxyAgentId(string)
 	SetConfig(map[string]interface{}, bool)
 }
 
@@ -29,5 +30,6 @@ func readFromResponse(d destinationModel, resp destinations.DestinationDetailsBa
 	d.SetHybridDeploymentAgentId(resp.HybridDeploymentAgentId)
 	d.SetNetworkingMethod(resp.NetworkingMethod)
 	d.SetPrivateLinkId(resp.PrivateLinkId)
+	d.SetProxyAgentId(resp.ProxyAgentId)
 	d.SetConfig(config, isImporting)
 }

@@ -27,6 +27,7 @@ const (
         "setup_status": "CONNECTED",
         "daylight_saving_time_enabled": true,
         "private_link_id": "private_link_id",
+        "proxy_agent_id": "proxy_agent_id",
         "group_id": "group_id",
         "time_zone_offset": "+3",
         "hybrid_deployment_agent_id": "hybrid_deployment_agent_id"
@@ -47,6 +48,7 @@ const (
         "setup_status": "CONNECTED",
         "daylight_saving_time_enabled": true,
         "private_link_id": "private_link_id",
+		"proxy_agent_id": "proxy_agent_id",
         "group_id": "group_id",
         "time_zone_offset": "+3",
         "hybrid_deployment_agent_id": "hybrid_deployment_agent_id"
@@ -96,6 +98,7 @@ func TestDataSourceDestinationsMappingMock(t *testing.T) {
 			resource.TestCheckResourceAttr("data.fivetran_destinations.test_destinations", "destinations.0.networking_method", "Directly"),
 			resource.TestCheckResourceAttr("data.fivetran_destinations.test_destinations", "destinations.0.hybrid_deployment_agent_id", "hybrid_deployment_agent_id"),
 			resource.TestCheckResourceAttr("data.fivetran_destinations.test_destinations", "destinations.0.private_link_id", "private_link_id"),
+			resource.TestCheckResourceAttr("data.fivetran_destinations.test_destinations", "destinations.0.proxy_agent_id", "proxy_agent_id"),
 			resource.TestCheckResourceAttr("data.fivetran_destinations.test_destinations", "destinations.0.time_zone_offset", "+3"),
 			resource.TestCheckResourceAttr("data.fivetran_destinations.test_destinations", "destinations.0.daylight_saving_time_enabled", "true"),
 		),
