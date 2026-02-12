@@ -12,7 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added field: `proxy_agent_id`, to `fivetran_destination` resource and `fivetran_destination` data source
 
-### Added
 New connection services supported:
 - Supported service: `national_heavy_vehicle_regulator`
 - Supported service: `refiner`
