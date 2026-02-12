@@ -6,6 +6,8 @@ page_title: "Resource: fivetran_connector"
 
 This resource allows you to create, update, and delete connectors.
 
+-> **Note**: For new implementations, consider using [`fivetran_connection`](connection.md) and [`fivetran_connection_config`](connection_config.md) which provide better separation of concerns, improved credential management, and more flexible configuration options. See the [migration guide](../guides/migrating-from-connector-to-connection.md) for details. This resource remains fully supported.
+
 ## Example Usage
 
 ```hcl
@@ -5122,3 +5124,11 @@ resource "fivetran_connector" "my_github_connector" {
     }
 }
 ```
+
+## See Also
+
+- [`fivetran_connection`](connection.md) - Recommended replacement: Create connections with metadata only
+- [`fivetran_connection_config`](connection_config.md) - Recommended replacement: Manage connection configuration and credentials
+- [Migration Guide](../guides/migrating-from-connector-to-connection.md) - Step-by-step guide to migrate from fivetran_connector to the new resources
+- [Fivetran REST API Documentation](https://fivetran.com/docs/rest-api/connectors) - API reference for connectors
+

@@ -31,6 +31,12 @@ New external logging config fields supported:
 - Added field `fivetran_external_logging.config.service_account_key` for services: `stackdriver`.
 - Added field `fivetran_external_logging.config.access_key_id` for services: `cloudwatch`.
 
+### Documentation
+- Added comprehensive migration guide for transitioning from `fivetran_connector` to `fivetran_connection` + `fivetran_connection_config`
+- Updated `fivetran_connector` resource documentation with information about alternative resources
+- Updated `fivetran_connection` resource documentation with migration section and examples
+- Updated `fivetran_connection_config` resource documentation with common use cases (credential rotation, secrets management integration)
+
 ## [v1.9.22](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.22...v1.9.21)
 
 ### Added

@@ -114,6 +114,72 @@ resource "fivetran_connection" "snowflake_connection" {
 }
 ```
 
+## Migrating from fivetran_connector
+
+If you're currently using the legacy `fivetran_connector` resource, you can migrate to `fivetran_connection` and `fivetran_connection_config` to benefit from:
+
+- **Better credential management**: Rotate credentials independently without touching connection configuration
+- **Improved security**: Separate metadata from sensitive credentials
+- **Cleaner state management**: Better resource dependency tracking
+- **More flexible workflows**: Update config and auth independently
+
+### Quick Migration Example
+
+**Before** (fivetran_connector):
+```hcl
+resource "fivetran_connector" "postgres" {
+  group_id = fivetran_group.example.id
+  service  = "postgres"
+
+  destination_schema {
+    prefix = "my_postgres"
+  }
+
+  config {
+    host          = "db.example.com"
+    port          = 5432
+    database      = "mydb"
+    user          = "fivetran_user"
+    password      = var.db_password
+    update_method = "XMIN"
+  }
+}
+```
+
+**After** (fivetran_connection + fivetran_connection_config):
+```hcl
+resource "fivetran_connection" "postgres" {
+  group_id = fivetran_group.example.id
+  service  = "postgres"
+
+  destination_schema {
+    prefix = "my_postgres"
+  }
+
+  config = jsonencode({
+    update_method = "XMIN"
+  })
+}
+
+resource "fivetran_connection_config" "postgres" {
+  connection_id = fivetran_connection.postgres.id
+
+  config = jsonencode({
+    host          = "db.example.com"
+    port          = 5432
+    database      = "mydb"
+    user          = "fivetran_user"
+    update_method = "XMIN"
+  })
+
+  auth = jsonencode({
+    password = var.db_password
+  })
+}
+```
+
+For complete migration steps, including import procedures, troubleshooting, and rollback instructions, see the [Migration Guide](../guides/migrating-from-connector-to-connection.md).
+
 ## Schema
 
 ### Required
@@ -174,5 +240,7 @@ terraform import fivetran_connection.example connection_id_here
 ## See Also
 
 - [`fivetran_connection_config`](connection_config.md) - Configure connection details (host, credentials, etc.)
+- [`fivetran_connector`](connector.md) - Legacy connector resource (planned for deprecation)
+- [Migration Guide](../guides/migrating-from-connector-to-connection.md) - Migrate from fivetran_connector to fivetran_connection
 - [`fivetran_connector_schedule`](connector_schedule.md) - Manage connection sync schedules
 - [`fivetran_connector_schema`](connector_schema_config.md) - Manage connection schema settings
