@@ -8,6 +8,7 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -77,6 +78,9 @@ func (r *destination) Create(ctx context.Context, req resource.CreateRequest, re
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	// Save plan config for PrivateLink scenarios before API modifies it
+	planConfig := data.Config
 
 	configMap, err := data.GetConfigMap(true)
 	if err != nil {
@@ -184,6 +188,12 @@ func (r *destination) Create(ctx context.Context, req resource.CreateRequest, re
 	} else {
 		data.ReadFromResponseWithTests(response)
 	}
+	
+	// Preserve plan values for PrivateLink scenarios
+	// When using PrivateLink with Databricks, Fivetran's API may modify server_host_name and cloud_provider
+	// We need to preserve the user's original values to avoid Terraform state inconsistencies
+	preservePrivateLinkValues(ctx, &data, &data, planConfig, resp)
+	
 	data.RunSetupTests = types.BoolValue(runSetupTestsPlan)
 	data.TrustCertificates = types.BoolValue(trustCertificatesPlan)
 	data.TrustFingerprints = types.BoolValue(trustFingerprintsPlan)
@@ -249,6 +259,9 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+
+	// Save plan config for PrivateLink scenarios before API modifies it
+	planConfig := plan.Config
 
 	runSetupTestsPlan := core.GetBoolOrDefault(plan.RunSetupTests, true)
 	trustCertificatesPlan := core.GetBoolOrDefault(plan.TrustCertificates, false)
@@ -343,21 +356,25 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 				return
 			}
 
-			plan.ReadFromLegacyResponse(response)
-			if response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
-				for _, tr := range response.Data.SetupTests {
-					if tr.Status != "PASSED" && tr.Status != "SKIPPED" {
-						resp.Diagnostics.AddWarning(
-							fmt.Sprintf("Destination setup test `%v` has status `%v`", tr.Title, tr.Status),
-							tr.Message,
-						)
-					}
+		plan.ReadFromLegacyResponse(response)
+		if response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
+			for _, tr := range response.Data.SetupTests {
+				if tr.Status != "PASSED" && tr.Status != "SKIPPED" {
+					resp.Diagnostics.AddWarning(
+						fmt.Sprintf("Destination setup test `%v` has status `%v`", tr.Title, tr.Status),
+						tr.Message,
+					)
 				}
 			}
+		}
 
-			// there were no changes in config so we can just copy it from state
-			plan.Config = state.Config
-			updatePerformed = true
+		// there were no changes in config so we can just copy it from state
+		plan.Config = state.Config
+		// Also preserve networking-related fields that aren't in the legacy response
+		plan.PrivateLinkId = state.PrivateLinkId
+		plan.NetworkingMethod = state.NetworkingMethod
+		plan.HybridDeploymentAgentId = state.HybridDeploymentAgentId
+		updatePerformed = true
 		}
 	}
 
@@ -373,6 +390,11 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 		}
 		plan.ReadFromResponse(response, false)
 	}
+
+	// Preserve plan values for PrivateLink scenarios
+	// When using PrivateLink with Databricks, Fivetran's API may modify server_host_name and cloud_provider
+	// We need to preserve the user's original values to avoid Terraform state inconsistencies
+	preservePrivateLinkValues(ctx, &plan, &state, planConfig, resp)
 
 	// Set up synthetic values
 	if plan.RunSetupTests.IsUnknown() {
@@ -409,5 +431,63 @@ func (r *destination) Delete(ctx context.Context, req resource.DeleteRequest, re
 			fmt.Sprintf("%v; code: %v; message: %v", err, deleteResponse.Code, deleteResponse.Message),
 		)
 		return
+	}
+}
+
+// preservePrivateLinkValues preserves certain plan values when using PrivateLink with Databricks.
+// When PrivateLink is configured, Fivetran's API may return modified values for server_host_name, cloud_provider,
+// networking_method, and private_link_id, which can cause Terraform to report "Provider produced inconsistent result 
+// after apply" errors. This function restores the user's original plan values to maintain consistency.
+func preservePrivateLinkValues(ctx context.Context, result *model.DestinationResourceModel, plan *model.DestinationResourceModel, planConfig types.Object, resp interface{}) {
+	// Only process if plan specifies PrivateLink with Databricks (check plan, not result, since result may be modified)
+	if plan.NetworkingMethod.ValueString() != "PrivateLink" || plan.Service.ValueString() != "databricks" {
+		return
+	}
+
+	// Preserve top-level networking fields
+	result.NetworkingMethod = plan.NetworkingMethod
+	result.PrivateLinkId = plan.PrivateLinkId
+
+	// Get plan config attributes
+	planConfigAttrs := planConfig.Attributes()
+	if planConfigAttrs == nil {
+		return
+	}
+
+	// Get result config attributes - need to make a copy since map is reference type
+	resultConfigAttrs := result.Config.Attributes()
+	if resultConfigAttrs == nil {
+		return
+	}
+
+	// Create a new map with all current result attributes
+	newConfigAttrs := make(map[string]attr.Value)
+	for k, v := range resultConfigAttrs {
+		newConfigAttrs[k] = v
+	}
+
+	// Preserve server_host_name from plan if present
+	if serverHostName, ok := planConfigAttrs["server_host_name"]; ok && !serverHostName.IsNull() && !serverHostName.IsUnknown() {
+		newConfigAttrs["server_host_name"] = serverHostName
+	}
+
+	// Preserve cloud_provider from plan if present
+	if cloudProvider, ok := planConfigAttrs["cloud_provider"]; ok && !cloudProvider.IsNull() && !cloudProvider.IsUnknown() {
+		newConfigAttrs["cloud_provider"] = cloudProvider
+	}
+
+	// Reconstruct the config object with preserved values
+	preservedConfig, diags := types.ObjectValue(result.Config.AttributeTypes(ctx), newConfigAttrs)
+	if resp != nil {
+		switch r := resp.(type) {
+		case *resource.CreateResponse:
+			r.Diagnostics.Append(diags...)
+		case *resource.UpdateResponse:
+			r.Diagnostics.Append(diags...)
+		}
+	}
+	
+	if !diags.HasError() {
+		result.Config = preservedConfig
 	}
 }
