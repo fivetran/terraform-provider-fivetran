@@ -151,7 +151,6 @@ coalesce
 coassemble
 cockroachdb
 codefresh
-coheris
 collibra
 column
 commercetools
@@ -407,7 +406,6 @@ medallia_agile_research
 megaphone
 mention
 microsoft_dynamics_365_fno
-microsoft_dynamics_365_fo
 microsoft_entra_id
 microsoft_lists
 microsoft_power_bi
@@ -427,6 +425,7 @@ mysql
 mysql_azure
 mysql_rds
 namely
+national_heavy_vehicle_regulator
 navan
 netsuite_suiteanalytics
 nice
@@ -530,6 +529,7 @@ recharge
 recurly
 reddit_ads
 referralhero
+refiner
 reltio
 replyio
 resource_management_by_smartsheet
@@ -627,7 +627,6 @@ sql_server_rds
 sql_server_sap_ecc_hva
 square
 squarespace
-stackadapt
 stackadapt_graphql
 standard_metrics
 starrez
@@ -658,7 +657,7 @@ the_trade_desk
 thinkific
 ticket_tailor
 tiktok_ads
-tiktok_organic
+tiktok_organic_app
 tive
 toggl_track
 totango

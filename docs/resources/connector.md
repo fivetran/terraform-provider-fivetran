@@ -672,6 +672,7 @@ Optional:
 - `api_environment` (String) Field usage depends on `service` value: 
 	- Service `afterpay`: Your Afterpay API environment.
 	- Service `tiktok_organic`: Your TikTok Organic API environment.
+	- Service `tiktok_organic_app`: Your TikTok Organic API environment.
 - `api_id` (String) Field usage depends on `service` value: 
 	- Service `aircall`: Your Aircall API ID.
 - `api_integration_type` (String) Field usage depends on `service` value: 
@@ -849,6 +850,7 @@ Optional:
 	- Service `quorum`: Your Quorum API key.
 	- Service `rebound_returns`: Your ReBound Returns API key.
 	- Service `recurly`: The Recurly API key.
+	- Service `refiner`: Your Refiner API key.
 	- Service `replyio`: Your Reply API key.
 	- Service `revenuecat`: Your RevenueCat API key.
 	- Service `reviewsio`: Your REVIEWS.io API key.
@@ -1321,6 +1323,8 @@ Optional:
 	- Service `webhooks`: Whether to store the events in Fivetran's container service or your S3 bucket. Default value: `Fivetran`.
 - `business_accounts` (Set of String) Field usage depends on `service` value: 
 	- Service `reddit_ads`: Specific Accounts to sync.  Must be populated if `sync_mode` is set to `SpecificAccounts`.
+- `business_category` (String) Field usage depends on `service` value: 
+	- Service `tiktok_organic_app`: The TikTok business category whose data you want to sync.
 - `business_id` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `birdeye`: Your Birdeye Business ID.
 - `business_unit` (String) Field usage depends on `service` value: 
@@ -1408,7 +1412,7 @@ Optional:
 	- Service `genesys`: Your Genesys client ID.
 	- Service `github`: GitHub App Client ID
 	- Service `gofundme_pro`: Client ID of the API application in your GoFundMe Pro account.
-	- Service `h_level`: Your HighLevel Client Id.
+	- Service `h_level`: Your HighLevel client ID.
 	- Service `hana_sap_hva_ecc_netweaver`: Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.
 	- Service `hana_sap_hva_s4_netweaver`: Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.
 	- Service `helpdesk`: Your HelpDesk client ID.
@@ -1445,6 +1449,7 @@ Optional:
 	- Service `power_reviews_enterprise`: Your PowerReviews Enterprise Client ID.
 	- Service `prisma_cloud`: Your Prisma Cloud access key ID.
 	- Service `procore`: Your Procore client ID.
+	- Service `quickbooks`: Client ID of your QuickBooks client application.
 	- Service `quora_ads`: Your Quora Ads client ID.
 	- Service `reltio`: Your Reltio client ID.
 	- Service `salesforce_commerce_cloud`: The Salesforce Commerce Cloud Client ID.
@@ -1589,7 +1594,7 @@ Optional:
 	- Service `fortnox`: Your Fortnox client secret.
 	- Service `genesys`: Your Genesys client secret.
 	- Service `gofundme_pro`: Client secret of the API application in your GoFundMe Pro account.
-	- Service `h_level`: Your HighLevel Client secret.
+	- Service `h_level`: Your HighLevel client secret.
 	- Service `helpdesk`: Your HelpDesk client secret.
 	- Service `hilti_ontrack`: Your Hilti On!Track client secret.
 	- Service `ibacos`: Your Ibacos Client secret.
@@ -1619,6 +1624,7 @@ Optional:
 	- Service `power_reviews_enterprise`: Your PowerReviews Enterprise Client Secret.
 	- Service `prisma_cloud`: Your Prisma Cloud secret access Key.
 	- Service `procore`: Your Procore client secret.
+	- Service `quickbooks`: Client Secret of your QuickBooks client application.
 	- Service `quora_ads`: Your Quora Ads client secret.
 	- Service `reltio`: Your Reltio client secret.
 	- Service `salesforce_commerce_cloud`: The Salesforce Commerce Cloud Client secret.
@@ -2442,6 +2448,7 @@ Optional:
 - `hostname` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `akamai`: Your Akamai hostname.
 	- Service `discourse`: Your Discourse hostname.
+	- Service `national_heavy_vehicle_regulator`: Your National Heavy Vehicle Regulator hostname.
 	- Service `ukg_pro`: Your UKG Pro hostname.
 - `hosts` (Set of String) Field usage depends on `service` value: 
 	- Service `azure_cosmos_for_mongo`: A list of host addresses for Azure Cosmos DB for Mongo DB.
@@ -2465,7 +2472,7 @@ Optional:
 	- Service `salesforce_marketing_cloud`: The Salesforce Marketing Cloud instance ID
 	- Service `servicenow`: ServiceNow Instance ID.
 - `instance_code` (String) Field usage depends on `service` value: 
-	- Service `workday_adaptive`: Instance code for Workday Adaptive Planning
+	- Service `workday_adaptive`: Instance code for Workday Adaptive Planning.
 - `instance_number` (String) Field usage depends on `service` value: 
 	- Service `hana_sap_hva_b1`: Two-digit number (00-97) of the SAP instance within its host.
 	- Service `hana_sap_hva_ecc`: Two-digit number (00-97) of the SAP instance within its host.
@@ -2589,7 +2596,7 @@ Optional:
 - `list_sync_mode` (String) Field usage depends on `service` value: 
 	- Service `google_analytics_4_export`: The Sync Mode
 - `location_ids` (String) Field usage depends on `service` value: 
-	- Service `h_level`: Your HighLevel Location IDs.
+	- Service `h_level`: Your HighLevel location IDs.
 - `log_journal` (String) Field usage depends on `service` value: 
 	- Service `db2i_hva`: The log journal name.
 	- Service `db2i_sap_hva`: The log journal name.
@@ -3665,6 +3672,8 @@ Optional:
 	- Service `linkedin_company_pages`: The social data (UGCPosts, Shares, Comments) sync time frame in months. Default value: `SIX` .
 - `source` (String) Field usage depends on `service` value: 
 	- Service `adobe_analytics_data_feed`: The data source.
+- `source_file_type` (String) Field usage depends on `service` value: 
+	- Service `microsoft_dynamics_365_fno`: The file type of the source files. Supported file types are `CSV` and `PARQUET`.
 - `source_name` (String) Field usage depends on `service` value: 
 	- Service `consensus_demo_automation_platform`: Your Consensus Demo Automation Platform source name.
 - `storage_account_name` (String) Field usage depends on `service` value: 
@@ -3797,6 +3806,7 @@ Optional:
 - `subscription_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `cabcharge`: Your Cabcharge subscription key.
 	- Service `dsv`: Your DSV subscription key.
+	- Service `national_heavy_vehicle_regulator`: Your National Heavy Vehicle Regulator subscription key.
 - `support_connected_accounts_sync` (Boolean) Field usage depends on `service` value: 
 	- Service `stripe`: Sync Connected Accounts. Connected Account Documentation - https://stripe.com/docs/api/connected_accounts.
 	- Service `stripe_test`: Sync Connected Accounts. Connected Account Documentation - https://stripe.com/docs/api/connected_accounts.
@@ -3863,6 +3873,10 @@ Optional:
 	- Service `yahoo_dsp`: Whether to sync all seats or specific seats. Default value: `ALL_SEATS`.
 - `sync_multiple_accounts` (Boolean) Field usage depends on `service` value: 
 	- Service `reddit_ads`: When this parameter is set to `true`, we sync the data of the additional linked accounts. When this parameter is set to `false`, we sync only the data from the main account that was used for authorization
+- `sync_nested_files` (Boolean) Field usage depends on `service` value: 
+	- Service `google_drive`: Optional. Set to true to sync files from nested folders within the specified folder.
+	- Service `sftp`: Optional. Set to true to sync files from nested folders within the specified folder.
+	- Service `share_point`: Optional. Set to true to sync files from nested folders within the specified folder.
 - `sync_pack_mode` (String) Field usage depends on `service` value: 
 	- Service `cosmos`: The packing mode type. Supported values:`STANDARD_UNPACKED_MODE`- Unpacks _one_ layer of nested fields and infers types.`PACKED_MODE`- Delivers packed data as a single destination column value.Learn more in our [Azure Cosmos DB Sync Pack Mode Options documentation](https://fivetran.com/docs/connectors/databases/cosmos#packmodeoptions).
 	- Service `documentdb`: Indicates whether synced data will be packed into a single entry(column), or unpacked with one layer of nested fields.
@@ -4842,7 +4856,7 @@ Optional:
 - `conversion_metric_id` (String) Field usage depends on `service` value: 
 	- Service `klaviyo`: The ID of the conversion metric.
 - `currency` (String) Field usage depends on `service` value: 
-	- Service `workday_adaptive`: List of currencies to sync for the table, if applicable
+	- Service `workday_adaptive`: List of currencies to sync for the table, if applicable.
 - `custom_column_ids` (Set of String) Field usage depends on `service` value: 
 	- Service `google_search_ads_360`: The report custom column IDs included to sync.
 - `custom_dimension_key_ids` (Set of String) Field usage depends on `service` value: 
@@ -4860,7 +4874,7 @@ Optional:
 	- Service `google_analytics_4`: The report dimensions to include into a sync.
 	- Service `google_display_and_video_360`: The report dimensions (filters) to include into a sync. The dimension names are provided in the API format. This is a required parameter when `config_method` is set to `CREATE_NEW`.
 	- Service `google_search_console`: The report dimensions included to sync.
-	- Service `workday_adaptive`: List of dimensions to sync for the table, if applicable
+	- Service `workday_adaptive`: List of dimensions to sync for the table, if applicable.
 - `dynamic_parameter_field` (String) Field usage depends on `service` value: 
 	- Service `workday`: Dynamic parameter field name
 - `enable_all_dimension_combinations` (Boolean) Field usage depends on `service` value: 
@@ -4880,7 +4894,7 @@ Optional:
 - `generate_fivetran_pk` (Boolean) Field usage depends on `service` value: 
 	- Service `workday`: Select this option to generate a Primary Key for reports where no single column or combination of columns can be used to form a Primary Key.
 - `include_zero_rows` (Boolean) Field usage depends on `service` value: 
-	- Service `workday_adaptive`: Include zero rows in the table sync
+	- Service `workday_adaptive`: Include zero rows in the table sync.
 - `interval` (String) Field usage depends on `service` value: 
 	- Service `klaviyo`: The interval used in the API calls to retrieve the reports.
 - `levels` (Block Set) (see [below for nested schema](#nestedblock--config--reports--levels))
@@ -4948,7 +4962,7 @@ Optional:
 	- Service `google_search_ads_360`: The name of a table within the schema to which connector syncs the data of a given report.
 	- Service `google_search_console`: The name of a table within the schema to which connector syncs the data of a given report.
 	- Service `workday`: The table name within the schema to which connector will sync the data of the specific report.
-	- Service `workday_adaptive`: Table name to be synced
+	- Service `workday_adaptive`: Table name to be synced.
 - `table_name` (String) Field usage depends on `service` value: 
 	- Service `google_display_and_video_360`: The table name within the schema to which connector will sync the data of the specific report.
 - `time_aggregation_granularity` (String) Field usage depends on `service` value: 
@@ -4958,9 +4972,9 @@ Optional:
 - `update_config_on_each_sync` (Boolean) Field usage depends on `service` value: 
 	- Service `google_display_and_video_360`: Specifies whether the configuration is updated before each sync or only when the connector settings are saved. This parameter only takes effect when `config_method` is set to `REUSE_EXISTING`. The default value is `true`.
 - `version_sync_strategy` (String) Field usage depends on `service` value: 
-	- Service `workday_adaptive`: Version sync strategy for the table, SYNC_ALL_AND_NEW_VERSIONS or SYNC_SELECT_VERSIONS
+	- Service `workday_adaptive`: Version sync strategy for the table, `SYNC_ALL_AND_NEW_VERSIONS` or `SYNC_SELECT_VERSIONS`.
 - `versions` (Set of String) Field usage depends on `service` value: 
-	- Service `workday_adaptive`: List of versions to sync for the table, if versionSyncStrategy is SYNC_SELECT_VERSIONS
+	- Service `workday_adaptive`: List of versions to sync for the table, if versionSyncStrategy is `SYNC_SELECT_VERSIONS`.
 
 <a id="nestedblock--config--reports--accounts"></a>
 ### Nested Schema for `config.reports.accounts`
@@ -4968,9 +4982,9 @@ Optional:
 Optional:
 
 - `flag` (Boolean) Field usage depends on `service` value: 
-	- Service `workday_adaptive`: Flag to indicate if descendants are included or not
+	- Service `workday_adaptive`: Flag to indicate if descendants are included or not.
 - `id` (String) Field usage depends on `service` value: 
-	- Service `workday_adaptive`: Account ID to sync
+	- Service `workday_adaptive`: Account ID and `isAssumption` flag (`true` or `false`) are separated by a comma. The `isAssumption` flag indicates whether the account is used for assumptions.
 
 
 <a id="nestedblock--config--reports--filters"></a>
@@ -4998,9 +5012,9 @@ Optional:
 Optional:
 
 - `flag` (Boolean) Field usage depends on `service` value: 
-	- Service `workday_adaptive`: Flag to indicate if descendants are included or not
+	- Service `workday_adaptive`: Flag to indicate if descendants are included or not.
 - `id` (String) Field usage depends on `service` value: 
-	- Service `workday_adaptive`: Level ID to sync
+	- Service `workday_adaptive`: Level ID to sync.
 - `include_descendants` (Boolean) Field usage depends on `service` value: 
 	- Service `workday_adaptive`: Flag to indicate if descendants are included or not
 
