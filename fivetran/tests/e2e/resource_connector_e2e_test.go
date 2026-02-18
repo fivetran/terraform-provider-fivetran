@@ -972,3 +972,125 @@ func TestResourceConnectorPlanOnlyAttributesE2E(t *testing.T) {
 		},
 	})
 }
+
+func TestResourceConnectorImportingWithTableGroupNameE2E(t *testing.T) {
+	var connectionId string = ""
+
+	tfConfig := `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_connection"
+			    }
+
+			    resource "fivetran_connector" "test_connector" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "share_point"
+
+					destination_schema {
+						name = "share_point_connection"
+						table_group_name = "table_group_name1"
+					}
+
+					auth {
+						tenant_id = "tenant_id1"
+
+						client_access {
+							client_id     = "client_id1"
+							client_secret = "client_secret1"
+						}
+					}
+
+					config {
+						access_type          = "CUSTOM_APP"
+						is_single_table_mode = true
+    					prefix               = "prefix1"
+						line_separator       = "\\n"
+    					compression          = "uncompressed"
+						append_file_option   = "upsert_file"
+						file_handling        = "unstructured"
+						file_type            = "unstructured"
+						json_delivery_mode   = "Packed"
+						on_error             = "fail"
+						quote_char           = "\""
+						quote_character_enabled = true
+						empty_header         = false
+						sync_permissions     = false
+
+						files {
+							table_name = "table_name1"
+						}
+					}
+
+					run_setup_tests = false
+					trust_certificates = false
+					trust_fingerprints = false
+				}
+
+				data "fivetran_connector" "test_connector" {
+					provider = fivetran-provider
+					id = fivetran_connector.test_connector.id
+				}
+		  `
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectionResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: tfConfig,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectionResourceCreate(t, "fivetran_connector.test_connector"),
+					resource.TestCheckResourceAttrSet("fivetran_connector.test_connector", "id"),
+					resource.TestCheckResourceAttrSet("fivetran_connector.test_connector", "name"),
+					resource.TestCheckResourceAttrSet("fivetran_connector.test_connector", "created_at"),
+					resource.TestCheckResourceAttrSet("fivetran_connector.test_connector", "connected_by"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "share_point"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "destination_schema.name", "share_point_connection"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "destination_schema.table_group_name", "table_group_name1"),
+
+					resource.TestCheckResourceAttrSet("data.fivetran_connector.test_connector", "id"),
+					resource.TestCheckResourceAttrSet("data.fivetran_connector.test_connector", "name"),
+					resource.TestCheckResourceAttrSet("data.fivetran_connector.test_connector", "created_at"),
+					resource.TestCheckResourceAttrSet("data.fivetran_connector.test_connector", "connected_by"),
+					resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "service", "share_point"),
+					resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "destination_schema.name", "share_point_connection"),
+					resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "destination_schema.table_group_name", "table_group_name1"),
+					func(s *terraform.State) error {
+						rs := GetResource(t, s, "fivetran_connector.test_connector")
+						connectionId = rs.Primary.ID
+						return nil
+					},
+				),
+			},
+			{
+				Config: tfConfig,
+				ResourceName:      "fivetran_connector.test_connector",
+				ImportState:       true,
+				ImportStateVerify: true,
+				ImportStateVerifyIgnore: []string{
+					"run_setup_tests", 
+					"trust_certificates", 
+					"trust_fingerprints",
+					"data_delay_sensitivity",
+					"auth",
+				},
+				ImportStateIdFunc:       func(s *terraform.State) (string, error) {
+					return connectionId, nil
+				},
+
+				ImportStateCheck: ComposeImportStateCheck(
+					CheckImportResourceAttr("fivetran_connector", "service", "share_point"),
+					CheckImportResourceAttr("fivetran_connector", "destination_schema.name", "share_point_connection"),
+					CheckImportResourceAttr("fivetran_connector", "destination_schema.table_group_name", "table_group_name1"),
+					CheckNoImportResourceAttr("fivetran_connector", "destination_schema.table"),
+					CheckNoImportResourceAttr("fivetran_connector", "destination_schema.prefix"),
+				),
+			},
+		},
+	})
+}

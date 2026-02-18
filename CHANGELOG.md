@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.23...HEAD)
 
+### Fixed
+- Importing of `fivetran_connector` resource with `destination_schema.table_group_name` specified
+
 ## [v1.9.23](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.23...v1.9.22)
 
 ### Added
