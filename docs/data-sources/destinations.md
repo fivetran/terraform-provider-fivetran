@@ -33,6 +33,7 @@ Read-Only:
 - `id` (String) The unique identifier for the destination within the Fivetran system.
 - `networking_method` (String) Possible values: Directly, SshTunnel, ProxyAgent, PrivateLink.
 - `private_link_id` (String) The private link ID.
+- `proxy_agent_id` (String) The proxy agent ID.
 - `region` (String) Data processing location. This is where Fivetran will operate and run computation on data.
 - `service` (String) The destination type id within the Fivetran system.
 - `setup_status` (String) Destination setup status.
