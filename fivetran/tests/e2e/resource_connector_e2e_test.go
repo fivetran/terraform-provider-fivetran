@@ -1094,3 +1094,66 @@ func TestResourceConnectorImportingWithTableGroupNameE2E(t *testing.T) {
 		},
 	})
 }
+
+func TestResourceConnectorWhenConfigHasEmptyNestedObjectsE2E(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectorResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_name"
+			    }
+
+			    resource "fivetran_connector" "test_connector" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "pendo"
+					
+					data_delay_sensitivity = "NORMAL"
+					data_delay_threshold = 0
+					networking_method = "Directly"
+
+					destination_schema {
+						name = "schema1"
+					}
+
+					config {
+					 	sync_mode = "SpecificAppIds"
+						integration_key = "integration_key1"
+						app_ids = ["-1", "1", "2"]
+						region = "US"
+
+						# aws_credentials, etc., are absent intentionally, to test connection creation without empty nested objects
+					}
+					
+					trust_certificates = false
+					trust_fingerprints = false
+					run_setup_tests = false
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectorResourceCreate(t, "fivetran_connector.test_connector"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "pendo"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "schema1"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_sensitivity", "NORMAL"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_threshold", "0"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "networking_method", "Directly"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.sync_mode", "SpecificAppIds"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.integration_key", "integration_key1"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.region", "US"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.app_ids.#", "3"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.app_ids.0", "-1"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.app_ids.1", "1"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.app_ids.2", "2"),
+				),
+			},
+		},
+	})
+}
