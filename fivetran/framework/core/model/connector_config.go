@@ -212,6 +212,9 @@ func getValue(
 			return types.ObjectNull(complexType.AttributeTypes())
 		}
 		vMap := value.(map[string]interface{})
+		if len(vMap) == 0 && local == nil {
+			return types.ObjectNull(complexType.AttributeTypes())
+		}
 		var lMap map[string]interface{}
 		if local != nil {
 			lMap = local.(map[string]interface{})
