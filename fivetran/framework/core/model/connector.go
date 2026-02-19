@@ -224,7 +224,7 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, is
         d.DataDelayThreshold = types.Int64Null()
     }
     
-    d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema, d.DestinationSchema)
+    d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema, d.DestinationSchema, isImporting)
 
 	if c.HybridDeploymentAgentId != "" && !d.HybridDeploymentAgentId.IsUnknown() && !d.HybridDeploymentAgentId.IsNull() {
 		d.HybridDeploymentAgentId = types.StringValue(c.HybridDeploymentAgentId)
@@ -276,7 +276,7 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
         d.DataDelayThreshold = types.Int64Null()
     }
 
-    d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema, d.DestinationSchema)
+    d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema, d.DestinationSchema, true)
     
     if c.PrivateLinkId != "" {
         d.PrivateLinkId = types.StringValue(c.PrivateLinkId)
@@ -451,7 +451,7 @@ func getDestinatonSchemaForConfig(serviceId, nameAttr, tableAttr, prefixAttr, ta
 	}
 }
 
-func getDestinationSchemaValue(service, schema string, destinationSchema types.Object ) types.Object {
+func getDestinationSchemaValue(service, schema string, destinationSchema types.Object, isImporting bool) types.Object {
     r, _ := types.ObjectValue(
         map[string]attr.Type{
             "name":             types.StringType,
@@ -459,12 +459,12 @@ func getDestinationSchemaValue(service, schema string, destinationSchema types.O
             "prefix":           types.StringType,
             "table_group_name": types.StringType,
         },
-        getDestinationSchemaValuesMap(service, schema, destinationSchema),
+        getDestinationSchemaValuesMap(service, schema, destinationSchema, isImporting),
     )
     return r
 }
 
-func getDestinationSchemaValuesMap(service, schema string, destinationSchema types.Object) map[string]attr.Value {
+func getDestinationSchemaValuesMap(service, schema string, destinationSchema types.Object, isImporting bool) map[string]attr.Value {
     if _, ok := common.GetDestinationSchemaFields()[service]; !ok {
         panic(fmt.Errorf("unknown connector service: `%v`", service))
     }
@@ -485,18 +485,22 @@ func getDestinationSchemaValuesMap(service, schema string, destinationSchema typ
         s := strings.Split(schema, ".")
         result["name"] = types.StringValue(s[0])
         if len(s) > 1 {
-            if common.GetDestinationSchemaFields()[service]["table_group_name"] &&
-                !destinationSchema.IsNull() && 
-                !destinationSchema.Attributes()["table_group_name"].IsNull() && 
-                !destinationSchema.Attributes()["table_group_name"].IsUnknown() {
-                result["table_group_name"] = types.StringValue(s[1])                
+            if common.GetDestinationSchemaFields()[service]["table_group_name"] {
+                if (!destinationSchema.IsNull() && 
+                    !destinationSchema.Attributes()["table_group_name"].IsNull() && 
+                    !destinationSchema.Attributes()["table_group_name"].IsUnknown()) || 
+                    isImporting {
+                    result["table_group_name"] = types.StringValue(s[1])
+                }           
             }
 
-            if common.GetDestinationSchemaFields()[service]["table"] &&
-               !destinationSchema.IsNull() && 
-               !destinationSchema.Attributes()["table"].IsNull() && 
-               !destinationSchema.Attributes()["table"].IsUnknown() {
-                result["table"] = types.StringValue(s[1])                
+            if common.GetDestinationSchemaFields()[service]["table"] {
+                if (!destinationSchema.IsNull() && 
+                    !destinationSchema.Attributes()["table"].IsNull() && 
+                    !destinationSchema.Attributes()["table"].IsUnknown()) ||
+                    isImporting {
+                    result["table"] = types.StringValue(s[1])
+                }
             }
         }
 

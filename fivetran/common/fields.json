@@ -14079,7 +14079,6 @@
          "s3": "Destination table. Table is permanent and cannot be changed after connection creation",
          "safebase": "Destination table. Table is permanent and cannot be changed after connection creation",
          "sftp": "Destination table. Table is permanent and cannot be changed after connection creation",
-         "share_point": "Destination table. Table is permanent and cannot be changed after connection creation",
          "shiphero": "Destination table. Table is permanent and cannot be changed after connection creation",
          "sistrix": "Destination table. Table is permanent and cannot be changed after connection creation",
          "slack": "Destination table. Table is permanent and cannot be changed after connection creation",

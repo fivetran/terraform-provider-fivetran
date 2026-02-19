@@ -54,7 +54,7 @@ func (d *ConnectionResourceModel) ReadFromResponse(resp connections.DetailsWithC
         d.DataDelayThreshold = types.Int64Null()
     }
     
-    d.DestinationSchema = getDestinationSchemaValue(resp.Data.Service, resp.Data.Schema, d.DestinationSchema)
+    d.DestinationSchema = getDestinationSchemaValue(resp.Data.Service, resp.Data.Schema, d.DestinationSchema, false)
 
     if resp.Data.HybridDeploymentAgentId != "" && !d.HybridDeploymentAgentId.IsUnknown() && !d.HybridDeploymentAgentId.IsNull() {
         d.HybridDeploymentAgentId = types.StringValue(resp.Data.HybridDeploymentAgentId)
@@ -98,7 +98,7 @@ func (d *ConnectionResourceModel) ReadFromCreateResponse(resp connections.Detail
         d.DataDelayThreshold = types.Int64Null()
     }
     
-    d.DestinationSchema = getDestinationSchemaValue(resp.Data.Service, resp.Data.Schema, d.DestinationSchema)
+    d.DestinationSchema = getDestinationSchemaValue(resp.Data.Service, resp.Data.Schema, d.DestinationSchema, false)
 
     if resp.Data.HybridDeploymentAgentId != "" && !d.HybridDeploymentAgentId.IsUnknown() && !d.HybridDeploymentAgentId.IsNull() {
         d.HybridDeploymentAgentId = types.StringValue(resp.Data.HybridDeploymentAgentId)
@@ -198,7 +198,7 @@ func (d *ConnectionDatasourceModel) ReadFromResponse(resp connections.DetailsWit
         d.DailySyncTime = types.StringNull()
     }
 
-    d.DestinationSchema = getDestinationSchemaValue(resp.Data.Service, resp.Data.Schema, d.DestinationSchema)
+    d.DestinationSchema = getDestinationSchemaValue(resp.Data.Service, resp.Data.Schema, d.DestinationSchema, false)
 
     codeMessageAttrType := types.ObjectType{
         AttrTypes: codeMessageAttrTypes,

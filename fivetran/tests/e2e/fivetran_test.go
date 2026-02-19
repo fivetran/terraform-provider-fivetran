@@ -341,3 +341,24 @@ func CheckImportResourceAttrSet(resourceType, attributeName string) resource.Imp
 		return fmt.Errorf("Resource with type '%s' not found in imported state. At %s:%d", resourceType, file, line)
 	}
 }
+
+func CheckNoImportResourceAttr(resourceType, attributeName string) resource.ImportStateCheckFunc {
+	_, file, line, _ := runtime.Caller(1)
+
+	return func(s []*terraform.InstanceState) error {
+		for _, v := range s {
+			if v.Ephemeral.Type == resourceType {
+
+				if attrVal, ok := v.Attributes[attributeName]; ok {
+					if attrVal != "" {
+						return fmt.Errorf("For %s, '%s' attribute is found while not expected. Got: '%s'. At %s:%d", v.Ephemeral.Type, attributeName, attrVal, file, line)
+					}
+				}
+
+				return nil
+			}
+		}
+
+		return fmt.Errorf("Resource with type '%s' not found in imported state. At %s:%d", resourceType, file, line)
+	}
+}
