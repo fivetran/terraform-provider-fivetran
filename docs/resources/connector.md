@@ -6,6 +6,8 @@ page_title: "Resource: fivetran_connector"
 
 This resource allows you to create, update, and delete connectors.
 
+-> NOTE: The `fivetran_connector` resource creates a paused connector. In order to start data syncs, please create corresponding [fivetran_connector_schedule](connector_schedule) resource with `paused = false`
+
 ## Example Usage
 
 ```hcl
