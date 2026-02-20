@@ -96,6 +96,7 @@ resource "fivetran_connector" "amplitude" {
 Optional:
 
 - `access_token` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `amazon_dsp`: Your Amazon DSP access token.
 	- Service `autodesk_bim_360`: Your Autodesk BIM 360 Access Token.
 	- Service `azure_sql_db`: The long-lived Access token carries the information necessary to access API resources.
 	- Service `azure_sql_managed_db`: The long-lived Access token carries the information necessary to access API resources.
@@ -104,16 +105,18 @@ Optional:
 	- Service `docebo`: Your Docebo Access Token.
 	- Service `drift`: Your Drift access token.
 	- Service `employment_hero`: Your Employment Hero access token.
-	- Service `facebook_ads`: The long-lived `Access token` along with the `client_id` and `client_secret` parameters carry the information necessary to query the Facebook Ads API
+	- Service `facebook_ads`: The long-lived `Access token` along with the `client_id` and `client_secret` parameters carry the information necessary to query the Facebook Ads API. Use either `access_token` or `user_access_token`, not both at the same time.
 	- Service `facebook_pages`: The `Access Token` carries the information necessary for API resources to fetch data
 	- Service `freshbooks`: Your FreshBooks Access Token.
 	- Service `gitlab`: Your GitLab access token.
+	- Service `gmail`: The `Access Token` that carries the information necessary for API resources to fetch data.
 	- Service `google_business_profile`: Your Google Business Profile Access token.
 	- Service `google_calendar`: Your Google Calendar access token.
 	- Service `google_classroom`: The `Access Token` that carries the information necessary for API resources to fetch data.
 	- Service `google_tasks`: The access token that carries the information necessary for API resources to your Google Tasks fetch data.
 	- Service `instagram_business`: The `Access Token` carries the information necessary for API resources to fetch data
 	- Service `intercom`: The long-lived `Access Token` carries the information necessary for API resources to fetch data.
+	- Service `lightspeed_retail_xseries`: Your Lightspeed Retail X-Series access token.
 	- Service `medallia`: Your Medallia access token that contains all the information necessary for the API resources to fetch your data.
 	- Service `pinterest_organic`: Your Pinterest access token.
 	- Service `ramp`: Your Ramp access token.
@@ -124,6 +127,8 @@ Optional:
 	- Service `stripe_test`: The Stripe API Restricted Key
 	- Service `survey_monkey`: The long-lived `Access token` carries the information necessary to access API resources.
 	- Service `tiktok_ads`: The long-lived `Access token` carries the information necessary to access API resources.
+	- Service `tiktok_organic_app`: Your TikTok Organic access token.
+	- Service `tremendous`: Your Tremendous access token.
 	- Service `typeform`: The Typeform API access token.
 	- Service `yahoo_search_ads_yahoo_japan`: Your Yahoo Search Ads Access Token.
 	- Service `zendesk`: The long-lived `Access token` carries the information necessary to access API resources.
@@ -133,6 +138,8 @@ Optional:
 - `api_key` (String) Field usage depends on `service` value: 
 	- Service `elastic_cloud`: The Elasticsearch API key. If omitted, then basic user and password authentication will apply.
 	- Service `es_self_hosted`: The Elasticsearch API key. If omitted, then basic user and password authentication will apply.
+- `authentication_method` (String) Field usage depends on `service` value: 
+	- Service `google_play`: Authentication Method
 - `aws_access_key` (String) Field usage depends on `service` value: 
 	- Service `amazon_selling_partner`: `AWS Access Key` of your AWS Account User.
 - `aws_secret_key` (String) Field usage depends on `service` value: 
@@ -141,12 +148,16 @@ Optional:
 - `client_id` (String) Field usage depends on `service` value: 
 	- Service `amazon_selling_partner`: `Client ID` of your Amazon Seller/Vendor Central client application.
 	- Service `apple_search_ads`: Apple Search Ads REST API Client ID. Must be populated if `is_auth2_enabled` is set to `true`.
+	- Service `azure_blob_storage`: `Client ID` of your Microsoft client application.
+	- Service `microsoft_dynamics_365_fno`: `Client ID` of your Microsoft client application.
 	- Service `workday`: Client ID
 	- Service `workday_financial_management`: ID of your Workday Client App
 	- Service `workday_hcm`: ID of your Workday Client App
 	- Service `yahoo_dsp`: Your Yahoo DSP Client ID.
-- `client_secret` (String) Field usage depends on `service` value: 
+- `client_secret` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `amazon_selling_partner`: `Client Secret` of your Amazon Seller/Vendor Central client application.
+	- Service `azure_blob_storage`: `Client Secret` of your Microsoft client application.
+	- Service `microsoft_dynamics_365_fno`: `Client Secret` of your Microsoft client application.
 	- Service `workday`: Client Secret
 	- Service `workday_financial_management`: Secret of your Workday Client App
 	- Service `workday_hcm`: Secret of your Workday Client App
@@ -154,19 +165,22 @@ Optional:
 - `consumer_key` (String) Field usage depends on `service` value: 
 	- Service `twitter`: API Key of your app
 	- Service `twitter_ads`: The Twitter App consumer key.
-- `consumer_secret` (String) Field usage depends on `service` value: 
+- `consumer_secret` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `twitter`: API Secret of your app
 	- Service `twitter_ads`: The Twitter App consumer secret.
 - `key_id` (String) Field usage depends on `service` value: 
 	- Service `apple_search_ads`: Apple Search Ads REST API Key ID. Must be populated if `is_auth2_enabled` is set to `true`.
-- `oauth_token` (String) Field usage depends on `service` value: 
+- `managed_identity_user_assigned` (String) Field usage depends on `service` value: 
+	- Service `azure_sql_db`: User Assigned Managed Identity Client ID.
+	- Service `azure_sql_managed_db`: User Assigned Managed Identity Client ID.
+- `oauth_token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `twitter`: The Twitter App access token.
 	- Service `twitter_ads`: The Twitter App access token.
-- `oauth_token_secret` (String) Field usage depends on `service` value: 
+- `oauth_token_secret` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `twitter`: The Twitter App access token secret.
 	- Service `twitter_ads`: The Twitter App access token secret.
-- `ocapi_access_token` (String)
-- `ocapi_refresh_token` (String)
+- `ocapi_access_token` (String, Sensitive)
+- `ocapi_refresh_token` (String, Sensitive)
 - `previous_refresh_token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `dynamics_365`: Previous `Refresh token` of your application.
 - `realm_id` (String) Field usage depends on `service` value: 
@@ -175,6 +189,7 @@ Optional:
 	- Service `adroll`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `airtable`: The long-lived refresh token along with the client ID and client secret carry the information necessary to get a new access token for API resources.
 	- Service `amazon_ads`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
+	- Service `amazon_dsp`: Your Amazon DSP refresh token.
 	- Service `amazon_selling_partner`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `asana`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `autodesk_bim_360`: Your Autodesk BIM 360 Refresh Token.
@@ -196,6 +211,7 @@ Optional:
 	- Service `freshbooks`: Your FreshBooks Refresh Token.
 	- Service `front`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `gitlab`: Your GitLab refresh token.
+	- Service `gmail`: The long-lived `Refresh token` of your Gmail client application.
 	- Service `google_ads`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `google_analytics`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `google_analytics_4`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
@@ -210,6 +226,7 @@ Optional:
 	- Service `google_tasks`: The long-lived refresh token of your Google Tasks client application.
 	- Service `helpscout`: The long-lived `refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `hubspot`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
+	- Service `lightspeed_retail_xseries`: Your Lightspeed Retail X-Series refresh token.
 	- Service `linkedin_ads`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `linkedin_company_pages`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `microsoft_lists`: The long-lived Refresh token carries the information necessary to get a new access token for API resources.
@@ -230,19 +247,40 @@ Optional:
 	- Service `slack`: Your Slack refresh token.
 	- Service `snapchat_ads`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `spotify_ads`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
+	- Service `tiktok_organic_app`: Your TikTok Organic refresh token.
+	- Service `tremendous`: Your Tremendous refresh token.
 	- Service `typeform`: The Typeform API refresh token.
 	- Service `workday`: OAuth Refresh Token
 	- Service `yahoo_search_ads_yahoo_japan`: Your Yahoo Search Ads Refresh Token.
+	- Service `youtube_analytics`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `zoho_crm`: The long-lived `Refresh token`, along with the `client_id` and `client_secret` parameters, carries the information necessary to get a new access token for API resources.
 	- Service `zoom`: Your Zoom Refresh token.
 - `role_arn` (String) Field usage depends on `service` value: 
 	- Service `amazon_selling_partner`: `IAM Role ARN` of your AWS Account.
+- `service_principal_client_cert_pvt_key` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `azure_sql_db`: Contents of Service Principal Client Certificate Private Key.
+	- Service `azure_sql_managed_db`: Contents of Service Principal Client Certificate Private Key.
+- `service_principal_client_certificate` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `azure_sql_db`: Contents of Service Principal Client Certificate.
+	- Service `azure_sql_managed_db`: Contents of Service Principal Client Certificate.
+- `service_principal_client_secret` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `azure_sql_db`: Service Principal Client Secret.
+	- Service `azure_sql_managed_db`: Service Principal Client Secret.
+- `service_principal_id` (String) Field usage depends on `service` value: 
+	- Service `azure_sql_db`: Service Principal Client ID.
+	- Service `azure_sql_managed_db`: Service Principal Client ID.
+- `svc_acc_secret_key` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `google_play`: Service account secret key
+- `system_user_access_token` (String, Sensitive)
 - `team_id` (String) Field usage depends on `service` value: 
 	- Service `apple_search_ads`: Apple Search Ads REST API Team ID. Must be populated if `is_auth2_enabled` is set to `true`.
 - `tenant_id` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `azure_blob_storage`: `Tenant ID` of your Microsoft client application.
+	- Service `microsoft_dynamics_365_fno`: `Tenant ID` of your Microsoft client application.
+	- Service `microsoft_lists`: `Tenant ID` of your Microsoft client application.
 	- Service `share_point`: `Tenant ID` of your Microsoft client application.
-- `user_access_token` (String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: Access Token
+- `user_access_token` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `facebook_ads`: System User Token. Use in combination with `client_id` and `client_secret`. Use either `user_access_token` (for system token) or `access_token` (for user access token), not both at the same time.
 
 <a id="nestedblock--auth--client_access"></a>
 ### Nested Schema for `auth.client_access`
@@ -260,11 +298,12 @@ Optional:
 	- Service `double_click_campaign_manager`: `Client ID` of your Google Campaign Manager 360 client application.
 	- Service `double_click_publishers`: `Client ID` of your Google Ad Manager client application.
 	- Service `dropbox`: `Client ID` of your Dropbox client application.
-	- Service `dynamics_365`: `Client ID` of your Dynamic 365 client application, or Service Principal.
+	- Service `dynamics_365`: Client ID of your Dynamics 365 client application, or service principal.
 	- Service `facebook_ads`: `Client ID` of your Facebook client application.
 	- Service `facebook_pages`: `Client ID` of your Facebook  client application.
 	- Service `financial_force`: `Client ID` of your Salesforce client application.
 	- Service `front`: `Client ID` of your Front client application.
+	- Service `gmail`: `Client ID` of your Gmail client application.
 	- Service `google_ads`: `Client ID` of your Google Ads client application.
 	- Service `google_analytics`: `Client ID` of your Google Analytics client application.
 	- Service `google_analytics_4`: `Client ID` of your Google Analytics client application.
@@ -276,7 +315,8 @@ Optional:
 	- Service `google_sheets`: `Client ID` of your Google Sheets client application.
 	- Service `helpscout`: `Client ID` of your Help Scout client application.
 	- Service `hubspot`: `Client ID` of your HubSpot client application.
-	- Service `instagram_business`: `Client ID` of your Facebook  client application.
+	- Service `instagram_business`: `Client ID` of your Facebook client application.
+	- Service `lightspeed_retail_xseries`: `Client ID` of your Lightspeed Retail X-Series client application.
 	- Service `linkedin_ads`: `Client ID` of your LinkedIn client application.
 	- Service `linkedin_company_pages`: `Client ID` of your LinkedIn client application.
 	- Service `microsoft_lists`: `Client ID` of your Microsoft client application.
@@ -284,6 +324,7 @@ Optional:
 	- Service `optimizely`: `Client ID` of your Optimizely client application.
 	- Service `outreach`: `Client ID` of your Outreach client application.
 	- Service `pardot`: `Client ID` of your Pardot client application.
+	- Service `pardot_sandbox`: `Client ID` of your Pardot client application.
 	- Service `pinterest_ads`: `Client ID` of your Pinterest client application.
 	- Service `pipedrive`: `Client ID` of your Pipedrive client application.
 	- Service `qualtrics`: `Client ID` of your Qualtrics client application.
@@ -301,6 +342,7 @@ Optional:
 	- Service `typeform`: The Typeform client ID.
 	- Service `yahoo_gemini`: `Client ID` of your Yahoo Gemini client application.
 	- Service `youtube_analytics`: `Client ID` of your Youtube client application.
+	- Service `zendesk`: `Identifier` of your Zendesk Confidential OAuth client app.
 	- Service `zoho_crm`: `Client ID` of your Zoho client application.
 - `client_secret` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `adroll`: `Client Secret` of your AdRoll client application.
@@ -313,11 +355,12 @@ Optional:
 	- Service `double_click_campaign_manager`: `Client Secret` of your Google Campaign Manager 360 client application.
 	- Service `double_click_publishers`: `Client Secret` of your Google Ad Manager client application.
 	- Service `dropbox`: `Client Secret` of your Dropbox client application.
-	- Service `dynamics_365`: `Client Secret` of your Dynamic 365 client application, or Service Principal.
+	- Service `dynamics_365`: Client Secret of your Dynamics 365 client application, or service principal.
 	- Service `facebook_ads`: `Client Secret` of your Facebook client application.
 	- Service `facebook_pages`: `Client Secret` of your Facebook client application.
 	- Service `financial_force`: `Client Secret` of your Salesforce client application.
 	- Service `front`: `Client Secret` of your Front client application.
+	- Service `gmail`: `Client Secret` of your Gmail client application.
 	- Service `google_ads`: `Client Secret` of your Google Ads client application.
 	- Service `google_analytics`: `Client Secret` of your Google Analytics client application.
 	- Service `google_analytics_4`: `Client Secret` of your Google Analytics client application.
@@ -330,6 +373,7 @@ Optional:
 	- Service `helpscout`: `Client Secret` of your Help Scout client application.
 	- Service `hubspot`: `Client Secret` of your HubSpot client application.
 	- Service `instagram_business`: `Client Secret` of your Facebook client application.
+	- Service `lightspeed_retail_xseries`: `Client Secret` of your Lightspeed Retail X-Series client application.
 	- Service `linkedin_ads`: `Client Secret` of your LinkedIn client application.
 	- Service `linkedin_company_pages`: `Client Secret` of your LinkedIn client application.
 	- Service `microsoft_lists`: `Client Secret` of your Microsoft client application.
@@ -337,6 +381,7 @@ Optional:
 	- Service `optimizely`: `Client Secret` of your Optimizely client application.
 	- Service `outreach`: `Client Secret` of your Outreach client application.
 	- Service `pardot`: `Client Secret` of your Pardot client application.
+	- Service `pardot_sandbox`: `Client Secret` of your Pardot client application.
 	- Service `pinterest_ads`: `Client Secret` of your Pinterest client application.
 	- Service `pipedrive`: `Client Secret` of your Pipedrive client application.
 	- Service `qualtrics`: `Client Secret` of your Qualtrics client application.
@@ -354,9 +399,10 @@ Optional:
 	- Service `typeform`: The Typeform client secret.
 	- Service `yahoo_gemini`: `Client Secret` of your Yahoo Gemini client application.
 	- Service `youtube_analytics`: `Client Secret` of your Youtube client application.
+	- Service `zendesk`: `Client Secret` of your Zendesk Confidential OAuth client app.
 	- Service `zoho_crm`: `Client Secret` of your Zoho client application.
 - `developer_token` (String) Field usage depends on `service` value: 
-	- Service `google_ads`: Your approved `Developer token` to connect to the Google Ads API.
+	- Service `google_ads`: Not required. You can provide your own developer token with your custom client.
 - `user_agent` (String) Field usage depends on `service` value: 
 	- Service `google_ads`: Your company's name in your Google Ads client application.
 

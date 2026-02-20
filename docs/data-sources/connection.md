@@ -39,8 +39,8 @@ data "fivetran_connection" "connection" {
 - `private_link_id` (String) The private link ID.
 - `proxy_agent_id` (String) The proxy agent ID.
 - `schedule_type` (String) The connection schedule configuration type. Supported values: auto, manual.
-- `service` (String) The connector type id within the Fivetran system.
-- `service_version` (String) The connector type version within the Fivetran system.
+- `service` (String) The connection type id within the Fivetran system.
+- `service_version` (String) The connection type version within the Fivetran system.
 - `status` (Block, Read-only) (see [below for nested schema](#nestedblock--status))
 - `succeeded_at` (String) The timestamp of the time the connection sync succeeded last time.
 - `sync_frequency` (Number) The connection sync frequency in minutes.
@@ -50,9 +50,9 @@ data "fivetran_connection" "connection" {
 
 Read-Only:
 
-- `name` (String) The connector schema name in destination. Has to be unique within the group (destination). Required for connector creation.
-- `prefix` (String) The connector schema prefix has to be unique within the group (destination). Each replicated schema is prefixed with the provided value. Required for connector creation.
-- `table` (String) The table name unique within the schema to which connector will sync the data. Required for connector creation.
+- `name` (String) The connection schema name in destination. Has to be unique within the group (destination). Required for connection creation.
+- `prefix` (String) The connection schema prefix has to be unique within the group (destination). Each replicated schema is prefixed with the provided value. Required for connection creation.
+- `table` (String) The table name unique within the schema to which connection will sync the data. Required for connection creation.
 - `table_group_name` (String) Table group name.
 
 
