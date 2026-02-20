@@ -5,7 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.24...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.25...HEAD)
+
+## [v1.9.25](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.25...v1.9.24)
+New connection auth fields supported:
+- Added field `fivetran_connector.config.service_principal_id` for services: `azure_sql_db`, `azure_sql_managed_db`.
+- Added field `fivetran_connector.config.managed_identity_user_assigned` for services: `azure_sql_db`, `azure_sql_managed_db`.
+- Added field `fivetran_connector.config.service_principal_client_cert_pvt_key` for services: `azure_sql_db`, `azure_sql_managed_db`.
+- Added field `fivetran_connector.config.service_principal_client_certificate` for services: `azure_sql_db`, `azure_sql_managed_db`.
+- Added field `fivetran_connector.config.service_principal_client_secret` for services: `azure_sql_db`, `azure_sql_managed_db`.
+- Added field `fivetran_connector.config.authentication_method` for services: `google_play`.
+- Added field `fivetran_connector.config.svc_acc_secret_key` for services: `google_play`.
+- Added field `fivetran_connector.config.system_user_access_token` for services: `instagram_business`.
 
 ## [v1.9.24](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.24...v1.9.23)
 

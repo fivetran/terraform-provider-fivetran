@@ -91,10 +91,20 @@ func main() {
 
 	updateFields(services, schemaContainer,
 		"fivetran/common/auth-fields.json",
+		"_auth_V1.properties.auth.properties",
+		"fivetran/common/auth-fields-updated.json",
+		"auth-changes.txt",
+		false,
+		false,
+		"New connection auth fields supported:",
+	)
+
+	updateFields(services, schemaContainer,
+		"fivetran/common/auth-fields-updated.json",
 		"_config_V1.properties.auth.properties",
 		"fivetran/common/auth-fields-updated.json",
 		"auth-changes.txt",
-		true,
+		false,
 		false,
 		"New connection auth fields supported:",
 	)
