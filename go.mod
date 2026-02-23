@@ -1,7 +1,7 @@
 module github.com/fivetran/terraform-provider-fivetran
 
 require (
-	github.com/fivetran/go-fivetran v1.2.7
+	github.com/fivetran/go-fivetran v1.2.8
 	github.com/hashicorp/terraform-plugin-framework v1.8.0
 	github.com/hashicorp/terraform-plugin-framework-timeouts v0.4.1
 	github.com/hashicorp/terraform-plugin-framework-validators v0.12.0
@@ -68,3 +68,6 @@ require (
 go 1.21
 
 toolchain go1.22.1
+
+replace github.com/fivetran/go-fivetran => ../go-fivetran
+

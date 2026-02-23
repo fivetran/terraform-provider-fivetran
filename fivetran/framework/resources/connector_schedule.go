@@ -4,11 +4,14 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/fivetran/go-fivetran/connections"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
 func ConnectorSchedule() resource.Resource {
@@ -117,6 +120,10 @@ func (r *connectorSchedule) Create(ctx context.Context, req resource.CreateReque
 		svc.ScheduleType(data.ScheduleType.ValueString())
 	}
 
+	if schedule := scheduleFromPlan(ctx, data.Schedule); schedule != nil {
+		svc.Schedule(schedule)
+	}
+
 	connectorResponse, err := svc.DoCustom(ctx)
 
 	if err != nil {
@@ -218,6 +225,12 @@ func (r *connectorSchedule) Update(ctx context.Context, req resource.UpdateReque
 		svc.ScheduleType(plan.ScheduleType.ValueString())
 	}
 
+	if !plan.Schedule.Equal(state.Schedule) {
+		if schedule := scheduleFromPlan(ctx, plan.Schedule); schedule != nil {
+			svc.Schedule(schedule)
+		}
+	}
+
 	connectorResponse, err := svc.DoCustom(ctx)
 
 	if err != nil {
@@ -241,4 +254,37 @@ func (r *connectorSchedule) Update(ctx context.Context, req resource.UpdateReque
 
 func (r *connectorSchedule) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	// do nothing
+}
+
+func scheduleFromPlan(ctx context.Context, scheduleObj types.Object) *connections.ConnectorSchedule {
+	if scheduleObj.IsNull() || scheduleObj.IsUnknown() {
+		return nil
+	}
+	var block model.ConnectorScheduleBlock
+	scheduleObj.As(ctx, &block, basetypes.ObjectAsOptions{})
+
+	s := &connections.ConnectorSchedule{}
+
+	if !block.ScheduleType.IsNull() && !block.ScheduleType.IsUnknown() {
+		v := block.ScheduleType.ValueString()
+		s.ScheduleType = &v
+	}
+	if !block.Interval.IsNull() && !block.Interval.IsUnknown() {
+		v := int(block.Interval.ValueInt64())
+		s.Interval = &v
+	}
+	if !block.TimeOfDay.IsNull() && !block.TimeOfDay.IsUnknown() {
+		v := block.TimeOfDay.ValueString()
+		s.TimeOfDay = &v
+	}
+	if !block.Cron.IsNull() && !block.Cron.IsUnknown() {
+		v := block.Cron.ValueString()
+		s.Cron = &v
+	}
+	if !block.DaysOfWeek.IsNull() && !block.DaysOfWeek.IsUnknown() {
+		var days []string
+		block.DaysOfWeek.ElementsAs(ctx, &days, false)
+		s.DaysOfWeek = days
+	}
+	return s
 }

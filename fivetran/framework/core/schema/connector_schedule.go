@@ -4,6 +4,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
 func GetConnectorScheduleResourceSchema() schema.Schema {
@@ -14,17 +15,17 @@ func GetConnectorScheduleResourceSchema() schema.Schema {
 				Description: "The unique resource identifier (equals to `connector_id`).",
 			},
 			"connector_id": schema.StringAttribute{
-				Optional: true,
-				Computed: true,
-				Description:   "The unique identifier for the connector within the Fivetran system.",
+				Optional:    true,
+				Computed:    true,
+				Description: "The unique identifier for the connector within the Fivetran system.",
 			},
 			"group_id": schema.StringAttribute{
-				Optional: true,
-				Description:   "The unique identifier for the Group (Destination) within the Fivetran system.",
+				Optional:    true,
+				Description: "The unique identifier for the Group (Destination) within the Fivetran system.",
 			},
 			"connector_name": schema.StringAttribute{
-				Optional: true,
-				Description:   "The name used both as the connection's name within the Fivetran system and as the source schema's name within your destination.",
+				Optional:    true,
+				Description: "The name used both as the connection's name within the Fivetran system and as the source schema's name within your destination.",
 			},
 			"sync_frequency": schema.StringAttribute{
 				Optional: true,
@@ -32,7 +33,7 @@ func GetConnectorScheduleResourceSchema() schema.Schema {
 				Validators: []validator.String{
 					stringvalidator.OneOf("1", "5", "15", "30", "60", "120", "180", "360", "480", "720", "1440"),
 				},
-				Description: "The connector sync frequency in minutes. Supported values: 1, 5, 15, 30, 60, 120, 180, 360, 480, 720, 1440.",
+				Description: "The connector sync frequency in minutes. Supported values: 1, 5, 15, 30, 60, 120, 180, 360, 480, 720, 1440. Deprecated: use `schedule` block instead.",
 			},
 			"schedule_type": schema.StringAttribute{
 				Optional:    true,
@@ -65,6 +66,37 @@ func GetConnectorScheduleResourceSchema() schema.Schema {
 				Validators: []validator.String{
 					stringvalidator.OneOf("00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00",
 						"10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"),
+				},
+			},
+		},
+		Blocks: map[string]schema.Block{
+			"schedule": schema.SingleNestedBlock{
+				Description: "Flexible sync schedule configuration. When set, takes precedence over `sync_frequency`.",
+				Attributes: map[string]schema.Attribute{
+					"schedule_type": schema.StringAttribute{
+						Required: true,
+						Description: "The schedule type. Supported values: INTERVAL, TIME_OF_DAY, CRON, MANUAL.",
+						Validators: []validator.String{
+							stringvalidator.OneOf("INTERVAL", "TIME_OF_DAY", "CRON", "MANUAL"),
+						},
+					},
+					"interval": schema.Int64Attribute{
+						Optional:    true,
+						Description: "The sync interval in minutes. Required for INTERVAL schedule type.",
+					},
+					"time_of_day": schema.StringAttribute{
+						Optional:    true,
+						Description: `The time of day to run the sync. Required for TIME_OF_DAY schedule type. Supported values: "00:00" to "23:00".`,
+					},
+					"days_of_week": schema.SetAttribute{
+						Optional:    true,
+						ElementType: basetypes.StringType{},
+						Description: "The days of the week to run the sync. Used with INTERVAL and TIME_OF_DAY schedule types. Supported values: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY.",
+					},
+					"cron": schema.StringAttribute{
+						Optional:    true,
+						Description: "The cron expression for the sync schedule. Required for CRON schedule type.",
+					},
 				},
 			},
 		},
