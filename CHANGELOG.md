@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.24...HEAD)
 
+### Added
+- Added `schedule` block to `fivetran_connector_schedule` resource to support flexible sync schedules. The block supports `schedule_type` (INTERVAL, TIME_OF_DAY, CRON, MANUAL), `interval`, `time_of_day`, `days_of_week`, and `cron` fields.
+
 ## [v1.9.24](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.24...v1.9.23)
 
 ### Fixed
