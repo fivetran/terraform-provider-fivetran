@@ -138,6 +138,8 @@ Optional:
 - `api_key` (String) Field usage depends on `service` value: 
 	- Service `elastic_cloud`: The Elasticsearch API key. If omitted, then basic user and password authentication will apply.
 	- Service `es_self_hosted`: The Elasticsearch API key. If omitted, then basic user and password authentication will apply.
+- `application_id` (String) Field usage depends on `service` value: 
+	- Service `amazon_selling_partner`: `Application ID` of the public application registered in the Amazon Selling Partner Appstore that you want to use for authentication of your connection. Use this parameter along with `Client ID` and `Client Secret` only if you want to use your own public application for authorisation via Connect Card.
 - `authentication_method` (String) Field usage depends on `service` value: 
 	- Service `google_play`: Authentication Method
 - `aws_access_key` (String) Field usage depends on `service` value: 
@@ -1058,6 +1060,9 @@ Optional:
 	- Service `amazon_dsp`: Your Amazon DSP API URL region.
 - `api_usage` (String) Field usage depends on `service` value: 
 	- Service `zendesk`: Maximum Zendesk Api Usage allowed
+- `api_usage_limit` (Number) Field usage depends on `service` value: 
+	- Service `salesforce`: (Optional) The percentage of your Salesforce [daily API limit](https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm) that Fivetran should consume. Value must be between 50 and 90 (default value = `90`)
+	- Service `salesforce_sandbox`: (Optional) The percentage of your Salesforce [daily API limit](https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm) that Fivetran should consume. Value must be between 50 and 90 (default value = `90`)
 - `api_user_identifier` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `shipnetwork`: Your ShipNetwork API user identifier.
 - `api_user_secret` (String, Sensitive) Field usage depends on `service` value: 
@@ -1118,7 +1123,7 @@ Optional:
 	- Service `dear`: Your Dear Application key.
 	- Service `partnerize`: Your Partnerize user application key.
 - `application_name` (String) Field usage depends on `service` value: 
-	- Service `db2z`: Application name used to generate an RACF PassTicket for user authentication. Specify only when `authentication_method` is `LEGACY_PASS_TICKET`.
+	- Service `db2z`: The application name used to generate an RACF PassTicket for user authentication. Specify only when `authentication_method` is `LEGACY_PASS_TICKET` or `ENHANCED_PASS_TICKET`.
 - `apps` (Set of String) Field usage depends on `service` value: 
 	- Service `itunes_connect`: Specific apps to sync. Must be populated if `app_sync_mode` is set to `SpecificApps`.
 - `archive_log_format` (String) Field usage depends on `service` value: 
@@ -1243,7 +1248,7 @@ Optional:
 	- Service `amazon_dsp`: Your Amazon DSP auth grant URL region.
 - `authentication_method` (String) Field usage depends on `service` value: 
 	- Service `adobe_analytics`: Authentication Method
-	- Service `db2z`: User authentication method. Supported values:`PASSWORD`- Authenticate with the database server using an RACF user ID and password. If the parameter is omitted, this is the default value. `LEGACY_PASS_TICKET`- Authenticate with the database server using an RACF user ID and PassTicket.
+	- Service `db2z`: User authentication method. Supported values:`PASSWORD`- Authenticate with the database server using an RACF user ID and password. If the parameter is omitted, `PASSWORD` is used by default. `LEGACY_PASS_TICKET`- Authenticate with the database server using an RACF user ID and legacy PassTicket. `ENHANCED_PASS_TICKET`- Authenticate with the database server using an RACF user ID and an enhanced PassTicket. Enhanced PassTickets are more secure than legacy PassTickets.
 	- Service `elastic_cloud`: The authentication method used to connect to your cluster.
 	- Service `es_self_hosted`: The authentication method used to connect to your cluster.
 	- Service `opendistro`: The authentication method used to connect to your cluster.
@@ -1416,7 +1421,7 @@ Optional:
 	- Service `adp_workforce_now`: Your ADP Client ID.
 	- Service `akamai`: Your Akamai client ID.
 	- Service `akeneo`: Your Akeneo client ID.
-	- Service `alation`: Your Alation Client ID.
+	- Service `alation`: Client ID of the OAuth client application registered in Alation for this connection.
 	- Service `auth0`: Your Auth0 client ID.
 	- Service `autodesk_bim_360`: Your Autodesk BIM 360 & Construction Cloud client ID.
 	- Service `bigin_by_zoho_crm`: Your Bigin by Zoho CRM Client Id
@@ -1602,7 +1607,7 @@ Optional:
 	- Service `adp_workforce_now`: Your ADP Client Secret.
 	- Service `akamai`: Your Akamai client secret.
 	- Service `akeneo`: Your Akeneo client secret.
-	- Service `alation`: Your Alation Client Secret.
+	- Service `alation`: Client secret of the OAuth client application registered in Alation for this connection.
 	- Service `auth0`: Your Auth0 client secret.
 	- Service `autodesk_bim_360`: Your Autodesk BIM 360 & Construction Cloud client secret.
 	- Service `bigin_by_zoho_crm`: Your Bigin by Zoho CRM Client Secret
@@ -2175,6 +2180,8 @@ Optional:
 	- Service `s3_compatible_storage`: S3-Compatible Storage Endpoint URL.
 - `engagement_attribution_window` (String) Field usage depends on `service` value: 
 	- Service `pinterest_ads`: The number of days to use as the conversion attribution window for an engagement (i.e. closeup or save) action.
+- `enhanced_pass_ticket_type` (String) Field usage depends on `service` value: 
+	- Service `db2z`: Determines whether the Enhanced PassTicket is sent in mixed case or uppercase before authentication. Specify only when `authentication_method` is `ENHANCED_PASS_TICKET`. Supported values:`UPPER`- The generated PassTicket consist of uppercase alphanumeric characters.`MIXED`- The generated PassTicket consists of mixed-case alphanumeric characters and may include '-' and '_'.
 - `enriched_export` (String) Field usage depends on `service` value: 
 	- Service `optimizely`: Enriched Events S3 bucket
 - `entity_id` (String) Field usage depends on `service` value: 
@@ -3286,6 +3293,7 @@ Optional:
 	- Service `amazon_ads`: The region used by the Amazon Ads profile.
 	- Service `amazon_selling_partner`: The region used by the Amazon Selling Partner profile.
 	- Service `anaplan`: Your Anaplan account region
+	- Service `appcues`: Your Appcues region.
 	- Service `atlassian_ops_genie`: Your company's Osgenie region (usually **company**.opsgenie.com)
 	- Service `awin`: Your Awin Region.
 	- Service `aws_lambda`: The AWS region code for the DynamoDB instance.
@@ -3551,7 +3559,7 @@ Optional:
 	- Service `google_cloud_function`: The secrets that should be passed to the function at runtime.
 - `secrets_list` (Block Set) (see [below for nested schema](#nestedblock--config--secrets_list))
 - `secured_signon_key` (String, Sensitive) Field usage depends on `service` value: 
-	- Service `db2z`: The application secret key registered in RACF for the application, used to generate a PassTicket when authentication_method is `LEGACY_PASS_TICKET`.
+	- Service `db2z`: Application secret key registered in RACF for the application. Used to generate a PassTicket when `authentication_method` is `LEGACY_PASS_TICKET` or `ENHANCED_PASS_TICKET`.
 - `security_protocol` (String) Field usage depends on `service` value: 
 	- Service `apache_kafka`: Security protocol for Kafka interaction.
 	- Service `aws_msk`: The security protocol for Kafka interaction.
@@ -3777,6 +3785,7 @@ Optional:
 	- Service `jamf`: Your Jamf subdomain.
 	- Service `kandji`: Your Kandji Subdomain.
 	- Service `khoros_care`: Your Khoros Care subDomain.
+	- Service `lattice`: Your Lattice subdomain.
 	- Service `looker_source`: Your looker SubDomain name.
 	- Service `lucca`: Your Lucca subdomain.
 	- Service `mailgun`: Your Mailgun subdomain.
@@ -3818,8 +3827,8 @@ Optional:
 	- Service `workable`: Your Workable Subdomain.
 	- Service `wrike`: Your Wrike Subdomain.
 - `subdomain` (String) Field usage depends on `service` value: 
-	- Service `adobe_experience_platform`: Your Adobe Experience Platform subdomain.
-	- Service `alation`: Your Alation subdomain.
+	- Service `adobe_experience_platform`: Your Adobe Experience Platform IMS region.
+	- Service `alation`: Your Alation base URL.
 	- Service `bamboohr`: The subdomain used to access your account. If you access BambooHR at 'https://mycompany.bamboohr.com', then the subdomain is 'mycompany'.
 	- Service `bynder`: Your Bynder subdomain.
 	- Service `datadog`: Your Datadog subdomain.
@@ -3922,6 +3931,8 @@ Optional:
 - `sync_multiple_accounts` (Boolean) Field usage depends on `service` value: 
 	- Service `reddit_ads`: When this parameter is set to `true`, we sync the data of the additional linked accounts. When this parameter is set to `false`, we sync only the data from the main account that was used for authorization
 - `sync_nested_files` (Boolean) Field usage depends on `service` value: 
+	- Service `box`: Optional. Set this to true to sync files from nested folders within the specified folder.
+	- Service `dropbox`: Optional. Set this to true to sync files from nested folders within the specified folder.
 	- Service `google_drive`: Optional. Set to true to sync files from nested folders within the specified folder.
 	- Service `sftp`: Optional. Set to true to sync files from nested folders within the specified folder.
 	- Service `share_point`: Optional. Set to true to sync files from nested folders within the specified folder.
@@ -4796,6 +4807,18 @@ Optional:
 	- Service `s3_compatible_storage`: All files in your search path matching this regular expression will be synced per table.
 	- Service `sftp`: All files in your search path matching this regular expression will be synced per table.
 	- Service `share_point`: All files in your search path matching this regular expression will be synced per table.
+- `selected_range` (String) Field usage depends on `service` value: 
+	- Service `azure_blob_storage`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format.
+	- Service `box`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format.
+	- Service `dropbox`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format.
+	- Service `email`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format.
+	- Service `ftp`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format.
+	- Service `gcs`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format.
+	- Service `google_drive`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format.
+	- Service `s3`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format.
+	- Service `s3_compatible_storage`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format.
+	- Service `sftp`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format.
+	- Service `share_point`: Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format.
 - `table_name` (String) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: All files matching the above pattern will be synced to this table.
 	- Service `box`: All files matching the above pattern will be synced to this table.

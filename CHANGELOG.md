@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v1.9.25](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.25...v1.9.24)
 New connection auth fields supported:
+- Added field `fivetran_connector.config.application_id` for services: `amazon_selling_partner`.
 - Added field `fivetran_connector.config.service_principal_id` for services: `azure_sql_db`, `azure_sql_managed_db`.
 - Added field `fivetran_connector.config.managed_identity_user_assigned` for services: `azure_sql_db`, `azure_sql_managed_db`.
 - Added field `fivetran_connector.config.service_principal_client_cert_pvt_key` for services: `azure_sql_db`, `azure_sql_managed_db`.
@@ -17,6 +18,10 @@ New connection auth fields supported:
 - Added field `fivetran_connector.config.authentication_method` for services: `google_play`.
 - Added field `fivetran_connector.config.svc_acc_secret_key` for services: `google_play`.
 - Added field `fivetran_connector.config.system_user_access_token` for services: `instagram_business`.
+New connection config fields supported:
+- Added field `fivetran_connector.config.files.selected_range` for services: `box`, `dropbox`, `gcs`, `s3`, `sftp`, `share_point`, `azure_blob_storage`, `email`, `ftp`, `google_drive`, `s3_compatible_storage`.
+- Added field `fivetran_connector.config.enhanced_pass_ticket_type` for services: `db2z`.
+- Added field `fivetran_connector.config.api_usage_limit` for services: `salesforce_sandbox`, `salesforce`.
 
 ### Added
 - Added `schedule` block to `fivetran_connector_schedule` resource to support flexible sync schedules. The block supports `schedule_type` (INTERVAL, TIME_OF_DAY, CRON, MANUAL), `interval`, `time_of_day`, `days_of_week`, and `cron` fields.

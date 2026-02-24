@@ -109,6 +109,19 @@
       },
       "api_field": ""
    },
+   "application_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "amazon_selling_partner": "`Application ID` of the public application registered in the Amazon Selling Partner Appstore that you want to use for authentication of your connection. Use this parameter along with `Client ID` and `Client Secret` only if you want to use your own public application for authorisation via Connect Card."
+      },
+      "api_field": ""
+   },
    "authentication_method": {
       "readonly": false,
       "sensitive": false,
@@ -207,6 +220,7 @@
                "fortnox": "",
                "freshbooks": "",
                "front": "`Client ID` of your Front client application.",
+               "gainsight_customer_success": "",
                "gitlab": "",
                "gmail": "`Client ID` of your Gmail client application.",
                "google_ads": "`Client ID` of your Google Ads client application.",
@@ -340,6 +354,7 @@
                "fortnox": "",
                "freshbooks": "",
                "front": "`Client Secret` of your Front client application.",
+               "gainsight_customer_success": "",
                "gitlab": "",
                "gmail": "`Client Secret` of your Gmail client application.",
                "google_ads": "`Client Secret` of your Google Ads client application.",
@@ -494,6 +509,7 @@
          "fortnox": "",
          "freshbooks": "Your FreshBooks application client access.",
          "front": "",
+         "gainsight_customer_success": "",
          "gitlab": "",
          "gmail": "Your application client access fields",
          "google_ads": "We use a Fivetran developer token to access the Google Ads API. If this is your first Google Ads connector with custom authorization, you should create a new Google API Console project. Each Google API Console project can be associated with the developer token from only one manager account. Once you make a Google Ads API request, the developer token is permanently paired to the Google API Console project. Otherwise, we can't bind the Fivetran developer token to your client. You can reuse the same project to create other Google Ads connectors. You can use your own developer token with your custom client if you have one, but it's not required",
@@ -804,6 +820,7 @@
          "fortnox": "",
          "freshbooks": "Your FreshBooks Refresh Token.",
          "front": "The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.",
+         "gainsight_customer_success": "",
          "gitlab": "Your GitLab refresh token.",
          "gmail": "The long-lived `Refresh token` of your Gmail client application.",
          "google_ads": "The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.",

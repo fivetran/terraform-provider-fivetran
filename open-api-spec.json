@@ -18,11 +18,11 @@
   "tags": [
     {
       "name": "updated",
-      "description": "2026-02-11T09:35:15.937Z"
+      "description": "2026-02-20T09:31:45.056Z"
     },
     {
       "name": "hash",
-      "description": "6527a79af4a0464eff7065161beafcbb3db9f6774e21be30c7f02075cebcd5ef"
+      "description": "75dc54bfdc0f0eb2c1faf7672a2a22e41f8c2186348e649fad7741cb608892d0"
     }
   ],
   "paths": {
@@ -10477,7 +10477,7 @@
                     "message": {
                       "type": "string",
                       "description": "Response status text",
-                      "example": "Transformation project deleted successfully"
+                      "example": "Transformation project with id 'string' has been deleted"
                     }
                   }
                 }
@@ -13490,6 +13490,7 @@
             "thinkific": "#/components/schemas/thinkific_NewConnectorRequestV1",
             "ticket_tailor": "#/components/schemas/ticket_tailor_NewConnectorRequestV1",
             "tiktok_ads": "#/components/schemas/tiktok_ads_NewConnectorRequestV1",
+            "tiktok_organic": "#/components/schemas/tiktok_organic_NewConnectorRequestV1",
             "tiktok_organic_app": "#/components/schemas/tiktok_organic_app_NewConnectorRequestV1",
             "tive": "#/components/schemas/tive_NewConnectorRequestV1",
             "toggl_track": "#/components/schemas/toggl_track_NewConnectorRequestV1",
@@ -14637,6 +14638,7 @@
             "thinkific": "#/components/schemas/thinkific_ConnectorResponseV1",
             "ticket_tailor": "#/components/schemas/ticket_tailor_ConnectorResponseV1",
             "tiktok_ads": "#/components/schemas/tiktok_ads_ConnectorResponseV1",
+            "tiktok_organic": "#/components/schemas/tiktok_organic_ConnectorResponseV1",
             "tiktok_organic_app": "#/components/schemas/tiktok_organic_app_ConnectorResponseV1",
             "tive": "#/components/schemas/tive_ConnectorResponseV1",
             "toggl_track": "#/components/schemas/toggl_track_ConnectorResponseV1",
@@ -15333,7 +15335,9 @@
           "columns",
           "enabled",
           "enabled_patch_settings",
-          "name_in_destination"
+          "name_in_destination",
+          "supports_columns_config",
+          "supports_history_mode"
         ],
         "type": "object",
         "properties": {
@@ -15371,7 +15375,14 @@
             "$ref": "#/components/schemas/TableEnabledPatchSettings"
           },
           "supports_columns_config": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "A boolean value that specifies if the table supports a column-level configuration.",
+            "example": true
+          },
+          "supports_history_mode": {
+            "type": "boolean",
+            "description": "The boolean value that specifies if the table supports history mode.",
+            "example": true
           }
         }
       },
@@ -16861,6 +16872,7 @@
             "azure_monitor_log": "#/components/schemas/azure_monitor_log_AddLogRequest",
             "cloudwatch": "#/components/schemas/cloudwatch_AddLogRequest",
             "datadog_log": "#/components/schemas/datadog_log_AddLogRequest",
+            "grafana_loki": "#/components/schemas/grafana_loki_AddLogRequest",
             "new_relic_log": "#/components/schemas/new_relic_log_AddLogRequest",
             "splunkLog": "#/components/schemas/splunkLog_AddLogRequest",
             "stackdriver": "#/components/schemas/stackdriver_AddLogRequest"
@@ -16910,6 +16922,7 @@
             "azure_monitor_log": "#/components/schemas/azure_monitor_log_LogExtendedResponse",
             "cloudwatch": "#/components/schemas/cloudwatch_LogExtendedResponse",
             "datadog_log": "#/components/schemas/datadog_log_LogExtendedResponse",
+            "grafana_loki": "#/components/schemas/grafana_loki_LogExtendedResponse",
             "new_relic_log": "#/components/schemas/new_relic_log_LogExtendedResponse",
             "splunkLog": "#/components/schemas/splunkLog_LogExtendedResponse",
             "stackdriver": "#/components/schemas/stackdriver_LogExtendedResponse"
@@ -22851,6 +22864,52 @@
           }
         ]
       },
+      "grafana_loki_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "tenant_id": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "loki_url": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": "string"
+              },
+              "username": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": "string"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "grafana_loki_AddLogRequest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AddLogRequest"
+          },
+          {
+            "$ref": "#/components/schemas/grafana_loki_config_V1"
+          }
+        ]
+      },
       "new_relic_log_config_V1": {
         "properties": {
           "config": {
@@ -23000,6 +23059,16 @@
           },
           {
             "$ref": "#/components/schemas/datadog_log_config_V1"
+          }
+        ]
+      },
+      "grafana_loki_LogExtendedResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/LogExtendedResponse"
+          },
+          {
+            "$ref": "#/components/schemas/grafana_loki_config_V1"
           }
         ]
       },
@@ -23849,8 +23918,8 @@
               "subdomain": {
                 "title": "",
                 "type": "string",
-                "description": "Your Adobe Experience Platform subdomain.",
-                "example": "your_adobe_experience_platform_subdomain"
+                "description": "Your Adobe Experience Platform IMS region.",
+                "example": "your_adobe_experience_platform_ims_region"
               },
               "sandbox_name": {
                 "title": "",
@@ -24567,20 +24636,20 @@
               "subdomain": {
                 "title": "",
                 "type": "string",
-                "description": "Your Alation subdomain.",
+                "description": "Your Alation base URL.",
                 "example": "string"
               },
               "client_secret": {
                 "title": "",
                 "type": "string",
-                "description": "Your Alation Client Secret.",
+                "description": "Client secret of the OAuth client application registered in Alation for this connection.",
                 "format": "password",
                 "example": "string"
               },
               "client_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Alation Client ID.",
+                "description": "Client ID of the OAuth client application registered in Alation for this connection.",
                 "example": "string"
               }
             },
@@ -25120,6 +25189,12 @@
                 "type": "string",
                 "description": "`Client Secret` of your Amazon Seller/Vendor Central client application.",
                 "example": "my_client_secret"
+              },
+              "application_id": {
+                "title": "",
+                "type": "string",
+                "description": "`Application ID` of the public application registered in the Amazon Selling Partner Appstore that you want to use for authentication of your connection. Use this parameter along with `Client ID` and `Client Secret` only if you want to use your own public application for authorisation via Connect Card.",
+                "example": "my_application_id"
               },
               "client_id": {
                 "title": "",
@@ -25736,6 +25811,14 @@
                 "description": "Your Appcues Secret.",
                 "format": "password",
                 "example": "your_appcues_secret"
+              },
+              "region": {
+                "type": "object",
+                "description": "Your Appcues region.",
+                "enum": [
+                  "appcues.com",
+                  "eu.appcues.com"
+                ]
               }
             },
             "description": ""
@@ -27911,6 +27994,12 @@
                       "description": "All files in your search path matching this regular expression will be synced per table. We have discontinued this field, and will delete it by August 31, 2025.",
                       "example": "string"
                     },
+                    "selected_range": {
+                      "title": "",
+                      "type": "string",
+                      "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowNumber>` format.",
+                      "example": "'Sheet1'!A1"
+                    },
                     "table_name": {
                       "title": "",
                       "type": "string",
@@ -29877,40 +29966,17 @@
                 "description": "If you don’t want to use an enclosing character while processing the files, set the value to false. By default, the value is set to true and is considered \" as quote character.",
                 "example": true
               },
-              "append_file_option": {
-                "title": "",
-                "type": "object",
-                "description": "If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
-                "example": "upsert_file_with_primary_keys | upsert_file | append_file",
-                "enum": [
-                  "upsert_file_with_primary_keys",
-                  "upsert_file",
-                  "append_file"
-                ]
-              },
               "prefix": {
                 "title": "",
                 "type": "string",
                 "description": "All files and folders under this folder path will be searched for files to sync.",
                 "example": "folder_path"
               },
-              "selected_range": {
-                "title": "",
-                "type": "string",
-                "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowName>` format.",
-                "example": "'Sheet1'!A1"
-              },
               "pattern": {
                 "title": "",
                 "type": "string",
                 "description": "All files in your search path matching this regular expression will be synced.",
                 "example": "file_pattern"
-              },
-              "escape_char": {
-                "title": "",
-                "type": "string",
-                "description": "If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
-                "example": "escape_char"
               },
               "json_delivery_mode": {
                 "title": "",
@@ -29935,12 +30001,6 @@
                 "description": "You can specify the enclosing character used in your CSVs here. Fivetran will consider \" as the quote character if this field is empty and quote_character_enabled is set to true.",
                 "example": "string"
               },
-              "line_separator": {
-                "title": "",
-                "type": "string",
-                "description": "You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.",
-                "example": ";"
-              },
               "skip_before": {
                 "title": "",
                 "type": "integer",
@@ -29952,18 +30012,6 @@
                 "title": "",
                 "type": "boolean",
                 "description": "<strong>Optional.</strong> If your CSV generating software doesn't provide header line for the documents, Fivetran can generate the generic column names and sync data rows with them.",
-                "example": true
-              },
-              "null_sequence": {
-                "title": "",
-                "type": "string",
-                "description": "If your CSVs use a special value indicating null, you can specify it here.",
-                "example": "string"
-              },
-              "is_single_table_mode": {
-                "title": "",
-                "type": "boolean",
-                "description": "Allows the creation of connector using Merge Mode strategy.",
                 "example": true
               },
               "delimiter": {
@@ -29998,6 +30046,53 @@
                   "skip"
                 ]
               },
+              "archive_pattern": {
+                "title": "",
+                "type": "string",
+                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
+                "example": "regex_pattern"
+              },
+              "append_file_option": {
+                "title": "",
+                "type": "object",
+                "description": "If you know that the source completely over-writes the same file with new data, you can append the changes instead of upserting based on filename and line number.",
+                "example": "upsert_file_with_primary_keys | upsert_file | append_file",
+                "enum": [
+                  "upsert_file_with_primary_keys",
+                  "upsert_file",
+                  "append_file"
+                ]
+              },
+              "selected_range": {
+                "title": "",
+                "type": "string",
+                "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowName>` format.",
+                "example": "'Sheet1'!A1"
+              },
+              "escape_char": {
+                "title": "",
+                "type": "string",
+                "description": "If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
+                "example": "escape_char"
+              },
+              "line_separator": {
+                "title": "",
+                "type": "string",
+                "description": "You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.",
+                "example": ";"
+              },
+              "null_sequence": {
+                "title": "",
+                "type": "string",
+                "description": "If your CSVs use a special value indicating null, you can specify it here.",
+                "example": "string"
+              },
+              "is_single_table_mode": {
+                "title": "",
+                "type": "boolean",
+                "description": "Allows the creation of connector using Merge Mode strategy.",
+                "example": true
+              },
               "files": {
                 "title": "",
                 "type": "array",
@@ -30011,6 +30106,12 @@
                       "type": "string",
                       "description": "All files in your search path matching this regular expression will be synced per table.",
                       "example": "string"
+                    },
+                    "selected_range": {
+                      "title": "",
+                      "type": "string",
+                      "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowNumber>` format.",
+                      "example": "'Sheet1'!A1"
                     },
                     "table_name": {
                       "title": "",
@@ -30051,11 +30152,11 @@
                   "tar_bz2"
                 ]
               },
-              "archive_pattern": {
+              "sync_nested_files": {
                 "title": "",
-                "type": "string",
-                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
-                "example": "regex_pattern"
+                "type": "boolean",
+                "description": "<strong>Optional.</strong> Set this to true to sync files from nested folders within the specified folder.",
+                "example": true
               }
             },
             "description": ""
@@ -35585,6 +35686,16 @@
                 "description": "Require TLS",
                 "example": true
               },
+              "enhanced_pass_ticket_type": {
+                "title": "",
+                "type": "object",
+                "description": "Determines whether the Enhanced PassTicket is sent in mixed case or uppercase before authentication. Specify only when `authentication_method` is `ENHANCED_PASS_TICKET`. Supported values:<br>`UPPER`- The generated PassTicket consist of uppercase alphanumeric characters.<br>`MIXED`- The generated PassTicket consists of mixed-case alphanumeric characters and may include '-' and '_'.",
+                "example": "UPPER | MIXED",
+                "enum": [
+                  "UPPER",
+                  "MIXED"
+                ]
+              },
               "tunnel_user": {
                 "title": "",
                 "type": "string",
@@ -35594,11 +35705,12 @@
               "authentication_method": {
                 "title": "",
                 "type": "object",
-                "description": "User authentication method. Supported values:<br>`PASSWORD`- Authenticate with the database server using an RACF user ID and password. If the parameter is omitted, this is the default value. <br>`LEGACY_PASS_TICKET`- Authenticate with the database server using an RACF user ID and PassTicket.",
-                "example": "PASSWORD | LEGACY_PASS_TICKET",
+                "description": "User authentication method. Supported values:<br>`PASSWORD`- Authenticate with the database server using an RACF user ID and password. If the parameter is omitted, `PASSWORD` is used by default. <br>`LEGACY_PASS_TICKET`- Authenticate with the database server using an RACF user ID and legacy PassTicket. <br>`ENHANCED_PASS_TICKET`- Authenticate with the database server using an RACF user ID and an enhanced PassTicket. Enhanced PassTickets are more secure than legacy PassTickets.",
+                "example": "PASSWORD | LEGACY_PASS_TICKET | ENHANCED_PASS_TICKET",
                 "enum": [
                   "PASSWORD",
-                  "LEGACY_PASS_TICKET"
+                  "LEGACY_PASS_TICKET",
+                  "ENHANCED_PASS_TICKET"
                 ]
               },
               "tunnel_port": {
@@ -35624,7 +35736,7 @@
               "application_name": {
                 "title": "",
                 "type": "string",
-                "description": "Application name used to generate an RACF PassTicket for user authentication. Specify only when `authentication_method` is `LEGACY_PASS_TICKET`.",
+                "description": "The application name used to generate an RACF PassTicket for user authentication. Specify only when `authentication_method` is `LEGACY_PASS_TICKET` or `ENHANCED_PASS_TICKET`.",
                 "example": "string"
               },
               "port": {
@@ -35655,7 +35767,7 @@
               "secured_signon_key": {
                 "title": "",
                 "type": "string",
-                "description": "The application secret key registered in RACF for the application, used to generate a PassTicket when authentication_method is `LEGACY_PASS_TICKET`.",
+                "description": "Application secret key registered in RACF for the application. Used to generate a PassTicket when `authentication_method` is `LEGACY_PASS_TICKET` or `ENHANCED_PASS_TICKET`.",
                 "format": "password",
                 "example": "string"
               }
@@ -37238,6 +37350,12 @@
                       "description": "All files in your search path matching this regular expression will be synced per table.",
                       "example": "string"
                     },
+                    "selected_range": {
+                      "title": "",
+                      "type": "string",
+                      "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowNumber>` format.",
+                      "example": "'Sheet1'!A1"
+                    },
                     "table_name": {
                       "title": "",
                       "type": "string",
@@ -37276,6 +37394,12 @@
                 "type": "string",
                 "description": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
                 "example": "regex_pattern"
+              },
+              "sync_nested_files": {
+                "title": "",
+                "type": "boolean",
+                "description": "<strong>Optional.</strong> Set this to true to sync files from nested folders within the specified folder.",
+                "example": true
               }
             },
             "description": ""
@@ -38129,6 +38253,12 @@
                       "type": "string",
                       "description": "All files in your search path matching this regular expression will be synced per table.",
                       "example": "string"
+                    },
+                    "selected_range": {
+                      "title": "",
+                      "type": "string",
+                      "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowNumber>` format.",
+                      "example": "'Sheet1'!A1"
                     },
                     "table_name": {
                       "title": "",
@@ -40767,6 +40897,12 @@
                       "description": "All files in your search path matching this regular expression will be synced per table.",
                       "example": "string"
                     },
+                    "selected_range": {
+                      "title": "",
+                      "type": "string",
+                      "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowNumber>` format.",
+                      "example": "'Sheet1'!A1"
+                    },
                     "table_name": {
                       "title": "",
                       "type": "string",
@@ -40950,6 +41086,40 @@
           }
         }
       },
+      "gainsight_customer_success_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": "string"
+              },
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "gainsight_customer_success_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -40960,6 +41130,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/gainsight_customer_success_auth_V1"
           }
         ]
       },
@@ -41221,6 +41394,12 @@
                       "type": "string",
                       "description": "All files in your search path matching this regular expression will be synced per table.",
                       "example": "string"
+                    },
+                    "selected_range": {
+                      "title": "",
+                      "type": "string",
+                      "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowNumber>` format.",
+                      "example": "'Sheet1'!A1"
                     },
                     "table_name": {
                       "title": "",
@@ -43488,6 +43667,12 @@
                       "type": "string",
                       "description": "All files in your search path matching this regular expression will be synced per table.",
                       "example": "string"
+                    },
+                    "selected_range": {
+                      "title": "",
+                      "type": "string",
+                      "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowNumber>` format.",
+                      "example": "'Sheet1'!A1"
                     },
                     "table_name": {
                       "title": "",
@@ -47440,6 +47625,14 @@
                 "description": "Your Lattice API access token.",
                 "format": "password",
                 "example": "your_lattice_access_token"
+              },
+              "sub_domain": {
+                "type": "object",
+                "description": "Your Lattice subdomain.",
+                "enum": [
+                  "api.emea",
+                  "api"
+                ]
               }
             },
             "description": ""
@@ -59329,6 +59522,12 @@
                       "description": "All files in your search path matching this regular expression will be synced per table.",
                       "example": "string"
                     },
+                    "selected_range": {
+                      "title": "",
+                      "type": "string",
+                      "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowNumber>` format.",
+                      "example": "'Sheet1'!A1"
+                    },
                     "table_name": {
                       "title": "",
                       "type": "string",
@@ -59596,6 +59795,12 @@
                       "type": "string",
                       "description": "All files in your search path matching this regular expression will be synced per table.",
                       "example": "string"
+                    },
+                    "selected_range": {
+                      "title": "",
+                      "type": "string",
+                      "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowNumber>` format.",
+                      "example": "'Sheet1'!A1"
                     },
                     "table_name": {
                       "title": "",
@@ -59952,6 +60157,13 @@
                 "description": "Provide content of the `.key` private key (only when authentication_method = `ADVANCED`).",
                 "format": "password",
                 "example": "---"
+              },
+              "api_usage_limit": {
+                "title": "",
+                "type": "integer",
+                "description": "(Optional) The percentage of your Salesforce [daily API limit](https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm) that Fivetran should consume. Value must be between 50 and 90 (default value = `90`)",
+                "format": "int32",
+                "example": 75
               }
             },
             "description": ""
@@ -60310,6 +60522,13 @@
                 "description": "Provide content of the `.key` private key (only when authentication_method = `ADVANCED`).",
                 "format": "password",
                 "example": "---"
+              },
+              "api_usage_limit": {
+                "title": "",
+                "type": "integer",
+                "description": "(Optional) The percentage of your Salesforce [daily API limit](https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm) that Fivetran should consume. Value must be between 50 and 90 (default value = `90`)",
+                "format": "int32",
+                "example": 75
               }
             },
             "description": ""
@@ -61405,6 +61624,12 @@
                       "description": "All files in your search path matching this regular expression will be synced per table.",
                       "example": "string"
                     },
+                    "selected_range": {
+                      "title": "",
+                      "type": "string",
+                      "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowNumber>` format.",
+                      "example": "'Sheet1'!A1"
+                    },
                     "table_name": {
                       "title": "",
                       "type": "string",
@@ -61679,6 +61904,12 @@
                       "type": "string",
                       "description": "All files in your search path matching this regular expression will be synced per table.",
                       "example": "string"
+                    },
+                    "selected_range": {
+                      "title": "",
+                      "type": "string",
+                      "description": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'<sheetName>'!<startColumnName><startRowNumber>` format.",
+                      "example": "'Sheet1'!A1"
                     },
                     "table_name": {
                       "title": "",
@@ -66386,6 +66617,50 @@
           },
           {
             "$ref": "#/components/schemas/tiktok_ads_auth_V1"
+          }
+        ]
+      },
+      "tiktok_organic_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_environment": {
+                "type": "object",
+                "description": "Your TikTok Organic API environment.",
+                "enum": [
+                  "business-api.tiktok.com",
+                  "sandbox-ads.tiktok.com"
+                ]
+              },
+              "secret": {
+                "title": "",
+                "type": "string",
+                "description": "The secret of the app registered in your TikTok developer account.",
+                "format": "password",
+                "example": "your_tiktok_organic_app_secret"
+              },
+              "app_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Tiktok Organic app ID.",
+                "example": "your_tiktok_organic_app_id"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "tiktok_organic_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/tiktok_organic_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
           }
         ]
       },
@@ -80246,6 +80521,16 @@
           }
         ]
       },
+      "tiktok_organic_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/tiktok_organic_config_V1"
+          }
+        ]
+      },
       "tiktok_organic_app_ConnectorResponseV1": {
         "allOf": [
           {
@@ -81660,15 +81945,15 @@
             ],
             "type": "object",
             "properties": {
-              "account_url": {
-                "type": "object",
-                "description": "The URL of your account.",
-                "example": "account_url"
-              },
               "vpce_id": {
                 "type": "object",
                 "description": "The ID of your Virtual Private Cloud Endpoint.",
                 "example": "vpce_id"
+              },
+              "account_url": {
+                "type": "object",
+                "description": "The URL of your account.",
+                "example": "account_url"
               }
             },
             "description": "Snowflake for AWS"
@@ -81695,15 +81980,15 @@
             ],
             "type": "object",
             "properties": {
-              "aws_account_id": {
-                "type": "object",
-                "description": "The ID of your AWS account.",
-                "example": "aws_account_id"
-              },
               "cluster_identifier": {
                 "type": "object",
                 "description": "The cluster identifier.",
                 "example": "cluster_identifier"
+              },
+              "aws_account_id": {
+                "type": "object",
+                "description": "The ID of your AWS account.",
+                "example": "aws_account_id"
               }
             },
             "description": "Redshift for AWS"
@@ -81759,15 +82044,15 @@
             ],
             "type": "object",
             "properties": {
-              "connection_service_id": {
-                "type": "object",
-                "description": "The ID of your connection service.",
-                "example": "connection_service_id"
-              },
               "workspace_url": {
                 "type": "object",
                 "description": "Workspace Url",
                 "example": "workspace_url"
+              },
+              "connection_service_id": {
+                "type": "object",
+                "description": "The ID of your connection service.",
+                "example": "connection_service_id"
               }
             },
             "description": "Databricks for Azure"
@@ -81794,15 +82079,15 @@
             ],
             "type": "object",
             "properties": {
-              "account_url": {
-                "type": "object",
-                "description": "The URL of your account.",
-                "example": "account_url"
-              },
               "pls_id": {
                 "type": "object",
                 "description": "The ID of your Private Link service.",
                 "example": "pls_id"
+              },
+              "account_url": {
+                "type": "object",
+                "description": "The URL of your account.",
+                "example": "account_url"
               }
             },
             "description": "Snowflake for Azure"
@@ -81916,15 +82201,15 @@
             ],
             "type": "object",
             "properties": {
-              "connection_service_id": {
-                "type": "object",
-                "description": "The ID of your connection service.",
-                "example": "connection_service_id"
-              },
               "sub_resource_name": {
                 "type": "object",
                 "description": "The name of subresource.",
                 "example": "sub_resource_name"
+              },
+              "connection_service_id": {
+                "type": "object",
+                "description": "The ID of your connection service.",
+                "example": "connection_service_id"
               },
               "private_dns_records": {
                 "type": "object",
@@ -81956,15 +82241,15 @@
             ],
             "type": "object",
             "properties": {
-              "account_url": {
-                "type": "object",
-                "description": "The URL of your account.",
-                "example": "account_url"
-              },
               "pls_id": {
                 "type": "object",
                 "description": "The ID of your Private Link service.",
                 "example": "pls_id"
+              },
+              "account_url": {
+                "type": "object",
+                "description": "The URL of your account.",
+                "example": "account_url"
               }
             },
             "description": "Snowflake for GCP"
@@ -82020,15 +82305,15 @@
             ],
             "type": "object",
             "properties": {
-              "connection_service_id": {
-                "type": "object",
-                "description": "The ID of your connection service.",
-                "example": "connection_service_id"
-              },
               "workspace_url": {
                 "type": "object",
                 "description": "Workspace Url",
                 "example": "workspace_url"
+              },
+              "connection_service_id": {
+                "type": "object",
+                "description": "The ID of your connection service.",
+                "example": "connection_service_id"
               }
             },
             "description": "Databricks for GCP"
