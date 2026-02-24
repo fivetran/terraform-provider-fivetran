@@ -1657,6 +1657,20 @@
       },
       "api_field": ""
    },
+   "api_usage_limit": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "salesforce": "(Optional) The percentage of your Salesforce [daily API limit](https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm) that Fivetran should consume. Value must be between 50 and 90 (default value = `90`)",
+         "salesforce_sandbox": "(Optional) The percentage of your Salesforce [daily API limit](https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm) that Fivetran should consume. Value must be between 50 and 90 (default value = `90`)"
+      },
+      "api_field": ""
+   },
    "api_user_identifier": {
       "readonly": false,
       "sensitive": true,
@@ -1947,7 +1961,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "db2z": "Application name used to generate an RACF PassTicket for user authentication. Specify only when `authentication_method` is `LEGACY_PASS_TICKET`."
+         "db2z": "The application name used to generate an RACF PassTicket for user authentication. Specify only when `authentication_method` is `LEGACY_PASS_TICKET` or `ENHANCED_PASS_TICKET`."
       },
       "api_field": ""
    },
@@ -2359,7 +2373,7 @@
       "item_type": {},
       "description": {
          "adobe_analytics": "Authentication Method",
-         "db2z": "User authentication method. Supported values:`PASSWORD`- Authenticate with the database server using an RACF user ID and password. If the parameter is omitted, this is the default value. `LEGACY_PASS_TICKET`- Authenticate with the database server using an RACF user ID and PassTicket.",
+         "db2z": "User authentication method. Supported values:`PASSWORD`- Authenticate with the database server using an RACF user ID and password. If the parameter is omitted, `PASSWORD` is used by default. `LEGACY_PASS_TICKET`- Authenticate with the database server using an RACF user ID and legacy PassTicket. `ENHANCED_PASS_TICKET`- Authenticate with the database server using an RACF user ID and an enhanced PassTicket. Enhanced PassTickets are more secure than legacy PassTickets.",
          "elastic_cloud": "The authentication method used to connect to your cluster.",
          "es_self_hosted": "The authentication method used to connect to your cluster.",
          "financial_force": "",
@@ -3107,7 +3121,7 @@
          "adp_workforce_now": "Your ADP Client ID.",
          "akamai": "Your Akamai client ID.",
          "akeneo": "Your Akeneo client ID.",
-         "alation": "Your Alation Client ID.",
+         "alation": "Client ID of the OAuth client application registered in Alation for this connection.",
          "auth0": "Your Auth0 client ID.",
          "autodesk_bim_360": "Your Autodesk BIM 360 \u0026 Construction Cloud client ID.",
          "bigin_by_zoho_crm": "Your Bigin by Zoho CRM Client Id",
@@ -3389,7 +3403,7 @@
          "adp_workforce_now": "Your ADP Client Secret.",
          "akamai": "Your Akamai client secret.",
          "akeneo": "Your Akeneo client secret.",
-         "alation": "Your Alation Client Secret.",
+         "alation": "Client secret of the OAuth client application registered in Alation for this connection.",
          "auth0": "Your Auth0 client secret.",
          "autodesk_bim_360": "Your Autodesk BIM 360 \u0026 Construction Cloud client secret.",
          "bigin_by_zoho_crm": "Your Bigin by Zoho CRM Client Secret",
@@ -5797,6 +5811,19 @@
       },
       "api_field": ""
    },
+   "enhanced_pass_ticket_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "db2z": "Determines whether the Enhanced PassTicket is sent in mixed case or uppercase before authentication. Specify only when `authentication_method` is `ENHANCED_PASS_TICKET`. Supported values:`UPPER`- The generated PassTicket consist of uppercase alphanumeric characters.`MIXED`- The generated PassTicket consists of mixed-case alphanumeric characters and may include '-' and '_'."
+      },
+      "api_field": ""
+   },
    "enriched_export": {
       "readonly": false,
       "sensitive": false,
@@ -6210,6 +6237,29 @@
                "s3_compatible_storage": "All files in your search path matching this regular expression will be synced per table.",
                "sftp": "All files in your search path matching this regular expression will be synced per table.",
                "share_point": "All files in your search path matching this regular expression will be synced per table."
+            },
+            "api_field": ""
+         },
+         "selected_range": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "azure_blob_storage": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format.",
+               "box": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format.",
+               "dropbox": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format.",
+               "email": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format.",
+               "ftp": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format.",
+               "gcs": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format.",
+               "google_drive": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format.",
+               "s3": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format.",
+               "s3_compatible_storage": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format.",
+               "sftp": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format.",
+               "share_point": "Cell reference that will be used to sync all contiguous data starting from the top-left cell in all the spreadsheets matching the name. Cell reference is in the `'sheetName'!startColumnNamestartRowNumber` format."
             },
             "api_field": ""
          },
@@ -9493,6 +9543,7 @@
          "amazon_ads": "The region used by the Amazon Ads profile.",
          "amazon_selling_partner": "The region used by the Amazon Selling Partner profile.",
          "anaplan": "Your Anaplan account region",
+         "appcues": "Your Appcues region.",
          "atlassian_ops_genie": "Your company's Osgenie region (usually **company**.opsgenie.com)",
          "awin": "Your Awin Region.",
          "aws_lambda": "The AWS region code for the DynamoDB instance.",
@@ -12590,7 +12641,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "db2z": "The application secret key registered in RACF for the application, used to generate a PassTicket when authentication_method is `LEGACY_PASS_TICKET`."
+         "db2z": "Application secret key registered in RACF for the application. Used to generate a PassTicket when `authentication_method` is `LEGACY_PASS_TICKET` or `ENHANCED_PASS_TICKET`."
       },
       "api_field": ""
    },
@@ -13556,6 +13607,7 @@
          "jamf": "Your Jamf subdomain.",
          "kandji": "Your Kandji Subdomain.",
          "khoros_care": "Your Khoros Care subDomain.",
+         "lattice": "Your Lattice subdomain.",
          "looker_source": "Your looker SubDomain name.",
          "lucca": "Your Lucca subdomain.",
          "mailgun": "Your Mailgun subdomain.",
@@ -13608,8 +13660,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "adobe_experience_platform": "Your Adobe Experience Platform subdomain.",
-         "alation": "Your Alation subdomain.",
+         "adobe_experience_platform": "Your Adobe Experience Platform IMS region.",
+         "alation": "Your Alation base URL.",
          "bamboohr": "The subdomain used to access your account. If you access BambooHR at 'https://mycompany.bamboohr.com', then the subdomain is 'mycompany'.",
          "bynder": "Your Bynder subdomain.",
          "datadog": "Your Datadog subdomain.",
@@ -13902,6 +13954,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "box": "Optional. Set this to true to sync files from nested folders within the specified folder.",
+         "dropbox": "Optional. Set this to true to sync files from nested folders within the specified folder.",
          "google_drive": "Optional. Set to true to sync files from nested folders within the specified folder.",
          "sftp": "Optional. Set to true to sync files from nested folders within the specified folder.",
          "share_point": "Optional. Set to true to sync files from nested folders within the specified folder."
