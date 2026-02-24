@@ -1157,3 +1157,145 @@ func TestResourceConnectorWhenConfigHasEmptyNestedObjectsE2E(t *testing.T) {
 		},
 	})
 }
+
+func TestResourceConnectorAuthServicePrincipalIdAndClientSecretE2E(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectorResourceDestroy,
+		Steps: []resource.TestStep{
+			// Create
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_name"
+			    }
+
+			    resource "fivetran_connector" "test_connector" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "azure_sql_db"
+					
+					data_delay_sensitivity = "NORMAL"
+					data_delay_threshold = 0
+					networking_method = "Directly"
+
+					destination_schema {
+						prefix = "prefix1"
+					}
+
+					config {
+						tenant_id       = "tenant_id1"
+						connection_type = "Directly"
+						auth_method     = "EntraIDServicePrincipalSecret"
+						host            = "host1"
+						database        = "database1"
+						port            = 5432
+						update_method   = "TELEPORT"
+					}
+
+					auth {
+						service_principal_id = "service_principal_id1"
+						service_principal_client_secret = "service_principal_client_secret1"
+					}
+					
+					trust_certificates = false
+					trust_fingerprints = false
+					run_setup_tests = false
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectorResourceCreate(t, "fivetran_connector.test_connector"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "azure_sql_db"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "prefix1"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "destination_schema.prefix", "prefix1"),
+
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_sensitivity", "NORMAL"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_threshold", "0"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "networking_method", "Directly"),
+
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.tenant_id", "tenant_id1"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.connection_type", "Directly"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.auth_method", "EntraIDServicePrincipalSecret"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.host", "host1"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.database", "database1"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.port", "5432"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.update_method", "TELEPORT"),
+
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.service_principal_id", "service_principal_id1"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.service_principal_client_secret", "service_principal_client_secret1"),
+				),
+			},
+			// Update
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_name"
+			    }
+
+			    resource "fivetran_connector" "test_connector" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "azure_sql_db"
+					
+					data_delay_sensitivity = "NORMAL"
+					data_delay_threshold = 0
+					networking_method = "Directly"
+
+					destination_schema {
+						prefix = "prefix1"
+					}
+
+					config {
+						tenant_id       = "tenant_id2"
+						connection_type = "Directly"
+						auth_method     = "EntraIDServicePrincipalSecret"
+						host            = "host1"
+						database        = "database2"
+						port            = 5432
+						update_method   = "TELEPORT"
+					}
+
+					auth {
+						service_principal_id = "service_principal_id2"
+						service_principal_client_secret = "service_principal_client_secret2"
+					}
+					
+					trust_certificates = false
+					trust_fingerprints = false
+					run_setup_tests = false
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectorResourceCreate(t, "fivetran_connector.test_connector"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "azure_sql_db"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "prefix1"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "destination_schema.prefix", "prefix1"),
+
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_sensitivity", "NORMAL"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_threshold", "0"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "networking_method", "Directly"),
+
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.tenant_id", "tenant_id2"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.connection_type", "Directly"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.auth_method", "EntraIDServicePrincipalSecret"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.host", "host1"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.database", "database2"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.port", "5432"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.update_method", "TELEPORT"),
+
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.service_principal_id", "service_principal_id2"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.service_principal_client_secret", "service_principal_client_secret2"),
+				),
+			},
+		},
+	})
+}
