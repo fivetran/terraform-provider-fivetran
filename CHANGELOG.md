@@ -187,6 +187,10 @@ New connection config fields supported:
 ### Fixed
 - Allow for importing of `fivetran_private_link` with empty `config_map` (`config_map = {}`).
 
+### Fixed
+- Fixed "Provider produced inconsistent result after apply" error for `fivetran_destination` resource when using PrivateLink with Databricks destinations. When PrivateLink is configured, Fivetran's API returns modified values for `server_host_name` (PrivateLink endpoint), `cloud_provider`, `networking_method`, and `private_link_id`. The provider now preserves the user's original configuration values for these fields to maintain Terraform state consistency.
+- Fixed "Provider produced inconsistent result after apply" error for `fivetran_destination` resource when changing `run_setup_tests` from `false` to `true`. The provider now correctly preserves networking-related fields (`private_link_id`, `networking_method`, `hybrid_deployment_agent_id`) when running setup tests without config changes.
+
 ## [v1.9.14](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.13...v1.9.14)
 
 ### Added
