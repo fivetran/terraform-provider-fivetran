@@ -1,6 +1,7 @@
 package resources_test
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"testing"
@@ -235,8 +236,8 @@ func TestResourceConnectorScheduleWithScheduleBlock(t *testing.T) {
 
 	scheduleState := map[string]interface{}{
 		"schedule_type":     "auto",
-		"paused":            false,
-		"pause_after_trial": false,
+		"paused":            true,
+		"pause_after_trial": true,
 		"sync_frequency":    float64(360),
 		"schedule":          map[string]interface{}(nil),
 	}
@@ -249,24 +250,8 @@ func TestResourceConnectorScheduleWithScheduleBlock(t *testing.T) {
 
 		scheduleBlock := ""
 		if s, ok := ss["schedule"].(map[string]interface{}); ok && s != nil {
-			scheduleJson := `"schedule": {`
-			if v, ok := s["schedule_type"]; ok {
-				scheduleJson += fmt.Sprintf(`"schedule_type": "%v",`, v)
-			}
-			if v, ok := s["interval"]; ok {
-				scheduleJson += fmt.Sprintf(`"interval": %v,`, v)
-			}
-			if v, ok := s["time_of_day"]; ok && v != nil {
-				scheduleJson += fmt.Sprintf(`"time_of_day": "%v",`, v)
-			}
-			if v, ok := s["cron"]; ok && v != nil {
-				scheduleJson += fmt.Sprintf(`"cron": "%v",`, v)
-			}
-			if v, ok := s["days_of_week"]; ok && v != nil {
-				scheduleJson += fmt.Sprintf(`"days_of_week": %v,`, v)
-			}
-			scheduleJson = scheduleJson[:len(scheduleJson)-1] + `},`
-			scheduleBlock = scheduleJson
+			scheduleJson, _ := json.Marshal(s)
+			scheduleBlock = fmt.Sprintf(`"schedule": %s,`, string(scheduleJson))
 		}
 
 		return fmt.Sprintf(`
@@ -315,10 +300,7 @@ func TestResourceConnectorScheduleWithScheduleBlock(t *testing.T) {
 			func(req *http.Request) (*http.Response, error) {
 				body := tfmock.RequestBodyToJson(t, req)
 				if s, ok := body["schedule"]; ok {
-					scheduleState["schedule"] = s
-				}
-				if v, ok := body["paused"]; ok {
-					scheduleState["paused"] = v
+					scheduleState["schedule"] = s.(map[string]interface{})
 				}
 				responseData = tfmock.CreateMapFromJsonString(t, createResponse(scheduleState))
 				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
@@ -341,8 +323,8 @@ func TestResourceConnectorScheduleWithScheduleBlock(t *testing.T) {
 					resource "fivetran_connector_schedule" "test_connector_schedule" {
 						provider = fivetran-provider
 						connector_id = "connector_id"
-						paused = false
-						pause_after_trial = false
+						paused = true
+						pause_after_trial = true
 						schedule {
 							schedule_type = "INTERVAL"
 							interval      = 60
@@ -365,8 +347,8 @@ func TestResourceConnectorScheduleWithScheduleBlock(t *testing.T) {
 					resource "fivetran_connector_schedule" "test_connector_schedule" {
 						provider = fivetran-provider
 						connector_id = "connector_id"
-						paused = false
-						pause_after_trial = false
+						paused = true
+						pause_after_trial = true
 						schedule {
 							schedule_type = "TIME_OF_DAY"
 							time_of_day   = "09:00"
@@ -388,8 +370,8 @@ func TestResourceConnectorScheduleWithScheduleBlock(t *testing.T) {
 					resource "fivetran_connector_schedule" "test_connector_schedule" {
 						provider = fivetran-provider
 						connector_id = "connector_id"
-						paused = false
-						pause_after_trial = false
+						paused = true
+						pause_after_trial = true
 						schedule {
 							schedule_type = "CRON"
 							cron          = "0 9 * * 1-5"
@@ -410,8 +392,8 @@ func TestResourceConnectorScheduleWithScheduleBlock(t *testing.T) {
 					resource "fivetran_connector_schedule" "test_connector_schedule" {
 						provider = fivetran-provider
 						connector_id = "connector_id"
-						paused = false
-						pause_after_trial = false
+						paused = true
+						pause_after_trial = true
 						schedule {
 							schedule_type = "MANUAL"
 						}
