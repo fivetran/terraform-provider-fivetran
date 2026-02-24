@@ -74,7 +74,7 @@ func GetConnectorScheduleResourceSchema() schema.Schema {
 				Description: "Flexible sync schedule configuration. When set, takes precedence over `sync_frequency`.",
 				Attributes: map[string]schema.Attribute{
 					"schedule_type": schema.StringAttribute{
-						Required: true,
+						Optional:    true,
 						Description: "The schedule type. Supported values: INTERVAL, TIME_OF_DAY, CRON, MANUAL.",
 						Validators: []validator.String{
 							stringvalidator.OneOf("INTERVAL", "TIME_OF_DAY", "CRON", "MANUAL"),
