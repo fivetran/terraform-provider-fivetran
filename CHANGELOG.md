@@ -18,6 +18,9 @@ New connection auth fields supported:
 - Added field `fivetran_connector.config.svc_acc_secret_key` for services: `google_play`.
 - Added field `fivetran_connector.config.system_user_access_token` for services: `instagram_business`.
 
+### Added
+- Added `schedule` block to `fivetran_connector_schedule` resource to support flexible sync schedules. The block supports `schedule_type` (INTERVAL, TIME_OF_DAY, CRON, MANUAL), `interval`, `time_of_day`, `days_of_week`, and `cron` fields.
+
 ## [v1.9.24](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.24...v1.9.23)
 
 ### Fixed
