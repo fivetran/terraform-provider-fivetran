@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/hashicorp/terraform-plugin-framework/action"
 	actionSchema "github.com/hashicorp/terraform-plugin-framework/action/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -149,6 +150,9 @@ func (a *connectionSchemaReload) Invoke(ctx context.Context, req action.InvokeRe
 	}
 
 	connectionID := data.ConnectionId.ValueString()
+
+	core.SchemaLocks.Lock(connectionID)
+	defer core.SchemaLocks.Unlock(connectionID)
 
 	if resp.SendProgress != nil {
 		resp.SendProgress(action.InvokeProgressEvent{

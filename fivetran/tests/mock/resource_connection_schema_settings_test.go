@@ -6,8 +6,10 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/fivetran/go-fivetran/tests/mock"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
@@ -381,7 +383,7 @@ resource "fivetran_connection_schema_settings" "test" {
 	schema_change_handling = "ALLOW_ALL"
 	disabled_schemas       = ["schema_2"]
 }`,
-				ExpectError: regexp.MustCompile("Unable to Read Connection Schema"),
+				ExpectError: regexp.MustCompile("Ensure the schema has"),
 			},
 		},
 	})
@@ -1039,6 +1041,75 @@ resource "fivetran_connection_schema_settings" "test" {
 	enabled_schemas        = ["charlie", "alpha", "bravo"]
 }`,
 				Check: resource.TestCheckResourceAttr("fivetran_connection_schema_settings.test", "enabled_schemas.#", "3"),
+			},
+		},
+	})
+}
+
+// TestConnectionSchemaSettingsConflictRetry verifies that when the PATCH endpoint
+// returns a 409 Conflict (optimistic lock failure), the resource retries the full
+// read-modify-write cycle and eventually succeeds.
+func TestConnectionSchemaSettingsConflictRetry(t *testing.T) {
+	origBackoff := core.SchemaConflictBackoff()
+	core.SetSchemaConflictBackoff(10 * time.Millisecond)
+	defer core.SetSchemaConflictBackoff(origBackoff)
+
+	patchAttempts := 0
+
+	setupMock := func(t *testing.T) {
+		mockClient.Reset()
+		patchAttempts = 0
+
+		mockClient.When(http.MethodGet, "/v1/connections/conn_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", map[string]any{
+					"schema_change_handling": "ALLOW_ALL",
+					"schemas": map[string]any{
+						"schema_1": map[string]any{"enabled": true},
+						"schema_2": map[string]any{"enabled": false},
+					},
+				}), nil
+			},
+		)
+
+		mockClient.When(http.MethodPatch, "/v1/connections/conn_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				patchAttempts++
+				if patchAttempts <= 2 {
+					return fivetranResponse(t, req, "Conflict", http.StatusConflict,
+						"Optimistic lock conflict", nil), nil
+				}
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", map[string]any{
+					"schema_change_handling": "ALLOW_ALL",
+					"schemas": map[string]any{
+						"schema_1": map[string]any{"enabled": true},
+						"schema_2": map[string]any{"enabled": false},
+					},
+				}), nil
+			},
+		)
+	}
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { setupMock(t) },
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             func(s *terraform.State) error { return nil },
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "fivetran_connection_schema_settings" "test" {
+	provider               = fivetran-provider
+	connection_id          = "conn_id"
+	schema_change_handling = "ALLOW_ALL"
+	disabled_schemas       = ["schema_2"]
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("fivetran_connection_schema_settings.test", "disabled_schemas.#", "1"),
+					func(s *terraform.State) error {
+						assertEqual(t, patchAttempts, 3)
+						return nil
+					},
+				),
 			},
 		},
 	})

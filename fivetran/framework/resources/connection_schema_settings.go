@@ -11,7 +11,6 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/fivetrantypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
-	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -190,30 +189,25 @@ func (r *connectionSchemaSettings) Create(ctx context.Context, req resource.Crea
 	connectionId := data.ConnectionId.ValueString()
 	client := r.GetClient()
 
-	schemaResp, err := client.NewConnectionSchemaDetails().ConnectionID(connectionId).Do(ctx)
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Unable to Read Connection Schema.",
-			fmt.Sprintf("Schema details not available for connection %s. "+
-				"Ensure the schema has been loaded (e.g. via fivetran_connection_schema_reload action). "+
-				"Error: %v; code: %v; message: %v", connectionId, err, schemaResp.Code, schemaResp.Message),
-		)
-		return
-	}
+	core.SchemaLocks.Lock(connectionId)
+	defer core.SchemaLocks.Unlock(connectionId)
 
-	applySchemaSettings(ctx, client, connectionId, data, schemaResp, &resp.Diagnostics)
+	var updatedResp connections.ConnectionSchemaDetailsResponse
+	core.RetryOnSchemaConflict(ctx, &resp.Diagnostics, "Unable to Update Connection Schema Settings.", func() error {
+		schemaResp, err := client.NewConnectionSchemaDetails().ConnectionID(connectionId).Do(ctx)
+		if err != nil {
+			return fmt.Errorf("schema details not available for connection %s. "+
+				"Ensure the schema has been loaded (e.g. via fivetran_connection_schema_reload action). "+
+				"Error: %v; code: %v; message: %v", connectionId, err, schemaResp.Code, schemaResp.Message)
+		}
+		updatedResp, err = applySchemaSettings(ctx, client, connectionId, data, schemaResp)
+		return err
+	})
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	schemaResp, err = client.NewConnectionSchemaDetails().ConnectionID(connectionId).Do(ctx)
-	if err != nil {
-		resp.Diagnostics.AddError("Unable to Read Connection Schema After Update.",
-			fmt.Sprintf("%v; code: %v; message: %v", err, schemaResp.Code, schemaResp.Message))
-		return
-	}
-
-	data.readFromResponse(schemaResp)
+	data.readFromResponse(updatedResp)
 	data.Id = types.StringValue(connectionId)
 	data.ConnectionId = types.StringValue(connectionId)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -280,26 +274,23 @@ func (r *connectionSchemaSettings) Update(ctx context.Context, req resource.Upda
 	connectionId := state.ConnectionId.ValueString()
 	client := r.GetClient()
 
-	schemaResp, err := client.NewConnectionSchemaDetails().ConnectionID(connectionId).Do(ctx)
-	if err != nil {
-		resp.Diagnostics.AddError("Unable to Read Connection Schema.",
-			fmt.Sprintf("%v; code: %v; message: %v", err, schemaResp.Code, schemaResp.Message))
-		return
-	}
+	core.SchemaLocks.Lock(connectionId)
+	defer core.SchemaLocks.Unlock(connectionId)
 
-	applySchemaSettings(ctx, client, connectionId, plan, schemaResp, &resp.Diagnostics)
+	var updatedResp connections.ConnectionSchemaDetailsResponse
+	core.RetryOnSchemaConflict(ctx, &resp.Diagnostics, "Unable to Update Connection Schema Settings.", func() error {
+		schemaResp, err := client.NewConnectionSchemaDetails().ConnectionID(connectionId).Do(ctx)
+		if err != nil {
+			return fmt.Errorf("%v; code: %v; message: %v", err, schemaResp.Code, schemaResp.Message)
+		}
+		updatedResp, err = applySchemaSettings(ctx, client, connectionId, plan, schemaResp)
+		return err
+	})
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	schemaResp, err = client.NewConnectionSchemaDetails().ConnectionID(connectionId).Do(ctx)
-	if err != nil {
-		resp.Diagnostics.AddError("Unable to Read Connection Schema After Update.",
-			fmt.Sprintf("%v; code: %v; message: %v", err, schemaResp.Code, schemaResp.Message))
-		return
-	}
-
-	plan.readFromResponse(schemaResp)
+	plan.readFromResponse(updatedResp)
 	plan.Id = types.StringValue(connectionId)
 	plan.ConnectionId = types.StringValue(connectionId)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
@@ -366,14 +357,14 @@ func computeDesiredEnabled(policy string, schemaName string, userSet map[string]
 // over all schemas present in the API response and sets each to its desired
 // enabled state based on the policy and user's list. Schemas not present
 // in the API response (e.g. stale references in config) are silently skipped.
+// Returns the raw error from the API call (nil on success).
 func applySchemaSettings(
 	ctx context.Context,
 	client *fivetran.Client,
 	connectionId string,
 	data connectionSchemaSettingsModel,
 	schemaResp connections.ConnectionSchemaDetailsResponse,
-	diagnostics *diag.Diagnostics,
-) {
+) (connections.ConnectionSchemaDetailsResponse, error) {
 	policy := data.SchemaChangeHandling.ValueString()
 	userSet := getUserSchemaNames(data)
 
@@ -387,11 +378,5 @@ func applySchemaSettings(
 		}
 	}
 
-	updateResp, err := svc.Do(ctx)
-	if err != nil {
-		diagnostics.AddError(
-			"Unable to Update Connection Schema Settings.",
-			fmt.Sprintf("%v; code: %v; message: %v", err, updateResp.Code, updateResp.Message),
-		)
-	}
+	return svc.Do(ctx)
 }
