@@ -127,14 +127,17 @@ func ConnectorAttributesSchema() core.Schema {
 	}
 }
 
+func ConnectorConfigDynamicAttribute() resourceSchema.Attribute {
+	return resourceSchema.DynamicAttribute{
+		Optional:    true,
+		Description: "Connector config. Keys depend on the connector service type. Only managed keys are tracked for drift.",
+	}
+}
+
 func ConnectorResourceBlocks(ctx context.Context) map[string]resourceSchema.Block {
 	return map[string]resourceSchema.Block{
 		"destination_schema": resourceSchema.SingleNestedBlock{
 			Attributes: destinationSchemaAttributes().GetResourceSchema(),
-		},
-		"config": resourceSchema.SingleNestedBlock{
-			Attributes: GetResourceConnectorConfigSchemaAttributes(),
-			Blocks:     GetResourceConnectorConfigSchemaBlocks(),
 		},
 		"auth": resourceSchema.SingleNestedBlock{
 			Attributes: GetResourceAuthSchemaAttributes(),

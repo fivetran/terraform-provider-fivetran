@@ -1,11 +1,13 @@
 package model
 
 import (
+    "context"
     "fmt"
     "strings"
 
     gfcommon "github.com/fivetran/go-fivetran/common"
     "github.com/fivetran/go-fivetran/connections"
+    "github.com/fivetran/go-fivetran/metadata"
     "github.com/fivetran/terraform-provider-fivetran/fivetran/common"
     "github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
     "github.com/hashicorp/terraform-plugin-framework/attr"
@@ -42,7 +44,7 @@ type ConnectorDatasourceModel struct {
     PrivateLinkId            types.String `tfsdk:"private_link_id"`
     Status types.Object `tfsdk:"status"`
 
-    Config types.Object `tfsdk:"config"`
+    Config types.Dynamic `tfsdk:"config"`
 }
 
 var (
@@ -142,7 +144,7 @@ type ConnectorResourceModel struct {
     DataDelaySensitivity    types.String `tfsdk:"data_delay_sensitivity"`
     DataDelayThreshold      types.Int64  `tfsdk:"data_delay_threshold"`
 
-    Config   types.Object   `tfsdk:"config"`
+    Config   types.Dynamic  `tfsdk:"config"`
     Auth     types.Object   `tfsdk:"auth"`
     Timeouts timeouts.Value `tfsdk:"timeouts"`
 
@@ -165,19 +167,55 @@ func (d *ConnectorResourceModel) ReadFromCreateResponse(resp connections.Details
     return nil
 }
 
-func (d *ConnectorResourceModel) GetConfigMap(nullOnNull bool) (map[string]interface{}, error) {
-    if d.Config.IsNull() && nullOnNull {
+func (d *ConnectorResourceModel) GetConfigMapFromDynamic(ctx context.Context) (map[string]any, error) {
+    if d.Config.IsNull() || d.Config.IsUnknown() {
         return nil, nil
     }
-    result := getValueFromAttrValue(d.Config, common.GetConfigFieldsMap(), nil, d.Service.ValueString()).(map[string]interface{})
-    serviceName := d.Service.ValueString()
-    serviceFields, err := common.GetFieldsForService(serviceName)
-    if err != nil {
-        return result, err
+    return dynamicToMap(ctx, d.Config), nil
+}
+
+func (d *ConnectorResourceModel) ReadConfigFromResponse(ctx context.Context, remote map[string]any, meta *metadata.ConnectorMetadata, isImporting bool) {
+    if d.Config.IsNull() && !isImporting {
+        return
     }
-    allFields := common.GetConfigFieldsMap()
-    err = patchServiceSpecificFields(result, serviceName, serviceFields, allFields)
-    return result, err
+    mask := dynamicToMap(ctx, d.Config)
+    projected := project(remote, mask, meta)
+    d.Config = mapToDynamic(ctx, projected)
+}
+
+func mapToDynamic(ctx context.Context, m map[string]any) types.Dynamic {
+    if m == nil {
+        return types.DynamicNull()
+    }
+    attrTypes := map[string]attr.Type{}
+    attrVals := map[string]attr.Value{}
+    for k, v := range m {
+        av := anyToAttrValue(v)
+        attrTypes[k] = av.Type(ctx)
+        attrVals[k] = av
+    }
+    obj, _ := types.ObjectValue(attrTypes, attrVals)
+    return types.DynamicValue(obj)
+}
+
+func anyToAttrValue(v any) attr.Value {
+    if v == nil {
+        return types.StringNull()
+    }
+    switch val := v.(type) {
+    case string:
+        return types.StringValue(val)
+    case bool:
+        return types.BoolValue(val)
+    case int64:
+        return types.Int64Value(val)
+    case float64:
+        return types.Float64Value(val)
+    case map[string]any:
+        ctx := context.Background()
+        return mapToDynamic(ctx, val).UnderlyingValue()
+    }
+    return types.StringValue(fmt.Sprintf("%v", v))
 }
 
 func (d *ConnectorResourceModel) GetAuthMap(nullOnNull bool) (map[string]interface{}, error) {
@@ -248,13 +286,8 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, is
 		d.NetworkingMethod = types.StringValue(c.NetworkingMethod)
 	}
 
-	if isImporting || (!d.Config.IsNull() && !d.Config.IsUnknown()) {
-		d.Config = getValue(
-			types.ObjectType{AttrTypes: getAttrTypes(common.GetConfigFieldsMap())},
-			c.Config,
-			getValueFromAttrValue(d.Config, common.GetConfigFieldsMap(), nil, c.Service).(map[string]interface{}),
-			common.GetConfigFieldsMap(), nil, c.Service, isImporting, false).(basetypes.ObjectValue)
-	}
+	// Config is now types.Dynamic — projection happens in ReadConfigFromResponse
+	// called from the resource Read() with metadata context.
 }
 
 func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) {
@@ -300,31 +333,22 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
         d.HybridDeploymentAgentId = types.StringNull()
     }
 
-    d.Config = getValue(
-        types.ObjectType{AttrTypes: getAttrTypes(common.GetConfigFieldsMap())},
-        c.Config,
-        c.Config,
-        common.GetConfigFieldsMap(),
-        nil,
-        c.Service, false, false).(basetypes.ObjectValue)
+    // Datasource config: show all remote fields directly (no mask, no projection)
+    d.Config = mapToDynamic(context.Background(), c.Config)
 }
 
-func (d *ConnectorResourceModel) HasUpdates(plan ConnectorResourceModel, state ConnectorResourceModel) (bool, map[string]interface{}, map[string]interface{}, error) {
-    stateConfigMap, err := state.GetConfigMap(false)
-    // this is not expected - state should contain only known fields relative to service
-    // but we have to check error just in case
+func (d *ConnectorResourceModel) HasUpdates(ctx context.Context, plan ConnectorResourceModel, state ConnectorResourceModel, meta *metadata.ConnectorMetadata) (bool, map[string]any, map[string]interface{}, error) {
+    stateConfigMap, err := state.GetConfigMapFromDynamic(ctx)
+    if err != nil {
+        return false, nil, nil, err
+    }
+
+    planConfigMap, err := plan.GetConfigMapFromDynamic(ctx)
     if err != nil {
         return false, nil, nil, err
     }
 
     stateAuthMap, err := state.GetAuthMap(false)
-    // this is not expected - state should contain only known fields relative to service
-    // but we have to check error just in case
-    if err != nil {
-        return false, nil, nil, err
-    }
-
-    planConfigMap, err := plan.GetConfigMap(false)
     if err != nil {
         return false, nil, nil, err
     }
@@ -334,21 +358,20 @@ func (d *ConnectorResourceModel) HasUpdates(plan ConnectorResourceModel, state C
         return false, nil, nil, err
     }
 
-    patch := PrepareConfigAuthPatch(stateConfigMap, planConfigMap, plan.Service.ValueString(), common.GetConfigFieldsMap())
+    patch := PrepareConfigPatchDynamic(stateConfigMap, planConfigMap, meta)
     authPatch := PrepareConfigAuthPatch(stateAuthMap, planAuthMap, plan.Service.ValueString(), common.GetAuthFieldsMap())
 
-    if len(patch) > 0 || 
-            len(authPatch) > 0 || 
+    if len(patch) > 0 ||
+            len(authPatch) > 0 ||
             !plan.ProxyAgentId.Equal(state.ProxyAgentId) ||
             !plan.PrivateLinkId.Equal(state.PrivateLinkId) ||
             !plan.HybridDeploymentAgentId.Equal(state.HybridDeploymentAgentId) ||
             !plan.DataDelaySensitivity.Equal(state.DataDelaySensitivity) ||
             !plan.DataDelayThreshold.Equal(state.DataDelayThreshold) ||
             !plan.NetworkingMethod.Equal(state.NetworkingMethod) {
-                return true, patch, authPatch, nil
-            } else {
-                return false, nil, nil, nil
-            }
+        return true, patch, authPatch, nil
+    }
+    return false, nil, nil, nil
 }
 
 type ConnectorModelContainer struct {

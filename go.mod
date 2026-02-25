@@ -65,6 +65,8 @@ require (
 	google.golang.org/protobuf v1.33.0 // indirect
 )
 
+replace github.com/fivetran/go-fivetran => ../go-fivetran
+
 go 1.21
 
 toolchain go1.22.1
