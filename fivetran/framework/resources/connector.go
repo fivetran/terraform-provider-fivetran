@@ -15,6 +15,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
+// Ensure ValidateConfig interface is satisfied
+var _ resource.ResourceWithValidateConfig = &connector{}
+
 func Connector() resource.Resource {
 	return &connector{}
 }
@@ -33,10 +36,42 @@ func (r *connector) Metadata(ctx context.Context, req resource.MetadataRequest, 
 }
 
 func (r *connector) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	attrs := fivetranSchema.ConnectorAttributesSchema().GetResourceSchema()
+	attrs["config"] = fivetranSchema.ConnectorConfigDynamicAttribute()
 	resp.Schema = schema.Schema{
-		Attributes: fivetranSchema.ConnectorAttributesSchema().GetResourceSchema(),
+		Attributes: attrs,
 		Blocks:     fivetranSchema.ConnectorResourceBlocks(ctx),
 		Version:    4,
+	}
+}
+
+func (r *connector) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+	var data model.ConnectorResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	service := data.Service.ValueString()
+	if service == "" || data.Config.IsNull() || data.Config.IsUnknown() {
+		return
+	}
+
+	meta, err := core.GetCachedConnectorMetadata(ctx, r.GetClient(), service)
+	if err != nil {
+		// non-fatal: skip validation if metadata unavailable
+		return
+	}
+
+	configMap := model.DynamicToMapPublic(ctx, data.Config)
+	for key := range configMap {
+		if _, ok := meta.Config.Properties[key]; !ok {
+			resp.Diagnostics.AddAttributeError(
+				path.Root("config"),
+				"Unknown config field",
+				fmt.Sprintf("Field %q is not valid for service %q.", key, service),
+			)
+		}
 	}
 }
 
@@ -103,7 +138,7 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 		return
 	}
 
-	configMap, err := data.GetConfigMap(true)
+	configMap, err := data.GetConfigMapFromDynamic(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Create Connector Resource.",
@@ -267,6 +302,11 @@ func (r *connector) Read(ctx context.Context, req resource.ReadRequest, resp *re
 
 	data.ReadFromResponse(response, isImportOperation)
 
+	meta, metaErr := core.GetCachedConnectorMetadata(ctx, r.GetClient(), data.Service.ValueString())
+	if metaErr == nil {
+		data.ReadConfigFromResponse(ctx, response.Data.Config, meta, isImportOperation)
+	}
+
 	// Restore plan-only attributes after reading API response
 	data.RunSetupTests = runSetupTests
 	data.TrustCertificates = trustCertificates
@@ -303,7 +343,16 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 		(trustCertificatesPlan && trustCertificatesPlan != trustCertificatesState) ||
 		(trustFingerprintsPlan && trustFingerprintsPlan != trustFingerprintsState)
 
-	hasUpdates, patch, authPatch, err := plan.HasUpdates(plan, state)
+	meta, err := core.GetCachedConnectorMetadata(ctx, r.GetClient(), plan.Service.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to fetch connector metadata.",
+			fmt.Sprintf("%v;", err),
+		)
+		return
+	}
+
+	hasUpdates, patch, authPatch, err := plan.HasUpdates(ctx, plan, state, meta)
     if err != nil {
         resp.Diagnostics.AddError(
             "Unable to Update Connector Resource.",
