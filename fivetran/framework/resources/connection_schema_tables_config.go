@@ -103,7 +103,6 @@ func (d *connectionSchemaTablesConfigModel) readFromResponse(
 	schemaResp connections.ConnectionSchemaDetailsResponse,
 	schemaName string,
 	priorSyncMode types.Map,
-	refresh bool,
 ) error {
 	tables, err := getTablesFromResponse(schemaResp, schemaName)
 	if err != nil {
@@ -111,19 +110,11 @@ func (d *connectionSchemaTablesConfigModel) readFromResponse(
 	}
 
 	if !d.DisabledTables.IsNull() {
-		names := collectTableNames(tables, false)
-		if !refresh {
-			names = filterByPrior(names, d.DisabledTables)
-		}
-		d.DisabledTables = buildOrderedSet(names, d.DisabledTables)
+		d.DisabledTables = buildOrderedSet(collectTableNames(tables, false), d.DisabledTables)
 	} else if !d.EnabledTables.IsNull() {
-		names := collectTableNames(tables, true)
-		if !refresh {
-			names = filterByPrior(names, d.EnabledTables)
-		}
-		d.EnabledTables = buildOrderedSet(names, d.EnabledTables)
+		d.EnabledTables = buildOrderedSet(collectTableNames(tables, true), d.EnabledTables)
 	} else {
-		// Import case: both lists are null — populate based on API policy
+		// Import: populate based on API policy
 		if schemaResp.Data.SchemaChangeHandling == "ALLOW_ALL" || schemaResp.Data.SchemaChangeHandling == "ALLOW_COLUMNS" {
 			names := collectTableNames(tables, false)
 			if len(names) > 0 {
@@ -164,20 +155,6 @@ func collectTableNames(
 	result := make(map[string]bool)
 	for name, t := range tables {
 		if t.Enabled != nil && *t.Enabled == wantEnabled {
-			result[name] = true
-		}
-	}
-	return result
-}
-
-// filterByPrior returns the subset of names that are present in the prior state set.
-// This ensures Read only reports items the user explicitly configured, not unmanaged
-// items that happen to match the predicate.
-func filterByPrior(names map[string]bool, prior fivetrantypes.FastStringSetValue) map[string]bool {
-	priorSet := fastSetAsMap(prior)
-	result := make(map[string]bool)
-	for name := range names {
-		if priorSet[name] {
 			result[name] = true
 		}
 	}
@@ -239,36 +216,34 @@ func readSyncModes(
 // within a specific schema. Only tables explicitly listed in disabled_tables
 // or enabled_tables are touched; all other tables are left in their current
 // state. Validates EnabledPatchSettings before applying.
+// applyTableSettings sends a PATCH request to update table-level settings.
+// disabled_tables: listed tables are disabled, all others are enabled.
+// enabled_tables: listed tables are enabled, all others are disabled.
+// Validates EnabledPatchSettings before applying.
 func applyTableSettings(
 	ctx context.Context,
 	client *fivetran.Client,
 	connectionId string,
 	schemaName string,
 	data connectionSchemaTablesConfigModel,
-	prior connectionSchemaTablesConfigModel,
 	tables map[string]*connections.ConnectionSchemaConfigTableResponse,
 ) (connections.ConnectionSchemaDetailsResponse, error) {
 	disabledSet := fastSetAsMap(data.DisabledTables)
 	enabledSet := fastSetAsMap(data.EnabledTables)
-	priorDisabledSet := fastSetAsMap(prior.DisabledTables)
-	priorEnabledSet := fastSetAsMap(prior.EnabledTables)
 	syncModes := getSyncModeMap(data)
 
 	// Validate enabled_patch_settings before attempting any changes
 	var blocked []string
 	for tableName, t := range tables {
-		wantDisable := disabledSet[tableName]
-		wantEnable := enabledSet[tableName]
-		if wantDisable && t.Enabled != nil && *t.Enabled {
-			if t.EnabledPatchSettings.Allowed != nil && !*t.EnabledPatchSettings.Allowed {
-				reason := "unknown reason"
-				if t.EnabledPatchSettings.Reason != nil {
-					reason = *t.EnabledPatchSettings.Reason
-				}
-				blocked = append(blocked, fmt.Sprintf("  - %s: %s", tableName, reason))
-			}
+		var desired bool
+		if len(disabledSet) > 0 {
+			desired = !disabledSet[tableName]
+		} else if len(enabledSet) > 0 {
+			desired = enabledSet[tableName]
+		} else {
+			continue
 		}
-		if wantEnable && t.Enabled != nil && !*t.Enabled {
+		if t.Enabled != nil && *t.Enabled != desired {
 			if t.EnabledPatchSettings.Allowed != nil && !*t.EnabledPatchSettings.Allowed {
 				reason := "unknown reason"
 				if t.EnabledPatchSettings.Reason != nil {
@@ -292,24 +267,16 @@ func applyTableSettings(
 		tableConfig := fivetran.NewConnectionSchemaConfigTable()
 		needsUpdate := false
 
-		if disabledSet[tableName] {
-			if t.Enabled == nil || *t.Enabled {
-				tableConfig.Enabled(false)
+		if len(disabledSet) > 0 {
+			desired := !disabledSet[tableName]
+			if t.Enabled == nil || *t.Enabled != desired {
+				tableConfig.Enabled(desired)
 				needsUpdate = true
 			}
-		} else if enabledSet[tableName] {
-			if t.Enabled == nil || !*t.Enabled {
-				tableConfig.Enabled(true)
-				needsUpdate = true
-			}
-		} else if priorDisabledSet[tableName] {
-			if t.Enabled != nil && !*t.Enabled {
-				tableConfig.Enabled(true)
-				needsUpdate = true
-			}
-		} else if priorEnabledSet[tableName] {
-			if t.Enabled != nil && *t.Enabled {
-				tableConfig.Enabled(false)
+		} else if len(enabledSet) > 0 {
+			desired := enabledSet[tableName]
+			if t.Enabled == nil || *t.Enabled != desired {
+				tableConfig.Enabled(desired)
 				needsUpdate = true
 			}
 		}
@@ -395,14 +362,14 @@ func (r *connectionSchemaTablesConfig) Create(ctx context.Context, req resource.
 			return fmt.Errorf("schema %q not found for connection %s", schemaName, connectionId)
 		}
 
-		updatedResp, err = applyTableSettings(ctx, client, connectionId, schemaName, data, connectionSchemaTablesConfigModel{}, tables)
+		updatedResp, err = applyTableSettings(ctx, client, connectionId, schemaName, data, tables)
 		return err
 	})
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	if readErr := data.readFromResponse(updatedResp, schemaName, data.SyncMode, false); readErr != nil {
+	if readErr := data.readFromResponse(updatedResp, schemaName, data.SyncMode); readErr != nil {
 		resp.Diagnostics.AddError("Unable to Read Table Settings.", readErr.Error())
 		return
 	}
@@ -455,7 +422,7 @@ func (r *connectionSchemaTablesConfig) Read(ctx context.Context, req resource.Re
 
 	priorSyncMode := data.SyncMode
 
-	if readErr := data.readFromResponse(schemaResp, schemaName, priorSyncMode, true); readErr != nil {
+	if readErr := data.readFromResponse(schemaResp, schemaName, priorSyncMode); readErr != nil {
 		resp.Diagnostics.AddError("Schema Not Found.",
 			fmt.Sprintf("Schema %q not found in API response for connection %s.", schemaName, connectionId))
 		return
@@ -499,14 +466,14 @@ func (r *connectionSchemaTablesConfig) Update(ctx context.Context, req resource.
 			return tableErr
 		}
 
-		updatedResp, err = applyTableSettings(ctx, client, connectionId, schemaName, plan, state, tables)
+		updatedResp, err = applyTableSettings(ctx, client, connectionId, schemaName, plan, tables)
 		return err
 	})
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	if readErr := plan.readFromResponse(updatedResp, schemaName, plan.SyncMode, false); readErr != nil {
+	if readErr := plan.readFromResponse(updatedResp, schemaName, plan.SyncMode); readErr != nil {
 		resp.Diagnostics.AddError("Unable to Read Table Settings.", readErr.Error())
 		return
 	}

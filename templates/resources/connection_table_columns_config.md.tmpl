@@ -1,0 +1,91 @@
+---
+page_title: "Resource: fivetran_connection_table_columns_config"
+subcategory: "Preview"
+---
+
+# Resource: fivetran_connection_table_columns_config
+
+~> **Preview** This resource is in preview. Its behavior and interface may change in future releases without prior notice.
+
+Manages column-level settings for a specific table within a Fivetran connection schema: which columns are enabled or disabled, hashed, and designated as primary keys.
+
+The list you choose defines the complete desired state for all columns in the table:
+
+- **`disabled_columns`** — listed columns are **disabled**, all other columns are **enabled**
+- **`enabled_columns`** — listed columns are **enabled**, all other columns are **disabled**
+
+If a new column appears upstream, the resource will automatically apply the correct state based on which list you configured.
+
+The `hashed_columns` and `primary_key_columns` attributes, when configured, own the full table-level setting — any external changes to column hashing or primary keys are detected as drift. When these attributes are omitted, external changes to hashing/PKs are ignored.
+
+## Example Usage
+
+### Disable and hash specific columns (all others enabled)
+
+```hcl
+resource "fivetran_connection_table_columns_config" "users" {
+  connection_id       = fivetran_connector.my_connector.id
+  schema_name         = "public"
+  table_name          = "users"
+  disabled_columns    = ["internal_notes", "debug_info"]
+  hashed_columns      = ["email", "phone"]
+  primary_key_columns = ["id"]
+}
+```
+
+### Enable specific columns (all others disabled)
+
+```hcl
+resource "fivetran_connection_table_columns_config" "events" {
+  connection_id   = fivetran_connector.my_connector.id
+  schema_name     = "analytics"
+  table_name      = "events"
+  enabled_columns = ["event_id", "event_type", "timestamp"]
+}
+```
+
+### Using for_each for multiple tables
+
+```hcl
+locals {
+  column_configs = {
+    "public:users" = {
+      schema = "public", table = "users"
+      disabled_columns = ["debug_info"]
+      hashed_columns   = ["email"]
+      pk_columns       = ["id"]
+    }
+    "public:orders" = {
+      schema = "public", table = "orders"
+      disabled_columns = ["internal_status"]
+      hashed_columns   = null
+      pk_columns       = null
+    }
+  }
+}
+
+resource "fivetran_connection_table_columns_config" "table" {
+  for_each = local.column_configs
+
+  connection_id       = fivetran_connector.my_connector.id
+  schema_name         = each.value.schema
+  table_name          = each.value.table
+  disabled_columns    = each.value.disabled_columns
+  hashed_columns      = each.value.hashed_columns
+  primary_key_columns = each.value.pk_columns
+
+  depends_on = [fivetran_connection_schema_tables_config.schema]
+}
+```
+
+-> **NOTE:** The `disabled_columns` and `enabled_columns` attributes conflict with each other — use one or the other. Columns listed in `hashed_columns` or `primary_key_columns` must not be in `disabled_columns`.
+
+{{ .SchemaMarkdown | trimspace }}
+
+## Import
+
+Import using `connection_id:schema_name:table_name`:
+
+```shell
+terraform import fivetran_connection_table_columns_config.users my_connection_id:public:users
+```

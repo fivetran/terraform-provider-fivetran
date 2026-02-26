@@ -82,30 +82,18 @@ type connectionSchemasConfigModel struct {
 }
 
 // readFromResponse populates the model from the API response.
-// Populates whichever list the user has in their config (prior state):
-// disabled_schemas gets schemas where enabled==false, enabled_schemas gets
-// schemas where enabled==true. The other list stays null.
-// readFromResponse populates the model from the API response.
-// When refresh is true (Read/refresh), all matching items are reported for drift detection.
-// When refresh is false (post-apply read-back), items are filtered to only those in
-// the current config to avoid "inconsistent result after apply".
-func (d *connectionSchemasConfigModel) readFromResponse(resp connections.ConnectionSchemaDetailsResponse, refresh bool) {
+// If the user has disabled_schemas: reports all schemas where enabled==false.
+// If the user has enabled_schemas: reports all schemas where enabled==true.
+// On import (both null): falls back to policy-based population.
+func (d *connectionSchemasConfigModel) readFromResponse(resp connections.ConnectionSchemaDetailsResponse) {
 	d.SchemaChangeHandling = types.StringValue(resp.Data.SchemaChangeHandling)
 
 	if !d.DisabledSchemas.IsNull() {
-		names := collectSchemaNames(resp, false)
-		if !refresh {
-			names = filterByPrior(names, d.DisabledSchemas)
-		}
-		d.DisabledSchemas = buildOrderedSet(names, d.DisabledSchemas)
+		d.DisabledSchemas = buildOrderedSet(collectSchemaNames(resp, false), d.DisabledSchemas)
 	} else if !d.EnabledSchemas.IsNull() {
-		names := collectSchemaNames(resp, true)
-		if !refresh {
-			names = filterByPrior(names, d.EnabledSchemas)
-		}
-		d.EnabledSchemas = buildOrderedSet(names, d.EnabledSchemas)
+		d.EnabledSchemas = buildOrderedSet(collectSchemaNames(resp, true), d.EnabledSchemas)
 	} else {
-		// Import case: both lists are null — populate based on API policy
+		// Import: populate based on API policy
 		if resp.Data.SchemaChangeHandling == "ALLOW_ALL" {
 			names := collectSchemaNames(resp, false)
 			if len(names) > 0 {
@@ -216,14 +204,14 @@ func (r *connectionSchemasConfig) Create(ctx context.Context, req resource.Creat
 				"Ensure the schema has been loaded (e.g. via fivetran_connection_schema_reload action). "+
 				"Error: %v; code: %v; message: %v", connectionId, err, schemaResp.Code, schemaResp.Message)
 		}
-		updatedResp, err = applySchemaSettings(ctx, client, connectionId, data, connectionSchemasConfigModel{}, schemaResp)
+		updatedResp, err = applySchemaSettings(ctx, client, connectionId, data, schemaResp)
 		return err
 	})
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	data.readFromResponse(updatedResp, false)
+	data.readFromResponse(updatedResp)
 	data.Id = types.StringValue(connectionId)
 	data.ConnectionId = types.StringValue(connectionId)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -263,7 +251,7 @@ func (r *connectionSchemasConfig) Read(ctx context.Context, req resource.ReadReq
 		return
 	}
 
-	data.readFromResponse(schemaResp, true)
+	data.readFromResponse(schemaResp)
 	data.Id = types.StringValue(connectionId)
 	data.ConnectionId = types.StringValue(connectionId)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -294,14 +282,14 @@ func (r *connectionSchemasConfig) Update(ctx context.Context, req resource.Updat
 		if err != nil {
 			return fmt.Errorf("%v; code: %v; message: %v", err, schemaResp.Code, schemaResp.Message)
 		}
-		updatedResp, err = applySchemaSettings(ctx, client, connectionId, plan, state, schemaResp)
+		updatedResp, err = applySchemaSettings(ctx, client, connectionId, plan, schemaResp)
 		return err
 	})
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	plan.readFromResponse(updatedResp, false)
+	plan.readFromResponse(updatedResp)
 	plan.Id = types.StringValue(connectionId)
 	plan.ConnectionId = types.StringValue(connectionId)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
@@ -314,16 +302,14 @@ func (r *connectionSchemasConfig) Delete(_ context.Context, _ resource.DeleteReq
 // --- Helpers ---
 
 // applySchemaSettings sends a PATCH request to update the connection's
-// schema_change_handling policy and per-schema enabled state. Only schemas
-// explicitly listed in disabled_schemas or enabled_schemas are touched.
-// Schemas removed from the lists (present in prior but not in current) are
-// reversed (re-enabled or re-disabled).
+// schema_change_handling policy and per-schema enabled state.
+// disabled_schemas: listed schemas are disabled, all others are enabled.
+// enabled_schemas: listed schemas are enabled, all others are disabled.
 func applySchemaSettings(
 	ctx context.Context,
 	client *fivetran.Client,
 	connectionId string,
 	data connectionSchemasConfigModel,
-	prior connectionSchemasConfigModel,
 	schemaResp connections.ConnectionSchemaDetailsResponse,
 ) (connections.ConnectionSchemaDetailsResponse, error) {
 	policy := data.SchemaChangeHandling.ValueString()
@@ -333,28 +319,18 @@ func applySchemaSettings(
 
 	disabledSet := fastSetAsMap(data.DisabledSchemas)
 	enabledSet := fastSetAsMap(data.EnabledSchemas)
-	priorDisabledSet := fastSetAsMap(prior.DisabledSchemas)
-	priorEnabledSet := fastSetAsMap(prior.EnabledSchemas)
 
 	for schemaName, s := range schemaResp.Data.Schemas {
-		if disabledSet[schemaName] {
-			if s.Enabled == nil || *s.Enabled {
-				svc.Schema(schemaName, fivetran.NewConnectionSchemaConfigSchema().Enabled(false))
-			}
-		} else if enabledSet[schemaName] {
-			if s.Enabled == nil || !*s.Enabled {
-				svc.Schema(schemaName, fivetran.NewConnectionSchemaConfigSchema().Enabled(true))
-			}
-		} else if priorDisabledSet[schemaName] {
-			// Was disabled, removed from list → re-enable
-			if s.Enabled != nil && !*s.Enabled {
-				svc.Schema(schemaName, fivetran.NewConnectionSchemaConfigSchema().Enabled(true))
-			}
-		} else if priorEnabledSet[schemaName] {
-			// Was enabled, removed from list → re-disable
-			if s.Enabled != nil && *s.Enabled {
-				svc.Schema(schemaName, fivetran.NewConnectionSchemaConfigSchema().Enabled(false))
-			}
+		var desired bool
+		if len(disabledSet) > 0 {
+			desired = !disabledSet[schemaName] // not in disabled list → enabled
+		} else if len(enabledSet) > 0 {
+			desired = enabledSet[schemaName] // in enabled list → enabled
+		} else {
+			continue // neither list set, skip
+		}
+		if s.Enabled == nil || *s.Enabled != desired {
+			svc.Schema(schemaName, fivetran.NewConnectionSchemaConfigSchema().Enabled(desired))
 		}
 	}
 

@@ -110,22 +110,13 @@ func (d *connectionTableColumnsConfigModel) readFromColumns(
 	columns map[string]*connections.ConnectionSchemaConfigColumnResponse,
 	priorHashed fivetrantypes.FastStringSetValue,
 	priorPK fivetrantypes.FastStringSetValue,
-	refresh bool,
 ) {
 	if !d.DisabledColumns.IsNull() {
-		names := collectColumnNames(columns, false)
-		if !refresh {
-			names = filterByPrior(names, d.DisabledColumns)
-		}
-		d.DisabledColumns = buildOrderedSet(names, d.DisabledColumns)
+		d.DisabledColumns = buildOrderedSet(collectColumnNames(columns, false), d.DisabledColumns)
 	} else if !d.EnabledColumns.IsNull() {
-		names := collectColumnNames(columns, true)
-		if !refresh {
-			names = filterByPrior(names, d.EnabledColumns)
-		}
-		d.EnabledColumns = buildOrderedSet(names, d.EnabledColumns)
+		d.EnabledColumns = buildOrderedSet(collectColumnNames(columns, true), d.EnabledColumns)
 	} else {
-		// Import case: both lists are null — populate disabled columns by default
+		// Import: populate disabled columns by default
 		names := collectColumnNames(columns, false)
 		if len(names) > 0 {
 			d.DisabledColumns = buildOrderedSet(names, d.DisabledColumns)
@@ -222,6 +213,9 @@ func readBoolColumnSet(
 // Only columns explicitly listed in disabled_columns or enabled_columns are
 // touched; all other columns are left in their current state.
 // Validates EnabledPatchSettings and hashed/PK consistency before applying.
+// applyColumnSettings sends a PATCH request to update column-level settings.
+// disabled_columns: listed columns are disabled, all others are enabled.
+// enabled_columns: listed columns are enabled, all others are disabled.
 func applyColumnSettings(
 	ctx context.Context,
 	client *fivetran.Client,
@@ -229,13 +223,10 @@ func applyColumnSettings(
 	schemaName string,
 	tableName string,
 	data connectionTableColumnsConfigModel,
-	prior connectionTableColumnsConfigModel,
 	columns map[string]*connections.ConnectionSchemaConfigColumnResponse,
 ) (connections.ConnectionSchemaDetailsResponse, error) {
 	disabledSet := fastSetAsMap(data.DisabledColumns)
 	enabledSet := fastSetAsMap(data.EnabledColumns)
-	priorDisabledSet := fastSetAsMap(prior.DisabledColumns)
-	priorEnabledSet := fastSetAsMap(prior.EnabledColumns)
 	manageHashed := !data.HashedColumns.IsNull()
 	hashedSet := fastSetAsMap(data.HashedColumns)
 	managePK := !data.PrimaryKeyColumns.IsNull()
@@ -244,18 +235,15 @@ func applyColumnSettings(
 	// Validate enabled_patch_settings before attempting any changes
 	var blocked []string
 	for colName, c := range columns {
-		wantDisable := disabledSet[colName]
-		wantEnable := enabledSet[colName]
-		if wantDisable && c.Enabled != nil && *c.Enabled {
-			if c.EnabledPatchSettings.Allowed != nil && !*c.EnabledPatchSettings.Allowed {
-				reason := "unknown reason"
-				if c.EnabledPatchSettings.Reason != nil {
-					reason = *c.EnabledPatchSettings.Reason
-				}
-				blocked = append(blocked, fmt.Sprintf("  - %s: %s", colName, reason))
-			}
+		var desired bool
+		if len(disabledSet) > 0 {
+			desired = !disabledSet[colName]
+		} else if len(enabledSet) > 0 {
+			desired = enabledSet[colName]
+		} else {
+			continue
 		}
-		if wantEnable && c.Enabled != nil && !*c.Enabled {
+		if c.Enabled != nil && *c.Enabled != desired {
 			if c.EnabledPatchSettings.Allowed != nil && !*c.EnabledPatchSettings.Allowed {
 				reason := "unknown reason"
 				if c.EnabledPatchSettings.Reason != nil {
@@ -301,24 +289,16 @@ func applyColumnSettings(
 		colConfig := fivetran.NewConnectionSchemaConfigColumn()
 		needsUpdate := false
 
-		if disabledSet[colName] {
-			if c.Enabled == nil || *c.Enabled {
-				colConfig.Enabled(false)
+		if len(disabledSet) > 0 {
+			desired := !disabledSet[colName]
+			if c.Enabled == nil || *c.Enabled != desired {
+				colConfig.Enabled(desired)
 				needsUpdate = true
 			}
-		} else if enabledSet[colName] {
-			if c.Enabled == nil || !*c.Enabled {
-				colConfig.Enabled(true)
-				needsUpdate = true
-			}
-		} else if priorDisabledSet[colName] {
-			if c.Enabled != nil && !*c.Enabled {
-				colConfig.Enabled(true)
-				needsUpdate = true
-			}
-		} else if priorEnabledSet[colName] {
-			if c.Enabled != nil && *c.Enabled {
-				colConfig.Enabled(false)
+		} else if len(enabledSet) > 0 {
+			desired := enabledSet[colName]
+			if c.Enabled == nil || *c.Enabled != desired {
+				colConfig.Enabled(desired)
 				needsUpdate = true
 			}
 		}
@@ -421,7 +401,7 @@ func (r *connectionTableColumnsConfig) Create(ctx context.Context, req resource.
 			return colErr
 		}
 
-		_, err = applyColumnSettings(ctx, client, connectionId, schemaName, tableName, data, connectionTableColumnsConfigModel{}, columns)
+		_, err = applyColumnSettings(ctx, client, connectionId, schemaName, tableName, data, columns)
 		return err
 	})
 	if resp.Diagnostics.HasError() {
@@ -441,7 +421,7 @@ func (r *connectionTableColumnsConfig) Create(ctx context.Context, req resource.
 		return
 	}
 
-	data.readFromColumns(columns, data.HashedColumns, data.PrimaryKeyColumns, false)
+	data.readFromColumns(columns, data.HashedColumns, data.PrimaryKeyColumns)
 	data.Id = types.StringValue(connectionId + ":" + schemaName + ":" + tableName)
 	data.ConnectionId = types.StringValue(connectionId)
 	data.SchemaName = types.StringValue(schemaName)
@@ -501,7 +481,7 @@ func (r *connectionTableColumnsConfig) Read(ctx context.Context, req resource.Re
 	priorHashed := data.HashedColumns
 	priorPK := data.PrimaryKeyColumns
 
-	data.readFromColumns(columns, priorHashed, priorPK, true)
+	data.readFromColumns(columns, priorHashed, priorPK)
 
 	data.Id = types.StringValue(connectionId + ":" + schemaName + ":" + tableName)
 	data.ConnectionId = types.StringValue(connectionId)
@@ -542,7 +522,7 @@ func (r *connectionTableColumnsConfig) Update(ctx context.Context, req resource.
 			return colErr
 		}
 
-		_, err = applyColumnSettings(ctx, client, connectionId, schemaName, tableName, plan, state, columns)
+		_, err = applyColumnSettings(ctx, client, connectionId, schemaName, tableName, plan, columns)
 		return err
 	})
 	if resp.Diagnostics.HasError() {
@@ -561,7 +541,7 @@ func (r *connectionTableColumnsConfig) Update(ctx context.Context, req resource.
 		return
 	}
 
-	plan.readFromColumns(columns, plan.HashedColumns, plan.PrimaryKeyColumns, false)
+	plan.readFromColumns(columns, plan.HashedColumns, plan.PrimaryKeyColumns)
 	plan.Id = types.StringValue(connectionId + ":" + schemaName + ":" + tableName)
 	plan.ConnectionId = types.StringValue(connectionId)
 	plan.SchemaName = types.StringValue(schemaName)

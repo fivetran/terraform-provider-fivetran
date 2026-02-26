@@ -39,8 +39,8 @@ data "fivetran_connection" "connection" {
 - `private_link_id` (String) The private link ID.
 - `proxy_agent_id` (String) The proxy agent ID.
 - `schedule_type` (String) The connection schedule configuration type. Supported values: auto, manual.
-- `service` (String) The connector type id within the Fivetran system.
-- `service_version` (String) The connector type version within the Fivetran system.
+- `service` (String) The connection type id within the Fivetran system.
+- `service_version` (String) The connection type version within the Fivetran system.
 - `status` (Block, Read-only) (see [below for nested schema](#nestedblock--status))
 - `succeeded_at` (String) The timestamp of the time the connection sync succeeded last time.
 - `sync_frequency` (Number) The connection sync frequency in minutes.
@@ -50,9 +50,9 @@ data "fivetran_connection" "connection" {
 
 Read-Only:
 
-- `name` (String) The connector schema name in destination. Has to be unique within the group (destination). Required for connector creation.
-- `prefix` (String) The connector schema prefix has to be unique within the group (destination). Each replicated schema is prefixed with the provided value. Required for connector creation.
-- `table` (String) The table name unique within the schema to which connector will sync the data. Required for connector creation.
+- `name` (String) The connection schema name in destination. Has to be unique within the group (destination). Required for connection creation.
+- `prefix` (String) The connection schema prefix has to be unique within the group (destination). Each replicated schema is prefixed with the provided value. Required for connection creation.
+- `table` (String) The table name unique within the schema to which connection will sync the data. Required for connection creation.
 - `table_group_name` (String) Table group name.
 
 
@@ -61,12 +61,12 @@ Read-Only:
 
 Read-Only:
 
-- `is_historical_sync` (Boolean) The boolean specifying whether the connection should be triggered to re-sync all historical data. If you set this parameter to TRUE, the next scheduled sync will be historical. If the value is FALSE or not specified, the connection will not re-sync historical data. NOTE: When the value is TRUE, only the next scheduled sync will be historical, all subsequent ones will be incremental. This parameter is set to FALSE once the historical sync is completed.
-- `setup_state` (String) The current setup state of the connection. The available values are: <br /> - incomplete - the setup config is incomplete, the setup tests never succeeded  `connected` - the connection is properly set up, `broken` - the connection setup config is broken.
-- `sync_state` (String) The current sync state of the connection. The available values are: `scheduled` - the sync is waiting to be run, `syncing` - the sync is currently running, `paused` - the sync is currently paused, `rescheduled` - the sync is waiting until more API calls are available in the source service.
-- `tasks` (Attributes Set) The collection of tasks for the connection. (see [below for nested schema](#nestedatt--status--tasks))
-- `update_state` (String) The current data update state of the connection. The available values are: `on_schedule` - the sync is running smoothly, no delays, `delayed` - the data is delayed for a longer time than expected for the update.
-- `warnings` (Attributes Set) The collection of warnings for the connection. (see [below for nested schema](#nestedatt--status--warnings))
+- `is_historical_sync` (Boolean) The boolean specifying whether the connector should be triggered to re-sync all historical data. If you set this parameter to TRUE, the next scheduled sync will be historical. If the value is FALSE or not specified, the connector will not re-sync historical data. NOTE: When the value is TRUE, only the next scheduled sync will be historical, all subsequent ones will be incremental. This parameter is set to FALSE once the historical sync is completed.
+- `setup_state` (String) The current setup state of the connector. The available values are: <br /> - incomplete - the setup config is incomplete, the setup tests never succeeded  `connected` - the connector is properly set up, `broken` - the connector setup config is broken.
+- `sync_state` (String) The current sync state of the connector. The available values are: `scheduled` - the sync is waiting to be run, `syncing` - the sync is currently running, `paused` - the sync is currently paused, `rescheduled` - the sync is waiting until more API calls are available in the source service.
+- `tasks` (Attributes Set) The collection of tasks for the connector. (see [below for nested schema](#nestedatt--status--tasks))
+- `update_state` (String) The current data update state of the connector. The available values are: `on_schedule` - the sync is running smoothly, no delays, `delayed` - the data is delayed for a longer time than expected for the update.
+- `warnings` (Attributes Set) The collection of warnings for the connector. (see [below for nested schema](#nestedatt--status--warnings))
 
 <a id="nestedatt--status--tasks"></a>
 ### Nested Schema for `status.tasks`

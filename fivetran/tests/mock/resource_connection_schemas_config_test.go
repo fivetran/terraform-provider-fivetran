@@ -215,12 +215,9 @@ resource "fivetran_connection_schemas_config" "test" {
 	schema_change_handling = "BLOCK_ALL"
 	enabled_schemas        = ["schema_1"]
 }`,
-				// The reversal logic re-enables schema_2 (removed from disabled_schemas).
-				// Refresh detects schema_2 is now enabled and reports it in enabled_schemas,
-				// causing a non-empty plan (schema_2 needs to be removed on next apply).
-				ExpectNonEmptyPlan: true,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("fivetran_connection_schemas_config.test", "schema_change_handling", "BLOCK_ALL"),
+					resource.TestCheckResourceAttr("fivetran_connection_schemas_config.test", "enabled_schemas.#", "1"),
 					func(s *terraform.State) error {
 						assertEqual(t, patchHandler.Interactions, 2)
 						return nil
