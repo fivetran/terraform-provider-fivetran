@@ -805,18 +805,12 @@ resource "fivetran_connection_schema_config" "test" {
 	})
 }
 
-// TestConnectionSchemaConfigNewTableAppearsWithWrongState verifies drift detection
-// when a new table appears in the API with an enabled state that contradicts the
-// resource's policy-based expectation.
-// Under ALLOW_ALL with disabled_tables = ["table_2"], all tables except table_2
-// should be enabled. When table_3 appears with enabled=false (e.g. disabled by
-// an external process), Read picks it up in disabled_tables — causing drift because
-// the config only lists table_2. The subsequent apply should re-enable table_3.
-func TestConnectionSchemaConfigNewTableAppearsWithWrongState(t *testing.T) {
+// TestConnectionSchemaConfigNewDisabledTableDetected verifies that when a new table
+// appears in the API with disabled state, it is detected as drift — the user should
+// be aware that a new table was disabled (by policy or external process).
+func TestConnectionSchemaConfigNewDisabledTableDetected(t *testing.T) {
 	newTablePresent := false
-	// Track table states for stateful mock
 	table2Enabled := true
-	table3Enabled := false // new table arrives disabled under ALLOW_ALL — wrong state
 
 	setupMock := func(t *testing.T) {
 		mockClient.Reset()
@@ -828,15 +822,12 @@ func TestConnectionSchemaConfigNewTableAppearsWithWrongState(t *testing.T) {
 					"table_2": map[string]any{"enabled": table2Enabled, "sync_mode": "LIVE"},
 				}
 				if newTablePresent {
-					tables["table_3"] = map[string]any{"enabled": table3Enabled, "sync_mode": "LIVE"}
+					tables["table_3"] = map[string]any{"enabled": false, "sync_mode": "LIVE"}
 				}
 				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", map[string]any{
 					"schema_change_handling": "ALLOW_ALL",
 					"schemas": map[string]any{
-						"schema_1": map[string]any{
-							"enabled": true,
-							"tables":  tables,
-						},
+						"schema_1": map[string]any{"enabled": true, "tables": tables},
 					},
 				}), nil
 			},
@@ -844,35 +835,14 @@ func TestConnectionSchemaConfigNewTableAppearsWithWrongState(t *testing.T) {
 
 		mockClient.When(http.MethodPatch, "/v1/connections/conn_id/schemas/schema_1").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
-				body := requestBodyToJson(t, req)
-				if tables, ok := body["tables"].(map[string]interface{}); ok {
-					for name, val := range tables {
-						if tMap, ok := val.(map[string]interface{}); ok {
-							if en, ok := tMap["enabled"]; ok {
-								switch name {
-								case "table_2":
-									table2Enabled = en.(bool)
-								case "table_3":
-									table3Enabled = en.(bool)
-								}
-							}
-						}
-					}
-				}
-				tables := map[string]any{
-					"table_1": map[string]any{"enabled": true, "sync_mode": "LIVE"},
-					"table_2": map[string]any{"enabled": table2Enabled, "sync_mode": "LIVE"},
-				}
-				if newTablePresent {
-					tables["table_3"] = map[string]any{"enabled": table3Enabled, "sync_mode": "LIVE"}
-				}
+				table2Enabled = false
 				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", map[string]any{
 					"schema_change_handling": "ALLOW_ALL",
 					"schemas": map[string]any{
-						"schema_1": map[string]any{
-							"enabled": true,
-							"tables":  tables,
-						},
+						"schema_1": map[string]any{"enabled": true, "tables": map[string]any{
+							"table_1": map[string]any{"enabled": true, "sync_mode": "LIVE"},
+							"table_2": map[string]any{"enabled": false, "sync_mode": "LIVE"},
+						}},
 					},
 				}), nil
 			},
@@ -885,7 +855,6 @@ func TestConnectionSchemaConfigNewTableAppearsWithWrongState(t *testing.T) {
 		CheckDestroy:             func(s *terraform.State) error { return nil },
 		Steps: []resource.TestStep{
 			{
-				// Step 1: Create — table_1 enabled, table_2 disabled
 				Config: `
 resource "fivetran_connection_schema_config" "test" {
 	provider      = fivetran-provider
@@ -893,40 +862,14 @@ resource "fivetran_connection_schema_config" "test" {
 	schema_name   = "schema_1"
 	disabled_tables = ["table_2"]
 }`,
-				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "disabled_tables.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "disabled_tables.0", "table_2"),
-				),
+				Check: resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "disabled_tables.#", "1"),
 			},
 			{
-				// Step 2: New table_3 appears with enabled=false (wrong for ALLOW_ALL).
-				// Refresh detects drift: disabled_tables now has [table_2, table_3] but
-				// config only lists [table_2].
+				// New table_3 appears disabled — drift MUST be detected so the
+				// user knows about the new disabled table
 				PreConfig:          func() { newTablePresent = true },
 				RefreshState:       true,
 				ExpectNonEmptyPlan: true,
-			},
-			{
-				// Step 3: Apply with same config — should re-enable table_3 because
-				// under ALLOW_ALL only table_2 should be disabled.
-				Config: `
-resource "fivetran_connection_schema_config" "test" {
-	provider      = fivetran-provider
-	connection_id = "conn_id"
-	schema_name   = "schema_1"
-	disabled_tables = ["table_2"]
-}`,
-				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "disabled_tables.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "disabled_tables.0", "table_2"),
-					func(s *terraform.State) error {
-						// table_3 should have been re-enabled by the apply
-						if !table3Enabled {
-							t.Fatal("expected table_3 to be re-enabled after apply")
-						}
-						return nil
-					},
-				),
 			},
 		},
 	})

@@ -82,20 +82,41 @@ type connectionSchemaSettingsModel struct {
 }
 
 // readFromResponse populates the model from the API response.
-// When the policy is ALLOW_ALL, disabled_schemas is populated with schemas where enabled==false.
-// When the policy is BLOCK_ALL or ALLOW_COLUMNS, enabled_schemas is populated with schemas where enabled==true.
-// The irrelevant set is set to null in each case.
-func (d *connectionSchemaSettingsModel) readFromResponse(resp connections.ConnectionSchemaDetailsResponse) {
+// Populates whichever list the user has in their config (prior state):
+// disabled_schemas gets schemas where enabled==false, enabled_schemas gets
+// schemas where enabled==true. The other list stays null.
+// readFromResponse populates the model from the API response.
+// When refresh is true (Read/refresh), all matching items are reported for drift detection.
+// When refresh is false (post-apply read-back), items are filtered to only those in
+// the current config to avoid "inconsistent result after apply".
+func (d *connectionSchemaSettingsModel) readFromResponse(resp connections.ConnectionSchemaDetailsResponse, refresh bool) {
 	d.SchemaChangeHandling = types.StringValue(resp.Data.SchemaChangeHandling)
 
-	if resp.Data.SchemaChangeHandling == "ALLOW_ALL" {
+	if !d.DisabledSchemas.IsNull() {
 		names := collectSchemaNames(resp, false)
+		if !refresh {
+			names = filterByPrior(names, d.DisabledSchemas)
+		}
 		d.DisabledSchemas = buildOrderedSet(names, d.DisabledSchemas)
-		d.EnabledSchemas = fivetrantypes.NewFastStringSetNull()
-	} else {
+	} else if !d.EnabledSchemas.IsNull() {
 		names := collectSchemaNames(resp, true)
+		if !refresh {
+			names = filterByPrior(names, d.EnabledSchemas)
+		}
 		d.EnabledSchemas = buildOrderedSet(names, d.EnabledSchemas)
-		d.DisabledSchemas = fivetrantypes.NewFastStringSetNull()
+	} else {
+		// Import case: both lists are null — populate based on API policy
+		if resp.Data.SchemaChangeHandling == "ALLOW_ALL" {
+			names := collectSchemaNames(resp, false)
+			if len(names) > 0 {
+				d.DisabledSchemas = buildOrderedSet(names, d.DisabledSchemas)
+			}
+		} else {
+			names := collectSchemaNames(resp, true)
+			if len(names) > 0 {
+				d.EnabledSchemas = buildOrderedSet(names, d.EnabledSchemas)
+			}
+		}
 	}
 }
 
@@ -181,11 +202,6 @@ func (r *connectionSchemaSettings) Create(ctx context.Context, req resource.Crea
 		return
 	}
 
-	if diagMsg := validatePlanConsistency(data); diagMsg != "" {
-		resp.Diagnostics.AddError("Invalid Configuration", diagMsg)
-		return
-	}
-
 	connectionId := data.ConnectionId.ValueString()
 	client := r.GetClient()
 
@@ -200,14 +216,14 @@ func (r *connectionSchemaSettings) Create(ctx context.Context, req resource.Crea
 				"Ensure the schema has been loaded (e.g. via fivetran_connection_schema_reload action). "+
 				"Error: %v; code: %v; message: %v", connectionId, err, schemaResp.Code, schemaResp.Message)
 		}
-		updatedResp, err = applySchemaSettings(ctx, client, connectionId, data, schemaResp)
+		updatedResp, err = applySchemaSettings(ctx, client, connectionId, data, connectionSchemaSettingsModel{}, schemaResp)
 		return err
 	})
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	data.readFromResponse(updatedResp)
+	data.readFromResponse(updatedResp, false)
 	data.Id = types.StringValue(connectionId)
 	data.ConnectionId = types.StringValue(connectionId)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -247,7 +263,7 @@ func (r *connectionSchemaSettings) Read(ctx context.Context, req resource.ReadRe
 		return
 	}
 
-	data.readFromResponse(schemaResp)
+	data.readFromResponse(schemaResp, true)
 	data.Id = types.StringValue(connectionId)
 	data.ConnectionId = types.StringValue(connectionId)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -266,11 +282,6 @@ func (r *connectionSchemaSettings) Update(ctx context.Context, req resource.Upda
 		return
 	}
 
-	if diagMsg := validatePlanConsistency(plan); diagMsg != "" {
-		resp.Diagnostics.AddError("Invalid Configuration", diagMsg)
-		return
-	}
-
 	connectionId := state.ConnectionId.ValueString()
 	client := r.GetClient()
 
@@ -283,14 +294,14 @@ func (r *connectionSchemaSettings) Update(ctx context.Context, req resource.Upda
 		if err != nil {
 			return fmt.Errorf("%v; code: %v; message: %v", err, schemaResp.Code, schemaResp.Message)
 		}
-		updatedResp, err = applySchemaSettings(ctx, client, connectionId, plan, schemaResp)
+		updatedResp, err = applySchemaSettings(ctx, client, connectionId, plan, state, schemaResp)
 		return err
 	})
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	plan.readFromResponse(updatedResp)
+	plan.readFromResponse(updatedResp, false)
 	plan.Id = types.StringValue(connectionId)
 	plan.ConnectionId = types.StringValue(connectionId)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
@@ -302,79 +313,48 @@ func (r *connectionSchemaSettings) Delete(_ context.Context, _ resource.DeleteRe
 
 // --- Helpers ---
 
-// validatePlanConsistency checks that the user specified the correct schema
-// list attribute for the chosen policy. Returns an error message if
-// enabled_schemas is used with ALLOW_ALL (should use disabled_schemas) or
-// disabled_schemas is used with BLOCK_ALL/ALLOW_COLUMNS (should use enabled_schemas).
-// Returns an empty string when the configuration is valid.
-func validatePlanConsistency(data connectionSchemaSettingsModel) string {
-	policy := data.SchemaChangeHandling.ValueString()
-	if policy == "ALLOW_ALL" && !data.EnabledSchemas.IsNull() {
-		return "enabled_schemas cannot be used with schema_change_handling = ALLOW_ALL. Use disabled_schemas instead."
-	}
-	if policy != "ALLOW_ALL" && !data.DisabledSchemas.IsNull() {
-		return fmt.Sprintf("disabled_schemas cannot be used with schema_change_handling = %s. Use enabled_schemas instead.", policy)
-	}
-	return ""
-}
-
-// getUserSchemaNames extracts schema names from whichever list attribute is
-// set (disabled_schemas or enabled_schemas) and returns them as a Go map for
-// O(1) membership checks. Returns an empty map if neither attribute is set.
-func getUserSchemaNames(data connectionSchemaSettingsModel) map[string]bool {
-	result := map[string]bool{}
-	var setToRead fivetrantypes.FastStringSetValue
-	if !data.DisabledSchemas.IsNull() && !data.DisabledSchemas.IsUnknown() {
-		setToRead = data.DisabledSchemas
-	} else if !data.EnabledSchemas.IsNull() && !data.EnabledSchemas.IsUnknown() {
-		setToRead = data.EnabledSchemas
-	} else {
-		return result
-	}
-	for _, elem := range setToRead.Elements() {
-		if strVal, ok := elem.(types.String); ok {
-			result[strVal.ValueString()] = true
-		}
-	}
-	return result
-}
-
-// computeDesiredEnabled determines whether a schema should be enabled based on
-// the schema_change_handling policy and the user's schema list.
-// ALLOW_ALL: schemas are enabled by default; those in userSet are disabled.
-// BLOCK_ALL/ALLOW_COLUMNS: schemas are disabled by default; those in userSet are enabled.
-func computeDesiredEnabled(policy string, schemaName string, userSet map[string]bool) bool {
-	if policy == "ALLOW_ALL" {
-		_, inSet := userSet[schemaName]
-		return !inSet
-	}
-	_, inSet := userSet[schemaName]
-	return inSet
-}
-
 // applySchemaSettings sends a PATCH request to update the connection's
-// schema_change_handling policy and per-schema enabled state. It iterates
-// over all schemas present in the API response and sets each to its desired
-// enabled state based on the policy and user's list. Schemas not present
-// in the API response (e.g. stale references in config) are silently skipped.
-// Returns the raw error from the API call (nil on success).
+// schema_change_handling policy and per-schema enabled state. Only schemas
+// explicitly listed in disabled_schemas or enabled_schemas are touched.
+// Schemas removed from the lists (present in prior but not in current) are
+// reversed (re-enabled or re-disabled).
 func applySchemaSettings(
 	ctx context.Context,
 	client *fivetran.Client,
 	connectionId string,
 	data connectionSchemaSettingsModel,
+	prior connectionSchemaSettingsModel,
 	schemaResp connections.ConnectionSchemaDetailsResponse,
 ) (connections.ConnectionSchemaDetailsResponse, error) {
 	policy := data.SchemaChangeHandling.ValueString()
-	userSet := getUserSchemaNames(data)
 
 	svc := client.NewConnectionSchemaUpdateService().ConnectionID(connectionId)
 	svc.SchemaChangeHandling(policy)
 
+	disabledSet := fastSetAsMap(data.DisabledSchemas)
+	enabledSet := fastSetAsMap(data.EnabledSchemas)
+	priorDisabledSet := fastSetAsMap(prior.DisabledSchemas)
+	priorEnabledSet := fastSetAsMap(prior.EnabledSchemas)
+
 	for schemaName, s := range schemaResp.Data.Schemas {
-		desired := computeDesiredEnabled(policy, schemaName, userSet)
-		if s.Enabled == nil || *s.Enabled != desired {
-			svc.Schema(schemaName, fivetran.NewConnectionSchemaConfigSchema().Enabled(desired))
+		if disabledSet[schemaName] {
+			if s.Enabled == nil || *s.Enabled {
+				svc.Schema(schemaName, fivetran.NewConnectionSchemaConfigSchema().Enabled(false))
+			}
+		} else if enabledSet[schemaName] {
+			if s.Enabled == nil || !*s.Enabled {
+				svc.Schema(schemaName, fivetran.NewConnectionSchemaConfigSchema().Enabled(true))
+			}
+		} else if priorDisabledSet[schemaName] {
+			// Was disabled, removed from list → re-enable
+			if s.Enabled != nil && !*s.Enabled {
+				svc.Schema(schemaName, fivetran.NewConnectionSchemaConfigSchema().Enabled(true))
+			}
+		} else if priorEnabledSet[schemaName] {
+			// Was enabled, removed from list → re-disable
+			if s.Enabled != nil && *s.Enabled {
+				svc.Schema(schemaName, fivetran.NewConnectionSchemaConfigSchema().Enabled(false))
+			}
 		}
 	}
 

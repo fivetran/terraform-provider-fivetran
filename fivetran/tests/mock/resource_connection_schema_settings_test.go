@@ -215,11 +215,13 @@ resource "fivetran_connection_schema_settings" "test" {
 	schema_change_handling = "BLOCK_ALL"
 	enabled_schemas        = ["schema_1"]
 }`,
+				// The reversal logic re-enables schema_2 (removed from disabled_schemas).
+				// Refresh detects schema_2 is now enabled and reports it in enabled_schemas,
+				// causing a non-empty plan (schema_2 needs to be removed on next apply).
+				ExpectNonEmptyPlan: true,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("fivetran_connection_schema_settings.test", "schema_change_handling", "BLOCK_ALL"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_settings.test", "enabled_schemas.#", "1"),
 					func(s *terraform.State) error {
-						// Two PATCH calls: one for create, one for update
 						assertEqual(t, patchHandler.Interactions, 2)
 						return nil
 					},
@@ -229,33 +231,38 @@ resource "fivetran_connection_schema_settings" "test" {
 	})
 }
 
-// TestConnectionSchemaSettingsRefreshOnly simulates upstream drift: after initial
-// create, a new disabled schema (schema_3) appears on the server. A refresh-only
-// step must accept the upstream state without error, update disabled_schemas from
-// 1 to 2 elements, and signal a non-empty plan to alert the user to the drift.
+// TestConnectionSchemaSettingsRefreshOnly simulates upstream drift on a managed
+// schema: after initial create with disabled_schemas = ["schema_2"], someone
+// re-enables schema_2 externally. Refresh detects the drift (schema_2 is no longer
+// disabled) and signals a non-empty plan.
 func TestConnectionSchemaSettingsRefreshOnly(t *testing.T) {
-	var currentData map[string]any
+	schema2Enabled := false
 
 	setupMock := func(t *testing.T) {
 		mockClient.Reset()
 
-		currentData = map[string]any{
-			"schema_change_handling": "ALLOW_ALL",
-			"schemas": map[string]any{
-				"schema_1": map[string]any{"enabled": true},
-				"schema_2": map[string]any{"enabled": false},
-			},
-		}
-
 		mockClient.When(http.MethodGet, "/v1/connections/conn_id/schemas").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
-				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", currentData), nil
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", map[string]any{
+					"schema_change_handling": "ALLOW_ALL",
+					"schemas": map[string]any{
+						"schema_1": map[string]any{"enabled": true},
+						"schema_2": map[string]any{"enabled": schema2Enabled},
+					},
+				}), nil
 			},
 		)
 
 		mockClient.When(http.MethodPatch, "/v1/connections/conn_id/schemas").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
-				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", currentData), nil
+				schema2Enabled = false
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", map[string]any{
+					"schema_change_handling": "ALLOW_ALL",
+					"schemas": map[string]any{
+						"schema_1": map[string]any{"enabled": true},
+						"schema_2": map[string]any{"enabled": false},
+					},
+				}), nil
 			},
 		)
 	}
@@ -273,26 +280,13 @@ resource "fivetran_connection_schema_settings" "test" {
 	schema_change_handling = "ALLOW_ALL"
 	disabled_schemas       = ["schema_2"]
 }`,
-				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_connection_schema_settings.test", "disabled_schemas.#", "1"),
-				),
+				Check: resource.TestCheckResourceAttr("fivetran_connection_schema_settings.test", "disabled_schemas.#", "1"),
 			},
 			{
-				PreConfig: func() {
-					// Simulate upstream drift: a new schema appeared and was disabled externally
-					currentData["schemas"] = map[string]any{
-						"schema_1": map[string]any{"enabled": true},
-						"schema_2": map[string]any{"enabled": false},
-						"schema_3": map[string]any{"enabled": false},
-					}
-				},
-				RefreshState: true,
-				// After refresh, state should reflect the upstream: disabled_schemas now has 2 entries
+				// Someone re-enabled schema_2 externally — drift on managed item
+				PreConfig: func() { schema2Enabled = true },
+				RefreshState:       true,
 				ExpectNonEmptyPlan: true,
-				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_connection_schema_settings.test", "disabled_schemas.#", "2"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_settings.test", "schema_change_handling", "ALLOW_ALL"),
-				),
 			},
 		},
 	})

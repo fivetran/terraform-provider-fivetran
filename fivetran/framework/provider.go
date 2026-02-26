@@ -138,6 +138,7 @@ func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Reso
 		resources.Transformation,
 		resources.ConnectionSchemaSettings,
 		resources.ConnectionSchemaConfig,
+		resources.ConnectionSchemaTableConfig,
 	}
 }
 
