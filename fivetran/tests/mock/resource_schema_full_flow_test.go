@@ -329,7 +329,7 @@ action "fivetran_connection_schema_reload" "reload" {
 
 # ─── 2. Schema-level settings ────────────────────────────────────────
 
-resource "fivetran_connection_schema_settings" "settings" {
+resource "fivetran_connection_schemas_config" "settings" {
   provider               = fivetran-provider
   connection_id          = local.connection_id
   schema_change_handling = "ALLOW_ALL"
@@ -339,33 +339,33 @@ resource "fivetran_connection_schema_settings" "settings" {
 
 # ─── 3. Table-level settings (one per schema) ────────────────────────
 
-resource "fivetran_connection_schema_config" "public" {
+resource "fivetran_connection_schema_tables_config" "public" {
   provider        = fivetran-provider
   connection_id   = local.connection_id
   schema_name     = "public"
   disabled_tables = local.schema_table_config["public"].disabled_tables
-  depends_on      = [fivetran_connection_schema_settings.settings]
+  depends_on      = [fivetran_connection_schemas_config.settings]
 }
 
-resource "fivetran_connection_schema_config" "analytics" {
+resource "fivetran_connection_schema_tables_config" "analytics" {
   provider        = fivetran-provider
   connection_id   = local.connection_id
   schema_name     = "analytics"
   disabled_tables = local.schema_table_config["analytics"].disabled_tables
-  depends_on      = [fivetran_connection_schema_settings.settings]
+  depends_on      = [fivetran_connection_schemas_config.settings]
 }
 
-resource "fivetran_connection_schema_config" "reporting" {
+resource "fivetran_connection_schema_tables_config" "reporting" {
   provider        = fivetran-provider
   connection_id   = local.connection_id
   schema_name     = "reporting"
   disabled_tables = local.schema_table_config["reporting"].disabled_tables
-  depends_on      = [fivetran_connection_schema_settings.settings]
+  depends_on      = [fivetran_connection_schemas_config.settings]
 }
 
 # ─── 4. Column-level settings (one per table needing column config) ──
 
-resource "fivetran_connection_schema_table_config" "public_users" {
+resource "fivetran_connection_table_columns_config" "public_users" {
   provider            = fivetran-provider
   connection_id       = local.connection_id
   schema_name         = local.column_config["public_users"].schema
@@ -373,25 +373,25 @@ resource "fivetran_connection_schema_table_config" "public_users" {
   disabled_columns    = local.column_config["public_users"].disabled_columns
   hashed_columns      = local.column_config["public_users"].hashed_columns
   primary_key_columns = local.column_config["public_users"].pk_columns
-  depends_on          = [fivetran_connection_schema_config.public]
+  depends_on          = [fivetran_connection_schema_tables_config.public]
 }
 
-resource "fivetran_connection_schema_table_config" "public_orders" {
+resource "fivetran_connection_table_columns_config" "public_orders" {
   provider         = fivetran-provider
   connection_id    = local.connection_id
   schema_name      = local.column_config["public_orders"].schema
   table_name       = local.column_config["public_orders"].table
   disabled_columns = local.column_config["public_orders"].disabled_columns
-  depends_on       = [fivetran_connection_schema_config.public]
+  depends_on       = [fivetran_connection_schema_tables_config.public]
 }
 
-resource "fivetran_connection_schema_table_config" "analytics_events" {
+resource "fivetran_connection_table_columns_config" "analytics_events" {
   provider         = fivetran-provider
   connection_id    = local.connection_id
   schema_name      = local.column_config["analytics_events"].schema
   table_name       = local.column_config["analytics_events"].table
   disabled_columns = local.column_config["analytics_events"].disabled_columns
-  depends_on       = [fivetran_connection_schema_config.analytics]
+  depends_on       = [fivetran_connection_schema_tables_config.analytics]
 }
 
 # ─── 5. Unpause ──────────────────────────────────────────────────────
@@ -403,23 +403,23 @@ resource "fivetran_connector_schedule" "schedule" {
   paused         = "false"
   schedule_type  = "auto"
   depends_on     = [
-    fivetran_connection_schema_table_config.public_users,
-    fivetran_connection_schema_table_config.public_orders,
-    fivetran_connection_schema_table_config.analytics_events,
+    fivetran_connection_table_columns_config.public_users,
+    fivetran_connection_table_columns_config.public_orders,
+    fivetran_connection_table_columns_config.analytics_events,
   ]
 }
 `,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("fivetran_connector.pg", "service", "postgres"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_settings.settings", "disabled_schemas.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.public", "disabled_tables.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.analytics", "disabled_tables.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.reporting", "disabled_tables.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.public_users", "disabled_columns.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.public_users", "hashed_columns.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.public_users", "primary_key_columns.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.public_orders", "disabled_columns.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.analytics_events", "disabled_columns.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_schemas_config.settings", "disabled_schemas.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.public", "disabled_tables.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.analytics", "disabled_tables.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.reporting", "disabled_tables.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.public_users", "disabled_columns.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.public_users", "hashed_columns.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.public_users", "primary_key_columns.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.public_orders", "disabled_columns.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.analytics_events", "disabled_columns.#", "1"),
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.schedule", "paused", "false"),
 
 					func(s *terraform.State) error {

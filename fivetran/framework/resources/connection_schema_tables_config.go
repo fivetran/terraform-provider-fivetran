@@ -25,7 +25,7 @@ import (
 
 // --- Schema ---
 
-func connectionSchemaConfigSchema() schema.Schema {
+func connectionSchemaTablesConfigSchema() schema.Schema {
 	return schema.Schema{
 		Description: "Manages table-level settings for a specific schema within a Fivetran connection: which tables are enabled or disabled, and per-table sync modes.",
 		Attributes: map[string]schema.Attribute{
@@ -81,7 +81,7 @@ func connectionSchemaConfigSchema() schema.Schema {
 
 // --- Model ---
 
-type connectionSchemaConfigModel struct {
+type connectionSchemaTablesConfigModel struct {
 	Id             types.String                     `tfsdk:"id"`
 	ConnectionId   types.String                     `tfsdk:"connection_id"`
 	SchemaName     types.String                     `tfsdk:"schema_name"`
@@ -99,7 +99,7 @@ type connectionSchemaConfigModel struct {
 // Populates whichever list the user has in their config (prior state):
 // disabled_tables gets tables where enabled==false, enabled_tables gets
 // tables where enabled==true. The other list stays null.
-func (d *connectionSchemaConfigModel) readFromResponse(
+func (d *connectionSchemaTablesConfigModel) readFromResponse(
 	schemaResp connections.ConnectionSchemaDetailsResponse,
 	schemaName string,
 	priorSyncMode types.Map,
@@ -185,7 +185,7 @@ func filterByPrior(names map[string]bool, prior fivetrantypes.FastStringSetValue
 }
 
 // getSyncModeMap extracts the sync_mode map from the model as a Go map[string]string.
-func getSyncModeMap(data connectionSchemaConfigModel) map[string]string {
+func getSyncModeMap(data connectionSchemaTablesConfigModel) map[string]string {
 	result := map[string]string{}
 	if data.SyncMode.IsNull() || data.SyncMode.IsUnknown() {
 		return result
@@ -244,8 +244,8 @@ func applyTableSettings(
 	client *fivetran.Client,
 	connectionId string,
 	schemaName string,
-	data connectionSchemaConfigModel,
-	prior connectionSchemaConfigModel,
+	data connectionSchemaTablesConfigModel,
+	prior connectionSchemaTablesConfigModel,
 	tables map[string]*connections.ConnectionSchemaConfigTableResponse,
 ) (connections.ConnectionSchemaDetailsResponse, error) {
 	disabledSet := fastSetAsMap(data.DisabledTables)
@@ -331,26 +331,26 @@ func applyTableSettings(
 
 // --- Resource ---
 
-func ConnectionSchemaConfig() resource.Resource {
-	return &connectionSchemaConfig{}
+func ConnectionSchemaTablesConfig() resource.Resource {
+	return &connectionSchemaTablesConfig{}
 }
 
-type connectionSchemaConfig struct {
+type connectionSchemaTablesConfig struct {
 	core.ProviderResource
 }
 
-var _ resource.ResourceWithConfigure = &connectionSchemaConfig{}
-var _ resource.ResourceWithImportState = &connectionSchemaConfig{}
+var _ resource.ResourceWithConfigure = &connectionSchemaTablesConfig{}
+var _ resource.ResourceWithImportState = &connectionSchemaTablesConfig{}
 
-func (r *connectionSchemaConfig) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_connection_schema_config"
+func (r *connectionSchemaTablesConfig) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_connection_schema_tables_config"
 }
 
-func (r *connectionSchemaConfig) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = connectionSchemaConfigSchema()
+func (r *connectionSchemaTablesConfig) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = connectionSchemaTablesConfigSchema()
 }
 
-func (r *connectionSchemaConfig) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *connectionSchemaTablesConfig) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	parts := strings.SplitN(req.ID, ":", 2)
 	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
 		resp.Diagnostics.AddError("Invalid Import ID",
@@ -362,13 +362,13 @@ func (r *connectionSchemaConfig) ImportState(ctx context.Context, req resource.I
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("schema_name"), parts[1])...)
 }
 
-func (r *connectionSchemaConfig) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (r *connectionSchemaTablesConfig) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError("Unconfigured Fivetran Client", "Please report this issue to the provider developers.")
 		return
 	}
 
-	var data connectionSchemaConfigModel
+	var data connectionSchemaTablesConfigModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -395,7 +395,7 @@ func (r *connectionSchemaConfig) Create(ctx context.Context, req resource.Create
 			return fmt.Errorf("schema %q not found for connection %s", schemaName, connectionId)
 		}
 
-		updatedResp, err = applyTableSettings(ctx, client, connectionId, schemaName, data, connectionSchemaConfigModel{}, tables)
+		updatedResp, err = applyTableSettings(ctx, client, connectionId, schemaName, data, connectionSchemaTablesConfigModel{}, tables)
 		return err
 	})
 	if resp.Diagnostics.HasError() {
@@ -413,13 +413,13 @@ func (r *connectionSchemaConfig) Create(ctx context.Context, req resource.Create
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *connectionSchemaConfig) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+func (r *connectionSchemaTablesConfig) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError("Unconfigured Fivetran Client", "Please report this issue to the provider developers.")
 		return
 	}
 
-	var data connectionSchemaConfigModel
+	var data connectionSchemaTablesConfigModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -467,13 +467,13 @@ func (r *connectionSchemaConfig) Read(ctx context.Context, req resource.ReadRequ
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *connectionSchemaConfig) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (r *connectionSchemaTablesConfig) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError("Unconfigured Fivetran Client", "Please report this issue to the provider developers.")
 		return
 	}
 
-	var plan, state connectionSchemaConfigModel
+	var plan, state connectionSchemaTablesConfigModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -517,6 +517,6 @@ func (r *connectionSchemaConfig) Update(ctx context.Context, req resource.Update
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
-func (r *connectionSchemaConfig) Delete(_ context.Context, _ resource.DeleteRequest, _ *resource.DeleteResponse) {
+func (r *connectionSchemaTablesConfig) Delete(_ context.Context, _ resource.DeleteRequest, _ *resource.DeleteResponse) {
 	// No-op: table settings always exist on a schema.
 }

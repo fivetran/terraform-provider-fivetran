@@ -27,7 +27,7 @@ var fastStringSetType = fivetrantypes.FastStringSetType{
 	ListType: basetypes.ListType{ElemType: types.StringType},
 }
 
-func connectionSchemaSettingsSchema() schema.Schema {
+func connectionSchemasConfigSchema() schema.Schema {
 	return schema.Schema{
 		Description: "Manages schema-level settings for a Fivetran connection: the schema_change_handling policy and which schemas are enabled or disabled.",
 		Attributes: map[string]schema.Attribute{
@@ -73,7 +73,7 @@ func connectionSchemaSettingsSchema() schema.Schema {
 
 // --- Model ---
 
-type connectionSchemaSettingsModel struct {
+type connectionSchemasConfigModel struct {
 	Id                   types.String                      `tfsdk:"id"`
 	ConnectionId         types.String                      `tfsdk:"connection_id"`
 	SchemaChangeHandling types.String                      `tfsdk:"schema_change_handling"`
@@ -89,7 +89,7 @@ type connectionSchemaSettingsModel struct {
 // When refresh is true (Read/refresh), all matching items are reported for drift detection.
 // When refresh is false (post-apply read-back), items are filtered to only those in
 // the current config to avoid "inconsistent result after apply".
-func (d *connectionSchemaSettingsModel) readFromResponse(resp connections.ConnectionSchemaDetailsResponse, refresh bool) {
+func (d *connectionSchemasConfigModel) readFromResponse(resp connections.ConnectionSchemaDetailsResponse, refresh bool) {
 	d.SchemaChangeHandling = types.StringValue(resp.Data.SchemaChangeHandling)
 
 	if !d.DisabledSchemas.IsNull() {
@@ -167,36 +167,36 @@ func buildOrderedSet(names map[string]bool, prior fivetrantypes.FastStringSetVal
 
 // --- Resource ---
 
-func ConnectionSchemaSettings() resource.Resource {
-	return &connectionSchemaSettings{}
+func ConnectionSchemasConfig() resource.Resource {
+	return &connectionSchemasConfig{}
 }
 
-type connectionSchemaSettings struct {
+type connectionSchemasConfig struct {
 	core.ProviderResource
 }
 
-var _ resource.ResourceWithConfigure = &connectionSchemaSettings{}
-var _ resource.ResourceWithImportState = &connectionSchemaSettings{}
+var _ resource.ResourceWithConfigure = &connectionSchemasConfig{}
+var _ resource.ResourceWithImportState = &connectionSchemasConfig{}
 
-func (r *connectionSchemaSettings) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_connection_schema_settings"
+func (r *connectionSchemasConfig) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_connection_schemas_config"
 }
 
-func (r *connectionSchemaSettings) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = connectionSchemaSettingsSchema()
+func (r *connectionSchemasConfig) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = connectionSchemasConfigSchema()
 }
 
-func (r *connectionSchemaSettings) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *connectionSchemasConfig) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
-func (r *connectionSchemaSettings) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (r *connectionSchemasConfig) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError("Unconfigured Fivetran Client", "Please report this issue to the provider developers.")
 		return
 	}
 
-	var data connectionSchemaSettingsModel
+	var data connectionSchemasConfigModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -216,7 +216,7 @@ func (r *connectionSchemaSettings) Create(ctx context.Context, req resource.Crea
 				"Ensure the schema has been loaded (e.g. via fivetran_connection_schema_reload action). "+
 				"Error: %v; code: %v; message: %v", connectionId, err, schemaResp.Code, schemaResp.Message)
 		}
-		updatedResp, err = applySchemaSettings(ctx, client, connectionId, data, connectionSchemaSettingsModel{}, schemaResp)
+		updatedResp, err = applySchemaSettings(ctx, client, connectionId, data, connectionSchemasConfigModel{}, schemaResp)
 		return err
 	})
 	if resp.Diagnostics.HasError() {
@@ -229,13 +229,13 @@ func (r *connectionSchemaSettings) Create(ctx context.Context, req resource.Crea
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *connectionSchemaSettings) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+func (r *connectionSchemasConfig) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError("Unconfigured Fivetran Client", "Please report this issue to the provider developers.")
 		return
 	}
 
-	var data connectionSchemaSettingsModel
+	var data connectionSchemasConfigModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -269,13 +269,13 @@ func (r *connectionSchemaSettings) Read(ctx context.Context, req resource.ReadRe
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *connectionSchemaSettings) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (r *connectionSchemasConfig) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	if r.GetClient() == nil {
 		resp.Diagnostics.AddError("Unconfigured Fivetran Client", "Please report this issue to the provider developers.")
 		return
 	}
 
-	var plan, state connectionSchemaSettingsModel
+	var plan, state connectionSchemasConfigModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -307,7 +307,7 @@ func (r *connectionSchemaSettings) Update(ctx context.Context, req resource.Upda
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
-func (r *connectionSchemaSettings) Delete(_ context.Context, _ resource.DeleteRequest, _ *resource.DeleteResponse) {
+func (r *connectionSchemasConfig) Delete(_ context.Context, _ resource.DeleteRequest, _ *resource.DeleteResponse) {
 	// No-op: schema settings always exist on a connection.
 }
 
@@ -322,8 +322,8 @@ func applySchemaSettings(
 	ctx context.Context,
 	client *fivetran.Client,
 	connectionId string,
-	data connectionSchemaSettingsModel,
-	prior connectionSchemaSettingsModel,
+	data connectionSchemasConfigModel,
+	prior connectionSchemasConfigModel,
 	schemaResp connections.ConnectionSchemaDetailsResponse,
 ) (connections.ConnectionSchemaDetailsResponse, error) {
 	policy := data.SchemaChangeHandling.ValueString()

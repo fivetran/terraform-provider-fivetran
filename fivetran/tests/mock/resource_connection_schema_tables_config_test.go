@@ -13,10 +13,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
-// TestConnectionSchemaConfigAllowAllDisabledTables verifies creating a resource
+// TestConnectionSchemaTablesConfigAllowAllDisabledTables verifies creating a resource
 // with ALLOW_ALL policy and disabled_tables. The PATCH is sent to the per-schema endpoint
 // and the state shows the correct disabled_tables count.
-func TestConnectionSchemaConfigAllowAllDisabledTables(t *testing.T) {
+func TestConnectionSchemaTablesConfigAllowAllDisabledTables(t *testing.T) {
 	var patchBody map[string]interface{}
 	table2Enabled := true
 
@@ -69,15 +69,15 @@ func TestConnectionSchemaConfigAllowAllDisabledTables(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_config" "test" {
+resource "fivetran_connection_schema_tables_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
 	disabled_tables = ["table_2"]
 }`,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "disabled_tables.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "id", "conn_id:schema_1"),
+					resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.test", "disabled_tables.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.test", "id", "conn_id:schema_1"),
 					func(s *terraform.State) error {
 						assertNotEmpty(t, patchBody)
 						return nil
@@ -88,9 +88,9 @@ resource "fivetran_connection_schema_config" "test" {
 	})
 }
 
-// TestConnectionSchemaConfigBlockAllEnabledTables verifies creating a resource
+// TestConnectionSchemaTablesConfigBlockAllEnabledTables verifies creating a resource
 // with BLOCK_ALL policy and enabled_tables. Only the listed table is enabled.
-func TestConnectionSchemaConfigBlockAllEnabledTables(t *testing.T) {
+func TestConnectionSchemaTablesConfigBlockAllEnabledTables(t *testing.T) {
 	setupMock := func(t *testing.T) {
 		mockClient.Reset()
 
@@ -138,25 +138,25 @@ func TestConnectionSchemaConfigBlockAllEnabledTables(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_config" "test" {
+resource "fivetran_connection_schema_tables_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
 	enabled_tables = ["table_1"]
 }`,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "enabled_tables.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "id", "conn_id:schema_1"),
+					resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.test", "enabled_tables.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.test", "id", "conn_id:schema_1"),
 				),
 			},
 		},
 	})
 }
 
-// TestConnectionSchemaConfigSyncMode verifies that sync_mode map is correctly
+// TestConnectionSchemaTablesConfigSyncMode verifies that sync_mode map is correctly
 // sent in the PATCH request and reflected in state. The mock tracks state changes
 // so the second GET (after PATCH) returns updated sync modes.
-func TestConnectionSchemaConfigSyncMode(t *testing.T) {
+func TestConnectionSchemaTablesConfigSyncMode(t *testing.T) {
 	var patchBody map[string]interface{}
 	t1SyncMode := "LIVE"
 	t2SyncMode := "LIVE"
@@ -219,7 +219,7 @@ func TestConnectionSchemaConfigSyncMode(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_config" "test" {
+resource "fivetran_connection_schema_tables_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -229,8 +229,8 @@ resource "fivetran_connection_schema_config" "test" {
 	}
 }`,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "sync_mode.table_1", "HISTORY"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "sync_mode.table_2", "SOFT_DELETE"),
+					resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.test", "sync_mode.table_1", "HISTORY"),
+					resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.test", "sync_mode.table_2", "SOFT_DELETE"),
 					func(s *terraform.State) error {
 						assertNotEmpty(t, patchBody)
 						return nil
@@ -241,10 +241,10 @@ resource "fivetran_connection_schema_config" "test" {
 	})
 }
 
-// TestConnectionSchemaConfigUpdate verifies updating tables and sync modes
+// TestConnectionSchemaTablesConfigUpdate verifies updating tables and sync modes
 // across two steps. Step 1 disables table_2 and sets sync_mode for table_1.
 // Step 2 changes to disable table_3 instead and updates sync_mode.
-func TestConnectionSchemaConfigUpdate(t *testing.T) {
+func TestConnectionSchemaTablesConfigUpdate(t *testing.T) {
 	tableState := map[string]map[string]any{
 		"table_1": {"enabled": true, "sync_mode": "LIVE"},
 		"table_2": {"enabled": true, "sync_mode": "LIVE"},
@@ -305,7 +305,7 @@ func TestConnectionSchemaConfigUpdate(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_config" "test" {
+resource "fivetran_connection_schema_tables_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -315,13 +315,13 @@ resource "fivetran_connection_schema_config" "test" {
 	}
 }`,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "disabled_tables.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "sync_mode.table_1", "HISTORY"),
+					resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.test", "disabled_tables.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.test", "sync_mode.table_1", "HISTORY"),
 				),
 			},
 			{
 				Config: `
-resource "fivetran_connection_schema_config" "test" {
+resource "fivetran_connection_schema_tables_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -331,17 +331,17 @@ resource "fivetran_connection_schema_config" "test" {
 	}
 }`,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "disabled_tables.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "sync_mode.table_1", "SOFT_DELETE"),
+					resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.test", "disabled_tables.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.test", "sync_mode.table_1", "SOFT_DELETE"),
 				),
 			},
 		},
 	})
 }
 
-// TestConnectionSchemaConfigImport verifies importing a resource
+// TestConnectionSchemaTablesConfigImport verifies importing a resource
 // with "connection_id:schema_name" format. State should be populated from API.
-func TestConnectionSchemaConfigImport(t *testing.T) {
+func TestConnectionSchemaTablesConfigImport(t *testing.T) {
 	setupMock := func(t *testing.T) {
 		mockClient.Reset()
 
@@ -387,7 +387,7 @@ func TestConnectionSchemaConfigImport(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_config" "test" {
+resource "fivetran_connection_schema_tables_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -395,7 +395,7 @@ resource "fivetran_connection_schema_config" "test" {
 }`,
 			},
 			{
-				ResourceName:            "fivetran_connection_schema_config.test",
+				ResourceName:            "fivetran_connection_schema_tables_config.test",
 				ImportState:             true,
 				ImportStateId:           "conn_id:schema_1",
 				ImportStateVerify:       true,
@@ -405,9 +405,9 @@ resource "fivetran_connection_schema_config" "test" {
 	})
 }
 
-// TestConnectionSchemaConfigSchemaNotLoaded verifies that when the API returns
+// TestConnectionSchemaTablesConfigSchemaNotLoaded verifies that when the API returns
 // NotFound_SchemaConfig, the resource reports an error asking the user to reload.
-func TestConnectionSchemaConfigSchemaNotLoaded(t *testing.T) {
+func TestConnectionSchemaTablesConfigSchemaNotLoaded(t *testing.T) {
 	setupMock := func(t *testing.T) {
 		mockClient.Reset()
 
@@ -426,7 +426,7 @@ func TestConnectionSchemaConfigSchemaNotLoaded(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_config" "test" {
+resource "fivetran_connection_schema_tables_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -438,9 +438,9 @@ resource "fivetran_connection_schema_config" "test" {
 	})
 }
 
-// TestConnectionSchemaConfigSchemaNotFound verifies that when the API succeeds
+// TestConnectionSchemaTablesConfigSchemaNotFound verifies that when the API succeeds
 // but the requested schema is not in the response, the resource reports an error.
-func TestConnectionSchemaConfigSchemaNotFound(t *testing.T) {
+func TestConnectionSchemaTablesConfigSchemaNotFound(t *testing.T) {
 	setupMock := func(t *testing.T) {
 		mockClient.Reset()
 
@@ -466,7 +466,7 @@ func TestConnectionSchemaConfigSchemaNotFound(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_config" "test" {
+resource "fivetran_connection_schema_tables_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -478,13 +478,13 @@ resource "fivetran_connection_schema_config" "test" {
 	})
 }
 
-// TestConnectionSchemaConfigConnectionDeletedUpstream verifies that when
+// TestConnectionSchemaTablesConfigConnectionDeletedUpstream verifies that when
 // the connection is deleted upstream (NotFound_Connection), the resource is
 // silently removed from state on refresh.
-// TestConnectionSchemaConfigConflictRetry verifies that when the PATCH endpoint
+// TestConnectionSchemaTablesConfigConflictRetry verifies that when the PATCH endpoint
 // returns a 409 Conflict (optimistic lock failure), the resource retries the full
 // read-modify-write cycle and eventually succeeds.
-func TestConnectionSchemaConfigConflictRetry(t *testing.T) {
+func TestConnectionSchemaTablesConfigConflictRetry(t *testing.T) {
 	origBackoff := core.SchemaConflictBackoff()
 	core.SetSchemaConflictBackoff(10 * time.Millisecond)
 	defer core.SetSchemaConflictBackoff(origBackoff)
@@ -545,14 +545,14 @@ func TestConnectionSchemaConfigConflictRetry(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_config" "test" {
+resource "fivetran_connection_schema_tables_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
 	disabled_tables = ["table_2"]
 }`,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "disabled_tables.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.test", "disabled_tables.#", "1"),
 					func(s *terraform.State) error {
 						assertEqual(t, patchAttempts, 3)
 						return nil
@@ -563,7 +563,7 @@ resource "fivetran_connection_schema_config" "test" {
 	})
 }
 
-func TestConnectionSchemaConfigConnectionDeletedUpstream(t *testing.T) {
+func TestConnectionSchemaTablesConfigConnectionDeletedUpstream(t *testing.T) {
 	getCallCount := 0
 
 	setupMock := func(t *testing.T) {
@@ -614,7 +614,7 @@ func TestConnectionSchemaConfigConnectionDeletedUpstream(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_config" "test" {
+resource "fivetran_connection_schema_tables_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -628,13 +628,13 @@ resource "fivetran_connection_schema_config" "test" {
 	})
 }
 
-// TestConnectionSchemaConfigSyncModeTracksOnlyConfiguredTables verifies that
+// TestConnectionSchemaTablesConfigSyncModeTracksOnlyConfiguredTables verifies that
 // sync_mode in state only contains tables explicitly listed in the user's config.
 // The schema has 3 tables with sync_modes, but the user only configures sync_mode
 // for table_1. Step 1: create — state should have sync_mode only for table_1.
 // Step 2: the API changes sync_mode on untracked table_3 from LIVE to HISTORY;
 // a plan-only check should show no drift from untracked tables.
-func TestConnectionSchemaConfigSyncModeTracksOnlyConfiguredTables(t *testing.T) {
+func TestConnectionSchemaTablesConfigSyncModeTracksOnlyConfiguredTables(t *testing.T) {
 	table3SyncMode := "LIVE"
 
 	setupMock := func(t *testing.T) {
@@ -684,7 +684,7 @@ func TestConnectionSchemaConfigSyncModeTracksOnlyConfiguredTables(t *testing.T) 
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_config" "test" {
+resource "fivetran_connection_schema_tables_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -694,10 +694,10 @@ resource "fivetran_connection_schema_config" "test" {
 }`,
 				Check: resource.ComposeTestCheckFunc(
 					// Only table_1 should be in sync_mode — table_2 and table_3 are untracked
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "sync_mode.%", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "sync_mode.table_1", "HISTORY"),
-					resource.TestCheckNoResourceAttr("fivetran_connection_schema_config.test", "sync_mode.table_2"),
-					resource.TestCheckNoResourceAttr("fivetran_connection_schema_config.test", "sync_mode.table_3"),
+					resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.test", "sync_mode.%", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.test", "sync_mode.table_1", "HISTORY"),
+					resource.TestCheckNoResourceAttr("fivetran_connection_schema_tables_config.test", "sync_mode.table_2"),
+					resource.TestCheckNoResourceAttr("fivetran_connection_schema_tables_config.test", "sync_mode.table_3"),
 				),
 			},
 			{
@@ -705,7 +705,7 @@ resource "fivetran_connection_schema_config" "test" {
 				// Since table_3 is not in the user's sync_mode config, this should NOT cause drift.
 				PreConfig: func() { table3SyncMode = "HISTORY" },
 				Config: `
-resource "fivetran_connection_schema_config" "test" {
+resource "fivetran_connection_schema_tables_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -719,12 +719,12 @@ resource "fivetran_connection_schema_config" "test" {
 	})
 }
 
-// TestConnectionSchemaConfigTableDroppedFromSource verifies that when a table
+// TestConnectionSchemaTablesConfigTableDroppedFromSource verifies that when a table
 // configured in disabled_tables and sync_mode is dropped from the source and
 // disappears from the API response, the resource handles it gracefully:
 // - Read removes the dropped table from state (no error)
 // - Terraform detects drift and plans to reconcile
-func TestConnectionSchemaConfigTableDroppedFromSource(t *testing.T) {
+func TestConnectionSchemaTablesConfigTableDroppedFromSource(t *testing.T) {
 	tableDropped := false
 
 	setupMock := func(t *testing.T) {
@@ -780,7 +780,7 @@ func TestConnectionSchemaConfigTableDroppedFromSource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_config" "test" {
+resource "fivetran_connection_schema_tables_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -790,8 +790,8 @@ resource "fivetran_connection_schema_config" "test" {
 	}
 }`,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "disabled_tables.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "sync_mode.table_2", "LIVE"),
+					resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.test", "disabled_tables.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.test", "sync_mode.table_2", "LIVE"),
 				),
 			},
 			{
@@ -805,10 +805,10 @@ resource "fivetran_connection_schema_config" "test" {
 	})
 }
 
-// TestConnectionSchemaConfigNewDisabledTableDetected verifies that when a new table
+// TestConnectionSchemaTablesConfigNewDisabledTableDetected verifies that when a new table
 // appears in the API with disabled state, it is detected as drift — the user should
 // be aware that a new table was disabled (by policy or external process).
-func TestConnectionSchemaConfigNewDisabledTableDetected(t *testing.T) {
+func TestConnectionSchemaTablesConfigNewDisabledTableDetected(t *testing.T) {
 	newTablePresent := false
 	table2Enabled := true
 
@@ -856,13 +856,13 @@ func TestConnectionSchemaConfigNewDisabledTableDetected(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_config" "test" {
+resource "fivetran_connection_schema_tables_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
 	disabled_tables = ["table_2"]
 }`,
-				Check: resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "disabled_tables.#", "1"),
+				Check: resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.test", "disabled_tables.#", "1"),
 			},
 			{
 				// New table_3 appears disabled — drift MUST be detected so the
@@ -875,11 +875,11 @@ resource "fivetran_connection_schema_config" "test" {
 	})
 }
 
-// TestConnectionSchemaConfigSyncModeTableDropped verifies drift detection when a
+// TestConnectionSchemaTablesConfigSyncModeTableDropped verifies drift detection when a
 // table tracked in sync_mode disappears from the API response. The user configures
 // sync_mode for table_1 and table_2. After creation, table_2 is dropped from the
 // source. On refresh, sync_mode should lose the table_2 entry, causing drift.
-func TestConnectionSchemaConfigSyncModeTableDropped(t *testing.T) {
+func TestConnectionSchemaTablesConfigSyncModeTableDropped(t *testing.T) {
 	tableDropped := false
 	t1SyncMode := "LIVE"
 	t2SyncMode := "LIVE"
@@ -948,7 +948,7 @@ func TestConnectionSchemaConfigSyncModeTableDropped(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_config" "test" {
+resource "fivetran_connection_schema_tables_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -958,9 +958,9 @@ resource "fivetran_connection_schema_config" "test" {
 	}
 }`,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "sync_mode.%", "2"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "sync_mode.table_1", "HISTORY"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_config.test", "sync_mode.table_2", "SOFT_DELETE"),
+					resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.test", "sync_mode.%", "2"),
+					resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.test", "sync_mode.table_1", "HISTORY"),
+					resource.TestCheckResourceAttr("fivetran_connection_schema_tables_config.test", "sync_mode.table_2", "SOFT_DELETE"),
 				),
 			},
 			{
@@ -973,10 +973,10 @@ resource "fivetran_connection_schema_config" "test" {
 	})
 }
 
-// TestConnectionSchemaConfigEnabledPatchSettingsBlocked verifies that when the user
+// TestConnectionSchemaTablesConfigEnabledPatchSettingsBlocked verifies that when the user
 // tries to disable a table whose enabled_patch_settings.allowed is false (e.g. a
 // system table), the resource fails with an informative error listing all blocked tables.
-func TestConnectionSchemaConfigEnabledPatchSettingsBlocked(t *testing.T) {
+func TestConnectionSchemaTablesConfigEnabledPatchSettingsBlocked(t *testing.T) {
 	setupMock := func(t *testing.T) {
 		mockClient.Reset()
 
@@ -1025,7 +1025,7 @@ func TestConnectionSchemaConfigEnabledPatchSettingsBlocked(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_config" "test" {
+resource "fivetran_connection_schema_tables_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -1037,12 +1037,12 @@ resource "fivetran_connection_schema_config" "test" {
 	})
 }
 
-// TestConnectionSchemaConfigConcurrentSchemasNoDeadlock verifies that multiple
+// TestConnectionSchemaTablesConfigConcurrentSchemasNoDeadlock verifies that multiple
 // connection_schema_config resources for the same connection_id but different
 // schemas are applied without deadlock and with serialized PATCH requests.
 // Terraform applies independent resources in parallel; the per-connection mutex
 // should serialize the PATCH calls so they never overlap.
-func TestConnectionSchemaConfigConcurrentSchemasNoDeadlock(t *testing.T) {
+func TestConnectionSchemaTablesConfigConcurrentSchemasNoDeadlock(t *testing.T) {
 	var concurrentPatches atomic.Int32
 	var maxConcurrent atomic.Int32
 	var totalPatches atomic.Int32
@@ -1116,7 +1116,7 @@ func TestConnectionSchemaConfigConcurrentSchemasNoDeadlock(t *testing.T) {
 	config := ""
 	for _, name := range schemaNames {
 		config += fmt.Sprintf(`
-resource "fivetran_connection_schema_config" "%s" {
+resource "fivetran_connection_schema_tables_config" "%s" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "%s"

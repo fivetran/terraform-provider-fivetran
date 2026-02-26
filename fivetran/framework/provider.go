@@ -136,9 +136,9 @@ func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Reso
 		resources.PrivateLink,
 		resources.TransformationProject,
 		resources.Transformation,
-		resources.ConnectionSchemaSettings,
-		resources.ConnectionSchemaConfig,
-		resources.ConnectionSchemaTableConfig,
+		resources.ConnectionSchemasConfig,
+		resources.ConnectionSchemaTablesConfig,
+		resources.ConnectionTableColumnsConfig,
 	}
 }
 

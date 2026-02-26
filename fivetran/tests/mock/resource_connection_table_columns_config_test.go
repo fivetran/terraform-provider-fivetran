@@ -52,9 +52,9 @@ func mockColumnList(t *testing.T, columnsFn func() map[string]any) {
 	)
 }
 
-// TestConnectionSchemaTableConfigAllowAllDisabledColumns verifies creating a resource
+// TestConnectionTableColumnsConfigAllowAllDisabledColumns verifies creating a resource
 // with ALLOW_ALL policy and disabled_columns.
-func TestConnectionSchemaTableConfigAllowAllDisabledColumns(t *testing.T) {
+func TestConnectionTableColumnsConfigAllowAllDisabledColumns(t *testing.T) {
 	colAEnabled := true
 
 	setupMock := func(t *testing.T) {
@@ -91,7 +91,7 @@ func TestConnectionSchemaTableConfigAllowAllDisabledColumns(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_table_config" "test" {
+resource "fivetran_connection_table_columns_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -99,17 +99,17 @@ resource "fivetran_connection_schema_table_config" "test" {
 	disabled_columns = ["col_a"]
 }`,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.test", "disabled_columns.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.test", "id", "conn_id:schema_1:table_1"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.test", "disabled_columns.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.test", "id", "conn_id:schema_1:table_1"),
 				),
 			},
 		},
 	})
 }
 
-// TestConnectionSchemaTableConfigBlockAllEnabledColumns verifies creating a resource
+// TestConnectionTableColumnsConfigBlockAllEnabledColumns verifies creating a resource
 // with BLOCK_ALL policy and enabled_columns.
-func TestConnectionSchemaTableConfigBlockAllEnabledColumns(t *testing.T) {
+func TestConnectionTableColumnsConfigBlockAllEnabledColumns(t *testing.T) {
 	columns := func() map[string]any {
 		return map[string]any{
 			"col_a": col(false, false, false),
@@ -144,7 +144,7 @@ func TestConnectionSchemaTableConfigBlockAllEnabledColumns(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_table_config" "test" {
+resource "fivetran_connection_table_columns_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -152,16 +152,16 @@ resource "fivetran_connection_schema_table_config" "test" {
 	enabled_columns = ["col_b"]
 }`,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.test", "enabled_columns.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.test", "enabled_columns.#", "1"),
 				),
 			},
 		},
 	})
 }
 
-// TestConnectionSchemaTableConfigHashedColumns verifies that hashed_columns
+// TestConnectionTableColumnsConfigHashedColumns verifies that hashed_columns
 // are correctly applied and reflected in state.
-func TestConnectionSchemaTableConfigHashedColumns(t *testing.T) {
+func TestConnectionTableColumnsConfigHashedColumns(t *testing.T) {
 	colBHashed := false
 
 	columns := func() map[string]any {
@@ -198,7 +198,7 @@ func TestConnectionSchemaTableConfigHashedColumns(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_table_config" "test" {
+resource "fivetran_connection_table_columns_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -206,17 +206,17 @@ resource "fivetran_connection_schema_table_config" "test" {
 	hashed_columns = ["col_b"]
 }`,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.test", "hashed_columns.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.test", "hashed_columns.0", "col_b"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.test", "hashed_columns.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.test", "hashed_columns.0", "col_b"),
 				),
 			},
 		},
 	})
 }
 
-// TestConnectionSchemaTableConfigPrimaryKeyColumns verifies that primary_key_columns
+// TestConnectionTableColumnsConfigPrimaryKeyColumns verifies that primary_key_columns
 // are correctly applied and reflected in state.
-func TestConnectionSchemaTableConfigPrimaryKeyColumns(t *testing.T) {
+func TestConnectionTableColumnsConfigPrimaryKeyColumns(t *testing.T) {
 	colAPK := false
 
 	columns := func() map[string]any {
@@ -253,7 +253,7 @@ func TestConnectionSchemaTableConfigPrimaryKeyColumns(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_table_config" "test" {
+resource "fivetran_connection_table_columns_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -261,16 +261,16 @@ resource "fivetran_connection_schema_table_config" "test" {
 	primary_key_columns = ["col_a"]
 }`,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.test", "primary_key_columns.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.test", "primary_key_columns.0", "col_a"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.test", "primary_key_columns.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.test", "primary_key_columns.0", "col_a"),
 				),
 			},
 		},
 	})
 }
 
-// TestConnectionSchemaTableConfigUpdate verifies updating columns across steps.
-func TestConnectionSchemaTableConfigUpdate(t *testing.T) {
+// TestConnectionTableColumnsConfigUpdate verifies updating columns across steps.
+func TestConnectionTableColumnsConfigUpdate(t *testing.T) {
 	colState := map[string]map[string]any{
 		"col_a": {"enabled": true, "hashed": false, "is_primary_key": false},
 		"col_b": {"enabled": true, "hashed": false, "is_primary_key": false},
@@ -324,7 +324,7 @@ func TestConnectionSchemaTableConfigUpdate(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_table_config" "test" {
+resource "fivetran_connection_table_columns_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -333,13 +333,13 @@ resource "fivetran_connection_schema_table_config" "test" {
 	hashed_columns   = ["col_a"]
 }`,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.test", "disabled_columns.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.test", "hashed_columns.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.test", "disabled_columns.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.test", "hashed_columns.#", "1"),
 				),
 			},
 			{
 				Config: `
-resource "fivetran_connection_schema_table_config" "test" {
+resource "fivetran_connection_table_columns_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -348,18 +348,18 @@ resource "fivetran_connection_schema_table_config" "test" {
 	hashed_columns   = ["col_b"]
 }`,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.test", "disabled_columns.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.test", "disabled_columns.0", "col_c"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.test", "hashed_columns.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.test", "hashed_columns.0", "col_b"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.test", "disabled_columns.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.test", "disabled_columns.0", "col_c"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.test", "hashed_columns.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.test", "hashed_columns.0", "col_b"),
 				),
 			},
 		},
 	})
 }
 
-// TestConnectionSchemaTableConfigImport verifies importing with "conn_id:schema:table".
-func TestConnectionSchemaTableConfigImport(t *testing.T) {
+// TestConnectionTableColumnsConfigImport verifies importing with "conn_id:schema:table".
+func TestConnectionTableColumnsConfigImport(t *testing.T) {
 	columns := func() map[string]any {
 		return map[string]any{
 			"col_a": col(true, false, false),
@@ -393,7 +393,7 @@ func TestConnectionSchemaTableConfigImport(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_table_config" "test" {
+resource "fivetran_connection_table_columns_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -402,7 +402,7 @@ resource "fivetran_connection_schema_table_config" "test" {
 }`,
 			},
 			{
-				ResourceName:            "fivetran_connection_schema_table_config.test",
+				ResourceName:            "fivetran_connection_table_columns_config.test",
 				ImportState:             true,
 				ImportStateId:           "conn_id:schema_1:table_1",
 				ImportStateVerify:       true,
@@ -412,8 +412,8 @@ resource "fivetran_connection_schema_table_config" "test" {
 	})
 }
 
-// TestConnectionSchemaTableConfigSchemaNotLoaded verifies error when schema not loaded.
-func TestConnectionSchemaTableConfigSchemaNotLoaded(t *testing.T) {
+// TestConnectionTableColumnsConfigSchemaNotLoaded verifies error when schema not loaded.
+func TestConnectionTableColumnsConfigSchemaNotLoaded(t *testing.T) {
 	setupMock := func(t *testing.T) {
 		mockClient.Reset()
 		mockClient.When(http.MethodGet, "/v1/connections/conn_id/schemas").ThenCall(
@@ -431,7 +431,7 @@ func TestConnectionSchemaTableConfigSchemaNotLoaded(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_table_config" "test" {
+resource "fivetran_connection_table_columns_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -444,9 +444,9 @@ resource "fivetran_connection_schema_table_config" "test" {
 	})
 }
 
-// TestConnectionSchemaTableConfigTableNotFound verifies error when table is missing
+// TestConnectionTableColumnsConfigTableNotFound verifies error when table is missing
 // from the column list API response.
-func TestConnectionSchemaTableConfigTableNotFound(t *testing.T) {
+func TestConnectionTableColumnsConfigTableNotFound(t *testing.T) {
 	setupMock := func(t *testing.T) {
 		mockClient.Reset()
 		mockClient.When(http.MethodGet, "/v1/connections/conn_id/schemas").ThenCall(
@@ -479,7 +479,7 @@ func TestConnectionSchemaTableConfigTableNotFound(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_table_config" "test" {
+resource "fivetran_connection_table_columns_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -492,9 +492,9 @@ resource "fivetran_connection_schema_table_config" "test" {
 	})
 }
 
-// TestConnectionSchemaTableConfigConnectionDeletedUpstream verifies RemoveResource
+// TestConnectionTableColumnsConfigConnectionDeletedUpstream verifies RemoveResource
 // when connection is deleted upstream.
-func TestConnectionSchemaTableConfigConnectionDeletedUpstream(t *testing.T) {
+func TestConnectionTableColumnsConfigConnectionDeletedUpstream(t *testing.T) {
 	getCallCount := 0
 
 	columns := func() map[string]any {
@@ -533,7 +533,7 @@ func TestConnectionSchemaTableConfigConnectionDeletedUpstream(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_table_config" "test" {
+resource "fivetran_connection_table_columns_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -548,9 +548,9 @@ resource "fivetran_connection_schema_table_config" "test" {
 	})
 }
 
-// TestConnectionSchemaTableConfigEnabledPatchSettingsBlocked verifies that system
+// TestConnectionTableColumnsConfigEnabledPatchSettingsBlocked verifies that system
 // columns that cannot be disabled produce an informative error.
-func TestConnectionSchemaTableConfigEnabledPatchSettingsBlocked(t *testing.T) {
+func TestConnectionTableColumnsConfigEnabledPatchSettingsBlocked(t *testing.T) {
 	columns := func() map[string]any {
 		return map[string]any{
 			"col_a":      col(true, false, false),
@@ -577,7 +577,7 @@ func TestConnectionSchemaTableConfigEnabledPatchSettingsBlocked(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_table_config" "test" {
+resource "fivetran_connection_table_columns_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -590,9 +590,9 @@ resource "fivetran_connection_schema_table_config" "test" {
 	})
 }
 
-// TestConnectionSchemaTableConfigColumnDroppedFromSource verifies drift detection
+// TestConnectionTableColumnsConfigColumnDroppedFromSource verifies drift detection
 // when a configured column disappears from the API response.
-func TestConnectionSchemaTableConfigColumnDroppedFromSource(t *testing.T) {
+func TestConnectionTableColumnsConfigColumnDroppedFromSource(t *testing.T) {
 	colDropped := false
 
 	columns := func() map[string]any {
@@ -631,7 +631,7 @@ func TestConnectionSchemaTableConfigColumnDroppedFromSource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "fivetran_connection_schema_table_config" "test" {
+resource "fivetran_connection_table_columns_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -640,8 +640,8 @@ resource "fivetran_connection_schema_table_config" "test" {
 	hashed_columns   = ["col_a"]
 }`,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.test", "disabled_columns.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.test", "hashed_columns.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.test", "disabled_columns.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.test", "hashed_columns.#", "1"),
 				),
 			},
 			{
@@ -653,11 +653,11 @@ resource "fivetran_connection_schema_table_config" "test" {
 	})
 }
 
-// TestConnectionSchemaTableConfigHashedColumnDriftDetection verifies that when
+// TestConnectionTableColumnsConfigHashedColumnDriftDetection verifies that when
 // hashed_columns IS configured and an external process hashes another column,
 // drift is detected. When hashed_columns is NOT configured, external changes
 // to column hashing are ignored.
-func TestConnectionSchemaTableConfigHashedColumnDriftDetection(t *testing.T) {
+func TestConnectionTableColumnsConfigHashedColumnDriftDetection(t *testing.T) {
 	colCHashed := false
 
 	columns := func() map[string]any {
@@ -695,7 +695,7 @@ func TestConnectionSchemaTableConfigHashedColumnDriftDetection(t *testing.T) {
 			{
 				// hashed_columns IS configured — col_a is tracked
 				Config: `
-resource "fivetran_connection_schema_table_config" "test" {
+resource "fivetran_connection_table_columns_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -703,8 +703,8 @@ resource "fivetran_connection_schema_table_config" "test" {
 	hashed_columns = ["col_a"]
 }`,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.test", "hashed_columns.#", "1"),
-					resource.TestCheckResourceAttr("fivetran_connection_schema_table_config.test", "hashed_columns.0", "col_a"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.test", "hashed_columns.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connection_table_columns_config.test", "hashed_columns.0", "col_a"),
 				),
 			},
 			{
@@ -718,10 +718,10 @@ resource "fivetran_connection_schema_table_config" "test" {
 	})
 }
 
-// TestConnectionSchemaTableConfigUnconfiguredHashedIgnored verifies that when
+// TestConnectionTableColumnsConfigUnconfiguredHashedIgnored verifies that when
 // hashed_columns is NOT in the config, external hashing changes are ignored
 // and no drift is reported.
-func TestConnectionSchemaTableConfigUnconfiguredHashedIgnored(t *testing.T) {
+func TestConnectionTableColumnsConfigUnconfiguredHashedIgnored(t *testing.T) {
 	colBHashed := false
 
 	columns := func() map[string]any {
@@ -758,7 +758,7 @@ func TestConnectionSchemaTableConfigUnconfiguredHashedIgnored(t *testing.T) {
 			{
 				// No hashed_columns in config — only managing disabled_columns
 				Config: `
-resource "fivetran_connection_schema_table_config" "test" {
+resource "fivetran_connection_table_columns_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -770,7 +770,7 @@ resource "fivetran_connection_schema_table_config" "test" {
 				// because hashed_columns is not configured
 				PreConfig: func() { colBHashed = true },
 				Config: `
-resource "fivetran_connection_schema_table_config" "test" {
+resource "fivetran_connection_table_columns_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -782,10 +782,10 @@ resource "fivetran_connection_schema_table_config" "test" {
 	})
 }
 
-// TestConnectionSchemaTableConfigHashedColumnMustBeEnabled verifies that configuring
+// TestConnectionTableColumnsConfigHashedColumnMustBeEnabled verifies that configuring
 // a column in hashed_columns or primary_key_columns that would be disabled produces
 // an error.
-func TestConnectionSchemaTableConfigHashedColumnMustBeEnabled(t *testing.T) {
+func TestConnectionTableColumnsConfigHashedColumnMustBeEnabled(t *testing.T) {
 	columns := func() map[string]any {
 		return map[string]any{
 			"col_a": col(true, false, false),
@@ -813,7 +813,7 @@ func TestConnectionSchemaTableConfigHashedColumnMustBeEnabled(t *testing.T) {
 			{
 				// col_b is in disabled_columns AND hashed_columns — should fail
 				Config: `
-resource "fivetran_connection_schema_table_config" "test" {
+resource "fivetran_connection_table_columns_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
@@ -827,9 +827,9 @@ resource "fivetran_connection_schema_table_config" "test" {
 	})
 }
 
-// TestConnectionSchemaTableConfigPKColumnMustBeEnabled verifies that configuring
+// TestConnectionTableColumnsConfigPKColumnMustBeEnabled verifies that configuring
 // a column in primary_key_columns that is also in disabled_columns produces an error.
-func TestConnectionSchemaTableConfigPKColumnMustBeEnabled(t *testing.T) {
+func TestConnectionTableColumnsConfigPKColumnMustBeEnabled(t *testing.T) {
 	columns := func() map[string]any {
 		return map[string]any{
 			"col_a": col(true, false, false),
@@ -857,7 +857,7 @@ func TestConnectionSchemaTableConfigPKColumnMustBeEnabled(t *testing.T) {
 			{
 				// col_b is in both disabled_columns and primary_key_columns — should fail
 				Config: `
-resource "fivetran_connection_schema_table_config" "test" {
+resource "fivetran_connection_table_columns_config" "test" {
 	provider      = fivetran-provider
 	connection_id = "conn_id"
 	schema_name   = "schema_1"
