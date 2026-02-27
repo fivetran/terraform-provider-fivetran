@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/hashicorp/terraform-plugin-framework/action"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -29,12 +30,20 @@ type ProviderDatasource struct {
 	clientContainer
 }
 
+type ProviderAction struct {
+	clientContainer
+}
+
 type ProviderResource struct {
 	clientContainer
 }
 
 func (d *clientContainer) GetClient() *fivetran.Client {
 	return d.client
+}
+
+func (d *ProviderAction) Configure(ctx context.Context, req action.ConfigureRequest, resp *action.ConfigureResponse) {
+	d.getClient(resp.Diagnostics, req.ProviderData)
 }
 
 func (d *ProviderResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {

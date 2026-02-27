@@ -1,0 +1,53 @@
+---
+page_title: "Action: fivetran_transformation_project_run_tests"
+---
+
+# Action: fivetran_transformation_project_run_tests
+
+Resource is in ALPHA state.
+
+This action triggers setup tests for a Fivetran transformation project. It allows practitioners to run project validation tests independently of project create/update operations.
+
+~> **NOTE:** Actions require Terraform 1.14 or later.
+
+## Example Usage
+
+### Basic usage - fail on test errors (default)
+
+```hcl
+resource "fivetran_transformation_project" "project" {
+    group_id = "group_id"
+    type     = "DBT_GIT"
+
+    project_config {
+        git_remote_url = "https://github.com/org/dbt-project.git"
+        git_branch     = "main"
+        default_schema = "my_schema"
+        dbt_version    = "1.7.0"
+    }
+
+    lifecycle {
+        action_trigger {
+            action  = fivetran_transformation_project_run_tests.test
+            events  = ["after_create", "after_update"]
+        }
+    }
+}
+
+action "fivetran_transformation_project_run_tests" "test" {
+    project_id = fivetran_transformation_project.project.id
+}
+```
+
+### Continue on test failure
+
+```hcl
+action "fivetran_transformation_project_run_tests" "test" {
+    project_id             = fivetran_transformation_project.project.id
+    fail_on_tests_failure  = false
+}
+```
+
+When `fail_on_tests_failure` is set to `false`, test failures are reported as warnings instead of errors, allowing Terraform to continue with the rest of the plan.
+
+{{ .SchemaMarkdown | trimspace }}
