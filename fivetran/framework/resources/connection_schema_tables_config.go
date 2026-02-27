@@ -308,6 +308,7 @@ type connectionSchemaTablesConfig struct {
 
 var _ resource.ResourceWithConfigure = &connectionSchemaTablesConfig{}
 var _ resource.ResourceWithImportState = &connectionSchemaTablesConfig{}
+var _ resource.ResourceWithModifyPlan = &connectionSchemaTablesConfig{}
 
 func (r *connectionSchemaTablesConfig) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_connection_schema_tables_config"
@@ -327,6 +328,28 @@ func (r *connectionSchemaTablesConfig) ImportState(ctx context.Context, req reso
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), req.ID)...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("connection_id"), parts[0])...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("schema_name"), parts[1])...)
+}
+
+func (r *connectionSchemaTablesConfig) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	if req.State.Raw.IsNull() || req.Plan.Raw.IsNull() || r.GetClient() == nil {
+		return
+	}
+
+	var plan connectionSchemaTablesConfigModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if core.ConnectionSyncStatus.HasSynced(ctx, r.GetClient(), plan.ConnectionId.ValueString()) {
+		resp.Diagnostics.AddWarning(
+			"Schema Changes on a Synced Connection",
+			"This connection has already synced data. Modifying table settings "+
+				"(enabling/disabling tables, changing sync modes) may trigger "+
+				"a full or partial resync, which can cause data delays and increased load "+
+				"on the destination. Review the planned changes carefully before applying.",
+		)
+	}
 }
 
 func (r *connectionSchemaTablesConfig) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

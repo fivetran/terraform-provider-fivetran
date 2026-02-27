@@ -1105,3 +1105,96 @@ resource "fivetran_connection_schemas_config" "test" {
 		},
 	})
 }
+
+// TestConnectionSchemasConfigSyncedConnectionWarning verifies that ModifyPlan
+// calls the connection details endpoint to check sync status, enabling the
+// resync warning for connections that have already synced.
+func TestConnectionSchemasConfigSyncedConnectionWarning(t *testing.T) {
+	var connDetailsHandler *mock.Handler
+	schema3Exists := false
+
+	setupMock := func(t *testing.T) {
+		mockClient.Reset()
+		core.ConnectionSyncStatus.Reset()
+
+		connDetailsHandler = mockClient.When(http.MethodGet, "/v1/connections/conn_id").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", map[string]any{
+					"id":           "conn_id",
+					"group_id":     "group_id",
+					"service":      "postgres",
+					"succeeded_at": "2024-06-15T10:30:00.000000Z",
+					"failed_at":    nil,
+				}), nil
+			},
+		)
+
+		schemaData := func() map[string]any {
+			schemas := map[string]any{
+				"schema_1": map[string]any{"enabled": true},
+				"schema_2": map[string]any{"enabled": false},
+			}
+			if schema3Exists {
+				schemas["schema_3"] = map[string]any{"enabled": false}
+			}
+			return map[string]any{
+				"schema_change_handling": "ALLOW_ALL",
+				"schemas":               schemas,
+			}
+		}
+
+		mockClient.When(http.MethodGet, "/v1/connections/conn_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaData()), nil
+			},
+		)
+
+		mockClient.When(http.MethodPatch, "/v1/connections/conn_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				body := requestBodyToJson(t, req)
+				if schemas, ok := body["schemas"].(map[string]interface{}); ok {
+					if _, ok := schemas["schema_3"]; ok {
+						schema3Exists = true
+					}
+				}
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaData()), nil
+			},
+		)
+	}
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { setupMock(t) },
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             func(s *terraform.State) error { return nil },
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "fivetran_connection_schemas_config" "test" {
+	provider               = fivetran-provider
+	connection_id          = "conn_id"
+	schema_change_handling = "ALLOW_ALL"
+	disabled_schemas       = ["schema_2"]
+}`,
+			},
+			{
+				// schema_3 appears upstream before step 2
+				PreConfig: func() { schema3Exists = true },
+				Config: `
+resource "fivetran_connection_schemas_config" "test" {
+	provider               = fivetran-provider
+	connection_id          = "conn_id"
+	schema_change_handling = "ALLOW_ALL"
+	disabled_schemas       = ["schema_2", "schema_3"]
+}`,
+				Check: func(s *terraform.State) error {
+					// ModifyPlan fires during update (state exists),
+					// so connection details should have been called
+					if connDetailsHandler.Interactions == 0 {
+						t.Error("expected connection details to be called during ModifyPlan")
+					}
+					return nil
+				},
+			},
+		},
+	})
+}

@@ -165,6 +165,7 @@ type connectionSchemasConfig struct {
 
 var _ resource.ResourceWithConfigure = &connectionSchemasConfig{}
 var _ resource.ResourceWithImportState = &connectionSchemasConfig{}
+var _ resource.ResourceWithModifyPlan = &connectionSchemasConfig{}
 
 func (r *connectionSchemasConfig) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_connection_schemas_config"
@@ -176,6 +177,28 @@ func (r *connectionSchemasConfig) Schema(_ context.Context, _ resource.SchemaReq
 
 func (r *connectionSchemasConfig) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+}
+
+func (r *connectionSchemasConfig) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	if req.State.Raw.IsNull() || req.Plan.Raw.IsNull() || r.GetClient() == nil {
+		return
+	}
+
+	var plan connectionSchemasConfigModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if core.ConnectionSyncStatus.HasSynced(ctx, r.GetClient(), plan.ConnectionId.ValueString()) {
+		resp.Diagnostics.AddWarning(
+			"Schema Changes on a Synced Connection",
+			"This connection has already synced data. Modifying schema settings "+
+				"(enabling/disabling schemas, changing schema_change_handling) may trigger "+
+				"a full or partial resync, which can cause data delays and increased load "+
+				"on the destination. Review the planned changes carefully before applying.",
+		)
+	}
 }
 
 func (r *connectionSchemasConfig) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
