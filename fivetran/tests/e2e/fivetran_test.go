@@ -80,7 +80,7 @@ func GetResource(t *testing.T, s *terraform.State, resourceName string) *terrafo
 	}
 
 	if rs.Primary.ID == "" {
-		t.Fatalf(resourceName + " ID is not set")
+		t.Fatalf("%s ID is not set", resourceName)
 	}
 
 	return rs

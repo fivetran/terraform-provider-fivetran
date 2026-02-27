@@ -8,8 +8,10 @@ import (
 	"github.com/fivetran/go-fivetran"
 	httputils "github.com/fivetran/go-fivetran/http_utils"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/common"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/actions"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/datasources"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/resources"
+	"github.com/hashicorp/terraform-plugin-framework/action"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
@@ -95,6 +97,7 @@ func (p *fivetranProvider) Configure(ctx context.Context, req provider.Configure
 	fivetranClient.CustomUserAgent("terraform-provider-fivetran/" + Version)
 	resp.DataSourceData = fivetranClient
 	resp.ResourceData = fivetranClient
+	resp.ActionData = fivetranClient
 }
 
 func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Resource {
@@ -125,6 +128,12 @@ func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Reso
 		resources.PrivateLink,
 		resources.TransformationProject,
 		resources.Transformation,
+	}
+}
+
+func (p *fivetranProvider) Actions(ctx context.Context) []func() action.Action {
+	return []func() action.Action{
+		actions.TransformationProjectRunTests,
 	}
 }
 

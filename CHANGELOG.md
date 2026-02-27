@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.25...HEAD)
 
+### Added
+- New `fivetran_transformation_project_run_tests` action (requires Terraform 1.14+) that triggers setup tests for a transformation project independently of create/update operations. Supports `fail_on_tests_failure` parameter to control whether test failures block plan execution.
+- Updated "Transformation Project Setup With Git Private Repo" guide to use the new action for project setup validation with `lifecycle.action_trigger`.
+
 ## [v1.9.25](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.25...v1.9.24)
 New connection auth fields supported:
 - Added field `fivetran_connector.config.application_id` for services: `amazon_selling_partner`.

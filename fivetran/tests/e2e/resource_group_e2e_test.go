@@ -349,7 +349,7 @@ func testFivetranGroupResourceCreate(t *testing.T, resourceName string) resource
 		}
 
 		if len(users) != 0 {
-			return fmt.Errorf("Group has extra " + strconv.Itoa(len(users)) + " users (" + strings.Join(users, ",") + ")")
+			return fmt.Errorf("Group has extra %d users (%s)", len(users), strings.Join(users, ","))
 		}
 
 		return nil
