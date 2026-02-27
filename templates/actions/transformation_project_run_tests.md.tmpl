@@ -4,7 +4,7 @@ page_title: "Action: fivetran_transformation_project_run_tests"
 
 # Action: fivetran_transformation_project_run_tests
 
-Resource is in ALPHA state.
+Action is in ALPHA state.
 
 This action triggers setup tests for a Fivetran transformation project. It allows practitioners to run project validation tests independently of project create/update operations.
 
