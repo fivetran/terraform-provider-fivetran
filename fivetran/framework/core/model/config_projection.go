@@ -75,7 +75,7 @@ func convertSliceElements(ctx context.Context, elements []attr.Value) []any {
 }
 
 // project filters remoteConfig to only the keys present in mask (the local state).
-// Sensitive fields: keep local (state) value — never overwrite from remote masked value.
+// Password fields (format == "password"): keep local (state) value — never overwrite from remote masked value.
 // Readonly fields: skip — they are computed and not user-managed.
 // Keys in mask but absent in remote: set to nil to surface drift.
 func project(remote, mask map[string]any, meta *metadata.ConnectorMetadata) map[string]any {
@@ -83,7 +83,7 @@ func project(remote, mask map[string]any, meta *metadata.ConnectorMetadata) map[
 	for key, maskVal := range mask {
 		prop := findProperty(meta, key)
 
-		if prop != nil && prop.Sensitive {
+		if prop != nil && prop.Format == "password" {
 			result[key] = maskVal // keep local value, never read from remote
 			continue
 		}
