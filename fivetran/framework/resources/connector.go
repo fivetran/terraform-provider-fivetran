@@ -57,6 +57,10 @@ func (r *connector) ValidateConfig(ctx context.Context, req resource.ValidateCon
 		return
 	}
 
+	if r.GetClient() == nil {
+		return
+	}
+
 	meta, err := core.GetCachedConnectorMetadata(ctx, r.GetClient(), service)
 	if err != nil {
 		// non-fatal: skip validation if metadata unavailable
