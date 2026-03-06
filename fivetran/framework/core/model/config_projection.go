@@ -15,7 +15,7 @@ func DynamicToMapPublic(ctx context.Context, dyn types.Dynamic) map[string]any {
 }
 
 // dynamicToMap converts a types.Dynamic holding an object value to map[string]any.
-// Empty strings are converted to nil (treated as explicit clear operation).
+// Empty strings are passed through as-is (valid values for fields like pattern, null_sequence).
 // Null values are preserved as nil. Unknown values are skipped.
 func dynamicToMap(ctx context.Context, dyn types.Dynamic) map[string]any {
 	if dyn.IsNull() || dyn.IsUnknown() {
@@ -35,11 +35,7 @@ func attrValueToAny(ctx context.Context, val attr.Value) any {
 
 	switch v := val.(type) {
 	case types.String:
-		s := v.ValueString()
-		if s == "" {
-			return nil // empty string = explicit clear
-		}
-		return s
+		return v.ValueString()
 	case types.Bool:
 		return v.ValueBool()
 	case types.Int64:
@@ -123,8 +119,8 @@ func findProperty(meta *metadata.ConnectorMetadata, key string) *metadata.Proper
 }
 
 // PrepareConfigPatchDynamic builds the PATCH payload for a dynamic config.
-// Key fix over PrepareConfigAuthPatch: any field removed from config sends null to the API,
-// regardless of whether it was marked nullable in fields.json.
+// Fields removed from plan send null to the API only if the metadata marks them nullable
+// (i.e. the connector field is typed Optional<T>). Non-nullable fields are omitted from the patch.
 func PrepareConfigPatchDynamic(state, plan map[string]any, meta *metadata.ConnectorMetadata) map[string]any {
 	result := map[string]any{}
 
@@ -135,11 +131,11 @@ func PrepareConfigPatchDynamic(state, plan map[string]any, meta *metadata.Connec
 		}
 	}
 
-	// fields in state but absent in plan: send null to clear them
+	// fields in state but absent in plan: send null only if nullable according to metadata
 	for k := range state {
 		if _, ok := plan[k]; !ok {
 			prop := findProperty(meta, k)
-			if prop == nil || !prop.Readonly {
+			if prop != nil && prop.Nullable && !prop.Readonly {
 				result[k] = nil
 			}
 		}
