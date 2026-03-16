@@ -39,26 +39,26 @@ func ConnectionAttributesSchema() core.Schema {
 				Required:    true,
 				ForceNew:    true,
 				ValueType:   core.String,
-				Description: "The connection type id within the Fivetran system.",
+				Description: "The connection service type (e.g., `postgres`, `mysql`, `s3`, `snowflake`). See [Fivetran connection types documentation](https://fivetran.com/docs/connectors) for available services.",
 			},
 			"config": {
 				ValueType:    core.String,
 				ResourceOnly: true,
-				Description:  "Optional connection configuration as a JSON string. This will be merged with destination_schema fields. The connection resource does not read this field back from the API, allowing it to be managed separately by fivetran_connection_config resource.",
+				Description:  "Optional connection configuration as a JSON-encoded string. This config is merged with destination_schema fields and sent to the API during creation. The connection resource does not read this field back, allowing it to be managed separately by the `fivetran_connection_config` resource. Use this to provide service-specific required fields (e.g., `update_method` for Postgres/MySQL) or full connection configuration.",
 			},
 			"run_setup_tests": {
 				ValueType:    core.Boolean,
-				Description:  "Specifies whether the setup tests should be run automatically. The default value is FALSE.",
+				Description:  "Whether to run setup tests when creating the connection. Default: `false`. **Note:** This is a plan-only attribute and will not be stored in state.",
 				ResourceOnly: true,
 			},
 			"trust_certificates": {
 				ValueType:    core.Boolean,
-				Description:  "Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
+				Description:  "Whether to automatically trust SSL certificates. Default: `false`. **Note:** This is a plan-only attribute.",
 				ResourceOnly: true,
 			},
 			"trust_fingerprints": {
 				ValueType:    core.Boolean,
-				Description:  "Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
+				Description:  "Whether to automatically trust SSH fingerprints. Default: `false`. **Note:** This is a plan-only attribute.",
 				ResourceOnly: true,
 			},
 			"succeeded_at": {
@@ -103,11 +103,11 @@ func ConnectionAttributesSchema() core.Schema {
 			},
 			"proxy_agent_id": {
 				ValueType:   core.String,
-				Description: "The proxy agent ID.",
+				Description: "The ID of the proxy agent to use. Required when `networking_method` is `ProxyAgent`.",
 			},
 			"networking_method": {
-				ValueType:   	core.StringEnum,
-				Description: 	"Possible values: Directly, SshTunnel, ProxyAgent.",
+				ValueType:   core.StringEnum,
+				Description: "The networking method for the connection. Possible values: `Directly`, `SshTunnel`, `ProxyAgent`, `PrivateLink`.",
 			},
 			"hybrid_deployment_agent_id": {
 				ValueType:   core.String,
@@ -115,11 +115,11 @@ func ConnectionAttributesSchema() core.Schema {
 			},
 			"private_link_id": {
 				ValueType:   core.String,
-				Description: "The private link ID.",
+				Description: "The private link ID. Required when `networking_method` is `PrivateLink`.",
 			},
 			"data_delay_sensitivity": {
 				ValueType:   core.String,
-				Description: "The level of data delay notification threshold. Possible values: LOW, NORMAL, HIGH, CUSTOM. The default value NORMAL. CUSTOM is only available for customers using the Enterprise plan or above.",
+				Description: "The level of data delay notification threshold. Possible values: LOW, NORMAL, HIGH, CUSTOM, SYNC_FREQUENCY. The default value NORMAL. CUSTOM is only available for customers using the [Enterprise plan](https://fivetran.com/docs/getting-started/pricing#fivetranplans) or above.",
 			},
 			"data_delay_threshold": {
 				ValueType:   core.Integer,
@@ -142,7 +142,7 @@ func ConnectionDatasourceBlocks() map[string]datasourceSchema.Block {
 		"destination_schema": datasourceSchema.SingleNestedBlock{
 			Attributes: connectionDestinationSchema().GetDatasourceSchema(),
 		},
-		"status": connectorStatusBlock(),
+		"status": connectionStatusBlock(),
 	}
 }
 

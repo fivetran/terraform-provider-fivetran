@@ -26,20 +26,20 @@ data "fivetran_connection" "connection" {
 - `connected_by` (String) The unique identifier of the user who has created the connection in your account.
 - `created_at` (String) The timestamp of the time the connection was created in your account.
 - `daily_sync_time` (String) The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440. It can be specified in one hour increments starting from 00:00 to 23:00. If not specified, we will use [the baseline sync start time](https://fivetran.com/docs/getting-started/syncoverview#syncfrequencyandscheduling). This parameter has no effect on the [0 to 60 minutes offset](https://fivetran.com/docs/getting-started/syncoverview#syncstarttimesandoffsets) used to determine the actual sync start time.
-- `data_delay_sensitivity` (String) The level of data delay notification threshold. Possible values: LOW, NORMAL, HIGH, CUSTOM. The default value NORMAL. CUSTOM is only available for customers using the Enterprise plan or above.
+- `data_delay_sensitivity` (String) The level of data delay notification threshold. Possible values: LOW, NORMAL, HIGH, CUSTOM, SYNC_FREQUENCY. The default value NORMAL. CUSTOM is only available for customers using the [Enterprise plan](https://fivetran.com/docs/getting-started/pricing#fivetranplans) or above.
 - `data_delay_threshold` (Number) Custom sync delay notification threshold in minutes. The default value is 0. This parameter is only used when data_delay_sensitivity set to CUSTOM.
 - `destination_schema` (Block, Read-only) (see [below for nested schema](#nestedblock--destination_schema))
 - `failed_at` (String) The timestamp of the time the connection sync failed last time.
 - `group_id` (String) The unique identifier for the Group (Destination) within the Fivetran system.
 - `hybrid_deployment_agent_id` (String) The hybrid deployment agent ID that refers to the controller created for the group the connection belongs to. If the value is specified, the system will try to associate the connection with an existing agent.
 - `name` (String) The name used both as the connection's name within the Fivetran system and as the source schema's name within your destination.
-- `networking_method` (String) Possible values: Directly, SshTunnel, ProxyAgent.
+- `networking_method` (String) The networking method for the connection. Possible values: `Directly`, `SshTunnel`, `ProxyAgent`, `PrivateLink`.
 - `pause_after_trial` (Boolean) Specifies whether the connection should be paused after the free trial period has ended.
 - `paused` (Boolean) Specifies whether the connection is paused.
-- `private_link_id` (String) The private link ID.
-- `proxy_agent_id` (String) The proxy agent ID.
+- `private_link_id` (String) The private link ID. Required when `networking_method` is `PrivateLink`.
+- `proxy_agent_id` (String) The ID of the proxy agent to use. Required when `networking_method` is `ProxyAgent`.
 - `schedule_type` (String) The connection schedule configuration type. Supported values: auto, manual.
-- `service` (String) The connection type id within the Fivetran system.
+- `service` (String) The connection service type (e.g., `postgres`, `mysql`, `s3`, `snowflake`). See [Fivetran connection types documentation](https://fivetran.com/docs/connectors) for available services.
 - `service_version` (String) The connection type version within the Fivetran system.
 - `status` (Block, Read-only) (see [below for nested schema](#nestedblock--status))
 - `succeeded_at` (String) The timestamp of the time the connection sync succeeded last time.
