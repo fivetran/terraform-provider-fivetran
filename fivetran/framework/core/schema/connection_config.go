@@ -24,30 +24,30 @@ func ConnectionConfigResourceSchema() schema.Schema {
 			"config": schema.StringAttribute{
 				Optional:    true,
 				CustomType:  fivetrantypes.JsonConfigType{},
-				Description: "Connection config in Json format, following [Fivetran API endpoint contract](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection) for `config` field",
+				Description: "Connection config in Json format, following [Fivetran API endpoint contract](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection) for `config` field. This field uses semantic JSON equality, so whitespace and key order differences won't trigger updates.",
 			},
 			"auth": schema.StringAttribute{
 				Optional:    true,
 				CustomType:  fivetrantypes.JsonConfigType{},
-				Description: "Connection auth config in Json format, following [Fivetran API endpoint contract](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection) for `auth` field",
+				Description: "Connection auth config in Json format, following [Fivetran API endpoint contract](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection) for `auth` field. This field uses semantic JSON equality, so whitespace and key order differences won't trigger updates.",
 			},
 			"run_setup_tests": schema.BoolAttribute{
 				Optional:    true,
 				Computed:    true,
 				Default:     booldefault.StaticBool(true),
-				Description: "Whether to run setup tests when applying configuration. Defaults to true. This is a plan-only attribute and will not be stored in state.",
+				Description: "Whether to run setup tests when applying configuration. Default: `false`. When `true`, Fivetran validates the configuration by testing the connection. **Note:** This is a plan-only attribute and will not be stored in state.",
 			},
 			"trust_certificates": schema.BoolAttribute{
 				Optional:    true,
 				Computed:    true,
 				Default:     booldefault.StaticBool(false),
-				Description: "Whether to automatically trust SSL certificates. Defaults to false. This is a plan-only attribute and will not be stored in state.",
+				Description: "Whether to automatically trust SSL certificates. Default: `false`. **Note:** This is a plan-only attribute and will not be stored in state.",
 			},
 			"trust_fingerprints": schema.BoolAttribute{
 				Optional:    true,
 				Computed:    true,
 				Default:     booldefault.StaticBool(false),
-				Description: "Whether to automatically trust SSH fingerprints. Defaults to false. This is a plan-only attribute and will not be stored in state.",
+				Description: "Whether to automatically trust SSH fingerprints. Default: `false`. **Note:** This is a plan-only attribute and will not be stored in state.",
 			},
 		},
 	}
