@@ -5,11 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.25...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.26...HEAD)
+
+## [v1.9.26](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.26...v1.9.25)
 
 ### Added
 - New `fivetran_transformation_project_run_tests` action (requires Terraform 1.14+) that triggers setup tests for a transformation project independently of create/update operations. Supports `fail_on_tests_failure` parameter to control whether test failures block plan execution.
 - Updated "Transformation Project Setup With Git Private Repo" guide to use the new action for project setup validation with `lifecycle.action_trigger`.
+New connection services supported:
+- Supported service: `adform`
+New connection config fields supported:
+- Added field `fivetran_connector.config.sync_all_versions` for services: `microsoft_dynamics_365_fno`.
+- Added field `fivetran_connector.config.campaign_query_lookback_window_in_days` for services: `sailthru`.
+- Added field `fivetran_connector.config.hana_db_port` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.enable_mtls_connection` for services: `gitlab`.
+- Added field `fivetran_connector.config.reports.split_by_advertiser` for services: `google_display_and_video_360`.
 
 ## [v1.9.25](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.25...v1.9.24)
 New connection auth fields supported:

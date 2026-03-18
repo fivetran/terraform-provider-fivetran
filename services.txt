@@ -7,6 +7,7 @@ acculynx
 activecampaign
 acumatica
 ada
+adform
 adjust
 adobe_analytics
 adobe_analytics_data_feed

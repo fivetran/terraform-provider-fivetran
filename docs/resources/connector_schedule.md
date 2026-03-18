@@ -33,12 +33,24 @@ resource "fivetran_connector_schedule" "my_connector_schedule" {
 - `group_id` (String) The unique identifier for the Group (Destination) within the Fivetran system.
 - `pause_after_trial` (String) Specifies whether the connector should be paused after the free trial period has ended.
 - `paused` (String) Specifies whether the connector is paused.
+- `schedule` (Block, Optional) Flexible sync schedule configuration. When set, takes precedence over `sync_frequency`. (see [below for nested schema](#nestedblock--schedule))
 - `schedule_type` (String) The connector schedule configuration type. Supported values: auto, manual.
-- `sync_frequency` (String) The connector sync frequency in minutes. Supported values: 1, 5, 15, 30, 60, 120, 180, 360, 480, 720, 1440.
+- `sync_frequency` (String) The connector sync frequency in minutes. Supported values: 1, 5, 15, 30, 60, 120, 180, 360, 480, 720, 1440. Deprecated: use `schedule` block instead.
 
 ### Read-Only
 
 - `id` (String) The unique resource identifier (equals to `connector_id`).
+
+<a id="nestedblock--schedule"></a>
+### Nested Schema for `schedule`
+
+Optional:
+
+- `cron` (String) The cron expression for the sync schedule. Required for CRON schedule type.
+- `days_of_week` (Set of String) The days of the week to run the sync. Used with INTERVAL and TIME_OF_DAY schedule types. Supported values: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY.
+- `interval` (Number) The sync interval in minutes. Required for INTERVAL schedule type.
+- `schedule_type` (String) The schedule type. Supported values: INTERVAL, TIME_OF_DAY, CRON, MANUAL.
+- `time_of_day` (String) The time of day to run the sync. Required for TIME_OF_DAY schedule type. Supported values: "00:00" to "23:00".
 
 ## Import
 
