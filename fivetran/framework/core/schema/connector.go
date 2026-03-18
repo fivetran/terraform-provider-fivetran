@@ -2,11 +2,21 @@ package schema
 
 import (
 	"context"
+	"fmt"
+	"sort"
+	"strings"
+	"sync"
 
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/common"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	datasourceSchema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+)
+
+var (
+	destinationSchemaFieldDescriptions      map[string]string = make(map[string]string)
+	destinationSchemaFieldDescriptionsMutex sync.RWMutex      = sync.RWMutex{}
 )
 
 func ConnectorAttributesSchema() core.Schema {
@@ -104,8 +114,8 @@ func ConnectorAttributesSchema() core.Schema {
 				Description: "The proxy agent ID.",
 			},
 			"networking_method": {
-				ValueType:   	core.StringEnum,
-				Description: 	"Possible values: Directly, SshTunnel, ProxyAgent, PrivateLink.",
+				ValueType:   core.StringEnum,
+				Description: "Possible values: Directly, SshTunnel, ProxyAgent, PrivateLink.",
 			},
 			"hybrid_deployment_agent_id": {
 				ValueType:   core.String,
@@ -218,28 +228,32 @@ func destinationSchemaAttributes() core.Schema {
 	return core.Schema{
 		Fields: map[string]core.SchemaField{
 			"name": {
-				ForceNew:    true,
-				Required:    false,
-				ValueType:   core.String,
-				Description: "The connector schema name in destination. Has to be unique within the group (destination). Required for connector creation.",
+				ForceNew:  true,
+				Required:  false,
+				ValueType: core.String,
+				Description: "The connector schema name in destination. Has to be unique within the group (destination). Required for connector creation" +
+					buildDestinationSchemaFieldDescription("schema"), // it is as expected that field is called `name` in Terraform Provider, but `schema` in API
 			},
 			"table": {
-				ForceNew:    true,
-				Required:    false,
-				ValueType:   core.String,
-				Description: "The table name unique within the schema to which connector will sync the data. Required for connector creation.",
+				ForceNew:  true,
+				Required:  false,
+				ValueType: core.String,
+				Description: "The table name unique within the schema to which connector will sync the data. Required for connector creation" +
+					buildDestinationSchemaFieldDescription("table"),
 			},
 			"prefix": {
-				ForceNew:    true,
-				Required:    false,
-				ValueType:   core.String,
-				Description: "The connector schema prefix has to be unique within the group (destination). Each replicated schema is prefixed with the provided value. Required for connector creation.",
+				ForceNew:  true,
+				Required:  false,
+				ValueType: core.String,
+				Description: "The connector schema prefix has to be unique within the group (destination). Each replicated schema is prefixed with the provided value. Required for connector creation" +
+					buildDestinationSchemaFieldDescription("schema_prefix"), // it is as expected that field is called `prefix` in Terraform Provider, but `schema_prefix` in API
 			},
 			"table_group_name": {
-				ForceNew:    true,
-				Required:    false,
-				ValueType:   core.String,
-				Description: "Table group name.",
+				ForceNew:  true,
+				Required:  false,
+				ValueType: core.String,
+				Description: "Table group name. Combined with the schema to form the Fivetran connection name '<schema>.<table_group_name>'. Required for connector creation" +
+					buildDestinationSchemaFieldDescription("table_group_name"),
 			},
 		},
 	}
@@ -261,5 +275,35 @@ func ConnectorsDatasource() datasourceSchema.Schema {
 				},
 			},
 		},
+	}
+}
+
+func getDestinationSchemaFieldDescription(fieldName string) string {
+	if description, ok := destinationSchemaFieldDescriptions[fieldName]; ok {
+		return description
+	}
+
+	description := buildDestinationSchemaFieldDescription(fieldName)
+	if destinationSchemaFieldDescriptionsMutex.TryLock() {
+		destinationSchemaFieldDescriptions[fieldName] = description
+		destinationSchemaFieldDescriptionsMutex.Unlock()
+	}
+
+	return description
+}
+
+func buildDestinationSchemaFieldDescription(fieldName string) string {
+	var result []string
+	for serviceName, flags := range common.GetDestinationSchemaFields() {
+		if flags[fieldName] {
+			result = append(result, fmt.Sprintf("`%v`", serviceName))
+		}
+	}
+
+	if len(result) > 0 {
+		sort.Strings(result)
+		return " of services:<br>\n" + strings.Join(result, ", ")
+	} else {
+		return ""
 	}
 }
