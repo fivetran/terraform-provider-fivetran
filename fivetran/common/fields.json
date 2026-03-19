@@ -1301,7 +1301,7 @@
          "okendo": "Your Okendo API key.",
          "ometria": "Your Ometria API Key.",
          "oncehub": "Your OnceHub API key.",
-         "openai": "Your OpenAI API key.",
+         "openai": "Your OpenAI Admin API key.",
          "ordergroove": "Your Ordergroove API key.",
          "ordway": "Your Ordway API key.",
          "ortto": "Your Ortto API key.",
@@ -2195,6 +2195,7 @@
       "item_type": {},
       "description": {
          "databricks_db": "Token-based authentication type",
+         "gitlab": "Your GitLab auth type.",
          "redshift_db": "Password-based authentication type",
          "snowflake_db": "Password-based or key-based authentication type"
       },
@@ -2377,6 +2378,7 @@
          "elastic_cloud": "The authentication method used to connect to your cluster.",
          "es_self_hosted": "The authentication method used to connect to your cluster.",
          "financial_force": "",
+         "gainsight_customer_success": "The authentication method to use. Can be either OAUTH or API_KEY.",
          "opendistro": "The authentication method used to connect to your cluster.",
          "opensearch": "The authentication method used to connect to your cluster.",
          "oracle_fusion_cloud_apps_crm": "The Oracle Fusion Cloud authentication method.",
@@ -2625,7 +2627,7 @@
          "shopify": "Limit of the Historical Sync Time for selected tables",
          "stripe": "Limit of the Historical Sync Time for selected tables",
          "stripe_test": "Limit of the Historical Sync Time for selected tables",
-         "zendesk": "Date Limit of the Historical Sync Time for selected tables. The format should be YYYY-MM-DD"
+         "zendesk": "Date Limit of the Historical Sync Time for selected tables. The format should be YYYY-MM-DD."
       },
       "api_field": ""
    },
@@ -2638,7 +2640,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "hubspot": "Date Limit of the Historical Sync Time for selected tables. The Format should be YYYY-MM-DD",
+         "hubspot": "Date Limit of the Historical Sync Time for selected tables. The Format should be YYYY-MM-DD.",
          "mixpanel": "Date from which data needs to be synced.",
          "pendo": "The start date (YYYY-MM-DD) from which to sync historical data."
       },
@@ -2709,6 +2711,7 @@
          "fillout": "Your Fillout Base URL.",
          "financial_force": "(Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.",
          "freshsales": "Your Freshsales product.",
+         "gitlab": "Your GitLab base URL.",
          "gongio": "Your Gong API Base URL.",
          "higher_logic_vanilla": "Your Higher Logic Vanilla base URL.",
          "ironclad": "Your Ironclad base url.",
@@ -2965,6 +2968,19 @@
       },
       "api_field": ""
    },
+   "campaign_query_lookback_window_in_days": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sailthru": "The number of days to look back for campaign query data during incremental syncs. Valid range: 2-90. Default: 60."
+      },
+      "api_field": ""
+   },
    "catalog": {
       "readonly": false,
       "sensitive": false,
@@ -3074,6 +3090,7 @@
       "item_type": {},
       "description": {
          "amqp": "Client certificate for mutual TLS authentication.",
+         "gitlab": "Your GitLab client certificate content.",
          "share_point": "`Client Certificate` of your Microsoft client application."
       },
       "api_field": ""
@@ -3115,6 +3132,7 @@
       "description": {
          "360learning": "Your 360Learning client ID.",
          "acumatica": "Your Acumatica client ID.",
+         "adform": "Your Adform client ID.",
          "adobe_analytics": "Client ID from the OAuth Server-to-Server credentials of your Adobe Project.",
          "adobe_experience_platform": "Your Adobe Experience Platform client ID.",
          "adobe_workfront": "Your Adobe Workfront client ID.",
@@ -3323,6 +3341,7 @@
          "aurora": "Client Private Key in .pem format.",
          "aurora_postgres": "Client Private Key in .pem format.",
          "azure_postgres": "Client Private Key in .pem format.",
+         "gitlab": "Your GitLab client private key content.",
          "google_cloud_mysql": "Client Private Key in .pem format.",
          "google_cloud_postgresql": "Client Private Key in .pem format.",
          "heroku_postgres": "Client Private Key in .pem format.",
@@ -3342,6 +3361,7 @@
          "aurora": true,
          "aurora_postgres": true,
          "azure_postgres": true,
+         "gitlab": true,
          "google_cloud_mysql": true,
          "google_cloud_postgresql": true,
          "heroku_postgres": true,
@@ -3397,6 +3417,7 @@
       "description": {
          "360learning": "Your 360Learning client secret.",
          "acumatica": "Your Acumatica client secret.",
+         "adform": "Your Adform client secret.",
          "adobe_analytics": "Client Secret from the OAuth Server-to-Server credentials of your Adobe Project.",
          "adobe_experience_platform": "Your Adobe Experience Platform client secret.",
          "adobe_workfront": "Your Adobe Workfront client secret.",
@@ -3446,6 +3467,7 @@
          "h_level": "Your HighLevel client secret.",
          "helpdesk": "Your HelpDesk client secret.",
          "hilti_ontrack": "Your Hilti On!Track client secret.",
+         "hubspot": "Client secret for private custom app authentication.",
          "ibacos": "Your Ibacos Client secret.",
          "ilevel": "Your iLevel Client Secret.",
          "instructure": "Your Instructure client secret.",
@@ -4222,7 +4244,8 @@
       "description": {
          "coalesce": "Your Coalesce custom base URL.",
          "datadog": "Your Datadog custom base url.",
-         "deposco": "Your Deposco custom base URL."
+         "deposco": "Your Deposco custom base URL.",
+         "gitlab": "Your GitLab custom base URL."
       },
       "api_field": ""
    },
@@ -5712,6 +5735,19 @@
       },
       "api_field": ""
    },
+   "enable_mtls_connection": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "gitlab": "The confirmation that you have allowed Fivetran to connect with your self-hosted instance. Possible values: `true`, `false`."
+      },
+      "api_field": ""
+   },
    "enable_tde": {
       "readonly": false,
       "sensitive": false,
@@ -6682,6 +6718,19 @@
       },
       "api_field": ""
    },
+   "hana_db_port": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sap_hana_db": "Port number of the SAP HANA database"
+      },
+      "api_field": ""
+   },
    "hana_mode": {
       "readonly": false,
       "sensitive": false,
@@ -6798,7 +6847,7 @@
       "description": {
          "amazon_selling_partner": "The time frame for historical data synchronization. Default value: `ALL_TIME`.",
          "ascend_by_partnerize": "Your Ascend by Partnerize Historical sync time frame",
-         "hubspot": "Used to configure Historical sync timeframe for selected tables",
+         "hubspot": "Used to configure Historical sync timeframe for selected tables.",
          "mixpanel": "Should sync all data or adhere to `backward_sync_limit_date`",
          "pendo": "The time range for which historical data should be synced. Default value: `All Time`.",
          "rokt": "Your Rokt historical sync time frame.",
@@ -6807,7 +6856,7 @@
          "stripe": "Used to configure Historical sync timeframe for selected tables",
          "stripe_test": "Used to configure Historical sync timeframe for selected tables",
          "vimeo": "Your Vimeo Historical sync time frame.",
-         "zendesk": "Used to configure Historical sync timeframe for selected tables"
+         "zendesk": "Used to configure Historical sync timeframe for selected tables."
       },
       "api_field": ""
    },
@@ -7658,7 +7707,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "h_level": "Your HighLevel location IDs."
+         "h_level": "Your HighLevel location ID."
       },
       "api_field": ""
    },
@@ -8688,6 +8737,7 @@
       "description": {
          "cj_commission_detail": "Your CJ Commission Detail personal access token.",
          "databricks_db": "Access Token",
+         "gitlab": "Your GitLab personal access token.",
          "harvest": "Your Harvest Personal Access Token.",
          "productive": "Your Productive personal access token.",
          "totango": "Your Totango personal access token."
@@ -10812,6 +10862,19 @@
             },
             "api_field": ""
          },
+         "split_by_advertiser": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "boolean",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "google_display_and_video_360": "If enabled, the report will be queried separately for each advertiser, and the FILTER_ADVERTISER dimension will be added automatically if not already selected. This parameter only takes effect when `config_method` is set to `CREATE_NEW`. The default value is `false`."
+            },
+            "api_field": ""
+         },
          "start_date": {
             "readonly": false,
             "sensitive": false,
@@ -11584,6 +11647,7 @@
          "activecampaign": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "acumatica": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "ada": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "adform": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "adjust": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "adobe_analytics": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "adobe_analytics_data_feed": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -13731,7 +13795,7 @@
       "description": {
          "cabcharge": "Your Cabcharge subscription key.",
          "dsv": "Your DSV subscription key.",
-         "national_heavy_vehicle_regulator": "Your National Heavy Vehicle Regulator subscription key."
+         "national_heavy_vehicle_regulator": "Your NHVR Portal API subscription key."
       },
       "api_field": ""
    },
@@ -13785,6 +13849,19 @@
       "item_type": {},
       "description": {
          "snapchat_ads": "The time period to attribute conversions based on swipes. Default value: `DAY_28`"
+      },
+      "api_field": ""
+   },
+   "sync_all_versions": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "microsoft_dynamics_365_fno": "Specify if all versions of the records should be synced. If set to `true`, all versions of the records will be synced. If set to `false`, only the latest version of the records will be synced."
       },
       "api_field": ""
    },
@@ -14208,7 +14285,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "hubspot": "Timestamp to indicate when tables without access was updated"
+         "hubspot": "Timestamp to indicate when tables without access was updated."
       },
       "api_field": ""
    },
