@@ -133,8 +133,8 @@ resource "fivetran_connection" "snowflake_connection" {
 - `private_link_id` (String) The private link ID. Required when `networking_method` is `PrivateLink`.
 - `proxy_agent_id` (String) The ID of the proxy agent to use. Required when `networking_method` is `ProxyAgent`.
 - `run_setup_tests` (Boolean) Whether to run setup tests when creating the connection. Default: `false`. **Note:** This is a plan-only attribute and will not be stored in state.
-- `trust_certificates` (Boolean) Whether to automatically trust SSL certificates. Default: `false`. **Note:** This is a plan-only attribute.
-- `trust_fingerprints` (Boolean) Whether to automatically trust SSH fingerprints. Default: `false`. **Note:** This is a plan-only attribute.
+- `trust_certificates` (Boolean) Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate). **Note:** This is a plan-only attribute.
+- `trust_fingerprints` (Boolean) Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint). **Note:** This is a plan-only attribute.
 
 ### Read-Only
 

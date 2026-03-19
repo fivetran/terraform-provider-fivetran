@@ -53,12 +53,12 @@ func ConnectionAttributesSchema() core.Schema {
 			},
 			"trust_certificates": {
 				ValueType:    core.Boolean,
-				Description:  "Whether to automatically trust SSL certificates. Default: `false`. **Note:** This is a plan-only attribute.",
+				Description:  "Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate). **Note:** This is a plan-only attribute.",
 				ResourceOnly: true,
 			},
 			"trust_fingerprints": {
 				ValueType:    core.Boolean,
-				Description:  "Whether to automatically trust SSH fingerprints. Default: `false`. **Note:** This is a plan-only attribute.",
+				Description:  "Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint). **Note:** This is a plan-only attribute.",
 				ResourceOnly: true,
 			},
 			"succeeded_at": {
