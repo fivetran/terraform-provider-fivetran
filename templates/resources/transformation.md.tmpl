@@ -4,8 +4,6 @@ page_title: "Resource: fivetran_transformation"
 
 # Resource: fivetran_transformation
 
-Resource is in ALPHA state.
-
 This resource allows you to add, manage and delete transformation projects in your account. 
 
 ## Example Usage for dbt Core Transformation
