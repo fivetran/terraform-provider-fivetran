@@ -22,7 +22,7 @@ New connection config fields supported:
 - Added field `fivetran_connector.config.reports.split_by_advertiser` for services: `google_display_and_video_360`.
 
 ## Updated
-`fivetran_transformation` and `fivetran_transformation_project` resources are now  generally available.
+`fivetran_transformation` and `fivetran_transformation_project` resources are now generally available.
 
 ## [v1.9.25](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.25...v1.9.24)
 New connection auth fields supported:
