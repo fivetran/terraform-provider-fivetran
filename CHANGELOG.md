@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.26...HEAD)
 
+### Added
+- `configurable_vars` computed attribute to `fivetran_quickstart_package` datasource, exposing configurable variable definitions (`type`, `description`, `allowed_values`) keyed by variable name.
+
 ## [v1.9.26](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.26...v1.9.25)
 
 ### Added

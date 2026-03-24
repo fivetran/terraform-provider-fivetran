@@ -21,7 +21,14 @@ const (
     ],
     "output_model_names": [
       "string"
-    ]
+    ],
+    "configurable_variables": {
+      "start_date": {
+        "type": "DATE",
+        "description": "The start date for historical data",
+        "allowed_values": ["2020-01-01", "2021-01-01"]
+      }
+    }
   }
     `
 )
@@ -60,6 +67,10 @@ func TestDataSourceQuickstartPackageConfigMappingMock(t *testing.T) {
             resource.TestCheckResourceAttr("data.fivetran_quickstart_package.test", "id", "package_definition_id"),
             resource.TestCheckResourceAttr("data.fivetran_quickstart_package.test", "name", "package_definition_name"),
             resource.TestCheckResourceAttr("data.fivetran_quickstart_package.test", "version", "version"),
+            resource.TestCheckResourceAttr("data.fivetran_quickstart_package.test", "configurable_vars.start_date.type", "DATE"),
+            resource.TestCheckResourceAttr("data.fivetran_quickstart_package.test", "configurable_vars.start_date.description", "The start date for historical data"),
+            resource.TestCheckResourceAttr("data.fivetran_quickstart_package.test", "configurable_vars.start_date.allowed_values.0", "2020-01-01"),
+            resource.TestCheckResourceAttr("data.fivetran_quickstart_package.test", "configurable_vars.start_date.allowed_values.1", "2021-01-01"),
         ),
     }
 

@@ -5,6 +5,30 @@ import (
     datasourceSchema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 )
 
+func configurableVarsSchema() datasourceSchema.MapNestedAttribute {
+    return datasourceSchema.MapNestedAttribute{
+        Computed:    true,
+        Description: "Map of configurable variable definitions for the package, keyed by variable name.",
+        NestedObject: datasourceSchema.NestedAttributeObject{
+            Attributes: map[string]datasourceSchema.Attribute{
+                "type": datasourceSchema.StringAttribute{
+                    Computed:    true,
+                    Description: "The variable type (e.g. STRING, INTEGER, BOOLEAN, DATE).",
+                },
+                "description": datasourceSchema.StringAttribute{
+                    Computed:    true,
+                    Description: "Human-readable description of the variable.",
+                },
+                "allowed_values": datasourceSchema.ListAttribute{
+                    Computed:    true,
+                    Description: "List of allowed values for the variable, if restricted.",
+                    ElementType: basetypes.StringType{},
+                },
+            },
+        },
+    }
+}
+
 func QuickstartPackagesDatasource() datasourceSchema.Schema {
     return datasourceSchema.Schema {
         Blocks: map[string]datasourceSchema.Block{
@@ -65,6 +89,7 @@ func QuickstartPackageDatasource() datasourceSchema.Schema {
                 Description: "The list of transformation output models",
                 ElementType: basetypes.StringType{},
             },
+            "configurable_vars": configurableVarsSchema(),
         },
     }
 }
