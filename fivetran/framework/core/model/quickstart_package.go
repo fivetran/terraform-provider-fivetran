@@ -14,7 +14,7 @@ type QuickstartPackage struct {
 	Version          types.String `tfsdk:"version"`
 	ConnectorTypes   types.Set    `tfsdk:"connector_types"`
 	OutputModelNames types.Set    `tfsdk:"output_model_names"`
-	ConfigurableVars types.Map    `tfsdk:"configurable_vars"`
+	ConfigurableVars types.Map    `tfsdk:"configurable_variables"`
 }
 
 var configurableVarAttrTypes = map[string]attr.Type{

@@ -58,21 +58,21 @@ func TestDataSourceQuickstartPackageConfigMappingMock(t *testing.T) {
             id = "package_definition_id"
         }`,
 
-        Check: resource.ComposeAggregateTestCheckFunc(
-            func(s *terraform.State) error {
-                tfmock.AssertEqual(t, quickstartPackageDataSourceMockGetHandler.Interactions, 1)
-                tfmock.AssertNotEmpty(t, quickstartPackageDataSourceMockData)
-                return nil
-            },
-            resource.TestCheckResourceAttr("data.fivetran_quickstart_package.test", "id", "package_definition_id"),
-            resource.TestCheckResourceAttr("data.fivetran_quickstart_package.test", "name", "package_definition_name"),
-            resource.TestCheckResourceAttr("data.fivetran_quickstart_package.test", "version", "version"),
-            resource.TestCheckResourceAttr("data.fivetran_quickstart_package.test", "configurable_vars.start_date.type", "DATE"),
-            resource.TestCheckResourceAttr("data.fivetran_quickstart_package.test", "configurable_vars.start_date.description", "The start date for historical data"),
-            resource.TestCheckResourceAttr("data.fivetran_quickstart_package.test", "configurable_vars.start_date.allowed_values.0", "2020-01-01"),
-            resource.TestCheckResourceAttr("data.fivetran_quickstart_package.test", "configurable_vars.start_date.allowed_values.1", "2021-01-01"),
-        ),
-    }
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, quickstartPackageDataSourceMockGetHandler.Interactions, 1)
+				tfmock.AssertNotEmpty(t, quickstartPackageDataSourceMockData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("data.fivetran_quickstart_package.test", "id", "package_definition_id"),
+			resource.TestCheckResourceAttr("data.fivetran_quickstart_package.test", "name", "package_definition_name"),
+			resource.TestCheckResourceAttr("data.fivetran_quickstart_package.test", "version", "version"),
+			resource.TestCheckResourceAttr("data.fivetran_quickstart_package.test", "configurable_variables.start_date.type", "DATE"),
+			resource.TestCheckResourceAttr("data.fivetran_quickstart_package.test", "configurable_variables.start_date.description", "The start date for historical data"),
+			resource.TestCheckResourceAttr("data.fivetran_quickstart_package.test", "configurable_variables.start_date.allowed_values.0", "2020-01-01"),
+			resource.TestCheckResourceAttr("data.fivetran_quickstart_package.test", "configurable_variables.start_date.allowed_values.1", "2021-01-01"),
+		),
+	}
 
 	resource.Test(
 		t,
