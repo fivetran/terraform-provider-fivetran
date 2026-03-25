@@ -14,7 +14,7 @@ type QuickstartPackage struct {
 	Version          types.String `tfsdk:"version"`
 	ConnectorTypes   types.Set    `tfsdk:"connector_types"`
 	OutputModelNames types.Set    `tfsdk:"output_model_names"`
-	ConfigurableVars types.Map    `tfsdk:"configurable_variables"`
+	ConfigurableVariables types.Map    `tfsdk:"configurable_variables"`
 }
 
 var configurableVarAttrTypes = map[string]attr.Type{
@@ -40,10 +40,10 @@ func (d *QuickstartPackage) ReadFromResponse(ctx context.Context, resp transform
 	}
 	d.OutputModelNames, _ = types.SetValue(types.StringType, models)
 
-	d.ConfigurableVars = configurableVarsFromResponse(resp.Data.ConfigurableVars)
+	d.ConfigurableVariables = configurableVarsFromResponse(resp.Data.ConfigurableVariables)
 }
 
-func configurableVarsFromResponse(vars map[string]transformations.ConfigurableVarDefinition) types.Map {
+func configurableVarsFromResponse(vars map[string]transformations.ConfigurableVariableDefinition) types.Map {
 	if len(vars) == 0 {
 		return types.MapNull(types.ObjectType{AttrTypes: configurableVarAttrTypes})
 	}
