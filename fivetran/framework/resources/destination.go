@@ -217,6 +217,11 @@ func (r *destination) Read(ctx context.Context, req resource.ReadRequest, resp *
 		id = data.GroupId.ValueString()
 	}
 
+	// Preserve plan-only attributes before reading API response
+	runSetupTests := data.RunSetupTests
+	trustCertificates := data.TrustCertificates
+	trustFingerprints := data.TrustFingerprints
+
 	response, err := r.GetClient().
 		NewDestinationDetails().
 		DestinationID(id).
@@ -231,6 +236,12 @@ func (r *destination) Read(ctx context.Context, req resource.ReadRequest, resp *
 	}
 
 	data.ReadFromResponse(response, isImportOperation)
+
+	// Restore plan-only attributes after reading API response
+	data.RunSetupTests = runSetupTests
+	data.TrustCertificates = trustCertificates
+	data.TrustFingerprints = trustFingerprints
+
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 
 }
@@ -271,9 +282,7 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 	updatePerformed := false
 	if hasUpdates {
 		svc := r.GetClient().NewDestinationUpdate().
-				RunSetupTests(runSetupTestsPlan).
-				TrustCertificates(trustCertificatesPlan).
-				TrustFingerprints(trustFingerprintsPlan).
+				RunSetupTests(false).
 				Region(plan.Region.ValueString()).
 				DestinationID(state.Id.ValueString())
 
@@ -317,8 +326,32 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 		
 		updatePerformed = true
 		plan.ReadFromResponseWithTests(response)
+		// Preserve plan-only attributes after reading API response
+		plan.RunSetupTests = types.BoolValue(runSetupTestsPlan)
+		plan.TrustCertificates = types.BoolValue(trustCertificatesPlan)
+		plan.TrustFingerprints = types.BoolValue(trustFingerprintsPlan)
+	}
 
-		if runSetupTestsPlan && response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
+	planOnlyAttributesChanged := (runSetupTestsPlan && runSetupTestsPlan != runSetupTestsState) ||
+		(trustCertificatesPlan && trustCertificatesPlan != trustCertificatesState) ||
+		(trustFingerprintsPlan && trustFingerprintsPlan != trustFingerprintsState)
+
+	// If values of testing fields changed we should run tests
+	if planOnlyAttributesChanged || (updatePerformed && runSetupTestsPlan) {
+
+		response, err := r.GetClient().NewDestinationSetupTests().DestinationID(state.Id.ValueString()).
+			TrustCertificates(trustCertificatesPlan).
+			TrustFingerprints(trustFingerprintsPlan).
+			DoCustom(ctx)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to Update Destination Resource.",
+				fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
+			)
+			return
+		}
+
+		if response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
 			for _, tr := range response.Data.SetupTests {
 				if tr.Status != "PASSED" && tr.Status != "SKIPPED" {
 					resp.Diagnostics.AddWarning(
@@ -327,37 +360,6 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 					)
 				}
 			}
-		}
-	} else {
-		// If values of testing fields changed we should run tests
-		if runSetupTestsPlan && runSetupTestsPlan != runSetupTestsState ||
-			trustCertificatesPlan && trustCertificatesPlan != trustCertificatesState ||
-			trustFingerprintsPlan && trustFingerprintsPlan != trustFingerprintsState {
-
-			response, err := r.GetClient().NewDestinationSetupTests().DestinationID(state.Id.ValueString()).Do(ctx)
-			if err != nil {
-				resp.Diagnostics.AddError(
-					"Unable to Update Destination Resource.",
-					fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
-				)
-				return
-			}
-
-			plan.ReadFromLegacyResponse(response)
-			if response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
-				for _, tr := range response.Data.SetupTests {
-					if tr.Status != "PASSED" && tr.Status != "SKIPPED" {
-						resp.Diagnostics.AddWarning(
-							fmt.Sprintf("Destination setup test `%v` has status `%v`", tr.Title, tr.Status),
-							tr.Message,
-						)
-					}
-				}
-			}
-
-			// there were no changes in config so we can just copy it from state
-			plan.Config = state.Config
-			updatePerformed = true
 		}
 	}
 
@@ -372,6 +374,14 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 			return
 		}
 		plan.ReadFromResponse(response, false)
+		
+		// there were no changes in config so we can just copy it from state
+		plan.Config = state.Config
+		
+		// Preserve plan-only attributes after reading API response
+		plan.RunSetupTests = types.BoolValue(runSetupTestsPlan)
+		plan.TrustCertificates = types.BoolValue(trustCertificatesPlan)
+		plan.TrustFingerprints = types.BoolValue(trustFingerprintsPlan)
 	}
 
 	// Set up synthetic values
