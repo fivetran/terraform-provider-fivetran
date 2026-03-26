@@ -663,31 +663,6 @@ func TestResourceDestinationMappingMock(t *testing.T) {
 }
 
 func TestResourceDestinationSetupTests(t *testing.T) {
-	step1 := resource.TestStep{
-		Config: `
-			resource "fivetran_destination" "mydestination" {
-				provider = fivetran-provider
-
-				group_id = "group_id"
-				service = "snowflake"
-				time_zone_offset = "0"
-				region = "GCP_US_EAST4"
-				trust_certificates = "true"
-				trust_fingerprints = "true"
-				run_setup_tests = "true"
-				daylight_saving_time_enabled = "true"
-				networking_method = "Directly"
-
-				config {
-					host = "terraform-test.us-east-1.rds.amazonaws.com"
-					port = 5432
-					user = "postgres"
-					password = "password"
-					database = "fivetran"
-					connection_type = "Directly"
-				}
-			}`,
-	}
 	testDestinationData := tfmock.CreateMapFromJsonString(t, `
 	{
 		"id":"destination_id",
@@ -731,6 +706,90 @@ func TestResourceDestinationSetupTests(t *testing.T) {
 	var testHandler *mock.Handler
 	var deleteHandler *mock.Handler
 
+	resetCountersFunc := func() {
+			postHandler.Interactions = 0
+			getHandler.Interactions = 0
+			testHandler.Interactions = 0
+			deleteHandler.Interactions = 0
+		};
+
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_destination" "mydestination" {
+				provider = fivetran-provider
+
+				group_id = "group_id"
+				service = "snowflake"
+				time_zone_offset = "0"
+				region = "GCP_US_EAST4"
+				trust_certificates = "true"
+				#trust_fingerprints = "true"
+				run_setup_tests = "true"
+				daylight_saving_time_enabled = "true"
+				networking_method = "Directly"
+
+				config {
+					host = "terraform-test.us-east-1.rds.amazonaws.com"
+					port = 5432
+					user = "postgres"
+					password = "password"
+					database = "fivetran"
+					connection_type = "Directly"
+				}
+			}`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, postHandler.Interactions, 1)
+				tfmock.AssertEqual(t, testHandler.Interactions, 1)
+				tfmock.AssertEqual(t, getHandler.Interactions, 1)
+				tfmock.AssertEqual(t, deleteHandler.Interactions, 0)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_certificates", "true"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_fingerprints", "false"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "run_setup_tests", "true"),
+		),
+	}
+	step2 := resource.TestStep{
+		PreConfig: resetCountersFunc,
+		Config: `
+			resource "fivetran_destination" "mydestination" {
+				provider = fivetran-provider
+
+				group_id = "group_id"
+				service = "snowflake"
+				time_zone_offset = "0"
+				region = "GCP_US_EAST4"
+				trust_certificates = "true"
+				trust_fingerprints = "true"
+				run_setup_tests = "true"
+				daylight_saving_time_enabled = "true"
+				networking_method = "Directly"
+
+				config {
+					host = "terraform-test.us-east-1.rds.amazonaws.com"
+					port = 5432
+					user = "postgres"
+					password = "password"
+					database = "fivetran"
+					connection_type = "Directly"
+				}
+			}`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, postHandler.Interactions, 0)
+				tfmock.AssertEqual(t, testHandler.Interactions, 1)
+				tfmock.AssertEqual(t, getHandler.Interactions, 2)
+				tfmock.AssertEqual(t, deleteHandler.Interactions, 0)
+				resetCountersFunc()
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_certificates", "true"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_fingerprints", "true"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "run_setup_tests", "true"),
+		),
+	}
+
 	resource.Test(
 		t,
 		resource.TestCase{
@@ -770,15 +829,239 @@ func TestResourceDestinationSetupTests(t *testing.T) {
 
 			},
 			CheckDestroy: func(s *terraform.State) error {
-				tfmock.AssertEqual(t, postHandler.Interactions, 1)
-				tfmock.AssertEqual(t, testHandler.Interactions, 1)
-				tfmock.AssertEqual(t, getHandler.Interactions, 2)
+				tfmock.AssertEqual(t, postHandler.Interactions, 0)
+				tfmock.AssertEqual(t, testHandler.Interactions, 0)
+				tfmock.AssertEqual(t, getHandler.Interactions, 1)
 				tfmock.AssertEqual(t, deleteHandler.Interactions, 1)
 				return nil
 			},
 			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			Steps: []resource.TestStep{
 				step1,
+				step2,
+			},
+		},
+	)
+}
+
+func TestResourceDestinationPrivateLinkAndSetupTests(t *testing.T) {
+	testDestinationData := tfmock.CreateMapFromJsonString(t, `
+	{
+		"id":"destination_id",
+		"group_id":"group_id",
+		"service":"snowflake",
+		"region":"GCP_US_EAST4",
+		"time_zone_offset":"0",
+		"daylight_saving_time_enabled":true,
+		"networking_method":"PrivateLink",
+		"private_link_id":"private_link_id1",
+		"setup_status":"incomplete",
+		"setup_tests":[
+			{
+				"title":"Host Connection",
+				"status":"FAILED",
+				"message":"Host Connection error"
+			},
+			{
+				"title":"Database Connection",
+				"status":"FAILED",
+				"message":"Database Connection error"
+			},
+			{
+				"title":"Permission Test",
+				"status":"FAILED",
+				"message":"Permission Test error"
+			}
+		],
+		"config":{
+			"host": "terraform-test.us-east-1.rds.amazonaws.com",
+			"port": "5432",
+			"user": "postgres",
+			"password": "password",
+			"database": "fivetran",
+			"connection_type": "PrivateLink"
+		}
+	}
+	`)
+
+	setupTestsResponse := tfmock.CreateMapFromJsonString(t, `
+	{
+		"id":"destination_id",
+		"group_id":"group_id",
+		"service":"snowflake",
+		"region":"GCP_US_EAST4",
+		"time_zone_offset":"0",
+		"daylight_saving_time_enabled":true,
+		"networking_method":"PrivateLink",
+		"setup_status":"incomplete",
+		"setup_tests":[
+			{
+				"title":"Host Connection",
+				"status":"FAILED",
+				"message":"Host Connection error"
+			},
+			{
+				"title":"Database Connection",
+				"status":"FAILED",
+				"message":"Database Connection error"
+			},
+			{
+				"title":"Permission Test",
+				"status":"FAILED",
+				"message":"Permission Test error"
+			}
+		],
+		"config":{
+			"host": "terraform-test.us-east-1.rds.amazonaws.com",
+			"port": "5432",
+			"user": "postgres",
+			"password": "password",
+			"database": "fivetran",
+			"connection_type": "Directly"
+		}
+	}
+	`)
+
+	var getHandler *mock.Handler
+	var postHandler *mock.Handler
+	var testHandler *mock.Handler
+	var deleteHandler *mock.Handler
+
+	resetCountersFunc := func() {
+			postHandler.Interactions = 0
+			getHandler.Interactions = 0
+			testHandler.Interactions = 0
+			deleteHandler.Interactions = 0
+		};
+
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_destination" "mydestination" {
+				provider = fivetran-provider
+
+				group_id = "group_id"
+				service = "snowflake"
+				time_zone_offset = "0"
+				region = "GCP_US_EAST4"
+				trust_certificates = "true"
+				#trust_fingerprints = "true"
+				run_setup_tests = "true"
+				daylight_saving_time_enabled = "true"
+				networking_method = "PrivateLink"
+				private_link_id = "private_link_id1"
+
+				config {
+					host = "terraform-test.us-east-1.rds.amazonaws.com"
+					port = 5432
+					user = "postgres"
+					password = "password"
+					database = "fivetran"
+					connection_type = "PrivateLink"
+				}
+			}`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, postHandler.Interactions, 1)
+				tfmock.AssertEqual(t, testHandler.Interactions, 1)
+				tfmock.AssertEqual(t, getHandler.Interactions, 1)
+				tfmock.AssertEqual(t, deleteHandler.Interactions, 0)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_certificates", "true"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_fingerprints", "false"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "run_setup_tests", "true"),
+		),
+	}
+	step2 := resource.TestStep{
+		PreConfig: resetCountersFunc,
+		Config: `
+			resource "fivetran_destination" "mydestination" {
+				provider = fivetran-provider
+
+				group_id = "group_id"
+				service = "snowflake"
+				time_zone_offset = "0"
+				region = "GCP_US_EAST4"
+				trust_certificates = "true"
+				trust_fingerprints = "true"
+				run_setup_tests = "true"
+				daylight_saving_time_enabled = "true"
+				networking_method = "PrivateLink"
+				private_link_id = "private_link_id1"
+
+				config {
+					host = "terraform-test.us-east-1.rds.amazonaws.com"
+					port = 5432
+					user = "postgres"
+					password = "password"
+					database = "fivetran"
+					connection_type = "PrivateLink"
+				}
+			}`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, postHandler.Interactions, 0)
+				tfmock.AssertEqual(t, testHandler.Interactions, 1)
+				tfmock.AssertEqual(t, getHandler.Interactions,2)
+				tfmock.AssertEqual(t, deleteHandler.Interactions, 0)
+				resetCountersFunc()
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_certificates", "true"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "trust_fingerprints", "true"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "run_setup_tests", "true"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				tfmock.MockClient().Reset()
+
+				postHandler = tfmock.MockClient().When(http.MethodPost, "/v1/destinations").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						response := tfmock.FivetranSuccessResponse(t, req, http.StatusCreated,
+							"Destination has been created", testDestinationData)
+						return response, nil
+					},
+				)
+
+				getHandler = tfmock.MockClient().When(http.MethodGet, "/v1/destinations/destination_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						response := tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "", testDestinationData)
+						return response, nil
+					},
+				)
+
+				testHandler = tfmock.MockClient().When(http.MethodPost, "/v1/destinations/destination_id/test").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						response := tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Setup tests have been completed", setupTestsResponse)
+						return response, nil
+					},
+				)
+
+				deleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/destinations/destination_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						testDestinationData = nil
+						response := tfmock.FivetranSuccessResponse(t, req, 200,
+							"Destination with id 'destionation_id' has been deleted", nil)
+						return response, nil
+					},
+				)
+
+			},
+			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, postHandler.Interactions, 0)
+				tfmock.AssertEqual(t, testHandler.Interactions, 0)
+				tfmock.AssertEqual(t, getHandler.Interactions, 1)
+				tfmock.AssertEqual(t, deleteHandler.Interactions, 1)
+				return nil
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			Steps: []resource.TestStep{
+				step1,
+				step2,
 			},
 		},
 	)

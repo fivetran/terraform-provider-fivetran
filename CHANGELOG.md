@@ -5,7 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.26...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.27...HEAD)
+
+## [v1.9.27](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.27...v1.9.26)
+- In `fivetran_destination` resource when plan only flags are changed do not read state from `v1/destination/{id}/test` response, because previously it has some data absent. Do `GET v1/destination/{id}` instead.
 
 ## [v1.9.26](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.26...v1.9.25)
 
