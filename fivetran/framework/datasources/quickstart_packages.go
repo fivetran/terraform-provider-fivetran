@@ -45,12 +45,12 @@ func (d *quickstartPackages) Read(ctx context.Context, req datasource.ReadReques
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
 	var respNextCursor string
-	var listResponse sdk.QuickstartPackagesListResponse
+	var listResponse sdk.QuickstartPackagesMetadataListResponse
 	limit := 1000
 
 	for {
 		var err error
-		var tmpResp sdk.QuickstartPackagesListResponse
+		var tmpResp sdk.QuickstartPackagesMetadataListResponse
 		svc := d.GetClient().NewQuickstartPackagesList()
 		
         svc.Limit(limit)
@@ -64,7 +64,7 @@ func (d *quickstartPackages) Read(ctx context.Context, req datasource.ReadReques
 				"Read error.",
 				fmt.Sprintf("%v; code: %v", err, tmpResp.Code),
 			)
-			listResponse = sdk.QuickstartPackagesListResponse{}
+			listResponse = sdk.QuickstartPackagesMetadataListResponse{}
 		}
 
 		listResponse.Data.Items = append(listResponse.Data.Items, tmpResp.Data.Items...)

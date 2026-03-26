@@ -23,7 +23,7 @@ var configurableVarAttrTypes = map[string]attr.Type{
 	"allowed_values": types.ListType{ElemType: types.StringType},
 }
 
-func (d *QuickstartPackage) ReadFromResponse(ctx context.Context, resp transformations.QuickstartPackageResponse) {
+func (d *QuickstartPackage) ReadFromResponse(ctx context.Context, resp transformations.QuickstartPackageMetadataResponse) {
 	d.Id = types.StringValue(resp.Data.Id)
 	d.Name = types.StringValue(resp.Data.Name)
 	d.Version = types.StringValue(resp.Data.Version)
