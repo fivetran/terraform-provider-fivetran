@@ -282,7 +282,9 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 	updatePerformed := false
 	if hasUpdates {
 		svc := r.GetClient().NewDestinationUpdate().
-				RunSetupTests(false).
+				RunSetupTests(runSetupTestsPlan).
+				TrustCertificates(trustCertificatesPlan).
+				TrustFingerprints(trustFingerprintsPlan).
 				Region(plan.Region.ValueString()).
 				DestinationID(state.Id.ValueString())
 
@@ -330,34 +332,40 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 		plan.RunSetupTests = types.BoolValue(runSetupTestsPlan)
 		plan.TrustCertificates = types.BoolValue(trustCertificatesPlan)
 		plan.TrustFingerprints = types.BoolValue(trustFingerprintsPlan)
-	}
 
-	planOnlyAttributesChanged := (runSetupTestsPlan && runSetupTestsPlan != runSetupTestsState) ||
-		(trustCertificatesPlan && trustCertificatesPlan != trustCertificatesState) ||
-		(trustFingerprintsPlan && trustFingerprintsPlan != trustFingerprintsState)
-
-	// If values of testing fields changed we should run tests
-	if planOnlyAttributesChanged || (updatePerformed && runSetupTestsPlan) {
-
-		response, err := r.GetClient().NewDestinationSetupTests().DestinationID(state.Id.ValueString()).
-			TrustCertificates(trustCertificatesPlan).
-			TrustFingerprints(trustFingerprintsPlan).
-			DoCustom(ctx)
-		if err != nil {
-			resp.Diagnostics.AddError(
-				"Unable to Update Destination Resource.",
-				fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
-			)
-			return
-		}
-
-		if response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
+		if runSetupTestsPlan && response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
 			for _, tr := range response.Data.SetupTests {
 				if tr.Status != "PASSED" && tr.Status != "SKIPPED" {
 					resp.Diagnostics.AddWarning(
 						fmt.Sprintf("Destination setup test `%v` has status `%v`", tr.Title, tr.Status),
 						tr.Message,
 					)
+				}
+			}
+		}
+	} else {
+		// If values of testing fields changed we should run tests
+		if runSetupTestsPlan && runSetupTestsPlan != runSetupTestsState ||
+			trustCertificatesPlan && trustCertificatesPlan != trustCertificatesState ||
+			trustFingerprintsPlan && trustFingerprintsPlan != trustFingerprintsState {
+
+			response, err := r.GetClient().NewDestinationSetupTests().DestinationID(state.Id.ValueString()).Do(ctx)
+			if err != nil {
+				resp.Diagnostics.AddError(
+					"Unable to Update Destination Resource.",
+					fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
+				)
+				return
+			}
+
+			if response.Data.SetupTests != nil && len(response.Data.SetupTests) > 0 {
+				for _, tr := range response.Data.SetupTests {
+					if tr.Status != "PASSED" && tr.Status != "SKIPPED" {
+						resp.Diagnostics.AddWarning(
+							fmt.Sprintf("Destination setup test `%v` has status `%v`", tr.Title, tr.Status),
+							tr.Message,
+						)
+					}
 				}
 			}
 		}
