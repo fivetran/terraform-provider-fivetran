@@ -14,11 +14,12 @@ type QuickstartPackages struct {
 
 func (d *QuickstartPackages) ReadFromResponse(ctx context.Context, resp transformations.QuickstartPackagesMetadataListResponse) {
 	elemTypeAttrs := map[string]attr.Type{
-		"id":            		types.StringType,
-		"name":      			types.StringType,
-		"version":    			types.StringType,
-        "connector_types":     	types.SetType{ElemType: types.StringType},
-        "output_model_names":   types.SetType{ElemType: types.StringType},
+		"id":                     types.StringType,
+		"name":                   types.StringType,
+		"version":                types.StringType,
+		"connector_types":        types.SetType{ElemType: types.StringType},
+		"output_model_names":     types.SetType{ElemType: types.StringType},
+		"configurable_variables": types.MapType{ElemType: types.ObjectType{AttrTypes: configurableVarAttrTypes}},
 	}
 
 	if resp.Data.Items == nil {
@@ -31,27 +32,27 @@ func (d *QuickstartPackages) ReadFromResponse(ctx context.Context, resp transfor
 			item["name"] = types.StringValue(v.Name)
 			item["version"] = types.StringValue(v.Version)
 
-    		connectors := []attr.Value{}
-    		for _, el := range v.ConnectorTypes {
-        		connectors = append(connectors, types.StringValue(el))
-    		}
-    		
-    		if len(connectors) > 0 {
-        		item["connector_types"] = types.SetValueMust(types.StringType, connectors)
-    		} else {
-        		item["connector_types"] = types.SetNull(types.StringType)
-    		}
+			connectors := []attr.Value{}
+			for _, el := range v.ConnectorTypes {
+				connectors = append(connectors, types.StringValue(el))
+			}
+			if len(connectors) > 0 {
+				item["connector_types"] = types.SetValueMust(types.StringType, connectors)
+			} else {
+				item["connector_types"] = types.SetNull(types.StringType)
+			}
 
-    		models := []attr.Value{}
-    		for _, el := range v.OutputModelNames {
-        		models = append(models, types.StringValue(el))
-    		}
-    		
-    		if len(models) > 0 {
-        		item["output_model_names"] = types.SetValueMust(types.StringType, models)
-    		} else {
-        		item["output_model_names"] = types.SetNull(types.StringType)
-    		}
+			models := []attr.Value{}
+			for _, el := range v.OutputModelNames {
+				models = append(models, types.StringValue(el))
+			}
+			if len(models) > 0 {
+				item["output_model_names"] = types.SetValueMust(types.StringType, models)
+			} else {
+				item["output_model_names"] = types.SetNull(types.StringType)
+			}
+
+			item["configurable_variables"] = configurableVarsFromResponse(v.ConfigurableVariables)
 
 			objectValue, _ := types.ObjectValue(elemTypeAttrs, item)
 			items = append(items, objectValue)
