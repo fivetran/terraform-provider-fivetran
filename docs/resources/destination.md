@@ -164,7 +164,6 @@ Optional:
 	- Service `panoply`: Cluster region.
 	- Service `periscope_warehouse`: Cluster region.
 	- Service `redshift`: Cluster region. Must be populated if `connection_type` is set to `SshTunnel` and `auth_type` is set to `IAM`.
-- `connection_method` (String)
 - `connection_type` (String) Field usage depends on `service` value: 
 	- Service `adls`: Connection method. Default value: `Directly`.
 	- Service `aurora_postgres_warehouse`: Connection method. Default value: `Directly`.
@@ -196,7 +195,6 @@ Optional:
 	- Service `adls`: (Immutable) Container to store delta table files
 	- Service `managed_data_lake`: (Immutable) Name of the ADLS container you want to use to store your data. Use this parameter only if you want to deploy your data lake on ADLS.
 	- Service `onelake`: Workspace name to store delta table files
-- `controller_id` (String)
 - `create_external_tables` (Boolean) Field usage depends on `service` value: 
 	- Service `databricks`: Whether to create external tables
 - `create_external_volumes` (Boolean) Field usage depends on `service` value: 
@@ -244,7 +242,6 @@ Optional:
 	- Service `databricks`: Specifies whether you want Fivetran to disable Vacuum operations on Delta tables.
 - `enable_external_storage_for_unstructured_files` (Boolean) Field usage depends on `service` value: 
 	- Service `snowflake`: Set to `true` if you want to enable external storage for unstructured files.
-- `enable_remote_execution` (Boolean)
 - `enable_single_topic` (Boolean) Field usage depends on `service` value: 
 	- Service `confluent_cloud_wh`: Populate all tables in a single topic.
 - `enable_super_type` (Boolean) Field usage depends on `service` value: 
@@ -261,8 +258,6 @@ Optional:
 	- Service `snowflake`: External storage parent folder URL
 - `external_volume_location` (String) Field usage depends on `service` value: 
 	- Service `databricks`: Specifies the external volume path where you want Fivetran to create the unstructured files.
-- `fivetran_glue_role_arn` (String)
-- `fivetran_msk_role_arn` (String)
 - `fivetran_role_arn` (String) Field usage depends on `service` value: 
 	- Service `managed_data_lake`: (Immutable) ARN of the IAM role you created for the IAM policy associated with your S3 bucket or Glue catalog. Use this parameter only if you want to deploy your data lake on AWS.
 	- Service `new_s3_datalake`: ARN of the role which you created with different required policy mentioned in our setup guide
@@ -403,8 +398,6 @@ Optional:
 - `region` (String) Field usage depends on `service` value: 
 	- Service `managed_data_lake`: (Immutable) AWS Region of your S3 bucket. Use this parameter only if you want to deploy your data lake on AWS.
 	- Service `new_s3_datalake`: Region of your AWS S3 bucket
-- `registry_name` (String)
-- `registry_sts_region` (String)
 - `replication_factor` (Number) Field usage depends on `service` value: 
 	- Service `confluent_cloud_wh`: Replication factor.
 - `resource_id` (String) Field usage depends on `service` value: 
@@ -447,7 +440,6 @@ Optional:
 	- Service `confluent_cloud_wh`: Confluent Cloud SASL key.
 - `sasl_plain_secret` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `confluent_cloud_wh`: Confluent Cloud SASL secret.
-- `schema_compatibility` (String)
 - `schema_registry` (String) Field usage depends on `service` value: 
 	- Service `confluent_cloud_wh`: Schema Registry
 - `schema_registry_api_key` (String, Sensitive) Field usage depends on `service` value: 
@@ -486,8 +478,6 @@ Optional:
 	- Service `managed_data_lake`: Specifies how long you want us to retain your table snapshots. We delete the snapshots that are older than the retention period during our table maintenance operations. Default value: `ONE_WEEK`.
 	- Service `new_s3_datalake`: Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.
 	- Service `onelake`: Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.
-- `snowflake_cloud` (String)
-- `snowflake_region` (String)
 - `storage_account_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `azure_sql_data_warehouse`: The access key of the Azure storage account you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.
 	- Service `databricks`: Your storage account key
