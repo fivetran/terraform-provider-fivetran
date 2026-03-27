@@ -57,6 +57,7 @@ func QuickstartPackagesDatasource() datasourceSchema.Schema {
 							Description: "The list of transformation output models",
 							ElementType: basetypes.StringType{},
 						},
+						"configurable_variables": configurableVarsSchema(),
 					},
 				},
 			},

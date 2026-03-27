@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.28...HEAD)
 
+### Added
+- `configurable_variables` computed attribute to `fivetran_quickstart_package` and `fivetran_quickstart_packages` datasources, exposing configurable variable definitions (`type`, `description`, `allowed_values`) keyed by variable name.
+
 ## [v1.9.28](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.28...v1.9.27)
 
 ### Fixed
@@ -16,9 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - In `fivetran_destination` resource when plan only flags are changed do not read state from `v1/destination/{id}/test` response, because previously it has some data absent. Do `GET v1/destination/{id}` instead.
-
-### Added
-- `configurable_variables` computed attribute to `fivetran_quickstart_package` datasource, exposing configurable variable definitions (`type`, `description`, `allowed_values`) keyed by variable name.
 
 ## [v1.9.26](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.26...v1.9.25)
 
