@@ -228,6 +228,10 @@ func (r *destination) Read(ctx context.Context, req resource.ReadRequest, resp *
 		DoCustom(ctx)
 
 	if err != nil {
+		if response.Code == "NotFound_Destination" {
+			resp.State.RemoveResource(ctx)
+			return
+		}
 		resp.Diagnostics.AddError(
 			"Read error.",
 			fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),

@@ -3,6 +3,7 @@ package resources
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
@@ -104,6 +105,10 @@ func (r *destinationCertificate) Read(ctx context.Context, req resource.ReadRequ
 
 	listResponse, err := core.ReadCertificatesFromUpstream(ctx, r.GetClient(), data.DestinationId.ValueString(), "destination")
 	if err != nil {
+		if strings.HasPrefix(listResponse.Code, "NotFound") {
+			resp.State.RemoveResource(ctx)
+			return
+		}
 		resp.Diagnostics.AddError(
 			"Unable to Read Destination Certificate Resource.",
 			fmt.Sprintf("%v; code: %v", err, listResponse.Code),

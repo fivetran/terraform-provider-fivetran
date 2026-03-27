@@ -1,8 +1,9 @@
 package resources
 
 import (
-    "context"
-    "fmt"
+	"context"
+	"fmt"
+	"strings"
 
     "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
     "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
@@ -183,13 +184,17 @@ func (r *webhook) Read(ctx context.Context, req resource.ReadRequest, resp *reso
 
     webhookResponse, err := r.GetClient().NewWebhookDetails().WebhookId(data.Id.ValueString()).Do(ctx)
 
-    if err != nil {
-        resp.Diagnostics.AddError(
-            "Unable to Read Webhook Resource.",
-            fmt.Sprintf("%v; code: %v; message: %v", err, webhookResponse.Code, webhookResponse.Message),
-        )
-        return
-    }
+	if err != nil {
+		if strings.HasPrefix(webhookResponse.Code, "NotFound") {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+		resp.Diagnostics.AddError(
+			"Unable to Read Webhook Resource.",
+			fmt.Sprintf("%v; code: %v; message: %v", err, webhookResponse.Code, webhookResponse.Message),
+		)
+		return
+	}
 
     data.ReadFromResponse(ctx, webhookResponse)
 

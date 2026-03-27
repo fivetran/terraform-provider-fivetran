@@ -162,17 +162,14 @@ func (r *connectorSchedule) Read(ctx context.Context, req resource.ReadRequest, 
 	connectorResponse, err := r.GetClient().NewConnectionDetails().ConnectionID(data.Id.ValueString()).DoCustom(ctx)
 
 	if err != nil {
-		if connectorResponse.Code == "NotFound_Connector" {
-			resp.Diagnostics.AddError(
-				"Unable to Read Connector Schedule Resource.",
-				"Connector with id = "+data.ConnectorId.ValueString()+" doesn't exist.",
-			)
-		} else {
-			resp.Diagnostics.AddError(
-				"Unable to Read Connector Schedule Resource.",
-				fmt.Sprintf("%v; code: %v; message: %v", err, connectorResponse.Code, connectorResponse.Message),
-			)
+		if connectorResponse.Code == "NotFound_Connector" || connectorResponse.Code == "NotFound_Connection" {
+			resp.State.RemoveResource(ctx)
+			return
 		}
+		resp.Diagnostics.AddError(
+			"Unable to Read Connector Schedule Resource.",
+			fmt.Sprintf("%v; code: %v; message: %v", err, connectorResponse.Code, connectorResponse.Message),
+		)
 		return
 	}
 	data.ReadFromResponse(connectorResponse)

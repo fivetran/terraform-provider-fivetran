@@ -3,6 +3,7 @@ package resources
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/fivetran/go-fivetran/groups"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
@@ -150,6 +151,10 @@ func (r *groupUser) Read(ctx context.Context, req resource.ReadRequest, resp *re
 	tfUserId := r.getTerraformUserId(ctx)
 	groupUserListResponse, err := data.ReadFromSource(ctx, r.GetClient(), data.GroupId.ValueString(), tfUserId)
 	if err != nil {
+		if strings.HasPrefix(groupUserListResponse.Code, "NotFound") {
+			resp.State.RemoveResource(ctx)
+			return
+		}
 		resp.Diagnostics.AddError(
 			"Unable to Read Group User Resource.",
 			fmt.Sprintf("%v; code: %v", err, groupUserListResponse.Code),

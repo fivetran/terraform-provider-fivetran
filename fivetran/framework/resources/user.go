@@ -107,6 +107,10 @@ func (r *user) Read(ctx context.Context, req resource.ReadRequest, resp *resourc
 	userResponse, err := r.GetClient().NewUserDetails().UserID(data.ID.ValueString()).Do(ctx)
 
 	if err != nil {
+		if userResponse.Code == "NotFound_User" {
+			resp.State.RemoveResource(ctx)
+			return
+		}
 		resp.Diagnostics.AddError(
 			"Unable to Read User Resource.",
 			fmt.Sprintf("%v; code: %v; message: %v", err, userResponse.Code, userResponse.Message),

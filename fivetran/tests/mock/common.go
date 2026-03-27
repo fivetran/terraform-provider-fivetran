@@ -165,6 +165,19 @@ func assertEqual(t *testing.T, actual interface{}, expected interface{}) {
 	}
 }
 
+func AssertNotEqual(t *testing.T, actual interface{}, expected interface{}) {
+	t.Helper()
+	assertNotEqual(t, actual, expected)
+}
+
+func assertNotEqual(t *testing.T, actual interface{}, expected interface{}) {
+	t.Helper()
+
+	if reflect.DeepEqual(expected, actual) {
+		printError(t, actual, expected)
+	}
+}
+
 func AssertEmpty(t *testing.T, actual interface{}) {
 	t.Helper()
 	assertEmpty(t, actual)

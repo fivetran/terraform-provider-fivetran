@@ -90,13 +90,17 @@ func (r *group) Read(ctx context.Context, req resource.ReadRequest, resp *resour
 
     groupReadResponse, err := r.GetClient().NewGroupDetails().GroupID(data.Id.ValueString()).Do(ctx)
 
-    if err != nil {
-        resp.Diagnostics.AddError(
-            "Unable to Read Group Resource.",
-            fmt.Sprintf("%v; code: %v; message: %v", err, groupReadResponse.Code, groupReadResponse.Message),
-        )
-        return
-    }
+	if err != nil {
+		if groupReadResponse.Code == "NotFound_Group" {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+		resp.Diagnostics.AddError(
+			"Unable to Read Group Resource.",
+			fmt.Sprintf("%v; code: %v; message: %v", err, groupReadResponse.Code, groupReadResponse.Message),
+		)
+		return
+	}
 
     data.ReadFromResponse(ctx, groupReadResponse)
 

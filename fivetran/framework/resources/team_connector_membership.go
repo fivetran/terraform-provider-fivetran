@@ -3,6 +3,7 @@ package resources
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
@@ -103,6 +104,10 @@ func (r *teamConnectorMembership) Read(ctx context.Context, req resource.ReadReq
 
 	teamConnectorResponse, err := data.ReadFromSource(ctx, r.GetClient(), data.TeamId.ValueString())
 	if err != nil {
+		if strings.HasPrefix(teamConnectorResponse.Code, "NotFound") {
+			resp.State.RemoveResource(ctx)
+			return
+		}
 		resp.Diagnostics.AddError(
 			"Unable to Read Team Connector Memberships Resource.",
 			fmt.Sprintf("%v; code: %v", err, teamConnectorResponse.Code),

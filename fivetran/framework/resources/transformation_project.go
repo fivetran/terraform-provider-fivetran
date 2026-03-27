@@ -3,6 +3,7 @@ package resources
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
@@ -152,6 +153,10 @@ func (r *transformationProject) Read(ctx context.Context, req resource.ReadReque
 	projectResponse, err := r.GetClient().NewTransformationProjectDetails().ProjectId(data.Id.ValueString()).Do(ctx)
 
 	if err != nil {
+		if strings.HasPrefix(projectResponse.Code, "NotFound") {
+			resp.State.RemoveResource(ctx)
+			return
+		}
 		resp.Diagnostics.AddError(
 			"Unable to Read Transformation Project Resource.",
 			fmt.Sprintf("%v; code: %v; message: %v", err, projectResponse.Code, projectResponse.Message),

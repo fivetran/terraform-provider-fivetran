@@ -1,8 +1,9 @@
 package resources
 
 import (
-    "context"
-    "fmt"
+	"context"
+	"fmt"
+	"strings"
 
     "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
     "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
@@ -102,12 +103,16 @@ func (r *userConnectorMembership) Read(ctx context.Context, req resource.ReadReq
     var data model.UserConnectorMemberships
     resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
-    userConnectorResponse, err := data.ReadFromSource(ctx, r.GetClient(), data.UserId.ValueString())
-    if err != nil {
-        resp.Diagnostics.AddError(
-            "Unable to Read User Connector Memberships Resource.",
-            fmt.Sprintf("%v; code: %v", err, userConnectorResponse.Code),
-        )
+	userConnectorResponse, err := data.ReadFromSource(ctx, r.GetClient(), data.UserId.ValueString())
+	if err != nil {
+		if strings.HasPrefix(userConnectorResponse.Code, "NotFound") {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+		resp.Diagnostics.AddError(
+			"Unable to Read User Connector Memberships Resource.",
+			fmt.Sprintf("%v; code: %v", err, userConnectorResponse.Code),
+		)
 
         return
     }
