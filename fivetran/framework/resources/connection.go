@@ -178,7 +178,11 @@ func (r *connection) Read(ctx context.Context, req resource.ReadRequest, resp *r
 
 	response, err := r.GetClient().NewConnectionDetails().ConnectionID(data.Id.ValueString()).DoCustom(ctx)
 
-	if err != nil {
+	if err != nil {		
+		if response.Code == "NotFound_Connector" || response.Code == "NotFound_Connection" {	
+			resp.State.RemoveResource(ctx)
+			return
+		}
 		resp.Diagnostics.AddError(
 			"Read error.",
 			fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),

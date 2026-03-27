@@ -8,6 +8,8 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
+	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
@@ -853,6 +855,44 @@ func testFivetranConnectorResourceDestroy(s *terraform.State) error {
 	return nil
 }
 
+func deleteConnection(connectionId string) error {
+	_, err := client.NewConnectionDelete().ConnectionID(connectionId).Do(context.Background())
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func deleteDestination(groupAndDestinationId string) error {
+	// connectionsList, err0 := client.NewConnectionsList().GroupID(groupAndDestinationId).Do(context.Background())
+	// if err0 != nil {
+	// 	return err0
+	// }
+
+	// for _, connection := range connectionsList.Data.Items {
+	// 	err := deleteConnection(connection.ID)
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	// }
+
+	_, err := client.NewDestinationDelete().DestinationID(groupAndDestinationId).Do(context.Background())
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func deleteGroup(groupId string) error {
+	_, err := client.NewGroupDelete().GroupID(groupId).Do(context.Background())
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+	
 func TestResourceConnectorPlanOnlyAttributesE2E(t *testing.T) {
 	suffix := strconv.Itoa(seededRand.Int())
 	groupName := "test_group_plan_" + suffix
@@ -1294,6 +1334,260 @@ func TestResourceConnectorAuthServicePrincipalIdAndClientSecretE2E(t *testing.T)
 
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.service_principal_id", "service_principal_id2"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.service_principal_client_secret", "service_principal_client_secret2"),
+				),
+			},
+		},
+	})
+}
+
+func TestResourceConnectorDeletionInBackgroundE2E(t *testing.T) {
+	var connectionId = ""
+	var groupId = ""
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectorResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_name"
+			    }
+
+				resource "fivetran_destination" "test_destination" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "big_query"
+					time_zone_offset = "-5"
+					region = "GCP_US_EAST4"
+					run_setup_tests = false
+					config {
+						project_id = fivetran_group.test_group.id
+						data_set_location = "US"
+					}
+				}
+
+			    resource "fivetran_connector" "test_connector" {
+					provider = fivetran-provider
+					group_id = fivetran_destination.test_destination.group_id
+					service = "postgres"
+					
+					data_delay_sensitivity = "NORMAL"
+					data_delay_threshold = 0
+
+					destination_schema {
+						prefix = "fivetran_log_schema"
+					}
+					
+					trust_certificates = false
+					trust_fingerprints = false
+					run_setup_tests = false
+
+					networking_method  = "Directly"
+
+      				config {
+        				user = "user1"
+        				password = "password1"
+        				host = "host"
+        				port = "123"
+        				update_method = "QUERY_BASED"
+      				}
+				}
+
+				resource "fivetran_connector_schedule" "test_connector_schedule" {
+					provider = fivetran-provider
+
+					connector_id = fivetran_connector.test_connector.id
+					sync_frequency = 5
+					paused = true
+					pause_after_trial = true
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("fivetran_group.test_group", "name", "test_group_name"),
+
+					resource.TestCheckResourceAttr("fivetran_destination.test_destination", "service", "big_query"),
+
+					testFivetranConnectorResourceCreate(t, "fivetran_connector.test_connector"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "postgres"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "fivetran_log_schema"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_sensitivity", "NORMAL"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_threshold", "0"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "networking_method", "Directly"),
+
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "schedule_type", "auto"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "sync_frequency", "5"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "paused", "true"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "pause_after_trial", "true"),
+
+					func(s *terraform.State) error {
+						rs := GetResource(t, s, "fivetran_connector.test_connector")
+						connectionId = rs.Primary.ID
+						groupId = rs.Primary.Attributes["group_id"]
+						return nil
+					},
+				),
+			},
+			// Step 2: resource was deleted outside of Terraform, no failure is expected, plan attempts to create the resource again, plan-only step
+			{
+				PreConfig: func() {
+					deleteConnection(connectionId)
+					deleteDestination(groupId)
+					deleteGroup(groupId)
+				},
+				PlanOnly: true,
+				ExpectNonEmptyPlan: true,
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_name"
+			    }
+
+				resource "fivetran_destination" "test_destination" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "big_query"
+					time_zone_offset = "-5"
+					region = "GCP_US_EAST4"
+					run_setup_tests = false
+					config {
+						project_id = fivetran_group.test_group.id
+						data_set_location = "US"
+					}
+				}
+
+			    resource "fivetran_connector" "test_connector" {
+					provider = fivetran-provider
+					group_id = fivetran_destination.test_destination.group_id
+					service = "postgres"
+					
+					data_delay_sensitivity = "NORMAL"
+					data_delay_threshold = 0
+
+					destination_schema {
+						prefix = "fivetran_log_schema"
+					}
+					
+					trust_certificates = false
+					trust_fingerprints = false
+					run_setup_tests = false
+
+					networking_method  = "Directly"
+
+      				config {
+        				user = "user1"
+        				password = "password1"
+        				host = "host"
+        				port = "123"
+        				update_method = "QUERY_BASED"
+      				}
+				}
+
+				resource "fivetran_connector_schedule" "test_connector_schedule" {
+					provider = fivetran-provider
+
+					connector_id = fivetran_connector.test_connector.id
+					sync_frequency = 5
+					paused = true
+					pause_after_trial = true
+				}
+		  		`,
+			},
+			// Step 3: re-create resources
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_name"
+			    }
+
+				resource "fivetran_destination" "test_destination" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "big_query"
+					time_zone_offset = "-5"
+					region = "GCP_US_EAST4"
+					run_setup_tests = false
+					config {
+						project_id = fivetran_group.test_group.id
+						data_set_location = "US"
+					}
+				}
+
+			    resource "fivetran_connector" "test_connector" {
+					provider = fivetran-provider
+					group_id = fivetran_destination.test_destination.group_id
+					service = "postgres"
+					
+					data_delay_sensitivity = "NORMAL"
+					data_delay_threshold = 0
+
+					destination_schema {
+						prefix = "fivetran_log_schema"
+					}
+					
+					trust_certificates = false
+					trust_fingerprints = false
+					run_setup_tests = false
+
+					networking_method  = "Directly"
+
+      				config {
+        				user = "user1"
+        				password = "password1"
+        				host = "host"
+        				port = "123"
+        				update_method = "QUERY_BASED"
+      				}
+				}
+
+				resource "fivetran_connector_schedule" "test_connector_schedule" {
+					provider = fivetran-provider
+
+					connector_id = fivetran_connector.test_connector.id
+					sync_frequency = 5
+					paused = true
+					pause_after_trial = true
+				}
+		  		`,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction("fivetran_group.test_group", plancheck.ResourceActionCreate),
+						plancheck.ExpectResourceAction("fivetran_destination.test_destination", plancheck.ResourceActionCreate),
+						plancheck.ExpectResourceAction("fivetran_connector.test_connector", plancheck.ResourceActionCreate),
+						plancheck.ExpectResourceAction("fivetran_connector_schedule.test_connector_schedule", plancheck.ResourceActionCreate),
+					},
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("fivetran_group.test_group", "name", "test_group_name"),
+					
+					resource.TestCheckResourceAttr("fivetran_destination.test_destination", "service", "big_query"),
+
+					testFivetranConnectorResourceCreate(t, "fivetran_connector.test_connector"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "postgres"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "fivetran_log_schema"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_sensitivity", "NORMAL"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "data_delay_threshold", "0"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "networking_method", "Directly"),
+
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "schedule_type", "auto"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "sync_frequency", "5"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "paused", "true"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "pause_after_trial", "true"),
+
+					func(s *terraform.State) error {
+						rs := GetResource(t, s, "fivetran_connector.test_connector")
+						reCreatedConnectionId := rs.Primary.ID
+						tfmock.AssertNotEqual(t, connectionId, reCreatedConnectionId)	
+						return nil
+					},
 				),
 			},
 		},

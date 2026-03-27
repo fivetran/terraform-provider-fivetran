@@ -94,13 +94,17 @@ func (r *team) Read(ctx context.Context, req resource.ReadRequest, resp *resourc
 
     readResponse, err := r.GetClient().NewTeamsDetails().TeamId(data.Id.ValueString()).Do(ctx)
 
-    if err != nil {
-        resp.Diagnostics.AddError(
-            "Unable to Read Team Resource.",
-            fmt.Sprintf("%v; code: %v", err, readResponse.Code),
-        )
-        return
-    }
+	if err != nil {
+		if readResponse.Code == "NotFound_Team" {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+		resp.Diagnostics.AddError(
+			"Unable to Read Team Resource.",
+			fmt.Sprintf("%v; code: %v", err, readResponse.Code),
+		)
+		return
+	}
 
     data.ReadFromResponse(ctx, readResponse)
 

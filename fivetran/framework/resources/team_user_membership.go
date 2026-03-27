@@ -1,8 +1,9 @@
 package resources
 
 import (
-    "context"
-    "fmt"
+	"context"
+	"fmt"
+	"strings"
 
     "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
     "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
@@ -103,12 +104,16 @@ func (r *teamUserMembership) Read(ctx context.Context, req resource.ReadRequest,
     var data model.TeamUserMemberships
     resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
-    teamUserResponse, err := data.ReadFromSource(ctx, r.GetClient(), data.TeamId.ValueString())
-    if err != nil {
-        resp.Diagnostics.AddError(
-            "Unable to Read Team User Memberships Resource.",
-            fmt.Sprintf("%v; code: %v", err, teamUserResponse.Code),
-        )
+	teamUserResponse, err := data.ReadFromSource(ctx, r.GetClient(), data.TeamId.ValueString())
+	if err != nil {
+		if strings.HasPrefix(teamUserResponse.Code, "NotFound") {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+		resp.Diagnostics.AddError(
+			"Unable to Read Team User Memberships Resource.",
+			fmt.Sprintf("%v; code: %v", err, teamUserResponse.Code),
+		)
 
         return
     }

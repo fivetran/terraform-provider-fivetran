@@ -3,6 +3,7 @@ package resources
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/transformations"
@@ -274,6 +275,10 @@ func (r *transformation) Read(ctx context.Context, req resource.ReadRequest, res
 	readResponse, err := r.GetClient().NewTransformationDetails().TransformationId(data.Id.ValueString()).Do(ctx)
 
 	if err != nil {
+		if strings.HasPrefix(readResponse.Code, "NotFound") {
+			resp.State.RemoveResource(ctx)
+			return
+		}
 		resp.Diagnostics.AddError(
 			"Unable to Read Transformation Resource.",
 			fmt.Sprintf("%v; code: %v; message: %v", err, readResponse.Code, readResponse.Message),

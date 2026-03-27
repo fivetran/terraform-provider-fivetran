@@ -381,6 +381,10 @@ func (r *connectorSchema) Read(ctx context.Context, req resource.ReadRequest, re
 
 	schemaResponse, err := client.NewConnectionSchemaDetails().ConnectionID(connectorID).Do(ctx)
 	if err != nil {
+		if schemaResponse.Code == "NotFound_Connector" || schemaResponse.Code == "NotFound_Connection" || schemaResponse.Code == "NotFound_SchemaConfig" {
+			resp.State.RemoveResource(ctx)
+			return
+		}
 		resp.Diagnostics.AddError(
 			"Unable to Read Connector Schema Resource.",
 			fmt.Sprintf("Error while retrieving existing schema. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),

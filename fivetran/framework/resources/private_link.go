@@ -3,6 +3,7 @@ package resources
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
@@ -124,6 +125,10 @@ func (r *privateLink) Read(ctx context.Context, req resource.ReadRequest, resp *
 	readResponse, err := r.GetClient().NewPrivateLinkDetails().PrivateLinkId(data.Id.ValueString()).DoCustom(ctx)
 
 	if err != nil {
+		if strings.HasPrefix(readResponse.Code, "NotFound") {
+			resp.State.RemoveResource(ctx)
+			return
+		}
 		resp.Diagnostics.AddError(
 			"Unable to Read Private Link Resource.",
 			fmt.Sprintf("%v; code: %v", err, readResponse.Code),

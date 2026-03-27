@@ -93,13 +93,17 @@ func (r *hybridDeploymentAgent) Read(ctx context.Context, req resource.ReadReque
 
     readResponse, err := r.GetClient().NewHybridDeploymentAgentDetails().AgentId(data.Id.ValueString()).Do(ctx)
 
-    if err != nil {
-        resp.Diagnostics.AddError(
-            "Unable to Read Hybrid Deployment Agent Resource.",
-            fmt.Sprintf("%v; code: %v", err, readResponse.Code),
-        )
-        return
-    }
+	if err != nil {
+		if readResponse.Code == "NotFound_RemoteExecutionAgent" {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+		resp.Diagnostics.AddError(
+			"Unable to Read Hybrid Deployment Agent Resource.",
+			fmt.Sprintf("%v; code: %v", err, readResponse.Code),
+		)
+		return
+	}
 
     data.ReadFromResponse(readResponse)
 

@@ -102,6 +102,10 @@ func (r *externalLogging) Read(ctx context.Context, req resource.ReadRequest, re
 	readResponse, err := r.GetClient().NewExternalLoggingDetails().ExternalLoggingId(data.Id.ValueString()).DoCustom(ctx)
 
 	if err != nil {
+		if readResponse.Code == "NotFound_LogService" {
+			resp.State.RemoveResource(ctx)
+			return
+		}
 		resp.Diagnostics.AddError(
 			"Unable to Read External Logging Resource.",
 			fmt.Sprintf("%v; code: %v", err, readResponse.Code),

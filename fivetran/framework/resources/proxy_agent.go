@@ -3,6 +3,7 @@ package resources
 import (
     "context"
     "fmt"
+	"strings"
 
     "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
     "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
@@ -102,13 +103,17 @@ func (r *proxy) Read(ctx context.Context, req resource.ReadRequest, resp *resour
 
     readResponse, err := r.GetClient().NewProxyDetails().ProxyId(data.Id.ValueString()).Do(ctx)
 
-    if err != nil {
-        resp.Diagnostics.AddError(
-            "Unable to Read Proxy Agent Resource.",
-            fmt.Sprintf("%v; code: %v", err, readResponse.Code),
-        )
-        return
-    }
+	if err != nil {
+		if strings.HasPrefix(readResponse.Code, "NotFound") {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+		resp.Diagnostics.AddError(
+			"Unable to Read Proxy Agent Resource.",
+			fmt.Sprintf("%v; code: %v", err, readResponse.Code),
+		)
+		return
+	}
 
     data.ReadFromResponse(readResponse)
 
