@@ -302,21 +302,6 @@
       },
       "api_field": ""
    },
-   "connection_method": {
-      "readonly": false,
-      "sensitive": false,
-      "nullable": false,
-      "type": "string",
-      "fields": null,
-      "key_field": "",
-      "item_type": {},
-      "description": {
-         "aiven_kafka_wh": "",
-         "aws_msk_wh": "",
-         "confluent_cloud_wh": ""
-      },
-      "api_field": ""
-   },
    "connection_type": {
       "readonly": false,
       "sensitive": false,
@@ -367,20 +352,6 @@
          "adls": "(Immutable) Container to store delta table files",
          "managed_data_lake": "(Immutable) Name of the ADLS container you want to use to store your data. Use this parameter only if you want to deploy your data lake on ADLS.",
          "onelake": "Workspace name to store delta table files"
-      },
-      "api_field": ""
-   },
-   "controller_id": {
-      "readonly": false,
-      "sensitive": false,
-      "nullable": true,
-      "type": "string",
-      "fields": null,
-      "key_field": "",
-      "item_type": {},
-      "description": {
-         "databricks": "",
-         "snowflake": ""
       },
       "api_field": ""
    },
@@ -543,20 +514,6 @@
       },
       "api_field": ""
    },
-   "enable_remote_execution": {
-      "readonly": false,
-      "sensitive": false,
-      "nullable": false,
-      "type": "boolean",
-      "fields": null,
-      "key_field": "",
-      "item_type": {},
-      "description": {
-         "databricks": "",
-         "snowflake": ""
-      },
-      "api_field": ""
-   },
    "enable_single_topic": {
       "readonly": false,
       "sensitive": false,
@@ -683,32 +640,6 @@
       "item_type": {},
       "description": {
          "databricks": "Specifies the external volume path where you want Fivetran to create the unstructured files."
-      },
-      "api_field": ""
-   },
-   "fivetran_glue_role_arn": {
-      "readonly": false,
-      "sensitive": false,
-      "nullable": true,
-      "type": "string",
-      "fields": null,
-      "key_field": "",
-      "item_type": {},
-      "description": {
-         "aws_msk_wh": ""
-      },
-      "api_field": ""
-   },
-   "fivetran_msk_role_arn": {
-      "readonly": false,
-      "sensitive": false,
-      "nullable": true,
-      "type": "string",
-      "fields": null,
-      "key_field": "",
-      "item_type": {},
-      "description": {
-         "aws_msk_wh": ""
       },
       "api_field": ""
    },
@@ -1151,32 +1082,6 @@
       },
       "api_field": ""
    },
-   "registry_name": {
-      "readonly": false,
-      "sensitive": false,
-      "nullable": true,
-      "type": "string",
-      "fields": null,
-      "key_field": "",
-      "item_type": {},
-      "description": {
-         "aws_msk_wh": ""
-      },
-      "api_field": ""
-   },
-   "registry_sts_region": {
-      "readonly": false,
-      "sensitive": false,
-      "nullable": true,
-      "type": "string",
-      "fields": null,
-      "key_field": "",
-      "item_type": {},
-      "description": {
-         "aws_msk_wh": ""
-      },
-      "api_field": ""
-   },
    "replication_factor": {
       "readonly": false,
       "sensitive": false,
@@ -1314,19 +1219,6 @@
          "aiven_kafka_wh": "",
          "aws_msk_wh": "",
          "confluent_cloud_wh": "Confluent Cloud SASL secret."
-      },
-      "api_field": ""
-   },
-   "schema_compatibility": {
-      "readonly": false,
-      "sensitive": false,
-      "nullable": false,
-      "type": "string",
-      "fields": null,
-      "key_field": "",
-      "item_type": {},
-      "description": {
-         "aws_msk_wh": ""
       },
       "api_field": ""
    },
@@ -1507,32 +1399,6 @@
          "managed_data_lake": "Specifies how long you want us to retain your table snapshots. We delete the snapshots that are older than the retention period during our table maintenance operations. Default value: `ONE_WEEK`.",
          "new_s3_datalake": "Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.",
          "onelake": "Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`."
-      },
-      "api_field": ""
-   },
-   "snowflake_cloud": {
-      "readonly": false,
-      "sensitive": false,
-      "nullable": false,
-      "type": "string",
-      "fields": null,
-      "key_field": "",
-      "item_type": {},
-      "description": {
-         "snowflake": ""
-      },
-      "api_field": ""
-   },
-   "snowflake_region": {
-      "readonly": false,
-      "sensitive": false,
-      "nullable": true,
-      "type": "string",
-      "fields": null,
-      "key_field": "",
-      "item_type": {},
-      "description": {
-         "snowflake": ""
       },
       "api_field": ""
    },
