@@ -68,4 +68,3 @@ require (
 )
 
 go 1.24.0
-replace github.com/fivetran/go-fivetran => ../go-fivetran
