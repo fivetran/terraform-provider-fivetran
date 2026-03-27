@@ -12,7 +12,7 @@ type QuickstartPackages struct {
 	Packages types.List `tfsdk:"packages"`
 }
 
-func (d *QuickstartPackages) ReadFromResponse(ctx context.Context, resp transformations.QuickstartPackagesListResponse) {
+func (d *QuickstartPackages) ReadFromResponse(ctx context.Context, resp transformations.QuickstartPackagesMetadataListResponse) {
 	elemTypeAttrs := map[string]attr.Type{
 		"id":            		types.StringType,
 		"name":      			types.StringType,

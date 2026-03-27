@@ -208,7 +208,7 @@ func (d *Transformation) ReadFromResponse(ctx context.Context, resp sdk.Transfor
             subObjectValue, _ := types.ObjectValue(stepAttrTypes, subItem)
             subItems = append(subItems, subObjectValue)
         }
-        configAttrValues["steps"], _ = types.ListValue(stepSetAttrType, subItems)        
+        configAttrValues["steps"], _ = types.ListValue(stepSetAttrType, subItems)
     } else {
         configAttrValues["steps"] = types.ListNull(stepSetAttrType)
     }
