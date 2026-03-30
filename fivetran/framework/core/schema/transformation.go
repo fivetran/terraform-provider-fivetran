@@ -155,6 +155,11 @@ func transformationConfigDatasourceSchema() map[string]datasourceSchema.Attribut
 				},
 			},
 		},
+		"configurable_variables": datasourceSchema.MapAttribute{
+			Computed:    true,
+			ElementType: basetypes.StringType{},
+			Description: "Map of configurable variable values for the Quickstart transformation, keyed by variable name.",
+		},
 	}
 }
 
@@ -204,6 +209,12 @@ func transformationConfigResourceSchema() map[string]resourceSchema.Attribute {
 					},
 				},
 			},
+		},
+		"configurable_variables": resourceSchema.MapAttribute{
+			Optional:    true,
+			Computed:    true,
+			ElementType: basetypes.StringType{},
+			Description: "Map of configurable variable values for the Quickstart transformation, keyed by variable name.",
 		},
 	}
 }

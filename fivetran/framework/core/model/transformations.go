@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/fivetran/go-fivetran/transformations"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -158,22 +159,32 @@ func (d *Transformations) ReadFromResponse(ctx context.Context, resp transformat
 				configAttrValues["excluded_models"] = types.SetNull(types.StringType)
 			}
     
-    		if v.TransformationConfig.Steps != nil {
-		        subItems := []attr.Value{}
-        		for _, sub := range v.TransformationConfig.Steps {
-		            subItem := map[string]attr.Value{}
-        		    subItem["name"] = types.StringValue(sub.Name)
-		            subItem["command"] = types.StringValue(sub.Command)
+		if v.TransformationConfig.Steps != nil {
+			subItems := []attr.Value{}
+			for _, sub := range v.TransformationConfig.Steps {
+				subItem := map[string]attr.Value{}
+				subItem["name"] = types.StringValue(sub.Name)
+				subItem["command"] = types.StringValue(sub.Command)
 
-        		    subObjectValue, _ := types.ObjectValue(stepAttrTypes, subItem)
-		            subItems = append(subItems, subObjectValue)
-        		}
-		        configAttrValues["steps"], _ = types.ListValue(stepSetAttrType, subItems)
-		    } else {
-        		configAttrValues["steps"] = types.ListNull(stepSetAttrType)
-		    }
+				subObjectValue, _ := types.ObjectValue(stepAttrTypes, subItem)
+				subItems = append(subItems, subObjectValue)
+			}
+			configAttrValues["steps"], _ = types.ListValue(stepSetAttrType, subItems)
+		} else {
+			configAttrValues["steps"] = types.ListNull(stepSetAttrType)
+		}
 
-			item["transformation_config"] = types.ObjectValueMust(configAttrs, configAttrValues)
+		if len(v.TransformationConfig.ConfigurableVariables) > 0 {
+			cvars := map[string]attr.Value{}
+			for k, val := range v.TransformationConfig.ConfigurableVariables {
+				cvars[k] = types.StringValue(fmt.Sprintf("%v", val))
+			}
+			configAttrValues["configurable_variables"], _ = types.MapValue(types.StringType, cvars)
+		} else {
+			configAttrValues["configurable_variables"] = types.MapNull(types.StringType)
+		}
+
+		item["transformation_config"] = types.ObjectValueMust(configAttrs, configAttrValues)
 
 			objectValue, _ := types.ObjectValue(elemTypeAttrs, item)
 			items = append(items, objectValue)

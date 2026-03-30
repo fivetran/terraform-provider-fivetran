@@ -147,7 +147,11 @@ var (
       "excluded_models": [
         "excluded_model1","excluded_model2"
       ],
-      "upgrade_available": true
+      "upgrade_available": true,
+      "configurable_variables": {
+        "start_date": "2020-01-01",
+        "use_full_refresh": "true"
+      }
     }
   }`
 
@@ -187,7 +191,11 @@ var (
       "excluded_models": [
         "excluded_model1","excluded_model2"
       ],
-      "upgrade_available": true
+      "upgrade_available": true,
+      "configurable_variables": {
+        "start_date": "2020-01-01",
+        "use_full_refresh": "true"
+      }
     }
   }`
 )
@@ -300,6 +308,10 @@ func setupMockClientTransformationQuickstartResource(t *testing.T) {
             tfmock.AssertEqual(t, len(excludedModels), 2)
             tfmock.AssertEqual(t, excludedModels[0], "excluded_model1")
             tfmock.AssertEqual(t, excludedModels[1], "excluded_model2")
+
+            configurableVars := config["configurable_variables"].(map[string]interface{})
+            tfmock.AssertKeyExistsAndHasValue(t, configurableVars, "start_date", "2020-01-01")
+            tfmock.AssertKeyExistsAndHasValue(t, configurableVars, "use_full_refresh", "true")
 
             tfmock.AssertKeyExists(t, body, "schedule")
             schedule := body["schedule"].(map[string]interface{})
@@ -541,6 +553,10 @@ func TestResourceTransformationQuickstartMock(t *testing.T) {
                 package_name = "package_name"
                 connection_ids = ["connection_id1", "connection_id2"]
                 excluded_models = ["excluded_model1", "excluded_model2"]
+                configurable_variables = {
+                    start_date       = "2020-01-01"
+                    use_full_refresh = "true"
+                }
             }
         }
         `,
@@ -564,6 +580,8 @@ func TestResourceTransformationQuickstartMock(t *testing.T) {
             resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.excluded_models.0", "excluded_model1"),
             resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.excluded_models.1", "excluded_model2"),
             resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.upgrade_available", "true"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.configurable_variables.start_date", "2020-01-01"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.configurable_variables.use_full_refresh", "true"),
             resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.smart_syncing", "true"),
             resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.interval", "601"),
             resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.schedule_type", "schedule_type1"),
@@ -596,6 +614,10 @@ func TestResourceTransformationQuickstartMock(t *testing.T) {
                 package_name = "package_name"
                 connection_ids = ["connection_id1", "connection_id2"]
                 excluded_models = ["excluded_model1", "excluded_model2"]
+                configurable_variables = {
+                    start_date       = "2020-01-01"
+                    use_full_refresh = "true"
+                }
             }
         }
         `,
@@ -619,6 +641,8 @@ func TestResourceTransformationQuickstartMock(t *testing.T) {
             resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.excluded_models.0", "excluded_model1"),
             resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.excluded_models.1", "excluded_model2"),
             resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.upgrade_available", "true"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.configurable_variables.start_date", "2020-01-01"),
+            resource.TestCheckResourceAttr("fivetran_transformation.transformation", "transformation_config.configurable_variables.use_full_refresh", "true"),
             resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.smart_syncing", "true"),
             resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.interval", "601"),
             resource.TestCheckResourceAttr("fivetran_transformation.transformation", "schedule.schedule_type", "schedule_type1"),
