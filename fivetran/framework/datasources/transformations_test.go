@@ -94,7 +94,10 @@ const (
       "excluded_models": [
         "excluded_model2"
       ],
-      "upgrade_available": true
+      "upgrade_available": true,
+      "configurable_variables": {
+        "start_date": "2020-01-01"
+      }
     }
   }
     ],
@@ -158,6 +161,7 @@ func TestDataSourcetransformationsMappingMock(t *testing.T) {
       resource.TestCheckResourceAttr("data.fivetran_transformations.transformation", "transformations.1.transformation_config.connection_ids.0", "connection_id2"),
       resource.TestCheckResourceAttr("data.fivetran_transformations.transformation", "transformations.1.transformation_config.excluded_models.0", "excluded_model2"),
       resource.TestCheckResourceAttr("data.fivetran_transformations.transformation", "transformations.1.transformation_config.upgrade_available", "true"),
+      resource.TestCheckResourceAttr("data.fivetran_transformations.transformation", "transformations.1.transformation_config.configurable_variables.start_date", "2020-01-01"),
       resource.TestCheckResourceAttr("data.fivetran_transformations.transformation", "transformations.1.schedule.smart_syncing", "true"),
       resource.TestCheckResourceAttr("data.fivetran_transformations.transformation", "transformations.1.schedule.interval", "602"),
       resource.TestCheckResourceAttr("data.fivetran_transformations.transformation", "transformations.1.schedule.schedule_type", "schedule_type2"),
