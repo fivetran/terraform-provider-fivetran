@@ -28,7 +28,14 @@ const (
         ],
         "output_model_names": [
           "string"
-        ]
+        ],
+        "configurable_variables": {
+          "start_date": {
+            "type": "DATE",
+            "description": "The start date for historical data",
+            "allowed_values": ["2020-01-01", "2021-01-01"]
+          }
+        }
       },
       {
         "id": "package_definition_id_2",
@@ -39,7 +46,8 @@ const (
         ],
         "output_model_names": [
           "string_2"
-        ]
+        ],
+        "configurable_variables": {}
       }
     ],
     "next_cursor": null
@@ -73,6 +81,10 @@ func TestDataSourceQuickstartPackagesMappingMock(t *testing.T) {
             resource.TestCheckResourceAttr("data.fivetran_quickstart_packages.test_quickstart_package", "packages.0.id", "package_definition_id"),
             resource.TestCheckResourceAttr("data.fivetran_quickstart_packages.test_quickstart_package", "packages.0.name", "package_definition_name"),
             resource.TestCheckResourceAttr("data.fivetran_quickstart_packages.test_quickstart_package", "packages.0.version", "version"),
+            resource.TestCheckResourceAttr("data.fivetran_quickstart_packages.test_quickstart_package", "packages.0.configurable_variables.start_date.type", "DATE"),
+            resource.TestCheckResourceAttr("data.fivetran_quickstart_packages.test_quickstart_package", "packages.0.configurable_variables.start_date.description", "The start date for historical data"),
+            resource.TestCheckResourceAttr("data.fivetran_quickstart_packages.test_quickstart_package", "packages.0.configurable_variables.start_date.allowed_values.0", "2020-01-01"),
+            resource.TestCheckResourceAttr("data.fivetran_quickstart_packages.test_quickstart_package", "packages.0.configurable_variables.start_date.allowed_values.1", "2021-01-01"),
 
             resource.TestCheckResourceAttr("data.fivetran_quickstart_packages.test_quickstart_package", "packages.1.id", "package_definition_id_2"),
             resource.TestCheckResourceAttr("data.fivetran_quickstart_packages.test_quickstart_package", "packages.1.name", "package_definition_name_2"),
