@@ -68,7 +68,11 @@ func setupMockClienttransformationDataSourceMappingTest(t *testing.T) {
         "excluded_model1",
         "excluded_model2"
       ],
-      "upgrade_available": true
+      "upgrade_available": true,
+      "configurable_variables": {
+        "start_date": "2020-01-01",
+        "use_full_refresh": "true"
+      }
     }
   }`
   tfmock.MockClient().Reset()
@@ -116,6 +120,8 @@ func TestDataSourcetransformationMappingMock(t *testing.T) {
             resource.TestCheckResourceAttr("data.fivetran_transformation.transformation", "transformation_config.excluded_models.0", "excluded_model1"),
             resource.TestCheckResourceAttr("data.fivetran_transformation.transformation", "transformation_config.excluded_models.1", "excluded_model2"),
             resource.TestCheckResourceAttr("data.fivetran_transformation.transformation", "transformation_config.upgrade_available", "true"),
+            resource.TestCheckResourceAttr("data.fivetran_transformation.transformation", "transformation_config.configurable_variables.start_date", "2020-01-01"),
+            resource.TestCheckResourceAttr("data.fivetran_transformation.transformation", "transformation_config.configurable_variables.use_full_refresh", "true"),
             resource.TestCheckResourceAttr("data.fivetran_transformation.transformation", "schedule.smart_syncing", "true"),
             resource.TestCheckResourceAttr("data.fivetran_transformation.transformation", "schedule.interval", "60"),
             resource.TestCheckResourceAttr("data.fivetran_transformation.transformation", "schedule.schedule_type", "schedule_type"),

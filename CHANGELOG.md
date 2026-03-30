@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `configurable_variables` computed attribute to `fivetran_quickstart_package` and `fivetran_quickstart_packages` datasources, exposing configurable variable definitions (`type`, `description`, `allowed_values`) keyed by variable name.
+- `configurable_variables` optional/computed attribute to `fivetran_transformation` resource and datasource `transformation_config` block, allowing users to set and read configurable variable values for QUICKSTART transformations.
 
 ## [v1.9.28](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.28...v1.9.27)
 

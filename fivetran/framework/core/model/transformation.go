@@ -2,6 +2,7 @@ package model
 
 import (
     "context"
+    "fmt"
 
     sdk "github.com/fivetran/go-fivetran/transformations"
     "github.com/hashicorp/terraform-plugin-framework/attr"
@@ -41,13 +42,14 @@ var (
     }
 
     configAttrs = map[string]attr.Type{
-        "project_id":           types.StringType,
-        "package_name":         types.StringType,
-        "name":                 types.StringType,
-        "excluded_models":      types.SetType{ElemType: types.StringType},
-        "connection_ids":       types.SetType{ElemType: types.StringType},
-        "steps":                types.ListType{ElemType: types.ObjectType{AttrTypes: stepAttrTypes}},
-        "upgrade_available":    types.BoolType,
+        "project_id":              types.StringType,
+        "package_name":            types.StringType,
+        "name":                    types.StringType,
+        "excluded_models":         types.SetType{ElemType: types.StringType},
+        "connection_ids":          types.SetType{ElemType: types.StringType},
+        "steps":                   types.ListType{ElemType: types.ObjectType{AttrTypes: stepAttrTypes}},
+        "upgrade_available":       types.BoolType,
+        "configurable_variables":  types.MapType{ElemType: types.StringType},
     }
 )
 
@@ -211,6 +213,16 @@ func (d *Transformation) ReadFromResponse(ctx context.Context, resp sdk.Transfor
         configAttrValues["steps"], _ = types.ListValue(stepSetAttrType, subItems)
     } else {
         configAttrValues["steps"] = types.ListNull(stepSetAttrType)
+    }
+
+    if len(resp.Data.TransformationConfig.ConfigurableVariables) > 0 {
+        cvars := map[string]attr.Value{}
+        for k, v := range resp.Data.TransformationConfig.ConfigurableVariables {
+            cvars[k] = types.StringValue(fmt.Sprintf("%v", v))
+        }
+        configAttrValues["configurable_variables"], _ = types.MapValue(types.StringType, cvars)
+    } else {
+        configAttrValues["configurable_variables"] = types.MapNull(types.StringType)
     }
 
     d.Config = types.ObjectValueMust(configAttrs, configAttrValues)

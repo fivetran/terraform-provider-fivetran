@@ -172,6 +172,21 @@ func (r *transformation) Create(ctx context.Context, req resource.CreateRequest,
 			config.ExcludedModels(evars)
 		}
 
+		if !configAttributes["configurable_variables"].IsUnknown() && !configAttributes["configurable_variables"].IsNull() {
+			if transformationType != "QUICKSTART" {
+				resp.Diagnostics.AddError(
+					"Unable to Create Transformation Resource.",
+					fmt.Sprintf("The parameter `%v` can be set only for QUICKSTART type transformation", "transformation_config.configurable_variables"),
+				)
+				return
+			}
+			cvars := map[string]interface{}{}
+			for k, v := range configAttributes["configurable_variables"].(basetypes.MapValue).Elements() {
+				cvars[k] = v.(basetypes.StringValue).ValueString()
+			}
+			config.ConfigurableVariables(cvars)
+		}
+
 		svc.TransformationConfig(config)
 	}
 
@@ -368,7 +383,7 @@ func (r *transformation) Update(ctx context.Context, req resource.UpdateRequest,
 			config.Steps(evars)
 		}
 
-		if !configPlanAttributes["excluded_models"].IsUnknown() && 
+		if !configPlanAttributes["excluded_models"].IsUnknown() &&
 		!configPlanAttributes["excluded_models"].IsNull() &&
 		!configStateAttributes["excluded_models"].(basetypes.SetValue).Equal(configPlanAttributes["excluded_models"].(basetypes.SetValue)) {
 			if state.ProjectType.ValueString() != "QUICKSTART" {
@@ -386,6 +401,24 @@ func (r *transformation) Update(ctx context.Context, req resource.UpdateRequest,
 
 			hasChanges = true
 			config.ExcludedModels(evars)
+		}
+
+		if !configPlanAttributes["configurable_variables"].IsUnknown() &&
+		!configPlanAttributes["configurable_variables"].IsNull() &&
+		!configStateAttributes["configurable_variables"].(basetypes.MapValue).Equal(configPlanAttributes["configurable_variables"].(basetypes.MapValue)) {
+			if state.ProjectType.ValueString() != "QUICKSTART" {
+				resp.Diagnostics.AddError(
+					"Unable to Update Transformation Resource.",
+					fmt.Sprintf("The parameter `%v` can be set only for QUICKSTART type transformation", "transformation_config.configurable_variables"),
+				)
+				return
+			}
+			cvars := map[string]interface{}{}
+			for k, v := range configPlanAttributes["configurable_variables"].(basetypes.MapValue).Elements() {
+				cvars[k] = v.(basetypes.StringValue).ValueString()
+			}
+			hasChanges = true
+			config.ConfigurableVariables(cvars)
 		}
 
 		if hasChanges {
