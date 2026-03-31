@@ -5,11 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.28...HEAD)
+## [v1.9.29](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.29...v1.9.28)
 
 ### Added
 - `configurable_variables` computed attribute to `fivetran_quickstart_package` and `fivetran_quickstart_packages` datasources, exposing configurable variable definitions (`type`, `description`, `allowed_values`) keyed by variable name.
 - `configurable_variables` optional/computed attribute to `fivetran_transformation` resource and datasource `transformation_config` block, allowing users to set and read configurable variable values for QUICKSTART transformations.
+
+### Removed
+- `fivetran_destination`: Removed config fields not used by any service: `connection_method`, `controller_id`, `enable_remote_execution`, `fivetran_glue_role_arn`, `fivetran_msk_role_arn`, `registry_name`, `registry_sts_region`, `schema_compatibility`, `snowflake_cloud`, `snowflake_region`.
 
 ## [v1.9.28](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.28...v1.9.27)
 
