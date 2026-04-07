@@ -38,6 +38,7 @@ func (r *connectorSchema) Schema(ctx context.Context, req resource.SchemaRequest
 
 func (r *connectorSchema) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("connector_id"), req.ID)...)
 }
 
 func (r *connectorSchema) reloadSchema(ctx context.Context, connectorID string, diag diag.Diagnostics) connections.ConnectionSchemaDetailsResponse {
