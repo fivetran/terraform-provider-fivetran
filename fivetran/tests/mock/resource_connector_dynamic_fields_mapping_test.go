@@ -395,6 +395,59 @@ func TestResourceConnectorDynamicMapping(t *testing.T) {
 	}
 }
 
+func TestConnectorSdkFieldsExistInFieldsJson(t *testing.T) {
+	fieldsMap := common.GetConfigFieldsMap()
+
+	requiredFields := []string{"package_id", "python_version", "secrets_list"}
+	for _, fieldName := range requiredFields {
+		field, ok := fieldsMap[fieldName]
+		if !ok {
+			t.Fatalf("field %q not found in fields.json", fieldName)
+		}
+		if _, ok := field.Description["connector_sdk"]; !ok {
+			t.Fatalf("field %q exists but has no connector_sdk service mapping", fieldName)
+		}
+	}
+
+	// Verify package_id type
+	packageIdField := fieldsMap["package_id"]
+	if packageIdField.FieldValueType != common.String {
+		t.Fatalf("package_id should be type string, got %v", packageIdField.FieldValueType)
+	}
+	if packageIdField.Readonly {
+		t.Fatal("package_id should not be readonly")
+	}
+
+	// Verify secrets_list structure
+	secretsListField := fieldsMap["secrets_list"]
+	if secretsListField.FieldValueType != common.ObjectList {
+		t.Fatalf("secrets_list should be type object_list, got %v", secretsListField.FieldValueType)
+	}
+	if _, ok := secretsListField.ItemFields["key"]; !ok {
+		t.Fatal("secrets_list should have 'key' sub-field")
+	}
+	if _, ok := secretsListField.ItemFields["value"]; !ok {
+		t.Fatal("secrets_list should have 'value' sub-field")
+	}
+	if !secretsListField.ItemFields["value"].Sensitive {
+		t.Fatal("secrets_list.value should be sensitive")
+	}
+
+	// Verify connector_sdk is a known service with destination_schema.name
+	serviceFields, err := common.GetFieldsForService("connector_sdk")
+	if err != nil {
+		t.Fatalf("connector_sdk not recognized as a valid service: %v", err)
+	}
+	if len(serviceFields) == 0 {
+		t.Fatal("connector_sdk has no config fields")
+	}
+
+	destSchemaFields := common.GetDestinationSchemaFields()
+	if !destSchemaFields["connector_sdk"]["schema"] {
+		t.Fatal("connector_sdk should use destination_schema.name (schema=true)")
+	}
+}
+
 func testResourceConnectorConfigConflictingFieldsMappingMock(t *testing.T, service, destinationSchema, schema, tfConfig, jsonConfig string) {
 	config := getTfConfigForConflictingFields(service, destinationSchema, tfConfig)
 
