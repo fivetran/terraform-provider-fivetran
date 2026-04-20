@@ -128,6 +128,7 @@ func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Reso
 		resources.PrivateLink,
 		resources.TransformationProject,
 		resources.Transformation,
+		resources.ConnectorSdkPackage,
 	}
 }
 

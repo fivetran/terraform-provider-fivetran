@@ -67,4 +67,6 @@ require (
 	google.golang.org/protobuf v1.36.11 // indirect
 )
 
+replace github.com/fivetran/go-fivetran => ../go-fivetran
+
 go 1.24.0
