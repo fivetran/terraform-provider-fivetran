@@ -4273,3 +4273,83 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMo
 		},
 	)
 }
+
+func TestResourceConnectorSchemaConfigImportMock(t *testing.T) {
+
+	resetInvocationCounts := func() {
+		schemaEmptyDefaultReloadHandler.Interactions = 0
+		schemaEmptyDefaultGetHandler.Interactions = 0
+		schemaEmptyDefaultPatchHandler.Interactions = 0
+	}
+
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "ALLOW_ALL"
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				assertEqual(t, schemaEmptyDefaultReloadHandler.Interactions, 1)
+				assertEqual(t, schemaEmptyDefaultGetHandler.Interactions, 3)
+				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 0)
+				assertNotEmpty(t, schemaEmptyDefaultData) // schema initialised
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "ALLOW_ALL"),
+		),
+	}
+
+	step2 := resource.TestStep{
+		ResourceName:      "fivetran_connector_schema_config.test_schema",
+		ImportState:       true,
+		ImportStateId: 	"connector_id",
+		ImportStateVerify: true,
+	}
+
+	step3 := resource.TestStep{
+		PreConfig: resetInvocationCounts,
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "ALLOW_ALL"
+            }`,
+		ResourceName:      "fivetran_connector_schema_config.test_schema",
+		ImportState:       true,
+		ImportStateId: 	"connector_id",
+		ImportStateCheck: ComposeImportStateCheck(
+			func(s []*terraform.InstanceState) error {
+				assertEqual(t, schemaEmptyDefaultReloadHandler.Interactions, 1)
+				assertEqual(t, schemaEmptyDefaultGetHandler.Interactions, 3)
+				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 0)
+				return nil
+			},
+			CheckImportResourceAttr("fivetran_connector_schema_config", "test_schema", "id", "connector_id"),
+			CheckImportResourceAttr("fivetran_connector_schema_config", "test_schema", "connector_id", "connector_id"),
+			CheckImportResourceAttr("fivetran_connector_schema_config", "test_schema", "schema_change_handling", "ALLOW_ALL"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientEmptyDefaultSchemaResource(t)
+			},
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				// there is no possibility to destroy schema config - it alsways exists within the connector
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
+				step2,
+				step3,
+			},
+		},
+	)
+}
