@@ -57,6 +57,7 @@ Read-Only:
 
 Read-Only:
 
+- `configurable_variables` (Map of String) Map of configurable variable values for the Quickstart transformation, keyed by variable name.
 - `connection_ids` (Set of String) The list of the connection identifiers to be used for the integrated schedule. Also used to identify package_name automatically if package_name was not specified
 - `excluded_models` (Set of String) The list of excluded output model names
 - `name` (String) The transformation name

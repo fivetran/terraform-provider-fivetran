@@ -137,6 +137,7 @@ Read-Only:
 	- Service `panoply`: Cluster region.
 	- Service `periscope_warehouse`: Cluster region.
 	- Service `redshift`: Cluster region. Must be populated if `connection_type` is set to `SshTunnel` and `auth_type` is set to `IAM`.
+- `connection_method` (String)
 - `connection_type` (String) Field usage depends on `service` value: 
 	- Service `adls`: Connection method. Default value: `Directly`.
 	- Service `aurora_postgres_warehouse`: Connection method. Default value: `Directly`.
@@ -242,9 +243,13 @@ Read-Only:
 	- Service `snowflake`: External storage parent folder URL
 - `external_volume_location` (String) Field usage depends on `service` value: 
 	- Service `databricks`: Specifies the external volume path where you want Fivetran to create the unstructured files.
+- `fivetran_glue_role_arn` (String)
+- `fivetran_msk_role_arn` (String)
 - `fivetran_role_arn` (String) Field usage depends on `service` value: 
 	- Service `managed_data_lake`: (Immutable) ARN of the IAM role you created for the IAM policy associated with your S3 bucket or Glue catalog. Use this parameter only if you want to deploy your data lake on AWS.
 	- Service `new_s3_datalake`: ARN of the role which you created with different required policy mentioned in our setup guide
+- `gcs_project_id` (String) Field usage depends on `service` value: 
+	- Service `managed_data_lake`: GCS Project ID of your Google Cloud Storage bucket. Use this parameter only if you want to deploy your data lake on GCS.
 - `gcs_service_account_credentials_path` (String) Field usage depends on `service` value: 
 	- Service `snowflake`: The path to the JSON file that contains the service account credentials for the GCS bucket you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use a GCS bucket to stage your data.
 - `host` (String) Field usage depends on `service` value: 
@@ -401,6 +406,8 @@ Read-Only:
 - `region` (String) Field usage depends on `service` value: 
 	- Service `managed_data_lake`: (Immutable) AWS Region of your S3 bucket. Use this parameter only if you want to deploy your data lake on AWS.
 	- Service `new_s3_datalake`: Region of your AWS S3 bucket
+- `registry_name` (String)
+- `registry_sts_region` (String)
 - `replication_factor` (Number) Field usage depends on `service` value: 
 	- Service `confluent_cloud_wh`: Replication factor.
 - `resource_id` (String) Field usage depends on `service` value: 
@@ -443,6 +450,7 @@ Read-Only:
 	- Service `confluent_cloud_wh`: Confluent Cloud SASL key.
 - `sasl_plain_secret` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `confluent_cloud_wh`: Confluent Cloud SASL secret.
+- `schema_compatibility` (String)
 - `schema_registry` (String) Field usage depends on `service` value: 
 	- Service `confluent_cloud_wh`: Schema Registry
 - `schema_registry_api_key` (String, Sensitive) Field usage depends on `service` value: 
@@ -467,6 +475,8 @@ Read-Only:
 	- Service `managed_data_lake`: Server host name of the Databricks account associated with Unity Catalog. Use this parameter only if you want to use Unity Catalog to manage your Delta Lake tables.
 	- Service `new_s3_datalake`: Server host name
 	- Service `onelake`: Server Host name
+- `should_maintain_tables_in_bqms` (Boolean) Field usage depends on `service` value: 
+	- Service `managed_data_lake`: Specifies whether you want to manage your Iceberg tables in BQMS. Use this parameter only if you want to deploy your data lake on GCS.
 - `should_maintain_tables_in_databricks` (Boolean) Field usage depends on `service` value: 
 	- Service `adls`: Should maintain tables in Databricks 
 	- Service `managed_data_lake`: Specifies whether you want to manage your Delta Lake tables in Databricks Unity Catalog.

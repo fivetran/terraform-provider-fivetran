@@ -5,7 +5,54 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.29...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.30...HEAD)
+
+## [v1.9.30](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.30...v1.9.29)
+
+### Added
+New connection services supported:
+- Supported service: `anthropic_claude`
+- Supported service: `breathe_hr`
+- Supported service: `coda`
+- Supported service: `deel`
+- Supported service: `fathom`
+- Supported service: `google_tag_manager`
+- Supported service: `leapsome`
+- Supported service: `livestorm`
+- Supported service: `maintainx`
+- Supported service: `mollie`
+- Supported service: `rivo`
+- Supported service: `shipmonk`
+- Supported service: `slack_admin_data`
+- Supported service: `trustpilot`
+
+New connection config fields supported:
+- Added field `fivetran_connector.config.app_level` for services: `slack_app`.
+- Added field `fivetran_connector.config.reports.selected_accounts` for services: `workday_adaptive`.
+- Added field `fivetran_connector.config.custom_reports.time_dimensions` for services: `criteo`.
+- Added field `fivetran_connector.config.use_harvest_api_v3` for services: `greenhouse`.
+- Added field `fivetran_connector.config.reports.rollback_window_in_days` for services: `klaviyo`.
+- Added field `fivetran_connector.config.sap_hana_connection_mode` for services: `sap_hana_db`.
+- Added field `fivetran_connector.config.reports.level_sync_mode` for services: `workday_adaptive`.
+- Added field `fivetran_connector.config.reports.selected_levels` for services: `workday_adaptive`.
+- Added field `fivetran_connector.config.api_admin_key` for services: `anthropic_claude`.
+- Added field `fivetran_connector.config.should_sync_predictive_analytics` for services: `klaviyo`.
+- Added field `fivetran_connector.config.api_key_2` for services: `openai`.
+- Added field `fivetran_connector.config.reports.account_sync_mode` for services: `workday_adaptive`.
+- Added field `fivetran_connector.config.reports.sync_descendant_accounts` for services: `workday_adaptive`.
+- Added field `fivetran_connector.config.reports.sync_descendant_levels` for services: `workday_adaptive`.
+- Added field `fivetran_connector.config.delete_capture_frequency` for services: `oracle_fusion_cloud_apps_crm`, `oracle_fusion_cloud_apps_fscm`, `oracle_fusion_cloud_apps_hcm`.
+- Added field `fivetran_connector.config.update_infrequent_objects_in_every_sync` for services: `salesforce`, `salesforce_sandbox`.
+
+New destination config fields supported:
+- Added field `fivetran_destination.config.registry_sts_region` for services: `aws_msk_wh`.
+- Added field `fivetran_destination.config.should_maintain_tables_in_bqms` for services: `managed_data_lake`.
+- Added field `fivetran_destination.config.connection_method` for services: `aiven_kafka_wh`, `aws_msk_wh`, `confluent_cloud_wh`.
+- Added field `fivetran_destination.config.schema_compatibility` for services: `aws_msk_wh`.
+- Added field `fivetran_destination.config.registry_name` for services: `aws_msk_wh`.
+- Added field `fivetran_destination.config.gcs_project_id` for services: `managed_data_lake`.
+- Added field `fivetran_destination.config.fivetran_msk_role_arn` for services: `aws_msk_wh`.
+- Added field `fivetran_destination.config.fivetran_glue_role_arn` for services: `aws_msk_wh`.
 
 ### Added
 - New resource `fivetran_connector_sdk_package` for managing Connector SDK code packages. Supports full CRUD lifecycle with multipart file upload, plan-time SHA-256 change detection, and upload corruption guard.

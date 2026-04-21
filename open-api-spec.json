@@ -18,11 +18,11 @@
   "tags": [
     {
       "name": "updated",
-      "description": "2026-03-17T13:14:35.637Z"
+      "description": "2026-04-20T14:50:22.338Z"
     },
     {
       "name": "hash",
-      "description": "40dcb7c535013dbfcda084728898008cc82fd9a7ba5a6d3e2f28764a59121713"
+      "description": "0cea00c8eb40e5114b174524e1f642a13322dc08decdede48e67989807e1cc11"
     }
   ],
   "paths": {
@@ -1666,7 +1666,7 @@
           {
             "name": "table",
             "in": "path",
-            "description": "The table name within your database schema",
+            "description": "The table name from the connection schema, using the original source system's naming conventions. This value is case-sensitive.",
             "required": true,
             "schema": {
               "type": "string",
@@ -1903,7 +1903,7 @@
           {
             "name": "schemaName",
             "in": "path",
-            "description": "The database schema name within your destination (different from the connection schema)",
+            "description": "The schema name as stored in the connection schema config. This value is case-sensitive; an incorrect case results in an HTTP 404 error.",
             "required": true,
             "schema": {
               "type": "string",
@@ -1914,7 +1914,7 @@
           {
             "name": "tableName",
             "in": "path",
-            "description": "The table name within your database schema",
+            "description": "The table name as stored in the connection schema config. This value is case-sensitive; an incorrect case results in an HTTP 404 error.",
             "required": true,
             "schema": {
               "type": "string",
@@ -3172,6 +3172,30 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/StandardConfigCreateRequest"
+              },
+              "examples": {
+                "pre_create_schema_config_request": {
+                  "value": {
+                    "schemas": {
+                      "schema_name": {
+                        "enabled": true,
+                        "tables": {
+                          "table_name": {
+                            "enabled": true,
+                            "sync_mode": "SOFT_DELETE",
+                            "columns": {
+                              "column_name": {
+                                "enabled": true,
+                                "hashed": false
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "schema_change_handling": "ALLOW_COLUMNS"
+                  }
+                }
               }
             }
           }
@@ -3241,6 +3265,30 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/StandardConfigUpdateRequest"
+              },
+              "examples": {
+                "modify_schema_config_request": {
+                  "value": {
+                    "schemas": {
+                      "schema_name": {
+                        "enabled": true,
+                        "tables": {
+                          "table_name": {
+                            "enabled": true,
+                            "sync_mode": "SOFT_DELETE",
+                            "columns": {
+                              "column_name": {
+                                "enabled": true,
+                                "hashed": false
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "schema_change_handling": "BLOCK_ALL"
+                  }
+                }
               }
             }
           }
@@ -3627,7 +3675,7 @@
           "Connector SDK Package Resource"
         ],
         "summary": "Create Connector SDK Package",
-        "description": "Uploads a new Connector SDK package to your Fivetran account. The package must be a ZIP file containing your custom connector code. You can create the package ZIP file using the [`fivetran package` command](/docs/connector-sdk/technical-reference/connector-sdk-commands#fivetranpackage).\n\nAfter creating a package, use the standard [Create a Connection endpoint](/docs/rest-api/api-reference/connections/create-connection) with the returned `id` as `package_id` in the config.\n\n> NOTE: Each package can only be associated with one connection at a time.\n",
+        "description": "Uploads a new Connector SDK package to your Fivetran account. The package must be a ZIP file containing your custom connector code. You can create the package ZIP file using the [`fivetran package` command](/docs/connector-sdk/connector-development-and-configuration/connector-sdk-commands#fivetranpackage).\n\nAfter creating a package, use the standard [Create a Connection endpoint](/docs/rest-api/api-reference/connections/create-connection) with the returned `id` as `package_id` in the config.\n\n> NOTE: Each package can only be associated with one connection at a time.\n",
         "operationId": "create_connector_sdk_package",
         "parameters": [
           {
@@ -4567,7 +4615,7 @@
           {
             "name": "schemaName",
             "in": "path",
-            "description": "The database schema name within your destination (different from the connection schema)",
+            "description": "The schema name as stored in the connection schema config. This value is case-sensitive; an incorrect case results in an HTTP 404 error.",
             "required": true,
             "schema": {
               "type": "string",
@@ -4578,7 +4626,7 @@
           {
             "name": "tableName",
             "in": "path",
-            "description": "The table name within your database schema",
+            "description": "The table name as stored in the connection schema config. This value is case-sensitive; an incorrect case results in an HTTP 404 error.",
             "required": true,
             "schema": {
               "type": "string",
@@ -4589,7 +4637,7 @@
           {
             "name": "columnName",
             "in": "path",
-            "description": "The column name within your table",
+            "description": "The column name as stored in the connection schema config. This value is case-sensitive; an incorrect case results in an HTTP 404 error.",
             "required": true,
             "schema": {
               "type": "string",
@@ -4666,7 +4714,7 @@
           {
             "name": "schemaName",
             "in": "path",
-            "description": "The database schema name within your destination (different from the connection schema)",
+            "description": "The schema name as stored in the connection schema config. This value is case-sensitive; an incorrect case results in an HTTP 404 error.",
             "required": true,
             "schema": {
               "type": "string",
@@ -4677,7 +4725,7 @@
           {
             "name": "tableName",
             "in": "path",
-            "description": "The table name within your database schema",
+            "description": "The table name as stored in the connection schema config. This value is case-sensitive; an incorrect case results in an HTTP 404 error.",
             "required": true,
             "schema": {
               "type": "string",
@@ -4688,7 +4736,7 @@
           {
             "name": "columnName",
             "in": "path",
-            "description": "The column name within your table",
+            "description": "The column name as stored in the connection schema config. This value is case-sensitive; an incorrect case results in an HTTP 404 error.",
             "required": true,
             "schema": {
               "type": "string",
@@ -6372,7 +6420,7 @@
           {
             "name": "schemaName",
             "in": "path",
-            "description": "The database schema name within your destination (different from the connection schema)",
+            "description": "The schema name as stored in the connection schema config. This value is case-sensitive; an incorrect case results in an HTTP 404 error.",
             "required": true,
             "schema": {
               "type": "string",
@@ -9253,7 +9301,7 @@
           "Connection Management"
         ],
         "summary": "Update a Connection State",
-        "description": "Updates the connection state. To update the state, you should pause your connection first. \n\nTo update the connection state, do the following:\n\n  1. Pause connection using [Update a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/modify-connection) endpoint (set 'paused' to 'true'). \n  2. Update the state by using the [Update Connection State](https://fivetran.com/docs/rest-api/api-reference/connections/modify-connection-state) endpoint.\n  3. Unpause the connection by setting the 'paused' parameter to 'false' in the [Update a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/modify-connection) endpoint request.\n\nThis endpoint is only supported for [Function](https://fivetran.com/docs/connectors/functions) and [Connection SDK](https://fivetran.com/docs/connectors/connector-sdk) connectors.\n",
+        "description": "Updates the connection state. To update the state, you should pause your connection first.\n\nTo update the connection state, do the following:\n\n  1. Pause connection using [Update a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/modify-connection) endpoint (set 'paused' to 'true').\n  2. Update the state by using the [Update Connection State](https://fivetran.com/docs/rest-api/api-reference/connections/modify-connection-state) endpoint.\n  3. Unpause the connection by setting the 'paused' parameter to 'false' in the [Update a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/modify-connection) endpoint request.\n\nThis endpoint is only supported for [Function](https://fivetran.com/docs/connectors/functions) and [Connection SDK](https://fivetran.com/docs/connectors/connector-sdk) connectors.\n",
         "operationId": "modify_connection_state",
         "parameters": [
           {
@@ -9279,9 +9327,18 @@
         ],
         "requestBody": {
           "content": {
-            "*/*": {
+            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UpdateFunctionOrConnectorSdkState"
+              },
+              "examples": {
+                "update_connection_state_request": {
+                  "value": {
+                    "state": {
+                      "cursor": "2024-01-01T00:00:00Z"
+                    }
+                  }
+                }
               }
             }
           }
@@ -12881,6 +12938,7 @@
             "amplitude": "#/components/schemas/amplitude_NewConnectorRequestV1",
             "amqp": "#/components/schemas/amqp_NewConnectorRequestV1",
             "anaplan": "#/components/schemas/anaplan_NewConnectorRequestV1",
+            "anthropic_claude": "#/components/schemas/anthropic_claude_NewConnectorRequestV1",
             "anvyl": "#/components/schemas/anvyl_NewConnectorRequestV1",
             "apache_kafka": "#/components/schemas/apache_kafka_NewConnectorRequestV1",
             "apollo": "#/components/schemas/apollo_NewConnectorRequestV1",
@@ -12943,6 +13001,7 @@
             "branch": "#/components/schemas/branch_NewConnectorRequestV1",
             "brave_ads": "#/components/schemas/brave_ads_NewConnectorRequestV1",
             "braze": "#/components/schemas/braze_NewConnectorRequestV1",
+            "breathe_hr": "#/components/schemas/breathe_hr_NewConnectorRequestV1",
             "brevo": "#/components/schemas/brevo_NewConnectorRequestV1",
             "brex": "#/components/schemas/brex_NewConnectorRequestV1",
             "brightcove": "#/components/schemas/brightcove_NewConnectorRequestV1",
@@ -12997,6 +13056,7 @@
             "coalesce": "#/components/schemas/coalesce_NewConnectorRequestV1",
             "coassemble": "#/components/schemas/coassemble_NewConnectorRequestV1",
             "cockroachdb": "#/components/schemas/cockroachdb_NewConnectorRequestV1",
+            "coda": "#/components/schemas/coda_NewConnectorRequestV1",
             "codefresh": "#/components/schemas/codefresh_NewConnectorRequestV1",
             "collibra": "#/components/schemas/collibra_NewConnectorRequestV1",
             "column": "#/components/schemas/column_NewConnectorRequestV1",
@@ -13035,6 +13095,7 @@
             "db2z": "#/components/schemas/db2z_NewConnectorRequestV1",
             "dbt_cloud": "#/components/schemas/dbt_cloud_NewConnectorRequestV1",
             "dcl_logistics": "#/components/schemas/dcl_logistics_NewConnectorRequestV1",
+            "deel": "#/components/schemas/deel_NewConnectorRequestV1",
             "delighted": "#/components/schemas/delighted_NewConnectorRequestV1",
             "deposco": "#/components/schemas/deposco_NewConnectorRequestV1",
             "deputy": "#/components/schemas/deputy_NewConnectorRequestV1",
@@ -13081,6 +13142,7 @@
             "facebook_pages": "#/components/schemas/facebook_pages_NewConnectorRequestV1",
             "factbird": "#/components/schemas/factbird_NewConnectorRequestV1",
             "factorial": "#/components/schemas/factorial_NewConnectorRequestV1",
+            "fathom": "#/components/schemas/fathom_NewConnectorRequestV1",
             "fillout": "#/components/schemas/fillout_NewConnectorRequestV1",
             "firebase": "#/components/schemas/firebase_NewConnectorRequestV1",
             "fireflies": "#/components/schemas/fireflies_NewConnectorRequestV1",
@@ -13143,6 +13205,7 @@
             "google_search_ads_360": "#/components/schemas/google_search_ads_360_NewConnectorRequestV1",
             "google_search_console": "#/components/schemas/google_search_console_NewConnectorRequestV1",
             "google_sheets": "#/components/schemas/google_sheets_NewConnectorRequestV1",
+            "google_tag_manager": "#/components/schemas/google_tag_manager_NewConnectorRequestV1",
             "google_tasks": "#/components/schemas/google_tasks_NewConnectorRequestV1",
             "gorgias": "#/components/schemas/gorgias_NewConnectorRequestV1",
             "green_power_monitor": "#/components/schemas/green_power_monitor_NewConnectorRequestV1",
@@ -13209,6 +13272,7 @@
             "lattice": "#/components/schemas/lattice_NewConnectorRequestV1",
             "launchdarkly": "#/components/schemas/launchdarkly_NewConnectorRequestV1",
             "leap_crm": "#/components/schemas/leap_crm_NewConnectorRequestV1",
+            "leapsome": "#/components/schemas/leapsome_NewConnectorRequestV1",
             "learn_amp": "#/components/schemas/learn_amp_NewConnectorRequestV1",
             "learnupon": "#/components/schemas/learnupon_NewConnectorRequestV1",
             "lemlist": "#/components/schemas/lemlist_NewConnectorRequestV1",
@@ -13224,6 +13288,7 @@
             "linksquares": "#/components/schemas/linksquares_NewConnectorRequestV1",
             "listen360": "#/components/schemas/listen360_NewConnectorRequestV1",
             "livechat_partner": "#/components/schemas/livechat_partner_NewConnectorRequestV1",
+            "livestorm": "#/components/schemas/livestorm_NewConnectorRequestV1",
             "lob": "#/components/schemas/lob_NewConnectorRequestV1",
             "looker_source": "#/components/schemas/looker_source_NewConnectorRequestV1",
             "loop": "#/components/schemas/loop_NewConnectorRequestV1",
@@ -13236,6 +13301,7 @@
             "maileon": "#/components/schemas/maileon_NewConnectorRequestV1",
             "mailgun": "#/components/schemas/mailgun_NewConnectorRequestV1",
             "mailjet": "#/components/schemas/mailjet_NewConnectorRequestV1",
+            "maintainx": "#/components/schemas/maintainx_NewConnectorRequestV1",
             "malomo": "#/components/schemas/malomo_NewConnectorRequestV1",
             "mambu": "#/components/schemas/mambu_NewConnectorRequestV1",
             "mandrill": "#/components/schemas/mandrill_NewConnectorRequestV1",
@@ -13261,6 +13327,7 @@
             "mixmax": "#/components/schemas/mixmax_NewConnectorRequestV1",
             "mixpanel": "#/components/schemas/mixpanel_NewConnectorRequestV1",
             "mode": "#/components/schemas/mode_NewConnectorRequestV1",
+            "mollie": "#/components/schemas/mollie_NewConnectorRequestV1",
             "moloco": "#/components/schemas/moloco_NewConnectorRequestV1",
             "monday": "#/components/schemas/monday_NewConnectorRequestV1",
             "mongo": "#/components/schemas/mongo_NewConnectorRequestV1",
@@ -13393,6 +13460,7 @@
             "ringover": "#/components/schemas/ringover_NewConnectorRequestV1",
             "rippling": "#/components/schemas/rippling_NewConnectorRequestV1",
             "rithum": "#/components/schemas/rithum_NewConnectorRequestV1",
+            "rivo": "#/components/schemas/rivo_NewConnectorRequestV1",
             "rocketlane": "#/components/schemas/rocketlane_NewConnectorRequestV1",
             "rokt": "#/components/schemas/rokt_NewConnectorRequestV1",
             "rollbar": "#/components/schemas/rollbar_NewConnectorRequestV1",
@@ -13431,6 +13499,7 @@
             "shareasale": "#/components/schemas/shareasale_NewConnectorRequestV1",
             "sharetribe": "#/components/schemas/sharetribe_NewConnectorRequestV1",
             "shiphero": "#/components/schemas/shiphero_NewConnectorRequestV1",
+            "shipmonk": "#/components/schemas/shipmonk_NewConnectorRequestV1",
             "shipnetwork": "#/components/schemas/shipnetwork_NewConnectorRequestV1",
             "shipstation": "#/components/schemas/shipstation_NewConnectorRequestV1",
             "shopify": "#/components/schemas/shopify_NewConnectorRequestV1",
@@ -13450,6 +13519,7 @@
             "skuvault": "#/components/schemas/skuvault_NewConnectorRequestV1",
             "slab": "#/components/schemas/slab_NewConnectorRequestV1",
             "slack": "#/components/schemas/slack_NewConnectorRequestV1",
+            "slack_admin_data": "#/components/schemas/slack_admin_data_NewConnectorRequestV1",
             "slack_app": "#/components/schemas/slack_app_NewConnectorRequestV1",
             "smadex": "#/components/schemas/smadex_NewConnectorRequestV1",
             "smarthr": "#/components/schemas/smarthr_NewConnectorRequestV1",
@@ -13516,6 +13586,7 @@
             "tremendous": "#/components/schemas/tremendous_NewConnectorRequestV1",
             "triple_whale": "#/components/schemas/triple_whale_NewConnectorRequestV1",
             "trisolute": "#/components/schemas/trisolute_NewConnectorRequestV1",
+            "trustpilot": "#/components/schemas/trustpilot_NewConnectorRequestV1",
             "twilio": "#/components/schemas/twilio_NewConnectorRequestV1",
             "twitter": "#/components/schemas/twitter_NewConnectorRequestV1",
             "twitter_ads": "#/components/schemas/twitter_ads_NewConnectorRequestV1",
@@ -13725,7 +13796,7 @@
           },
           "is_historical_sync": {
             "type": "boolean",
-            "description": "The boolean specifying whether the connection should be triggered to re-sync all historical data. If you set this parameter to TRUE, the next scheduled sync will be historical. If the value is FALSE or not specified, the connection will not re-sync historical data. NOTE: When the value is TRUE, only the next scheduled sync will be historical, all subsequent ones will be incremental. This parameter is set to FALSE once the historical sync is completed.",
+            "description": "The boolean specifying whether the connection should be triggered to re-sync all historical data. If you set this parameter to TRUE, a [historical sync](https://fivetran.com/docs/getting-started/glossary#historicalsync) starts immediately. If a sync is currently running, it's canceled and restarted as a historical sync. All subsequent syncs after the historical sync completes will be incremental. If the value is FALSE or not specified, the connection doesn't re-sync historical data. This parameter is automatically reset to FALSE once the historical sync is completed.",
             "example": true
           },
           "data_delay_sensitivity": {
@@ -14030,6 +14101,7 @@
             "amplitude": "#/components/schemas/amplitude_ConnectorResponseV1",
             "amqp": "#/components/schemas/amqp_ConnectorResponseV1",
             "anaplan": "#/components/schemas/anaplan_ConnectorResponseV1",
+            "anthropic_claude": "#/components/schemas/anthropic_claude_ConnectorResponseV1",
             "anvyl": "#/components/schemas/anvyl_ConnectorResponseV1",
             "apache_kafka": "#/components/schemas/apache_kafka_ConnectorResponseV1",
             "apollo": "#/components/schemas/apollo_ConnectorResponseV1",
@@ -14092,6 +14164,7 @@
             "branch": "#/components/schemas/branch_ConnectorResponseV1",
             "brave_ads": "#/components/schemas/brave_ads_ConnectorResponseV1",
             "braze": "#/components/schemas/braze_ConnectorResponseV1",
+            "breathe_hr": "#/components/schemas/breathe_hr_ConnectorResponseV1",
             "brevo": "#/components/schemas/brevo_ConnectorResponseV1",
             "brex": "#/components/schemas/brex_ConnectorResponseV1",
             "brightcove": "#/components/schemas/brightcove_ConnectorResponseV1",
@@ -14146,6 +14219,7 @@
             "coalesce": "#/components/schemas/coalesce_ConnectorResponseV1",
             "coassemble": "#/components/schemas/coassemble_ConnectorResponseV1",
             "cockroachdb": "#/components/schemas/cockroachdb_ConnectorResponseV1",
+            "coda": "#/components/schemas/coda_ConnectorResponseV1",
             "codefresh": "#/components/schemas/codefresh_ConnectorResponseV1",
             "collibra": "#/components/schemas/collibra_ConnectorResponseV1",
             "column": "#/components/schemas/column_ConnectorResponseV1",
@@ -14184,6 +14258,7 @@
             "db2z": "#/components/schemas/db2z_ConnectorResponseV1",
             "dbt_cloud": "#/components/schemas/dbt_cloud_ConnectorResponseV1",
             "dcl_logistics": "#/components/schemas/dcl_logistics_ConnectorResponseV1",
+            "deel": "#/components/schemas/deel_ConnectorResponseV1",
             "delighted": "#/components/schemas/delighted_ConnectorResponseV1",
             "deposco": "#/components/schemas/deposco_ConnectorResponseV1",
             "deputy": "#/components/schemas/deputy_ConnectorResponseV1",
@@ -14230,6 +14305,7 @@
             "facebook_pages": "#/components/schemas/facebook_pages_ConnectorResponseV1",
             "factbird": "#/components/schemas/factbird_ConnectorResponseV1",
             "factorial": "#/components/schemas/factorial_ConnectorResponseV1",
+            "fathom": "#/components/schemas/fathom_ConnectorResponseV1",
             "fillout": "#/components/schemas/fillout_ConnectorResponseV1",
             "firebase": "#/components/schemas/firebase_ConnectorResponseV1",
             "fireflies": "#/components/schemas/fireflies_ConnectorResponseV1",
@@ -14292,6 +14368,7 @@
             "google_search_ads_360": "#/components/schemas/google_search_ads_360_ConnectorResponseV1",
             "google_search_console": "#/components/schemas/google_search_console_ConnectorResponseV1",
             "google_sheets": "#/components/schemas/google_sheets_ConnectorResponseV1",
+            "google_tag_manager": "#/components/schemas/google_tag_manager_ConnectorResponseV1",
             "google_tasks": "#/components/schemas/google_tasks_ConnectorResponseV1",
             "gorgias": "#/components/schemas/gorgias_ConnectorResponseV1",
             "green_power_monitor": "#/components/schemas/green_power_monitor_ConnectorResponseV1",
@@ -14358,6 +14435,7 @@
             "lattice": "#/components/schemas/lattice_ConnectorResponseV1",
             "launchdarkly": "#/components/schemas/launchdarkly_ConnectorResponseV1",
             "leap_crm": "#/components/schemas/leap_crm_ConnectorResponseV1",
+            "leapsome": "#/components/schemas/leapsome_ConnectorResponseV1",
             "learn_amp": "#/components/schemas/learn_amp_ConnectorResponseV1",
             "learnupon": "#/components/schemas/learnupon_ConnectorResponseV1",
             "lemlist": "#/components/schemas/lemlist_ConnectorResponseV1",
@@ -14373,6 +14451,7 @@
             "linksquares": "#/components/schemas/linksquares_ConnectorResponseV1",
             "listen360": "#/components/schemas/listen360_ConnectorResponseV1",
             "livechat_partner": "#/components/schemas/livechat_partner_ConnectorResponseV1",
+            "livestorm": "#/components/schemas/livestorm_ConnectorResponseV1",
             "lob": "#/components/schemas/lob_ConnectorResponseV1",
             "looker_source": "#/components/schemas/looker_source_ConnectorResponseV1",
             "loop": "#/components/schemas/loop_ConnectorResponseV1",
@@ -14385,6 +14464,7 @@
             "maileon": "#/components/schemas/maileon_ConnectorResponseV1",
             "mailgun": "#/components/schemas/mailgun_ConnectorResponseV1",
             "mailjet": "#/components/schemas/mailjet_ConnectorResponseV1",
+            "maintainx": "#/components/schemas/maintainx_ConnectorResponseV1",
             "malomo": "#/components/schemas/malomo_ConnectorResponseV1",
             "mambu": "#/components/schemas/mambu_ConnectorResponseV1",
             "mandrill": "#/components/schemas/mandrill_ConnectorResponseV1",
@@ -14410,6 +14490,7 @@
             "mixmax": "#/components/schemas/mixmax_ConnectorResponseV1",
             "mixpanel": "#/components/schemas/mixpanel_ConnectorResponseV1",
             "mode": "#/components/schemas/mode_ConnectorResponseV1",
+            "mollie": "#/components/schemas/mollie_ConnectorResponseV1",
             "moloco": "#/components/schemas/moloco_ConnectorResponseV1",
             "monday": "#/components/schemas/monday_ConnectorResponseV1",
             "mongo": "#/components/schemas/mongo_ConnectorResponseV1",
@@ -14542,6 +14623,7 @@
             "ringover": "#/components/schemas/ringover_ConnectorResponseV1",
             "rippling": "#/components/schemas/rippling_ConnectorResponseV1",
             "rithum": "#/components/schemas/rithum_ConnectorResponseV1",
+            "rivo": "#/components/schemas/rivo_ConnectorResponseV1",
             "rocketlane": "#/components/schemas/rocketlane_ConnectorResponseV1",
             "rokt": "#/components/schemas/rokt_ConnectorResponseV1",
             "rollbar": "#/components/schemas/rollbar_ConnectorResponseV1",
@@ -14580,6 +14662,7 @@
             "shareasale": "#/components/schemas/shareasale_ConnectorResponseV1",
             "sharetribe": "#/components/schemas/sharetribe_ConnectorResponseV1",
             "shiphero": "#/components/schemas/shiphero_ConnectorResponseV1",
+            "shipmonk": "#/components/schemas/shipmonk_ConnectorResponseV1",
             "shipnetwork": "#/components/schemas/shipnetwork_ConnectorResponseV1",
             "shipstation": "#/components/schemas/shipstation_ConnectorResponseV1",
             "shopify": "#/components/schemas/shopify_ConnectorResponseV1",
@@ -14599,6 +14682,7 @@
             "skuvault": "#/components/schemas/skuvault_ConnectorResponseV1",
             "slab": "#/components/schemas/slab_ConnectorResponseV1",
             "slack": "#/components/schemas/slack_ConnectorResponseV1",
+            "slack_admin_data": "#/components/schemas/slack_admin_data_ConnectorResponseV1",
             "slack_app": "#/components/schemas/slack_app_ConnectorResponseV1",
             "smadex": "#/components/schemas/smadex_ConnectorResponseV1",
             "smarthr": "#/components/schemas/smarthr_ConnectorResponseV1",
@@ -14665,6 +14749,7 @@
             "tremendous": "#/components/schemas/tremendous_ConnectorResponseV1",
             "triple_whale": "#/components/schemas/triple_whale_ConnectorResponseV1",
             "trisolute": "#/components/schemas/trisolute_ConnectorResponseV1",
+            "trustpilot": "#/components/schemas/trustpilot_ConnectorResponseV1",
             "twilio": "#/components/schemas/twilio_ConnectorResponseV1",
             "twitter": "#/components/schemas/twitter_ConnectorResponseV1",
             "twitter_ads": "#/components/schemas/twitter_ads_ConnectorResponseV1",
@@ -15042,7 +15127,7 @@
                 "$ref": "#/components/schemas/DropColumnsTableRequest"
               }
             },
-            "description": "The set of tables within your database schema config."
+            "description": "The set of tables within your database schema config. Each key is the table name as stored in the connection schema config. Table names are case-sensitive; an incorrect case results in an HTTP 404 error."
           }
         }
       },
@@ -15060,7 +15145,7 @@
                 "$ref": "#/components/schemas/DropColumnSchemaRequest"
               }
             },
-            "description": "The set of schemas within your connection schema config."
+            "description": "The set of schemas within your connection schema config. Each key is the schema name as stored in the connection schema config. Schema names are case-sensitive; an incorrect case results in an HTTP 404 error."
           }
         }
       },
@@ -15072,7 +15157,7 @@
         "properties": {
           "columns": {
             "type": "array",
-            "description": "The set of columns within your table schema config. The `columns` object in the response contains the columns whose `enabled` value has been set by the user after the initial sync.",
+            "description": "The set of columns within your table schema config. Each key is the column name as stored in the connection schema config. Column names are case-sensitive; an incorrect case results in an HTTP 404 error. The `columns` object in the response contains the columns whose `enabled` value has been set by the user after the initial sync.",
             "items": {
               "type": "string"
             }
@@ -15112,14 +15197,11 @@
             "example": true
           },
           "tables": {
-            "title": "Tables",
             "type": "object",
-            "properties": {
-              "table": {
-                "$ref": "#/components/schemas/TableUpdateRequest"
-              }
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TableUpdateRequest"
             },
-            "description": "The set of tables within your database schema config."
+            "description": "The set of tables within your database schema config. Each key is the table name as stored in the connection schema config. Table names are case-sensitive; an incorrect case results in an HTTP 404 error."
           }
         }
       },
@@ -15134,7 +15216,22 @@
             "additionalProperties": {
               "$ref": "#/components/schemas/SchemaUpdateRequest"
             },
-            "description": "The set of schemas within your connection schema config."
+            "description": "The set of schemas within your connection schema config. Each key is the schema name as stored in the connection schema config. Schema names are case-sensitive; an incorrect case results in an HTTP 404 error.",
+            "example": {
+              "schema_name": {
+                "enabled": true,
+                "tables": {
+                  "table_name": {
+                    "enabled": true,
+                    "columns": {
+                      "column_name": {
+                        "enabled": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "schema_change_handling": {
             "type": "string",
@@ -15160,14 +15257,11 @@
             "example": true
           },
           "columns": {
-            "title": "Columns",
             "type": "object",
-            "properties": {
-              "column": {
-                "$ref": "#/components/schemas/ColumnUpdateRequest"
-              }
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ColumnUpdateRequest"
             },
-            "description": "The set of columns within your table schema config. The `columns` object in the response contains the columns whose `enabled` value has been set by the user after the initial sync."
+            "description": "The set of columns within your table schema config. Each key is the column name as stored in the connection schema config. Column names are case-sensitive; an incorrect case results in an HTTP 404 error. The `columns` object in the response contains the columns whose `enabled` value has been set by the user after the initial sync."
           },
           "sync_mode": {
             "type": "string",
@@ -15195,14 +15289,26 @@
         "type": "object",
         "properties": {
           "schemas": {
-            "title": "Schemas",
             "type": "object",
-            "properties": {
-              "schema": {
-                "$ref": "#/components/schemas/SchemaUpdateRequest"
-              }
+            "additionalProperties": {
+              "$ref": "#/components/schemas/SchemaUpdateRequest"
             },
-            "description": "The set of schemas within your connection schema config."
+            "description": "The set of schemas within your connection schema config. Each key is the schema name as stored in the connection schema config. Schema names are case-sensitive; an incorrect case results in an HTTP 404 error.",
+            "example": {
+              "schema_name": {
+                "enabled": true,
+                "tables": {
+                  "table_name": {
+                    "enabled": true,
+                    "columns": {
+                      "column_name": {
+                        "enabled": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "is_type_locked": {
             "type": "boolean",
@@ -15307,7 +15413,7 @@
                 "$ref": "#/components/schemas/TableConfigResponse"
               }
             },
-            "description": "The set of tables within your database schema config."
+            "description": "The set of tables within your database schema config. Each key is the table name as stored in the connection schema config. Table names are case-sensitive; an incorrect case results in an HTTP 404 error."
           }
         }
       },
@@ -15331,7 +15437,7 @@
                 "$ref": "#/components/schemas/SchemaConfigResponse"
               }
             },
-            "description": "The set of schemas within your connection schema config."
+            "description": "The set of schemas within your connection schema config. Each key is the schema name as stored in the connection schema config. Schema names are case-sensitive; an incorrect case results in an HTTP 404 error."
           },
           "schema_change_handling": {
             "type": "string",
@@ -15384,7 +15490,7 @@
                 "$ref": "#/components/schemas/ColumnConfigResponse"
               }
             },
-            "description": "The set of columns within your table schema config. The `columns` object in the response contains the columns whose `enabled` value has been set by the user after the initial sync."
+            "description": "The set of columns within your table schema config. Each key is the column name as stored in the connection schema config. Column names are case-sensitive; an incorrect case results in an HTTP 404 error. The `columns` object in the response contains the columns whose `enabled` value has been set by the user after the initial sync."
           },
           "enabled_patch_settings": {
             "$ref": "#/components/schemas/TableEnabledPatchSettings"
@@ -15443,7 +15549,7 @@
                 "$ref": "#/components/schemas/ColumnConfigResponse"
               }
             },
-            "description": "The set of columns within your table schema config. The `columns` object in the response contains the columns whose `enabled` value has been set by the user after the initial sync."
+            "description": "The set of columns within your table schema config. Each key is the column name as stored in the connection schema config. Column names are case-sensitive; an incorrect case results in an HTTP 404 error. The `columns` object in the response contains the columns whose `enabled` value has been set by the user after the initial sync."
           }
         }
       },
@@ -15482,6 +15588,11 @@
             "type": "string",
             "description": "The connection identifier associated with this package. Each package can only be associated with one connection at a time. Returns null if the package is not yet associated with any connection.",
             "example": "connection_id"
+          },
+          "file_sha256_hash": {
+            "type": "string",
+            "description": "The SHA-256 hash of the uploaded package file. Used for integrity verification and change detection.",
+            "example": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2"
           },
           "updated_at": {
             "type": "string",
@@ -16478,7 +16589,7 @@
           },
           "picture": {
             "type": "string",
-            "description": "The user's avatar as a URL link (for example, 'http://mycompany.com/avatars/john_white.png') or base64 data URI (for example, 'data:image/png;base64,aHR0cDovL215Y29tcGFueS5jb20vYXZhdGFycy9qb2huX3doaXRlLnBuZw==')",
+            "description": "The user's avatar as a URL link (for example, 'http:<!-- -->//mycompany.com/avatars/john_white.png') or base64 data URI (for example, 'data:image/png;base64,aHR0cDovL215Y29tcGFueS5jb20vYXZhdGFycy9qb2huX3doaXRlLnBuZw==')",
             "example": "AFg65aoa7af4r3feaAa6bi7sfgse== ... base64 encoded image"
           },
           "phone": {
@@ -18536,7 +18647,7 @@
           },
           "picture": {
             "type": "string",
-            "description": "The user's avatar as a URL link (for example, 'http://mycompany.com/avatars/john_white.png') or base64 data URI (for example, 'data:image/png;base64,aHR0cDovL215Y29tcGFueS5jb20vYXZhdGFycy9qb2huX3doaXRlLnBuZw==')",
+            "description": "The user's avatar as a URL link (for example, 'http:<!-- -->//mycompany.com/avatars/john_white.png') or base64 data URI (for example, 'data:image/png;base64,aHR0cDovL215Y29tcGFueS5jb20vYXZhdGFycy9qb2huX3doaXRlLnBuZw==')",
             "example": "AFg65aoa7af4r3feaAa6bi7se ... base64 encoded image ... blDFSs87gQ=="
           },
           "role": {
@@ -18556,7 +18667,7 @@
           },
           "picture": {
             "type": "string",
-            "description": "The user's avatar as a URL link (for example, 'http://mycompany.com/avatars/john_white.png') or base64 data URI (for example, 'data:image/png;base64,aHR0cDovL215Y29tcGFueS5jb20vYXZhdGFycy9qb2huX3doaXRlLnBuZw==')",
+            "description": "The user's avatar as a URL link (for example, 'http:<!-- -->//mycompany.com/avatars/john_white.png') or base64 data URI (for example, 'data:image/png;base64,aHR0cDovL215Y29tcGFueS5jb20vYXZhdGFycy9qb2huX3doaXRlLnBuZw==')",
             "example": "AFg65aoa7af4r3feaAa6bi7se ... base64 encoded image ... blDFSs87gQ=="
           },
           "role": {
@@ -20319,6 +20430,12 @@
                 "description": "Tenant ID of the service principal you created for Fivetran. Use this parameter only if you want to deploy your data lake on ADLS.",
                 "example": "service_principal_tenant_id"
               },
+              "should_maintain_tables_in_bqms": {
+                "title": "",
+                "type": "boolean",
+                "description": "Specifies whether you want to manage your Iceberg tables in BQMS. Use this parameter only if you want to deploy your data lake on GCS.",
+                "example": true
+              },
               "should_maintain_tables_in_glue": {
                 "title": "",
                 "type": "boolean",
@@ -20349,6 +20466,12 @@
                 "type": "string",
                 "description": "HTTP path of the Databricks account associated with Unity Catalog. Use this parameter only if you want to use Unity Catalog to manage your Delta Lake tables.",
                 "example": "string"
+              },
+              "gcs_project_id": {
+                "title": "",
+                "type": "string",
+                "description": "GCS Project ID of your Google Cloud Storage bucket. Use this parameter only if you want to deploy your data lake on GCS.",
+                "example": "false"
               },
               "client_id": {
                 "title": "",
@@ -22896,21 +23019,57 @@
           "config": {
             "type": "object",
             "properties": {
+              "data_collection_endpoint": {
+                "title": "",
+                "type": "string",
+                "description": "For Logs Ingestion API authentication. The endpoint URL for your Data Collection Endpoint.",
+                "example": "https://my-endpoint.eastus-1.ingest.monitor.azure.com"
+              },
               "workspace_id": {
                 "title": "",
                 "type": "string",
-                "description": "",
-                "example": "string"
+                "description": "For HTTP Data Collector API authentication. Your Log Analytics workspace ID.",
+                "example": "your_workspace_id"
+              },
+              "dcr_stream_name": {
+                "title": "",
+                "type": "string",
+                "description": "For Logs Ingestion API authentication. The stream name of your Data Collection Rule.",
+                "example": "Custom-MyStream_CL"
+              },
+              "tenant_id": {
+                "title": "",
+                "type": "string",
+                "description": "For Logs Ingestion API authentication. Your Microsoft Entra directory (tenant) ID.",
+                "example": "your_tenant_id"
+              },
+              "dcr_immutable_id": {
+                "title": "",
+                "type": "string",
+                "description": "For Logs Ingestion API authentication. The immutable ID of your Data Collection Rule.",
+                "example": "dcr-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "For Logs Ingestion API authentication. Your application client secret.",
+                "format": "password",
+                "example": "your_client_secret"
               },
               "primary_key": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "For HTTP Data Collector API authentication. Your Log Analytics primary key.",
                 "format": "password",
-                "example": "string"
+                "example": "your_primary_key"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "For Logs Ingestion API authentication. Your application (client) ID.",
+                "example": "your_client_id"
               }
-            },
-            "description": ""
+            }
           }
         }
       },
@@ -23124,6 +23283,12 @@
                 "description": "",
                 "format": "int32",
                 "example": 0
+              },
+              "prefix": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": "string"
               },
               "host": {
                 "title": "",
@@ -25746,6 +25911,43 @@
           }
         ]
       },
+      "anthropic_claude_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_admin_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Claude Platform Admin API key.",
+                "format": "password",
+                "example": "your_admin_api_key"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Claude Platform standard API key.",
+                "format": "password",
+                "example": "your_standard_api_key"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "anthropic_claude_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/anthropic_claude_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
       "anvyl_config_V1": {
         "properties": {
           "config": {
@@ -28085,7 +28287,7 @@
               "extraction_pattern": {
                 "title": "",
                 "type": "string",
-                "description": "A regular expression with a named capture group `(?<table>...)` to extract table names from file paths.",
+                "description": "Required when `file_mapping_method` = `EXTRACT_TABLES`. A regular expression with a named capture group `(?<table>...)` to extract table names from file paths.",
                 "example": "(?<table>\\w+)/.*"
               },
               "archive_pattern": {
@@ -28184,7 +28386,7 @@
               "files": {
                 "title": "",
                 "type": "array",
-                "description": "Mapped file name patterns to a destination table.",
+                "description": "Required when `file_mapping_method` = `DEFINE_PER_TABLE`. Mapped file name patterns to a destination table.",
                 "items": {
                   "title": "",
                   "type": "object",
@@ -28214,7 +28416,7 @@
                       "example": "string"
                     }
                   },
-                  "description": "Mapped file name patterns to a destination table."
+                  "description": "Required when `file_mapping_method` = `DEFINE_PER_TABLE`. Mapped file name patterns to a destination table."
                 }
               },
               "compression": {
@@ -30170,8 +30372,8 @@
               "prefix": {
                 "title": "",
                 "type": "string",
-                "description": "All files and folders under this folder path will be searched for files to sync.",
-                "example": "folder_path"
+                "description": "The connection will look for files in this folder path. Choose the lowest common folder in a folder hierarchy that includes all the files you want to sync. This defines a specific location where Fivetran scans for files and helps ensure optimal performance.",
+                "example": "files/exports"
               },
               "pattern": {
                 "title": "",
@@ -30683,6 +30885,44 @@
           },
           {
             "$ref": "#/components/schemas/braze_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
+      "breathe_hr_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "environment": {
+                "type": "object",
+                "description": "Your Breathe HR environment.",
+                "enum": [
+                  "api.breathehr.com",
+                  "api.sandbox.breathehr.info"
+                ]
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Breathe HR API key.",
+                "format": "password",
+                "example": "your_breathe_hr_api_key"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "breathe_hr_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/breathe_hr_config_V1"
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
@@ -33040,6 +33280,36 @@
           }
         ]
       },
+      "coda_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your Coda API token.",
+                "format": "password",
+                "example": "your_coda_api_token"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "coda_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/coda_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
       "codefresh_config_V1": {
         "properties": {
           "config": {
@@ -33999,18 +34269,12 @@
           "config": {
             "type": "object",
             "properties": {
-              "client_secret": {
+              "api_token": {
                 "title": "",
                 "type": "string",
-                "description": "Enter your Credly Client Secret",
+                "description": "Enter your Credly API token",
                 "format": "password",
-                "example": "your_credly_lient_secret"
-              },
-              "client_id": {
-                "title": "",
-                "type": "string",
-                "description": "Enter your Credly Client ID",
-                "example": "your_credly_client_id"
+                "example": "your_credly_api_token"
               }
             },
             "description": ""
@@ -34839,6 +35103,72 @@
                 "type": "string",
                 "description": "Your Criteo Client ID.",
                 "example": "xxxxx-xxxxxx-x-xxxx"
+              },
+              "custom_reports": {
+                "title": "",
+                "type": "array",
+                "description": "Title of Custom Report",
+                "items": {
+                  "title": "",
+                  "type": "object",
+                  "properties": {
+                    "report_type": {
+                      "title": "",
+                      "type": "string",
+                      "description": "Type of report to be generated",
+                      "example": "STATISTICS_REPORT"
+                    },
+                    "time_dimensions": {
+                      "title": "",
+                      "type": "array",
+                      "description": "Time dimensions to be synced",
+                      "example": [
+                        "string"
+                      ],
+                      "items": {
+                        "title": "",
+                        "type": "string",
+                        "description": "",
+                        "example": "string"
+                      }
+                    },
+                    "metrics": {
+                      "title": "",
+                      "type": "array",
+                      "description": "Metrics to be synced",
+                      "example": [
+                        "string"
+                      ],
+                      "items": {
+                        "title": "",
+                        "type": "string",
+                        "description": "",
+                        "example": "string"
+                      }
+                    },
+                    "table_name": {
+                      "title": "",
+                      "type": "string",
+                      "description": "Destination Table name of report",
+                      "example": "table_1"
+                    },
+                    "dimensions": {
+                      "title": "",
+                      "type": "array",
+                      "description": "Dimensions to be synced",
+                      "example": [
+                        "string"
+                      ],
+                      "items": {
+                        "title": "",
+                        "type": "string",
+                        "description": "",
+                        "example": "string"
+                      }
+                    }
+                  },
+                  "description": "Title of Custom Report"
+                }
               }
             },
             "description": ""
@@ -36066,6 +36396,36 @@
           },
           {
             "$ref": "#/components/schemas/dcl_logistics_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
+      "deel_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your Deel access token.",
+                "format": "password",
+                "example": "your_deel_access_token"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "deel_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/deel_config_V1"
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
@@ -37424,8 +37784,8 @@
               "prefix": {
                 "title": "",
                 "type": "string",
-                "description": "All files and folders under this folder path will be searched for files to sync.",
-                "example": "folder_path"
+                "description": "The connection will look for files in this folder path. Choose the lowest common folder in a folder hierarchy that includes all the files you want to sync. This defines a specific location where Fivetran scans for files and helps ensure optimal performance.",
+                "example": "files/exports"
               },
               "selected_range": {
                 "title": "",
@@ -39744,6 +40104,36 @@
           }
         ]
       },
+      "fathom_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Fathom API key.",
+                "format": "password",
+                "example": "your_fathom_api_key"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "fathom_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/fathom_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
       "fillout_config_V1": {
         "properties": {
           "config": {
@@ -40922,8 +41312,8 @@
               "prefix": {
                 "title": "",
                 "type": "string",
-                "description": "All files and folders under this folder path will be searched for files to sync.",
-                "example": "folder_path"
+                "description": "The connection will look for files in this folder path. Choose the lowest common folder in a folder hierarchy that includes all the files you want to sync. This defines a specific location where Fivetran scans for files and helps ensure optimal performance.",
+                "example": "files/exports"
               },
               "pattern": {
                 "title": "",
@@ -41274,7 +41664,7 @@
                 "title": "",
                 "type": "object",
                 "description": "The authentication method to use. Can be either OAUTH or API_KEY.",
-                "example": "API_KEY",
+                "example": "API_KEY | OAUTH",
                 "enum": [
                   "API_KEY",
                   "OAUTH"
@@ -41283,14 +41673,14 @@
               "access_key": {
                 "title": "",
                 "type": "string",
-                "description": "The access key for API authentication.",
+                "description": "The API key for API authentication.",
                 "format": "password",
-                "example": "test_access_key"
+                "example": "test_api_key"
               },
               "sub_domain": {
                 "title": "",
                 "type": "string",
-                "description": "The subdomain of your Gainsight account.",
+                "description": "The subdomain of your Gainsight Customer Success account.",
                 "example": "test_sub_domain"
               }
             },
@@ -41401,8 +41791,8 @@
               "prefix": {
                 "title": "",
                 "type": "string",
-                "description": "All files and folders under this folder path will be searched for files to sync.",
-                "example": "folder_path"
+                "description": "The connection will look for files in this folder path. Choose the lowest common folder in a folder hierarchy that includes all the files you want to sync. This defines a specific location where Fivetran scans for files and helps ensure optimal performance.",
+                "example": "files/exports"
               },
               "non_standard_escape_char": {
                 "title": "",
@@ -41516,7 +41906,7 @@
               "extraction_pattern": {
                 "title": "",
                 "type": "string",
-                "description": "A regular expression with a named capture group `(?<table>...)` to extract table names from file paths.",
+                "description": "Required when `file_mapping_method` = `EXTRACT_TABLES`. A regular expression with a named capture group `(?<table>...)` to extract table names from file paths.",
                 "example": "(?<table>\\w+)/.*"
               },
               "archive_pattern": {
@@ -41596,7 +41986,7 @@
               "files": {
                 "title": "",
                 "type": "array",
-                "description": "Mapped file name patterns to a destination table.",
+                "description": "Required when `file_mapping_method` = `DEFINE_PER_TABLE`. Mapped file name patterns to a destination table.",
                 "items": {
                   "title": "",
                   "type": "object",
@@ -41626,7 +42016,7 @@
                       "example": "string"
                     }
                   },
-                  "description": "Mapped file name patterns to a destination table."
+                  "description": "Required when `file_mapping_method` = `DEFINE_PER_TABLE`. Mapped file name patterns to a destination table."
                 }
               },
               "compression": {
@@ -42851,9 +43241,8 @@
                 "title": "",
                 "type": "object",
                 "description": "The Sync Mode",
-                "example": "COLUMNS",
+                "example": "COLUMNS | JSON",
                 "enum": [
-                  "CHILD_TABLES",
                   "COLUMNS",
                   "JSON"
                 ]
@@ -43793,8 +44182,8 @@
               "prefix": {
                 "title": "",
                 "type": "string",
-                "description": "All files and folders under this folder path will be searched for files to sync, this can be the entire drive link or a folder URL",
-                "example": "folder_path"
+                "description": "The connection will look for files in the folder of the URL you provide. Choose the lowest common folder in a folder hierarchy that includes all the files you want to sync. This defines a specific location where Fivetran scans for files and helps ensure optimal performance.",
+                "example": "folder_link_url"
               },
               "pattern": {
                 "title": "",
@@ -44604,6 +44993,73 @@
           }
         ]
       },
+      "google_tag_manager_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "description": ""
+          }
+        }
+      },
+      "google_tag_manager_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your Google Tag Manager access token.",
+                "format": "password",
+                "example": "google_tag_manager_access_token"
+              },
+              "refresh_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your Google Tag Manager refresh token.",
+                "format": "password",
+                "example": "google_tag_manager_refresh_token"
+              },
+              "client_access": {
+                "title": "",
+                "type": "object",
+                "properties": {
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  },
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "google_tag_manager_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/google_tag_manager_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/google_tag_manager_auth_V1"
+          }
+        ]
+      },
       "google_tasks_config_V1": {
         "properties": {
           "config": {
@@ -44766,6 +45222,25 @@
                 "description": "Your Greenhouse API key.",
                 "format": "password",
                 "example": "xxxxxxxxxxxxxxxx"
+              },
+              "use_harvest_api_v3": {
+                "title": "",
+                "type": "string",
+                "description": "The confirmation that you want to connect to Harvest V3 API. Possible values: `true`, `false`.",
+                "example": "false"
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Greenhouse client secret.",
+                "format": "password",
+                "example": "your_greenhouse_harvest_v3_client_secret"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Greenhouse client ID.",
+                "example": "your_greenhouse_harvest_v3_client_id"
               }
             },
             "description": ""
@@ -45911,7 +46386,7 @@
             "properties": {
               "subdomain": {
                 "type": "object",
-                "description": "Your Ibacos subdomain.",
+                "description": "Your IBACOS Server.",
                 "enum": [
                   "perform-api-stg.ibacos.org",
                   "perform-api.Indo.site",
@@ -45921,14 +46396,14 @@
               "client_secret": {
                 "title": "",
                 "type": "string",
-                "description": "Your Ibacos Client secret.",
+                "description": "Your IBACOS Client secret.",
                 "format": "password",
                 "example": "string"
               },
               "client_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Ibacos Client ID.",
+                "description": "Your IBACOS Client ID.",
                 "example": "string"
               }
             },
@@ -47689,6 +48164,12 @@
           "config": {
             "type": "object",
             "properties": {
+              "should_sync_predictive_analytics": {
+                "title": "",
+                "type": "boolean",
+                "description": "Sync predictive analytics for `PERSON` table",
+                "example": true
+              },
               "historical_sync_limit_date": {
                 "title": "",
                 "type": "string",
@@ -47703,6 +48184,13 @@
                   "title": "",
                   "type": "object",
                   "properties": {
+                    "rollback_window_in_days": {
+                      "title": "",
+                      "type": "integer",
+                      "description": "The number of days to look back during each sync to capture late-arriving data. Valid range: 2 to 90 days. Default: 5 days.",
+                      "format": "int32",
+                      "example": 5
+                    },
                     "name": {
                       "title": "",
                       "type": "string",
@@ -47767,7 +48255,7 @@
               "packing_mode": {
                 "title": "",
                 "type": "object",
-                "description": "Packing mode for EVENT and PERSON tables.",
+                "description": "Packing mode for EVENT and `PERSON` tables.",
                 "example": "UNPACKED | PACKED",
                 "enum": [
                   "UNPACKED",
@@ -47982,6 +48470,36 @@
           },
           {
             "$ref": "#/components/schemas/leap_crm_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
+      "leapsome_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "",
+                "type": "string",
+                "description": "your Leapsome API secret",
+                "format": "password",
+                "example": "your_leapsome_api_secret"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "leapsome_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/leapsome_config_V1"
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
@@ -48690,6 +49208,36 @@
           }
         ]
       },
+      "livestorm_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Livestorm API key.",
+                "format": "password",
+                "example": "your_livestorm_api_key"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "livestorm_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/livestorm_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
       "lob_config_V1": {
         "properties": {
           "config": {
@@ -48728,20 +49276,20 @@
               "sub_domain": {
                 "title": "",
                 "type": "string",
-                "description": "Your looker SubDomain name.",
-                "example": "your_looker_sub_domain"
+                "description": "Your Looker domain name.",
+                "example": "your_looker_domain"
               },
               "client_secret": {
                 "title": "",
                 "type": "string",
-                "description": "Your Looker Client Secret.",
+                "description": "Your Looker client secret.",
                 "format": "password",
                 "example": "your_client_secret"
               },
               "client_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Looker Client ID.",
+                "description": "Your Looker client ID.",
                 "example": "your_client_id"
               }
             },
@@ -49368,6 +49916,36 @@
           }
         ]
       },
+      "maintainx_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your MaintainX API key.",
+                "format": "password",
+                "example": "your_maintainx_api_key"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "maintainx_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/maintainx_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
       "malomo_config_V1": {
         "properties": {
           "config": {
@@ -49983,23 +50561,11 @@
           "config": {
             "type": "object",
             "properties": {
-              "soap_uri": {
-                "title": "",
-                "type": "string",
-                "description": "Marketo SOAP API Endpoint (Discontinued).",
-                "example": "https://58-LBZ-000.mktoapi.com/soap/mktows/3_1"
-              },
               "prioritise_bulk_export_over_rest": {
                 "title": "",
                 "type": "boolean",
                 "description": "Use BULK for both LEAD and ACTIITIES",
                 "example": true
-              },
-              "client_id": {
-                "title": "",
-                "type": "string",
-                "description": "Marketo REST API Client Id.",
-                "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
               },
               "historical_sync_limit_date": {
                 "title": "",
@@ -50023,12 +50589,6 @@
                 "description": "Marketo REST API endpoint.",
                 "example": "https://my.mktorest.com/rest"
               },
-              "user_id": {
-                "title": "",
-                "type": "string",
-                "description": "Marketo SOAP API User Id (Discontinued).",
-                "example": "MKTOWS_58-LBZ-000_Y"
-              },
               "identity": {
                 "title": "",
                 "type": "string",
@@ -50042,19 +50602,18 @@
                 "format": "int32",
                 "example": 10000
               },
-              "encryption_key": {
-                "title": "",
-                "type": "string",
-                "description": "Marketo SOAP API Encryption Key (Discontinued).",
-                "format": "password",
-                "example": "your_encryption_key"
-              },
               "client_secret": {
                 "title": "",
                 "type": "string",
                 "description": "Marketo REST API Client Secret.",
                 "format": "password",
                 "example": "your_api_secret"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Marketo REST API Client Id.",
+                "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
               }
             },
             "description": ""
@@ -50934,6 +51493,36 @@
           },
           {
             "$ref": "#/components/schemas/mode_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
+      "mollie_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Mollie API key.",
+                "format": "password",
+                "example": "your_api_key"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "mollie_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/mollie_config_V1"
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
@@ -52630,7 +53219,8 @@
                 "description": "Your OneTrust API integration type.",
                 "enum": [
                   "consentmanager/v1/datasubjects/profiles",
-                  "api/cmp/v1/webscans"
+                  "/cmp/v1/webscans",
+                  "/assessment/v2/assessments"
                 ]
               }
             },
@@ -53532,6 +54122,18 @@
                 "description": "The Oracle Fusion Cloud issuer name.",
                 "example": "test_issuer"
               },
+              "delete_capture_frequency": {
+                "title": "",
+                "type": "object",
+                "description": "Use this option to configure how often the connection captures deletes.",
+                "example": "EVERY_WEEK | EVERY_SYNC | NEVER | EVERY_DAY",
+                "enum": [
+                  "EVERY_WEEK",
+                  "EVERY_SYNC",
+                  "NEVER",
+                  "EVERY_DAY"
+                ]
+              },
               "username": {
                 "title": "",
                 "type": "string",
@@ -53610,6 +54212,18 @@
                 "description": "The Oracle Fusion Cloud issuer name.",
                 "example": "test_issuer"
               },
+              "delete_capture_frequency": {
+                "title": "",
+                "type": "object",
+                "description": "Use this option to configure how often the connection captures deletes.",
+                "example": "EVERY_WEEK | EVERY_SYNC | NEVER | EVERY_DAY",
+                "enum": [
+                  "EVERY_WEEK",
+                  "EVERY_SYNC",
+                  "NEVER",
+                  "EVERY_DAY"
+                ]
+              },
               "username": {
                 "title": "",
                 "type": "string",
@@ -53687,6 +54301,18 @@
                 "type": "string",
                 "description": "The Oracle Fusion Cloud issuer name.",
                 "example": "test_issuer"
+              },
+              "delete_capture_frequency": {
+                "title": "",
+                "type": "object",
+                "description": "Use this option to configure how often the connection captures deletes.",
+                "example": "EVERY_WEEK | EVERY_SYNC | NEVER | EVERY_DAY",
+                "enum": [
+                  "EVERY_WEEK",
+                  "EVERY_SYNC",
+                  "NEVER",
+                  "EVERY_DAY"
+                ]
               },
               "username": {
                 "title": "",
@@ -56365,20 +56991,6 @@
                 "enum": [
                   "CONVERSION_EVENT",
                   "AD_EVENT"
-                ]
-              },
-              "engagement_attribution_window": {
-                "title": "",
-                "type": "object",
-                "description": "The number of days to use as the conversion attribution window for an engagement (i.e. closeup or save) action.",
-                "example": "ZERO | THIRTY | SIXTY | FOURTEEN | ONE | SEVEN",
-                "enum": [
-                  "ZERO",
-                  "THIRTY",
-                  "SIXTY",
-                  "FOURTEEN",
-                  "ONE",
-                  "SEVEN"
                 ]
               },
               "click_attribution_window": {
@@ -59287,6 +59899,36 @@
           }
         ]
       },
+      "rivo_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Rivo API key.",
+                "format": "password",
+                "example": "your_rivo_api_key"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "rivo_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/rivo_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
       "rocketlane_config_V1": {
         "properties": {
           "config": {
@@ -59584,8 +60226,8 @@
               "prefix": {
                 "title": "",
                 "type": "string",
-                "description": "All files and folders under this folder path will be searched for files to sync.",
-                "example": "folder_path"
+                "description": "The connection will look for files in this folder path. Choose the lowest common folder in a folder hierarchy that includes all the files you want to sync. This defines a specific location where Fivetran scans for files and helps ensure optimal performance.",
+                "example": "files/exports"
               },
               "non_standard_escape_char": {
                 "title": "",
@@ -59692,7 +60334,7 @@
               "extraction_pattern": {
                 "title": "",
                 "type": "string",
-                "description": "A regular expression with a named capture group `(?<table>...)` to extract table names from file paths.",
+                "description": "Required when `file_mapping_method` = `EXTRACT_TABLES`. A regular expression with a named capture group `(?<table>...)` to extract table names from file paths.",
                 "example": "(?<table>\\w+)/.*"
               },
               "archive_pattern": {
@@ -59815,7 +60457,7 @@
               "files": {
                 "title": "",
                 "type": "array",
-                "description": "Mapped file name patterns to a destination table.",
+                "description": "Required when `file_mapping_method` = `DEFINE_PER_TABLE`. Mapped file name patterns to a destination table.",
                 "items": {
                   "title": "",
                   "type": "object",
@@ -59845,7 +60487,7 @@
                       "example": "string"
                     }
                   },
-                  "description": "Mapped file name patterns to a destination table."
+                  "description": "Required when `file_mapping_method` = `DEFINE_PER_TABLE`. Mapped file name patterns to a destination table."
                 }
               },
               "compression": {
@@ -59916,8 +60558,8 @@
               "prefix": {
                 "title": "",
                 "type": "string",
-                "description": "All files and folders under this folder path will be searched for files to sync.",
-                "example": "folder_path"
+                "description": "The connection will look for files in this folder path. Choose the lowest common folder in a folder hierarchy that includes all the files you want to sync. This defines a specific location where Fivetran scans for files and helps ensure optimal performance.",
+                "example": "files/exports"
               },
               "json_delivery_mode": {
                 "title": "",
@@ -60469,6 +61111,12 @@
                 "format": "password",
                 "example": "---"
               },
+              "update_infrequent_objects_in_every_sync": {
+                "title": "",
+                "type": "boolean",
+                "description": "Enable this option to sync infrequently updated tables during every sync (default value = `false`)",
+                "example": true
+              },
               "api_usage_limit": {
                 "title": "",
                 "type": "integer",
@@ -60712,7 +61360,7 @@
               "sync_mode": {
                 "title": "",
                 "type": "object",
-                "description": "Select the sync mode.",
+                "description": "Filter event types.",
                 "example": "SelectedEvents | AllEvents",
                 "enum": [
                   "SelectedEvents",
@@ -60833,6 +61481,12 @@
                 "description": "Provide content of the `.key` private key (only when authentication_method = `ADVANCED`).",
                 "format": "password",
                 "example": "---"
+              },
+              "update_infrequent_objects_in_every_sync": {
+                "title": "",
+                "type": "boolean",
+                "description": "Enable this option to sync infrequently updated tables during every sync (default value = `false`)",
+                "example": true
               },
               "api_usage_limit": {
                 "title": "",
@@ -60999,6 +61653,14 @@
                 "format": "password",
                 "example": "your_samsara_api_token"
               },
+              "auth_type": {
+                "type": "object",
+                "description": "The authentication method you want to use for your connection.",
+                "enum": [
+                  "access_token",
+                  "oauth_2"
+                ]
+              },
               "region": {
                 "type": "object",
                 "description": "The region of your Samsara account. For instance, if your region is `EUROPE`, provide `eu.samsara` in the `Region` field. If your region is not in Europe, provide `samsara`.",
@@ -61006,6 +61668,19 @@
                   "eu.samsara",
                   "samsara"
                 ]
+              },
+              "app_id": {
+                "title": "",
+                "type": "string",
+                "description": "App ID for your OAuth 2.0 app.",
+                "example": "your_oauth_app_id"
+              },
+              "app_secret": {
+                "title": "",
+                "type": "string",
+                "description": "App secret for your OAuth 2.0 app.",
+                "format": "password",
+                "example": "your_oauth_app_secret"
               }
             },
             "description": ""
@@ -61145,6 +61820,17 @@
                 "description": "",
                 "format": "password",
                 "example": "string"
+              },
+              "sap_hana_connection_mode": {
+                "title": "SAP HANA Connection Mode",
+                "type": "object",
+                "description": "Connection mode for SAP HANA database (DIRECT or NETWEAVER)",
+                "example": "NETWEAVER",
+                "enum": [
+                  "NET_WEAVER",
+                  "NETWEAVER",
+                  "DIRECT"
+                ]
               },
               "use_sap_router": {
                 "title": "Use SAP Router",
@@ -61720,8 +62406,8 @@
               "prefix": {
                 "title": "",
                 "type": "string",
-                "description": "All files and folders under this folder path will be searched for files to sync.",
-                "example": "folder_path"
+                "description": "The connection will look for files in this folder path. Choose the lowest common folder in a folder hierarchy that includes all the files you want to sync. This defines a specific location where Fivetran scans for files and helps ensure optimal performance.",
+                "example": "files/exports"
               },
               "pattern": {
                 "title": "",
@@ -61842,7 +62528,7 @@
               "extraction_pattern": {
                 "title": "",
                 "type": "string",
-                "description": "A regular expression with a named capture group `(?<table>...)` to extract table names from file paths.",
+                "description": "Required when `file_mapping_method` = `EXTRACT_TABLES`. A regular expression with a named capture group `(?<table>...)` to extract table names from file paths.",
                 "example": "(?<table>\\w+)/.*"
               },
               "archive_pattern": {
@@ -61931,7 +62617,7 @@
               "files": {
                 "title": "",
                 "type": "array",
-                "description": "Mapped file name patterns to a destination table.",
+                "description": "Required when `file_mapping_method` = `DEFINE_PER_TABLE`. Mapped file name patterns to a destination table.",
                 "items": {
                   "title": "",
                   "type": "object",
@@ -61961,7 +62647,7 @@
                       "example": "string"
                     }
                   },
-                  "description": "Mapped file name patterns to a destination table."
+                  "description": "Required when `file_mapping_method` = `DEFINE_PER_TABLE`. Mapped file name patterns to a destination table."
                 }
               },
               "is_keypair": {
@@ -62033,10 +62719,11 @@
                 "title": "",
                 "type": "object",
                 "description": "Access Type",
-                "example": "CUSTOM_APP | SPECIFIC_SITES | ALL_SITES",
+                "example": "CUSTOM_APP | SPECIFIC_SITES | CLIENT_CERTIFICATE | ALL_SITES",
                 "enum": [
                   "CUSTOM_APP",
                   "SPECIFIC_SITES",
+                  "CLIENT_CERTIFICATE",
                   "ALL_SITES"
                 ]
               },
@@ -62059,7 +62746,7 @@
               "prefix": {
                 "title": "",
                 "type": "string",
-                "description": "All files and folders under this folder path link will be searched for files to sync. This can be any shared folder link.",
+                "description": "The connection will look for files in the folder of the URL you provide. Choose the lowest common folder in a folder hierarchy that includes all the files you want to sync. This defines a specific location where Fivetran scans for files and helps ensure optimal performance.",
                 "example": "folder_link_url"
               },
               "client_certificate_private_key": {
@@ -62441,6 +63128,36 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_table"
+          }
+        ]
+      },
+      "shipmonk_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Shipmonk API key.",
+                "format": "password",
+                "example": "your_shipmonk_api_key"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "shipmonk_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/shipmonk_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
           }
         ]
       },
@@ -63281,6 +63998,42 @@
           }
         ]
       },
+      "slack_admin_data_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Slack admin client secret.",
+                "format": "password",
+                "example": "your_slack_admin_client_secret"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Slack admin client ID.",
+                "example": "your_slack_admin_client_id"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "slack_admin_data_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/slack_admin_data_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
       "slack_app_config_V1": {
         "properties": {
           "config": {
@@ -63298,6 +64051,14 @@
                 "type": "string",
                 "description": "Your Slack app Client ID.",
                 "example": "your_slack_client_id"
+              },
+              "app_level": {
+                "type": "object",
+                "description": "Your Slack app level.",
+                "enum": [
+                  "users:read,bookmarks:read,channels:history,channels:read,dnd:read,emoji:read,groups:history,groups:read,im:history,im:read,mpim:history,mpim:read,pins:read,reactions:read,reminders:read,usergroups:read,files:read,users.profile:read,users:read.email,remote_files:read,pins:read,team.billing:read,team.preferences:read",
+                  "users:read,bookmarks:read,channels:history,channels:read,dnd:read,emoji:read,groups:history,groups:read,im:history,im:read,mpim:history,mpim:read,pins:read,reactions:read,reminders:read,usergroups:read,files:read,users.profile:read,users:read.email,remote_files:read,pins:read,team.billing:read,team.preferences:read,auditlogs:read"
+                ]
               }
             },
             "description": ""
@@ -64405,6 +65166,13 @@
                 "format": "password",
                 "example": "password"
               },
+              "rollback_window": {
+                "title": "",
+                "type": "integer",
+                "description": "Set a rollback window between 0 and 7 days. The default is 2 days.",
+                "format": "int32",
+                "example": 2
+              },
               "port": {
                 "title": "",
                 "type": "integer",
@@ -64696,8 +65464,9 @@
                 "title": "",
                 "type": "object",
                 "description": "Location of transaction log backup files when using BACKUP binary log type. Possible values: `\"AZURE\"`, `\"ALTERNATE_LOCATION\"`, `\"AWS\"`.",
-                "example": "AZURE | ALTERNATE_LOCATION | AWS",
+                "example": "MSDB | AZURE | ALTERNATE_LOCATION | AWS",
                 "enum": [
+                  "MSDB",
                   "AZURE",
                   "ALTERNATE_LOCATION",
                   "AWS"
@@ -67495,6 +68264,49 @@
           }
         ]
       },
+      "trustpilot_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "domain_name": {
+                "title": "",
+                "type": "string",
+                "description": "Your Trustpilot domain name.",
+                "example": "your_trustpilot_domain_name"
+              },
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Trustpilot API key.",
+                "format": "password",
+                "example": "your_trustpilot_api_key"
+              },
+              "api_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Trustpilot API secret.",
+                "format": "password",
+                "example": "your_trustpilot_api_secret"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "trustpilot_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/trustpilot_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
       "twilio_config_V1": {
         "properties": {
           "config": {
@@ -69413,31 +70225,24 @@
                       "title": "",
                       "type": "string",
                       "description": "The table name within the schema to which connector will sync the data of the specific report.",
-                      "example": "string"
+                      "example": "table_name"
                     },
                     "start_date": {
                       "title": "",
                       "type": "string",
                       "description": "Start date",
-                      "example": "string"
+                      "example": "2024-01-01"
                     }
                   },
                   "description": "The list of reports. Each report corresponds to a table within the schema to which connector will sync the data."
                 }
               },
-              "primary_keys": {
+              "password": {
                 "title": "",
-                "type": "array",
-                "description": "Primary Keys",
-                "example": [
-                  "string"
-                ],
-                "items": {
-                  "title": "",
-                  "type": "string",
-                  "description": "",
-                  "example": "string"
-                }
+                "type": "string",
+                "description": "Workday password.",
+                "format": "password",
+                "example": "workday_password"
               },
               "authorization_url": {
                 "title": "",
@@ -69445,17 +70250,17 @@
                 "description": "Authorization URL",
                 "example": "string"
               },
+              "domain_host_name": {
+                "title": "",
+                "type": "string",
+                "description": "Workday host name.",
+                "example": "string"
+              },
               "user_name": {
                 "title": "",
                 "type": "string",
                 "description": "Workday username.",
                 "example": "workday_username"
-              },
-              "report_url": {
-                "title": "",
-                "type": "string",
-                "description": "URL for a live custom report.",
-                "example": "workday_report_url"
               },
               "auth_mode": {
                 "title": "",
@@ -69465,41 +70270,6 @@
                 "enum": [
                   "BASIC",
                   "OAUTH"
-                ]
-              },
-              "support_nested_columns": {
-                "title": "",
-                "type": "boolean",
-                "description": "This option is to unpack the nested columns and sync them separately. By default, we sync the nested columns as JSON objects.",
-                "example": true
-              },
-              "password": {
-                "title": "",
-                "type": "string",
-                "description": "Workday password.",
-                "format": "password",
-                "example": "workday_password"
-              },
-              "domain_host_name": {
-                "title": "",
-                "type": "string",
-                "description": "Workday host name.",
-                "example": "string"
-              },
-              "generate_fivetran_pk": {
-                "title": "",
-                "type": "boolean",
-                "description": "Select this option to generate a Primary Key for reports where no single column or combination of columns can be used to form a Primary Key.",
-                "example": true
-              },
-              "report_format_type": {
-                "title": "",
-                "type": "object",
-                "description": "This is to select report format from JSON and CSV. By default, report format is JSON.",
-                "example": "csv | json",
-                "enum": [
-                  "csv",
-                  "json"
                 ]
               },
               "tenant": {
@@ -69576,6 +70346,76 @@
                       "description": "Include zero rows in the table sync.",
                       "example": true
                     },
+                    "sync_descendant_levels": {
+                      "title": "",
+                      "type": "boolean",
+                      "description": "Flag to indicate if descendant levels should be included for the selected levels.",
+                      "example": true
+                    },
+                    "version_sync_strategy": {
+                      "title": "",
+                      "type": "object",
+                      "description": "Version sync strategy for the table, `SYNC_ALL_AND_NEW_VERSIONS` or `SYNC_SELECT_VERSIONS`.",
+                      "example": "SYNC_SELECT_VERSIONS | SYNC_ALL_AND_NEW_VERSIONS",
+                      "enum": [
+                        "SYNC_SELECT_VERSIONS",
+                        "SYNC_ALL_AND_NEW_VERSIONS"
+                      ]
+                    },
+                    "sync_descendant_accounts": {
+                      "title": "",
+                      "type": "boolean",
+                      "description": "Flag to indicate if descendant accounts should be included for the selected accounts.",
+                      "example": true
+                    },
+                    "level_sync_mode": {
+                      "title": "",
+                      "type": "object",
+                      "description": "Level sync mode for the table. Options: `SYNC_ALL_LEVELS` (sync all levels) or `SELECT_SPECIFIC_LEVELS` (sync selected levels only).",
+                      "example": "SYNC_ALL_LEVELS",
+                      "enum": [
+                        "SELECT_SPECIFIC_LEVELS",
+                        "SYNC_ALL_LEVELS"
+                      ]
+                    },
+                    "selected_levels": {
+                      "title": "",
+                      "type": "array",
+                      "description": "List of level IDs to sync when `levelSyncMode` is `SELECT_SPECIFIC_LEVELS`.",
+                      "example": [
+                        "string"
+                      ],
+                      "items": {
+                        "title": "",
+                        "type": "string",
+                        "description": "",
+                        "example": "string"
+                      }
+                    },
+                    "selected_accounts": {
+                      "title": "",
+                      "type": "array",
+                      "description": "List of account IDs to sync when `accountSyncMode` is `SELECT_SPECIFIC_ACCOUNTS`. Each ID should be in the format: `<accountId>,<isAssumption>` (e.g., `1,false`).",
+                      "example": [
+                        "string"
+                      ],
+                      "items": {
+                        "title": "",
+                        "type": "string",
+                        "description": "",
+                        "example": "string"
+                      }
+                    },
+                    "account_sync_mode": {
+                      "title": "",
+                      "type": "object",
+                      "description": "Account sync mode for the table. Options: `SYNC_ALL_ACCOUNTS` (sync all accounts) or `SELECT_SPECIFIC_ACCOUNTS` (sync selected accounts only).",
+                      "example": "SYNC_ALL_ACCOUNTS",
+                      "enum": [
+                        "SELECT_SPECIFIC_ACCOUNTS",
+                        "SYNC_ALL_ACCOUNTS"
+                      ]
+                    },
                     "versions": {
                       "title": "",
                       "type": "array",
@@ -69589,16 +70429,6 @@
                         "description": "",
                         "example": "string"
                       }
-                    },
-                    "version_sync_strategy": {
-                      "title": "",
-                      "type": "object",
-                      "description": "Version sync strategy for the table, `SYNC_ALL_AND_NEW_VERSIONS` or `SYNC_SELECT_VERSIONS`.",
-                      "example": "SYNC_SELECT_VERSIONS | SYNC_ALL_AND_NEW_VERSIONS",
-                      "enum": [
-                        "SYNC_SELECT_VERSIONS",
-                        "SYNC_ALL_AND_NEW_VERSIONS"
-                      ]
                     },
                     "currency": {
                       "title": "",
@@ -72005,6 +72835,7 @@
                   "EU",
                   "AU",
                   "IN",
+                  "JP",
                   "CN",
                   "US"
                 ]
@@ -73048,6 +73879,16 @@
           }
         ]
       },
+      "anthropic_claude_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/anthropic_claude_config_V1"
+          }
+        ]
+      },
       "anvyl_ConnectorResponseV1": {
         "allOf": [
           {
@@ -74040,6 +74881,16 @@
           }
         ]
       },
+      "breathe_hr_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/breathe_hr_config_V1"
+          }
+        ]
+      },
       "brevo_ConnectorResponseV1": {
         "allOf": [
           {
@@ -74618,6 +75469,16 @@
           }
         ]
       },
+      "coda_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/coda_config_V1"
+          }
+        ]
+      },
       "codefresh_ConnectorResponseV1": {
         "allOf": [
           {
@@ -75071,6 +75932,16 @@
           },
           {
             "$ref": "#/components/schemas/dcl_logistics_config_V1"
+          }
+        ]
+      },
+      "deel_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/deel_config_V1"
           }
         ]
       },
@@ -75690,6 +76561,16 @@
           },
           {
             "$ref": "#/components/schemas/factorial_config_V1"
+          }
+        ]
+      },
+      "fathom_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/fathom_config_V1"
           }
         ]
       },
@@ -76405,6 +77286,16 @@
           },
           {
             "$ref": "#/components/schemas/google_sheets_config_V1"
+          }
+        ]
+      },
+      "google_tag_manager_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/google_tag_manager_config_V1"
           }
         ]
       },
@@ -77136,6 +78027,16 @@
           }
         ]
       },
+      "leapsome_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/leapsome_config_V1"
+          }
+        ]
+      },
       "learn_amp_ConnectorResponseV1": {
         "allOf": [
           {
@@ -77283,6 +78184,16 @@
           },
           {
             "$ref": "#/components/schemas/livechat_partner_config_V1"
+          }
+        ]
+      },
+      "livestorm_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/livestorm_config_V1"
           }
         ]
       },
@@ -77450,6 +78361,16 @@
           }
         ]
       },
+      "maintainx_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/maintainx_config_V1"
+          }
+        ]
+      },
       "malomo_ConnectorResponseV1": {
         "allOf": [
           {
@@ -77583,22 +78504,6 @@
           }
         ]
       },
-      "marketo_readonly_config_V1": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "properties": {
-              "are_soap_credentials_provided": {
-                "title": "",
-                "type": "boolean",
-                "description": "Marketo SOAP credentials provided.",
-                "example": true
-              }
-            },
-            "description": ""
-          }
-        }
-      },
       "marketo_ConnectorResponseV1": {
         "allOf": [
           {
@@ -77606,9 +78511,6 @@
           },
           {
             "$ref": "#/components/schemas/marketo_config_V1"
-          },
-          {
-            "$ref": "#/components/schemas/marketo_readonly_config_V1"
           }
         ]
       },
@@ -77779,6 +78681,16 @@
           },
           {
             "$ref": "#/components/schemas/mode_config_V1"
+          }
+        ]
+      },
+      "mollie_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/mollie_config_V1"
           }
         ]
       },
@@ -79432,6 +80344,16 @@
           }
         ]
       },
+      "rivo_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/rivo_config_V1"
+          }
+        ]
+      },
       "rocketlane_ConnectorResponseV1": {
         "allOf": [
           {
@@ -80024,6 +80946,16 @@
           }
         ]
       },
+      "shipmonk_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/shipmonk_config_V1"
+          }
+        ]
+      },
       "shipnetwork_ConnectorResponseV1": {
         "allOf": [
           {
@@ -80211,6 +81143,16 @@
           },
           {
             "$ref": "#/components/schemas/slack_config_V1"
+          }
+        ]
+      },
+      "slack_admin_data_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/slack_admin_data_config_V1"
           }
         ]
       },
@@ -80966,6 +81908,16 @@
           },
           {
             "$ref": "#/components/schemas/trisolute_config_V1"
+          }
+        ]
+      },
+      "trustpilot_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/trustpilot_config_V1"
           }
         ]
       },
@@ -82273,15 +83225,15 @@
             ],
             "type": "object",
             "properties": {
-              "vpce_id": {
-                "type": "object",
-                "description": "The ID of your Virtual Private Cloud Endpoint.",
-                "example": "vpce_id"
-              },
               "account_url": {
                 "type": "object",
                 "description": "The URL of your account.",
                 "example": "account_url"
+              },
+              "vpce_id": {
+                "type": "object",
+                "description": "The ID of your Virtual Private Cloud Endpoint.",
+                "example": "vpce_id"
               }
             },
             "description": "Snowflake for AWS"
@@ -82308,15 +83260,15 @@
             ],
             "type": "object",
             "properties": {
-              "cluster_identifier": {
-                "type": "object",
-                "description": "The cluster identifier.",
-                "example": "cluster_identifier"
-              },
               "aws_account_id": {
                 "type": "object",
                 "description": "The ID of your AWS account.",
                 "example": "aws_account_id"
+              },
+              "cluster_identifier": {
+                "type": "object",
+                "description": "The cluster identifier.",
+                "example": "cluster_identifier"
               }
             },
             "description": "Redshift for AWS"
@@ -82372,15 +83324,15 @@
             ],
             "type": "object",
             "properties": {
-              "workspace_url": {
-                "type": "object",
-                "description": "Workspace Url",
-                "example": "workspace_url"
-              },
               "connection_service_id": {
                 "type": "object",
                 "description": "The ID of your connection service.",
                 "example": "connection_service_id"
+              },
+              "workspace_url": {
+                "type": "object",
+                "description": "Workspace Url",
+                "example": "workspace_url"
               }
             },
             "description": "Databricks for Azure"
@@ -82407,15 +83359,15 @@
             ],
             "type": "object",
             "properties": {
-              "pls_id": {
-                "type": "object",
-                "description": "The ID of your Private Link service.",
-                "example": "pls_id"
-              },
               "account_url": {
                 "type": "object",
                 "description": "The URL of your account.",
                 "example": "account_url"
+              },
+              "pls_id": {
+                "type": "object",
+                "description": "The ID of your Private Link service.",
+                "example": "pls_id"
               }
             },
             "description": "Snowflake for Azure"
@@ -82529,15 +83481,15 @@
             ],
             "type": "object",
             "properties": {
-              "sub_resource_name": {
-                "type": "object",
-                "description": "The name of subresource.",
-                "example": "sub_resource_name"
-              },
               "connection_service_id": {
                 "type": "object",
                 "description": "The ID of your connection service.",
                 "example": "connection_service_id"
+              },
+              "sub_resource_name": {
+                "type": "object",
+                "description": "The name of subresource.",
+                "example": "sub_resource_name"
               },
               "private_dns_records": {
                 "type": "object",
@@ -82569,15 +83521,15 @@
             ],
             "type": "object",
             "properties": {
-              "pls_id": {
-                "type": "object",
-                "description": "The ID of your Private Link service.",
-                "example": "pls_id"
-              },
               "account_url": {
                 "type": "object",
                 "description": "The URL of your account.",
                 "example": "account_url"
+              },
+              "pls_id": {
+                "type": "object",
+                "description": "The ID of your Private Link service.",
+                "example": "pls_id"
               }
             },
             "description": "Snowflake for GCP"
@@ -82633,15 +83585,15 @@
             ],
             "type": "object",
             "properties": {
-              "workspace_url": {
-                "type": "object",
-                "description": "Workspace Url",
-                "example": "workspace_url"
-              },
               "connection_service_id": {
                 "type": "object",
                 "description": "The ID of your connection service.",
                 "example": "connection_service_id"
+              },
+              "workspace_url": {
+                "type": "object",
+                "description": "Workspace Url",
+                "example": "workspace_url"
               }
             },
             "description": "Databricks for GCP"
