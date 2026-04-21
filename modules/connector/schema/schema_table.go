@@ -217,7 +217,7 @@ func (t *_table) readFromResponse(name string, response *connections.ConnectionS
 		t.columns[k] = c
 	}
 }
-func (t _table) toStateObject(sch string, local *_table, diag *diag.Diagnostics, schema string) (map[string]interface{}, bool) {
+func (t _table) toStateObject(sch string, local *_table, diag *diag.Diagnostics, schema string, isImporting bool) (map[string]interface{}, bool) {
 	result := make(map[string]interface{})
 	result[ENABLED] = helpers.BoolToStr(t.enabled)
 
@@ -242,38 +242,43 @@ func (t _table) toStateObject(sch string, local *_table, diag *diag.Diagnostics,
 	result[NAME] = t.name
 	if t.syncMode != nil && (local != nil && local.syncMode != nil) { // save sync_mode in state only if it is configured!
 		result[SYNC_MODE] = *t.syncMode
+	} else if isImporting {
+		result[SYNC_MODE] = *t.syncMode
 	}
+
 	columns := make([]interface{}, 0)
-	if local != nil && len(local.columns) > 0 {
+	if (local != nil && len(local.columns) > 0) || isImporting {
 		for k, v := range t.columns {
 			var columnState map[string]interface{}
 			var include bool
 			if local != nil {
 				if lc, ok := local.columns[k]; ok {
-					columnState, include = v.toStateObject(sch, lc, diag, schema, k)
+					columnState, include = v.toStateObject(sch, lc, diag, schema, k, false)
 				} else {
-					columnState, include = v.toStateObject(sch, nil, diag, schema, k)
+					columnState, include = v.toStateObject(sch, nil, diag, schema, k, false)
 				}
 			} else {
-				columnState, include = v.toStateObject(sch, nil, diag, schema, k)
+				columnState, include = v.toStateObject(sch, nil, diag, schema, k, isImporting)
 			}
 			if include {
 				columns = append(columns, columnState)
 			}
 		}
 		// Include columns that are defined in config, but not returned in response
-		for k, v := range local.columns {
-			if _, ok := t.columns[k]; !ok {
-				diag.AddWarning(
-					"Schema might be missconfigured.",
-					fmt.Sprintf(
-						"Column with name `%v` in table `%v` of schema `%v`, defined in your config, not found in upstream source config.\n"+
-							"Table might be deleted from source or renamed.\n "+
-							"Please remove it from your configuration, or align its name with source schema.", k, t.name, schema),
-				)
-			    columnState, include := v.toStateObject(sch, v, diag, schema, k)
-				if include {
-					columns = append(columns, columnState)
+		if local != nil {
+			for k, v := range local.columns {
+				if _, ok := t.columns[k]; !ok {
+					diag.AddWarning(
+						"Schema might be missconfigured.",
+						fmt.Sprintf(
+							"Column with name `%v` in table `%v` of schema `%v`, defined in your config, not found in upstream source config.\n"+
+								"Table might be deleted from source or renamed.\n "+
+								"Please remove it from your configuration, or align its name with source schema.", k, t.name, schema),
+					)
+					columnState, include := v.toStateObject(sch, v, diag, schema, k, false)
+					if include {
+						columns = append(columns, columnState)
+					}
 				}
 			}
 		}
@@ -281,7 +286,7 @@ func (t _table) toStateObject(sch string, local *_table, diag *diag.Diagnostics,
 	}
 
 	// table has been configured locally OR has columns to include OR table inconsistent by policy (patch allowed)
-	include := local != nil || len(columns) > 0 || (t.enabled != (sch == ALLOW_ALL) && t.isPatchAllowed())
+	include := local != nil || len(columns) > 0 || (t.enabled != (sch == ALLOW_ALL) && t.isPatchAllowed()) || isImporting
 
 	return result, include
 }

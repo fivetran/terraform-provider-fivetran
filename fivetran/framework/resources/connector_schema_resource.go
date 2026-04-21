@@ -111,7 +111,7 @@ func (r *connectorSchema) createNewSchema(ctx context.Context, connectorID strin
 		)
 		return
 	}
-	data.ReadFromResponse(applyResponse, &resp.Diagnostics)
+	data.ReadFromResponse(applyResponse, false, &resp.Diagnostics)
 	data.Id = types.StringValue(connectorID)
 	data.ConnectorId = types.StringValue(connectorID)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -355,7 +355,7 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 	}
 
 	// read data from response and merge with existing config
-	data.ReadFromResponse(schemaResponse, &resp.Diagnostics)
+	data.ReadFromResponse(schemaResponse, false, &resp.Diagnostics)
 	data.Id = types.StringValue(connectorID)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -377,6 +377,11 @@ func (r *connectorSchema) Read(ctx context.Context, req resource.ReadRequest, re
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
+	isImportOperation := data.ConnectorId.IsNull()
+	if isImportOperation {
+		data.ConnectorId = types.StringValue(data.Id.ValueString())
+	}
+
 	connectorID := data.ConnectorId.ValueString()
 
 	schemaResponse, err := client.NewConnectionSchemaDetails().ConnectionID(connectorID).Do(ctx)
@@ -391,7 +396,7 @@ func (r *connectorSchema) Read(ctx context.Context, req resource.ReadRequest, re
 		)
 		return
 	}
-	data.ReadFromResponse(schemaResponse, &resp.Diagnostics)
+	data.ReadFromResponse(schemaResponse, isImportOperation, &resp.Diagnostics)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
@@ -568,7 +573,7 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
-	plan.ReadFromResponse(schemaResponse, &resp.Diagnostics)
+	plan.ReadFromResponse(schemaResponse, false, &resp.Diagnostics)
 	plan.Id = types.StringValue(connectorID)
 	plan.ConnectorId = types.StringValue(connectorID)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)

@@ -151,7 +151,7 @@ func (s *_schema) readTables(tables []interface{}, sch string) {
 	}
 }
 
-func (s _schema) toStateObject(sch string, local *_schema, diag *diag.Diagnostics) (map[string]interface{}, bool) {
+func (s _schema) toStateObject(sch string, local *_schema, isImporting bool, diag *diag.Diagnostics) (map[string]interface{}, bool) {
 	result := make(map[string]interface{})
 	result[ENABLED] = helpers.BoolToStr(s.enabled)
 	result[NAME] = s.name
@@ -161,12 +161,12 @@ func (s _schema) toStateObject(sch string, local *_schema, diag *diag.Diagnostic
 		var include bool
 		if local != nil {
 			if lt, ok := local.tables[k]; ok {
-				tableState, include = v.toStateObject(sch, lt, diag, s.name)
+				tableState, include = v.toStateObject(sch, lt, diag, s.name, false)
 			} else {
-				tableState, include = v.toStateObject(sch, nil, diag, s.name)
+				tableState, include = v.toStateObject(sch, nil, diag, s.name, false)
 			}
 		} else {
-			tableState, include = v.toStateObject(sch, nil, diag, s.name)
+			tableState, include = v.toStateObject(sch, nil, diag, s.name, isImporting)
 		}
 		if include {
 			tables = append(tables, tableState)
@@ -183,7 +183,7 @@ func (s _schema) toStateObject(sch string, local *_schema, diag *diag.Diagnostic
 							"Table might be deleted from source or renamed.\n "+
 							"Please remove it from your configuration, or align its name with source schema.", k, s.name),
 				)
-				tableState, include := v.toStateObject(sch, nil, diag, s.name)
+				tableState, include := v.toStateObject(sch, nil, diag, s.name, false)
 				if include {
 					tables = append(tables, tableState)
 				}
@@ -192,6 +192,6 @@ func (s _schema) toStateObject(sch string, local *_schema, diag *diag.Diagnostic
 	}
 	result[TABLE] = tables
 	// schema has been configured locally OR has tables to include (only if schema is enabled) OR schema inconsistent by policy
-	include := local != nil || (len(tables) > 0 && s.enabled) || s.enabled != (sch == ALLOW_ALL)
+	include := local != nil || (len(tables) > 0 && s.enabled) || s.enabled != (sch == ALLOW_ALL) || isImporting
 	return result, include
 }

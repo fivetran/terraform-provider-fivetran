@@ -4288,6 +4288,23 @@ func TestResourceConnectorSchemaConfigImportMock(t *testing.T) {
 				provider = fivetran-provider
 				connector_id = "connector_id"
 				schema_change_handling = "ALLOW_ALL"
+				schemas = {
+					"schema_1" = {
+						enabled = true
+						tables = {
+							"table_1" = {
+								sync_mode = "SOFT_DELETE"
+								enabled = true
+								columns = {
+									"column_1" = { 
+										enabled = true
+										hashed = false
+									}
+								}
+							}
+						}
+					}
+				}
 			}`,
 
 		Check: resource.ComposeAggregateTestCheckFunc(
@@ -4299,6 +4316,14 @@ func TestResourceConnectorSchemaConfigImportMock(t *testing.T) {
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "ALLOW_ALL"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "validation_level", "TABLES"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.enabled", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.%", "1"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.table_1.enabled", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.table_1.sync_mode", "SOFT_DELETE"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.table_1.columns.%", "1"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.table_1.columns.column_1.enabled", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.table_1.columns.column_1.hashed", "false"),
 		),
 	}
 
@@ -4307,6 +4332,7 @@ func TestResourceConnectorSchemaConfigImportMock(t *testing.T) {
 		ImportState:       true,
 		ImportStateId: 	"connector_id",
 		ImportStateVerify: true,
+		ImportStateVerifyIgnore: []string{"validation_level"},
 	}
 
 	step3 := resource.TestStep{
@@ -4316,20 +4342,44 @@ func TestResourceConnectorSchemaConfigImportMock(t *testing.T) {
 				provider = fivetran-provider
 				connector_id = "connector_id"
 				schema_change_handling = "ALLOW_ALL"
+				schemas = {
+					"schema_1" = {
+						enabled = true
+						tables = {
+							"table_1" = {
+								sync_mode = "SOFT_DELETE"
+								enabled = true
+								columns = {
+									"column_1" = { 
+										enabled = true
+										hashed = false
+									}
+								}
+							}
+						}
+					}
+				}
             }`,
 		ResourceName:      "fivetran_connector_schema_config.test_schema",
 		ImportState:       true,
 		ImportStateId: 	"connector_id",
 		ImportStateCheck: ComposeImportStateCheck(
 			func(s []*terraform.InstanceState) error {
-				assertEqual(t, schemaEmptyDefaultReloadHandler.Interactions, 1)
-				assertEqual(t, schemaEmptyDefaultGetHandler.Interactions, 3)
+				assertEqual(t, schemaEmptyDefaultReloadHandler.Interactions, 0)
+				assertEqual(t, schemaEmptyDefaultGetHandler.Interactions, 1)
 				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 0)
 				return nil
 			},
-			CheckImportResourceAttr("fivetran_connector_schema_config", "test_schema", "id", "connector_id"),
-			CheckImportResourceAttr("fivetran_connector_schema_config", "test_schema", "connector_id", "connector_id"),
-			CheckImportResourceAttr("fivetran_connector_schema_config", "test_schema", "schema_change_handling", "ALLOW_ALL"),
+			CheckImportResourceAttr("fivetran_connector_schema_config", "connector_id", "id", "connector_id"),
+			CheckImportResourceAttr("fivetran_connector_schema_config", "connector_id", "connector_id", "connector_id"),
+			CheckImportResourceAttr("fivetran_connector_schema_config", "connector_id", "schema_change_handling", "ALLOW_ALL"),
+			CheckImportResourceAttr("fivetran_connector_schema_config", "connector_id", "schemas.schema_1.enabled", "true"),
+			CheckImportResourceAttr("fivetran_connector_schema_config", "connector_id", "schemas.schema_1.tables.%", "1"),
+			CheckImportResourceAttr("fivetran_connector_schema_config", "connector_id", "schemas.schema_1.tables.table_1.enabled", "true"),
+			CheckImportResourceAttr("fivetran_connector_schema_config", "connector_id", "schemas.schema_1.tables.table_1.sync_mode", "SOFT_DELETE"),
+			CheckImportResourceAttr("fivetran_connector_schema_config", "connector_id", "schemas.schema_1.tables.table_1.columns.%", "1"),
+			CheckImportResourceAttr("fivetran_connector_schema_config", "connector_id", "schemas.schema_1.tables.table_1.columns.column_1.enabled", "true"),
+			CheckImportResourceAttr("fivetran_connector_schema_config", "connector_id", "schemas.schema_1.tables.table_1.columns.column_1.hashed", "false"),
 		),
 	}
 
