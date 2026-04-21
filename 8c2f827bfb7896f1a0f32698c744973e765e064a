@@ -1,0 +1,36 @@
+.github/workflows/testing.yml
+  e419a2ed30b3c077 20-25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.1",
+  "base_commit_sha": "8c2f827bfb7896f1a0f32698c744973e765e064a",
+  "prompts": {
+    "a54034bed4122e35": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ac0db7d4-973c-46c8-a197-5744cfe8ed69",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>",
+      "messages": [],
+      "total_additions": 348,
+      "total_deletions": 136,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    },
+    "e419a2ed30b3c077": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b947e291-3f9e-4ed4-a846-d789792ce92b",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>",
+      "messages": [],
+      "total_additions": 6,
+      "total_deletions": 0,
+      "accepted_lines": 6,
+      "overriden_lines": 0
+    }
+  }
+}
