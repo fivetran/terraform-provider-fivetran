@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.9.30](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.30...v1.9.29)
 
 ### Added
+- New resource `fivetran_connector_sdk_package` for managing Connector SDK code packages. Supports full CRUD lifecycle with multipart file upload, plan-time SHA-256 change detection, and upload corruption guard.
+
 New connection services supported:
 - Supported service: `anthropic_claude`
 - Supported service: `breathe_hr`
@@ -54,11 +56,13 @@ New destination config fields supported:
 - Added field `fivetran_destination.config.fivetran_msk_role_arn` for services: `aws_msk_wh`.
 - Added field `fivetran_destination.config.fivetran_glue_role_arn` for services: `aws_msk_wh`.
 
-### Added
-- New resource `fivetran_connector_sdk_package` for managing Connector SDK code packages. Supports full CRUD lifecycle with multipart file upload, plan-time SHA-256 change detection, and upload corruption guard.
-
 ### Changed
 - Bump `go-fivetran` dependency to `v1.3.2` (adds Connector SDK package CRUD client and multipart upload support).
+
+### Fixed
+- `fivetran_connector` resource - fix for `json: cannot unmarshal array into Go struct field
+SetupTestResponse.data.DetailsAndSetupTestsResponseDataCommon.setup_tests.details
+of type string;` error during resource creation
 
 ## [v1.9.29](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.29...v1.9.28)
 

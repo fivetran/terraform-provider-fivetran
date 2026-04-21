@@ -181,7 +181,7 @@ const (
 		}
 	}
 		`
-	
+
 	connectorUpdateResponse1 = `
 	{
 		"id": "connector_id",
@@ -547,12 +547,17 @@ const (
 			{
 			"title": "Validating report parameters",
 			"status": "PASSED",
-			"message": ""
+			"message": "",
+			"details": "Some details"
 			},
 			{
 			"title": "Validating adaptive credentials",
 			"status": "PASSED",
-			"message": ""
+			"message": "",
+			"details": [{
+					"name": "some name",
+					"hash": "abc123="
+				}]
 			}
 		],
 		"config": {
@@ -609,12 +614,17 @@ const (
 			{
 			"title": "Validating report parameters",
 			"status": "PASSED",
-			"message": ""
+			"message": "",
+			"details": "Some details"
 			},
 			{
 			"title": "Validating adaptive credentials",
 			"status": "PASSED",
-			"message": ""
+			"message": "",
+			"details": [{
+					"name": "some name",
+					"hash": "abc123="
+				}]
 			}
 		],
 		"config": {
@@ -976,11 +986,11 @@ func setupMockClientConnectorResourceUpdateConfig(t *testing.T) {
 			updateIteration++
 
 			patchRequestJson = tfmock.RequestBodyToJson(t, req)
-			 if updateIteration <=2 {
+			if updateIteration <= 2 {
 				connectorMockData = tfmock.CreateMapFromJsonString(t, coilConnectorPatchResponse1)
-			 } else {
+			} else {
 				connectorMockData = tfmock.CreateMapFromJsonString(t, coilConnectorPatchResponse2)
-			 }
+			}
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorMockData), nil
 		},
 	)
@@ -1158,7 +1168,7 @@ func TestResourceUpdateSensitiveFieldInConfigMock(t *testing.T) {
 				tfmock.AssertEqual(t, connectorMockUpdatePatchHandler.Interactions, 1)
 				tfmock.AssertNotEmpty(t, connectorMockData)
 				patchRequestConfig := patchRequestJson["config"].(map[string]interface{})
-				
+
 				tfmock.AssertEmpty(t, patchRequestConfig["client_secret"])
 				tfmock.AssertEqual(t, patchRequestConfig["client_id"], "client_id2")
 				tfmock.AssertEmpty(t, patchRequestConfig["tenant"])
@@ -1201,9 +1211,9 @@ func TestResourceImportThenUpdateSensitiveFieldInConfigMock(t *testing.T) {
 			provider = fivetran-provider
 		}
 		`,
-		ImportState: true,
-		ResourceName: "fivetran_connector.test_connector",
-		ImportStateId: "connector_id",
+		ImportState:        true,
+		ResourceName:       "fivetran_connector.test_connector",
+		ImportStateId:      "connector_id",
 		ImportStatePersist: true,
 		PreConfig: func() {
 			connectorMockUpdatePostHandler.Interactions = 0
@@ -2045,11 +2055,11 @@ func TestResourceConnectorMock(t *testing.T) {
 					},
 				)
 
-			tfmock.MockClient().When(http.MethodPost, "/v1/connections/connector_id/test").ThenCall(
-				func(req *http.Request) (*http.Response, error) {
-					return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
-				},
-			)
+				tfmock.MockClient().When(http.MethodPost, "/v1/connections/connector_id/test").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
+					},
+				)
 			},
 			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
