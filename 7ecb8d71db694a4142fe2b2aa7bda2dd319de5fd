@@ -1,0 +1,21 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.1",
+  "base_commit_sha": "7ecb8d71db694a4142fe2b2aa7bda2dd319de5fd",
+  "prompts": {
+    "a54034bed4122e35": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ac0db7d4-973c-46c8-a197-5744cfe8ed69",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>",
+      "messages": [],
+      "total_additions": 609,
+      "total_deletions": 2,
+      "accepted_lines": 608,
+      "overriden_lines": 0
+    }
+  }
+}
