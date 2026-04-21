@@ -94,6 +94,7 @@ func (r *connectorSdkPackage) ModifyPlan(ctx context.Context, req resource.Modif
 
 	if localHash != stateHash {
 		resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, path.Root("file_sha256_hash"), types.StringValue(localHash))...)
+		resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, path.Root("updated_at"), types.StringUnknown())...)
 	}
 }
 
