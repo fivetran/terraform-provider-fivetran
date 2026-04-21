@@ -1,6 +1,7 @@
 package resources
 
 import (
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
@@ -9,11 +10,11 @@ import (
 	"strings"
 
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
+	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -27,15 +28,6 @@ type connectorSdkPackage struct {
 	core.ProviderResource
 }
 
-// Model — all fields in a single struct, no external model file.
-type connectorSdkPackageModel struct {
-	ID             types.String `tfsdk:"id"`
-	FilePath       types.String `tfsdk:"file_path"`
-	FileSha256Hash types.String `tfsdk:"file_sha256_hash"`
-	CreatedAt      types.String `tfsdk:"created_at"`
-	UpdatedAt      types.String `tfsdk:"updated_at"`
-}
-
 var _ resource.ResourceWithConfigure = &connectorSdkPackage{}
 var _ resource.ResourceWithImportState = &connectorSdkPackage{}
 var _ resource.ResourceWithModifyPlan = &connectorSdkPackage{}
@@ -45,50 +37,21 @@ func (r *connectorSdkPackage) Metadata(_ context.Context, req resource.MetadataR
 }
 
 func (r *connectorSdkPackage) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = schema.Schema{
-		Attributes: map[string]schema.Attribute{
-			"id": schema.StringAttribute{
-				Computed:    true,
-				Description: "Package ID (two-word format, e.g. 'happy_harmony').",
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"file_path": schema.StringAttribute{
-				Required:    true,
-				Description: "Path to the .zip file to upload. File is read during plan (for change detection) and during apply (for upload).",
-			},
-			"file_sha256_hash": schema.StringAttribute{
-				Computed:    true,
-				Description: "SHA-256 hash of the uploaded file as computed and stored by the API. Used for upstream drift detection.",
-			},
-			"created_at": schema.StringAttribute{
-				Computed:    true,
-				Description: "Timestamp when the package was created.",
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"updated_at": schema.StringAttribute{
-				Computed:    true,
-				Description: "Timestamp when the package was last updated.",
-			},
-		},
-	}
+	resp.Schema = fivetranSchema.ConnectorSdkPackageResource()
 }
 
 func (r *connectorSdkPackage) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
-// ModifyPlan — plan-time change detection by reading the file and computing SHA-256.
+// ModifyPlan computes the local SHA-256 hash at plan time so file changes are detected in the plan diff.
 func (r *connectorSdkPackage) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
 	// Skip on destroy
 	if req.Plan.Raw.IsNull() {
 		return
 	}
 
-	var plan connectorSdkPackageModel
+	var plan model.ConnectorSdkPackage
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -119,14 +82,14 @@ func (r *connectorSdkPackage) ModifyPlan(ctx context.Context, req resource.Modif
 	digest := sha256.Sum256(fileBytes)
 	localHash := hex.EncodeToString(digest[:])
 
-	// Compare against current state hash
 	var stateHash string
 	if !req.State.Raw.IsNull() {
-		var state connectorSdkPackageModel
+		var state model.ConnectorSdkPackage
 		resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
-		if !resp.Diagnostics.HasError() {
-			stateHash = state.FileSha256Hash.ValueString()
+		if resp.Diagnostics.HasError() {
+			return
 		}
+		stateHash = state.FileSha256Hash.ValueString()
 	}
 
 	if localHash != stateHash {
@@ -136,41 +99,26 @@ func (r *connectorSdkPackage) ModifyPlan(ctx context.Context, req resource.Modif
 
 func (r *connectorSdkPackage) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	if r.GetClient() == nil {
-		resp.Diagnostics.AddError("Unconfigured Fivetran Client", "Please report this issue to the provider developers.")
+		resp.Diagnostics.AddError(
+			"Unconfigured Fivetran Client",
+			"Please report this issue to the provider developers.",
+		)
 		return
 	}
 
-	var data connectorSdkPackageModel
+	var data model.ConnectorSdkPackage
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Read file and compute local hash
-	fileBytes, err := os.ReadFile(data.FilePath.ValueString())
-	if err != nil {
-		resp.Diagnostics.AddError("Cannot read file", fmt.Sprintf("Cannot read file %q: %s", data.FilePath.ValueString(), err))
+	fileBytes, localHash := readFileAndHash(data.FilePath.ValueString(), &resp.Diagnostics)
+	if resp.Diagnostics.HasError() {
 		return
 	}
-
-	if len(fileBytes) > maxPackageFileSize {
-		resp.Diagnostics.AddError("File too large", fmt.Sprintf("File %q exceeds 200MB limit.", data.FilePath.ValueString()))
-		return
-	}
-
-	digest := sha256.Sum256(fileBytes)
-	localHash := hex.EncodeToString(digest[:])
-
-	// Upload via API
-	file, err := os.Open(data.FilePath.ValueString())
-	if err != nil {
-		resp.Diagnostics.AddError("Cannot open file", fmt.Sprintf("Cannot open file %q: %s", data.FilePath.ValueString(), err))
-		return
-	}
-	defer file.Close()
 
 	createResp, err := r.GetClient().NewConnectorSdkPackageCreate().
-		FileContent(file).
+		FileContent(bytes.NewReader(fileBytes)).
 		Do(ctx)
 
 	if err != nil {
@@ -181,7 +129,6 @@ func (r *connectorSdkPackage) Create(ctx context.Context, req resource.CreateReq
 		return
 	}
 
-	// Upload corruption guard
 	if createResp.Data.FileSha256Hash != "" && createResp.Data.FileSha256Hash != localHash {
 		resp.Diagnostics.AddError(
 			"Upload Corruption Detected",
@@ -190,21 +137,22 @@ func (r *connectorSdkPackage) Create(ctx context.Context, req resource.CreateReq
 		return
 	}
 
-	data.ID = types.StringValue(createResp.Data.ID)
+	data.ReadFromResponse(createResp)
 	data.FileSha256Hash = types.StringValue(localHash)
-	data.CreatedAt = types.StringValue(createResp.Data.CreatedAt.String())
-	data.UpdatedAt = types.StringValue(createResp.Data.UpdatedAt.String())
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
 func (r *connectorSdkPackage) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	if r.GetClient() == nil {
-		resp.Diagnostics.AddError("Unconfigured Fivetran Client", "Please report this issue to the provider developers.")
+		resp.Diagnostics.AddError(
+			"Unconfigured Fivetran Client",
+			"Please report this issue to the provider developers.",
+		)
 		return
 	}
 
-	var data connectorSdkPackageModel
+	var data model.ConnectorSdkPackage
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -215,7 +163,7 @@ func (r *connectorSdkPackage) Read(ctx context.Context, req resource.ReadRequest
 		Do(ctx)
 
 	if err != nil {
-		if readResp.Code == "NotFound" || strings.Contains(err.Error(), "status code: 404") {
+		if strings.HasPrefix(readResp.Code, "NotFound") {
 			resp.State.RemoveResource(ctx)
 			return
 		}
@@ -227,61 +175,42 @@ func (r *connectorSdkPackage) Read(ctx context.Context, req resource.ReadRequest
 	}
 
 	// Update computed fields — do NOT update file_path (user-supplied)
-	if readResp.Data.FileSha256Hash != "" {
-		data.FileSha256Hash = types.StringValue(readResp.Data.FileSha256Hash)
-	}
-	data.CreatedAt = types.StringValue(readResp.Data.CreatedAt.String())
-	data.UpdatedAt = types.StringValue(readResp.Data.UpdatedAt.String())
+	data.ReadFromResponse(readResp)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
 func (r *connectorSdkPackage) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	if r.GetClient() == nil {
-		resp.Diagnostics.AddError("Unconfigured Fivetran Client", "Please report this issue to the provider developers.")
+		resp.Diagnostics.AddError(
+			"Unconfigured Fivetran Client",
+			"Please report this issue to the provider developers.",
+		)
 		return
 	}
 
-	var plan, state connectorSdkPackageModel
+	var plan, state model.ConnectorSdkPackage
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Read file and compute local hash
-	fileBytes, err := os.ReadFile(plan.FilePath.ValueString())
-	if err != nil {
-		resp.Diagnostics.AddError("Cannot read file", fmt.Sprintf("Cannot read file %q: %s", plan.FilePath.ValueString(), err))
+	fileBytes, localHash := readFileAndHash(plan.FilePath.ValueString(), &resp.Diagnostics)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	if len(fileBytes) > maxPackageFileSize {
-		resp.Diagnostics.AddError("File too large", fmt.Sprintf("File %q exceeds 200MB limit.", plan.FilePath.ValueString()))
-		return
-	}
-
-	digest := sha256.Sum256(fileBytes)
-	localHash := hex.EncodeToString(digest[:])
-
-	// If local hash matches state hash — file hasn't changed, only update file_path in state
+	// Skip upload if file hasn't changed — only sync file_path into state
 	if localHash == state.FileSha256Hash.ValueString() {
 		state.FilePath = plan.FilePath
 		resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 		return
 	}
 
-	// File changed — upload new version
-	file, err := os.Open(plan.FilePath.ValueString())
-	if err != nil {
-		resp.Diagnostics.AddError("Cannot open file", fmt.Sprintf("Cannot open file %q: %s", plan.FilePath.ValueString(), err))
-		return
-	}
-	defer file.Close()
-
 	updateResp, err := r.GetClient().NewConnectorSdkPackageUpdate().
 		PackageID(state.ID.ValueString()).
-		FileContent(file).
+		FileContent(bytes.NewReader(fileBytes)).
 		Do(ctx)
 
 	if err != nil {
@@ -292,7 +221,6 @@ func (r *connectorSdkPackage) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	// Upload corruption guard
 	if updateResp.Data.FileSha256Hash != "" && updateResp.Data.FileSha256Hash != localHash {
 		resp.Diagnostics.AddError(
 			"Upload Corruption Detected",
@@ -301,22 +229,23 @@ func (r *connectorSdkPackage) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	state.ID = types.StringValue(updateResp.Data.ID)
 	state.FilePath = plan.FilePath
+	state.ReadFromResponse(updateResp)
 	state.FileSha256Hash = types.StringValue(localHash)
-	state.CreatedAt = types.StringValue(updateResp.Data.CreatedAt.String())
-	state.UpdatedAt = types.StringValue(updateResp.Data.UpdatedAt.String())
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
 func (r *connectorSdkPackage) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	if r.GetClient() == nil {
-		resp.Diagnostics.AddError("Unconfigured Fivetran Client", "Please report this issue to the provider developers.")
+		resp.Diagnostics.AddError(
+			"Unconfigured Fivetran Client",
+			"Please report this issue to the provider developers.",
+		)
 		return
 	}
 
-	var data connectorSdkPackageModel
+	var data model.ConnectorSdkPackage
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -327,8 +256,8 @@ func (r *connectorSdkPackage) Delete(ctx context.Context, req resource.DeleteReq
 		Do(ctx)
 
 	if err != nil {
-		// Treat 404 as already deleted
-		if strings.Contains(err.Error(), "status code: 404") {
+		// Treat 404 as already deleted — idempotent destroy
+		if strings.HasPrefix(deleteResp.Code, "NotFound") {
 			return
 		}
 		resp.Diagnostics.AddError(
@@ -336,4 +265,20 @@ func (r *connectorSdkPackage) Delete(ctx context.Context, req resource.DeleteReq
 			fmt.Sprintf("%v; code: %v; message: %v", err, deleteResp.Code, deleteResp.Message),
 		)
 	}
+}
+
+// readFileAndHash reads the file at filePath and returns its bytes and hex-encoded SHA-256 hash.
+// On failure, appends an error to the provided diagnostics and returns nil, "".
+func readFileAndHash(filePath string, diags *diag.Diagnostics) ([]byte, string) {
+	fileBytes, err := os.ReadFile(filePath)
+	if err != nil {
+		diags.AddError("Cannot read file", fmt.Sprintf("Cannot read file %q: %s", filePath, err))
+		return nil, ""
+	}
+	if len(fileBytes) > maxPackageFileSize {
+		diags.AddError("File too large", fmt.Sprintf("File %q exceeds 200MB limit.", filePath))
+		return nil, ""
+	}
+	digest := sha256.Sum256(fileBytes)
+	return fileBytes, hex.EncodeToString(digest[:])
 }

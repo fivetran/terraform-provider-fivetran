@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - New resource `fivetran_connector_sdk_package` for managing Connector SDK code packages. Supports full CRUD lifecycle with multipart file upload, plan-time SHA-256 change detection, and upload corruption guard.
 
+### Changed
+- Bump `go-fivetran` dependency to `v1.3.2` (adds Connector SDK package CRUD client and multipart upload support).
+
 ## [v1.9.29](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.29...v1.9.28)
 
 ### Added
