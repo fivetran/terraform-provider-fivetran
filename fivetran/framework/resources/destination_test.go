@@ -170,12 +170,17 @@ func TestResourceMDLSDestinationMock(t *testing.T){
 		{
 			"title": "AWS Read and write access test",
 			"status": "FAILED",
-			"message": "User: arn:aws:iam::1234567890:user/gcp_donkey is not authorized to perform: sts:AssumeRole on resource: arn:aws:iam::1234567890:role/smth-us-east-1 (Service: AWSSecurityTokenService; Status Code: 403; Error Code: AccessDenied; Request ID: 0000000-0000-0000-0000-000000000; Proxy: null)"
+			"message": "User: arn:aws:iam::1234567890:user/gcp_donkey is not authorized to perform: sts:AssumeRole on resource: arn:aws:iam::1234567890:role/smth-us-east-1 (Service: AWSSecurityTokenService; Status Code: 403; Error Code: AccessDenied; Request ID: 0000000-0000-0000-0000-000000000; Proxy: null)",
+			"details": "Some details"
 		},
 		{
 			"title": "Input fields validation test",
 			"status": "PASSED",
-			"message": ""
+			"message": "",
+			"details": [{
+					"name": "some name",
+					"hash": "abc123="
+				}]
 		}
 		],
 		"config": {

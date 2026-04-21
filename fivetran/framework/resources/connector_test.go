@@ -559,7 +559,6 @@ const (
 					"hash": "abc123="
 				}]
 			}
-			}
 		],
 		"config": {
 			"login": "mail@mail.com",
