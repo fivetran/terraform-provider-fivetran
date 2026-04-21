@@ -302,6 +302,21 @@
       },
       "api_field": ""
    },
+   "connection_method": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aiven_kafka_wh": "",
+         "aws_msk_wh": "",
+         "confluent_cloud_wh": ""
+      },
+      "api_field": ""
+   },
    "connection_type": {
       "readonly": false,
       "sensitive": false,
@@ -643,6 +658,32 @@
       },
       "api_field": ""
    },
+   "fivetran_glue_role_arn": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aws_msk_wh": ""
+      },
+      "api_field": ""
+   },
+   "fivetran_msk_role_arn": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aws_msk_wh": ""
+      },
+      "api_field": ""
+   },
    "fivetran_role_arn": {
       "readonly": false,
       "sensitive": false,
@@ -654,6 +695,19 @@
       "description": {
          "managed_data_lake": "(Immutable) ARN of the IAM role you created for the IAM policy associated with your S3 bucket or Glue catalog. Use this parameter only if you want to deploy your data lake on AWS.",
          "new_s3_datalake": "ARN of the role which you created with different required policy mentioned in our setup guide"
+      },
+      "api_field": ""
+   },
+   "gcs_project_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "managed_data_lake": "GCS Project ID of your Google Cloud Storage bucket. Use this parameter only if you want to deploy your data lake on GCS."
       },
       "api_field": ""
    },
@@ -1082,6 +1136,32 @@
       },
       "api_field": ""
    },
+   "registry_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aws_msk_wh": ""
+      },
+      "api_field": ""
+   },
+   "registry_sts_region": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aws_msk_wh": ""
+      },
+      "api_field": ""
+   },
    "replication_factor": {
       "readonly": false,
       "sensitive": false,
@@ -1222,6 +1302,19 @@
       },
       "api_field": ""
    },
+   "schema_compatibility": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aws_msk_wh": ""
+      },
+      "api_field": ""
+   },
    "schema_registry": {
       "readonly": false,
       "sensitive": false,
@@ -1341,6 +1434,19 @@
          "managed_data_lake": "Server host name of the Databricks account associated with Unity Catalog. Use this parameter only if you want to use Unity Catalog to manage your Delta Lake tables.",
          "new_s3_datalake": "Server host name",
          "onelake": "Server Host name"
+      },
+      "api_field": ""
+   },
+   "should_maintain_tables_in_bqms": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "managed_data_lake": "Specifies whether you want to manage your Iceberg tables in BQMS. Use this parameter only if you want to deploy your data lake on GCS."
       },
       "api_field": ""
    },

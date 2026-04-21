@@ -23,7 +23,17 @@ data "fivetran_quickstart_package" "test" {
 
 ### Read-Only
 
+- `configurable_variables` (Attributes Map) Map of configurable variable definitions for the package, keyed by variable name. (see [below for nested schema](#nestedatt--configurable_variables))
 - `connector_types` (Set of String) The set of connector types
 - `name` (String) The Quickstart transformation package name
 - `output_model_names` (Set of String) The list of transformation output models
 - `version` (String) The Quickstart package definition version
+
+<a id="nestedatt--configurable_variables"></a>
+### Nested Schema for `configurable_variables`
+
+Read-Only:
+
+- `allowed_values` (List of String) List of allowed values for the variable, if restricted.
+- `description` (String) Human-readable description of the variable.
+- `type` (String) The variable type (e.g. STRING, INTEGER, BOOLEAN, DATE).
