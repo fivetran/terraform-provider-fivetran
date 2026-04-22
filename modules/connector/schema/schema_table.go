@@ -242,7 +242,7 @@ func (t _table) toStateObject(sch string, local *_table, diag *diag.Diagnostics,
 	result[NAME] = t.name
 	if t.syncMode != nil && (local != nil && local.syncMode != nil) { // save sync_mode in state only if it is configured!
 		result[SYNC_MODE] = *t.syncMode
-	} else if isImporting {
+	} else if t.syncMode != nil && isImporting {
 		result[SYNC_MODE] = *t.syncMode
 	}
 
