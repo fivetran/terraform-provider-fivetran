@@ -63,6 +63,7 @@ New destination config fields supported:
 - `fivetran_connector` resource - fix for `json: cannot unmarshal array into Go struct field
 SetupTestResponse.data.DetailsAndSetupTestsResponseDataCommon.setup_tests.details
 of type string;` error during resource creation
+- importing of `fivetran_connector_schema_config` resource
 
 ## [v1.9.29](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.29...v1.9.28)
 

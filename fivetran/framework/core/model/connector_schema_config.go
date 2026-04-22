@@ -74,19 +74,19 @@ func (d *ConnectorSchemaResourceModel) IsMappedSchemaDefined() bool {
 	return !d.Schemas.IsUnknown() && !d.Schemas.IsNull() && len(d.Schemas.Elements()) > 0
 }
 
-func (d *ConnectorSchemaResourceModel) ReadFromResponse(response connections.ConnectionSchemaDetailsResponse, diag *diag.Diagnostics) {
+func (d *ConnectorSchemaResourceModel) ReadFromResponse(response connections.ConnectionSchemaDetailsResponse, isImporting bool, diag *diag.Diagnostics) {
 	schemaObject := configSchema.SchemaConfig{}
 	schemaObject.ReadFromResponse(response)
-	schemas := schemaObject.GetSchemas(response.Data.SchemaChangeHandling, d.GetSchemaConfig(), diag)
+	schemas := schemaObject.GetSchemas(response.Data.SchemaChangeHandling, d.GetSchemaConfig(), isImporting, diag)
 
 	if d.IsLegacySchemaDefined() {
 		d.Schema = d.getLegacySchemaItems(schemas)
 		d.Schemas = d.getNullSchemas()
 		d.SchemasRaw = fivetrantypes.NewJsonSchemaNull()
 	}
-	if d.IsMappedSchemaDefined() {
+	if d.IsMappedSchemaDefined() || isImporting {
 		d.Schema = d.getNullSchema()
-		d.Schemas = d.getSchemasMap(schemas)
+		d.Schemas = d.getSchemasMap(schemas, isImporting)
 		d.SchemasRaw = fivetrantypes.NewJsonSchemaNull()
 	}
 	if d.IsRawSchemaDefined() {
@@ -98,6 +98,8 @@ func (d *ConnectorSchemaResourceModel) ReadFromResponse(response connections.Con
 
 	// SAP connections will not accept schemaChangeHandling in request and will return ALLOW_COLUMNS as default
 	if !d.SchemaChangeHandling.IsNull() && !d.SchemaChangeHandling.IsUnknown() && d.SchemaChangeHandling.ValueString() != "" {
+		d.SchemaChangeHandling = types.StringValue(response.Data.SchemaChangeHandling)
+	} else if isImporting {
 		d.SchemaChangeHandling = types.StringValue(response.Data.SchemaChangeHandling)
 	} else {
 		d.SchemaChangeHandling = types.StringNull()
@@ -183,7 +185,7 @@ func (d *ConnectorSchemaResourceModel) getSchemasRawValue(schemas []interface{})
 	return string(resultRawString)
 }
 
-func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}) basetypes.MapValue {
+func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}, isImporting bool) basetypes.MapValue {
 	columnsAttrTypes := map[string]attr.Type{
 		"enabled":        types.BoolType,
 		"hashed":         types.BoolType,
@@ -215,7 +217,7 @@ func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}) base
 		schemaName := schemaMap["name"].(string)
 		localSchema := d.tryGetLocalSchema(localSchemas, schemaName)
 		schemaElements := map[string]attr.Value{}
-		if _, ok := localSchema["enabled"]; ok {
+		if _, ok := localSchema["enabled"]; (ok || isImporting) {
 			schemaElements["enabled"] = types.BoolValue(helpers.StrToBool(schemaMap["enabled"].(string)))
 		} else {
 			schemaElements["enabled"] = types.BoolNull()
@@ -232,13 +234,13 @@ func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}) base
 				tableElements := map[string]attr.Value{}
 				tableElements["sync_mode"] = types.StringNull()
 
-				if _, ok := localTable["sync_mode"]; ok {
+				if _, ok := localTable["sync_mode"]; (ok || isImporting) {
 					if sm, ok := tableMap["sync_mode"].(string); ok {
 						tableElements["sync_mode"] = types.StringValue(sm)
 					}
 				}
 
-				if _, ok := localTable["enabled"]; ok {
+				if _, ok := localTable["enabled"]; (ok || isImporting) {
 					tableElements["enabled"] = types.BoolValue(helpers.StrToBool(tableMap["enabled"].(string)))
 				} else {
 					tableElements["enabled"] = types.BoolNull()
@@ -253,13 +255,13 @@ func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}) base
 
 						columnElements := map[string]attr.Value{}
 
-						if _, ok := localColumn["enabled"]; ok {
+						if _, ok := localColumn["enabled"]; (ok || isImporting) {
 							columnElements["enabled"] = types.BoolValue(helpers.StrToBool(columnMap["enabled"].(string)))
 						} else {
 							columnElements["enabled"] = types.BoolNull()
 						}
 
-						if _, ok := localColumn["hashed"]; ok {
+						if _, ok := localColumn["hashed"]; (ok || isImporting) {
 							columnElements["hashed"] = types.BoolValue(helpers.StrToBool(columnMap["hashed"].(string)))
 						} else {
 							columnElements["hashed"] = types.BoolNull()

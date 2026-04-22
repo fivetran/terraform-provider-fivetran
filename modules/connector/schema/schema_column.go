@@ -122,7 +122,7 @@ func (c *_column) readFromResponse(name string, response *connections.Connection
 	}
 }
 
-func (c _column) toStateObject(sch string, local *_column, diag *diag.Diagnostics, schema, table string) (map[string]interface{}, bool) {
+func (c _column) toStateObject(sch string, local *_column, diag *diag.Diagnostics, schema, table string, isImporting bool) (map[string]interface{}, bool) {
 	result := make(map[string]interface{})
 
 	result[ENABLED] = helpers.BoolToStr(c.enabled)
@@ -146,12 +146,16 @@ func (c _column) toStateObject(sch string, local *_column, diag *diag.Diagnostic
 
 	result[NAME] = c.name
 
-	if local != nil && local.hashed != nil && c.hashed != nil {
+	if (local != nil && local.hashed != nil || isImporting) && c.hashed != nil {
 		result[HASHED] = helpers.BoolToStr(*c.hashed)
 	}
-	if local != nil && c.isPrimaryKey != nil {
+
+	if (local != nil || isImporting) && c.isPrimaryKey != nil {
 		result[IS_PRIMARY_KEY] = helpers.BoolToStr(*c.isPrimaryKey)
 	}
-	return result, local != nil ||
-		(c.enabled != (sch != BLOCK_ALL) && c.isPatchAllowed())
+	
+	include :=local != nil ||
+		(c.enabled != (sch != BLOCK_ALL) && c.isPatchAllowed()) ||
+		isImporting
+	return result, include
 }

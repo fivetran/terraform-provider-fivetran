@@ -102,16 +102,16 @@ func (c *SchemaConfig) ReadFromResponse(response connections.ConnectionSchemaDet
 	}
 }
 
-func (c SchemaConfig) GetSchemas(sch string, local SchemaConfig, diag *diag.Diagnostics) []interface{} {
+func (c SchemaConfig) GetSchemas(sch string, local SchemaConfig, isImporting bool, diag *diag.Diagnostics) []interface{} {
 	schemas := make([]interface{}, 0)
 
 	for k, v := range c.schemas {
 		var schemaState map[string]interface{}
 		var include bool
 		if ls, ok := local.schemas[k]; ok {
-			schemaState, include = v.toStateObject(sch, ls, diag)
+			schemaState, include = v.toStateObject(sch, ls, false, diag)
 		} else {
-			schemaState, include = v.toStateObject(sch, nil, diag)
+			schemaState, include = v.toStateObject(sch, nil, isImporting, diag)
 		}
 		if include {
 			schemas = append(schemas, schemaState)
@@ -128,7 +128,7 @@ func (c SchemaConfig) GetSchemas(sch string, local SchemaConfig, diag *diag.Diag
 						"Schema might be deleted from source or renamed.\n "+
 						"Please remove it from your configuration, or align its name with source schema.", k),
 			)
-			schemaState, include := v.toStateObject(sch, nil, diag)
+			schemaState, include := v.toStateObject(sch, nil, false, diag)
 			if include {
 				schemas = append(schemas, schemaState)
 			}
