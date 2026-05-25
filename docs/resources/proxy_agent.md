@@ -34,8 +34,8 @@ resource "fivetran_proxy_agent" "test_proxy_agent" {
 ### Read-Only
 
 - `client_cert` (String) Client certificate.
-- `client_private_key` (String) Client private key.
+- `client_private_key` (String, Sensitive) Client private key.
 - `created_by` (String) The actor who created the proxy agent.
 - `id` (String) The unique identifier for the proxy within your account.
 - `registred_at` (String) The timestamp of the time the proxy agent was created in your account.
-- `token` (String) The auth token.
+- `token` (String, Sensitive) The auth token.

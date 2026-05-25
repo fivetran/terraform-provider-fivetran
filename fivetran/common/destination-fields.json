@@ -88,6 +88,7 @@
       "description": {
          "adls": "Authentication type",
          "databricks": "Authentication type",
+         "databricks_via_managed_data_lake": "Specifies the authentication types for Fivetran to connect to Databricks.",
          "managed_data_lake": "Specifies the authentication types for Fivetran to connect to Databricks. Use this parameter only if you want to use Unity Catalog to manage your Delta Lake tables.",
          "new_s3_datalake": "Authentication type",
          "onelake": "Authentication type",
@@ -204,6 +205,7 @@
          "big_query": "Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
          "big_query_dts": "Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
          "databricks": "Your bucket",
+         "databricks_via_managed_data_lake": "(Immutable) Name of the S3 or Google Cloud Storage (GCS) bucket you want to use to store your data. Use this parameter only if you want to deploy your data lake on Amazon Web Services (AWS) or GCS.",
          "managed_big_query": "Customer bucket. If specified, your GCS bucket will be used to process the data instead of a Fivetran-managed bucket. The bucket must be present in the same location as the dataset location.",
          "managed_data_lake": "(Immutable) Name of the S3 or Google Cloud Storage (GCS) bucket you want to use to store your data. Use this parameter only if you want to deploy your data lake on Amazon Web Services (AWS) or GCS.",
          "new_s3_datalake": "(Immutable) The name of the bucket to be used as destination",
@@ -238,6 +240,7 @@
       "description": {
          "adls": "Catalog name",
          "databricks": "Catalog name",
+         "databricks_via_managed_data_lake": "Name of the specific catalog in Unity Catalog that you want to use to manage your Delta Lake tables.",
          "managed_data_lake": "Name of the specific catalog in Unity Catalog that you want to use to manage your Delta Lake tables. Use this parameter only if you want to use Unity Catalog with your data lake.",
          "new_s3_datalake": "Catalog name",
          "onelake": "Catalog name"
@@ -254,6 +257,7 @@
       "item_type": {},
       "description": {
          "adls": "Client id of service principal",
+         "databricks_via_managed_data_lake": "Client ID of the service principal you created for Fivetran. Use this parameter only if you want to deploy your data lake on ADLS.",
          "managed_data_lake": "Client ID of the service principal you created for Fivetran. Use this parameter only if you want to deploy your data lake on ADLS.",
          "onelake": "Client ID of service principal"
       },
@@ -334,6 +338,7 @@
          "azure_sql_database": "Connection method. Default value: `Directly`.",
          "azure_sql_managed_db_warehouse": "Connection method. Default value: `Directly`.",
          "databricks": "Connection method. Default value: `Directly`.",
+         "databricks_via_managed_data_lake": "connection type",
          "managed_data_lake": "connection type",
          "maria_rds_warehouse": "Connection method. Default value: `Directly`.",
          "maria_warehouse": "Connection method. Default value: `Directly`.",
@@ -365,6 +370,7 @@
       "item_type": {},
       "description": {
          "adls": "(Immutable) Container to store delta table files",
+         "databricks_via_managed_data_lake": "(Immutable) Name of the ADLS container you want to use to store your data. Use this parameter only if you want to deploy your data lake on ADLS.",
          "managed_data_lake": "(Immutable) Name of the ADLS container you want to use to store your data. Use this parameter only if you want to deploy your data lake on ADLS.",
          "onelake": "Workspace name to store delta table files"
       },
@@ -471,6 +477,7 @@
       "item_type": {},
       "description": {
          "adls": "Databricks Connection method. Default value: `Directly`.",
+         "databricks_via_managed_data_lake": "Specifies how you want Fivetran to connect to the Databricks account associated with Unity Catalog. Default value: `Directly`.",
          "managed_data_lake": "Specifies how you want Fivetran to connect to the Databricks account associated with Unity Catalog. Default value: `Directly`. Use this parameter only if you want to use Unity Catalog with your data lake.",
          "new_s3_datalake": "Databricks Connection method. Default value: `Directly`.",
          "onelake": "Databricks Connection method. Default value: `Directly`."
@@ -693,6 +700,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "databricks_via_managed_data_lake": "(Immutable) ARN of the IAM role you created for the IAM policy associated with your S3 bucket or Glue catalog. Use this parameter only if you want to deploy your data lake on AWS.",
          "managed_data_lake": "(Immutable) ARN of the IAM role you created for the IAM policy associated with your S3 bucket or Glue catalog. Use this parameter only if you want to deploy your data lake on AWS.",
          "new_s3_datalake": "ARN of the role which you created with different required policy mentioned in our setup guide"
       },
@@ -707,6 +715,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "databricks_via_managed_data_lake": "GCS Project ID of your Google Cloud Storage bucket. Use this parameter only if you want to deploy your data lake on GCS.",
          "managed_data_lake": "GCS Project ID of your Google Cloud Storage bucket. Use this parameter only if you want to deploy your data lake on GCS."
       },
       "api_field": ""
@@ -770,6 +779,7 @@
       "description": {
          "adls": "HTTP path",
          "databricks": "HTTP path",
+         "databricks_via_managed_data_lake": "HTTP path of the Databricks account associated with Unity Catalog.",
          "managed_data_lake": "HTTP path of the Databricks account associated with Unity Catalog. Use this parameter only if you want to use Unity Catalog to manage your Delta Lake tables.",
          "new_s3_datalake": "HTTP path",
          "onelake": "HTTP path"
@@ -824,6 +834,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "databricks_via_managed_data_lake": "",
          "managed_data_lake": "(Immutable) OneLake lakehouse GUID.",
          "onelake": "(Immutable) OneLake lakehouse GUID"
       },
@@ -881,6 +892,7 @@
       "description": {
          "adls": "OAuth 2.0 client ID",
          "databricks": "OAuth 2.0 client ID",
+         "databricks_via_managed_data_lake": "The OAuth 2.0 client ID you created for authenticating Fivetran.",
          "managed_data_lake": "The OAuth 2.0 client ID you created for authenticating Fivetran. Use this parameter only if you want to use OAuth 2.0 as the authentication type for Fivetran to connect to Databricks.",
          "new_s3_datalake": "OAuth 2.0 client ID",
          "onelake": "OAuth 2.0 client ID"
@@ -898,6 +910,7 @@
       "description": {
          "adls": "OAuth 2.0 secret",
          "databricks": "OAuth 2.0 secret",
+         "databricks_via_managed_data_lake": "OAuth 2.0 secret you created for authenticating Fivetran.",
          "managed_data_lake": "OAuth 2.0 secret you created for authenticating Fivetran. Use this parameter only if you want to use OAuth 2.0 as the authentication type for Fivetran to connect to Databricks.",
          "new_s3_datalake": "OAuth 2.0 secret",
          "onelake": "OAuth 2.0 secret"
@@ -913,6 +926,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "databricks_via_managed_data_lake": "",
          "managed_data_lake": "(Immutable) Client ID of OneLake service principal."
       },
       "api_field": ""
@@ -926,6 +940,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "databricks_via_managed_data_lake": "",
          "managed_data_lake": "Secret value for OneLake service principal."
       },
       "api_field": ""
@@ -939,6 +954,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "databricks_via_managed_data_lake": "",
          "managed_data_lake": "(Immutable) Tenant ID of OneLake service principal"
       },
       "api_field": ""
@@ -1002,6 +1018,7 @@
       "description": {
          "adls": "Personal access token",
          "databricks": "Personal access token",
+         "databricks_via_managed_data_lake": "The personal access token you created for authenticating Fivetran.",
          "managed_data_lake": "The personal access token you created for authenticating Fivetran. Use this parameter only if you want to use a personal access token as the authentication type for Fivetran to connect to Databricks.",
          "new_s3_datalake": "Personal access token",
          "onelake": "Personal access token"
@@ -1025,6 +1042,7 @@
          "azure_sql_database": "Server port number",
          "azure_sql_managed_db_warehouse": "Server port number",
          "databricks": "Server port number",
+         "databricks_via_managed_data_lake": "Server port number of the Databricks account associated with Unity Catalog.",
          "managed_data_lake": "Server port number of the Databricks account associated with Unity Catalog. Use this parameter only if you want to use Unity Catalog to manage your Delta Lake tables.",
          "maria_rds_warehouse": "Server port number",
          "maria_warehouse": "Server port number",
@@ -1058,6 +1076,7 @@
       "item_type": {},
       "description": {
          "adls": "(Immutable) path/to/data within the container",
+         "databricks_via_managed_data_lake": "(Immutable) Prefix path or virtual folder path within your bucket or container where you want Fivetran to store your data. Skip this parameter for AWS-based data lakes if the IAM policy configured for your S3 bucket grants access to the entire bucket.",
          "managed_data_lake": "(Immutable) Prefix path or virtual folder path within your bucket or container where you want Fivetran to store your data. Skip this parameter for AWS-based data lakes if the IAM policy configured for your S3 bucket grants access to the entire bucket.",
          "new_s3_datalake": "(Immutable) Prefix path of the bucket for which you have configured access policy. It is not required if access has been granted to entire Bucket in the access policy",
          "onelake": "(Immutable) path/to/data within your lakehouse inside the Files directory"
@@ -1131,6 +1150,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "databricks_via_managed_data_lake": "(Immutable) AWS Region of your S3 bucket. Use this parameter only if you want to deploy your data lake on AWS.",
          "managed_data_lake": "(Immutable) AWS Region of your S3 bucket. Use this parameter only if you want to deploy your data lake on AWS.",
          "new_s3_datalake": "Region of your AWS S3 bucket"
       },
@@ -1400,6 +1420,7 @@
       "item_type": {},
       "description": {
          "adls": "Secret value for service principal",
+         "databricks_via_managed_data_lake": "Secret value of the service principal you created for Fivetran. Use this parameter only if you want to deploy your data lake on ADLS.",
          "managed_data_lake": "Secret value of the service principal you created for Fivetran. Use this parameter only if you want to deploy your data lake on ADLS.",
          "onelake": "Secret value for service principal"
       },
@@ -1431,6 +1452,7 @@
       "description": {
          "adls": "Server Host name",
          "databricks": "Server name",
+         "databricks_via_managed_data_lake": "Server host name of the Databricks account associated with Unity Catalog.",
          "managed_data_lake": "Server host name of the Databricks account associated with Unity Catalog. Use this parameter only if you want to use Unity Catalog to manage your Delta Lake tables.",
          "new_s3_datalake": "Server host name",
          "onelake": "Server Host name"
@@ -1446,6 +1468,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "databricks_via_managed_data_lake": "Specifies whether you want to manage your Iceberg tables in BQMS. Use this parameter only if you want to deploy your data lake on GCS.",
          "managed_data_lake": "Specifies whether you want to manage your Iceberg tables in BQMS. Use this parameter only if you want to deploy your data lake on GCS."
       },
       "api_field": ""
@@ -1460,6 +1483,7 @@
       "item_type": {},
       "description": {
          "adls": "Should maintain tables in Databricks ",
+         "databricks_via_managed_data_lake": "Specifies whether you want to manage your Delta Lake tables in Databricks Unity Catalog.",
          "managed_data_lake": "Specifies whether you want to manage your Delta Lake tables in Databricks Unity Catalog.",
          "new_s3_datalake": "Should maintain tables in Databricks ",
          "onelake": "Should maintain tables in Databricks "
@@ -1475,6 +1499,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "databricks_via_managed_data_lake": "Specifies whether you want to manage your Iceberg tables in AWS Glue. Use this parameter only if you want to deploy your data lake on AWS.",
          "managed_data_lake": "Specifies whether you want to manage your Iceberg tables in AWS Glue. Use this parameter only if you want to deploy your data lake on AWS."
       },
       "api_field": ""
@@ -1488,6 +1513,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "databricks_via_managed_data_lake": "",
          "managed_data_lake": "Specifies whether you want to create shortcut for you table in OneLake. Use this parameter only if you want to deploy your data lake on ADLS."
       },
       "api_field": ""
@@ -1502,6 +1528,7 @@
       "item_type": {},
       "description": {
          "adls": "Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.",
+         "databricks_via_managed_data_lake": "Specifies how long you want us to retain your table snapshots. We delete the snapshots that are older than the retention period during our table maintenance operations. Default value: `ONE_WEEK`.",
          "managed_data_lake": "Specifies how long you want us to retain your table snapshots. We delete the snapshots that are older than the retention period during our table maintenance operations. Default value: `ONE_WEEK`.",
          "new_s3_datalake": "Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.",
          "onelake": "Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`."
@@ -1538,6 +1565,7 @@
          "adls": "(Immutable) Storage account for Azure Data Lake Storage Gen2 name",
          "azure_sql_data_warehouse": "The name of the Azure storage account you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment.",
          "databricks": "Your storage account name",
+         "databricks_via_managed_data_lake": "(Immutable) Name of your Azure Data Lake Storage Gen2 (ADLS Gen2) storage account. Use this parameter only if you want to deploy your data lake on ADLS.",
          "managed_data_lake": "(Immutable) Name of your Azure Data Lake Storage Gen2 (ADLS Gen2) storage account. Use this parameter only if you want to deploy your data lake on ADLS.",
          "onelake": "(Immutable) Storage account for Azure Data Lake Storage Gen2 name",
          "snowflake": "The name of the Azure storage account you want to use to stage your data. Use this parameter only if you are using Hybrid Deployment and want to use an Azure Blob storage container to stage your data."
@@ -1553,6 +1581,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "databricks_via_managed_data_lake": "The cloud storage provider you want to use for your data lake.",
          "managed_data_lake": "The cloud storage provider you want to use for your data lake."
       },
       "api_field": ""
@@ -1595,6 +1624,7 @@
       "item_type": {},
       "description": {
          "adls": "Tenant id of service principal",
+         "databricks_via_managed_data_lake": "Tenant ID of the service principal you created for Fivetran. Use this parameter only if you want to deploy your data lake on ADLS.",
          "managed_data_lake": "Tenant ID of the service principal you created for Fivetran. Use this parameter only if you want to deploy your data lake on ADLS.",
          "onelake": "Tenant ID of service principal"
       },
@@ -1759,6 +1789,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "databricks_via_managed_data_lake": "",
          "managed_data_lake": "(Immutable) OneLake workspace GUID.",
          "onelake": "(Immutable) OneLake workspace GUID"
       },

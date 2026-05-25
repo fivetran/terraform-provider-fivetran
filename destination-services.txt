@@ -11,6 +11,7 @@ big_query_dts
 clickhouse
 confluent_cloud_wh
 databricks
+databricks_via_managed_data_lake
 managed_big_query
 managed_data_lake
 maria_rds_warehouse
@@ -20,7 +21,6 @@ milvus
 motherduck
 mysql_rds_warehouse
 mysql_warehouse
-onelake
 oracle_rac_warehouse
 oracle_rds_warehouse
 oracle_warehouse

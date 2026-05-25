@@ -57,6 +57,45 @@
       },
       "api_field": ""
    },
+   "abs_export_connection_string": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "braze": "Your Azure Blob Storage connection string for exports. Required if `AZURE_BLOB_STORAGE` is the `export_storage_type`"
+      },
+      "api_field": ""
+   },
+   "abs_export_container_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "braze": "Your Azure Blob Storage container name for exports. Required if `AZURE_BLOB_STORAGE` is the `export_storage_type`"
+      },
+      "api_field": ""
+   },
+   "abs_export_prefix": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "braze": "Your Azure Blob Storage prefix for exports. Used if `AZURE_BLOB_STORAGE` is the `export_storage_type`"
+      },
+      "api_field": ""
+   },
    "abs_host_ip": {
       "readonly": false,
       "sensitive": false,
@@ -310,6 +349,7 @@
          "dear": "Your Dear Account ID.",
          "harvest": "Your Harvest Account ID.",
          "optimizely": "Your Optimizely account ID.",
+         "parcellab": "Your parcelLab account ID.",
          "rokt": "Your Rokt account ID.",
          "udemy_business": "Your Udemy Business account ID."
       },
@@ -1202,10 +1242,12 @@
          "brivo": "Your Brivo API key.",
          "bubble": "Your Bubble API token.",
          "buildium": "Your Buildium private API key.",
+         "calcom": "Your Cal.com API key.",
          "callrail": "Your CallRail API key.",
          "campaignmonitor": "Your Campaign Monitor API key.",
          "campfire": "Your Campfire API key.",
          "canny": "Your Canny API key.",
+         "captivateiq": "Your CaptivateIQ API key.",
          "chargebee_product_catalog_1": "Your Chargebee Product Catalog 1 API key.",
          "chargebee_product_catalog_2": "Your Chargebee API key.",
          "charthop": "Your ChartHop app API key.",
@@ -1329,6 +1371,7 @@
          "pagerduty": "Your PagerDuty API key.",
          "pandadoc": "Your PandaDoc API key.",
          "papershift": "Your Papershift API Key",
+         "parcellab": "Your parcelLab API token.",
          "partnerize": "Your Partnerize user API key.",
          "peopleforce": "Your PeopleForce API key.",
          "persona": "Your Persona API key.",
@@ -1340,6 +1383,7 @@
          "playvox": "Your Playvox API Key.",
          "posthog": "Your PostHog API key.",
          "prive": "Your Prive API key.",
+         "profound": "Your Profound API key.",
          "prosperstack": "Your ProsperStack API key.",
          "qualaroo": "Your Qualaroo API Key.",
          "quorum": "Your Quorum API key.",
@@ -1364,7 +1408,7 @@
          "security_journey": "Your Security Journey API key.",
          "sendgrid": "The SendGrid API key.",
          "sendinblue": "Your Sendinblue API key.",
-         "shipmonk": "Your Shipmonk API key.",
+         "shipmonk": "Your ShipMonk API key.",
          "shortcut": "Your Shortcut API token.",
          "shortio": "Your Short.io API key.",
          "simplesat": "Your Simplesat API key.",
@@ -1389,7 +1433,7 @@
          "transcend": "Your Transcend API key.",
          "trello": "Your TRELLO api key.",
          "triple_whale": "Your Triple Whale API key.",
-         "trustpilot": "Your Trustpilot API key.",
+         "trustpilot": "Your Trustpilot application API key.",
          "upland": "Your Upland Software API key.",
          "uppromote": "Your UpPromote API key.",
          "veeqo": "Your Veeqo API key.",
@@ -1532,13 +1576,13 @@
          "friendbuy": "Your Friendbuy API secret.",
          "integrate": "Your Integrate API secret.",
          "justcall": "Your JustCall API secret.",
-         "leapsome": "your Leapsome API secret",
+         "leapsome": "Your Leapsome API secret.",
          "liftoff": "Your Liftoff API secret.",
          "mixpanel": "Mixpanel API Secret.",
          "qualaroo": "Your Qualaroo API Secret.",
          "sailthru": "The Sailthru API secret.",
          "shareasale": "Your ShareASale API secret.",
-         "trustpilot": "Your Trustpilot API secret.",
+         "trustpilot": "Your Trustpilot application API secret.",
          "vonage": "Your Vonage API Secret."
       },
       "api_field": ""
@@ -1581,6 +1625,7 @@
          "aha": "Your Aha! API key.",
          "aircall": "Your Aircall API token.",
          "appsflyer": "API Token for AppsFlyer's PULL API.",
+         "atlassian_compass": "Your Atlassian Compass API token.",
          "aura_from_unity": "Your Aura from Unity API token.",
          "awin": "Your Awin API Token.",
          "backbone_plm": "Your Backbone PLM API token.",
@@ -1593,7 +1638,7 @@
          "cloudflare_analytics": "Your Cloudflare Analytics API token.",
          "coda": "Your Coda API token.",
          "confluence": "The Confluence API token.",
-         "credly": "Enter your Credly API token",
+         "credly": "Your Credly API token",
          "dixa": "Your Dixa API token.",
          "drip": "Your Drip API Token.",
          "factbird": "Your Factbird API token.",
@@ -2666,7 +2711,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "sql_server": "Location of transaction log backup files when using BACKUP binary log type. Possible values: `\"AZURE\"`, `\"ALTERNATE_LOCATION\"`, `\"AWS\"`."
+         "sql_server": "Location of transaction log backup files when using BACKUP binary log type. Possible values: `\"AZURE\"`, `\"ALTERNATE_LOCATION\"`, `\"AWS\"`, `\"GCS\"`, `\"MSDB\"`."
       },
       "api_field": ""
    },
@@ -3024,6 +3069,19 @@
       },
       "api_field": ""
    },
+   "calendly_plan": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "calendly": "Your Calendly Plan."
+      },
+      "api_field": ""
+   },
    "campaign_query_lookback_window_in_days": {
       "readonly": false,
       "sensitive": false,
@@ -3034,6 +3092,19 @@
       "item_type": {},
       "description": {
          "sailthru": "The number of days to look back for campaign query data during incremental syncs. Valid range: 2-90. Default: 60."
+      },
+      "api_field": ""
+   },
+   "capture_deletes": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "firebase": "Whether to capture document deletions from Firestore. Set to false to disable delete capture, which may improve connector performance. Default value: true."
       },
       "api_field": ""
    },
@@ -3248,7 +3319,7 @@
          "hana_sap_hva_s4_netweaver": "Three-digit (000-999) identifier of the SAP client, which is sent to an AS ABAP upon logon.",
          "helpdesk": "Your HelpDesk client ID.",
          "hilti_ontrack": "Your Hilti On!Track client ID.",
-         "ibacos": "Your IBACOS Client ID.",
+         "ibacos": "Your IBACOS client ID.",
          "ilevel": "Your iLevel Client ID.",
          "instructure": "Your Instructure client ID.",
          "integral_ad_science": "Your integral_ad_science client id.",
@@ -3328,6 +3399,7 @@
          "zoho_campaigns": "Your Zoho Campaigns Client ID.",
          "zoho_desk": "Your Zoho Desk Client Id.",
          "zoho_inventory": "Your Zoho Inventory client ID.",
+         "zoho_people": "Your Zoho People client ID.",
          "zoho_recruit": "Your Zoho Recruit client ID.",
          "zuora": "Zuora Client ID.",
          "zuora_sandbox": "Zuora Client ID."
@@ -3527,7 +3599,7 @@
          "helpdesk": "Your HelpDesk client secret.",
          "hilti_ontrack": "Your Hilti On!Track client secret.",
          "hubspot": "Client secret for private custom app authentication.",
-         "ibacos": "Your IBACOS Client secret.",
+         "ibacos": "Your IBACOS client secret.",
          "ilevel": "Your iLevel Client Secret.",
          "instructure": "Your Instructure client secret.",
          "integral_ad_science": "Your integral_ad_science client secret.",
@@ -3601,6 +3673,7 @@
          "zoho_campaigns": "Your Zoho Campaigns Client Secret.",
          "zoho_desk": "Your Zoho Desk Client secret.",
          "zoho_inventory": "Your Zoho Inventory client secret.",
+         "zoho_people": "Your Zoho People client secret.",
          "zoho_recruit": "Your Zoho Recruit client secret.",
          "zuora": "Zuora Client Secret.",
          "zuora_sandbox": "Zuora Client Secret."
@@ -5518,7 +5591,7 @@
          "calabrio": "Your Calabrio domain name",
          "dynamics_365": "The custom domain name associated with Dynamics 365.",
          "helpshift": "Your Helpshift domain name.",
-         "trustpilot": "Your Trustpilot domain name."
+         "trustpilot": "Your domain from which you want to sync data."
       },
       "api_field": ""
    },
@@ -5717,6 +5790,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "atlassian_compass": "Your Atlassian Compass email ID.",
          "cabcharge": "Your Cabcharge email ID.",
          "ordway": "Your Ordway user email ID.",
          "planful": "Your Planful email ID.",
@@ -8407,7 +8481,7 @@
       "description": {
          "azure_cosmos_for_mongo": "Indicates the desired sync pack mode. Accepted values are `UsePackedModeOnly` and `UseUnpackedModeOnly`. `SelectTablesForPackedMode` is deprecated. ",
          "firebase": "Whether to sync all tables in unpacked mode or specific tables in packed mode. Default value: `UseUnpackedModeOnly`.",
-         "klaviyo": "Packing mode for EVENT and `PERSON` tables.",
+         "klaviyo": "Packing mode for EVENT and PERSON tables.",
          "mongo": "Whether to sync all tables in unpacked mode only, all tables in packed mode only, or specific tables in packed mode. Default value: `UseUnpackedModeOnly`.",
          "mongo_sharded": "Whether to sync all tables in unpacked mode only, all tables in packed mode only, or specific tables in packed mode. Default value: `UseUnpackedModeOnly`.",
          "optimizely": "Packing mode for conversion and decision tables.",
@@ -8838,6 +8912,7 @@
          "databricks_db": "Access Token",
          "gitlab": "Your GitLab personal access token.",
          "harvest": "Your Harvest Personal Access Token.",
+         "leave_dates": "Your Leave Dates personal access token.",
          "productive": "Your Productive personal access token.",
          "totango": "Your Totango personal access token."
       },
@@ -9728,6 +9803,7 @@
          "zoho_campaigns": "Your Zoho Campaigns application host region.",
          "zoho_desk": "Your Zoho Desk domain.",
          "zoho_inventory": "Your Zoho Inventory application host region.",
+         "zoho_people": "Your Zoho People application host region.",
          "zoho_recruit": "Your Zoho Recruit region."
       },
       "api_field": ""
@@ -10252,7 +10328,20 @@
                "google_search_ads_360": "string"
             },
             "description": {
-               "google_search_ads_360": "The report attributes included to sync."
+               "google_search_ads_360": "The report attributes included to sync. Labeled `Fields` in the Fivetran dashboard."
+            },
+            "api_field": ""
+         },
+         "breakdown": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "klaviyo": "Optional breakdown for Form Series reports. Select Form version ID to group data by individual form versions, or Form ID to group data by form only."
             },
             "api_field": ""
          },
@@ -10909,7 +10998,7 @@
                "double_click_campaign_manager": "Type of reporting data to sync. Default value: `STANDARD`.",
                "google_ads": "The name of the Google Ads report from which the connector will sync the data. [Possible report_type values](https://developers.google.com/adwords/api/docs/appendix/reports#report-types).",
                "google_display_and_video_360": "The type of the report to create. This is a required parameter when `config_method` is set to `CREATE_NEW`.",
-               "google_search_ads_360": "The type of report",
+               "google_search_ads_360": "The type of report. Labeled `Resource type` in the Fivetran dashboard.",
                "google_search_console": "The type of report"
             },
             "api_field": ""
@@ -11348,6 +11437,19 @@
       "description": {
          "pardot": "The number of API calls that the connector should not exceed in a day. Default REST API call limit per day: 150,000.",
          "pardot_sandbox": "The number of API calls that the connector should not exceed in a day. Default REST API call limit per day: 150,000."
+      },
+      "api_field": ""
+   },
+   "return_full_schedule": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "assembled": "Your Assembled ReturnFullSchedule Query param for Activity table."
       },
       "api_field": ""
    },
@@ -11896,6 +11998,7 @@
          "ashby": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "assembled": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "asset_panda": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "atlassian_compass": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "atlassian_jira_align": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "atlassian_ops_genie": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "attentive": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11957,6 +12060,7 @@
          "bynder": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "cabcharge": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "calabrio": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "calcom": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "calendly": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "callrail": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "campaignmonitor": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -11964,6 +12068,7 @@
          "canny": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "canvas_by_instructure": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "canvas_data_2_by_instructure": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "captivateiq": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "care_quality_commission": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "castor_edc": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "centra": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -12032,6 +12137,7 @@
          "d2l_brightspace": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "datadog": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "datastreamer_source": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "db2luw": "The schema name.",
          "dbt_cloud": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "dcl_logistics": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "dear": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -12218,6 +12324,7 @@
          "leapsome": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "learn_amp": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "learnupon": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "leave_dates": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "lemlist": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "lessonly": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "lever": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -12311,6 +12418,7 @@
          "pagerduty": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "pandadoc": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "papershift": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "parcellab": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "pardot": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "pardot_sandbox": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "partnerize": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -12350,6 +12458,7 @@
          "procore": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "productboard": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "productive": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "profound": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "proofpoint_security_awareness": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "prosperstack": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "purple_dot": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -12589,6 +12698,7 @@
          "zoho_crm": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "zoho_desk": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "zoho_inventory": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "zoho_people": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "zoho_recruit": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "zonka_feedback": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "zoom": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -13394,7 +13504,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "klaviyo": "Sync events linked to deleted profiles"
+         "klaviyo": "Sync events linked to deleted profiles."
       },
       "api_field": ""
    },
@@ -13407,7 +13517,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "klaviyo": "Sync predictive analytics for `PERSON` table"
+         "klaviyo": "Sync predictive analytics for `PERSON` table."
       },
       "api_field": ""
    },
@@ -13867,6 +13977,7 @@
          "acumatica": "Your Acumatica subdomain.",
          "ada": "Your Ada sub-domain.",
          "alchemer": "Your Alchemer sub-domain.",
+         "atlassian_compass": "Your Atlassian Compass subdomain.",
          "atlassian_jira_align": "Your Jira Align base URL.",
          "azure_boards": "Your Azure Boards Organization Name.",
          "azure_devops": "Your Azure Organization Name",
@@ -13928,6 +14039,7 @@
          "recurly": "Your company's Recurly subdomain.",
          "reltio": "Your Reltio subdomain.",
          "revel": "Your Revel Systems subDomain.",
+         "rocketlane": "Your Rocketlane API server region.",
          "rundeck": "Your Rundeck subdomain.",
          "sage_hr": "Your Sage HR subdomain.",
          "salesforce_marketing_cloud": "Your Salesforce Marketing Cloud subdomain.",
@@ -13971,7 +14083,7 @@
          "freshsuccess": "Your Freshsuccess subdomain.",
          "gorgias": "Your Gorgias subdomain.",
          "hex": "Your Hex subdomain.",
-         "ibacos": "Your IBACOS Server.",
+         "ibacos": "Your IBACOS server.",
          "jama_software": "Your Jama Software subdomain.",
          "klarna": "Your Klarna subdomain.",
          "learnupon": "Your LearnUpon subdomain.",
@@ -14435,6 +14547,7 @@
          "livechat_partner": "Destination table. Table is permanent and cannot be changed after connection creation",
          "looker_source": "Destination table. Table is permanent and cannot be changed after connection creation",
          "mixmax": "Destination table. Table is permanent and cannot be changed after connection creation",
+         "mixpanel": "Destination table. Table is permanent and cannot be changed after connection creation",
          "navan": "Destination table. Table is permanent and cannot be changed after connection creation",
          "open_data_dc": "Destination table. Table is permanent and cannot be changed after connection creation",
          "paddle": "Destination table. Table is permanent and cannot be changed after connection creation",
@@ -16105,6 +16218,58 @@
          "pipedrive": "The registered URL for webhooks in your Pipedrive dashboard.",
          "segment": "Webhook URL.",
          "xero": "(ReadOnly) The Webhook URL generated by Fivetran. You can configure this in XERO."
+      },
+      "api_field": ""
+   },
+   "windows_auth_client_certificate": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sql_server": "Fivetran client certificate to add to the Windows Auth server's trusted clients."
+      },
+      "api_field": ""
+   },
+   "windows_auth_grpc_host": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sql_server": "Hostname of the Windows Auth gRPC server."
+      },
+      "api_field": ""
+   },
+   "windows_auth_grpc_port": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sql_server": "Port of the Windows Auth gRPC server."
+      },
+      "api_field": ""
+   },
+   "windows_auth_server_certificate": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sql_server": "PEM certificate of the Windows Auth gRPC server used to verify the server identity."
       },
       "api_field": ""
    },
