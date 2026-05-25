@@ -7,7 +7,9 @@ import (
 	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
 	"github.com/fivetran/go-fivetran/tests/mock"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+    "github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+    "github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 var (
@@ -80,6 +82,10 @@ func TestResourceProxyMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "client_private_key", "client_private_key"),
 			resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "client_cert", "client_cert"),
 		),
+		ConfigStateChecks: []statecheck.StateCheck{
+			statecheck.ExpectSensitiveValue("fivetran_proxy_agent.test_proxy_agent", tfjsonpath.New("token")),
+			statecheck.ExpectSensitiveValue("fivetran_proxy_agent.test_proxy_agent", tfjsonpath.New("client_private_key")),
+		},
 	}
 
 	resource.Test(

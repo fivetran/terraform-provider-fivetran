@@ -46,12 +46,14 @@ func ProxyAgentSchema() core.Schema {
                 Readonly:    true,
                 ValueType:   core.String,
                 ResourceOnly:true,
+                Sensitive: true,
                 Description: "Client private key.",
             },
             "token": {
                 ResourceOnly: true,
                 Readonly:    true,
                 ValueType:   core.String,
+                Sensitive: true,
                 Description: "The auth token.",
             },
             "regeneration_counter": {
