@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.9.31](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.31...v1.9.30)
 
 ### Fixed
-- Better `fivetran_proxy_agent` resource
+- Better attribution for `fivetran_proxy_agent` resource properties
 
 ## [v1.9.30](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.30...v1.9.29)
 
