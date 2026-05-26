@@ -283,6 +283,10 @@ func (t _table) toStateObject(sch string, local *_table, diag *diag.Diagnostics,
 			}
 		}
 		result[COLUMN] = columns
+	} else {
+		if local != nil && local.columns != nil {
+			result[COLUMN] = columns
+		}
 	}
 
 	// table has been configured locally OR has columns to include OR table inconsistent by policy (patch allowed)

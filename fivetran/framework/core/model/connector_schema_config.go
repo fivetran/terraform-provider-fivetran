@@ -278,6 +278,8 @@ func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}, isIm
 				}
 				if len(columns) > 0 {
 					tableElements["columns"], _ = types.MapValue(types.ObjectType{AttrTypes: columnsAttrTypes}, columns)
+				} else if localTable["column"] != nil && len(localTable["column"].(map[string]interface{})) == 0 {
+					tableElements["columns"], _ = types.MapValue(types.ObjectType{AttrTypes: columnsAttrTypes}, columns)
 				} else {
 					tableElements["columns"] = types.MapNull(types.ObjectType{AttrTypes: columnsAttrTypes})
 				}

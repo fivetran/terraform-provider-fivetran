@@ -335,23 +335,16 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 			)
 			return
 		}
-	}
 
-	// We need to re-read schema
-	schemaResponse, err = client.NewConnectionSchemaDetails().ConnectionID(connectorID).Do(ctx)
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Unable to Create Connector Schema Resource.",
-			fmt.Sprintf("Error while reading schema after schema change handling apply. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
-		)
-		return
-	}
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Unable to Create Connector Schema Resource.",
-			fmt.Sprintf("Some elements missing in upstream schema. Details: %v", err),
-		)
-		return
+		// We need to re-read schema
+		schemaResponse, err = client.NewConnectionSchemaDetails().ConnectionID(connectorID).Do(ctx)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to Create Connector Schema Resource.",
+				fmt.Sprintf("Error while reading schema after schema change handling apply. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
+			)
+			return
+		}
 	}
 
 	// read data from response and merge with existing config
