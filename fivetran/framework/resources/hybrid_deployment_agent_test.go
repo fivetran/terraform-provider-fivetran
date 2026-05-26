@@ -7,7 +7,9 @@ import (
 	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
 	"github.com/fivetran/go-fivetran/tests/mock"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 var (
@@ -24,6 +26,7 @@ func setupMockClientHybridDeploymentAgentResource(t *testing.T) {
        	"display_name": "display_name",
        	"group_id": "group_id",
        	"registered_at": "registered_at",
+		"token": "token1",
        	"files": {
           	"config_json": "config_json",
           	"auth_json": "auth_json",
@@ -76,6 +79,11 @@ func TestResourceHybridDeploymentAgentMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_hybrid_deployment_agent.test_lpa", "auth_json", "auth_json"),
 			resource.TestCheckResourceAttr("fivetran_hybrid_deployment_agent.test_lpa", "docker_compose_yaml", "docker_compose_yaml"),
 		),
+		ConfigStateChecks: []statecheck.StateCheck{
+			statecheck.ExpectSensitiveValue("fivetran_hybrid_deployment_agent.test_lpa", tfjsonpath.New("auth_json")),
+			statecheck.ExpectSensitiveValue("fivetran_hybrid_deployment_agent.test_lpa", tfjsonpath.New("config_json")),
+			statecheck.ExpectSensitiveValue("fivetran_hybrid_deployment_agent.test_lpa", tfjsonpath.New("token")),
+		},
 	}
 
 	resource.Test(
