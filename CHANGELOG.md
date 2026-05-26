@@ -34,8 +34,12 @@ New connection config fields supported:
 - Added field `fivetran_connector.config.capture_deletes` for services: `firebase`.
 - Added field `fivetran_connector.config.reports.breakdown` for services: `klaviyo`.
 - Added field `fivetran_connector.config.windows_auth_grpc_port` for services: `sql_server`.
+
 New connection auth fields supported:
 - Added field `fivetran_connector.config.windows_auth_client_private_key` for services: `sql_server`.
+
+### Fixed
+- Better attribution for `fivetran_proxy_agent` resource properties
 
 ## [v1.9.30](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.30...v1.9.29)
 

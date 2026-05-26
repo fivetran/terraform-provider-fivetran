@@ -52,12 +52,14 @@ func hybridDeploymentAgentAttribute() core.Schema {
                 ResourceOnly: true,
                 Readonly:     true,
                 ValueType:    core.String,
+                Sensitive:    true,
                 Description:  "Base64-encoded content of the config.json file.",
             },
             "auth_json": {
                 ResourceOnly: true,
                 Readonly:     true,
                 ValueType:    core.String,
+                Sensitive:    true,
                 Description:  "Base64-encoded content of the auth.json file.",
             },
             "docker_compose_yaml": {
@@ -70,6 +72,7 @@ func hybridDeploymentAgentAttribute() core.Schema {
                 ResourceOnly: true,
                 Readonly:     true,
                 ValueType:    core.String,
+                Sensitive:    true,
                 Description:  "Base64 encoded content of token.",
             },
         },
