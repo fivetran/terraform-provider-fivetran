@@ -9,6 +9,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v1.9.31](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.31...v1.9.30)
 
+### Added
+New destination services supported:
+- Supported service: `databricks_via_managed_data_lake`
+
+New connection services supported:
+- Supported service: `atlassian_compass`
+- Supported service: `calcom`
+- Supported service: `captivateiq`
+- Supported service: `leave_dates`
+- Supported service: `parcellab`
+- Supported service: `profound`
+- Supported service: `zoho_people`
+
+New connection config fields supported:
+- Added field `fivetran_connector.config.abs_export_connection_string` for services: `braze`.
+- Added field `fivetran_connector.config.abs_export_container_name` for services: `braze`.
+- Added field `fivetran_connector.config.windows_auth_client_certificate` for services: `sql_server`.
+- Added field `fivetran_connector.config.windows_auth_server_certificate` for services: `sql_server`.
+- Added field `fivetran_connector.config.windows_auth_grpc_host` for services: `sql_server`.
+- Added field `fivetran_connector.config.return_full_schedule` for services: `assembled`.
+- Added field `fivetran_connector.config.abs_export_prefix` for services: `braze`.
+- Added field `fivetran_connector.config.calendly_plan` for services: `calendly`.
+- Added field `fivetran_connector.config.capture_deletes` for services: `firebase`.
+- Added field `fivetran_connector.config.reports.breakdown` for services: `klaviyo`.
+- Added field `fivetran_connector.config.windows_auth_grpc_port` for services: `sql_server`.
+
+New connection auth fields supported:
+- Added field `fivetran_connector.config.windows_auth_client_private_key` for services: `sql_server`.
+
 ### Fixed
 - Better attribution for `fivetran_proxy_agent` resource properties
 

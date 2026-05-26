@@ -1,6 +1,5 @@
 15five
 360learning
-6sense
 7shifts
 absorb_lms
 acculynx
@@ -12,7 +11,6 @@ adjust
 adobe_analytics
 adobe_analytics_data_feed
 adobe_commerce
-adobe_experience_platform
 adobe_workfront
 adp_workforce_now
 adroll
@@ -49,6 +47,7 @@ ascend_by_partnerize
 ashby
 assembled
 asset_panda
+atlassian_compass
 atlassian_jira_align
 atlassian_ops_genie
 attentive
@@ -112,6 +111,7 @@ buzzsprout
 bynder
 cabcharge
 calabrio
+calcom
 calendly
 callrail
 campaignmonitor
@@ -119,6 +119,7 @@ campfire
 canny
 canvas_by_instructure
 canvas_data_2_by_instructure
+captivateiq
 care_quality_commission
 castor_edc
 centra
@@ -286,7 +287,6 @@ gofundme_pro
 goldcast
 gongio
 google_ads
-google_analytics_360
 google_analytics_4
 google_analytics_4_export
 google_business_profile
@@ -372,6 +372,7 @@ leap_crm
 leapsome
 learn_amp
 learnupon
+leave_dates
 lemlist
 lessonly
 lever
@@ -481,6 +482,7 @@ paddle
 pagerduty
 pandadoc
 papershift
+parcellab
 pardot
 pardot_sandbox
 partnerize
@@ -522,6 +524,7 @@ prive
 procore
 productboard
 productive
+profound
 proofpoint_security_awareness
 prosperstack
 purple_dot
@@ -756,6 +759,7 @@ zoho_campaigns
 zoho_crm
 zoho_desk
 zoho_inventory
+zoho_people
 zoho_recruit
 zonka_feedback
 zoom

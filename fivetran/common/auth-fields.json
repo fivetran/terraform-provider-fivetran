@@ -91,6 +91,7 @@
          "zoho_campaigns": "",
          "zoho_desk": "",
          "zoho_inventory": "",
+         "zoho_people": "",
          "zoho_recruit": "",
          "zoom": "Your Zoom Access token."
       },
@@ -280,8 +281,8 @@
                "tiktok_ads": "`Client ID` of your TikTok Ads client application.",
                "tiktok_organic_app": "",
                "tremendous": "",
-               "twitter": "`Client ID` of your Twitter client application.",
-               "twitter_ads": "`Client ID` of your Twitter Ads client application.",
+               "twitter": "`Client ID` of your X client application.",
+               "twitter_ads": "`Client ID` of your X Ads client application.",
                "typeform": "The Typeform client ID.",
                "vimeo": "",
                "wordpress": "",
@@ -298,6 +299,7 @@
                "zoho_crm": "`Client ID` of your Zoho client application.",
                "zoho_desk": "",
                "zoho_inventory": "",
+               "zoho_people": "",
                "zoho_recruit": "",
                "zoom": ""
             },
@@ -415,8 +417,8 @@
                "tiktok_ads": "`Client Secret` of your TikTok Ads client application.",
                "tiktok_organic_app": "",
                "tremendous": "",
-               "twitter": "`Client Secret` of your Twitter client application.",
-               "twitter_ads": "`Client Secret` of your Twitter Ads client application.",
+               "twitter": "`Client Secret` of your X client application.",
+               "twitter_ads": "`Client Secret` of your X Ads client application.",
                "typeform": "The Typeform client secret.",
                "vimeo": "",
                "wordpress": "",
@@ -433,6 +435,7 @@
                "zoho_crm": "`Client Secret` of your Zoho client application.",
                "zoho_desk": "",
                "zoho_inventory": "",
+               "zoho_people": "",
                "zoho_recruit": "",
                "zoom": ""
             },
@@ -589,6 +592,7 @@
          "zoho_crm": "",
          "zoho_desk": "",
          "zoho_inventory": "",
+         "zoho_people": "",
          "zoho_recruit": "",
          "zoom": "Your zoom client access"
       },
@@ -643,7 +647,7 @@
       "item_type": {},
       "description": {
          "twitter": "API Key of your app",
-         "twitter_ads": "The Twitter App consumer key."
+         "twitter_ads": "The X App consumer key."
       },
       "api_field": ""
    },
@@ -657,7 +661,7 @@
       "item_type": {},
       "description": {
          "twitter": "API Secret of your app",
-         "twitter_ads": "The Twitter App consumer secret."
+         "twitter_ads": "The X App consumer secret."
       },
       "api_field": ""
    },
@@ -697,8 +701,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "twitter": "The Twitter App access token.",
-         "twitter_ads": "The Twitter App access token."
+         "twitter": "The X App access token.",
+         "twitter_ads": "The X App access token."
       },
       "api_field": ""
    },
@@ -711,8 +715,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "twitter": "The Twitter App access token secret.",
-         "twitter_ads": "The Twitter App access token secret."
+         "twitter": "The X App access token secret.",
+         "twitter_ads": "The X App access token secret."
       },
       "api_field": ""
    },
@@ -895,6 +899,7 @@
          "zoho_crm": "The long-lived `Refresh token`, along with the `client_id` and `client_secret` parameters, carries the information necessary to get a new access token for API resources.",
          "zoho_desk": "",
          "zoho_inventory": "",
+         "zoho_people": "",
          "zoho_recruit": "",
          "zoom": "Your Zoom Refresh token."
       },
@@ -991,6 +996,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "facebook_pages": "",
          "instagram_business": ""
       },
       "api_field": ""
@@ -1034,6 +1040,19 @@
       "item_type": {},
       "description": {
          "facebook_ads": "System User Token. Use in combination with `client_id` and `client_secret`. Use either `user_access_token` (for system token) or `access_token` (for user access token), not both at the same time."
+      },
+      "api_field": ""
+   },
+   "windows_auth_client_private_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sql_server": "Private key associated with the Fivetran client certificate."
       },
       "api_field": ""
    }
