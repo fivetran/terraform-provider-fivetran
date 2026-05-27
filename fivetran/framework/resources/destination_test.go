@@ -1593,12 +1593,8 @@ func TestNetworkingMethodNullMock(t *testing.T) {
 					func(req *http.Request) (*http.Response, error) {
 						body := tfmock.RequestBodyToJson(t, req)
 
-						tfmock.AssertKeyExists(t, body, "config")
-
-						config := body["config"].(map[string]interface{})
-						tfmock.AssertKeyExistsAndHasValue(t, config, "bucket", "bucket1")
-
-						tfmock.AssertKeyDoesNotExist(t, config, "external_id")
+						tfmock.AssertKeyExistsAndHasValue(t, body, "region", "GCP_US_WEST1")
+						tfmock.AssertKeyDoesNotExist(t, body, "networking_method")
 
 						testDestinationData = tfmock.CreateMapFromJsonString(t, `
 						{
@@ -1626,7 +1622,7 @@ func TestNetworkingMethodNullMock(t *testing.T) {
 					func(req *http.Request) (*http.Response, error) {
 						testDestinationData = nil
 						response := tfmock.FivetranSuccessResponse(t, req, 200,
-							"Destination with id 'destionation_id' has been deleted", nil)
+							"Destination with id 'destination_id' has been deleted", nil)
 						return response, nil
 					},
 				)
