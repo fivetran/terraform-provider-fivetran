@@ -29,7 +29,56 @@ func TestResourceProxyAgentE2E(t *testing.T) {
 					testFivetranProxyAgentResourceCreate(t, "fivetran_proxy_agent.test_proxy_agent"),
 					resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "display_name", "display_name"),
 					resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "group_region", "GCP_US_EAST4"),
+					resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "regeneration_counter", "1"),
 				),
+			},
+		},
+	})
+}
+
+func TestResourceProxyAgentUpdateCounterE2E(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranProxyAgentResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+            	resource "fivetran_proxy_agent" "test_proxy_agent" {
+                	provider = fivetran-provider
+
+                 	display_name = "display_name"
+                 	group_region = "GCP_US_EAST4"
+					regeneration_counter = 2
+            	}`,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranProxyAgentResourceCreate(t, "fivetran_proxy_agent.test_proxy_agent"),
+					resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "display_name", "display_name"),
+					resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "group_region", "GCP_US_EAST4"),
+					resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "regeneration_counter", "2"),
+				),
+			},
+			{
+				Config: `
+            	resource "fivetran_proxy_agent" "test_proxy_agent" {
+                	provider = fivetran-provider
+
+                 	display_name = "display_name"
+                 	group_region = "GCP_US_EAST4"
+					regeneration_counter = 3 # updating counter to trigger regeneration of credentials
+            	}`,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranProxyAgentResourceCreate(t, "fivetran_proxy_agent.test_proxy_agent"),
+					resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "display_name", "display_name"),
+					resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "group_region", "GCP_US_EAST4"),
+					resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "regeneration_counter", "3"),
+				),
+			},
+			{
+				ResourceName:      "fivetran_proxy_agent.test_proxy_agent",
+				ImportState:       true,
+				ImportStateVerify: true,
+				ImportStateVerifyIgnore: []string{"client_cert", "client_private_key", "token", "regeneration_counter"},
 			},
 		},
 	})
