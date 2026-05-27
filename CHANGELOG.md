@@ -39,6 +39,7 @@ New connection auth fields supported:
 - Added field `fivetran_connector.config.windows_auth_client_private_key` for services: `sql_server`.
 
 ### Fixed
+- `fivetran_destination`: do not fail if upstream returns null in `networking_method`
 - Better attribution for `fivetran_proxy_agent` resource properties
 
 ## [v1.9.30](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.30...v1.9.29)
