@@ -68,10 +68,36 @@ func TestResourceProxyAgentUpdateCounterE2E(t *testing.T) {
 					regeneration_counter = 3 # updating counter to trigger regeneration of credentials
             	}`,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					testFivetranProxyAgentResourceCreate(t, "fivetran_proxy_agent.test_proxy_agent"),
 					resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "display_name", "display_name"),
 					resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "group_region", "GCP_US_EAST4"),
 					resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "regeneration_counter", "3"),
+				),
+			},
+			{
+				Config: `
+            	resource "fivetran_proxy_agent" "test_proxy_agent" {
+                	provider = fivetran-provider
+
+                 	display_name = "display_name"
+                 	group_region = "GCP_US_EAST4"
+					regeneration_counter = 3
+            	}
+
+				data "fivetran_proxy_agent" "test_proxy_agent_data" {
+					provider = fivetran-provider
+
+					id = fivetran_proxy_agent.test_proxy_agent.id
+				}
+				data "fivetran_proxy_agents" "test_proxy_agents_data" {
+					provider = fivetran-provider
+				}`,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "display_name", "display_name"),
+					resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "group_region", "GCP_US_EAST4"),
+					resource.TestCheckResourceAttr("fivetran_proxy_agent.test_proxy_agent", "regeneration_counter", "3"),
+
+					resource.TestCheckResourceAttr("data.fivetran_proxy_agent.test_proxy_agent_data", "display_name", "display_name"),
+					resource.TestCheckResourceAttr("data.fivetran_proxy_agent.test_proxy_agent_data", "group_region", "GCP_US_EAST4"),
 				),
 			},
 			{
