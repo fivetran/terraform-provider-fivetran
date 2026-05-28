@@ -38,7 +38,6 @@ func (d *ProxyAgentResourceModel) SetDisplayName(value string) {
 func (d *ProxyAgentResourceModel) ReadFromResponse(resp proxy.ProxyDetailsResponse) {
 	var model proxyAgentModel = d
 	readProxyAgentFromResponse(model, resp)
-	d.RegenerationCounter = types.Int64Value(d.RegenerationCounter.ValueInt64() + 1)
 	if(d.AuthToken.IsUnknown()){
 		d.AuthToken = types.StringNull()
 	}
