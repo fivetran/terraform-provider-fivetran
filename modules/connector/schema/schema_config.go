@@ -15,7 +15,7 @@ type SchemaConfig struct {
 
 func (c SchemaConfig) ValidateSchemas(
 	connectorId string,
-	schemas map[string]*connections.ConnectionSchemaConfigSchemaResponse,
+	schemas map[string]*connections.ConnectionSchemaConfigSchemaResponse, //upstream
 	client fivetran.Client,
 	ctx context.Context,
 	validateColumns bool) (error, bool) {
