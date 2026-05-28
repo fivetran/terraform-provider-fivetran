@@ -61,6 +61,8 @@ func (d *DestinationResourceModel) SetHybridDeploymentAgentId(value string) {
 func (d *DestinationResourceModel) SetNetworkingMethod(value string) {
 	if value != "" {
 		d.NetworkingMethod = types.StringValue(value)
+	} else {
+		d.NetworkingMethod = types.StringNull()
 	}
 }
 func (d *DestinationResourceModel) SetPrivateLinkId(value string) {
