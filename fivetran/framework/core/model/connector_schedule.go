@@ -38,7 +38,7 @@ type ConnectorSchedule struct {
 }
 
 func readScheduleFromResponse(s *connections.ConnectorSchedule, existing types.Object) types.Object {
-	if s == nil {
+	if s == nil || existing.IsNull() || existing.IsUnknown() {
 		return types.ObjectNull(connectorScheduleBlockAttrTypes)
 	}
 
@@ -57,7 +57,7 @@ func readScheduleFromResponse(s *connections.ConnectorSchedule, existing types.O
 	}
 
 	if s.TimeOfDay != nil {
-		vals["time_of_day"] = types.StringValue(*s.TimeOfDay)
+		vals["time_of_day"] = normaliseTimeOfDay(*s.TimeOfDay, existing.Attributes()["time_of_day"]) 
 	} else {
 		vals["time_of_day"] = types.StringNull()
 	}
@@ -68,7 +68,7 @@ func readScheduleFromResponse(s *connections.ConnectorSchedule, existing types.O
 		vals["cron"] = types.StringNull()
 	}
 
-	if len(s.DaysOfWeek) > 0 {
+	if len(s.DaysOfWeek) > 0 && !existing.Attributes()["days_of_week"].IsNull(){
 		elems := make([]attr.Value, len(s.DaysOfWeek))
 		for i, d := range s.DaysOfWeek {
 			elems[i] = types.StringValue(d)
@@ -79,6 +79,19 @@ func readScheduleFromResponse(s *connections.ConnectorSchedule, existing types.O
 	}
 
 	return types.ObjectValueMust(connectorScheduleBlockAttrTypes, vals)
+}
+
+func normaliseTimeOfDay(upstream string, stateValue attr.Value) attr.Value {
+	if stateValue.IsNull() || stateValue.IsUnknown() {
+		return types.StringValue(upstream)
+	}
+
+	stateStr := stateValue.(types.String).ValueString()
+	if upstream == stateStr || upstream == stateStr+":00" {
+		return types.StringValue(stateStr)
+	}
+
+	return types.StringValue(upstream)
 }
 
 func (d *ConnectorSchedule) ReadFromResponse(response connections.DetailsWithCustomConfigNoTestsResponse) {
