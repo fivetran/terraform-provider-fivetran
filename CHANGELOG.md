@@ -40,7 +40,10 @@ New connection auth fields supported:
 
 ### Fixed
 - `fivetran_connector_schema_config` resource - fixed schema table columns object was empty, but now null failure
+- `fivetran_destination`: do not fail if upstream returns null in `networking_method`
 - Better attribution for `fivetran_proxy_agent` resource properties
+- `fivetran_proxy_agent`: regeneration of secrets by updating `regeneration_counter` in Terraform Config
+- 'fivetran_connector_schedule': fix 'schedule'. 'schedule' is not mandatory, and 'schedule.days_of_week' is not mandatory
 
 ## [v1.9.30](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.30...v1.9.29)
 

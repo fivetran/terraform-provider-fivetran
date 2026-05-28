@@ -10,6 +10,7 @@ import (
     fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
     "github.com/hashicorp/terraform-plugin-framework/path"
     "github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 func ProxyAgent() resource.Resource {
@@ -46,10 +47,12 @@ func (r *proxy) Create(ctx context.Context, req resource.CreateRequest, resp *re
 		return
 	}
 
-	var data model.ProxyAgentResourceModel
+	var data, tfConfig model.ProxyAgentResourceModel
 
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &tfConfig)...)
+    regenerationCounterIsManagedByConfig := !tfConfig.RegenerationCounter.IsNull() && !tfConfig.RegenerationCounter.IsUnknown()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -75,13 +78,16 @@ func (r *proxy) Create(ctx context.Context, req resource.CreateRequest, resp *re
 
     if err != nil {
         resp.Diagnostics.AddError(
-            "Unable to Create Proxy Agent Resource.",
+            "Unable to read Proxy Agent Resource after creation.",
             fmt.Sprintf("%v; code: %v", err, readResponse.Code),
         )
         return
     }
 
     data.ReadFromResponse(readResponse)
+	if !regenerationCounterIsManagedByConfig {
+		data.RegenerationCounter = types.Int64Value(data.RegenerationCounter.ValueInt64() + 1)
+	}
     
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -130,10 +136,12 @@ func (r *proxy) Update(ctx context.Context, req resource.UpdateRequest, resp *re
         return
     }
 
-    var plan, state model.ProxyAgentResourceModel
+    var plan, state, tfConfig model.ProxyAgentResourceModel
 
     resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
     resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &tfConfig)...)
+    regenerationCounterIsManagedByConfig := !tfConfig.RegenerationCounter.IsNull() && !tfConfig.RegenerationCounter.IsUnknown()
 
     svc := r.GetClient().NewProxyRegenerateSecrets()
     svc.ProxyId(state.Id.ValueString())
@@ -153,13 +161,18 @@ func (r *proxy) Update(ctx context.Context, req resource.UpdateRequest, resp *re
 
     if err != nil {
         resp.Diagnostics.AddError(
-            "Unable to Create Proxy Agent Resource.",
+            "Unable to read Proxy Agent Resource after regenerating secrets during Update.",
             fmt.Sprintf("%v; code: %v", err, readResponse.Code),
         )
         return
     }
 
     state.ReadFromResponse(readResponse)
+	if regenerationCounterIsManagedByConfig {
+        state.RegenerationCounter = plan.RegenerationCounter
+    } else {
+		state.RegenerationCounter = types.Int64Value(state.RegenerationCounter.ValueInt64() + 1)
+	}
     
     resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }

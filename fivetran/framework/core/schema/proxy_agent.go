@@ -59,7 +59,7 @@ func ProxyAgentSchema() core.Schema {
             "regeneration_counter": {
                 ResourceOnly: true,
                 ValueType:    core.Integer,
-                Description:  "Determines whether regenerarion secrets needs to be performed.",
+                Description:  "Determines whether regeneration secrets needs to be performed.",
             },
         },
     }
