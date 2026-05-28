@@ -1343,6 +1343,7 @@ func TestResourceConnectorAuthServicePrincipalIdAndClientSecretE2E(t *testing.T)
 func TestResourceConnectorDeletionInBackgroundE2E(t *testing.T) {
 	var connectionId = ""
 	var groupId = ""
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
 		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
@@ -1758,6 +1759,7 @@ func TestResourceConnectorScheduleWithScheduleBlockE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule4", "schedule.days_of_week.#", "0"),
 				),
 			},
+			
 		// 	{
 		// 		Config: `
 		// 		resource "fivetran_group" "test_group" {
