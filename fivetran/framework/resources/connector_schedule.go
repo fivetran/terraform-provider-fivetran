@@ -245,6 +245,7 @@ func (r *connectorSchedule) Update(ctx context.Context, req resource.UpdateReque
 		return
 	}
 
+	state.Schedule = plan.Schedule
 	state.ReadFromUpdateResponse(connectorResponse)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }

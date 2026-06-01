@@ -411,6 +411,184 @@ func TestResourceConnectorScheduleWithScheduleBlock(t *testing.T) {
 	)
 }
 
+func TestResourceConnectorScheduleMigrationFromLegacyConfig(t *testing.T) {
+	var patchHandler *mock.Handler
+
+	scheduleState := map[string]interface{}{
+		"schedule_type":     "auto",
+		"paused":            false,
+		"pause_after_trial": false,
+		"sync_frequency":    float64(60),
+		"schedule":          map[string]interface{}(nil),
+	}
+
+	createResponse := func(ss map[string]interface{}) string {
+		paused := ss["paused"].(bool)
+		pauseAfterTrial := ss["pause_after_trial"].(bool)
+		scheduleType := ss["schedule_type"].(string)
+		syncFrequency := ss["sync_frequency"].(float64)
+
+		scheduleBlock := ""
+		if s, ok := ss["schedule"].(map[string]interface{}); ok && s != nil {
+			scheduleJson, _ := json.Marshal(s)
+			scheduleBlock = fmt.Sprintf(`"schedule": %s,`, string(scheduleJson))
+		}
+
+		return fmt.Sprintf(`
+		{
+			"id": "connector_id",
+			"group_id": "group_id",
+			"service": "service_type",
+			"service_version": 0,
+			"schema": "schema_name",
+			"connected_by": "user_id",
+			"created_at": "2020-03-11T15:03:55.743708Z",
+			"succeeded_at": "2020-03-17T12:31:40.870504Z",
+			"failed_at": "2021-01-15T10:55:00.056497Z",
+			"status": {
+				"setup_state": "incomplete",
+				"schema_status": "ready",
+				"sync_state": "scheduled",
+				"update_state": "delayed",
+				"is_historical_sync": false,
+				"tasks": [],
+				"warnings": []
+			},
+			"config": {},
+			%v
+			"data_delay_sensitivity": "NORMAL",
+			"data_delay_threshold": 0,
+			"paused": %v,
+			"pause_after_trial": %v,
+			"sync_frequency": %v,
+			"schedule_type": "%v"
+		}`, scheduleBlock, paused, pauseAfterTrial, syncFrequency, scheduleType)
+	}
+
+	var responseData map[string]interface{}
+
+	preCheckFunc := func() {
+		tfmock.MockClient().Reset()
+		tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				responseData = tfmock.CreateMapFromJsonString(t, createResponse(scheduleState))
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
+			},
+		)
+
+		patchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/connections/connector_id").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				body := tfmock.RequestBodyToJson(t, req)
+				if v, ok := body["paused"]; ok {
+					scheduleState["paused"] = v
+				}
+				if v, ok := body["pause_after_trial"]; ok {
+					scheduleState["pause_after_trial"] = v
+				}
+				if v, ok := body["sync_frequency"]; ok {
+					scheduleState["sync_frequency"] = v
+				}
+				if scheduleMap, ok := body["schedule"].(map[string]interface{}); ok {
+					// Simulate API: TIME_OF_DAY defaults to all 7 days when days_of_week not provided
+					if scheduleMap["schedule_type"] == "TIME_OF_DAY" {
+						if _, hasDays := scheduleMap["days_of_week"]; !hasDays {
+							scheduleMap["days_of_week"] = []interface{}{
+								"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY",
+							}
+						}
+					}
+					scheduleState["schedule"] = scheduleMap
+				}
+				responseData = tfmock.CreateMapFromJsonString(t, createResponse(scheduleState))
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
+			},
+		)
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck:                 preCheckFunc,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				return nil
+			},
+			Steps: []resource.TestStep{
+				{
+					// Step 1: create with legacy config that has no schedule block.
+					Config: `
+					resource "fivetran_connector_schedule" "test_connector_schedule" {
+						provider          = fivetran-provider
+						connector_id      = "connector_id"
+						sync_frequency    = 60
+						paused            = false
+						pause_after_trial = false
+					}`,
+					Check: resource.ComposeAggregateTestCheckFunc(
+						func(s *terraform.State) error {
+							tfmock.AssertEqual(t, patchHandler.Interactions, 1)
+							return nil
+						},
+						resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "id", "connector_id"),
+						resource.TestCheckNoResourceAttr("fivetran_connector_schedule.test_connector_schedule", "schedule.schedule_type"),
+					),
+				},
+				{
+					// Step 2: migrate to new config that introduces a schedule block.
+					// Previously this produced ".schedule: was present, but now absent" because
+					// state.Schedule was null (old state had no schedule block), which caused
+					// readScheduleFromResponse to return ObjectNull immediately, discarding the
+					// API response — so state still showed schedule=null while plan expected it present.
+					Config: `
+					resource "fivetran_connector_schedule" "test_connector_schedule" {
+						provider          = fivetran-provider
+						connector_id      = "connector_id"
+						paused            = false
+						pause_after_trial = false
+						schedule {
+							schedule_type = "INTERVAL"
+							interval      = 60
+						}
+					}`,
+					Check: resource.ComposeAggregateTestCheckFunc(
+						func(s *terraform.State) error {
+							tfmock.AssertEqual(t, patchHandler.Interactions, 2)
+							return nil
+						},
+						resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "schedule.schedule_type", "INTERVAL"),
+						resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "schedule.interval", "60"),
+					),
+				},
+				{
+					// Step 3: switch to TIME_OF_DAY without specifying days_of_week.
+					// The API returns all 7 days by default, but state must keep days_of_week null
+					// (matching the plan), otherwise "Provider produced inconsistent result after apply".
+					Config: `
+					resource "fivetran_connector_schedule" "test_connector_schedule" {
+						provider          = fivetran-provider
+						connector_id      = "connector_id"
+						paused            = false
+						pause_after_trial = false
+						schedule {
+							schedule_type = "TIME_OF_DAY"
+							time_of_day   = "09:00"
+						}
+					}`,
+					Check: resource.ComposeAggregateTestCheckFunc(
+						func(s *terraform.State) error {
+							tfmock.AssertEqual(t, patchHandler.Interactions, 3)
+							return nil
+						},
+						resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "schedule.schedule_type", "TIME_OF_DAY"),
+						resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "schedule.time_of_day", "09:00"),
+						resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "schedule.days_of_week.#", "0"),
+					),
+				},
+			},
+		},
+	)
+}
+
 func TestResourceConnectorScheduleAddressingByGroupIdAndSchema(t *testing.T) {
 	var getListConnectionsHandler *mock.Handler
 	var patchHandler *mock.Handler

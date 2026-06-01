@@ -68,14 +68,17 @@ func readScheduleFromResponse(s *connections.ConnectorSchedule, existing types.O
 		vals["cron"] = types.StringNull()
 	}
 
-	if len(s.DaysOfWeek) > 0 && !existing.Attributes()["days_of_week"].IsNull(){
+	existingDaysAttr := existing.Attributes()["days_of_week"]
+	hasSpecifiedDays := !existingDaysAttr.IsNull() && !existingDaysAttr.IsUnknown() &&
+		len(existingDaysAttr.(types.Set).Elements()) > 0
+	if len(s.DaysOfWeek) > 0 && hasSpecifiedDays {
 		elems := make([]attr.Value, len(s.DaysOfWeek))
 		for i, d := range s.DaysOfWeek {
 			elems[i] = types.StringValue(d)
 		}
 		vals["days_of_week"] = types.SetValueMust(types.StringType, elems)
 	} else {
-		vals["days_of_week"] = types.SetNull(types.StringType)
+		vals["days_of_week"] = existingDaysAttr
 	}
 
 	return types.ObjectValueMust(connectorScheduleBlockAttrTypes, vals)
