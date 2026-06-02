@@ -134,7 +134,6 @@ func TestResourceConnectorScheduleMock(t *testing.T) {
 						connector_id = "connector_id"
 						sync_frequency = 360
 						schedule_type = "auto"
-						daily_sync_time = "12:00"
 						paused = true
 						pause_after_trial = true
 					}`,
@@ -174,7 +173,6 @@ func TestResourceConnectorScheduleMock(t *testing.T) {
 						connector_id = "connector_id"
 						sync_frequency = 60
 						schedule_type = "auto"
-						daily_sync_time = "12:00"
 						paused = true
 						pause_after_trial = true
 					}`,
@@ -758,7 +756,6 @@ func TestResourceConnectorScheduleAddressingByGroupIdAndSchema(t *testing.T) {
 						connector_name = "schema_name"
 						sync_frequency = 360
 						schedule_type = "auto"
-						daily_sync_time = "12:00"
 						paused = true
 						pause_after_trial = true
 					}`,
@@ -798,6 +795,169 @@ func TestResourceConnectorScheduleAddressingByGroupIdAndSchema(t *testing.T) {
 						resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "connector_id", "connection_id"),
 						resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "group_id", "group_id"),
 						resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "connector_name", "schema_name"),
+					),
+				},
+			},
+		},
+	)
+}
+
+// TestResourceConnectorScheduleStaleDailySyncTime verifies Bug 8:
+// When sync_frequency transitions away from 1440, daily_sync_time must be cleared in state.
+// Without the fix, ReadFromResponse leaves the stale "12:00" value in state because the
+// `else if d.DailySyncTime.IsUnknown()` guard never fires for a known value, causing a
+// perpetual plan diff on every subsequent terraform plan/refresh.
+func TestResourceConnectorScheduleStaleDailySyncTime(t *testing.T) {
+	var patchHandler *mock.Handler
+
+	scheduleState := map[string]interface{}{
+		"daily_sync_time":   nil,
+		"schedule_type":     "auto",
+		"paused":            false,
+		"pause_after_trial": false,
+		"sync_frequency":    float64(1440),
+	}
+
+	createResponse := func(ss map[string]interface{}) string {
+		syncFrequency := ss["sync_frequency"].(float64)
+		dailySyncTime := ss["daily_sync_time"]
+		paused := ss["paused"].(bool)
+		pauseAfterTrial := ss["pause_after_trial"].(bool)
+		scheduleType := ss["schedule_type"].(string)
+
+		dailySyncTimeElem := ""
+		if syncFrequency == float64(1440) && dailySyncTime != nil {
+			dailySyncTimeElem = fmt.Sprintf(`"daily_sync_time": "%v",`, dailySyncTime)
+		}
+
+		return fmt.Sprintf(`
+		{
+			"id": "connector_id",
+			"group_id": "group_id",
+			"service": "service_type",
+			"service_version": 0,
+			"schema": "schema_name",
+			"connected_by": "user_id",
+			"created_at": "2020-03-11T15:03:55.743708Z",
+			"succeeded_at": "2020-03-17T12:31:40.870504Z",
+			"failed_at": "2021-01-15T10:55:00.056497Z",
+			"status": {
+				"setup_state": "incomplete",
+				"schema_status": "ready",
+				"sync_state": "scheduled",
+				"update_state": "delayed",
+				"is_historical_sync": false,
+				"tasks": [],
+				"warnings": []
+			},
+			"config": {},
+			%v
+			"data_delay_sensitivity": "NORMAL",
+			"data_delay_threshold": 0,
+			"paused": %v,
+			"pause_after_trial": %v,
+			"sync_frequency": %v,
+			"schedule_type": "%v"
+		}`, dailySyncTimeElem, paused, pauseAfterTrial, syncFrequency, scheduleType)
+	}
+
+	var responseData map[string]interface{}
+
+	preCheckFunc := func() {
+		tfmock.MockClient().Reset()
+		tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				responseData = tfmock.CreateMapFromJsonString(t, createResponse(scheduleState))
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
+			},
+		)
+		patchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/connections/connector_id").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				body := tfmock.RequestBodyToJson(t, req)
+				for k, v := range body {
+					if _, ok := scheduleState[k]; ok {
+						scheduleState[k] = v
+					}
+				}
+				responseData = tfmock.CreateMapFromJsonString(t, createResponse(scheduleState))
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
+			},
+		)
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck:                 preCheckFunc,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				return nil
+			},
+			Steps: []resource.TestStep{
+				{
+					// Step 1: create with sync_frequency=1440 and daily_sync_time set
+					Config: `
+					resource "fivetran_connector_schedule" "test_connector_schedule" {
+						provider          = fivetran-provider
+						connector_id      = "connector_id"
+						sync_frequency    = "1440"
+						daily_sync_time   = "12:00"
+						schedule_type     = "auto"
+						paused            = false
+						pause_after_trial = false
+					}`,
+					Check: resource.ComposeAggregateTestCheckFunc(
+						func(s *terraform.State) error {
+							tfmock.AssertEqual(t, patchHandler.Interactions, 1)
+							return nil
+						},
+						resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "sync_frequency", "1440"),
+						resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "daily_sync_time", "12:00"),
+					),
+				},
+				{
+					// Step 2: change to sync_frequency=60, drop daily_sync_time from config.
+					// After apply, state must NOT retain the stale "12:00" value.
+					// Bug 8: ReadFromResponse hits `else if IsUnknown()` which is false for
+					// the known "12:00" value — so it never nulls it out, leaving stale state.
+					Config: `
+					resource "fivetran_connector_schedule" "test_connector_schedule" {
+						provider          = fivetran-provider
+						connector_id      = "connector_id"
+						sync_frequency    = "60"
+						schedule_type     = "auto"
+						paused            = false
+						pause_after_trial = false
+					}`,
+					Check: resource.ComposeAggregateTestCheckFunc(
+						func(s *terraform.State) error {
+							tfmock.AssertEqual(t, patchHandler.Interactions, 2)
+							return nil
+						},
+						resource.TestCheckResourceAttr("fivetran_connector_schedule.test_connector_schedule", "sync_frequency", "60"),
+						// This check FAILS on main (returns "12:00" instead of "") — proving Bug 8
+						resource.TestCheckNoResourceAttr("fivetran_connector_schedule.test_connector_schedule", "daily_sync_time"),
+					),
+				},
+				{
+					// Step 3: re-apply identical config — no PATCH should be triggered.
+					// If daily_sync_time is stale in state, Terraform sees a diff and sends
+					// another PATCH, proving the perpetual-diff half of Bug 8.
+					Config: `
+					resource "fivetran_connector_schedule" "test_connector_schedule" {
+						provider          = fivetran-provider
+						connector_id      = "connector_id"
+						sync_frequency    = "60"
+						schedule_type     = "auto"
+						paused            = false
+						pause_after_trial = false
+					}`,
+					Check: resource.ComposeAggregateTestCheckFunc(
+						func(s *terraform.State) error {
+							// Still 2 — no extra PATCH was sent
+							tfmock.AssertEqual(t, patchHandler.Interactions, 2)
+							return nil
+						},
 					),
 				},
 			},
