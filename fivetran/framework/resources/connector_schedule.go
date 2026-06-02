@@ -78,7 +78,7 @@ func (r *connectorSchedule) Create(ctx context.Context, req resource.CreateReque
 		if len(list.Data.Items) == 0 {
 			resp.Diagnostics.AddError(
 				"Unable to Create Connector Schedule Resource.",
-				"Connector with '" + data.GroupId.ValueString() + "' group_id and '"+data.ConnectorName.ValueString()+"' connector_name doesn't exist.",
+				"Connector with '"+data.GroupId.ValueString()+"' group_id and '"+data.ConnectorName.ValueString()+"' connector_name doesn't exist.",
 			)
 			return
 		}
@@ -86,7 +86,7 @@ func (r *connectorSchedule) Create(ctx context.Context, req resource.CreateReque
 		if len(list.Data.Items) > 1 {
 			resp.Diagnostics.AddError(
 				"Unable to Create Connector Schedule Resource.",
-				"Ambiguous connectors found with '" + data.GroupId.ValueString() + "' group_id and '"+data.ConnectorName.ValueString()+"' connector_name.",
+				"Ambiguous connectors found with '"+data.GroupId.ValueString()+"' group_id and '"+data.ConnectorName.ValueString()+"' connector_name.",
 			)
 			return
 		}
@@ -194,7 +194,10 @@ func (r *connectorSchedule) Update(ctx context.Context, req resource.UpdateReque
 	svc := r.GetClient().NewConnectionUpdate().
 		ConnectionID(state.ConnectorId.ValueString())
 
+	hasChanges := false
+
 	if !plan.SyncFrequency.Equal(state.SyncFrequency) {
+		hasChanges = true
 		if !plan.SyncFrequency.IsNull() && !plan.SyncFrequency.IsUnknown() && plan.SyncFrequency.ValueString() != "" {
 			syncFrequency := helpers.StrToInt(plan.SyncFrequency.ValueString())
 			svc.SyncFrequency(&syncFrequency)
@@ -207,25 +210,40 @@ func (r *connectorSchedule) Update(ctx context.Context, req resource.UpdateReque
 	}
 
 	if !plan.DailySyncTime.IsUnknown() && !plan.DailySyncTime.Equal(state.DailySyncTime) && plan.SyncFrequency.ValueString() == "1440" {
+		hasChanges = true
 		svc.DailySyncTime(plan.DailySyncTime.ValueString())
 	}
 
 	if !plan.Paused.IsUnknown() && !plan.Paused.IsNull() && !plan.Paused.Equal(state.Paused) {
+		hasChanges = true
 		svc.Paused(helpers.StrToBool(plan.Paused.ValueString()))
 	}
 
 	if !plan.PauseAfterTrial.IsUnknown() && !plan.PauseAfterTrial.IsNull() && !plan.PauseAfterTrial.Equal(state.PauseAfterTrial) {
+		hasChanges = true
 		svc.PauseAfterTrial(helpers.StrToBool(plan.PauseAfterTrial.ValueString()))
 	}
 
 	if !plan.ScheduleType.IsUnknown() && !plan.ScheduleType.IsNull() && !plan.ScheduleType.Equal(state.ScheduleType) {
+		hasChanges = true
 		svc.ScheduleType(plan.ScheduleType.ValueString())
 	}
 
 	if !plan.Schedule.Equal(state.Schedule) {
 		if schedule := scheduleFromPlan(ctx, plan.Schedule); schedule != nil {
+			hasChanges = true
 			svc.Schedule(schedule)
 		}
+		// If plan.Schedule is null, no API call is needed — state is reconciled below.
+	}
+
+	if !hasChanges {
+		// Nothing to send to the API. Reconcile state.Schedule to match the plan so that
+		// a null plan.Schedule (user removed the schedule block) doesn't produce a perpetual
+		// diff against leftover non-null state written by an older provider version.
+		state.Schedule = plan.Schedule
+		resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+		return
 	}
 
 	connectorResponse, err := svc.DoCustom(ctx)
