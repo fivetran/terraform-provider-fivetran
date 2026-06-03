@@ -5,7 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.31...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.32...HEAD)
+
+## [v1.9.32](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.32...v1.9.31)
+
+### Fixed
+- `fivetran_connector_schedule`: avoid sending an empty connection update request when there are no API-backed schedule changes.
+- `fivetran_connector_schedule`: reconcile removed `schedule` blocks in Terraform state to avoid perpetual diffs after upgrading from earlier provider versions.
+- `fivetran_connector_schedule`: preserve an omitted `schedule.days_of_week` value when the API returns default days for `TIME_OF_DAY` schedules.
 
 ## [v1.9.31](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.31...v1.9.30)
 
