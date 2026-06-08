@@ -29,7 +29,7 @@ resource "fivetran_proxy_agent" "test_proxy_agent" {
 
 ### Optional
 
-- `regeneration_counter` (Number) Determines whether regenerarion secrets needs to be performed.
+- `regeneration_counter` (Number) Determines whether regeneration secrets needs to be performed.
 
 ### Read-Only
 

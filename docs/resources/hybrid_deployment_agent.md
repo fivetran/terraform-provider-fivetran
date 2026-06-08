@@ -34,9 +34,9 @@ resource "fivetran_hybrid_deployment_agent" "hybrid_deployment_agent" {
 
 ### Read-Only
 
-- `auth_json` (String) Base64-encoded content of the auth.json file.
-- `config_json` (String) Base64-encoded content of the config.json file.
+- `auth_json` (String, Sensitive) Base64-encoded content of the auth.json file.
+- `config_json` (String, Sensitive) Base64-encoded content of the config.json file.
 - `docker_compose_yaml` (String) Base64-encoded content of the compose file for the chosen containerization type.
 - `id` (String) The unique identifier for the hybrid deployment agent within your account.
 - `registered_at` (String) The timestamp of the time the hybrid deployment agent was created in your account.
-- `token` (String) Base64 encoded content of token.
+- `token` (String, Sensitive) Base64 encoded content of token.
