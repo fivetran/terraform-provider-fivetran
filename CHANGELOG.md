@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.32...HEAD)
 
+### Added
+- Internal: per-provider-instance metadata cache (`GetCachedConnectorMetadata`) for connector metadata responses — fetches each service's metadata exactly once per `terraform plan` / `apply` run.
+- Internal: dynamic config projection layer (`DynamicToMap`, `project`, `PrepareConfigPatchDynamic`) bridging Terraform's `types.Dynamic` and the Fivetran API's `map[string]interface{}` shape. Consumed by the upcoming `fivetran_connection_v2` resource.
+- Bumped `go-fivetran` dependency to v1.3.4 (adds `Property.Nullable`, `Property.Format`, `Property.Immutable` metadata fields).
+
 ## [v1.9.32](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.32...v1.9.31)
 
 ### Fixed
