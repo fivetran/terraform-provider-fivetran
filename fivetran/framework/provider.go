@@ -2,13 +2,14 @@ package framework
 
 import (
 	"context"
-
 	"os"
+	"sync"
 
 	"github.com/fivetran/go-fivetran"
 	httputils "github.com/fivetran/go-fivetran/http_utils"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/common"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/actions"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/datasources"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/resources"
 	"github.com/hashicorp/terraform-plugin-framework/action"
@@ -22,7 +23,8 @@ import (
 const Version = "1.9.32" // Current provider version
 
 type fivetranProvider struct {
-	mockClient httputils.HttpClient
+	mockClient    httputils.HttpClient
+	metadataCache *sync.Map
 }
 
 type fivetranProviderModel struct {
@@ -36,7 +38,7 @@ func FivetranProvider() provider.Provider {
 	common.LoadAuthFieldsMap()
 	common.LoadDestinationFieldsMap()
 	common.LoadExternalLoggingFieldsMap()
-	return &fivetranProvider{mockClient: nil}
+	return &fivetranProvider{mockClient: nil, metadataCache: &sync.Map{}}
 }
 
 // For mocked tests
@@ -45,7 +47,7 @@ func FivetranProviderMock(client httputils.HttpClient) provider.Provider {
 	common.LoadAuthFieldsMap()
 	common.LoadDestinationFieldsMap()
 	common.LoadExternalLoggingFieldsMap()
-	return &fivetranProvider{mockClient: client}
+	return &fivetranProvider{mockClient: client, metadataCache: &sync.Map{}}
 }
 
 func (p *fivetranProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -96,7 +98,7 @@ func (p *fivetranProvider) Configure(ctx context.Context, req provider.Configure
 
 	fivetranClient.CustomUserAgent("terraform-provider-fivetran/" + Version)
 	resp.DataSourceData = fivetranClient
-	resp.ResourceData = fivetranClient
+	resp.ResourceData = &core.ProviderResourceData{Client: fivetranClient, MetadataCache: p.metadataCache}
 	resp.ActionData = fivetranClient
 }
 
