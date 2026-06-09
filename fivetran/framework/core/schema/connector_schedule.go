@@ -33,7 +33,7 @@ func GetConnectorScheduleResourceSchema() schema.Schema {
 				Validators: []validator.String{
 					stringvalidator.OneOf("1", "5", "15", "30", "60", "120", "180", "360", "480", "720", "1440"),
 				},
-				Description: "The connector sync frequency in minutes. Supported values: 1, 5, 15, 30, 60, 120, 180, 360, 480, 720, 1440. Deprecated: use `schedule` block instead.",
+				Description: "The connector sync frequency in minutes. Supported values: 1, 5, 15, 30, 60, 120, 180, 360, 480, 720, 1440.",
 			},
 			"schedule_type": schema.StringAttribute{
 				Optional:    true,
