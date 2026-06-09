@@ -71,7 +71,7 @@ func GetConnectorScheduleResourceSchema() schema.Schema {
 		},
 		Blocks: map[string]schema.Block{
 			"schedule": schema.SingleNestedBlock{
-				Description: "Flexible sync schedule configuration. When set, takes precedence over `sync_frequency`.",
+				Description: "Flexible sync schedule configuration. When set, takes precedence over `sync_frequency`. **Note:** This attribute is in **ALPHA** state. ",
 				Attributes: map[string]schema.Attribute{
 					"schedule_type": schema.StringAttribute{
 						Optional:    true,
