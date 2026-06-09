@@ -55,22 +55,21 @@ func (d *ProviderDatasource) Configure(ctx context.Context, req datasource.Confi
 }
 
 func (d *clientContainer) getClient(diag diag.Diagnostics, data any) {
-	// Prevent panic if the provider has not been configured.
 	if data == nil {
 		return
 	}
 
-	client, ok := data.(*fivetran.Client)
-
-	if !ok {
+	switch v := data.(type) {
+	case *fivetran.Client:
+		d.client = v
+	case *ProviderResourceData:
+		d.client = v.Client
+	default:
 		diag.AddError(
-			"Unexpected Data Source Configure Type",
-			fmt.Sprintf("Expected *fivetran.Client, got: %T. Please report this issue to the provider developers.", data),
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected *ProviderResourceData, got: %T. Please report this issue to the provider developers.", data),
 		)
-		return
 	}
-
-	d.client = client
 }
 
 type FieldValueType int64
