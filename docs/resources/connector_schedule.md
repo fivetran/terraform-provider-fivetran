@@ -33,7 +33,7 @@ resource "fivetran_connector_schedule" "my_connector_schedule" {
 - `group_id` (String) The unique identifier for the Group (Destination) within the Fivetran system.
 - `pause_after_trial` (String) Specifies whether the connector should be paused after the free trial period has ended.
 - `paused` (String) Specifies whether the connector is paused.
-- `schedule` (Block, Optional) Flexible sync schedule configuration. When set, takes precedence over `sync_frequency`. **Note:** This attribute is in private preview stage (see [below for nested schema](#nestedblock--schedule))
+- `schedule` (Block, Optional) Flexible sync schedule configuration. When set, takes precedence over `sync_frequency`. **Note:** This attribute is in **ALPHA** state (see [below for nested schema](#nestedblock--schedule))
 - `schedule_type` (String) The connector schedule configuration type. Supported values: auto, manual.
 - `sync_frequency` (String) The connector sync frequency in minutes. Supported values: 1, 5, 15, 30, 60, 120, 180, 360, 480, 720, 1440. Deprecated: use `schedule` block instead.
 
