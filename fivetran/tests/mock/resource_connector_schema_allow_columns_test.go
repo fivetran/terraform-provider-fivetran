@@ -444,6 +444,10 @@ func TestResourceSchemaEmptyColumnsListMock(t *testing.T) {
 		),
 	}
 
+	step2 := resource.TestStep{
+		RefreshState: true,
+	}
+
 	resource.Test(
 		t,
 		resource.TestCase{
@@ -498,6 +502,7 @@ func TestResourceSchemaEmptyColumnsListMock(t *testing.T) {
 
 			Steps: []resource.TestStep{
 				step1,
+				step2,
 			},
 		},
 	)
