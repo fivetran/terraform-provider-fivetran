@@ -269,6 +269,18 @@ func (r *connector) Read(ctx context.Context, req resource.ReadRequest, resp *re
 		return
 	}
 
+	if isImportOperation && response.Data.Service != "" {
+		if _, ok := common.GetDestinationSchemaFields()[response.Data.Service]; !ok {
+			resp.Diagnostics.AddError(
+				"Read error.",
+				fmt.Sprintf("Unknown connector service: %v", response.Data.Service),
+			)
+
+			resp.State.RemoveResource(ctx)
+			return
+		}
+	}
+
 	data.ReadFromResponse(response, isImportOperation)
 
 	// Restore plan-only attributes after reading API response
