@@ -659,6 +659,35 @@ const (
 		}
 	}
 	`
+
+	unsupportedServiceResponse = `
+	{
+		"id": "connector_id",
+        "group_id": "group_id",
+		"service": "unsupported_service",
+		"service_version": 0,
+		"schema": "schema1",
+		"connected_by": "user_id",
+		"created_at": "2025-11-19T11:14:34.391353Z",
+		"failed_at": "2025-11-19T11:14:34.391353Z",
+		"succeeded_at": "2025-11-19T11:14:34.391353Z",
+		"paused": true,
+		"pause_after_trial": false,
+		"sync_frequency": 30,
+		"data_delay_threshold": 0,
+		"data_delay_sensitivity": "NORMAL",
+		"private_link_id": null,
+		"networking_method": "Directly",
+		"schedule_type": "auto",
+		"status": {
+			"tasks": [],
+			"warnings": []
+		},
+		"config": {
+		}
+	}
+	`
+
 )
 
 func setupMockClientConnectorResourceListMappingConfig(t *testing.T) {
@@ -1198,6 +1227,45 @@ func TestResourceUpdateSensitiveFieldInConfigMock(t *testing.T) {
 				step1,
 				step2,
 				step3,
+			},
+		},
+	)
+}
+
+func TestResourceImportAttemptOfUnsupportedServiceMock(t *testing.T) {
+
+	step1 := resource.TestStep{
+		Config: `
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+		}
+		`,
+		ImportState:        true,
+		ResourceName:       "fivetran_connector.test_connector",
+		ImportStateId:      "connector_id",
+		PreConfig: func() {
+			postRequestJson = nil
+			patchRequestJson = nil
+			connectorMockData = tfmock.CreateMapFromJsonString(t, unsupportedServiceResponse)
+		},
+		ExpectError: regexp.MustCompile(`Unknown connector service: unsupported_service`),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientConnectorResourceUpdateConfig(t)
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, connectorMockUpdateDelete.Interactions, 1)
+				tfmock.AssertEmpty(t, connectorMockData)
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
 			},
 		},
 	)
