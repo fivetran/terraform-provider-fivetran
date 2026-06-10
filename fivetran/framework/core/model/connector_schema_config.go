@@ -278,7 +278,7 @@ func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}, isIm
 				}
 				if len(columns) > 0 {
 					tableElements["columns"], _ = types.MapValue(types.ObjectType{AttrTypes: columnsAttrTypes}, columns)
-				} else if !localTable["columns_are_null"].(bool) {
+				} else if columnsAreNull, ok := localTable["columns_are_null"].(bool); ok && !columnsAreNull {
 					tableElements["columns"], _ = types.MapValue(types.ObjectType{AttrTypes: columnsAttrTypes}, columns)
 				} else {
 					tableElements["columns"] = types.MapNull(types.ObjectType{AttrTypes: columnsAttrTypes})
