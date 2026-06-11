@@ -5,12 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.32...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.33...HEAD)
+
+## [v1.9.33](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.33...v1.9.32)
+
+### Fixed
+- Panic in `fivetran_connector_schema_config` and `fivetran_connector`
 
 ### Added
 - Internal: per-provider-instance metadata cache (`GetCachedConnectorMetadata`) for connector metadata responses — fetches each service's metadata exactly once per `terraform plan` / `apply` run.
 - Internal: dynamic config projection layer (`DynamicToMap`, `project`, `PrepareConfigPatchDynamic`) bridging Terraform's `types.Dynamic` and the Fivetran API's `map[string]interface{}` shape. Consumed by the upcoming `fivetran_connection_v2` resource.
 - Bumped `go-fivetran` dependency to v1.3.4 (adds `Property.Nullable`, `Property.Format`, `Property.Immutable` metadata fields).
+
+New connection services supported:
+- Supported service: `claude_compliance`
+- Supported service: `ironclad_clickwrap`
+- Supported service: `openai_compliance_platform`
+- Supported service: `sevdesk`
+
+New connection config fields supported:
+- Added field `fivetran_connector.config.tax_rule_code` for services: `sevdesk`.
+- Added field `fivetran_connector.config.account_number` for services: `sevdesk`.
+- Added field `fivetran_connector.config.balance_date` for services: `sevdesk`.
+- Added field `fivetran_connector.config.server_name` for services: `sql_server_hva`, `sql_server_sap_ecc_hva`.
+- Added field `fivetran_connector.config.oidc_profile_id` for services: `veeva_vault`.
+- Added field `fivetran_connector.config.vault_dns` for services: `veeva_vault`.
+- Added field `fivetran_connector.config.jwt_environment` for services: `younium`.
+- Added field `fivetran_connector.config.custom_reports.base_report_type` for services: `apple_search_ads`.
+- Added field `fivetran_connector.config.custom_reports.group_by` for services: `apple_search_ads`.
+- Added field `fivetran_connector.config.shard_authorization_id` for services: `healthie`.
+- Added field `fivetran_connector.config.custom_field_value` for services: `sevdesk`.
+- Added field `fivetran_connector.config.v2_api_key` for services: `shipstation`.
+- Added field `fivetran_connector.config.o_auth_service_token_url` for services: `veeva_vault`.
+- Added field `fivetran_connector.config.custom_reports.table` for services: `apple_search_ads`.
+
+New connection auth fields supported:
+- Added field `fivetran_connector.config.oauth_client_secret` for services: `confluent_cloud`.
+- Added field `fivetran_connector.config.oauth_scope` for services: `confluent_cloud`.
+- Added field `fivetran_connector.config.oauth_token_endpoint_url` for services: `confluent_cloud`.
+- Added field `fivetran_connector.config.identity_pool_id` for services: `confluent_cloud`.
+- Added field `fivetran_connector.config.logical_cluster_id` for services: `confluent_cloud`.
+- Added field `fivetran_connector.config.oauth_client_id` for services: `confluent_cloud`.
+
+New destination config fields supported:
+- Added field `fivetran_destination.config.one_lake_auth_type` for services: `databricks_via_managed_data_lake`, `managed_data_lake`.
 
 ## [v1.9.32](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.32...v1.9.31)
 

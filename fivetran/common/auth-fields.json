@@ -665,6 +665,19 @@
       },
       "api_field": ""
    },
+   "identity_pool_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "confluent_cloud": "Optional Confluent Cloud identity pool ID. When omitted, Confluent auto-maps the token to a matching pool."
+      },
+      "api_field": ""
+   },
    "key_id": {
       "readonly": false,
       "sensitive": false,
@@ -675,6 +688,19 @@
       "item_type": {},
       "description": {
          "apple_search_ads": "Apple Search Ads REST API Key ID. Must be populated if `is_auth2_enabled` is set to `true`."
+      },
+      "api_field": ""
+   },
+   "logical_cluster_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "confluent_cloud": "Confluent Cloud logical cluster ID. Required for OAuth 2.0 authentication."
       },
       "api_field": ""
    },
@@ -692,6 +718,45 @@
       },
       "api_field": ""
    },
+   "oauth_client_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "confluent_cloud": "OAuth 2.0 client ID issued by the identity provider."
+      },
+      "api_field": ""
+   },
+   "oauth_client_secret": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "confluent_cloud": "OAuth 2.0 client secret issued by the identity provider."
+      },
+      "api_field": ""
+   },
+   "oauth_scope": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "confluent_cloud": "Optional OAuth 2.0 scope to request with the access token."
+      },
+      "api_field": ""
+   },
    "oauth_token": {
       "readonly": false,
       "sensitive": true,
@@ -703,6 +768,19 @@
       "description": {
          "twitter": "The X App access token.",
          "twitter_ads": "The X App access token."
+      },
+      "api_field": ""
+   },
+   "oauth_token_endpoint_url": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "confluent_cloud": "OAuth 2.0 token endpoint URL used to obtain access tokens."
       },
       "api_field": ""
    },

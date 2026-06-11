@@ -223,9 +223,9 @@ Optional:
 	- Service `maria_warehouse`: Database name
 	- Service `mysql_rds_warehouse`: Database name
 	- Service `mysql_warehouse`: Database name
-	- Service `oracle_rac_warehouse`: Service Name
-	- Service `oracle_rds_warehouse`: Database name
-	- Service `oracle_warehouse`: Database name
+	- Service `oracle_rac_warehouse`: SID/Service name
+	- Service `oracle_rds_warehouse`: SID/Service name
+	- Service `oracle_warehouse`: SID/Service name
 	- Service `panoply`: Database name
 	- Service `periscope_warehouse`: Database name
 	- Service `postgres_databricks_warehouse`: Database name
@@ -315,6 +315,7 @@ Optional:
 - `is_redshift_serverless` (Boolean) Field usage depends on `service` value: 
 	- Service `redshift`: Is your destination Redshift Serverless
 - `lakehouse_guid` (String) Field usage depends on `service` value: 
+	- Service `databricks_via_managed_data_lake`: (Immutable) OneLake lakehouse GUID.
 	- Service `managed_data_lake`: (Immutable) OneLake lakehouse GUID.
 	- Service `onelake`: (Immutable) OneLake lakehouse GUID
 - `lakehouse_name` (String) Field usage depends on `service` value: 
@@ -336,11 +337,17 @@ Optional:
 	- Service `managed_data_lake`: OAuth 2.0 secret you created for authenticating Fivetran. Use this parameter only if you want to use OAuth 2.0 as the authentication type for Fivetran to connect to Databricks.
 	- Service `new_s3_datalake`: OAuth 2.0 secret
 	- Service `onelake`: OAuth 2.0 secret
+- `one_lake_auth_type` (String) Field usage depends on `service` value: 
+	- Service `databricks_via_managed_data_lake`: (Immutable) Authentication type for OneLake. Default value: `ServicePrincipal`.
+	- Service `managed_data_lake`: (Immutable) Authentication type for OneLake. Default value: `ServicePrincipal`.
 - `onelake_client_id` (String) Field usage depends on `service` value: 
+	- Service `databricks_via_managed_data_lake`: (Immutable) Client ID of OneLake service principal.
 	- Service `managed_data_lake`: (Immutable) Client ID of OneLake service principal.
 - `onelake_client_secret` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `databricks_via_managed_data_lake`: Secret value for OneLake service principal.
 	- Service `managed_data_lake`: Secret value for OneLake service principal.
 - `onelake_tenant_id` (String) Field usage depends on `service` value: 
+	- Service `databricks_via_managed_data_lake`: (Immutable) Tenant ID of OneLake service principal
 	- Service `managed_data_lake`: (Immutable) Tenant ID of OneLake service principal
 - `passphrase` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `snowflake`: In case private key is encrypted, you are required to enter passphrase that was used to encrypt the private key. The field can be specified if authentication type is `KEY_PAIR`.
@@ -503,6 +510,7 @@ Optional:
 	- Service `databricks_via_managed_data_lake`: Specifies whether you want to manage your Iceberg tables in AWS Glue. Use this parameter only if you want to deploy your data lake on AWS.
 	- Service `managed_data_lake`: Specifies whether you want to manage your Iceberg tables in AWS Glue. Use this parameter only if you want to deploy your data lake on AWS.
 - `should_maintain_tables_in_one_lake` (Boolean) Field usage depends on `service` value: 
+	- Service `databricks_via_managed_data_lake`: Specifies whether you want to create shortcut for you table in OneLake. Use this parameter only if you want to deploy your data lake on ADLS.
 	- Service `managed_data_lake`: Specifies whether you want to create shortcut for you table in OneLake. Use this parameter only if you want to deploy your data lake on ADLS.
 - `snapshot_retention_period` (String) Field usage depends on `service` value: 
 	- Service `adls`: Snapshots older than the retention period are deleted every week. Default value: `ONE_WEEK`.
@@ -632,6 +640,7 @@ Optional:
 	- Service `sql_server_rds_warehouse`: Database user name
 	- Service `sql_server_warehouse`: Database user name
 - `workspace_guid` (String) Field usage depends on `service` value: 
+	- Service `databricks_via_managed_data_lake`: (Immutable) OneLake workspace GUID.
 	- Service `managed_data_lake`: (Immutable) OneLake workspace GUID.
 	- Service `onelake`: (Immutable) OneLake workspace GUID
 - `workspace_name` (String) Field usage depends on `service` value: 

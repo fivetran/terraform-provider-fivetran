@@ -260,6 +260,7 @@
       "item_type": {},
       "description": {
          "7shifts": "Your 7shifts access token.",
+         "adobe_commerce": "Your Adobe Commerce access_token",
          "attio": "Your Attio bearer token",
          "big_commerce": "Your [API access token ](https://fivetran.com/docs/connectors/applications/big-commerce/setup-guide#createaccesstoken).",
          "bitly": "Your Bitly access token.",
@@ -400,6 +401,19 @@
          "maxio_saasoptics": "Your Maxio SaaSOptics account name.",
          "talkdesk": "Your Talkdesk Account Name.",
          "udemy_business": "Your Udemy Business account name."
+      },
+      "api_field": ""
+   },
+   "account_number": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sevdesk": "The datev account number to retrieve receipt guidance for (optional — leave blank to skip this table)."
       },
       "api_field": ""
    },
@@ -1139,7 +1153,7 @@
       "description": {
          "device_magic": "Your Device Magic API access token.",
          "flywheel_digital": "Your Flywheel Digital API access token.",
-         "shopify": "API access token of your custom app.",
+         "shopify": "API access token of your custom or public app.",
          "square": "The Square API access token of your application."
       },
       "api_field": ""
@@ -1257,6 +1271,7 @@
          "churnzero": "Your ChurnZero API key.",
          "cimis": "Your Cimis API key.",
          "circleci": "Your CircleCI API Key.",
+         "claude_compliance": "Your Claude Compliance Access Key.",
          "clickup": "Your ClickUp API key.",
          "clockify": "Your Clockify API key.",
          "clockodo": "Your Clockodo API key.",
@@ -1364,6 +1379,7 @@
          "ometria": "Your Ometria API Key.",
          "oncehub": "Your OnceHub API key.",
          "openai": "Your OpenAI Admin API key.",
+         "openai_compliance_platform": "Your OpenAI Compliance Platform API key.",
          "ordergroove": "Your Ordergroove API key.",
          "ordway": "Your Ordway API key.",
          "ortto": "Your Ortto API key.",
@@ -1675,6 +1691,7 @@
          "safetyculture": "Your SafetyCulture API token.",
          "sensor_tower": "Your Sensor Tower API token.",
          "sentry": "Your Sentry auth token.",
+         "sevdesk": "Your 32-character hexadecimal API token.",
          "simplecast": "Your Simplecast API token.",
          "smartsheet": "API token generated from your Smartsheet account.",
          "snyk": "Your Snyk API token.",
@@ -1992,7 +2009,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "shopify": "App store url of your public app"
+         "shopify": "App store url of your app"
       },
       "api_field": ""
    },
@@ -2134,18 +2151,18 @@
       "item_type": {},
       "description": {
          "aws_cost_report": "Optional. Files inside of compressed archives with filenames matching this regular expression will be synced.",
-         "azure_blob_storage": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
-         "box": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
-         "dropbox": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
-         "email": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
-         "ftp": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
-         "gcs": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
-         "google_drive": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
+         "azure_blob_storage": "Files inside compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
+         "box": "Files inside of compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
+         "dropbox": "Files inside of compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
+         "email": "Files inside of compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
+         "ftp": "Files inside of compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
+         "gcs": "Files inside of compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
+         "google_drive": "Files inside of compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
          "kinesis": "Optional. Files inside of compressed archives with filenames matching this regular expression will be synced.",
-         "s3": "Files inside compressed archives with filenames matching this regular expression will be synced.",
-         "s3_compatible_storage": "Files inside compressed archives with filenames matching this regular expression will be synced.",
-         "sftp": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
-         "share_point": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
+         "s3": "Files inside of compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
+         "s3_compatible_storage": "Files inside of compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
+         "sftp": "Files inside of compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
+         "share_point": "Files inside of compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
          "wasabi_cloud_storage": "Files inside compressed archives with filenames matching this regular expression will be synced."
       },
       "api_field": ""
@@ -2323,7 +2340,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "younium": "Your Younium auth environment."
+         "younium": "Your Younium auth environment. Use this parameter only if you want the connection to authenticate using OAuth 2.0."
       },
       "api_field": ""
    },
@@ -2355,6 +2372,7 @@
          "azure_postgres": "Database authentication method",
          "azure_sql_db": "Authentication Method.",
          "azure_sql_managed_db": "Authentication Method.",
+         "confluent_cloud": "Authentication method. Use API_KEY for API Key/Secret or OAUTH for OAuth 2.0 client credentials flow.",
          "google_cloud_mysql": "Database authentication method",
          "google_cloud_postgresql": "Database authentication method",
          "heroku_postgres": "Database authentication method",
@@ -2432,6 +2450,7 @@
       "item_type": {},
       "description": {
          "360learning": "Your 360Learning auth type.",
+         "adobe_commerce": "Your Adobe Commerce auth type.",
          "airtable": "Type of authentication being used by connector",
          "amqp": "Authentication method (BasicAuth or MutualTLS).",
          "aws_cost_report": "Access approach",
@@ -2448,7 +2467,8 @@
          "s3_compatible_storage": "Access approach",
          "samsara": "The authentication method you want to use for your connection.",
          "upland": "Authentication method you want to use for your connection.",
-         "wasabi_cloud_storage": "The Wasabi Cloud Storage Access approach. Required for connector creation. Default value: `ACCESS_KEY`."
+         "wasabi_cloud_storage": "The Wasabi Cloud Storage Access approach. Required for connector creation. Default value: `ACCESS_KEY`.",
+         "younium": "The authentication method you want to use for your connection."
       },
       "api_field": ""
    },
@@ -2476,7 +2496,7 @@
       "description": {
          "adobe_analytics": "Authentication Method",
          "db2z": "User authentication method. Supported values:`PASSWORD`- Authenticate with the database server using an RACF user ID and password. If the parameter is omitted, `PASSWORD` is used by default. `LEGACY_PASS_TICKET`- Authenticate with the database server using an RACF user ID and legacy PassTicket. `ENHANCED_PASS_TICKET`- Authenticate with the database server using an RACF user ID and an enhanced PassTicket. Enhanced PassTickets are more secure than legacy PassTickets.",
-         "elastic_cloud": "The authentication method used to connect to your cluster.",
+         "elastic_cloud": "The authentication method used to connect to your cluster. Supported values: `BASICAUTH` (default), `APIKEY`.",
          "es_self_hosted": "The authentication method used to connect to your cluster.",
          "financial_force": "",
          "gainsight_customer_success": "The authentication method to use. Can be either OAUTH or API_KEY.",
@@ -2486,7 +2506,8 @@
          "oracle_fusion_cloud_apps_fscm": "The Oracle Fusion Cloud authentication method.",
          "oracle_fusion_cloud_apps_hcm": "The Oracle Fusion Cloud authentication method.",
          "salesforce": "(Optional) Authentication type (default value = `STANDARD`)",
-         "salesforce_sandbox": "(Optional) Authentication type (default value = `STANDARD`)"
+         "salesforce_sandbox": "(Optional) Authentication type (default value = `STANDARD`)",
+         "veeva_vault": "(Optional) Authentication type (default value is `Basic`)"
       },
       "api_field": ""
    },
@@ -2747,6 +2768,19 @@
       },
       "api_field": ""
    },
+   "balance_date": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sevdesk": "ISO 8601 date for balance calculation (optional — leave blank to skip this table)."
+      },
+      "api_field": ""
+   },
    "base_currency": {
       "readonly": false,
       "sensitive": false,
@@ -2823,8 +2857,9 @@
          "prisma_cloud": "Your Prisma Cloud admin console URL.",
          "salesforce": "(Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.",
          "salesforce_sandbox": "(Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.",
+         "sevdesk": "The base URL for the sevdesk API, without the protocol prefix.",
          "stickyio": "Your sticky.io base URL .",
-         "veeva_vault": "Base URL",
+         "veeva_vault": "Base URL of your Veeva Vault instance",
          "veevavault": "Your Veeva Vault base URL.",
          "vitally": "Your Vitally base URL."
       },
@@ -3324,6 +3359,7 @@
          "instructure": "Your Instructure client ID.",
          "integral_ad_science": "Your integral_ad_science client id.",
          "ironclad": "Your Ironclad client ID.",
+         "ironclad_clickwrap": "Your Ironclad Clickwrap Client ID.",
          "jama_software": "Your Jama Software client ID.",
          "jibble": "Your Jibble client ID.",
          "khoros_communities": "Your Khoros Communities client ID.",
@@ -3363,7 +3399,7 @@
          "servicetitan": "Your ServiceTitan client ID.",
          "sharetribe": "Your Sharetribe client ID.",
          "shipnetwork": "Your ShipNetwork client ID.",
-         "shopify": "Client ID of your public app",
+         "shopify": "Client ID of your app",
          "showpad": "Your Showpad client ID.",
          "siemens_building_x_openness": "Your Siemens Building X Openness client ID.",
          "sigma_computing_source": "Your Sigma Computing client ID.",
@@ -3386,6 +3422,7 @@
          "tymeshift": "Your Tymeshift email.",
          "udemy_business": "Your Udemy Business client ID.",
          "ukg_pro_workforce_management": "Your UKG Pro Workforce Management client ID.",
+         "veeva_vault": "OAuth2 client ID (only when authentication_method is `OAuth2`)",
          "vimeo": "Your Vimeo client ID.",
          "visma": "Your Visma client ID.",
          "vonage_contact_center": "Your Vonage Contact Center client ID.",
@@ -3394,12 +3431,13 @@
          "xray": "Your Xray Client ID.",
          "yahoo_display_ads_on_yahoo_japan": "Your Yahoo Display Ads on Yahoo Japan client ID.",
          "yougov_sport": "Your Yougov Sport client ID.",
+         "younium": "Client ID of the personal access token you want to use to generate the JWT token. Use this parameter only if you want the connection to authenticate using a JWT token.",
          "zendesk_chat": "Your Zendesk client ID.",
          "zoho_books": "Your Zoho Books Client ID.",
          "zoho_campaigns": "Your Zoho Campaigns Client ID.",
          "zoho_desk": "Your Zoho Desk Client Id.",
          "zoho_inventory": "Your Zoho Inventory client ID.",
-         "zoho_people": "Your Zoho People client ID.",
+         "zoho_people": "The client ID of the application that is registered in your Zoho People developer account for this connection.",
          "zoho_recruit": "Your Zoho Recruit client ID.",
          "zuora": "Zuora Client ID.",
          "zuora_sandbox": "Zuora Client ID."
@@ -3604,6 +3642,7 @@
          "instructure": "Your Instructure client secret.",
          "integral_ad_science": "Your integral_ad_science client secret.",
          "ironclad": "Your Ironclad client secret.",
+         "ironclad_clickwrap": "Your Ironclad Clickwrap Client Secret.",
          "jama_software": "Your Jama Software client secret.",
          "jibble": "Your Jibble client secret.",
          "learn_amp": "Your Learn Amp client secret.",
@@ -3637,7 +3676,7 @@
          "servicenow": "ServiceNow Client Secret.",
          "servicetitan": "Your ServiceTitan secret key.",
          "sharetribe": "Your Sharetribe client secret.",
-         "shopify": "Client secret of your public app",
+         "shopify": "Client secret of your app",
          "showpad": "Your Showpad client secret.",
          "siemens_building_x_openness": "Your Siemens Building X Openness client secret.",
          "sigma_computing_source": "Your Sigma Computing client secret.",
@@ -3661,6 +3700,7 @@
          "tymeshift": "Your Tymeshift password.",
          "udemy_business": "Your Udemy Business client secret.",
          "ukg_pro_workforce_management": "Your UKG Pro Workforce Management client secret.",
+         "veeva_vault": "OAuth2 client secret (only when authentication_method is `OAuth2`)",
          "vimeo": "Your Vimeo client secret.",
          "visma": "Your Visma client secret.",
          "vonage_contact_center": "Your Vonage Contact Center client secret.",
@@ -3668,12 +3708,13 @@
          "xero": "your clientSecret",
          "xray": "Your Xray Client Secret.",
          "yahoo_display_ads_on_yahoo_japan": "Your Yahoo Display Ads on Yahoo Japan client secret.",
+         "younium": "Secret key of the personal access token you want to use to generate the JWT token. Use this parameter only if you want the connection to authenticate using a JWT token.",
          "zendesk_chat": "Your Zendesk client secret.",
          "zoho_books": "Your Zoho Books Client Secret.",
          "zoho_campaigns": "Your Zoho Campaigns Client Secret.",
          "zoho_desk": "Your Zoho Desk Client secret.",
          "zoho_inventory": "Your Zoho Inventory client secret.",
-         "zoho_people": "Your Zoho People client secret.",
+         "zoho_people": "The client secret of the application that is registered in your Zoho People developer account for this connection.",
          "zoho_recruit": "Your Zoho Recruit client secret.",
          "zuora": "Zuora Client Secret.",
          "zuora_sandbox": "Zuora Client Secret."
@@ -4440,6 +4481,19 @@
       },
       "api_field": ""
    },
+   "custom_field_value": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sevdesk": "The custom field value to search contacts by (optional — leave blank to skip this table)."
+      },
+      "api_field": ""
+   },
    "custom_floodlight_variables": {
       "readonly": false,
       "sensitive": false,
@@ -4588,6 +4642,19 @@
             },
             "api_field": ""
          },
+         "base_report_type": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "apple_search_ads": "The base report type. It determines the set of available dimensions for the `groupBy` field and the metrics that will be included in the custom report. Only one value is supported: `CAMPAIGN`."
+            },
+            "api_field": ""
+         },
          "breakdown": {
             "readonly": false,
             "sensitive": false,
@@ -4711,6 +4778,21 @@
             },
             "api_field": ""
          },
+         "group_by": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "item_type": {
+               "apple_search_ads": "string"
+            },
+            "description": {
+               "apple_search_ads": "The list of dimensions to group the data by. The available dimensions depend on the selected `baseReportType`."
+            },
+            "api_field": ""
+         },
          "level": {
             "readonly": false,
             "sensitive": false,
@@ -4810,6 +4892,19 @@
             },
             "api_field": ""
          },
+         "table": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": true,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "apple_search_ads": "The name of the custom report table. It must be unique within this connection and must comply with Fivetran's naming conventions."
+            },
+            "api_field": ""
+         },
          "table_name": {
             "readonly": false,
             "sensitive": false,
@@ -4869,6 +4964,7 @@
       "key_field": "report_name|table_name",
       "item_type": {},
       "description": {
+         "apple_search_ads": "Allows users to define reports with custom groupBy dimensions.",
          "criteo": "Title of Custom Report",
          "reddit_ads": "The list of custom report configurations. Each report corresponds to a table within the schema to which connector will sync the data.",
          "snapchat_ads": "[Custom reports for Snapchat Ads connector](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports).",
@@ -5790,7 +5886,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "atlassian_compass": "Your Atlassian Compass email ID.",
+         "atlassian_compass": "The email ID associated with the Atlassian Compass account you want Fivetran to use to access your data.",
          "cabcharge": "Your Cabcharge email ID.",
          "ordway": "Your Ordway user email ID.",
          "planful": "Your Planful email ID.",
@@ -6129,7 +6225,7 @@
          "tremendous": "Your Tremendous environment.",
          "vts": "Your VTS environment.",
          "xactly": "Your Xactly environment.",
-         "younium": "Your Younium API environment.",
+         "younium": "Your Younium API environment. Use this parameter only if you want the connection to authenticate using OAuth 2.0.",
          "zip": "Your Zip environment.",
          "zuora": "Zuora Sandbox Environment. This accepts either of the two values Sandbox or Central Sandbox based on your subscription. The default environment is Sandbox.",
          "zuora_sandbox": "Zuora Sandbox Environment. This accepts either of the two values Sandbox or Central Sandbox based on your subscription. The default environment is Sandbox."
@@ -6435,7 +6531,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "azure_blob_storage": "All files in your search path matching this regular expression will be synced per table. We have discontinued this field, and will delete it by August 31, 2025.",
+               "azure_blob_storage": "All files in your search path matching this regular expression will be synced per table.",
                "box": "All files in your search path matching this regular expression will be synced per table.",
                "dropbox": "All files in your search path matching this regular expression will be synced per table.",
                "email": "All files in your search path matching this regular expression will be synced per table.",
@@ -7660,6 +7756,19 @@
       },
       "api_field": ""
    },
+   "jwt_environment": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "younium": "Your Younium API environment. Use this parameter only if you want the connection to authenticate using a JWT token."
+      },
+      "api_field": ""
+   },
    "key": {
       "readonly": false,
       "sensitive": false,
@@ -8180,6 +8289,19 @@
       },
       "api_field": ""
    },
+   "o_auth_service_token_url": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "veeva_vault": "OAuth2 authorization server token endpoint URL (only when authentication_method is `OAuth2`)"
+      },
+      "api_field": ""
+   },
    "oauth_subscription_key": {
       "readonly": false,
       "sensitive": true,
@@ -8301,6 +8423,19 @@
       },
       "api_field": ""
    },
+   "oidc_profile_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "veeva_vault": "OIDC profile ID configured in Veeva Vault (only when authentication_method is `OAuth2`)"
+      },
+      "api_field": ""
+   },
    "on_error": {
       "readonly": false,
       "sensitive": false,
@@ -8393,6 +8528,7 @@
          "financial_force": "",
          "integrate": "Your Integrate organization ID.",
          "megaphone": "Your Megaphone organization ID.",
+         "openai_compliance_platform": "Your OpenAI Compliance Platform organization ID.",
          "productive": "Your Productive Organization ID.",
          "salesforce": "",
          "salesforce_commerce_cloud": "The organization ID from Salesforce Commerce Cloud account.",
@@ -8731,7 +8867,7 @@
          "unicommerce": "Your uniware login password.",
          "upland": "Your Upland Software password.",
          "uptempo": "Your Uptempo password.",
-         "veeva_vault": "Password",
+         "veeva_vault": "Password (only when authentication_method is `Basic`)",
          "veevavault": "Your Veeva Vault password.",
          "walmart_dsp": "Walmart DSP password. It is a part of the login credentials.",
          "when_i_work": "Your When I Work password.",
@@ -8742,7 +8878,7 @@
          "workday_hcm": "Workday password.",
          "xandr": "Your Xandr password.",
          "yougov_brandindex": "Your YouGov BrandIndex password.",
-         "younium": "Your Younium password.",
+         "younium": "Your Younium password. Use this parameter only if you want the connection to authenticate using OAuth 2.0.",
          "zuora": "The corresponding password for the API user.",
          "zuora_sandbox": "The corresponding password for the API user."
       },
@@ -8825,17 +8961,17 @@
       "item_type": {},
       "description": {
          "aws_cost_report": "Optional. All files in your search path matching this regular expression will be synced. This parameter is optional.",
-         "azure_blob_storage": "All files in your search path matching this regular expression will be synced.",
-         "box": "All files in your search path matching this regular expression will be synced.",
-         "dropbox": "All files in your search path matching this regular expression will be synced.",
-         "email": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will delete it by Oct 31, 2025.",
-         "ftp": "All files in your search path matching this regular expression will be synced.",
-         "gcs": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will delete it by August 31, 2025.",
-         "google_drive": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will delete it by August 31, 2025.",
+         "azure_blob_storage": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
+         "box": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
+         "dropbox": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
+         "email": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
+         "ftp": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
+         "gcs": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
+         "google_drive": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
          "kinesis": "Optional. All files in your search path matching this regular expression will be synced. This parameter is optional.",
-         "s3": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will delete it by August 31, 2025.",
-         "sftp": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will delete it by August 31, 2025.",
-         "share_point": "All files in your search path matching this regular expression will be synced.",
+         "s3": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
+         "sftp": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
+         "share_point": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
          "wasabi_cloud_storage": "All files in your search path matching this regular expression will be synced."
       },
       "api_field": ""
@@ -9791,6 +9927,7 @@
          "recurly": "Your Recurly region.",
          "ringover": "Your Ringover region.",
          "samsara": "The region of your Samsara account. For instance, if your region is `EUROPE`, provide `eu.samsara` in the `Region` field. If your region is not in Europe, provide `samsara`.",
+         "smartsheet": "The Smartsheet data region for your account. Can be COM, EU, or AU.",
          "snyk": "Your Snyk region.",
          "talkdesk": "Your Talkdesk region (\".com\",\".eu\",\"ca.com\")",
          "totango": "Your Totango region.",
@@ -9803,7 +9940,7 @@
          "zoho_campaigns": "Your Zoho Campaigns application host region.",
          "zoho_desk": "Your Zoho Desk domain.",
          "zoho_inventory": "Your Zoho Inventory application host region.",
-         "zoho_people": "Your Zoho People application host region.",
+         "zoho_people": "The region where the application that is registered in your Zoho People developer account is hosted.",
          "zoho_recruit": "Your Zoho Recruit region."
       },
       "api_field": ""
@@ -12092,6 +12229,7 @@
          "cj_commission_detail": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "clari": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "classy": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "claude_compliance": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "clazar": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "clickup": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "clockify": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -12293,6 +12431,7 @@
          "intercom": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "invoiced": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "ironclad": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "ironclad_clickwrap": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "ironsource": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "iterable": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "itunes_connect": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -12400,6 +12539,7 @@
          "open_data_dc": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "open_exchange_rates": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "openai": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "openai_compliance_platform": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "opendistro": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "opensearch": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "optimizely": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -12531,6 +12671,7 @@
          "servicenow": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "servicetitan": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "servicetrade": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "sevdesk": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "sftp": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "share_point": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "shareasale": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -12866,7 +13007,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "ebay": "Your eBay scopes."
+         "ebay": "Your eBay scopes.",
+         "veeva_vault": "OAuth2 scope (only when authentication_method is `OAuth2`)"
       },
       "api_field": ""
    },
@@ -13176,6 +13318,20 @@
       },
       "api_field": ""
    },
+   "server_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sql_server_hva": "Server name. Used when authenticating with Windows Authentication.",
+         "sql_server_sap_ecc_hva": "Server name. Used when authenticating with Windows Authentication."
+      },
+      "api_field": ""
+   },
    "server_region": {
       "readonly": false,
       "sensitive": false,
@@ -13427,6 +13583,19 @@
       "description": {
          "adobe_analytics_data_feed": "SFTP user.",
          "salesforce_marketing_cloud": "User"
+      },
+      "api_field": ""
+   },
+   "shard_authorization_id": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "healthie": "Your Healthie shard authorization ID."
       },
       "api_field": ""
    },
@@ -14660,6 +14829,19 @@
       "item_type": {},
       "description": {
          "d2l_brightspace": "Your D2L Brightspace target host."
+      },
+      "api_field": ""
+   },
+   "tax_rule_code": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "sevdesk": "The tax rule code to retrieve receipt guidance for (optional — leave blank to skip this table)."
       },
       "api_field": ""
    },
@@ -16065,7 +16247,7 @@
          "unicommerce": "Your uniware login username.",
          "upland": "Your Upland Software username.",
          "uptempo": "Your Uptempo username.",
-         "veeva_vault": "Username",
+         "veeva_vault": "Username (only when authentication_method is `Basic`)",
          "veevavault": "Your Veeva Vault username.",
          "when_i_work": "Your When I Work username.",
          "wherefour": "Your Wherefour username.",
@@ -16073,7 +16255,7 @@
          "workday_hcm": "Username of your Workday Integration System User account",
          "xandr": "Your Xandr username.",
          "yougov_brandindex": "Your YouGov BrandIndex username.",
-         "younium": "Your Younium username.",
+         "younium": "Your Younium username. Use this parameter only if you want the connection to authenticate using OAuth 2.0.",
          "zuora": "The API username with the necessary access permissions.",
          "zuora_sandbox": "The API username with the necessary access permissions."
       },
@@ -16081,6 +16263,32 @@
          "compliance_checkpoint": true,
          "pingdom": true,
          "shipstation": true
+      },
+      "api_field": ""
+   },
+   "v2_api_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "shipstation": "Your ShipStation V2 API key."
+      },
+      "api_field": ""
+   },
+   "vault_dns": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "veeva_vault": "(Optional) Target Vault DNS if different from default (only when authentication_method is `OAuth2`)"
       },
       "api_field": ""
    },
@@ -16321,7 +16529,8 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "fulfil": "Your Fulfil workspace ID."
+         "fulfil": "Your Fulfil workspace ID.",
+         "openai_compliance_platform": "Your OpenAI Compliance Platform workspace ID."
       },
       "api_field": ""
    },

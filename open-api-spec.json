@@ -18,11 +18,11 @@
   "tags": [
     {
       "name": "updated",
-      "description": "2026-05-22T15:32:24.433Z"
+      "description": "2026-06-10T12:50:49.107Z"
     },
     {
       "name": "hash",
-      "description": "7db20ae6e6839d876b384e3e4937e4dc89364ed44727d883651fb13fd773f790"
+      "description": "a058c78149b08eefe211a148eee1186b5a2304fa048338e43732fa6139d4efe8"
     }
   ],
   "paths": {
@@ -306,7 +306,7 @@
           "Connection Management"
         ],
         "summary": "Create a Connection",
-        "description": "Creates a new connection within a specified group in your Fivetran account. Runs setup tests and returns testing results. <br />\n> IMPORTANT: The `destination_schema_names` field will soon become a required field. Make sure to include it in your API requests when creating new connections to prevent future disruptions.\n ",
+        "description": "Creates a new connection within a specified group in your Fivetran account. Runs setup tests and returns testing results. <br />\n> IMPORTANT: The `destination_schema_names` field will soon become a required field. Make sure to include it in your API requests when creating new connections to prevent future disruptions.",
         "operationId": "create_connection",
         "parameters": [
           {
@@ -13478,6 +13478,11 @@
             "type": "boolean",
             "description": "An optional parameter that lets you hide the embedded setup guide in the Connect Card.",
             "example": true
+          },
+          "all_fields": {
+            "type": "boolean",
+            "description": "An optional parameter that lets you show all fields on Connect Card including those that are hidden by default for certain connectors.",
+            "example": true
           }
         }
       },
@@ -13773,6 +13778,7 @@
             "circleci": "#/components/schemas/circleci_NewConnectorRequestV1",
             "cj_commission_detail": "#/components/schemas/cj_commission_detail_NewConnectorRequestV1",
             "clari": "#/components/schemas/clari_NewConnectorRequestV1",
+            "claude_compliance": "#/components/schemas/claude_compliance_NewConnectorRequestV1",
             "clazar": "#/components/schemas/clazar_NewConnectorRequestV1",
             "clickup": "#/components/schemas/clickup_NewConnectorRequestV1",
             "clockify": "#/components/schemas/clockify_NewConnectorRequestV1",
@@ -13973,6 +13979,7 @@
             "intercom": "#/components/schemas/intercom_NewConnectorRequestV1",
             "invoiced": "#/components/schemas/invoiced_NewConnectorRequestV1",
             "ironclad": "#/components/schemas/ironclad_NewConnectorRequestV1",
+            "ironclad_clickwrap": "#/components/schemas/ironclad_clickwrap_NewConnectorRequestV1",
             "ironsource": "#/components/schemas/ironsource_NewConnectorRequestV1",
             "iterable": "#/components/schemas/iterable_NewConnectorRequestV1",
             "itunes_connect": "#/components/schemas/itunes_connect_NewConnectorRequestV1",
@@ -14086,6 +14093,7 @@
             "open_data_dc": "#/components/schemas/open_data_dc_NewConnectorRequestV1",
             "open_exchange_rates": "#/components/schemas/open_exchange_rates_NewConnectorRequestV1",
             "openai": "#/components/schemas/openai_NewConnectorRequestV1",
+            "openai_compliance_platform": "#/components/schemas/openai_compliance_platform_NewConnectorRequestV1",
             "opendistro": "#/components/schemas/opendistro_NewConnectorRequestV1",
             "opensearch": "#/components/schemas/opensearch_NewConnectorRequestV1",
             "optimizely": "#/components/schemas/optimizely_NewConnectorRequestV1",
@@ -14226,6 +14234,7 @@
             "servicenow": "#/components/schemas/servicenow_NewConnectorRequestV1",
             "servicetitan": "#/components/schemas/servicetitan_NewConnectorRequestV1",
             "servicetrade": "#/components/schemas/servicetrade_NewConnectorRequestV1",
+            "sevdesk": "#/components/schemas/sevdesk_NewConnectorRequestV1",
             "sftp": "#/components/schemas/sftp_NewConnectorRequestV1",
             "share_point": "#/components/schemas/share_point_NewConnectorRequestV1",
             "shareasale": "#/components/schemas/shareasale_NewConnectorRequestV1",
@@ -14949,6 +14958,7 @@
             "circleci": "#/components/schemas/circleci_ConnectorResponseV1",
             "cj_commission_detail": "#/components/schemas/cj_commission_detail_ConnectorResponseV1",
             "clari": "#/components/schemas/clari_ConnectorResponseV1",
+            "claude_compliance": "#/components/schemas/claude_compliance_ConnectorResponseV1",
             "clazar": "#/components/schemas/clazar_ConnectorResponseV1",
             "clickup": "#/components/schemas/clickup_ConnectorResponseV1",
             "clockify": "#/components/schemas/clockify_ConnectorResponseV1",
@@ -15149,6 +15159,7 @@
             "intercom": "#/components/schemas/intercom_ConnectorResponseV1",
             "invoiced": "#/components/schemas/invoiced_ConnectorResponseV1",
             "ironclad": "#/components/schemas/ironclad_ConnectorResponseV1",
+            "ironclad_clickwrap": "#/components/schemas/ironclad_clickwrap_ConnectorResponseV1",
             "ironsource": "#/components/schemas/ironsource_ConnectorResponseV1",
             "iterable": "#/components/schemas/iterable_ConnectorResponseV1",
             "itunes_connect": "#/components/schemas/itunes_connect_ConnectorResponseV1",
@@ -15262,6 +15273,7 @@
             "open_data_dc": "#/components/schemas/open_data_dc_ConnectorResponseV1",
             "open_exchange_rates": "#/components/schemas/open_exchange_rates_ConnectorResponseV1",
             "openai": "#/components/schemas/openai_ConnectorResponseV1",
+            "openai_compliance_platform": "#/components/schemas/openai_compliance_platform_ConnectorResponseV1",
             "opendistro": "#/components/schemas/opendistro_ConnectorResponseV1",
             "opensearch": "#/components/schemas/opensearch_ConnectorResponseV1",
             "optimizely": "#/components/schemas/optimizely_ConnectorResponseV1",
@@ -15402,6 +15414,7 @@
             "servicenow": "#/components/schemas/servicenow_ConnectorResponseV1",
             "servicetitan": "#/components/schemas/servicetitan_ConnectorResponseV1",
             "servicetrade": "#/components/schemas/servicetrade_ConnectorResponseV1",
+            "sevdesk": "#/components/schemas/sevdesk_ConnectorResponseV1",
             "sftp": "#/components/schemas/sftp_ConnectorResponseV1",
             "share_point": "#/components/schemas/share_point_ConnectorResponseV1",
             "shareasale": "#/components/schemas/shareasale_ConnectorResponseV1",
@@ -18267,7 +18280,7 @@
           },
           "group_region": {
             "type": "string",
-            "description": "Data processing location. This is where Fivetran will operate and run computation on data.",
+            "description": "Data processing location. This is where Fivetran will operate and run computation on data (optional).",
             "example": "GCP_US_EAST4",
             "enum": [
               "GCP_US_EAST4",
@@ -21471,8 +21484,8 @@
               "lakehouse_guid": {
                 "title": "",
                 "type": "string",
-                "description": "",
-                "example": "string"
+                "description": "(Immutable) OneLake lakehouse GUID.",
+                "example": "onelake_lakehouse_guid"
               },
               "oauth2_client_id": {
                 "title": "",
@@ -21487,24 +21500,34 @@
                 "format": "password",
                 "example": "string"
               },
+              "one_lake_auth_type": {
+                "title": "",
+                "type": "object",
+                "description": "(Immutable) Authentication type for OneLake. Default value: `ServicePrincipal`.",
+                "example": "SERVICE_PRINCIPAL | WORKSPACE_IDENTITY",
+                "enum": [
+                  "SERVICE_PRINCIPAL",
+                  "WORKSPACE_IDENTITY"
+                ]
+              },
               "onelake_client_id": {
                 "title": "",
                 "type": "string",
-                "description": "",
-                "example": "string"
+                "description": "(Immutable) Client ID of OneLake service principal.",
+                "example": "onelake_client_id"
               },
               "onelake_client_secret": {
                 "title": "",
                 "type": "string",
-                "description": "",
+                "description": "Secret value for OneLake service principal.",
                 "format": "password",
-                "example": "string"
+                "example": "onelake_client_secret"
               },
               "onelake_tenant_id": {
                 "title": "",
                 "type": "string",
-                "description": "",
-                "example": "string"
+                "description": "(Immutable) Tenant ID of OneLake service principal",
+                "example": "onelake_tenant_id"
               },
               "personal_access_token": {
                 "title": "",
@@ -21588,7 +21611,7 @@
               "should_maintain_tables_in_one_lake": {
                 "title": "",
                 "type": "boolean",
-                "description": "",
+                "description": "Specifies whether you want to create shortcut for you table in OneLake. Use this parameter only if you want to deploy your data lake on ADLS.",
                 "example": true
               },
               "snapshot_retention_period": {
@@ -21631,8 +21654,8 @@
               "workspace_guid": {
                 "title": "",
                 "type": "string",
-                "description": "",
-                "example": "string"
+                "description": "(Immutable) OneLake workspace GUID.",
+                "example": "workspace_guid"
               }
             },
             "description": ""
@@ -21805,6 +21828,16 @@
                 "description": "OAuth 2.0 secret you created for authenticating Fivetran. Use this parameter only if you want to use OAuth 2.0 as the authentication type for Fivetran to connect to Databricks.",
                 "format": "password",
                 "example": "string"
+              },
+              "one_lake_auth_type": {
+                "title": "",
+                "type": "object",
+                "description": "(Immutable) Authentication type for OneLake. Default value: `ServicePrincipal`.",
+                "example": "SERVICE_PRINCIPAL | WORKSPACE_IDENTITY",
+                "enum": [
+                  "SERVICE_PRINCIPAL",
+                  "WORKSPACE_IDENTITY"
+                ]
               },
               "onelake_client_id": {
                 "title": "",
@@ -22398,7 +22431,7 @@
               "database": {
                 "title": "",
                 "type": "string",
-                "description": "Service Name",
+                "description": "SID/Service name",
                 "example": "production"
               },
               "host": {
@@ -22485,7 +22518,7 @@
               "database": {
                 "title": "",
                 "type": "string",
-                "description": "Database name",
+                "description": "SID/Service name",
                 "example": "production"
               },
               "host": {
@@ -22572,7 +22605,7 @@
               "database": {
                 "title": "",
                 "type": "string",
-                "description": "Database name",
+                "description": "SID/Service name",
                 "example": "production"
               },
               "host": {
@@ -25334,6 +25367,21 @@
           "config": {
             "type": "object",
             "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your Adobe Commerce access_token",
+                "format": "password",
+                "example": "your_adobe_commerce_access_token"
+              },
+              "auth_type": {
+                "type": "object",
+                "description": "Your Adobe Commerce auth type.",
+                "enum": [
+                  "access_token",
+                  "oauth_2"
+                ]
+              },
               "host_url": {
                 "title": "",
                 "type": "string",
@@ -26594,26 +26642,26 @@
               "application_id": {
                 "title": "",
                 "type": "string",
-                "description": "`Application ID` of the public application registered in the Amazon Selling Partner Appstore that you want to use for authentication of your connection. Use this parameter along with `Client ID` and `Client Secret` only if you want to use your own public application for authorisation via Connect Card.",
-                "example": "my_application_id"
+                "description": "",
+                "example": "string"
               },
               "client_id": {
                 "title": "",
                 "type": "string",
-                "description": "`Client ID` of your Amazon Seller/Vendor Central client application.",
-                "example": "my_client_id"
+                "description": "",
+                "example": "string"
               },
               "client_secret": {
                 "title": "",
                 "type": "string",
-                "description": "`Client Secret` of your Amazon Seller/Vendor Central client application.",
-                "example": "my_client_secret"
+                "description": "",
+                "example": "string"
               },
               "refresh_token": {
                 "title": "",
                 "type": "string",
-                "description": "The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.",
-                "example": "my_refresh_token"
+                "description": "",
+                "example": "string"
               }
             },
             "description": ""
@@ -27336,6 +27384,44 @@
           "config": {
             "type": "object",
             "properties": {
+              "custom_reports": {
+                "title": "",
+                "type": "array",
+                "description": "Allows users to define reports with custom groupBy dimensions.",
+                "items": {
+                  "title": "",
+                  "type": "object",
+                  "properties": {
+                    "base_report_type": {
+                      "type": "object",
+                      "description": "The base report type. It determines the set of available dimensions for the `groupBy` field and the metrics that will be included in the custom report. Only one value is supported: `CAMPAIGN`.",
+                      "example": "CAMPAIGN",
+                      "enum": [
+                        "CAMPAIGN"
+                      ]
+                    },
+                    "group_by": {
+                      "type": "array",
+                      "description": "The list of dimensions to group the data by. The available dimensions depend on the selected `baseReportType`.",
+                      "example": [
+                        "string"
+                      ],
+                      "items": {
+                        "title": "",
+                        "type": "string",
+                        "description": "",
+                        "example": "string"
+                      }
+                    },
+                    "table": {
+                      "type": "string",
+                      "description": "The name of the custom report table. It must be unique within this connection and must comply with Fivetran's naming conventions.",
+                      "example": "my_custom_report"
+                    }
+                  },
+                  "description": "Allows users to define reports with custom groupBy dimensions."
+                }
+              },
               "organizations": {
                 "title": "",
                 "type": "array",
@@ -27829,7 +27915,7 @@
               "email_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Atlassian Compass email ID.",
+                "description": "The email ID associated with the Atlassian Compass account you want Fivetran to use to access your data.",
                 "example": "your_atlassian_compass_email_id"
               },
               "sub_domain": {
@@ -29280,7 +29366,7 @@
               "archive_pattern": {
                 "title": "",
                 "type": "string",
-                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
+                "description": "Files inside compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
                 "example": "regex_pattern"
               },
               "auth_method": {
@@ -29407,7 +29493,7 @@
                     "file_pattern": {
                       "title": "",
                       "type": "string",
-                      "description": "All files in your search path matching this regular expression will be synced per table. We have discontinued this field, and will delete it by August 31, 2025.",
+                      "description": "All files in your search path matching this regular expression will be synced per table.",
                       "example": "string"
                     },
                     "selected_range": {
@@ -29473,7 +29559,7 @@
               "pattern": {
                 "title": "",
                 "type": "string",
-                "description": "All files in your search path matching this regular expression will be synced.",
+                "description": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
                 "example": "file_pattern"
               },
               "pgp_pass_phrase": {
@@ -31464,7 +31550,7 @@
               "archive_pattern": {
                 "title": "",
                 "type": "string",
-                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
+                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
                 "example": "regex_pattern"
               },
               "compression": {
@@ -31611,7 +31697,7 @@
               "pattern": {
                 "title": "",
                 "type": "string",
-                "description": "All files in your search path matching this regular expression will be synced.",
+                "description": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
                 "example": "file_pattern"
               },
               "prefix": {
@@ -33869,6 +33955,36 @@
           }
         ]
       },
+      "claude_compliance_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Claude Compliance Access Key.",
+                "format": "password",
+                "example": "your_compliance_access_key"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "claude_compliance_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/claude_compliance_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
       "clazar_config_V1": {
         "properties": {
           "config": {
@@ -34872,6 +34988,16 @@
                 "format": "password",
                 "example": "string"
               },
+              "auth_method": {
+                "title": "",
+                "type": "object",
+                "description": "Authentication method. Use API_KEY for API Key/Secret or OAUTH for OAuth 2.0 client credentials flow.",
+                "example": "API_KEY",
+                "enum": [
+                  "API_KEY",
+                  "OAUTH"
+                ]
+              },
               "consumer_group": {
                 "title": "",
                 "type": "string",
@@ -34961,6 +35087,52 @@
           }
         }
       },
+      "confluent_cloud_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "identity_pool_id": {
+                "title": "",
+                "type": "string",
+                "description": "Optional Confluent Cloud identity pool ID. When omitted, Confluent auto-maps the token to a matching pool.",
+                "example": "pool-xxxxxx"
+              },
+              "logical_cluster_id": {
+                "title": "",
+                "type": "string",
+                "description": "Confluent Cloud logical cluster ID. Required for OAuth 2.0 authentication.",
+                "example": "lkc-xxxxxx"
+              },
+              "oauth_client_id": {
+                "title": "",
+                "type": "string",
+                "description": "OAuth 2.0 client ID issued by the identity provider.",
+                "example": "string"
+              },
+              "oauth_client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "OAuth 2.0 client secret issued by the identity provider.",
+                "example": "string"
+              },
+              "oauth_scope": {
+                "title": "",
+                "type": "string",
+                "description": "Optional OAuth 2.0 scope to request with the access token.",
+                "example": "api://your-resource/.default"
+              },
+              "oauth_token_endpoint_url": {
+                "title": "",
+                "type": "string",
+                "description": "OAuth 2.0 token endpoint URL used to obtain access tokens.",
+                "example": "https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "confluent_cloud_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -34971,6 +35143,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/confluent_cloud_auth_V1"
           }
         ]
       },
@@ -38970,7 +39145,7 @@
               "archive_pattern": {
                 "title": "",
                 "type": "string",
-                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
+                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
                 "example": "regex_pattern"
               },
               "compression": {
@@ -39107,7 +39282,7 @@
               "pattern": {
                 "title": "",
                 "type": "string",
-                "description": "All files in your search path matching this regular expression will be synced.",
+                "description": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
                 "example": "file_pattern"
               },
               "prefix": {
@@ -39713,6 +39888,16 @@
                 "description": "Default value: true. Set to false if TLS is not required when using an SSH tunnel.",
                 "example": true
               },
+              "authentication_method": {
+                "title": "",
+                "type": "object",
+                "description": "The authentication method used to connect to your cluster. Supported values: `BASICAUTH` (default), `APIKEY`.",
+                "example": "BASICAUTH | APIKEY",
+                "enum": [
+                  "BASICAUTH",
+                  "APIKEY"
+                ]
+              },
               "connection_type": {
                 "title": "",
                 "type": "object",
@@ -39890,7 +40075,7 @@
               "archive_pattern": {
                 "title": "",
                 "type": "string",
-                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
+                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
                 "example": "regex_pattern"
               },
               "compression": {
@@ -40023,7 +40208,7 @@
               "pattern": {
                 "title": "",
                 "type": "string",
-                "description": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will delete it by Oct 31, 2025.",
+                "description": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
                 "example": "file_pattern"
               },
               "quote_char": {
@@ -40258,6 +40443,16 @@
                 "type": "boolean",
                 "description": "Default value: true. Set to false if TLS is not required when using an SSH tunnel.",
                 "example": true
+              },
+              "authentication_method": {
+                "title": "",
+                "type": "object",
+                "description": "The authentication method used to connect to your cluster.",
+                "example": "BASICAUTH | APIKEY",
+                "enum": [
+                  "BASICAUTH",
+                  "APIKEY"
+                ]
               },
               "connection_type": {
                 "title": "",
@@ -40764,13 +40959,13 @@
                       "type": "array",
                       "description": "List of breakdowns which connector will sync. [Possible breakdowns values](/docs/connectors/applications/facebook-ads#breakdowns).",
                       "example": [
-                        "country | skan_campaign_id | gender | hourly_stats_aggregated_by_advertiser_time_zone | skan_conversion_id | link_url_asset | title_asset | action_converted_product_id | fidelity_type | mmm | call_to_action_asset | image_asset | product_id | hsid | app_id | impression_device | user_segment_key | body_asset | frequency_value | place_page_id | video_asset | redownload | hourly_stats_aggregated_by_audience_time_zone | ad_format_asset | platform_position | postback_sequence_index | dma | device_platform | placement | publisher_platform | region | is_conversion_id_modeled | coarse_conversion_value | age | description_asset"
+                        "country | skan_campaign_id | gender | hourly_stats_aggregated_by_advertiser_time_zone | skan_conversion_id | link_url_asset | title_asset | action_converted_product_id | fidelity_type | mmm | call_to_action_asset | image_asset | product_id | hsid | app_id | impression_device | user_segment_key | body_asset | frequency_value | place_page_id | video_asset | redownload | hourly_stats_aggregated_by_audience_time_zone | ad_format_asset | platform_position | postback_sequence_index | dma | device_platform | placement | publisher_platform | comscore_market | region | is_conversion_id_modeled | coarse_conversion_value | age | description_asset"
                       ],
                       "items": {
                         "title": "",
                         "type": "object",
                         "description": "",
-                        "example": "country | skan_campaign_id | gender | hourly_stats_aggregated_by_advertiser_time_zone | skan_conversion_id | link_url_asset | title_asset | action_converted_product_id | fidelity_type | mmm | call_to_action_asset | image_asset | product_id | hsid | app_id | impression_device | user_segment_key | body_asset | frequency_value | place_page_id | video_asset | redownload | hourly_stats_aggregated_by_audience_time_zone | ad_format_asset | platform_position | postback_sequence_index | dma | device_platform | placement | publisher_platform | region | is_conversion_id_modeled | coarse_conversion_value | age | description_asset",
+                        "example": "country | skan_campaign_id | gender | hourly_stats_aggregated_by_advertiser_time_zone | skan_conversion_id | link_url_asset | title_asset | action_converted_product_id | fidelity_type | mmm | call_to_action_asset | image_asset | product_id | hsid | app_id | impression_device | user_segment_key | body_asset | frequency_value | place_page_id | video_asset | redownload | hourly_stats_aggregated_by_audience_time_zone | ad_format_asset | platform_position | postback_sequence_index | dma | device_platform | placement | publisher_platform | comscore_market | region | is_conversion_id_modeled | coarse_conversion_value | age | description_asset",
                         "enum": [
                           "country",
                           "skan_campaign_id",
@@ -40802,6 +40997,7 @@
                           "device_platform",
                           "placement",
                           "publisher_platform",
+                          "comscore_market",
                           "region",
                           "is_conversion_id_modeled",
                           "coarse_conversion_value",
@@ -42521,7 +42717,7 @@
               "archive_pattern": {
                 "title": "",
                 "type": "string",
-                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
+                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
                 "example": "regex_pattern"
               },
               "compression": {
@@ -42665,7 +42861,7 @@
               "pattern": {
                 "title": "",
                 "type": "string",
-                "description": "All files in your search path matching this regular expression will be synced.",
+                "description": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
                 "example": "file_pattern"
               },
               "pgp_pass_phrase": {
@@ -43000,7 +43196,7 @@
               "archive_pattern": {
                 "title": "",
                 "type": "string",
-                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
+                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
                 "example": "regex_pattern"
               },
               "auth_type": {
@@ -43163,7 +43359,7 @@
               "pattern": {
                 "title": "",
                 "type": "string",
-                "description": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will delete it by August 31, 2025.",
+                "description": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
                 "example": "file_pattern"
               },
               "pgp_pass_phrase": {
@@ -45330,7 +45526,7 @@
               "archive_pattern": {
                 "title": "",
                 "type": "string",
-                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
+                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
                 "example": "regex_pattern"
               },
               "compression": {
@@ -45483,7 +45679,7 @@
               "pattern": {
                 "title": "",
                 "type": "string",
-                "description": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will delete it by August 31, 2025.",
+                "description": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
                 "example": "file_pattern"
               },
               "prefix": {
@@ -46665,6 +46861,13 @@
                   "staging-api",
                   "api"
                 ]
+              },
+              "shard_authorization_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Healthie shard authorization ID.",
+                "format": "password",
+                "example": "string"
               }
             },
             "description": ""
@@ -48154,6 +48357,42 @@
           },
           {
             "$ref": "#/components/schemas/ironclad_auth_V1"
+          }
+        ]
+      },
+      "ironclad_clickwrap_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your Ironclad Clickwrap Client ID.",
+                "example": "your_ironclad_clickwrap_client_id"
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Ironclad Clickwrap Client Secret.",
+                "format": "password",
+                "example": "your_ironclad_clickwrap_client_secret"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "ironclad_clickwrap_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/ironclad_clickwrap_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
           }
         ]
       },
@@ -54702,6 +54941,48 @@
           }
         ]
       },
+      "openai_compliance_platform_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your OpenAI Compliance Platform API key.",
+                "format": "password",
+                "example": "your_openai_compliance_platform_api_key"
+              },
+              "organization_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your OpenAI Compliance Platform organization ID.",
+                "example": "your_openai_compliance_platform_organization_id"
+              },
+              "workspace_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your OpenAI Compliance Platform workspace ID.",
+                "example": "your_openai_compliance_platform_workspace_id"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "openai_compliance_platform_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/openai_compliance_platform_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
       "opendistro_config_V1": {
         "properties": {
           "config": {
@@ -54712,6 +54993,16 @@
                 "type": "boolean",
                 "description": "Default value: true. Set to false if TLS is not required when using an SSH tunnel.",
                 "example": true
+              },
+              "authentication_method": {
+                "title": "",
+                "type": "object",
+                "description": "The authentication method used to connect to your cluster.",
+                "example": "BASICAUTH | APIKEY",
+                "enum": [
+                  "BASICAUTH",
+                  "APIKEY"
+                ]
               },
               "connection_type": {
                 "title": "",
@@ -54796,6 +55087,16 @@
                 "type": "boolean",
                 "description": "Default value: true. Set to false if TLS is not required when using an SSH tunnel.",
                 "example": true
+              },
+              "authentication_method": {
+                "title": "",
+                "type": "object",
+                "description": "The authentication method used to connect to your cluster.",
+                "example": "BASICAUTH | APIKEY",
+                "enum": [
+                  "BASICAUTH",
+                  "APIKEY"
+                ]
               },
               "connection_type": {
                 "title": "",
@@ -61485,7 +61786,7 @@
               "archive_pattern": {
                 "title": "",
                 "type": "string",
-                "description": "Files inside compressed archives with filenames matching this regular expression will be synced.",
+                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
                 "example": "regex_pattern"
               },
               "auth_type": {
@@ -61683,7 +61984,7 @@
               "pattern": {
                 "title": "",
                 "type": "string",
-                "description": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will delete it by August 31, 2025.",
+                "description": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
                 "example": "file_pattern"
               },
               "pgp_pass_phrase": {
@@ -61807,7 +62108,7 @@
               "archive_pattern": {
                 "title": "",
                 "type": "string",
-                "description": "Files inside compressed archives with filenames matching this regular expression will be synced.",
+                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
                 "example": "regex_pattern"
               },
               "auth_type": {
@@ -63618,6 +63919,66 @@
           }
         ]
       },
+      "sevdesk_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "account_number": {
+                "title": "",
+                "type": "string",
+                "description": "The datev account number to retrieve receipt guidance for (optional — leave blank to skip this table).",
+                "example": "your_sevdesk_account_number"
+              },
+              "api_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your 32-character hexadecimal API token.",
+                "format": "password",
+                "example": "your_sevdesk_api_token"
+              },
+              "balance_date": {
+                "title": "",
+                "type": "string",
+                "description": "ISO 8601 date for balance calculation (optional — leave blank to skip this table).",
+                "example": "your_sevdesk_balance_date"
+              },
+              "base_url": {
+                "title": "",
+                "type": "string",
+                "description": "The base URL for the sevdesk API, without the protocol prefix.",
+                "example": "your_sevdesk_base_url"
+              },
+              "custom_field_value": {
+                "title": "",
+                "type": "string",
+                "description": "The custom field value to search contacts by (optional — leave blank to skip this table).",
+                "example": "your_sevdesk_custom_field_value"
+              },
+              "tax_rule_code": {
+                "title": "",
+                "type": "string",
+                "description": "The tax rule code to retrieve receipt guidance for (optional — leave blank to skip this table).",
+                "example": "your_sevdesk_tax_rule_code"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "sevdesk_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/sevdesk_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
       "sftp_config_V1": {
         "properties": {
           "config": {
@@ -63637,7 +63998,7 @@
               "archive_pattern": {
                 "title": "",
                 "type": "string",
-                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
+                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
                 "example": "regex_pattern"
               },
               "compression": {
@@ -63823,7 +64184,7 @@
               "pattern": {
                 "title": "",
                 "type": "string",
-                "description": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will delete it by August 31, 2025.",
+                "description": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
                 "example": "file_pattern"
               },
               "pgp_pass_phrase": {
@@ -63977,7 +64338,7 @@
               "archive_pattern": {
                 "title": "",
                 "type": "string",
-                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced.",
+                "description": "Files inside of compressed archives with filenames matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
                 "example": "regex_pattern"
               },
               "client_certificate": {
@@ -64132,7 +64493,7 @@
               "pattern": {
                 "title": "",
                 "type": "string",
-                "description": "All files in your search path matching this regular expression will be synced.",
+                "description": "All files in your search path matching this regular expression will be synced. We have discontinued this field, and will stop supporting it by August 31, 2026.",
                 "example": "file_pattern"
               },
               "prefix": {
@@ -64458,6 +64819,13 @@
                 "description": "Your ShipStation username.",
                 "format": "password",
                 "example": "your_shipstation_username"
+              },
+              "v2_api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your ShipStation V2 API key.",
+                "format": "password",
+                "example": "your_shipstation_v2_api_key"
               }
             },
             "description": ""
@@ -64485,14 +64853,14 @@
               "api_access_token": {
                 "title": "",
                 "type": "string",
-                "description": "API access token of your custom app.",
+                "description": "API access token of your custom or public app.",
                 "format": "password",
                 "example": "string"
               },
               "app_url": {
                 "title": "",
                 "type": "string",
-                "description": "App store url of your public app",
+                "description": "App store url of your app",
                 "example": "string"
               },
               "backward_sync_limit": {
@@ -64504,13 +64872,13 @@
               "client_id": {
                 "title": "",
                 "type": "string",
-                "description": "Client ID of your public app",
+                "description": "Client ID of your app",
                 "example": "string"
               },
               "client_secret": {
                 "title": "",
                 "type": "string",
-                "description": "Client secret of your public app",
+                "description": "Client secret of your app",
                 "format": "password",
                 "example": "string"
               },
@@ -65450,6 +65818,17 @@
                 "enum": [
                   "OAuth2",
                   "APIToken"
+                ]
+              },
+              "region": {
+                "title": "",
+                "type": "object",
+                "description": "The Smartsheet data region for your account. Can be COM, EU, or AU.",
+                "example": "COM | EU | AU",
+                "enum": [
+                  "COM",
+                  "EU",
+                  "AU"
                 ]
               }
             },
@@ -67074,6 +67453,12 @@
                 "description": "SAP Schema Name. Required only for High-Volume Agent SAP ECC connector.",
                 "example": "string"
               },
+              "server_name": {
+                "title": "",
+                "type": "string",
+                "description": "Server name. Used when authenticating with Windows Authentication.",
+                "example": "string"
+              },
               "tde_certificate": {
                 "title": "",
                 "type": "string",
@@ -67374,6 +67759,12 @@
                 "title": "",
                 "type": "string",
                 "description": "SAP Schema Name.",
+                "example": "string"
+              },
+              "server_name": {
+                "title": "",
+                "type": "string",
+                "description": "Server name. Used when authenticating with Windows Authentication.",
                 "example": "string"
               },
               "tde_certificate": {
@@ -70457,24 +70848,71 @@
           "config": {
             "type": "object",
             "properties": {
+              "authentication_method": {
+                "title": "",
+                "type": "object",
+                "description": "(Optional) Authentication type (default value is `Basic`)",
+                "example": "Basic | OAuth2",
+                "enum": [
+                  "Basic",
+                  "OAuth2"
+                ]
+              },
               "base_url": {
                 "title": "",
                 "type": "string",
-                "description": "Base URL",
+                "description": "Base URL of your Veeva Vault instance",
                 "example": "my-org.veevavault.com"
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "OAuth2 client ID (only when authentication_method is `OAuth2`)",
+                "example": "my_client_id"
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "OAuth2 client secret (only when authentication_method is `OAuth2`)",
+                "format": "password",
+                "example": "my_client_secret"
+              },
+              "o_auth_service_token_url": {
+                "title": "",
+                "type": "string",
+                "description": "OAuth2 authorization server token endpoint URL (only when authentication_method is `OAuth2`)",
+                "example": "https://login.veevavault.com/auth/oauth/token/v1"
+              },
+              "oidc_profile_id": {
+                "title": "",
+                "type": "string",
+                "description": "OIDC profile ID configured in Veeva Vault (only when authentication_method is `OAuth2`)",
+                "example": "my_oidc_profile_id"
               },
               "password": {
                 "title": "",
                 "type": "string",
-                "description": "Password",
+                "description": "Password (only when authentication_method is `Basic`)",
                 "format": "password",
                 "example": "password"
+              },
+              "scope": {
+                "title": "",
+                "type": "string",
+                "description": "OAuth2 scope (only when authentication_method is `OAuth2`)",
+                "example": "openid"
               },
               "username": {
                 "title": "",
                 "type": "string",
-                "description": "Username",
+                "description": "Username (only when authentication_method is `Basic`)",
                 "example": "username"
+              },
+              "vault_dns": {
+                "title": "",
+                "type": "string",
+                "description": "(Optional) Target Vault DNS if different from default (only when authentication_method is `OAuth2`)",
+                "example": "my-vault.veevavault.com"
               }
             },
             "description": ""
@@ -73403,19 +73841,50 @@
             "properties": {
               "auth_environment": {
                 "type": "object",
-                "description": "Your Younium auth environment.",
+                "description": "Your Younium auth environment. Use this parameter only if you want the connection to authenticate using OAuth 2.0.",
                 "enum": [
                   "younium-identity-server-sandbox.azurewebsites.net",
                   "younium-identity-server.azurewebsites.net"
                 ]
               },
+              "auth_type": {
+                "type": "object",
+                "description": "The authentication method you want to use for your connection.",
+                "enum": [
+                  "jwt_auth",
+                  "oauth2"
+                ]
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Client ID of the personal access token you want to use to generate the JWT token. Use this parameter only if you want the connection to authenticate using a JWT token.",
+                "example": "your_client_id"
+              },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Secret key of the personal access token you want to use to generate the JWT token. Use this parameter only if you want the connection to authenticate using a JWT token.",
+                "format": "password",
+                "example": "your_secret_key"
+              },
               "environment": {
                 "type": "object",
-                "description": "Your Younium API environment.",
+                "description": "Your Younium API environment. Use this parameter only if you want the connection to authenticate using OAuth 2.0.",
                 "enum": [
                   "apisanbox",
                   "api.us",
                   "api.sandbox.us",
+                  "api"
+                ]
+              },
+              "jwt_environment": {
+                "type": "object",
+                "description": "Your Younium API environment. Use this parameter only if you want the connection to authenticate using a JWT token.",
+                "enum": [
+                  "api.us",
+                  "api.sandbox.us",
+                  "api.sandbox",
                   "api"
                 ]
               },
@@ -73428,14 +73897,14 @@
               "password": {
                 "title": "",
                 "type": "string",
-                "description": "Your Younium password.",
+                "description": "Your Younium password. Use this parameter only if you want the connection to authenticate using OAuth 2.0.",
                 "format": "password",
                 "example": "your_younium_password"
               },
               "username": {
                 "title": "",
                 "type": "string",
-                "description": "Your Younium username.",
+                "description": "Your Younium username. Use this parameter only if you want the connection to authenticate using OAuth 2.0.",
                 "example": "your_younium_username"
               }
             },
@@ -74379,19 +74848,19 @@
               "client_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Zoho People client ID.",
-                "example": "your_zoho_people_client_id"
+                "description": "The client ID of the application that is registered in your Zoho People developer account for this connection.",
+                "example": "your_application_client_id"
               },
               "client_secret": {
                 "title": "",
                 "type": "string",
-                "description": "Your Zoho People client secret.",
+                "description": "The client secret of the application that is registered in your Zoho People developer account for this connection.",
                 "format": "password",
-                "example": "your_zoho_people_client_secret"
+                "example": "your_application_client_secret"
               },
               "region": {
                 "type": "object",
-                "description": "Your Zoho People application host region.",
+                "description": "The region where the application that is registered in your Zoho People developer account is hosted.",
                 "enum": [
                   "com",
                   "eu",
@@ -76688,6 +77157,16 @@
           }
         ]
       },
+      "claude_compliance_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/claude_compliance_config_V1"
+          }
+        ]
+      },
       "clazar_ConnectorResponseV1": {
         "allOf": [
           {
@@ -77670,16 +78149,6 @@
           "config": {
             "type": "object",
             "properties": {
-              "authentication_method": {
-                "title": "",
-                "type": "object",
-                "description": "The authentication method used to connect to your cluster.",
-                "example": "BASICAUTH | APIKEY",
-                "enum": [
-                  "BASICAUTH",
-                  "APIKEY"
-                ]
-              },
               "public_key": {
                 "title": "",
                 "type": "string",
@@ -77797,16 +78266,6 @@
           "config": {
             "type": "object",
             "properties": {
-              "authentication_method": {
-                "title": "",
-                "type": "object",
-                "description": "The authentication method used to connect to your cluster.",
-                "example": "BASICAUTH | APIKEY",
-                "enum": [
-                  "BASICAUTH",
-                  "APIKEY"
-                ]
-              },
               "public_key": {
                 "title": "",
                 "type": "string",
@@ -79072,6 +79531,16 @@
           },
           {
             "$ref": "#/components/schemas/ironclad_config_V1"
+          }
+        ]
+      },
+      "ironclad_clickwrap_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/ironclad_clickwrap_config_V1"
           }
         ]
       },
@@ -80462,21 +80931,21 @@
           }
         ]
       },
+      "openai_compliance_platform_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/openai_compliance_platform_config_V1"
+          }
+        ]
+      },
       "opendistro_readonly_config_V1": {
         "properties": {
           "config": {
             "type": "object",
             "properties": {
-              "authentication_method": {
-                "title": "",
-                "type": "object",
-                "description": "The authentication method used to connect to your cluster.",
-                "example": "BASICAUTH | APIKEY",
-                "enum": [
-                  "BASICAUTH",
-                  "APIKEY"
-                ]
-              },
               "public_key": {
                 "title": "",
                 "type": "string",
@@ -80506,16 +80975,6 @@
           "config": {
             "type": "object",
             "properties": {
-              "authentication_method": {
-                "title": "",
-                "type": "object",
-                "description": "The authentication method used to connect to your cluster.",
-                "example": "BASICAUTH | APIKEY",
-                "enum": [
-                  "BASICAUTH",
-                  "APIKEY"
-                ]
-              },
               "public_key": {
                 "title": "",
                 "type": "string",
@@ -82281,6 +82740,16 @@
           },
           {
             "$ref": "#/components/schemas/servicetrade_config_V1"
+          }
+        ]
+      },
+      "sevdesk_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/sevdesk_config_V1"
           }
         ]
       },

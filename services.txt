@@ -141,6 +141,7 @@ cin7core
 circleci
 cj_commission_detail
 clari
+claude_compliance
 clazar
 clickup
 clockify
@@ -341,6 +342,7 @@ integrate
 intercom
 invoiced
 ironclad
+ironclad_clickwrap
 ironsource
 iterable
 itunes_connect
@@ -454,6 +456,7 @@ onetrust
 open_data_dc
 open_exchange_rates
 openai
+openai_compliance_platform
 opendistro
 opensearch
 optimizely
@@ -594,6 +597,7 @@ sentry
 servicenow
 servicetitan
 servicetrade
+sevdesk
 sftp
 share_point
 shareasale
