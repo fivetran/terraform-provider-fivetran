@@ -2,6 +2,7 @@ package resources_test
 
 import (
 	"net/http"
+	"regexp"
 	"strconv"
 	"testing"
 	"time"
@@ -1715,6 +1716,57 @@ func TestResourceHybridDeploymentDestinationWithoutRegionMock(t *testing.T) {
 			CheckDestroy: func(s *terraform.State) error {
 				tfmock.AssertEqual(t, destinationDeleteHandler.Interactions, 1)
 				tfmock.AssertEmpty(t, testDestinationData)
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
+			},
+		},
+	)
+}
+
+func TestResourceDestinationExplicitEmptyRegionMock(t *testing.T) {
+	var destinationPostHandler *mock.Handler
+
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_destination" "mydestination" {
+				provider = fivetran-provider
+				group_id = "group_id"
+				service = "big_query"
+				region = ""
+				time_zone_offset = "0"
+				run_setup_tests = "false"
+
+				config {
+					project_id = "project_id1"
+					support_json_type = true
+					data_set_location = "US"
+				}
+			}`,
+		ExpectError: regexp.MustCompile("Unable to Create Destination Resource."),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				tfmock.MockClient().Reset()
+
+				destinationPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/destinations").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						body := tfmock.RequestBodyToJson(t, req)
+
+						tfmock.AssertKeyExistsAndHasValue(t, body, "region", "")
+
+						return mock.NewResponse(req, http.StatusBadRequest, `{"code":"InvalidInput","message":"region cannot be empty"}`), nil
+					},
+				)
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, destinationPostHandler.Interactions, 1)
 				return nil
 			},
 

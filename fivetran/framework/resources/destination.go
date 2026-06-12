@@ -424,7 +424,7 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 }
 
 func configuredStringValue(value types.String) (string, bool) {
-	if value.IsNull() || value.IsUnknown() || value.ValueString() == "" {
+	if value.IsNull() || value.IsUnknown() {
 		return "", false
 	}
 
