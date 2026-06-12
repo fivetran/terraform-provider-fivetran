@@ -5474,6 +5474,24 @@
       },
       "api_field": ""
    },
+   "delete_capture_enabled": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aurora_postgres": "",
+         "azure_postgres": "",
+         "google_cloud_postgresql": "",
+         "heroku_postgres": "",
+         "postgres": "",
+         "postgres_rds": ""
+      },
+      "api_field": ""
+   },
    "delete_capture_frequency": {
       "readonly": false,
       "sensitive": false,

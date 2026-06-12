@@ -18,11 +18,11 @@
   "tags": [
     {
       "name": "updated",
-      "description": "2026-06-10T12:50:49.107Z"
+      "description": "2026-06-12T10:44:20.662Z"
     },
     {
       "name": "hash",
-      "description": "a058c78149b08eefe211a148eee1186b5a2304fa048338e43732fa6139d4efe8"
+      "description": "c9ad34100234fde0abbd5c0b1501ac3a183d5488df421b468596443388611921"
     }
   ],
   "paths": {
@@ -28423,6 +28423,12 @@
                 "description": "The database name.",
                 "example": "postgres"
               },
+              "delete_capture_enabled": {
+                "title": "",
+                "type": "boolean",
+                "description": "",
+                "example": true
+              },
               "entra_app_id": {
                 "title": "",
                 "type": "string",
@@ -28490,10 +28496,9 @@
                 "title": "",
                 "type": "object",
                 "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.<br>`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
-                "example": "XMIN | TELEPORT | WAL_PGOUTPUT",
+                "example": "QUERY_BASED | WAL_PGOUTPUT",
                 "enum": [
-                  "XMIN",
-                  "TELEPORT",
+                  "QUERY_BASED",
                   "WAL_PGOUTPUT"
                 ]
               },
@@ -30106,6 +30111,12 @@
                 "description": "The database name.",
                 "example": "postgres"
               },
+              "delete_capture_enabled": {
+                "title": "",
+                "type": "boolean",
+                "description": "",
+                "example": true
+              },
               "entra_app_id": {
                 "title": "",
                 "type": "string",
@@ -30173,10 +30184,9 @@
                 "title": "",
                 "type": "object",
                 "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.<br>`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
-                "example": "XMIN | TELEPORT | WAL_PGOUTPUT",
+                "example": "QUERY_BASED | WAL_PGOUTPUT",
                 "enum": [
-                  "XMIN",
-                  "TELEPORT",
+                  "QUERY_BASED",
                   "WAL_PGOUTPUT"
                 ]
               },
@@ -45116,6 +45126,12 @@
                 "description": "The database name.",
                 "example": "postgres"
               },
+              "delete_capture_enabled": {
+                "title": "",
+                "type": "boolean",
+                "description": "",
+                "example": true
+              },
               "entra_app_id": {
                 "title": "",
                 "type": "string",
@@ -45183,10 +45199,9 @@
                 "title": "",
                 "type": "object",
                 "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.<br>`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
-                "example": "XMIN | TELEPORT | WAL_PGOUTPUT",
+                "example": "QUERY_BASED | WAL_PGOUTPUT",
                 "enum": [
-                  "XMIN",
-                  "TELEPORT",
+                  "QUERY_BASED",
                   "WAL_PGOUTPUT"
                 ]
               },
@@ -47361,6 +47376,12 @@
                 "description": "The database name.",
                 "example": "postgres"
               },
+              "delete_capture_enabled": {
+                "title": "",
+                "type": "boolean",
+                "description": "",
+                "example": true
+              },
               "entra_app_id": {
                 "title": "",
                 "type": "string",
@@ -47428,10 +47449,9 @@
                 "title": "",
                 "type": "object",
                 "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.<br>`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
-                "example": "XMIN | TELEPORT",
+                "example": "QUERY_BASED",
                 "enum": [
-                  "XMIN",
-                  "TELEPORT"
+                  "QUERY_BASED"
                 ]
               },
               "user": {
@@ -59167,6 +59187,12 @@
                 "description": "The database name.",
                 "example": "postgres"
               },
+              "delete_capture_enabled": {
+                "title": "",
+                "type": "boolean",
+                "description": "",
+                "example": true
+              },
               "entra_app_id": {
                 "title": "",
                 "type": "string",
@@ -59234,10 +59260,9 @@
                 "title": "",
                 "type": "object",
                 "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the  write-ahead log (WAL) using a logical slot.This is more efficient than the query-based method, but requires more setup and monitoring.<br>`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
-                "example": "XMIN | TELEPORT | WAL_PGOUTPUT",
+                "example": "QUERY_BASED | WAL_PGOUTPUT",
                 "enum": [
-                  "XMIN",
-                  "TELEPORT",
+                  "QUERY_BASED",
                   "WAL_PGOUTPUT"
                 ]
               },
@@ -59319,6 +59344,12 @@
                 "description": "The database name.",
                 "example": "postgres"
               },
+              "delete_capture_enabled": {
+                "title": "",
+                "type": "boolean",
+                "description": "",
+                "example": true
+              },
               "entra_app_id": {
                 "title": "",
                 "type": "string",
@@ -59386,10 +59417,9 @@
                 "title": "",
                 "type": "object",
                 "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.<br>`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
-                "example": "XMIN | TELEPORT | WAL_PGOUTPUT",
+                "example": "QUERY_BASED | WAL_PGOUTPUT",
                 "enum": [
-                  "XMIN",
-                  "TELEPORT",
+                  "QUERY_BASED",
                   "WAL_PGOUTPUT"
                 ]
               },

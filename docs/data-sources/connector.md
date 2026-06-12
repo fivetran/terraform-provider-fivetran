@@ -1755,6 +1755,7 @@ Read-Only:
 	- Service `myosh`: Your Myosh Server variables/db .
 - `default_host` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `discourse`: Your Discourse default host.
+- `delete_capture_enabled` (Boolean)
 - `delete_capture_frequency` (String) Field usage depends on `service` value: 
 	- Service `oracle_fusion_cloud_apps_crm`: Use this option to configure how often the connection captures deletes.
 	- Service `oracle_fusion_cloud_apps_fscm`: Use this option to configure how often the connection captures deletes.
