@@ -13,9 +13,9 @@ func DestinationAttributesSchema() core.Schema {
 	return core.Schema{
 		Fields: map[string]core.SchemaField{
 			"id": {
-				IsId:        	true,
-				ValueType:   	core.String,
-				Description: 	"The unique identifier for the destination within the Fivetran system.",
+				IsId:        true,
+				ValueType:   core.String,
+				Description: "The unique identifier for the destination within the Fivetran system.",
 			},
 			"group_id": {
 				Required:    true,
@@ -30,9 +30,10 @@ func DestinationAttributesSchema() core.Schema {
 				Description: "The destination type id within the Fivetran system.",
 			},
 			"region": {
-				Required:    true,
-				ValueType:   core.String,
-				Description: "Data processing location. This is where Fivetran will operate and run computation on data.",
+				Computed:           true,
+				UseStateForUnknown: true,
+				ValueType:          core.String,
+				Description:        "Data processing location. This is where Fivetran will operate and run computation on data.",
 			},
 			"time_zone_offset": {
 				Required:    true,
@@ -72,8 +73,8 @@ func DestinationAttributesSchema() core.Schema {
 				Description: "The hybrid deployment agent ID that refers to the controller created for the group the connection belongs to. If the value is specified, the system will try to associate the connection with an existing agent.",
 			},
 			"networking_method": {
-				ValueType:   	core.StringEnum,
-				Description: 	"Possible values: Directly, SshTunnel, ProxyAgent, PrivateLink.",
+				ValueType:   core.StringEnum,
+				Description: "Possible values: Directly, SshTunnel, ProxyAgent, PrivateLink.",
 			},
 			"proxy_agent_id": {
 				ValueType:   core.String,

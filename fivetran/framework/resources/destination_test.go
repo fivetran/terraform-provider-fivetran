@@ -2,6 +2,7 @@ package resources_test
 
 import (
 	"net/http"
+	"regexp"
 	"strconv"
 	"testing"
 	"time"
@@ -145,7 +146,7 @@ func TestReadonlyFieldSetMock(t *testing.T) {
 	)
 }
 
-func TestResourceMDLSDestinationMock(t *testing.T){ 
+func TestResourceMDLSDestinationMock(t *testing.T) {
 	var getDestinationResponse map[string]interface{}
 	var postDestinationResponse map[string]interface{}
 	var testDestinationData map[string]interface{}
@@ -249,7 +250,7 @@ func TestResourceMDLSDestinationMock(t *testing.T){
 				destinationPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/destinations").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 
-						testDestinationData = postDestinationResponse 
+						testDestinationData = postDestinationResponse
 						return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", postDestinationResponse), nil
 					},
 				)
@@ -341,10 +342,10 @@ func TestResourceMDLSDestinationMock(t *testing.T){
 						resource "fivetran_destination" "mydestination"  {
 							provider = fivetran-provider
 						}`,
-					ImportState:            true,
-					ResourceName:            "fivetran_destination.mydestination",
-					ImportStateId:  "group_id",
-					
+					ImportState:   true,
+					ResourceName:  "fivetran_destination.mydestination",
+					ImportStateId: "group_id",
+
 					ImportStateCheck: tfmock.ComposeImportStateCheck(
 						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "id", "group_id"),
 						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "group_id", "group_id"),
@@ -407,11 +408,11 @@ func TestResourceMDLSDestinationMock(t *testing.T){
 							#connection_type= "PRIVATE_LINK"
 						}
 					}`,
-					ImportState:            true,
-					ImportStatePersist: 	true,
-					ResourceName:            "fivetran_destination.mydestination",
-					ImportStateId:  "group_id",
-					
+					ImportState:        true,
+					ImportStatePersist: true,
+					ResourceName:       "fivetran_destination.mydestination",
+					ImportStateId:      "group_id",
+
 					ImportStateCheck: tfmock.ComposeImportStateCheck(
 						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "id", "group_id"),
 						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "group_id", "group_id"),
@@ -431,7 +432,7 @@ func TestResourceMDLSDestinationMock(t *testing.T){
 						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.auth_type", "OAUTH2"),
 						tfmock.CheckImportResourceAttr("fivetran_destination", "group_id", "config.databricks_connection_type", "DIRECTLY"),
 					),
-				},			
+				},
 			},
 		},
 	)
@@ -712,11 +713,11 @@ func TestResourceDestinationSetupTests(t *testing.T) {
 	var deleteHandler *mock.Handler
 
 	resetCountersFunc := func() {
-			postHandler.Interactions = 0
-			getHandler.Interactions = 0
-			testHandler.Interactions = 0
-			deleteHandler.Interactions = 0
-		};
+		postHandler.Interactions = 0
+		getHandler.Interactions = 0
+		testHandler.Interactions = 0
+		deleteHandler.Interactions = 0
+	}
 
 	step1 := resource.TestStep{
 		Config: `
@@ -933,11 +934,11 @@ func TestResourceDestinationPrivateLinkAndSetupTests(t *testing.T) {
 	var deleteHandler *mock.Handler
 
 	resetCountersFunc := func() {
-			postHandler.Interactions = 0
-			getHandler.Interactions = 0
-			testHandler.Interactions = 0
-			deleteHandler.Interactions = 0
-		};
+		postHandler.Interactions = 0
+		getHandler.Interactions = 0
+		testHandler.Interactions = 0
+		deleteHandler.Interactions = 0
+	}
 
 	step1 := resource.TestStep{
 		Config: `
@@ -1007,7 +1008,7 @@ func TestResourceDestinationPrivateLinkAndSetupTests(t *testing.T) {
 			func(s *terraform.State) error {
 				tfmock.AssertEqual(t, postHandler.Interactions, 0)
 				tfmock.AssertEqual(t, testHandler.Interactions, 1)
-				tfmock.AssertEqual(t, getHandler.Interactions,2)
+				tfmock.AssertEqual(t, getHandler.Interactions, 2)
 				tfmock.AssertEqual(t, deleteHandler.Interactions, 0)
 				resetCountersFunc()
 				return nil
@@ -1530,8 +1531,8 @@ func TestNetworkingMethodNullMock(t *testing.T) {
 
 				config {
 					project_id = "project_id1"
-        			support_json_type = true
-        			data_set_location = "US"
+					support_json_type = true
+					data_set_location = "US"
 				}
 			}`,
 	}
@@ -1548,8 +1549,8 @@ func TestNetworkingMethodNullMock(t *testing.T) {
 
 				config {
 					project_id = "project_id1"
-        			support_json_type = true
-        			data_set_location = "US"
+					support_json_type = true
+					data_set_location = "US"
 				}
 			}`,
 	}
@@ -1637,6 +1638,140 @@ func TestNetworkingMethodNullMock(t *testing.T) {
 			Steps: []resource.TestStep{
 				step1,
 				step2,
+			},
+		},
+	)
+}
+
+func TestResourceHybridDeploymentDestinationWithoutRegionMock(t *testing.T) {
+	var testDestinationData map[string]interface{}
+	var destinationPostHandler *mock.Handler
+	var destinationDeleteHandler *mock.Handler
+
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_destination" "mydestination" {
+				provider = fivetran-provider
+				group_id = "group_id"
+				service = "big_query"
+				time_zone_offset = "0"
+				hybrid_deployment_agent_id = "agent_id"
+				run_setup_tests = "false"
+
+				config {
+					project_id = "project_id1"
+					support_json_type = true
+					data_set_location = "US"
+				}
+			}`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, destinationPostHandler.Interactions, 1)
+				tfmock.AssertNotEmpty(t, testDestinationData)
+				return nil
+			},
+			resource.TestCheckNoResourceAttr("fivetran_destination.mydestination", "region"),
+			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "hybrid_deployment_agent_id", "agent_id"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				tfmock.MockClient().Reset()
+
+				tfmock.MockClient().When(http.MethodGet, "/v1/destinations/group_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", testDestinationData), nil
+					},
+				)
+
+				destinationPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/destinations").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						body := tfmock.RequestBodyToJson(t, req)
+
+						tfmock.AssertKeyDoesNotExist(t, body, "region")
+						tfmock.AssertKeyExistsAndHasValue(t, body, "hybrid_deployment_agent_id", "agent_id")
+
+						body["id"] = "group_id"
+						body["setup_status"] = "connected"
+						body["daylight_saving_time_enabled"] = false
+
+						testDestinationData = body
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", testDestinationData), nil
+					},
+				)
+
+				destinationDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/destinations/group_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						testDestinationData = nil
+						response := tfmock.FivetranSuccessResponse(t, req, 200,
+							"Destination with id 'destination_id' has been deleted", nil)
+						return response, nil
+					},
+				)
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, destinationDeleteHandler.Interactions, 1)
+				tfmock.AssertEmpty(t, testDestinationData)
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
+			},
+		},
+	)
+}
+
+func TestResourceDestinationExplicitEmptyRegionMock(t *testing.T) {
+	var destinationPostHandler *mock.Handler
+
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_destination" "mydestination" {
+				provider = fivetran-provider
+				group_id = "group_id"
+				service = "big_query"
+				region = ""
+				time_zone_offset = "0"
+				run_setup_tests = "false"
+
+				config {
+					project_id = "project_id1"
+					support_json_type = true
+					data_set_location = "US"
+				}
+			}`,
+		ExpectError: regexp.MustCompile("Unable to Create Destination Resource."),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				tfmock.MockClient().Reset()
+
+				destinationPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/destinations").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						body := tfmock.RequestBodyToJson(t, req)
+
+						tfmock.AssertKeyExistsAndHasValue(t, body, "region", "")
+
+						return mock.NewResponse(req, http.StatusBadRequest, `{"code":"InvalidInput","message":"region cannot be empty"}`), nil
+					},
+				)
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, destinationPostHandler.Interactions, 1)
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
 			},
 		},
 	)

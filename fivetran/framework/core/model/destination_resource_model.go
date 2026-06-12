@@ -21,7 +21,7 @@ type DestinationResourceModel struct {
 	HybridDeploymentAgentId   types.String   `tfsdk:"hybrid_deployment_agent_id"`
 	NetworkingMethod          types.String   `tfsdk:"networking_method"`
 	PrivateLinkId             types.String   `tfsdk:"private_link_id"`
-	ProxyAgentId			  types.String   `tfsdk:"proxy_agent_id"`
+	ProxyAgentId              types.String   `tfsdk:"proxy_agent_id"`
 
 	RunSetupTests     types.Bool `tfsdk:"run_setup_tests"`
 	TrustCertificates types.Bool `tfsdk:"trust_certificates"`
@@ -40,7 +40,11 @@ func (d *DestinationResourceModel) SetService(value string) {
 	d.Service = types.StringValue(value)
 }
 func (d *DestinationResourceModel) SetRegion(value string) {
-	d.Region = types.StringValue(value)
+	if value != "" {
+		d.Region = types.StringValue(value)
+	} else {
+		d.Region = types.StringNull()
+	}
 }
 func (d *DestinationResourceModel) SetTimeZonOffset(value string) {
 	d.TimeZoneOffset = types.StringValue(value)
@@ -141,10 +145,12 @@ func (d *DestinationResourceModel) HasUpdates(plan DestinationResourceModel, sta
 
 	patch := PrepareConfigAuthPatch(stateConfigMap, planConfigMap, plan.Service.ValueString(), common.GetConfigFieldsMap())
 
+	regionChanged := !plan.Region.IsNull() && !plan.Region.IsUnknown() && !plan.Region.Equal(state.Region)
+
 	if len(patch) > 0 ||
 		!plan.TimeZoneOffset.Equal(state.TimeZoneOffset) ||
 		!plan.DaylightSavingTimeEnabled.Equal(state.DaylightSavingTimeEnabled) ||
-		!plan.Region.Equal(state.Region) ||
+		regionChanged ||
 		!plan.HybridDeploymentAgentId.Equal(state.HybridDeploymentAgentId) ||
 		!plan.NetworkingMethod.Equal(state.NetworkingMethod) ||
 		!plan.PrivateLinkId.Equal(state.PrivateLinkId) ||

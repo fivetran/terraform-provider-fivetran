@@ -14,8 +14,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	datasourceSchema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -86,17 +86,19 @@ const (
 type SchemaField struct {
 	ValueType FieldValueType
 
-	IsId           bool
-	Required       bool
-	ForceNew       bool
-	DatasourceOnly bool
-	ResourceOnly   bool
-	Sensitive      bool
+	IsId               bool
+	Required           bool
+	Computed           bool
+	ForceNew           bool
+	DatasourceOnly     bool
+	ResourceOnly       bool
+	Sensitive          bool
+	UseStateForUnknown bool
 
 	DeprecationMessage string
-	DefaultString string
-	Readonly    bool
-	Description string
+	DefaultString      string
+	Readonly           bool
+	Description        string
 }
 
 type Schema struct {
@@ -231,17 +233,22 @@ func (s SchemaField) getResourceSchemaAttribute() resourceSchema.Attribute {
 	var result resourceSchema.Attribute
 	switch s.ValueType {
 	case StringEnum:
+		var planModifiers []planmodifier.String
 		var stringAttribute = resourceSchema.StringAttribute{
 			Required:    s.Required,
-			Computed:    !s.Required || s.Readonly || (s.IsId && !s.Required),
+			Computed:    s.Computed || !s.Required || s.Readonly || (s.IsId && !s.Required),
 			Optional:    !s.Required && !s.Readonly && !s.IsId,
 			Description: s.Description,
 			Sensitive:   s.Sensitive,
 		}
 		if s.ForceNew {
-			stringAttribute.PlanModifiers = []planmodifier.String{
-				stringplanmodifier.RequiresReplace(),
-			}
+			planModifiers = append(planModifiers, stringplanmodifier.RequiresReplace())
+		}
+		if s.UseStateForUnknown {
+			planModifiers = append(planModifiers, stringplanmodifier.UseStateForUnknown())
+		}
+		if len(planModifiers) > 0 {
+			stringAttribute.PlanModifiers = planModifiers
 		}
 		if s.DefaultString != "" {
 			stringAttribute.Default = stringdefault.StaticString(s.DefaultString)
@@ -251,17 +258,22 @@ func (s SchemaField) getResourceSchemaAttribute() resourceSchema.Attribute {
 		}
 		result = stringAttribute
 	case String:
+		var planModifiers []planmodifier.String
 		var stringAttribute = resourceSchema.StringAttribute{
 			Required:    s.Required,
-			Computed:    s.Readonly || (s.IsId && !s.Required),
+			Computed:    s.Computed || s.Readonly || (s.IsId && !s.Required),
 			Optional:    !s.Required && !s.Readonly && !s.IsId,
 			Description: s.Description,
 			Sensitive:   s.Sensitive,
 		}
 		if s.ForceNew {
-			stringAttribute.PlanModifiers = []planmodifier.String{
-				stringplanmodifier.RequiresReplace(),
-			}
+			planModifiers = append(planModifiers, stringplanmodifier.RequiresReplace())
+		}
+		if s.UseStateForUnknown {
+			planModifiers = append(planModifiers, stringplanmodifier.UseStateForUnknown())
+		}
+		if len(planModifiers) > 0 {
+			stringAttribute.PlanModifiers = planModifiers
 		}
 		if s.DefaultString != "" {
 			stringAttribute.Default = stringdefault.StaticString(s.DefaultString)
