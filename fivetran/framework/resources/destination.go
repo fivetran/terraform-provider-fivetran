@@ -69,10 +69,11 @@ func (r *destination) Create(ctx context.Context, req resource.CreateRequest, re
 
 		return
 	}
-	var data model.DestinationResourceModel
+	var data, config model.DestinationResourceModel
 
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -96,13 +97,16 @@ func (r *destination) Create(ctx context.Context, req resource.CreateRequest, re
 	svc := r.GetClient().NewDestinationCreate().
 		Service(data.Service.ValueString()).
 		GroupID(data.GroupId.ValueString()).
-		Region(data.Region.ValueString()).
 		TimeZoneOffset(data.TimeZoneOffset.ValueString()).
 		RunSetupTests(runSetupTestsPlan).
 		TrustCertificates(trustCertificatesPlan).
 		TrustFingerprints(trustFingerprintsPlan).
 		DaylightSavingTimeEnabled(daylightSavingTimeEnabledPlan).
 		ConfigCustom(&configMap)
+
+	if region, ok := configuredStringValue(config.Region); ok {
+		svc.Region(region)
+	}
 
 	if data.HybridDeploymentAgentId.ValueString() != "" {
 		svc.HybridDeploymentAgentId(data.HybridDeploymentAgentId.ValueString())
@@ -260,10 +264,15 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 		return
 	}
 
-	var plan, state model.DestinationResourceModel
+	var plan, state, config model.DestinationResourceModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	runSetupTestsPlan := core.GetBoolOrDefault(plan.RunSetupTests, true)
 	trustCertificatesPlan := core.GetBoolOrDefault(plan.TrustCertificates, false)
@@ -276,43 +285,47 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 	daylightSavingTimeEnabledState := core.GetBoolOrDefault(state.DaylightSavingTimeEnabled, false)
 
 	hasUpdates, patch, err := plan.HasUpdates(plan, state)
-    if err != nil {
-        resp.Diagnostics.AddError(
-            "Unable to Update Destination Resource.",
-            fmt.Sprintf("%v; ", err),
-        )
-    }
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to Update Destination Resource.",
+			fmt.Sprintf("%v; ", err),
+		)
+		return
+	}
 
 	updatePerformed := false
 	if hasUpdates {
 		svc := r.GetClient().NewDestinationUpdate().
-				RunSetupTests(runSetupTestsPlan).
-				TrustCertificates(trustCertificatesPlan).
-				TrustFingerprints(trustFingerprintsPlan).
-				Region(plan.Region.ValueString()).
-				DestinationID(state.Id.ValueString())
+			RunSetupTests(runSetupTestsPlan).
+			TrustCertificates(trustCertificatesPlan).
+			TrustFingerprints(trustFingerprintsPlan).
+			DestinationID(state.Id.ValueString())
 
-		if (!plan.TimeZoneOffset.Equal(state.TimeZoneOffset)) {
+		if region, ok := configuredStringValue(config.Region); ok {
+			svc.Region(region)
+		}
+
+		if !plan.TimeZoneOffset.Equal(state.TimeZoneOffset) {
 			svc.TimeZoneOffset(plan.TimeZoneOffset.ValueString())
 		}
 
-		if (daylightSavingTimeEnabledPlan != daylightSavingTimeEnabledState) {
+		if daylightSavingTimeEnabledPlan != daylightSavingTimeEnabledState {
 			svc.DaylightSavingTimeEnabled(daylightSavingTimeEnabledPlan)
 		}
 
-		if (!plan.HybridDeploymentAgentId.IsUnknown() && !plan.HybridDeploymentAgentId.Equal(state.HybridDeploymentAgentId)) {
+		if !plan.HybridDeploymentAgentId.IsUnknown() && !plan.HybridDeploymentAgentId.Equal(state.HybridDeploymentAgentId) {
 			svc.HybridDeploymentAgentId(plan.HybridDeploymentAgentId.ValueString())
 		}
 
-		if (!plan.NetworkingMethod.IsUnknown() && !plan.NetworkingMethod.Equal(state.NetworkingMethod)) {
+		if !plan.NetworkingMethod.IsUnknown() && !plan.NetworkingMethod.Equal(state.NetworkingMethod) {
 			svc.NetworkingMethod(plan.NetworkingMethod.ValueString())
 		}
 
-		if (!plan.PrivateLinkId.IsUnknown() && !plan.PrivateLinkId.Equal(state.PrivateLinkId)) {
+		if !plan.PrivateLinkId.IsUnknown() && !plan.PrivateLinkId.Equal(state.PrivateLinkId) {
 			svc.PrivateLinkId(plan.PrivateLinkId.ValueString())
 		}
 
-		if (!plan.ProxyAgentId.IsUnknown() && !plan.ProxyAgentId.Equal(state.ProxyAgentId)) {
+		if !plan.ProxyAgentId.IsUnknown() && !plan.ProxyAgentId.Equal(state.ProxyAgentId) {
 			svc.ProxyAgentId(plan.ProxyAgentId.ValueString())
 		}
 
@@ -329,7 +342,7 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 			)
 			return
 		}
-		
+
 		updatePerformed = true
 		plan.ReadFromResponseWithTests(response)
 		// Preserve plan-only attributes after reading API response
@@ -386,10 +399,10 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 			return
 		}
 		plan.ReadFromResponse(response, false)
-		
+
 		// there were no changes in config so we can just copy it from state
 		plan.Config = state.Config
-		
+
 		// Preserve plan-only attributes after reading API response
 		plan.RunSetupTests = types.BoolValue(runSetupTestsPlan)
 		plan.TrustCertificates = types.BoolValue(trustCertificatesPlan)
@@ -408,6 +421,14 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+}
+
+func configuredStringValue(value types.String) (string, bool) {
+	if value.IsNull() || value.IsUnknown() || value.ValueString() == "" {
+		return "", false
+	}
+
+	return value.ValueString(), true
 }
 
 func (r *destination) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

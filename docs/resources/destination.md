@@ -40,7 +40,6 @@ resource "fivetran_destination" "dest" {
 ### Required
 
 - `group_id` (String) The unique identifier for the Group within the Fivetran system.
-- `region` (String) Data processing location. This is where Fivetran will operate and run computation on data.
 - `service` (String) The destination type id within the Fivetran system.
 - `time_zone_offset` (String) Determines the time zone for the Fivetran sync schedule.
 
@@ -52,6 +51,7 @@ resource "fivetran_destination" "dest" {
 - `networking_method` (String) Possible values: Directly, SshTunnel, ProxyAgent, PrivateLink.
 - `private_link_id` (String) The private link ID.
 - `proxy_agent_id` (String) The proxy agent ID.
+- `region` (String) Data processing location. This is where Fivetran will operate and run computation on data.
 - `run_setup_tests` (Boolean) Specifies whether the setup tests should be run automatically. The default value is TRUE.
 - `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 - `trust_certificates` (Boolean) Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).

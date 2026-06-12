@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.33...HEAD)
 
+### Fixed
+- `fivetran_destination`: make top-level `region` optional and omit it from API requests unless configured.
+
 ## [v1.9.33](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.33...v1.9.32)
 
 ### Fixed
