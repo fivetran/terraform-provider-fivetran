@@ -143,10 +143,6 @@ Optional:
 	- Service `amazon_selling_partner`: `Application ID` of the public application registered in the Amazon Selling Partner Appstore that you want to use for authentication of your connection. Use this parameter along with `Client ID` and `Client Secret` only if you want to use your own public application for authorisation via Connect Card.
 - `authentication_method` (String) Field usage depends on `service` value: 
 	- Service `google_play`: Authentication Method
-- `aws_access_key` (String) Field usage depends on `service` value: 
-	- Service `amazon_selling_partner`: `AWS Access Key` of your AWS Account User.
-- `aws_secret_key` (String) Field usage depends on `service` value: 
-	- Service `amazon_selling_partner`: `AWS Secret Key` of your AWS Account User.
 - `client_access` (Block, Optional) (see [below for nested schema](#nestedblock--auth--client_access))
 - `client_id` (String) Field usage depends on `service` value: 
 	- Service `amazon_selling_partner`: `Client ID` of your Amazon Seller/Vendor Central client application.
@@ -196,8 +192,6 @@ Optional:
 	- Service `twitter_ads`: The X App access token secret.
 - `ocapi_access_token` (String, Sensitive)
 - `ocapi_refresh_token` (String, Sensitive)
-- `previous_refresh_token` (String, Sensitive) Field usage depends on `service` value: 
-	- Service `dynamics_365`: Previous `Refresh token` of your application.
 - `realm_id` (String) Field usage depends on `service` value: 
 	- Service `quickbooks`: `Realm ID` of your QuickBooks application.
 - `refresh_token` (String, Sensitive) Field usage depends on `service` value: 
@@ -222,15 +216,12 @@ Optional:
 	- Service `dropbox`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `dynamics_365`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `employment_hero`: Your Employment Hero refresh token.
-	- Service `financial_force`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `freshbooks`: Your FreshBooks Refresh Token.
 	- Service `front`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `gitlab`: Your GitLab refresh token.
 	- Service `gmail`: The long-lived `Refresh token` of your Gmail client application.
 	- Service `google_ads`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
-	- Service `google_analytics`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `google_analytics_4`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
-	- Service `google_analytics_mcf`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `google_business_profile`: Your Google Business Profile Refresh token.
 	- Service `google_calendar`: Your Google Calendar refresh token.
 	- Service `google_classroom`: The long-lived `Refresh token` of your Google Calendar client application.
@@ -260,7 +251,6 @@ Optional:
 	- Service `salesforce_sandbox`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `salesloft`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `share_point`: The long-lived Refresh token carries the information necessary to get a new access token for API resources.
-	- Service `slack`: Your Slack refresh token.
 	- Service `snapchat_ads`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `spotify_ads`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `tiktok_organic_app`: Your TikTok Organic refresh token.
@@ -271,8 +261,6 @@ Optional:
 	- Service `youtube_analytics`: The long-lived `Refresh token` along with the `client_id` and `client_secret` parameters carry the information necessary to get a new access token for API resources.
 	- Service `zoho_crm`: The long-lived `Refresh token`, along with the `client_id` and `client_secret` parameters, carries the information necessary to get a new access token for API resources.
 	- Service `zoom`: Your Zoom Refresh token.
-- `role_arn` (String) Field usage depends on `service` value: 
-	- Service `amazon_selling_partner`: `IAM Role ARN` of your AWS Account.
 - `service_principal_client_cert_pvt_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `azure_sql_db`: Contents of Service Principal Client Certificate Private Key.
 	- Service `azure_sql_managed_db`: Contents of Service Principal Client Certificate Private Key.
@@ -319,13 +307,10 @@ Optional:
 	- Service `dynamics_365`: Client ID of your Dynamics 365 client application, or service principal.
 	- Service `facebook_ads`: `Client ID` of your Facebook client application.
 	- Service `facebook_pages`: `Client ID` of your Facebook  client application.
-	- Service `financial_force`: `Client ID` of your Salesforce client application.
 	- Service `front`: `Client ID` of your Front client application.
 	- Service `gmail`: `Client ID` of your Gmail client application.
 	- Service `google_ads`: `Client ID` of your Google Ads client application.
-	- Service `google_analytics`: `Client ID` of your Google Analytics client application.
 	- Service `google_analytics_4`: `Client ID` of your Google Analytics client application.
-	- Service `google_analytics_mcf`: `Client ID` of your Google Analytics client application.
 	- Service `google_display_and_video_360`: `Client ID` of your Google Display & Video 360 client application.
 	- Service `google_play`: `Client ID` of your Google Play client application.
 	- Service `google_search_ads_360`: `Client ID` of your Google Search Ads 360 client application.
@@ -376,13 +361,10 @@ Optional:
 	- Service `dynamics_365`: Client Secret of your Dynamics 365 client application, or service principal.
 	- Service `facebook_ads`: `Client Secret` of your Facebook client application.
 	- Service `facebook_pages`: `Client Secret` of your Facebook client application.
-	- Service `financial_force`: `Client Secret` of your Salesforce client application.
 	- Service `front`: `Client Secret` of your Front client application.
 	- Service `gmail`: `Client Secret` of your Gmail client application.
 	- Service `google_ads`: `Client Secret` of your Google Ads client application.
-	- Service `google_analytics`: `Client Secret` of your Google Analytics client application.
 	- Service `google_analytics_4`: `Client Secret` of your Google Analytics client application.
-	- Service `google_analytics_mcf`: `Client Secret` of your Google Analytics client application.
 	- Service `google_display_and_video_360`: `Client Secret` of your Google Display & Video 360 client application.
 	- Service `google_play`: `Client Secret` of your Google Play client application.
 	- Service `google_search_ads_360`: `Client Secret` of your Google Search Ads 360 client application.
@@ -1457,7 +1439,11 @@ Optional:
 - `campaign_query_lookback_window_in_days` (Number) Field usage depends on `service` value: 
 	- Service `sailthru`: The number of days to look back for campaign query data during incremental syncs. Valid range: 2-90. Default: 60.
 - `capture_deletes` (Boolean) Field usage depends on `service` value: 
+	- Service `elastic_cloud`: Whether to capture hard deletes, meaning source documents removed from the index. Set to false to skip hard-delete detection, which may improve connector performance for sources that do not hard-delete documents. This does not affect source-level soft-delete fields; those fields sync as ordinary document updates. If you re-enable delete capture later, resync the affected tables to rebuild an accurate delete baseline. Default value: true.
+	- Service `es_self_hosted`: Whether to capture hard deletes, meaning source documents removed from the index. Set to false to skip hard-delete detection, which may improve connector performance for sources that do not hard-delete documents. This does not affect source-level soft-delete fields; those fields sync as ordinary document updates. If you re-enable delete capture later, resync the affected tables to rebuild an accurate delete baseline. Default value: true.
 	- Service `firebase`: Whether to capture document deletions from Firestore. Set to false to disable delete capture, which may improve connector performance. Default value: true.
+	- Service `opendistro`: Whether to capture hard deletes, meaning source documents removed from the index. Set to false to skip hard-delete detection, which may improve connector performance for sources that do not hard-delete documents. This does not affect source-level soft-delete fields; those fields sync as ordinary document updates. If you re-enable delete capture later, resync the affected tables to rebuild an accurate delete baseline. Default value: true.
+	- Service `opensearch`: Whether to capture hard deletes, meaning source documents removed from the index. Set to false to skip hard-delete detection, which may improve connector performance for sources that do not hard-delete documents. This does not affect source-level soft-delete fields; those fields sync as ordinary document updates. If you re-enable delete capture later, resync the affected tables to rebuild an accurate delete baseline. Default value: true.
 - `catalog` (String) Field usage depends on `service` value: 
 	- Service `databricks_db`: catalog to sync
 - `certificate` (String, Sensitive) Field usage depends on `service` value: 
@@ -4691,6 +4677,8 @@ Optional:
 	- Service `linkedin_ads`: The time period to attribute conversions based on views. Default value: `DAY_7`
 - `web_service_api_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `adyen`: Your Adyen Web Service API key.
+- `webhook_auth_type` (String) Field usage depends on `service` value: 
+	- Service `iterable`: The authentication method for the Iterable webhook. Accepted values: `NoAuth`, `Basic`, `OAuth2`.
 - `webhook_endpoint` (String) Field usage depends on `service` value: 
 	- Service `appsflyer`: Webhook Url
 - `webhook_key` (String) Field usage depends on `service` value: 
@@ -4910,14 +4898,16 @@ Optional:
 	- Service `facebook_ads`: The report time of action stats. [Possible action_report time values](https://fivetran.com/docs/connectors/applications/facebook-ads#actionreporttime).
 - `aggregation` (String) Field usage depends on `service` value: 
 	- Service `facebook_ads`: Options to select aggregation duration. [Possible aggregation values](https://fivetran.com/docs/connectors/applications/facebook-ads#aggregation).
+- `attribution_windows` (Set of String) Field usage depends on `service` value: 
+	- Service `facebook_ads`: List of attribution windows passed as Meta's `action_attribution_windows` query parameter. Default: `CLICK_7D`, `VIEW_1D`, `INCREMENTALITY`. Possible values: `CLICK_1D`, `CLICK_7D`, `CLICK_28D`, `VIEW_1D`, `ENGAGED_VIEW_1D`, `INCREMENTALITY`, `INCREMENTALITY_FIRST_CONVERSION`, `INCREMENTALITY_ALL_CONVERSIONS`.
 - `breakdowns` (Set of String) Field usage depends on `service` value: 
 	- Service `facebook_ads`: List of breakdowns which connector will sync. [Possible breakdowns values](https://fivetran.com/docs/connectors/applications/facebook-ads#breakdowns).
 - `click_attribution_window` (String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: Time period to attribute conversions based on clicks. [Possible click_attribution_window values](https://fivetran.com/docs/connectors/applications/facebook-ads#clickattributionwindow).
+	- Service `facebook_ads`: Deprecated. Read-only legacy field used only during migration to `attribution_windows`.
 - `config_type` (String) Field usage depends on `service` value: 
 	- Service `facebook_ads`: Option to select Prebuilt Reports or Custom Reports. [Possible config_type values](https://fivetran.com/docs/connectors/applications/facebook-ads#configtype).
 - `engaged_view_attribution_window` (String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: Time period to attribute conversions based on engaged views. [Possible view_attribution_window values](https://fivetran.com/docs/connectors/applications/facebook-ads#engagedviewattributionwindow).
+	- Service `facebook_ads`: Deprecated. Read-only legacy field used only during migration to `attribution_windows`.
 - `fields` (Set of String) Field usage depends on `service` value: 
 	- Service `facebook_ads`: List of fields which connector will sync. [Possible field values](https://fivetran.com/docs/connectors/applications/facebook-ads#fields).
 - `level` (String)
@@ -4927,7 +4917,7 @@ Optional:
 	- Service `facebook_ads`: The table name within the schema to which the connector will sync the data. It must be unique within the connector and must comply with [Fivetran's naming conventions](https://fivetran.com/docs/getting-started/core-concepts#namingconventions).
 - `use_unified_attribution_setting` (Boolean)
 - `view_attribution_window` (String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: Time period to attribute conversions based on views. [Possible view_attribution_window values](https://fivetran.com/docs/connectors/applications/facebook-ads#viewattributionwindow).
+	- Service `facebook_ads`: Deprecated. Read-only legacy field used only during migration to `attribution_windows`.
 
 
 <a id="nestedblock--config--data_model_path_alias_list"></a>

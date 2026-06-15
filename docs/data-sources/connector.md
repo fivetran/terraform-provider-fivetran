@@ -1084,7 +1084,11 @@ Read-Only:
 - `campaign_query_lookback_window_in_days` (Number) Field usage depends on `service` value: 
 	- Service `sailthru`: The number of days to look back for campaign query data during incremental syncs. Valid range: 2-90. Default: 60.
 - `capture_deletes` (Boolean) Field usage depends on `service` value: 
+	- Service `elastic_cloud`: Whether to capture hard deletes, meaning source documents removed from the index. Set to false to skip hard-delete detection, which may improve connector performance for sources that do not hard-delete documents. This does not affect source-level soft-delete fields; those fields sync as ordinary document updates. If you re-enable delete capture later, resync the affected tables to rebuild an accurate delete baseline. Default value: true.
+	- Service `es_self_hosted`: Whether to capture hard deletes, meaning source documents removed from the index. Set to false to skip hard-delete detection, which may improve connector performance for sources that do not hard-delete documents. This does not affect source-level soft-delete fields; those fields sync as ordinary document updates. If you re-enable delete capture later, resync the affected tables to rebuild an accurate delete baseline. Default value: true.
 	- Service `firebase`: Whether to capture document deletions from Firestore. Set to false to disable delete capture, which may improve connector performance. Default value: true.
+	- Service `opendistro`: Whether to capture hard deletes, meaning source documents removed from the index. Set to false to skip hard-delete detection, which may improve connector performance for sources that do not hard-delete documents. This does not affect source-level soft-delete fields; those fields sync as ordinary document updates. If you re-enable delete capture later, resync the affected tables to rebuild an accurate delete baseline. Default value: true.
+	- Service `opensearch`: Whether to capture hard deletes, meaning source documents removed from the index. Set to false to skip hard-delete detection, which may improve connector performance for sources that do not hard-delete documents. This does not affect source-level soft-delete fields; those fields sync as ordinary document updates. If you re-enable delete capture later, resync the affected tables to rebuild an accurate delete baseline. Default value: true.
 - `catalog` (String) Field usage depends on `service` value: 
 	- Service `databricks_db`: catalog to sync
 - `certificate` (String, Sensitive) Field usage depends on `service` value: 
@@ -4365,6 +4369,8 @@ Read-Only:
 	- Service `linkedin_ads`: The time period to attribute conversions based on views. Default value: `DAY_7`
 - `web_service_api_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `adyen`: Your Adyen Web Service API key.
+- `webhook_auth_type` (String) Field usage depends on `service` value: 
+	- Service `iterable`: The authentication method for the Iterable webhook. Accepted values: `NoAuth`, `Basic`, `OAuth2`.
 - `webhook_endpoint` (String) Field usage depends on `service` value: 
 	- Service `appsflyer`: Webhook Url
 - `webhook_key` (String) Field usage depends on `service` value: 
@@ -4575,14 +4581,16 @@ Read-Only:
 	- Service `facebook_ads`: The report time of action stats. [Possible action_report time values](https://fivetran.com/docs/connectors/applications/facebook-ads#actionreporttime).
 - `aggregation` (String) Field usage depends on `service` value: 
 	- Service `facebook_ads`: Options to select aggregation duration. [Possible aggregation values](https://fivetran.com/docs/connectors/applications/facebook-ads#aggregation).
+- `attribution_windows` (Set of String) Field usage depends on `service` value: 
+	- Service `facebook_ads`: List of attribution windows passed as Meta's `action_attribution_windows` query parameter. Default: `CLICK_7D`, `VIEW_1D`, `INCREMENTALITY`. Possible values: `CLICK_1D`, `CLICK_7D`, `CLICK_28D`, `VIEW_1D`, `ENGAGED_VIEW_1D`, `INCREMENTALITY`, `INCREMENTALITY_FIRST_CONVERSION`, `INCREMENTALITY_ALL_CONVERSIONS`.
 - `breakdowns` (Set of String) Field usage depends on `service` value: 
 	- Service `facebook_ads`: List of breakdowns which connector will sync. [Possible breakdowns values](https://fivetran.com/docs/connectors/applications/facebook-ads#breakdowns).
 - `click_attribution_window` (String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: Time period to attribute conversions based on clicks. [Possible click_attribution_window values](https://fivetran.com/docs/connectors/applications/facebook-ads#clickattributionwindow).
+	- Service `facebook_ads`: Deprecated. Read-only legacy field used only during migration to `attribution_windows`.
 - `config_type` (String) Field usage depends on `service` value: 
 	- Service `facebook_ads`: Option to select Prebuilt Reports or Custom Reports. [Possible config_type values](https://fivetran.com/docs/connectors/applications/facebook-ads#configtype).
 - `engaged_view_attribution_window` (String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: Time period to attribute conversions based on engaged views. [Possible view_attribution_window values](https://fivetran.com/docs/connectors/applications/facebook-ads#engagedviewattributionwindow).
+	- Service `facebook_ads`: Deprecated. Read-only legacy field used only during migration to `attribution_windows`.
 - `fields` (Set of String) Field usage depends on `service` value: 
 	- Service `facebook_ads`: List of fields which connector will sync. [Possible field values](https://fivetran.com/docs/connectors/applications/facebook-ads#fields).
 - `level` (String)
@@ -4592,7 +4600,7 @@ Read-Only:
 	- Service `facebook_ads`: The table name within the schema to which the connector will sync the data. It must be unique within the connector and must comply with [Fivetran's naming conventions](https://fivetran.com/docs/getting-started/core-concepts#namingconventions).
 - `use_unified_attribution_setting` (Boolean)
 - `view_attribution_window` (String) Field usage depends on `service` value: 
-	- Service `facebook_ads`: Time period to attribute conversions based on views. [Possible view_attribution_window values](https://fivetran.com/docs/connectors/applications/facebook-ads#viewattributionwindow).
+	- Service `facebook_ads`: Deprecated. Read-only legacy field used only during migration to `attribution_windows`.
 
 
 <a id="nestedatt--config--data_model_path_alias_list"></a>
