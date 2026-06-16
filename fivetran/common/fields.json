@@ -3139,7 +3139,11 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "firebase": "Whether to capture document deletions from Firestore. Set to false to disable delete capture, which may improve connector performance. Default value: true."
+         "elastic_cloud": "Whether to capture hard deletes, meaning source documents removed from the index. Set to false to skip hard-delete detection, which may improve connector performance for sources that do not hard-delete documents. This does not affect source-level soft-delete fields; those fields sync as ordinary document updates. If you re-enable delete capture later, resync the affected tables to rebuild an accurate delete baseline. Default value: true.",
+         "es_self_hosted": "Whether to capture hard deletes, meaning source documents removed from the index. Set to false to skip hard-delete detection, which may improve connector performance for sources that do not hard-delete documents. This does not affect source-level soft-delete fields; those fields sync as ordinary document updates. If you re-enable delete capture later, resync the affected tables to rebuild an accurate delete baseline. Default value: true.",
+         "firebase": "Whether to capture document deletions from Firestore. Set to false to disable delete capture, which may improve connector performance. Default value: true.",
+         "opendistro": "Whether to capture hard deletes, meaning source documents removed from the index. Set to false to skip hard-delete detection, which may improve connector performance for sources that do not hard-delete documents. This does not affect source-level soft-delete fields; those fields sync as ordinary document updates. If you re-enable delete capture later, resync the affected tables to rebuild an accurate delete baseline. Default value: true.",
+         "opensearch": "Whether to capture hard deletes, meaning source documents removed from the index. Set to false to skip hard-delete detection, which may improve connector performance for sources that do not hard-delete documents. This does not affect source-level soft-delete fields; those fields sync as ordinary document updates. If you re-enable delete capture later, resync the affected tables to rebuild an accurate delete baseline. Default value: true."
       },
       "api_field": ""
    },
@@ -5017,6 +5021,19 @@
             },
             "api_field": ""
          },
+         "attribution_windows": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string_list",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "facebook_ads": "List of attribution windows passed as Meta's `action_attribution_windows` query parameter. Default: `CLICK_7D`, `VIEW_1D`, `INCREMENTALITY`. Possible values: `CLICK_1D`, `CLICK_7D`, `CLICK_28D`, `VIEW_1D`, `ENGAGED_VIEW_1D`, `INCREMENTALITY`, `INCREMENTALITY_FIRST_CONVERSION`, `INCREMENTALITY_ALL_CONVERSIONS`."
+            },
+            "api_field": ""
+         },
          "breakdowns": {
             "readonly": false,
             "sensitive": false,
@@ -5039,7 +5056,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "facebook_ads": "Time period to attribute conversions based on clicks. [Possible click_attribution_window values](https://fivetran.com/docs/connectors/applications/facebook-ads#clickattributionwindow)."
+               "facebook_ads": "Deprecated. Read-only legacy field used only during migration to `attribution_windows`."
             },
             "api_field": ""
          },
@@ -5065,7 +5082,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "facebook_ads": "Time period to attribute conversions based on engaged views. [Possible view_attribution_window values](https://fivetran.com/docs/connectors/applications/facebook-ads#engagedviewattributionwindow)."
+               "facebook_ads": "Deprecated. Read-only legacy field used only during migration to `attribution_windows`."
             },
             "api_field": ""
          },
@@ -5143,7 +5160,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
-               "facebook_ads": "Time period to attribute conversions based on views. [Possible view_attribution_window values](https://fivetran.com/docs/connectors/applications/facebook-ads#viewattributionwindow)."
+               "facebook_ads": "Deprecated. Read-only legacy field used only during migration to `attribution_windows`."
             },
             "api_field": ""
          }
@@ -5471,6 +5488,24 @@
       "item_type": {},
       "description": {
          "discourse": "Your Discourse default host."
+      },
+      "api_field": ""
+   },
+   "delete_capture_enabled": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "aurora_postgres": "",
+         "azure_postgres": "",
+         "google_cloud_postgresql": "",
+         "heroku_postgres": "",
+         "postgres": "",
+         "postgres_rds": ""
       },
       "api_field": ""
    },
@@ -16371,6 +16406,19 @@
       "item_type": {},
       "description": {
          "adyen": "Your Adyen Web Service API key."
+      },
+      "api_field": ""
+   },
+   "webhook_auth_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "iterable": "The authentication method for the Iterable webhook. Accepted values: `NoAuth`, `Basic`, `OAuth2`."
       },
       "api_field": ""
    },

@@ -5,10 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.33...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.34...HEAD)
+
+## [v1.9.34](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.34...v1.9.33)
 
 ### Fixed
 - `fivetran_destination`: make top-level `region` optional and omit it from API requests unless configured.
+
+### Added
+New connection config fields supported:
+- Added field `fivetran_connector.config.delete_capture_enabled` for services: `aurora_postgres`, `azure_postgres`, `google_cloud_postgresql`, `heroku_postgres`, `postgres`, `postgres_rds`.
 
 ## [v1.9.33](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.33...v1.9.32)
 

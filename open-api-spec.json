@@ -18,11 +18,11 @@
   "tags": [
     {
       "name": "updated",
-      "description": "2026-06-10T12:50:49.107Z"
+      "description": "2026-06-15T04:07:48.133Z"
     },
     {
       "name": "hash",
-      "description": "a058c78149b08eefe211a148eee1186b5a2304fa048338e43732fa6139d4efe8"
+      "description": "22876f24c7426029a290b1c695e341c95bd1e2bb9ff2d59fae54f40979d0ebaf"
     }
   ],
   "paths": {
@@ -306,7 +306,7 @@
           "Connection Management"
         ],
         "summary": "Create a Connection",
-        "description": "Creates a new connection within a specified group in your Fivetran account. Runs setup tests and returns testing results. <br />\n> IMPORTANT: The `destination_schema_names` field will soon become a required field. Make sure to include it in your API requests when creating new connections to prevent future disruptions.",
+        "description": "Creates a new connection within a specified group in your Fivetran account. Runs setup tests and returns testing results.\n\n> IMPORTANT: The `destination_schema_names` field will soon become a required field. Make sure to include it in your API requests when creating new connections to prevent future disruptions.\n\n> IMPORTANT: If you want to get the fingerprint details, do not set `trust_fingerprints` to `true` when you create a connection with our REST API. We can only provide the fingerprint details through the failed SSH Tunnel Connection setup test. For a full walkthrough, see [Get Connection Fingerprint Details](https://fivetran.com/docs/rest-api/tutorials/get-connection-fingerprint-details).\n",
         "operationId": "create_connection",
         "parameters": [
           {
@@ -1342,7 +1342,7 @@
           "Connection Schema Management"
         ],
         "summary": "Retrieve a Connection Schema Config",
-        "description": "\nReturns the top-level schema configuration for an existing connection within your Fivetran account. The response includes global flags, every schema, each table, and only the columns that were explicitly overridden. \n\nUse this endpoint to read the current data-selection tree for a connection, or to copy the configuration to another connection.\n\nFor more information, see the [Connection Schema config](https://fivetran.com/docs/rest-api/tutorials/connection-schema-configuration-use-cases) tutorial.\n\n> Note: Unedited columns (those following table defaults) are omitted from the response. For a real-time, exhaustive column list for a specific table, call the [Retrieve Source Table Columns Config](/docs/rest-api/api-reference/connection-schema/connection-column-config) endpoint. \n\nFor the NetSuite SuiteAnalytics, and Salesforce and Salesforce Sandbox connectors, the 'schemas' map field contains a single entry with the 'netsuite' or 'salesforce' key, respectively. For the 'schema.name_in_destination` name field, these connectors always return the destination schema name you set in the connection setup form.\n\nFor more information on using this API endpoint with the the Oracle Fusion Cloud Applications connectors, see the [Schema information documentation](https://fivetran.com/docs/connectors/applications/oracle-fusion-cloud-applications#schemainformation).\n",
+        "description": "\nReturns the top-level schema configuration for an existing connection within your Fivetran account. The response includes global flags, every schema, each table, and only the columns that were explicitly overridden. \n\nUse this endpoint to read the current data-selection tree for a connection, to back up the schema before making edits, or to copy the configuration to another connection.\n\n> NOTE: To restore a backed-up schema or copy the configuration to another connection, use the [Update a Connection Schema Config](/docs/rest-api/api-reference/connection-schema/modify-connection-schema-config) endpoint.\n\nFor more information, see the [Connection Schema config](https://fivetran.com/docs/rest-api/tutorials/connection-schema-configuration-use-cases) tutorial.\n\n> NOTE: Unedited columns (those following table defaults) are omitted from the response. For a real-time, exhaustive column list for a specific table, call the [Retrieve Source Table Columns Config](/docs/rest-api/api-reference/connection-schema/connection-column-config) endpoint. \n\nFor the NetSuite SuiteAnalytics, and Salesforce and Salesforce Sandbox connectors, the 'schemas' map field contains a single entry with the 'netsuite' or 'salesforce' key, respectively. For the 'schema.name_in_destination` name field, these connectors always return the destination schema name you set in the connection setup form.\n\nFor more information on using this API endpoint with the the Oracle Fusion Cloud Applications connectors, see the [Schema information documentation](https://fivetran.com/docs/connectors/applications/oracle-fusion-cloud-applications#schemainformation).\n\n> IMPORTANT: This endpoint does not apply to [Magic Folder](/docs/connectors/files#magicfolder) connectors.\n",
         "operationId": "connection_schema_config",
         "parameters": [
           {
@@ -1402,7 +1402,7 @@
           "Connection Schema Management"
         ],
         "summary": "Set Up a New Connection Schema Config",
-        "description": "Configures a Connection Schema for a new connection before the schema is captured from the source.\n\n> Note: The response returns the exact settings provided in the request.\n\nAfter the initial sync, when the connection captures the schema from the source, Fivetran attempts to apply the specified settings to the actual schema.\nIf certain tables or columns cannot be excluded, the settings for those entities are ignored.\n",
+        "description": "Configures a Connection Schema for a new connection before the schema is captured from the source.\n\n> NOTE: The response returns the exact settings provided in the request.\n\nAfter the initial sync, when the connection captures the schema from the source, Fivetran attempts to apply the specified settings to the actual schema.\nIf certain tables or columns cannot be excluded, the settings for those entities are ignored.\n",
         "operationId": "pre_create_connection_schema_config",
         "parameters": [
           {
@@ -2199,7 +2199,7 @@
           "Connection Schema Management"
         ],
         "summary": "Retrieve Source Table Columns Config",
-        "description": "Returns the real-time column list for one source table by querying the source. The response includes the current enabled and hashed flags, and the patchable fields. \n\n> Note: This endpoint works only for an existing connection that is in a 'Connected' state.\n",
+        "description": "Returns the real-time column list for one source table by querying the source. The response includes the current enabled and hashed flags, and the patchable fields. \n\n> NOTE: This endpoint works only for an existing connection that is in a 'Connected' state.\n",
         "operationId": "connection_column_config",
         "parameters": [
           {
@@ -2444,7 +2444,7 @@
           "Connection Management"
         ],
         "summary": "Sync Connection Data",
-        "description": "Triggers a data sync for an existing connection within your Fivetran account without waiting for the next scheduled sync. This action does not override the standard sync frequency you defined in the Fivetran dashboard.",
+        "description": "Triggers a data sync for an existing connection within your Fivetran account without waiting for the next scheduled sync. This action does not override the standard sync frequency you defined in the Fivetran dashboard.\n\nWhen `schedule_type` is set to `manual`, this endpoint is the only way syncs occur — including syncs in a `rescheduled` state. For a full walkthrough, see [Trigger Manual Syncs](https://fivetran.com/docs/rest-api/tutorials/trigger-syncs-manually).\n",
         "operationId": "sync_connection",
         "parameters": [
           {
@@ -3122,7 +3122,7 @@
           "Destination Management"
         ],
         "summary": "Create a Destination",
-        "description": "Creates a new destination within a specified group in your Fivetran account. \n\n> IMPORTANT: Groups and destinations are mapped 1:1 to each other. We do this mapping using the group's `id` value that we automatically generate when you create a group, and the destination's `group_id` value that you specify when you create a destination. This means that you must create a group in your Fivetran account before you can create a destination in it.\n",
+        "description": "Creates a new destination within a specified group in your Fivetran account.\n\n> IMPORTANT: Groups and destinations are mapped 1:1 to each other. We do this mapping using the group's `id` value that we automatically generate when you create a group, and the destination's `group_id` value that you specify when you create a destination. This means that you must create a group in your Fivetran account before you can create a destination in it.\n\n> IMPORTANT: If you want to get the certificate details, do not set `trust_certificates` to `true` when you create a destination with our REST API. We can only provide the certificate details through the failed Validate Certificate setup test. For a full walkthrough, see [Get Destination Certificate Details](https://fivetran.com/docs/rest-api/tutorials/get-destination-certificate-details).\n",
         "operationId": "create_destination",
         "parameters": [
           {
@@ -3283,7 +3283,7 @@
           "Destination Management"
         ],
         "summary": "Retrieve Destination Details",
-        "description": "Returns a destination object if a valid identifier was provided.",
+        "description": "Returns a destination object if a valid identifier was provided.\n\nTo find a destination's unique identifier, call the [List All Groups](https://fivetran.com/docs/rest-api/groups#listallgroups) endpoint and search the response `items` for your target destination by its `name` field. The group's `id` value is also the destination's `id`, since groups and destinations are mapped 1:1.\n",
         "operationId": "destination_details",
         "parameters": [
           {
@@ -13518,12 +13518,12 @@
           },
           "trust_certificates": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the certificate automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic certificate trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a certificate is not trusted automatically during testing, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
+            "description": "Specifies whether we should trust the certificate automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic certificate trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a certificate is not trusted automatically, it has to be approved by calling the [Approve connection certificate endpoint](/docs/rest-api/api-reference/certificates/approve-connection-certificate).\n\n> IMPORTANT: To capture the `hash` and `encoded_cert` values needed for approval, omit this field or set it to `false`.\n",
             "example": true
           },
           "trust_fingerprints": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the SSH fingerprint automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic fingerprint trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a fingerprint is not trusted automatically during testing, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
+            "description": "Specifies whether we should trust the SSH fingerprint automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic fingerprint trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a fingerprint is not trusted automatically, it has to be approved by calling the [Approve connection fingerprint endpoint](/docs/rest-api/api-reference/certificates/approve-connection-fingerprint).\n\n> IMPORTANT: To capture the `hash` and `public_key` values needed for approval, omit this field or set it to `false`.\n",
             "example": true
           },
           "run_setup_tests": {
@@ -13585,7 +13585,7 @@
           },
           "schedule_type": {
             "type": "string",
-            "description": "The connection schedule configuration type. Supported values: auto, manual",
+            "description": "The connection schedule configuration type. Supported values: `auto`, where Fivetran controls sync frequency based on your plan, and `manual`, where you trigger syncs on demand using the [Sync connection](https://fivetran.com/docs/rest-api/api-reference/connections/sync-connection) endpoint. In `manual` mode, `sync_frequency` is ignored.\n\n> NOTE: To switch from manual back to automatic scheduling, set this field to `auto`. You cannot make this change in the Fivetran dashboard — you must use the REST API. For a full walkthrough, see [Trigger Manual Syncs](https://fivetran.com/docs/rest-api/tutorials/trigger-syncs-manually).",
             "example": "auto",
             "enum": [
               "auto",
@@ -14446,12 +14446,12 @@
         "properties": {
           "trust_certificates": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the certificate automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic certificate trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a certificate is not trusted automatically during testing, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
+            "description": "Specifies whether we should trust the certificate automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic certificate trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a certificate is not trusted automatically, it has to be approved by calling the [Approve connection certificate endpoint](/docs/rest-api/api-reference/certificates/approve-connection-certificate).\n\n> IMPORTANT: To capture the `hash` and `encoded_cert` values needed for approval, omit this field or set it to `false`.\n",
             "example": true
           },
           "trust_fingerprints": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the SSH fingerprint automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic fingerprint trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a fingerprint is not trusted automatically during testing, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
+            "description": "Specifies whether we should trust the SSH fingerprint automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic fingerprint trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a fingerprint is not trusted automatically, it has to be approved by calling the [Approve connection fingerprint endpoint](/docs/rest-api/api-reference/certificates/approve-connection-fingerprint).\n\n> IMPORTANT: To capture the `hash` and `public_key` values needed for approval, omit this field or set it to `false`.\n",
             "example": true
           }
         }
@@ -14481,12 +14481,12 @@
           },
           "trust_certificates": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the certificate automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic certificate trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a certificate is not trusted automatically during testing, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
+            "description": "Specifies whether we should trust the certificate automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic certificate trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a certificate is not trusted automatically, it has to be approved by calling the [Approve connection certificate endpoint](/docs/rest-api/api-reference/certificates/approve-connection-certificate).\n\n> IMPORTANT: To capture the `hash` and `encoded_cert` values needed for approval, omit this field or set it to `false`.\n",
             "example": true
           },
           "trust_fingerprints": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the SSH fingerprint automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic fingerprint trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a fingerprint is not trusted automatically during testing, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
+            "description": "Specifies whether we should trust the SSH fingerprint automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic fingerprint trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a fingerprint is not trusted automatically, it has to be approved by calling the [Approve connection fingerprint endpoint](/docs/rest-api/api-reference/certificates/approve-connection-fingerprint).\n\n> IMPORTANT: To capture the `hash` and `public_key` values needed for approval, omit this field or set it to `false`.\n",
             "example": true
           },
           "sync_frequency": {
@@ -14543,12 +14543,12 @@
           },
           "is_historical_sync": {
             "type": "boolean",
-            "description": "The boolean specifying whether the connection should be triggered to re-sync all historical data. If you set this parameter to TRUE, a [historical sync](https://fivetran.com/docs/getting-started/glossary#historicalsync) starts immediately. If a sync is currently running, it's canceled and restarted as a historical sync. All subsequent syncs after the historical sync completes will be incremental. If the value is FALSE or not specified, the connection doesn't re-sync historical data. This parameter is automatically reset to FALSE once the historical sync is completed.",
+            "description": "The boolean specifying whether the connection should be triggered to re-sync all historical data. If you set this parameter to TRUE, a [historical sync](https://fivetran.com/docs/getting-started/glossary#historicalsync) starts immediately. If a sync is currently running, it's canceled and restarted as a historical sync.\n\n> NOTE: If the connection is paused, the flag is set but the historical sync won't begin until you unpause the connection.\n\n All subsequent syncs after the historical sync completes will be incremental. If the value is FALSE or not specified, the connection doesn't re-sync historical data. This parameter is automatically reset to FALSE once the historical sync is completed.",
             "example": true
           },
           "schedule_type": {
             "type": "string",
-            "description": "The connection schedule configuration type. Supported values: auto, manual",
+            "description": "The connection schedule configuration type. Supported values: `auto`, where Fivetran controls sync frequency based on your plan, and `manual`, where you trigger syncs on demand using the [Sync connection](https://fivetran.com/docs/rest-api/api-reference/connections/sync-connection) endpoint. In `manual` mode, `sync_frequency` is ignored.\n\n> NOTE: To switch from manual back to automatic scheduling, set this field to `auto`. You cannot make this change in the Fivetran dashboard — you must use the REST API. For a full walkthrough, see [Trigger Manual Syncs](https://fivetran.com/docs/rest-api/tutorials/trigger-syncs-manually).",
             "example": "auto",
             "enum": [
               "auto",
@@ -14774,7 +14774,7 @@
           },
           "schedule_type": {
             "type": "string",
-            "description": "The connection schedule configuration type. Supported values: auto, manual",
+            "description": "The connection schedule configuration type. Supported values: `auto`, where Fivetran controls sync frequency based on your plan, and `manual`, where you trigger syncs on demand using the [Sync connection](https://fivetran.com/docs/rest-api/api-reference/connections/sync-connection) endpoint. In `manual` mode, `sync_frequency` is ignored.\n\n> NOTE: To switch from manual back to automatic scheduling, set this field to `auto`. You cannot make this change in the Fivetran dashboard — you must use the REST API. For a full walkthrough, see [Trigger Manual Syncs](https://fivetran.com/docs/rest-api/tutorials/trigger-syncs-manually).",
             "example": "auto"
           },
           "setup_tests": {
@@ -15634,7 +15634,7 @@
           },
           "is_historical_sync": {
             "type": "boolean",
-            "description": "The boolean specifying whether the connection should be triggered to re-sync all historical data. If you set this parameter to TRUE, a [historical sync](https://fivetran.com/docs/getting-started/glossary#historicalsync) starts immediately. If a sync is currently running, it's canceled and restarted as a historical sync. All subsequent syncs after the historical sync completes will be incremental. If the value is FALSE or not specified, the connection doesn't re-sync historical data. This parameter is automatically reset to FALSE once the historical sync is completed.",
+            "description": "The boolean specifying whether the connection should be triggered to re-sync all historical data. If you set this parameter to TRUE, a [historical sync](https://fivetran.com/docs/getting-started/glossary#historicalsync) starts immediately. If a sync is currently running, it's canceled and restarted as a historical sync.\n\n> NOTE: If the connection is paused, the flag is set but the historical sync won't begin until you unpause the connection.\n\n All subsequent syncs after the historical sync completes will be incremental. If the value is FALSE or not specified, the connection doesn't re-sync historical data. This parameter is automatically reset to FALSE once the historical sync is completed.",
             "example": false
           },
           "rescheduled_for": {
@@ -16705,12 +16705,12 @@
           },
           "trust_certificates": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
+            "description": "Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved by calling the [Approve destination certificate endpoint](/docs/rest-api/api-reference/certificates/approve-destination-certificate).\n\n> IMPORTANT: To capture the `hash` and `encoded_cert` values needed for approval, omit this field or set it to `false`.\n",
             "example": true
           },
           "trust_fingerprints": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
+            "description": "Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved by calling the [Approve destination fingerprint endpoint](/docs/rest-api/api-reference/certificates/approve-destination-fingerprint).\n\n> IMPORTANT: To capture the `hash` and `public_key` values needed for approval, omit this field or set it to `false`.\n",
             "example": true
           },
           "run_setup_tests": {
@@ -16843,12 +16843,12 @@
           },
           "trust_certificates": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
+            "description": "Specifies whether we should trust the certificate automatically. The default value is FALSE. If a certificate is not trusted automatically, it has to be approved by calling the [Approve destination certificate endpoint](/docs/rest-api/api-reference/certificates/approve-destination-certificate).\n\n> IMPORTANT: To capture the `hash` and `encoded_cert` values needed for approval, omit this field or set it to `false`.\n",
             "example": true
           },
           "trust_fingerprints": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
+            "description": "Specifies whether we should trust the SSH fingerprint automatically. The default value is FALSE. If a fingerprint is not trusted automatically, it has to be approved by calling the [Approve destination fingerprint endpoint](/docs/rest-api/api-reference/certificates/approve-destination-fingerprint).\n\n> IMPORTANT: To capture the `hash` and `public_key` values needed for approval, omit this field or set it to `false`.\n",
             "example": true
           },
           "time_zone_offset": {
@@ -28423,6 +28423,12 @@
                 "description": "The database name.",
                 "example": "postgres"
               },
+              "delete_capture_enabled": {
+                "title": "",
+                "type": "boolean",
+                "description": "",
+                "example": true
+              },
               "entra_app_id": {
                 "title": "",
                 "type": "string",
@@ -28490,10 +28496,9 @@
                 "title": "",
                 "type": "object",
                 "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.<br>`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
-                "example": "XMIN | TELEPORT | WAL_PGOUTPUT",
+                "example": "QUERY_BASED | WAL_PGOUTPUT",
                 "enum": [
-                  "XMIN",
-                  "TELEPORT",
+                  "QUERY_BASED",
                   "WAL_PGOUTPUT"
                 ]
               },
@@ -30106,6 +30111,12 @@
                 "description": "The database name.",
                 "example": "postgres"
               },
+              "delete_capture_enabled": {
+                "title": "",
+                "type": "boolean",
+                "description": "",
+                "example": true
+              },
               "entra_app_id": {
                 "title": "",
                 "type": "string",
@@ -30173,10 +30184,9 @@
                 "title": "",
                 "type": "object",
                 "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.<br>`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
-                "example": "XMIN | TELEPORT | WAL_PGOUTPUT",
+                "example": "QUERY_BASED | WAL_PGOUTPUT",
                 "enum": [
-                  "XMIN",
-                  "TELEPORT",
+                  "QUERY_BASED",
                   "WAL_PGOUTPUT"
                 ]
               },
@@ -39898,6 +39908,12 @@
                   "APIKEY"
                 ]
               },
+              "capture_deletes": {
+                "title": "",
+                "type": "boolean",
+                "description": "Whether to capture hard deletes, meaning source documents removed from the index. Set to false to skip hard-delete detection, which may improve connector performance for sources that do not hard-delete documents. This does not affect source-level soft-delete fields; those fields sync as ordinary document updates. If you re-enable delete capture later, resync the affected tables to rebuild an accurate delete baseline. Default value: true.",
+                "example": true
+              },
               "connection_type": {
                 "title": "",
                 "type": "object",
@@ -40454,6 +40470,12 @@
                   "APIKEY"
                 ]
               },
+              "capture_deletes": {
+                "title": "",
+                "type": "boolean",
+                "description": "Whether to capture hard deletes, meaning source documents removed from the index. Set to false to skip hard-delete detection, which may improve connector performance for sources that do not hard-delete documents. This does not affect source-level soft-delete fields; those fields sync as ordinary document updates. If you re-enable delete capture later, resync the affected tables to rebuild an accurate delete baseline. Default value: true.",
+                "example": true
+              },
               "connection_type": {
                 "title": "",
                 "type": "object",
@@ -40954,6 +40976,30 @@
                         "Week"
                       ]
                     },
+                    "attribution_windows": {
+                      "title": "",
+                      "type": "array",
+                      "description": "List of attribution windows passed as Meta's `action_attribution_windows` query parameter. Default: `CLICK_7D`, `VIEW_1D`, `INCREMENTALITY`. Possible values: `CLICK_1D`, `CLICK_7D`, `CLICK_28D`, `VIEW_1D`, `ENGAGED_VIEW_1D`, `INCREMENTALITY`, `INCREMENTALITY_FIRST_CONVERSION`, `INCREMENTALITY_ALL_CONVERSIONS`.",
+                      "example": [
+                        "VIEW_1D | INCREMENTALITY | CLICK_1D | INCREMENTALITY_FIRST_CONVERSION | CLICK_7D | INCREMENTALITY_ALL_CONVERSIONS | CLICK_28D | ENGAGED_VIEW_1D"
+                      ],
+                      "items": {
+                        "title": "",
+                        "type": "object",
+                        "description": "",
+                        "example": "VIEW_1D | INCREMENTALITY | CLICK_1D | INCREMENTALITY_FIRST_CONVERSION | CLICK_7D | INCREMENTALITY_ALL_CONVERSIONS | CLICK_28D | ENGAGED_VIEW_1D",
+                        "enum": [
+                          "VIEW_1D",
+                          "INCREMENTALITY",
+                          "CLICK_1D",
+                          "INCREMENTALITY_FIRST_CONVERSION",
+                          "CLICK_7D",
+                          "INCREMENTALITY_ALL_CONVERSIONS",
+                          "CLICK_28D",
+                          "ENGAGED_VIEW_1D"
+                        ]
+                      }
+                    },
                     "breakdowns": {
                       "title": "",
                       "type": "array",
@@ -41009,7 +41055,7 @@
                     "click_attribution_window": {
                       "title": "",
                       "type": "object",
-                      "description": "Time period to attribute conversions based on clicks. [Possible click_attribution_window values](/docs/connectors/applications/facebook-ads#clickattributionwindow).",
+                      "description": "Deprecated. Read-only legacy field used only during migration to `attribution_windows`.",
                       "example": "DAY_1 | DAY_1_EV | DAY_7 | NONE | DAY_28",
                       "enum": [
                         "DAY_1",
@@ -41032,7 +41078,7 @@
                     "engaged_view_attribution_window": {
                       "title": "",
                       "type": "object",
-                      "description": "Time period to attribute conversions based on engaged views. [Possible view_attribution_window values](/docs/connectors/applications/facebook-ads#engagedviewattributionwindow).",
+                      "description": "Deprecated. Read-only legacy field used only during migration to `attribution_windows`.",
                       "example": "DAY_1 | DAY_1_EV | DAY_7 | NONE | DAY_28",
                       "enum": [
                         "DAY_1",
@@ -41230,7 +41276,7 @@
                     "view_attribution_window": {
                       "title": "",
                       "type": "object",
-                      "description": "Time period to attribute conversions based on views. [Possible view_attribution_window values](/docs/connectors/applications/facebook-ads#viewattributionwindow).",
+                      "description": "Deprecated. Read-only legacy field used only during migration to `attribution_windows`.",
                       "example": "DAY_1 | DAY_1_EV | DAY_7 | NONE | DAY_28",
                       "enum": [
                         "DAY_1",
@@ -45116,6 +45162,12 @@
                 "description": "The database name.",
                 "example": "postgres"
               },
+              "delete_capture_enabled": {
+                "title": "",
+                "type": "boolean",
+                "description": "",
+                "example": true
+              },
               "entra_app_id": {
                 "title": "",
                 "type": "string",
@@ -45183,10 +45235,9 @@
                 "title": "",
                 "type": "object",
                 "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.<br>`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
-                "example": "XMIN | TELEPORT | WAL_PGOUTPUT",
+                "example": "QUERY_BASED | WAL_PGOUTPUT",
                 "enum": [
-                  "XMIN",
-                  "TELEPORT",
+                  "QUERY_BASED",
                   "WAL_PGOUTPUT"
                 ]
               },
@@ -47361,6 +47412,12 @@
                 "description": "The database name.",
                 "example": "postgres"
               },
+              "delete_capture_enabled": {
+                "title": "",
+                "type": "boolean",
+                "description": "",
+                "example": true
+              },
               "entra_app_id": {
                 "title": "",
                 "type": "string",
@@ -47428,10 +47485,9 @@
                 "title": "",
                 "type": "object",
                 "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.<br>`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
-                "example": "XMIN | TELEPORT",
+                "example": "QUERY_BASED",
                 "enum": [
-                  "XMIN",
-                  "TELEPORT"
+                  "QUERY_BASED"
                 ]
               },
               "user": {
@@ -48519,6 +48575,17 @@
                   "SelectedEvents",
                   "AllEvents"
                 ]
+              },
+              "webhook_auth_type": {
+                "title": "",
+                "type": "object",
+                "description": "The authentication method for the Iterable webhook. Accepted values: `NoAuth`, `Basic`, `OAuth2`.",
+                "example": "Basic | OAuth2 | NoAuth",
+                "enum": [
+                  "Basic",
+                  "OAuth2",
+                  "NoAuth"
+                ]
               }
             },
             "description": ""
@@ -48805,8 +48872,9 @@
                 "title": "",
                 "type": "object",
                 "description": "Authorization type.",
-                "example": "BASIC | OAUTH",
+                "example": "SERVICE_ACCOUNT | BASIC | OAUTH",
                 "enum": [
+                  "SERVICE_ACCOUNT",
                   "BASIC",
                   "OAUTH"
                 ]
@@ -55004,6 +55072,12 @@
                   "APIKEY"
                 ]
               },
+              "capture_deletes": {
+                "title": "",
+                "type": "boolean",
+                "description": "Whether to capture hard deletes, meaning source documents removed from the index. Set to false to skip hard-delete detection, which may improve connector performance for sources that do not hard-delete documents. This does not affect source-level soft-delete fields; those fields sync as ordinary document updates. If you re-enable delete capture later, resync the affected tables to rebuild an accurate delete baseline. Default value: true.",
+                "example": true
+              },
               "connection_type": {
                 "title": "",
                 "type": "object",
@@ -55097,6 +55171,12 @@
                   "BASICAUTH",
                   "APIKEY"
                 ]
+              },
+              "capture_deletes": {
+                "title": "",
+                "type": "boolean",
+                "description": "Whether to capture hard deletes, meaning source documents removed from the index. Set to false to skip hard-delete detection, which may improve connector performance for sources that do not hard-delete documents. This does not affect source-level soft-delete fields; those fields sync as ordinary document updates. If you re-enable delete capture later, resync the affected tables to rebuild an accurate delete baseline. Default value: true.",
+                "example": true
               },
               "connection_type": {
                 "title": "",
@@ -59167,6 +59247,12 @@
                 "description": "The database name.",
                 "example": "postgres"
               },
+              "delete_capture_enabled": {
+                "title": "",
+                "type": "boolean",
+                "description": "",
+                "example": true
+              },
               "entra_app_id": {
                 "title": "",
                 "type": "string",
@@ -59234,10 +59320,9 @@
                 "title": "",
                 "type": "object",
                 "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the  write-ahead log (WAL) using a logical slot.This is more efficient than the query-based method, but requires more setup and monitoring.<br>`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
-                "example": "XMIN | TELEPORT | WAL_PGOUTPUT",
+                "example": "QUERY_BASED | WAL_PGOUTPUT",
                 "enum": [
-                  "XMIN",
-                  "TELEPORT",
+                  "QUERY_BASED",
                   "WAL_PGOUTPUT"
                 ]
               },
@@ -59319,6 +59404,12 @@
                 "description": "The database name.",
                 "example": "postgres"
               },
+              "delete_capture_enabled": {
+                "title": "",
+                "type": "boolean",
+                "description": "",
+                "example": true
+              },
               "entra_app_id": {
                 "title": "",
                 "type": "string",
@@ -59386,10 +59477,9 @@
                 "title": "",
                 "type": "object",
                 "description": "The method to detect new or changed rows. <br>Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. <br>Supported values:<br>`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.<br>`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
-                "example": "XMIN | TELEPORT | WAL_PGOUTPUT",
+                "example": "QUERY_BASED | WAL_PGOUTPUT",
                 "enum": [
-                  "XMIN",
-                  "TELEPORT",
+                  "QUERY_BASED",
                   "WAL_PGOUTPUT"
                 ]
               },
@@ -79575,6 +79665,13 @@
                   "HYBRID_PROJECT",
                   "EMAIL_BASED_PROJECT"
                 ]
+              },
+              "webhook_secret": {
+                "title": "",
+                "type": "string",
+                "description": "The secret token used to authenticate incoming webhook events from Iterable. Only applicable when `webhook_auth_type` is `Basic` or `OAuth2`.",
+                "format": "password",
+                "example": "string"
               }
             },
             "description": ""
