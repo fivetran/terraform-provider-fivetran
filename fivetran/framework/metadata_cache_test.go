@@ -17,7 +17,7 @@ const metadataDetailsBody = `{
 		"id": "google_sheets",
 		"name": "Google Sheets",
 		"type": "File",
-		"config": {"properties": {"spreadsheet_id": {"type": "string"}}},
+		"config": {"properties": {"spreadsheet_id": {"type": "string", "fieldStatus": "private_preview"}}},
 		"auth":   {"properties": {}}
 	}
 }`
@@ -65,6 +65,9 @@ func TestMetadataCache_HitReturnsCachedValue(t *testing.T) {
 	}
 	if m1.ID != "google_sheets" {
 		t.Errorf("unexpected ID: %v", m1.ID)
+	}
+	if got := m1.Config.Properties["spreadsheet_id"].FieldStatus; got != FieldStatusPrivatePreview {
+		t.Errorf("unexpected field status: got %q, want %q", got, FieldStatusPrivatePreview)
 	}
 }
 
