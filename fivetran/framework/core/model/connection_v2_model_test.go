@@ -42,7 +42,6 @@ func TestConnectionV2ResourceModelTfsdkShape(t *testing.T) {
 		ServiceVersion:          types.StringValue("1"),
 		SyncFrequency:           types.Int64Value(60),
 		ScheduleType:            types.StringValue("auto"),
-		Paused:                  types.BoolValue(true),
 		PauseAfterTrial:         types.BoolValue(false),
 		DailySyncTime:           types.StringNull(),
 		ProxyAgentId:            types.StringNull(),

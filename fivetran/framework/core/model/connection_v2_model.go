@@ -21,7 +21,6 @@ type ConnectionV2ResourceModel struct {
 	ServiceVersion  types.String `tfsdk:"service_version"`
 	SyncFrequency   types.Int64  `tfsdk:"sync_frequency"`
 	ScheduleType    types.String `tfsdk:"schedule_type"`
-	Paused          types.Bool   `tfsdk:"paused"`
 	PauseAfterTrial types.Bool   `tfsdk:"pause_after_trial"`
 	DailySyncTime   types.String `tfsdk:"daily_sync_time"`
 
@@ -77,7 +76,6 @@ func ConnectionV2ResourceModelAttrTypes() map[string]attr.Type {
 		"service_version":            types.StringType,
 		"sync_frequency":             types.Int64Type,
 		"schedule_type":              types.StringType,
-		"paused":                     types.BoolType,
 		"pause_after_trial":          types.BoolType,
 		"daily_sync_time":            types.StringType,
 		"proxy_agent_id":             types.StringType,

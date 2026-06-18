@@ -89,14 +89,6 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 				stringplanmodifier.UseStateForUnknown(),
 			},
 		},
-		"paused": resourceSchema.BoolAttribute{
-			Optional:    true,
-			Computed:    true,
-			Description: "Specifies whether the connection is paused.",
-			PlanModifiers: []planmodifier.Bool{
-				boolplanmodifier.UseStateForUnknown(),
-			},
-		},
 		"pause_after_trial": resourceSchema.BoolAttribute{
 			Optional:    true,
 			Computed:    true,

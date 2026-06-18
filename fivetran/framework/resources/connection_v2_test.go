@@ -32,12 +32,14 @@ func TestConnectionV2SchemaShape(t *testing.T) {
 	if _, ok := attrs["local_processing_agent_id"]; ok {
 		t.Fatal("fivetran_connection_v2 must not expose deprecated local_processing_agent_id")
 	}
+	if _, ok := attrs["paused"]; ok {
+		t.Fatal("fivetran_connection_v2 must not expose paused; pause state is managed by fivetran_connection_v2_pause_state")
+	}
 
 	assertStringAttribute(t, attrs, "service", true, false, false)
 	assertStringAttribute(t, attrs, "group_id", true, false, false)
 	assertDynamicAttribute(t, attrs, "config", true, true, false)
 	assertDynamicAttribute(t, attrs, "auth", true, true, true)
-	assertBoolAttribute(t, attrs, "paused", false, true, true)
 	assertInt64Attribute(t, attrs, "sync_frequency", false, true, true)
 	assertBoolAttribute(t, attrs, "run_setup_tests", false, true, false)
 	assertBoolAttribute(t, attrs, "trust_certificates", false, true, false)
