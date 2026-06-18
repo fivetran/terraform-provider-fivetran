@@ -1,7 +1,16 @@
 package model
 
 import (
+	"context"
+	"fmt"
+	"time"
+
+	gfcommon "github.com/fivetran/go-fivetran/common"
+	"github.com/fivetran/go-fivetran/connections"
+	"github.com/fivetran/go-fivetran/metadata"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -89,4 +98,134 @@ func ConnectionV2ResourceModelAttrTypes() map[string]attr.Type {
 		"trust_fingerprints":         types.BoolType,
 		"status":                     types.ObjectType{AttrTypes: ConnectionV2StatusAttrTypes()},
 	}
+}
+
+func (d *ConnectionV2ResourceModel) ReadFromCreateResponse(ctx context.Context, resp connections.DetailsWithCustomConfigResponse, meta *metadata.ConnectorMetadata, configMask map[string]interface{}) diag.Diagnostics {
+	return d.readFromResponseData(ctx, resp.Data.DetailsResponseDataCommon, resp.Data.Config, meta, configMask)
+}
+
+func (d *ConnectionV2ResourceModel) ReadFromResponse(ctx context.Context, resp connections.DetailsWithCustomConfigNoTestsResponse, meta *metadata.ConnectorMetadata, configMask map[string]interface{}) diag.Diagnostics {
+	return d.readFromResponseData(ctx, resp.Data.DetailsResponseDataCommon, resp.Data.Config, meta, configMask)
+}
+
+func (d *ConnectionV2ResourceModel) ReadFromResponseForImport(ctx context.Context, resp connections.DetailsWithCustomConfigNoTestsResponse, meta *metadata.ConnectorMetadata) diag.Diagnostics {
+	return d.readFromResponseData(ctx, resp.Data.DetailsResponseDataCommon, resp.Data.Config, meta, resp.Data.Config)
+}
+
+func (d *ConnectionV2ResourceModel) readFromResponseData(ctx context.Context, data connections.DetailsResponseDataCommon, config map[string]interface{}, meta *metadata.ConnectorMetadata, configMask map[string]interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	d.Id = types.StringValue(data.ID)
+	d.Name = types.StringValue(data.Schema)
+	d.ConnectedBy = stringValueOrNull(data.ConnectedBy)
+	d.CreatedAt = timeValueOrNull(data.CreatedAt)
+	d.GroupId = types.StringValue(data.GroupID)
+	d.Service = types.StringValue(data.Service)
+
+	d.SucceededAt = timeValueOrNull(data.SucceededAt)
+	d.FailedAt = timeValueOrNull(data.FailedAt)
+	d.ServiceVersion = intPointerStringValue(data.ServiceVersion)
+	d.SyncFrequency = intPointerInt64Value(data.SyncFrequency)
+	d.ScheduleType = stringValueOrNull(data.ScheduleType)
+	d.PauseAfterTrial = boolPointerValue(data.PauseAfterTrial)
+	d.DailySyncTime = stringValueOrNull(data.DailySyncTime)
+
+	d.ProxyAgentId = stringValueOrNull(data.ProxyAgentId)
+	d.NetworkingMethod = stringValueOrNull(data.NetworkingMethod)
+	d.HybridDeploymentAgentId = stringValueOrNull(data.HybridDeploymentAgentId)
+	d.PrivateLinkId = stringValueOrNull(data.PrivateLinkId)
+
+	d.DataDelaySensitivity = stringValueOrNull(data.DataDelaySensitivity)
+	d.DataDelayThreshold = intPointerInt64Value(data.DataDelayThreshold)
+	d.Status = connectionV2StatusValue(data.Status)
+
+	configSlot := (*metadata.Property)(nil)
+	if meta != nil {
+		configSlot = &meta.Config
+	}
+	projectedConfig := core.ProjectDynamic(config, configMask, configSlot)
+	dynamicConfig, dynamicDiags := core.MapToDynamic(ctx, projectedConfig)
+	diags.Append(dynamicDiags...)
+	if !diags.HasError() {
+		d.Config = dynamicConfig
+	}
+
+	return diags
+}
+
+func stringValueOrNull(value string) types.String {
+	if value == "" {
+		return types.StringNull()
+	}
+	return types.StringValue(value)
+}
+
+func timeValueOrNull(value time.Time) types.String {
+	if value.IsZero() {
+		return types.StringNull()
+	}
+	return types.StringValue(value.String())
+}
+
+func intPointerStringValue(value *int) types.String {
+	if value == nil {
+		return types.StringNull()
+	}
+	return types.StringValue(fmt.Sprintf("%v", *value))
+}
+
+func intPointerInt64Value(value *int) types.Int64 {
+	if value == nil {
+		return types.Int64Null()
+	}
+	return types.Int64Value(int64(*value))
+}
+
+func boolPointerValue(value *bool) types.Bool {
+	if value == nil {
+		return types.BoolNull()
+	}
+	return types.BoolValue(*value)
+}
+
+func connectionV2ReadCommonResponse(r gfcommon.CommonResponse) attr.Value {
+	result, _ := types.ObjectValue(ConnectionV2CodeMessageAttrTypes(),
+		map[string]attr.Value{
+			"code":    types.StringValue(r.Code),
+			"message": types.StringValue(r.Message),
+		})
+	return result
+}
+
+func connectionV2StatusValue(status connections.StatusResponse) types.Object {
+	codeMessageType := types.ObjectType{
+		AttrTypes: ConnectionV2CodeMessageAttrTypes(),
+	}
+
+	warnings := make([]attr.Value, 0, len(status.Warnings))
+	for _, w := range status.Warnings {
+		warnings = append(warnings, connectionV2ReadCommonResponse(w))
+	}
+
+	tasks := make([]attr.Value, 0, len(status.Tasks))
+	for _, t := range status.Tasks {
+		tasks = append(tasks, connectionV2ReadCommonResponse(t))
+	}
+
+	warningsValue, _ := types.SetValue(codeMessageType, warnings)
+	tasksValue, _ := types.SetValue(codeMessageType, tasks)
+
+	result, _ := types.ObjectValue(
+		ConnectionV2StatusAttrTypes(),
+		map[string]attr.Value{
+			"setup_state":        stringValueOrNull(status.SetupState),
+			"is_historical_sync": boolPointerValue(status.IsHistoricalSync),
+			"sync_state":         stringValueOrNull(status.SyncState),
+			"update_state":       stringValueOrNull(status.UpdateState),
+			"warnings":           warningsValue,
+			"tasks":              tasksValue,
+		},
+	)
+
+	return result
 }
