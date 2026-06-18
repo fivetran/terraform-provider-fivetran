@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Internal: connector metadata field status helpers for future validation improvements.
+- Internal: metadata-driven connection resource foundations, including dynamic `config` / `auth` handling and lifecycle plumbing. The resource is not registered yet.
 
 ## [v1.9.34](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.34...v1.9.33)
 
