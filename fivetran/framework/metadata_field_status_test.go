@@ -51,6 +51,7 @@ func TestMetadataFieldStatusHelpers(t *testing.T) {
 		prop        *metadata.Property
 		wantGA      bool
 		wantSupport bool
+		wantWarn    bool
 		wantPrivate bool
 		wantDevelop bool
 		wantSunset  bool
@@ -70,19 +71,22 @@ func TestMetadataFieldStatusHelpers(t *testing.T) {
 		{
 			name:        "private preview",
 			prop:        &metadata.Property{FieldStatus: FieldStatusPrivatePreview},
-			wantSupport: false,
+			wantSupport: true,
+			wantWarn:    true,
 			wantPrivate: true,
 		},
 		{
 			name:        "development",
 			prop:        &metadata.Property{FieldStatus: FieldStatusDevelopment},
-			wantSupport: false,
+			wantSupport: true,
+			wantWarn:    true,
 			wantDevelop: true,
 		},
 		{
 			name:        "sunset",
 			prop:        &metadata.Property{FieldStatus: FieldStatusSunset},
 			wantSupport: true,
+			wantWarn:    true,
 			wantSunset:  true,
 		},
 		{
@@ -102,6 +106,9 @@ func TestMetadataFieldStatusHelpers(t *testing.T) {
 			}
 			if got := IsTerraformSupportedMetadataField(tt.prop); got != tt.wantSupport {
 				t.Errorf("IsTerraformSupportedMetadataField() = %v, want %v", got, tt.wantSupport)
+			}
+			if got := ShouldWarnForMetadataFieldStatus(tt.prop); got != tt.wantWarn {
+				t.Errorf("ShouldWarnForMetadataFieldStatus() = %v, want %v", got, tt.wantWarn)
 			}
 			if got := IsPrivatePreviewMetadataField(tt.prop); got != tt.wantPrivate {
 				t.Errorf("IsPrivatePreviewMetadataField() = %v, want %v", got, tt.wantPrivate)

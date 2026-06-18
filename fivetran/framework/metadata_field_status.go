@@ -23,10 +23,17 @@ func IsGenerallyAvailableMetadataField(prop *metadata.Property) bool {
 
 func IsTerraformSupportedMetadataField(prop *metadata.Property) bool {
 	switch MetadataFieldStatus(prop) {
-	case "", FieldStatusGeneralAvailability, FieldStatusSunset:
+	case "", FieldStatusGeneralAvailability, FieldStatusPrivatePreview, FieldStatusDevelopment, FieldStatusSunset:
 		return true
-	case FieldStatusPrivatePreview, FieldStatusDevelopment:
+	default:
 		return false
+	}
+}
+
+func ShouldWarnForMetadataFieldStatus(prop *metadata.Property) bool {
+	switch MetadataFieldStatus(prop) {
+	case FieldStatusPrivatePreview, FieldStatusDevelopment, FieldStatusSunset:
+		return true
 	default:
 		return false
 	}
