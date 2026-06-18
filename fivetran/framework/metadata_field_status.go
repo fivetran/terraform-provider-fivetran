@@ -16,13 +16,8 @@ func MetadataFieldStatus(prop *metadata.Property) string {
 	return prop.FieldStatus
 }
 
-func IsGenerallyAvailableMetadataField(prop *metadata.Property) bool {
-	status := MetadataFieldStatus(prop)
-	return status == "" || status == FieldStatusGeneralAvailability
-}
-
-func IsTerraformSupportedMetadataField(prop *metadata.Property) bool {
-	switch MetadataFieldStatus(prop) {
+func IsKnownMetadataFieldStatus(status string) bool {
+	switch status {
 	case "", FieldStatusGeneralAvailability, FieldStatusPrivatePreview, FieldStatusDevelopment, FieldStatusSunset:
 		return true
 	default:
@@ -37,16 +32,4 @@ func ShouldWarnForMetadataFieldStatus(prop *metadata.Property) bool {
 	default:
 		return false
 	}
-}
-
-func IsPrivatePreviewMetadataField(prop *metadata.Property) bool {
-	return MetadataFieldStatus(prop) == FieldStatusPrivatePreview
-}
-
-func IsDevelopmentMetadataField(prop *metadata.Property) bool {
-	return MetadataFieldStatus(prop) == FieldStatusDevelopment
-}
-
-func IsSunsetMetadataField(prop *metadata.Property) bool {
-	return MetadataFieldStatus(prop) == FieldStatusSunset
 }

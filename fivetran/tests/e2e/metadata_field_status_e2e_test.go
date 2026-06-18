@@ -59,7 +59,7 @@ func collectMetadataFieldStatuses(path string, properties map[string]*metadata.P
 		status := framework.MetadataFieldStatus(prop)
 		if status == "" {
 			*withoutStatus = append(*withoutStatus, fieldPath)
-		} else if !isKnownMetadataFieldStatus(status) {
+		} else if !framework.IsKnownMetadataFieldStatus(status) {
 			*unknown = append(*unknown, fmt.Sprintf("%s=%s", fieldPath, status))
 		} else {
 			counts[status]++
@@ -71,18 +71,6 @@ func collectMetadataFieldStatuses(path string, properties map[string]*metadata.P
 		if prop.Items != nil && len(prop.Items.Properties) > 0 {
 			collectMetadataFieldStatuses(fieldPath+"[]", prop.Items.Properties, counts, withoutStatus, unknown)
 		}
-	}
-}
-
-func isKnownMetadataFieldStatus(status string) bool {
-	switch status {
-	case framework.FieldStatusDevelopment,
-		framework.FieldStatusPrivatePreview,
-		framework.FieldStatusGeneralAvailability,
-		framework.FieldStatusSunset:
-		return true
-	default:
-		return false
 	}
 }
 
