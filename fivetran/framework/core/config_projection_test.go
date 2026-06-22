@@ -1,4 +1,4 @@
-package framework
+package core
 
 import (
 	"context"
@@ -84,6 +84,48 @@ func TestDynamicToMap_EmptyStringPreserved(t *testing.T) {
 	}
 }
 
+func TestMapToDynamic_RoundTrip(t *testing.T) {
+	t.Parallel()
+	ctx := context.Background()
+	input := map[string]interface{}{
+		"bucket":  "b",
+		"enabled": true,
+		"count":   3,
+		"nested": map[string]interface{}{
+			"pattern": "",
+		},
+		"list": []interface{}{"a", "b"},
+	}
+
+	dyn, diags := MapToDynamic(ctx, input)
+	if diags.HasError() {
+		t.Fatalf("MapToDynamic diagnostics: %v", diags)
+	}
+
+	output, diags := DynamicToMap(ctx, dyn)
+	if diags.HasError() {
+		t.Fatalf("DynamicToMap diagnostics: %v", diags)
+	}
+
+	if output["bucket"] != "b" {
+		t.Errorf("bucket: got %v, want b", output["bucket"])
+	}
+	if output["enabled"] != true {
+		t.Errorf("enabled: got %v, want true", output["enabled"])
+	}
+	if output["count"] != int64(3) {
+		t.Errorf("count: got %v (%T), want int64(3)", output["count"], output["count"])
+	}
+	nested := output["nested"].(map[string]interface{})
+	if nested["pattern"] != "" {
+		t.Errorf("nested.pattern: got %v, want empty string", nested["pattern"])
+	}
+	list := output["list"].([]interface{})
+	if len(list) != 2 || list[0] != "a" || list[1] != "b" {
+		t.Errorf("list: got %v, want [a b]", list)
+	}
+}
+
 // --- project ---
 
 func TestProject_NormalFieldTakesRemote(t *testing.T) {
@@ -135,6 +177,21 @@ func TestProject_ReadonlyTakesRemote(t *testing.T) {
 			t.Errorf("readonly: got %v, want server-key (remote stored for reference)", result["public_key"])
 		}
 	})
+}
+
+func TestProject_ReadonlyAbsentFromMaskTakesRemote(t *testing.T) {
+	t.Parallel()
+	slot := makeSlot(map[string]*metadata.Property{
+		"public_key": {Readonly: true},
+	})
+	remote := map[string]interface{}{"public_key": "server-key"}
+	mask := map[string]interface{}{}
+
+	result := project(remote, mask, slot)
+
+	if result["public_key"] != "server-key" {
+		t.Errorf("readonly absent from mask: got %v, want server-key", result["public_key"])
+	}
 }
 
 func TestProject_MissingFromAPI_SetNil(t *testing.T) {

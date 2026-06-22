@@ -3,6 +3,7 @@ package core
 import (
 	"context"
 	"fmt"
+	"sync"
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/hashicorp/terraform-plugin-framework/action"
@@ -23,7 +24,8 @@ import (
 )
 
 type clientContainer struct {
-	client *fivetran.Client
+	client        *fivetran.Client
+	metadataCache *sync.Map
 }
 
 type ProviderDatasource struct {
@@ -40,6 +42,10 @@ type ProviderResource struct {
 
 func (d *clientContainer) GetClient() *fivetran.Client {
 	return d.client
+}
+
+func (d *clientContainer) GetMetadataCache() *sync.Map {
+	return d.metadataCache
 }
 
 func (d *ProviderAction) Configure(ctx context.Context, req action.ConfigureRequest, resp *action.ConfigureResponse) {
@@ -64,6 +70,7 @@ func (d *clientContainer) getClient(diag diag.Diagnostics, data any) {
 		d.client = v
 	case *ProviderResourceData:
 		d.client = v.Client
+		d.metadataCache = v.MetadataCache
 	default:
 		diag.AddError(
 			"Unexpected Resource Configure Type",

@@ -1,7 +1,8 @@
-package framework
+package core
 
 import (
 	"context"
+	"math/big"
 	"reflect"
 
 	"github.com/fivetran/go-fivetran/metadata"
@@ -47,6 +48,18 @@ func attrToInterface(ctx context.Context, val attr.Value) interface{} {
 		return v.ValueInt64()
 	case types.Float64:
 		return v.ValueFloat64()
+	case types.Number:
+		n := v.ValueBigFloat()
+		if n == nil {
+			return nil
+		}
+		if i, acc := n.Int64(); acc == big.Exact {
+			return i
+		}
+		f, _ := n.Float64()
+		return f
+	case types.Dynamic:
+		return attrToInterface(ctx, v.UnderlyingValue())
 	case types.Object:
 		return convertObjectAttrs(ctx, v.Attributes())
 	case types.Map:
@@ -54,6 +67,8 @@ func attrToInterface(ctx context.Context, val attr.Value) interface{} {
 	case types.List:
 		return convertSliceElems(ctx, v.Elements())
 	case types.Set:
+		return convertSliceElems(ctx, v.Elements())
+	case types.Tuple:
 		return convertSliceElems(ctx, v.Elements())
 	}
 	return nil
@@ -73,6 +88,99 @@ func convertSliceElems(ctx context.Context, elems []attr.Value) []interface{} {
 		result[i] = attrToInterface(ctx, v)
 	}
 	return result
+}
+
+// MapToDynamic converts a map back into a Terraform dynamic object value.
+func MapToDynamic(ctx context.Context, m map[string]interface{}) (types.Dynamic, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	if m == nil {
+		return types.DynamicNull(), diags
+	}
+
+	value, _, valueDiags := interfaceToAttrValue(ctx, m)
+	diags.Append(valueDiags...)
+	if diags.HasError() {
+		return types.DynamicNull(), diags
+	}
+
+	return types.DynamicValue(value), diags
+}
+
+func interfaceToAttrValue(ctx context.Context, value interface{}) (attr.Value, attr.Type, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	switch v := value.(type) {
+	case nil:
+		return types.DynamicNull(), types.DynamicType, diags
+	case string:
+		return types.StringValue(v), types.StringType, diags
+	case bool:
+		return types.BoolValue(v), types.BoolType, diags
+	case int:
+		return types.Int64Value(int64(v)), types.Int64Type, diags
+	case int8:
+		return types.Int64Value(int64(v)), types.Int64Type, diags
+	case int16:
+		return types.Int64Value(int64(v)), types.Int64Type, diags
+	case int32:
+		return types.Int64Value(int64(v)), types.Int64Type, diags
+	case int64:
+		return types.Int64Value(v), types.Int64Type, diags
+	case uint:
+		return types.Int64Value(int64(v)), types.Int64Type, diags
+	case uint8:
+		return types.Int64Value(int64(v)), types.Int64Type, diags
+	case uint16:
+		return types.Int64Value(int64(v)), types.Int64Type, diags
+	case uint32:
+		return types.Int64Value(int64(v)), types.Int64Type, diags
+	case uint64:
+		return types.NumberValue(new(big.Float).SetUint64(v)), types.NumberType, diags
+	case float32:
+		return numberValue(float64(v)), types.NumberType, diags
+	case float64:
+		return numberValue(v), types.NumberType, diags
+	case map[string]interface{}:
+		attrTypes := make(map[string]attr.Type, len(v))
+		attrValues := make(map[string]attr.Value, len(v))
+		for key, nested := range v {
+			nestedValue, nestedType, nestedDiags := interfaceToAttrValue(ctx, nested)
+			diags.Append(nestedDiags...)
+			attrTypes[key] = nestedType
+			attrValues[key] = nestedValue
+		}
+		result, resultDiags := types.ObjectValue(attrTypes, attrValues)
+		diags.Append(resultDiags...)
+		return result, types.ObjectType{AttrTypes: attrTypes}, diags
+	case []interface{}:
+		elementTypes := make([]attr.Type, 0, len(v))
+		elementValues := make([]attr.Value, 0, len(v))
+		for _, nested := range v {
+			nestedValue, nestedType, nestedDiags := interfaceToAttrValue(ctx, nested)
+			diags.Append(nestedDiags...)
+			elementTypes = append(elementTypes, nestedType)
+			elementValues = append(elementValues, nestedValue)
+		}
+		result, resultDiags := types.TupleValue(elementTypes, elementValues)
+		diags.Append(resultDiags...)
+		return result, types.TupleType{ElemTypes: elementTypes}, diags
+	}
+
+	diags.AddError("Unsupported dynamic value", "The API returned a dynamic field value the provider does not know how to store in Terraform state.")
+	return types.DynamicNull(), types.DynamicType, diags
+}
+
+func numberValue(value float64) types.Number {
+	f := new(big.Float).SetFloat64(value)
+	if i, acc := f.Int64(); acc == big.Exact {
+		return types.NumberValue(new(big.Float).SetInt64(i))
+	}
+	return types.NumberValue(f)
+}
+
+// ProjectDynamic filters an API read-back (remote) down to managed keys.
+func ProjectDynamic(remote, mask map[string]interface{}, slot *metadata.Property) map[string]interface{} {
+	return project(remote, mask, slot)
 }
 
 // project filters an API read-back (remote) down to the keys the user manages (mask/plan),
@@ -119,6 +227,16 @@ func project(remote, mask map[string]interface{}, slot *metadata.Property) map[s
 		}
 
 		result[key] = remoteVal
+	}
+
+	for key, remoteVal := range remote {
+		if _, inMask := mask[key]; inMask {
+			continue
+		}
+		prop := slotProp(slot, key)
+		if prop != nil && prop.Readonly {
+			result[key] = remoteVal
+		}
 	}
 
 	return result
