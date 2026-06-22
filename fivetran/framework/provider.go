@@ -28,9 +28,10 @@ type fivetranProvider struct {
 }
 
 type fivetranProviderModel struct {
-	ApiKey    types.String `tfsdk:"api_key"`
-	ApiSecret types.String `tfsdk:"api_secret"`
-	ApiUrl    types.String `tfsdk:"api_url"`
+	ApiKey                 types.String `tfsdk:"api_key"`
+	ApiSecret              types.String `tfsdk:"api_secret"`
+	ApiUrl                 types.String `tfsdk:"api_url"`
+	SkipPlanTimeValidation types.Bool   `tfsdk:"skip_plan_time_validation"`
 }
 
 func FivetranProvider() provider.Provider {
@@ -60,6 +61,10 @@ func (p *fivetranProvider) Schema(ctx context.Context, req provider.SchemaReques
 			"api_key":    schema.StringAttribute{Optional: true},
 			"api_secret": schema.StringAttribute{Optional: true, Sensitive: true},
 			"api_url":    schema.StringAttribute{Optional: true},
+			"skip_plan_time_validation": schema.BoolAttribute{
+				Optional:    true,
+				Description: "Skip metadata-backed plan-time validation for dynamic v2 resource fields. Use only as a temporary workaround when validation metadata is not available; invalid fields will fail later at apply time.",
+			},
 		},
 	}
 }
@@ -84,6 +89,10 @@ func (p *fivetranProvider) Configure(ctx context.Context, req provider.Configure
 	if data.ApiUrl.ValueString() != "" {
 		apiUrl = data.ApiUrl.ValueString()
 	}
+	skipPlanTimeValidation := false
+	if !data.SkipPlanTimeValidation.IsNull() && !data.SkipPlanTimeValidation.IsUnknown() {
+		skipPlanTimeValidation = data.SkipPlanTimeValidation.ValueBool()
+	}
 
 	// Init client
 	fivetranClient := fivetran.New(apiKey, apiSecret)
@@ -98,7 +107,11 @@ func (p *fivetranProvider) Configure(ctx context.Context, req provider.Configure
 
 	fivetranClient.CustomUserAgent("terraform-provider-fivetran/" + Version)
 	resp.DataSourceData = fivetranClient
-	resp.ResourceData = &core.ProviderResourceData{Client: fivetranClient, MetadataCache: p.metadataCache}
+	resp.ResourceData = &core.ProviderResourceData{
+		Client:                 fivetranClient,
+		MetadataCache:          p.metadataCache,
+		SkipPlanTimeValidation: skipPlanTimeValidation,
+	}
 	resp.ActionData = fivetranClient
 }
 

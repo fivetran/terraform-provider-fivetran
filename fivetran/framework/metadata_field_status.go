@@ -1,35 +1,25 @@
 package framework
 
-import "github.com/fivetran/go-fivetran/metadata"
+import (
+	"github.com/fivetran/go-fivetran/metadata"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
+)
 
 const (
-	FieldStatusDevelopment         = "development"
-	FieldStatusPrivatePreview      = "private_preview"
-	FieldStatusGeneralAvailability = "general_availability"
-	FieldStatusSunset              = "sunset"
+	FieldStatusDevelopment         = core.FieldStatusDevelopment
+	FieldStatusPrivatePreview      = core.FieldStatusPrivatePreview
+	FieldStatusGeneralAvailability = core.FieldStatusGeneralAvailability
+	FieldStatusSunset              = core.FieldStatusSunset
 )
 
 func MetadataFieldStatus(prop *metadata.Property) string {
-	if prop == nil {
-		return ""
-	}
-	return prop.FieldStatus
+	return core.MetadataFieldStatus(prop)
 }
 
 func IsKnownMetadataFieldStatus(status string) bool {
-	switch status {
-	case "", FieldStatusGeneralAvailability, FieldStatusPrivatePreview, FieldStatusDevelopment, FieldStatusSunset:
-		return true
-	default:
-		return false
-	}
+	return core.IsKnownMetadataFieldStatus(status)
 }
 
 func ShouldWarnForMetadataFieldStatus(prop *metadata.Property) bool {
-	switch MetadataFieldStatus(prop) {
-	case FieldStatusPrivatePreview, FieldStatusDevelopment, FieldStatusSunset:
-		return true
-	default:
-		return false
-	}
+	return core.ShouldWarnForMetadataFieldStatus(prop)
 }

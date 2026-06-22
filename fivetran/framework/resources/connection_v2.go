@@ -323,6 +323,12 @@ func (r *connectionV2) connectorMetadata(ctx context.Context, service string) (*
 	if cache == nil {
 		cache = &sync.Map{}
 	}
+	if r.GetClient() == nil {
+		if v, ok := cache.Load(service); ok {
+			return v.(*metadata.ConnectorMetadata), nil
+		}
+		return nil, fmt.Errorf("unconfigured Fivetran client")
+	}
 	return core.GetCachedConnectorMetadata(ctx, r.GetClient(), cache, service)
 }
 

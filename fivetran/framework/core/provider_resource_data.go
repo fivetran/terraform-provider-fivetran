@@ -9,6 +9,7 @@ import (
 // ProviderResourceData is passed as ResourceData to all resources.
 // It carries the Fivetran client and the per-provider-instance metadata cache.
 type ProviderResourceData struct {
-	Client        *fivetran.Client
-	MetadataCache *sync.Map
+	Client                 *fivetran.Client
+	MetadataCache          *sync.Map
+	SkipPlanTimeValidation bool
 }
