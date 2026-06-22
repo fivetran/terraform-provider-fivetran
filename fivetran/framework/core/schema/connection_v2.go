@@ -57,7 +57,6 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 		},
 		"auth": resourceSchema.DynamicAttribute{
 			Optional:    true,
-			Computed:    true,
 			Sensitive:   true,
 			Description: "Service-specific authorization configuration. The accepted fields are defined by connector metadata at runtime.",
 		},

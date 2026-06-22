@@ -39,7 +39,7 @@ func TestConnectionV2SchemaShape(t *testing.T) {
 	assertStringAttribute(t, attrs, "service", true, false, false)
 	assertStringAttribute(t, attrs, "group_id", true, false, false)
 	assertDynamicAttribute(t, attrs, "config", true, true, false)
-	assertDynamicAttribute(t, attrs, "auth", true, true, true)
+	assertDynamicAttribute(t, attrs, "auth", true, false, true)
 	assertInt64Attribute(t, attrs, "sync_frequency", false, true, true)
 	assertBoolAttribute(t, attrs, "run_setup_tests", false, true, false)
 	assertBoolAttribute(t, attrs, "trust_certificates", false, true, false)
