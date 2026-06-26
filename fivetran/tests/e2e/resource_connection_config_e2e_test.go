@@ -161,12 +161,107 @@ func TestResourceConnectionConfigOnlyConfigE2E(t *testing.T) {
 						port = 5432
 						database = "config_only_db"
 					})
+
+					run_setup_tests = false
 				}
 		  `,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranConnectionConfigResourceCreate(t, "fivetran_connection_config.test_config"),
 					resource.TestCheckResourceAttrSet("fivetran_connection_config.test_config", "connection_id"),
 					resource.TestCheckResourceAttrSet("fivetran_connection_config.test_config", "config"),
+					resource.TestCheckResourceAttr("fivetran_connection_config.test_config", "run_setup_tests", "false"),
+				),
+			},
+
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_config_only"
+			    }
+
+			    resource "fivetran_connection" "test_connection" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "postgres"
+
+					destination_schema {
+						prefix = "postgres_config_only"
+					}
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+					})
+
+					run_setup_tests = false
+				}
+
+				resource "fivetran_connection_config" "test_config" {
+					provider = fivetran-provider
+					connection_id = fivetran_connection.test_connection.id
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+						user = "config_only_user"
+						host = "config.example.com"
+						port = 5432
+						database = "config_only_db"
+					})
+
+					run_setup_tests = true
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectionConfigResourceCreate(t, "fivetran_connection_config.test_config"),
+					resource.TestCheckResourceAttrSet("fivetran_connection_config.test_config", "connection_id"),
+					resource.TestCheckResourceAttrSet("fivetran_connection_config.test_config", "config"),
+					resource.TestCheckResourceAttr("fivetran_connection_config.test_config", "run_setup_tests", "true"),
+				),
+			},
+
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_config_only"
+			    }
+
+			    resource "fivetran_connection" "test_connection" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "postgres"
+
+					destination_schema {
+						prefix = "postgres_config_only"
+					}
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+					})
+
+					run_setup_tests = false
+				}
+
+				resource "fivetran_connection_config" "test_config" {
+					provider = fivetran-provider
+					connection_id = fivetran_connection.test_connection.id
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+						user = "config_only_user"
+						host = "config.example.com"
+						port = 5432
+						database = "config_only_db"
+					})
+
+					run_setup_tests = false
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectionConfigResourceCreate(t, "fivetran_connection_config.test_config"),
+					resource.TestCheckResourceAttrSet("fivetran_connection_config.test_config", "connection_id"),
+					resource.TestCheckResourceAttrSet("fivetran_connection_config.test_config", "config"),
+					resource.TestCheckResourceAttr("fivetran_connection_config.test_config", "run_setup_tests", "false"),
 				),
 			},
 		},
@@ -216,6 +311,53 @@ func TestResourceConnectionConfigOnlyAuthE2E(t *testing.T) {
 				}
 		  `,
 				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("fivetran_connection.test_connection", "run_setup_tests", "false"),
+
+					testFivetranConnectionConfigResourceCreate(t, "fivetran_connection_config.test_config"),
+					resource.TestCheckResourceAttrSet("fivetran_connection_config.test_config", "connection_id"),
+					resource.TestCheckResourceAttrSet("fivetran_connection_config.test_config", "auth"),
+				),
+			},
+
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_auth_only"
+			    }
+
+			    resource "fivetran_connection" "test_connection" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "postgres"
+
+					destination_schema {
+						prefix = "postgres_auth_only"
+					}
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+					})
+
+					run_setup_tests = true
+				}
+
+				resource "fivetran_connection_config" "test_config" {
+					provider = fivetran-provider
+					connection_id = fivetran_connection.test_connection.id
+
+					config = jsonencode({
+						update_method = "QUERY_BASED"
+					})
+
+					auth = jsonencode({
+						password = "auth_only_password"
+					})
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("fivetran_connection.test_connection", "run_setup_tests", "true"),
+
 					testFivetranConnectionConfigResourceCreate(t, "fivetran_connection_config.test_config"),
 					resource.TestCheckResourceAttrSet("fivetran_connection_config.test_config", "connection_id"),
 					resource.TestCheckResourceAttrSet("fivetran_connection_config.test_config", "auth"),
