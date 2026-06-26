@@ -686,14 +686,11 @@ func TestWorkdayAdaptiveReportsE2E(t *testing.T) {
 							version_sync_strategy = "SYNC_SELECT_VERSIONS"
 							include_zero_rows = true
 							versions = ["2945"]
-							accounts  { 
-							  id = "3"
-							  flag = true 
-							}
-							accounts { 
-							  id = "4"
-							  flag = true 
-							}
+							account_sync_mode = "SELECT_SPECIFIC_ACCOUNTS"
+							selected_accounts = [ 
+							  "3,true",
+							  "4,true"
+							]
 							dimensions = ["3","4"]
 						}
 					}
@@ -711,7 +708,8 @@ func TestWorkdayAdaptiveReportsE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.reports.0.include_zero_rows", "true"),
 					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.reports.0.versions.#", "1"),
 					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.reports.0.versions.0", "2945"),
-					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.reports.0.accounts.#", "2"),
+					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.reports.0.account_sync_mode", "SELECT_SPECIFIC_ACCOUNTS"),
+					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.reports.0.selected_accounts.#", "2"),
 					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.reports.0.dimensions.#", "2"),
 					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.reports.0.dimensions.0", "3"),
 					resource.TestCheckResourceAttr("fivetran_connector.workday_adaptive_connection", "config.reports.0.dimensions.1", "4"),
