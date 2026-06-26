@@ -150,6 +150,8 @@ func (r *connectionConfig) Update(ctx context.Context, req resource.UpdateReques
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
 	if plan.Config.Equal(state.Config) && plan.Auth.Equal(state.Auth) {
+
+		resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 		return
 	}
 
