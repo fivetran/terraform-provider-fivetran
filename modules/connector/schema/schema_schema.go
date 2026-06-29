@@ -95,7 +95,7 @@ func (s *_schema) override(local *_schema, sch string) error {
 	return nil
 }
 
-func (s *_schema) readFromResponse(name string, response *connections.ConnectionSchemaConfigSchemaResponse) {
+func (s *_schema) readFromResponse(name string, response *connections.ConnectionSchemaConfigSchemaResponse, responseSchemaChangeHandling string) {
 	s.name = name
 	s.enabled = *response.Enabled
 
@@ -105,7 +105,7 @@ func (s *_schema) readFromResponse(name string, response *connections.Connection
 	s.tables = make(map[string]*_table)
 	for k, v := range response.Tables {
 		t := &_table{}
-		t.readFromResponse(k, v)
+		t.readFromResponse(k, v, responseSchemaChangeHandling, s.enabled)
 		s.tables[k] = t
 	}
 }

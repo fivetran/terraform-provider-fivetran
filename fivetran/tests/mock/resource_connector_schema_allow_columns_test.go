@@ -977,11 +977,11 @@ func TestResourceSchemaDisabledSchemasWithUnexpectedTablesInResponseMock(t *test
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.SOURCE.enabled", "true"),
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.SOURCE.tables.ORDERS.enabled", "true"),
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.SCHEMA2.enabled", "false"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.SCHEMA2.tables.SALES.enabled", "false"),
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.SCHEMA3.enabled", "false"),
 			
 			resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.SOURCE.tables.DELIVERIES"),
 			resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.SCHEMA3.tables.SUPPLIER"),
-			resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.SCHEMA2.tables.SALES"),
 		),
 	}
 
