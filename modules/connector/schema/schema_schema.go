@@ -95,7 +95,7 @@ func (s *_schema) override(local *_schema, sch string) error {
 	return nil
 }
 
-func (s *_schema) readFromResponse(name string, response *connections.ConnectionSchemaConfigSchemaResponse, responseSchemaChangeHandling string) {
+func (s *_schema) readFromResponse(name string, response *connections.ConnectionSchemaConfigSchemaResponse) {
 	s.name = name
 	s.enabled = *response.Enabled
 
@@ -105,7 +105,7 @@ func (s *_schema) readFromResponse(name string, response *connections.Connection
 	s.tables = make(map[string]*_table)
 	for k, v := range response.Tables {
 		t := &_table{}
-		t.readFromResponse(k, v, responseSchemaChangeHandling, s.enabled)
+		t.readFromResponse(k, v)
 		s.tables[k] = t
 	}
 }
@@ -163,7 +163,9 @@ func (s _schema) toStateObject(sch string, local *_schema, isImporting bool, dia
 			if lt, ok := local.tables[k]; ok {
 				tableState, include = v.toStateObject(sch, lt, diag, s.name, false)
 			} else {
-				tableState, include = v.toStateObject(sch, nil, diag, s.name, false)
+				if s.enabled {
+					tableState, include = v.toStateObject(sch, nil, diag, s.name, false)
+				}
 			}
 		} else {
 			tableState, include = v.toStateObject(sch, nil, diag, s.name, isImporting)

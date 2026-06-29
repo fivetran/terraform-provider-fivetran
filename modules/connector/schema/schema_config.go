@@ -94,12 +94,10 @@ func (c *SchemaConfig) ReadFromRawSourceData(d []interface{}, sch string) {
 }
 
 func (c *SchemaConfig) ReadFromResponse(response connections.ConnectionSchemaDetailsResponse) {
-	responseSchemaChangeHandling := response.Data.SchemaChangeHandling
-
 	c.schemas = make(map[string]*_schema)
 	for k, v := range response.Data.Schemas {
 		s := &_schema{}
-		s.readFromResponse(k, v, responseSchemaChangeHandling)
+		s.readFromResponse(k, v)
 		c.schemas[k] = s
 	}
 }

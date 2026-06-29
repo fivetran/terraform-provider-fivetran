@@ -188,15 +188,10 @@ func (t *_table) readColumns(columns []interface{}, sch string) {
 	}
 }
 
-func (t *_table) readFromResponse(name string, response *connections.ConnectionSchemaConfigTableResponse, responseSchemaChangeHandling string, schemaEnabled bool) {
+func (t *_table) readFromResponse(name string, response *connections.ConnectionSchemaConfigTableResponse) {
 	t.name = name
 
-	if responseSchemaChangeHandling != ALLOW_ALL && !schemaEnabled {
-		t.enabled = false
- 	} else {
-		t.enabled = *response.Enabled
-	}
-	
+	t.enabled = *response.Enabled
 	t.patchAllowed = response.EnabledPatchSettings.Allowed
 	if !t.isPatchAllowed() {
 		lockReason := "Reason unknown. Please report this error to provider developers."

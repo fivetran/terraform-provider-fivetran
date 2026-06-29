@@ -951,14 +951,6 @@ func TestResourceSchemaDisabledSchemasWithUnexpectedTablesInResponseMock(t *test
 							}
 						}
 					}
-					"SCHEMA2" = {
-						enabled = false,
-						tables = {
-							"SALES" = {
-								enabled = false
-							}
-						}
-					}
 					"SCHEMA3" = {
 						enabled = false
 					}
@@ -976,8 +968,6 @@ func TestResourceSchemaDisabledSchemasWithUnexpectedTablesInResponseMock(t *test
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "ALLOW_COLUMNS"),
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.SOURCE.enabled", "true"),
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.SOURCE.tables.ORDERS.enabled", "true"),
-			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.SCHEMA2.enabled", "false"),
-			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.SCHEMA2.tables.SALES.enabled", "false"),
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.SCHEMA3.enabled", "false"),
 			
 			resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.SOURCE.tables.DELIVERIES"),

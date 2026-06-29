@@ -520,6 +520,9 @@ func TestResourceEmptyDefaultSchemaMock(t *testing.T) {
 	}
 
 	step2 := resource.TestStep{
+		PreConfig: func() {
+			schemaEmptyDefaultReloadHandler.Interactions = 0
+		},
 		Config: `
 			resource "fivetran_connector_schema_config" "test_schema" {
 				provider = fivetran-provider
@@ -538,6 +541,9 @@ func TestResourceEmptyDefaultSchemaMock(t *testing.T) {
 	}
 
 	step3 := resource.TestStep{
+		PreConfig: func() {
+			schemaEmptyDefaultPatchHandler.Interactions = 0
+		},
 		Config: `
 			resource "fivetran_connector_schema_config" "test_schema" {
 				provider = fivetran-provider
@@ -559,7 +565,7 @@ func TestResourceEmptyDefaultSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				//assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 1)
+				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 1)
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
@@ -567,6 +573,9 @@ func TestResourceEmptyDefaultSchemaMock(t *testing.T) {
 	}
 
 	step4 := resource.TestStep{
+		PreConfig: func() {
+			schemaEmptyDefaultPatchHandler.Interactions = 0
+		},
 		Config: `
 			resource "fivetran_connector_schema_config" "test_schema" {
 				provider = fivetran-provider
@@ -586,7 +595,7 @@ func TestResourceEmptyDefaultSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				//assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 2)
+				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 1)
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
