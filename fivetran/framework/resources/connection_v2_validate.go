@@ -31,10 +31,7 @@ func (r *connectionV2) ValidateConfig(ctx context.Context, req resource.Validate
 		return
 	}
 
-	configMap, configDiags := core.DynamicToMap(ctx, data.Config)
-	resp.Diagnostics.Append(configDiags...)
-	authMap, authDiags := core.DynamicToMap(ctx, data.Auth)
-	resp.Diagnostics.Append(authDiags...)
+	configMap, authMap := r.dynamicPlanMaps(ctx, data, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -89,8 +86,8 @@ func validateDynamicObject(values map[string]interface{}, slot *metadata.Propert
 		} else if core.ShouldWarnForMetadataFieldStatus(prop) {
 			diags.AddAttributeWarning(
 				fieldPath,
-				"Non-GA Dynamic Field",
-				fmt.Sprintf("Field %q is marked as %q in connector metadata. It is accepted because the metadata endpoint returned it for this account, but availability may change before general availability.", name, prop.FieldStatus),
+				"Non-Standard Dynamic Field",
+				fmt.Sprintf("Field %q is marked as %q in connector metadata. It is accepted because the metadata endpoint returned it for this account, but its availability or behavior may change, including potential removal for sunset fields.", name, prop.FieldStatus),
 			)
 		}
 
