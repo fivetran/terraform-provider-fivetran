@@ -797,3 +797,255 @@ func TestResourceSchemaEmptyColumnsListOldSchemaMock(t *testing.T) {
 		},
 	)
 }
+
+// TestResourceSchemaDisabledSchemasWithUnexpectedTablesInResponseMock reproduces GitHub Issue #589.
+//
+// When schemas are configured with enabled = false and no tables defined locally,
+// but the Fivetran API response returns those schemas with tables after PATCH,
+// the provider was incorrectly including those tables in state, causing:
+//
+//	"Provider produced inconsistent result after apply:
+//	 .schemas["SCHEMA3"].tables: new element "SUPPLIER" has appeared."
+func TestResourceSchemaDisabledSchemasWithUnexpectedTablesInResponseMock(t *testing.T) {
+
+	var schemaData map[string]interface{}
+
+	var getHandler *mock.Handler
+	var patchHandler *mock.Handler
+	var postSchemasReloadHandler *mock.Handler
+
+	// Initial upstream: all schemas enabled
+	var initialSchemaResponse = `
+{
+	"schema_change_handling": "ALLOW_ALL",
+	"schemas": {
+		"SOURCE": {
+			"name_in_destination": "schema1_source",
+			"enabled": true,
+			"tables": {
+				"ORDERS": {
+					"name_in_destination": "orders",
+					"sync_mode": "SOFT_DELETE",
+					"enabled": true,
+					"supports_columns_config": true,
+					"supports_history_mode": true,
+					"enabled_patch_settings": {
+						"allowed": true
+					}
+				},
+				"DELIVERIES": {
+					"name_in_destination": "deliveries",
+					"sync_mode": "SOFT_DELETE",
+					"enabled": true,
+					"supports_columns_config": true,
+					"supports_history_mode": true,
+					"enabled_patch_settings": {
+						"allowed": true
+					}
+				}
+			}
+		},
+		"SCHEMA2": {
+			"name_in_destination": "schema1_schema2",
+			"enabled": true,
+			"tables": {
+				"SALES": {
+					"name_in_destination": "sales",
+					"enabled": true,
+					"enabled_patch_settings": {
+						"allowed": true
+					}
+				}
+			}
+		},
+		"SCHEMA3": {
+			"name_in_destination": "schema1_schema3",
+			"enabled": true,
+			"tables": {
+				"SUPPLIER": {
+					"name_in_destination": "supplier",
+					"enabled": true,
+					"enabled_patch_settings": {
+						"allowed": true
+					}
+				}
+			}
+		}
+	}
+}`
+
+	// After PATCH: SCHEMA2 and SCHEMA3 are disabled, but the API still returns their tables.
+	var afterPatchSchemaResponse = `
+{
+	"schema_change_handling": "ALLOW_COLUMNS",
+	"schemas": {
+		"SOURCE": {
+			"name_in_destination": "schema1_source",
+			"enabled": true,
+			"tables": {
+				"ORDERS": {
+					"name_in_destination": "orders",
+					"sync_mode": "SOFT_DELETE",
+					"enabled": true,
+					"supports_columns_config": true,
+					"supports_history_mode": true,
+					"enabled_patch_settings": {
+						"allowed": true
+					}
+				},
+				"DELIVERIES": {
+					"name_in_destination": "deliveries",
+					"sync_mode": "SOFT_DELETE",
+					"enabled": false,
+					"supports_columns_config": true,
+					"supports_history_mode": true,
+					"enabled_patch_settings": {
+						"allowed": true
+					}
+				}
+			}
+		},
+		"SCHEMA2": {
+			"name_in_destination": "schema1_schema2",
+			"enabled": false,
+			"tables": {
+				"SALES": {
+					"name_in_destination": "sales",
+					"enabled": true,
+					"enabled_patch_settings": {
+						"allowed": true
+					}
+				}
+			}
+		},
+		"SCHEMA3": {
+			"name_in_destination": "schema1_schema3",
+			"enabled": false,
+			"tables": {
+				"SUPPLIER": {
+					"name_in_destination": "supplier",
+					"enabled": true,
+					"enabled_patch_settings": {
+						"allowed": true
+					}
+				}
+			}
+		}
+	}
+}`
+
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+
+				connector_id           = "connector_id"
+				schema_change_handling = "ALLOW_COLUMNS"
+
+				schemas = {
+					"SOURCE" = {
+						enabled = true
+						tables = {
+							"ORDERS" = {
+								enabled = true
+							}
+						}
+					}
+					"SCHEMA2" = {
+						enabled = false,
+						tables = {
+							"SALES" = {
+								enabled = false
+							}
+						}
+					}
+					"SCHEMA3" = {
+						enabled = false
+					}
+				}
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				assertEqual(t, getHandler.Interactions, 2)
+				assertEqual(t, postSchemasReloadHandler.Interactions, 1)
+				assertEqual(t, patchHandler.Interactions, 1)
+				assertNotEmpty(t, schemaData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "ALLOW_COLUMNS"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.SOURCE.enabled", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.SOURCE.tables.ORDERS.enabled", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.SCHEMA2.enabled", "false"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.SCHEMA3.enabled", "false"),
+			
+			resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.SOURCE.tables.DELIVERIES"),
+			resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.SCHEMA3.tables.SUPPLIER"),
+			resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.SCHEMA2.tables.SALES"),
+		),
+	}
+
+	// Refresh to ensure the state remains stable (no perpetual diff after initial apply).
+	step2 := resource.TestStep{
+		RefreshState: true,
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				mockClient.Reset()
+				schemaData = nil
+
+				getHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						if nil == schemaData {
+							return fivetranResponse(t, req,
+								"NotFound_SchemaConfig", http.StatusNotFound,
+								"Connector with id 'connector_id' doesn't have schema config", nil), nil
+						}
+						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaData), nil
+					},
+				)
+
+				postSchemasReloadHandler = mockClient.When(http.MethodPost, "/v1/connections/connector_id/schemas/reload").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						schemaData = createMapFromJsonString(t, initialSchemaResponse)
+						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaData), nil
+					},
+				)
+
+				patchHandler = mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						body := requestBodyToJson(t, req)
+
+						assertKeyExistsAndHasValue(t, body, "schema_change_handling", "ALLOW_COLUMNS")
+						schemas := assertKeyExists(t, body, "schemas").(map[string]interface{})
+
+						schemaSource := assertKeyExists(t, schemas, "SOURCE").(map[string]interface{})
+						tables := assertKeyExists(t, schemaSource, "tables").(map[string]interface{})
+						assertKeyExistsAndHasValue(t, tables["DELIVERIES"].(map[string]interface{}), "enabled", false)
+
+						schema2 := assertKeyExists(t, schemas, "SCHEMA2").(map[string]interface{})
+						assertKeyExistsAndHasValue(t, schema2, "enabled", false)
+
+						schema3 := assertKeyExists(t, schemas, "SCHEMA3").(map[string]interface{})
+						assertKeyExistsAndHasValue(t, schema3, "enabled", false)
+
+						schemaData = createMapFromJsonString(t, afterPatchSchemaResponse)
+						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaData), nil
+					},
+				)
+			},
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				// Schema config always exists within the connector — nothing to destroy.
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
+				step2,
+			},
+		},
+	)
+}
