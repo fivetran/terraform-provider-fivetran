@@ -2,6 +2,7 @@ package framework
 
 import (
 	"context"
+	"sync"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/provider"
@@ -11,7 +12,7 @@ import (
 func TestProviderSchemaIncludesSkipPlanTimeValidation(t *testing.T) {
 	t.Parallel()
 
-	p := FivetranProvider()
+	p := &fivetranProvider{metadataCache: &sync.Map{}}
 	var resp provider.SchemaResponse
 	p.Schema(context.Background(), provider.SchemaRequest{}, &resp)
 	if resp.Diagnostics.HasError() {

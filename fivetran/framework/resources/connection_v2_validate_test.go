@@ -202,6 +202,24 @@ func TestConnectionV2ValidateConfigReportsMetadataFetchFailure(t *testing.T) {
 	}
 }
 
+func TestConnectionV2ValidateConfigSkipsMetadataFetchForEmptyDynamicObjects(t *testing.T) {
+	t.Parallel()
+	ctx := context.Background()
+
+	r := configuredConnectionV2ForValidation(t, false, &sync.Map{})
+	req := connectionV2ValidateConfigRequest(t, "google_ads",
+		map[string]interface{}{},
+		map[string]interface{}{},
+	)
+
+	var resp resource.ValidateConfigResponse
+	r.ValidateConfig(ctx, req, &resp)
+
+	if resp.Diagnostics.HasError() {
+		t.Fatalf("unexpected validation errors: %v", resp.Diagnostics)
+	}
+}
+
 func TestConnectionV2ValidateConfigReportsUnconfiguredClient(t *testing.T) {
 	t.Parallel()
 	ctx := context.Background()

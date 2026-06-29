@@ -38,7 +38,7 @@ func (r *connectionV2) ValidateConfig(ctx context.Context, req resource.Validate
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	if configMap == nil && authMap == nil {
+	if len(configMap) == 0 && len(authMap) == 0 {
 		return
 	}
 
