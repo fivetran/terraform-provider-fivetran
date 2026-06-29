@@ -238,6 +238,27 @@ func TestConnectionV2ValidateConfigReportsUnconfiguredClient(t *testing.T) {
 	}
 }
 
+func TestConnectionV2ValidateConfigReportsUnexpectedMetadataCacheType(t *testing.T) {
+	t.Parallel()
+	ctx := context.Background()
+
+	cache := &sync.Map{}
+	cache.Store("google_ads", "not metadata")
+
+	r := configuredConnectionV2ForValidation(t, false, cache)
+	req := connectionV2ValidateConfigRequest(t, "google_ads",
+		map[string]interface{}{"schema": "app"},
+		nil,
+	)
+
+	var resp resource.ValidateConfigResponse
+	r.ValidateConfig(ctx, req, &resp)
+
+	if resp.Diagnostics.ErrorsCount() != 1 {
+		t.Fatalf("errors = %d, want 1: %v", resp.Diagnostics.ErrorsCount(), resp.Diagnostics)
+	}
+}
+
 func TestConnectionV2ValidateConfigReportsMetadataValidationErrors(t *testing.T) {
 	t.Parallel()
 	ctx := context.Background()
