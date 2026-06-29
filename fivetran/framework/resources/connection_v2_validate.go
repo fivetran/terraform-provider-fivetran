@@ -69,7 +69,7 @@ func validateDynamicObject(values map[string]interface{}, slot *metadata.Propert
 	}
 
 	for name, value := range values {
-		prop := metadataSlotProp(slot, name)
+		prop := core.SlotProp(slot, name)
 		fieldPath := root.AtName(name)
 		if prop == nil {
 			diags.AddAttributeError(
@@ -203,11 +203,4 @@ func isNumberValue(value interface{}) bool {
 	default:
 		return false
 	}
-}
-
-func metadataSlotProp(slot *metadata.Property, key string) *metadata.Property {
-	if slot == nil || slot.Properties == nil {
-		return nil
-	}
-	return slot.Properties[key]
 }

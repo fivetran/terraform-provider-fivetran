@@ -197,7 +197,7 @@ func project(remote, mask map[string]interface{}, slot *metadata.Property) map[s
 	result := make(map[string]interface{}, len(mask))
 
 	for key, maskVal := range mask {
-		prop := slotProp(slot, key)
+		prop := SlotProp(slot, key)
 
 		if prop != nil && prop.Format == "password" {
 			result[key] = maskVal
@@ -233,7 +233,7 @@ func project(remote, mask map[string]interface{}, slot *metadata.Property) map[s
 		if _, inMask := mask[key]; inMask {
 			continue
 		}
-		prop := slotProp(slot, key)
+		prop := SlotProp(slot, key)
 		if prop != nil && prop.Readonly {
 			result[key] = remoteVal
 		}
@@ -256,7 +256,7 @@ func PrepareConfigPatchDynamic(plan, state map[string]interface{}, slot *metadat
 	patch := make(map[string]interface{})
 
 	for k, planVal := range plan {
-		prop := slotProp(slot, k)
+		prop := SlotProp(slot, k)
 		if prop != nil && (prop.Readonly || prop.Immutable) {
 			continue
 		}
@@ -270,7 +270,7 @@ func PrepareConfigPatchDynamic(plan, state map[string]interface{}, slot *metadat
 		if _, inPlan := plan[k]; inPlan {
 			continue
 		}
-		prop := slotProp(slot, k)
+		prop := SlotProp(slot, k)
 		if prop != nil && (prop.Readonly || prop.Immutable) {
 			continue
 		}
@@ -282,7 +282,9 @@ func PrepareConfigPatchDynamic(plan, state map[string]interface{}, slot *metadat
 	return patch
 }
 
-func slotProp(slot *metadata.Property, key string) *metadata.Property {
+// SlotProp returns the child Property for key within a slot's Properties map,
+// or nil if the slot, its Properties map, or the key is absent.
+func SlotProp(slot *metadata.Property, key string) *metadata.Property {
 	if slot == nil || slot.Properties == nil {
 		return nil
 	}
