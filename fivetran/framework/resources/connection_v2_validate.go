@@ -96,7 +96,18 @@ func validateDynamicObject(values map[string]interface{}, slot *metadata.Propert
 }
 
 func validateDynamicValue(value interface{}, prop *metadata.Property, valuePath path.Path, diags *diag.Diagnostics) {
-	if value == nil || prop == nil {
+	if prop == nil {
+		return
+	}
+	if value == nil {
+		if prop.Nullable {
+			return
+		}
+		diags.AddAttributeError(
+			valuePath,
+			"Invalid Dynamic Field Value",
+			fmt.Sprintf("Field with metadata type %q does not allow null.", prop.Type),
+		)
 		return
 	}
 

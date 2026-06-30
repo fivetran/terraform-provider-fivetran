@@ -136,6 +136,8 @@ func TestValidateDynamicValueTypes(t *testing.T) {
 		{name: "number rejects bool", prop: &metadata.Property{Type: "number"}, value: true, wantErrors: 1},
 		{name: "boolean accepts bool", prop: &metadata.Property{Type: "boolean"}, value: true},
 		{name: "boolean rejects string", prop: &metadata.Property{Type: "boolean"}, value: "true", wantErrors: 1},
+		{name: "null rejects non-nullable field", prop: &metadata.Property{Type: "string"}, value: nil, wantErrors: 1},
+		{name: "null accepts nullable field", prop: &metadata.Property{Type: "string", Nullable: true}, value: nil},
 		{name: "empty metadata type is tolerated", prop: &metadata.Property{Type: ""}, value: map[string]interface{}{"schema": "app"}},
 	}
 

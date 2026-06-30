@@ -13,8 +13,13 @@ import (
 // The cache is passed explicitly so each provider instance is hermetic (no package-level state).
 // Errors are not cached — transient failures are retried on the next call.
 func GetCachedConnectorMetadata(ctx context.Context, client *fivetran.Client, cache *sync.Map, service string) (*metadata.ConnectorMetadata, error) {
-	if meta, ok, err := LoadCachedConnectorMetadata(cache, service); ok || err != nil {
-		return meta, err
+	if cache != nil {
+		if meta, ok, err := LoadCachedConnectorMetadata(cache, service); ok || err != nil {
+			return meta, err
+		}
+	}
+	if client == nil {
+		return nil, fmt.Errorf("unconfigured Fivetran client")
 	}
 
 	resp, err := client.NewMetadataDetails().Service(service).Do(ctx)
@@ -23,6 +28,10 @@ func GetCachedConnectorMetadata(ctx context.Context, client *fivetran.Client, ca
 	}
 
 	meta := resp.Data.ConnectorMetadata
+	if cache == nil {
+		return &meta, nil
+	}
+
 	// LoadOrStore: concurrent fetches are idempotent; first stored value wins.
 	actual, _ := cache.LoadOrStore(service, &meta)
 	return connectorMetadataCacheValue(service, actual)
