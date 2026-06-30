@@ -138,6 +138,7 @@ churnzero
 cimis
 cin7
 cin7core
+circle_community_platform
 circleci
 cj_commission_detail
 clari
@@ -310,6 +311,7 @@ green_power_monitor
 greenhouse
 grepsr
 grin
+guidewire_cloud_data_access
 guru
 h_level
 happyfox
