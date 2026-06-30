@@ -217,6 +217,7 @@
          "aws_cost_report": "Access Key ID",
          "checkout": "Your Checkout.com access key ID.",
          "cloudtalk": "Your CloudTalk Access Key ID.",
+         "guidewire_cloud_data_access": "Access Key ID for access key authentication.",
          "nice": "Your NICE access key ID.",
          "s3": "Access Key ID",
          "s3_compatible_storage": "Access Key ID",
@@ -243,6 +244,7 @@
          "checkout": "Your Checkout.com access key secret.",
          "cloudtalk": "Your CloudTalk Access Key Secret.",
          "gongio": "Your Gongio Access Key Secret.",
+         "guidewire_cloud_data_access": "Access Key Secret for access key authentication.",
          "nice": "Your NICE access key secret.",
          "s3": "Access Key Secret",
          "s3_compatible_storage": "Access Key Secret",
@@ -1059,6 +1061,21 @@
       },
       "api_field": ""
    },
+   "allowed_senders_list": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "item_type": {
+         "email": "string"
+      },
+      "description": {
+         "email": "Restrict ingestion to emails from these senders only. Supports exact addresses (e.g. reports@vendor.com) or domains (e.g. @vendor.com). Applies to all tables."
+      },
+      "api_field": ""
+   },
    "always_encrypted": {
       "readonly": false,
       "sensitive": false,
@@ -1129,6 +1146,19 @@
       },
       "api_field": ""
    },
+   "analytics_api_key": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "anthropic_claude": "Your Analytics API key for syncing Claude Enterprise organization-level analytics data."
+      },
+      "api_field": ""
+   },
    "api": {
       "readonly": false,
       "sensitive": false,
@@ -1167,7 +1197,20 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "anthropic_claude": "Your Claude Platform Admin API key."
+         "anthropic_claude": "Your Claude Platform Admin API key for syncing organization-level management and reporting data."
+      },
+      "api_field": ""
+   },
+   "api_base_url": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "gongio": "Your Gong API Base URL."
       },
       "api_field": ""
    },
@@ -1230,7 +1273,7 @@
          "airtable": "API key of the Airtable account.",
          "algolia": "Your Algolia API key.",
          "alida": "Your Alida API key.",
-         "anthropic_claude": "Your Claude Platform standard API key.",
+         "anthropic_claude": "Your API key for syncing data from a specific Claude workspace.",
          "anvyl": "Your Anvyl API key.",
          "apollo": "Your Apollo API key.",
          "appcues": "Your Appcues API key.",
@@ -1479,7 +1522,20 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "openai": "Your OpenAI API key."
+         "openai": "The project-specific API key for the OpenAI Platform project whose data you want to sync."
+      },
+      "api_field": ""
+   },
+   "api_key_3": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "openai": "The API key scoped to `codex.enterprise.analytics.read` for syncing Codex Enterprise Analytics data from a specific ChatGPT workspace."
       },
       "api_field": ""
    },
@@ -1650,6 +1706,7 @@
          "buzzsprout": "Your Buzzsprout API token.",
          "centra": "Your Centra API token.",
          "chameleon": "Your Chameleon API token.",
+         "circle_community_platform": "Your Circle Community Platform API token.",
          "clari": "Your Clari API token.",
          "cloudflare_analytics": "Your Cloudflare Analytics API token.",
          "coda": "Your Coda API token.",
@@ -2311,7 +2368,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "databricks_db": "Token-based authentication type",
+         "databricks_db": "Authentication type (TOKEN or OAUTH2)",
          "gitlab": "Your GitLab auth type.",
          "redshift_db": "Password-based authentication type",
          "snowflake_db": "Password-based or key-based authentication type"
@@ -2340,6 +2397,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "ukg_pro_workforce_management": "Your UKG Pro Workforce Management Auth base URL.",
          "younium": "Your Younium auth environment. Use this parameter only if you want the connection to authenticate using OAuth 2.0."
       },
       "api_field": ""
@@ -2458,6 +2516,7 @@
          "dynamics_365": "Authentication mechanism. Either one of `OAUTH2`, or `SERVICE_PRINCIPAL`. Default value `OAUTH2`",
          "gcs": "Authorization type. Required for storage bucket authentication.",
          "google_sheets": "The `OAuth` value must be specified for this type of authorization.",
+         "guidewire_cloud_data_access": "Access approach. Supported values: IAM_ROLE, ACCESS_KEY, PUBLIC_BUCKET.",
          "jira": "Authorization type.",
          "mixpanel": "Authentication Method",
          "pardot": "Authenticate using OAuth or HTTP Basic",
@@ -2466,6 +2525,7 @@
          "s3": "Access approach",
          "s3_compatible_storage": "Access approach",
          "samsara": "The authentication method you want to use for your connection.",
+         "ukg_pro_workforce_management": "The authentication method you want to use for your connection.",
          "upland": "Authentication method you want to use for your connection.",
          "wasabi_cloud_storage": "The Wasabi Cloud Storage Access approach. Required for connector creation. Default value: `ACCESS_KEY`.",
          "younium": "The authentication method you want to use for your connection."
@@ -2847,7 +2907,7 @@
          "financial_force": "(Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.",
          "freshsales": "Your Freshsales product.",
          "gitlab": "Your GitLab base URL.",
-         "gongio": "Your Gong API Base URL.",
+         "gongio": "Your Gong Base URL.",
          "higher_logic_vanilla": "Your Higher Logic Vanilla base URL.",
          "ironclad": "Your Ironclad base url.",
          "jotform": "Your Jotform base URL.",
@@ -2998,6 +3058,7 @@
          "connector_sdk": "",
          "gcs": "The name of the GCS bucket.",
          "google_play": "The Google Cloud Storage source bucket.",
+         "guidewire_cloud_data_access": "The S3 bucket name containing the Guidewire CDA export. Required for connector creation.",
          "heap": "The S3 bucket name.",
          "kinesis": "The name of the Kinesis bucket.",
          "s3": "The S3 bucket name. Required for connector creation.",
@@ -3649,6 +3710,7 @@
          "ironclad_clickwrap": "Your Ironclad Clickwrap Client Secret.",
          "jama_software": "Your Jama Software client secret.",
          "jibble": "Your Jibble client secret.",
+         "khoros_communities": "Your Khoros Communities client secret.",
          "learn_amp": "Your Learn Amp client secret.",
          "looker_source": "Your Looker client secret.",
          "marketo": "Marketo REST API Client Secret.",
@@ -4126,6 +4188,7 @@
          "google_cloud_mysql": "Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
          "google_cloud_postgresql": "Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
          "google_cloud_sqlserver": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
+         "guidewire_cloud_data_access": "Connection method. Default value: `Directly`.",
          "hana_sap_hva_b1": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
          "hana_sap_hva_ecc": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
          "hana_sap_hva_ecc_netweaver": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
@@ -4394,6 +4457,19 @@
       "item_type": {},
       "description": {
          "adjust": "CSV definition for the CSV export (https://help.adjust.com/en/article/csv-uploads#how-do-i-format-my-csv-definition)."
+      },
+      "api_field": ""
+   },
+   "csv_delimiter": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "klarna": "The CSV delimiter used in your Klarna settlement report."
       },
       "api_field": ""
    },
@@ -4698,6 +4774,32 @@
             },
             "api_field": ""
          },
+         "click_attribution_window": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "pinterest_ads": "Overrides the connector-level click attribution window for this report."
+            },
+            "api_field": ""
+         },
+         "conversion_report_time": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "pinterest_ads": "Overrides the connector-level conversion report time for this report."
+            },
+            "api_field": ""
+         },
          "conversions_report_included": {
             "readonly": false,
             "sensitive": false,
@@ -4778,6 +4880,7 @@
             "key_field": "",
             "item_type": {},
             "description": {
+               "pinterest_ads": "Time granularity for the report: DAY, HOUR, WEEK, MONTH, or TOTAL.",
                "snapchat_ads": "[Sets Granularity on custom report](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports#granularity)."
             },
             "api_field": ""
@@ -4819,10 +4922,12 @@
             "key_field": "",
             "item_type": {
                "criteo": "string",
+               "pinterest_ads": "string",
                "tiktok_ads": "string"
             },
             "description": {
                "criteo": "Metrics to be synced",
+               "pinterest_ads": "List of metrics to include in the report.",
                "tiktok_ads": "Metrics to be synced"
             },
             "api_field": ""
@@ -4866,6 +4971,7 @@
             "item_type": {},
             "description": {
                "criteo": "Type of report to be generated",
+               "pinterest_ads": "The breakdown level for the report (e.g. ADVERTISER, CAMPAIGN, AD_GROUP, PIN_PROMOTION, KEYWORD, PRODUCT_GROUP, PRODUCT_ITEM).",
                "tiktok_ads": "Type of report to be generated"
             },
             "api_field": ""
@@ -4919,6 +5025,7 @@
             "item_type": {},
             "description": {
                "criteo": "Destination Table name of report",
+               "pinterest_ads": "Destination table name for this custom report.",
                "tiktok_ads": "Destination Table name of report"
             },
             "api_field": ""
@@ -4963,6 +5070,19 @@
                "reddit_ads": "When this parameter is set to `ACCOUNT`, connector will use account related time zone to sync report data. Default value: `ACCOUNT`. Possible values: `ACCOUNT`, `USER`"
             },
             "api_field": ""
+         },
+         "view_attribution_window": {
+            "readonly": false,
+            "sensitive": false,
+            "nullable": false,
+            "type": "string",
+            "fields": null,
+            "key_field": "",
+            "item_type": {},
+            "description": {
+               "pinterest_ads": "Overrides the connector-level view attribution window for this report."
+            },
+            "api_field": ""
          }
       },
       "key_field": "report_name|table_name",
@@ -4970,6 +5090,7 @@
       "description": {
          "apple_search_ads": "Allows users to define reports with custom groupBy dimensions.",
          "criteo": "Title of Custom Report",
+         "pinterest_ads": "Custom reports to sync. Each entry creates a destination table with the specified metrics and breakdown level.",
          "reddit_ads": "The list of custom report configurations. Each report corresponds to a table within the schema to which connector will sync the data.",
          "snapchat_ads": "[Custom reports for Snapchat Ads connector](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports).",
          "tiktok_ads": "Title of Custom Report"
@@ -5600,6 +5721,19 @@
          "google_display_and_video_360": "The report dimensions (filters) to include into a sync. The dimension names are provided in the API format. This is a required parameter when `config_method` is set to `CREATE_NEW`."
       },
       "api_field": ""
+   },
+   "dimensions_criteo_retail_media": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "criteo_retail_media": "Your Criteo Retail Media report revenue dimensions."
+      },
+      "api_field": "dimensions"
    },
    "direct_capture_method": {
       "readonly": false,
@@ -6425,6 +6559,7 @@
       "item_type": {},
       "description": {
          "azure_blob_storage": "Required when `file_mapping_method` = `EXTRACT_TABLES`. A regular expression with a named capture group `(?table...)` to extract table names from file paths.",
+         "ftp": "Required when `file_mapping_method` = `EXTRACT_TABLES`. A regular expression with a named capture group `(?table...)` to extract table names from file paths.",
          "gcs": "Required when `file_mapping_method` = `EXTRACT_TABLES`. A regular expression with a named capture group `(?table...)` to extract table names from file paths.",
          "s3": "Required when `file_mapping_method` = `EXTRACT_TABLES`. A regular expression with a named capture group `(?table...)` to extract table names from file paths.",
          "sftp": "Required when `file_mapping_method` = `EXTRACT_TABLES`. A regular expression with a named capture group `(?table...)` to extract table names from file paths."
@@ -6483,6 +6618,7 @@
       "item_type": {},
       "description": {
          "azure_blob_storage": "The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.",
+         "ftp": "The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.",
          "gcs": "The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.",
          "s3": "The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.",
          "sftp": "The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern."
@@ -6634,7 +6770,7 @@
          "box": "Mapped file name patterns to a destination table.",
          "dropbox": "Mapped file name patterns to a destination table.",
          "email": "Mapped file name patterns to a destination table.",
-         "ftp": "Mapped file name patterns to a destination table.",
+         "ftp": "Required when `file_mapping_method` = `DEFINE_PER_TABLE`. Mapped file name patterns to a destination table.",
          "gcs": "Required when `file_mapping_method` = `DEFINE_PER_TABLE`. Mapped file name patterns to a destination table.",
          "google_drive": "Mapped file name patterns to a destination table.",
          "s3": "Required when `file_mapping_method` = `DEFINE_PER_TABLE`. Mapped file name patterns to a destination table.",
@@ -7492,6 +7628,19 @@
       },
       "api_field": ""
    },
+   "integration_system_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "workday_hcm": "Integration System ID"
+      },
+      "api_field": ""
+   },
    "ip_address": {
       "readonly": false,
       "sensitive": false,
@@ -7635,6 +7784,7 @@
       "description": {
          "aws_lambda": "We use PrivateLink by default if your AWS Lambda is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to AWS lambda over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options/aws-private-link).",
          "dynamodb": "We use PrivateLink by default if your DynamoDB instance is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to DynamoDB over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options/aws-private-link).",
+         "guidewire_cloud_data_access": "Set to `true` if you want to connect to S3 bucket over PrivateLink. Default value: `false`.",
          "s3": "Set to `true` if you want to connect to S3 bucket over PrivateLink. Default value: `false`."
       },
       "api_field": ""
@@ -7760,7 +7910,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "itunes_connect": "Your Issuer ID"
+         "itunes_connect": "Your Issuer ID. Must be populated if `key_type` is set to `Team`"
       },
       "api_field": ""
    },
@@ -7856,6 +8006,19 @@
       "item_type": {},
       "description": {
          "heroku_kafka": "Key Store Type"
+      },
+      "api_field": ""
+   },
+   "key_type": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "itunes_connect": "Key Type"
       },
       "api_field": ""
    },
@@ -8128,6 +8291,19 @@
       },
       "description": {
          "google_ads": "The list of the Manager Account IDs whose clients will be synced. Must be populated if `sync_mode` is set to `ManagerAccounts`."
+      },
+      "api_field": ""
+   },
+   "manifest_path": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "guidewire_cloud_data_access": "The path to the Guidewire CDA manifest.json file in the S3 bucket."
       },
       "api_field": ""
    },
@@ -8532,7 +8708,8 @@
       "item_type": {},
       "description": {
          "gladly": "Your Gladly Organization Name.",
-         "statuspage": "Your Statuspage Organization ID."
+         "statuspage": "Your Statuspage Organization ID.",
+         "ukg_pro_workforce_management": "Your UKG Pro Workforce Management Organization ID."
       },
       "api_field": ""
    },
@@ -8828,7 +9005,7 @@
          "jira": "The Jira user's password.",
          "khoros_care": "Your Khoros Care password.",
          "kissmetrics": "Your Kissmetrics API Password.",
-         "klarna": "Your Klarna Password.",
+         "klarna": "Your Klarna password.",
          "lessonly": "Your Lessonly password.",
          "magento_mysql": "The user's password.",
          "magento_mysql_rds": "The user's password.",
@@ -11676,6 +11853,7 @@
          "aws_msk": "If `sasl_mechanism` is set to `IAM`, enter your Role ARN",
          "cloudfront": "The Role ARN required for authentication.",
          "dynamodb": "Role ARN",
+         "guidewire_cloud_data_access": "The Role ARN required for IAM role authentication.",
          "heap": "The Role ARN required for authentication.",
          "kinesis": "The Role ARN required for authentication.",
          "magento_mysql_rds": "The ARN of the IAM role with RDS permissions. Required if the authentication method is `AWS_IAM` in the SaaS Deployment model.",
@@ -12260,6 +12438,7 @@
          "cimis": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "cin7": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "cin7core": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "circle_community_platform": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "circleci": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "cj_commission_detail": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "clari": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
@@ -12431,6 +12610,7 @@
          "greenhouse": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "grepsr": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "grin": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
+         "guidewire_cloud_data_access": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "guru": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "h_level": "Destination schema name. Schema name is permanent and cannot be changed after connection creation",
          "hana_sap_hva_ecc_netweaver": "Destination schema. Schema is permanent and cannot be changed after connection creation",
@@ -14794,6 +14974,7 @@
          "ftp": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema.",
          "gcs": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema.",
          "google_drive": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema.",
+         "guidewire_cloud_data_access": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema.",
          "s3": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema.",
          "s3_compatible_storage": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema.",
          "sftp": "Combined with the schema to form the Fivetran connection name `schema.table_group_name`. Lets you create multiple Merge Mode connections per schema.",
@@ -16245,7 +16426,7 @@
          "jamf": "Your Jamf username.",
          "khoros_care": "Your Khoros Care username.",
          "kissmetrics": "Your Kissmetrics API Username.",
-         "klarna": "Your Klarna Username.",
+         "klarna": "Your Klarna username.",
          "learnupon": "Your LearnUpon username.",
          "lessonly": "Your Lessonly username.",
          "mailgun": "Your Mailgun API username.",
@@ -16578,6 +16759,7 @@
       "item_type": {},
       "description": {
          "fulfil": "Your Fulfil workspace ID.",
+         "openai": "Your ChatGPT Enterprise Workspace ID.",
          "openai_compliance_platform": "Your OpenAI Compliance Platform workspace ID."
       },
       "api_field": ""

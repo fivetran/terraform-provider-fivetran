@@ -18,11 +18,11 @@
   "tags": [
     {
       "name": "updated",
-      "description": "2026-06-15T04:07:48.133Z"
+      "description": "2026-06-29T15:41:23.547Z"
     },
     {
       "name": "hash",
-      "description": "22876f24c7426029a290b1c695e341c95bd1e2bb9ff2d59fae54f40979d0ebaf"
+      "description": "68f35f1175cf760be31d418e93c79f84b638a6b15cadd4dbcff6a604ea809cf8"
     }
   ],
   "paths": {
@@ -202,7 +202,7 @@
           {
             "name": "group_id",
             "in": "query",
-            "description": "Specify the group identifier to filter connections by group",
+            "description": "Filter the list to connections belonging to this group. Retrieve group IDs from the [List All Groups](https://fivetran.com/docs/rest-api/api-reference/groups/list-all-groups) endpoint.",
             "required": false,
             "schema": {
               "type": "string",
@@ -213,7 +213,7 @@
           {
             "name": "schema",
             "in": "query",
-            "description": "Specify the schema name to filter connections by schema",
+            "description": "Filter the list to connections whose schema name matches this value. Partial matches are not supported.",
             "required": false,
             "schema": {
               "type": "string",
@@ -298,6 +298,15 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized error"
+          },
+          "405": {
+            "description": "Method not allowed error"
+          },
+          "406": {
+            "description": "Not acceptable error"
           }
         }
       },
@@ -306,7 +315,7 @@
           "Connection Management"
         ],
         "summary": "Create a Connection",
-        "description": "Creates a new connection within a specified group in your Fivetran account. Runs setup tests and returns testing results.\n\n> IMPORTANT: The `destination_schema_names` field will soon become a required field. Make sure to include it in your API requests when creating new connections to prevent future disruptions.\n\n> IMPORTANT: If you want to get the fingerprint details, do not set `trust_fingerprints` to `true` when you create a connection with our REST API. We can only provide the fingerprint details through the failed SSH Tunnel Connection setup test. For a full walkthrough, see [Get Connection Fingerprint Details](https://fivetran.com/docs/rest-api/tutorials/get-connection-fingerprint-details).\n",
+        "description": "Creates a new connection within a specified group in your Fivetran account. Runs setup tests and returns testing results. <br />\n> IMPORTANT: The `destination_schema_names` field will soon become a required field. Make sure to include it in your API requests when creating new connections to prevent future disruptions.\n> IMPORTANT: If you want to get the fingerprint details, do not set `trust_fingerprints` to `true` when you create a connection with our REST API. We can only provide the fingerprint details through the failed SSH Tunnel Connection setup test. For a full walkthrough, see [Get Connection Fingerprint Details](https://fivetran.com/docs/rest-api/tutorials/get-connection-fingerprint-details).",
         "operationId": "create_connection",
         "parameters": [
           {
@@ -359,6 +368,21 @@
           },
           "400": {
             "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found error"
+          },
+          "406": {
+            "description": "Not acceptable"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "415": {
+            "description": "Unsupported media type"
           }
         }
       }
@@ -375,13 +399,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -421,6 +445,18 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized error"
+          },
+          "404": {
+            "description": "Not found error"
+          },
+          "405": {
+            "description": "Method not allowed error"
+          },
+          "406": {
+            "description": "Not acceptable error"
           }
         }
       },
@@ -435,13 +471,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -495,13 +531,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -569,13 +605,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "cursor",
@@ -671,13 +707,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -748,13 +784,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "hash",
@@ -822,13 +858,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "hash",
@@ -895,13 +931,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -950,6 +986,21 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found error"
+          },
+          "406": {
+            "description": "Not acceptable"
+          },
+          "415": {
+            "description": "Unsupported media type"
           }
         }
       }
@@ -966,13 +1017,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "cursor",
@@ -1068,13 +1119,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -1130,13 +1181,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "hash",
@@ -1204,13 +1255,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "hash",
@@ -1277,13 +1328,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -1330,8 +1381,26 @@
               }
             }
           },
+          "400": {
+            "description": "Bad request error. Returned when the scope object is empty, a schema key maps to an empty table array, or the connector does not support table-level re-sync."
+          },
+          "401": {
+            "description": "Unauthorized error"
+          },
           "404": {
             "description": "Not found error"
+          },
+          "405": {
+            "description": "Method not allowed error"
+          },
+          "406": {
+            "description": "Not acceptable error"
+          },
+          "409": {
+            "description": "Conflict error. Returned when a data sync is already in progress and cannot be completed before the re-sync can be scheduled."
+          },
+          "415": {
+            "description": "Unsupported media type error"
           }
         }
       }
@@ -1348,13 +1417,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -1408,13 +1477,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -1501,13 +1570,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -1596,13 +1665,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -1673,13 +1742,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -1744,13 +1813,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -1827,13 +1896,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "schemaName",
@@ -1909,13 +1978,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "schemaName",
@@ -2002,13 +2071,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "schemaName",
@@ -2101,13 +2170,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "schemaName",
@@ -2205,13 +2274,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "schema",
@@ -2283,19 +2352,19 @@
           "Connection Management"
         ],
         "summary": "Retrieve Connection State",
-        "description": "Returns the connection state. This endpoint is only supported for Function and Connection SDK connectors.",
+        "description": "Returns the connection state. This endpoint is only supported for Function and Connection SDK connectors. To update the connection state, use [Update Connection State](https://fivetran.com/docs/rest-api/api-reference/connections/modify-connection-state).",
         "operationId": "connection_state",
         "parameters": [
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -2339,11 +2408,17 @@
           "400": {
             "description": "The connection state doesn't exist."
           },
+          "401": {
+            "description": "Unauthorized error"
+          },
           "404": {
             "description": "Connection not found error."
           },
           "405": {
             "description": "Not a function connector error."
+          },
+          "406": {
+            "description": "Not acceptable error"
           }
         }
       },
@@ -2358,13 +2433,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -2424,16 +2499,25 @@
             }
           },
           "400": {
-            "description": "The connection state doesn't exist."
+            "description": "The request body is missing or malformed."
+          },
+          "401": {
+            "description": "Unauthorized error"
           },
           "404": {
             "description": "Connection not found error."
           },
           "405": {
-            "description": "Not a function connector error."
+            "description": "Not a function connector error. Also returned when an unsupported HTTP method is used."
+          },
+          "406": {
+            "description": "Not acceptable error"
           },
           "409": {
             "description": "Connection cannot be updated because the sync is in progress."
+          },
+          "415": {
+            "description": "Unsupported media type error"
           }
         }
       }
@@ -2450,13 +2534,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -2503,8 +2587,17 @@
               }
             }
           },
+          "401": {
+            "description": "Unauthorized error"
+          },
           "404": {
             "description": "Not found error"
+          },
+          "406": {
+            "description": "Not acceptable error"
+          },
+          "415": {
+            "description": "Unsupported media type error"
           }
         }
       }
@@ -2521,13 +2614,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -2577,8 +2670,23 @@
               }
             }
           },
+          "400": {
+            "description": "Bad request error. Returned when the request body is omitted entirely (as opposed to an empty object, which is accepted)."
+          },
+          "401": {
+            "description": "Unauthorized error"
+          },
           "404": {
             "description": "Not found error"
+          },
+          "405": {
+            "description": "Method not allowed error"
+          },
+          "406": {
+            "description": "Not acceptable error"
+          },
+          "415": {
+            "description": "Unsupported media type error"
           }
         }
       }
@@ -9399,13 +9507,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -9470,13 +9578,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -9538,13 +9646,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -11833,7 +11941,7 @@
         "tags": [
           "User Management"
         ],
-        "summary": "Retrieve a User Details",
+        "summary": "Retrieve User Details",
         "description": "Returns a user object if a valid identifier was provided.",
         "operationId": "user_details",
         "parameters": [
@@ -12161,13 +12269,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -12235,13 +12343,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -12309,13 +12417,13 @@
           {
             "name": "connectionId",
             "in": "path",
-            "description": "The unique identifier for the connection within the Fivetran system.",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "connectionId"
+              "example": "4107c213907114059a5544ad8fa66c52"
             },
-            "example": "connectionId"
+            "example": "4107c213907114059a5544ad8fa66c52"
           },
           {
             "name": "Accept",
@@ -13471,7 +13579,7 @@
         "properties": {
           "redirect_uri": {
             "type": "string",
-            "description": "The URI on your site we redirect the end user to after successful setup. The URI must start with the `https` or `http` prefix. ",
+            "description": "The URI on your site we redirect the end user to after successful setup. The URI must start with the `https` or `http` prefix.",
             "example": "https://your.site/path"
           },
           "hide_setup_guide": {
@@ -13508,7 +13616,7 @@
         "properties": {
           "group_id": {
             "type": "string",
-            "description": "The unique identifier for the group within the Fivetran system",
+            "description": "The unique identifier of the destination group to create the connection in. Retrieve group IDs from the [List All Groups](https://fivetran.com/docs/rest-api/api-reference/groups/list-all-groups) endpoint.",
             "example": "group_id"
           },
           "service": {
@@ -13518,12 +13626,12 @@
           },
           "trust_certificates": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the certificate automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic certificate trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a certificate is not trusted automatically, it has to be approved by calling the [Approve connection certificate endpoint](/docs/rest-api/api-reference/certificates/approve-connection-certificate).\n\n> IMPORTANT: To capture the `hash` and `encoded_cert` values needed for approval, omit this field or set it to `false`.\n",
+            "description": "Specifies whether we should trust the certificate automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic certificate trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a certificate is not trusted automatically during testing, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
             "example": true
           },
           "trust_fingerprints": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the SSH fingerprint automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic fingerprint trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a fingerprint is not trusted automatically, it has to be approved by calling the [Approve connection fingerprint endpoint](/docs/rest-api/api-reference/certificates/approve-connection-fingerprint).\n\n> IMPORTANT: To capture the `hash` and `public_key` values needed for approval, omit this field or set it to `false`.\n",
+            "description": "Specifies whether we should trust the SSH fingerprint automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic fingerprint trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a fingerprint is not trusted automatically during testing, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
             "example": true
           },
           "run_setup_tests": {
@@ -13585,7 +13693,7 @@
           },
           "schedule_type": {
             "type": "string",
-            "description": "The connection schedule configuration type. Supported values: `auto`, where Fivetran controls sync frequency based on your plan, and `manual`, where you trigger syncs on demand using the [Sync connection](https://fivetran.com/docs/rest-api/api-reference/connections/sync-connection) endpoint. In `manual` mode, `sync_frequency` is ignored.\n\n> NOTE: To switch from manual back to automatic scheduling, set this field to `auto`. You cannot make this change in the Fivetran dashboard — you must use the REST API. For a full walkthrough, see [Trigger Manual Syncs](https://fivetran.com/docs/rest-api/tutorials/trigger-syncs-manually).",
+            "description": "The connection schedule configuration type. Supported values: auto, manual",
             "example": "auto",
             "enum": [
               "auto",
@@ -13625,11 +13733,16 @@
           "destination_schema_names": {
             "type": "string",
             "description": "Defines how you want the schema names to appear in your destination. <br /> The available values are:  <br /> - FIVETRAN_NAMING - Use Fivetran naming conventions to simplify and standardize the schema, table and column names in the destination. <br /> - SOURCE_NAMING - Preserve source schema table and column names in the destination. <br /> You can modify your selection only before the initial sync. Learn more in [our documentation](https://fivetran.com/docs/core-concepts#namingconventions) <br />\n> IMPORTANT: This field will soon become a required field. Make sure to include it in your API requests when creating new connections to prevent future disruptions.",
-            "example": "SOURCE_NAMING",
+            "example": "FIVETRAN_NAMING",
             "enum": [
               "FIVETRAN_NAMING",
               "SOURCE_NAMING"
             ]
+          },
+          "external_secrets_manager_id": {
+            "type": "string",
+            "description": "The unique identifier of the [External Secrets Manager](/docs/rest-api/api-reference/external-secrets-managers) instance. Connector service must [support](/docs/core-concepts/features/external-secret-managers#connectors) External Secrets Manager feature to use this field.",
+            "example": "esm_id"
           }
         },
         "discriminator": {
@@ -13775,6 +13888,7 @@
             "cimis": "#/components/schemas/cimis_NewConnectorRequestV1",
             "cin7": "#/components/schemas/cin7_NewConnectorRequestV1",
             "cin7core": "#/components/schemas/cin7core_NewConnectorRequestV1",
+            "circle_community_platform": "#/components/schemas/circle_community_platform_NewConnectorRequestV1",
             "circleci": "#/components/schemas/circleci_NewConnectorRequestV1",
             "cj_commission_detail": "#/components/schemas/cj_commission_detail_NewConnectorRequestV1",
             "clari": "#/components/schemas/clari_NewConnectorRequestV1",
@@ -13947,6 +14061,7 @@
             "greenhouse": "#/components/schemas/greenhouse_NewConnectorRequestV1",
             "grepsr": "#/components/schemas/grepsr_NewConnectorRequestV1",
             "grin": "#/components/schemas/grin_NewConnectorRequestV1",
+            "guidewire_cloud_data_access": "#/components/schemas/guidewire_cloud_data_access_NewConnectorRequestV1",
             "guru": "#/components/schemas/guru_NewConnectorRequestV1",
             "h_level": "#/components/schemas/h_level_NewConnectorRequestV1",
             "happyfox": "#/components/schemas/happyfox_NewConnectorRequestV1",
@@ -14410,6 +14525,9 @@
         }
       },
       "ConnectCardConfigRequest": {
+        "required": [
+          "connect_card_config"
+        ],
         "type": "object",
         "properties": {
           "connect_card_config": {
@@ -14437,7 +14555,7 @@
                 }
               }
             },
-            "description": "A map containing an array of tables to re-sync for each schema.\n\nIt is an optional parameter that must be non-empty if provided. If not provided, all schemas and tables of the connection are re-synced.\n"
+            "description": "A map where each key is a schema name and each value is a non-empty array of table names to re-sync within that schema.\nBoth the scope object and each schema's table array must be non-empty — an empty scope object or an empty table array returns 400.\nIf omitted or set to null, all schemas and tables of the connection are re-synced.\nThis parameter is only supported for connectors that support table-level re-sync (typically database connectors such as PostgreSQL, MySQL, and Oracle). Sending scope to an unsupported connector type (for example, Google Sheets) returns 400.\nRetrieve valid schema and table names from GET /v1/connections/{connectionId}/schemas.\n"
           }
         }
       },
@@ -14446,12 +14564,12 @@
         "properties": {
           "trust_certificates": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the certificate automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic certificate trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a certificate is not trusted automatically, it has to be approved by calling the [Approve connection certificate endpoint](/docs/rest-api/api-reference/certificates/approve-connection-certificate).\n\n> IMPORTANT: To capture the `hash` and `encoded_cert` values needed for approval, omit this field or set it to `false`.\n",
+            "description": "Specifies whether we should trust the certificate automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic certificate trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a certificate is not trusted automatically during testing, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
             "example": true
           },
           "trust_fingerprints": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the SSH fingerprint automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic fingerprint trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a fingerprint is not trusted automatically, it has to be approved by calling the [Approve connection fingerprint endpoint](/docs/rest-api/api-reference/certificates/approve-connection-fingerprint).\n\n> IMPORTANT: To capture the `hash` and `public_key` values needed for approval, omit this field or set it to `false`.\n",
+            "description": "Specifies whether we should trust the SSH fingerprint automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic fingerprint trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a fingerprint is not trusted automatically during testing, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
             "example": true
           }
         }
@@ -14461,7 +14579,8 @@
         "properties": {
           "force": {
             "type": "boolean",
-            "description": "If force is true and the connection is currently syncing, it will stop the sync and re-run it. If force is false, the connection will sync only if it isn't currently syncing. The default value is false"
+            "description": "If force is true and the connection is currently syncing, it will stop the sync and re-run it. If force is false, the connection will sync only if it isn't currently syncing. The default value is false",
+            "example": true
           }
         }
       },
@@ -14481,12 +14600,12 @@
           },
           "trust_certificates": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the certificate automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic certificate trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a certificate is not trusted automatically, it has to be approved by calling the [Approve connection certificate endpoint](/docs/rest-api/api-reference/certificates/approve-connection-certificate).\n\n> IMPORTANT: To capture the `hash` and `encoded_cert` values needed for approval, omit this field or set it to `false`.\n",
+            "description": "Specifies whether we should trust the certificate automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic certificate trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a certificate is not trusted automatically during testing, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate).",
             "example": true
           },
           "trust_fingerprints": {
             "type": "boolean",
-            "description": "Specifies whether we should trust the SSH fingerprint automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic fingerprint trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a fingerprint is not trusted automatically, it has to be approved by calling the [Approve connection fingerprint endpoint](/docs/rest-api/api-reference/certificates/approve-connection-fingerprint).\n\n> IMPORTANT: To capture the `hash` and `public_key` values needed for approval, omit this field or set it to `false`.\n",
+            "description": "Specifies whether we should trust the SSH fingerprint automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic fingerprint trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a fingerprint is not trusted automatically during testing, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint).",
             "example": true
           },
           "sync_frequency": {
@@ -14524,7 +14643,7 @@
           },
           "daily_sync_time": {
             "type": "string",
-            "description": "The connection daily sync start time that we return only when the sync frequency is set to 1440 (which means 24 hours) and the daily_sync_time parameter was set using the Create a Connection or Update a Connection request",
+            "description": "The daily sync start time, in `HH:MM` format (UTC), at which the connection syncs. Returned only when `sync_frequency` is `1440` and `daily_sync_time` was explicitly set. `null` otherwise.",
             "example": "14:00"
           },
           "pause_after_trial": {
@@ -14543,12 +14662,12 @@
           },
           "is_historical_sync": {
             "type": "boolean",
-            "description": "The boolean specifying whether the connection should be triggered to re-sync all historical data. If you set this parameter to TRUE, a [historical sync](https://fivetran.com/docs/getting-started/glossary#historicalsync) starts immediately. If a sync is currently running, it's canceled and restarted as a historical sync.\n\n> NOTE: If the connection is paused, the flag is set but the historical sync won't begin until you unpause the connection.\n\n All subsequent syncs after the historical sync completes will be incremental. If the value is FALSE or not specified, the connection doesn't re-sync historical data. This parameter is automatically reset to FALSE once the historical sync is completed.",
+            "description": "The boolean specifying whether the connection should be triggered to re-sync all historical data. If you set this parameter to TRUE, a [historical sync](https://fivetran.com/docs/getting-started/glossary#historicalsync) starts immediately. If a sync is currently running, it's canceled and restarted as a historical sync. All subsequent syncs after the historical sync completes will be incremental. If the value is FALSE or not specified, the connection doesn't re-sync historical data. This parameter is automatically reset to FALSE once the historical sync is completed.",
             "example": true
           },
           "schedule_type": {
             "type": "string",
-            "description": "The connection schedule configuration type. Supported values: `auto`, where Fivetran controls sync frequency based on your plan, and `manual`, where you trigger syncs on demand using the [Sync connection](https://fivetran.com/docs/rest-api/api-reference/connections/sync-connection) endpoint. In `manual` mode, `sync_frequency` is ignored.\n\n> NOTE: To switch from manual back to automatic scheduling, set this field to `auto`. You cannot make this change in the Fivetran dashboard — you must use the REST API. For a full walkthrough, see [Trigger Manual Syncs](https://fivetran.com/docs/rest-api/tutorials/trigger-syncs-manually).",
+            "description": "The connection schedule configuration type. Supported values: auto, manual",
             "example": "auto",
             "enum": [
               "auto",
@@ -14586,6 +14705,13 @@
           },
           "destination_configuration": {
             "$ref": "#/components/schemas/DestinationConfiguration"
+          },
+          "external_secrets_manager_id": {
+            "type": "string",
+            "description": "The unique identifier of the [External Secrets Manager](/docs/rest-api/api-reference/external-secrets-managers) instance. Connector service must [support](/docs/core-concepts/features/external-secret-managers#connectors) External Secrets Manager feature to use this field."
+          },
+          "external_secrets_keys_config": {
+            "description": "The setup configuration keys to be stored in external secrets manager. Check possible config formats in [create method](/docs/rest-api/api-reference/connections/create-connection/)"
           }
         }
       },
@@ -14602,12 +14728,12 @@
         "properties": {
           "code": {
             "type": "string",
-            "description": "Code",
+            "description": "A machine-readable identifier for the warning type (for example: resync_table_warning). Use this value to programmatically detect and respond to specific connection conditions.",
             "example": "resync_table_warning"
           },
           "message": {
             "type": "string",
-            "description": "Setup test message",
+            "description": "A human-readable label describing the warning. For example: Resync Table Warning.",
             "example": "Resync Table Warning"
           },
           "details": {
@@ -14620,13 +14746,13 @@
         "properties": {
           "token": {
             "type": "string",
-            "description": "The connect-card auth token",
-            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkIjp7ImxvZ2luIjp0cnVlLCJ1c2VyIjoiX2FjY291bnR3b3J0aHkiLCJhY2NvdW50IjoiX21vb25iZWFtX2FjYyIsImdyb3VwIjoiX21vb25iZWFtIiwiY29ubmVjdG9yIjoiY29iYWx0X2VsZXZhdGlvbiIsIm1ldGhvZCI6IlBiZkNhcmQiLCJpZGVudGl0eSI6ZmFsc2V9LCJpYXQiOjE2Njc4MzA2MzZ9.YUMGUbzxW96xsKJLo4bTorqzx8Q19GTrUi3WFRFM8BU"
+            "description": "A short-lived JWT that authorizes the end user to configure this connection via the Connect Card interface. Use the `uri` field directly to redirect users — it already embeds this token. If you need to construct your own URL, pass this value as the `auth` query parameter to `https://fivetran.com/connect-card/setup`.",
+            "example": "eyJ0e..."
           },
           "uri": {
             "type": "string",
-            "description": "The Connect Card URI for the user interface",
-            "example": "https://fivetran.com/connect-card/setup?auth=eyJ0eXAiOiJKV1QiLCJh..."
+            "description": "The complete URL to redirect the end user to in order to authorize the connection. It embeds the auth token, redirect URI, and setup guide visibility as query parameters. Redirect the user directly to this address.",
+            "example": "https://fivetran.com/connect-card/setup?redirect_uri=https://your.site/path&auth=eyJ0e...&hide_setup_guide=true"
           }
         }
       },
@@ -14649,7 +14775,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "The unique identifier for the connection within the Fivetran system",
+            "description": "The unique identifier of this connection. Use this value as the `connectionId` path parameter when calling other Connections API endpoints, such as [Retrieve Connection Details](https://fivetran.com/docs/rest-api/api-reference/connections/connection-details) or [Sync Connection Data](https://fivetran.com/docs/rest-api/api-reference/connections/sync-connection).",
             "example": "connection_id"
           },
           "service": {
@@ -14672,7 +14798,7 @@
           },
           "group_id": {
             "type": "string",
-            "description": "The unique identifier for the group within the Fivetran system",
+            "description": "The unique identifier of the destination group this connection belongs to. Use this value with the [List All Groups](https://fivetran.com/docs/rest-api/api-reference/groups/list-all-groups) or [Retrieve Group Details](https://fivetran.com/docs/rest-api/api-reference/groups/group-details) endpoints.",
             "example": "group_id"
           },
           "service_version": {
@@ -14683,8 +14809,8 @@
           },
           "connected_by": {
             "type": "string",
-            "description": "The unique identifier of the user who has created the connection in your account",
-            "example": "user_id"
+            "description": "The unique identifier of the user who created this connection. `null` if the connection was created programmatically without a user context. Use this value with the [Retrieve User Details](https://fivetran.com/docs/rest-api/api-reference/users/user-details) endpoint.",
+            "example": "priceless_odour"
           },
           "created_at": {
             "type": "string",
@@ -14694,13 +14820,13 @@
           },
           "succeeded_at": {
             "type": "string",
-            "description": "The timestamp of the time the connection sync succeeded last time",
+            "description": "The UTC timestamp of the most recent successful sync. `null` if the connection has never completed a successful sync.",
             "format": "date-time",
             "example": "2024-03-17T12:31:40.870504Z"
           },
           "failed_at": {
             "type": "string",
-            "description": "The timestamp of the time the connection sync failed last time",
+            "description": "The UTC timestamp of the most recent failed sync. `null` if the connection has never experienced a sync failure.",
             "format": "date-time",
             "example": "2024-04-01T18:13:25.043659Z"
           },
@@ -14749,7 +14875,7 @@
           "private_link_id": {
             "type": "string",
             "description": "The unique identifier for the self-served private link that is used by the connection",
-            "example": "private_link_id"
+            "example": "link_id"
           },
           "networking_method": {
             "type": "string",
@@ -14765,16 +14891,16 @@
           "proxy_agent_id": {
             "type": "string",
             "description": "The unique identifier for the proxy agent within the Fivetran system",
-            "example": "proxy_agent_id"
+            "example": "agent_id"
           },
           "daily_sync_time": {
             "type": "string",
-            "description": "The connection daily sync start time that we return only when the sync frequency is set to 1440 (which means 24 hours) and the daily_sync_time parameter was set using the Create a Connection or Update a Connection request",
+            "description": "The daily sync start time, in `HH:MM` format (UTC), at which the connection syncs. Returned only when `sync_frequency` is `1440` and `daily_sync_time` was explicitly set. `null` otherwise.",
             "example": "14:00"
           },
           "schedule_type": {
             "type": "string",
-            "description": "The connection schedule configuration type. Supported values: `auto`, where Fivetran controls sync frequency based on your plan, and `manual`, where you trigger syncs on demand using the [Sync connection](https://fivetran.com/docs/rest-api/api-reference/connections/sync-connection) endpoint. In `manual` mode, `sync_frequency` is ignored.\n\n> NOTE: To switch from manual back to automatic scheduling, set this field to `auto`. You cannot make this change in the Fivetran dashboard — you must use the REST API. For a full walkthrough, see [Trigger Manual Syncs](https://fivetran.com/docs/rest-api/tutorials/trigger-syncs-manually).",
+            "description": "The connection schedule configuration type. Supported values: auto, manual",
             "example": "auto"
           },
           "setup_tests": {
@@ -14797,19 +14923,24 @@
           "hybrid_deployment_agent_id": {
             "type": "string",
             "description": "The unique identifier for the hybrid deployment agent within the Fivetran system. If not specified, the agent ID from the destination will be used",
-            "example": "hybrid_deployment_agent_id"
+            "example": "agent_id"
           },
           "destination_configuration": {
             "$ref": "#/components/schemas/DestinationConfiguration"
           },
           "destination_schema_names": {
             "type": "string",
-            "description": "Defines how schema names appear in your destination. <br /> The possible values are:  <br /> - FIVETRAN_NAMING - Uses Fivetran naming conventions to simplify and standardize the schema, table and column names in the destination. <br /> - SOURCE_NAMING - Preserves source schema table and column names in the destination. <br />",
-            "example": "SOURCE_NAMING",
+            "description": "Defines how schema names appear in your destination.  <br /> The possible values are:  <br /> - FIVETRAN_NAMING - Uses Fivetran naming conventions to simplify and standardize the schema, table and column names in the destination. <br /> - SOURCE_NAMING - Preserves source schema table and column names in the destination. <br />",
+            "example": "FIVETRAN_NAMING",
             "enum": [
               "FIVETRAN_NAMING",
               "SOURCE_NAMING"
             ]
+          },
+          "external_secrets_manager_id": {
+            "type": "string",
+            "description": "The unique identifier of the [External Secrets Manager](/docs/rest-api/api-reference/external-secrets-managers) instance. Connector service must [support](/docs/core-concepts/features/external-secret-managers#connectors) External Secrets Manager feature to use this field.",
+            "example": "esm_id"
           }
         },
         "discriminator": {
@@ -14955,6 +15086,7 @@
             "cimis": "#/components/schemas/cimis_ConnectorResponseV1",
             "cin7": "#/components/schemas/cin7_ConnectorResponseV1",
             "cin7core": "#/components/schemas/cin7core_ConnectorResponseV1",
+            "circle_community_platform": "#/components/schemas/circle_community_platform_ConnectorResponseV1",
             "circleci": "#/components/schemas/circleci_ConnectorResponseV1",
             "cj_commission_detail": "#/components/schemas/cj_commission_detail_ConnectorResponseV1",
             "clari": "#/components/schemas/clari_ConnectorResponseV1",
@@ -15127,6 +15259,7 @@
             "greenhouse": "#/components/schemas/greenhouse_ConnectorResponseV1",
             "grepsr": "#/components/schemas/grepsr_ConnectorResponseV1",
             "grin": "#/components/schemas/grin_ConnectorResponseV1",
+            "guidewire_cloud_data_access": "#/components/schemas/guidewire_cloud_data_access_ConnectorResponseV1",
             "guru": "#/components/schemas/guru_ConnectorResponseV1",
             "h_level": "#/components/schemas/h_level_ConnectorResponseV1",
             "happyfox": "#/components/schemas/happyfox_ConnectorResponseV1",
@@ -15634,12 +15767,12 @@
           },
           "is_historical_sync": {
             "type": "boolean",
-            "description": "The boolean specifying whether the connection should be triggered to re-sync all historical data. If you set this parameter to TRUE, a [historical sync](https://fivetran.com/docs/getting-started/glossary#historicalsync) starts immediately. If a sync is currently running, it's canceled and restarted as a historical sync.\n\n> NOTE: If the connection is paused, the flag is set but the historical sync won't begin until you unpause the connection.\n\n All subsequent syncs after the historical sync completes will be incremental. If the value is FALSE or not specified, the connection doesn't re-sync historical data. This parameter is automatically reset to FALSE once the historical sync is completed.",
+            "description": "The boolean specifying whether the connection should be triggered to re-sync all historical data. If you set this parameter to TRUE, a [historical sync](https://fivetran.com/docs/getting-started/glossary#historicalsync) starts immediately. If a sync is currently running, it's canceled and restarted as a historical sync. All subsequent syncs after the historical sync completes will be incremental. If the value is FALSE or not specified, the connection doesn't re-sync historical data. This parameter is automatically reset to FALSE once the historical sync is completed.",
             "example": false
           },
           "rescheduled_for": {
             "type": "string",
-            "description": "The scheduled time for the next sync when sync_state is rescheduled. If schedule_type is manual, then the connection expects triggering the event at the designated time through the [Sync Connection Data](https://fivetran.com/docs/rest-api/api-reference/connections/sync-connection) endpoint.",
+            "description": "The UTC timestamp of the next scheduled sync attempt. Non-null only when `sync_state` is `\"rescheduled\"`. If `schedule_type` is `manual`, the connection expects the sync to be triggered at the designated time through the [Sync Connection Data](https://fivetran.com/docs/rest-api/api-reference/connections/sync-connection) endpoint.",
             "format": "date-time",
             "example": "2024-12-01T15:43:29.013729Z"
           }
@@ -15654,12 +15787,12 @@
         "properties": {
           "title": {
             "type": "string",
-            "description": "Setup test title",
+            "description": "A human-readable name for the setup test step. For example: Validate Login, Test Connection, Check Permissions.",
             "example": "Validate Login"
           },
           "status": {
             "type": "string",
-            "description": "",
+            "description": "The result of the individual setup test step. Possible values: PASSED, FAILED, SKIPPED.",
             "example": "FAILED",
             "enum": [
               "PASSED",
@@ -15671,13 +15804,13 @@
           },
           "message": {
             "type": "string",
-            "description": "Setup test message",
+            "description": "The result message for the setup test step. For example: Invalid login credentials.",
             "example": "Invalid login credentials."
           },
           "details": {
             "type": "object",
-            "description": "Setup test details",
-            "example": "..."
+            "description": "Additional diagnostic information about the setup test result. Populated when the status is FAILED and more context is available beyond the message.",
+            "example": "Authentication failed (401 Unauthorized). Verify the provided credentials and permissions."
           }
         }
       },
@@ -15689,7 +15822,7 @@
         "properties": {
           "connector_id": {
             "type": "string",
-            "description": "The connection identifier",
+            "description": "The unique identifier of the connection for which this Connect Card token was issued. This is the same value as the `connectionId` path parameter.",
             "example": "connection_id"
           },
           "connect_card": {
@@ -15708,9 +15841,9 @@
         "properties": {
           "state": {
             "type": "object",
-            "description": "Connection state as a JSON object",
+            "description": "A freeform JSON object representing the connector's cursor or internal state. The structure is defined by the connector implementation and varies by connector type. Returns 400 if no state has been written yet.",
             "example": {
-              "cursor": "cursor_value"
+              "cursor": "2024-01-01T00:00:00Z"
             }
           }
         }
@@ -15876,6 +16009,15 @@
               "FIVETRAN_NAMING",
               "SOURCE_NAMING"
             ]
+          },
+          "external_secrets_manager_id": {
+            "type": "string"
+          },
+          "external_secrets_keys_config": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
           }
         }
       },
@@ -16506,6 +16648,9 @@
             "type": "string",
             "description": "The date (yyyy-MM-dd) the connector status was updated to the current availability status",
             "format": "date-time"
+          },
+          "external_secrets_keys_config": {
+            "type": "object"
           }
         }
       },
@@ -16746,6 +16891,10 @@
             "type": "string",
             "description": "The unique identifier for the proxy agent within the Fivetran system",
             "example": "proxy_agent_id"
+          },
+          "external_secrets_manager_id": {
+            "type": "string",
+            "description": "The unique identifier of the [External Secrets Manager](/docs/rest-api/api-reference/external-secrets-managers) instance. Destination service must [support](/docs/core-concepts/features/external-secret-managers#destinations) External Secrets Manager feature to use this field."
           }
         },
         "discriminator": {
@@ -16913,6 +17062,13 @@
             "type": "string",
             "description": "The unique identifier for the proxy agent within the Fivetran system",
             "example": "proxy_agent_id"
+          },
+          "external_secrets_manager_id": {
+            "type": "string",
+            "description": "The unique identifier of the [External Secrets Manager](/docs/rest-api/api-reference/external-secrets-managers) instance. Destination service must [support](/docs/core-concepts/features/external-secret-managers#destinations) External Secrets Manager feature to use this field."
+          },
+          "external_secrets_keys_config": {
+            "description": "The setup configuration keys to be stored in external secrets manager. Check possible config formats in [create method](/docs/rest-api/api-reference/destinations/create-destination/)"
           }
         }
       },
@@ -17057,6 +17213,10 @@
             "type": "string",
             "description": "The unique identifier for the proxy agent within the Fivetran system",
             "example": "proxy_agent_id"
+          },
+          "external_secrets_manager_id": {
+            "type": "string",
+            "description": "The unique identifier of the [External Secrets Manager](/docs/rest-api/api-reference/external-secrets-managers) instance. Destination service must [support](/docs/core-concepts/features/external-secret-managers#destinations) External Secrets Manager feature to use this field."
           },
           "setup_tests": {
             "type": "array",
@@ -17250,6 +17410,10 @@
             "type": "string",
             "description": "The unique identifier for the proxy agent within the Fivetran system",
             "example": "proxy_agent_id"
+          },
+          "external_secrets_manager_id": {
+            "type": "string",
+            "description": "The unique identifier of the [External Secrets Manager](/docs/rest-api/api-reference/external-secrets-managers) instance. Destination service must [support](/docs/core-concepts/features/external-secret-managers#destinations) External Secrets Manager feature to use this field."
           }
         }
       },
@@ -20849,6 +21013,28 @@
           }
         }
       },
+      "azure_sql_database_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "azure_sql_database_NewDestinationRequest": {
         "allOf": [
           {
@@ -20856,6 +21042,9 @@
           },
           {
             "$ref": "#/components/schemas/azure_sql_database_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/azure_sql_database_esm_keys_config_V1"
           }
         ]
       },
@@ -20938,6 +21127,28 @@
           }
         }
       },
+      "azure_sql_managed_db_warehouse_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "azure_sql_managed_db_warehouse_NewDestinationRequest": {
         "allOf": [
           {
@@ -20945,6 +21156,9 @@
           },
           {
             "$ref": "#/components/schemas/azure_sql_managed_db_warehouse_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/azure_sql_managed_db_warehouse_esm_keys_config_V1"
           }
         ]
       },
@@ -21390,6 +21604,34 @@
           }
         }
       },
+      "databricks_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "oauth2_client_id": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for oAuth 2.0 client ID",
+                "example": "OAUTH2_CLIENT_ID_KEY"
+              },
+              "oauth2_secret": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for oAuth 2.0 secret",
+                "example": "OAUTH2_SECRET_KEY"
+              },
+              "personal_access_token": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for personal access token",
+                "example": "PERSONAL_ACCESS_TOKEN_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "databricks_NewDestinationRequest": {
         "allOf": [
           {
@@ -21397,6 +21639,9 @@
           },
           {
             "$ref": "#/components/schemas/databricks_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/databricks_esm_keys_config_V1"
           }
         ]
       },
@@ -23353,6 +23598,28 @@
           }
         }
       },
+      "redshift_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for database user password",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for database user name",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "redshift_NewDestinationRequest": {
         "allOf": [
           {
@@ -23360,6 +23627,9 @@
           },
           {
             "$ref": "#/components/schemas/redshift_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/redshift_esm_keys_config_V1"
           }
         ]
       },
@@ -23596,6 +23866,40 @@
           }
         }
       },
+      "snowflake_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "passphrase": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for a passphrase that was used to encrypt the private key.  The field can be specified if authentication type is `KEY_PAIR`.",
+                "example": "PASSPHRASE_KEY"
+              },
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for database user password. The field should be specified if authentication type is `PASSWORD` and the password is stored in an external secrets manager.",
+                "example": "PASSWORD_KEY"
+              },
+              "private_key": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for private access key.  The field should be specified if authentication type is `KEY_PAIR` and the private key is stored in an external secrets manager.",
+                "example": "PRIVATE_KEY_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for database user name",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "snowflake_NewDestinationRequest": {
         "allOf": [
           {
@@ -23603,6 +23907,9 @@
           },
           {
             "$ref": "#/components/schemas/snowflake_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/snowflake_esm_keys_config_V1"
           }
         ]
       },
@@ -23685,6 +23992,28 @@
           }
         }
       },
+      "sql_server_rds_warehouse_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for database user password",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for database user name",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "sql_server_rds_warehouse_NewDestinationRequest": {
         "allOf": [
           {
@@ -23692,6 +24021,9 @@
           },
           {
             "$ref": "#/components/schemas/sql_server_rds_warehouse_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/sql_server_rds_warehouse_esm_keys_config_V1"
           }
         ]
       },
@@ -23774,6 +24106,28 @@
           }
         }
       },
+      "sql_server_warehouse_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for database user password",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for database user name",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "sql_server_warehouse_NewDestinationRequest": {
         "allOf": [
           {
@@ -23781,6 +24135,9 @@
           },
           {
             "$ref": "#/components/schemas/sql_server_warehouse_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/sql_server_warehouse_esm_keys_config_V1"
           }
         ]
       },
@@ -23887,6 +24244,9 @@
           },
           {
             "$ref": "#/components/schemas/azure_sql_database_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/azure_sql_database_esm_keys_config_V1"
           }
         ]
       },
@@ -23897,6 +24257,9 @@
           },
           {
             "$ref": "#/components/schemas/azure_sql_managed_db_warehouse_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/azure_sql_managed_db_warehouse_esm_keys_config_V1"
           }
         ]
       },
@@ -23947,6 +24310,9 @@
           },
           {
             "$ref": "#/components/schemas/databricks_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/databricks_esm_keys_config_V1"
           }
         ]
       },
@@ -24127,6 +24493,9 @@
           },
           {
             "$ref": "#/components/schemas/redshift_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/redshift_esm_keys_config_V1"
           }
         ]
       },
@@ -24147,6 +24516,9 @@
           },
           {
             "$ref": "#/components/schemas/snowflake_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/snowflake_esm_keys_config_V1"
           }
         ]
       },
@@ -24157,6 +24529,9 @@
           },
           {
             "$ref": "#/components/schemas/sql_server_rds_warehouse_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/sql_server_rds_warehouse_esm_keys_config_V1"
           }
         ]
       },
@@ -24167,6 +24542,9 @@
           },
           {
             "$ref": "#/components/schemas/sql_server_warehouse_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/sql_server_warehouse_esm_keys_config_V1"
           }
         ]
       },
@@ -24655,21 +25033,6 @@
           "config": {
             "type": "object",
             "properties": {
-              "api_key": {
-                "title": "",
-                "type": "string",
-                "description": "Your 360Learning API Key.",
-                "format": "password",
-                "example": "your_360learning_api_key"
-              },
-              "auth_type": {
-                "type": "object",
-                "description": "Your 360Learning auth type.",
-                "enum": [
-                  "auth1",
-                  "auth2"
-                ]
-              },
               "base_url": {
                 "type": "object",
                 "description": "Your 360Learning base URL.",
@@ -24691,12 +25054,6 @@
                 "description": "Your 360Learning client secret.",
                 "format": "password",
                 "example": "your_360learning_client_secret"
-              },
-              "company_id": {
-                "title": "",
-                "type": "string",
-                "description": "Your 360Learning company ID.",
-                "example": "your_company_id"
               }
             },
             "description": ""
@@ -27011,19 +27368,26 @@
           "config": {
             "type": "object",
             "properties": {
+              "analytics_api_key": {
+                "title": "",
+                "type": "string",
+                "description": "Your Analytics API key for syncing Claude Enterprise organization-level analytics data.",
+                "format": "password",
+                "example": "your_analytics_api_key"
+              },
               "api_admin_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Claude Platform Admin API key.",
+                "description": "Your Claude Platform Admin API key for syncing organization-level management and reporting data.",
                 "format": "password",
                 "example": "your_admin_api_key"
               },
               "api_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Claude Platform standard API key.",
+                "description": "Your API key for syncing data from a specific Claude workspace.",
                 "format": "password",
-                "example": "your_standard_api_key"
+                "example": "your_workspace_api_key"
               }
             },
             "description": ""
@@ -28513,6 +28877,28 @@
           }
         }
       },
+      "aurora_postgres_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name.",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "aurora_postgres_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -28523,6 +28909,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_prefix"
+          },
+          {
+            "$ref": "#/components/schemas/aurora_postgres_esm_keys_config_V1"
           }
         ]
       },
@@ -28933,6 +29322,28 @@
           }
         }
       },
+      "aws_cost_report_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "access_key_id": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for access Key ID",
+                "example": "ACCESS_KEY_ID_KEY"
+              },
+              "access_key_secret": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for access Key Secret",
+                "example": "ACCESS_KEY_SECRET_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "aws_cost_report_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -28943,6 +29354,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_table"
+          },
+          {
+            "$ref": "#/components/schemas/aws_cost_report_esm_keys_config_V1"
           }
         ]
       },
@@ -30201,6 +30615,28 @@
           }
         }
       },
+      "azure_postgres_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name.",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "azure_postgres_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -30211,6 +30647,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_prefix"
+          },
+          {
+            "$ref": "#/components/schemas/azure_postgres_esm_keys_config_V1"
           }
         ]
       },
@@ -30561,6 +31000,28 @@
           }
         }
       },
+      "azure_sql_db_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "azure_sql_db_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -30574,6 +31035,9 @@
           },
           {
             "$ref": "#/components/schemas/azure_sql_db_auth_V1"
+          },
+          {
+            "$ref": "#/components/schemas/azure_sql_db_esm_keys_config_V1"
           }
         ]
       },
@@ -30737,6 +31201,28 @@
           }
         }
       },
+      "azure_sql_managed_db_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "azure_sql_managed_db_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -30750,6 +31236,9 @@
           },
           {
             "$ref": "#/components/schemas/azure_sql_managed_db_auth_V1"
+          },
+          {
+            "$ref": "#/components/schemas/azure_sql_managed_db_esm_keys_config_V1"
           }
         ]
       },
@@ -33863,6 +34352,36 @@
           }
         ]
       },
+      "circle_community_platform_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "api_token": {
+                "title": "",
+                "type": "string",
+                "description": "Your Circle Community Platform API token.",
+                "format": "password",
+                "example": "your_circle_community_platform_api_token"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "circle_community_platform_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/circle_community_platform_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema"
+          }
+        ]
+      },
       "circleci_config_V1": {
         "properties": {
           "config": {
@@ -36577,6 +37096,67 @@
                 "format": "password",
                 "example": "your_criteo_retail_media_client_secret"
               },
+              "dimensions": {
+                "type": "object",
+                "description": "Your Criteo Retail Media report revenue dimensions.",
+                "enum": [
+                  "date",
+                  "taxonomy1Id",
+                  "attributionSettings",
+                  "taxonomy5Id",
+                  "lineItemName",
+                  "taxonomy3Id",
+                  "taxonomy2Name",
+                  "retailerCategoryName",
+                  "accountTypeName",
+                  "salesChannel",
+                  "advProductMpn",
+                  "taxonomy3Name",
+                  "lineItemStatus",
+                  "keyword",
+                  "advertiserType",
+                  "campaignEndDate",
+                  "brandName",
+                  "campaignId",
+                  "taxonomyBreadcrumb",
+                  "lineItemEndDate",
+                  "accountId",
+                  "retailerCategoryId",
+                  "taxonomy1Name",
+                  "brandId",
+                  "advProductId",
+                  "skuRelation",
+                  "taxonomy6Id",
+                  "advProductGtin",
+                  "taxonomy7Name",
+                  "placementId",
+                  "taxonomy4Id",
+                  "accountName",
+                  "taxonomy2Id",
+                  "soldBy",
+                  "targetedKeywordType",
+                  "parentAccount",
+                  "hour",
+                  "taxonomy6Name",
+                  "placementName",
+                  "retailerName",
+                  "pageTypeName",
+                  "pageCategory",
+                  "lineItemId",
+                  "lineItemStartDate",
+                  "taxonomy4Name",
+                  "retailerId",
+                  "environment",
+                  "campaignTypeName",
+                  "taxonomy5Name",
+                  "buyType",
+                  "taxonomy7Id",
+                  "activityType",
+                  "campaignName",
+                  "campaignStartDate",
+                  "advProductName"
+                ]
+              },
               "version": {
                 "title": "",
                 "type": "string",
@@ -37054,9 +37634,10 @@
               "auth": {
                 "title": "",
                 "type": "object",
-                "description": "Token-based authentication type",
+                "description": "Authentication type (TOKEN or OAUTH2)",
                 "example": "TOKEN",
                 "enum": [
+                  "OAUTH2",
                   "TOKEN"
                 ]
               },
@@ -39990,6 +40571,34 @@
           }
         }
       },
+      "elastic_cloud_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the Elasticsearch API key",
+                "example": "API_KEY_KEY"
+              },
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name.",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "elastic_cloud_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -40003,6 +40612,9 @@
           },
           {
             "$ref": "#/components/schemas/elastic_cloud_auth_V1"
+          },
+          {
+            "$ref": "#/components/schemas/elastic_cloud_esm_keys_config_V1"
           }
         ]
       },
@@ -40078,6 +40690,20 @@
           "config": {
             "type": "object",
             "properties": {
+              "allowed_senders_list": {
+                "title": "",
+                "type": "array",
+                "description": "Restrict ingestion to emails from these senders only. Supports exact addresses (e.g. reports@vendor.com) or domains (e.g. @vendor.com). Applies to all tables.",
+                "example": [
+                  "string"
+                ],
+                "items": {
+                  "title": "",
+                  "type": "string",
+                  "description": "",
+                  "example": "string"
+                }
+              },
               "append_file_option": {
                 "title": "",
                 "type": "object",
@@ -40436,6 +41062,28 @@
           }
         }
       },
+      "epic_clarity_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "epic_clarity_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -40446,6 +41094,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_prefix"
+          },
+          {
+            "$ref": "#/components/schemas/epic_clarity_esm_keys_config_V1"
           }
         ]
       },
@@ -40552,6 +41203,34 @@
           }
         }
       },
+      "es_self_hosted_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the Elasticsearch API key",
+                "example": "API_KEY_KEY"
+              },
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name.",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "es_self_hosted_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -40565,6 +41244,9 @@
           },
           {
             "$ref": "#/components/schemas/es_self_hosted_auth_V1"
+          },
+          {
+            "$ref": "#/components/schemas/es_self_hosted_esm_keys_config_V1"
           }
         ]
       },
@@ -41364,6 +42046,22 @@
           }
         }
       },
+      "facebook_ads_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "user_access_token": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for system User Token",
+                "example": "USER_ACCESS_TOKEN_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "facebook_ads_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -41377,6 +42075,9 @@
           },
           {
             "$ref": "#/components/schemas/facebook_ads_auth_V1"
+          },
+          {
+            "$ref": "#/components/schemas/facebook_ads_esm_keys_config_V1"
           }
         ]
       },
@@ -42801,6 +43502,22 @@
                 "description": "If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
                 "example": "string"
               },
+              "extraction_pattern": {
+                "title": "",
+                "type": "string",
+                "description": "Required when `file_mapping_method` = `EXTRACT_TABLES`. A regular expression with a named capture group `(?<table>...)` to extract table names from file paths.",
+                "example": "(?<table>\\w+)/.*"
+              },
+              "file_mapping_method": {
+                "title": "",
+                "type": "object",
+                "description": "The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.",
+                "example": "DEFINE_PER_TABLE",
+                "enum": [
+                  "EXTRACT_TABLES",
+                  "DEFINE_PER_TABLE"
+                ]
+              },
               "file_type": {
                 "title": "",
                 "type": "object",
@@ -42820,7 +43537,7 @@
               "files": {
                 "title": "",
                 "type": "array",
-                "description": "Mapped file name patterns to a destination table.",
+                "description": "Required when `file_mapping_method` = `DEFINE_PER_TABLE`. Mapped file name patterns to a destination table.",
                 "items": {
                   "title": "",
                   "type": "object",
@@ -42850,7 +43567,7 @@
                       "example": "string"
                     }
                   },
-                  "description": "Mapped file name patterns to a destination table."
+                  "description": "Required when `file_mapping_method` = `DEFINE_PER_TABLE`. Mapped file name patterns to a destination table."
                 }
               },
               "host": {
@@ -44099,11 +44816,17 @@
                 "format": "password",
                 "example": "your_gong_api_access_key_secret"
               },
-              "base_url": {
+              "api_base_url": {
                 "title": "",
                 "type": "string",
                 "description": "Your Gong API Base URL.",
                 "example": "your_gong_api_base_url"
+              },
+              "base_url": {
+                "title": "",
+                "type": "string",
+                "description": "Your Gong Base URL.",
+                "example": "your_gong_base_url"
               }
             },
             "description": ""
@@ -45252,6 +45975,28 @@
           }
         }
       },
+      "google_cloud_postgresql_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name.",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "google_cloud_postgresql_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -45262,6 +46007,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_prefix"
+          },
+          {
+            "$ref": "#/components/schemas/google_cloud_postgresql_esm_keys_config_V1"
           }
         ]
       },
@@ -45354,6 +46102,28 @@
           }
         }
       },
+      "google_cloud_sqlserver_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "google_cloud_sqlserver_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -45364,6 +46134,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_prefix"
+          },
+          {
+            "$ref": "#/components/schemas/google_cloud_sqlserver_esm_keys_config_V1"
           }
         ]
       },
@@ -46720,6 +47493,115 @@
           }
         ]
       },
+      "guidewire_cloud_data_access_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "access_key_id": {
+                "title": "",
+                "type": "string",
+                "description": "Access Key ID for access key authentication.",
+                "example": "access_key_id_value"
+              },
+              "access_key_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Access Key Secret for access key authentication.",
+                "format": "password",
+                "example": "access_key_secret_value"
+              },
+              "auth_type": {
+                "title": "",
+                "type": "object",
+                "description": "Access approach. Supported values: IAM_ROLE, ACCESS_KEY, PUBLIC_BUCKET.",
+                "example": "IAM_ROLE | PUBLIC_BUCKET | ACCESS_KEY",
+                "enum": [
+                  "IAM_ROLE",
+                  "PUBLIC_BUCKET",
+                  "ACCESS_KEY"
+                ]
+              },
+              "bucket": {
+                "title": "",
+                "type": "string",
+                "description": "The S3 bucket name containing the Guidewire CDA export. Required for connector creation.",
+                "example": "bucket_name"
+              },
+              "connection_type": {
+                "title": "",
+                "type": "object",
+                "description": "Connection method. Default value: `Directly`.",
+                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
+                "enum": [
+                  "Directly",
+                  "PrivateLink",
+                  "SshTunnel",
+                  "ProxyAgent"
+                ]
+              },
+              "is_private_link_required": {
+                "title": "",
+                "type": "boolean",
+                "description": "Set to `true` if you want to connect to S3 bucket over PrivateLink. Default value: `false`.",
+                "example": true
+              },
+              "manifest_path": {
+                "title": "",
+                "type": "string",
+                "description": "The path to the Guidewire CDA manifest.json file in the S3 bucket.",
+                "example": "CDA/manifest.json"
+              },
+              "role_arn": {
+                "title": "",
+                "type": "string",
+                "description": "The Role ARN required for IAM role authentication.",
+                "format": "password",
+                "example": "arn::your_role_arn"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "guidewire_cloud_data_access_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "access_key_id": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for access Key ID for access key authentication.",
+                "example": "ACCESS_KEY_ID_KEY"
+              },
+              "access_key_secret": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for access Key Secret for access key authentication.",
+                "example": "ACCESS_KEY_SECRET_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "guidewire_cloud_data_access_NewConnectorRequestV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewConnectorRequestV1"
+          },
+          {
+            "$ref": "#/components/schemas/guidewire_cloud_data_access_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/schema_format_schema_table_group"
+          },
+          {
+            "$ref": "#/components/schemas/guidewire_cloud_data_access_esm_keys_config_V1"
+          }
+        ]
+      },
       "guru_config_V1": {
         "properties": {
           "config": {
@@ -47501,6 +48383,28 @@
           }
         }
       },
+      "heroku_postgres_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name.",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "heroku_postgres_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -47511,6 +48415,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_prefix"
+          },
+          {
+            "$ref": "#/components/schemas/heroku_postgres_esm_keys_config_V1"
           }
         ]
       },
@@ -48638,7 +49545,7 @@
               "issuer_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Issuer ID",
+                "description": "Your Issuer ID. Must be populated if `key_type` is set to `Team`",
                 "example": "your_issuer_id"
               },
               "key_id": {
@@ -48646,6 +49553,16 @@
                 "type": "string",
                 "description": "Your Key ID",
                 "example": "your_key_id"
+              },
+              "key_type": {
+                "title": "",
+                "type": "object",
+                "description": "Key Type",
+                "example": "Team",
+                "enum": [
+                  "Individual",
+                  "Team"
+                ]
               },
               "private_key": {
                 "title": "",
@@ -48947,6 +49864,28 @@
           }
         }
       },
+      "jira_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the Jira user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the Jira username.",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "jira_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -48957,6 +49896,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/jira_esm_keys_config_V1"
           }
         ]
       },
@@ -49278,22 +50220,59 @@
                 "description": "Your Khoros Communities client ID.",
                 "example": "string"
               },
+              "client_secret": {
+                "title": "",
+                "type": "string",
+                "description": "Your Khoros Communities client secret.",
+                "format": "password",
+                "example": "string"
+              },
               "community_domain": {
                 "title": "",
                 "type": "string",
                 "description": "Your Khoros Communities community domain.",
                 "example": "string"
-              },
-              "community_id": {
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "khoros_communities_auth_V1": {
+        "properties": {
+          "auth": {
+            "type": "object",
+            "properties": {
+              "access_token": {
                 "title": "",
                 "type": "string",
-                "description": "Your Khoros Communities community ID.",
+                "description": "",
+                "format": "password",
                 "example": "string"
               },
-              "token": {
+              "client_access": {
+                "type": "object",
+                "properties": {
+                  "client_id": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "example": "string"
+                  },
+                  "client_secret": {
+                    "title": "",
+                    "type": "string",
+                    "description": "",
+                    "format": "password",
+                    "example": "string"
+                  }
+                },
+                "description": ""
+              },
+              "refresh_token": {
                 "title": "",
                 "type": "string",
-                "description": "Your Khoros Communities token.",
+                "description": "",
                 "format": "password",
                 "example": "string"
               }
@@ -49312,6 +50291,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/khoros_communities_auth_V1"
           }
         ]
       },
@@ -49350,70 +50332,11 @@
           "config": {
             "type": "object",
             "properties": {
-              "archive_pattern": {
-                "title": "",
-                "type": "string",
-                "description": "<strong>Optional.</strong> Files inside of compressed archives with filenames matching this regular expression will be synced.",
-                "example": "string"
-              },
               "bucket": {
                 "title": "",
                 "type": "string",
                 "description": "The name of the Kinesis bucket.",
                 "example": "aws_region_code"
-              },
-              "compression": {
-                "title": "",
-                "type": "object",
-                "description": "If your files are compressed, but do not have extensions indicating the compression method, you can force them to be uncompressed according to the selected compression algorithm. Leave the value as <strong>infer</strong> if your files are saved with the correct compression extensions.",
-                "example": "zip | gz | tar_gz | tar | infer | gzip | uncompressed | bz2 | tar_bz2",
-                "enum": [
-                  "zip",
-                  "gz",
-                  "tar_gz",
-                  "tar",
-                  "infer",
-                  "gzip",
-                  "uncompressed",
-                  "bz2",
-                  "tar_bz2"
-                ]
-              },
-              "connection_type": {
-                "title": "",
-                "type": "object",
-                "description": "Connection method. Default value: `Directly`.",
-                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
-                "enum": [
-                  "Directly",
-                  "PrivateLink",
-                  "SshTunnel",
-                  "ProxyAgent"
-                ]
-              },
-              "delimiter": {
-                "title": "",
-                "type": "string",
-                "description": "<strong>Optional.</strong> You can specify your the delimiter that your CSVs use here. Fivetran generally tries to infer the delimiter, but in some cases this is impossible. If your files sync with the wrong number of columns, consider setting this value",
-                "example": "string"
-              },
-              "empty_header": {
-                "title": "",
-                "type": "boolean",
-                "description": "<strong>Optional.</strong> If your CSV generating software doesn't provide header line for the documents, Fivetran can generate the generic column names and sync data rows with them.",
-                "example": true
-              },
-              "escape_char": {
-                "title": "",
-                "type": "string",
-                "description": "<strong>Optional.</strong> If your CSV generator follows non-standard rules for escaping quotation marks, you can set the escape character here.",
-                "example": "string"
-              },
-              "is_public": {
-                "title": "",
-                "type": "boolean",
-                "description": "Is the bucket public? (you don't need an AWS account for syncing public buckets!)",
-                "example": true
               },
               "json_delivery_mode": {
                 "title": "",
@@ -49424,44 +50347,6 @@
                   "Packed",
                   "Unpacked"
                 ]
-              },
-              "line_separator": {
-                "title": "",
-                "type": "string",
-                "description": "You can specify the custom line separator for your CSV files. The line separator is used in files to separate one row from the next.",
-                "example": "string"
-              },
-              "list_strategy": {
-                "title": "",
-                "type": "object",
-                "description": "<strong>Optional.</strong> If you have a file structure where new files are always named in lexicographically increasing order such as files being named in increasing order of time, you can select <code>time_based_pattern_listing</code>.",
-                "example": "complete_listing | time_based_pattern_listing",
-                "enum": [
-                  "complete_listing",
-                  "time_based_pattern_listing"
-                ]
-              },
-              "null_sequence": {
-                "title": "",
-                "type": "string",
-                "description": "<strong>Optional.</strong> If your CSVs use a special value indicating null, you can specify it here.",
-                "example": "string"
-              },
-              "on_error": {
-                "title": "",
-                "type": "object",
-                "description": "If you know that your files contain some errors, you can choose to have poorly formatted lines skipped. We recommend leaving the value as <strong>fail</strong> unless you are certain that you have undesirable, malformed data.",
-                "example": "fail | skip",
-                "enum": [
-                  "fail",
-                  "skip"
-                ]
-              },
-              "pattern": {
-                "title": "",
-                "type": "string",
-                "description": "<strong>Optional.</strong> All files in your search path matching this regular expression will be synced. This parameter is optional.",
-                "example": "string"
               },
               "prefix": {
                 "title": "",
@@ -49475,20 +50360,6 @@
                 "description": "The Role ARN required for authentication.",
                 "format": "password",
                 "example": "arn::your_role_arn"
-              },
-              "skip_after": {
-                "title": "",
-                "type": "integer",
-                "description": "Enter 1 or greater",
-                "format": "int32",
-                "example": 0
-              },
-              "skip_before": {
-                "title": "",
-                "type": "integer",
-                "description": "Enter 1 or greater",
-                "format": "int32",
-                "example": 0
               }
             },
             "description": ""
@@ -49579,10 +50450,20 @@
           "config": {
             "type": "object",
             "properties": {
+              "csv_delimiter": {
+                "type": "object",
+                "description": "The CSV delimiter used in your Klarna settlement report.",
+                "enum": [
+                  ":",
+                  ";",
+                  ",",
+                  "|"
+                ]
+              },
               "password": {
                 "title": "",
                 "type": "string",
-                "description": "Your Klarna Password.",
+                "description": "Your Klarna password.",
                 "format": "password",
                 "example": "your_klarna_password"
               },
@@ -49598,7 +50479,7 @@
               "username": {
                 "title": "",
                 "type": "string",
-                "description": "Your Klarna Username.",
+                "description": "Your Klarna username.",
                 "example": "your_klarna_username"
               }
             },
@@ -54982,14 +55863,27 @@
                 "type": "string",
                 "description": "Your OpenAI Admin API key.",
                 "format": "password",
-                "example": "your_openai_admin_api_key"
+                "example": "your_admin_api_key"
               },
               "api_key_2": {
                 "title": "",
                 "type": "string",
-                "description": "Your OpenAI API key.",
+                "description": "The project-specific API key for the OpenAI Platform project whose data you want to sync.",
                 "format": "password",
-                "example": "your_openai_api_key"
+                "example": "your_project_specific_api_key"
+              },
+              "api_key_3": {
+                "title": "",
+                "type": "string",
+                "description": "The API key scoped to `codex.enterprise.analytics.read` for syncing Codex Enterprise Analytics data from a specific ChatGPT workspace.",
+                "format": "password",
+                "example": "your_api_key_for_analytics_data"
+              },
+              "workspace_id": {
+                "title": "",
+                "type": "string",
+                "description": "Your ChatGPT Enterprise Workspace ID.",
+                "example": "your_workspace_id"
               }
             },
             "description": ""
@@ -55138,6 +56032,28 @@
           }
         }
       },
+      "opendistro_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name.",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "opendistro_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -55148,6 +56064,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/opendistro_esm_keys_config_V1"
           }
         ]
       },
@@ -55238,6 +56157,28 @@
           }
         }
       },
+      "opensearch_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name.",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "opensearch_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -55248,6 +56189,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/opensearch_esm_keys_config_V1"
           }
         ]
       },
@@ -55429,6 +56373,28 @@
           }
         }
       },
+      "oracle_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name.",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "oracle_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -55439,6 +56405,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_prefix"
+          },
+          {
+            "$ref": "#/components/schemas/oracle_esm_keys_config_V1"
           }
         ]
       },
@@ -55609,6 +56578,28 @@
           }
         }
       },
+      "oracle_ebs_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name.",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "oracle_ebs_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -55619,6 +56610,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_prefix"
+          },
+          {
+            "$ref": "#/components/schemas/oracle_ebs_esm_keys_config_V1"
           }
         ]
       },
@@ -56169,6 +57163,28 @@
           }
         }
       },
+      "oracle_hva_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name.",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "oracle_hva_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -56179,6 +57195,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_prefix"
+          },
+          {
+            "$ref": "#/components/schemas/oracle_hva_esm_keys_config_V1"
           }
         ]
       },
@@ -56410,6 +57429,28 @@
           }
         }
       },
+      "oracle_rac_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name.",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "oracle_rac_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -56420,6 +57461,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_prefix"
+          },
+          {
+            "$ref": "#/components/schemas/oracle_rac_esm_keys_config_V1"
           }
         ]
       },
@@ -56519,6 +57563,28 @@
           }
         }
       },
+      "oracle_rds_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name.",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "oracle_rds_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -56529,6 +57595,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_prefix"
+          },
+          {
+            "$ref": "#/components/schemas/oracle_rds_esm_keys_config_V1"
           }
         ]
       },
@@ -56761,6 +57830,28 @@
           }
         }
       },
+      "oracle_sap_hva_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the username.",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "oracle_sap_hva_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -56771,6 +57862,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_prefix"
+          },
+          {
+            "$ref": "#/components/schemas/oracle_sap_hva_esm_keys_config_V1"
           }
         ]
       },
@@ -56839,11 +57933,12 @@
                 "title": "",
                 "type": "object",
                 "description": "Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.",
-                "example": "Directly | PrivateLink | SshTunnel",
+                "example": "Directly | PrivateLink | SshTunnel | ProxyAgent",
                 "enum": [
                   "Directly",
                   "PrivateLink",
-                  "SshTunnel"
+                  "SshTunnel",
+                  "ProxyAgent"
                 ]
               },
               "enable_archive_log_only": {
@@ -56920,6 +58015,28 @@
           }
         }
       },
+      "oracle_sap_hva_netweaver_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the username.",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "oracle_sap_hva_netweaver_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -56930,6 +58047,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
+          },
+          {
+            "$ref": "#/components/schemas/oracle_sap_hva_netweaver_esm_keys_config_V1"
           }
         ]
       },
@@ -58543,6 +59663,93 @@
                   "AD_EVENT"
                 ]
               },
+              "custom_reports": {
+                "title": "",
+                "type": "array",
+                "description": "Custom reports to sync. Each entry creates a destination table with the specified metrics and breakdown level.",
+                "items": {
+                  "title": "",
+                  "type": "object",
+                  "properties": {
+                    "click_attribution_window": {
+                      "title": "",
+                      "type": "object",
+                      "description": "Overrides the connector-level click attribution window for this report.",
+                      "example": "THIRTY",
+                      "enum": [
+                        "ZERO",
+                        "THIRTY",
+                        "SIXTY",
+                        "FOURTEEN",
+                        "ONE",
+                        "SEVEN"
+                      ]
+                    },
+                    "conversion_report_time": {
+                      "title": "",
+                      "type": "object",
+                      "description": "Overrides the connector-level conversion report time for this report.",
+                      "example": "AD_EVENT",
+                      "enum": [
+                        "CONVERSION_EVENT",
+                        "AD_EVENT"
+                      ]
+                    },
+                    "granularity": {
+                      "title": "",
+                      "type": "object",
+                      "description": "Time granularity for the report: DAY, HOUR, WEEK, MONTH, or TOTAL.",
+                      "example": "DAY",
+                      "enum": [
+                        "TOTAL",
+                        "MONTH",
+                        "HOUR",
+                        "WEEK",
+                        "DAY"
+                      ]
+                    },
+                    "metrics": {
+                      "title": "",
+                      "type": "array",
+                      "description": "List of metrics to include in the report.",
+                      "example": "OUTBOUND_CLICK_1",
+                      "items": {
+                        "title": "",
+                        "type": "string",
+                        "description": "",
+                        "example": "string"
+                      }
+                    },
+                    "report_type": {
+                      "title": "",
+                      "type": "string",
+                      "description": "The breakdown level for the report (e.g. ADVERTISER, CAMPAIGN, AD_GROUP, PIN_PROMOTION, KEYWORD, PRODUCT_GROUP, PRODUCT_ITEM).",
+                      "example": "CAMPAIGN"
+                    },
+                    "table_name": {
+                      "title": "",
+                      "type": "string",
+                      "description": "Destination table name for this custom report.",
+                      "example": "my_campaign_report"
+                    },
+                    "view_attribution_window": {
+                      "title": "",
+                      "type": "object",
+                      "description": "Overrides the connector-level view attribution window for this report.",
+                      "example": "ONE",
+                      "enum": [
+                        "ZERO",
+                        "THIRTY",
+                        "SIXTY",
+                        "FOURTEEN",
+                        "ONE",
+                        "SEVEN"
+                      ]
+                    }
+                  },
+                  "description": "Custom reports to sync. Each entry creates a destination table with the specified metrics and breakdown level."
+                }
+              },
               "refresh_token_expires_at": {
                 "title": "",
                 "type": "string",
@@ -59337,6 +60544,28 @@
           }
         }
       },
+      "postgres_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name.",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "postgres_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -59347,6 +60576,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_prefix"
+          },
+          {
+            "$ref": "#/components/schemas/postgres_esm_keys_config_V1"
           }
         ]
       },
@@ -59494,6 +60726,28 @@
           }
         }
       },
+      "postgres_rds_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name.",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "postgres_rds_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -59504,6 +60758,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_prefix"
+          },
+          {
+            "$ref": "#/components/schemas/postgres_rds_esm_keys_config_V1"
           }
         ]
       },
@@ -62153,6 +63410,28 @@
           }
         }
       },
+      "s3_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "access_key_id": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for access Key ID",
+                "example": "ACCESS_KEY_ID_KEY"
+              },
+              "access_key_secret": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for access Key Secret",
+                "example": "ACCESS_KEY_SECRET_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "s3_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -62163,6 +63442,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_table_group"
+          },
+          {
+            "$ref": "#/components/schemas/s3_esm_keys_config_V1"
           }
         ]
       },
@@ -62421,6 +63703,28 @@
           }
         }
       },
+      "s3_compatible_storage_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "access_key_id": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for access Key ID",
+                "example": "ACCESS_KEY_ID_KEY"
+              },
+              "access_key_secret": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for access Key Secret",
+                "example": "ACCESS_KEY_SECRET_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "s3_compatible_storage_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -62431,6 +63735,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_table_group"
+          },
+          {
+            "$ref": "#/components/schemas/s3_compatible_storage_esm_keys_config_V1"
           }
         ]
       },
@@ -63597,6 +64904,28 @@
           }
         }
       },
+      "sap_hana_db_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "sap_hana_db_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -63607,6 +64936,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_prefix"
+          },
+          {
+            "$ref": "#/components/schemas/sap_hana_db_esm_keys_config_V1"
           }
         ]
       },
@@ -67406,6 +68738,28 @@
           }
         }
       },
+      "sql_server_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "sql_server_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -67419,6 +68773,9 @@
           },
           {
             "$ref": "#/components/schemas/sql_server_auth_V1"
+          },
+          {
+            "$ref": "#/components/schemas/sql_server_esm_keys_config_V1"
           }
         ]
       },
@@ -67717,6 +69074,28 @@
           }
         }
       },
+      "sql_server_rds_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "sql_server_rds_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -67727,6 +69106,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_prefix"
+          },
+          {
+            "$ref": "#/components/schemas/sql_server_rds_esm_keys_config_V1"
           }
         ]
       },
@@ -70581,6 +71963,20 @@
           "config": {
             "type": "object",
             "properties": {
+              "auth_environment": {
+                "title": "",
+                "type": "string",
+                "description": "Your UKG Pro Workforce Management Auth base URL.",
+                "example": "your_ukg_pro_workforce_management_auth_base_url"
+              },
+              "auth_type": {
+                "type": "object",
+                "description": "The authentication method you want to use for your connection.",
+                "enum": [
+                  "client_credentials",
+                  "ropc"
+                ]
+              },
               "client_id": {
                 "title": "",
                 "type": "string",
@@ -70599,6 +71995,12 @@
                 "type": "string",
                 "description": "Your UKG Pro Workforce Management hostname.",
                 "example": "your_ukg_pro_workforce_management_host_name"
+              },
+              "organization": {
+                "title": "",
+                "type": "string",
+                "description": "Your UKG Pro Workforce Management Organization ID.",
+                "example": "your_ukg_pro_workforce_management_organization_id"
               },
               "password": {
                 "title": "",
@@ -72122,6 +73524,28 @@
           }
         }
       },
+      "workday_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for workday password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user_name": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for workday username.",
+                "example": "USER_NAME_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "workday_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -72135,6 +73559,9 @@
           },
           {
             "$ref": "#/components/schemas/workday_auth_V1"
+          },
+          {
+            "$ref": "#/components/schemas/workday_esm_keys_config_V1"
           }
         ]
       },
@@ -72174,35 +73601,11 @@
                       "title": "",
                       "type": "object",
                       "description": "Account sync mode for the table. Options: `SYNC_ALL_ACCOUNTS` (sync all accounts) or `SELECT_SPECIFIC_ACCOUNTS` (sync selected accounts only).",
-                      "example": "SYNC_ALL_ACCOUNTS",
+                      "example": "SELECT_SPECIFIC_ACCOUNTS | SYNC_ALL_ACCOUNTS",
                       "enum": [
                         "SELECT_SPECIFIC_ACCOUNTS",
                         "SYNC_ALL_ACCOUNTS"
                       ]
-                    },
-                    "accounts": {
-                      "title": "",
-                      "type": "array",
-                      "description": "List of accounts to sync for the table, if applicable.",
-                      "items": {
-                        "title": "",
-                        "type": "object",
-                        "properties": {
-                          "flag": {
-                            "title": "",
-                            "type": "boolean",
-                            "description": "Flag to indicate if descendants are included or not.",
-                            "example": true
-                          },
-                          "id": {
-                            "title": "",
-                            "type": "string",
-                            "description": "Account ID and `isAssumption` flag (`true` or `false`) are separated by a comma. The `isAssumption` flag indicates whether the account is used for assumptions.",
-                            "example": "1,false"
-                          }
-                        },
-                        "description": "List of accounts to sync for the table, if applicable."
-                      }
                     },
                     "currency": {
                       "title": "",
@@ -72234,35 +73637,11 @@
                       "title": "",
                       "type": "object",
                       "description": "Level sync mode for the table. Options: `SYNC_ALL_LEVELS` (sync all levels) or `SELECT_SPECIFIC_LEVELS` (sync selected levels only).",
-                      "example": "SYNC_ALL_LEVELS",
+                      "example": "SELECT_SPECIFIC_LEVELS | SYNC_ALL_LEVELS",
                       "enum": [
                         "SELECT_SPECIFIC_LEVELS",
                         "SYNC_ALL_LEVELS"
                       ]
-                    },
-                    "levels": {
-                      "title": "",
-                      "type": "array",
-                      "description": "List of levels to sync for the table, if applicable.",
-                      "items": {
-                        "title": "",
-                        "type": "object",
-                        "properties": {
-                          "flag": {
-                            "title": "",
-                            "type": "boolean",
-                            "description": "Flag to indicate if descendants are included or not.",
-                            "example": true
-                          },
-                          "id": {
-                            "title": "",
-                            "type": "string",
-                            "description": "Level ID to sync.",
-                            "example": "string"
-                          }
-                        },
-                        "description": "List of levels to sync for the table, if applicable."
-                      }
                     },
                     "selected_accounts": {
                       "title": "",
@@ -72466,6 +73845,12 @@
                 "description": "Workday host name.",
                 "example": "your_workday_host_name"
               },
+              "integration_system_id": {
+                "title": "",
+                "type": "string",
+                "description": "Integration System ID",
+                "example": "integration_system_id"
+              },
               "password": {
                 "title": "",
                 "type": "string",
@@ -72518,6 +73903,28 @@
           }
         }
       },
+      "workday_hcm_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for workday password.",
+                "example": "PASSWORD_KEY"
+              },
+              "username": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for username of your Workday Integration System User account",
+                "example": "USERNAME_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "workday_hcm_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -72531,6 +73938,9 @@
           },
           {
             "$ref": "#/components/schemas/workday_hcm_auth_V1"
+          },
+          {
+            "$ref": "#/components/schemas/workday_hcm_esm_keys_config_V1"
           }
         ]
       },
@@ -72661,11 +74071,11 @@
                 "type": "object",
                 "description": "Your Wrike Subscription Plan.",
                 "enum": [
-                  "[customColumnIds,superParentIds,customItemTypeId,metadata,attachmentCount,customFields,space]",
-                  "[customColumnIds,superParentIds,customItemTypeId,metadata,attachmentCount,space,customFields]",
-                  "[customColumnIds,superParentIds,customItemTypeId,attachmentCount,space,customFields,metadata]",
-                  "[customColumnIds,superParentIds,customItemTypeId,metadata,space,customFields,attachmentCount]",
-                  "[customColumnIds,superParentIds,customItemTypeId,metadata,attachmentCount,space,customFields,contractType]"
+                  "{\"folder_project\":\"[customColumnIds,superParentIds,customItemTypeId,metadata,attachmentCount,customFields,space]\",\"folder_task\":\"[authorIds,hasAttachments,attachmentCount,parentIds,superParentIds,sharedIds,responsibleIds,description,briefDescription,followerIds,recurrent,superTaskIds,subTaskIds,dependencyIds,metadata,customFields,customItemTypeId,effortAllocation]\",\"space_task\":\"[authorIds,hasAttachments,attachmentCount,parentIds,superParentIds,sharedIds,responsibleIds,description,briefDescription,followerIds,recurrent,superTaskIds,subTaskIds,dependencyIds,metadata,customFields,customItemTypeId,effortAllocation]\"}",
+                  "{\"folder_project\":\"[customColumnIds,superParentIds,customItemTypeId,attachmentCount,space,customFields,metadata]\",\"folder_task\":\"[authorIds,hasAttachments,attachmentCount,parentIds,superParentIds,sharedIds,responsibleIds,description,briefDescription,followerIds,recurrent,superTaskIds,subTaskIds,dependencyIds,effortAllocation,customFields,customItemTypeId,metadata]\",\"space_task\":\"[authorIds,hasAttachments,attachmentCount,parentIds,superParentIds,sharedIds,responsibleIds,description,briefDescription,followerIds,recurrent,superTaskIds,subTaskIds,dependencyIds,effortAllocation,customFields,customItemTypeId,metadata]\"}",
+                  "{\"folder_project\":\"[customColumnIds,superParentIds,customItemTypeId,metadata,attachmentCount,space,customFields]\",\"folder_task\":\"[authorIds,hasAttachments,attachmentCount,parentIds,superParentIds,sharedIds,responsibleIds,description,briefDescription,followerIds,recurrent,superTaskIds,subTaskIds,dependencyIds,metadata,customFields,effortAllocation,customItemTypeId]\",\"space_task\":\"[authorIds,hasAttachments,attachmentCount,parentIds,superParentIds,sharedIds,responsibleIds,description,briefDescription,followerIds,recurrent,superTaskIds,subTaskIds,dependencyIds,metadata,customFields,effortAllocation,customItemTypeId]\"}",
+                  "{\"folder_project\":\"[customColumnIds,superParentIds,customItemTypeId,metadata,space,customFields,attachmentCount]\",\"folder_task\":\"[authorIds,hasAttachments,attachmentCount,parentIds,superParentIds,sharedIds,responsibleIds,description,briefDescription,followerIds,recurrent,superTaskIds,subTaskIds,dependencyIds,metadata,customItemTypeId,effortAllocation,customFields]\",\"space_task\":\"[authorIds,hasAttachments,attachmentCount,parentIds,superParentIds,sharedIds,responsibleIds,description,briefDescription,followerIds,recurrent,superTaskIds,subTaskIds,dependencyIds,metadata,customItemTypeId,effortAllocation,customFields]\"}",
+                  "{\"folder_project\":\"[customColumnIds,superParentIds,customItemTypeId,metadata,attachmentCount,space,customFields,contractType]\",\"folder_task\":\"[authorIds,hasAttachments,attachmentCount,parentIds,superParentIds,sharedIds,responsibleIds,responsiblePlaceholderIds,description,briefDescription,followerIds,recurrent,superTaskIds,subTaskIds,dependencyIds,metadata,customFields,effortAllocation,billingType,finance,customItemTypeId]\",\"space_task\":\"[authorIds,hasAttachments,attachmentCount,parentIds,superParentIds,sharedIds,responsibleIds,responsiblePlaceholderIds,description,briefDescription,followerIds,recurrent,superTaskIds,subTaskIds,dependencyIds,metadata,customFields,effortAllocation,billingType,customItemTypeId]\"}"
                 ]
               },
               "sub_domain": {
@@ -75135,7 +76545,9 @@
                 "description": "Your Zonka Feedback data center ID.",
                 "enum": [
                   "us1",
-                  "e"
+                  "au",
+                  "e",
+                  "in"
                 ]
               }
             },
@@ -76110,6 +77522,9 @@
           },
           {
             "$ref": "#/components/schemas/aurora_postgres_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/aurora_postgres_esm_keys_config_V1"
           }
         ]
       },
@@ -76237,6 +77652,9 @@
           },
           {
             "$ref": "#/components/schemas/aws_cost_report_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/aws_cost_report_esm_keys_config_V1"
           }
         ]
       },
@@ -76453,6 +77871,9 @@
           },
           {
             "$ref": "#/components/schemas/azure_postgres_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/azure_postgres_esm_keys_config_V1"
           }
         ]
       },
@@ -76511,6 +77932,9 @@
           },
           {
             "$ref": "#/components/schemas/azure_sql_db_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/azure_sql_db_esm_keys_config_V1"
           }
         ]
       },
@@ -76540,6 +77964,9 @@
           },
           {
             "$ref": "#/components/schemas/azure_sql_managed_db_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/azure_sql_managed_db_esm_keys_config_V1"
           }
         ]
       },
@@ -77214,6 +78641,16 @@
           },
           {
             "$ref": "#/components/schemas/cin7core_config_V1"
+          }
+        ]
+      },
+      "circle_community_platform_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/circle_community_platform_config_V1"
           }
         ]
       },
@@ -78260,6 +79697,9 @@
           },
           {
             "$ref": "#/components/schemas/elastic_cloud_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/elastic_cloud_esm_keys_config_V1"
           }
         ]
       },
@@ -78348,6 +79788,9 @@
           },
           {
             "$ref": "#/components/schemas/epic_clarity_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/epic_clarity_esm_keys_config_V1"
           }
         ]
       },
@@ -78377,6 +79820,9 @@
           },
           {
             "$ref": "#/components/schemas/es_self_hosted_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/es_self_hosted_esm_keys_config_V1"
           }
         ]
       },
@@ -78467,6 +79913,9 @@
           },
           {
             "$ref": "#/components/schemas/facebook_ads_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/facebook_ads_esm_keys_config_V1"
           }
         ]
       },
@@ -79104,6 +80553,9 @@
           },
           {
             "$ref": "#/components/schemas/google_cloud_postgresql_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/google_cloud_postgresql_esm_keys_config_V1"
           }
         ]
       },
@@ -79133,6 +80585,9 @@
           },
           {
             "$ref": "#/components/schemas/google_cloud_sqlserver_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/google_cloud_sqlserver_esm_keys_config_V1"
           }
         ]
       },
@@ -79285,6 +80740,38 @@
           }
         ]
       },
+      "guidewire_cloud_data_access_readonly_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "external_id": {
+                "title": "",
+                "type": "string",
+                "description": "Used for authentication along with the `role_arn`. If not provided, it uses connector's `group_id`. Use the [List All Groups endpoint](/docs/rest-api/groups#listallgroups) to find the `group_id`.",
+                "example": "group_id"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "guidewire_cloud_data_access_ConnectorResponseV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectorResponseV1"
+          },
+          {
+            "$ref": "#/components/schemas/guidewire_cloud_data_access_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/guidewire_cloud_data_access_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/guidewire_cloud_data_access_esm_keys_config_V1"
+          }
+        ]
+      },
       "guru_ConnectorResponseV1": {
         "allOf": [
           {
@@ -79431,6 +80918,9 @@
           },
           {
             "$ref": "#/components/schemas/heroku_postgres_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/heroku_postgres_esm_keys_config_V1"
           }
         ]
       },
@@ -79748,6 +81238,9 @@
           },
           {
             "$ref": "#/components/schemas/jira_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/jira_esm_keys_config_V1"
           }
         ]
       },
@@ -81064,6 +82557,9 @@
           },
           {
             "$ref": "#/components/schemas/opendistro_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/opendistro_esm_keys_config_V1"
           }
         ]
       },
@@ -81093,6 +82589,9 @@
           },
           {
             "$ref": "#/components/schemas/opensearch_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/opensearch_esm_keys_config_V1"
           }
         ]
       },
@@ -81132,6 +82631,9 @@
           },
           {
             "$ref": "#/components/schemas/oracle_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/oracle_esm_keys_config_V1"
           }
         ]
       },
@@ -81171,6 +82673,9 @@
           },
           {
             "$ref": "#/components/schemas/oracle_ebs_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/oracle_ebs_esm_keys_config_V1"
           }
         ]
       },
@@ -81240,6 +82745,9 @@
           },
           {
             "$ref": "#/components/schemas/oracle_hva_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/oracle_hva_esm_keys_config_V1"
           }
         ]
       },
@@ -81289,6 +82797,9 @@
           },
           {
             "$ref": "#/components/schemas/oracle_rac_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/oracle_rac_esm_keys_config_V1"
           }
         ]
       },
@@ -81318,6 +82829,9 @@
           },
           {
             "$ref": "#/components/schemas/oracle_rds_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/oracle_rds_esm_keys_config_V1"
           }
         ]
       },
@@ -81347,6 +82861,9 @@
           },
           {
             "$ref": "#/components/schemas/oracle_sap_hva_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/oracle_sap_hva_esm_keys_config_V1"
           }
         ]
       },
@@ -81357,6 +82874,9 @@
           },
           {
             "$ref": "#/components/schemas/oracle_sap_hva_netweaver_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/oracle_sap_hva_netweaver_esm_keys_config_V1"
           }
         ]
       },
@@ -81835,6 +83355,9 @@
           },
           {
             "$ref": "#/components/schemas/postgres_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/postgres_esm_keys_config_V1"
           }
         ]
       },
@@ -81864,6 +83387,9 @@
           },
           {
             "$ref": "#/components/schemas/postgres_rds_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/postgres_rds_esm_keys_config_V1"
           }
         ]
       },
@@ -82413,6 +83939,9 @@
           },
           {
             "$ref": "#/components/schemas/s3_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/s3_esm_keys_config_V1"
           }
         ]
       },
@@ -82423,6 +83952,9 @@
           },
           {
             "$ref": "#/components/schemas/s3_compatible_storage_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/s3_compatible_storage_esm_keys_config_V1"
           }
         ]
       },
@@ -82722,6 +84254,9 @@
           },
           {
             "$ref": "#/components/schemas/sap_hana_db_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/sap_hana_db_esm_keys_config_V1"
           }
         ]
       },
@@ -83354,6 +84889,9 @@
           },
           {
             "$ref": "#/components/schemas/sql_server_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/sql_server_esm_keys_config_V1"
           }
         ]
       },
@@ -83412,6 +84950,9 @@
           },
           {
             "$ref": "#/components/schemas/sql_server_rds_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/sql_server_rds_esm_keys_config_V1"
           }
         ]
       },
@@ -84304,6 +85845,9 @@
           },
           {
             "$ref": "#/components/schemas/workday_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/workday_esm_keys_config_V1"
           }
         ]
       },
@@ -84334,6 +85878,9 @@
           },
           {
             "$ref": "#/components/schemas/workday_hcm_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/workday_hcm_esm_keys_config_V1"
           }
         ]
       },

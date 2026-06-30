@@ -12,6 +12,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `fivetran_connector_schema_config`: inconsistent result after apply, when API returns tables inside disabled schema
 
+### Added
+New connection services supported:
+- Supported service: `circle_community_platform`
+- Supported service: `guidewire_cloud_data_access`
+New connection config fields supported:
+- Added field `fivetran_connector.config.dimensions_criteo_retail_media` for services: `criteo_retail_media`.
+- Added field `fivetran_connector.config.allowed_senders_list` for services: `email`.
+- Added field `fivetran_connector.config.api_base_url` for services: `gongio`.
+- Added field `fivetran_connector.config.manifest_path` for services: `guidewire_cloud_data_access`.
+- Added field `fivetran_connector.config.key_type` for services: `itunes_connect`.
+- Added field `fivetran_connector.config.csv_delimiter` for services: `klarna`.
+- Added field `fivetran_connector.config.integration_system_id` for services: `workday_hcm`.
+- Added field `fivetran_connector.config.analytics_api_key` for services: `anthropic_claude`.
+- Added field `fivetran_connector.config.api_key_3` for services: `openai`.
+- Added field `fivetran_connector.config.custom_reports.view_attribution_window` for services: `pinterest_ads`.
+- Added field `fivetran_connector.config.custom_reports.click_attribution_window` for services: `pinterest_ads`.
+- Added field `fivetran_connector.config.custom_reports.conversion_report_time` for services: `pinterest_ads`.
+
 ## [v1.9.35](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.35...v1.9.34)
 
 ### Fixed

@@ -92,6 +92,7 @@ Read-Only:
 	- Service `aws_cost_report`: Access Key ID
 	- Service `checkout`: Your Checkout.com access key ID.
 	- Service `cloudtalk`: Your CloudTalk Access Key ID.
+	- Service `guidewire_cloud_data_access`: Access Key ID for access key authentication.
 	- Service `nice`: Your NICE access key ID.
 	- Service `s3`: Access Key ID
 	- Service `s3_compatible_storage`: Access Key ID
@@ -102,6 +103,7 @@ Read-Only:
 	- Service `checkout`: Your Checkout.com access key secret.
 	- Service `cloudtalk`: Your CloudTalk Access Key Secret.
 	- Service `gongio`: Your Gongio Access Key Secret.
+	- Service `guidewire_cloud_data_access`: Access Key Secret for access key authentication.
 	- Service `nice`: Your NICE access key secret.
 	- Service `s3`: Access Key Secret
 	- Service `s3_compatible_storage`: Access Key Secret
@@ -312,6 +314,8 @@ Read-Only:
 	- Service `economic`: Your E-conomic X-AgreementGrantToken goes here.
 - `algorithm` (String) Field usage depends on `service` value: 
 	- Service `webhooks`: HMAC algorithm used for generating the HMAC signature. Supported algorithms  INFER_FROM_HEADER, MD5, SHA_1, SHA_224, SHA_256, SHA_384, SHA_512. Default: SHA_256
+- `allowed_senders_list` (Set of String) Field usage depends on `service` value: 
+	- Service `email`: Restrict ingestion to emails from these senders only. Supports exact addresses (e.g. reports@vendor.com) or domains (e.g. @vendor.com). Applies to all tables.
 - `always_encrypted` (Boolean) Field usage depends on `service` value: 
 	- Service `aurora`: Require TLS through Tunnel
 	- Service `aurora_postgres`: Require TLS through Tunnel
@@ -361,6 +365,8 @@ Read-Only:
 	- Service `sql_server_hva`: Require TLS.
 	- Service `sql_server_rds`: Require TLS.
 	- Service `sql_server_sap_ecc_hva`: Require TLS.
+- `analytics_api_key` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `anthropic_claude`: Your Analytics API key for syncing Claude Enterprise organization-level analytics data.
 - `api` (String) Field usage depends on `service` value: 
 	- Service `freshsuccess`: Set this parameter to `api`.
 - `api_access_token` (String, Sensitive) Field usage depends on `service` value: 
@@ -369,7 +375,9 @@ Read-Only:
 	- Service `shopify`: API access token of your custom or public app.
 	- Service `square`: The Square API access token of your application.
 - `api_admin_key` (String, Sensitive) Field usage depends on `service` value: 
-	- Service `anthropic_claude`: Your Claude Platform Admin API key.
+	- Service `anthropic_claude`: Your Claude Platform Admin API key for syncing organization-level management and reporting data.
+- `api_base_url` (String) Field usage depends on `service` value: 
+	- Service `gongio`: Your Gong API Base URL.
 - `api_environment` (String) Field usage depends on `service` value: 
 	- Service `afterpay`: Your Afterpay API environment.
 	- Service `tiktok_organic`: Your TikTok Organic API environment.
@@ -388,7 +396,7 @@ Read-Only:
 	- Service `airtable`: API key of the Airtable account.
 	- Service `algolia`: Your Algolia API key.
 	- Service `alida`: Your Alida API key.
-	- Service `anthropic_claude`: Your Claude Platform standard API key.
+	- Service `anthropic_claude`: Your API key for syncing data from a specific Claude workspace.
 	- Service `anvyl`: Your Anvyl API key.
 	- Service `apollo`: Your Apollo API key.
 	- Service `appcues`: Your Appcues API key.
@@ -626,7 +634,9 @@ Read-Only:
 	- Service `zingtree`: Your Zingtree API key.
 	- Service `zip`: Your Zip API key.
 - `api_key_2` (String, Sensitive) Field usage depends on `service` value: 
-	- Service `openai`: Your OpenAI API key.
+	- Service `openai`: The project-specific API key for the OpenAI Platform project whose data you want to sync.
+- `api_key_3` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `openai`: The API key scoped to `codex.enterprise.analytics.read` for syncing Codex Enterprise Analytics data from a specific ChatGPT workspace.
 - `api_key_api_secret` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `revel`: Your Revel Systems API Key and API Secret.
 - `api_keys` (Set of String) Field usage depends on `service` value: 
@@ -674,6 +684,7 @@ Read-Only:
 	- Service `buzzsprout`: Your Buzzsprout API token.
 	- Service `centra`: Your Centra API token.
 	- Service `chameleon`: Your Chameleon API token.
+	- Service `circle_community_platform`: Your Circle Community Platform API token.
 	- Service `clari`: Your Clari API token.
 	- Service `cloudflare_analytics`: Your Cloudflare Analytics API token.
 	- Service `coda`: Your Coda API token.
@@ -858,13 +869,14 @@ Read-Only:
 - `audience` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `auth0`: Your Auth0 API audience.
 - `auth` (String) Field usage depends on `service` value: 
-	- Service `databricks_db`: Token-based authentication type
+	- Service `databricks_db`: Authentication type (TOKEN or OAUTH2)
 	- Service `gitlab`: Your GitLab auth type.
 	- Service `redshift_db`: Password-based authentication type
 	- Service `snowflake_db`: Password-based or key-based authentication type
 - `auth_code` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `happyfox`: Your HappyFox auth code.
 - `auth_environment` (String) Field usage depends on `service` value: 
+	- Service `ukg_pro_workforce_management`: Your UKG Pro Workforce Management Auth base URL.
 	- Service `younium`: Your Younium auth environment. Use this parameter only if you want the connection to authenticate using OAuth 2.0.
 - `auth_header_key` (String) Field usage depends on `service` value: 
 	- Service `webhooks`: Set if you use HMAC/token-based auth methods. This is used to retrieve a key in headers
@@ -917,6 +929,7 @@ Read-Only:
 	- Service `dynamics_365`: Authentication mechanism. Either one of `OAUTH2`, or `SERVICE_PRINCIPAL`. Default value `OAUTH2`
 	- Service `gcs`: Authorization type. Required for storage bucket authentication.
 	- Service `google_sheets`: The `OAuth` value must be specified for this type of authorization.
+	- Service `guidewire_cloud_data_access`: Access approach. Supported values: IAM_ROLE, ACCESS_KEY, PUBLIC_BUCKET.
 	- Service `jira`: Authorization type.
 	- Service `mixpanel`: Authentication Method
 	- Service `pardot`: Authenticate using OAuth or HTTP Basic
@@ -925,6 +938,7 @@ Read-Only:
 	- Service `s3`: Access approach
 	- Service `s3_compatible_storage`: Access approach
 	- Service `samsara`: The authentication method you want to use for your connection.
+	- Service `ukg_pro_workforce_management`: The authentication method you want to use for your connection.
 	- Service `upland`: Authentication method you want to use for your connection.
 	- Service `wasabi_cloud_storage`: The Wasabi Cloud Storage Access approach. Required for connector creation. Default value: `ACCESS_KEY`.
 	- Service `younium`: The authentication method you want to use for your connection.
@@ -1004,7 +1018,7 @@ Read-Only:
 	- Service `financial_force`: (Optional) The custom Salesforce domain. Make sure that the `base_url` starts with `https://`.
 	- Service `freshsales`: Your Freshsales product.
 	- Service `gitlab`: Your GitLab base URL.
-	- Service `gongio`: Your Gong API Base URL.
+	- Service `gongio`: Your Gong Base URL.
 	- Service `higher_logic_vanilla`: Your Higher Logic Vanilla base URL.
 	- Service `ironclad`: Your Ironclad base url.
 	- Service `jotform`: Your Jotform base URL.
@@ -1055,6 +1069,7 @@ Read-Only:
 	- Service `cloudfront`: The bucket name for CloudFront.
 	- Service `gcs`: The name of the GCS bucket.
 	- Service `google_play`: The Google Cloud Storage source bucket.
+	- Service `guidewire_cloud_data_access`: The S3 bucket name containing the Guidewire CDA export. Required for connector creation.
 	- Service `heap`: The S3 bucket name.
 	- Service `kinesis`: The name of the Kinesis bucket.
 	- Service `s3`: The S3 bucket name. Required for connector creation.
@@ -1374,6 +1389,7 @@ Read-Only:
 	- Service `ironclad_clickwrap`: Your Ironclad Clickwrap Client Secret.
 	- Service `jama_software`: Your Jama Software client secret.
 	- Service `jibble`: Your Jibble client secret.
+	- Service `khoros_communities`: Your Khoros Communities client secret.
 	- Service `learn_amp`: Your Learn Amp client secret.
 	- Service `looker_source`: Your Looker client secret.
 	- Service `marketo`: Marketo REST API Client Secret.
@@ -1553,6 +1569,7 @@ Read-Only:
 	- Service `google_cloud_mysql`: Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
 	- Service `google_cloud_postgresql`: Possible values:`Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
 	- Service `google_cloud_sqlserver`: Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
+	- Service `guidewire_cloud_data_access`: Connection method. Default value: `Directly`.
 	- Service `hana_sap_hva_b1`: Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
 	- Service `hana_sap_hva_ecc`: Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
 	- Service `hana_sap_hva_ecc_netweaver`: Possible values: `Directly`, `PrivateLink`, `SshTunnel`. `SshTunnel` is used as a value if this parameter is omitted in the request and any of the following parameter's values is specified: `tunnel_host`, `tunnel_port`, `tunnel_user`. Otherwise, `Directly` is used as a value if the parameter is omitted.
@@ -1636,6 +1653,8 @@ Read-Only:
 	- Service `sistrix`: Your SISTRIX country code.
 - `csv_definition` (String) Field usage depends on `service` value: 
 	- Service `adjust`: CSV definition for the CSV export (https://help.adjust.com/en/article/csv-uploads#how-do-i-format-my-csv-definition).
+- `csv_delimiter` (String) Field usage depends on `service` value: 
+	- Service `klarna`: The CSV delimiter used in your Klarna settlement report.
 - `currency` (String) Field usage depends on `service` value: 
 	- Service `criteo`: Currency
 	- Service `rokt`: Your Rokt currency.
@@ -1667,6 +1686,7 @@ Read-Only:
 - `custom_reports` (Attributes Set) Field usage depends on `service` value: 
 	- Service `apple_search_ads`: Allows users to define reports with custom groupBy dimensions.
 	- Service `criteo`: Title of Custom Report
+	- Service `pinterest_ads`: Custom reports to sync. Each entry creates a destination table with the specified metrics and breakdown level.
 	- Service `reddit_ads`: The list of custom report configurations. Each report corresponds to a table within the schema to which connector will sync the data.
 	- Service `snapchat_ads`: [Custom reports for Snapchat Ads connector](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports).
 	- Service `tiktok_ads`: Title of Custom Report (see [below for nested schema](#nestedatt--config--custom_reports))
@@ -1789,6 +1809,8 @@ Read-Only:
 	- Service `double_click_publishers`: Report dimensions to include in the sync. The `date` dimension is mandatory for all the report types.
 	- Service `google_analytics`: The report dimensions to include into a sync. The `date` dimension is mandatory for all the report types.
 	- Service `google_display_and_video_360`: The report dimensions (filters) to include into a sync. The dimension names are provided in the API format. This is a required parameter when `config_method` is set to `CREATE_NEW`.
+- `dimensions_criteo_retail_media` (String) Field usage depends on `service` value: 
+	- Service `criteo_retail_media`: Your Criteo Retail Media report revenue dimensions.
 - `direct_capture_method` (String) Field usage depends on `service` value: 
 	- Service `oracle_hva`: Possible values:`DIRECT`, `BFILE`, `ASM`, `ARCHIVE_ONLY`
 	- Service `oracle_sap_hva`: Possible values:`DIRECT`, `BFILE`, `ASM`, `ARCHIVE_ONLY`
@@ -2023,6 +2045,7 @@ Read-Only:
 	- Service `sql_server`: The external ID to be used when assuming the IAM role.
 - `extraction_pattern` (String) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: Required when `file_mapping_method` = `EXTRACT_TABLES`. A regular expression with a named capture group `(?table...)` to extract table names from file paths.
+	- Service `ftp`: Required when `file_mapping_method` = `EXTRACT_TABLES`. A regular expression with a named capture group `(?table...)` to extract table names from file paths.
 	- Service `gcs`: Required when `file_mapping_method` = `EXTRACT_TABLES`. A regular expression with a named capture group `(?table...)` to extract table names from file paths.
 	- Service `s3`: Required when `file_mapping_method` = `EXTRACT_TABLES`. A regular expression with a named capture group `(?table...)` to extract table names from file paths.
 	- Service `sftp`: Required when `file_mapping_method` = `EXTRACT_TABLES`. A regular expression with a named capture group `(?table...)` to extract table names from file paths.
@@ -2037,6 +2060,7 @@ Read-Only:
 	- Service `share_point`: Files will be processed and synced according to the selected file handling option. Supported values:`structured`- (Default) Extract structured data into destination tables for analysis. Commonly used.`unstructured`- Replicate files in their original format. Best for PDFs, images, and other unstructured content.  Learn more about unstructured file replication in our [documentation.](https://fivetran.com/docs/using-fivetran/features/unstructured-file-replication).
 - `file_mapping_method` (String) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.
+	- Service `ftp`: The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.
 	- Service `gcs`: The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.
 	- Service `s3`: The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.
 	- Service `sftp`: The method used to map files to destination tables. Use `DEFINE_PER_TABLE` to manually configure each table with its own file pattern, or `EXTRACT_TABLES` to automatically discover tables based on a single extraction pattern.
@@ -2060,7 +2084,7 @@ Read-Only:
 	- Service `box`: Mapped file name patterns to a destination table.
 	- Service `dropbox`: Mapped file name patterns to a destination table.
 	- Service `email`: Mapped file name patterns to a destination table.
-	- Service `ftp`: Mapped file name patterns to a destination table.
+	- Service `ftp`: Required when `file_mapping_method` = `DEFINE_PER_TABLE`. Mapped file name patterns to a destination table.
 	- Service `gcs`: Required when `file_mapping_method` = `DEFINE_PER_TABLE`. Mapped file name patterns to a destination table.
 	- Service `google_drive`: Mapped file name patterns to a destination table.
 	- Service `s3`: Required when `file_mapping_method` = `DEFINE_PER_TABLE`. Mapped file name patterns to a destination table.
@@ -2298,6 +2322,8 @@ Read-Only:
 	- Service `sap_business_by_design`: The SAP Business ByDesign instance URL.
 - `integration_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `pendo`: The integration key of the Pendo account.
+- `integration_system_id` (String) Field usage depends on `service` value: 
+	- Service `workday_hcm`: Integration System ID
 - `ip_address` (String) Field usage depends on `service` value: 
 	- Service `aveva_pi`: IP address of the AF Server
 - `is_account_level_connector` (Boolean) Field usage depends on `service` value: 
@@ -2323,6 +2349,7 @@ Read-Only:
 - `is_private_link_required` (Boolean) Field usage depends on `service` value: 
 	- Service `aws_lambda`: We use PrivateLink by default if your AWS Lambda is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to AWS lambda over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options/aws-private-link).
 	- Service `dynamodb`: We use PrivateLink by default if your DynamoDB instance is in the same region as Fivetran. Turning on this toggle ensures that Fivetran always connects to DynamoDB over PrivateLink. Learn more in our [PrivateLink documentation](https://fivetran.com/docs/connectors/databases/connection-options/aws-private-link).
+	- Service `guidewire_cloud_data_access`: Set to `true` if you want to connect to S3 bucket over PrivateLink. Default value: `false`.
 	- Service `s3`: Set to `true` if you want to connect to S3 bucket over PrivateLink. Default value: `false`.
 - `is_public` (Boolean) Field usage depends on `service` value: 
 	- Service `aws_cost_report`: Whether you are syncing from a public bucket. Default value: `false`.
@@ -2349,7 +2376,7 @@ Read-Only:
 	- Service `oracle_fusion_cloud_apps_fscm`: The Oracle Fusion Cloud issuer name.
 	- Service `oracle_fusion_cloud_apps_hcm`: The Oracle Fusion Cloud issuer name.
 - `issuer_id` (String) Field usage depends on `service` value: 
-	- Service `itunes_connect`: Your Issuer ID
+	- Service `itunes_connect`: Your Issuer ID. Must be populated if `key_type` is set to `Team`
 - `json_delivery_mode` (String) Field usage depends on `service` value: 
 	- Service `amqp`: JSON delivery mode (Packed or Unpacked).
 	- Service `aws_cost_report`: Control how your JSON data is delivered into your destination
@@ -2376,6 +2403,8 @@ Read-Only:
 	- Service `aws_msk`: If `security_protocol` is set to `TLS`, enter your `Key Password`.
 - `key_store_type` (String) Field usage depends on `service` value: 
 	- Service `heroku_kafka`: Key Store Type
+- `key_type` (String) Field usage depends on `service` value: 
+	- Service `itunes_connect`: Key Type
 - `keystore` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `aws_msk`: If `security_protocol` is set to `TLS`, add the `Keystore File` as Base64 encoded string.
 - `keystore_password` (String, Sensitive) Field usage depends on `service` value: 
@@ -2436,6 +2465,8 @@ Read-Only:
 	- Service `sage_intacct`: Lookback window for GL Batch endpoint lookback sync
 - `manager_accounts` (Set of String) Field usage depends on `service` value: 
 	- Service `google_ads`: The list of the Manager Account IDs whose clients will be synced. Must be populated if `sync_mode` is set to `ManagerAccounts`.
+- `manifest_path` (String) Field usage depends on `service` value: 
+	- Service `guidewire_cloud_data_access`: The path to the Guidewire CDA manifest.json file in the S3 bucket.
 - `max_api_requests_per_day` (Number) Field usage depends on `service` value: 
 	- Service `reltio`: Maximum API requests per day
 - `merchant_id` (String) Field usage depends on `service` value: 
@@ -2536,6 +2567,7 @@ Read-Only:
 - `organization` (String) Field usage depends on `service` value: 
 	- Service `gladly`: Your Gladly Organization Name.
 	- Service `statuspage`: Your Statuspage Organization ID.
+	- Service `ukg_pro_workforce_management`: Your UKG Pro Workforce Management Organization ID.
 - `organization_domain` (String) Field usage depends on `service` value: 
 	- Service `adobe_workfront`: Your Adobe Workfront organization domain.
 - `organization_id` (String) Field usage depends on `service` value: 
@@ -2644,7 +2676,7 @@ Read-Only:
 	- Service `jira`: The Jira user's password.
 	- Service `khoros_care`: Your Khoros Care password.
 	- Service `kissmetrics`: Your Kissmetrics API Password.
-	- Service `klarna`: Your Klarna Password.
+	- Service `klarna`: Your Klarna password.
 	- Service `lessonly`: Your Lessonly password.
 	- Service `magento_mysql`: The user's password.
 	- Service `magento_mysql_rds`: The user's password.
@@ -3196,6 +3228,7 @@ Read-Only:
 	- Service `aws_msk`: If `sasl_mechanism` is set to `IAM`, enter your Role ARN
 	- Service `cloudfront`: The Role ARN required for authentication.
 	- Service `dynamodb`: Role ARN
+	- Service `guidewire_cloud_data_access`: The Role ARN required for IAM role authentication.
 	- Service `heap`: The Role ARN required for authentication.
 	- Service `kinesis`: The Role ARN required for authentication.
 	- Service `magento_mysql_rds`: The ARN of the IAM role with RDS permissions. Required if the authentication method is `AWS_IAM` in the SaaS Deployment model.
@@ -4305,7 +4338,7 @@ Read-Only:
 	- Service `jamf`: Your Jamf username.
 	- Service `khoros_care`: Your Khoros Care username.
 	- Service `kissmetrics`: Your Kissmetrics API Username.
-	- Service `klarna`: Your Klarna Username.
+	- Service `klarna`: Your Klarna username.
 	- Service `learnupon`: Your LearnUpon username.
 	- Service `lessonly`: Your Lessonly username.
 	- Service `mailgun`: Your Mailgun API username.
@@ -4398,6 +4431,7 @@ Read-Only:
 	- Service `mode`: Your Mode Workspace.
 - `workspace_id` (String) Field usage depends on `service` value: 
 	- Service `fulfil`: Your Fulfil workspace ID.
+	- Service `openai`: Your ChatGPT Enterprise Workspace ID.
 	- Service `openai_compliance_platform`: Your OpenAI Compliance Platform workspace ID.
 - `workspace_name` (String) Field usage depends on `service` value: 
 	- Service `bigquery_db`: Workspace Dataset Name
@@ -4525,6 +4559,10 @@ Read-Only:
 	- Service `reddit_ads`: Breakdowns are now used instead of level and segmentation. They provide a filter for report data.
 - `breakout` (String) Field usage depends on `service` value: 
 	- Service `snapchat_ads`: [Sets Breakout on custom report](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports#breakout).
+- `click_attribution_window` (String) Field usage depends on `service` value: 
+	- Service `pinterest_ads`: Overrides the connector-level click attribution window for this report.
+- `conversion_report_time` (String) Field usage depends on `service` value: 
+	- Service `pinterest_ads`: Overrides the connector-level conversion report time for this report.
 - `conversions_report_included` (Boolean) Field usage depends on `service` value: 
 	- Service `reddit_ads`: The boolean value specifying whether to enable or disable event conversions data synchronisation. Default value: `false`
 - `custom_events_included` (Boolean) Field usage depends on `service` value: 
@@ -4537,6 +4575,7 @@ Read-Only:
 - `event_names` (Set of String) Field usage depends on `service` value: 
 	- Service `reddit_ads`: The list of events the conversion data will be synchronised for
 - `granularity` (String) Field usage depends on `service` value: 
+	- Service `pinterest_ads`: Time granularity for the report: DAY, HOUR, WEEK, MONTH, or TOTAL.
 	- Service `snapchat_ads`: [Sets Granularity on custom report](https://fivetran.com/docs/connectors/applications/snapchat-ads/custom-reports#granularity).
 - `group_by` (Set of String) Field usage depends on `service` value: 
 	- Service `apple_search_ads`: The list of dimensions to group the data by. The available dimensions depend on the selected `baseReportType`.
@@ -4544,6 +4583,7 @@ Read-Only:
 	- Service `reddit_ads`: Level of custom report.
 - `metrics` (Set of String) Field usage depends on `service` value: 
 	- Service `criteo`: Metrics to be synced
+	- Service `pinterest_ads`: List of metrics to include in the report.
 	- Service `tiktok_ads`: Metrics to be synced
 - `report_fields` (Set of String) Field usage depends on `service` value: 
 	- Service `reddit_ads`: The list of fields included in custom report
@@ -4552,6 +4592,7 @@ Read-Only:
 	- Service `snapchat_ads`: Custom report name (must be unique)
 - `report_type` (String) Field usage depends on `service` value: 
 	- Service `criteo`: Type of report to be generated
+	- Service `pinterest_ads`: The breakdown level for the report (e.g. ADVERTISER, CAMPAIGN, AD_GROUP, PIN_PROMOTION, KEYWORD, PRODUCT_GROUP, PRODUCT_ITEM).
 	- Service `tiktok_ads`: Type of report to be generated
 - `segmentation` (String) Field usage depends on `service` value: 
 	- Service `reddit_ads`: Level of custom report.
@@ -4561,6 +4602,7 @@ Read-Only:
 	- Service `apple_search_ads`: The name of the custom report table. It must be unique within this connection and must comply with Fivetran's naming conventions.
 - `table_name` (String) Field usage depends on `service` value: 
 	- Service `criteo`: Destination Table name of report
+	- Service `pinterest_ads`: Destination table name for this custom report.
 	- Service `tiktok_ads`: Destination Table name of report
 - `time_dimensions` (Set of String) Field usage depends on `service` value: 
 	- Service `criteo`: Time dimensions to be synced
@@ -4568,6 +4610,8 @@ Read-Only:
 	- Service `reddit_ads`: The specific time zone to sync report data if  `useAccountTimeZone` set to `false`.
 - `time_zone_mode` (String) Field usage depends on `service` value: 
 	- Service `reddit_ads`: When this parameter is set to `ACCOUNT`, connector will use account related time zone to sync report data. Default value: `ACCOUNT`. Possible values: `ACCOUNT`, `USER`
+- `view_attribution_window` (String) Field usage depends on `service` value: 
+	- Service `pinterest_ads`: Overrides the connector-level view attribution window for this report.
 
 
 <a id="nestedatt--config--custom_tables"></a>
@@ -4986,13 +5030,13 @@ Read-Only:
 Read-Only:
 
 - `name` (String) The connector schema name in destination. Has to be unique within the group (destination). Required for connector creation of services:<br>
-`15five`, `360learning`, `6sense`, `7shifts`, `absorb_lms`, `acculynx`, `activecampaign`, `acumatica`, `ada`, `adform`, `adjust`, `adobe_analytics_data_feed`, `adobe_analytics`, `adobe_commerce`, `adobe_experience_platform`, `adobe_workfront`, `adp_workforce_now`, `adroll`, `adyen`, `affinity`, `afterpay`, `aha`, `aircall`, `akamai`, `akeneo`, `alation`, `alchemer`, `algolia`, `alida`, `amazon_ads`, `amazon_attribution`, `amazon_dsp`, `amazon_selling_partner`, `amplitude`, `amqp`, `anaplan`, `anthropic_claude`, `anvyl`, `apache_kafka`, `apollo`, `appcues`, `appfigures`, `apple_search_ads`, `applovin`, `appsflyer`, `asana`, `ascend_by_partnerize`, `ashby`, `assembled`, `asset_panda`, `atlassian_compass`, `atlassian_jira_align`, `atlassian_ops_genie`, `attentive`, `attio`, `aumni`, `aura_from_unity`, `auth0`, `autodesk_bim_360`, `avantlink`, `aveva_pi`, `awin`, `aws_cloudtrail`, `aws_cost_report`, `aws_cost`, `aws_inventory`, `aws_lambda`, `aws_msk`, `azure_blob_storage`, `azure_boards`, `azure_devops`, `azure_event_hub`, `azure_function`, `azure_service_bus`, `backbone_plm`, `ballotready`, `bamboohr`, `bazaarvoice`, `betterworks`, `big_commerce`, `bigin_by_zoho_crm`, `bigmarker`, `billing_platform`, `bing_webmaster_tools`, `bingads`, `birdeye`, `bitly`, `bizzabo_app`, `bizzabo_v2`, `bizzabo`, `boostr`, `box`, `braintree_sandbox`, `braintree`, `branch`, `brave_ads`, `braze`, `breathe_hr`, `brevo`, `brex`, `brightcove`, `brightflag`, `brightpearl`, `brivo`, `bubble`, `buildium`, `buildkite`, `business_central`, `buzzsprout`, `bynder`, `cabcharge`, `calabrio`, `calcom`, `calendly`, `callrail`, `campaignmonitor`, `campfire`, `canny`, `canvas_by_instructure`, `canvas_data_2_by_instructure`, `captivateiq`, `care_quality_commission`, `castor_edc`, `centra`, `ceridian_dayforce`, `chameleon`, `channel_advisor`, `chargebee_product_catalog_1`, `chargebee_product_catalog_2`, `chargedesk`, `charthop`, `chartmogul`, `checkout`, `checkr`, `chorusai`, `churnkey`, `churnzero`, `cimis`, `cin7`, `cin7core`, `circleci`, `cj_commission_detail`, `clari`, `classy`, `claude_compliance`, `clazar`, `clickup`, `clockify`, `clockodo`, `close`, `cloudbeds`, `cloudflare_analytics`, `cloudfront`, `cloudtalk`, `clubspeed`, `coalesce`, `coassemble`, `coda`, `codefresh`, `coheris`, `collibra`, `column`, `commercetools`, `compliance_checkpoint`, `concord`, `concur`, `confluence`, `confluent_cloud`, `connector_sdk`, `consensus_demo_automation_platform`, `constant_contact`, `contrast_security`, `convex`, `copper`, `cornerstone`, `coupa`, `credly`, `criteo_retail_media`, `criteo`, `crossbeam`, `crowddev`, `crunchbase`, `cube_software`, `cube`, `culture_amp`, `customerio`, `cvent`, `d2l_brightspace`, `datadog`, `datastreamer_source`, `db2luw`, `dbt_cloud`, `dcl_logistics`, `dear`, `deel`, `delighted`, `deposco`, `deputy`, `destini`, `device_magic`, `dialpad`, `discourse`, `dixa`, `docebo`, `donus`, `doorloop`, `double_click_campaign_manager`, `double_click_publishers`, `drata`, `drift`, `drip`, `dropbox_sign`, `dropbox`, `dsv`, `duoplane`, `dutchie`, `dynamics_365`, `dynamodb`, `easypost`, `ebay`, `economic`, `elastic_cloud`, `electronic_tenant_solutions`, `eloqua`, `email`, `employment_hero`, `es_self_hosted`, `eventbrite`, `eventsforce`, `everflow`, `everhour`, `exact_online`, `expensein`, `expensify`, `ezofficeinventory`, `facebook_ad_account`, `facebook_ads`, `facebook_pages`, `facebook`, `factbird`, `factorial`, `fathom`, `fillout`, `financial_force`, `firebase`, `fireflies`, `firehydrant`, `fivetran_log`, `flexport`, `float`, `flywheel_digital`, `fone_dynamics`, `forethought`, `forj_community`, `formstack`, `fortnox`, `fountain`, `fourkites`, `freightview`, `freshbooks`, `freshchat`, `freshdesk_contact_center`, `freshdesk`, `freshsales`, `freshservice`, `freshsuccess`, `freshteam`, `friendbuy`, `front`, `ftp`, `fulfil`, `fullstory`, `g2`, `gainsight_customer_success`, `gainsight_product_experience`, `gcs`, `gem`, `genesys`, `getfeedback`, `github`, `gitlab`, `gladly`, `globalmeet`, `gmail`, `gocardless`, `gofundme_pro`, `goldcast`, `gongio`, `google_ads`, `google_analytics_360`, `google_analytics_4_export`, `google_analytics_4`, `google_analytics_mcf`, `google_analytics`, `google_business_profile`, `google_calendar`, `google_classroom`, `google_cloud_function`, `google_display_and_video_360`, `google_drive`, `google_play`, `google_search_ads_360`, `google_search_console`, `google_sheets`, `google_tag_manager`, `google_tasks`, `gorgias`, `green_power_monitor`, `greenhouse`, `grepsr`, `grin`, `guru`, `h_level`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4_netweaver`, `happyfox`, `harvest`, `healthie`, `heap`, `heartland_retail_pos`, `height`, `helpdesk`, `helpjuice`, `helpscout`, `helpshift`, `heroku_kafka`, `hex`, `hibob`, `higher_logic_vanilla`, `hilti_ontrack`, `hopin`, `hubspot`, `ibacos`, `ilevel`, `impact_partner`, `impact`, `incidentio`, `infobip`, `insightly`, `instagram_business`, `instructure`, `integral_ad_science`, `integrate`, `intercom`, `invoiced`, `ironclad_clickwrap`, `ironclad`, `ironsource`, `iterable`, `itunes_connect`, `ivanti`, `jama_software`, `jamf`, `jibble`, `jira`, `jobnimbus`, `jotform`, `justcall`, `kandji`, `katana`, `kevel`, `keypay`, `khoros_care`, `khoros_communities`, `khoros_marketing`, `kinesis`, `kisi`, `kissmetrics`, `klarna`, `klaviyo`, `konnect_insights`, `kustomer`, `lattice`, `launchdarkly`, `leap_crm`, `leapsome`, `learn_amp`, `learnupon`, `leave_dates`, `lemlist`, `lessonly`, `lever`, `liftoff`, `light_speed_retail`, `lightspeed_retail_xseries`, `line_ads`, `linear`, `linkedin_ads`, `linkedin_company_pages`, `linksquares`, `listen360`, `livechat_partner`, `livechat`, `livestorm`, `lob`, `looker_source`, `loop`, `loopio`, `lucca`, `luma`, `mailchimp`, `maileon`, `mailgun`, `mailjet`, `maintainx`, `malomo`, `mambu`, `mandrill`, `marin`, `marketo`, `matomo`, `mavenlink`, `maxio_chargify`, `maxio_saasoptics`, `medallia_agile_research`, `medallia`, `megaphone`, `meltwater`, `mention`, `messagebird`, `microsoft_dynamics_365_fno`, `microsoft_dynamics_365_fo`, `microsoft_entra_id`, `microsoft_lists`, `microsoft_power_bi`, `microsoft_teams`, `missive`, `mixmax`, `mixpanel`, `mode`, `mollie`, `moloco`, `monday`, `mountain`, `mux`, `myosh`, `namely`, `national_heavy_vehicle_regulator`, `navan`, `netsuite_suiteanalytics`, `nice`, `notion`, `nylas`, `odoo`, `okendo`, `okta`, `ometria`, `on24`, `oncehub`, `one_drive`, `onetrust`, `open_data_dc`, `open_exchange_rates`, `openai_compliance_platform`, `openai`, `opendistro`, `opensearch`, `optimizely`, `oracle_fusion_field_service`, `oracle_moat_analytics`, `oracle_netsuite_openair`, `oracle_sap_hva_netweaver`, `orbit`, `ordergroove`, `ordway`, `ortto`, `outbrain`, `outreach`, `packiyo`, `paddle`, `pagerduty`, `pandadoc`, `papershift`, `parcellab`, `pardot_sandbox`, `pardot`, `partnerize`, `partnerstack_vendor`, `paychex`, `paylocity`, `paypal_sandbox`, `paypal`, `pendo`, `peopleforce`, `persona`, `personio`, `phoenix_ads`, `picqer`, `pigment`, `pingdom`, `pinpoint`, `pinterest_ads`, `pinterest_organic`, `pipe17`, `pipedrive`, `pivotal_tracker`, `piwik_pro`, `placerai`, `planetscale`, `planful`, `planhat`, `playvox_workforce_management`, `playvox`, `podio`, `poplar`, `posthog`, `postmark`, `power_reviews_enterprise`, `prisma_cloud`, `prive`, `procore`, `productboard`, `productive`, `profound`, `proofpoint_security_awareness`, `prosperstack`, `purple_dot`, `pylon_support_platform`, `qmatic_data_connect`, `qualaroo`, `qualtrics`, `quickbooks`, `quora_ads`, `quorum`, `rakutenadvertising`, `ramp`, `rarible`, `rebound_returns`, `recharge`, `recurly`, `reddit_ads`, `referralhero`, `refiner`, `reltio`, `replyio`, `resource_management_by_smartsheet`, `retailnext`, `retently`, `revel`, `revenuecat`, `reviewsai`, `reviewsio`, `revops`, `revx`, `ricochet360`, `ringcentral`, `ringover`, `rippling`, `rithum`, `rivo`, `rocketlane`, `rokt`, `rollbar`, `rootly`, `rtb_house`, `ruddr`, `rundeck`, `s3_compatible_storage`, `s3`, `safebase`, `safetyculture`, `sage_hr`, `sage_intacct`, `sailthru`, `salesforce_commerce_cloud`, `salesforce_marketing_cloud`, `salesforce_sandbox`, `salesforce`, `salesloft`, `salsify`, `samsara`, `sana`, `sap_business_by_design`, `sap_hana`, `sap_s4hana`, `sap_success_factors`, `scorm`, `security_journey`, `segment`, `sendgrid`, `sendinblue`, `sensor_tower`, `sentry`, `servicenow`, `servicetitan`, `servicetrade`, `sevdesk`, `sftp`, `share_point`, `shareasale`, `sharetribe`, `shiphero`, `shipmonk`, `shipnetwork`, `shipstation`, `shopify`, `shopware`, `shortcut`, `shortio`, `showpad`, `siemens_building_x_openness`, `sigma_computing_source`, `simplecast`, `simplesat`, `singlestore_source`, `sistrix`, `skilljar`, `skillstx`, `skimlinks`, `skuvault`, `slab`, `slack_admin_data`, `slack_app`, `slack`, `smadex`, `smarthr`, `smartrecruiters`, `smartsheet`, `smartwaiver`, `snapchat_ads`, `snowplow`, `snyk`, `solarwinds_service_desk`, `sonarqube`, `sparkpost`, `splash`, `splitio`, `splunk`, `spotify_ads`, `sprout`, `square`, `squarespace`, `stackadapt_graphql`, `stackadapt`, `standard_metrics`, `starrez`, `statistics_netherlands_cbs`, `statsig`, `statuspage`, `stickyio`, `stripe_test`, `stripe`, `stylight`, `subscript`, `sugarcrm`, `survey_monkey`, `survicate`, `swoogo`, `tableau_source`, `taboola`, `talkdesk`, `talkwalker`, `teads`, `teamtailor`, `teamwork`, `tempo`, `testrail`, `textus`, `the_movie_database`, `the_trade_desk`, `thinkific`, `ticket_tailor`, `tiktok_ads`, `tiktok_organic_app`, `tiktok_organic`, `tive`, `toast`, `toggl_track`, `totango`, `tracksuit_source`, `transcend`, `trelica`, `trello`, `tremendous`, `triple_whale`, `trisolute`, `trustpilot`, `twilio`, `twitter_ads`, `twitter`, `tymeshift`, `typeform`, `udemy_business`, `ukg_pro_workforce_management`, `ukg_pro`, `unicommerce`, `upland`, `uppromote`, `uptempo`, `uservoice`, `validio`, `veeqo`, `veeva_vault`, `veevavault`, `venminder`, `vimeo`, `visit_by_ges`, `visma`, `vitally`, `vonage_contact_center`, `vonage`, `vts`, `vwo`, `walmart_dsp`, `walmart_marketplace`, `wasabi_cloud_storage`, `web_scraper`, `webconnex`, `webhooks`, `when_i_work`, `wherefour`, `wicked_reports`, `woocommerce`, `wordpress`, `workable`, `workday_adaptive`, `workday_financial_management`, `workday_hcm`, `workday_strategic_sourcing`, `workday`, `workflowmax`, `workleap_officevibe`, `workramp`, `wrike`, `writesonic`, `xactly`, `xandr`, `xero`, `xray`, `xsolla`, `yahoo_display_ads_on_yahoo_japan`, `yahoo_dsp`, `yahoo_gemini`, `yahoo_search_ads_yahoo_japan`, `yext`, `yotpo_app`, `yotpo`, `yougov_brandindex`, `yougov_sport`, `younium`, `youtube_analytics`, `zendesk_chat`, `zendesk_sell`, `zendesk_sunshine`, `zendesk_workforce_management`, `zendesk`, `zenefits`, `zingtree`, `zip`, `zoho_books`, `zoho_campaigns`, `zoho_crm`, `zoho_desk`, `zoho_inventory`, `zoho_people`, `zoho_recruit`, `zonka_feedback`, `zoom`, `zuora_sandbox`, `zuora`
+`15five`, `360learning`, `6sense`, `7shifts`, `absorb_lms`, `acculynx`, `activecampaign`, `acumatica`, `ada`, `adform`, `adjust`, `adobe_analytics_data_feed`, `adobe_analytics`, `adobe_commerce`, `adobe_experience_platform`, `adobe_workfront`, `adp_workforce_now`, `adroll`, `adyen`, `affinity`, `afterpay`, `aha`, `aircall`, `akamai`, `akeneo`, `alation`, `alchemer`, `algolia`, `alida`, `amazon_ads`, `amazon_attribution`, `amazon_dsp`, `amazon_selling_partner`, `amplitude`, `amqp`, `anaplan`, `anthropic_claude`, `anvyl`, `apache_kafka`, `apollo`, `appcues`, `appfigures`, `apple_search_ads`, `applovin`, `appsflyer`, `asana`, `ascend_by_partnerize`, `ashby`, `assembled`, `asset_panda`, `atlassian_compass`, `atlassian_jira_align`, `atlassian_ops_genie`, `attentive`, `attio`, `aumni`, `aura_from_unity`, `auth0`, `autodesk_bim_360`, `avantlink`, `aveva_pi`, `awin`, `aws_cloudtrail`, `aws_cost_report`, `aws_cost`, `aws_inventory`, `aws_lambda`, `aws_msk`, `azure_blob_storage`, `azure_boards`, `azure_devops`, `azure_event_hub`, `azure_function`, `azure_service_bus`, `backbone_plm`, `ballotready`, `bamboohr`, `bazaarvoice`, `betterworks`, `big_commerce`, `bigin_by_zoho_crm`, `bigmarker`, `billing_platform`, `bing_webmaster_tools`, `bingads`, `birdeye`, `bitly`, `bizzabo_app`, `bizzabo_v2`, `bizzabo`, `boostr`, `box`, `braintree_sandbox`, `braintree`, `branch`, `brave_ads`, `braze`, `breathe_hr`, `brevo`, `brex`, `brightcove`, `brightflag`, `brightpearl`, `brivo`, `bubble`, `buildium`, `buildkite`, `business_central`, `buzzsprout`, `bynder`, `cabcharge`, `calabrio`, `calcom`, `calendly`, `callrail`, `campaignmonitor`, `campfire`, `canny`, `canvas_by_instructure`, `canvas_data_2_by_instructure`, `captivateiq`, `care_quality_commission`, `castor_edc`, `centra`, `ceridian_dayforce`, `chameleon`, `channel_advisor`, `chargebee_product_catalog_1`, `chargebee_product_catalog_2`, `chargedesk`, `charthop`, `chartmogul`, `checkout`, `checkr`, `chorusai`, `churnkey`, `churnzero`, `cimis`, `cin7`, `cin7core`, `circle_community_platform`, `circleci`, `cj_commission_detail`, `clari`, `classy`, `claude_compliance`, `clazar`, `clickup`, `clockify`, `clockodo`, `close`, `cloudbeds`, `cloudflare_analytics`, `cloudfront`, `cloudtalk`, `clubspeed`, `coalesce`, `coassemble`, `coda`, `codefresh`, `coheris`, `collibra`, `column`, `commercetools`, `compliance_checkpoint`, `concord`, `concur`, `confluence`, `confluent_cloud`, `connector_sdk`, `consensus_demo_automation_platform`, `constant_contact`, `contrast_security`, `convex`, `copper`, `cornerstone`, `coupa`, `credly`, `criteo_retail_media`, `criteo`, `crossbeam`, `crowddev`, `crunchbase`, `cube_software`, `cube`, `culture_amp`, `customerio`, `cvent`, `d2l_brightspace`, `datadog`, `datastreamer_source`, `db2luw`, `dbt_cloud`, `dcl_logistics`, `dear`, `deel`, `delighted`, `deposco`, `deputy`, `destini`, `device_magic`, `dialpad`, `discourse`, `dixa`, `docebo`, `donus`, `doorloop`, `double_click_campaign_manager`, `double_click_publishers`, `drata`, `drift`, `drip`, `dropbox_sign`, `dropbox`, `dsv`, `duoplane`, `dutchie`, `dynamics_365`, `dynamodb`, `easypost`, `ebay`, `economic`, `elastic_cloud`, `electronic_tenant_solutions`, `eloqua`, `email`, `employment_hero`, `es_self_hosted`, `eventbrite`, `eventsforce`, `everflow`, `everhour`, `exact_online`, `expensein`, `expensify`, `ezofficeinventory`, `facebook_ad_account`, `facebook_ads`, `facebook_pages`, `facebook`, `factbird`, `factorial`, `fathom`, `fillout`, `financial_force`, `firebase`, `fireflies`, `firehydrant`, `fivetran_log`, `flexport`, `float`, `flywheel_digital`, `fone_dynamics`, `forethought`, `forj_community`, `formstack`, `fortnox`, `fountain`, `fourkites`, `freightview`, `freshbooks`, `freshchat`, `freshdesk_contact_center`, `freshdesk`, `freshsales`, `freshservice`, `freshsuccess`, `freshteam`, `friendbuy`, `front`, `ftp`, `fulfil`, `fullstory`, `g2`, `gainsight_customer_success`, `gainsight_product_experience`, `gcs`, `gem`, `genesys`, `getfeedback`, `github`, `gitlab`, `gladly`, `globalmeet`, `gmail`, `gocardless`, `gofundme_pro`, `goldcast`, `gongio`, `google_ads`, `google_analytics_360`, `google_analytics_4_export`, `google_analytics_4`, `google_analytics_mcf`, `google_analytics`, `google_business_profile`, `google_calendar`, `google_classroom`, `google_cloud_function`, `google_display_and_video_360`, `google_drive`, `google_play`, `google_search_ads_360`, `google_search_console`, `google_sheets`, `google_tag_manager`, `google_tasks`, `gorgias`, `green_power_monitor`, `greenhouse`, `grepsr`, `grin`, `guidewire_cloud_data_access`, `guru`, `h_level`, `hana_sap_hva_ecc_netweaver`, `hana_sap_hva_s4_netweaver`, `happyfox`, `harvest`, `healthie`, `heap`, `heartland_retail_pos`, `height`, `helpdesk`, `helpjuice`, `helpscout`, `helpshift`, `heroku_kafka`, `hex`, `hibob`, `higher_logic_vanilla`, `hilti_ontrack`, `hopin`, `hubspot`, `ibacos`, `ilevel`, `impact_partner`, `impact`, `incidentio`, `infobip`, `insightly`, `instagram_business`, `instructure`, `integral_ad_science`, `integrate`, `intercom`, `invoiced`, `ironclad_clickwrap`, `ironclad`, `ironsource`, `iterable`, `itunes_connect`, `ivanti`, `jama_software`, `jamf`, `jibble`, `jira`, `jobnimbus`, `jotform`, `justcall`, `kandji`, `katana`, `kevel`, `keypay`, `khoros_care`, `khoros_communities`, `khoros_marketing`, `kinesis`, `kisi`, `kissmetrics`, `klarna`, `klaviyo`, `konnect_insights`, `kustomer`, `lattice`, `launchdarkly`, `leap_crm`, `leapsome`, `learn_amp`, `learnupon`, `leave_dates`, `lemlist`, `lessonly`, `lever`, `liftoff`, `light_speed_retail`, `lightspeed_retail_xseries`, `line_ads`, `linear`, `linkedin_ads`, `linkedin_company_pages`, `linksquares`, `listen360`, `livechat_partner`, `livechat`, `livestorm`, `lob`, `looker_source`, `loop`, `loopio`, `lucca`, `luma`, `mailchimp`, `maileon`, `mailgun`, `mailjet`, `maintainx`, `malomo`, `mambu`, `mandrill`, `marin`, `marketo`, `matomo`, `mavenlink`, `maxio_chargify`, `maxio_saasoptics`, `medallia_agile_research`, `medallia`, `megaphone`, `meltwater`, `mention`, `messagebird`, `microsoft_dynamics_365_fno`, `microsoft_dynamics_365_fo`, `microsoft_entra_id`, `microsoft_lists`, `microsoft_power_bi`, `microsoft_teams`, `missive`, `mixmax`, `mixpanel`, `mode`, `mollie`, `moloco`, `monday`, `mountain`, `mux`, `myosh`, `namely`, `national_heavy_vehicle_regulator`, `navan`, `netsuite_suiteanalytics`, `nice`, `notion`, `nylas`, `odoo`, `okendo`, `okta`, `ometria`, `on24`, `oncehub`, `one_drive`, `onetrust`, `open_data_dc`, `open_exchange_rates`, `openai_compliance_platform`, `openai`, `opendistro`, `opensearch`, `optimizely`, `oracle_fusion_field_service`, `oracle_moat_analytics`, `oracle_netsuite_openair`, `oracle_sap_hva_netweaver`, `orbit`, `ordergroove`, `ordway`, `ortto`, `outbrain`, `outreach`, `packiyo`, `paddle`, `pagerduty`, `pandadoc`, `papershift`, `parcellab`, `pardot_sandbox`, `pardot`, `partnerize`, `partnerstack_vendor`, `paychex`, `paylocity`, `paypal_sandbox`, `paypal`, `pendo`, `peopleforce`, `persona`, `personio`, `phoenix_ads`, `picqer`, `pigment`, `pingdom`, `pinpoint`, `pinterest_ads`, `pinterest_organic`, `pipe17`, `pipedrive`, `pivotal_tracker`, `piwik_pro`, `placerai`, `planetscale`, `planful`, `planhat`, `playvox_workforce_management`, `playvox`, `podio`, `poplar`, `posthog`, `postmark`, `power_reviews_enterprise`, `prisma_cloud`, `prive`, `procore`, `productboard`, `productive`, `profound`, `proofpoint_security_awareness`, `prosperstack`, `purple_dot`, `pylon_support_platform`, `qmatic_data_connect`, `qualaroo`, `qualtrics`, `quickbooks`, `quora_ads`, `quorum`, `rakutenadvertising`, `ramp`, `rarible`, `rebound_returns`, `recharge`, `recurly`, `reddit_ads`, `referralhero`, `refiner`, `reltio`, `replyio`, `resource_management_by_smartsheet`, `retailnext`, `retently`, `revel`, `revenuecat`, `reviewsai`, `reviewsio`, `revops`, `revx`, `ricochet360`, `ringcentral`, `ringover`, `rippling`, `rithum`, `rivo`, `rocketlane`, `rokt`, `rollbar`, `rootly`, `rtb_house`, `ruddr`, `rundeck`, `s3_compatible_storage`, `s3`, `safebase`, `safetyculture`, `sage_hr`, `sage_intacct`, `sailthru`, `salesforce_commerce_cloud`, `salesforce_marketing_cloud`, `salesforce_sandbox`, `salesforce`, `salesloft`, `salsify`, `samsara`, `sana`, `sap_business_by_design`, `sap_hana`, `sap_s4hana`, `sap_success_factors`, `scorm`, `security_journey`, `segment`, `sendgrid`, `sendinblue`, `sensor_tower`, `sentry`, `servicenow`, `servicetitan`, `servicetrade`, `sevdesk`, `sftp`, `share_point`, `shareasale`, `sharetribe`, `shiphero`, `shipmonk`, `shipnetwork`, `shipstation`, `shopify`, `shopware`, `shortcut`, `shortio`, `showpad`, `siemens_building_x_openness`, `sigma_computing_source`, `simplecast`, `simplesat`, `singlestore_source`, `sistrix`, `skilljar`, `skillstx`, `skimlinks`, `skuvault`, `slab`, `slack_admin_data`, `slack_app`, `slack`, `smadex`, `smarthr`, `smartrecruiters`, `smartsheet`, `smartwaiver`, `snapchat_ads`, `snowplow`, `snyk`, `solarwinds_service_desk`, `sonarqube`, `sparkpost`, `splash`, `splitio`, `splunk`, `spotify_ads`, `sprout`, `square`, `squarespace`, `stackadapt_graphql`, `stackadapt`, `standard_metrics`, `starrez`, `statistics_netherlands_cbs`, `statsig`, `statuspage`, `stickyio`, `stripe_test`, `stripe`, `stylight`, `subscript`, `sugarcrm`, `survey_monkey`, `survicate`, `swoogo`, `tableau_source`, `taboola`, `talkdesk`, `talkwalker`, `teads`, `teamtailor`, `teamwork`, `tempo`, `testrail`, `textus`, `the_movie_database`, `the_trade_desk`, `thinkific`, `ticket_tailor`, `tiktok_ads`, `tiktok_organic_app`, `tiktok_organic`, `tive`, `toast`, `toggl_track`, `totango`, `tracksuit_source`, `transcend`, `trelica`, `trello`, `tremendous`, `triple_whale`, `trisolute`, `trustpilot`, `twilio`, `twitter_ads`, `twitter`, `tymeshift`, `typeform`, `udemy_business`, `ukg_pro_workforce_management`, `ukg_pro`, `unicommerce`, `upland`, `uppromote`, `uptempo`, `uservoice`, `validio`, `veeqo`, `veeva_vault`, `veevavault`, `venminder`, `vimeo`, `visit_by_ges`, `visma`, `vitally`, `vonage_contact_center`, `vonage`, `vts`, `vwo`, `walmart_dsp`, `walmart_marketplace`, `wasabi_cloud_storage`, `web_scraper`, `webconnex`, `webhooks`, `when_i_work`, `wherefour`, `wicked_reports`, `woocommerce`, `wordpress`, `workable`, `workday_adaptive`, `workday_financial_management`, `workday_hcm`, `workday_strategic_sourcing`, `workday`, `workflowmax`, `workleap_officevibe`, `workramp`, `wrike`, `writesonic`, `xactly`, `xandr`, `xero`, `xray`, `xsolla`, `yahoo_display_ads_on_yahoo_japan`, `yahoo_dsp`, `yahoo_gemini`, `yahoo_search_ads_yahoo_japan`, `yext`, `yotpo_app`, `yotpo`, `yougov_brandindex`, `yougov_sport`, `younium`, `youtube_analytics`, `zendesk_chat`, `zendesk_sell`, `zendesk_sunshine`, `zendesk_workforce_management`, `zendesk`, `zenefits`, `zingtree`, `zip`, `zoho_books`, `zoho_campaigns`, `zoho_crm`, `zoho_desk`, `zoho_inventory`, `zoho_people`, `zoho_recruit`, `zonka_feedback`, `zoom`, `zuora_sandbox`, `zuora`
 - `prefix` (String) The connector schema prefix has to be unique within the group (destination). Each replicated schema is prefixed with the provided value. Required for connector creation of services:<br>
 `airtable`, `aurora_postgres`, `aurora`, `azure_cosmos_for_mongo`, `azure_postgres`, `azure_sql_db`, `azure_sql_managed_db`, `bigquery_db`, `clarity`, `cockroachdb`, `cosmos`, `databricks_db`, `db2`, `db2i_hva`, `db2i_sap_hva`, `db2luw`, `db2z`, `documentdb`, `dynamics_365_fo`, `ehr`, `epic_clarity`, `google_cloud_mysql`, `google_cloud_postgresql`, `google_cloud_sqlserver`, `hana_sap_hva_b1`, `hana_sap_hva_ecc`, `hana_sap_hva_s4`, `heroku_postgres`, `magento_mysql_rds`, `magento_mysql`, `maria_azure`, `maria_rds`, `maria`, `mongo_sharded`, `mongo`, `mysql_azure`, `mysql_rds`, `mysql`, `oracle_business_intelligence_publisher`, `oracle_ebs`, `oracle_fusion_cloud_apps_crm`, `oracle_fusion_cloud_apps_fscm`, `oracle_fusion_cloud_apps_hcm`, `oracle_hva`, `oracle_rac`, `oracle_rds`, `oracle_sap_hva`, `oracle`, `postgres_rds`, `postgres`, `redshift_db`, `sap_hana_db`, `snowflake_db`, `sql_server_hva`, `sql_server_rds`, `sql_server_sap_ecc_hva`, `sql_server`
 - `table` (String) The table name unique within the schema to which connector will sync the data. Required for connector creation of services:<br>
 `adroll`, `akamai`, `akeneo`, `algolia`, `amazon_dsp`, `assembled`, `aws_cost_report`, `azure_blob_storage`, `box`, `brave_ads`, `buzzsprout`, `canvas_data_2_by_instructure`, `chargebee_product_catalog_2`, `chargedesk`, `cloudflare_analytics`, `clubspeed`, `constant_contact`, `criteo_retail_media`, `destini`, `double_click_campaign_manager`, `double_click_publishers`, `dropbox_sign`, `dropbox`, `dsv`, `duoplane`, `email`, `eventsforce`, `everflow`, `facebook`, `forj_community`, `freshdesk_contact_center`, `freshsuccess`, `ftp`, `gcs`, `google_analytics`, `google_classroom`, `google_display_and_video_360`, `google_drive`, `google_sheets`, `grin`, `happyfox`, `jama_software`, `jibble`, `justcall`, `kinesis`, `learnupon`, `livechat_partner`, `looker_source`, `mixmax`, `mixpanel`, `navan`, `open_data_dc`, `paddle`, `referralhero`, `reviewsai`, `revops`, `rollbar`, `s3`, `safebase`, `sftp`, `shiphero`, `sistrix`, `slack`, `sugarcrm`, `teamtailor`, `tive`, `wasabi_cloud_storage`, `webhooks`, `wherefour`, `wordpress`, `workday`, `workleap_officevibe`, `youtube_analytics`
 - `table_group_name` (String) Table group name. Combined with the schema to form the Fivetran connection name '<schema>.<table_group_name>'. Required for connector creation of services:<br>
-`azure_blob_storage`, `box`, `dropbox`, `email`, `ftp`, `gcs`, `google_drive`, `s3_compatible_storage`, `s3`, `sftp`, `share_point`, `workday`
+`azure_blob_storage`, `box`, `dropbox`, `email`, `ftp`, `gcs`, `google_drive`, `guidewire_cloud_data_access`, `s3_compatible_storage`, `s3`, `sftp`, `share_point`, `workday`
 
 
 <a id="nestedblock--status"></a>
