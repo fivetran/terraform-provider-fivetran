@@ -35,6 +35,36 @@ func DynamicToMap(ctx context.Context, dyn types.Dynamic) (map[string]interface{
 	return m, diags
 }
 
+type DynamicUnknownValue struct{}
+
+func IsDynamicUnknownValue(value interface{}) bool {
+	_, ok := value.(DynamicUnknownValue)
+	return ok
+}
+
+// DynamicToMapPreserveUnknown converts dynamic objects like DynamicToMap, but preserves
+// nested unknown values so plan-time validation can distinguish them from explicit nulls.
+func DynamicToMapPreserveUnknown(ctx context.Context, dyn types.Dynamic) (map[string]interface{}, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	if dyn.IsNull() || dyn.IsUnknown() {
+		return nil, diags
+	}
+	underlying := dyn.UnderlyingValue()
+	if underlying == nil || underlying.IsNull() || underlying.IsUnknown() {
+		return nil, diags
+	}
+	result := attrToInterfacePreserveUnknown(ctx, underlying)
+	if result == nil {
+		return nil, diags
+	}
+	m, ok := result.(map[string]interface{})
+	if !ok {
+		diags.AddError("Dynamic config is not an object", "Expected an object value for dynamic config.")
+		return nil, diags
+	}
+	return m, diags
+}
+
 func attrToInterface(ctx context.Context, val attr.Value) interface{} {
 	if val == nil || val.IsNull() || val.IsUnknown() {
 		return nil
@@ -74,6 +104,48 @@ func attrToInterface(ctx context.Context, val attr.Value) interface{} {
 	return nil
 }
 
+func attrToInterfacePreserveUnknown(ctx context.Context, val attr.Value) interface{} {
+	if val == nil || val.IsNull() {
+		return nil
+	}
+	if val.IsUnknown() {
+		return DynamicUnknownValue{}
+	}
+	switch v := val.(type) {
+	case types.String:
+		return v.ValueString()
+	case types.Bool:
+		return v.ValueBool()
+	case types.Int64:
+		return v.ValueInt64()
+	case types.Float64:
+		return v.ValueFloat64()
+	case types.Number:
+		n := v.ValueBigFloat()
+		if n == nil {
+			return nil
+		}
+		if i, acc := n.Int64(); acc == big.Exact {
+			return i
+		}
+		f, _ := n.Float64()
+		return f
+	case types.Dynamic:
+		return attrToInterfacePreserveUnknown(ctx, v.UnderlyingValue())
+	case types.Object:
+		return convertObjectAttrsPreserveUnknown(ctx, v.Attributes())
+	case types.Map:
+		return convertObjectAttrsPreserveUnknown(ctx, v.Elements())
+	case types.List:
+		return convertSliceElemsPreserveUnknown(ctx, v.Elements())
+	case types.Set:
+		return convertSliceElemsPreserveUnknown(ctx, v.Elements())
+	case types.Tuple:
+		return convertSliceElemsPreserveUnknown(ctx, v.Elements())
+	}
+	return nil
+}
+
 func convertObjectAttrs(ctx context.Context, elems map[string]attr.Value) map[string]interface{} {
 	result := make(map[string]interface{}, len(elems))
 	for k, v := range elems {
@@ -82,10 +154,26 @@ func convertObjectAttrs(ctx context.Context, elems map[string]attr.Value) map[st
 	return result
 }
 
+func convertObjectAttrsPreserveUnknown(ctx context.Context, elems map[string]attr.Value) map[string]interface{} {
+	result := make(map[string]interface{}, len(elems))
+	for k, v := range elems {
+		result[k] = attrToInterfacePreserveUnknown(ctx, v)
+	}
+	return result
+}
+
 func convertSliceElems(ctx context.Context, elems []attr.Value) []interface{} {
 	result := make([]interface{}, len(elems))
 	for i, v := range elems {
 		result[i] = attrToInterface(ctx, v)
+	}
+	return result
+}
+
+func convertSliceElemsPreserveUnknown(ctx context.Context, elems []attr.Value) []interface{} {
+	result := make([]interface{}, len(elems))
+	for i, v := range elems {
+		result[i] = attrToInterfacePreserveUnknown(ctx, v)
 	}
 	return result
 }

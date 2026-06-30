@@ -12,6 +12,7 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -348,6 +349,39 @@ func TestConnectionV2ValidateConfigEarlyReturns(t *testing.T) {
 	}
 }
 
+func TestConnectionV2ValidateConfigSkipsUnknownNestedValue(t *testing.T) {
+	t.Parallel()
+	ctx := context.Background()
+
+	cache := &sync.Map{}
+	cache.Store("google_ads", &metadata.ConnectorMetadata{
+		Config: metadata.Property{Properties: map[string]*metadata.Property{
+			"schema": {Type: "string"},
+		}},
+	})
+
+	configObject, diags := types.ObjectValue(
+		map[string]attr.Type{"schema": types.StringType},
+		map[string]attr.Value{"schema": types.StringUnknown()},
+	)
+	if diags.HasError() {
+		t.Fatalf("config object diagnostics: %v", diags)
+	}
+
+	r := configuredConnectionV2ForValidation(t, false, cache)
+	req := connectionV2ValidateConfigRequestWithDynamic(
+		t,
+		types.StringValue("google_ads"),
+		types.DynamicValue(configObject),
+		types.DynamicNull(),
+	)
+
+	var resp resource.ValidateConfigResponse
+	r.ValidateConfig(ctx, req, &resp)
+
+	assertNoDiagnostics(t, resp.Diagnostics)
+}
+
 func TestConnectionV2ValidateConfigUsesMetadataCache(t *testing.T) {
 	t.Parallel()
 	ctx := context.Background()
@@ -548,6 +582,13 @@ func connectionV2ValidateConfigRequestWithService(t *testing.T, service types.St
 			t.Fatalf("auth dynamic diagnostics: %v", diags)
 		}
 	}
+
+	return connectionV2ValidateConfigRequestWithDynamic(t, service, configValue, authValue)
+}
+
+func connectionV2ValidateConfigRequestWithDynamic(t *testing.T, service types.String, configValue, authValue types.Dynamic) resource.ValidateConfigRequest {
+	t.Helper()
+	ctx := context.Background()
 
 	data := model.ConnectionV2ResourceModel{
 		Id:                      types.StringNull(),

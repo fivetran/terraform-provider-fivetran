@@ -68,6 +68,25 @@ func TestDynamicToMap_NestedObject(t *testing.T) {
 	}
 }
 
+func TestDynamicToMapPreserveUnknown_NestedValue(t *testing.T) {
+	t.Parallel()
+	obj, diags := types.ObjectValue(
+		map[string]attr.Type{"bucket": types.StringType},
+		map[string]attr.Value{"bucket": types.StringUnknown()},
+	)
+	if diags.HasError() {
+		t.Fatalf("object diagnostics: %v", diags)
+	}
+
+	m, mapDiags := DynamicToMapPreserveUnknown(context.Background(), types.DynamicValue(obj))
+	if mapDiags.HasError() {
+		t.Fatalf("unexpected error: %v", mapDiags)
+	}
+	if !IsDynamicUnknownValue(m["bucket"]) {
+		t.Fatalf("bucket should preserve unknown sentinel, got %T %[1]v", m["bucket"])
+	}
+}
+
 func TestDynamicToMap_EmptyStringPreserved(t *testing.T) {
 	t.Parallel()
 	obj, _ := types.ObjectValue(

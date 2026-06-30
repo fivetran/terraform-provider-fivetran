@@ -31,7 +31,7 @@ func (r *connectionV2) ValidateConfig(ctx context.Context, req resource.Validate
 		return
 	}
 
-	configMap, authMap := r.dynamicPlanMaps(ctx, data, &resp.Diagnostics)
+	configMap, authMap := r.dynamicValidationMaps(ctx, data, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -99,6 +99,9 @@ func validateDynamicValue(value interface{}, prop *metadata.Property, valuePath 
 	if prop == nil {
 		return
 	}
+	if core.IsDynamicUnknownValue(value) {
+		return
+	}
 	if value == nil {
 		if prop.Nullable {
 			return
@@ -154,6 +157,16 @@ func validateDynamicValue(value interface{}, prop *metadata.Property, valuePath 
 			fmt.Sprintf("Connector metadata returned unsupported type %q. Expected one of string, integer, number, boolean, array, or object.", prop.Type),
 		)
 	}
+}
+
+func (r *connectionV2) dynamicValidationMaps(ctx context.Context, data model.ConnectionV2ResourceModel, diags *diag.Diagnostics) (map[string]interface{}, map[string]interface{}) {
+	configMap, configDiags := core.DynamicToMapPreserveUnknown(ctx, data.Config)
+	diags.Append(configDiags...)
+
+	authMap, authDiags := core.DynamicToMapPreserveUnknown(ctx, data.Auth)
+	diags.Append(authDiags...)
+
+	return configMap, authMap
 }
 
 func validateStringValue(value interface{}, prop *metadata.Property, valuePath path.Path, diags *diag.Diagnostics) {
