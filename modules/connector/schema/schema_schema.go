@@ -163,7 +163,9 @@ func (s _schema) toStateObject(sch string, local *_schema, isImporting bool, dia
 			if lt, ok := local.tables[k]; ok {
 				tableState, include = v.toStateObject(sch, lt, diag, s.name, false)
 			} else {
-				tableState, include = v.toStateObject(sch, nil, diag, s.name, false)
+				if s.enabled {
+					tableState, include = v.toStateObject(sch, nil, diag, s.name, false)
+				}
 			}
 		} else {
 			tableState, include = v.toStateObject(sch, nil, diag, s.name, isImporting)

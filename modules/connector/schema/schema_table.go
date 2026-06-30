@@ -190,6 +190,7 @@ func (t *_table) readColumns(columns []interface{}, sch string) {
 
 func (t *_table) readFromResponse(name string, response *connections.ConnectionSchemaConfigTableResponse) {
 	t.name = name
+
 	t.enabled = *response.Enabled
 	t.patchAllowed = response.EnabledPatchSettings.Allowed
 	if !t.isPatchAllowed() {

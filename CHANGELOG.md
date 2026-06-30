@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.35...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.36...HEAD)
+
+## [v1.9.36](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.36...v1.9.35)
+
+### Fixed
+- `fivetran_connector_schema_config`: inconsistent result after apply, when API returns tables inside disabled schema
 
 ## [v1.9.35](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.35...v1.9.34)
 
