@@ -3,6 +3,7 @@ package resources
 import (
 	"context"
 	"errors"
+	"math"
 	"net/http"
 	"sync"
 	"testing"
@@ -130,9 +131,15 @@ func TestValidateDynamicValueTypes(t *testing.T) {
 		{name: "integer accepts int64", prop: &metadata.Property{Type: "integer"}, value: int64(3)},
 		{name: "integer accepts exact float64", prop: &metadata.Property{Type: "integer"}, value: float64(3)},
 		{name: "integer rejects non-integer float64", prop: &metadata.Property{Type: "integer"}, value: float64(3.5), wantErrors: 1},
+		{name: "integer rejects positive infinity", prop: &metadata.Property{Type: "integer"}, value: math.Inf(1), wantErrors: 1},
+		{name: "integer rejects negative infinity", prop: &metadata.Property{Type: "integer"}, value: math.Inf(-1), wantErrors: 1},
+		{name: "integer rejects NaN", prop: &metadata.Property{Type: "integer"}, value: math.NaN(), wantErrors: 1},
 		{name: "integer rejects string", prop: &metadata.Property{Type: "integer"}, value: "3", wantErrors: 1},
 		{name: "number accepts int64", prop: &metadata.Property{Type: "number"}, value: int64(3)},
 		{name: "number accepts float64", prop: &metadata.Property{Type: "number"}, value: float64(3.5)},
+		{name: "number rejects positive infinity", prop: &metadata.Property{Type: "number"}, value: math.Inf(1), wantErrors: 1},
+		{name: "number rejects negative infinity", prop: &metadata.Property{Type: "number"}, value: math.Inf(-1), wantErrors: 1},
+		{name: "number rejects NaN", prop: &metadata.Property{Type: "number"}, value: math.NaN(), wantErrors: 1},
 		{name: "number rejects string", prop: &metadata.Property{Type: "number"}, value: "3.5", wantErrors: 1},
 		{name: "number rejects bool", prop: &metadata.Property{Type: "number"}, value: true, wantErrors: 1},
 		{name: "boolean accepts bool", prop: &metadata.Property{Type: "boolean"}, value: true},
@@ -329,6 +336,11 @@ func TestConnectionV2ValidateConfigEarlyReturns(t *testing.T) {
 		{
 			name:    "unknown service skips metadata fetch",
 			service: types.StringUnknown(),
+			config:  map[string]interface{}{"schema": "app"},
+		},
+		{
+			name:    "empty service skips metadata fetch",
+			service: types.StringValue(""),
 			config:  map[string]interface{}{"schema": "app"},
 		},
 	}
