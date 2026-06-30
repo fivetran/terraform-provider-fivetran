@@ -113,6 +113,116 @@ func TestValidateDynamicObjectRejectsInvalidEnum(t *testing.T) {
 	}
 }
 
+func TestValidateDynamicValueTypes(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name       string
+		prop       *metadata.Property
+		value      interface{}
+		wantErrors int
+	}{
+		{name: "string accepts string", prop: &metadata.Property{Type: "string"}, value: "app"},
+		{name: "string rejects bool", prop: &metadata.Property{Type: "string"}, value: true, wantErrors: 1},
+		{name: "string rejects int", prop: &metadata.Property{Type: "string"}, value: int64(1), wantErrors: 1},
+		{name: "string rejects object", prop: &metadata.Property{Type: "string"}, value: map[string]interface{}{"schema": "app"}, wantErrors: 1},
+		{name: "integer accepts int64", prop: &metadata.Property{Type: "integer"}, value: int64(3)},
+		{name: "integer accepts exact float64", prop: &metadata.Property{Type: "integer"}, value: float64(3)},
+		{name: "integer rejects non-integer float64", prop: &metadata.Property{Type: "integer"}, value: float64(3.5), wantErrors: 1},
+		{name: "integer rejects string", prop: &metadata.Property{Type: "integer"}, value: "3", wantErrors: 1},
+		{name: "number accepts int64", prop: &metadata.Property{Type: "number"}, value: int64(3)},
+		{name: "number accepts float64", prop: &metadata.Property{Type: "number"}, value: float64(3.5)},
+		{name: "number rejects string", prop: &metadata.Property{Type: "number"}, value: "3.5", wantErrors: 1},
+		{name: "number rejects bool", prop: &metadata.Property{Type: "number"}, value: true, wantErrors: 1},
+		{name: "boolean accepts bool", prop: &metadata.Property{Type: "boolean"}, value: true},
+		{name: "boolean rejects string", prop: &metadata.Property{Type: "boolean"}, value: "true", wantErrors: 1},
+		{name: "empty metadata type is tolerated", prop: &metadata.Property{Type: ""}, value: map[string]interface{}{"schema": "app"}},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			var diags diag.Diagnostics
+			validateDynamicValue(tt.value, tt.prop, path.Root("config").AtName("field"), &diags)
+			assertErrorCount(t, diags, tt.wantErrors)
+			assertWarningCount(t, diags, 0)
+		})
+	}
+}
+
+func TestValidateDynamicValueCollections(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name       string
+		prop       *metadata.Property
+		value      interface{}
+		wantErrors int
+	}{
+		{
+			name:  "array accepts valid item types",
+			prop:  &metadata.Property{Type: "array", Items: &metadata.Property{Type: "string"}},
+			value: []interface{}{"one", "two"},
+		},
+		{
+			name:       "array rejects non-array value",
+			prop:       &metadata.Property{Type: "array", Items: &metadata.Property{Type: "string"}},
+			value:      "not-array",
+			wantErrors: 1,
+		},
+		{
+			name:       "array rejects invalid item type",
+			prop:       &metadata.Property{Type: "array", Items: &metadata.Property{Type: "string"}},
+			value:      []interface{}{"one", true},
+			wantErrors: 1,
+		},
+		{
+			name:  "array with nil items skips item validation",
+			prop:  &metadata.Property{Type: "array"},
+			value: []interface{}{"one", true, map[string]interface{}{"nested": "value"}},
+		},
+		{
+			name: "object accepts nested map",
+			prop: &metadata.Property{Type: "object", Properties: map[string]*metadata.Property{
+				"table": {Type: "string"},
+			}},
+			value: map[string]interface{}{"table": "events"},
+		},
+		{
+			name:       "object rejects non-object value",
+			prop:       &metadata.Property{Type: "object", Properties: map[string]*metadata.Property{"table": {Type: "string"}}},
+			value:      "not-object",
+			wantErrors: 1,
+		},
+		{
+			name:       "nested object rejects unknown field",
+			prop:       &metadata.Property{Type: "object", Properties: map[string]*metadata.Property{"table": {Type: "string"}}},
+			value:      map[string]interface{}{"dog": "good_boy"},
+			wantErrors: 1,
+		},
+		{
+			name:       "nested object rejects wrong field type",
+			prop:       &metadata.Property{Type: "object", Properties: map[string]*metadata.Property{"table": {Type: "string"}}},
+			value:      map[string]interface{}{"table": true},
+			wantErrors: 1,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			var diags diag.Diagnostics
+			validateDynamicValue(tt.value, tt.prop, path.Root("config").AtName("field"), &diags)
+			assertErrorCount(t, diags, tt.wantErrors)
+			assertWarningCount(t, diags, 0)
+		})
+	}
+}
+
 func TestValidateDynamicObjectRejectsUnknownMetadataType(t *testing.T) {
 	t.Parallel()
 
@@ -128,6 +238,43 @@ func TestValidateDynamicObjectRejectsUnknownMetadataType(t *testing.T) {
 
 	if diags.ErrorsCount() != 1 {
 		t.Fatalf("errors = %d, want 1: %v", diags.ErrorsCount(), diags)
+	}
+}
+
+func TestValidateDynamicObjectFieldStatuses(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name         string
+		fieldStatus  string
+		wantWarnings int
+	}{
+		{name: "missing status"},
+		{name: "general availability", fieldStatus: core.FieldStatusGeneralAvailability},
+		{name: "private preview", fieldStatus: core.FieldStatusPrivatePreview, wantWarnings: 1},
+		{name: "development", fieldStatus: core.FieldStatusDevelopment, wantWarnings: 1},
+		{name: "sunset", fieldStatus: core.FieldStatusSunset, wantWarnings: 1},
+		{name: "unknown status", fieldStatus: "some_future_status", wantWarnings: 1},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			var diags diag.Diagnostics
+			validateDynamicObject(
+				map[string]interface{}{"field": "value"},
+				&metadata.Property{Properties: map[string]*metadata.Property{
+					"field": {Type: "string", FieldStatus: tt.fieldStatus},
+				}},
+				path.Root("config"),
+				&diags,
+			)
+
+			assertErrorCount(t, diags, 0)
+			assertWarningCount(t, diags, tt.wantWarnings)
+		})
 	}
 }
 
@@ -149,6 +296,53 @@ func TestValidateDynamicObjectWarnsForNonGAFieldStatus(t *testing.T) {
 	}
 	if diags.WarningsCount() != 1 {
 		t.Fatalf("warnings = %d, want 1: %v", diags.WarningsCount(), diags)
+	}
+}
+
+func TestConnectionV2ValidateConfigEarlyReturns(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name    string
+		service types.String
+		config  map[string]interface{}
+		auth    map[string]interface{}
+	}{
+		{
+			name:    "null config and auth skips metadata fetch",
+			service: types.StringValue("google_ads"),
+		},
+		{
+			name:    "empty config and auth skips metadata fetch",
+			service: types.StringValue("google_ads"),
+			config:  map[string]interface{}{},
+			auth:    map[string]interface{}{},
+		},
+		{
+			name:    "null service skips metadata fetch",
+			service: types.StringNull(),
+			config:  map[string]interface{}{"schema": "app"},
+		},
+		{
+			name:    "unknown service skips metadata fetch",
+			service: types.StringUnknown(),
+			config:  map[string]interface{}{"schema": "app"},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			r := configuredConnectionV2ForValidation(t, false, &sync.Map{})
+			req := connectionV2ValidateConfigRequestWithService(t, tt.service, tt.config, tt.auth)
+
+			var resp resource.ValidateConfigResponse
+			r.ValidateConfig(context.Background(), req, &resp)
+
+			assertNoDiagnostics(t, resp.Diagnostics)
+		})
 	}
 }
 
@@ -328,6 +522,11 @@ func (errorHTTPClient) Do(*http.Request) (*http.Response, error) {
 
 func connectionV2ValidateConfigRequest(t *testing.T, service string, config, auth map[string]interface{}) resource.ValidateConfigRequest {
 	t.Helper()
+	return connectionV2ValidateConfigRequestWithService(t, types.StringValue(service), config, auth)
+}
+
+func connectionV2ValidateConfigRequestWithService(t *testing.T, service types.String, config, auth map[string]interface{}) resource.ValidateConfigRequest {
+	t.Helper()
 	ctx := context.Background()
 
 	configValue := types.DynamicNull()
@@ -354,7 +553,7 @@ func connectionV2ValidateConfigRequest(t *testing.T, service string, config, aut
 		ConnectedBy:             types.StringNull(),
 		CreatedAt:               types.StringNull(),
 		GroupId:                 types.StringValue("group_id"),
-		Service:                 types.StringValue(service),
+		Service:                 service,
 		Config:                  configValue,
 		Auth:                    authValue,
 		SucceededAt:             types.StringNull(),
@@ -392,5 +591,26 @@ func connectionV2ValidateConfigRequest(t *testing.T, service string, config, aut
 			Raw:    raw,
 			Schema: fivetranSchema.ConnectionV2ResourceSchema(),
 		},
+	}
+}
+
+func assertNoDiagnostics(t *testing.T, diags diag.Diagnostics) {
+	t.Helper()
+	if diags.HasError() || diags.WarningsCount() > 0 {
+		t.Fatalf("unexpected diagnostics: %v", diags)
+	}
+}
+
+func assertErrorCount(t *testing.T, diags diag.Diagnostics, want int) {
+	t.Helper()
+	if diags.ErrorsCount() != want {
+		t.Fatalf("errors = %d, want %d: %v", diags.ErrorsCount(), want, diags)
+	}
+}
+
+func assertWarningCount(t *testing.T, diags diag.Diagnostics, want int) {
+	t.Helper()
+	if diags.WarningsCount() != want {
+		t.Fatalf("warnings = %d, want %d: %v", diags.WarningsCount(), want, diags)
 	}
 }
