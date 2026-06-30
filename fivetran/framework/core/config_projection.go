@@ -29,7 +29,7 @@ func DynamicToMap(ctx context.Context, dyn types.Dynamic) (map[string]interface{
 	}
 	m, ok := result.(map[string]interface{})
 	if !ok {
-		diags.AddError("Dynamic config is not an object", "Expected an object value for dynamic config.")
+		diags.AddError("Dynamic value is not an object", "Expected an object value for this dynamic attribute.")
 		return nil, diags
 	}
 	return m, diags
@@ -59,7 +59,7 @@ func DynamicToMapPreserveUnknown(ctx context.Context, dyn types.Dynamic) (map[st
 	}
 	m, ok := result.(map[string]interface{})
 	if !ok {
-		diags.AddError("Dynamic config is not an object", "Expected an object value for dynamic config.")
+		diags.AddError("Dynamic value is not an object", "Expected an object value for this dynamic attribute.")
 		return nil, diags
 	}
 	return m, diags

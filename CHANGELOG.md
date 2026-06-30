@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.35...HEAD)
 
 ### Added
-- Internal: metadata-driven plan-time validation for dynamic connection config/auth fields.
+- `fivetran_connection_v2`: metadata-driven plan-time validation for dynamic `config` / `auth` fields (override via provider `skip_plan_time_validation`).
 
 ## [v1.9.35](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.35...v1.9.34)
 
