@@ -24,8 +24,9 @@ import (
 )
 
 type clientContainer struct {
-	client        *fivetran.Client
-	metadataCache *sync.Map
+	client                 *fivetran.Client
+	metadataCache          *sync.Map
+	skipPlanTimeValidation bool
 }
 
 type ProviderDatasource struct {
@@ -46,6 +47,10 @@ func (d *clientContainer) GetClient() *fivetran.Client {
 
 func (d *clientContainer) GetMetadataCache() *sync.Map {
 	return d.metadataCache
+}
+
+func (d *clientContainer) GetSkipPlanTimeValidation() bool {
+	return d.skipPlanTimeValidation
 }
 
 func (d *ProviderAction) Configure(ctx context.Context, req action.ConfigureRequest, resp *action.ConfigureResponse) {
@@ -71,6 +76,7 @@ func (d *clientContainer) getClient(diag diag.Diagnostics, data any) {
 	case *ProviderResourceData:
 		d.client = v.Client
 		d.metadataCache = v.MetadataCache
+		d.skipPlanTimeValidation = v.SkipPlanTimeValidation
 	default:
 		diag.AddError(
 			"Unexpected Resource Configure Type",

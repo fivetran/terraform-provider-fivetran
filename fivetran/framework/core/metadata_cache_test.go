@@ -71,6 +71,28 @@ func TestMetadataCache_HitReturnsCachedValue(t *testing.T) {
 	}
 }
 
+func TestMetadataCache_NilCacheFetchesWithoutCaching(t *testing.T) {
+	t.Parallel()
+	var callCount atomic.Int32
+	_, client := newMetadataServer(t, "google_sheets", &callCount, metadataDetailsBody)
+
+	m1, err := GetCachedConnectorMetadata(context.Background(), client, nil, "google_sheets")
+	if err != nil {
+		t.Fatalf("first call: %v", err)
+	}
+	m2, err := GetCachedConnectorMetadata(context.Background(), client, nil, "google_sheets")
+	if err != nil {
+		t.Fatalf("second call: %v", err)
+	}
+
+	if callCount.Load() != 2 {
+		t.Errorf("nil cache should fetch every time, got %d API calls", callCount.Load())
+	}
+	if m1 == m2 {
+		t.Error("nil cache calls should not return the same cached pointer")
+	}
+}
+
 func TestMetadataCache_TwoDistinctServicesMakeTwoCalls(t *testing.T) {
 	t.Parallel()
 	var count1, count2 atomic.Int32

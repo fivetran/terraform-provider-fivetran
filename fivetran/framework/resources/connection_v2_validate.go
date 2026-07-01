@@ -1,0 +1,234 @@
+package resources
+
+import (
+	"context"
+	"fmt"
+	"math"
+	"strings"
+
+	"github.com/fivetran/go-fivetran/metadata"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+)
+
+var _ resource.ResourceWithValidateConfig = &connectionV2{}
+
+func (r *connectionV2) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+	if r.GetSkipPlanTimeValidation() {
+		return
+	}
+
+	var data model.ConnectionV2ResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if data.Service.IsNull() || data.Service.IsUnknown() || data.Service.ValueString() == "" {
+		return
+	}
+
+	configMap, authMap := r.dynamicValidationMaps(ctx, data, &resp.Diagnostics)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	if len(configMap) == 0 && len(authMap) == 0 {
+		return
+	}
+
+	meta, err := r.connectorMetadata(ctx, data.Service.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to Validate Connection V2 Configuration",
+			fmt.Sprintf("Unable to fetch metadata for service %q. Terraform cannot safely validate dynamic config/auth fields without metadata. Fix metadata access or set provider skip_plan_time_validation = true to bypass this check temporarily. Original error: %v", data.Service.ValueString(), err),
+		)
+		return
+	}
+
+	validateDynamicObject(configMap, &meta.Config, path.Root("config"), &resp.Diagnostics)
+	validateDynamicObject(authMap, &meta.Auth, path.Root("auth"), &resp.Diagnostics)
+}
+
+func validateDynamicObject(values map[string]interface{}, slot *metadata.Property, root path.Path, diags *diag.Diagnostics) {
+	if values == nil {
+		return
+	}
+	if slot == nil {
+		diags.AddAttributeError(
+			root,
+			"Unsupported Dynamic Field",
+			"Metadata does not define this dynamic object.",
+		)
+		return
+	}
+
+	for name, value := range values {
+		prop := core.SlotProp(slot, name)
+		fieldPath := root.AtName(name)
+		if prop == nil {
+			diags.AddAttributeError(
+				fieldPath,
+				"Unsupported Dynamic Field",
+				fmt.Sprintf("Metadata for this service does not define field %q.", name),
+			)
+			continue
+		}
+
+		if !core.IsKnownMetadataFieldStatus(prop.FieldStatus) {
+			diags.AddAttributeWarning(
+				fieldPath,
+				"Unknown Metadata Field Status",
+				fmt.Sprintf("Field %q has unknown metadata fieldStatus %q. Terraform will validate the field shape, but the field availability may need provider support in the future.", name, prop.FieldStatus),
+			)
+		} else if core.ShouldWarnForMetadataFieldStatus(prop) {
+			diags.AddAttributeWarning(
+				fieldPath,
+				"Non-Standard Dynamic Field",
+				fmt.Sprintf("Field %q is marked as %q in connector metadata. It is accepted because the metadata endpoint returned it for this account, but its availability or behavior may change, including potential removal for sunset fields.", name, prop.FieldStatus),
+			)
+		}
+
+		validateDynamicValue(value, prop, fieldPath, diags)
+	}
+}
+
+func validateDynamicValue(value interface{}, prop *metadata.Property, valuePath path.Path, diags *diag.Diagnostics) {
+	if prop == nil {
+		return
+	}
+	if core.IsDynamicUnknownValue(value) {
+		return
+	}
+	if value == nil {
+		if prop.Nullable {
+			return
+		}
+		diags.AddAttributeError(
+			valuePath,
+			"Invalid Dynamic Field Value",
+			fmt.Sprintf("Field with metadata type %q does not allow null.", prop.Type),
+		)
+		return
+	}
+
+	switch prop.Type {
+	case "string":
+		validateStringValue(value, prop, valuePath, diags)
+	case "integer":
+		if !isIntegerValue(value) {
+			addTypeError(valuePath, prop.Type, value, diags)
+		}
+	case "number":
+		if !isNumberValue(value) {
+			addTypeError(valuePath, prop.Type, value, diags)
+		}
+	case "boolean":
+		if _, ok := value.(bool); !ok {
+			addTypeError(valuePath, prop.Type, value, diags)
+		}
+	case "array":
+		items, ok := value.([]interface{})
+		if !ok {
+			addTypeError(valuePath, prop.Type, value, diags)
+			return
+		}
+		if prop.Items == nil {
+			return
+		}
+		for i, item := range items {
+			validateDynamicValue(item, prop.Items, valuePath.AtListIndex(i), diags)
+		}
+	case "object":
+		nested, ok := value.(map[string]interface{})
+		if !ok {
+			addTypeError(valuePath, prop.Type, value, diags)
+			return
+		}
+		validateDynamicObject(nested, prop, valuePath, diags)
+	case "":
+		return
+	default:
+		diags.AddAttributeError(
+			valuePath,
+			"Unknown Metadata Field Type",
+			fmt.Sprintf("Connector metadata returned unsupported type %q. Expected one of string, integer, number, boolean, array, or object.", prop.Type),
+		)
+	}
+}
+
+func (r *connectionV2) dynamicValidationMaps(ctx context.Context, data model.ConnectionV2ResourceModel, diags *diag.Diagnostics) (map[string]interface{}, map[string]interface{}) {
+	configMap, configDiags := core.DynamicToMapPreserveUnknown(ctx, data.Config)
+	diags.Append(configDiags...)
+
+	authMap, authDiags := core.DynamicToMapPreserveUnknown(ctx, data.Auth)
+	diags.Append(authDiags...)
+
+	return configMap, authMap
+}
+
+func validateStringValue(value interface{}, prop *metadata.Property, valuePath path.Path, diags *diag.Diagnostics) {
+	stringValue, ok := value.(string)
+	if !ok {
+		addTypeError(valuePath, prop.Type, value, diags)
+		return
+	}
+	if len(prop.Enum) == 0 {
+		return
+	}
+	for _, allowed := range prop.Enum {
+		if stringValue == allowed {
+			return
+		}
+	}
+	diags.AddAttributeError(
+		valuePath,
+		"Invalid Dynamic Field Value",
+		fmt.Sprintf("Value %q is not allowed. Allowed values: %s.", stringValue, strings.Join(prop.Enum, ", ")),
+	)
+}
+
+func addTypeError(valuePath path.Path, expected string, value interface{}, diags *diag.Diagnostics) {
+	diags.AddAttributeError(
+		valuePath,
+		"Invalid Dynamic Field Type",
+		fmt.Sprintf("Expected metadata type %q, got Terraform value type %T.", expected, value),
+	)
+}
+
+func isIntegerValue(value interface{}) bool {
+	switch v := value.(type) {
+	case int, int8, int16, int32, int64:
+		return true
+	case uint, uint8, uint16, uint32, uint64:
+		return true
+	case float32:
+		f := float64(v)
+		return isFiniteFloat(f) && math.Trunc(f) == f
+	case float64:
+		return isFiniteFloat(v) && math.Trunc(v) == v
+	default:
+		return false
+	}
+}
+
+func isNumberValue(value interface{}) bool {
+	switch v := value.(type) {
+	case int, int8, int16, int32, int64:
+		return true
+	case uint, uint8, uint16, uint32, uint64:
+		return true
+	case float32:
+		return isFiniteFloat(float64(v))
+	case float64:
+		return isFiniteFloat(v)
+	default:
+		return false
+	}
+}
+
+func isFiniteFloat(value float64) bool {
+	return !math.IsNaN(value) && !math.IsInf(value, 0)
+}

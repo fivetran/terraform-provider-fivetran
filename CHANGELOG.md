@@ -30,6 +30,9 @@ New connection config fields supported:
 - Added field `fivetran_connector.config.custom_reports.click_attribution_window` for services: `pinterest_ads`.
 - Added field `fivetran_connector.config.custom_reports.conversion_report_time` for services: `pinterest_ads`.
 
+### Added
+- `fivetran_connection_v2`: metadata-driven plan-time validation for dynamic `config` / `auth` fields (override via provider `skip_plan_time_validation`).
+
 ## [v1.9.35](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.35...v1.9.34)
 
 ### Fixed
