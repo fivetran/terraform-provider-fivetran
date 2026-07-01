@@ -1914,7 +1914,7 @@ func TestResourceConnectorScheduleWithScheduleBlockE2E(t *testing.T) {
 	})
 }
 
-func TestResourceConnectorConfigArrayOfSensitiveStringsE2E(t *testing.T) {
+func TestResourceConnectorConfigArrayOfStringsNullLocalyEmptyArrayInUpstreamE2E(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() {},
 		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
@@ -1994,6 +1994,54 @@ func TestResourceConnectorConfigArrayOfSensitiveStringsE2E(t *testing.T) {
     					auth_mode    = "JWT"
 						client_id    = "client_id1"
 						private_key  = "private_key1"
+						pats = []
+						use_webhooks = "false"
+      				}
+				}
+		  		`,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("fivetran_group.test_group", "name", "test_group_name"),
+
+					testFivetranConnectorResourceCreate(t, "fivetran_connector.test_connector"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "github"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "some_schema"),
+
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.auth_mode", "JWT"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.client_id", "client_id1"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.private_key", "private_key1"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.use_webhooks", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.pats.#", "0"),
+				),
+			},
+			// Step 3: 
+			{
+				Config: `
+				
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_name"
+			    }
+
+			    resource "fivetran_connector" "test_connector" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "github"
+
+					destination_schema {
+						name = "some_schema"
+					}
+					
+					trust_certificates = false
+					trust_fingerprints = false
+					run_setup_tests = false
+
+					networking_method  = "Directly"
+
+      				config {
+    					auth_mode    = "JWT"
+						client_id    = "client_id1"
+						private_key  = "private_key1"
+						use_webhooks = "false"
       				}
 				}
 		  		`,
