@@ -1,6 +1,9 @@
 package model
 
 import (
+	"strconv"
+	"strings"
+
 	"github.com/fivetran/go-fivetran/connections"
 	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -38,7 +41,13 @@ type ConnectorSchedule struct {
 }
 
 func readScheduleFromResponse(s *connections.ConnectorSchedule, existing types.Object) types.Object {
-	if s == nil || existing.IsNull() || existing.IsUnknown() {
+	if s == nil {
+		if legacyCompatibleExistingSchedule(existing) {
+			return existing
+		}
+		return types.ObjectNull(connectorScheduleBlockAttrTypes)
+	}
+	if existing.IsNull() || existing.IsUnknown() {
 		return types.ObjectNull(connectorScheduleBlockAttrTypes)
 	}
 
@@ -57,7 +66,7 @@ func readScheduleFromResponse(s *connections.ConnectorSchedule, existing types.O
 	}
 
 	if s.TimeOfDay != nil {
-		vals["time_of_day"] = normaliseTimeOfDay(*s.TimeOfDay, existing.Attributes()["time_of_day"]) 
+		vals["time_of_day"] = normaliseTimeOfDay(*s.TimeOfDay, existing.Attributes()["time_of_day"])
 	} else {
 		vals["time_of_day"] = types.StringNull()
 	}
@@ -82,6 +91,79 @@ func readScheduleFromResponse(s *connections.ConnectorSchedule, existing types.O
 	}
 
 	return types.ObjectValueMust(connectorScheduleBlockAttrTypes, vals)
+}
+
+func legacyCompatibleExistingSchedule(existing types.Object) bool {
+	if existing.IsNull() || existing.IsUnknown() {
+		return false
+	}
+
+	attrs := existing.Attributes()
+	scheduleType, ok := attrs["schedule_type"].(types.String)
+	if !ok || scheduleType.IsNull() || scheduleType.IsUnknown() || !legacyExistingHasAllDays(attrs["days_of_week"]) {
+		return false
+	}
+
+	switch scheduleType.ValueString() {
+	case "INTERVAL":
+		interval, ok := attrs["interval"].(types.Int64)
+		return ok && !interval.IsNull() && !interval.IsUnknown() &&
+			legacyExistingSyncFrequency(int(interval.ValueInt64()))
+	case "TIME_OF_DAY":
+		timeOfDay, ok := attrs["time_of_day"].(types.String)
+		return ok && !timeOfDay.IsNull() && !timeOfDay.IsUnknown() &&
+			legacyExistingDailySyncTime(timeOfDay.ValueString())
+	default:
+		return false
+	}
+}
+
+func legacyExistingSyncFrequency(interval int) bool {
+	for _, supportedInterval := range []int{1, 5, 15, 30, 60, 120, 180, 360, 480, 720, 1440} {
+		if interval == supportedInterval {
+			return true
+		}
+	}
+	return false
+}
+
+func legacyExistingDailySyncTime(timeOfDay string) bool {
+	parts := strings.Split(timeOfDay, ":")
+	if len(parts) < 2 || len(parts) > 3 || len(parts[0]) != 2 || parts[1] != "00" {
+		return false
+	}
+	if len(parts) == 3 && parts[2] != "00" {
+		return false
+	}
+
+	hour, err := strconv.Atoi(parts[0])
+	return err == nil && hour >= 0 && hour <= 23
+}
+
+func legacyExistingHasAllDays(daysAttr attr.Value) bool {
+	days, ok := daysAttr.(types.Set)
+	if !ok || days.IsNull() || days.IsUnknown() || len(days.Elements()) == 0 {
+		return true
+	}
+	if len(days.Elements()) != 7 {
+		return false
+	}
+
+	seen := map[string]bool{}
+	for _, value := range days.Elements() {
+		day, ok := value.(types.String)
+		if !ok || day.IsNull() || day.IsUnknown() {
+			return false
+		}
+		seen[day.ValueString()] = true
+	}
+
+	for _, day := range []string{"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"} {
+		if !seen[day] {
+			return false
+		}
+	}
+	return true
 }
 
 func normaliseTimeOfDay(upstream string, stateValue attr.Value) attr.Value {
