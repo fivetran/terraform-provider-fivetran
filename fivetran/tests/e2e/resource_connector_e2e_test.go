@@ -1780,7 +1780,7 @@ func TestResourceConnectorScheduleWithScheduleBlockE2E(t *testing.T) {
 					run_setup_tests = false
 				}
 
-				resource "fivetran_connector_schedule" "this" {
+				resource "fivetran_connector_schedule" "connector_schedule" {
 					provider = fivetran-provider
 
 					connector_id = fivetran_connector.test_connector.id
@@ -1880,9 +1880,9 @@ func TestResourceConnectorScheduleWithScheduleBlockE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "fivetran_log"),
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "fivetran_log_schema"),
 
-					resource.TestCheckResourceAttr("fivetran_connector_schedule.this", "paused", "true"),
-					resource.TestCheckResourceAttr("fivetran_connector_schedule.this", "schedule.schedule_type", "INTERVAL"),
-					resource.TestCheckResourceAttr("fivetran_connector_schedule.this", "schedule.interval", "30"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule", "paused", "true"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule", "schedule.schedule_type", "INTERVAL"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule", "schedule.interval", "30"),
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule", "schedule.days_of_week.#", "0"),
 
 					resource.TestCheckResourceAttr("fivetran_connector.test_connector2", "service", "fivetran_log"),
