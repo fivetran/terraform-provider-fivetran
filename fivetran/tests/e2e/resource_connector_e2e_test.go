@@ -1756,160 +1756,310 @@ func TestResourceConnectorScheduleWithScheduleBlockE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule4", "schedule.days_of_week.#", "0"),
 				),
 			},
-		// 	{
-		// 		Config: `
-		// 		resource "fivetran_group" "test_group" {
-		// 			provider = fivetran-provider
-		// 			name = "test_group_name"
-		// 		}
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_name"
+				}
 
-		// 		resource "fivetran_connector" "test_connector" {
-		// 			provider = fivetran-provider
-		// 			group_id = fivetran_group.test_group.id
-		// 			service = "fivetran_log"
+				resource "fivetran_connector" "test_connector" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "fivetran_log"
 
-		// 			data_delay_sensitivity = "NORMAL"
-		// 			data_delay_threshold = 0
+					data_delay_sensitivity = "NORMAL"
+					data_delay_threshold = 0
 
-		// 			destination_schema {
-		// 				name = "fivetran_log_schema"
-		// 			}
+					destination_schema {
+						name = "fivetran_log_schema"
+					}
 
-		// 			trust_certificates = false
-		// 			trust_fingerprints = false
-		// 			run_setup_tests = false
-		// 		}
+					trust_certificates = false
+					trust_fingerprints = false
+					run_setup_tests = false
+				}
 
-		// 		resource "fivetran_connector_schedule" "this" {
-		// 			provider = fivetran-provider
+				resource "fivetran_connector_schedule" "connector_schedule" {
+					provider = fivetran-provider
 
-		// 			connector_id = fivetran_connector.test_connector.id
-		// 			paused = "true"
-		// 			schedule {
-		// 				schedule_type = "INTERVAL"
-		// 				interval      = 30
-		// 			}
-		// 		}
+					connector_id = fivetran_connector.test_connector.id
+					paused = "true"
+					schedule {
+						schedule_type = "INTERVAL"
+						interval      = 30
+					}
+				}
 
-		// 		resource "fivetran_connector" "test_connector2" {
-		// 			provider = fivetran-provider
-		// 			group_id = fivetran_group.test_group.id
-		// 			service = "fivetran_log"
+				resource "fivetran_connector" "test_connector2" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "fivetran_log"
 
-		// 			data_delay_sensitivity = "NORMAL"
-		// 			data_delay_threshold = 0
+					data_delay_sensitivity = "NORMAL"
+					data_delay_threshold = 0
 
-		// 			destination_schema {
-		// 				name = "fivetran_log_schema2"
-		// 			}
+					destination_schema {
+						name = "fivetran_log_schema2"
+					}
 
-		// 			trust_certificates = false
-		// 			trust_fingerprints = false
-		// 			run_setup_tests = false
-		// 		}
+					trust_certificates = false
+					trust_fingerprints = false
+					run_setup_tests = false
+				}
 
-		// 		resource "fivetran_connector_schedule" "connector_schedule2" {
-		// 			provider = fivetran-provider
+				resource "fivetran_connector_schedule" "connector_schedule2" {
+					provider = fivetran-provider
 
-		// 			connector_id = fivetran_connector.test_connector2.id
-		// 			paused = "true"
-		// 			schedule {
-		// 				schedule_type = "INTERVAL"
-		// 				interval      = 30
-		// 				days_of_week = ["MONDAY", "TUESDAY"]
-		// 			}
-		// 		}
+					connector_id = fivetran_connector.test_connector2.id
+					paused = "true"
+					schedule {
+						schedule_type = "INTERVAL"
+						interval      = 30
+						days_of_week = ["MONDAY", "TUESDAY"]
+					}
+				}
 
-		// 		resource "fivetran_connector" "test_connector3" {
-		// 			provider = fivetran-provider
-		// 			group_id = fivetran_group.test_group.id
-		// 			service = "fivetran_log"
+				resource "fivetran_connector" "test_connector3" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "fivetran_log"
 
-		// 			data_delay_sensitivity = "NORMAL"
-		// 			data_delay_threshold = 0
+					data_delay_sensitivity = "NORMAL"
+					data_delay_threshold = 0
 
-		// 			destination_schema {
-		// 				name = "fivetran_log_schema3"
-		// 			}
+					destination_schema {
+						name = "fivetran_log_schema3"
+					}
 
-		// 			trust_certificates = false
-		// 			trust_fingerprints = false
-		// 			run_setup_tests = false
-		// 		}
+					trust_certificates = false
+					trust_fingerprints = false
+					run_setup_tests = false
+				}
 
-		// 		resource "fivetran_connector_schedule" "connector_schedule3" {
-		// 			provider = fivetran-provider
+				resource "fivetran_connector_schedule" "connector_schedule3" {
+					provider = fivetran-provider
 
-		// 			connector_id = fivetran_connector.test_connector3.id
-		// 			paused = "true"
-		// 			schedule {
-		// 				schedule_type = "TIME_OF_DAY"
-		// 				time_of_day   = "15:30"
-		// 			}
-		// 		}
+					connector_id = fivetran_connector.test_connector3.id
+					paused = "true"
+					schedule {
+						schedule_type = "TIME_OF_DAY"
+						time_of_day   = "15:30"
+					}
+				}
 
-		// 		resource "fivetran_connector" "test_connector4" {
-		// 			provider = fivetran-provider
-		// 			group_id = fivetran_group.test_group.id
-		// 			service = "fivetran_log"
+				resource "fivetran_connector" "test_connector4" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "fivetran_log"
 
-		// 			data_delay_sensitivity = "NORMAL"
-		// 			data_delay_threshold = 0
+					data_delay_sensitivity = "NORMAL"
+					data_delay_threshold = 0
 
-		// 			destination_schema {
-		// 				name = "fivetran_log_schema4"
-		// 			}
+					destination_schema {
+						name = "fivetran_log_schema4"
+					}
 
-		// 			trust_certificates = false
-		// 			trust_fingerprints = false
-		// 			run_setup_tests = false
-		// 		}
+					trust_certificates = false
+					trust_fingerprints = false
+					run_setup_tests = false
+				}
 
-		// 		resource "fivetran_connector_schedule" "connector_schedule4" {
-		// 			provider = fivetran-provider
+				resource "fivetran_connector_schedule" "connector_schedule4" {
+					provider = fivetran-provider
 
-		// 			connector_id = fivetran_connector.test_connector4.id
-		// 			paused = "true"
-		// 			schedule {
-		// 				schedule_type = "CRON"
-		// 				cron          = "0 15 * * *"
-		// 			}
-		// 		}
-		// 		`,
-		// 		Check: resource.ComposeAggregateTestCheckFunc(
-		// 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "fivetran_log"),
-		// 			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "fivetran_log_schema"),
+					connector_id = fivetran_connector.test_connector4.id
+					paused = "true"
+					schedule {
+						schedule_type = "CRON"
+						cron          = "0 15 * * *"
+					}
+				}
+				`,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "fivetran_log"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "fivetran_log_schema"),
 
-		// 			resource.TestCheckResourceAttr("fivetran_connector_schedule.this", "paused", "true"),
-		// 			resource.TestCheckResourceAttr("fivetran_connector_schedule.this", "schedule.schedule_type", "INTERVAL"),
-		// 			resource.TestCheckResourceAttr("fivetran_connector_schedule.this", "schedule.interval", "30"),
-		// 			resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule", "schedule.days_of_week.#", "0"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule", "paused", "true"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule", "schedule.schedule_type", "INTERVAL"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule", "schedule.interval", "30"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule", "schedule.days_of_week.#", "0"),
 
-		// 			resource.TestCheckResourceAttr("fivetran_connector.test_connector2", "service", "fivetran_log"),
-		// 			resource.TestCheckResourceAttr("fivetran_connector.test_connector2", "name", "fivetran_log_schema2"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector2", "service", "fivetran_log"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector2", "name", "fivetran_log_schema2"),
 
-		// 			resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule2", "paused", "true"),
-		// 			resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule2", "schedule.schedule_type", "INTERVAL"),
-		// 			resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule2", "schedule.interval", "30"),
-		// 			resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule2", "schedule.days_of_week.#", "2"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule2", "paused", "true"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule2", "schedule.schedule_type", "INTERVAL"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule2", "schedule.interval", "30"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule2", "schedule.days_of_week.#", "2"),
 
-		// 			resource.TestCheckResourceAttr("fivetran_connector.test_connector3", "service", "fivetran_log"),
-		// 			resource.TestCheckResourceAttr("fivetran_connector.test_connector3", "name", "fivetran_log_schema3"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector3", "service", "fivetran_log"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector3", "name", "fivetran_log_schema3"),
 
-		// 			resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule3", "paused", "true"),
-		// 			resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule3", "schedule.schedule_type", "TIME_OF_DAY"),
-		// 			resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule3", "schedule.time_of_day", "15:30"),
-		// 			resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule3", "schedule.days_of_week.#", "0"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule3", "paused", "true"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule3", "schedule.schedule_type", "TIME_OF_DAY"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule3", "schedule.time_of_day", "15:30"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule3", "schedule.days_of_week.#", "0"),
 
-		// 			resource.TestCheckResourceAttr("fivetran_connector.test_connector4", "service", "fivetran_log"),
-		// 			resource.TestCheckResourceAttr("fivetran_connector.test_connector4", "name", "fivetran_log_schema4"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector4", "service", "fivetran_log"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector4", "name", "fivetran_log_schema4"),
 
-		// 			resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule4", "paused", "true"),
-		// 			resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule4", "schedule.schedule_type", "CRON"),
-		// 			resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule4", "schedule.cron", "0 15 * * *"),
-		// 			resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule4", "schedule.days_of_week.#", "0"),
-		// 		),
-		// 	},
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule4", "paused", "true"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule4", "schedule.schedule_type", "CRON"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule4", "schedule.cron", "0 15 * * *"),
+					resource.TestCheckResourceAttr("fivetran_connector_schedule.connector_schedule4", "schedule.days_of_week.#", "0"),
+				),
+			},
+		},
+	})
+}
+
+func TestResourceConnectorConfigArrayOfStringsNullLocalyEmptyArrayInUpstreamE2E(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectorResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_name"
+			    }
+
+			    resource "fivetran_connector" "test_connector" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "github"
+
+					destination_schema {
+						name = "some_schema"
+					}
+					
+					trust_certificates = false
+					trust_fingerprints = false
+					run_setup_tests = false
+
+					networking_method  = "Directly"
+
+      				config {
+    					auth_mode    = "PersonalAccessToken"
+						pats = ["pat1"]
+						use_webhooks = "false"
+      				}
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("fivetran_group.test_group", "name", "test_group_name"),
+
+					testFivetranConnectorResourceCreate(t, "fivetran_connector.test_connector"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "github"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "some_schema"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_certificates", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "trust_fingerprints", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "run_setup_tests", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "networking_method", "Directly"),
+
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.auth_mode", "PersonalAccessToken"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.pats.#", "1"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.pats.0", "pat1"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.use_webhooks", "false"),
+				),
+			},
+			// Step 2: 
+			{
+				Config: `
+				
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_name"
+			    }
+
+			    resource "fivetran_connector" "test_connector" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "github"
+
+					destination_schema {
+						name = "some_schema"
+					}
+					
+					trust_certificates = false
+					trust_fingerprints = false
+					run_setup_tests = false
+
+					networking_method  = "Directly"
+
+      				config {
+    					auth_mode    = "JWT"
+						client_id    = "client_id1"
+						private_key  = "private_key1"
+						pats = []
+						use_webhooks = "false"
+      				}
+				}
+		  		`,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("fivetran_group.test_group", "name", "test_group_name"),
+
+					testFivetranConnectorResourceCreate(t, "fivetran_connector.test_connector"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "github"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "some_schema"),
+
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.auth_mode", "JWT"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.client_id", "client_id1"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.private_key", "private_key1"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.use_webhooks", "false"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.pats.#", "0"),
+				),
+			},
+			// Step 3: 
+			{
+				Config: `
+				
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_name"
+			    }
+
+			    resource "fivetran_connector" "test_connector" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "github"
+
+					destination_schema {
+						name = "some_schema"
+					}
+					
+					trust_certificates = false
+					trust_fingerprints = false
+					run_setup_tests = false
+
+					networking_method  = "Directly"
+
+      				config {
+    					auth_mode    = "JWT"
+						client_id    = "client_id1"
+						private_key  = "private_key1"
+						use_webhooks = "false"
+      				}
+				}
+		  		`,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("fivetran_group.test_group", "name", "test_group_name"),
+
+					testFivetranConnectorResourceCreate(t, "fivetran_connector.test_connector"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "github"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "name", "some_schema"),
+
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.auth_mode", "JWT"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.client_id", "client_id1"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.private_key", "private_key1"),
+					resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.use_webhooks", "false"),
+					resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "config.pats"),
+					resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "config.pats.#"),
+				),
+			},
 		},
 	})
 }

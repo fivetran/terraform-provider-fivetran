@@ -279,6 +279,15 @@ func getValue(
 				return types.ListNull(collectionType.ElementType())
 			}
 		}
+		if local == nil && currentField != nil && !currentField.Readonly && !isImporting {
+			if currentField.GetIsSensitive(service) || len(value.([]interface{})) == 0 {
+				if _, ok := collectionType.(basetypes.SetTypable); ok {
+					return types.SetNull(collectionType.ElementType())
+				} else {
+					return types.ListNull(collectionType.ElementType())
+				}
+			}
+		}
 		items := []attr.Value{}
 		for _, v := range value.([]interface{}) {
 			if currentField.ItemKeyField != "" && local != nil {

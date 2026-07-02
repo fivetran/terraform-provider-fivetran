@@ -2839,3 +2839,199 @@ func TestResourceConnectorWorkdayServiceMock(t *testing.T) {
 		},
 	)
 }
+
+// TestResourceConnectorConfigArrayOfSensitiveStringsMock verifies that a string array config field
+// if it's null locally doesn't fail on empty array in the upstream API response
+func TestResourceConnectorConfigArrayOfSensitiveStringsMock(t *testing.T) {
+
+	connectorSensitiveArrayStep1Response := `
+	{
+		"id": "connector_id",
+		"group_id": "group_id",
+		"service": "github",
+		"service_version": 1,
+		"schema": "some_schema",
+		"paused": true,
+		"pause_after_trial": true,
+		"connected_by": "user_id",
+		"created_at": "2022-01-01T11:22:33.012345Z",
+		"succeeded_at": null,
+		"failed_at": null,
+		"sync_frequency": 5,
+		"schedule_type": "auto",
+		"networking_method": "Directly",
+		"status": {
+			"setup_state": "incomplete",
+			"sync_state": "paused",
+			"update_state": "on_schedule",
+			"is_historical_sync": true,
+			"tasks": [],
+			"warnings": []
+		},
+		"config": {
+			"auth_mode": "PersonalAccessToken",
+			"pats": ["**********"],
+			"use_webhooks": false
+		}
+	}
+	`
+
+	// pats is now empty array after switching to JWT
+	connectorSensitiveArrayStep2Response := `
+	{
+		"id": "connector_id",
+		"group_id": "group_id",
+		"service": "github",
+		"service_version": 1,
+		"schema": "some_schema",
+		"paused": true,
+		"pause_after_trial": true,
+		"connected_by": "user_id",
+		"created_at": "2022-01-01T11:22:33.012345Z",
+		"succeeded_at": null,
+		"failed_at": null,
+		"sync_frequency": 5,
+		"schedule_type": "auto",
+		"networking_method": "Directly",
+		"status": {
+			"setup_state": "incomplete",
+			"sync_state": "paused",
+			"update_state": "on_schedule",
+			"is_historical_sync": true,
+			"tasks": [],
+			"warnings": []
+		},
+		"config": {
+			"auth_mode": "JWT",
+			"client_id": "client_id1",
+			"private_key": "**********",
+			"pats": ["********"],
+			"use_webhooks": false
+		}
+	}
+	`
+	var (
+	connectorSensitiveArrayMockPostHandler   *mock.Handler
+	connectorSensitiveArrayMockPatchHandler  *mock.Handler
+	connectorSensitiveArrayMockDeleteHandler *mock.Handler
+	connectorSensitiveArrayMockData          map[string]interface{}
+	)
+
+	step1 := resource.TestStep{
+		Config: `
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+
+			group_id = "group_id"
+			service  = "github"
+
+			destination_schema {
+				name = "some_schema"
+			}
+
+			trust_certificates = false
+			trust_fingerprints = false
+			run_setup_tests    = false
+
+			networking_method = "Directly"
+
+			config {
+				auth_mode    = "PersonalAccessToken"
+				pats         = ["pat1"]
+				use_webhooks = "false"
+			}
+		}
+		`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, connectorSensitiveArrayMockPostHandler.Interactions, 1)
+				tfmock.AssertNotEmpty(t, connectorSensitiveArrayMockData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.auth_mode", "PersonalAccessToken"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.pats.#", "1"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.pats.0", "pat1"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.use_webhooks", "false"),
+		),
+	}
+
+	step2 := resource.TestStep{
+		Config: `
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+
+			group_id = "group_id"
+			service  = "github"
+
+			destination_schema {
+				name = "some_schema"
+			}
+
+			trust_certificates = false
+			trust_fingerprints = false
+			run_setup_tests    = false
+
+			networking_method = "Directly"
+
+			config {
+				auth_mode   = "JWT"
+				client_id   = "client_id1"
+				private_key = "private_key1"
+			}
+		}
+		`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, connectorSensitiveArrayMockPatchHandler.Interactions, 1)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.auth_mode", "JWT"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.client_id", "client_id1"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.private_key", "private_key1"),
+			resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "config.pats"),
+			resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "config.pats.#"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				tfmock.MockClient().Reset()
+				tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorSensitiveArrayMockData), nil
+					},
+				)
+				connectorSensitiveArrayMockPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/connections").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						connectorSensitiveArrayMockData = tfmock.CreateMapFromJsonString(t, connectorSensitiveArrayStep1Response)
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", connectorSensitiveArrayMockData), nil
+					},
+				)
+				connectorSensitiveArrayMockPatchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/connections/connector_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						connectorSensitiveArrayMockData = tfmock.CreateMapFromJsonString(t, connectorSensitiveArrayStep2Response)
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorSensitiveArrayMockData), nil
+					},
+				)
+				connectorSensitiveArrayMockDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						connectorSensitiveArrayMockData = nil
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorSensitiveArrayMockData), nil
+					},
+				)
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, connectorSensitiveArrayMockDeleteHandler.Interactions, 1)
+				tfmock.AssertEmpty(t, connectorSensitiveArrayMockData)
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
+				step2,
+			},
+		},
+	)
+}
