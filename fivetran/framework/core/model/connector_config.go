@@ -280,7 +280,7 @@ func getValue(
 			}
 		}
 		if local == nil && currentField != nil && !currentField.Readonly && !isImporting {
-			if len(value.([]interface{})) == 0 {
+			if currentField.GetIsSensitive(service) || len(value.([]interface{})) == 0 {
 				if _, ok := collectionType.(basetypes.SetTypable); ok {
 					return types.SetNull(collectionType.ElementType())
 				} else {

@@ -2905,7 +2905,7 @@ func TestResourceConnectorConfigArrayOfSensitiveStringsMock(t *testing.T) {
 			"auth_mode": "JWT",
 			"client_id": "client_id1",
 			"private_key": "**********",
-			"pats": [],
+			"pats": ["********"],
 			"use_webhooks": false
 		}
 	}
