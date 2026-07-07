@@ -26,6 +26,7 @@ type connectionV2 struct {
 
 var _ resource.ResourceWithConfigure = &connectionV2{}
 var _ resource.ResourceWithImportState = &connectionV2{}
+var _ resource.ResourceWithModifyPlan = &connectionV2{}
 
 func (r *connectionV2) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_connection_v2"
