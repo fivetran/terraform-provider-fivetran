@@ -81,6 +81,42 @@ func TestConnectionV2NotRegistered(t *testing.T) {
 	}
 }
 
+func TestConnectionV2PauseStateSchemaShape(t *testing.T) {
+	t.Parallel()
+	ctx := context.Background()
+
+	r := resources.ConnectionV2PauseState()
+	var schemaResp resource.SchemaResponse
+	r.Schema(ctx, resource.SchemaRequest{}, &schemaResp)
+	if schemaResp.Diagnostics.HasError() {
+		t.Fatalf("schema diagnostics: %v", schemaResp.Diagnostics)
+	}
+
+	attrs := schemaResp.Schema.Attributes
+	if schemaResp.Schema.Version != 0 {
+		t.Fatalf("unexpected schema version: got %d, want 0", schemaResp.Schema.Version)
+	}
+
+	assertStringAttribute(t, attrs, "id", false, false, true)
+	assertStringAttribute(t, attrs, "connection_id", true, false, false)
+	assertBoolAttribute(t, attrs, "paused", true, false, false)
+}
+
+func TestConnectionV2PauseStateNotRegistered(t *testing.T) {
+	t.Parallel()
+	ctx := context.Background()
+
+	p := framework.FivetranProvider()
+	for _, resourceFactory := range p.Resources(ctx) {
+		r := resourceFactory()
+		var metadataResp resource.MetadataResponse
+		r.Metadata(ctx, resource.MetadataRequest{ProviderTypeName: "fivetran"}, &metadataResp)
+		if metadataResp.TypeName == "fivetran_connection_v2_pause_state" {
+			t.Fatal("fivetran_connection_v2_pause_state must remain unregistered until the publication ticket")
+		}
+	}
+}
+
 func assertStringAttribute(t *testing.T, attrs map[string]resourceSchema.Attribute, name string, required, optional, computed bool) {
 	t.Helper()
 
