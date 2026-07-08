@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `fivetran_connection_v2`: plan-time required-field checks for create and replacement plans, historical resync warnings, and immutable dynamic-field replacement handling.
+- `fivetran_connection_v2_pause_state`: resource implementation for future publication. The resource is not registered yet.
 
 ## [v1.9.37](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.37...v1.9.36)
 
