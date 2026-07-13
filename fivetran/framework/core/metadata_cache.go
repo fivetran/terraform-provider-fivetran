@@ -13,6 +13,14 @@ import (
 // The cache is passed explicitly so each provider instance is hermetic (no package-level state).
 // Errors are not cached — transient failures are retried on the next call.
 func GetCachedConnectorMetadata(ctx context.Context, client *fivetran.Client, cache *sync.Map, service string) (*metadata.ConnectorMetadata, error) {
+	return getCachedConnectorMetadata(ctx, client, cache, service, "")
+}
+
+func GetCachedConnectorMetadataWithUserAgentSuffix(ctx context.Context, client *fivetran.Client, cache *sync.Map, service string, userAgentSuffix string) (*metadata.ConnectorMetadata, error) {
+	return getCachedConnectorMetadata(ctx, client, cache, service, userAgentSuffix)
+}
+
+func getCachedConnectorMetadata(ctx context.Context, client *fivetran.Client, cache *sync.Map, service string, userAgentSuffix string) (*metadata.ConnectorMetadata, error) {
 	if cache != nil {
 		if meta, ok, err := LoadCachedConnectorMetadata(cache, service); ok || err != nil {
 			return meta, err
@@ -22,7 +30,16 @@ func GetCachedConnectorMetadata(ctx context.Context, client *fivetran.Client, ca
 		return nil, fmt.Errorf("unconfigured Fivetran client")
 	}
 
-	resp, err := client.NewMetadataDetails().Service(service).Do(ctx)
+	detailsService := client.NewMetadataDetails().Service(service)
+	var (
+		resp metadata.ConnectorMetadataResponse
+		err  error
+	)
+	if userAgentSuffix != "" {
+		resp, err = detailsService.DoWithUserAgentSuffix(ctx, userAgentSuffix)
+	} else {
+		resp, err = detailsService.Do(ctx)
+	}
 	if err != nil {
 		return nil, err
 	}
