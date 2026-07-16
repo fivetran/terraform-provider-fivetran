@@ -19,6 +19,8 @@ type connectionV2PauseState struct {
 	core.ProviderResource
 }
 
+const connectionV2PauseStateUserAgentSuffix = "fivetran_connection_v2_pause_state"
+
 var _ resource.ResourceWithConfigure = &connectionV2PauseState{}
 var _ resource.ResourceWithImportState = &connectionV2PauseState{}
 
@@ -172,14 +174,14 @@ func (r *connectionV2PauseState) setPauseState(ctx context.Context, connectionID
 		NewConnectionUpdate().
 		ConnectionID(connectionID).
 		Paused(paused).
-		DoCustom(ctx)
+		DoCustomWithUserAgentSuffix(ctx, connectionV2PauseStateUserAgentSuffix)
 }
 
 func (r *connectionV2PauseState) readPauseState(ctx context.Context, connectionID string) (model.ConnectionV2PauseStateResourceModel, connections.DetailsWithCustomConfigNoTestsResponse, error) {
 	response, err := r.GetClient().
 		NewConnectionDetails().
 		ConnectionID(connectionID).
-		DoCustom(ctx)
+		DoCustomWithUserAgentSuffix(ctx, connectionV2PauseStateUserAgentSuffix)
 
 	var data model.ConnectionV2PauseStateResourceModel
 	if err == nil {

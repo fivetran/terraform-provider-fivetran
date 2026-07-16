@@ -24,6 +24,8 @@ type connectionV2 struct {
 	core.ProviderResource
 }
 
+const connectionV2UserAgentSuffix = "fivetran_connection_v2"
+
 var _ resource.ResourceWithConfigure = &connectionV2{}
 var _ resource.ResourceWithImportState = &connectionV2{}
 var _ resource.ResourceWithModifyPlan = &connectionV2{}
@@ -45,7 +47,7 @@ func (r *connectionV2) ImportState(ctx context.Context, req resource.ImportState
 		return
 	}
 
-	details, err := r.GetClient().NewConnectionDetails().ConnectionID(req.ID).DoCustom(ctx)
+	details, err := r.GetClient().NewConnectionDetails().ConnectionID(req.ID).DoCustomWithUserAgentSuffix(ctx, connectionV2UserAgentSuffix)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Import Connection V2 Resource.",
@@ -133,7 +135,7 @@ func (r *connectionV2) Create(ctx context.Context, req resource.CreateRequest, r
 
 	r.applyCreateRootFields(svc, data)
 
-	response, err := svc.DoCustom(ctx)
+	response, err := svc.DoCustomWithUserAgentSuffix(ctx, connectionV2UserAgentSuffix)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Create Connection V2 Resource.",
@@ -171,7 +173,7 @@ func (r *connectionV2) Read(ctx context.Context, req resource.ReadRequest, resp 
 		return
 	}
 
-	response, err := r.GetClient().NewConnectionDetails().ConnectionID(data.Id.ValueString()).DoCustom(ctx)
+	response, err := r.GetClient().NewConnectionDetails().ConnectionID(data.Id.ValueString()).DoCustomWithUserAgentSuffix(ctx, connectionV2UserAgentSuffix)
 	if err != nil {
 		if response.Code == "NotFound_Connector" || response.Code == "NotFound_Connection" {
 			resp.State.RemoveResource(ctx)
@@ -262,7 +264,7 @@ func (r *connectionV2) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	r.applyUpdateRootFields(svc, plan, state)
 
-	response, err := svc.DoCustom(ctx)
+	response, err := svc.DoCustomWithUserAgentSuffix(ctx, connectionV2UserAgentSuffix)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Update Connection V2 Resource.",
@@ -273,7 +275,7 @@ func (r *connectionV2) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	r.warnFailedSetupTests(response.Data.SetupTests, &resp.Diagnostics)
 
-	details, err := r.GetClient().NewConnectionDetails().ConnectionID(state.Id.ValueString()).DoCustom(ctx)
+	details, err := r.GetClient().NewConnectionDetails().ConnectionID(state.Id.ValueString()).DoCustomWithUserAgentSuffix(ctx, connectionV2UserAgentSuffix)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Read Connection V2 Resource After Update.",
@@ -309,7 +311,7 @@ func (r *connectionV2) Delete(ctx context.Context, req resource.DeleteRequest, r
 		return
 	}
 
-	deleteResponse, err := r.GetClient().NewConnectionDelete().ConnectionID(data.Id.ValueString()).Do(ctx)
+	deleteResponse, err := r.GetClient().NewConnectionDelete().ConnectionID(data.Id.ValueString()).DoWithUserAgentSuffix(ctx, connectionV2UserAgentSuffix)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Delete Connection V2 Resource.",
@@ -330,7 +332,7 @@ func (r *connectionV2) connectorMetadata(ctx context.Context, service string) (*
 		}
 		return nil, fmt.Errorf("unconfigured Fivetran client")
 	}
-	return core.GetCachedConnectorMetadata(ctx, r.GetClient(), cache, service)
+	return core.GetCachedConnectorMetadataWithUserAgentSuffix(ctx, r.GetClient(), cache, service, connectionV2UserAgentSuffix)
 }
 
 func (r *connectionV2) dynamicPlanMaps(ctx context.Context, data model.ConnectionV2ResourceModel, diags *diag.Diagnostics) (map[string]interface{}, map[string]interface{}) {
