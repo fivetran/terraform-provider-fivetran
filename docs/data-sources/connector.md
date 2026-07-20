@@ -375,9 +375,11 @@ Read-Only:
 	- Service `shopify`: API access token of your custom or public app.
 	- Service `square`: The Square API access token of your application.
 - `api_admin_key` (String, Sensitive) Field usage depends on `service` value: 
-	- Service `anthropic_claude`: Your Claude Platform Admin API key for syncing organization-level management and reporting data.
+	- Service `anthropic_claude`: Your Claude Admin API key for syncing organization-level management and reporting data.
 - `api_base_url` (String) Field usage depends on `service` value: 
 	- Service `gongio`: Your Gong API Base URL.
+- `api_cursor_rollback_window` (Number) Field usage depends on `service` value: 
+	- Service `jira`: The number of hours to roll back the issue search cursor. Allows reprocessing of recently updated issues that may have been missed due to indexing delays. Valid range is 0-48 hours. A value of 0 disables the rollback.
 - `api_environment` (String) Field usage depends on `service` value: 
 	- Service `afterpay`: Your Afterpay API environment.
 	- Service `tiktok_organic`: Your TikTok Organic API environment.
@@ -671,6 +673,8 @@ Read-Only:
 	- Service `alchemer`: Your Alchemer API Secret key.
 - `api_server` (String) Field usage depends on `service` value: 
 	- Service `sigma_computing_source`: Your Sigma Computing api server.
+- `api_to_sync_conversation_analytics_data` (String) Field usage depends on `service` value: 
+	- Service `genesys`: Choose the Genesys API you want to use to sync conversation analytics data. Export API retrieves conversation records via an asynchronous export job and is recommended for historical data. Aggregate Query API fetches data using the analytics aggregate query endpoint and produces a different set of tables and schemas. You cannot change this value after you set up the connection.
 - `api_token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `aha`: Your Aha! API key.
 	- Service `aircall`: Your Aircall API token.
@@ -725,7 +729,7 @@ Read-Only:
 	- Service `safetyculture`: Your SafetyCulture API token.
 	- Service `sensor_tower`: Your Sensor Tower API token.
 	- Service `sentry`: Your Sentry auth token.
-	- Service `sevdesk`: Your 32-character hexadecimal API token.
+	- Service `sevdesk`: Your sevdesk API token.
 	- Service `simplecast`: Your Simplecast API token.
 	- Service `smartsheet`: API token generated from your Smartsheet account.
 	- Service `snyk`: Your Snyk API token.
@@ -856,6 +860,10 @@ Read-Only:
 - `asm_password` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `oracle_hva`: ASM password. Mandatory if `use_oracle_rac` or `asm_option` is set to `true`.
 	- Service `oracle_sap_hva`: The ASM user's password. Mandatory if `use_oracle_rac` or `asm_option` is set to `true`.
+- `asm_staging_directory` (String) Field usage depends on `service` value: 
+	- Service `oracle`: ASM staging directory path. Required when the ASM option is enabled.
+	- Service `oracle_ebs`: ASM staging directory path. Required when the ASM option is enabled.
+	- Service `oracle_rac`: ASM staging directory path. Required when the ASM option is enabled.
 - `asm_tns` (String) Field usage depends on `service` value: 
 	- Service `oracle_hva`: ASM TNS.
 	- Service `oracle_sap_hva`: ASM TNS.
@@ -912,6 +920,7 @@ Read-Only:
 	- Service `github`: Authorization type.
 	- Service `smartsheet`: Authorization type.
 	- Service `workday`: Authentication Mode
+	- Service `workday_adaptive`: Authentication mode: PASSWORD (username/password) or TOKEN (key-based authentication)
 	- Service `workday_financial_management`: Authentication Mode
 	- Service `workday_hcm`: Authentication Mode
 - `auth_secret` (String, Sensitive) Field usage depends on `service` value: 
@@ -1106,6 +1115,18 @@ Read-Only:
 	- Service `opensearch`: Whether to capture hard deletes, meaning source documents removed from the index. Set to false to skip hard-delete detection, which may improve connector performance for sources that do not hard-delete documents. This does not affect source-level soft-delete fields; those fields sync as ordinary document updates. If you re-enable delete capture later, resync the affected tables to rebuild an accurate delete baseline. Default value: true.
 - `catalog` (String) Field usage depends on `service` value: 
 	- Service `databricks_db`: catalog to sync
+- `cdb_database` (String) Field usage depends on `service` value: 
+	- Service `oracle`: Optional: CDB database name for TDE-encrypted containerized databases.
+	- Service `oracle_ebs`: Optional: CDB database name for TDE-encrypted containerized databases.
+	- Service `oracle_rac`: Optional: CDB database name for TDE-encrypted containerized databases.
+- `cdb_password` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `oracle`: Optional: Password for the CDB user.
+	- Service `oracle_ebs`: Optional: Password for the CDB user.
+	- Service `oracle_rac`: Optional: Password for the CDB user.
+- `cdb_user` (String) Field usage depends on `service` value: 
+	- Service `oracle`: Optional: CDB user for TDE-encrypted containerized databases.
+	- Service `oracle_ebs`: Optional: CDB user for TDE-encrypted containerized databases.
+	- Service `oracle_rac`: Optional: CDB user for TDE-encrypted containerized databases.
 - `certificate` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `anaplan`: The contents of your PEM certificate file. Must be populated if `auth_mode` is set to `Certificate`.
 	- Service `db2z`: Db2 for z/OS host certificate
@@ -1197,7 +1218,7 @@ Read-Only:
 	- Service `instructure`: Your Instructure client ID.
 	- Service `integral_ad_science`: Your integral_ad_science client id.
 	- Service `ironclad`: Your Ironclad client ID.
-	- Service `ironclad_clickwrap`: Your Ironclad Clickwrap Client ID.
+	- Service `ironclad_clickwrap`: Your Ironclad Clickwrap client ID.
 	- Service `jama_software`: Your Jama Software client ID.
 	- Service `jibble`: Your Jibble client ID.
 	- Service `khoros_communities`: Your Khoros Communities client ID.
@@ -1265,6 +1286,7 @@ Read-Only:
 	- Service `visma`: Your Visma client ID.
 	- Service `vonage_contact_center`: Your Vonage Contact Center client ID.
 	- Service `walmart_marketplace`: Your Walmart Marketplace client ID.
+	- Service `workday_adaptive`: Client ID for token authentication (required for TOKEN authentication)
 	- Service `xero`: your clientId
 	- Service `xray`: Your Xray Client ID.
 	- Service `yahoo_display_ads_on_yahoo_japan`: Your Yahoo Display Ads on Yahoo Japan client ID.
@@ -1386,7 +1408,7 @@ Read-Only:
 	- Service `instructure`: Your Instructure client secret.
 	- Service `integral_ad_science`: Your integral_ad_science client secret.
 	- Service `ironclad`: Your Ironclad client secret.
-	- Service `ironclad_clickwrap`: Your Ironclad Clickwrap Client Secret.
+	- Service `ironclad_clickwrap`: Your Ironclad Clickwrap client secret.
 	- Service `jama_software`: Your Jama Software client secret.
 	- Service `jibble`: Your Jibble client secret.
 	- Service `khoros_communities`: Your Khoros Communities client secret.
@@ -1913,6 +1935,10 @@ Read-Only:
 	- Service `oracle_sap_hva_netweaver`: Default value: `false`. Set to `true` if you're using archive log only mode.
 	- Service `sql_server_hva`: Use archive log only mode
 	- Service `sql_server_sap_ecc_hva`: Use archive log only mode
+- `enable_asm` (Boolean) Field usage depends on `service` value: 
+	- Service `oracle`: Default value: `false`. Set to `true` if you're using ASM.
+	- Service `oracle_ebs`: Default value: `false`. Set to `true` if you're using ASM.
+	- Service `oracle_rac`: Default value: `false`. Set to `true` if you're using ASM.
 - `enable_data_extensions_syncing` (Boolean)
 - `enable_distributed_connector_mode` (Boolean) Field usage depends on `service` value: 
 	- Service `cosmos`: Enable to allow the connector to join a cluster of connectors forming a Distributed Connector Cluster. This cluster allows parallel syncs from the same source to the same destination using multiple connectors.
@@ -1923,12 +1949,19 @@ Read-Only:
 	- Service `braze`: Enable User Profile Exports
 - `enable_mtls_connection` (String) Field usage depends on `service` value: 
 	- Service `gitlab`: The confirmation that you have allowed Fivetran to connect with your self-hosted instance. Possible values: `true`, `false`.
+- `enable_symbolic_links` (Boolean) Field usage depends on `service` value: 
+	- Service `oracle`: Default value: `false`. Set to `true` if you're using symbolic links.
+	- Service `oracle_ebs`: Default value: `false`. Set to `true` if you're using symbolic links.
+	- Service `oracle_rac`: Default value: `false`. Set to `true` if you're using symbolic links.
 - `enable_tde` (Boolean) Field usage depends on `service` value: 
 	- Service `sql_server`: Use transparent data encryption (TDE)
 	- Service `sql_server_hva`: Using Transparent Data Encryption (TDE)
 	- Service `sql_server_sap_ecc_hva`: Using Transparent Data Encryption (TDE)
 - `enable_tde_encryption` (Boolean) Field usage depends on `service` value: 
+	- Service `oracle`: Default value: `false`. Set to `true` if you're using TDE encryption.
+	- Service `oracle_ebs`: Default value: `false`. Set to `true` if you're using TDE encryption.
 	- Service `oracle_hva`: Default value: `false`. Set to `true` if you're using TDE encryption.
+	- Service `oracle_rac`: Default value: `false`. Set to `true` if you're using TDE encryption.
 	- Service `oracle_sap_hva`: Default value: `false`. Set to `true` if you're using TDE encryption.
 	- Service `oracle_sap_hva_netweaver`: Default value: `false`. Set to `true` if you're using TDE encryption.
 - `encoded_public_key` (String) Field usage depends on `service` value: 
@@ -2021,6 +2054,8 @@ Read-Only:
 - `eu_region` (Boolean) Field usage depends on `service` value: 
 	- Service `kustomer`: Turn it on if your app is on EU region
 	- Service `survey_monkey`: The SurveyMonkey account region. Specify `true`, if your account is hosted in the EU region. Default value is `false`.
+- `event_extract_mode` (String) Field usage depends on `service` value: 
+	- Service `salesforce_marketing_cloud`: Event sync method. This is how Fivetran gets data for the event objects,  can be selected only during the connector creation.  TRACKING_EXTRACT - Salesforce exports a file, which we download and extract event  data from. This is the faster for large volumes, and requires SFTP.  SOAP  - We sync data using the SOAP API event object endpoints. This syncs the  latest events faster, but is slow for large volumes.
 - `events` (Set of String) Field usage depends on `service` value: 
 	- Service `iterable`: List of events to sync. Should be specified when `sync_mode` is `SelectedEvents`
 - `export_native_types_as_pdf` (Boolean) Field usage depends on `service` value: 
@@ -2205,7 +2240,7 @@ Read-Only:
 	- Service `appsflyer`: Your S3 home folder path of the Data Locker.
 - `host` (String) Field usage depends on `service` value: 
 	- Service `amqp`: AMQP broker host address.
-	- Service `aurora`: DB instance host or IP address.
+	- Service `aurora`: DB instance host or IP address. When the connection type is `PrivateLink` and the authentication method is `AWS_IAM`, set this to the PrivateLink DNS address and use `databaseEndpoint` for the actual RDS endpoint.
 	- Service `aurora_postgres`: DB instance host or IP address.
 	- Service `aveva_pi`: IP address of the AF Server
 	- Service `azure_postgres`: DB instance host or IP address.
@@ -2237,14 +2272,14 @@ Read-Only:
 	- Service `heroku_postgres`: DB instance host or IP address.
 	- Service `jira`: The Jira service host address.
 	- Service `magento_mysql`: DB instance host or IP address.
-	- Service `magento_mysql_rds`: DB instance host or IP address.
+	- Service `magento_mysql_rds`: DB instance host or IP address. When the connection type is `PrivateLink` and the authentication method is `AWS_IAM`, set this to the PrivateLink DNS address and use `databaseEndpoint` for the actual RDS endpoint.
 	- Service `maria`: DB instance host or IP address.
 	- Service `maria_azure`: DB instance host or IP address.
-	- Service `maria_rds`: DB instance host or IP address.
+	- Service `maria_rds`: DB instance host or IP address. When the connection type is `PrivateLink` and the authentication method is `AWS_IAM`, set this to the PrivateLink DNS address and use `databaseEndpoint` for the actual RDS endpoint.
 	- Service `marin`: The Marin host address.
 	- Service `mysql`: DB instance host or IP address.
 	- Service `mysql_azure`: DB instance host or IP address.
-	- Service `mysql_rds`: DB instance host or IP address.
+	- Service `mysql_rds`: DB instance host or IP address. When the connection type is `PrivateLink` and the authentication method is `AWS_IAM`, set this to the PrivateLink DNS address and use `databaseEndpoint` for the actual RDS endpoint.
 	- Service `netsuite_suiteanalytics`: The NetSuite service host address.
 	- Service `opendistro`: DB instance host or IP address.
 	- Service `opensearch`: DB instance host or IP address.
@@ -2267,6 +2302,7 @@ Read-Only:
 	- Service `sql_server_hva`: DB instance host or IP address.
 	- Service `sql_server_rds`: DB instance host or IP address.
 	- Service `sql_server_sap_ecc_hva`: DB instance host or IP address.
+	- Service `workday_adaptive`: Workday Adaptive host URL, including the scheme, required for TOKEN authentication
 - `host_ip` (String) Field usage depends on `service` value: 
 	- Service `azure_blob_storage`: IP address of host tunnel machine which is used to connect to the Storage container.
 	- Service `azure_service_bus`: The IP address of the host machine which we use to connect to ASB via ssh
@@ -2377,6 +2413,8 @@ Read-Only:
 	- Service `oracle_fusion_cloud_apps_hcm`: The Oracle Fusion Cloud issuer name.
 - `issuer_id` (String) Field usage depends on `service` value: 
 	- Service `itunes_connect`: Your Issuer ID. Must be populated if `key_type` is set to `Team`
+- `isu` (String) Field usage depends on `service` value: 
+	- Service `workday_adaptive`: Integration System User (ISU) for token authentication (required for TOKEN authentication)
 - `json_delivery_mode` (String) Field usage depends on `service` value: 
 	- Service `amqp`: JSON delivery mode (Packed or Unpacked).
 	- Service `aws_cost_report`: Control how your JSON data is delivered into your destination
@@ -2442,6 +2480,14 @@ Read-Only:
 	- Service `s3_compatible_storage`: The listing strategy you want to use. Default value: `complete_listing`.
 - `list_sync_mode` (String) Field usage depends on `service` value: 
 	- Service `google_analytics_4_export`: The Sync Mode
+- `local_wallet_host` (String) Field usage depends on `service` value: 
+	- Service `oracle`: Optional: The host for the local Oracle Wallet.
+	- Service `oracle_ebs`: Optional: The host for the local Oracle Wallet.
+	- Service `oracle_rac`: Optional: The host for the local Oracle Wallet.
+- `local_wallet_user` (String) Field usage depends on `service` value: 
+	- Service `oracle`: Optional: The user for the local Oracle Wallet.
+	- Service `oracle_ebs`: Optional: The user for the local Oracle Wallet.
+	- Service `oracle_rac`: Optional: The user for the local Oracle Wallet.
 - `location_ids` (String) Field usage depends on `service` value: 
 	- Service `h_level`: Your HighLevel location ID.
 - `log_journal` (String) Field usage depends on `service` value: 
@@ -2457,7 +2503,7 @@ Read-Only:
 	- Service `rebound_returns`: Your ReBound Returns login.
 	- Service `the_trade_desk`: The Trade Desk email. It is a part of the login credentials.
 	- Service `walmart_dsp`: Walmart DSP email. It is a part of the login credentials.
-	- Service `workday_adaptive`: User email address
+	- Service `workday_adaptive`: User email address (required for PASSWORD authentication)
 - `login_password` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `concur`: The SAP Concur password.
 	- Service `sage_intacct`: The login password. It is a part of the login credentials.
@@ -2710,7 +2756,7 @@ Read-Only:
 	- Service `pardot_sandbox`: The Pardot user's password.
 	- Service `partnerize`: Your Partnerize account's password.
 	- Service `podio`: Your Podio account password.
-	- Service `postgres`: The user's password.
+	- Service `postgres`: For password authentication, enter the user's password.For Entra ID authentication, enter the client secret value.
 	- Service `postgres_rds`: The user's password.
 	- Service `qmatic_data_connect`: Your Qmatic Data Connect password.
 	- Service `redshift_db`: The Redshift user's password.
@@ -2753,7 +2799,7 @@ Read-Only:
 	- Service `when_i_work`: Your When I Work password.
 	- Service `wherefour`: Your Wherefour password.
 	- Service `workday`: Workday password.
-	- Service `workday_adaptive`: User password
+	- Service `workday_adaptive`: User password (required for PASSWORD authentication)
 	- Service `workday_financial_management`: Workday password.
 	- Service `workday_hcm`: Workday password.
 	- Service `xandr`: Your Xandr password.
@@ -2943,6 +2989,7 @@ Read-Only:
 	- Service `salesforce`: Provide content of the `.key` private key (only when authentication_method = `ADVANCED`).
 	- Service `salesforce_sandbox`: Provide content of the `.key` private key (only when authentication_method = `ADVANCED`).
 	- Service `snowflake_db`: Private access key.  The field should be specified if authentication type is `KEY_PAIR`.
+	- Service `workday_adaptive`: PEM-formatted PKCS#8 private key, including BEGIN/END PRIVATE KEY markers, for token authentication
 - `private_token` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `eventbrite`: Your Eventbrite private token.
 - `product` (String) Field usage depends on `service` value: 
@@ -3176,6 +3223,9 @@ Read-Only:
 - `report_service_api_key` (String, Sensitive) Field usage depends on `service` value: 
 	- Service `adyen`: Your Report Service API key.
 - `report_suites` (Set of String)
+- `report_templates` (Set of String) Field usage depends on `service` value: 
+	- Service `the_trade_desk`: Report templates to sync.
+	- Service `walmart_dsp`: Report templates to sync.
 - `report_timezone` (String) Field usage depends on `service` value: 
 	- Service `criteo`: Report Timezone
 - `report_type` (String) Field usage depends on `service` value: 
@@ -3697,6 +3747,8 @@ Read-Only:
 	- Service `yext`: Your Yext subdomain. 
 	- Service `zendesk_chat`: Your Zendesk domain.
 	- Service `zendesk_workforce_management`: Your Zendesk Workforce Management subdomain.
+- `subscriber_id` (String) Field usage depends on `service` value: 
+	- Service `workday_hcm`: WID of the Workday Integration Transaction Log Service subscriber. Used to scope the V2 optimised history transaction-log queries to a specific integration subscriber.
 - `subscriber_name` (String) Field usage depends on `service` value: 
 	- Service `azure_service_bus`: The subscriber name. If the connection string does not have manage permission, you need to specify a subscriber name we can use to fetch data. If not specified, we default to `fivetran_sub_schema`
 - `subscription` (String) Field usage depends on `service` value: 
@@ -3718,12 +3770,16 @@ Read-Only:
 	- Service `microsoft_dynamics_365_fno`: Specify if all versions of the records should be synced. If set to `true`, all versions of the records will be synced. If set to `false`, only the latest version of the records will be synced.
 - `sync_data_locker` (Boolean) Field usage depends on `service` value: 
 	- Service `appsflyer`: Sync AppsFlyer Data Locker. Default value is `true`, set it to `false` to sync AppsFlyer data using only webhooks.
+- `sync_files` (Boolean) Field usage depends on `service` value: 
+	- Service `jira`: Specifies whether to sync files in JIRA for supported destinations (true) or not (false).
 - `sync_format` (String) Field usage depends on `service` value: 
 	- Service `webhooks`: The webhooks sync format.  Default value: `Unpacked`. Unpacked messages must be valid JSON.
 - `sync_formula_fields` (Boolean) Field usage depends on `service` value: 
 	- Service `financial_force`: Enable this option to sync formula fields directly (default value = `false`)
 	- Service `salesforce`: Enable this option to sync formula fields directly (default value = `false`)
 	- Service `salesforce_sandbox`: Enable this option to sync formula fields directly (default value = `false`)
+- `sync_highly_sensitive_data` (Boolean) Field usage depends on `service` value: 
+	- Service `hubspot`: Enable syncing of highly sensitive data fields from HubSpot. When enabled, sensitive data syncing is also automatically enabled.
 - `sync_metadata` (Boolean) Field usage depends on `service` value: 
 	- Service `facebook_ads`: Parameter defining whether to enable or disable metadata synchronisation. Default value: `TRUE`.
 - `sync_method` (String) Field usage depends on `service` value: 
@@ -3787,6 +3843,8 @@ Read-Only:
 	- Service `share_point`: Optional. Set to true to sync per-user file access permissions to control visibility in downstream applications.
 - `sync_pull_api` (Boolean) Field usage depends on `service` value: 
 	- Service `appsflyer`: These options are for Appsflyer's Pull API, and are only necessary for syncing events from Pull API.
+- `sync_sensitive_data` (Boolean) Field usage depends on `service` value: 
+	- Service `hubspot`: Enable syncing of sensitive data fields from HubSpot.
 - `sync_tables` (String) Field usage depends on `service` value: 
 	- Service `google_analytics_4_export`: Sync Table
 - `sync_type` (String) Field usage depends on `service` value: 
@@ -3839,7 +3897,10 @@ Read-Only:
 - `tde_setting` (String) Field usage depends on `service` value: 
 	- Service `sql_server`: Transparent Data Encryption (TDE) setting. Possible values: `"OFF"`, `"CERTIFICATE"`. Default value is `"OFF"`.
 - `tde_wallet_password` (String, Sensitive) Field usage depends on `service` value: 
+	- Service `oracle`: TDE wallet password. Required for password based wallet.
+	- Service `oracle_ebs`: TDE wallet password. Required for password based wallet.
 	- Service `oracle_hva`: TDE wallet password. Required for password based wallet.
+	- Service `oracle_rac`: TDE wallet password. Required for password based wallet.
 	- Service `oracle_sap_hva`: TDE wallet password. Required for password based wallet.
 	- Service `oracle_sap_hva_netweaver`: TDE wallet password. Required for password based wallet.
 - `team_id` (String) Field usage depends on `service` value: 
@@ -3854,6 +3915,7 @@ Read-Only:
 	- Service `microsoft_teams`: Your Microsoft Teams Tenant.
 	- Service `unicommerce`: Your uniware tenant.
 	- Service `workday`: Workday tenant name
+	- Service `workday_adaptive`: Tenant identifier (required for TOKEN authentication)
 	- Service `workday_financial_management`: Workday tenant name
 	- Service `workday_hcm`: Workday tenant name
 - `tenant_app_url` (String) Field usage depends on `service` value: 
@@ -4167,11 +4229,11 @@ Read-Only:
 	- Service `mysql`: The method to detect new or changed rows. Supported values:`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
 	- Service `mysql_azure`: The method to detect new or changed rows. Supported values:`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
 	- Service `mysql_rds`: The method to detect new or changed rows. Supported values:`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
-	- Service `oracle`: The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
-	- Service `oracle_ebs`: The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables.  - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
+	- Service `oracle`: The method used to detect new or changed rows. Supported values: - `BINARY_LOG_READER` - Fivetran reads Oracle redo logs to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
+	- Service `oracle_ebs`: The method used to detect new or changed rows. Supported values: - `BINARY_LOG_READER` - Fivetran reads Oracle redo logs to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
 	- Service `oracle_hva`: The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
-	- Service `oracle_rac`: The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables.  - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
-	- Service `oracle_rds`: The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables.  - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
+	- Service `oracle_rac`: The method used to detect new or changed rows. Supported values: - `BINARY_LOG_READER` - Fivetran reads Oracle redo logs to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
+	- Service `oracle_rds`: The method used to detect new or changed rows. Supported values: - `BINARY_LOG_READER` - Fivetran reads Oracle redo logs to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes. - `XSTREAM_OUT` - Fivetran uses Oracle XStream Out to stream changes from the database.
 	- Service `oracle_sap_hva`: The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.
 	- Service `postgres`: The method to detect new or changed rows. Specify only for `"service": "postgres"` or `"service": "postgres_rds"`. Supported values:`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the  write-ahead log (WAL) using a logical slot.This is more efficient than the query-based method, but requires more setup and monitoring.`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns
 	- Service `postgres_rds`: The method to detect new or changed rows. Specify only for `"service": "postgres"` or `"service": "postgres_rds"`. Supported values:`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns
@@ -4195,6 +4257,9 @@ Read-Only:
 	- Service `sailthru`: Enable this if you want to sync Sailthru Connect using your own"  S3 bucket.
 - `use_data_sync` (Boolean) Field usage depends on `service` value: 
 	- Service `pendo`: Toggle field to determine whether connector is syncing from API or from Data Sync
+- `use_database_name_for_table_filtering` (Boolean) Field usage depends on `service` value: 
+	- Service `db2i_hva`: Restricts schema discovery to libraries (schemas) within the configured database. When enabled, the database parameter must also be specified.
+	- Service `db2i_sap_hva`: Restricts schema discovery to libraries (schemas) within the configured database. When enabled, the database parameter must also be specified. Has no effect on SAP ECC on Db2 for i connectors.
 - `use_harvest_api_v3` (String) Field usage depends on `service` value: 
 	- Service `greenhouse`: The confirmation that you want to connect to Harvest V3 API. Possible values: `true`, `false`.
 - `use_message_server` (Boolean) Field usage depends on `service` value: 
@@ -4276,7 +4341,7 @@ Read-Only:
 	- Service `oracle_sap_hva`: The username.
 	- Service `oracle_sap_hva_netweaver`: The username.
 	- Service `outbrain`: The username or email of the Outbrain user.
-	- Service `postgres`: The user name.
+	- Service `postgres`: For password authentication, enter the user name.For Entra ID authentication, enter the registered app display name.
 	- Service `postgres_rds`: The user name.
 	- Service `redshift_db`: The Redshift username.
 	- Service `sap_hana`: Your SAP HANA user name.
@@ -4830,7 +4895,7 @@ Read-Only:
 	- Service `double_click_publishers`: Report dimensions to include in the sync. The `date` dimension is mandatory for all the report types.
 	- Service `google_analytics`: The report dimensions to include into a sync. The `date` dimension is mandatory for all the report types.
 	- Service `google_analytics_4`: The report dimensions to include into a sync.
-	- Service `google_display_and_video_360`: The report dimensions (filters) to include into a sync. The dimension names are provided in the API format. This is a required parameter when `config_method` is set to `CREATE_NEW`.
+	- Service `google_display_and_video_360`: The report dimensions (filters) to include into a sync. The dimension names are provided in the API format. This is a required parameter when `config_method` is set to `CREATE_NEW`. NOTE: At least one of the following date dimensions must be included for report data aggregation: `FILTER_DATE` (daily), `FILTER_WEEK` (weekly), or `FILTER_MONTH` (monthly).
 	- Service `google_search_console`: The report dimensions included to sync.
 	- Service `workday_adaptive`: List of dimensions to sync for the table, if applicable.
 - `dynamic_parameter_field` (String) Field usage depends on `service` value: 

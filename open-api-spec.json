@@ -18,11 +18,11 @@
   "tags": [
     {
       "name": "updated",
-      "description": "2026-06-29T15:41:23.547Z"
+      "description": "2026-07-20T13:56:30.021Z"
     },
     {
       "name": "hash",
-      "description": "68f35f1175cf760be31d418e93c79f84b638a6b15cadd4dbcff6a604ea809cf8"
+      "description": "b358207b47ca4cbdda99875c249a5c87821dd3cb63dcb644b8f58c5e64768a52"
     }
   ],
   "paths": {
@@ -1316,6 +1316,92 @@
         }
       }
     },
+    "/v1/connections/{connectionId}/move": {
+      "post": {
+        "tags": [
+          "Connection Management"
+        ],
+        "summary": "Move a Connection (Beta)",
+        "description": "Moves a connection from its current destination group to a different destination group. The connection must be paused before calling this endpoint. Use `sync_behavior` to control how data syncs after the move: `CONTINUE` preserves the existing sync cursor so the connection resumes incremental sync from where it left off; `BACKFILL` resets the cursor and triggers a historical sync.",
+        "operationId": "connection_moved",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "4107c213907114059a5544ad8fa66c52"
+            },
+            "example": "4107c213907114059a5544ad8fa66c52"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json;version=2",
+              "default": "application/json;version=2"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MoveConnectionsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text",
+                      "example": "Connection moved successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/MoveConnectionsResponse"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request error"
+          },
+          "401": {
+            "description": "Unauthorized error"
+          },
+          "404": {
+            "description": "Not found error"
+          },
+          "406": {
+            "description": "Not acceptable error"
+          },
+          "415": {
+            "description": "Unsupported media type error"
+          }
+        }
+      }
+    },
     "/v1/connections/{connectionId}/resync": {
       "post": {
         "tags": [
@@ -2406,7 +2492,7 @@
             }
           },
           "400": {
-            "description": "The connection state doesn't exist."
+            "description": "The specified connection does not support state management. Only Function and Connector SDK connectors support this operation."
           },
           "401": {
             "description": "Unauthorized error"
@@ -2415,7 +2501,7 @@
             "description": "Connection not found error."
           },
           "405": {
-            "description": "Not a function connector error."
+            "description": "Method not allowed error."
           },
           "406": {
             "description": "Not acceptable error"
@@ -2499,7 +2585,7 @@
             }
           },
           "400": {
-            "description": "The request body is missing or malformed."
+            "description": "Invalid request. Possible causes: the request body is missing or malformed, the connection state does not exist, or the specified connection is not a Function or Connector SDK connector."
           },
           "401": {
             "description": "Unauthorized error"
@@ -2508,7 +2594,7 @@
             "description": "Connection not found error."
           },
           "405": {
-            "description": "Not a function connector error. Also returned when an unsupported HTTP method is used."
+            "description": "Method not allowed error."
           },
           "406": {
             "description": "Not acceptable error"
@@ -2598,6 +2684,150 @@
           },
           "415": {
             "description": "Unsupported media type error"
+          }
+        }
+      }
+    },
+    "/v1/connections/{connectionId}/sync-history": {
+      "get": {
+        "tags": [
+          "Connection Management"
+        ],
+        "summary": "Retrieve Connection Sync History",
+        "description": "Returns a list of sync history records for the specified connection. The maximum time window is 7 days.",
+        "operationId": "connection_sync_history",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "The unique identifier of the connection. Retrieve it from the `id` field in the [List All Connections](https://fivetran.com/docs/rest-api/api-reference/connections/list-connections) response, or from the `id` field returned when you [Create a Connection](https://fivetran.com/docs/rest-api/api-reference/connections/create-connection).",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "4107c213907114059a5544ad8fa66c52"
+            },
+            "example": "4107c213907114059a5544ad8fa66c52"
+          },
+          {
+            "name": "duration",
+            "in": "query",
+            "description": "Deprecated. Use `start_time` and `end_time` instead.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "start_time",
+            "in": "query",
+            "description": "The start of the time range for which to retrieve sync history, in ISO 8601 format (for example, 2026-01-01T00:00:00Z). If omitted, defaults to one hour before `end_time`. The maximum allowed range between `start_time` and `end_time` is 7 days.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end_time",
+            "in": "query",
+            "description": "The end of the time range for which to retrieve sync history, in ISO 8601 format (for example, 2026-01-01T01:00:00Z). If omitted, defaults to one hour after `start_time`. Must be after `start_time`.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Paging cursor, [read more about pagination](https://fivetran.com/docs/rest-api/pagination)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "cursor_value"
+            },
+            "example": "cursor_value"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "example": 100
+            },
+            "example": 100
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json;version=2",
+              "default": "application/json;version=2"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text",
+                      "example": "Operation performed successfully"
+                    },
+                    "data": {
+                      "required": [
+                        "items"
+                      ],
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "description": "The collection of returned items",
+                          "items": {
+                            "$ref": "#/components/schemas/ConnectorSyncHistoryResponse"
+                          }
+                        },
+                        "next_cursor": {
+                          "type": "string",
+                          "description": "The value of the cursor parameter for the next page",
+                          "example": "cursor_value"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request error. Returned when the duration between `start_time` and `end_time` exceeds 7 days, `start_time` is after `end_time`, or `start_time` is more than 7 days in the past."
+          },
+          "401": {
+            "description": "Unauthorized error"
+          },
+          "404": {
+            "description": "Not found error"
+          },
+          "405": {
+            "description": "Method not allowed error"
+          },
+          "406": {
+            "description": "Not acceptable error"
           }
         }
       }
@@ -4779,6 +5009,57 @@
                     },
                     "data": {
                       "$ref": "#/components/schemas/LogExtendedResponse"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/external-logging/account/test": {
+      "post": {
+        "tags": [
+          "Log Service Management"
+        ],
+        "summary": "Run Account Log Service Setup Tests",
+        "description": "Runs the setup tests for the account-level [logging service](/docs/logs/external-logs).",
+        "operationId": "run_setup_tests_account_log_service",
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "application/json",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "code",
+                    "data"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Response status code",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Response status text",
+                      "example": "Account external logging service setup tests have been completed"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/LoggingServiceSetupTestResponse"
                     }
                   }
                 }
@@ -13946,7 +14227,6 @@
             "dbt_cloud": "#/components/schemas/dbt_cloud_NewConnectorRequestV1",
             "dcl_logistics": "#/components/schemas/dcl_logistics_NewConnectorRequestV1",
             "deel": "#/components/schemas/deel_NewConnectorRequestV1",
-            "delighted": "#/components/schemas/delighted_NewConnectorRequestV1",
             "deposco": "#/components/schemas/deposco_NewConnectorRequestV1",
             "deputy": "#/components/schemas/deputy_NewConnectorRequestV1",
             "destini": "#/components/schemas/destini_NewConnectorRequestV1",
@@ -14531,7 +14811,34 @@
         "type": "object",
         "properties": {
           "connect_card_config": {
-            "$ref": "#/components/schemas/ConnectCardConfig"
+            "description": "Configuration for the Connect Card flow. Connect Card is a Fivetran-hosted UI that allows your end users to authorize a connection without accessing the Fivetran dashboard. Use `redirect_uri` to control where users land after completing setup.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ConnectCardConfig"
+              }
+            ]
+          }
+        }
+      },
+      "MoveConnectionsRequest": {
+        "required": [
+          "destination_group_id"
+        ],
+        "type": "object",
+        "properties": {
+          "destination_group_id": {
+            "type": "string",
+            "description": "The unique identifier of the destination group to move the connection to. Retrieve group IDs from the [List All Groups](https://fivetran.com/docs/rest-api/api-reference/groups/list-all-groups) endpoint.",
+            "example": "destination_group_id"
+          },
+          "sync_behavior": {
+            "type": "string",
+            "description": "Controls how data syncs after the move. Use `CONTINUE` to preserve the existing sync cursor so the connection resumes incremental sync from where it left off. Use `BACKFILL` to reset the cursor and trigger a historical sync.",
+            "example": "CONTINUE",
+            "enum": [
+              "CONTINUE",
+              "BACKFILL"
+            ]
           }
         }
       },
@@ -14588,7 +14895,12 @@
         "type": "object",
         "properties": {
           "config": {
-            "description": "The setup configuration. Check possible config formats in [create method](/docs/rest-api/api-reference/connections/create-connection/)"
+            "description": "The setup configuration. Check possible config formats in [create method](/docs/rest-api/api-reference/connections/create-connection/)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonNode"
+              }
+            ]
           },
           "auth": {
             "description": "The connector authorization settings. Check possible config formats in [create method](/docs/rest-api/api-reference/connections/create-connection/)"
@@ -14719,25 +15031,15 @@
         "type": "object",
         "properties": {
           "state": {
-            "$ref": "#/components/schemas/JsonNode"
-          }
-        }
-      },
-      "Alert": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string",
-            "description": "A machine-readable identifier for the warning type (for example: resync_table_warning). Use this value to programmatically detect and respond to specific connection conditions.",
-            "example": "resync_table_warning"
-          },
-          "message": {
-            "type": "string",
-            "description": "A human-readable label describing the warning. For example: Resync Table Warning.",
-            "example": "Resync Table Warning"
-          },
-          "details": {
-            "type": "string"
+            "description": "A freeform JSON object representing the connector's cursor or internal state to write. The structure is defined by the connector implementation and varies by connector type. If omitted or set to null, the existing state is preserved and the response returns 200 without modification.",
+            "example": {
+              "cursor": "2024-01-01T00:00:00Z"
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonNode"
+              }
+            ]
           }
         }
       },
@@ -14753,6 +15055,40 @@
             "type": "string",
             "description": "The complete URL to redirect the end user to in order to authorize the connection. It embeds the auth token, redirect URI, and setup guide visibility as query parameters. Redirect the user directly to this address.",
             "example": "https://fivetran.com/connect-card/setup?redirect_uri=https://your.site/path&auth=eyJ0e...&hide_setup_guide=true"
+          }
+        }
+      },
+      "ConnectionTask": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "A machine-readable identifier for the condition type. Use this value to programmatically detect and respond to specific connection conditions."
+          },
+          "message": {
+            "type": "string",
+            "description": "A human-readable label describing the condition. For example: Reconnect, Resync Table Warning."
+          },
+          "details": {
+            "type": "string",
+            "description": "Additional context about this condition beyond the message field."
+          }
+        }
+      },
+      "ConnectionWarning": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "A machine-readable identifier for the condition type. Use this value to programmatically detect and respond to specific connection conditions."
+          },
+          "message": {
+            "type": "string",
+            "description": "A human-readable label describing the condition. For example: Reconnect, Resync Table Warning."
+          },
+          "details": {
+            "type": "string",
+            "description": "Additional context about this condition beyond the message field."
           }
         }
       },
@@ -14794,7 +15130,12 @@
             "example": false
           },
           "status": {
-            "$ref": "#/components/schemas/ConnectorStatusResponse"
+            "description": "The current operational state of the connection, including setup state, sync state, update state, and any active tasks or warnings.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ConnectorStatusResponse"
+              }
+            ]
           },
           "group_id": {
             "type": "string",
@@ -15144,7 +15485,6 @@
             "dbt_cloud": "#/components/schemas/dbt_cloud_ConnectorResponseV1",
             "dcl_logistics": "#/components/schemas/dcl_logistics_ConnectorResponseV1",
             "deel": "#/components/schemas/deel_ConnectorResponseV1",
-            "delighted": "#/components/schemas/delighted_ConnectorResponseV1",
             "deposco": "#/components/schemas/deposco_ConnectorResponseV1",
             "deputy": "#/components/schemas/deputy_ConnectorResponseV1",
             "destini": "#/components/schemas/destini_ConnectorResponseV1",
@@ -15735,14 +16075,14 @@
             "type": "array",
             "description": "The collection of tasks for the connection",
             "items": {
-              "$ref": "#/components/schemas/Alert"
+              "$ref": "#/components/schemas/ConnectionTask"
             }
           },
           "warnings": {
             "type": "array",
             "description": "The collection of warnings for the connection",
             "items": {
-              "$ref": "#/components/schemas/Alert"
+              "$ref": "#/components/schemas/ConnectionWarning"
             }
           },
           "setup_state": {
@@ -15848,6 +16188,83 @@
           }
         }
       },
+      "ConnectorSyncHistoryResponse": {
+        "required": [
+          "stages",
+          "status",
+          "sync_id"
+        ],
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "string",
+            "description": "The UTC timestamp of when the sync started, in ISO 8601 format. Null if the sync has not started yet."
+          },
+          "end": {
+            "type": "string",
+            "description": "The UTC timestamp of when the sync finished, in ISO 8601 format. Null if the sync is still in progress."
+          },
+          "status": {
+            "type": "string",
+            "description": "The outcome of the sync. Possible values: `COMPLETED`, `FAILURE`, `CANCELED`, `INCOMPLETE`, `RESCHEDULED`, `PAUSED`."
+          },
+          "reason": {
+            "type": "string",
+            "description": "The failure reason if the sync did not complete successfully. Omitted if the sync completed without errors."
+          },
+          "stages": {
+            "description": "The data volume processed in each stage of the sync pipeline.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Stages"
+              }
+            ]
+          },
+          "sync_id": {
+            "type": "string",
+            "description": "The unique identifier of the sync."
+          }
+        }
+      },
+      "Stage": {
+        "type": "object",
+        "properties": {
+          "volume": {
+            "type": "number",
+            "description": "The volume of data processed in this stage, in megabytes. Null if volume data is not available for this stage.",
+            "format": "double"
+          }
+        }
+      },
+      "Stages": {
+        "type": "object",
+        "properties": {
+          "extract": {
+            "description": "Data volume metrics for the extract stage, in which data is read from the source system.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Stage"
+              }
+            ]
+          },
+          "process": {
+            "description": "Data volume metrics for the process stage, in which data is transformed and prepared for loading.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Stage"
+              }
+            ]
+          },
+          "load": {
+            "description": "Data volume metrics for the load stage, in which data is written to the destination.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Stage"
+              }
+            ]
+          }
+        }
+      },
       "ConnectorResponse": {
         "required": [
           "connected_by",
@@ -15885,7 +16302,12 @@
             "example": false
           },
           "status": {
-            "$ref": "#/components/schemas/ConnectorStatusResponse"
+            "description": "The current state of the connection. ",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ConnectorStatusResponse"
+              }
+            ]
           },
           "config": {
             "type": "object",
@@ -16021,6 +16443,48 @@
           }
         }
       },
+      "MoveConnectionsResponse": {
+        "required": [
+          "connection_id",
+          "destination_group_id",
+          "moved_at",
+          "source_group_id",
+          "sync_behavior"
+        ],
+        "type": "object",
+        "properties": {
+          "connection_id": {
+            "type": "string",
+            "description": "The unique identifier of the connection that was moved.",
+            "example": "connection_id"
+          },
+          "source_group_id": {
+            "type": "string",
+            "description": "The unique identifier of the destination group the connection was moved from.",
+            "example": "source_group_id"
+          },
+          "destination_group_id": {
+            "type": "string",
+            "description": "The unique identifier of the destination group to move the connection to. Retrieve group IDs from the [List All Groups](https://fivetran.com/docs/rest-api/api-reference/groups/list-all-groups) endpoint.",
+            "example": "destination_group_id"
+          },
+          "sync_behavior": {
+            "type": "string",
+            "description": "Controls how data syncs after the move. Use `CONTINUE` to preserve the existing sync cursor so the connection resumes incremental sync from where it left off. Use `BACKFILL` to reset the cursor and trigger a historical sync.",
+            "example": "CONTINUE",
+            "enum": [
+              "CONTINUE",
+              "BACKFILL"
+            ]
+          },
+          "moved_at": {
+            "type": "string",
+            "description": "The timestamp of when the connection was moved.",
+            "format": "date-time",
+            "example": "2024-01-01T00:00:00Z"
+          }
+        }
+      },
       "DropColumnSchemaRequest": {
         "required": [
           "tables"
@@ -16090,6 +16554,27 @@
           },
           "is_primary_key": {
             "type": "boolean"
+          },
+          "target_data_type": {
+            "type": "string",
+            "enum": [
+              "Unknown",
+              "Boolean",
+              "String",
+              "Short",
+              "Int",
+              "Long",
+              "Float",
+              "Double",
+              "BigDecimal",
+              "Instant",
+              "LocalDateTime",
+              "LocalDate",
+              "LocalTime",
+              "Json",
+              "Binary",
+              "Xml"
+            ]
           }
         }
       },
@@ -16264,6 +16749,9 @@
           },
           "is_primary_key": {
             "type": "boolean"
+          },
+          "target_data_type": {
+            "type": "string"
           }
         }
       },
@@ -16988,7 +17476,12 @@
             ]
           },
           "config": {
-            "description": "The setup configuration. Check possible config formats in [create method](/docs/rest-api/api-reference/destinations/create-destination/)"
+            "description": "The setup configuration. Check possible config formats in [create method](/docs/rest-api/api-reference/destinations/create-destination/)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonNode"
+              }
+            ]
           },
           "trust_certificates": {
             "type": "boolean",
@@ -17994,7 +18487,7 @@
         "properties": {
           "service": {
             "type": "string",
-            "description": "The name of the log service type within the Fivetran system. We support the following log services: `azure_monitor_log`, `cloudwatch`, `datadog_log`, `grafana_loki`, `splunkLog`, `new_relic_log`, `stackdriver` (Google Cloud Logging).",
+            "description": "The name of the log service type within the Fivetran system. We support the following log services: `azure_monitor_log`, `cloudwatch`, `datadog_log`, `dynatrace`, `grafana_loki`, `splunkLog`, `new_relic_log`, `stackdriver` (Google Cloud Logging).",
             "example": "log_service_type"
           },
           "enabled": {
@@ -18004,6 +18497,11 @@
           },
           "config": {
             "$ref": "#/components/schemas/JsonNode"
+          },
+          "run_setup_tests": {
+            "type": "boolean",
+            "description": "When `true`, Fivetran runs setup tests immediately after creating or updating the log service and returns the results in the `setup_tests` field of the response. Defaults to `false`.",
+            "example": false
           }
         }
       },
@@ -18017,13 +18515,18 @@
           },
           "service": {
             "type": "string",
-            "description": "The name of the log service type within the Fivetran system. We support the following log services: `azure_monitor_log`, `cloudwatch`, `datadog_log`, `grafana_loki`, `splunkLog`, `new_relic_log`, `stackdriver` (Google Cloud Logging).",
+            "description": "The name of the log service type within the Fivetran system. We support the following log services: `azure_monitor_log`, `cloudwatch`, `datadog_log`, `dynatrace`, `grafana_loki`, `splunkLog`, `new_relic_log`, `stackdriver` (Google Cloud Logging).",
             "example": "log_service_type"
           },
           "enabled": {
             "type": "boolean",
             "description": "The boolean value specifying whether the log service is enabled.",
             "example": true
+          },
+          "run_setup_tests": {
+            "type": "boolean",
+            "description": "When `true`, Fivetran runs setup tests immediately after creating or updating the log service and returns the results in the `setup_tests` field of the response. Defaults to `false`.",
+            "example": false
           }
         },
         "discriminator": {
@@ -18032,6 +18535,7 @@
             "azure_monitor_log": "#/components/schemas/azure_monitor_log_AddLogRequest",
             "cloudwatch": "#/components/schemas/cloudwatch_AddLogRequest",
             "datadog_log": "#/components/schemas/datadog_log_AddLogRequest",
+            "dynatrace": "#/components/schemas/dynatrace_AddLogRequest",
             "grafana_loki": "#/components/schemas/grafana_loki_AddLogRequest",
             "new_relic_log": "#/components/schemas/new_relic_log_AddLogRequest",
             "splunkLog": "#/components/schemas/splunkLog_AddLogRequest",
@@ -18049,6 +18553,31 @@
           },
           "config": {
             "description": "The setup configuration. Check possible config formats in [create method](/docs/rest-api/api-reference/log-service-management/add-log-service/)"
+          },
+          "run_setup_tests": {
+            "type": "boolean",
+            "description": "When `true`, Fivetran runs setup tests immediately after creating or updating the log service and returns the results in the `setup_tests` field of the response. Defaults to `false`.",
+            "example": false
+          }
+        }
+      },
+      "LogAlert": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Alert code identifying the type of issue.",
+            "example": "reconnect_log"
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable description of the issue.",
+            "example": "Reconnect Logging Service"
+          },
+          "details": {
+            "type": "string",
+            "description": "Additional context or details for the alert.",
+            "example": "Please provide required permissions"
           }
         }
       },
@@ -18067,13 +18596,28 @@
           },
           "service": {
             "type": "string",
-            "description": "The name of the log service type within the Fivetran system. We support the following log services: `azure_monitor_log`, `cloudwatch`, `datadog_log`, `grafana_loki`, `splunkLog`, `new_relic_log`, `stackdriver` (Google Cloud Logging).",
+            "description": "The name of the log service type within the Fivetran system. We support the following log services: `azure_monitor_log`, `cloudwatch`, `datadog_log`, `dynatrace`, `grafana_loki`, `splunkLog`, `new_relic_log`, `stackdriver` (Google Cloud Logging).",
             "example": "log_service_type"
           },
           "enabled": {
             "type": "boolean",
             "description": "The boolean value specifying whether the log service is enabled.",
             "example": true
+          },
+          "status": {
+            "description": "Setup status of the log service. Present when a setup status exists for the log service.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LogStatusResponse"
+              }
+            ]
+          },
+          "setup_tests": {
+            "type": "array",
+            "description": "Results of the most recent setup test run.",
+            "items": {
+              "$ref": "#/components/schemas/SetupTestResultResponse"
+            }
           }
         },
         "discriminator": {
@@ -18082,10 +18626,28 @@
             "azure_monitor_log": "#/components/schemas/azure_monitor_log_LogExtendedResponse",
             "cloudwatch": "#/components/schemas/cloudwatch_LogExtendedResponse",
             "datadog_log": "#/components/schemas/datadog_log_LogExtendedResponse",
+            "dynatrace": "#/components/schemas/dynatrace_LogExtendedResponse",
             "grafana_loki": "#/components/schemas/grafana_loki_LogExtendedResponse",
             "new_relic_log": "#/components/schemas/new_relic_log_LogExtendedResponse",
             "splunkLog": "#/components/schemas/splunkLog_LogExtendedResponse",
             "stackdriver": "#/components/schemas/stackdriver_LogExtendedResponse"
+          }
+        }
+      },
+      "LogStatusResponse": {
+        "type": "object",
+        "properties": {
+          "tasks": {
+            "type": "array",
+            "description": "List of alerts describing issues with the log service configuration.",
+            "items": {
+              "$ref": "#/components/schemas/LogAlert"
+            }
+          },
+          "setup_state": {
+            "type": "string",
+            "description": "Current setup state of the log service. Possible values: `connected` — log service is reachable and forwarding events; `broken` — configuration errors prevent log delivery; `incomplete` — setup has not been completed and log delivery is paused. Example: `connected`.",
+            "example": "connected"
           }
         }
       },
@@ -18104,13 +18666,21 @@
           },
           "service": {
             "type": "string",
-            "description": "The name of the log service type within the Fivetran system. We support the following log services: `azure_monitor_log`, `cloudwatch`, `datadog_log`, `grafana_loki`, `splunkLog`, `new_relic_log`, `stackdriver` (Google Cloud Logging).",
+            "description": "The name of the log service type within the Fivetran system. We support the following log services: `azure_monitor_log`, `cloudwatch`, `datadog_log`, `dynatrace`, `grafana_loki`, `splunkLog`, `new_relic_log`, `stackdriver` (Google Cloud Logging).",
             "example": "log_service_type"
           },
           "enabled": {
             "type": "boolean",
             "description": "The boolean value specifying whether the log service is enabled.",
             "example": true
+          },
+          "status": {
+            "description": "Setup status of the log service. Present when a setup status exists for the log service.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LogStatusResponse"
+              }
+            ]
           }
         }
       },
@@ -18135,6 +18705,11 @@
           },
           "config": {
             "$ref": "#/components/schemas/JsonNode"
+          },
+          "run_setup_tests": {
+            "type": "boolean",
+            "description": "When `true`, Fivetran runs setup tests immediately after creating or updating the log service and returns the results in the `setup_tests` field of the response. Defaults to `false`.",
+            "example": false
           }
         }
       },
@@ -18498,7 +19073,9 @@
           "agent_id",
           "auth_token",
           "client_cert",
-          "client_private_key"
+          "client_private_key",
+          "orchestrator_host",
+          "orchestrator_port"
         ],
         "type": "object",
         "properties": {
@@ -18521,6 +19098,17 @@
             "type": "string",
             "description": "Client private key.",
             "example": "client_private_key"
+          },
+          "orchestrator_host": {
+            "type": "string",
+            "description": "The hostname that the Proxy Agent uses to connect to the Fivetran orchestrator.",
+            "example": "orchestrator.fivetran.com"
+          },
+          "orchestrator_port": {
+            "type": "integer",
+            "description": "The port that the Proxy Agent uses to connect to the Fivetran orchestrator.",
+            "format": "int32",
+            "example": 443
           }
         }
       },
@@ -18841,7 +19429,12 @@
             "example": "My AWS Secrets Manager"
           },
           "config": {
-            "$ref": "#/components/schemas/JsonNode"
+            "description": "Provider-specific configuration object. For AWS_SECRET_MANAGER: role_arn (required). For AZURE_KEY_VAULT: vault_url (required), tenant_id (required for SaaS). For HASHICORP_VAULT: vault_address (required), role_id and secret_id (required for SaaS), namespace (optional).",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonNode"
+              }
+            ]
           },
           "is_hybrid_deployment": {
             "type": "boolean",
@@ -18857,7 +19450,12 @@
         "type": "object",
         "properties": {
           "config": {
-            "$ref": "#/components/schemas/JsonNode"
+            "description": "Provider-specific configuration object. For AWS_SECRET_MANAGER: role_arn (required). For AZURE_KEY_VAULT: vault_url (required), tenant_id (required for SaaS). For HASHICORP_VAULT: vault_address (required), role_id and secret_id (required for SaaS), namespace (optional).",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonNode"
+              }
+            ]
           }
         }
       },
@@ -19672,7 +20270,12 @@
             ]
           },
           "schedule": {
-            "$ref": "#/components/schemas/TransformationSchedule"
+            "description": "The transformation schedule",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TransformationSchedule"
+              }
+            ]
           },
           "type": {
             "type": "string",
@@ -19890,6 +20493,10 @@
         }
       },
       "MembershipRequest_add_user_membership_in_connection": {
+        "required": [
+          "id",
+          "role"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -19917,6 +20524,9 @@
         }
       },
       "UpdateMembershipRequest_update_user_membership_in_group": {
+        "required": [
+          "role"
+        ],
         "type": "object",
         "properties": {
           "role": {
@@ -24742,6 +25352,39 @@
           }
         ]
       },
+      "dynatrace_config_V1": {
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "format": "password",
+                "example": "string"
+              },
+              "environment_id": {
+                "title": "",
+                "type": "string",
+                "description": "",
+                "example": "string"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "dynatrace_AddLogRequest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AddLogRequest"
+          },
+          {
+            "$ref": "#/components/schemas/dynatrace_config_V1"
+          }
+        ]
+      },
       "grafana_loki_config_V1": {
         "properties": {
           "config": {
@@ -24893,6 +25536,7 @@
                 "title": "",
                 "type": "string",
                 "description": "",
+                "format": "password",
                 "example": "string"
               }
             },
@@ -24937,6 +25581,16 @@
           },
           {
             "$ref": "#/components/schemas/datadog_log_config_V1"
+          }
+        ]
+      },
+      "dynatrace_LogExtendedResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/LogExtendedResponse"
+          },
+          {
+            "$ref": "#/components/schemas/dynatrace_config_V1"
           }
         ]
       },
@@ -27378,7 +28032,7 @@
               "api_admin_key": {
                 "title": "",
                 "type": "string",
-                "description": "Your Claude Platform Admin API key for syncing organization-level management and reporting data.",
+                "description": "Your Claude Admin API key for syncing organization-level management and reporting data.",
                 "format": "password",
                 "example": "your_admin_api_key"
               },
@@ -28649,7 +29303,7 @@
               "host": {
                 "title": "",
                 "type": "string",
-                "description": "DB instance host or IP address.",
+                "description": "DB instance host or IP address. When the connection type is `PrivateLink` and the authentication method is `AWS_IAM`, set this to the PrivateLink DNS address and use `databaseEndpoint` for the actual RDS endpoint.",
                 "example": "mysqlinstance.mycompany.com"
               },
               "password": {
@@ -35521,7 +36175,7 @@
                 "title": "",
                 "type": "object",
                 "description": "Authentication method. Use API_KEY for API Key/Secret or OAUTH for OAuth 2.0 client credentials flow.",
-                "example": "API_KEY",
+                "example": "API_KEY | OAUTH",
                 "enum": [
                   "API_KEY",
                   "OAUTH"
@@ -37884,6 +38538,12 @@
                 "description": "SSH user, specify only to connect via an SSH tunnel. Required for connector creation.",
                 "example": "fivetran"
               },
+              "use_database_name_for_table_filtering": {
+                "title": "",
+                "type": "boolean",
+                "description": "Restricts schema discovery to libraries (schemas) within the configured database. When enabled, the database parameter must also be specified.",
+                "example": true
+              },
               "user": {
                 "title": "",
                 "type": "string",
@@ -38024,6 +38684,12 @@
                 "type": "string",
                 "description": "SSH user, specify only to connect via an SSH tunnel.",
                 "example": "fivetran"
+              },
+              "use_database_name_for_table_filtering": {
+                "title": "",
+                "type": "boolean",
+                "description": "Restricts schema discovery to libraries (schemas) within the configured database. When enabled, the database parameter must also be specified. Has no effect on SAP ECC on Db2 for i connectors.",
+                "example": true
               },
               "user": {
                 "title": "",
@@ -38384,43 +39050,6 @@
           },
           {
             "$ref": "#/components/schemas/deel_config_V1"
-          },
-          {
-            "$ref": "#/components/schemas/schema_format_schema"
-          }
-        ]
-      },
-      "delighted_config_V1": {
-        "properties": {
-          "config": {
-            "type": "object",
-            "properties": {
-              "api_key": {
-                "title": "",
-                "type": "string",
-                "description": "API Key for your Delighted account",
-                "format": "password",
-                "example": "******"
-              },
-              "password": {
-                "title": "",
-                "type": "string",
-                "description": "Pass an empty string",
-                "format": "password",
-                "example": "string"
-              }
-            },
-            "description": ""
-          }
-        }
-      },
-      "delighted_NewConnectorRequestV1": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NewConnectorRequestV1"
-          },
-          {
-            "$ref": "#/components/schemas/delighted_config_V1"
           },
           {
             "$ref": "#/components/schemas/schema_format_schema"
@@ -38919,6 +39548,28 @@
           }
         }
       },
+      "documentdb_esm_keys_config_V1": {
+        "properties": {
+          "external_secrets_keys_config": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user's password.",
+                "example": "PASSWORD_KEY"
+              },
+              "user": {
+                "title": "",
+                "type": "string",
+                "description": "ESM key for the user name.",
+                "example": "USER_KEY"
+              }
+            },
+            "description": ""
+          }
+        }
+      },
       "documentdb_NewConnectorRequestV1": {
         "allOf": [
           {
@@ -38929,6 +39580,9 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_prefix"
+          },
+          {
+            "$ref": "#/components/schemas/documentdb_esm_keys_config_V1"
           }
         ]
       },
@@ -41738,7 +42392,7 @@
                       "title": "",
                       "type": "object",
                       "description": "Deprecated. Read-only legacy field used only during migration to `attribution_windows`.",
-                      "example": "DAY_1 | DAY_1_EV | DAY_7 | NONE | DAY_28",
+                      "example": "DAY_7",
                       "enum": [
                         "DAY_1",
                         "DAY_1_EV",
@@ -41959,7 +42613,7 @@
                       "title": "",
                       "type": "object",
                       "description": "Deprecated. Read-only legacy field used only during migration to `attribution_windows`.",
-                      "example": "DAY_1 | DAY_1_EV | DAY_7 | NONE | DAY_28",
+                      "example": "DAY_7",
                       "enum": [
                         "DAY_1",
                         "DAY_1_EV",
@@ -44249,6 +44903,14 @@
           "config": {
             "type": "object",
             "properties": {
+              "api_to_sync_conversation_analytics_data": {
+                "type": "object",
+                "description": "Choose the Genesys API you want to use to sync conversation analytics data. Export API retrieves conversation records via an asynchronous export job and is recommended for historical data. Aggregate Query API fetches data using the analytics aggregate query endpoint and produces a different set of tables and schemas. You cannot change this value after you set up the connection.",
+                "enum": [
+                  "export_api",
+                  "aggregate_query_api"
+                ]
+              },
               "client_id": {
                 "title": "",
                 "type": "string",
@@ -44821,12 +45483,6 @@
                 "type": "string",
                 "description": "Your Gong API Base URL.",
                 "example": "your_gong_api_base_url"
-              },
-              "base_url": {
-                "title": "",
-                "type": "string",
-                "description": "Your Gong Base URL.",
-                "example": "your_gong_base_url"
               }
             },
             "description": ""
@@ -46180,7 +46836,7 @@
                     "dimensions": {
                       "title": "",
                       "type": "array",
-                      "description": "The report dimensions (filters) to include into a sync. The dimension names are provided in the API format. This is a required parameter when `config_method` is set to `CREATE_NEW`.",
+                      "description": "The report dimensions (filters) to include into a sync. The dimension names are provided in the API format. This is a required parameter when `config_method` is set to `CREATE_NEW`. <br><strong>NOTE:</strong> At least one of the following date dimensions must be included for report data aggregation: `FILTER_DATE` (daily), `FILTER_WEEK` (weekly), or `FILTER_MONTH` (monthly).",
                       "example": "FILTER_ADVERTISER",
                       "items": {
                         "title": "",
@@ -47550,7 +48206,7 @@
                 "title": "",
                 "type": "string",
                 "description": "The path to the Guidewire CDA manifest.json file in the S3 bucket.",
-                "example": "CDA/manifest.json"
+                "example": "<planet_name>/<application_name>/<time_of_deployment_epoch>/manifest.json"
               },
               "role_arn": {
                 "title": "",
@@ -48636,6 +49292,18 @@
                   "DATE_LIMIT"
                 ]
               },
+              "sync_highly_sensitive_data": {
+                "title": "",
+                "type": "boolean",
+                "description": "Enable syncing of highly sensitive data fields from HubSpot. When enabled, sensitive data syncing is also automatically enabled.",
+                "example": true
+              },
+              "sync_sensitive_data": {
+                "title": "",
+                "type": "boolean",
+                "description": "Enable syncing of sensitive data fields from HubSpot.",
+                "example": true
+              },
               "tables_without_access_updated_at": {
                 "title": "",
                 "type": "string",
@@ -49331,13 +49999,13 @@
               "client_id": {
                 "title": "",
                 "type": "string",
-                "description": "Your Ironclad Clickwrap Client ID.",
+                "description": "Your Ironclad Clickwrap client ID.",
                 "example": "your_ironclad_clickwrap_client_id"
               },
               "client_secret": {
                 "title": "",
                 "type": "string",
-                "description": "Your Ironclad Clickwrap Client Secret.",
+                "description": "Your Ironclad Clickwrap client secret.",
                 "format": "password",
                 "example": "your_ironclad_clickwrap_client_secret"
               }
@@ -49785,6 +50453,13 @@
           "config": {
             "type": "object",
             "properties": {
+              "api_cursor_rollback_window": {
+                "title": "",
+                "type": "integer",
+                "description": "The number of hours to roll back the issue search cursor. Allows reprocessing of recently updated issues that may have been missed due to indexing delays. Valid range is 0-48 hours. A value of 0 disables the rollback.",
+                "format": "int32",
+                "example": 2
+              },
               "auth_type": {
                 "title": "",
                 "type": "object",
@@ -49842,6 +50517,12 @@
                   "format": "int32",
                   "example": 0
                 }
+              },
+              "sync_files": {
+                "title": "",
+                "type": "boolean",
+                "description": "Specifies whether to sync files in JIRA for supported destinations (true) or not (false).",
+                "example": true
               },
               "sync_mode": {
                 "title": "",
@@ -52085,7 +52766,7 @@
               "host": {
                 "title": "",
                 "type": "string",
-                "description": "DB instance host or IP address.",
+                "description": "DB instance host or IP address. When the connection type is `PrivateLink` and the authentication method is `AWS_IAM`, set this to the PrivateLink DNS address and use `databaseEndpoint` for the actual RDS endpoint.",
                 "example": "mysqlinstance.mycompany.com"
               },
               "password": {
@@ -52807,7 +53488,7 @@
               "host": {
                 "title": "",
                 "type": "string",
-                "description": "DB instance host or IP address.",
+                "description": "DB instance host or IP address. When the connection type is `PrivateLink` and the authentication method is `AWS_IAM`, set this to the PrivateLink DNS address and use `databaseEndpoint` for the actual RDS endpoint.",
                 "example": "mysqlinstance.mycompany.com"
               },
               "password": {
@@ -54699,7 +55380,7 @@
               "host": {
                 "title": "",
                 "type": "string",
-                "description": "DB instance host or IP address.",
+                "description": "DB instance host or IP address. When the connection type is `PrivateLink` and the authentication method is `AWS_IAM`, set this to the PrivateLink DNS address and use `databaseEndpoint` for the actual RDS endpoint.",
                 "example": "mysqlinstance.mycompany.com"
               },
               "password": {
@@ -56288,6 +56969,31 @@
                 "description": "Require TLS through Tunnel",
                 "example": true
               },
+              "asm_staging_directory": {
+                "title": "",
+                "type": "string",
+                "description": "ASM staging directory path. Required when the ASM option is enabled.",
+                "example": "string"
+              },
+              "cdb_database": {
+                "title": "",
+                "type": "string",
+                "description": "<strong>Optional:</strong> CDB database name for TDE-encrypted containerized databases.",
+                "example": "string"
+              },
+              "cdb_password": {
+                "title": "",
+                "type": "string",
+                "description": "<strong>Optional:</strong> Password for the CDB user.",
+                "format": "password",
+                "example": "string"
+              },
+              "cdb_user": {
+                "title": "",
+                "type": "string",
+                "description": "<strong>Optional:</strong> CDB user for TDE-encrypted containerized databases.",
+                "example": "string"
+              },
               "connection_type": {
                 "title": "",
                 "type": "object",
@@ -56306,11 +57012,41 @@
                 "description": "The database name.",
                 "example": "oracledb"
               },
+              "enable_asm": {
+                "title": "",
+                "type": "boolean",
+                "description": "Default value: `false`. Set to `true` if you're using ASM.",
+                "example": true
+              },
+              "enable_symbolic_links": {
+                "title": "",
+                "type": "boolean",
+                "description": "Default value: `false`. Set to `true` if you're using symbolic links.",
+                "example": true
+              },
+              "enable_tde_encryption": {
+                "title": "",
+                "type": "boolean",
+                "description": "Default value: `false`. Set to `true` if you're using TDE encryption.",
+                "example": true
+              },
               "host": {
                 "title": "",
                 "type": "string",
                 "description": "DB instance host or IP address.",
                 "example": "oracleinstance.mycompany.com"
+              },
+              "local_wallet_host": {
+                "title": "",
+                "type": "string",
+                "description": "<strong>Optional:</strong> The host for the local Oracle Wallet.",
+                "example": "string"
+              },
+              "local_wallet_user": {
+                "title": "",
+                "type": "string",
+                "description": "<strong>Optional:</strong> The user for the local Oracle Wallet.",
+                "example": "string"
               },
               "password": {
                 "title": "",
@@ -56331,6 +57067,23 @@
                 "description": "The port number.",
                 "format": "int32",
                 "example": 1521
+              },
+              "symbolic_links_mapping": {
+                "title": "",
+                "type": "array",
+                "description": "Mapping of symbolic links to actual file paths. Required when symbolic links are enabled.",
+                "items": {
+                  "type": "object",
+                  "properties": {},
+                  "description": ""
+                }
+              },
+              "tde_wallet_password": {
+                "title": "",
+                "type": "string",
+                "description": "TDE wallet password. Required for password based wallet.",
+                "format": "password",
+                "example": "tde_wallet_password"
               },
               "tunnel_host": {
                 "title": "",
@@ -56354,7 +57107,7 @@
               "update_method": {
                 "title": "",
                 "type": "object",
-                "description": "The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
+                "description": "The method used to detect new or changed rows. Supported values: - `BINARY_LOG_READER` - Fivetran reads Oracle redo logs to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
                 "example": "BINARY_LOG_READER | LOGMINER | TELEPORT",
                 "enum": [
                   "BINARY_LOG_READER",
@@ -56494,6 +57247,31 @@
                 "description": "Require TLS through Tunnel",
                 "example": true
               },
+              "asm_staging_directory": {
+                "title": "",
+                "type": "string",
+                "description": "ASM staging directory path. Required when the ASM option is enabled.",
+                "example": "string"
+              },
+              "cdb_database": {
+                "title": "",
+                "type": "string",
+                "description": "<strong>Optional:</strong> CDB database name for TDE-encrypted containerized databases.",
+                "example": "string"
+              },
+              "cdb_password": {
+                "title": "",
+                "type": "string",
+                "description": "<strong>Optional:</strong> Password for the CDB user.",
+                "format": "password",
+                "example": "string"
+              },
+              "cdb_user": {
+                "title": "",
+                "type": "string",
+                "description": "<strong>Optional:</strong> CDB user for TDE-encrypted containerized databases.",
+                "example": "string"
+              },
               "connection_type": {
                 "title": "",
                 "type": "object",
@@ -56512,11 +57290,41 @@
                 "description": "The database name.",
                 "example": "oracledb"
               },
+              "enable_asm": {
+                "title": "",
+                "type": "boolean",
+                "description": "Default value: `false`. Set to `true` if you're using ASM.",
+                "example": true
+              },
+              "enable_symbolic_links": {
+                "title": "",
+                "type": "boolean",
+                "description": "Default value: `false`. Set to `true` if you're using symbolic links.",
+                "example": true
+              },
+              "enable_tde_encryption": {
+                "title": "",
+                "type": "boolean",
+                "description": "Default value: `false`. Set to `true` if you're using TDE encryption.",
+                "example": true
+              },
               "host": {
                 "title": "",
                 "type": "string",
                 "description": "DB instance host or IP address.",
                 "example": "oracleinstance.mycompany.com"
+              },
+              "local_wallet_host": {
+                "title": "",
+                "type": "string",
+                "description": "<strong>Optional:</strong> The host for the local Oracle Wallet.",
+                "example": "string"
+              },
+              "local_wallet_user": {
+                "title": "",
+                "type": "string",
+                "description": "<strong>Optional:</strong> The user for the local Oracle Wallet.",
+                "example": "string"
               },
               "password": {
                 "title": "",
@@ -56537,6 +57345,23 @@
                 "description": "The port number.",
                 "format": "int32",
                 "example": 1521
+              },
+              "symbolic_links_mapping": {
+                "title": "",
+                "type": "array",
+                "description": "Mapping of symbolic links to actual file paths. Required when symbolic links are enabled.",
+                "items": {
+                  "type": "object",
+                  "properties": {},
+                  "description": ""
+                }
+              },
+              "tde_wallet_password": {
+                "title": "",
+                "type": "string",
+                "description": "TDE wallet password. Required for password based wallet.",
+                "format": "password",
+                "example": "tde_wallet_password"
               },
               "tunnel_host": {
                 "title": "",
@@ -56560,7 +57385,7 @@
               "update_method": {
                 "title": "",
                 "type": "object",
-                "description": "The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables.  - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
+                "description": "The method used to detect new or changed rows. Supported values: - `BINARY_LOG_READER` - Fivetran reads Oracle redo logs to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
                 "example": "BINARY_LOG_READER | LOGMINER",
                 "enum": [
                   "BINARY_LOG_READER",
@@ -57344,6 +58169,31 @@
                 "description": "Require TLS through Tunnel",
                 "example": true
               },
+              "asm_staging_directory": {
+                "title": "",
+                "type": "string",
+                "description": "ASM staging directory path. Required when the ASM option is enabled.",
+                "example": "string"
+              },
+              "cdb_database": {
+                "title": "",
+                "type": "string",
+                "description": "<strong>Optional:</strong> CDB database name for TDE-encrypted containerized databases.",
+                "example": "string"
+              },
+              "cdb_password": {
+                "title": "",
+                "type": "string",
+                "description": "<strong>Optional:</strong> Password for the CDB user.",
+                "format": "password",
+                "example": "string"
+              },
+              "cdb_user": {
+                "title": "",
+                "type": "string",
+                "description": "<strong>Optional:</strong> CDB user for TDE-encrypted containerized databases.",
+                "example": "string"
+              },
               "connection_type": {
                 "title": "",
                 "type": "object",
@@ -57362,11 +58212,41 @@
                 "description": "The database name.",
                 "example": "oracledb"
               },
+              "enable_asm": {
+                "title": "",
+                "type": "boolean",
+                "description": "Default value: `false`. Set to `true` if you're using ASM.",
+                "example": true
+              },
+              "enable_symbolic_links": {
+                "title": "",
+                "type": "boolean",
+                "description": "Default value: `false`. Set to `true` if you're using symbolic links.",
+                "example": true
+              },
+              "enable_tde_encryption": {
+                "title": "",
+                "type": "boolean",
+                "description": "Default value: `false`. Set to `true` if you're using TDE encryption.",
+                "example": true
+              },
               "host": {
                 "title": "",
                 "type": "string",
                 "description": "DB instance host or IP address.",
                 "example": "oracleinstance.mycompany.com"
+              },
+              "local_wallet_host": {
+                "title": "",
+                "type": "string",
+                "description": "<strong>Optional:</strong> The host for the local Oracle Wallet.",
+                "example": "string"
+              },
+              "local_wallet_user": {
+                "title": "",
+                "type": "string",
+                "description": "<strong>Optional:</strong> The user for the local Oracle Wallet.",
+                "example": "string"
               },
               "password": {
                 "title": "",
@@ -57387,6 +58267,23 @@
                 "description": "The port number.",
                 "format": "int32",
                 "example": 1521
+              },
+              "symbolic_links_mapping": {
+                "title": "",
+                "type": "array",
+                "description": "Mapping of symbolic links to actual file paths. Required when symbolic links are enabled.",
+                "items": {
+                  "type": "object",
+                  "properties": {},
+                  "description": ""
+                }
+              },
+              "tde_wallet_password": {
+                "title": "",
+                "type": "string",
+                "description": "TDE wallet password. Required for password based wallet.",
+                "format": "password",
+                "example": "tde_wallet_password"
               },
               "tunnel_host": {
                 "title": "",
@@ -57410,7 +58307,7 @@
               "update_method": {
                 "title": "",
                 "type": "object",
-                "description": "The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables.  - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
+                "description": "The method used to detect new or changed rows. Supported values: - `BINARY_LOG_READER` - Fivetran reads Oracle redo logs to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
                 "example": "BINARY_LOG_READER | LOGMINER | TELEPORT",
                 "enum": [
                   "BINARY_LOG_READER",
@@ -57544,7 +58441,7 @@
               "update_method": {
                 "title": "",
                 "type": "object",
-                "description": "The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables.  - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
+                "description": "The method used to detect new or changed rows. Supported values: - `BINARY_LOG_READER` - Fivetran reads Oracle redo logs to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes. - `XSTREAM_OUT` - Fivetran uses Oracle XStream Out to stream changes from the database.",
                 "example": "BINARY_LOG_READER | LOGMINER | TELEPORT",
                 "enum": [
                   "BINARY_LOG_READER",
@@ -59675,7 +60572,7 @@
                       "title": "",
                       "type": "object",
                       "description": "Overrides the connector-level click attribution window for this report.",
-                      "example": "THIRTY",
+                      "example": "ZERO | THIRTY | SIXTY | FOURTEEN | ONE | SEVEN",
                       "enum": [
                         "ZERO",
                         "THIRTY",
@@ -59689,7 +60586,7 @@
                       "title": "",
                       "type": "object",
                       "description": "Overrides the connector-level conversion report time for this report.",
-                      "example": "AD_EVENT",
+                      "example": "CONVERSION_EVENT | AD_EVENT",
                       "enum": [
                         "CONVERSION_EVENT",
                         "AD_EVENT"
@@ -59699,7 +60596,7 @@
                       "title": "",
                       "type": "object",
                       "description": "Time granularity for the report: DAY, HOUR, WEEK, MONTH, or TOTAL.",
-                      "example": "DAY",
+                      "example": "TOTAL | MONTH | HOUR | WEEK | DAY",
                       "enum": [
                         "TOTAL",
                         "MONTH",
@@ -59722,9 +60619,19 @@
                     },
                     "report_type": {
                       "title": "",
-                      "type": "string",
+                      "type": "object",
                       "description": "The breakdown level for the report (e.g. ADVERTISER, CAMPAIGN, AD_GROUP, PIN_PROMOTION, KEYWORD, PRODUCT_GROUP, PRODUCT_ITEM).",
-                      "example": "CAMPAIGN"
+                      "example": "CAMPAIGN",
+                      "enum": [
+                        "PRODUCT_GROUP",
+                        "PIN_PROMOTION",
+                        "PRODUCT_GROUP_TARGETING",
+                        "KEYWORD",
+                        "AD_GROUP",
+                        "ADVERTISER",
+                        "CAMPAIGN",
+                        "PIN_PROMOTION_TARGETING"
+                      ]
                     },
                     "table_name": {
                       "title": "",
@@ -59736,7 +60643,7 @@
                       "title": "",
                       "type": "object",
                       "description": "Overrides the connector-level view attribution window for this report.",
-                      "example": "ONE",
+                      "example": "ZERO | THIRTY | SIXTY | FOURTEEN | ONE | SEVEN",
                       "enum": [
                         "ZERO",
                         "THIRTY",
@@ -60481,7 +61388,7 @@
               "password": {
                 "title": "",
                 "type": "string",
-                "description": "The user's password.",
+                "description": "For password authentication, enter the user's password.<br>For Entra ID authentication, enter the client secret value.",
                 "format": "password",
                 "example": "test_password"
               },
@@ -60536,7 +61443,7 @@
               "user": {
                 "title": "",
                 "type": "string",
-                "description": "The user name.",
+                "description": "For password authentication, enter the user name.<br>For Entra ID authentication, enter the registered app display name.",
                 "example": "test_user"
               }
             },
@@ -60552,13 +61459,13 @@
               "password": {
                 "title": "",
                 "type": "string",
-                "description": "ESM key for the user's password.",
+                "description": "ESM key for the user's password or client secret value.",
                 "example": "PASSWORD_KEY"
               },
               "user": {
                 "title": "",
                 "type": "string",
-                "description": "ESM key for the user name.",
+                "description": "ESM key for the user name or app display name.",
                 "example": "USER_KEY"
               }
             },
@@ -64249,6 +65156,16 @@
                 "format": "password",
                 "example": "your_api_secret"
               },
+              "event_extract_mode": {
+                "title": "",
+                "type": "object",
+                "description": "Event sync method. This is how Fivetran gets data for the event objects,  can be selected only during the connector creation.  TRACKING_EXTRACT - Salesforce exports a file, which we download and extract event  data from. This is the faster for large volumes, and requires SFTP.  SOAP  - We sync data using the SOAP API event object endpoints. This syncs the  latest events faster, but is slow for large volumes.",
+                "example": "TRACKING_EXTRACT | SOAP",
+                "enum": [
+                  "TRACKING_EXTRACT",
+                  "SOAP"
+                ]
+              },
               "historical_sync_limit": {
                 "title": "",
                 "type": "object",
@@ -65346,42 +66263,18 @@
           "config": {
             "type": "object",
             "properties": {
-              "account_number": {
-                "title": "",
-                "type": "string",
-                "description": "The datev account number to retrieve receipt guidance for (optional — leave blank to skip this table).",
-                "example": "your_sevdesk_account_number"
-              },
               "api_token": {
                 "title": "",
                 "type": "string",
-                "description": "Your 32-character hexadecimal API token.",
+                "description": "Your sevdesk API token.",
                 "format": "password",
                 "example": "your_sevdesk_api_token"
-              },
-              "balance_date": {
-                "title": "",
-                "type": "string",
-                "description": "ISO 8601 date for balance calculation (optional — leave blank to skip this table).",
-                "example": "your_sevdesk_balance_date"
               },
               "base_url": {
                 "title": "",
                 "type": "string",
                 "description": "The base URL for the sevdesk API, without the protocol prefix.",
                 "example": "your_sevdesk_base_url"
-              },
-              "custom_field_value": {
-                "title": "",
-                "type": "string",
-                "description": "The custom field value to search contacts by (optional — leave blank to skip this table).",
-                "example": "your_sevdesk_custom_field_value"
-              },
-              "tax_rule_code": {
-                "title": "",
-                "type": "string",
-                "description": "The tax rule code to retrieve receipt guidance for (optional — leave blank to skip this table).",
-                "example": "your_sevdesk_tax_rule_code"
               }
             },
             "description": ""
@@ -68722,22 +69615,6 @@
           }
         }
       },
-      "sql_server_auth_V1": {
-        "properties": {
-          "auth": {
-            "type": "object",
-            "properties": {
-              "windows_auth_client_private_key": {
-                "title": "",
-                "type": "string",
-                "description": "Private key associated with the Fivetran client certificate.",
-                "example": "string"
-              }
-            },
-            "description": ""
-          }
-        }
-      },
       "sql_server_esm_keys_config_V1": {
         "properties": {
           "external_secrets_keys_config": {
@@ -68770,9 +69647,6 @@
           },
           {
             "$ref": "#/components/schemas/schema_format_schema_prefix"
-          },
-          {
-            "$ref": "#/components/schemas/sql_server_auth_V1"
           },
           {
             "$ref": "#/components/schemas/sql_server_esm_keys_config_V1"
@@ -70526,6 +71400,20 @@
                 "format": "password",
                 "example": "xxxxxxxxxx"
               },
+              "report_templates": {
+                "title": "",
+                "type": "array",
+                "description": "Report templates to sync.",
+                "example": [
+                  "string"
+                ],
+                "items": {
+                  "title": "",
+                  "type": "string",
+                  "description": "",
+                  "example": "string"
+                }
+              },
               "sync_mode": {
                 "title": "",
                 "type": "object",
@@ -70977,6 +71865,12 @@
                   }
                 },
                 "description": "Your TikTok Organic client access."
+              },
+              "realm_id": {
+                "title": "",
+                "type": "string",
+                "description": "The TikTok account Open ID (open_id) returned during OAuth authorization. Required when creating the connector via REST API.",
+                "example": "your_realm_id"
               },
               "refresh_token": {
                 "title": "",
@@ -72831,6 +73725,20 @@
                 "format": "password",
                 "example": "xxxxxxxxxx"
               },
+              "report_templates": {
+                "title": "",
+                "type": "array",
+                "description": "Report templates to sync.",
+                "example": [
+                  "string"
+                ],
+                "items": {
+                  "title": "",
+                  "type": "string",
+                  "description": "",
+                  "example": "string"
+                }
+              },
               "sync_mode": {
                 "title": "",
                 "type": "object",
@@ -73570,22 +74478,57 @@
           "config": {
             "type": "object",
             "properties": {
+              "auth_mode": {
+                "title": "",
+                "type": "object",
+                "description": "Authentication mode: PASSWORD (username/password) or TOKEN (key-based authentication)",
+                "example": "PASSWORD",
+                "enum": [
+                  "PASSWORD",
+                  "TOKEN"
+                ]
+              },
+              "client_id": {
+                "title": "",
+                "type": "string",
+                "description": "Client ID for token authentication (required for TOKEN authentication)",
+                "example": "string"
+              },
+              "host": {
+                "title": "",
+                "type": "string",
+                "description": "Workday Adaptive host URL, including the scheme, required for TOKEN authentication",
+                "example": "https://impl-services1.wd12.myworkday.com"
+              },
               "instance_code": {
                 "title": "",
                 "type": "string",
                 "description": "Instance code for Workday Adaptive Planning.",
                 "example": "string"
               },
+              "isu": {
+                "title": "",
+                "type": "string",
+                "description": "Integration System User (ISU) for token authentication (required for TOKEN authentication)",
+                "example": "string"
+              },
               "login": {
                 "title": "",
                 "type": "string",
-                "description": "User email address",
+                "description": "User email address (required for PASSWORD authentication)",
                 "example": "string"
               },
               "password": {
                 "title": "",
                 "type": "string",
-                "description": "User password",
+                "description": "User password (required for PASSWORD authentication)",
+                "format": "password",
+                "example": "string"
+              },
+              "private_key": {
+                "title": "",
+                "type": "string",
+                "description": "PEM-formatted PKCS#8 private key, including BEGIN/END PRIVATE KEY markers, for token authentication",
                 "format": "password",
                 "example": "string"
               },
@@ -73716,6 +74659,12 @@
                   },
                   "description": "Custom Report"
                 }
+              },
+              "tenant": {
+                "title": "",
+                "type": "string",
+                "description": "Tenant identifier (required for TOKEN authentication)",
+                "example": "string"
               }
             },
             "description": ""
@@ -73857,6 +74806,12 @@
                 "description": "Workday password.",
                 "format": "password",
                 "example": "workday_password"
+              },
+              "subscriber_id": {
+                "title": "",
+                "type": "string",
+                "description": "WID of the Workday Integration Transaction Log Service subscriber. Used to scope the V2 optimised history transaction-log queries to a specific integration subscriber.",
+                "example": "subscriber_id"
               },
               "tenant": {
                 "title": "",
@@ -79338,16 +80293,6 @@
           }
         ]
       },
-      "delighted_ConnectorResponseV1": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ConnectorResponseV1"
-          },
-          {
-            "$ref": "#/components/schemas/delighted_config_V1"
-          }
-        ]
-      },
       "deposco_ConnectorResponseV1": {
         "allOf": [
           {
@@ -79454,6 +80399,9 @@
           },
           {
             "$ref": "#/components/schemas/documentdb_readonly_config_V1"
+          },
+          {
+            "$ref": "#/components/schemas/documentdb_esm_keys_config_V1"
           }
         ]
       },
