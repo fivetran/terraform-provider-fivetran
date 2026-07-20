@@ -28,22 +28,24 @@ func TestResourceExternalLoggingE2E(t *testing.T) {
 					provider = fivetran-provider
 
     				group_id = fivetran_group.testgroup.id
-    				service = "azure_monitor_log"
+    				service = "splunkLog"
     				enabled = "true"
     				run_setup_tests = "false"
 
 				    config {
-        				workspace_id = "workspace_id"
-        				primary_key = "PASSWORD"
+        				host = "1.1.1.1"
+						port = 8080
+        				token = "PASSWORD"
     				}
 				}
 		  `,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranExternalLoggingResourceCreate(t, "fivetran_external_logging.test_extlog"),
-					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "service", "azure_monitor_log"),
+					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "service", "splunkLog"),
 					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "enabled", "true"),
-					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.workspace_id", "workspace_id"),
-					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.primary_key", "PASSWORD"),
+					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.host", "1.1.1.1"),
+					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.port", "8080"),
+					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.token", "PASSWORD"),
 				),
 			},
 			{
@@ -57,13 +59,14 @@ func TestResourceExternalLoggingE2E(t *testing.T) {
 					provider = fivetran-provider
 
     				group_id = fivetran_group.testgroup.id
-    				service = "azure_monitor_log"
+    				service = "splunkLog"
     				enabled = "true"
     				run_setup_tests = "false"
 
 				    config {
-        				workspace_id = "workspace_id_1"
-        				primary_key = "PASSWORD"
+        				host = "1.1.1.1"
+						port = 8080
+        				token = "PASSWORD"
     				}
 				}
 
@@ -75,16 +78,17 @@ func TestResourceExternalLoggingE2E(t *testing.T) {
 		  `,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranExternalLoggingResourceUpdate(t, "fivetran_external_logging.test_extlog"),
-					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "service", "azure_monitor_log"),
+					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "service", "splunkLog"),
 					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "enabled", "true"),
-					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.workspace_id", "workspace_id_1"),
-					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.primary_key", "PASSWORD"),
+					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.host", "1.1.1.1"),
+					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.port", "8080"),
+					resource.TestCheckResourceAttr("fivetran_external_logging.test_extlog", "config.token", "PASSWORD"),
 
-					resource.TestCheckResourceAttr("data.fivetran_external_logging.data_test_extlog", "service", "azure_monitor_log"),
+					resource.TestCheckResourceAttr("data.fivetran_external_logging.data_test_extlog", "service", "splunkLog"),
 					resource.TestCheckResourceAttr("data.fivetran_external_logging.data_test_extlog", "enabled", "true"),
-					resource.TestCheckResourceAttr("data.fivetran_external_logging.data_test_extlog", "config.workspace_id", "workspace_id_1"),
-					resource.TestCheckResourceAttr("data.fivetran_external_logging.data_test_extlog", "config.port", "0"),
-					resource.TestCheckResourceAttr("data.fivetran_external_logging.data_test_extlog", "config.enable_ssl", "false"),
+					resource.TestCheckResourceAttr("data.fivetran_external_logging.data_test_extlog", "config.host", "1.1.1.1"),
+					resource.TestCheckResourceAttr("data.fivetran_external_logging.data_test_extlog", "config.port", "8080"),
+					resource.TestCheckNoResourceAttr("data.fivetran_external_logging.data_test_extlog", "config.token"),
 				),
 			},
 		},
