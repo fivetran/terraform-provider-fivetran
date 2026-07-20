@@ -196,7 +196,6 @@ db2z
 dbt_cloud
 dcl_logistics
 deel
-delighted
 deposco
 deputy
 destini

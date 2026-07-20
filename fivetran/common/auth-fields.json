@@ -788,7 +788,8 @@
       "item_type": {},
       "description": {
          "quickbooks": "`Realm ID` of your QuickBooks application.",
-         "smartsheet": ""
+         "smartsheet": "",
+         "tiktok_organic_app": "The TikTok account Open ID (open_id) returned during OAuth authorization. Required when creating the connector via REST API."
       },
       "api_field": ""
    },

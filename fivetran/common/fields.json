@@ -1197,7 +1197,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "anthropic_claude": "Your Claude Platform Admin API key for syncing organization-level management and reporting data."
+         "anthropic_claude": "Your Claude Admin API key for syncing organization-level management and reporting data."
       },
       "api_field": ""
    },
@@ -1211,6 +1211,19 @@
       "item_type": {},
       "description": {
          "gongio": "Your Gong API Base URL."
+      },
+      "api_field": ""
+   },
+   "api_cursor_rollback_window": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "integer",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "jira": "The number of hours to roll back the issue search cursor. Allows reprocessing of recently updated issues that may have been missed due to indexing delays. Valid range is 0-48 hours. A value of 0 disables the rollback."
       },
       "api_field": ""
    },
@@ -1685,6 +1698,19 @@
       },
       "api_field": ""
    },
+   "api_to_sync_conversation_analytics_data": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "genesys": "Choose the Genesys API you want to use to sync conversation analytics data. Export API retrieves conversation records via an asynchronous export job and is recommended for historical data. Aggregate Query API fetches data using the analytics aggregate query endpoint and produces a different set of tables and schemas. You cannot change this value after you set up the connection."
+      },
+      "api_field": ""
+   },
    "api_token": {
       "readonly": false,
       "sensitive": true,
@@ -1748,7 +1774,7 @@
          "safetyculture": "Your SafetyCulture API token.",
          "sensor_tower": "Your Sensor Tower API token.",
          "sentry": "Your Sentry auth token.",
-         "sevdesk": "Your 32-character hexadecimal API token.",
+         "sevdesk": "Your sevdesk API token.",
          "simplecast": "Your Simplecast API token.",
          "smartsheet": "API token generated from your Smartsheet account.",
          "snyk": "Your Snyk API token.",
@@ -2292,6 +2318,21 @@
       },
       "api_field": ""
    },
+   "asm_staging_directory": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "oracle": "ASM staging directory path. Required when the ASM option is enabled.",
+         "oracle_ebs": "ASM staging directory path. Required when the ASM option is enabled.",
+         "oracle_rac": "ASM staging directory path. Required when the ASM option is enabled."
+      },
+      "api_field": ""
+   },
    "asm_tns": {
       "readonly": false,
       "sensitive": false,
@@ -2466,6 +2507,7 @@
          "github": "Authorization type.",
          "smartsheet": "Authorization type.",
          "workday": "Authentication Mode",
+         "workday_adaptive": "Authentication mode: PASSWORD (username/password) or TOKEN (key-based authentication)",
          "workday_financial_management": "Authentication Mode",
          "workday_hcm": "Authentication Mode"
       },
@@ -3221,6 +3263,51 @@
       },
       "api_field": ""
    },
+   "cdb_database": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "oracle": "Optional: CDB database name for TDE-encrypted containerized databases.",
+         "oracle_ebs": "Optional: CDB database name for TDE-encrypted containerized databases.",
+         "oracle_rac": "Optional: CDB database name for TDE-encrypted containerized databases."
+      },
+      "api_field": ""
+   },
+   "cdb_password": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "oracle": "Optional: Password for the CDB user.",
+         "oracle_ebs": "Optional: Password for the CDB user.",
+         "oracle_rac": "Optional: Password for the CDB user."
+      },
+      "api_field": ""
+   },
+   "cdb_user": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "oracle": "Optional: CDB user for TDE-encrypted containerized databases.",
+         "oracle_ebs": "Optional: CDB user for TDE-encrypted containerized databases.",
+         "oracle_rac": "Optional: CDB user for TDE-encrypted containerized databases."
+      },
+      "api_field": ""
+   },
    "certificate": {
       "readonly": false,
       "sensitive": true,
@@ -3424,7 +3511,7 @@
          "instructure": "Your Instructure client ID.",
          "integral_ad_science": "Your integral_ad_science client id.",
          "ironclad": "Your Ironclad client ID.",
-         "ironclad_clickwrap": "Your Ironclad Clickwrap Client ID.",
+         "ironclad_clickwrap": "Your Ironclad Clickwrap client ID.",
          "jama_software": "Your Jama Software client ID.",
          "jibble": "Your Jibble client ID.",
          "khoros_communities": "Your Khoros Communities client ID.",
@@ -3492,6 +3579,7 @@
          "visma": "Your Visma client ID.",
          "vonage_contact_center": "Your Vonage Contact Center client ID.",
          "walmart_marketplace": "Your Walmart Marketplace client ID.",
+         "workday_adaptive": "Client ID for token authentication (required for TOKEN authentication)",
          "xero": "your clientId",
          "xray": "Your Xray Client ID.",
          "yahoo_display_ads_on_yahoo_japan": "Your Yahoo Display Ads on Yahoo Japan client ID.",
@@ -3707,7 +3795,7 @@
          "instructure": "Your Instructure client secret.",
          "integral_ad_science": "Your integral_ad_science client secret.",
          "ironclad": "Your Ironclad client secret.",
-         "ironclad_clickwrap": "Your Ironclad Clickwrap Client Secret.",
+         "ironclad_clickwrap": "Your Ironclad Clickwrap client secret.",
          "jama_software": "Your Jama Software client secret.",
          "jibble": "Your Jibble client secret.",
          "khoros_communities": "Your Khoros Communities client secret.",
@@ -6119,6 +6207,21 @@
       },
       "api_field": ""
    },
+   "enable_asm": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "oracle": "Default value: `false`. Set to `true` if you're using ASM.",
+         "oracle_ebs": "Default value: `false`. Set to `true` if you're using ASM.",
+         "oracle_rac": "Default value: `false`. Set to `true` if you're using ASM."
+      },
+      "api_field": ""
+   },
    "enable_data_extensions_syncing": {
       "readonly": false,
       "sensitive": false,
@@ -6185,6 +6288,21 @@
       },
       "api_field": ""
    },
+   "enable_symbolic_links": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "oracle": "Default value: `false`. Set to `true` if you're using symbolic links.",
+         "oracle_ebs": "Default value: `false`. Set to `true` if you're using symbolic links.",
+         "oracle_rac": "Default value: `false`. Set to `true` if you're using symbolic links."
+      },
+      "api_field": ""
+   },
    "enable_tde": {
       "readonly": false,
       "sensitive": false,
@@ -6209,7 +6327,10 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "oracle": "Default value: `false`. Set to `true` if you're using TDE encryption.",
+         "oracle_ebs": "Default value: `false`. Set to `true` if you're using TDE encryption.",
          "oracle_hva": "Default value: `false`. Set to `true` if you're using TDE encryption.",
+         "oracle_rac": "Default value: `false`. Set to `true` if you're using TDE encryption.",
          "oracle_sap_hva": "Default value: `false`. Set to `true` if you're using TDE encryption.",
          "oracle_sap_hva_netweaver": "Default value: `false`. Set to `true` if you're using TDE encryption."
       },
@@ -6478,6 +6599,19 @@
       "description": {
          "kustomer": "Turn it on if your app is on EU region",
          "survey_monkey": "The SurveyMonkey account region. Specify `true`, if your account is hosted in the EU region. Default value is `false`."
+      },
+      "api_field": ""
+   },
+   "event_extract_mode": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "salesforce_marketing_cloud": "Event sync method. This is how Fivetran gets data for the event objects,  can be selected only during the connector creation.  TRACKING_EXTRACT - Salesforce exports a file, which we download and extract event  data from. This is the faster for large volumes, and requires SFTP.  SOAP  - We sync data using the SOAP API event object endpoints. This syncs the  latest events faster, but is slow for large volumes."
       },
       "api_field": ""
    },
@@ -7323,7 +7457,7 @@
       "item_type": {},
       "description": {
          "amqp": "AMQP broker host address.",
-         "aurora": "DB instance host or IP address.",
+         "aurora": "DB instance host or IP address. When the connection type is `PrivateLink` and the authentication method is `AWS_IAM`, set this to the PrivateLink DNS address and use `databaseEndpoint` for the actual RDS endpoint.",
          "aurora_postgres": "DB instance host or IP address.",
          "aveva_pi": "IP address of the AF Server",
          "azure_postgres": "DB instance host or IP address.",
@@ -7356,14 +7490,14 @@
          "heroku_postgres": "DB instance host or IP address.",
          "jira": "The Jira service host address.",
          "magento_mysql": "DB instance host or IP address.",
-         "magento_mysql_rds": "DB instance host or IP address.",
+         "magento_mysql_rds": "DB instance host or IP address. When the connection type is `PrivateLink` and the authentication method is `AWS_IAM`, set this to the PrivateLink DNS address and use `databaseEndpoint` for the actual RDS endpoint.",
          "maria": "DB instance host or IP address.",
          "maria_azure": "DB instance host or IP address.",
-         "maria_rds": "DB instance host or IP address.",
+         "maria_rds": "DB instance host or IP address. When the connection type is `PrivateLink` and the authentication method is `AWS_IAM`, set this to the PrivateLink DNS address and use `databaseEndpoint` for the actual RDS endpoint.",
          "marin": "The Marin host address.",
          "mysql": "DB instance host or IP address.",
          "mysql_azure": "DB instance host or IP address.",
-         "mysql_rds": "DB instance host or IP address.",
+         "mysql_rds": "DB instance host or IP address. When the connection type is `PrivateLink` and the authentication method is `AWS_IAM`, set this to the PrivateLink DNS address and use `databaseEndpoint` for the actual RDS endpoint.",
          "netsuite_suiteanalytics": "The NetSuite service host address.",
          "opendistro": "DB instance host or IP address.",
          "opensearch": "DB instance host or IP address.",
@@ -7386,7 +7520,8 @@
          "sql_server": "DB instance host or IP address.",
          "sql_server_hva": "DB instance host or IP address.",
          "sql_server_rds": "DB instance host or IP address.",
-         "sql_server_sap_ecc_hva": "DB instance host or IP address."
+         "sql_server_sap_ecc_hva": "DB instance host or IP address.",
+         "workday_adaptive": "Workday Adaptive host URL, including the scheme, required for TOKEN authentication"
       },
       "api_field": ""
    },
@@ -7914,6 +8049,19 @@
       },
       "api_field": ""
    },
+   "isu": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "workday_adaptive": "Integration System User (ISU) for token authentication (required for TOKEN authentication)"
+      },
+      "api_field": ""
+   },
    "json_delivery_mode": {
       "readonly": false,
       "sensitive": false,
@@ -8178,6 +8326,36 @@
       },
       "api_field": ""
    },
+   "local_wallet_host": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "oracle": "Optional: The host for the local Oracle Wallet.",
+         "oracle_ebs": "Optional: The host for the local Oracle Wallet.",
+         "oracle_rac": "Optional: The host for the local Oracle Wallet."
+      },
+      "api_field": ""
+   },
+   "local_wallet_user": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "oracle": "Optional: The user for the local Oracle Wallet.",
+         "oracle_ebs": "Optional: The user for the local Oracle Wallet.",
+         "oracle_rac": "Optional: The user for the local Oracle Wallet."
+      },
+      "api_field": ""
+   },
    "location_ids": {
       "readonly": false,
       "sensitive": false,
@@ -8248,7 +8426,7 @@
          "rebound_returns": "Your ReBound Returns login.",
          "the_trade_desk": "The Trade Desk email. It is a part of the login credentials.",
          "walmart_dsp": "Walmart DSP email. It is a part of the login credentials.",
-         "workday_adaptive": "User email address"
+         "workday_adaptive": "User email address (required for PASSWORD authentication)"
       },
       "api_field": ""
    },
@@ -9039,7 +9217,7 @@
          "pardot_sandbox": "The Pardot user's password.",
          "partnerize": "Your Partnerize account's password.",
          "podio": "Your Podio account password.",
-         "postgres": "The user's password.",
+         "postgres": "For password authentication, enter the user's password.For Entra ID authentication, enter the client secret value.",
          "postgres_rds": "The user's password.",
          "qmatic_data_connect": "Your Qmatic Data Connect password.",
          "redshift_db": "The Redshift user's password.",
@@ -9085,7 +9263,7 @@
          "when_i_work": "Your When I Work password.",
          "wherefour": "Your Wherefour password.",
          "workday": "Workday password.",
-         "workday_adaptive": "User password",
+         "workday_adaptive": "User password (required for PASSWORD authentication)",
          "workday_financial_management": "Workday password.",
          "workday_hcm": "Workday password.",
          "xandr": "Your Xandr password.",
@@ -9569,7 +9747,8 @@
          "qualtrics": "Your private key",
          "salesforce": "Provide content of the `.key` private key (only when authentication_method = `ADVANCED`).",
          "salesforce_sandbox": "Provide content of the `.key` private key (only when authentication_method = `ADVANCED`).",
-         "snowflake_db": "Private access key.  The field should be specified if authentication type is `KEY_PAIR`."
+         "snowflake_db": "Private access key.  The field should be specified if authentication type is `KEY_PAIR`.",
+         "workday_adaptive": "PEM-formatted PKCS#8 private key, including BEGIN/END PRIVATE KEY markers, for token authentication"
       },
       "api_field": ""
    },
@@ -10524,6 +10703,23 @@
       "description": {},
       "api_field": ""
    },
+   "report_templates": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string_list",
+      "fields": null,
+      "key_field": "",
+      "item_type": {
+         "the_trade_desk": "string",
+         "walmart_dsp": "string"
+      },
+      "description": {
+         "the_trade_desk": "Report templates to sync.",
+         "walmart_dsp": "Report templates to sync."
+      },
+      "api_field": ""
+   },
    "report_timezone": {
       "readonly": false,
       "sensitive": false,
@@ -10872,7 +11068,7 @@
                "double_click_publishers": "Report dimensions to include in the sync. The `date` dimension is mandatory for all the report types.",
                "google_analytics": "The report dimensions to include into a sync. The `date` dimension is mandatory for all the report types.",
                "google_analytics_4": "The report dimensions to include into a sync.",
-               "google_display_and_video_360": "The report dimensions (filters) to include into a sync. The dimension names are provided in the API format. This is a required parameter when `config_method` is set to `CREATE_NEW`.",
+               "google_display_and_video_360": "The report dimensions (filters) to include into a sync. The dimension names are provided in the API format. This is a required parameter when `config_method` is set to `CREATE_NEW`. NOTE: At least one of the following date dimensions must be included for report data aggregation: `FILTER_DATE` (daily), `FILTER_WEEK` (weekly), or `FILTER_MONTH` (monthly).",
                "google_search_console": "The report dimensions included to sync.",
                "workday_adaptive": "List of dimensions to sync for the table, if applicable."
             },
@@ -14489,6 +14685,19 @@
       },
       "api_field": ""
    },
+   "subscriber_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "workday_hcm": "WID of the Workday Integration Transaction Log Service subscriber. Used to scope the V2 optimised history transaction-log queries to a specific integration subscriber."
+      },
+      "api_field": ""
+   },
    "subscriber_name": {
       "readonly": true,
       "sensitive": false,
@@ -14609,6 +14818,19 @@
       },
       "api_field": ""
    },
+   "sync_files": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "jira": "Specifies whether to sync files in JIRA for supported destinations (true) or not (false)."
+      },
+      "api_field": ""
+   },
    "sync_format": {
       "readonly": false,
       "sensitive": false,
@@ -14634,6 +14856,19 @@
          "financial_force": "Enable this option to sync formula fields directly (default value = `false`)",
          "salesforce": "Enable this option to sync formula fields directly (default value = `false`)",
          "salesforce_sandbox": "Enable this option to sync formula fields directly (default value = `false`)"
+      },
+      "api_field": ""
+   },
+   "sync_highly_sensitive_data": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "hubspot": "Enable syncing of highly sensitive data fields from HubSpot. When enabled, sensitive data syncing is also automatically enabled."
       },
       "api_field": ""
    },
@@ -14808,6 +15043,19 @@
       "item_type": {},
       "description": {
          "appsflyer": "These options are for Appsflyer's Pull API, and are only necessary for syncing events from Pull API."
+      },
+      "api_field": ""
+   },
+   "sync_sensitive_data": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "hubspot": "Enable syncing of sensitive data fields from HubSpot."
       },
       "api_field": ""
    },
@@ -15194,7 +15442,10 @@
       "key_field": "",
       "item_type": {},
       "description": {
+         "oracle": "TDE wallet password. Required for password based wallet.",
+         "oracle_ebs": "TDE wallet password. Required for password based wallet.",
          "oracle_hva": "TDE wallet password. Required for password based wallet.",
+         "oracle_rac": "TDE wallet password. Required for password based wallet.",
          "oracle_sap_hva": "TDE wallet password. Required for password based wallet.",
          "oracle_sap_hva_netweaver": "TDE wallet password. Required for password based wallet."
       },
@@ -15255,6 +15506,7 @@
          "microsoft_teams": "Your Microsoft Teams Tenant.",
          "unicommerce": "Your uniware tenant.",
          "workday": "Workday tenant name",
+         "workday_adaptive": "Tenant identifier (required for TOKEN authentication)",
          "workday_financial_management": "Workday tenant name",
          "workday_hcm": "Workday tenant name"
       },
@@ -15984,11 +16236,11 @@
          "mysql": "The method to detect new or changed rows. Supported values:`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
          "mysql_azure": "The method to detect new or changed rows. Supported values:`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
          "mysql_rds": "The method to detect new or changed rows. Supported values:`BINLOG` - Fivetran uses your binary logs (also called binlogs) to request only the data that has changed since our last sync. This is the default value if no value is specified. `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-         "oracle": "The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-         "oracle_ebs": "The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables.  - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
+         "oracle": "The method used to detect new or changed rows. Supported values: - `BINARY_LOG_READER` - Fivetran reads Oracle redo logs to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
+         "oracle_ebs": "The method used to detect new or changed rows. Supported values: - `BINARY_LOG_READER` - Fivetran reads Oracle redo logs to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
          "oracle_hva": "The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-         "oracle_rac": "The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables.  - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
-         "oracle_rds": "The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables.  - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
+         "oracle_rac": "The method used to detect new or changed rows. Supported values: - `BINARY_LOG_READER` - Fivetran reads Oracle redo logs to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
+         "oracle_rds": "The method used to detect new or changed rows. Supported values: - `BINARY_LOG_READER` - Fivetran reads Oracle redo logs to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes. - `XSTREAM_OUT` - Fivetran uses Oracle XStream Out to stream changes from the database.",
          "oracle_sap_hva": "The method used to detect new or changed rows. Supported values: - `LOGMINER` - Fivetran uses LogMiner, a utility that is part of Oracle Database, to detect modified rows in the source tables. - `TELEPORT` - Fivetran's proprietary replication method that uses compressed snapshots to detect and apply changes.",
          "postgres": "The method to detect new or changed rows. Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. Supported values:`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the  write-ahead log (WAL) using a logical slot.This is more efficient than the query-based method, but requires more setup and monitoring.`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
          "postgres_rds": "The method to detect new or changed rows. Specify only for `\"service\": \"postgres\"` or `\"service\": \"postgres_rds\"`. Supported values:`WAL_PGOUTPUT` -  logical replication of the WAL using the pgoutput plugin. This method replicates new, changed, and deleted rows by tailing the write-ahead log (WAL) using a logical slot. This is more efficient than the query-based method, but requires more setup and monitoring.`QUERY_BASED` - this method replicates new, changed and deleted rows via the `xmin` and `ctid` system columns",
@@ -16089,6 +16341,20 @@
       "item_type": {},
       "description": {
          "pendo": "Toggle field to determine whether connector is syncing from API or from Data Sync"
+      },
+      "api_field": ""
+   },
+   "use_database_name_for_table_filtering": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": false,
+      "type": "boolean",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "db2i_hva": "Restricts schema discovery to libraries (schemas) within the configured database. When enabled, the database parameter must also be specified.",
+         "db2i_sap_hva": "Restricts schema discovery to libraries (schemas) within the configured database. When enabled, the database parameter must also be specified. Has no effect on SAP ECC on Db2 for i connectors."
       },
       "api_field": ""
    },
@@ -16292,7 +16558,7 @@
          "oracle_sap_hva": "The username.",
          "oracle_sap_hva_netweaver": "The username.",
          "outbrain": "The username or email of the Outbrain user.",
-         "postgres": "The user name.",
+         "postgres": "For password authentication, enter the user name.For Entra ID authentication, enter the registered app display name.",
          "postgres_rds": "The user name.",
          "redshift_db": "The Redshift username.",
          "sap_hana": "Your SAP HANA user name.",
