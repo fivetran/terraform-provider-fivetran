@@ -294,9 +294,6 @@ func project(remote, mask map[string]interface{}, slot *metadata.Property) map[s
 
 		remoteVal, inRemote := remote[key]
 		if !inRemote {
-			// Field was set in config but not echoed back by the API.
-			// Preserve the plan value so Terraform doesn't see a nil→string drift
-			// for write-once fields the API collapses into top-level response fields (e.g. schema).
 			result[key] = maskVal
 			continue
 		}
@@ -318,16 +315,6 @@ func project(remote, mask map[string]interface{}, slot *metadata.Property) map[s
 		}
 
 		result[key] = remoteVal
-	}
-
-	for key, remoteVal := range remote {
-		if _, inMask := mask[key]; inMask {
-			continue
-		}
-		prop := SlotProp(slot, key)
-		if prop != nil && prop.Readonly {
-			result[key] = remoteVal
-		}
 	}
 
 	return result
