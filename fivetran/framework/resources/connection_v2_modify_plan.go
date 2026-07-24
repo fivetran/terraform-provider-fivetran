@@ -42,7 +42,7 @@ func (r *connectionV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRe
 		isRootReplacement = warnRootReplacementIfChanged("group_id", plan.GroupId, state.GroupId, &resp.Diagnostics) || isRootReplacement
 	}
 
-	if r.GetSkipPlanTimeValidation() || r.GetClient() == nil {
+	if r.GetSkipPlanTimeValidation() {
 		return
 	}
 

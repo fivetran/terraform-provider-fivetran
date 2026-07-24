@@ -17,7 +17,7 @@ import (
 var _ resource.ResourceWithValidateConfig = &connectionV2{}
 
 func (r *connectionV2) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
-	if r.GetSkipPlanTimeValidation() || r.GetClient() == nil {
+	if r.GetSkipPlanTimeValidation() {
 		return
 	}
 

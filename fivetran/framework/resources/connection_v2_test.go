@@ -41,9 +41,9 @@ func TestConnectionV2SchemaShape(t *testing.T) {
 	assertDynamicAttribute(t, attrs, "config", true, true, false)
 	assertDynamicAttribute(t, attrs, "auth", true, false, true)
 	assertInt64Attribute(t, attrs, "sync_frequency", false, true, true)
-	assertBoolAttribute(t, attrs, "run_setup_tests", false, true, false)
-	assertBoolAttribute(t, attrs, "trust_certificates", false, true, false)
-	assertBoolAttribute(t, attrs, "trust_fingerprints", false, true, false)
+	assertBoolAttribute(t, attrs, "run_setup_tests", false, true, true)
+	assertBoolAttribute(t, attrs, "trust_certificates", false, true, true)
+	assertBoolAttribute(t, attrs, "trust_fingerprints", false, true, true)
 
 	status, ok := attrs["status"].(resourceSchema.SingleNestedAttribute)
 	if !ok {

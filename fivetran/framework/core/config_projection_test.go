@@ -198,7 +198,7 @@ func TestProject_ReadonlyTakesRemote(t *testing.T) {
 	})
 }
 
-func TestProject_ReadonlyAbsentFromMaskTakesRemote(t *testing.T) {
+func TestProject_ReadonlyAbsentFromMaskExcluded(t *testing.T) {
 	t.Parallel()
 	slot := makeSlot(map[string]*metadata.Property{
 		"public_key": {Readonly: true},
@@ -208,23 +208,22 @@ func TestProject_ReadonlyAbsentFromMaskTakesRemote(t *testing.T) {
 
 	result := project(remote, mask, slot)
 
-	if result["public_key"] != "server-key" {
-		t.Errorf("readonly absent from mask: got %v, want server-key", result["public_key"])
+	if _, present := result["public_key"]; present {
+		t.Errorf("readonly field absent from mask should not appear in result, got %v", result["public_key"])
 	}
 }
 
-func TestProject_MissingFromAPI_SetNil(t *testing.T) {
+func TestProject_MissingFromAPI_PreservesMaskValue(t *testing.T) {
 	t.Parallel()
-	t.Run("missing_from_api_set_to_nil", func(t *testing.T) {
+	t.Run("missing_from_api_preserves_mask_value", func(t *testing.T) {
 		slot := makeSlot(map[string]*metadata.Property{"bucket": {}, "gone": {}})
 		remote := map[string]interface{}{"bucket": "b"}
 		mask := map[string]interface{}{"bucket": "b", "gone": "old-val"}
 
 		result := project(remote, mask, slot)
 
-		v, ok := result["gone"]
-		if !ok || v != nil {
-			t.Errorf("field absent from API: want nil to surface drift, got %v (ok=%v)", v, ok)
+		if result["gone"] != "old-val" {
+			t.Errorf("field absent from API: want mask value preserved, got %v", result["gone"])
 		}
 	})
 }
