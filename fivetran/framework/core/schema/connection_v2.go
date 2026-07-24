@@ -154,15 +154,18 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 		},
 		"run_setup_tests": resourceSchema.BoolAttribute{
 			Optional:    true,
-			Description: "Whether to run setup tests when creating or updating the connection. This is a plan-only attribute.",
+			Computed:    true,
+			Description: "Whether to run setup tests when creating or updating the connection.",
 		},
 		"trust_certificates": resourceSchema.BoolAttribute{
 			Optional:    true,
-			Description: "Specifies whether Fivetran should trust certificates automatically. This is a plan-only attribute.",
+			Computed:    true,
+			Description: "Specifies whether Fivetran should trust certificates automatically.",
 		},
 		"trust_fingerprints": resourceSchema.BoolAttribute{
 			Optional:    true,
-			Description: "Specifies whether Fivetran should trust SSH fingerprints automatically. This is a plan-only attribute.",
+			Computed:    true,
+			Description: "Specifies whether Fivetran should trust SSH fingerprints automatically.",
 		},
 		"status": connectionV2StatusAttribute(),
 	}
