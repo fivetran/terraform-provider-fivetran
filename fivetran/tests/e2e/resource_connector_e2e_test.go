@@ -1111,11 +1111,12 @@ func TestResourceConnectorImportingWithTableGroupNameE2E(t *testing.T) {
 				ImportState:       true,
 				ImportStateVerify: true,
 				ImportStateVerifyIgnore: []string{
-					"run_setup_tests", 
-					"trust_certificates", 
+					"run_setup_tests",
+					"trust_certificates",
 					"trust_fingerprints",
 					"data_delay_sensitivity",
 					"auth",
+					"config.file_mapping_method",
 				},
 				ImportStateIdFunc:       func(s *terraform.State) (string, error) {
 					return connectionId, nil
