@@ -294,7 +294,7 @@ func project(remote, mask map[string]interface{}, slot *metadata.Property) map[s
 
 		remoteVal, inRemote := remote[key]
 		if !inRemote {
-			result[key] = nil
+			result[key] = maskVal
 			continue
 		}
 
@@ -315,16 +315,6 @@ func project(remote, mask map[string]interface{}, slot *metadata.Property) map[s
 		}
 
 		result[key] = remoteVal
-	}
-
-	for key, remoteVal := range remote {
-		if _, inMask := mask[key]; inMask {
-			continue
-		}
-		prop := SlotProp(slot, key)
-		if prop != nil && prop.Readonly {
-			result[key] = remoteVal
-		}
 	}
 
 	return result

@@ -137,6 +137,9 @@ func (d *ConnectionV2ResourceModel) readFromResponseData(ctx context.Context, da
 
 	d.DataDelaySensitivity = stringValueOrNull(data.DataDelaySensitivity)
 	d.DataDelayThreshold = intPointerInt64Value(data.DataDelayThreshold)
+	d.RunSetupTests = boolPointerValue(data.RunSetupTests)
+	d.TrustCertificates = boolPointerValue(data.TrustCertificates)
+	d.TrustFingerprints = boolPointerValue(data.TrustFingerprints)
 	d.Status = connectionV2StatusValue(data.Status)
 
 	configSlot := (*metadata.Property)(nil)
