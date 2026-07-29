@@ -15,7 +15,7 @@ import (
 )
 
 func (r *connectionV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	if req.Plan.Raw.IsNull() {
+	if req.Plan.Raw.IsNull() || r.GetClient() == nil {
 		return
 	}
 
