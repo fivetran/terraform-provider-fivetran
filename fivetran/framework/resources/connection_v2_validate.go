@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"math"
 	"strings"
@@ -17,7 +18,7 @@ import (
 var _ resource.ResourceWithValidateConfig = &connectionV2{}
 
 func (r *connectionV2) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
-	if r.GetSkipPlanTimeValidation() || r.GetClient() == nil {
+	if r.GetSkipPlanTimeValidation() {
 		return
 	}
 
@@ -41,6 +42,9 @@ func (r *connectionV2) ValidateConfig(ctx context.Context, req resource.Validate
 
 	meta, err := r.connectorMetadata(ctx, data.Service.ValueString())
 	if err != nil {
+		if errors.Is(err, errUnconfiguredClient) {
+			return
+		}
 		resp.Diagnostics.AddError(
 			"Unable to Validate Connection V2 Configuration",
 			fmt.Sprintf("Unable to fetch metadata for service %q. Terraform cannot safely validate dynamic config/auth fields without metadata. Fix metadata access or set provider skip_plan_time_validation = true to bypass this check temporarily. Original error: %v", data.Service.ValueString(), err),

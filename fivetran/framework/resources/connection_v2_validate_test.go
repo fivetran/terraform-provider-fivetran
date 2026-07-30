@@ -462,7 +462,7 @@ func TestConnectionV2ValidateConfigSkipsMetadataFetchForEmptyDynamicObjects(t *t
 	}
 }
 
-func TestConnectionV2ValidateConfigReportsUnconfiguredClient(t *testing.T) {
+func TestConnectionV2ValidateConfigSkipsWhenUnconfiguredAndUncached(t *testing.T) {
 	t.Parallel()
 	ctx := context.Background()
 
@@ -475,8 +475,8 @@ func TestConnectionV2ValidateConfigReportsUnconfiguredClient(t *testing.T) {
 	var resp resource.ValidateConfigResponse
 	r.ValidateConfig(ctx, req, &resp)
 
-	if resp.Diagnostics.ErrorsCount() != 1 {
-		t.Fatalf("errors = %d, want 1: %v", resp.Diagnostics.ErrorsCount(), resp.Diagnostics)
+	if resp.Diagnostics.ErrorsCount() != 0 {
+		t.Fatalf("errors = %d, want 0: %v", resp.Diagnostics.ErrorsCount(), resp.Diagnostics)
 	}
 }
 
