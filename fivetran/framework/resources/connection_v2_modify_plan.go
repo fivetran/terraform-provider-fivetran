@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"reflect"
 
@@ -66,6 +67,9 @@ func (r *connectionV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRe
 
 	meta, err := r.connectorMetadata(ctx, plan.Service.ValueString())
 	if err != nil {
+		if errors.Is(err, errUnconfiguredClient) {
+			return
+		}
 		resp.Diagnostics.AddError(
 			"Unable to Modify Connection V2 Plan",
 			fmt.Sprintf("Unable to fetch metadata for service %q. Terraform cannot safely evaluate required or immutable dynamic config/auth fields without metadata. Fix metadata access or set provider skip_plan_time_validation = true to bypass this check temporarily. Original error: %v", plan.Service.ValueString(), err),

@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"sync"
 
@@ -15,6 +16,13 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
+
+// errUnconfiguredClient means metadata is unavailable only because the provider
+// client hasn't been configured yet and nothing was cached. Terraform calls
+// ValidateConfig/ModifyPlan once before Configure (client nil) and again after
+// (client set); callers skip silently on this specific error since the later
+// call with a live client performs the real validation.
+var errUnconfiguredClient = errors.New("unconfigured Fivetran client")
 
 func ConnectionV2() resource.Resource {
 	return &connectionV2{}
@@ -330,7 +338,7 @@ func (r *connectionV2) connectorMetadata(ctx context.Context, service string) (*
 		if meta, ok, err := core.LoadCachedConnectorMetadata(cache, service); ok || err != nil {
 			return meta, err
 		}
-		return nil, fmt.Errorf("unconfigured Fivetran client")
+		return nil, errUnconfiguredClient
 	}
 	return core.GetCachedConnectorMetadataWithUserAgentSuffix(ctx, r.GetClient(), cache, service, connectionV2UserAgentSuffix)
 }
