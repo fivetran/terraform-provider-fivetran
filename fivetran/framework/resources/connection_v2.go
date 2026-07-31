@@ -12,6 +12,7 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -209,12 +210,18 @@ func (r *connectionV2) Read(ctx context.Context, req resource.ReadRequest, resp 
 		return
 	}
 	auth := data.Auth
+	runSetupTests := data.RunSetupTests
+	trustCertificates := data.TrustCertificates
+	trustFingerprints := data.TrustFingerprints
 
 	resp.Diagnostics.Append(data.ReadFromResponse(ctx, response, meta, configMask)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 	data.Auth = preserveDynamic(auth)
+	data.RunSetupTests = runSetupTests
+	data.TrustCertificates = trustCertificates
+	data.TrustFingerprints = trustFingerprints
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -257,28 +264,62 @@ func (r *connectionV2) Update(ctx context.Context, req resource.UpdateRequest, r
 	trustCertificatesPlan := core.GetBoolOrDefault(plan.TrustCertificates, false)
 	trustFingerprintsPlan := core.GetBoolOrDefault(plan.TrustFingerprints, false)
 
-	svc := r.GetClient().NewConnectionUpdate().
-		ConnectionID(state.Id.ValueString()).
-		RunSetupTests(runSetupTestsPlan).
-		TrustCertificates(trustCertificatesPlan).
-		TrustFingerprints(trustFingerprintsPlan)
+	runSetupTestsChanged := !plan.RunSetupTests.Equal(state.RunSetupTests)
+	trustCertificatesChanged := !plan.TrustCertificates.Equal(state.TrustCertificates)
+	trustFingerprintsChanged := !plan.TrustFingerprints.Equal(state.TrustFingerprints)
+	anyTriggerFieldChanged := runSetupTestsChanged || trustCertificatesChanged || trustFingerprintsChanged
 
-	if len(configPatch) > 0 {
-		svc.ConfigCustom(&configPatch)
-	}
-	if len(authPatch) > 0 {
-		svc.AuthCustom(&authPatch)
-	}
+	hasOtherChanges := len(configPatch) > 0 || len(authPatch) > 0 || r.hasRootFieldChanges(plan, state)
+	onlyTriggerFieldsChanged := anyTriggerFieldChanged && !hasOtherChanges
 
-	r.applyUpdateRootFields(svc, plan, state)
+	var response connections.DetailsWithCustomConfigResponse
+	var updateErr error
+	if onlyTriggerFieldsChanged {
+		// The Fivetran API rejects an update PATCH containing only
+		// run_setup_tests/trust_certificates/trust_fingerprints ("No update
+		// parameters specified"). Use the dedicated setup-tests endpoint instead,
+		// which exists exactly for this case.
+		response, updateErr = r.GetClient().NewConnectionSetupTests().
+			ConnectionID(state.Id.ValueString()).
+			TrustCertificates(trustCertificatesPlan).
+			TrustFingerprints(trustFingerprintsPlan).
+			DoCustom(ctx)
+		if updateErr != nil {
+			resp.Diagnostics.AddError(
+				"Unable to Run Connection V2 Setup Tests.",
+				fmt.Sprintf("%v; code: %v; message: %v", updateErr, response.Code, response.Message),
+			)
+			return
+		}
+	} else {
+		svc := r.GetClient().NewConnectionUpdate().
+			ConnectionID(state.Id.ValueString())
 
-	response, err := svc.DoCustomWithUserAgentSuffix(ctx, connectionV2UserAgentSuffix)
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Unable to Update Connection V2 Resource.",
-			fmt.Sprintf("%v; code: %v; message: %v", err, response.Code, response.Message),
-		)
-		return
+		if runSetupTestsChanged {
+			svc.RunSetupTests(runSetupTestsPlan)
+		}
+		if trustCertificatesChanged {
+			svc.TrustCertificates(trustCertificatesPlan)
+		}
+		if trustFingerprintsChanged {
+			svc.TrustFingerprints(trustFingerprintsPlan)
+		}
+		if len(configPatch) > 0 {
+			svc.ConfigCustom(&configPatch)
+		}
+		if len(authPatch) > 0 {
+			svc.AuthCustom(&authPatch)
+		}
+		r.applyUpdateRootFields(svc, plan, state)
+
+		response, updateErr = svc.DoCustomWithUserAgentSuffix(ctx, connectionV2UserAgentSuffix)
+		if updateErr != nil {
+			resp.Diagnostics.AddError(
+				"Unable to Update Connection V2 Resource.",
+				fmt.Sprintf("%v; code: %v; message: %v", updateErr, response.Code, response.Message),
+			)
+			return
+		}
 	}
 
 	r.warnFailedSetupTests(response.Data.SetupTests, &resp.Diagnostics)
@@ -387,6 +428,35 @@ func (r *connectionV2) applyCreateRootFields(svc *connections.ConnectionCreateSe
 		value := int(data.DataDelayThreshold.ValueInt64())
 		svc.DataDelayThreshold(&value)
 	}
+}
+
+// hasRootFieldChanges reports whether any root-level field applyUpdateRootFields
+// would send has actually changed between plan and state.
+func (r *connectionV2) hasRootFieldChanges(plan, state model.ConnectionV2ResourceModel) bool {
+	fields := []struct{ plan, state attr.Value }{
+		{plan.SyncFrequency, state.SyncFrequency},
+		{plan.ScheduleType, state.ScheduleType},
+		{plan.DailySyncTime, state.DailySyncTime},
+		{plan.PauseAfterTrial, state.PauseAfterTrial},
+		{plan.ProxyAgentId, state.ProxyAgentId},
+		{plan.NetworkingMethod, state.NetworkingMethod},
+		{plan.PrivateLinkId, state.PrivateLinkId},
+		{plan.HybridDeploymentAgentId, state.HybridDeploymentAgentId},
+		{plan.DataDelaySensitivity, state.DataDelaySensitivity},
+		{plan.DataDelayThreshold, state.DataDelayThreshold},
+	}
+	for _, f := range fields {
+		if fieldChanged(f.plan, f.state) {
+			return true
+		}
+	}
+	return false
+}
+
+// fieldChanged reports whether plan sets a known, non-null value that differs
+// from state. Mirrors the guard every applyUpdateRootFields branch used inline.
+func fieldChanged(plan, state attr.Value) bool {
+	return !plan.IsNull() && !plan.IsUnknown() && !plan.Equal(state)
 }
 
 func (r *connectionV2) applyUpdateRootFields(svc *connections.ConnectionUpdateService, plan, state model.ConnectionV2ResourceModel) {
