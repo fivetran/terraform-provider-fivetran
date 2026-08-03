@@ -292,18 +292,15 @@ func (r *connectionV2) Update(ctx context.Context, req resource.UpdateRequest, r
 			return
 		}
 	} else {
+		// The API defaults run_setup_tests/trust_certificates/trust_fingerprints
+		// to true when omitted from the PATCH, so these must always be sent
+		// explicitly to reflect the current TF config, not just when changed.
 		svc := r.GetClient().NewConnectionUpdate().
-			ConnectionID(state.Id.ValueString())
+			ConnectionID(state.Id.ValueString()).
+			RunSetupTests(runSetupTestsPlan).
+			TrustCertificates(trustCertificatesPlan).
+			TrustFingerprints(trustFingerprintsPlan)
 
-		if runSetupTestsChanged {
-			svc.RunSetupTests(runSetupTestsPlan)
-		}
-		if trustCertificatesChanged {
-			svc.TrustCertificates(trustCertificatesPlan)
-		}
-		if trustFingerprintsChanged {
-			svc.TrustFingerprints(trustFingerprintsPlan)
-		}
 		if len(configPatch) > 0 {
 			svc.ConfigCustom(&configPatch)
 		}
