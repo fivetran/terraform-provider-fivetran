@@ -60,18 +60,22 @@ func TestConnectionV2SchemaShape(t *testing.T) {
 	}
 }
 
-func TestConnectionV2NotRegistered(t *testing.T) {
+func TestConnectionV2IsRegistered(t *testing.T) {
 	t.Parallel()
 	ctx := context.Background()
 
 	p := framework.FivetranProvider()
+	found := false
 	for _, resourceFactory := range p.Resources(ctx) {
 		r := resourceFactory()
 		var metadataResp resource.MetadataResponse
 		r.Metadata(ctx, resource.MetadataRequest{ProviderTypeName: "fivetran"}, &metadataResp)
 		if metadataResp.TypeName == "fivetran_connection_v2" {
-			t.Fatal("fivetran_connection_v2 must remain unregistered until the registration ticket")
+			found = true
 		}
+	}
+	if !found {
+		t.Fatal("fivetran_connection_v2 must be registered")
 	}
 
 	var metadataResp provider.MetadataResponse
@@ -102,18 +106,22 @@ func TestConnectionV2PauseStateSchemaShape(t *testing.T) {
 	assertBoolAttribute(t, attrs, "paused", true, false, false)
 }
 
-func TestConnectionV2PauseStateNotRegistered(t *testing.T) {
+func TestConnectionV2PauseStateIsRegistered(t *testing.T) {
 	t.Parallel()
 	ctx := context.Background()
 
 	p := framework.FivetranProvider()
+	found := false
 	for _, resourceFactory := range p.Resources(ctx) {
 		r := resourceFactory()
 		var metadataResp resource.MetadataResponse
 		r.Metadata(ctx, resource.MetadataRequest{ProviderTypeName: "fivetran"}, &metadataResp)
 		if metadataResp.TypeName == "fivetran_connection_v2_pause_state" {
-			t.Fatal("fivetran_connection_v2_pause_state must remain unregistered until the publication ticket")
+			found = true
 		}
+	}
+	if !found {
+		t.Fatal("fivetran_connection_v2_pause_state must be registered")
 	}
 }
 
