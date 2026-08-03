@@ -32,6 +32,8 @@ func (r *connectionV2) ValidateConfig(ctx context.Context, req resource.Validate
 		return
 	}
 
+	validateDailySyncTime(data, &resp.Diagnostics)
+
 	configMap, authMap := r.dynamicValidationMaps(ctx, data, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
@@ -54,6 +56,22 @@ func (r *connectionV2) ValidateConfig(ctx context.Context, req resource.Validate
 
 	validateDynamicObject(configMap, &meta.Config, path.Root("config"), &resp.Diagnostics)
 	validateDynamicObject(authMap, &meta.Auth, path.Root("auth"), &resp.Diagnostics)
+}
+
+func validateDailySyncTime(data model.ConnectionV2ResourceModel, diags *diag.Diagnostics) {
+	if data.DailySyncTime.IsNull() || data.DailySyncTime.IsUnknown() || data.DailySyncTime.ValueString() == "" {
+		return
+	}
+	if data.SyncFrequency.IsUnknown() {
+		return
+	}
+	if data.SyncFrequency.IsNull() || data.SyncFrequency.ValueInt64() != 1440 {
+		diags.AddAttributeError(
+			path.Root("daily_sync_time"),
+			"Invalid Daily Sync Time",
+			"daily_sync_time is only used when sync_frequency is set to 1440. Remove daily_sync_time or set sync_frequency = 1440.",
+		)
+	}
 }
 
 func validateDynamicObject(values map[string]interface{}, slot *metadata.Property, root path.Path, diags *diag.Diagnostics) {
