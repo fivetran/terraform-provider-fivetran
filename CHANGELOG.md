@@ -5,12 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.37...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.39...HEAD)
+
+## [v1.9.39](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.39...v1.9.38)
 
 ### Added
 - `fivetran_connection_v2`: plan-time required-field checks for create and replacement plans, historical resync warnings, and immutable dynamic-field replacement handling.
 - `fivetran_connection_v2_pause_state`: resource implementation for future publication. The resource is not registered yet.
 - `fivetran_connection_v2` and `fivetran_connection_v2_pause_state` requests include their Terraform resource type in the User-Agent for request attribution.
+- `fivetran_connection_v2` and `fivetran_connection_v2_pause_state`: registered internally for alpha testing. Undocumented; not yet announced for general availability.
 
 ## [v1.9.37](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.37...v1.9.36)
 
