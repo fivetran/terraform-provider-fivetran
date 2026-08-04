@@ -5,7 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.39...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.40...HEAD)
+
+## [v1.9.40](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.39...v1.9.40)
+
+### Added
+- `fivetran_connection_v2`: Terraform support for `connect_card_config`, `destination_schema_names`, and `destination_configuration`.
+
+### Changed
+- Updated `github.com/fivetran/go-fivetran` to `v1.3.8`.
 
 ## [v1.9.39](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.39...v1.9.38)
 

@@ -126,6 +126,9 @@ func (r *connectionV2) Create(ctx context.Context, req resource.CreateRequest, r
 	runSetupTestsPlan := core.GetBoolOrDefault(data.RunSetupTests, false)
 	trustCertificatesPlan := core.GetBoolOrDefault(data.TrustCertificates, false)
 	trustFingerprintsPlan := core.GetBoolOrDefault(data.TrustFingerprints, false)
+	connectCardConfigPlan := data.ConnectCardConfig
+	destinationSchemaNamesPlan := data.DestinationSchemaNames
+	destinationConfigurationPlan := data.DestinationConfiguration
 
 	svc := r.GetClient().NewConnectionCreate().
 		Paused(true).
@@ -161,6 +164,9 @@ func (r *connectionV2) Create(ctx context.Context, req resource.CreateRequest, r
 	data.RunSetupTests = types.BoolValue(runSetupTestsPlan)
 	data.TrustCertificates = types.BoolValue(trustCertificatesPlan)
 	data.TrustFingerprints = types.BoolValue(trustFingerprintsPlan)
+	data.ConnectCardConfig = preserveObject(data.ConnectCardConfig, connectCardConfigPlan)
+	data.DestinationSchemaNames = preserveString(data.DestinationSchemaNames, destinationSchemaNamesPlan)
+	data.DestinationConfiguration = preserveObject(data.DestinationConfiguration, destinationConfigurationPlan)
 
 	r.warnFailedSetupTests(response.Data.SetupTests, &resp.Diagnostics)
 
@@ -213,6 +219,9 @@ func (r *connectionV2) Read(ctx context.Context, req resource.ReadRequest, resp 
 	runSetupTests := data.RunSetupTests
 	trustCertificates := data.TrustCertificates
 	trustFingerprints := data.TrustFingerprints
+	connectCardConfig := data.ConnectCardConfig
+	destinationSchemaNames := data.DestinationSchemaNames
+	destinationConfiguration := data.DestinationConfiguration
 
 	resp.Diagnostics.Append(data.ReadFromResponse(ctx, response, meta, configMask)...)
 	if resp.Diagnostics.HasError() {
@@ -222,6 +231,9 @@ func (r *connectionV2) Read(ctx context.Context, req resource.ReadRequest, resp 
 	data.RunSetupTests = runSetupTests
 	data.TrustCertificates = trustCertificates
 	data.TrustFingerprints = trustFingerprints
+	data.ConnectCardConfig = preserveObject(data.ConnectCardConfig, connectCardConfig)
+	data.DestinationSchemaNames = preserveString(data.DestinationSchemaNames, destinationSchemaNames)
+	data.DestinationConfiguration = preserveObject(data.DestinationConfiguration, destinationConfiguration)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -263,6 +275,9 @@ func (r *connectionV2) Update(ctx context.Context, req resource.UpdateRequest, r
 	runSetupTestsPlan := core.GetBoolOrDefault(plan.RunSetupTests, false)
 	trustCertificatesPlan := core.GetBoolOrDefault(plan.TrustCertificates, false)
 	trustFingerprintsPlan := core.GetBoolOrDefault(plan.TrustFingerprints, false)
+	connectCardConfigPlan := plan.ConnectCardConfig
+	destinationSchemaNamesPlan := plan.DestinationSchemaNames
+	destinationConfigurationPlan := plan.DestinationConfiguration
 
 	runSetupTestsChanged := !plan.RunSetupTests.Equal(state.RunSetupTests)
 	trustCertificatesChanged := !plan.TrustCertificates.Equal(state.TrustCertificates)
@@ -338,6 +353,9 @@ func (r *connectionV2) Update(ctx context.Context, req resource.UpdateRequest, r
 	plan.RunSetupTests = types.BoolValue(runSetupTestsPlan)
 	plan.TrustCertificates = types.BoolValue(trustCertificatesPlan)
 	plan.TrustFingerprints = types.BoolValue(trustFingerprintsPlan)
+	plan.ConnectCardConfig = preserveObject(plan.ConnectCardConfig, connectCardConfigPlan)
+	plan.DestinationSchemaNames = preserveString(plan.DestinationSchemaNames, destinationSchemaNamesPlan)
+	plan.DestinationConfiguration = preserveObject(plan.DestinationConfiguration, destinationConfigurationPlan)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
@@ -400,8 +418,20 @@ func (r *connectionV2) applyCreateRootFields(svc *connections.ConnectionCreateSe
 		value := int(data.SyncFrequency.ValueInt64())
 		svc.SyncFrequency(&value)
 	}
+	if !data.ScheduleType.IsNull() && !data.ScheduleType.IsUnknown() {
+		svc.ScheduleType(data.ScheduleType.ValueString())
+	}
 	if !data.DailySyncTime.IsNull() && !data.DailySyncTime.IsUnknown() {
 		svc.DailySyncTime(data.DailySyncTime.ValueString())
+	}
+	if config := connectionV2ConnectCardConfigRequest(data.ConnectCardConfig); config != nil {
+		svc.ConnectCardConfig(config)
+	}
+	if !data.DestinationSchemaNames.IsNull() && !data.DestinationSchemaNames.IsUnknown() {
+		svc.DestinationSchemaNames(data.DestinationSchemaNames.ValueString())
+	}
+	if config := connectionV2DestinationConfigurationRequest(data.DestinationConfiguration); config != nil {
+		svc.DestinationConfiguration(config)
 	}
 	if !data.PauseAfterTrial.IsNull() && !data.PauseAfterTrial.IsUnknown() {
 		svc.PauseAfterTrial(data.PauseAfterTrial.ValueBool())
@@ -434,6 +464,7 @@ func (r *connectionV2) hasRootFieldChanges(plan, state model.ConnectionV2Resourc
 		{plan.SyncFrequency, state.SyncFrequency},
 		{plan.ScheduleType, state.ScheduleType},
 		{plan.DailySyncTime, state.DailySyncTime},
+		{plan.DestinationConfiguration, state.DestinationConfiguration},
 		{plan.PauseAfterTrial, state.PauseAfterTrial},
 		{plan.ProxyAgentId, state.ProxyAgentId},
 		{plan.NetworkingMethod, state.NetworkingMethod},
@@ -466,6 +497,9 @@ func (r *connectionV2) applyUpdateRootFields(svc *connections.ConnectionUpdateSe
 	}
 	if !plan.DailySyncTime.Equal(state.DailySyncTime) && !plan.DailySyncTime.IsNull() && !plan.DailySyncTime.IsUnknown() {
 		svc.DailySyncTime(plan.DailySyncTime.ValueString())
+	}
+	if !plan.DestinationConfiguration.Equal(state.DestinationConfiguration) && !plan.DestinationConfiguration.IsNull() && !plan.DestinationConfiguration.IsUnknown() {
+		svc.DestinationConfiguration(connectionV2DestinationConfigurationRequest(plan.DestinationConfiguration))
 	}
 	if !plan.PauseAfterTrial.Equal(state.PauseAfterTrial) && !plan.PauseAfterTrial.IsNull() && !plan.PauseAfterTrial.IsUnknown() {
 		svc.PauseAfterTrial(plan.PauseAfterTrial.ValueBool())
@@ -507,4 +541,65 @@ func preserveDynamic(value types.Dynamic) types.Dynamic {
 		return types.DynamicNull()
 	}
 	return value
+}
+
+func preserveString(value, fallback types.String) types.String {
+	if value.IsNull() && !fallback.IsUnknown() {
+		return fallback
+	}
+	if value.IsUnknown() {
+		return fallback
+	}
+	return value
+}
+
+func preserveObject(value, fallback types.Object) types.Object {
+	if value.IsNull() && !fallback.IsUnknown() {
+		return fallback
+	}
+	if value.IsUnknown() {
+		return fallback
+	}
+	return value
+}
+
+func connectionV2ConnectCardConfigRequest(value types.Object) *connections.ConnectCardConfig {
+	if value.IsNull() || value.IsUnknown() {
+		return nil
+	}
+
+	attrs := value.Attributes()
+	return &connections.ConnectCardConfig{
+		RedirectUri:    stringObjectAttr(attrs, "redirect_uri"),
+		HideSetupGuide: boolObjectAttr(attrs, "hide_setup_guide"),
+		AllFields:      boolObjectAttr(attrs, "all_fields"),
+	}
+}
+
+func connectionV2DestinationConfigurationRequest(value types.Object) *connections.DestinationConfiguration {
+	if value.IsNull() || value.IsUnknown() {
+		return nil
+	}
+
+	return &connections.DestinationConfiguration{
+		VirtualWarehouse: stringObjectAttr(value.Attributes(), "virtual_warehouse"),
+	}
+}
+
+func stringObjectAttr(attrs map[string]attr.Value, name string) *string {
+	value, ok := attrs[name].(types.String)
+	if !ok || value.IsNull() || value.IsUnknown() {
+		return nil
+	}
+	result := value.ValueString()
+	return &result
+}
+
+func boolObjectAttr(attrs map[string]attr.Value, name string) *bool {
+	value, ok := attrs[name].(types.Bool)
+	if !ok || value.IsNull() || value.IsUnknown() {
+		return nil
+	}
+	result := value.ValueBool()
+	return &result
 }

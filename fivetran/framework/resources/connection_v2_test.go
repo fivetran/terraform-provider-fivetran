@@ -41,6 +41,10 @@ func TestConnectionV2SchemaShape(t *testing.T) {
 	assertDynamicAttribute(t, attrs, "config", true, true, false)
 	assertDynamicAttribute(t, attrs, "auth", true, false, true)
 	assertInt64Attribute(t, attrs, "sync_frequency", false, true, true)
+	assertStringAttribute(t, attrs, "schedule_type", false, true, true)
+	assertSingleNestedAttribute(t, attrs, "connect_card_config", false, true, false)
+	assertStringAttribute(t, attrs, "destination_schema_names", false, true, false)
+	assertSingleNestedAttribute(t, attrs, "destination_configuration", false, true, true)
 	assertBoolAttribute(t, attrs, "run_setup_tests", false, true, true)
 	assertBoolAttribute(t, attrs, "trust_certificates", false, true, true)
 	assertBoolAttribute(t, attrs, "trust_fingerprints", false, true, true)
@@ -141,6 +145,16 @@ func assertBoolAttribute(t *testing.T, attrs map[string]resourceSchema.Attribute
 	attr, ok := attrs[name].(resourceSchema.BoolAttribute)
 	if !ok {
 		t.Fatalf("%s has type %T, want BoolAttribute", name, attrs[name])
+	}
+	assertAttributeMode(t, name, attr.Required, attr.Optional, attr.Computed, required, optional, computed)
+}
+
+func assertSingleNestedAttribute(t *testing.T, attrs map[string]resourceSchema.Attribute, name string, required, optional, computed bool) {
+	t.Helper()
+
+	attr, ok := attrs[name].(resourceSchema.SingleNestedAttribute)
+	if !ok {
+		t.Fatalf("%s has type %T, want SingleNestedAttribute", name, attrs[name])
 	}
 	assertAttributeMode(t, name, attr.Required, attr.Optional, attr.Computed, required, optional, computed)
 }
