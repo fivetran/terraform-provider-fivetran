@@ -8,7 +8,7 @@ page_title: "Resource: fivetran_connection_v2"
 
 Manages a Fivetran connection. Unlike `fivetran_connector`/`fivetran_connection`, `config` and `auth` are provided as dynamic, service-specific objects: their accepted fields, types, and required/readonly/immutable rules are resolved from connector metadata at plan time rather than from a fixed schema. This means the same resource works across services (e.g. `s3`, `postgres`, `fivetran_log`) without a per-service Terraform schema.
 
-Pause state is managed separately via `fivetran_connection_v2_pause_state`; this resource does not expose a `paused` attribute.
+Pause state is managed separately via `fivetran_connection_v2_pause_state`; this resource does not expose a `paused` attribute. **New connections are always created paused.** To start syncing, add a linked `fivetran_connection_v2_pause_state` resource with `paused = false`.
 
 ## Example Usage
 
@@ -20,6 +20,12 @@ resource "fivetran_connection_v2" "connection" {
     config = {
         schema = "my_schema"
     }
+}
+
+# The connection above is created paused. Unpause it to start syncing:
+resource "fivetran_connection_v2_pause_state" "pause_state" {
+    connection_id = fivetran_connection_v2.connection.id
+    paused        = false
 }
 ```
 
