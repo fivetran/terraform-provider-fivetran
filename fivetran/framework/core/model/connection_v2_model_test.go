@@ -28,32 +28,57 @@ func TestConnectionV2ResourceModelTfsdkShape(t *testing.T) {
 		t.Fatalf("building config: %v", diags)
 	}
 
+	connectCardConfig, diags := types.ObjectValue(
+		model.ConnectionV2ConnectCardConfigAttrTypes(),
+		map[string]attr.Value{
+			"redirect_uri":     types.StringValue("https://example.com/callback"),
+			"hide_setup_guide": types.BoolValue(true),
+			"all_fields":       types.BoolValue(true),
+		},
+	)
+	if diags.HasError() {
+		t.Fatalf("building connect_card_config: %v", diags)
+	}
+
+	destinationConfiguration, diags := types.ObjectValue(
+		model.ConnectionV2DestinationConfigurationAttrTypes(),
+		map[string]attr.Value{
+			"virtual_warehouse": types.StringValue("virtual_warehouse"),
+		},
+	)
+	if diags.HasError() {
+		t.Fatalf("building destination_configuration: %v", diags)
+	}
+
 	input := model.ConnectionV2ResourceModel{
-		Id:                      types.StringValue("connection_id"),
-		Name:                    types.StringValue("app"),
-		ConnectedBy:             types.StringValue("user_id"),
-		CreatedAt:               types.StringValue("2026-06-18T10:00:00Z"),
-		GroupId:                 types.StringValue("group_id"),
-		Service:                 types.StringValue("postgres"),
-		Config:                  types.DynamicValue(config),
-		Auth:                    types.DynamicNull(),
-		SucceededAt:             types.StringValue("2026-06-18T11:00:00Z"),
-		FailedAt:                types.StringNull(),
-		ServiceVersion:          types.StringValue("1"),
-		SyncFrequency:           types.Int64Value(60),
-		ScheduleType:            types.StringValue("auto"),
-		PauseAfterTrial:         types.BoolValue(false),
-		DailySyncTime:           types.StringNull(),
-		ProxyAgentId:            types.StringNull(),
-		NetworkingMethod:        types.StringValue("Directly"),
-		HybridDeploymentAgentId: types.StringNull(),
-		PrivateLinkId:           types.StringNull(),
-		DataDelaySensitivity:    types.StringValue("NORMAL"),
-		DataDelayThreshold:      types.Int64Value(0),
-		RunSetupTests:           types.BoolValue(false),
-		TrustCertificates:       types.BoolValue(false),
-		TrustFingerprints:       types.BoolValue(false),
-		Status:                  types.ObjectNull(model.ConnectionV2StatusAttrTypes()),
+		Id:                       types.StringValue("connection_id"),
+		Name:                     types.StringValue("app"),
+		ConnectedBy:              types.StringValue("user_id"),
+		CreatedAt:                types.StringValue("2026-06-18T10:00:00Z"),
+		GroupId:                  types.StringValue("group_id"),
+		Service:                  types.StringValue("postgres"),
+		Config:                   types.DynamicValue(config),
+		Auth:                     types.DynamicNull(),
+		SucceededAt:              types.StringValue("2026-06-18T11:00:00Z"),
+		FailedAt:                 types.StringNull(),
+		ServiceVersion:           types.StringValue("1"),
+		SyncFrequency:            types.Int64Value(60),
+		ScheduleType:             types.StringValue("auto"),
+		PauseAfterTrial:          types.BoolValue(false),
+		DailySyncTime:            types.StringNull(),
+		ConnectCardConfig:        connectCardConfig,
+		DestinationSchemaNames:   types.StringValue("FIVETRAN_NAMING"),
+		DestinationConfiguration: destinationConfiguration,
+		ProxyAgentId:             types.StringNull(),
+		NetworkingMethod:         types.StringValue("Directly"),
+		HybridDeploymentAgentId:  types.StringNull(),
+		PrivateLinkId:            types.StringNull(),
+		DataDelaySensitivity:     types.StringValue("NORMAL"),
+		DataDelayThreshold:       types.Int64Value(0),
+		RunSetupTests:            types.BoolValue(false),
+		TrustCertificates:        types.BoolValue(false),
+		TrustFingerprints:        types.BoolValue(false),
+		Status:                   types.ObjectNull(model.ConnectionV2StatusAttrTypes()),
 	}
 
 	var object types.Object
@@ -76,6 +101,15 @@ func TestConnectionV2ResourceModelTfsdkShape(t *testing.T) {
 	}
 	if !output.Auth.IsNull() {
 		t.Fatal("expected null auth dynamic value to round-trip")
+	}
+	if output.ConnectCardConfig.IsNull() || output.ConnectCardConfig.IsUnknown() {
+		t.Fatal("expected connect_card_config object to round-trip")
+	}
+	if output.DestinationSchemaNames.ValueString() != "FIVETRAN_NAMING" {
+		t.Fatalf("unexpected destination_schema_names: got %q", output.DestinationSchemaNames.ValueString())
+	}
+	if output.DestinationConfiguration.IsNull() || output.DestinationConfiguration.IsUnknown() {
+		t.Fatal("expected destination_configuration object to round-trip")
 	}
 	if output.Status.IsUnknown() {
 		t.Fatal("expected status object to keep a known null value")

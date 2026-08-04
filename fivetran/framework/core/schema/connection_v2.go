@@ -1,11 +1,13 @@
 package schema
 
 import (
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
 func ConnectionV2ResourceSchema() resourceSchema.Schema {
@@ -102,6 +104,59 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 			Description: "The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440.",
 			PlanModifiers: []planmodifier.String{
 				stringplanmodifier.UseStateForUnknown(),
+			},
+		},
+		"connect_card_config": resourceSchema.SingleNestedAttribute{
+			Optional:    true,
+			Description: "Configuration for the interactive Connect Card setup flow.",
+			Attributes: map[string]resourceSchema.Attribute{
+				"redirect_uri": resourceSchema.StringAttribute{
+					Optional:    true,
+					Sensitive:   true,
+					Description: "URI where the Connect Card flow redirects after setup.",
+					PlanModifiers: []planmodifier.String{
+						stringplanmodifier.RequiresReplace(),
+					},
+				},
+				"hide_setup_guide": resourceSchema.BoolAttribute{
+					Optional:    true,
+					Description: "Whether to hide the setup guide in the Connect Card flow.",
+					PlanModifiers: []planmodifier.Bool{
+						boolplanmodifier.RequiresReplace(),
+					},
+				},
+				"all_fields": resourceSchema.BoolAttribute{
+					Optional:    true,
+					Description: "Whether Connect Card should show all setup fields.",
+					PlanModifiers: []planmodifier.Bool{
+						boolplanmodifier.RequiresReplace(),
+					},
+				},
+			},
+		},
+		"destination_schema_names": resourceSchema.StringAttribute{
+			Optional:    true,
+			Description: "Defines how schema names appear in the destination. Supported values: FIVETRAN_NAMING, SOURCE_NAMING.",
+			Validators: []validator.String{
+				stringvalidator.OneOf("FIVETRAN_NAMING", "SOURCE_NAMING"),
+			},
+			PlanModifiers: []planmodifier.String{
+				stringplanmodifier.RequiresReplace(),
+			},
+		},
+		"destination_configuration": resourceSchema.SingleNestedAttribute{
+			Optional:    true,
+			Computed:    true,
+			Description: "Destination-specific configuration for the connection.",
+			Attributes: map[string]resourceSchema.Attribute{
+				"virtual_warehouse": resourceSchema.StringAttribute{
+					Optional:    true,
+					Computed:    true,
+					Description: "Destination virtual warehouse used by the connection.",
+					PlanModifiers: []planmodifier.String{
+						stringplanmodifier.UseStateForUnknown(),
+					},
+				},
 			},
 		},
 		"proxy_agent_id": resourceSchema.StringAttribute{

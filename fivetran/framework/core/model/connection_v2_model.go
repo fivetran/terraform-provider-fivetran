@@ -25,13 +25,16 @@ type ConnectionV2ResourceModel struct {
 	Config types.Dynamic `tfsdk:"config"`
 	Auth   types.Dynamic `tfsdk:"auth"`
 
-	SucceededAt     types.String `tfsdk:"succeeded_at"`
-	FailedAt        types.String `tfsdk:"failed_at"`
-	ServiceVersion  types.String `tfsdk:"service_version"`
-	SyncFrequency   types.Int64  `tfsdk:"sync_frequency"`
-	ScheduleType    types.String `tfsdk:"schedule_type"`
-	PauseAfterTrial types.Bool   `tfsdk:"pause_after_trial"`
-	DailySyncTime   types.String `tfsdk:"daily_sync_time"`
+	SucceededAt              types.String `tfsdk:"succeeded_at"`
+	FailedAt                 types.String `tfsdk:"failed_at"`
+	ServiceVersion           types.String `tfsdk:"service_version"`
+	SyncFrequency            types.Int64  `tfsdk:"sync_frequency"`
+	ScheduleType             types.String `tfsdk:"schedule_type"`
+	PauseAfterTrial          types.Bool   `tfsdk:"pause_after_trial"`
+	DailySyncTime            types.String `tfsdk:"daily_sync_time"`
+	ConnectCardConfig        types.Object `tfsdk:"connect_card_config"`
+	DestinationSchemaNames   types.String `tfsdk:"destination_schema_names"`
+	DestinationConfiguration types.Object `tfsdk:"destination_configuration"`
 
 	ProxyAgentId            types.String `tfsdk:"proxy_agent_id"`
 	NetworkingMethod        types.String `tfsdk:"networking_method"`
@@ -70,6 +73,20 @@ func ConnectionV2StatusAttrTypes() map[string]attr.Type {
 	}
 }
 
+func ConnectionV2ConnectCardConfigAttrTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"redirect_uri":     types.StringType,
+		"hide_setup_guide": types.BoolType,
+		"all_fields":       types.BoolType,
+	}
+}
+
+func ConnectionV2DestinationConfigurationAttrTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"virtual_warehouse": types.StringType,
+	}
+}
+
 func ConnectionV2ResourceModelAttrTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		"id":                         types.StringType,
@@ -87,6 +104,9 @@ func ConnectionV2ResourceModelAttrTypes() map[string]attr.Type {
 		"schedule_type":              types.StringType,
 		"pause_after_trial":          types.BoolType,
 		"daily_sync_time":            types.StringType,
+		"connect_card_config":        types.ObjectType{AttrTypes: ConnectionV2ConnectCardConfigAttrTypes()},
+		"destination_schema_names":   types.StringType,
+		"destination_configuration":  types.ObjectType{AttrTypes: ConnectionV2DestinationConfigurationAttrTypes()},
 		"proxy_agent_id":             types.StringType,
 		"networking_method":          types.StringType,
 		"hybrid_deployment_agent_id": types.StringType,
@@ -129,6 +149,9 @@ func (d *ConnectionV2ResourceModel) readFromResponseData(ctx context.Context, da
 	d.ScheduleType = stringValueOrNull(data.ScheduleType)
 	d.PauseAfterTrial = boolPointerValue(data.PauseAfterTrial)
 	d.DailySyncTime = stringValueOrNull(data.DailySyncTime)
+	d.ConnectCardConfig = connectionV2ConnectCardConfigValue(data.ConnectCardConfig)
+	d.DestinationSchemaNames = stringPointerValueOrNull(data.DestinationSchemaNames)
+	d.DestinationConfiguration = connectionV2DestinationConfigurationValue(data.DestinationConfiguration)
 
 	d.ProxyAgentId = stringValueOrNull(data.ProxyAgentId)
 	d.NetworkingMethod = stringValueOrNull(data.NetworkingMethod)
@@ -161,6 +184,13 @@ func stringValueOrNull(value string) types.String {
 		return types.StringNull()
 	}
 	return types.StringValue(value)
+}
+
+func stringPointerValueOrNull(value *string) types.String {
+	if value == nil {
+		return types.StringNull()
+	}
+	return stringValueOrNull(*value)
 }
 
 func timeValueOrNull(value time.Time) types.String {
@@ -230,5 +260,35 @@ func connectionV2StatusValue(status connections.StatusResponse) types.Object {
 		},
 	)
 
+	return result
+}
+
+func connectionV2ConnectCardConfigValue(config *connections.ConnectCardConfig) types.Object {
+	if config == nil {
+		return types.ObjectNull(ConnectionV2ConnectCardConfigAttrTypes())
+	}
+
+	result, _ := types.ObjectValue(
+		ConnectionV2ConnectCardConfigAttrTypes(),
+		map[string]attr.Value{
+			"redirect_uri":     stringPointerValueOrNull(config.RedirectUri),
+			"hide_setup_guide": boolPointerValue(config.HideSetupGuide),
+			"all_fields":       boolPointerValue(config.AllFields),
+		},
+	)
+	return result
+}
+
+func connectionV2DestinationConfigurationValue(config *connections.DestinationConfiguration) types.Object {
+	if config == nil {
+		return types.ObjectNull(ConnectionV2DestinationConfigurationAttrTypes())
+	}
+
+	result, _ := types.ObjectValue(
+		ConnectionV2DestinationConfigurationAttrTypes(),
+		map[string]attr.Value{
+			"virtual_warehouse": stringPointerValueOrNull(config.VirtualWarehouse),
+		},
+	)
 	return result
 }
