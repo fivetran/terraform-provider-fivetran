@@ -43,7 +43,7 @@ func TestConnectionV2SchemaShape(t *testing.T) {
 	assertInt64Attribute(t, attrs, "sync_frequency", false, true, true)
 	assertStringAttribute(t, attrs, "schedule_type", false, true, true)
 	assertSingleNestedAttribute(t, attrs, "connect_card_config", false, true, false)
-	assertStringAttribute(t, attrs, "destination_schema_names", false, true, false)
+	assertStringAttribute(t, attrs, "destination_schema_names", false, true, true)
 	assertSingleNestedAttribute(t, attrs, "destination_configuration", false, true, true)
 	assertBoolAttribute(t, attrs, "run_setup_tests", false, true, true)
 	assertBoolAttribute(t, attrs, "trust_certificates", false, true, true)
