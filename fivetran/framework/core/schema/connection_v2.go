@@ -136,6 +136,7 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 		},
 		"destination_schema_names": resourceSchema.StringAttribute{
 			Optional:    true,
+			Computed:    true,
 			Description: "Defines how schema names appear in the destination. Supported values: FIVETRAN_NAMING, SOURCE_NAMING.",
 			Validators: []validator.String{
 				stringvalidator.OneOf("FIVETRAN_NAMING", "SOURCE_NAMING"),

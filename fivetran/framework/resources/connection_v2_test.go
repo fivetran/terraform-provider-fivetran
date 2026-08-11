@@ -43,7 +43,7 @@ func TestConnectionV2SchemaShape(t *testing.T) {
 	assertInt64Attribute(t, attrs, "sync_frequency", false, true, true)
 	assertStringAttribute(t, attrs, "schedule_type", false, true, true)
 	assertSingleNestedAttribute(t, attrs, "connect_card_config", false, true, false)
-	assertStringAttribute(t, attrs, "destination_schema_names", false, true, false)
+	assertStringAttribute(t, attrs, "destination_schema_names", false, true, true)
 	assertSingleNestedAttribute(t, attrs, "destination_configuration", false, true, true)
 	assertBoolAttribute(t, attrs, "run_setup_tests", false, true, true)
 	assertBoolAttribute(t, attrs, "trust_certificates", false, true, true)
@@ -61,6 +61,36 @@ func TestConnectionV2SchemaShape(t *testing.T) {
 	}
 	if _, ok := status.Attributes["warnings"].(resourceSchema.SetNestedAttribute); !ok {
 		t.Fatalf("status.warnings has type %T, want SetNestedAttribute", status.Attributes["warnings"])
+	}
+}
+
+// TestConnectionV2DestinationSchemaNamesIsComputed guards against a regression
+// where destination_schema_names was Optional but not Computed. The API always
+// returns a value for this field (defaulting to FIVETRAN_NAMING server-side)
+// even when the user omits it from HCL. Without Computed, Terraform's plan
+// value stays null while Create/Read write back the API's real value, and
+// Terraform Core rejects the mismatch with "Provider produced inconsistent
+// result after apply".
+func TestConnectionV2DestinationSchemaNamesIsComputed(t *testing.T) {
+	t.Parallel()
+	ctx := context.Background()
+
+	r := resources.ConnectionV2()
+	var schemaResp resource.SchemaResponse
+	r.Schema(ctx, resource.SchemaRequest{}, &schemaResp)
+	if schemaResp.Diagnostics.HasError() {
+		t.Fatalf("schema diagnostics: %v", schemaResp.Diagnostics)
+	}
+
+	attr, ok := schemaResp.Schema.Attributes["destination_schema_names"].(resourceSchema.StringAttribute)
+	if !ok {
+		t.Fatalf("destination_schema_names has type %T, want StringAttribute", schemaResp.Schema.Attributes["destination_schema_names"])
+	}
+	if !attr.Computed {
+		t.Fatal("destination_schema_names must be Computed: the API can return a value (e.g. FIVETRAN_NAMING) even when the user never set it, and Terraform requires Computed to allow the plan's null to resolve to that value without an inconsistent-result error")
+	}
+	if !attr.Optional {
+		t.Fatal("destination_schema_names must remain Optional so users can still set it explicitly")
 	}
 }
 
