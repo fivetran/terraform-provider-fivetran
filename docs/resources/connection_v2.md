@@ -33,6 +33,7 @@ resource "fivetran_connection_v2_pause_state" "pause_state" {
 
 ### Required
 
+- `destination_schema_names` (String) Defines how schema names appear in the destination. Supported values: `FIVETRAN_NAMING`, `SOURCE_NAMING`. Changing this forces the connection to be replaced.
 - `group_id` (String) The unique identifier for the Group (Destination) within the Fivetran system. Changing this forces the connection to be replaced.
 - `service` (String) The connection service type (e.g., `postgres`, `mysql`, `s3`, `snowflake`). Changing this forces the connection to be replaced.
 
@@ -45,7 +46,6 @@ resource "fivetran_connection_v2_pause_state" "pause_state" {
 - `data_delay_sensitivity` (String) The level of data delay notification threshold. Possible values: `LOW`, `NORMAL`, `HIGH`, `CUSTOM`, `SYNC_FREQUENCY`.
 - `data_delay_threshold` (Number) Custom sync delay notification threshold in minutes. Only used when `data_delay_sensitivity` is `CUSTOM`.
 - `destination_configuration` (Attributes) Destination-specific configuration for the connection.
-- `destination_schema_names` (String) Defines how schema names appear in the destination. Supported values: `FIVETRAN_NAMING`, `SOURCE_NAMING`. Changing this forces the connection to be replaced.
 - `hybrid_deployment_agent_id` (String) The hybrid deployment agent ID for the group the connection belongs to.
 - `networking_method` (String) The networking method for the connection. Possible values: `Directly`, `SshTunnel`, `ProxyAgent`, `PrivateLink`.
 - `pause_after_trial` (Boolean) Whether the connection should be paused after the free trial period has ended.
