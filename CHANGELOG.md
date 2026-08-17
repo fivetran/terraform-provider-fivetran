@@ -5,10 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.40...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.41...HEAD)
 
-### Fixed
-- `fivetran_connection_v2`: `destination_schema_names` caused "Provider produced inconsistent result after apply" when omitted from HCL, since the API always returns a value (defaults to `FIVETRAN_NAMING`) but the attribute was not `Computed`.
+## [v1.9.41](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.40...v1.9.41)
+
+### Changed
+- `fivetran_connection_v2`: `destination_schema_names` is now `Required` instead of `Optional`/`Computed`. Users must set it explicitly in HCL.
 
 ## [v1.9.40](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.39...v1.9.40)
 
