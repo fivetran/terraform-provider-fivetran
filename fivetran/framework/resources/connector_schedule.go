@@ -3,6 +3,8 @@ package resources
 import (
 	"context"
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/fivetran/go-fivetran/connections"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
@@ -121,7 +123,9 @@ func (r *connectorSchedule) Create(ctx context.Context, req resource.CreateReque
 	}
 
 	if schedule := scheduleFromPlan(ctx, data.Schedule); schedule != nil {
-		svc.Schedule(schedule)
+		if !applyLegacyCompatibleScheduleFields(svc, schedule) {
+			svc.Schedule(schedule)
+		}
 	}
 
 	connectorResponse, err := svc.DoCustom(ctx)
@@ -232,7 +236,9 @@ func (r *connectorSchedule) Update(ctx context.Context, req resource.UpdateReque
 	if !plan.Schedule.Equal(state.Schedule) {
 		if schedule := scheduleFromPlan(ctx, plan.Schedule); schedule != nil {
 			hasChanges = true
-			svc.Schedule(schedule)
+			if !applyLegacyCompatibleScheduleFields(svc, schedule) {
+				svc.Schedule(schedule)
+			}
 		}
 		// If plan.Schedule is null, no API call is needed — state is reconciled below.
 	}
@@ -303,4 +309,89 @@ func scheduleFromPlan(ctx context.Context, scheduleObj types.Object) *connection
 		s.DaysOfWeek = days
 	}
 	return s
+}
+
+func applyLegacyCompatibleScheduleFields(svc *connections.ConnectionUpdateService, schedule *connections.ConnectorSchedule) bool {
+	if syncFrequency, dailySyncTime := legacyCompatibleScheduleFields(schedule); syncFrequency != nil {
+		svc.SyncFrequency(syncFrequency)
+		if dailySyncTime != nil {
+			svc.DailySyncTime(*dailySyncTime)
+		}
+		return true
+	}
+	return false
+}
+
+func legacyCompatibleScheduleFields(schedule *connections.ConnectorSchedule) (*int, *string) {
+	if schedule == nil || schedule.ScheduleType == nil || !hasAllDays(schedule.DaysOfWeek) {
+		return nil, nil
+	}
+
+	switch *schedule.ScheduleType {
+	case "INTERVAL":
+		if schedule.Interval == nil || !isLegacySyncFrequency(*schedule.Interval) {
+			return nil, nil
+		}
+		syncFrequency := *schedule.Interval
+		return &syncFrequency, nil
+	case "TIME_OF_DAY":
+		if schedule.TimeOfDay == nil {
+			return nil, nil
+		}
+		dailySyncTime, ok := legacyDailySyncTime(*schedule.TimeOfDay)
+		if !ok {
+			return nil, nil
+		}
+		syncFrequency := 1440
+		return &syncFrequency, &dailySyncTime
+	default:
+		return nil, nil
+	}
+}
+
+func isLegacySyncFrequency(interval int) bool {
+	for _, supportedInterval := range []int{1, 5, 15, 30, 60, 120, 180, 360, 480, 720, 1440} {
+		if interval == supportedInterval {
+			return true
+		}
+	}
+	return false
+}
+
+func legacyDailySyncTime(timeOfDay string) (string, bool) {
+	parts := strings.Split(timeOfDay, ":")
+	if len(parts) < 2 || len(parts) > 3 || len(parts[0]) != 2 || parts[1] != "00" {
+		return "", false
+	}
+	if len(parts) == 3 && parts[2] != "00" {
+		return "", false
+	}
+
+	hour, err := strconv.Atoi(parts[0])
+	if err != nil || hour < 0 || hour > 23 {
+		return "", false
+	}
+
+	return parts[0] + ":00", true
+}
+
+func hasAllDays(days []string) bool {
+	if len(days) == 0 {
+		return true
+	}
+	if len(days) != 7 {
+		return false
+	}
+
+	seen := map[string]bool{}
+	for _, day := range days {
+		seen[day] = true
+	}
+
+	for _, day := range []string{"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"} {
+		if !seen[day] {
+			return false
+		}
+	}
+	return true
 }
