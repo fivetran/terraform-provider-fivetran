@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
@@ -80,6 +81,13 @@ The value defines validation method.
 										Description: "This field appears in the response if the connector supports switching sync modes for tables.",
 										Validators: []validator.String{
 											stringvalidator.OneOf("HISTORY", "SOFT_DELETE", "LIVE"),
+										},
+									},
+									"parent_table": schema.StringAttribute{
+										Computed:    true,
+										Description: "The name of the table that this table is grouped under, if any. This field is read-only and computed by the API.",
+										PlanModifiers: []planmodifier.String{
+											stringplanmodifier.UseStateForUnknown(),
 										},
 									},
 									"columns": schema.MapNestedAttribute{
@@ -171,6 +179,13 @@ func getTableBlock() schema.SetNestedBlock {
 					Description: "This field appears in the response if the connector supports switching sync modes for tables.",
 					Validators: []validator.String{
 						stringvalidator.OneOf("HISTORY", "SOFT_DELETE", "LIVE"),
+					},
+				},
+				"parent_table": schema.StringAttribute{
+					Computed:    true,
+					Description: "The name of the table that this table is grouped under, if any. This field is read-only and computed by the API.",
+					PlanModifiers: []planmodifier.String{
+						stringplanmodifier.UseStateForUnknown(),
 					},
 				},
 			},

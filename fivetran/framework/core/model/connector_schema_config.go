@@ -114,9 +114,10 @@ func (d *ConnectorSchemaResourceModel) getNullSchema() basetypes.SetValue {
 		"is_primary_key": types.BoolType,
 	}
 	tableAttrTypes := map[string]attr.Type{
-		"name":      types.StringType,
-		"enabled":   types.BoolType,
-		"sync_mode": types.StringType,
+		"name":         types.StringType,
+		"enabled":      types.BoolType,
+		"sync_mode":    types.StringType,
+		"parent_table": types.StringType,
 		"column": types.SetType{
 			ElemType: types.ObjectType{
 				AttrTypes: columnAttrTypes,
@@ -143,8 +144,9 @@ func (d *ConnectorSchemaResourceModel) getNullSchemas() basetypes.MapValue {
 	}
 
 	tablesAttrTypes := map[string]attr.Type{
-		"enabled":   types.BoolType,
-		"sync_mode": types.StringType,
+		"enabled":      types.BoolType,
+		"sync_mode":    types.StringType,
+		"parent_table": types.StringType,
 		"columns": types.MapType{
 			ElemType: types.ObjectType{
 				AttrTypes: columnsAttrTypes,
@@ -193,8 +195,9 @@ func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}, isIm
 	}
 
 	tablesAttrTypes := map[string]attr.Type{
-		"enabled":   types.BoolType,
-		"sync_mode": types.StringType,
+		"enabled":      types.BoolType,
+		"sync_mode":    types.StringType,
+		"parent_table": types.StringType,
 		"columns": types.MapType{
 			ElemType: types.ObjectType{
 				AttrTypes: columnsAttrTypes,
@@ -238,6 +241,12 @@ func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}, isIm
 					if sm, ok := tableMap["sync_mode"].(string); ok {
 						tableElements["sync_mode"] = types.StringValue(sm)
 					}
+				}
+
+				if pt, ok := tableMap["parent_table"].(string); ok {
+					tableElements["parent_table"] = types.StringValue(pt)
+				} else {
+					tableElements["parent_table"] = types.StringNull()
 				}
 
 				if _, ok := localTable["enabled"]; (ok || isImporting) {
@@ -332,9 +341,10 @@ func (d *ConnectorSchemaResourceModel) getLegacySchemaItems(schemas []interface{
 	}
 
 	tableAttrTypes := map[string]attr.Type{
-		"name":      types.StringType,
-		"enabled":   types.BoolType,
-		"sync_mode": types.StringType,
+		"name":         types.StringType,
+		"enabled":      types.BoolType,
+		"sync_mode":    types.StringType,
+		"parent_table": types.StringType,
 		"column": types.SetType{
 			ElemType: types.ObjectType{
 				AttrTypes: columnAttrTypes,
@@ -405,6 +415,12 @@ func (d *ConnectorSchemaResourceModel) getLegacySchemaItems(schemas []interface{
 					if sm, ok := tableMap["sync_mode"].(string); ok {
 						tableElements["sync_mode"] = types.StringValue(sm)
 					}
+				}
+
+				if pt, ok := tableMap["parent_table"].(string); ok {
+					tableElements["parent_table"] = types.StringValue(pt)
+				} else {
+					tableElements["parent_table"] = types.StringNull()
 				}
 
 				if _, ok := localTable["enabled"]; ok {

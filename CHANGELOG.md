@@ -5,7 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.41...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.42...HEAD)
+
+## [v1.9.42](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.41...v1.9.42)
+
+### Added
+- `fivetran_connector_schema_config`: `parent_table` computed attribute on tables, reporting the core table a table is grouped under (if any) so refreshes no longer show drift for core-table configuration.
+
+### Changed
+- Updated `github.com/fivetran/go-fivetran` to `v1.3.9`.
 
 ## [v1.9.41](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.40...v1.9.41)
 
