@@ -220,6 +220,10 @@ Optional:
 - `enabled` (Boolean) The boolean value specifying whether the sync of table into the destination is enabled.
 - `sync_mode` (String) This field appears in the response if the connector supports switching sync modes for tables.
 
+Read-Only:
+
+- `parent_table` (String) The name of the table that this table is grouped under, if any. This field is read-only and computed by the API.
+
 <a id="nestedblock--schema--table--column"></a>
 ### Nested Schema for `schema.table.column`
 
@@ -255,6 +259,10 @@ Optional:
 - `columns` (Attributes Map) Map of table configurations. (see [below for nested schema](#nestedatt--schemas--tables--columns))
 - `enabled` (Boolean) The boolean value specifying whether the sync for the table into the destination is enabled.
 - `sync_mode` (String) This field appears in the response if the connector supports switching sync modes for tables.
+
+Read-Only:
+
+- `parent_table` (String) The name of the table that this table is grouped under, if any. This field is read-only and computed by the API.
 
 <a id="nestedatt--schemas--tables--columns"></a>
 ### Nested Schema for `schemas.tables.columns`

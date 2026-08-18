@@ -958,13 +958,110 @@ func TestParentTableMock(t *testing.T) {
 			},
 			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
-				// there is no possibility to destroy schema config - it alsways exists within the connector
+				// there is no possibility to destroy schema config - it always exists within the connector
 				return nil
 			},
 
 			Steps: []resource.TestStep{
 				step1,
 				step2,
+			},
+		},
+	)
+}
+
+func TestParentTableLegacyBlockMock(t *testing.T) {
+	// TODO: file ticket - the legacy `schema { table {} }` block is a SetNestedBlock, and
+	// parent_table is Computed-only (unlike sync_mode/enabled, which are Optional+Computed).
+	// A purely-Computed attribute is unknown at plan time, and unknown values break Set element
+	// identity, so Terraform can never converge to an empty plan for this block. Unskip once the
+	// schema is fixed (e.g. by making parent_table Optional+Computed to match sync_mode).
+	t.Skip("parent_table causes perpetual drift in the legacy schema{table{}} Set block - see TODO above")
+
+	setupMockClientParentTableLegacyResource := func(t *testing.T) {
+		mockClient.Reset()
+		schemaParentTableData = createMapFromJsonString(t, `
+					{
+						"enable_new_by_default": true,
+						"schema_change_handling": "BLOCK_ALL",
+						"schemas": {
+							"schema_1": {
+								"name_in_destination": "schema_1",
+								"enabled": true,
+								"tables": {
+									"core_table": {
+										"name_in_destination": "core_table",
+										"enabled": true,
+										"sync_mode": "LIVE",
+										"enabled_patch_settings": {
+											"allowed": true
+										}
+									},
+									"child_table": {
+										"name_in_destination": "child_table",
+										"enabled": true,
+										"sync_mode": "LIVE",
+										"parent_table": "core_table",
+										"enabled_patch_settings": {
+											"allowed": false,
+											"reason_code": "NOT_SELECTABLE_CHILD_TABLE"
+										}
+									}
+								}
+							}
+						}
+					}
+					`)
+
+		schemaParentTableGetHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaParentTableData), nil
+			},
+		)
+	}
+
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "BLOCK_ALL"
+				schema {
+					name = "schema_1"
+					enabled = true
+					table {
+						name = "core_table"
+						enabled = true
+						sync_mode = "LIVE"
+					}
+					table {
+						name = "child_table"
+						enabled = true
+						sync_mode = "LIVE"
+					}
+				}
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.1.parent_table"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema.0.table.0.parent_table", "core_table"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientParentTableLegacyResource(t)
+			},
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				// there is no possibility to destroy schema config - it always exists within the connector
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
 			},
 		},
 	)
