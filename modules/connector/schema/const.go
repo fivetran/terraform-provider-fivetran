@@ -20,6 +20,7 @@ const (
 	HASHED                 = "hashed"
 	IS_PRIMARY_KEY         = "is_primary_key"
 	SYNC_MODE              = "sync_mode"
+	PARENT_TABLE           = "parent_table"
 
 	HANDLED       = "handled"
 	EXCLUDED      = "excluded"

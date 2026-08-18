@@ -12,8 +12,9 @@ import (
 
 type _table struct {
 	_element
-	syncMode *string
-	columns  map[string]*_column
+	syncMode    *string
+	parentTable *string
+	columns     map[string]*_column
 }
 
 func (t _table) validateColumns(
@@ -210,6 +211,7 @@ func (t *_table) readFromResponse(name string, response *connections.ConnectionS
 	}
 
 	t.syncMode = response.SyncMode
+	t.parentTable = response.ParentTable
 	t.columns = make(map[string]*_column)
 
 	for k, v := range response.Columns {
@@ -245,6 +247,10 @@ func (t _table) toStateObject(sch string, local *_table, diag *diag.Diagnostics,
 		result[SYNC_MODE] = *t.syncMode
 	} else if t.syncMode != nil && isImporting {
 		result[SYNC_MODE] = *t.syncMode
+	}
+
+	if t.parentTable != nil {
+		result[PARENT_TABLE] = *t.parentTable
 	}
 
 	columns := make([]interface{}, 0)
