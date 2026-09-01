@@ -4790,7 +4790,11 @@ func TestResourceConnectorSchemaConfigImportMock(t *testing.T) {
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 				assertEqual(t, schemaEmptyDefaultReloadHandler.Interactions, 1)
-				assertEqual(t, schemaEmptyDefaultGetHandler.Interactions, 2)
+				// 4, not 2: ValidateConfig now calls GET .../schemas at plan time too -
+				// once on the initial plan (404, no schema yet, no-op) and once on the
+				// post-apply re-plan (200, schema now exists, validated), in addition to
+				// Create's own 2 GET calls.
+				assertEqual(t, schemaEmptyDefaultGetHandler.Interactions, 4)
 				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 0)
 				assertNotEmpty(t, schemaEmptyDefaultData) // schema initialised
 				return nil
