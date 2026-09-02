@@ -4619,3 +4619,239 @@ func TestResourceConnectorSchemaConfigImportMock(t *testing.T) {
 		},
 	)
 }
+
+func TestResourceSchemaConfigTransientSchemaDuringRefreshWithAllowAllMock(t *testing.T) {
+	var (
+		getHandler        *mock.Handler
+		reloadHandler     *mock.Handler
+		patchHandler      *mock.Handler
+		schemaGetResponse string
+	)
+
+	resetInvocationCounts := func() {
+		getHandler.Interactions = 0
+		patchHandler.Interactions = 0
+		reloadHandler.Interactions = 0
+	}
+
+	step1 := resource.TestStep{
+		PreConfig: func() {
+			resetInvocationCounts()
+			schemaGetResponse = `
+					{
+						"enable_new_by_default": false,
+						"schema_change_handling": "ALLOW_ALL",
+						"schemas": {
+							"public": {
+								"name_in_destination": "public",
+								"enabled": true,
+								"tables": {
+									"table_1": {
+										"name_in_destination": "table_1",
+										"enabled": true,
+										"sync_mode": "SOFT_DELETE",
+										"enabled_patch_settings": {
+											"allowed": true
+										}
+									}
+								}
+							}
+						}
+					}`
+		},
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "ALLOW_ALL"
+				schemas = {
+					"public" = {
+						enabled = true
+					}
+				}
+			}`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				assertEqual(t, getHandler.Interactions, 2)
+				assertEqual(t, patchHandler.Interactions, 0)
+				assertEqual(t, reloadHandler.Interactions, 0)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "connector_id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "ALLOW_ALL"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.%", "1"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.enabled", "true"),
+		),
+	}
+
+	// Step 2: Refresh state with an additional transient schema, while ALLOW_ALL is set
+	// empty plan is expected after the refresh
+	step2 := resource.TestStep{
+		PreConfig: func() {
+			resetInvocationCounts()
+			schemaGetResponse = `
+					{
+						"enable_new_by_default": false,
+						"schema_change_handling": "ALLOW_ALL",
+						"schemas": {
+							"public": {
+								"name_in_destination": "public",
+								"enabled": true,
+								"tables": {
+									"table_1": {
+										"name_in_destination": "table_1",
+										"enabled": true,
+										"sync_mode": "SOFT_DELETE",
+										"enabled_patch_settings": {
+											"allowed": true
+										}
+									}
+								}
+							},
+							"transient": {
+								"name_in_destination": "transient",
+								"enabled": false,
+								"tables": {}
+							}
+						}
+					}`
+		},
+		RefreshState: true,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				assertEqual(t, getHandler.Interactions, 1)
+				assertEqual(t, patchHandler.Interactions, 0)
+				assertEqual(t, reloadHandler.Interactions, 0)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "connector_id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "ALLOW_ALL"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.%", "1"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.enabled", "true"),
+		),
+	}
+
+	step3 := resource.TestStep{
+		PreConfig: func() {
+			resetInvocationCounts()
+		},
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "ALLOW_ALL"
+				schemas = {
+					"public" = {
+						enabled = true
+					}
+				}
+			}`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				assertEqual(t, getHandler.Interactions, 1)
+				assertEqual(t, patchHandler.Interactions, 0)
+				assertEqual(t, reloadHandler.Interactions, 0)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "connector_id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "ALLOW_ALL"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.%", "1"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.enabled", "true"),
+		),
+	}
+
+	// Step 4: Transient schema is gone
+	step4 := resource.TestStep{
+		PreConfig: func() {
+			resetInvocationCounts()
+			schemaGetResponse = `
+					{
+						"enable_new_by_default": false,
+						"schema_change_handling": "ALLOW_ALL",
+						"schemas": {
+							"public": {
+								"name_in_destination": "public",
+								"enabled": true,
+								"tables": {
+									"table_1": {
+										"name_in_destination": "table_1",
+										"enabled": true,
+										"sync_mode": "SOFT_DELETE",
+										"enabled_patch_settings": {
+											"allowed": true
+										}
+									}
+								}
+							}
+						}
+					}`
+		},
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "ALLOW_ALL"
+				schemas = {
+					"public" = {
+						enabled = true
+					}
+				}
+			}`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				assertEqual(t, getHandler.Interactions, 1)
+				assertEqual(t, patchHandler.Interactions, 0)
+				assertEqual(t, reloadHandler.Interactions, 0)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "connector_id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "ALLOW_ALL"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.%", "1"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.enabled", "true"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				mockClient.Reset()
+
+				getHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						responseData := createMapFromJsonString(t, schemaGetResponse)
+						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
+					},
+				)
+
+				reloadHandler = mockClient.When(http.MethodPost, "/v1/connections/connector_id/schemas/reload").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						responseData := createMapFromJsonString(t, schemaGetResponse)
+						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
+					},
+				)
+
+				patchHandler = mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						responseData := createMapFromJsonString(t, schemaGetResponse)
+						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
+					},
+				)
+			},
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
+				step2,
+				step3,
+				step4,
+			},
+		},
+	)
+}
