@@ -90,9 +90,9 @@ func TestResourceConnectionE2E(t *testing.T) {
 				),
 			},
 			{
-				ResourceName:      "fivetran_connection.test_connection",
-				ImportState:       true,
-				ImportStateVerify: true,
+				ResourceName:            "fivetran_connection.test_connection",
+				ImportState:             true,
+				ImportStateVerify:       true,
 				ImportStateVerifyIgnore: []string{"run_setup_tests", "trust_certificates", "trust_fingerprints", "config", "data_delay_sensitivity"},
 			},
 		},
@@ -170,6 +170,48 @@ func TestResourceConnectionMultipleServicesE2E(t *testing.T) {
 
 					testFivetranConnectionResourceCreate(t, "fivetran_connection.s3_connection"),
 					resource.TestCheckResourceAttr("fivetran_connection.s3_connection", "service", "s3"),
+				),
+			},
+		},
+	})
+}
+
+func TestResourceConnectionSftpTableGroupNameE2E(t *testing.T) {
+	tfConfig := `
+				resource "fivetran_group" "test_group" {
+					provider = fivetran-provider
+					name = "test_group_connection_sftp_table_group"
+			    }
+
+			    resource "fivetran_connection" "sftp_connection" {
+					provider = fivetran-provider
+					group_id = fivetran_group.test_group.id
+					service = "sftp"
+
+					destination_schema {
+						name = "sftp_connection"
+						table_group_name = "sftp_table_group"
+					}
+
+					run_setup_tests = false
+					trust_certificates = false
+					trust_fingerprints = false
+				}
+		  `
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() {},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		CheckDestroy:             testFivetranConnectionResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: tfConfig,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranConnectionResourceCreate(t, "fivetran_connection.sftp_connection"),
+					resource.TestCheckResourceAttrSet("fivetran_connection.sftp_connection", "id"),
+					resource.TestCheckResourceAttr("fivetran_connection.sftp_connection", "service", "sftp"),
+					resource.TestCheckResourceAttr("fivetran_connection.sftp_connection", "destination_schema.name", "sftp_connection"),
+					resource.TestCheckResourceAttr("fivetran_connection.sftp_connection", "destination_schema.table_group_name", "sftp_table_group"),
 				),
 			},
 		},
