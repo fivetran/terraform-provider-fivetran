@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.43...HEAD)
 
+### Fixed
+- `fivetran_connector_schema_config`: preserve explicitly configured empty `tables = {}` map in state instead of degrading it to null, fixing "Provider produced inconsistent result after apply: .schemas[...].tables: was cty.MapValEmpty(...), but now null" when all upstream tables match the `schema_change_handling` policy default.
+
 ## [v1.9.43](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.42...v1.9.43)
 
 ### Fixed
