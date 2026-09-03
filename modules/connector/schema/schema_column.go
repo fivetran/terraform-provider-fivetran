@@ -45,6 +45,9 @@ func (c _column) prepareRequest() *connections.ConnectionSchemaConfigColumn {
 	if c.hashed != nil {
 		result.Hashed(*c.hashed)
 	}
+	if c.isPrimaryKey != nil {
+		result.IsPrimaryKey(*c.isPrimaryKey)
+	}
 	return result
 }
 
@@ -53,6 +56,9 @@ func (c _column) prepareCreateRequest() *connections.ConnectionSchemaConfigColum
 	result.Enabled(c.enabled)
 	if c.hashed != nil {
 		result.Hashed(*c.hashed)
+	}
+	if c.isPrimaryKey != nil {
+		result.IsPrimaryKey(*c.isPrimaryKey)
 	}
 	return result
 }

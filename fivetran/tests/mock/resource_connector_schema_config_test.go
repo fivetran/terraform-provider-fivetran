@@ -2556,6 +2556,270 @@ func TestResourceSchemaPrimaryKeyLargeSchemaNoNoiseMock(t *testing.T) {
 	)
 }
 
+// Test to verify that is_primary_key is mutable and optional: a user can explicitly
+// set it in config for an "s3" connector schema, have it sent to the API, and change
+// it later triggering a PATCH with the new value.
+func TestResourceSchemaPrimaryKeyMutableS3Mock(t *testing.T) {
+	var (
+		schemaPrimaryKeyMutableGetHandler   *mock.Handler
+		schemaPrimaryKeyMutablePatchHandler *mock.Handler
+		schemaPrimaryKeyMutableData         map[string]interface{}
+	)
+
+	setupMockClientPrimaryKeyMutableResource := func(t *testing.T) {
+		mockClient.Reset()
+		schemaPrimaryKeyMutableData = nil
+
+		// Mock GET handler - simulates an s3 connector schema where the API
+		// doesn't mark any column as a primary key by default.
+		schemaPrimaryKeyMutableGetHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				if schemaPrimaryKeyMutableData == nil {
+					schemaPrimaryKeyMutableData = createMapFromJsonString(t, `
+					{
+						"enable_new_by_default": true,
+						"schema_change_handling": "ALLOW_ALL",
+						"schemas": {
+							"s3_data": {
+								"name_in_destination": "s3_data",
+								"enabled": true,
+								"tables": {
+									"files": {
+										"name_in_destination": "files",
+										"enabled": true,
+										"enabled_patch_settings": {
+											"allowed": true
+										},
+										"columns": {
+											"key": {
+												"name_in_destination": "key",
+												"enabled": true,
+												"hashed": false,
+												"is_primary_key": false,
+												"enabled_patch_settings": {
+													"allowed": true
+												}
+											},
+											"bucket": {
+												"name_in_destination": "bucket",
+												"enabled": true,
+												"hashed": false,
+												"is_primary_key": false,
+												"enabled_patch_settings": {
+													"allowed": true
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					`)
+				}
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaPrimaryKeyMutableData), nil
+			},
+		)
+
+		// getColumnIsPrimaryKey reads the current mocked is_primary_key value for a column,
+		// used to seed defaults so that PATCH requests which don't touch a given column
+		// (e.g. ones only toggling `enabled`) don't clobber its previously applied value.
+		getColumnIsPrimaryKey := func(columnName string) bool {
+			schemas, _ := schemaPrimaryKeyMutableData["schemas"].(map[string]interface{})
+			s3Data, _ := schemas["s3_data"].(map[string]interface{})
+			tables, _ := s3Data["tables"].(map[string]interface{})
+			files, _ := tables["files"].(map[string]interface{})
+			columns, _ := files["columns"].(map[string]interface{})
+			column, _ := columns[columnName].(map[string]interface{})
+			value, _ := column["is_primary_key"].(bool)
+			return value
+		}
+
+		// Mock PATCH handler - merges whatever is_primary_key values are sent into the
+		// existing mocked data (PATCH requests only carry the changed fields) and echoes
+		// the merged result back so we can assert on both the request and resulting state.
+		schemaPrimaryKeyMutablePatchHandler = mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				body := requestBodyToJson(t, req)
+
+				keyIsPrimaryKey := getColumnIsPrimaryKey("key")
+				bucketIsPrimaryKey := getColumnIsPrimaryKey("bucket")
+
+				if schemas, ok := body["schemas"].(map[string]interface{}); ok {
+					if s3Data, ok := schemas["s3_data"].(map[string]interface{}); ok {
+						if tables, ok := s3Data["tables"].(map[string]interface{}); ok {
+							if files, ok := tables["files"].(map[string]interface{}); ok {
+								if columns, ok := files["columns"].(map[string]interface{}); ok {
+									if key, ok := columns["key"].(map[string]interface{}); ok {
+										if v, exists := key["is_primary_key"]; exists {
+											keyIsPrimaryKey, _ = v.(bool)
+										}
+									}
+									if bucket, ok := columns["bucket"].(map[string]interface{}); ok {
+										if v, exists := bucket["is_primary_key"]; exists {
+											bucketIsPrimaryKey, _ = v.(bool)
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
+				schemaPrimaryKeyMutableData = createMapFromJsonString(t, fmt.Sprintf(`
+				{
+					"enable_new_by_default": true,
+					"schema_change_handling": "ALLOW_ALL",
+					"schemas": {
+						"s3_data": {
+							"name_in_destination": "s3_data",
+							"enabled": true,
+							"tables": {
+								"files": {
+									"name_in_destination": "files",
+									"enabled": true,
+									"enabled_patch_settings": {
+										"allowed": true
+									},
+									"columns": {
+										"key": {
+											"name_in_destination": "key",
+											"enabled": true,
+											"hashed": false,
+											"is_primary_key": %v,
+											"enabled_patch_settings": {
+												"allowed": true
+											}
+										},
+										"bucket": {
+											"name_in_destination": "bucket",
+											"enabled": true,
+											"hashed": false,
+											"is_primary_key": %v,
+											"enabled_patch_settings": {
+												"allowed": true
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				`, keyIsPrimaryKey, bucketIsPrimaryKey))
+
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaPrimaryKeyMutableData), nil
+			},
+		)
+	}
+
+	var patchInteractionsAfterCreate int
+
+	// Step 1: Create with is_primary_key explicitly set - verifies the value is
+	// sent to the API and reflected in state.
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "ALLOW_ALL"
+				schemas = {
+					"s3_data" = {
+						tables = {
+							"files" = {
+								columns = {
+									"key" = {
+										enabled = true
+										is_primary_key = true
+									}
+									"bucket" = {
+										enabled = true
+										is_primary_key = false
+									}
+								}
+							}
+						}
+					}
+				}
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				if schemaPrimaryKeyMutableGetHandler.Interactions == 0 {
+					t.Errorf("Expected at least one GET interaction, got 0")
+				}
+				if schemaPrimaryKeyMutablePatchHandler.Interactions == 0 {
+					t.Errorf("Expected is_primary_key = true to be sent to the API on create, but no PATCH interaction happened")
+				}
+				patchInteractionsAfterCreate = schemaPrimaryKeyMutablePatchHandler.Interactions
+				assertNotEmpty(t, schemaPrimaryKeyMutableData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.s3_data.tables.files.columns.key.is_primary_key", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.s3_data.tables.files.columns.bucket.is_primary_key", "false"),
+		),
+	}
+
+	// Step 2: Update is_primary_key from false to true on "bucket" - verifies the
+	// field is mutable and the new value is both sent in the PATCH request and
+	// reflected in the resulting state.
+	step2 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "ALLOW_ALL"
+				schemas = {
+					"s3_data" = {
+						tables = {
+							"files" = {
+								columns = {
+									"key" = {
+										enabled = true
+										is_primary_key = true
+									}
+									"bucket" = {
+										enabled = true
+										is_primary_key = true
+									}
+								}
+							}
+						}
+					}
+				}
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				if schemaPrimaryKeyMutablePatchHandler.Interactions <= patchInteractionsAfterCreate {
+					t.Errorf("Expected the is_primary_key change on \"bucket\" to trigger a new PATCH request, but interaction count didn't increase (was %d, still %d)",
+						patchInteractionsAfterCreate, schemaPrimaryKeyMutablePatchHandler.Interactions)
+				}
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.s3_data.tables.files.columns.key.is_primary_key", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.s3_data.tables.files.columns.bucket.is_primary_key", "true"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientPrimaryKeyMutableResource(t)
+			},
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
+				step2,
+			},
+		},
+	)
+}
+
 func TestResourceSchemaPrimaryKeyNoConfiguredColumnsNoNoiseMock(t *testing.T) {
 	var (
 		schemaGetHandler   *mock.Handler
