@@ -106,8 +106,9 @@ The value defines validation method.
 													Description: "The boolean value specifying whether a column should be hashed.",
 												},
 												"is_primary_key": schema.BoolAttribute{
+													Optional:    true,
 													Computed:    true,
-													Description: "Boolean value indicating if the column is a primary key. This field is read-only and computed by the API.",
+													Description: "Boolean value indicating if the column is a primary key.",
 													PlanModifiers: []planmodifier.Bool{
 														boolplanmodifier.UseStateForUnknown(),
 													},
@@ -215,8 +216,9 @@ func getColumnBlock() schema.SetNestedBlock {
 					Description: "The boolean value specifying whether a column should be hashed.",
 				},
 				"is_primary_key": schema.BoolAttribute{
+					Optional:    true,
 					Computed:    true,
-					Description: "Boolean value indicating if the column is a primary key. This field is read-only and computed by the API.",
+					Description: "Boolean value indicating if the column is a primary key.",
 					PlanModifiers: []planmodifier.Bool{
 						boolplanmodifier.UseStateForUnknown(),
 					},

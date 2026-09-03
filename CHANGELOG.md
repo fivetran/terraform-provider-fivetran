@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `fivetran_connection`: map `destination_schema.table_group_name` into `config.table_group_name` during connection creation, fixing SFTP creation when table group name is configured through `destination_schema`.
 - `fivetran_connector_schema_config`: a fix for a case when a disabled transient schema appeared in upstream, and TF-refresh performed
 
+### Changed
+- `fivetran_connector_schema_config`: column's `is_primary_key` is now mutable, validation is shifted to API side, whether specific conector service supports mutable `is_primary_key` or not
+
 ## [v1.9.42](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.41...v1.9.42)
 
 ### Added
