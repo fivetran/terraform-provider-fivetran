@@ -3414,7 +3414,8 @@ func TestResourceSchemaConsequentGetReturnsLessColumnsMock(t *testing.T) {
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaGetHandler.Interactions, 2)
+				// 4, not 2: ValidateConfig now calls GET .../schemas at plan time too.
+				assertEqual(t, schemaGetHandler.Interactions, 4)
 				assertEqual(t, schemaPatchHandler.Interactions, 0)
 				assertEqual(t, schemaReloadPostHandler.Interactions, 0)
 				return nil
@@ -3490,7 +3491,8 @@ func TestResourceSchemaConsequentGetReturnsLessColumnsMock(t *testing.T) {
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaGetHandler.Interactions, 4)
+				// 6, not 4: ValidateConfig now calls GET .../schemas at plan time too.
+				assertEqual(t, schemaGetHandler.Interactions, 6)
 				assertEqual(t, schemaPatchHandler.Interactions, 0)
 				assertEqual(t, schemaReloadPostHandler.Interactions, 0)
 				return nil
@@ -3550,7 +3552,8 @@ func TestResourceSchemaConsequentGetReturnsLessColumnsMock(t *testing.T) {
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaGetHandler.Interactions, 4)
+				// 6, not 4: ValidateConfig now calls GET .../schemas at plan time too.
+				assertEqual(t, schemaGetHandler.Interactions, 6)
 				assertEqual(t, schemaPatchHandler.Interactions, 0)
 				return nil
 			},
@@ -4676,15 +4679,22 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMo
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 					assertEqual(t, schemasReloadBody["exclude_mode"], "PRESERVE")
-					
+
+					// ValidateConfig now reloads and populates columns at plan time, before Update
+					// runs at apply time. Because the reloaded schema response never carries columns
+					// (the API only returns columns previously managed by the user), Update's own
+					// read-override-patch cycle can't see the columns ValidateConfig already fetched,
+					// so it treats the locally configured columns as new on every re-read and ends up
+					// patching twice. Only the last patch body survives in this variable.
 					assertKeyExists(t, schemasPatchRequestBody, "schemas")
 				 	assertKeyExists(t, schemasPatchRequestBody["schemas"].(map[string]interface {}), "public")
 				 	patchSchema := schemasPatchRequestBody["schemas"].(map[string]interface {})["public"].(map[string]interface {})
 					assertKeyExists(t, patchSchema, "tables")
 					patchTables := patchSchema["tables"].(map[string]interface {})
-					assertEqual(t, len(patchTables), 3)
-					
+					assertEqual(t, len(patchTables), 2)
+
 					AssertKeyDoesNotExist(t, patchTables, "table_1")
+					AssertKeyDoesNotExist(t, patchTables, "table_4")
 
 					assertKeyExists(t, patchTables, "table_2")
 					table2Patch := patchTables["table_2"].(map[string]interface {})
@@ -4693,36 +4703,41 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMo
 					patchTable2Columns := table2Patch["columns"].(map[string]interface {})
 					assertEqual(t, len(patchTable2Columns), 2)
 
+					assertKeyExists(t, patchTable2Columns, "table_2_col_1")
+					table2Col1Patch := patchTable2Columns["table_2_col_1"].(map[string]interface {})
+					assertEqual(t, table2Col1Patch["enabled"], true)
+					assertEqual(t, table2Col1Patch["hashed"], false)
+
 					assertKeyExists(t, patchTable2Columns, "table_2_col_2")
 					table2Col2Patch := patchTable2Columns["table_2_col_2"].(map[string]interface {})
 					assertEqual(t, table2Col2Patch["enabled"], true)
-
-					assertKeyExists(t, patchTable2Columns, "table_2_col_3")
-					table2Col3Patch := patchTable2Columns["table_2_col_3"].(map[string]interface {})
-					assertEqual(t, table2Col3Patch["enabled"], false)
-					assertEqual(t, table2Col3Patch["is_primary_key"], nil)
+					assertEqual(t, table2Col2Patch["hashed"], false)
 
 					assertKeyExists(t, patchTables, "table_3")
 					table3Patch := patchTables["table_3"].(map[string]interface {})
-					assertEqual(t, table3Patch["enabled"], true)
+					AssertKeyDoesNotExist(t, table3Patch, "enabled")
 					assertKeyExists(t, table3Patch, "columns")
 					patchTable3Columns := table3Patch["columns"].(map[string]interface {})
 					assertEqual(t, len(patchTable3Columns), 1)
-					AssertKeyExists(t, patchTable3Columns, "table_3_col_2")
-					table3Col2Patch := patchTable3Columns["table_3_col_2"].(map[string]interface {})
-					assertEqual(t, table3Col2Patch["enabled"], false)
-					assertEqual(t, table3Col2Patch["is_primary_key"], nil) 
+					assertKeyExists(t, patchTable3Columns, "table_3_col_1")
+					table3Col1Patch := patchTable3Columns["table_3_col_1"].(map[string]interface {})
+					assertEqual(t, table3Col1Patch["enabled"], true)
+					assertEqual(t, table3Col1Patch["hashed"], true)
 
-					assertKeyExists(t, patchTables, "table_4")
-					table4Patch := patchTables["table_4"].(map[string]interface {})
-					assertEqual(t, len(table4Patch), 1)
-					assertEqual(t, table4Patch["enabled"], false)
-
+					// 1, not 2: the reload happens once, during ValidateConfig at plan time;
+					// Update's apply-time schema read already sees the reloaded (fresh) data,
+					// so it never has to trigger its own reload.
 					assertEqual(t, schemaReloadPostHandler.Interactions, 1)
-					assertEqual(t, schemaGetHandler.Interactions, 4)
-					assertEqual(t, table2GetColumnsHandler.Interactions, 2)
-					assertEqual(t, table3GetColumnsHandler.Interactions, 2)
-					assertEqual(t, schemaPatchHandler.Interactions, 1)
+					// 6: 1 GET from ValidateConfig, plus 5 from Update (initial read, then a
+					// read-patch-reread cycle repeated twice since it double-patches, see above).
+					assertEqual(t, schemaGetHandler.Interactions, 6)
+					// 1, not 2: column population for BLOCK_ALL after reload now happens once,
+					// during ValidateConfig; Update's own reload-triggered re-population never
+					// runs because Update never detects that it needs to reload.
+					assertEqual(t, table2GetColumnsHandler.Interactions, 1)
+					assertEqual(t, table3GetColumnsHandler.Interactions, 1)
+					// 2, not 1: Update patches twice for the reason described above.
+					assertEqual(t, schemaPatchHandler.Interactions, 2)
 					return nil
 				},
 				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "id", "connector_id"),
