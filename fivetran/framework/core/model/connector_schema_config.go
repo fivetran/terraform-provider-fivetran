@@ -298,6 +298,8 @@ func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}, isIm
 		}
 		if len(tables) > 0 {
 			schemaElements["tables"], _ = types.MapValue(types.ObjectType{AttrTypes: tablesAttrTypes}, tables)
+		} else if tablesAreNull, ok := localSchema["tables_are_null"].(bool); ok && !tablesAreNull {
+			schemaElements["tables"], _ = types.MapValue(types.ObjectType{AttrTypes: tablesAttrTypes}, tables)
 		} else {
 			schemaElements["tables"] = types.MapNull(types.ObjectType{AttrTypes: tablesAttrTypes})
 		}
@@ -588,6 +590,7 @@ func (d *ConnectorSchemaResourceModel) getSchemas() []interface{} {
 			schemas = append(schemas, schema)
 
 			if tablesMap, ok := schemaElement.Attributes()["tables"].(basetypes.MapValue); ok {
+				schema["tables_are_null"] = tablesMap.IsNull()
 				tables := []interface{}{}
 				for tName, te := range tablesMap.Elements() {
 					if tableElement, ok := te.(basetypes.ObjectValue); ok {
