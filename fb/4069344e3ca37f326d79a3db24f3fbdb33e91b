@@ -1,0 +1,25 @@
+fivetran/tests/mock/resource_connector_schema_allow_columns_test.go
+  a597775acd132041 138-139,429-430,731-732,965-968
+fivetran/tests/mock/resource_connector_schema_config_test.go
+  a597775acd132041 4966-4967,5015-5016,5046-5047,5099-5100
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.4",
+  "base_commit_sha": "fb4069344e3ca37f326d79a3db24f3fbdb33e91b",
+  "prompts": {
+    "a597775acd132041": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "530fbd8b-6ad7-4a8c-ba2f-8feef2c76928",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>",
+      "messages": [],
+      "total_additions": 38,
+      "total_deletions": 28,
+      "accepted_lines": 26,
+      "overriden_lines": 0
+    }
+  }
+}
