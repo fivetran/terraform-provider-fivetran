@@ -4963,7 +4963,8 @@ func TestResourceSchemaConfigTransientSchemaDuringRefreshWithAllowAllMock(t *tes
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 2)
+				// 4, not 2: ValidateConfig now calls GET .../schemas at plan time too.
+				assertEqual(t, getHandler.Interactions, 4)
 				assertEqual(t, patchHandler.Interactions, 0)
 				assertEqual(t, reloadHandler.Interactions, 0)
 				return nil
@@ -5011,7 +5012,8 @@ func TestResourceSchemaConfigTransientSchemaDuringRefreshWithAllowAllMock(t *tes
 		RefreshState: true,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 1)
+				// 2, not 1: ValidateConfig now calls GET .../schemas at plan time too.
+				assertEqual(t, getHandler.Interactions, 2)
 				assertEqual(t, patchHandler.Interactions, 0)
 				assertEqual(t, reloadHandler.Interactions, 0)
 				return nil
@@ -5041,7 +5043,8 @@ func TestResourceSchemaConfigTransientSchemaDuringRefreshWithAllowAllMock(t *tes
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 1)
+				// 2, not 1: ValidateConfig now calls GET .../schemas at plan time too.
+				assertEqual(t, getHandler.Interactions, 2)
 				assertEqual(t, patchHandler.Interactions, 0)
 				assertEqual(t, reloadHandler.Interactions, 0)
 				return nil
@@ -5093,7 +5096,8 @@ func TestResourceSchemaConfigTransientSchemaDuringRefreshWithAllowAllMock(t *tes
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 1)
+				// 2, not 1: ValidateConfig now calls GET .../schemas at plan time too.
+				assertEqual(t, getHandler.Interactions, 2)
 				assertEqual(t, patchHandler.Interactions, 0)
 				assertEqual(t, reloadHandler.Interactions, 0)
 				return nil

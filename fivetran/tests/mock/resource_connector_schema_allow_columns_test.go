@@ -135,7 +135,8 @@ func TestResourceSchemaDisableColumnMissingInSchemaResponseMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 2)   // 1 read attempt before reload, 1 read after create
+				// 4, not 2: ValidateConfig now calls GET .../schemas at plan time too.
+				assertEqual(t, getHandler.Interactions, 4)   // 1 read attempt before reload, 1 read after create, doubled by ValidateConfig
 				assertEqual(t, patchHandler.Interactions, 1) // Update SCM and align schema
 				assertNotEmpty(t, schemaData)                // schema initialised
 				return nil
@@ -425,7 +426,8 @@ func TestResourceSchemaEmptyColumnsListMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 2)   // 1 read attempt before reload, 1 read after create
+				// 4, not 2: ValidateConfig now calls GET .../schemas at plan time too.
+				assertEqual(t, getHandler.Interactions, 4)   // 1 read attempt before reload, 1 read after create, doubled by ValidateConfig
 				assertEqual(t, patchHandler.Interactions, 1) // Update SCM and align schema
 				assertNotEmpty(t, schemaData)                // schema initialised
 				return nil
@@ -726,7 +728,8 @@ func TestResourceSchemaEmptyColumnsListOldSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 2)   // 1 read attempt before reload, 1 read after create
+				// 4, not 2: ValidateConfig now calls GET .../schemas at plan time too.
+				assertEqual(t, getHandler.Interactions, 4)   // 1 read attempt before reload, 1 read after create, doubled by ValidateConfig
 				assertEqual(t, patchHandler.Interactions, 1) // Update SCM and align schema
 				assertNotEmpty(t, schemaData)                // schema initialised
 				return nil
@@ -959,7 +962,10 @@ func TestResourceSchemaDisabledSchemasWithUnexpectedTablesInResponseMock(t *test
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 2)
+				// 4, not 2: ValidateConfig now calls GET .../schemas at plan time too.
+				assertEqual(t, getHandler.Interactions, 4)
+				// Reload happens once, during ValidateConfig at plan time; Create's own
+				// apply-time schema read already sees the reloaded data.
 				assertEqual(t, postSchemasReloadHandler.Interactions, 1)
 				assertEqual(t, patchHandler.Interactions, 1)
 				assertNotEmpty(t, schemaData)
