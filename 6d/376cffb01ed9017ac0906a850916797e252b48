@@ -1,0 +1,37 @@
+fivetran/tests/mock/resource_connector_schema_config_test.go
+  44df30ae81c96a2b 517,839,947-948,4044,4158-4160,4609-4610
+  a597775acd132041 516,838,3417-3418,3494-3495,3555-3556,4162,4682-4688,4694-4695,4697,4706-4710,4714,4718,4722-4729,4731-4740
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.4",
+  "base_commit_sha": "6d376cffb01ed9017ac0906a850916797e252b48",
+  "prompts": {
+    "44df30ae81c96a2b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "01a33416-d147-46da-bd97-34ff60e4f7fc",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>",
+      "messages": [],
+      "total_additions": 66,
+      "total_deletions": 31,
+      "accepted_lines": 10,
+      "overriden_lines": 0
+    },
+    "a597775acd132041": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "530fbd8b-6ad7-4a8c-ba2f-8feef2c76928",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>",
+      "messages": [],
+      "total_additions": 75,
+      "total_deletions": 60,
+      "accepted_lines": 44,
+      "overriden_lines": 0
+    }
+  }
+}
