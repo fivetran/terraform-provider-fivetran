@@ -513,7 +513,6 @@ func TestResourceEmptyDefaultSchemaMock(t *testing.T) {
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 				assertEqual(t, schemaEmptyDefaultReloadHandler.Interactions, 1)
-				// 4, not 2: ValidateConfig now calls GET .../schemas at plan time too.
 				assertEqual(t, schemaEmptyDefaultGetHandler.Interactions, 4)
 				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 0)
 				assertNotEmpty(t, schemaEmptyDefaultData) // schema initialised
@@ -835,7 +834,6 @@ func TestSyncModeMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				// 4, not 2: ValidateConfig now calls GET .../schemas at plan time too.
 				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 4) // 1 read attempt before reload, 1 read after create
 				assertNotEmpty(t, schemaConsistentWithUpstreamData)                    // schema initialised
 				return nil
@@ -944,7 +942,6 @@ func TestParentTableMock(t *testing.T) {
 		Config: step1.Config,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				// 9, not 4: ValidateConfig now calls GET .../schemas at plan time too, adding extra reads across both steps' plan/apply cycles.
 				assertEqual(t, schemaParentTableGetHandler.Interactions, 9) // reads before/after create, then before/after this step's no-op apply
 				return nil
 			},
@@ -1153,7 +1150,7 @@ func TestConsistentWithUpstreamSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 4) // ValidateConfig now calls GET ./schemas at plan time too
+				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 4)
 				assertNotEmpty(t, schemaConsistentWithUpstreamData)
 				return nil
 			},
@@ -1251,7 +1248,7 @@ func TestResourceHashedAlignmentSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaHashedAlignmentGetHandler.Interactions, 4) // ValidateConfig now calls GET ./schemas at plan time too   // 1 read attempt before reload, 1 read after create
+				assertEqual(t, schemaHashedAlignmentGetHandler.Interactions, 4)
 				assertEqual(t, schemaHashedAlignmentPatchHandler.Interactions, 1) // Update hashed for column
 				assertNotEmpty(t, schemaHashedAlignmentData)                      // schema initialised
 				return nil
@@ -1290,7 +1287,7 @@ func TestResourceLockedSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaLockedGetHandler.Interactions, 4) // ValidateConfig now calls GET ./schemas at plan time too   // 1 read attempt before reload, 1 read after create
+				assertEqual(t, schemaLockedGetHandler.Interactions, 4)
 				assertEqual(t, schemaLockedPatchHandler.Interactions, 1) // Update SCM and align schema
 				assertNotEmpty(t, schemaLockedData)                      // schema initialised
 				return nil
@@ -1402,7 +1399,7 @@ func TestConsistentWithUpstreamSchemaMappedMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 4) // ValidateConfig now calls GET ./schemas at plan time too
+				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 4)
 				assertNotEmpty(t, schemaConsistentWithUpstreamData)
 				return nil
 			},
@@ -1837,7 +1834,7 @@ func TestResourceSchemaPrimaryKeyComputedMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaPrimaryKeyGetHandler.Interactions, 5) // ValidateConfig now calls GET ./schemas at plan time too
+				assertEqual(t, schemaPrimaryKeyGetHandler.Interactions, 5)
 				assertNotEmpty(t, schemaPrimaryKeyData)
 				return nil
 			},
@@ -2174,7 +2171,7 @@ func TestResourceSchemaPrimaryKeyNullDefaultMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaPrimaryKeyNullGetHandler.Interactions, 5) // ValidateConfig now calls GET ./schemas at plan time too
+				assertEqual(t, schemaPrimaryKeyNullGetHandler.Interactions, 5)
 				assertNotEmpty(t, schemaPrimaryKeyNullData)
 				return nil
 			},
@@ -2457,7 +2454,7 @@ func TestResourceSchemaPrimaryKeyLargeSchemaNoNoiseMock(t *testing.T) {
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaLargeGetHandler.Interactions, 5) // ValidateConfig now calls GET ./schemas at plan time too
+				assertEqual(t, schemaLargeGetHandler.Interactions, 5)
 				// PATCH handler called during create (at least once)
 				if schemaLargePatchHandler.Interactions < 1 {
 					return fmt.Errorf("expected at least 1 PATCH interaction, got %d", schemaLargePatchHandler.Interactions)
@@ -3414,7 +3411,6 @@ func TestResourceSchemaConsequentGetReturnsLessColumnsMock(t *testing.T) {
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				// 4, not 2: ValidateConfig now calls GET .../schemas at plan time too.
 				assertEqual(t, schemaGetHandler.Interactions, 4)
 				assertEqual(t, schemaPatchHandler.Interactions, 0)
 				assertEqual(t, schemaReloadPostHandler.Interactions, 0)
@@ -3491,7 +3487,6 @@ func TestResourceSchemaConsequentGetReturnsLessColumnsMock(t *testing.T) {
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				// 6, not 4: ValidateConfig now calls GET .../schemas at plan time too.
 				assertEqual(t, schemaGetHandler.Interactions, 6)
 				assertEqual(t, schemaPatchHandler.Interactions, 0)
 				assertEqual(t, schemaReloadPostHandler.Interactions, 0)
@@ -3552,7 +3547,6 @@ func TestResourceSchemaConsequentGetReturnsLessColumnsMock(t *testing.T) {
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				// 6, not 4: ValidateConfig now calls GET .../schemas at plan time too.
 				assertEqual(t, schemaGetHandler.Interactions, 6)
 				assertEqual(t, schemaPatchHandler.Interactions, 0)
 				return nil
@@ -4040,7 +4034,6 @@ func TestResourceSchemaReloadUsesPreserveModeMock(t *testing.T) {
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-					// 4, not 2: ValidateConfig now calls GET ./schemas at plan time too
 					assertEqual(t, schemaGetHandler.Interactions, 4)
 					assertEqual(t, schemaPatchHandler.Interactions, 0)
 					assertEqual(t, schemaReloadPostHandler.Interactions, 0)
@@ -4606,7 +4599,6 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMo
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-					// 4, not 2: ValidateConfig now calls GET .../schemas at plan time too.
 					assertEqual(t, schemaGetHandler.Interactions, 4)
 					assertEqual(t, schemaPatchHandler.Interactions, 0)
 					assertEqual(t, schemaReloadPostHandler.Interactions, 0)
@@ -4680,12 +4672,6 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMo
 			func(s *terraform.State) error {
 					assertEqual(t, schemasReloadBody["exclude_mode"], "PRESERVE")
 
-					// ValidateConfig now reloads and populates columns at plan time, before Update
-					// runs at apply time. Because the reloaded schema response never carries columns
-					// (the API only returns columns previously managed by the user), Update's own
-					// read-override-patch cycle can't see the columns ValidateConfig already fetched,
-					// so it treats the locally configured columns as new on every re-read and ends up
-					// patching twice. Only the last patch body survives in this variable.
 					assertKeyExists(t, schemasPatchRequestBody, "schemas")
 				 	assertKeyExists(t, schemasPatchRequestBody["schemas"].(map[string]interface {}), "public")
 				 	patchSchema := schemasPatchRequestBody["schemas"].(map[string]interface {})["public"].(map[string]interface {})
@@ -4724,19 +4710,10 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMo
 					assertEqual(t, table3Col1Patch["enabled"], true)
 					assertEqual(t, table3Col1Patch["hashed"], true)
 
-					// 1, not 2: the reload happens once, during ValidateConfig at plan time;
-					// Update's apply-time schema read already sees the reloaded (fresh) data,
-					// so it never has to trigger its own reload.
 					assertEqual(t, schemaReloadPostHandler.Interactions, 1)
-					// 6: 1 GET from ValidateConfig, plus 5 from Update (initial read, then a
-					// read-patch-reread cycle repeated twice since it double-patches, see above).
 					assertEqual(t, schemaGetHandler.Interactions, 6)
-					// 1, not 2: column population for BLOCK_ALL after reload now happens once,
-					// during ValidateConfig; Update's own reload-triggered re-population never
-					// runs because Update never detects that it needs to reload.
 					assertEqual(t, table2GetColumnsHandler.Interactions, 1)
 					assertEqual(t, table3GetColumnsHandler.Interactions, 1)
-					// 2, not 1: Update patches twice for the reason described above.
 					assertEqual(t, schemaPatchHandler.Interactions, 2)
 					return nil
 				},
@@ -4813,10 +4790,6 @@ func TestResourceConnectorSchemaConfigImportMock(t *testing.T) {
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 				assertEqual(t, schemaEmptyDefaultReloadHandler.Interactions, 1)
-				// 4, not 2: ValidateConfig now calls GET .../schemas at plan time too -
-				// once on the initial plan (404, no schema yet, no-op) and once on the
-				// post-apply re-plan (200, schema now exists, validated), in addition to
-				// Create's own 2 GET calls.
 				assertEqual(t, schemaEmptyDefaultGetHandler.Interactions, 4)
 				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 0)
 				assertNotEmpty(t, schemaEmptyDefaultData) // schema initialised
@@ -4963,7 +4936,6 @@ func TestResourceSchemaConfigTransientSchemaDuringRefreshWithAllowAllMock(t *tes
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				// 4, not 2: ValidateConfig now calls GET .../schemas at plan time too.
 				assertEqual(t, getHandler.Interactions, 4)
 				assertEqual(t, patchHandler.Interactions, 0)
 				assertEqual(t, reloadHandler.Interactions, 0)
@@ -5012,7 +4984,6 @@ func TestResourceSchemaConfigTransientSchemaDuringRefreshWithAllowAllMock(t *tes
 		RefreshState: true,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				// 2, not 1: ValidateConfig now calls GET .../schemas at plan time too.
 				assertEqual(t, getHandler.Interactions, 2)
 				assertEqual(t, patchHandler.Interactions, 0)
 				assertEqual(t, reloadHandler.Interactions, 0)
@@ -5043,7 +5014,6 @@ func TestResourceSchemaConfigTransientSchemaDuringRefreshWithAllowAllMock(t *tes
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				// 2, not 1: ValidateConfig now calls GET .../schemas at plan time too.
 				assertEqual(t, getHandler.Interactions, 2)
 				assertEqual(t, patchHandler.Interactions, 0)
 				assertEqual(t, reloadHandler.Interactions, 0)
@@ -5096,7 +5066,6 @@ func TestResourceSchemaConfigTransientSchemaDuringRefreshWithAllowAllMock(t *tes
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				// 2, not 1: ValidateConfig now calls GET .../schemas at plan time too.
 				assertEqual(t, getHandler.Interactions, 2)
 				assertEqual(t, patchHandler.Interactions, 0)
 				assertEqual(t, reloadHandler.Interactions, 0)
