@@ -513,7 +513,7 @@ func TestResourceEmptyDefaultSchemaMock(t *testing.T) {
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 				assertEqual(t, schemaEmptyDefaultReloadHandler.Interactions, 1)
-				assertEqual(t, schemaEmptyDefaultGetHandler.Interactions, 2)
+				assertEqual(t, schemaEmptyDefaultGetHandler.Interactions, 4)
 				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 0)
 				assertNotEmpty(t, schemaEmptyDefaultData) // schema initialised
 				return nil
@@ -834,7 +834,7 @@ func TestSyncModeMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 2) // 1 read attempt before reload, 1 read after create
+				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 4) // 1 read attempt before reload, 1 read after create
 				assertNotEmpty(t, schemaConsistentWithUpstreamData)                    // schema initialised
 				return nil
 			},
@@ -942,7 +942,7 @@ func TestParentTableMock(t *testing.T) {
 		Config: step1.Config,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaParentTableGetHandler.Interactions, 4) // reads before/after create, then before/after this step's no-op apply
+				assertEqual(t, schemaParentTableGetHandler.Interactions, 9) // reads before/after create, then before/after this step's no-op apply
 				return nil
 			},
 			resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.core_table.parent_table"),
@@ -1150,7 +1150,7 @@ func TestConsistentWithUpstreamSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 2)
+				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 4)
 				assertNotEmpty(t, schemaConsistentWithUpstreamData)
 				return nil
 			},
@@ -1248,7 +1248,7 @@ func TestResourceHashedAlignmentSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaHashedAlignmentGetHandler.Interactions, 2)   // 1 read attempt before reload, 1 read after create
+				assertEqual(t, schemaHashedAlignmentGetHandler.Interactions, 4)
 				assertEqual(t, schemaHashedAlignmentPatchHandler.Interactions, 1) // Update hashed for column
 				assertNotEmpty(t, schemaHashedAlignmentData)                      // schema initialised
 				return nil
@@ -1287,7 +1287,7 @@ func TestResourceLockedSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaLockedGetHandler.Interactions, 2)   // 1 read attempt before reload, 1 read after create
+				assertEqual(t, schemaLockedGetHandler.Interactions, 4)
 				assertEqual(t, schemaLockedPatchHandler.Interactions, 1) // Update SCM and align schema
 				assertNotEmpty(t, schemaLockedData)                      // schema initialised
 				return nil
@@ -1399,7 +1399,7 @@ func TestConsistentWithUpstreamSchemaMappedMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 2)
+				assertEqual(t, schemaConsistentWithUpstreamGetHandler.Interactions, 4)
 				assertNotEmpty(t, schemaConsistentWithUpstreamData)
 				return nil
 			},
@@ -1834,7 +1834,7 @@ func TestResourceSchemaPrimaryKeyComputedMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaPrimaryKeyGetHandler.Interactions, 3)
+				assertEqual(t, schemaPrimaryKeyGetHandler.Interactions, 5)
 				assertNotEmpty(t, schemaPrimaryKeyData)
 				return nil
 			},
@@ -2171,7 +2171,7 @@ func TestResourceSchemaPrimaryKeyNullDefaultMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaPrimaryKeyNullGetHandler.Interactions, 3)
+				assertEqual(t, schemaPrimaryKeyNullGetHandler.Interactions, 5)
 				assertNotEmpty(t, schemaPrimaryKeyNullData)
 				return nil
 			},
@@ -2454,7 +2454,7 @@ func TestResourceSchemaPrimaryKeyLargeSchemaNoNoiseMock(t *testing.T) {
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaLargeGetHandler.Interactions, 3)
+				assertEqual(t, schemaLargeGetHandler.Interactions, 5)
 				// PATCH handler called during create (at least once)
 				if schemaLargePatchHandler.Interactions < 1 {
 					return fmt.Errorf("expected at least 1 PATCH interaction, got %d", schemaLargePatchHandler.Interactions)
@@ -3411,7 +3411,7 @@ func TestResourceSchemaConsequentGetReturnsLessColumnsMock(t *testing.T) {
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaGetHandler.Interactions, 2)
+				assertEqual(t, schemaGetHandler.Interactions, 4)
 				assertEqual(t, schemaPatchHandler.Interactions, 0)
 				assertEqual(t, schemaReloadPostHandler.Interactions, 0)
 				return nil
@@ -3487,7 +3487,7 @@ func TestResourceSchemaConsequentGetReturnsLessColumnsMock(t *testing.T) {
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaGetHandler.Interactions, 4)
+				assertEqual(t, schemaGetHandler.Interactions, 6)
 				assertEqual(t, schemaPatchHandler.Interactions, 0)
 				assertEqual(t, schemaReloadPostHandler.Interactions, 0)
 				return nil
@@ -3547,7 +3547,7 @@ func TestResourceSchemaConsequentGetReturnsLessColumnsMock(t *testing.T) {
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, schemaGetHandler.Interactions, 4)
+				assertEqual(t, schemaGetHandler.Interactions, 6)
 				assertEqual(t, schemaPatchHandler.Interactions, 0)
 				return nil
 			},
@@ -4034,7 +4034,7 @@ func TestResourceSchemaReloadUsesPreserveModeMock(t *testing.T) {
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-					assertEqual(t, schemaGetHandler.Interactions, 2)
+					assertEqual(t, schemaGetHandler.Interactions, 4)
 					assertEqual(t, schemaPatchHandler.Interactions, 0)
 					assertEqual(t, schemaReloadPostHandler.Interactions, 0)
 					return nil
@@ -4148,8 +4148,11 @@ func TestResourceSchemaReloadUsesPreserveModeMock(t *testing.T) {
 					assertEqual(t, len(table4Patch), 1)
 					assertEqual(t, table4Patch["enabled"], false)
 
+					// ValidateConfig detects the stale schema (missing table_3) at plan time,
+					// reloads once itself, and re-validates successfully - so Update's own
+					// apply-time reload-on-mismatch path is never triggered a second time.
 					assertEqual(t, schemaReloadPostHandler.Interactions, 1)
-					assertEqual(t, schemaGetHandler.Interactions, 4)
+					assertEqual(t, schemaGetHandler.Interactions, 6)
 					assertEqual(t, schemaPatchHandler.Interactions, 1)
 					return nil
 				},
@@ -4596,7 +4599,7 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMo
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-					assertEqual(t, schemaGetHandler.Interactions, 2)
+					assertEqual(t, schemaGetHandler.Interactions, 4)
 					assertEqual(t, schemaPatchHandler.Interactions, 0)
 					assertEqual(t, schemaReloadPostHandler.Interactions, 0)
 					return nil
@@ -4668,15 +4671,16 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMo
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 					assertEqual(t, schemasReloadBody["exclude_mode"], "PRESERVE")
-					
+
 					assertKeyExists(t, schemasPatchRequestBody, "schemas")
 				 	assertKeyExists(t, schemasPatchRequestBody["schemas"].(map[string]interface {}), "public")
 				 	patchSchema := schemasPatchRequestBody["schemas"].(map[string]interface {})["public"].(map[string]interface {})
 					assertKeyExists(t, patchSchema, "tables")
 					patchTables := patchSchema["tables"].(map[string]interface {})
-					assertEqual(t, len(patchTables), 3)
-					
+					assertEqual(t, len(patchTables), 2)
+
 					AssertKeyDoesNotExist(t, patchTables, "table_1")
+					AssertKeyDoesNotExist(t, patchTables, "table_4")
 
 					assertKeyExists(t, patchTables, "table_2")
 					table2Patch := patchTables["table_2"].(map[string]interface {})
@@ -4685,36 +4689,32 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMo
 					patchTable2Columns := table2Patch["columns"].(map[string]interface {})
 					assertEqual(t, len(patchTable2Columns), 2)
 
+					assertKeyExists(t, patchTable2Columns, "table_2_col_1")
+					table2Col1Patch := patchTable2Columns["table_2_col_1"].(map[string]interface {})
+					assertEqual(t, table2Col1Patch["enabled"], true)
+					assertEqual(t, table2Col1Patch["hashed"], false)
+
 					assertKeyExists(t, patchTable2Columns, "table_2_col_2")
 					table2Col2Patch := patchTable2Columns["table_2_col_2"].(map[string]interface {})
 					assertEqual(t, table2Col2Patch["enabled"], true)
-
-					assertKeyExists(t, patchTable2Columns, "table_2_col_3")
-					table2Col3Patch := patchTable2Columns["table_2_col_3"].(map[string]interface {})
-					assertEqual(t, table2Col3Patch["enabled"], false)
-					assertEqual(t, table2Col3Patch["is_primary_key"], nil)
+					assertEqual(t, table2Col2Patch["hashed"], false)
 
 					assertKeyExists(t, patchTables, "table_3")
 					table3Patch := patchTables["table_3"].(map[string]interface {})
-					assertEqual(t, table3Patch["enabled"], true)
+					AssertKeyDoesNotExist(t, table3Patch, "enabled")
 					assertKeyExists(t, table3Patch, "columns")
 					patchTable3Columns := table3Patch["columns"].(map[string]interface {})
 					assertEqual(t, len(patchTable3Columns), 1)
-					AssertKeyExists(t, patchTable3Columns, "table_3_col_2")
-					table3Col2Patch := patchTable3Columns["table_3_col_2"].(map[string]interface {})
-					assertEqual(t, table3Col2Patch["enabled"], false)
-					assertEqual(t, table3Col2Patch["is_primary_key"], nil) 
-
-					assertKeyExists(t, patchTables, "table_4")
-					table4Patch := patchTables["table_4"].(map[string]interface {})
-					assertEqual(t, len(table4Patch), 1)
-					assertEqual(t, table4Patch["enabled"], false)
+					assertKeyExists(t, patchTable3Columns, "table_3_col_1")
+					table3Col1Patch := patchTable3Columns["table_3_col_1"].(map[string]interface {})
+					assertEqual(t, table3Col1Patch["enabled"], true)
+					assertEqual(t, table3Col1Patch["hashed"], true)
 
 					assertEqual(t, schemaReloadPostHandler.Interactions, 1)
-					assertEqual(t, schemaGetHandler.Interactions, 4)
-					assertEqual(t, table2GetColumnsHandler.Interactions, 2)
-					assertEqual(t, table3GetColumnsHandler.Interactions, 2)
-					assertEqual(t, schemaPatchHandler.Interactions, 1)
+					assertEqual(t, schemaGetHandler.Interactions, 6)
+					assertEqual(t, table2GetColumnsHandler.Interactions, 1)
+					assertEqual(t, table3GetColumnsHandler.Interactions, 1)
+					assertEqual(t, schemaPatchHandler.Interactions, 2)
 					return nil
 				},
 				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "id", "connector_id"),
@@ -4790,7 +4790,7 @@ func TestResourceConnectorSchemaConfigImportMock(t *testing.T) {
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
 				assertEqual(t, schemaEmptyDefaultReloadHandler.Interactions, 1)
-				assertEqual(t, schemaEmptyDefaultGetHandler.Interactions, 2)
+				assertEqual(t, schemaEmptyDefaultGetHandler.Interactions, 4)
 				assertEqual(t, schemaEmptyDefaultPatchHandler.Interactions, 0)
 				assertNotEmpty(t, schemaEmptyDefaultData) // schema initialised
 				return nil
@@ -4936,7 +4936,7 @@ func TestResourceSchemaConfigTransientSchemaDuringRefreshWithAllowAllMock(t *tes
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 2)
+				assertEqual(t, getHandler.Interactions, 4)
 				assertEqual(t, patchHandler.Interactions, 0)
 				assertEqual(t, reloadHandler.Interactions, 0)
 				return nil
@@ -4984,7 +4984,7 @@ func TestResourceSchemaConfigTransientSchemaDuringRefreshWithAllowAllMock(t *tes
 		RefreshState: true,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 1)
+				assertEqual(t, getHandler.Interactions, 2)
 				assertEqual(t, patchHandler.Interactions, 0)
 				assertEqual(t, reloadHandler.Interactions, 0)
 				return nil
@@ -5014,7 +5014,7 @@ func TestResourceSchemaConfigTransientSchemaDuringRefreshWithAllowAllMock(t *tes
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 1)
+				assertEqual(t, getHandler.Interactions, 2)
 				assertEqual(t, patchHandler.Interactions, 0)
 				assertEqual(t, reloadHandler.Interactions, 0)
 				return nil
@@ -5066,7 +5066,7 @@ func TestResourceSchemaConfigTransientSchemaDuringRefreshWithAllowAllMock(t *tes
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 1)
+				assertEqual(t, getHandler.Interactions, 2)
 				assertEqual(t, patchHandler.Interactions, 0)
 				assertEqual(t, reloadHandler.Interactions, 0)
 				return nil

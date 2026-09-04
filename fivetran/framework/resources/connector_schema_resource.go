@@ -88,6 +88,9 @@ func (r *connectorSchema) createNewSchema(ctx context.Context, connectorID strin
 	}
 
 	// Plan is inconsistent
+	// TODO(schema-config-plan-validation): now caught earlier by ValidateConfig (see
+	// connector_schema_validate.go). Remove this apply-time duplicate once ValidateConfig
+	// has been out for a release or two and we're confident it always runs first.
 	if !data.IsValid() {
 		resp.Diagnostics.AddError(
 			"Unable to Create Connector Schema Resource.",
@@ -164,6 +167,9 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 	}
 
 	// Plan is inconsistent
+	// TODO(schema-config-plan-validation): now caught earlier by ValidateConfig (see
+	// connector_schema_validate.go). Remove this apply-time duplicate once ValidateConfig
+	// has been out for a release or two and we're confident it always runs first.
 	if !data.IsValid() {
 		resp.Diagnostics.AddError(
 			"Unable to Create Connector Schema Resource.",
@@ -415,6 +421,10 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
+	// TODO(schema-config-plan-validation): the plan.IsValid() half is now caught earlier by
+	// ValidateConfig (see connector_schema_validate.go) and can be dropped once that's been out
+	// for a release or two. state.IsValid() still needs to stay — ValidateConfig only sees the
+	// new config (req.Config), not prior applied state.
 	if !plan.IsValid() || !state.IsValid() {
 		resp.Diagnostics.AddError(
 			"Unable to Update Connector Schema Resource.",

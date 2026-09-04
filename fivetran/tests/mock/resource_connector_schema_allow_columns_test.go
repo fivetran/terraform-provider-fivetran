@@ -135,7 +135,7 @@ func TestResourceSchemaDisableColumnMissingInSchemaResponseMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 2)   // 1 read attempt before reload, 1 read after create
+				assertEqual(t, getHandler.Interactions, 4)   // 1 read attempt before reload, 1 read after create
 				assertEqual(t, patchHandler.Interactions, 1) // Update SCM and align schema
 				assertNotEmpty(t, schemaData)                // schema initialised
 				return nil
@@ -425,7 +425,7 @@ func TestResourceSchemaEmptyColumnsListMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 2)   // 1 read attempt before reload, 1 read after create
+				assertEqual(t, getHandler.Interactions, 4)   // 1 read attempt before reload, 1 read after create
 				assertEqual(t, patchHandler.Interactions, 1) // Update SCM and align schema
 				assertNotEmpty(t, schemaData)                // schema initialised
 				return nil
@@ -726,7 +726,7 @@ func TestResourceSchemaEmptyColumnsListOldSchemaMock(t *testing.T) {
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 2)   // 1 read attempt before reload, 1 read after create
+				assertEqual(t, getHandler.Interactions, 4)   // 1 read attempt before reload, 1 read after create
 				assertEqual(t, patchHandler.Interactions, 1) // Update SCM and align schema
 				assertNotEmpty(t, schemaData)                // schema initialised
 				return nil
@@ -959,7 +959,7 @@ func TestResourceSchemaDisabledSchemasWithUnexpectedTablesInResponseMock(t *test
 
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				assertEqual(t, getHandler.Interactions, 2)
+				assertEqual(t, getHandler.Interactions, 4)
 				assertEqual(t, postSchemasReloadHandler.Interactions, 1)
 				assertEqual(t, patchHandler.Interactions, 1)
 				assertNotEmpty(t, schemaData)
