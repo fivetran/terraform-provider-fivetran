@@ -3,6 +3,7 @@ package resources
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/connections"
@@ -15,6 +16,13 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
+
+// defaultSchemaOperationTimeout bounds the reload+validate+apply sequence in Create/Update
+// when the user hasn't set an explicit `timeouts` block. Reload has no server-side polling —
+// it's a single HTTP call — but on a large/slow source schema it can still take a while, and
+// the provider's HTTP client has no request timeout of its own (see go-fivetran's http.Client),
+// so without this, a stalled reload call could hang the whole `terraform apply` indefinitely.
+const defaultSchemaOperationTimeout = 30 * time.Minute
 
 func ConnectorSchema() resource.Resource {
 	return &connectorSchema{}
@@ -40,7 +48,7 @@ func (r *connectorSchema) ImportState(ctx context.Context, req resource.ImportSt
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
-func (r *connectorSchema) reloadSchema(ctx context.Context, connectorID string, diag diag.Diagnostics) connections.ConnectionSchemaDetailsResponse {
+func (r *connectorSchema) reloadSchema(ctx context.Context, connectorID string, diag *diag.Diagnostics) connections.ConnectionSchemaDetailsResponse {
 	client := r.GetClient()
 	if client == nil {
 		diag.AddError(
@@ -63,61 +71,6 @@ func (r *connectorSchema) reloadSchema(ctx context.Context, connectorID string, 
 		return connections.ConnectionSchemaDetailsResponse{}
 	}
 	return schemaResponse
-}
-
-func (r *connectorSchema) createNewSchema(ctx context.Context, connectorID string, req resource.CreateRequest, resp *resource.CreateResponse) {
-	client := r.GetClient()
-	if client == nil {
-		resp.Diagnostics.AddError(
-			"Unconfigured Fivetran Client",
-			"Please report this issue to the provider developers.",
-		)
-
-		return
-	}
-
-	var data model.ConnectorSchemaResourceModel
-
-	// Read Terraform plan data into the model
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
-	data.ConnectorId = types.StringValue(connectorID)
-
-	// Error while reading plan
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	// Plan is inconsistent
-	// TODO(schema-config-plan-validation): now caught earlier by ValidateConfig (see
-	// connector_schema_validate.go). Remove this apply-time duplicate once ValidateConfig
-	// has been out for a release or two and we're confident it always runs first.
-	if !data.IsValid() {
-		resp.Diagnostics.AddError(
-			"Unable to Create Connector Schema Resource.",
-			"You can use solely one field to define schema settings.",
-		)
-		return
-	}
-
-	schemaChangeHandling := data.SchemaChangeHandling.ValueString()
-	localConfig := data.GetSchemaConfig()
-	svc := localConfig.PrepareCreateRequest(client.NewConnectionSchemaCreateService()).
-		ConnectionID(connectorID).
-		SchemaChangeHandling(schemaChangeHandling)
-
-	// we should not parse response here because it will contain only applied diffs, not the whole configuration
-	applyResponse, err := svc.Do(ctx)
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Unable to Create Connector Schema Resource.",
-			fmt.Sprintf("Error while applying schema config patch. %v; code: %v; message: %v", err, applyResponse.Code, applyResponse.Message),
-		)
-		return
-	}
-	data.ReadFromResponse(applyResponse, false, &resp.Diagnostics)
-	data.Id = types.StringValue(connectorID)
-	data.ConnectorId = types.StringValue(connectorID)
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
 func findConnectorIdByGroupAndSchemaName(ctx context.Context, client *fivetran.Client, model *model.ConnectorSchemaResourceModel) (string, error) {
@@ -178,6 +131,14 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 
+	createTimeout, diags := data.Timeouts.Create(ctx, defaultSchemaOperationTimeout)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ctx, cancel := context.WithTimeout(ctx, createTimeout)
+	defer cancel()
+
 	var connectorID = data.ConnectorId.ValueString()
 	schemaChangeHandling := data.SchemaChangeHandling.ValueString()
 
@@ -208,14 +169,10 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 			)
 			return
 		} else {
-			if data.ValidationLevel.ValueString() == "NONE" {
-				// create new desired schema
-				r.createNewSchema(ctx, connectorID, req, resp)
-				return
-			} else {
-				// reload because connector doens't have any schema settings yet
-				needReload = true
-			}
+			// Reload because connector doesn't have any schema settings yet — reload is
+			// required even when validation_level is NONE, since PATCH can't update a
+			// schema config that doesn't exist yet; reload is what materializes it.
+			needReload = true
 		}
 	} else {
 		// We might have to refresh schema, not all tables might be saved in current configuration
@@ -234,7 +191,7 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 	}
 
 	if needReload {
-		schemaResponse = r.reloadSchema(ctx, connectorID, resp.Diagnostics)
+		schemaResponse = r.reloadSchema(ctx, connectorID, &resp.Diagnostics)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -310,6 +267,18 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 			fmt.Sprintf("Error while reading schema after schema change handling apply. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
 		)
 		return
+	}
+
+	if needReload && schemaChangeHandling == configSchema.BLOCK_ALL {
+		// response doesn't contain columns, need to go through tables and get columns
+		err, _ = data.ValidateSchemaElements(schemaResponse, true, *client, ctx)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to create Connector Schema Resource.",
+				fmt.Sprintf("Schema configuration is not aligned with source schema after update. Details:\n %v;", err),
+			)
+			return
+		}
 	}
 
 	// after applying changes it may come that columns weren't saved in table configs, but after switching schema_change_handling - new columns apper in enabled tables.
@@ -433,6 +402,14 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
+	updateTimeout, diags := plan.Timeouts.Update(ctx, defaultSchemaOperationTimeout)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ctx, cancel := context.WithTimeout(ctx, updateTimeout)
+	defer cancel()
+
 	connectorID := state.ConnectorId.ValueString()
 
 	schemaResponse, err := client.NewConnectionSchemaDetails().ConnectionID(connectorID).Do(ctx)
@@ -447,19 +424,32 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 	forceColumnsPopulationAfterSchemaReloaded := false
 	if plan.ValidationLevel.ValueString() != "NONE" {
 		// Before applying changes we should validate existing state and planned changes and decide if we need to reload schema
-		err, _ := plan.ValidateSchemaElements(schemaResponse, false, *client, ctx)
+		err, needReloadSchema := plan.ValidateSchemaElements(schemaResponse, false, *client, ctx)
 		if err != nil {
-			schemaResponse = r.reloadSchema(ctx, connectorID, resp.Diagnostics)
+			// Match Create: only reload if the validation module says reloading could
+			// help. A validation error that isn't reload-fixable (e.g. a genuinely
+			// misnamed column) should fail immediately instead of wasting a reload call.
+			if !needReloadSchema {
+				resp.Diagnostics.AddError(
+					"Unable to Update Connector Schema Resource",
+					fmt.Sprintf("Column config validation failed. %v", err),
+				)
+				return
+			}
+			schemaResponse = r.reloadSchema(ctx, connectorID, &resp.Diagnostics)
+			if resp.Diagnostics.HasError() {
+				return
+			}
 			forceColumnsPopulationAfterSchemaReloaded = (plan.SchemaChangeHandling.ValueString() == configSchema.BLOCK_ALL)
-		}
 
-		err, _ = plan.ValidateSchemaElements(schemaResponse, forceColumnsPopulationAfterSchemaReloaded, *client, ctx)
-		if err != nil {
-			resp.Diagnostics.AddError(
-				"Unable to update Connector Schema Resource.",
-				fmt.Sprintf("Schema configuration is not aligned with source schema. Details:\n %v;", err),
-			)
-			return
+			err, _ = plan.ValidateSchemaElements(schemaResponse, forceColumnsPopulationAfterSchemaReloaded, *client, ctx)
+			if err != nil {
+				resp.Diagnostics.AddError(
+					"Unable to update Connector Schema Resource.",
+					fmt.Sprintf("Schema configuration is not aligned with source schema. Details:\n %v;", err),
+				)
+				return
+			}
 		}
 	}
 
@@ -486,7 +476,7 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 		svc := config.PrepareRequest(client.NewConnectionSchemaUpdateService())
 		svc.ConnectionID(connectorID)
 		// update schema_change_handling as well if needed
-		if plan.SchemaChangeHandling.String() != "" && plan.SchemaChangeHandling != state.SchemaChangeHandling {
+		if plan.SchemaChangeHandling.ValueString() != "" && plan.SchemaChangeHandling.ValueString() != schemaResponse.Data.SchemaChangeHandling {
 			svc.SchemaChangeHandling(plan.SchemaChangeHandling.ValueString())
 		}
 		// we should not parse response here because it will contain only applied diffs, not the whole configuration
@@ -502,7 +492,7 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 
 	} else {
 		// update schema_change_handling if needed
-		if plan.SchemaChangeHandling.String() != "" && plan.SchemaChangeHandling != state.SchemaChangeHandling {
+		if plan.SchemaChangeHandling.ValueString() != "" && plan.SchemaChangeHandling.ValueString() != schemaResponse.Data.SchemaChangeHandling {
 			svc := client.NewConnectionSchemaUpdateService().ConnectionID(connectorID)
 			svc.SchemaChangeHandling(plan.SchemaChangeHandling.ValueString())
 			schResponse, err := svc.Do(ctx)
