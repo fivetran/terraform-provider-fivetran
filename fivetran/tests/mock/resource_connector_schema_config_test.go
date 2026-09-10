@@ -5119,3 +5119,184 @@ func TestResourceSchemaConfigTransientSchemaDuringRefreshWithAllowAllMock(t *tes
 		},
 	)
 }
+
+// A brand-new connector (GET returns NotFound_SchemaConfig) with validation_level = "NONE"
+// must still go through reload -> validate -> PATCH, the same as every other validation
+// level, instead of the old createNewSchema fast path that POSTed the local config directly
+// with no reload and no validation.
+func TestResourceSchemaConfigNewConnectionValidationLevelNoneMock(t *testing.T) {
+	var (
+		getHandler        *mock.Handler
+		postCreateHandler *mock.Handler
+		reloadHandler     *mock.Handler
+		patchHandler      *mock.Handler
+		schemaGetResponse map[string]interface{}
+		patchRequestBody  map[string]interface{}
+	)
+
+	reloadedSchemaResponse := `
+			{
+				"enable_new_by_default": false,
+				"schema_change_handling": "ALLOW_ALL",
+				"schemas": {
+					"public": {
+						"name_in_destination": "public",
+						"enabled": true,
+						"tables": {
+							"table_1": {
+								"name_in_destination": "table_1",
+								"enabled": true,
+								"supports_columns_config": true,
+								"sync_mode": "SOFT_DELETE",
+								"enabled_patch_settings": { "allowed": true },
+								"columns": {
+									"table_1_col_1": {
+										"name_in_destination": "table_1_col_1",
+										"enabled": true,
+										"hashed": false,
+										"enabled_patch_settings": { "allowed": true }
+									}
+								}
+							}
+						}
+					}
+				}
+			}`
+
+	patchedSchemaResponse := `
+			{
+				"enable_new_by_default": false,
+				"schema_change_handling": "ALLOW_ALL",
+				"schemas": {
+					"public": {
+						"name_in_destination": "public",
+						"enabled": true,
+						"tables": {
+							"table_1": {
+								"name_in_destination": "table_1",
+								"enabled": true,
+								"supports_columns_config": true,
+								"sync_mode": "SOFT_DELETE",
+								"enabled_patch_settings": { "allowed": true },
+								"columns": {
+									"table_1_col_1": {
+										"name_in_destination": "table_1_col_1",
+										"enabled": true,
+										"hashed": true,
+										"enabled_patch_settings": { "allowed": true }
+									}
+								}
+							}
+						}
+					}
+				}
+			}`
+
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				validation_level = "NONE"
+				schema_change_handling = "ALLOW_ALL"
+				schemas = {
+					"public" = {
+						enabled = true
+						tables = {
+							"table_1" = {
+								sync_mode = "SOFT_DELETE"
+								enabled = true
+								columns = {
+									"table_1_col_1" = {
+										enabled = true
+										hashed = true
+									}
+								}
+							}
+						}
+					}
+				}
+			}`,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				// The old createNewSchema fast path POSTed the config directly and is
+				// gone now — a brand-new connector must reload first, same as every
+				// other validation_level, and PATCH the local config (hashed=true)
+				// against the reloaded schema (hashed=false).
+				assertEqual(t, getHandler.Interactions, 2)
+				assertEqual(t, postCreateHandler.Interactions, 0)
+				assertEqual(t, reloadHandler.Interactions, 1)
+				assertEqual(t, patchHandler.Interactions, 1)
+
+				assertKeyExists(t, patchRequestBody, "schemas")
+				schemasBody := patchRequestBody["schemas"].(map[string]interface{})
+				assertKeyExists(t, schemasBody, "public")
+				publicBody := schemasBody["public"].(map[string]interface{})
+				tablesBody := assertKeyExists(t, publicBody, "tables").(map[string]interface{})
+				table1Body := assertKeyExists(t, tablesBody, "table_1").(map[string]interface{})
+				columnsBody := assertKeyExists(t, table1Body, "columns").(map[string]interface{})
+				col1Body := assertKeyExists(t, columnsBody, "table_1_col_1").(map[string]interface{})
+				assertEqual(t, col1Body["hashed"], true)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "connector_id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "validation_level", "NONE"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_1.columns.table_1_col_1.enabled", "true"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				mockClient.Reset()
+				schemaGetResponse = nil
+				patchRequestBody = nil
+
+				getHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						if schemaGetResponse == nil {
+							return fivetranResponse(t, req,
+								"NotFound_SchemaConfig", http.StatusNotFound,
+								"Connector with id 'connector_id' doesn't have schema config", nil), nil
+						}
+						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaGetResponse), nil
+					},
+				)
+
+				// Old createNewSchema path — must never be hit anymore.
+				postCreateHandler = mockClient.When(http.MethodPost, "/v1/connections/connector_id/schemas").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						t.Errorf("unexpected POST /schemas call — createNewSchema fast path should no longer be used")
+						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", nil), nil
+					},
+				)
+
+				reloadHandler = mockClient.When(http.MethodPost, "/v1/connections/connector_id/schemas/reload").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						schemaGetResponse = createMapFromJsonString(t, reloadedSchemaResponse)
+						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaGetResponse), nil
+					},
+				)
+
+				patchHandler = mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						patchRequestBody = requestBodyToJson(t, req)
+						// Reflect the patched column value so the post-apply re-read is
+						// consistent with what was just applied.
+						schemaGetResponse = createMapFromJsonString(t, patchedSchemaResponse)
+						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaGetResponse), nil
+					},
+				)
+			},
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
+			},
+		},
+	)
+}

@@ -8,7 +8,6 @@ import (
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	configSchema "github.com/fivetran/terraform-provider-fivetran/modules/connector/schema"
-	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 )
 
@@ -73,20 +72,24 @@ func (r *connectorSchema) ValidateConfig(ctx context.Context, req resource.Valid
 		// No schema captured yet for this connection — reload before validating,
 		// same as Create already does at apply time.
 		needReload = true
-	} else if validateErr, _ := data.ValidateSchemaElements(schemaResponse, false, *client, ctx); validateErr != nil {
+	} else if validateErr, needReloadSchema := data.ValidateSchemaElements(schemaResponse, false, *client, ctx); validateErr != nil {
 		// Mismatch against the current schema doesn't necessarily mean the config is
 		// wrong — the schema on record may simply be stale (e.g. a table was added at
-		// the source after the last reload). Reload and re-check before failing.
+		// the source after the last reload). Reload and re-check before failing, unless
+		// the validation module says reloading wouldn't help (e.g. a genuinely
+		// misnamed column) — match Create/Update by failing immediately in that case.
+		if !needReloadSchema {
+			resp.Diagnostics.AddError(
+				"Invalid Connector Schema Resource Configuration.",
+				fmt.Sprintf("Schema configuration is not aligned with source schema. Details:\n %v;", validateErr),
+			)
+			return
+		}
 		needReload = true
 	}
 
 	if needReload {
-		// reloadSchema takes diag.Diagnostics by value; append its result explicitly
-		// rather than relying on the callee's in-place mutation, since that mutation
-		// is not guaranteed to be visible here if the underlying slice reallocates.
-		var reloadDiags diag.Diagnostics
-		schemaResponse = r.reloadSchema(ctx, data.ConnectorId.ValueString(), reloadDiags)
-		resp.Diagnostics.Append(reloadDiags...)
+		schemaResponse = r.reloadSchema(ctx, data.ConnectorId.ValueString(), &resp.Diagnostics)
 		if resp.Diagnostics.HasError() {
 			return
 		}
