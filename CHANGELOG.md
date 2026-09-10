@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.43...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.44...HEAD)
+
+## [v1.9.44](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.43...v1.9.44)
+
+### Fixed
+- `fivetran_connectors` and `fivetran_connections`: handle nullable connection fields returned by the API without crashing the provider.
 
 ### Added
 - `fivetran_connector_schema_config`: plan-time validation via `ValidateConfig` — the "only one of `schemas`/`schema`/`schemas_json`" check now surfaces at `terraform plan` instead of only at `apply`.

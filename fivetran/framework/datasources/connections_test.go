@@ -76,6 +76,35 @@ const (
   }
 `
 
+	connectionsMappingResponseWithNullFields = `
+	{
+    "items": [
+      {
+        "id": "connection_id",
+        "service": "string",
+        "schema": "gsheets.table",
+        "paused": null,
+        "daily_sync_time": "14:00",
+        "succeeded_at": "2024-12-01T15:43:29.013729Z",
+        "sync_frequency": null,
+        "group_id": "group_id",
+        "connected_by": "user_id",
+        "service_version": null,
+        "created_at": "2024-12-01T15:43:29.013729Z",
+        "failed_at": "2024-12-01T15:43:29.013729Z",
+        "private_link_id": "string",
+        "proxy_agent_id": "string",
+        "networking_method": "Directly",
+        "pause_after_trial": null,
+        "data_delay_threshold": null,
+        "data_delay_sensitivity": "LOW",
+        "schedule_type": "auto",
+        "hybrid_deployment_agent_id": "string"
+      }
+    ],
+    "next_cursor": null
+  }
+`
 )
 
 func setupMockClientConnectionsDataSourceConfigMapping(t *testing.T) {
@@ -94,6 +123,18 @@ func setupMockClientConnectionsDataSourceConfigMapping(t *testing.T) {
 	)
 }
 
+func setupMockClientConnectionsDataSourceConfigMappingWithNullFields(t *testing.T) {
+	tfmock.MockClient().Reset()
+
+	connectionsDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connections").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			connectionsDataSourceMockData = tfmock.CreateMapFromJsonString(t, connectionsMappingResponseWithNullFields)
+
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectionsDataSourceMockData), nil
+		},
+	)
+}
+
 func setupMockClientConnectionsDataSourceFilteringByGroupIdAndSchema(t *testing.T) {
 	tfmock.MockClient().Reset()
 
@@ -106,6 +147,40 @@ func setupMockClientConnectionsDataSourceFilteringByGroupIdAndSchema(t *testing.
 			}
 
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectionsDataSourceMockData), nil
+		},
+	)
+}
+
+func TestDataSourceConnectionsMappingWithNullFieldsMock(t *testing.T) {
+	step1 := resource.TestStep{
+		Config: `
+		data "fivetran_connections" "test" {
+			provider = fivetran-provider
+		}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, connectionsDataSourceMockGetHandler.Interactions, 1)
+				tfmock.AssertNotEmpty(t, connectionsDataSourceMockData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("data.fivetran_connections.test", "connections.0.id", "connection_id"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientConnectionsDataSourceConfigMappingWithNullFields(t)
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
+			},
 		},
 	)
 }
