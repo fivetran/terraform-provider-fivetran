@@ -53,13 +53,13 @@ func (d *GroupConnectors) ReadFromResponse(ctx context.Context, resp groups.Grou
         connector["id"] = types.StringValue(v.ID)
         connector["group_id"] = types.StringValue(v.GroupID)
         connector["service"] = types.StringValue(v.Service)
-        connector["service_version"] = types.Int64Value(int64(*v.ServiceVersion))
+        connector["service_version"] = intPointerInt64Value(v.ServiceVersion)
         connector["schema"] = types.StringValue(v.Schema)
         connector["connected_by"] = types.StringValue(v.ConnectedBy)
         connector["created_at"] = types.StringValue(v.CreatedAt.String())
         connector["succeeded_at"] = types.StringValue(v.SucceededAt.String())
         connector["failed_at"] = types.StringValue(v.FailedAt.String())
-        connector["sync_frequency"] = types.Int64Value(int64(*v.SyncFrequency))
+        connector["sync_frequency"] = intPointerInt64Value(v.SyncFrequency)
         connector["schedule_type"] = types.StringValue(v.ScheduleType)
 
         if v.DailySyncTime != "" {

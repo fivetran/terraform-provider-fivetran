@@ -130,3 +130,71 @@ func TestDataSourceGroupConnectionsMappingMock(t *testing.T) {
 		},
 	)
 }
+
+func TestDataSourceGroupConnectionsMappingWithNullScheduleFieldsMock(t *testing.T) {
+	var getHandler *mock.Handler
+	step1 := resource.TestStep{
+		Config: `
+			data "fivetran_group_connections" "test" {
+				provider = fivetran-provider
+				id = "group"
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, getHandler.Interactions, 1)
+				return nil
+			},
+			resource.TestCheckResourceAttr("data.fivetran_group_connections.test", "id", "group"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				tfmock.MockClient().Reset()
+
+				getHandler = tfmock.MockClient().When(http.MethodGet, "/v1/groups/group/connections").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						var responseData = tfmock.CreateMapFromJsonString(t, `
+					{
+						"items":[
+						{
+							"id": "connection_id",
+							"group_id": "group_id",
+							"service": "reddit_ads",
+							"service_version": null,
+							"schema": "adwords_schema",
+							"connected_by": "monitoring_assuring",
+							"created_at": "2020-03-11T15:03:55.743708Z",
+							"succeeded_at": "2020-03-17T12:31:40.870504Z",
+							"failed_at": "2021-01-15T10:55:00.056497Z",
+							"sync_frequency": null,
+							"schedule_type": "manual",
+							"status": {
+								"setup_state": "connected",
+								"sync_state": "scheduled",
+								"update_state": "on_schedule",
+								"is_historical_sync": false,
+								"tasks": [],
+								"warnings": []
+							}
+						}
+						],
+						"next_cursor": null
+					}`)
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
+					},
+				)
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
+			},
+		},
+	)
+}

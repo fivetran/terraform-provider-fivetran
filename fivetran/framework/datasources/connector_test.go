@@ -49,6 +49,34 @@ const (
         }]
 	}
 	`
+
+	connectorMappingResponseWithNullFields = `
+	{
+		"id": "connector_id",
+        "group_id": "group_id",
+        "service": "google_sheets",
+        "service_version": null,
+        "schema": "schema.table",
+        "paused": null,
+        "pause_after_trial": null,
+        "connected_by": "user_id",
+        "created_at": "2022-01-01T11:22:33.012345Z",
+        "succeeded_at": null,
+        "failed_at": null,
+        "sync_frequency": null,
+		"schedule_type": "manual",
+		"data_delay_sensitivity": "NORMAL",
+		"data_delay_threshold": null,
+        "status": {
+            "setup_state": "incomplete",
+            "sync_state": "paused",
+            "update_state": "on_schedule",
+            "is_historical_sync": true,
+            "tasks": [],
+            "warnings": []
+        }
+	}
+	`
 )
 
 var (
@@ -63,6 +91,17 @@ func setupMockClientConnectorDataSourceConfigMapping(t *testing.T) {
 	connectorDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
 		func(req *http.Request) (*http.Response, error) {
 			connectorDataSourceMockData = tfmock.CreateMapFromJsonString(t, connectorMappingResponse)
+			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorDataSourceMockData), nil
+		},
+	)
+}
+
+func setupMockClientConnectorDataSourceConfigMappingWithNullFields(t *testing.T) {
+	tfmock.MockClient().Reset()
+
+	connectorDataSourceMockGetHandler = tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
+		func(req *http.Request) (*http.Response, error) {
+			connectorDataSourceMockData = tfmock.CreateMapFromJsonString(t, connectorMappingResponseWithNullFields)
 			return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", connectorDataSourceMockData), nil
 		},
 	)
@@ -113,6 +152,41 @@ func TestDataSourceConnectorConfigMappingMock(t *testing.T) {
 		resource.TestCase{
 			PreCheck: func() {
 				setupMockClientConnectorDataSourceConfigMapping(t)
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
+			},
+		},
+	)
+}
+
+func TestDataSourceConnectorConfigMappingWithNullFieldsMock(t *testing.T) {
+	step1 := resource.TestStep{
+		Config: `
+		data "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+			id = "connector_id"
+		}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, connectorDataSourceMockGetHandler.Interactions, 1)
+				tfmock.AssertNotEmpty(t, connectorDataSourceMockData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("data.fivetran_connector.test_connector", "id", "connector_id"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientConnectorDataSourceConfigMappingWithNullFields(t)
 			},
 			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
