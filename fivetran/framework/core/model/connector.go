@@ -68,11 +68,11 @@ func (d *ConnectorDatasourceModel) ReadFromResponse(resp connections.DetailsWith
 
 	d.SucceededAt = types.StringValue(resp.Data.SucceededAt.String())
 	d.FailedAt = types.StringValue(resp.Data.FailedAt.String())
-	d.ServiceVersion = types.StringValue(fmt.Sprintf("%v", *resp.Data.ServiceVersion))
-	d.SyncFrequency = types.Int64Value(int64(*resp.Data.SyncFrequency))
+	d.ServiceVersion = intPointerStringValue(resp.Data.ServiceVersion)
+	d.SyncFrequency = intPointerInt64Value(resp.Data.SyncFrequency)
 	d.ScheduleType = types.StringValue(resp.Data.ScheduleType)
-	d.Paused = types.BoolValue(*resp.Data.Paused)
-	d.PauseAfterTrial = types.BoolValue(*resp.Data.PauseAfterTrial)
+	d.Paused = boolPointerValue(resp.Data.Paused)
+	d.PauseAfterTrial = boolPointerValue(resp.Data.PauseAfterTrial)
     
     d.DataDelaySensitivity = types.StringValue(resp.Data.DataDelaySensitivity)
 

@@ -53,13 +53,13 @@ func (d *GroupConnections) ReadFromResponse(ctx context.Context, resp groups.Gro
         connection["id"] = types.StringValue(v.ID)
         connection["group_id"] = types.StringValue(v.GroupID)
         connection["service"] = types.StringValue(v.Service)
-        connection["service_version"] = types.Int64Value(int64(*v.ServiceVersion))
+        connection["service_version"] = intPointerInt64Value(v.ServiceVersion)
         connection["schema"] = types.StringValue(v.Schema)
         connection["connected_by"] = types.StringValue(v.ConnectedBy)
         connection["created_at"] = types.StringValue(v.CreatedAt.String())
         connection["succeeded_at"] = types.StringValue(v.SucceededAt.String())
         connection["failed_at"] = types.StringValue(v.FailedAt.String())
-        connection["sync_frequency"] = types.Int64Value(int64(*v.SyncFrequency))
+        connection["sync_frequency"] = intPointerInt64Value(v.SyncFrequency)
         connection["schedule_type"] = types.StringValue(v.ScheduleType)
 
         if v.DailySyncTime != "" {
