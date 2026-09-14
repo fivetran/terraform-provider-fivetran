@@ -11,6 +11,7 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
 	configSchema "github.com/fivetran/terraform-provider-fivetran/modules/connector/schema"
+	"github.com/fivetran/terraform-provider-fivetran/modules/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -136,7 +137,7 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	ctx, cancel := context.WithTimeout(ctx, createTimeout)
+	ctx, cancel := helpers.SetContextTimeout(ctx, createTimeout)
 	defer cancel()
 
 	var connectorID = data.ConnectorId.ValueString()
@@ -344,6 +345,17 @@ func (r *connectorSchema) Read(ctx context.Context, req resource.ReadRequest, re
 
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	readTimeout, diags := data.Timeouts.Read(ctx, defaultSchemaOperationTimeout)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ctx, cancel := helpers.SetContextTimeout(ctx, readTimeout)
+	defer cancel()
 
 	isImportOperation := data.ConnectorId.IsNull()
 	if isImportOperation {
@@ -407,7 +419,7 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	ctx, cancel := context.WithTimeout(ctx, updateTimeout)
+	ctx, cancel := helpers.SetContextTimeout(ctx, updateTimeout)
 	defer cancel()
 
 	connectorID := state.ConnectorId.ValueString()

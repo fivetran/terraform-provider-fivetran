@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.45...HEAD)
 
+### Fixed
+- `fivetran_connector_schema_config`: honor `timeouts.read` and correctly treat `create`/`update` timeout value `0` as no client-side deadline instead of an immediate timeout.
+
 ## [v1.9.45](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.44...v1.9.45)
 
 ### Added
