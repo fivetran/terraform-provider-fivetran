@@ -3442,7 +3442,7 @@ func TestResourceSchemaConsequentGetReturnsLessColumnsMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.private.tables.table_1.columns.table_1_col_1.enabled", "true"),
 		),
 	}
-    // Step 2: API returns less schemas
+	// Step 2: API returns less schemas
 	step2 := resource.TestStep{
 		PreConfig: func() {
 			resetInvocationCounts()
@@ -3628,15 +3628,15 @@ func TestResourceSchemaConsequentGetReturnsLessColumnsMock(t *testing.T) {
 
 func TestResourceSchemaReloadUsesPreserveModeMock(t *testing.T) {
 	var (
-		schemaGetHandler   *mock.Handler
-		schemaPatchHandler *mock.Handler
-		schemaReloadPostHandler   *mock.Handler
-		schemaResponseData map[string]interface{}
+		schemaGetHandler        *mock.Handler
+		schemaPatchHandler      *mock.Handler
+		schemaReloadPostHandler *mock.Handler
+		schemaResponseData      map[string]interface{}
 		schemasPatchRequestBody map[string]interface{}
-		schemasReloadBody map[string]interface{}
+		schemasReloadBody       map[string]interface{}
 	)
-	
-	schemaGetResponseAllTables :=  `
+
+	schemaGetResponseAllTables := `
 			{
 				"enable_new_by_default": false,
 				"schema_change_handling": "BLOCK_ALL",
@@ -3705,7 +3705,7 @@ func TestResourceSchemaReloadUsesPreserveModeMock(t *testing.T) {
 				}
 			}`
 
-	schemaGetResponseAbsentTable :=  `
+	schemaGetResponseAbsentTable := `
 			{
 				"enable_new_by_default": false,
 				"schema_change_handling": "BLOCK_ALL",
@@ -3758,8 +3758,8 @@ func TestResourceSchemaReloadUsesPreserveModeMock(t *testing.T) {
 					}
 				}
 			}`
-	
-	schemaGetResponseAllTablesAfterSchemaReload :=  `
+
+	schemaGetResponseAllTablesAfterSchemaReload := `
 			{
 				"enable_new_by_default": false,
 				"schema_change_handling": "BLOCK_ALL",
@@ -3854,8 +3854,8 @@ func TestResourceSchemaReloadUsesPreserveModeMock(t *testing.T) {
 					}
 				}
 			}`
-	
-	schemaGetResponseAllTablesAfterPatch :=  `
+
+	schemaGetResponseAllTablesAfterPatch := `
 			{
 				"enable_new_by_default": false,
 				"schema_change_handling": "BLOCK_ALL",
@@ -4034,30 +4034,30 @@ func TestResourceSchemaReloadUsesPreserveModeMock(t *testing.T) {
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-					assertEqual(t, schemaGetHandler.Interactions, 4)
-					assertEqual(t, schemaPatchHandler.Interactions, 0)
-					assertEqual(t, schemaReloadPostHandler.Interactions, 0)
-					return nil
-				},
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "id", "connector_id"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "connector_id", "connector_id"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.%", "1"),
+				assertEqual(t, schemaGetHandler.Interactions, 4)
+				assertEqual(t, schemaPatchHandler.Interactions, 0)
+				assertEqual(t, schemaReloadPostHandler.Interactions, 0)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "connector_id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.%", "1"),
 
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.%", "2"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.%", "2"),
 
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.sync_mode", "SOFT_DELETE"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.%", "2"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_1.enabled", "true"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_1.hashed", "false"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_2.enabled", "true"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_2.hashed", "false"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.sync_mode", "SOFT_DELETE"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.%", "2"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_1.enabled", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_1.hashed", "false"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_2.enabled", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_2.hashed", "false"),
 
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.sync_mode", "SOFT_DELETE"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.%", "1"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.table_3_col_1.enabled", "true"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.table_3_col_1.hashed", "false"),
-			),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.sync_mode", "SOFT_DELETE"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.%", "1"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.table_3_col_1.enabled", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.table_3_col_1.hashed", "false"),
+		),
 	}
 
 	// Step 2: API returns less tables
@@ -4105,75 +4105,75 @@ func TestResourceSchemaReloadUsesPreserveModeMock(t *testing.T) {
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-					assertEqual(t, schemasReloadBody["exclude_mode"], "PRESERVE")
-					
-					assertKeyExists(t, schemasPatchRequestBody, "schemas")
-				 	assertKeyExists(t, schemasPatchRequestBody["schemas"].(map[string]interface {}), "public")
-				 	patchSchema := schemasPatchRequestBody["schemas"].(map[string]interface {})["public"].(map[string]interface {})
-					assertKeyExists(t, patchSchema, "tables")
-					patchTables := patchSchema["tables"].(map[string]interface {})
-					assertEqual(t, len(patchTables), 3)
-					
-					AssertKeyDoesNotExist(t, patchTables, "table_1")
+				assertEqual(t, schemasReloadBody["exclude_mode"], "PRESERVE")
 
-					assertKeyExists(t, patchTables, "table_2")
-					table2Patch := patchTables["table_2"].(map[string]interface {})
-					AssertKeyDoesNotExist(t, table2Patch, "enabled")
-					assertKeyExists(t, table2Patch, "columns")
-					patchTable2Columns := table2Patch["columns"].(map[string]interface {})
-					assertEqual(t, len(patchTable2Columns), 2)
+				assertKeyExists(t, schemasPatchRequestBody, "schemas")
+				assertKeyExists(t, schemasPatchRequestBody["schemas"].(map[string]interface{}), "public")
+				patchSchema := schemasPatchRequestBody["schemas"].(map[string]interface{})["public"].(map[string]interface{})
+				assertKeyExists(t, patchSchema, "tables")
+				patchTables := patchSchema["tables"].(map[string]interface{})
+				assertEqual(t, len(patchTables), 3)
 
-					assertKeyExists(t, patchTable2Columns, "table_2_col_2")
-					table2Col2Patch := patchTable2Columns["table_2_col_2"].(map[string]interface {})
-					assertEqual(t, table2Col2Patch["enabled"], true)
+				AssertKeyDoesNotExist(t, patchTables, "table_1")
 
-					assertKeyExists(t, patchTable2Columns, "table_2_col_3")
-					table2Col3Patch := patchTable2Columns["table_2_col_3"].(map[string]interface {})
-					assertEqual(t, table2Col3Patch["enabled"], false)
-					assertEqual(t, table2Col3Patch["is_primary_key"], nil)
+				assertKeyExists(t, patchTables, "table_2")
+				table2Patch := patchTables["table_2"].(map[string]interface{})
+				AssertKeyDoesNotExist(t, table2Patch, "enabled")
+				assertKeyExists(t, table2Patch, "columns")
+				patchTable2Columns := table2Patch["columns"].(map[string]interface{})
+				assertEqual(t, len(patchTable2Columns), 2)
 
-					assertKeyExists(t, patchTables, "table_3")
-					table3Patch := patchTables["table_3"].(map[string]interface {})
-					assertEqual(t, table3Patch["enabled"], true)
-					assertKeyExists(t, table3Patch, "columns")
-					patchTable3Columns := table3Patch["columns"].(map[string]interface {})
-					assertEqual(t, len(patchTable3Columns), 1)
-					AssertKeyExists(t, patchTable3Columns, "table_3_col_2")
-					table3Col2Patch := patchTable3Columns["table_3_col_2"].(map[string]interface {})
-					assertEqual(t, table3Col2Patch["enabled"], false)
-					assertEqual(t, table3Col2Patch["is_primary_key"], nil) 
+				assertKeyExists(t, patchTable2Columns, "table_2_col_2")
+				table2Col2Patch := patchTable2Columns["table_2_col_2"].(map[string]interface{})
+				assertEqual(t, table2Col2Patch["enabled"], true)
 
-					assertKeyExists(t, patchTables, "table_4")
-					table4Patch := patchTables["table_4"].(map[string]interface {})
-					assertEqual(t, len(table4Patch), 1)
-					assertEqual(t, table4Patch["enabled"], false)
+				assertKeyExists(t, patchTable2Columns, "table_2_col_3")
+				table2Col3Patch := patchTable2Columns["table_2_col_3"].(map[string]interface{})
+				assertEqual(t, table2Col3Patch["enabled"], false)
+				assertEqual(t, table2Col3Patch["is_primary_key"], nil)
 
-					// ValidateConfig detects the stale schema (missing table_3) at plan time,
-					// reloads once itself, and re-validates successfully - so Update's own
-					// apply-time reload-on-mismatch path is never triggered a second time.
-					assertEqual(t, schemaReloadPostHandler.Interactions, 1)
-					assertEqual(t, schemaGetHandler.Interactions, 6)
-					assertEqual(t, schemaPatchHandler.Interactions, 1)
-					return nil
-				},
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "id", "connector_id"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "connector_id", "connector_id"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.%", "2"),
+				assertKeyExists(t, patchTables, "table_3")
+				table3Patch := patchTables["table_3"].(map[string]interface{})
+				assertEqual(t, table3Patch["enabled"], true)
+				assertKeyExists(t, table3Patch, "columns")
+				patchTable3Columns := table3Patch["columns"].(map[string]interface{})
+				assertEqual(t, len(patchTable3Columns), 1)
+				AssertKeyExists(t, patchTable3Columns, "table_3_col_2")
+				table3Col2Patch := patchTable3Columns["table_3_col_2"].(map[string]interface{})
+				assertEqual(t, table3Col2Patch["enabled"], false)
+				assertEqual(t, table3Col2Patch["is_primary_key"], nil)
 
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.sync_mode", "SOFT_DELETE"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.%", "2"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_1.enabled", "true"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_1.hashed", "false"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_2.enabled", "true"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_2.hashed", "false"),
+				assertKeyExists(t, patchTables, "table_4")
+				table4Patch := patchTables["table_4"].(map[string]interface{})
+				assertEqual(t, len(table4Patch), 1)
+				assertEqual(t, table4Patch["enabled"], false)
 
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.sync_mode", "SOFT_DELETE"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.%", "1"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.table_3_col_1.enabled", "true"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.table_3_col_1.hashed", "true"),
-			),
-		}
+				// ValidateConfig detects the stale schema (missing table_3) at plan time,
+				// reloads once itself, and re-validates successfully - so Update's own
+				// apply-time reload-on-mismatch path is never triggered a second time.
+				assertEqual(t, schemaReloadPostHandler.Interactions, 1)
+				assertEqual(t, schemaGetHandler.Interactions, 6)
+				assertEqual(t, schemaPatchHandler.Interactions, 1)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "connector_id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.%", "2"),
+
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.sync_mode", "SOFT_DELETE"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.%", "2"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_1.enabled", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_1.hashed", "false"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_2.enabled", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_2.hashed", "false"),
+
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.sync_mode", "SOFT_DELETE"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.%", "1"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.table_3_col_1.enabled", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.table_3_col_1.hashed", "true"),
+		),
+	}
 
 	resource.Test(
 		t,
@@ -4193,21 +4193,20 @@ func TestResourceSchemaReloadUsesPreserveModeMock(t *testing.T) {
 	)
 }
 
-func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMock(t *testing.T) {
+func TestResourceSchemaReloadUsesPreserveModeAndGetsColumnsOfTablesInBatchMock(t *testing.T) {
 	var (
-		schemaGetHandler   *mock.Handler
-		table2GetColumnsHandler   *mock.Handler
-		table3GetColumnsHandler   *mock.Handler
-		schemaPatchHandler *mock.Handler
+		schemaGetHandler          *mock.Handler
+		tablesGetColumnsHandler   *mock.Handler
+		schemaPatchHandler        *mock.Handler
 		schemaReloadPostHandler   *mock.Handler
-		schemaResponseData map[string]interface{}
+		schemaResponseData        map[string]interface{}
 		table2ColumnsResponseData map[string]interface{}
 		table3ColumnsResponseData map[string]interface{}
-		schemasPatchRequestBody map[string]interface{}
-		schemasReloadBody map[string]interface{}
+		schemasPatchRequestBody   map[string]interface{}
+		schemasReloadBody         map[string]interface{}
 	)
-	
-	schemaGetResponseAllTables :=  `
+
+	schemaGetResponseAllTables := `
 			{
 				"enable_new_by_default": false,
 				"schema_change_handling": "BLOCK_ALL",
@@ -4276,7 +4275,7 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMo
 				}
 			}`
 
-	schemaGetResponseAbsentTable :=  `
+	schemaGetResponseAbsentTable := `
 			{
 				"enable_new_by_default": false,
 				"schema_change_handling": "BLOCK_ALL",
@@ -4330,7 +4329,7 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMo
 				}
 			}`
 
-	getColumnsResponseAllTablesAfterSchemaReloadTable2 :=  `
+	getColumnsResponseAllTablesAfterSchemaReloadTable2 := `
 			{
 				"columns": {
 					"table_2_col_1": {
@@ -4354,7 +4353,7 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMo
 				}
 			}`
 
-	getColumnsResponseAllTablesAfterSchemaReloadTable3 :=  `
+	getColumnsResponseAllTablesAfterSchemaReloadTable3 := `
 			{
 				"columns": {
 					"table_3_col_1": {
@@ -4371,8 +4370,8 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMo
 					}
 				}
 			}`
-	
-	schemaGetResponseAllTablesAfterSchemaReload :=  `
+
+	schemaGetResponseAllTablesAfterSchemaReload := `
 			{
 				"enable_new_by_default": false,
 				"schema_change_handling": "BLOCK_ALL",
@@ -4414,7 +4413,7 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMo
 				}
 			}`
 
-	getColumnsResponseAllTablesAfterPatchTable2 :=  `
+	getColumnsResponseAllTablesAfterPatchTable2 := `
 			{
 				"columns": {
 					"table_2_col_1": {
@@ -4438,7 +4437,7 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMo
 				}
 			}`
 
-	getColumnsResponseAllTablesAfterPatchTable3 :=  `
+	getColumnsResponseAllTablesAfterPatchTable3 := `
 			{
 				"columns": {
 					"table_3_col_1": {
@@ -4455,8 +4454,8 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMo
 					}
 				}
  			}`
-					
-	schemaGetResponseAllTablesAfterPatch :=  `
+
+	schemaGetResponseAllTablesAfterPatch := `
 			{
 				"enable_new_by_default": false,
 				"schema_change_handling": "BLOCK_ALL",
@@ -4508,15 +4507,19 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMo
 			},
 		)
 
-		// Mock GET schemas handlers
-		table2GetColumnsHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas/public/tables/table_2/columns").ThenCall(
+		// Mock GET tables columns handler
+		tablesGetColumnsHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas/public/tables/columns").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
-				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", table2ColumnsResponseData), nil
-			},
-		)
-		table3GetColumnsHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas/public/tables/table_3/columns").ThenCall(
-			func(req *http.Request) (*http.Response, error) {
-				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", table3ColumnsResponseData), nil
+				tables := req.URL.Query()["tables"]
+				assertEqual(t, len(tables), 2)
+				assertEqual(t, stringSliceContains(tables, "table_2"), true)
+				assertEqual(t, stringSliceContains(tables, "table_3"), true)
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", map[string]interface{}{
+					"tables": map[string]interface{}{
+						"table_2": table2ColumnsResponseData,
+						"table_3": table3ColumnsResponseData,
+					},
+				}), nil
 			},
 		)
 
@@ -4548,8 +4551,7 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMo
 
 	resetInvocationCounts := func() {
 		schemaGetHandler.Interactions = 0
-		table2GetColumnsHandler.Interactions = 0
-		table3GetColumnsHandler.Interactions = 0
+		tablesGetColumnsHandler.Interactions = 0
 		schemaPatchHandler.Interactions = 0
 		schemaReloadPostHandler.Interactions = 0
 		schemasPatchRequestBody = nil
@@ -4599,30 +4601,30 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMo
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-					assertEqual(t, schemaGetHandler.Interactions, 4)
-					assertEqual(t, schemaPatchHandler.Interactions, 0)
-					assertEqual(t, schemaReloadPostHandler.Interactions, 0)
-					return nil
-				},
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "id", "connector_id"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "connector_id", "connector_id"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.%", "1"),
+				assertEqual(t, schemaGetHandler.Interactions, 4)
+				assertEqual(t, schemaPatchHandler.Interactions, 0)
+				assertEqual(t, schemaReloadPostHandler.Interactions, 0)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "connector_id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.%", "1"),
 
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.%", "2"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.%", "2"),
 
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.sync_mode", "SOFT_DELETE"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.%", "2"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_1.enabled", "true"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_1.hashed", "false"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_2.enabled", "true"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_2.hashed", "false"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.sync_mode", "SOFT_DELETE"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.%", "2"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_1.enabled", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_1.hashed", "false"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_2.enabled", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_2.hashed", "false"),
 
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.sync_mode", "SOFT_DELETE"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.%", "1"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.table_3_col_1.enabled", "true"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.table_3_col_1.hashed", "false"),
-			),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.sync_mode", "SOFT_DELETE"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.%", "1"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.table_3_col_1.enabled", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.table_3_col_1.hashed", "false"),
+		),
 	}
 
 	// Step 2: API returns less tables
@@ -4670,71 +4672,70 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetColumnsOfTablesIndividuallyMo
 			}`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-					assertEqual(t, schemasReloadBody["exclude_mode"], "PRESERVE")
+				assertEqual(t, schemasReloadBody["exclude_mode"], "PRESERVE")
 
-					assertKeyExists(t, schemasPatchRequestBody, "schemas")
-				 	assertKeyExists(t, schemasPatchRequestBody["schemas"].(map[string]interface {}), "public")
-				 	patchSchema := schemasPatchRequestBody["schemas"].(map[string]interface {})["public"].(map[string]interface {})
-					assertKeyExists(t, patchSchema, "tables")
-					patchTables := patchSchema["tables"].(map[string]interface {})
-					assertEqual(t, len(patchTables), 2)
+				assertKeyExists(t, schemasPatchRequestBody, "schemas")
+				assertKeyExists(t, schemasPatchRequestBody["schemas"].(map[string]interface{}), "public")
+				patchSchema := schemasPatchRequestBody["schemas"].(map[string]interface{})["public"].(map[string]interface{})
+				assertKeyExists(t, patchSchema, "tables")
+				patchTables := patchSchema["tables"].(map[string]interface{})
+				assertEqual(t, len(patchTables), 2)
 
-					AssertKeyDoesNotExist(t, patchTables, "table_1")
-					AssertKeyDoesNotExist(t, patchTables, "table_4")
+				AssertKeyDoesNotExist(t, patchTables, "table_1")
+				AssertKeyDoesNotExist(t, patchTables, "table_4")
 
-					assertKeyExists(t, patchTables, "table_2")
-					table2Patch := patchTables["table_2"].(map[string]interface {})
-					AssertKeyDoesNotExist(t, table2Patch, "enabled")
-					assertKeyExists(t, table2Patch, "columns")
-					patchTable2Columns := table2Patch["columns"].(map[string]interface {})
-					assertEqual(t, len(patchTable2Columns), 2)
+				assertKeyExists(t, patchTables, "table_2")
+				table2Patch := patchTables["table_2"].(map[string]interface{})
+				AssertKeyDoesNotExist(t, table2Patch, "enabled")
+				assertKeyExists(t, table2Patch, "columns")
+				patchTable2Columns := table2Patch["columns"].(map[string]interface{})
+				assertEqual(t, len(patchTable2Columns), 2)
 
-					assertKeyExists(t, patchTable2Columns, "table_2_col_1")
-					table2Col1Patch := patchTable2Columns["table_2_col_1"].(map[string]interface {})
-					assertEqual(t, table2Col1Patch["enabled"], true)
-					assertEqual(t, table2Col1Patch["hashed"], false)
+				assertKeyExists(t, patchTable2Columns, "table_2_col_1")
+				table2Col1Patch := patchTable2Columns["table_2_col_1"].(map[string]interface{})
+				assertEqual(t, table2Col1Patch["enabled"], true)
+				assertEqual(t, table2Col1Patch["hashed"], false)
 
-					assertKeyExists(t, patchTable2Columns, "table_2_col_2")
-					table2Col2Patch := patchTable2Columns["table_2_col_2"].(map[string]interface {})
-					assertEqual(t, table2Col2Patch["enabled"], true)
-					assertEqual(t, table2Col2Patch["hashed"], false)
+				assertKeyExists(t, patchTable2Columns, "table_2_col_2")
+				table2Col2Patch := patchTable2Columns["table_2_col_2"].(map[string]interface{})
+				assertEqual(t, table2Col2Patch["enabled"], true)
+				assertEqual(t, table2Col2Patch["hashed"], false)
 
-					assertKeyExists(t, patchTables, "table_3")
-					table3Patch := patchTables["table_3"].(map[string]interface {})
-					AssertKeyDoesNotExist(t, table3Patch, "enabled")
-					assertKeyExists(t, table3Patch, "columns")
-					patchTable3Columns := table3Patch["columns"].(map[string]interface {})
-					assertEqual(t, len(patchTable3Columns), 1)
-					assertKeyExists(t, patchTable3Columns, "table_3_col_1")
-					table3Col1Patch := patchTable3Columns["table_3_col_1"].(map[string]interface {})
-					assertEqual(t, table3Col1Patch["enabled"], true)
-					assertEqual(t, table3Col1Patch["hashed"], true)
+				assertKeyExists(t, patchTables, "table_3")
+				table3Patch := patchTables["table_3"].(map[string]interface{})
+				AssertKeyDoesNotExist(t, table3Patch, "enabled")
+				assertKeyExists(t, table3Patch, "columns")
+				patchTable3Columns := table3Patch["columns"].(map[string]interface{})
+				assertEqual(t, len(patchTable3Columns), 1)
+				assertKeyExists(t, patchTable3Columns, "table_3_col_1")
+				table3Col1Patch := patchTable3Columns["table_3_col_1"].(map[string]interface{})
+				assertEqual(t, table3Col1Patch["enabled"], true)
+				assertEqual(t, table3Col1Patch["hashed"], true)
 
-					assertEqual(t, schemaReloadPostHandler.Interactions, 1)
-					assertEqual(t, schemaGetHandler.Interactions, 6)
-					assertEqual(t, table2GetColumnsHandler.Interactions, 1)
-					assertEqual(t, table3GetColumnsHandler.Interactions, 1)
-					assertEqual(t, schemaPatchHandler.Interactions, 2)
-					return nil
-				},
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "id", "connector_id"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "connector_id", "connector_id"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.%", "2"),
+				assertEqual(t, schemaReloadPostHandler.Interactions, 1)
+				assertEqual(t, schemaGetHandler.Interactions, 6)
+				assertEqual(t, tablesGetColumnsHandler.Interactions, 1)
+				assertEqual(t, schemaPatchHandler.Interactions, 2)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "connector_id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schema_change_handling", "BLOCK_ALL"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.%", "2"),
 
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.sync_mode", "SOFT_DELETE"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.%", "2"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_1.enabled", "true"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_1.hashed", "false"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_2.enabled", "true"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_2.hashed", "false"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.sync_mode", "SOFT_DELETE"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.%", "2"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_1.enabled", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_1.hashed", "false"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_2.enabled", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_2.columns.table_2_col_2.hashed", "false"),
 
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.sync_mode", "SOFT_DELETE"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.%", "1"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.table_3_col_1.enabled", "true"),
-				resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.table_3_col_1.hashed", "true"),
-			),
-		}
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.sync_mode", "SOFT_DELETE"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.%", "1"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.table_3_col_1.enabled", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.public.tables.table_3.columns.table_3_col_1.hashed", "true"),
+		),
+	}
 
 	resource.Test(
 		t,
@@ -4808,10 +4809,10 @@ func TestResourceConnectorSchemaConfigImportMock(t *testing.T) {
 	}
 
 	step2 := resource.TestStep{
-		ResourceName:      "fivetran_connector_schema_config.test_schema",
-		ImportState:       true,
-		ImportStateId: 	"connector_id",
-		ImportStateVerify: true,
+		ResourceName:            "fivetran_connector_schema_config.test_schema",
+		ImportState:             true,
+		ImportStateId:           "connector_id",
+		ImportStateVerify:       true,
 		ImportStateVerifyIgnore: []string{"validation_level"},
 	}
 
@@ -4840,9 +4841,9 @@ func TestResourceConnectorSchemaConfigImportMock(t *testing.T) {
 					}
 				}
             }`,
-		ResourceName:      "fivetran_connector_schema_config.test_schema",
-		ImportState:       true,
-		ImportStateId: 	"connector_id",
+		ResourceName:  "fivetran_connector_schema_config.test_schema",
+		ImportState:   true,
+		ImportStateId: "connector_id",
 		ImportStateCheck: ComposeImportStateCheck(
 			func(s []*terraform.InstanceState) error {
 				assertEqual(t, schemaEmptyDefaultReloadHandler.Interactions, 0)

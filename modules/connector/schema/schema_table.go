@@ -23,40 +23,60 @@ func (t _table) validateColumns(
 	client fivetran.Client,
 	ctx context.Context) error {
 	if len(t.columns) > 0 {
-		if responseTable.SupportsColumnsConfig != nil && !*responseTable.SupportsColumnsConfig {
-			return fmt.Errorf("Table `%v` of schema `%s` doesn't support columns configuration.", tName, sName)
+		needsFetch, err := t.validateColumnConfigSupportAndNeedsFetch(sName, tName, responseTable)
+		if err != nil {
+			return err
 		}
-		columnsWereFetched := false
-		if len(responseTable.Columns) == 0 {
+		if needsFetch {
 			response, err := client.NewConnectionColumnConfigListService().ConnectionId(connectorId).Schema(sName).Table(tName).Do(ctx)
 			if err != nil {
 				return fmt.Errorf("Error while retrieving columns config for table `%s` of schema `%s. Error: %v; Code: `%v`.",
 					tName, sName, err, response.Code)
 			}
 			responseTable.Columns = response.Data.Columns
-			columnsWereFetched = true
-		} else {
-			for cName, _ := range t.columns {
-				if _, ok := responseTable.Columns[cName]; !ok {
-					if !columnsWereFetched {
-						response, err := client.NewConnectionColumnConfigListService().ConnectionId(connectorId).Schema(sName).Table(tName).Do(ctx)
-						if err != nil {
-							return fmt.Errorf("Error while retrieving columns config for table `%s` of schema `%s. Error: %v; Code: `%v`.",
-								tName, sName, err, response.Code)
-						}
-						responseTable.Columns = response.Data.Columns
-						columnsWereFetched = true
-						if _, ok := responseTable.Columns[cName]; !ok {
-							return fmt.Errorf("Column `%v` of table with name `%s` not found in source schema `%s`.", cName, tName, sName)
-						}
-					} else {
-						return fmt.Errorf("Column `%v` of table with name `%s` not found in source schema `%s`.", cName, tName, sName)
-					}
-
-				}
-			}
+		}
+		if err := t.validateColumnsPresent(sName, tName, responseTable); err != nil {
+			return err
 		}
 	}
+	return nil
+}
+
+func (t _table) validateColumnConfigSupportAndNeedsFetch(
+	sName, tName string,
+	responseTable *connections.ConnectionSchemaConfigTableResponse,
+) (bool, error) {
+	if len(t.columns) == 0 {
+		return false, nil
+	}
+
+	if responseTable.SupportsColumnsConfig != nil && !*responseTable.SupportsColumnsConfig {
+		return false, fmt.Errorf("Table `%v` of schema `%s` doesn't support columns configuration.", tName, sName)
+	}
+
+	if len(responseTable.Columns) == 0 {
+		return true, nil
+	}
+
+	for cName := range t.columns {
+		if _, ok := responseTable.Columns[cName]; !ok {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func (t _table) validateColumnsPresent(
+	sName, tName string,
+	responseTable *connections.ConnectionSchemaConfigTableResponse,
+) error {
+	for cName := range t.columns {
+		if _, ok := responseTable.Columns[cName]; !ok {
+			return fmt.Errorf("Column `%v` of table with name `%s` not found in source schema `%s`.", cName, tName, sName)
+		}
+	}
+
 	return nil
 }
 

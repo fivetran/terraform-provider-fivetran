@@ -256,6 +256,15 @@ func contains(s []interface{}, e interface{}) bool {
 	return false
 }
 
+func stringSliceContains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
+}
+
 func assertKeyExistsAndHasValue(t *testing.T, source map[string]interface{}, key string, value interface{}) {
 	t.Helper()
 
@@ -353,7 +362,7 @@ func CheckNoImportResourceAttr(resourceType, instanceId, attributeName string) r
 					return fmt.Errorf("For %s with '%s' id, attribute '%s' found when not expected. Got: '%s'. At %s:%d", v.Ephemeral.Type, instanceId, attributeName, attrVal, file, line)
 				}
 			}
-				
+
 			return nil
 		}
 

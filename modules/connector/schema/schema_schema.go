@@ -21,16 +21,46 @@ func (s _schema) validateTables(
 	client fivetran.Client,
 	ctx context.Context,
 	validateColumns bool) (error, bool) {
+	tablesNeedingColumns := make([]string, 0)
 	for tName, table := range s.tables {
 		if responseTable, ok := responseSchema.Tables[tName]; ok {
 			if validateColumns {
-				err := table.validateColumns(connectorId, sName, tName, responseTable, client, ctx)
+				needsFetch, err := table.validateColumnConfigSupportAndNeedsFetch(sName, tName, responseTable)
 				if err != nil {
 					return err, false
+				}
+				if needsFetch {
+					tablesNeedingColumns = append(tablesNeedingColumns, tName)
 				}
 			}
 		} else {
 			return fmt.Errorf("Table with name `%s` not found in source schema `%s`.", tName, sName), true
+		}
+	}
+	if len(tablesNeedingColumns) > 0 {
+		for start := 0; start < len(tablesNeedingColumns); start += multipleTableColumnsBatchSize {
+			end := start + multipleTableColumnsBatchSize
+			if end > len(tablesNeedingColumns) {
+				end = len(tablesNeedingColumns)
+			}
+
+			response, err := getMultipleTableColumnsConfig(ctx, client, connectorId, sName, tablesNeedingColumns[start:end])
+			if err != nil {
+				return fmt.Errorf("Error while retrieving columns config for schema `%s`. Error: %v; Code: `%v`.",
+					sName, err, response.Code), false
+			}
+			for tableName, tableColumns := range response.Data.Tables {
+				if responseTable, ok := responseSchema.Tables[tableName]; ok {
+					responseTable.Columns = tableColumns.Columns
+				}
+			}
+		}
+
+		for _, tName := range tablesNeedingColumns {
+			err := s.tables[tName].validateColumnsPresent(sName, tName, responseSchema.Tables[tName])
+			if err != nil {
+				return err, false
+			}
 		}
 	}
 	return nil, false
