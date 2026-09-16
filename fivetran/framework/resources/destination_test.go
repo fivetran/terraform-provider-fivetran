@@ -199,6 +199,7 @@ func TestResourceMDLSDestinationMock(t *testing.T) {
 			"connection_type": "PRIVATE_LINK",
 			"should_maintain_tables_in_glue": false,
 			"should_maintain_tables_in_bqms": false,
+			"should_write_delta": true,
 			"polaris_catalog_configuration": {
 				"polarisServerEndpoint": "https://smth.us-east-1.aws.polaris.fivetran.com/api/catalog",
 				"polarisCatalog": "group_id",
@@ -237,6 +238,7 @@ func TestResourceMDLSDestinationMock(t *testing.T) {
 			"connection_type": "PRIVATE_LINK",
 			"should_maintain_tables_in_glue": false,
 			"should_maintain_tables_in_bqms": false,
+			"should_write_delta": true,
 			"polaris_catalog_configuration": {
 				"polarisServerEndpoint": "https://smth.us-east-1.aws.polaris.fivetran.com/api/catalog",
 				"polarisCatalog": "group_id",
