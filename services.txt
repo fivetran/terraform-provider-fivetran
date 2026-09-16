@@ -18,6 +18,7 @@ adyen
 affinity
 afterpay
 aha
+ai_generated
 aircall
 airtable
 akamai
@@ -223,6 +224,7 @@ easypost
 ebay
 economic
 elastic_cloud
+elastic_cloud_serverless
 electronic_tenant_solutions
 eloqua
 email
@@ -369,6 +371,7 @@ klarna
 klaviyo
 konnect_insights
 kustomer
+kyriba
 lattice
 launchdarkly
 leap_crm
@@ -391,6 +394,7 @@ listen360
 livechat_partner
 livestorm
 lob
+local_file_system
 looker_source
 loop
 loopio
@@ -447,6 +451,7 @@ nice
 notion
 nylas
 odoo
+odoo_native
 okendo
 okta
 ometria
@@ -496,6 +501,7 @@ paylocity
 paypal
 paypal_sandbox
 pendo
+pennylane
 peopleforce
 persona
 personio
@@ -589,6 +595,8 @@ samsara
 sana
 sap_business_by_design
 sap_hana_db
+sap_odata
+sap_oracle
 sap_success_factors
 scorm
 security_journey
@@ -681,6 +689,7 @@ ticket_tailor
 tiktok_ads
 tiktok_organic
 tiktok_organic_app
+tiktok_shop_partner_center
 tive
 toggl_track
 totango

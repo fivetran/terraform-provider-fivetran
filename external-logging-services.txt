@@ -1,0 +1,8 @@
+azure_monitor_log
+cloudwatch
+datadog_log
+dynatrace
+grafana_loki
+new_relic_log
+splunkLog
+stackdriver
