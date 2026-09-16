@@ -1,6 +1,0 @@
-azure_monitor_log
-cloudwatch
-datadog_log
-new_relic_log
-splunkLog
-stackdriver

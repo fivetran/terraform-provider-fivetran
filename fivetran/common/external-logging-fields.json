@@ -25,6 +25,20 @@
       },
       "api_field": ""
    },
+   "access_token": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "dynatrace": "",
+         "grafana_loki": ""
+      },
+      "api_field": ""
+   },
    "api_key": {
       "readonly": false,
       "sensitive": true,
@@ -52,6 +66,71 @@
       },
       "api_field": ""
    },
+   "client_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "azure_monitor_log": "For Logs Ingestion API authentication. Your application (client) ID."
+      },
+      "api_field": ""
+   },
+   "client_secret": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "azure_monitor_log": "For Logs Ingestion API authentication. Your application client secret."
+      },
+      "api_field": ""
+   },
+   "data_collection_endpoint": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "azure_monitor_log": "For Logs Ingestion API authentication. The endpoint URL for your Data Collection Endpoint."
+      },
+      "api_field": ""
+   },
+   "dcr_immutable_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "azure_monitor_log": "For Logs Ingestion API authentication. The immutable ID of your Data Collection Rule."
+      },
+      "api_field": ""
+   },
+   "dcr_stream_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "azure_monitor_log": "For Logs Ingestion API authentication. The stream name of your Data Collection Rule."
+      },
+      "api_field": ""
+   },
    "enable_ssl": {
       "readonly": false,
       "sensitive": false,
@@ -62,6 +141,19 @@
       "item_type": {},
       "description": {
          "splunkLog": ""
+      },
+      "api_field": ""
+   },
+   "environment_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "dynatrace": ""
       },
       "api_field": ""
    },
@@ -117,6 +209,19 @@
       },
       "api_field": ""
    },
+   "loki_url": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "grafana_loki": ""
+      },
+      "api_field": ""
+   },
    "port": {
       "readonly": false,
       "sensitive": false,
@@ -139,7 +244,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "azure_monitor_log": ""
+         "azure_monitor_log": "For HTTP Data Collector API authentication. Your Log Analytics primary key."
       },
       "api_field": ""
    },
@@ -194,6 +299,9 @@
       "description": {
          "stackdriver": ""
       },
+      "sensitive_exclusions": {
+         "stackdriver": true
+      },
       "api_field": ""
    },
    "sub_domain": {
@@ -206,6 +314,23 @@
       "item_type": {},
       "description": {
          "new_relic_log": ""
+      },
+      "api_field": ""
+   },
+   "tenant_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "azure_monitor_log": "For Logs Ingestion API authentication. Your Microsoft Entra directory (tenant) ID.",
+         "grafana_loki": ""
+      },
+      "sensitive_exclusions": {
+         "grafana_loki": true
       },
       "api_field": ""
    },
@@ -222,6 +347,19 @@
       },
       "api_field": ""
    },
+   "username": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "grafana_loki": ""
+      },
+      "api_field": ""
+   },
    "workspace_id": {
       "readonly": false,
       "sensitive": false,
@@ -231,7 +369,7 @@
       "key_field": "",
       "item_type": {},
       "description": {
-         "azure_monitor_log": ""
+         "azure_monitor_log": "For HTTP Data Collector API authentication. Your Log Analytics workspace ID."
       },
       "api_field": ""
    }
