@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.45...HEAD)
 
+### Added
+- `fivetran_destination` (service `databricks`): support for Azure Client Credentials authentication with Hybrid Deployment and Azure Blob Storage staging via `azure_client_id`, `azure_client_secret`, and `azure_tenant_id` fields.
+- `fivetran_external_logging` (service `azure_monitor_log`): support for the new Azure Monitor Log Ingestion API via `client_id`, `client_secret`, `tenant_id`, `data_collection_endpoint`, `dcr_immutable_id`, and `dcr_stream_name` fields, enabling continued monitoring after the Microsoft HTTP Data Collector API retirement on 2026-09-14.
+- `fivetran_destination` (services `databricks_via_managed_data_lake`, `managed_data_lake`): support for Polaris catalog configuration via `polaris_catalog_configuration` and `should_write_delta` fields.
+- `fivetran_destination` (service `snowflake`): support for Google Cloud Storage (GCS) bucket staging in Hybrid Deployment via `gcs_service_account_credentials` field.
+- New destination service supported: `postgres_wh` with full configuration support including SSH tunnel, IAM authentication, and private link connectivity.
+
 ## [v1.9.45](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.44...v1.9.45)
 
 ### Added
