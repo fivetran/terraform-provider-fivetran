@@ -198,14 +198,7 @@ func TestResourceMDLSDestinationMock(t *testing.T) {
 			"should_maintain_tables_in_one_lake": false,
 			"connection_type": "PRIVATE_LINK",
 			"should_maintain_tables_in_glue": false,
-			"should_maintain_tables_in_bqms": false,
-			"should_write_delta": true,
-			"polaris_catalog_configuration": {
-				"polarisServerEndpoint": "https://smth.us-east-1.aws.polaris.fivetran.com/api/catalog",
-				"polarisCatalog": "group_id",
-				"clientId": "abc1234567890",
-				"clientSecret": "********"
-			}
+			"should_maintain_tables_in_bqms": false
 		}
 	}
 	`)
@@ -237,14 +230,7 @@ func TestResourceMDLSDestinationMock(t *testing.T) {
 			"should_maintain_tables_in_one_lake": false,
 			"connection_type": "PRIVATE_LINK",
 			"should_maintain_tables_in_glue": false,
-			"should_maintain_tables_in_bqms": false,
-			"should_write_delta": true,
-			"polaris_catalog_configuration": {
-				"polarisServerEndpoint": "https://smth.us-east-1.aws.polaris.fivetran.com/api/catalog",
-				"polarisCatalog": "group_id",
-				"clientId": "abc1234567890",
-				"clientSecret": "********"
-			}
+			"should_maintain_tables_in_bqms": false
 		}
 	}
 	`)
