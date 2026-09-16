@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.45...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.46...HEAD)
+
+## [v1.9.46](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.45...v1.9.46)
 
 ### Added
 - `fivetran_destination` (service `databricks`): support for Azure Client Credentials authentication with Hybrid Deployment and Azure Blob Storage staging via `azure_client_id`, `azure_client_secret`, and `azure_tenant_id` fields.
@@ -13,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `fivetran_destination` (services `databricks_via_managed_data_lake`, `managed_data_lake`): support for Polaris catalog configuration via `polaris_catalog_configuration` and `should_write_delta` fields.
 - `fivetran_destination` (service `snowflake`): support for Google Cloud Storage (GCS) bucket staging in Hybrid Deployment via `gcs_service_account_credentials` field.
 - New destination service supported: `postgres_wh` with full configuration support including SSH tunnel, IAM authentication, and private link connectivity.
+- `fivetran_connection_v2` documentation: added note directing customers to [Terraform registry documentation](https://registry.terraform.io/providers/fivetran/fivetran/latest/docs/resources/connection_v2) for service-specific `config` and `auth` field requirements.
 
 ## [v1.9.45](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.44...v1.9.45)
 
