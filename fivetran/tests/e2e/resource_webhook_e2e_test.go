@@ -23,7 +23,7 @@ func TestResourceWebhookE2E(t *testing.T) {
                  provider = fivetran-provider
 
                  type = "account"
-                 url = "https://your-host.your-domain/webhook"
+                 url = "https://webhook.site/00000000-0000-0000-0000-000000000000"
                  secret = "password"
                  active = "false"
                  run_tests = "false"
@@ -33,7 +33,7 @@ func TestResourceWebhookE2E(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						testFivetranWebhookResourceCreate(t, "fivetran_webhook.test_webhook"),
 						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "type", "account"),
-						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "url", "https://your-host.your-domain/webhook"),
+						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "url", "https://webhook.site/00000000-0000-0000-0000-000000000000"),
 						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "secret", "password"),
 						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "active", "false"),
 						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.0", "sync_end"),
@@ -46,7 +46,7 @@ func TestResourceWebhookE2E(t *testing.T) {
                  provider = fivetran-provider
 
                  type = "account"
-                 url = "https://your-host.your-domain/webhook_1"
+                 url = "https://webhook.site/11111111-1111-1111-1111-111111111111"
                  secret = "password_2"
                  active = "false"
                  run_tests = "false"
@@ -56,7 +56,7 @@ func TestResourceWebhookE2E(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						testFivetranWebhookResourceUpdate(t, "fivetran_webhook.test_webhook"),
 						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "type", "account"),
-						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "url", "https://your-host.your-domain/webhook_1"),
+						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "url", "https://webhook.site/11111111-1111-1111-1111-111111111111"),
 						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "secret", "password_2"),
 						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "active", "false"),
 						resource.TestCheckResourceAttr("fivetran_webhook.test_webhook", "events.0", "connection_failure"),
