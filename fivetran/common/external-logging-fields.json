@@ -52,6 +52,71 @@
       },
       "api_field": ""
    },
+   "client_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "azure_monitor_log": "Client ID of the Azure AD application for the Log Ingestion API authentication."
+      },
+      "api_field": ""
+   },
+   "client_secret": {
+      "readonly": false,
+      "sensitive": true,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "azure_monitor_log": "Client secret of the Azure AD application for the Log Ingestion API authentication."
+      },
+      "api_field": ""
+   },
+   "data_collection_endpoint": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "azure_monitor_log": "The URI of the Azure Monitor Data Collection Endpoint (DCE) for the Log Ingestion API."
+      },
+      "api_field": ""
+   },
+   "dcr_immutable_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "azure_monitor_log": "The immutable ID of the Azure Monitor Data Collection Rule (DCR) for the Log Ingestion API."
+      },
+      "api_field": ""
+   },
+   "dcr_stream_name": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "azure_monitor_log": "The stream name of the Azure Monitor Data Collection Rule (DCR) for the Log Ingestion API."
+      },
+      "api_field": ""
+   },
    "enable_ssl": {
       "readonly": false,
       "sensitive": false,
@@ -206,6 +271,19 @@
       "item_type": {},
       "description": {
          "new_relic_log": ""
+      },
+      "api_field": ""
+   },
+   "tenant_id": {
+      "readonly": false,
+      "sensitive": false,
+      "nullable": true,
+      "type": "string",
+      "fields": null,
+      "key_field": "",
+      "item_type": {},
+      "description": {
+         "azure_monitor_log": "Tenant ID of the Azure AD for the Log Ingestion API authentication."
       },
       "api_field": ""
    },
