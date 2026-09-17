@@ -108,7 +108,9 @@ The value defines validation method.
 												"is_primary_key": schema.BoolAttribute{
 													Optional:    true,
 													Computed:    true,
-													Description: "Boolean value indicating if the column is a primary key.",
+													Description: "Boolean value indicating if the column is a primary key. " +
+														"For file connectors (CSV, Google Sheets, Excel, JSON, Parquet), this can be set before the first sync. " +
+														"Changing this value after the connector has synced requires resource replacement.",
 													PlanModifiers: []planmodifier.Bool{
 														boolplanmodifier.UseStateForUnknown(),
 													},
@@ -218,7 +220,9 @@ func getColumnBlock() schema.SetNestedBlock {
 				"is_primary_key": schema.BoolAttribute{
 					Optional:    true,
 					Computed:    true,
-					Description: "Boolean value indicating if the column is a primary key.",
+					Description: "Boolean value indicating if the column is a primary key. " +
+						"For file connectors (CSV, Google Sheets, Excel, JSON, Parquet), this can be set before the first sync. " +
+						"Changing this value after the connector has synced requires resource replacement.",
 					PlanModifiers: []planmodifier.Bool{
 						boolplanmodifier.UseStateForUnknown(),
 					},
