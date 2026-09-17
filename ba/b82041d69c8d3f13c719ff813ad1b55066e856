@@ -1,0 +1,31 @@
+fivetran/framework/resources/connector_schema_resource.go
+  s_df46fbe05d04b6::t_843b82409c663d 302,304
+  s_df46fbe05d04b6::t_dfac6b9265a1ec 52,64-65
+  s_df46fbe05d04b6::t_148bef3abe3ab0 485-496
+  s_df46fbe05d04b6::t_93c11754851026 218
+  s_df46fbe05d04b6::t_718e5583ec8d78 219-220,224-234,236-237
+  s_df46fbe05d04b6::t_6c34a310935728 75,80,84-85,87-90
+  s_df46fbe05d04b6::t_f4aa1cb040cf8e 481
+  s_df46fbe05d04b6::t_a315b5e5a87ac4 63,66-73,78,81-83,86,93,97
+fivetran/framework/resources/connector_schema_validate.go
+  s_df46fbe05d04b6::t_f73a93dc12cae9 96-108
+  s_df46fbe05d04b6::t_19e7c2cdcff4af 92
+modules/connector/schema/schema_table.go
+  s_df46fbe05d04b6::t_a0a2f127c6e2ca 33-40,52-55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "bab82041d69c8d3f13c719ff813ad1b55066e856",
+  "prompts": {},
+  "sessions": {
+    "s_df46fbe05d04b6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a0e121fe-1598-439d-8d05-07153359f97f",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
