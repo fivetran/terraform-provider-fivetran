@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.46...HEAD)
 
+### Fixed
+- `fivetran_connector_schema_config`: warn when a table with no locally-declared `column`/`columns` block has upstream columns that don't match the `schema_change_handling` policy default — this drift was previously silently discarded instead of surfaced.
+
 ## [v1.9.46](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.45...v1.9.46)
 
 ### Added
@@ -27,7 +30,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `fivetran_connector_schema_config`: brand-new connections with `validation_level = "NONE"` now go through the same reload-then-validate-then-apply flow as every other validation level, instead of skipping validation entirely via a separate code path.
 - `fivetran_connector_schema_config`: `Update` and plan-time `ValidateConfig` now honor the same "is this validation error fixable by a reload" signal `Create` already used, instead of always reloading on any validation error.
 - `fivetran_connector_schema_config`: fixed reload failures being silently swallowed during plan-time validation (a `diag.Diagnostics` passed by value never propagated errors back to the caller).
-- `fivetran_connector_schema_config`: warn when a table with no locally-declared `column`/`columns` block has upstream columns that don't match the `schema_change_handling` policy default — this drift was previously silently discarded instead of surfaced.
 
 ## [v1.9.44](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.43...v1.9.44)
 
