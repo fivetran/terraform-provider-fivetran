@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/url"
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/common"
@@ -35,23 +34,27 @@ func getMultipleTableColumnsConfig(
 	var response multipleTableColumnsConfigResponse
 	httpService := client.NewHttpService()
 
-	query := url.Values{}
-	for _, table := range tables {
-		query.Add("tables", table)
-	}
-
 	requestURL := fmt.Sprintf(
-		"%s/connections/%s/schemas/%s/tables/columns?%s",
+		"%s/connections/%s/schemas/%s/fetch-source-columns",
 		httpService.BaseUrl,
 		connectionID,
 		schemaName,
-		query.Encode(),
 	)
 
+	requestBody := map[string]interface{}{
+		"tables": tables,
+	}
+
+	reqBodyJSON, err := json.Marshal(requestBody)
+	if err != nil {
+		return response, err
+	}
+
 	respBody, respStatus, err := (&httputils.Request{
-		Method:           "GET",
+		Method:           "POST",
 		Url:              requestURL,
 		Headers:          httpService.CommonHeaders,
+		Body:             reqBodyJSON,
 		Client:           httpService.Client,
 		HandleRateLimits: httpService.HandleRateLimits,
 		MaxRetryAttempts: httpService.MaxRetryAttempts,
