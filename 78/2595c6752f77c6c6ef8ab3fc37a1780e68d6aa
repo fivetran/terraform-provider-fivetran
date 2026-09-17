@@ -1,0 +1,20 @@
+fivetran/framework/core/model/connector_schema_config.go
+  s_df46fbe05d04b6::t_eec3097127bb10 279-286
+  s_df46fbe05d04b6::t_6a5e7ec8cf3ee9 408-415
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "782595c6752f77c6c6ef8ab3fc37a1780e68d6aa",
+  "prompts": {},
+  "sessions": {
+    "s_df46fbe05d04b6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a0e121fe-1598-439d-8d05-07153359f97f",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
