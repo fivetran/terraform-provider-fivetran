@@ -1,10 +1,96 @@
+<p align="center">
+  <a href="https://www.fivetran.com/">
+    <img src="https://cdn.prod.website-files.com/6130fa1501794ed4d11867ba/63d9599008ad50523f8ce26a_logo.svg" alt="Fivetran">
+  </a>
+</p>
+
+<p align="center">
+  Manage your Fivetran resources as infrastructure as code.
+</p>
+
+<p align="center">
+  <a href="https://registry.terraform.io/providers/fivetran/fivetran/latest" target="_blank"><img src="https://img.shields.io/badge/Terraform%20Registry-fivetran%2Ffivetran-844FBA?logo=terraform" alt="Terraform Registry"></a>
+  <a href="https://github.com/fivetran/terraform-provider-fivetran/releases/latest" target="_blank"><img src="https://img.shields.io/github/v/release/fivetran/terraform-provider-fivetran" alt="Latest Release"></a>
+  <a href="https://github.com/fivetran/terraform-provider-fivetran/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/github/license/fivetran/terraform-provider-fivetran" alt="License"></a>
+</p>
+
 # Terraform Provider for Fivetran
 
-`terraform-provider-fivetran` is the official Terraform Provider for Fivetran. 
+The `terraform-provider-fivetran` is the official Terraform provider for managing [Fivetran](https://fivetran.com/) resources as infrastructure as code. Use it to provision and manage destinations, connections, users, teams, roles, and other Fivetran resources through version-controlled Terraform configurations.
 
-Checkout our [CHANGELOG](CHANGELOG.md) for information about the latest bug fixes, updates, and features added to the SDK. 
+We strongly encourage you to get acquainted with the Fivetran REST API [documentation](https://fivetran.com/docs/rest-api) before using our Terraform provider.
 
-Make sure you read the Fivetran REST API [documentation](https://fivetran.com/docs/rest-api) before using the Provider.
+See our [CHANGELOG](CHANGELOG.md) for information about the latest bug fixes, updates, and features added to the provider. 
+
+## Quickstart
+
+### Prerequisites
+
+- [Terraform CLI](https://developer.hashicorp.com/terraform/install) v1.0 or later
+- A Fivetran account
+- A [Fivetran API key and API secret](https://fivetran.com/docs/developer-resources/terraform/getting-started#authenticate) with sufficient permissions for the resources you want to manage
+
+### Configure the provider
+
+Create a Terraform configuration:
+
+```hcl
+terraform {
+  required_version = ">= 1.0"
+
+  required_providers {
+    fivetran = {
+      source  = "fivetran/fivetran"
+      version = "~> 1.9"
+    }
+  }
+}
+
+provider "fivetran" {}
+
+resource "fivetran_group" "example" {
+  name = "terraform-example"
+}
+```
+
+Set your credentials as environment variables:
+
+```bash
+export FIVETRAN_APIKEY="your-api-key"
+export FIVETRAN_APISECRET="your-api-secret"
+```
+
+Initialize Terraform and preview the configuration:
+
+```bash
+terraform init
+terraform plan
+```
+
+Never commit API credentials to `.tf` files or version control. The provider requires the API key and API secret as separate values; do not use a Base64-encoded API key as either value. For authentication options and API-key types, see our [Getting Started Guide](https://fivetran.com/docs/developer-resources/terraform/getting-started#authenticate).
+
+## Managing connections
+
+Fivetran connection settings are service-specific. You can use the legacy [`fivetran_connector`](https://registry.terraform.io/providers/fivetran/fivetran/latest/docs/resources/connector) resource or the [Connection_v2 Configuration Page](https://fivetran.com/docs/developer-resources/terraform/terraform-configuration-connections) to generate the required HCL for a connection service.
+
+The `fivetran_connection_v2` resource uses metadata-driven `config` and `auth` objects and validates their fields during planning. Keep these behaviors in mind:
+
+- `destination_schema_names` is required.
+- The accepted `config` and `auth` fields depend on the selected service.
+- Sensitive fields are not necessarily placed in `auth`; follow the generated configuration for the service.
+- New v2 connections are created paused. Manage their state separately with `fivetran_connection_v2_pause_state`.
+- `fivetran_connection_v2` and `fivetran_connection_v2_pause_state` are in **alpha** and are subject to change at any moment.
+
+See the [`fivetran_connection_v2` reference](https://registry.terraform.io/providers/fivetran/fivetran/latest/docs/resources/connection_v2) for the full resource schema and current alpha limitations.
+
+## Important considerations
+
+- Provider capabilities depend on the corresponding Fivetran REST API behavior and the selected connection service.
+- Some authorization flows, including interactive OAuth, may require completion outside Terraform.
+- Sensitive values may be stored in Terraform state. Use an encrypted remote backend with appropriately restricted access.
+- Avoid managing the same setting through overlapping Terraform resources or through both Terraform and the Fivetran dashboard. Out-of-band changes create drift and may be reverted by a later `terraform apply`.
+
+For release-specific changes and known fixes, review the [changelog](CHANGELOG.md) before upgrading.
 
 ## Known issues
 
@@ -20,5 +106,12 @@ Check that the field causing the problem is actually applicable to the service s
 
 ## Support
 
-Please get in touch with us through our [Support Portal](https://support.fivetran.com/) if you 
-have any comments, suggestions, support requests, or bug reports.  
+For feedback, feature requests, or bug reports, contact Fivetran through the [Support Portal](https://support.fivetran.com/). 
+
+## Contributions
+
+External contributions are not currently accepted. See [CONTRIBUTING.md](CONTRIBUTING.md) for the current contribution policy.
+
+## License
+
+This project is licensed under the [Apache License 2.0](LICENSE).
