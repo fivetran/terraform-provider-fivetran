@@ -276,8 +276,8 @@ func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}, isIm
 							columnElements["hashed"] = types.BoolNull()
 						}
 
-						if columnMap["is_primary_key"] != nil {
-							columnElements["is_primary_key"] = types.BoolValue(helpers.StrToBool(columnMap["is_primary_key"].(string)))
+						if ispk, ok := columnMap["is_primary_key"].(bool); ok {
+							columnElements["is_primary_key"] = types.BoolValue(ispk)
 						} else {
 							columnElements["is_primary_key"] = types.BoolNull()
 						}
@@ -399,8 +399,8 @@ func (d *ConnectorSchemaResourceModel) getLegacySchemaItems(schemas []interface{
 						} else {
 							columnElements["hashed"] = types.BoolNull()
 						}
-						if columnMap["is_primary_key"] != nil {
-							columnElements["is_primary_key"] = types.BoolValue(helpers.StrToBool(columnMap["is_primary_key"].(string)))
+						if ispk, ok := columnMap["is_primary_key"].(bool); ok {
+							columnElements["is_primary_key"] = types.BoolValue(ispk)
 						} else {
 							columnElements["is_primary_key"] = types.BoolNull()
 						}
