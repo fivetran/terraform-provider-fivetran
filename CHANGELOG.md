@@ -30,6 +30,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `fivetran_connector_schema_config`: warn when a table with no locally-declared `column`/`columns` block has upstream columns that don't match the `schema_change_handling` policy default — this drift was previously silently discarded instead of surfaced.
 
+### Added
+- `fivetran_connector_schema_config`: plan-time validation for `is_primary_key` constraints — for file connectors (CSV, Google Sheets, Excel, JSON, Parquet), users can set `is_primary_key` before the connector's first sync. Attempting to change `is_primary_key` after syncing shows a warning that the change will require resource replacement.
+
+### Changed
+- `fivetran_connector_schema_config`: enhanced schema descriptions for `is_primary_key` field to document the sync-based constraints for file connectors.
+
 ## [v1.9.46](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.45...v1.9.46)
 
 ### Added
