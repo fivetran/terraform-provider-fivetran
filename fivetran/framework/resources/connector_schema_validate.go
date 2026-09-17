@@ -96,19 +96,23 @@ func (r *connectorSchema) ValidateConfig(ctx context.Context, req resource.Valid
 	}
 
 	if needReload {
-		schemaResponse = r.reloadSchema(ctx, data.ConnectorId.ValueString(), &resp.Diagnostics)
+		schemaResponse = r.reloadSchema(ctx, data.ConnectorId.ValueString(), schemaResponse, &resp.Diagnostics)
 		if resp.Diagnostics.HasError() {
 			return
 		}
-		// Match Create/Update: force column (re-)validation after a reload when
-		// schema_change_handling is BLOCK_ALL, so newly-unblocked columns are checked
-		// here too, not just on whichever of plan/apply happens to trigger the reload.
-		forceValidateColumns := data.SchemaChangeHandling.ValueString() == configSchema.BLOCK_ALL
-		if validateErr, _ := data.ValidateSchemaElements(schemaResponse, forceValidateColumns, *client, ctx); validateErr != nil {
-			resp.Diagnostics.AddError(
-				"Invalid Connector Schema Resource Configuration.",
-				fmt.Sprintf("Schema configuration is not aligned with source schema. Details:\n %v;", validateErr),
-			)
+		// Only validate if reload succeeded (returned schema data)
+		// If reload not supported, schemaResponse will be empty and we skip validation
+		if len(schemaResponse.Data.Schemas) > 0 {
+			// Match Create/Update: force column (re-)validation after a reload when
+			// schema_change_handling is BLOCK_ALL, so newly-unblocked columns are checked
+			// here too, not just on whichever of plan/apply happens to trigger the reload.
+			forceValidateColumns := data.SchemaChangeHandling.ValueString() == configSchema.BLOCK_ALL
+			if validateErr, _ := data.ValidateSchemaElements(schemaResponse, forceValidateColumns, *client, ctx); validateErr != nil {
+				resp.Diagnostics.AddError(
+					"Invalid Connector Schema Resource Configuration.",
+					fmt.Sprintf("Schema configuration is not aligned with source schema. Details:\n %v;", validateErr),
+				)
+			}
 		}
 	}
 
