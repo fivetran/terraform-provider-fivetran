@@ -156,12 +156,13 @@ func (c _column) toStateObject(sch string, local *_column, diag *diag.Diagnostic
 		result[HASHED] = helpers.BoolToStr(*c.hashed)
 	}
 
-	if (local != nil || isImporting) && c.isPrimaryKey != nil {
+	if c.isPrimaryKey != nil {
 		result[IS_PRIMARY_KEY] = helpers.BoolToStr(*c.isPrimaryKey)
 	}
-	
+
 	include :=local != nil ||
 		(c.enabled != (sch != BLOCK_ALL) && c.isPatchAllowed()) ||
-		isImporting
+		isImporting ||
+		c.isPrimaryKey != nil
 	return result, include
 }
