@@ -79,6 +79,7 @@ func (r *connectionV2) ImportState(ctx context.Context, req resource.ImportState
 		RunSetupTests:     types.BoolValue(false),
 		TrustCertificates: types.BoolValue(false),
 		TrustFingerprints: types.BoolValue(false),
+		Schedule:          types.ObjectNull(model.ConnectionV2ScheduleAttrTypes()),
 	}
 
 	resp.Diagnostics.Append(data.ReadFromResponseForImport(ctx, details, meta)...)
@@ -129,6 +130,7 @@ func (r *connectionV2) Create(ctx context.Context, req resource.CreateRequest, r
 	connectCardConfigPlan := data.ConnectCardConfig
 	destinationSchemaNamesPlan := data.DestinationSchemaNames
 	destinationConfigurationPlan := data.DestinationConfiguration
+	schedulePlan := data.Schedule
 
 	svc := r.GetClient().NewConnectionCreate().
 		Paused(true).
@@ -167,6 +169,7 @@ func (r *connectionV2) Create(ctx context.Context, req resource.CreateRequest, r
 	data.ConnectCardConfig = preserveObject(data.ConnectCardConfig, connectCardConfigPlan)
 	data.DestinationSchemaNames = preserveString(data.DestinationSchemaNames, destinationSchemaNamesPlan)
 	data.DestinationConfiguration = preserveObject(data.DestinationConfiguration, destinationConfigurationPlan)
+	data.Schedule = preserveObject(data.Schedule, schedulePlan)
 
 	r.warnFailedSetupTests(response.Data.SetupTests, &resp.Diagnostics)
 
@@ -222,6 +225,7 @@ func (r *connectionV2) Read(ctx context.Context, req resource.ReadRequest, resp 
 	connectCardConfig := data.ConnectCardConfig
 	destinationSchemaNames := data.DestinationSchemaNames
 	destinationConfiguration := data.DestinationConfiguration
+	schedule := data.Schedule
 
 	resp.Diagnostics.Append(data.ReadFromResponse(ctx, response, meta, configMask)...)
 	if resp.Diagnostics.HasError() {
@@ -234,6 +238,7 @@ func (r *connectionV2) Read(ctx context.Context, req resource.ReadRequest, resp 
 	data.ConnectCardConfig = preserveObject(data.ConnectCardConfig, connectCardConfig)
 	data.DestinationSchemaNames = preserveString(data.DestinationSchemaNames, destinationSchemaNames)
 	data.DestinationConfiguration = preserveObject(data.DestinationConfiguration, destinationConfiguration)
+	data.Schedule = preserveObject(data.Schedule, schedule)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -278,6 +283,7 @@ func (r *connectionV2) Update(ctx context.Context, req resource.UpdateRequest, r
 	connectCardConfigPlan := plan.ConnectCardConfig
 	destinationSchemaNamesPlan := plan.DestinationSchemaNames
 	destinationConfigurationPlan := plan.DestinationConfiguration
+	schedulePlan := plan.Schedule
 
 	runSetupTestsChanged := !plan.RunSetupTests.Equal(state.RunSetupTests)
 	trustCertificatesChanged := !plan.TrustCertificates.Equal(state.TrustCertificates)
@@ -356,6 +362,7 @@ func (r *connectionV2) Update(ctx context.Context, req resource.UpdateRequest, r
 	plan.ConnectCardConfig = preserveObject(plan.ConnectCardConfig, connectCardConfigPlan)
 	plan.DestinationSchemaNames = preserveString(plan.DestinationSchemaNames, destinationSchemaNamesPlan)
 	plan.DestinationConfiguration = preserveObject(plan.DestinationConfiguration, destinationConfigurationPlan)
+	plan.Schedule = preserveObject(plan.Schedule, schedulePlan)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
