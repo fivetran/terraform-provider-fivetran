@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.46...HEAD)
 
+### Added
+- `fivetran_connection_v2`: support for the `schedule` field to configure connector schedule with detailed scheduling options including `schedule_type`, `interval`, `time_of_day`, `days_of_week`, and `cron` expression support.
+
 ## [v1.9.46](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.45...v1.9.46)
 
 ### Added

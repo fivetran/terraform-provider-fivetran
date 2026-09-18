@@ -631,6 +631,7 @@ func connectionV2ValidateConfigRequestWithDynamic(t *testing.T, service types.St
 		TrustCertificates:        types.BoolNull(),
 		TrustFingerprints:        types.BoolNull(),
 		Status:                   types.ObjectNull(model.ConnectionV2StatusAttrTypes()),
+		Schedule:                 types.ObjectNull(model.ConnectionV2ScheduleAttrTypes()),
 	}
 
 	var object types.Object
