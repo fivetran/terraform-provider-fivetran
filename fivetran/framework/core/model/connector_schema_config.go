@@ -276,7 +276,13 @@ func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}, isIm
 							columnElements["hashed"] = types.BoolNull()
 						}
 
-						if ispk, ok := columnMap["is_primary_key"].(bool); ok {
+						if _, ok := localColumn["is_primary_key"]; (ok || isImporting) && columnMap["is_primary_key"] != nil {
+							if ispk, ok := columnMap["is_primary_key"].(bool); ok {
+								columnElements["is_primary_key"] = types.BoolValue(ispk)
+							} else {
+								columnElements["is_primary_key"] = types.BoolNull()
+							}
+						} else if ispk, ok := columnMap["is_primary_key"].(bool); ok {
 							columnElements["is_primary_key"] = types.BoolValue(ispk)
 						} else {
 							columnElements["is_primary_key"] = types.BoolNull()
@@ -399,7 +405,13 @@ func (d *ConnectorSchemaResourceModel) getLegacySchemaItems(schemas []interface{
 						} else {
 							columnElements["hashed"] = types.BoolNull()
 						}
-						if ispk, ok := columnMap["is_primary_key"].(bool); ok {
+						if _, ok := localColumn["is_primary_key"]; ok && columnMap["is_primary_key"] != nil {
+							if ispk, ok := columnMap["is_primary_key"].(bool); ok {
+								columnElements["is_primary_key"] = types.BoolValue(ispk)
+							} else {
+								columnElements["is_primary_key"] = types.BoolNull()
+							}
+						} else if ispk, ok := columnMap["is_primary_key"].(bool); ok {
 							columnElements["is_primary_key"] = types.BoolValue(ispk)
 						} else {
 							columnElements["is_primary_key"] = types.BoolNull()
