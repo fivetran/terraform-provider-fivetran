@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.46...HEAD)
 
+### Added
+- `fivetran_connector_schema_config`: plan-time validation for `is_primary_key` constraints — for file connectors (CSV, Google Sheets, Excel, JSON, Parquet), users can set `is_primary_key` before the connector's first sync. Attempting to change `is_primary_key` after syncing shows a warning that the change will require resource replacement.
+
+### Changed
+- `fivetran_connector_schema_config`: enhanced schema descriptions for `is_primary_key` field to document the sync-based constraints for file connectors.
+
 ## [v1.9.46](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.45...v1.9.46)
 
 ### Added

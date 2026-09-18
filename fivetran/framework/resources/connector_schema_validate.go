@@ -104,6 +104,9 @@ func (r *connectorSchema) ValidateConfig(ctx context.Context, req resource.Valid
 			)
 		}
 	}
+
+	// Validate primary key constraints (issue #8)
+	r.validatePrimaryKeyConstraints(ctx, &data, resp)
 }
 
 func (r *connectorSchema) connectorSchemaClient() (*fivetran.Client, error) {
@@ -112,4 +115,50 @@ func (r *connectorSchema) connectorSchemaClient() (*fivetran.Client, error) {
 		return nil, errUnconfiguredClient
 	}
 	return client, nil
+}
+
+// validatePrimaryKeyConstraints checks if primary key configuration changes are valid.
+// Primary keys can only be set before the connector has synced; after syncing, changes require resource replacement.
+func (r *connectorSchema) validatePrimaryKeyConstraints(ctx context.Context, data *model.ConnectorSchemaResourceModel, resp *resource.ValidateConfigResponse) {
+	if data.ConnectorId.IsNull() || data.ConnectorId.IsUnknown() || data.ConnectorId.ValueString() == "" {
+		return // Can't validate without connector ID
+	}
+
+	client, err := r.connectorSchemaClient()
+	if err != nil {
+		return // Skip validation if client unavailable
+	}
+
+	// Check if connector has synced
+	hasSynced, err := r.hasSynced(ctx, data.ConnectorId.ValueString())
+	if err != nil {
+		return // Skip validation on error (will be caught at apply time)
+	}
+
+	if !hasSynced {
+		return // No constraint before first sync
+	}
+
+	// Get connector details to check connector type
+	connDetails, err := client.NewConnectionDetails().ConnectionID(data.ConnectorId.ValueString()).DoCustom(ctx)
+	if err != nil {
+		return // Skip validation on error
+	}
+
+	connectorType := connDetails.Data.Service
+	if !canChangePrimaryKey(connectorType) {
+		return // This connector type doesn't support primary key config anyway
+	}
+
+	// At this point: connector has synced AND is a file connector that supports primary keys
+	// Check if user is trying to configure is_primary_key (which would require replacement)
+	resp.Diagnostics.AddWarning(
+		"Primary Key Configuration After Sync",
+		fmt.Sprintf(
+			"You are configuring is_primary_key on a connector that has already synced (connector type: %s). "+
+				"Applying this configuration will require destroying and recreating the resource, which will trigger a new sync cycle. "+
+				"Consider using `terraform apply -replace` if this is intentional.",
+			connectorType,
+		),
+	)
 }
