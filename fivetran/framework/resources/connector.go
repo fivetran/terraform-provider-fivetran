@@ -27,6 +27,7 @@ type connector struct {
 var _ resource.ResourceWithConfigure = &connector{}
 var _ resource.ResourceWithUpgradeState = &connector{}
 var _ resource.ResourceWithImportState = &connector{}
+var _ resource.ResourceWithValidateConfig = &connector{}
 
 func (r *connector) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_connector"
@@ -42,6 +43,16 @@ func (r *connector) Schema(ctx context.Context, req resource.SchemaRequest, resp
 
 func (r *connector) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+}
+
+func (r *connector) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+	var data model.ConnectorResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rejectHostWithPrivateLink(data.Config, data.PrivateLinkId, path.Root("config"), &resp.Diagnostics)
 }
 
 func (r *connector) UpgradeState(ctx context.Context) map[int64]resource.StateUpgrader {
