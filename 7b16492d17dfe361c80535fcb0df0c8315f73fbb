@@ -1,0 +1,31 @@
+fivetran/framework/core/model/connector_config.go
+  dca7928f57004d6a 4,18-55
+fivetran/framework/core/model/connector.go
+  dca7928f57004d6a 252,258-260
+fivetran/framework/core/schema/destination_config.go
+  dca7928f57004d6a 32-39
+fivetran/framework/core/model/destination_resource_model.go
+  dca7928f57004d6a 104-106
+fivetran/framework/resources/connector_test.go
+  dca7928f57004d6a 1684-1805
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.4",
+  "base_commit_sha": "7b16492d17dfe361c80535fcb0df0c8315f73fbb",
+  "prompts": {
+    "dca7928f57004d6a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d36fcb9c-a760-4627-98fa-1bb6d8eee24c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Roman Kolesnikov <roman.kolesnikov@fivetran.com>",
+      "messages": [],
+      "total_additions": 243,
+      "total_deletions": 2,
+      "accepted_lines": 241,
+      "overriden_lines": 0
+    }
+  }
+}
