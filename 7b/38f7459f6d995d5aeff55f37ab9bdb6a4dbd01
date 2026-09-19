@@ -1,0 +1,23 @@
+fivetran/tests/e2e/resource_connector_e2e_test.go
+  fa2ffaff1f474939 1119
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.3",
+  "base_commit_sha": "7b38f7459f6d995d5aeff55f37ab9bdb6a4dbd01",
+  "prompts": {
+    "fa2ffaff1f474939": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a888c29f-199a-4ea3-9714-4bbd858fc9e9",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>",
+      "messages": [],
+      "total_additions": 5,
+      "total_deletions": 2,
+      "accepted_lines": 3,
+      "overriden_lines": 0
+    }
+  }
+}

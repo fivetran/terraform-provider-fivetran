@@ -1,0 +1,29 @@
+fivetran/framework/resources/connection_v2.go
+  fa2ffaff1f474939 5,20-25,341
+fivetran/framework/resources/connection_v2_validate_test.go
+  fa2ffaff1f474939 465,478-479
+fivetran/framework/resources/connection_v2_modify_plan.go
+  fa2ffaff1f474939 5,70-72
+fivetran/framework/resources/connection_v2_validate.go
+  fa2ffaff1f474939 5,45-47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.3",
+  "base_commit_sha": "d16b552e54b1c47fe0a114490a713495840fa3e6",
+  "prompts": {
+    "fa2ffaff1f474939": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a888c29f-199a-4ea3-9714-4bbd858fc9e9",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>",
+      "messages": [],
+      "total_additions": 24,
+      "total_deletions": 6,
+      "accepted_lines": 286,
+      "overriden_lines": 0
+    }
+  }
+}

@@ -1,0 +1,36 @@
+fivetran/tests/e2e/resource_connector_e2e_test.go
+  7cd67594cfd0e3da 1595-1626,1628-1636,1722-1723,1727
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.1",
+  "base_commit_sha": "3ebc186749f0d976d36867ab8d745294aa347524",
+  "prompts": {
+    "7cd67594cfd0e3da": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "20fab4f7-05f0-4a5f-aca6-bf4303efcd30",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "RenatShaikhutdinov <renat.shaikhutdinov@fivetran.com>",
+      "messages": [],
+      "total_additions": 56,
+      "total_deletions": 1,
+      "accepted_lines": 48,
+      "overriden_lines": 7
+    },
+    "b62c507dd97a4783": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "aab4ad42-649b-4b7b-850c-15720dfef6ae",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "RenatShaikhutdinov <renat.shaikhutdinov@fivetran.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 122,
+      "overriden_lines": 0
+    }
+  }
+}

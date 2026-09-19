@@ -1,0 +1,49 @@
+CHANGELOG.md
+  a597775acd132041 11-17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.4",
+  "base_commit_sha": "450e579edbabc2858761f79423cd108a5dd48c65",
+  "prompts": {
+    "44df30ae81c96a2b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "01a33416-d147-46da-bd97-34ff60e4f7fc",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>",
+      "messages": [],
+      "total_additions": 66,
+      "total_deletions": 31,
+      "accepted_lines": 7,
+      "overriden_lines": 0
+    },
+    "a597775acd132041": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "530fbd8b-6ad7-4a8c-ba2f-8feef2c76928",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>",
+      "messages": [],
+      "total_additions": 175,
+      "total_deletions": 120,
+      "accepted_lines": 14,
+      "overriden_lines": 0
+    },
+    "fa2ffaff1f474939": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a888c29f-199a-4ea3-9714-4bbd858fc9e9",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>",
+      "messages": [],
+      "total_additions": 3,
+      "total_deletions": 0,
+      "accepted_lines": 4,
+      "overriden_lines": 0
+    }
+  }
+}

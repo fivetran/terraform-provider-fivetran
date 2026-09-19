@@ -1,0 +1,23 @@
+fivetran/framework/core/model/connector_config.go
+  00f12490d2bc6f4d 283
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.1",
+  "base_commit_sha": "c2cb1703a2a155a3c16f376176bf4479e9a5e35f",
+  "prompts": {
+    "00f12490d2bc6f4d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a34f3c60-6683-4ebb-ae24-fcfa23489381",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "RenatShaikhutdinov <renat.shaikhutdinov@fivetran.com>",
+      "messages": [],
+      "total_additions": 12,
+      "total_deletions": 14,
+      "accepted_lines": 6,
+      "overriden_lines": 0
+    }
+  }
+}

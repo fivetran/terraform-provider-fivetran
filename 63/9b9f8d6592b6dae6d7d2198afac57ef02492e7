@@ -1,0 +1,25 @@
+docs/resources/connection_v2_pause_state.md
+  fa2ffaff1f474939 11-12,20
+docs/resources/connection_v2.md
+  fa2ffaff1f474939 11,24-28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.3",
+  "base_commit_sha": "639b9f8d6592b6dae6d7d2198afac57ef02492e7",
+  "prompts": {
+    "fa2ffaff1f474939": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a888c29f-199a-4ea3-9714-4bbd858fc9e9",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>",
+      "messages": [],
+      "total_additions": 10,
+      "total_deletions": 2,
+      "accepted_lines": 274,
+      "overriden_lines": 0
+    }
+  }
+}
