@@ -1,6 +1,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 	"strconv"
@@ -13,6 +14,45 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
+
+// PreserveLocalHostForPrivateLink keeps the locally configured `host` value instead of the
+// value the API just returned, when a private link is in use. Fivetran silently derives
+// `host` from the private link referenced by `private_link_id`, server-side. `host` is
+// Optional+Computed, but once a user gives it an explicit value that value becomes the
+// authoritative planned value and Terraform's plan-consistency check forbids the final state
+// from disagreeing with it (attempting to plan it as unknown fails with "Provider produced
+// invalid plan"). So instead of writing back whatever the API resolved, we keep the
+// known/planned value in state, which is guaranteed to match. This only ever applies when the
+// user actually configured `host` explicitly; if it's left unset, the API-derived value is
+// used as normal (that's the whole point of `host` being Computed).
+func PreserveLocalHostForPrivateLink(newConfig basetypes.ObjectValue, priorConfig types.Object, privateLinkId string) basetypes.ObjectValue {
+	if privateLinkId == "" || priorConfig.IsNull() || priorConfig.IsUnknown() {
+		return newConfig
+	}
+
+	localHost, ok := priorConfig.Attributes()["host"].(types.String)
+	if !ok || localHost.IsNull() || localHost.IsUnknown() {
+		return newConfig
+	}
+
+	attrTypes := newConfig.AttributeTypes(context.Background())
+	if _, ok := attrTypes["host"]; !ok {
+		return newConfig
+	}
+
+	attrs := newConfig.Attributes()
+	patched := make(map[string]attr.Value, len(attrs))
+	for k, v := range attrs {
+		patched[k] = v
+	}
+	patched["host"] = localHost
+
+	result, diags := types.ObjectValue(attrTypes, patched)
+	if diags.HasError() {
+		return newConfig
+	}
+	return result
+}
 
 func PrepareConfigAuthPatch(state, plan map[string]interface{}, service string, allFields map[string]common.ConfigField) map[string]interface{} {
 	result := map[string]interface{}{}
