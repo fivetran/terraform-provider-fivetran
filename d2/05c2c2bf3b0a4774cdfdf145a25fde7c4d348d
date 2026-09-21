@@ -1,0 +1,25 @@
+fivetran/framework/resources/connection_v2_modify_plan_test.go
+  s_8224e51f51b2fe::t_f8a94678b50b9e 377-386,389,391-392,395,397-398,401,403-404,407,409-410,413,415-422,426,431,433,435-439
+  s_8224e51f51b2fe::t_0f49067ef9ccc9 387-388,390,393-394,396,399-400,402,405-406,408,411-412,414,423-425,427-430,432,434
+fivetran/framework/resources/connection_v2_modify_plan.go
+  s_8224e51f51b2fe::t_ba549b2b1e14b4 33-34
+  s_8224e51f51b2fe::t_aa70309a3dff26 227-241
+  s_8224e51f51b2fe::t_32289e376b0d8a 101-105
+  s_8224e51f51b2fe::t_27ed4841807ac7 100
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "d205c2c2bf3b0a4774cdfdf145a25fde7c4d348d",
+  "prompts": {},
+  "sessions": {
+    "s_8224e51f51b2fe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f86a822a-99c8-4f5c-b411-1f8f490e3fba",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
