@@ -68,5 +68,3 @@ require (
 )
 
 go 1.24.0
-
-replace github.com/fivetran/go-fivetran => github.com/jwmoss/go-fivetran v1.3.10-0.20260921191849-c6760b930a1c
