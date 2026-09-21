@@ -30,6 +30,8 @@ func (r *connectionV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRe
 		return
 	}
 
+	nullifyDailySyncTimeIfInvalid(&plan)
+
 	isCreate := req.State.Raw.IsNull()
 	isRootReplacement := false
 	var state model.ConnectionV2ResourceModel
@@ -94,6 +96,12 @@ func (r *connectionV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRe
 	if hasImmutableReplacement {
 		validateRequiredDynamicFields(planConfig, &meta.Config, path.Root("config"), &resp.Diagnostics)
 		validateRequiredDynamicFields(planAuth, &meta.Auth, path.Root("auth"), &resp.Diagnostics)
+	}
+
+	var origPlan model.ConnectionV2ResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &origPlan)...)
+	if !resp.Diagnostics.HasError() && plan.DailySyncTime != origPlan.DailySyncTime {
+		resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, path.Root("daily_sync_time"), plan.DailySyncTime)...)
 	}
 }
 
@@ -215,4 +223,19 @@ func dynamicValuesEqual(left, right interface{}) bool {
 		return true
 	}
 	return reflect.DeepEqual(left, right)
+}
+
+func nullifyDailySyncTimeIfInvalid(plan *model.ConnectionV2ResourceModel) {
+	if plan.SyncFrequency.IsUnknown() || plan.SyncFrequency.IsNull() {
+		return
+	}
+
+	syncFreq := plan.SyncFrequency.ValueInt64()
+	if syncFreq == 1440 {
+		return
+	}
+
+	if !plan.DailySyncTime.IsNull() && !plan.DailySyncTime.IsUnknown() {
+		plan.DailySyncTime = types.StringNull()
+	}
 }

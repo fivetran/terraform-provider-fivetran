@@ -374,6 +374,69 @@ func TestConnectionV2ModifyPlanSkipsDeleteAndUnknownService(t *testing.T) {
 	}
 }
 
+func TestConnectionV2ModifyPlanNullifyDailySyncTimeWhenSyncFrequencyNotDaily(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name         string
+		syncFreq     int64
+		dailySyncTime types.String
+		expectNull   bool
+	}{
+		{
+			name:          "sync_frequency=1440 keeps daily_sync_time",
+			syncFreq:      1440,
+			dailySyncTime: types.StringValue("03:00"),
+			expectNull:    false,
+		},
+		{
+			name:          "sync_frequency=60 nullifies daily_sync_time",
+			syncFreq:      60,
+			dailySyncTime: types.StringValue("03:00"),
+			expectNull:    true,
+		},
+		{
+			name:          "sync_frequency=720 nullifies daily_sync_time",
+			syncFreq:      720,
+			dailySyncTime: types.StringValue("03:00"),
+			expectNull:    true,
+		},
+		{
+			name:          "sync_frequency=1440 with null daily_sync_time stays null",
+			syncFreq:      1440,
+			dailySyncTime: types.StringNull(),
+			expectNull:    true,
+		},
+		{
+			name:          "sync_frequency=60 with null daily_sync_time stays null",
+			syncFreq:      60,
+			dailySyncTime: types.StringNull(),
+			expectNull:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			plan := model.ConnectionV2ResourceModel{
+				SyncFrequency: types.Int64Value(tt.syncFreq),
+				DailySyncTime: tt.dailySyncTime,
+			}
+
+			expectedBefore := plan.DailySyncTime
+			nullifyDailySyncTimeIfInvalid(&plan)
+			expectedAfter := plan.DailySyncTime
+
+			isNull := expectedAfter.IsNull()
+			if isNull != tt.expectNull {
+				t.Fatalf("daily_sync_time isNull = %v, want %v; value before = %v, after = %v", isNull, tt.expectNull, expectedBefore, expectedAfter)
+			}
+		})
+	}
+}
+
 type modifyPlanErrorHTTPClient struct{}
 
 func (modifyPlanErrorHTTPClient) Do(*http.Request) (*http.Response, error) {
