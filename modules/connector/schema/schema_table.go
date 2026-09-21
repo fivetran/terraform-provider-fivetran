@@ -2,7 +2,9 @@ package schema
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"reflect"
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/connections"
@@ -12,9 +14,11 @@ import (
 
 type _table struct {
 	_element
-	syncMode    *string
-	parentTable *string
-	columns     map[string]*_column
+	rowFilter    interface{}
+	rowFilterSet bool
+	syncMode     *string
+	parentTable  *string
+	columns      map[string]*_column
 }
 
 func (t _table) validateColumns(
@@ -75,6 +79,10 @@ func (t _table) prepareRequest() *connections.ConnectionSchemaConfigTable {
 		result.Enabled(t.enabled)
 	}
 
+	if t.rowFilterSet {
+		filter, _ := json.Marshal(t.rowFilter) // Values originate from decoded JSON.
+		result.RowFilter(filter)
+	}
 	if t.syncMode != nil {
 		result.SyncMode(*t.syncMode)
 	}
@@ -88,6 +96,10 @@ func (t _table) prepareRequest() *connections.ConnectionSchemaConfigTable {
 func (t _table) prepareCreateRequest() *connections.ConnectionSchemaConfigTable {
 	result := fivetran.NewConnectionSchemaConfigTable()
 	result.Enabled(t.enabled)
+	if t.rowFilterSet {
+		filter, _ := json.Marshal(t.rowFilter) // Values originate from decoded JSON.
+		result.RowFilter(filter)
+	}
 	if t.syncMode != nil {
 		result.SyncMode(*t.syncMode)
 	}
@@ -106,6 +118,11 @@ func (t *_table) override(local *_table, sch string) error {
 			}
 		}
 		t.setSyncMode(local.syncMode)
+		if local.rowFilterSet && !reflect.DeepEqual(helpers.NormalizeRowFilter(t.rowFilter), helpers.NormalizeRowFilter(local.rowFilter)) {
+			t.rowFilter = local.rowFilter
+			t.rowFilterSet = true
+			t.updated = true
+		}
 		if len(local.columns) > 0 {
 			// Handle columns that are managed in upstream and saved into standard config
 			for cName, c := range t.columns {
@@ -156,6 +173,7 @@ func (t *_table) override(local *_table, sch string) error {
 func (t *_table) readFromResourceData(source map[string]interface{}, sch string) {
 
 	t.name = source[NAME].(string)
+	t.rowFilter, t.rowFilterSet = source["row_filter"]
 	t.columns = make(map[string]*_column)
 	// Set sync_mode only in case if it is configured locally
 	if sm, ok := source[SYNC_MODE].(string); ok && sm != "" {
@@ -191,6 +209,12 @@ func (t *_table) readColumns(columns []interface{}, sch string) {
 
 func (t *_table) readFromResponse(name string, response *connections.ConnectionSchemaConfigTableResponse) {
 	t.name = name
+	// The SDK retains valid response JSON; an absent field means no filter.
+	t.rowFilter = nil
+	t.rowFilterSet = false
+	if len(response.RowFilter) > 0 {
+		_ = json.Unmarshal(response.RowFilter, &t.rowFilter)
+	}
 
 	t.enabled = *response.Enabled
 	t.patchAllowed = response.EnabledPatchSettings.Allowed
@@ -242,6 +266,12 @@ func (t _table) toStateObject(sch string, local *_table, diag *diag.Diagnostics,
 		}
 	}
 
+	if local != nil && local.rowFilterSet {
+		result["row_filter"] = t.rowFilter
+		if reflect.DeepEqual(helpers.NormalizeRowFilter(t.rowFilter), helpers.NormalizeRowFilter(local.rowFilter)) {
+			result["row_filter"] = local.rowFilter
+		}
+	}
 	result[NAME] = t.name
 	if t.syncMode != nil && (local != nil && local.syncMode != nil) { // save sync_mode in state only if it is configured!
 		result[SYNC_MODE] = *t.syncMode
