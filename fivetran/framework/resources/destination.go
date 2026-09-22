@@ -68,7 +68,7 @@ func (r *destination) ValidateConfig(ctx context.Context, req resource.ValidateC
 		return
 	}
 
-	rejectHostWithPrivateLink(data.Config, data.PrivateLinkId, path.Root("config"), &resp.Diagnostics)
+	rejectHostWithPrivateLink(data.Config, data.PrivateLinkId, data.Service, types.ObjectNull(nil), path.Root("config"), &resp.Diagnostics)
 }
 
 func (r *destination) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
