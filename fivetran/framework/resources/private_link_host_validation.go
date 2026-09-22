@@ -11,7 +11,7 @@ import (
 // Some services (aurora, magento_mysql_rds, maria_rds, mysql_rds) with AWS_IAM authentication
 // require the user to explicitly set `config.host` to the PrivateLink DNS address, so we only
 // reject for other service/auth combinations where Fivetran actually derives the host.
-func rejectHostWithPrivateLink(configAttr types.Object, privateLinkId types.String, service types.String, auth types.Object, configRoot path.Path, diags *diag.Diagnostics) {
+func rejectHostWithPrivateLink(configAttr types.Object, privateLinkId types.String, service types.String, configRoot path.Path, diags *diag.Diagnostics) {
 	if privateLinkId.IsNull() || privateLinkId.IsUnknown() || privateLinkId.ValueString() == "" {
 		return
 	}
@@ -19,13 +19,18 @@ func rejectHostWithPrivateLink(configAttr types.Object, privateLinkId types.Stri
 		return
 	}
 
-	hostVal, ok := configAttr.Attributes()["host"].(types.String)
+	configAttrs := configAttr.Attributes()
+	hostVal, ok := configAttrs["host"].(types.String)
 	if !ok || hostVal.IsNull() || hostVal.IsUnknown() {
 		return
 	}
 
 	// Allow host when service is one that requires explicit host for AWS_IAM + PrivateLink
-	if shouldAllowHostWithPrivateLink(service, auth) {
+	configAttrsInterface := make(map[string]interface{})
+	for k, v := range configAttrs {
+		configAttrsInterface[k] = v
+	}
+	if shouldAllowHostWithPrivateLink(service, configAttrsInterface) {
 		return
 	}
 
@@ -39,8 +44,8 @@ func rejectHostWithPrivateLink(configAttr types.Object, privateLinkId types.Stri
 
 // shouldAllowHostWithPrivateLink returns true for services that require explicit host configuration
 // when using AWS_IAM authentication with PrivateLink.
-func shouldAllowHostWithPrivateLink(service types.String, auth types.Object) bool {
-	if service.IsNull() || service.IsUnknown() || auth.IsNull() || auth.IsUnknown() {
+func shouldAllowHostWithPrivateLink(service types.String, configAttrs map[string]interface{}) bool {
+	if service.IsNull() || service.IsUnknown() {
 		return false
 	}
 
@@ -53,10 +58,9 @@ func shouldAllowHostWithPrivateLink(service types.String, auth types.Object) boo
 		return false
 	}
 
-	// Check if auth type is AWS_IAM
-	authAttrs := auth.Attributes()
-	if authType, ok := authAttrs["auth_type"].(types.String); ok && !authType.IsNull() {
-		return authType.ValueString() == "AWS_IAM"
+	// Check if auth_method is AWS_IAM in the config
+	if authMethod, ok := configAttrs["auth_method"].(types.String); ok && !authMethod.IsNull() {
+		return authMethod.ValueString() == "AWS_IAM"
 	}
 
 	return false
