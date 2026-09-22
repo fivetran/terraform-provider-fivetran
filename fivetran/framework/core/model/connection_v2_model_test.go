@@ -79,6 +79,7 @@ func TestConnectionV2ResourceModelTfsdkShape(t *testing.T) {
 		TrustCertificates:        types.BoolValue(false),
 		TrustFingerprints:        types.BoolValue(false),
 		Status:                   types.ObjectNull(model.ConnectionV2StatusAttrTypes()),
+		Schedule:                 types.ObjectNull(model.ConnectionV2ScheduleAttrTypes()),
 	}
 
 	var object types.Object
