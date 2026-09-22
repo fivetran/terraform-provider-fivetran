@@ -1,0 +1,25 @@
+fivetran/framework/resources/private_link_host_validation.go
+  s_22c26f440ca582::t_8a0b75bf61c469 47
+  s_22c26f440ca582::t_b8ff0f4112e37b 14,22-23,48,61-63
+  s_22c26f440ca582::t_4da214a5f20b1c 29-33
+fivetran/framework/resources/connector.go
+  s_22c26f440ca582::t_817b6585237d52 55
+fivetran/framework/resources/destination.go
+  s_22c26f440ca582::t_8b1e8323a8d8a8 71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "bcca737db5a557c1b6714d9a9c05afbdccc4b9fc",
+  "prompts": {},
+  "sessions": {
+    "s_22c26f440ca582": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dc6ed4b1-b7dc-4a6a-a604-e15df19fcc3e",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
