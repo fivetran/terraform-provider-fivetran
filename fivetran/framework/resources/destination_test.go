@@ -951,7 +951,6 @@ func TestResourceDestinationPrivateLinkAndSetupTests(t *testing.T) {
 				private_link_id = "private_link_id1"
 
 				config {
-					host = "terraform-test.us-east-1.rds.amazonaws.com"
 					port = 5432
 					user = "postgres"
 					password = "password"
@@ -990,7 +989,6 @@ func TestResourceDestinationPrivateLinkAndSetupTests(t *testing.T) {
 				private_link_id = "private_link_id1"
 
 				config {
-					host = "terraform-test.us-east-1.rds.amazonaws.com"
 					port = 5432
 					user = "postgres"
 					password = "password"
@@ -1342,7 +1340,6 @@ func TestResourceDestinationPrivateLinkChangeMock(t *testing.T) {
 				proxy_agent_id = "proxy_agent_id_1"
 
 				config {
-					host = "terraform-test.us-east-1.rds.amazonaws.com"
 					port = 5432
 					user = "postgres"
 					password = "password"
@@ -1367,7 +1364,6 @@ func TestResourceDestinationPrivateLinkChangeMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "hybrid_deployment_agent_id", "agent_id_1"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "private_link_id", "private_link_id_1"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "proxy_agent_id", "proxy_agent_id_1"),
-			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.host", "terraform-test.us-east-1.rds.amazonaws.com"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.port", "5432"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.user", "postgres"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.password", "password"),
@@ -1395,7 +1391,6 @@ func TestResourceDestinationPrivateLinkChangeMock(t *testing.T) {
 				proxy_agent_id = "proxy_agent_id_2"
 
 				config {
-					host = "test.host"
 					port = 5434
 					user = "postgres"
 					password = "password123"
@@ -1417,7 +1412,6 @@ func TestResourceDestinationPrivateLinkChangeMock(t *testing.T) {
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "hybrid_deployment_agent_id", "agent_id_2"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "private_link_id", "private_link_id_2"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "proxy_agent_id", "proxy_agent_id_2"),
-			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.host", "test.host"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.port", "5434"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.user", "postgres"),
 			resource.TestCheckResourceAttr("fivetran_destination.mydestination", "config.password", "password123"),
@@ -1505,6 +1499,53 @@ func TestResourceDestinationPrivateLinkChangeMock(t *testing.T) {
 			Steps: []resource.TestStep{
 				step1,
 				step2,
+			},
+		},
+	)
+}
+
+// TestResourceDestinationHostWithPrivateLinkMock ensures that configuring `config.host`
+// together with `private_link_id` is rejected at plan time. Fivetran derives `host` from
+// the private link server-side, so an explicit, conflicting `host` would otherwise only
+// surface later as "Provider produced inconsistent result after apply".
+func TestResourceDestinationHostWithPrivateLinkMock(t *testing.T) {
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_destination" "mydestination" {
+				provider = fivetran-provider
+
+				group_id = "test_group_id"
+				service = "postgres_rds_warehouse"
+				time_zone_offset = "0"
+				region = "GCP_US_EAST4"
+				trust_certificates = "true"
+				trust_fingerprints = "true"
+				daylight_saving_time_enabled = "true"
+				run_setup_tests = "false"
+				networking_method = "Directly"
+				private_link_id = "private_link_id_1"
+
+				config {
+					host = "terraform-test.us-east-1.rds.amazonaws.com"
+					port = 5432
+					user = "postgres"
+					password = "password"
+					database = "fivetran"
+					connection_type = "Directly"
+				}
+			}`,
+		ExpectError: regexp.MustCompile("`host` Cannot Be Set Together With `private_link_id`"),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
 			},
 		},
 	)

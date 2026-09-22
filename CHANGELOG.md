@@ -5,10 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.46...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.47...HEAD)
+
+## [v1.9.47](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.46...v1.9.47)
 
 ### Added
 - `fivetran_connection_v2`: support for the `schedule` field to configure connector schedule with detailed scheduling options including `schedule_type`, `interval`, `time_of_day`, `days_of_week`, and `cron` expression support.
+
+### Fixed
+- `fivetran_connector` and `fivetran_destination`: added validation to reject `config.host` configured together with `private_link_id`. Fivetran derives `host` from the private link server-side, so an explicit, conflicting `host` value would otherwise only surface later as "Provider produced inconsistent result after apply". Fixes [RD-1275375](https://fivetran.atlassian.net/browse/RD-1275375).
 
 ## [v1.9.46](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.45...v1.9.46)
 
