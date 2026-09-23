@@ -126,6 +126,9 @@ func unmarshalSchema(schema string) (map[string]interface{}, error) {
 									tResult["enabled"] = tEnabledBool
 								}
 							}
+							if filter, ok := tMap["row_filter"]; ok {
+								tResult["row_filter"] = helpers.NormalizeRowFilter(filter)
+							}
 							if tSyncMode, ok := tMap["sync_mode"]; ok {
 								tResult["sync_mode"] = tSyncMode
 							}
