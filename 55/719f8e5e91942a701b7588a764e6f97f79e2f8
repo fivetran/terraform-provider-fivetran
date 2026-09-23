@@ -1,0 +1,29 @@
+docs/resources/connection_v2.md
+  s_8b06cee97b1dd6::t_5f825dce017d39 7
+docs/resources/connection_v2_pause_state.md
+  s_91041559e0ac98::t_d46b261e0bba8f 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "55719f8e5e91942a701b7588a764e6f97f79e2f8",
+  "prompts": {},
+  "sessions": {
+    "s_8b06cee97b1dd6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "466c55ae-99b2-4bd8-8608-e9d75f50b47a",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    },
+    "s_91041559e0ac98": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ae02460-6408-45da-ab06-ce36594f2ca7",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
