@@ -1,0 +1,19 @@
+docs/resources/connection_v2_pause_state.md
+  s_91041559e0ac98::t_d46b261e0bba8f 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "da4a47ef302d3c4b5b3ed6c8223f7c6b9e196faa",
+  "prompts": {},
+  "sessions": {
+    "s_91041559e0ac98": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ae02460-6408-45da-ab06-ce36594f2ca7",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
