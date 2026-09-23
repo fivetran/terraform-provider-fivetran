@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.47...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.48...HEAD)
+
+## [v1.9.48](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.47...v1.9.48)
+
+### Changed
+- `fivetran_connection_v2_pause_state`: updated documentation to reflect public preview status, consistent with `fivetran_connection_v2`.
 
 ## [v1.9.47](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.46...v1.9.47)
 
