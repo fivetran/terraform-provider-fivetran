@@ -20,6 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `fivetran_connector` and `fivetran_destination`: added validation to reject `config.host` configured together with `private_link_id`. Fivetran derives `host` from the private link server-side, so an explicit, conflicting `host` value would otherwise only surface later as "Provider produced inconsistent result after apply". Fixes [RD-1275375](https://fivetran.atlassian.net/browse/RD-1275375).
 
+### Fixed
+- `fivetran_connector_schema_config`: warn when a table with no locally-declared `column`/`columns` block has upstream columns that don't match the `schema_change_handling` policy default — this drift was previously silently discarded instead of surfaced.
+
 ## [v1.9.46](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.45...v1.9.46)
 
 ### Added
