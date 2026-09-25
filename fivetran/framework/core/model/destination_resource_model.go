@@ -101,6 +101,9 @@ func (d *DestinationResourceModel) SetConfig(value map[string]interface{}, isImp
 		common.GetDestinationFieldsMap(),
 		nil,
 		service, isImporting, true).(basetypes.ObjectValue)
+	if !isImporting {
+		d.Config = PreserveLocalHostForPrivateLink(d.Config, config, d.PrivateLinkId.ValueString())
+	}
 }
 
 func (d *DestinationResourceModel) ReadFromResponse(resp destinations.DestinationDetailsCustomResponse, isImporting bool) {

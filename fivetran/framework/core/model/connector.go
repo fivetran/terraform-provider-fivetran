@@ -249,11 +249,15 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, is
 	}
 
 	if isImporting || (!d.Config.IsNull() && !d.Config.IsUnknown()) {
+		priorConfig := d.Config
 		d.Config = getValue(
 			types.ObjectType{AttrTypes: getAttrTypes(common.GetConfigFieldsMap())},
 			c.Config,
 			getValueFromAttrValue(d.Config, common.GetConfigFieldsMap(), nil, c.Service).(map[string]interface{}),
 			common.GetConfigFieldsMap(), nil, c.Service, isImporting, false).(basetypes.ObjectValue)
+		if !isImporting {
+			d.Config = PreserveLocalHostForPrivateLink(d.Config, priorConfig, c.PrivateLinkId)
+		}
 	}
 }
 

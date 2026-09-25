@@ -1681,6 +1681,128 @@ func TestResourceConnectorHybridDeploymentMock(t *testing.T) {
 	)
 }
 
+// TestResourceConnectorPrivateLinkHostMismatchMock reproduces the scenario where Fivetran
+// derives `config.host` from the private link referenced by `private_link_id`, and the
+// resolved host returned by the API differs from the one the user configured. The provider
+// must keep the configured value in state instead of the API-derived one, or Terraform's
+// plan-consistency check fails with "Provider produced inconsistent result after apply".
+func TestResourceConnectorPrivateLinkHostMismatchMock(t *testing.T) {
+	var connectorPostHandler *mock.Handler
+	var connectorDeleteHandler *mock.Handler
+
+	postResponse := `
+	{
+		"id": "connector_id",
+		"group_id": "group_id",
+		"service": "postgres",
+		"service_version": 1,
+		"schema": "postgres",
+		"paused": false,
+		"pause_after_trial": false,
+		"connected_by": "user_id",
+		"created_at": "2022-01-01T11:22:33.012345Z",
+		"succeeded_at": null,
+		"failed_at": null,
+		"sync_frequency": 5,
+		"schedule_type": "auto",
+		"networking_method": "PrivateLink",
+		"private_link_id": "private_link_id_1",
+		"data_delay_sensitivity": "NORMAL",
+		"data_delay_threshold": 0,
+		"status": {
+			"setup_state": "connected",
+			"sync_state": "scheduled",
+			"update_state": "on_schedule",
+			"is_historical_sync": false,
+			"tasks": [],
+			"warnings": []
+		},
+		"config": {
+			"user": "user",
+			"password": "password",
+			"host": "privatelink-derived-host.fivetran-privatelink.com",
+			"port": 5432
+		}
+	}
+	`
+
+	step1 := resource.TestStep{
+		Config: `
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+
+			group_id = "group_id"
+			service = "postgres"
+
+			private_link_id = "private_link_id_1"
+
+			destination_schema {
+				prefix = "postgres"
+			}
+
+			trust_certificates = false
+			trust_fingerprints = false
+			run_setup_tests = false
+
+			config {
+				user = "user"
+				password = "password"
+				host = "user-supplied-host.example.com"
+				port = "5432"
+			}
+		}
+		`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, connectorPostHandler.Interactions, 1)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "service", "postgres"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "private_link_id", "private_link_id_1"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.host", "user-supplied-host.example.com"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				tfmock.MockClient().Reset()
+
+				connectorPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/connections").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						body := tfmock.CreateMapFromJsonString(t, postResponse)
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", body), nil
+					},
+				)
+
+				tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						body := tfmock.CreateMapFromJsonString(t, postResponse)
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", body), nil
+					},
+				)
+
+				connectorDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", nil), nil
+					},
+				)
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, connectorDeleteHandler.Interactions, 1)
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
+			},
+		},
+	)
+}
+
 func TestResourceConnectorEmptyConfigMock(t *testing.T) {
 	step1 := resource.TestStep{
 		Config: `
