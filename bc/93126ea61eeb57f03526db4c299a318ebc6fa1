@@ -1,0 +1,27 @@
+fivetran/tests/mock/schema_tests_common.go
+  s_980d54e4c6ecbc::t_d6ddb900a2b95a 406,409-414
+modules/connector/schema/multiple_table_columns_config.go
+  s_980d54e4c6ecbc::t_e3d865160a0011 18-24
+go.mod
+  s_980d54e4c6ecbc::t_76a8624ab584bc 4
+modules/connector/schema/schema_schema.go
+  s_980d54e4c6ecbc::t_ddc370994d2d41 54
+go.sum
+  s_980d54e4c6ecbc::t_13e12fd2b3fd30 34-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "bc93126ea61eeb57f03526db4c299a318ebc6fa1",
+  "prompts": {},
+  "sessions": {
+    "s_980d54e4c6ecbc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0bfa2276-94be-4d2e-80a1-c1d86e80fe34",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
