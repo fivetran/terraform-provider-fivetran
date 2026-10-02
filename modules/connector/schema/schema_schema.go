@@ -51,7 +51,7 @@ func (s _schema) validateTables(
 			}
 			for tableName, tableColumns := range response.Data.Tables {
 				if responseTable, ok := responseSchema.Tables[tableName]; ok {
-					responseTable.Columns = tableColumns.Columns
+					responseTable.Columns = tableColumns
 				}
 			}
 		}

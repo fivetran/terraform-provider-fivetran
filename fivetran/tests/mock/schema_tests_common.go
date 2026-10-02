@@ -403,12 +403,15 @@ func setupComplexTestWithColumnsReload(
 		updateIteration := 0
 
 		for schema, tables := range columnsResponseConfigs {
-			mockClient.When(http.MethodGet, fmt.Sprintf("/v1/connections/connector_id/schemas/%s/tables/columns", schema)).ThenCall(
+			mockClient.When(http.MethodPost, fmt.Sprintf("/v1/connections/connector_id/schemas/%s/fetch-source-columns", schema)).ThenCall(
 				func(req *http.Request) (*http.Response, error) {
 					tableResponses := map[string]interface{}{}
-					for _, table := range req.URL.Query()["tables"] {
-						columnConfigs := tables[table]
-						tableResponses[table] = createMapFromJsonString(t, columnConfigs[updateIteration].jsonResponse())
+					body := RequestBodyToJson(t, req)
+					tablesList := body["tables"].([]interface{})
+					for _, table := range tablesList {
+						tableStr := table.(string)
+						columnConfigs := tables[tableStr]
+						tableResponses[tableStr] = createMapFromJsonString(t, columnConfigs[updateIteration].jsonResponse())
 					}
 					return fivetranSuccessResponse(t, req, http.StatusOK, "Success", map[string]interface{}{
 						"tables": tableResponses,
