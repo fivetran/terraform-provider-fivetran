@@ -3,6 +3,7 @@ package schema
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/connections"
@@ -15,16 +16,13 @@ type _schema struct {
 	tables map[string]*_table
 }
 
-// isEndpointUnavailableError checks if error indicates the endpoint is not implemented/unavailable
-// Returns true for 404 (NOT_FOUND), 501 (NOT_IMPLEMENTED), or 5xx server errors
-// Only these errors warrant falling back to per-table fetch
-// Other errors (rate limits, auth failures, timeouts) should propagate immediately
+// isEndpointUnavailableError checks if error indicates the batch endpoint is not implemented/unavailable
+// Returns true only for errors that clearly indicate the endpoint doesn't exist or is unavailable
+// Fivetran error codes use prefixes like "NotFound_*" and "NotImplemented_*"
+// An empty code indicates a transport or JSON decoding error, which should NOT fall back
 func isEndpointUnavailableError(code string) bool {
-	switch code {
-	case "NOT_FOUND", "NOT_IMPLEMENTED":
-		return true
-	case "", "SERVICE_UNAVAILABLE", "INTERNAL_SERVER_ERROR":
-		// 5xx errors indicate service is down
+	// Check for Fivetran-style error codes (e.g., "NotFound_*", "NotImplemented_*")
+	if len(code) > 0 && (strings.HasPrefix(code, "NotFound") || strings.HasPrefix(code, "NotImplemented")) {
 		return true
 	}
 	return false
