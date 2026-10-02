@@ -265,19 +265,35 @@ func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}, isIm
 						columnElements := map[string]attr.Value{}
 
 						if _, ok := localColumn["enabled"]; (ok || isImporting) {
-							columnElements["enabled"] = types.BoolValue(helpers.StrToBool(columnMap["enabled"].(string)))
+							if enabledVal, ok := columnMap["enabled"].(string); ok {
+								columnElements["enabled"] = types.BoolValue(helpers.StrToBool(enabledVal))
+							} else {
+								columnElements["enabled"] = types.BoolNull()
+							}
 						} else {
 							columnElements["enabled"] = types.BoolNull()
 						}
 
 						if _, ok := localColumn["hashed"]; (ok || isImporting) {
-							columnElements["hashed"] = types.BoolValue(helpers.StrToBool(columnMap["hashed"].(string)))
+							if hashedVal, ok := columnMap["hashed"].(string); ok {
+								columnElements["hashed"] = types.BoolValue(helpers.StrToBool(hashedVal))
+							} else {
+								columnElements["hashed"] = types.BoolNull()
+							}
 						} else {
 							columnElements["hashed"] = types.BoolNull()
 						}
 
-						if columnMap["is_primary_key"] != nil {
-							columnElements["is_primary_key"] = types.BoolValue(helpers.StrToBool(columnMap["is_primary_key"].(string)))
+						if _, ok := localColumn["is_primary_key"]; ok {
+							if ispk, ok := columnMap["is_primary_key"].(bool); ok {
+								columnElements["is_primary_key"] = types.BoolValue(ispk)
+							} else if localIsPk, ok := localColumn["is_primary_key"].(bool); ok {
+								columnElements["is_primary_key"] = types.BoolValue(localIsPk)
+							} else {
+								columnElements["is_primary_key"] = types.BoolNull()
+							}
+						} else if ispk, ok := columnMap["is_primary_key"].(bool); ok {
+							columnElements["is_primary_key"] = types.BoolValue(ispk)
 						} else {
 							columnElements["is_primary_key"] = types.BoolNull()
 						}
@@ -399,8 +415,16 @@ func (d *ConnectorSchemaResourceModel) getLegacySchemaItems(schemas []interface{
 						} else {
 							columnElements["hashed"] = types.BoolNull()
 						}
-						if columnMap["is_primary_key"] != nil {
-							columnElements["is_primary_key"] = types.BoolValue(helpers.StrToBool(columnMap["is_primary_key"].(string)))
+						if _, ok := localColumn["is_primary_key"]; ok {
+							if ispk, ok := columnMap["is_primary_key"].(bool); ok {
+								columnElements["is_primary_key"] = types.BoolValue(ispk)
+							} else if localIsPk, ok := localColumn["is_primary_key"].(bool); ok {
+								columnElements["is_primary_key"] = types.BoolValue(localIsPk)
+							} else {
+								columnElements["is_primary_key"] = types.BoolNull()
+							}
+						} else if ispk, ok := columnMap["is_primary_key"].(bool); ok {
+							columnElements["is_primary_key"] = types.BoolValue(ispk)
 						} else {
 							columnElements["is_primary_key"] = types.BoolNull()
 						}
