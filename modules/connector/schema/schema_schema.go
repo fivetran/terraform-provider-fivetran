@@ -48,10 +48,10 @@ func (s _schema) validateTables(
 		}
 	}
 	if len(tablesNeedingColumns) > 0 {
-		// Try batch endpoint first; only fall back if endpoint is unavailable (NotFound*, NotImplemented*, etc.)
-		// This provides backward compatibility in case the batch endpoint is unavailable.
-		// Rate limit, auth, timeout, and other errors propagate immediately without fallback
-		// to avoid masking the real issue or amplifying failures.
+		// Try batch endpoint first; only fall back if endpoint is not implemented (NotImplemented_*)
+		// This provides backward compatibility if the batch endpoint is not available.
+		// NotFound_* (resource-not-found), rate limit, auth, timeout, and other errors propagate
+		// immediately without fallback to avoid masking the real issue or amplifying failures.
 		var batchError error
 		batchAttempted := false
 		for start := 0; start < len(tablesNeedingColumns); start += multipleTableColumnsBatchSize {
@@ -80,7 +80,7 @@ func (s _schema) validateTables(
 			}
 		}
 
-		// Only fall back if batch endpoint is truly unavailable (404, 501, etc.)
+		// Only fall back if batch endpoint is not implemented (NotImplemented_* error)
 		if batchAttempted && batchError != nil {
 			for _, tName := range tablesNeedingColumns {
 				responseTable := responseSchema.Tables[tName]
