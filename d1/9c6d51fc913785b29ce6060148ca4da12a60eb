@@ -1,0 +1,19 @@
+fivetran/tests/mock/resource_connector_schema_config_timeout_test.go
+  s_7767bca3aeda5e::t_6d5d650e761a8d 114-235
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "d19c6d51fc913785b29ce6060148ca4da12a60eb",
+  "prompts": {},
+  "sessions": {
+    "s_7767bca3aeda5e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "57f7926e-ed82-406f-bfb8-44445b3851dc",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
