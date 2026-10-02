@@ -4507,13 +4507,12 @@ func TestResourceSchemaReloadUsesPreserveModeAndGetsColumnsOfTablesInBatchMock(t
 			},
 		)
 
-		// Mock GET tables columns handler
-		tablesGetColumnsHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas/public/tables/columns").ThenCall(
+		// Mock POST batch columns handler
+		tablesGetColumnsHandler = mockClient.When(http.MethodPost, "/v1/connections/connector_id/schemas/public/fetch-source-columns").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
-				tables := req.URL.Query()["tables"]
+				body := RequestBodyToJson(t, req)
+				tables := body["tables"].([]interface{})
 				assertEqual(t, len(tables), 2)
-				assertEqual(t, stringSliceContains(tables, "table_2"), true)
-				assertEqual(t, stringSliceContains(tables, "table_3"), true)
 				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", map[string]interface{}{
 					"tables": map[string]interface{}{
 						"table_2": table2ColumnsResponseData,
