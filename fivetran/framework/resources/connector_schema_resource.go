@@ -7,6 +7,7 @@ import (
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/connections"
+	"github.com/fivetran/go-fivetran/metadata"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
@@ -60,15 +61,23 @@ func (r *connectorSchema) reloadSchema(ctx context.Context, connectorID string, 
 		return connections.ConnectionSchemaDetailsResponse{}
 	}
 
-	// Check if this connection type supports reload (backend provides this flag)
-	// If supportsReload is false, skip the reload call entirely
-	if currentSchemaResponse.Data.SupportsReload != nil && !*currentSchemaResponse.Data.SupportsReload {
-		diag.AddWarning(
-			"Schema reload not supported for this connection type.",
-			"This connection type does not support schema reload. Proceeding with current schema state.",
-		)
-		// Return empty response — caller will skip validation
-		return connections.ConnectionSchemaDetailsResponse{}
+	// Fetch connector service to check if reload is supported
+	connDetails, err := client.NewConnectionDetails().ConnectionID(connectorID).Do(ctx)
+	if err == nil {
+		service := connDetails.Data.Service
+		if service != "" {
+			// Check if this connector type supports schema reload
+			cache := r.GetMetadataCache()
+			connMeta, _ := core.GetCachedConnectorMetadata(ctx, client, cache, service)
+			if connMeta != nil && connMeta.SupportsSchemaReload != nil && !*connMeta.SupportsSchemaReload {
+				diag.AddWarning(
+					"Schema reload not supported for this connection type.",
+					"This connection type does not support schema reload. Proceeding with current schema state.",
+				)
+				// Return empty response — caller will skip validation
+				return connections.ConnectionSchemaDetailsResponse{}
+			}
+		}
 	}
 
 	// Reload schema: we can't update schema if connector doesn't have it yet.
