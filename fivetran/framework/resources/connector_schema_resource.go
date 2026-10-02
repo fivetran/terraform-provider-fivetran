@@ -7,7 +7,6 @@ import (
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/connections"
-	"github.com/fivetran/go-fivetran/metadata"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
