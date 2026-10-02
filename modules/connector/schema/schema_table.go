@@ -294,6 +294,24 @@ func (t _table) toStateObject(sch string, local *_table, diag *diag.Diagnostics,
 		if local != nil && local.columns != nil {
 			result[COLUMN] = columns
 		}
+		// This table has no locally-declared columns, so upstream column data is never
+		// written into state (see the `if` above). That data still carries drift the API
+		// itself already flagged — columns previously managed by a user or currently
+		// misaligned with the schema_change_handling policy (see the comment on
+		// (*_table).override for why response.Columns is scoped that way) — so warn about
+		// it here instead of silently discarding it.
+		for _, v := range t.columns {
+			if v.enabled != (sch != BLOCK_ALL) {
+				diag.AddWarning(
+					"Schema might be misconfigured.",
+					fmt.Sprintf(
+						"Column `%v` in table `%v` of schema `%v` is `enabled = %v`, which doesn't match "+
+							"the `%v` schema_change_handling policy default. This column isn't declared in "+
+							"your configuration, so this drift won't be corrected automatically — review "+
+							"whether it should be.", v.name, t.name, schema, v.enabled, sch),
+				)
+			}
+		}
 	}
 
 	// table has been configured locally OR has columns to include OR table inconsistent by policy (patch allowed)
