@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 func ConnectionV2ResourceSchema() resourceSchema.Schema {
@@ -223,6 +224,7 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 			Description: "Specifies whether Fivetran should trust SSH fingerprints automatically.",
 		},
 		"status": connectionV2StatusAttribute(),
+		"schedule": connectionV2ScheduleAttribute(),
 	}
 
 	return attributes
@@ -268,6 +270,54 @@ func connectionV2CodeMessageSetAttribute(description string) resourceSchema.SetN
 				"message": resourceSchema.StringAttribute{
 					Computed:    true,
 					Description: "Message.",
+				},
+			},
+		},
+	}
+}
+
+func connectionV2ScheduleAttribute() resourceSchema.SingleNestedAttribute {
+	return resourceSchema.SingleNestedAttribute{
+		Optional:    true,
+		Computed:    true,
+		Description: "The connection schedule configuration.",
+		Attributes: map[string]resourceSchema.Attribute{
+			"schedule_type": resourceSchema.StringAttribute{
+				Optional:    true,
+				Computed:    true,
+				Description: "The schedule type. Supported values: INTERVAL, DAILY, WEEKLY, MONTHLY, CRON.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"interval": resourceSchema.Int64Attribute{
+				Optional:    true,
+				Computed:    true,
+				Description: "The interval in minutes between syncs (used when schedule_type is INTERVAL).",
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"time_of_day": resourceSchema.StringAttribute{
+				Optional:    true,
+				Computed:    true,
+				Description: "The time of day for scheduled syncs (format: HH:MM).",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"days_of_week": resourceSchema.SetAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+				Computed:    true,
+				Description: "The days of the week for scheduled syncs (used when schedule_type is WEEKLY).",
+			},
+			"cron": resourceSchema.StringAttribute{
+				Optional:    true,
+				Computed:    true,
+				Description: "The cron expression for scheduled syncs (used when schedule_type is CRON).",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 		},

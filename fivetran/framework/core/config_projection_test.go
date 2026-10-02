@@ -412,3 +412,127 @@ func TestPatch_NilSlot_RemovedFieldOmitted(t *testing.T) {
 		t.Error("nil slot removed field should be omitted — nullability unknown")
 	}
 }
+
+// --- Set-typed field comparisons ---
+
+func TestDynamicValuesEqualWithService_SetTypedFieldsReordered(t *testing.T) {
+	t.Parallel()
+	left := map[string]interface{}{
+		"custom_tables": []interface{}{
+			map[string]interface{}{
+				"table_name":          "my_table",
+				"attribution_windows": []interface{}{"VIEW_1D", "CLICK_7D", "CLICK_28D", "CLICK_1D"},
+			},
+		},
+	}
+	right := map[string]interface{}{
+		"custom_tables": []interface{}{
+			map[string]interface{}{
+				"table_name":          "my_table",
+				"attribution_windows": []interface{}{"CLICK_28D", "VIEW_1D", "CLICK_7D", "CLICK_1D"},
+			},
+		},
+	}
+
+	if !DynamicValuesEqualWithService(left, right, "facebook_ads") {
+		t.Error("set-typed field with same elements in different order should be equal")
+	}
+}
+
+func TestDynamicValuesEqualWithService_SetTypedFieldsDifferent(t *testing.T) {
+	t.Parallel()
+	left := map[string]interface{}{
+		"attribution_windows": []interface{}{"VIEW_1D", "CLICK_7D"},
+	}
+	right := map[string]interface{}{
+		"attribution_windows": []interface{}{"VIEW_1D", "CLICK_28D"},
+	}
+
+	if DynamicValuesEqualWithService(left, right, "facebook_ads") {
+		t.Error("set-typed field with different elements should not be equal")
+	}
+}
+
+func TestDynamicValuesEqualWithService_NotSetTypedField(t *testing.T) {
+	t.Parallel()
+	left := map[string]interface{}{
+		"some_list": []interface{}{"a", "b", "c"},
+	}
+	right := map[string]interface{}{
+		"some_list": []interface{}{"c", "b", "a"},
+	}
+
+	if DynamicValuesEqualWithService(left, right, "facebook_ads") {
+		t.Error("non-set-typed field should require exact order match")
+	}
+}
+
+func TestDynamicValuesEqualWithService_UnknownService(t *testing.T) {
+	t.Parallel()
+	left := []interface{}{"a", "b"}
+	right := []interface{}{"b", "a"}
+
+	if DynamicValuesEqualWithService(left, right, "unknown_service") {
+		t.Error("unknown service should use ordered comparison")
+	}
+}
+
+func TestDynamicValuesEqualWithService_NestedSetFields(t *testing.T) {
+	t.Parallel()
+	left := map[string]interface{}{
+		"custom_tables": []interface{}{
+			map[string]interface{}{
+				"table_name": "table1",
+				"fields":     []interface{}{"field1", "field2", "field3"},
+			},
+			map[string]interface{}{
+				"table_name": "table2",
+				"fields":     []interface{}{"fieldA", "fieldB"},
+			},
+		},
+	}
+	right := map[string]interface{}{
+		"custom_tables": []interface{}{
+			map[string]interface{}{
+				"table_name": "table1",
+				"fields":     []interface{}{"field3", "field1", "field2"},
+			},
+			map[string]interface{}{
+				"table_name": "table2",
+				"fields":     []interface{}{"fieldB", "fieldA"},
+			},
+		},
+	}
+
+	if !DynamicValuesEqualWithService(left, right, "facebook_ads") {
+		t.Error("nested set-typed fields with reordered elements should be equal")
+	}
+}
+
+func TestPatchWithService_SetTypedFieldReordered(t *testing.T) {
+	t.Parallel()
+	slot := makeSlot(map[string]*metadata.Property{"attribution_windows": {}})
+	patch := PrepareConfigPatchDynamicWithService(
+		map[string]interface{}{"attribution_windows": []interface{}{"CLICK_1D", "CLICK_7D", "CLICK_28D"}},
+		map[string]interface{}{"attribution_windows": []interface{}{"CLICK_28D", "CLICK_7D", "CLICK_1D"}},
+		slot,
+		"facebook_ads",
+	)
+	if _, ok := patch["attribution_windows"]; ok {
+		t.Error("set-typed field with same elements in different order should not be in patch")
+	}
+}
+
+func TestPatchWithService_SetTypedFieldChanged(t *testing.T) {
+	t.Parallel()
+	slot := makeSlot(map[string]*metadata.Property{"attribution_windows": {}})
+	patch := PrepareConfigPatchDynamicWithService(
+		map[string]interface{}{"attribution_windows": []interface{}{"CLICK_1D", "CLICK_7D"}},
+		map[string]interface{}{"attribution_windows": []interface{}{"CLICK_28D", "CLICK_7D"}},
+		slot,
+		"facebook_ads",
+	)
+	if _, ok := patch["attribution_windows"]; !ok {
+		t.Error("set-typed field with different elements should be in patch")
+	}
+}

@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_connection_v2"
 
 # Resource: fivetran_connection_v2
 
-~> **Alpha:** This resource is in alpha and its schema and behavior may change without notice. Not recommended for production use.
+~> **Public Preview:** This resource is in public preview. Features and behavior may change based on feedback.
 
 Manages a Fivetran connection. Unlike `fivetran_connector`/`fivetran_connection`, `config` and `auth` are provided as dynamic, service-specific objects: their accepted fields, types, and required/readonly/immutable rules are resolved from connector metadata at plan time rather than from a fixed schema. This means the same resource works across services (e.g. `s3`, `postgres`, `fivetran_log`) without a per-service Terraform schema.
 

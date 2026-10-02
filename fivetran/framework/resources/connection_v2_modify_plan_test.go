@@ -436,6 +436,7 @@ func connectionV2ModifyPlanModelWithService(t *testing.T, service types.String, 
 		TrustCertificates:        types.BoolNull(),
 		TrustFingerprints:        types.BoolNull(),
 		Status:                   types.ObjectNull(model.ConnectionV2StatusAttrTypes()),
+		Schedule:                 types.ObjectNull(model.ConnectionV2ScheduleAttrTypes()),
 	}
 }
 

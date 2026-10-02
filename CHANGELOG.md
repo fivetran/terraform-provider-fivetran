@@ -5,7 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.46...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.48...HEAD)
+
+### Fixed
+- `fivetran_connection_v2` (service `facebook_ads`): fixed perpetual plan diffs caused by set-valued fields (`fields`, `breakdowns`, `action_breakdowns`, `attribution_windows`) being returned in non-deterministic order by the API. These fields are now compared as unordered collections, so reordering by the API no longer triggers spurious plan diffs or unnecessary API calls.
+- `fivetran_connector_schema_config`: batch source-column validation requests per schema, reducing one columns API call per table to one call per table batch.
+
+## [v1.9.48](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.47...v1.9.48)
+
+### Changed
+- `fivetran_connection_v2_pause_state`: updated documentation to reflect public preview status, consistent with `fivetran_connection_v2`.
+
+## [v1.9.47](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.46...v1.9.47)
+
+### Added
+- `fivetran_connection_v2`: support for the `schedule` field to configure connector schedule with detailed scheduling options including `schedule_type`, `interval`, `time_of_day`, `days_of_week`, and `cron` expression support.
+
+### Fixed
+- `fivetran_connector` and `fivetran_destination`: added validation to reject `config.host` configured together with `private_link_id`. Fivetran derives `host` from the private link server-side, so an explicit, conflicting `host` value would otherwise only surface later as "Provider produced inconsistent result after apply". Fixes [RD-1275375](https://fivetran.atlassian.net/browse/RD-1275375).
+
+### Fixed
+- `fivetran_connector_schema_config`: warn when a table with no locally-declared `column`/`columns` block has upstream columns that don't match the `schema_change_handling` policy default — this drift was previously silently discarded instead of surfaced.
 
 ## [v1.9.46](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.45...v1.9.46)
 

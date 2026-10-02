@@ -26,6 +26,7 @@ type destination struct {
 var _ resource.ResourceWithConfigure = &destination{}
 var _ resource.ResourceWithImportState = &destination{}
 var _ resource.ResourceWithUpgradeState = &destination{}
+var _ resource.ResourceWithValidateConfig = &destination{}
 
 func (r *destination) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_destination"
@@ -58,6 +59,16 @@ func (r *destination) UpgradeState(ctx context.Context) map[int64]resource.State
 
 func (r *destination) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+}
+
+func (r *destination) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+	var data model.DestinationResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rejectHostWithPrivateLink(data.Config, data.PrivateLinkId, data.Service, path.Root("config"), &resp.Diagnostics)
 }
 
 func (r *destination) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

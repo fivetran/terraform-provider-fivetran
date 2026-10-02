@@ -48,7 +48,8 @@ type ConnectionV2ResourceModel struct {
 	TrustCertificates types.Bool `tfsdk:"trust_certificates"`
 	TrustFingerprints types.Bool `tfsdk:"trust_fingerprints"`
 
-	Status types.Object `tfsdk:"status"`
+	Status   types.Object `tfsdk:"status"`
+	Schedule types.Object `tfsdk:"schedule"`
 }
 
 func ConnectionV2CodeMessageAttrTypes() map[string]attr.Type {
@@ -87,6 +88,16 @@ func ConnectionV2DestinationConfigurationAttrTypes() map[string]attr.Type {
 	}
 }
 
+func ConnectionV2ScheduleAttrTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"schedule_type": types.StringType,
+		"interval":      types.Int64Type,
+		"time_of_day":   types.StringType,
+		"days_of_week":  types.SetType{ElemType: types.StringType},
+		"cron":          types.StringType,
+	}
+}
+
 func ConnectionV2ResourceModelAttrTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		"id":                         types.StringType,
@@ -117,6 +128,7 @@ func ConnectionV2ResourceModelAttrTypes() map[string]attr.Type {
 		"trust_certificates":         types.BoolType,
 		"trust_fingerprints":         types.BoolType,
 		"status":                     types.ObjectType{AttrTypes: ConnectionV2StatusAttrTypes()},
+		"schedule":                   types.ObjectType{AttrTypes: ConnectionV2ScheduleAttrTypes()},
 	}
 }
 
@@ -164,6 +176,7 @@ func (d *ConnectionV2ResourceModel) readFromResponseData(ctx context.Context, da
 	d.TrustCertificates = boolPointerValue(data.TrustCertificates)
 	d.TrustFingerprints = boolPointerValue(data.TrustFingerprints)
 	d.Status = connectionV2StatusValue(data.Status)
+	d.Schedule = connectionV2ScheduleValue(data.Schedule, d.Schedule)
 
 	configSlot := (*metadata.Property)(nil)
 	if meta != nil {
@@ -291,4 +304,48 @@ func connectionV2DestinationConfigurationValue(config *connections.DestinationCo
 		},
 	)
 	return result
+}
+
+func connectionV2ScheduleValue(schedule *connections.ConnectorSchedule, existing types.Object) types.Object {
+	if schedule == nil || existing.IsNull() || existing.IsUnknown() {
+		return types.ObjectNull(ConnectionV2ScheduleAttrTypes())
+	}
+
+	vals := map[string]attr.Value{}
+
+	if schedule.ScheduleType != nil {
+		vals["schedule_type"] = types.StringValue(*schedule.ScheduleType)
+	} else {
+		vals["schedule_type"] = types.StringNull()
+	}
+
+	if schedule.Interval != nil {
+		vals["interval"] = types.Int64Value(int64(*schedule.Interval))
+	} else {
+		vals["interval"] = types.Int64Null()
+	}
+
+	if schedule.TimeOfDay != nil {
+		vals["time_of_day"] = types.StringValue(*schedule.TimeOfDay)
+	} else {
+		vals["time_of_day"] = types.StringNull()
+	}
+
+	if schedule.Cron != nil {
+		vals["cron"] = types.StringValue(*schedule.Cron)
+	} else {
+		vals["cron"] = types.StringNull()
+	}
+
+	if len(schedule.DaysOfWeek) > 0 {
+		elems := make([]attr.Value, len(schedule.DaysOfWeek))
+		for i, d := range schedule.DaysOfWeek {
+			elems[i] = types.StringValue(d)
+		}
+		vals["days_of_week"] = types.SetValueMust(types.StringType, elems)
+	} else {
+		vals["days_of_week"] = types.SetNull(types.StringType)
+	}
+
+	return types.ObjectValueMust(ConnectionV2ScheduleAttrTypes(), vals)
 }

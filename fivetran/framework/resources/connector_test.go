@@ -1878,6 +1878,54 @@ func TestResourceConnectorUnknownServiceMock(t *testing.T) {
 	)
 }
 
+// TestResourceConnectorHostWithPrivateLinkMock ensures that configuring `config.host`
+// together with `private_link_id` is rejected at plan time. Fivetran derives `host` from
+// the private link server-side, so an explicit, conflicting `host` would otherwise only
+// surface later as "Provider produced inconsistent result after apply".
+func TestResourceConnectorHostWithPrivateLinkMock(t *testing.T) {
+	step1 := resource.TestStep{
+		Config: `
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+
+			group_id = "group_id"
+			service = "postgres"
+
+			private_link_id = "private_link_id_1"
+
+			destination_schema {
+				prefix = "postgres"
+			}
+
+			trust_certificates = false
+			trust_fingerprints = false
+			run_setup_tests = false
+
+			config {
+				user = "user"
+				password = "password"
+				host = "user-supplied-host.example.com"
+				port = "5432"
+			}
+		}
+		`,
+		ExpectError: regexp.MustCompile("`host` Cannot Be Set Together With `private_link_id`"),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
+			},
+		},
+	)
+}
+
 func TestResourceConnectorMock(t *testing.T) {
 	var postHandler *mock.Handler
 	step1 := resource.TestStep{

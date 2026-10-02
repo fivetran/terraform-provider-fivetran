@@ -23,40 +23,60 @@ func (t _table) validateColumns(
 	client fivetran.Client,
 	ctx context.Context) error {
 	if len(t.columns) > 0 {
-		if responseTable.SupportsColumnsConfig != nil && !*responseTable.SupportsColumnsConfig {
-			return fmt.Errorf("Table `%v` of schema `%s` doesn't support columns configuration.", tName, sName)
+		needsFetch, err := t.validateColumnConfigSupportAndNeedsFetch(sName, tName, responseTable)
+		if err != nil {
+			return err
 		}
-		columnsWereFetched := false
-		if len(responseTable.Columns) == 0 {
+		if needsFetch {
 			response, err := client.NewConnectionColumnConfigListService().ConnectionId(connectorId).Schema(sName).Table(tName).Do(ctx)
 			if err != nil {
 				return fmt.Errorf("Error while retrieving columns config for table `%s` of schema `%s. Error: %v; Code: `%v`.",
 					tName, sName, err, response.Code)
 			}
 			responseTable.Columns = response.Data.Columns
-			columnsWereFetched = true
-		} else {
-			for cName, _ := range t.columns {
-				if _, ok := responseTable.Columns[cName]; !ok {
-					if !columnsWereFetched {
-						response, err := client.NewConnectionColumnConfigListService().ConnectionId(connectorId).Schema(sName).Table(tName).Do(ctx)
-						if err != nil {
-							return fmt.Errorf("Error while retrieving columns config for table `%s` of schema `%s. Error: %v; Code: `%v`.",
-								tName, sName, err, response.Code)
-						}
-						responseTable.Columns = response.Data.Columns
-						columnsWereFetched = true
-						if _, ok := responseTable.Columns[cName]; !ok {
-							return fmt.Errorf("Column `%v` of table with name `%s` not found in source schema `%s`.", cName, tName, sName)
-						}
-					} else {
-						return fmt.Errorf("Column `%v` of table with name `%s` not found in source schema `%s`.", cName, tName, sName)
-					}
-
-				}
-			}
+		}
+		if err := t.validateColumnsPresent(sName, tName, responseTable); err != nil {
+			return err
 		}
 	}
+	return nil
+}
+
+func (t _table) validateColumnConfigSupportAndNeedsFetch(
+	sName, tName string,
+	responseTable *connections.ConnectionSchemaConfigTableResponse,
+) (bool, error) {
+	if len(t.columns) == 0 {
+		return false, nil
+	}
+
+	if responseTable.SupportsColumnsConfig != nil && !*responseTable.SupportsColumnsConfig {
+		return false, fmt.Errorf("Table `%v` of schema `%s` doesn't support columns configuration.", tName, sName)
+	}
+
+	if len(responseTable.Columns) == 0 {
+		return true, nil
+	}
+
+	for cName := range t.columns {
+		if _, ok := responseTable.Columns[cName]; !ok {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func (t _table) validateColumnsPresent(
+	sName, tName string,
+	responseTable *connections.ConnectionSchemaConfigTableResponse,
+) error {
+	for cName := range t.columns {
+		if _, ok := responseTable.Columns[cName]; !ok {
+			return fmt.Errorf("Column `%v` of table with name `%s` not found in source schema `%s`.", cName, tName, sName)
+		}
+	}
+
 	return nil
 }
 
@@ -293,6 +313,24 @@ func (t _table) toStateObject(sch string, local *_table, diag *diag.Diagnostics,
 	} else {
 		if local != nil && local.columns != nil {
 			result[COLUMN] = columns
+		}
+		// This table has no locally-declared columns, so upstream column data is never
+		// written into state (see the `if` above). That data still carries drift the API
+		// itself already flagged — columns previously managed by a user or currently
+		// misaligned with the schema_change_handling policy (see the comment on
+		// (*_table).override for why response.Columns is scoped that way) — so warn about
+		// it here instead of silently discarding it.
+		for _, v := range t.columns {
+			if v.enabled != (sch != BLOCK_ALL) {
+				diag.AddWarning(
+					"Schema might be misconfigured.",
+					fmt.Sprintf(
+						"Column `%v` in table `%v` of schema `%v` is `enabled = %v`, which doesn't match "+
+							"the `%v` schema_change_handling policy default. This column isn't declared in "+
+							"your configuration, so this drift won't be corrected automatically — review "+
+							"whether it should be.", v.name, t.name, schema, v.enabled, sch),
+				)
+			}
 		}
 	}
 

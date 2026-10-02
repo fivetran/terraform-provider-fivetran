@@ -331,6 +331,17 @@ func project(remote, mask map[string]interface{}, slot *metadata.Property) map[s
 //   - field removed from plan + nullable: sent as nil (JSON null clears on server)
 //   - field removed from plan + non-nullable or no metadata: omitted
 func PrepareConfigPatchDynamic(plan, state map[string]interface{}, slot *metadata.Property) map[string]interface{} {
+	return prepareConfigPatchDynamic(plan, state, slot, "")
+}
+
+// PrepareConfigPatchDynamicWithService is like PrepareConfigPatchDynamic but accounts for
+// set-typed fields that should be compared as unordered collections.
+// service is used to look up which fields are set-typed.
+func PrepareConfigPatchDynamicWithService(plan, state map[string]interface{}, slot *metadata.Property, service string) map[string]interface{} {
+	return prepareConfigPatchDynamic(plan, state, slot, service)
+}
+
+func prepareConfigPatchDynamic(plan, state map[string]interface{}, slot *metadata.Property, service string) map[string]interface{} {
 	patch := make(map[string]interface{})
 
 	for k, planVal := range plan {
@@ -339,9 +350,15 @@ func PrepareConfigPatchDynamic(plan, state map[string]interface{}, slot *metadat
 			continue
 		}
 		stateVal, inState := state[k]
-		if !inState || !reflect.DeepEqual(planVal, stateVal) {
+		if !inState {
 			patch[k] = planVal
+			continue
 		}
+
+		if valuesEqualWithService(planVal, stateVal, service, k) {
+			continue
+		}
+		patch[k] = planVal
 	}
 
 	for k := range state {
@@ -360,6 +377,74 @@ func PrepareConfigPatchDynamic(plan, state map[string]interface{}, slot *metadat
 	return patch
 }
 
+// valuesEqualWithService compares two values, using set semantics for set-typed fields
+// when service is non-empty.
+func valuesEqualWithService(left, right interface{}, service, fieldPath string) bool {
+	if isSetTypedField(service, fieldPath) {
+		if leftList, ok := left.([]interface{}); ok {
+			if rightList, ok := right.([]interface{}); ok {
+				return multisetEqual(leftList, rightList)
+			}
+		}
+	}
+	return reflect.DeepEqual(left, right)
+}
+
+// DynamicValuesEqualWithService compares two dynamic values, using set semantics for
+// set-typed fields when service is non-empty. This is exported for use by resources.
+func DynamicValuesEqualWithService(left, right interface{}, service string) bool {
+	return dynamicValuesEqualRecursive(left, right, service, "")
+}
+
+// dynamicValuesEqualRecursive recursively compares values, with set semantics for set-typed fields.
+func dynamicValuesEqualRecursive(left, right interface{}, service, fieldPath string) bool {
+	// Check types first
+	lType := reflect.TypeOf(left)
+	rType := reflect.TypeOf(right)
+	if lType != rType {
+		return false
+	}
+
+	switch l := left.(type) {
+	case []interface{}:
+		r := right.([]interface{})
+		if isSetTypedField(service, fieldPath) {
+			return multisetEqual(l, r)
+		}
+		if len(l) != len(r) {
+			return false
+		}
+		for i, lv := range l {
+			if !dynamicValuesEqualRecursive(lv, r[i], service, fieldPath) {
+				return false
+			}
+		}
+		return true
+	case map[string]interface{}:
+		r := right.(map[string]interface{})
+		if len(l) != len(r) {
+			return false
+		}
+		for k, lv := range l {
+			rv, ok := r[k]
+			if !ok {
+				return false
+			}
+			childPath := fieldPath
+			if childPath != "" {
+				childPath += "."
+			}
+			childPath += k
+			if !dynamicValuesEqualRecursive(lv, rv, service, childPath) {
+				return false
+			}
+		}
+		return true
+	default:
+		return reflect.DeepEqual(left, right)
+	}
+}
+
 // SlotProp returns the child Property for key within a slot's Properties map,
 // or nil if the slot, its Properties map, or the key is absent.
 func SlotProp(slot *metadata.Property, key string) *metadata.Property {
@@ -367,4 +452,53 @@ func SlotProp(slot *metadata.Property, key string) *metadata.Property {
 		return nil
 	}
 	return slot.Properties[key]
+}
+
+// setTypedFields maps service names to their set-typed field paths.
+// A value in this map indicates that the field, when present at the given path,
+// should be compared as an unordered set rather than an ordered list.
+var setTypedFields = map[string]map[string]bool{
+	"facebook_ads": {
+		"fields":                            true,
+		"breakdowns":                        true,
+		"action_breakdowns":                 true,
+		"attribution_windows":               true,
+		"custom_tables.fields":              true,
+		"custom_tables.breakdowns":          true,
+		"custom_tables.action_breakdowns":   true,
+		"custom_tables.attribution_windows": true,
+	},
+}
+
+// isSetTypedField returns true if the given field path in the given service
+// should be compared as an unordered set.
+func isSetTypedField(service string, fieldPath string) bool {
+	serviceFields, ok := setTypedFields[service]
+	if !ok {
+		return false
+	}
+	return serviceFields[fieldPath]
+}
+
+// multisetEqual returns true if two slices contain the same elements in any order.
+// Elements are compared using reflect.DeepEqual.
+func multisetEqual(a, b []interface{}) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	seen := make(map[int]bool)
+	for _, av := range a {
+		found := false
+		for j, bv := range b {
+			if !seen[j] && reflect.DeepEqual(av, bv) {
+				seen[j] = true
+				found = true
+				break
+			}
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
 }
