@@ -52,9 +52,9 @@ func (s _schema) validateTables(
 				batchSuccess = false
 				break
 			}
-			for tableName, tableColumns := range response.Data.Tables {
+			for tableName, tableData := range response.Data.Tables {
 				if responseTable, ok := responseSchema.Tables[tableName]; ok {
-					responseTable.Columns = tableColumns
+					responseTable.Columns = tableData.Columns
 				}
 			}
 		}

@@ -33,6 +33,8 @@ github.com/fivetran/go-fivetran v1.3.9 h1:31r7Kt/hKDowVYi8gQ7e7/d6MQwKJt4/TsVHrx
 github.com/fivetran/go-fivetran v1.3.9/go.mod h1:EIy5Uwn1zylQCr/7O+8rrwvmjvhW3PPpzHkQj26ON7Y=
 github.com/fivetran/go-fivetran v1.3.10 h1:pbgeuXjKtDxHH15flpdKyidlJUh6fFDoyFO1QvsZ7PY=
 github.com/fivetran/go-fivetran v1.3.10/go.mod h1:EIy5Uwn1zylQCr/7O+8rrwvmjvhW3PPpzHkQj26ON7Y=
+github.com/fivetran/go-fivetran v1.3.11 h1:U01F0hvmIJvn+al87IgLHvyIiKczXykidEHoL8uJ+o8=
+github.com/fivetran/go-fivetran v1.3.11/go.mod h1:EIy5Uwn1zylQCr/7O+8rrwvmjvhW3PPpzHkQj26ON7Y=
 github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 h1:+zs/tPmkDkHx3U66DAb0lQFJrpS6731Oaa12ikc+DiI=
 github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376/go.mod h1:an3vInlBmSxCcxctByoQdvwPiA7DTK7jaaFDBTtu0ic=
 github.com/go-git/go-billy/v5 v5.6.2 h1:6Q86EsPXMa7c3YZ3aLAQsMA0VlWmy43r6FHqa/UNbRM=
