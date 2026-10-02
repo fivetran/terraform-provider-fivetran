@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"reflect"
 
 	"github.com/fivetran/go-fivetran/metadata"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
@@ -89,8 +88,9 @@ func (r *connectionV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRe
 		return
 	}
 
-	hasImmutableReplacement := appendImmutableRequiresReplace(planConfig, stateConfig, &meta.Config, path.Root("config"), resp)
-	hasImmutableReplacement = appendImmutableRequiresReplace(planAuth, stateAuth, &meta.Auth, path.Root("auth"), resp) || hasImmutableReplacement
+	service := plan.Service.ValueString()
+	hasImmutableReplacement := appendImmutableRequiresReplace(planConfig, stateConfig, &meta.Config, path.Root("config"), resp, service)
+	hasImmutableReplacement = appendImmutableRequiresReplace(planAuth, stateAuth, &meta.Auth, path.Root("auth"), resp, service) || hasImmutableReplacement
 	if hasImmutableReplacement {
 		validateRequiredDynamicFields(planConfig, &meta.Config, path.Root("config"), &resp.Diagnostics)
 		validateRequiredDynamicFields(planAuth, &meta.Auth, path.Root("auth"), &resp.Diagnostics)
@@ -150,7 +150,7 @@ func validateNestedRequiredDynamicFields(value interface{}, prop *metadata.Prope
 	}
 }
 
-func appendImmutableRequiresReplace(planValues, stateValues map[string]interface{}, slot *metadata.Property, root path.Path, resp *resource.ModifyPlanResponse) bool {
+func appendImmutableRequiresReplace(planValues, stateValues map[string]interface{}, slot *metadata.Property, root path.Path, resp *resource.ModifyPlanResponse, service string) bool {
 	if slot == nil {
 		return false
 	}
@@ -164,23 +164,23 @@ func appendImmutableRequiresReplace(planValues, stateValues map[string]interface
 
 		fieldPath := root.AtName(name)
 		stateValue, stateHasValue := stateValues[name]
-		if prop.Immutable && (!stateHasValue || !dynamicValuesEqual(planValue, stateValue)) {
+		if prop.Immutable && (!stateHasValue || !dynamicValuesEqualWithService(planValue, stateValue, service)) {
 			resp.RequiresReplace.Append(fieldPath)
 			addHistoricalResyncWarning(fieldPath, &resp.Diagnostics)
 			hasReplacement = true
 			continue
 		}
 
-		hasReplacement = appendNestedImmutableRequiresReplace(planValue, stateValue, prop, fieldPath, resp) || hasReplacement
+		hasReplacement = appendNestedImmutableRequiresReplace(planValue, stateValue, prop, fieldPath, resp, service) || hasReplacement
 	}
 	return hasReplacement
 }
 
-func appendNestedImmutableRequiresReplace(planValue, stateValue interface{}, prop *metadata.Property, fieldPath path.Path, resp *resource.ModifyPlanResponse) bool {
+func appendNestedImmutableRequiresReplace(planValue, stateValue interface{}, prop *metadata.Property, fieldPath path.Path, resp *resource.ModifyPlanResponse, service string) bool {
 	switch planNested := planValue.(type) {
 	case map[string]interface{}:
 		stateNested, _ := stateValue.(map[string]interface{})
-		return appendImmutableRequiresReplace(planNested, stateNested, prop, fieldPath, resp)
+		return appendImmutableRequiresReplace(planNested, stateNested, prop, fieldPath, resp, service)
 	case []interface{}:
 		if prop.Items == nil {
 			return false
@@ -195,7 +195,7 @@ func appendNestedImmutableRequiresReplace(planValue, stateValue interface{}, pro
 			if i < len(stateItems) {
 				stateItem = stateItems[i]
 			}
-			hasReplacement = appendNestedImmutableRequiresReplace(item, stateItem, prop.Items, fieldPath.AtListIndex(i), resp) || hasReplacement
+			hasReplacement = appendNestedImmutableRequiresReplace(item, stateItem, prop.Items, fieldPath.AtListIndex(i), resp, service) || hasReplacement
 		}
 		return hasReplacement
 	}
@@ -214,5 +214,12 @@ func dynamicValuesEqual(left, right interface{}) bool {
 	if core.IsDynamicUnknownValue(left) || core.IsDynamicUnknownValue(right) {
 		return true
 	}
-	return reflect.DeepEqual(left, right)
+	return core.DynamicValuesEqualWithService(left, right, "")
+}
+
+func dynamicValuesEqualWithService(left, right interface{}, service string) bool {
+	if core.IsDynamicUnknownValue(left) || core.IsDynamicUnknownValue(right) {
+		return true
+	}
+	return core.DynamicValuesEqualWithService(left, right, service)
 }
