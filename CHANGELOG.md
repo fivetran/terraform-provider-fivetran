@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `fivetran_connection_v2` (service `facebook_ads`): fixed perpetual plan diffs caused by set-valued fields (`fields`, `breakdowns`, `action_breakdowns`, `attribution_windows`) being returned in non-deterministic order by the API. These fields are now compared as unordered collections, so reordering by the API no longer triggers spurious plan diffs or unnecessary API calls.
+- `fivetran_connector_schema_config`: batch source-column validation requests per schema, reducing one columns API call per table to one call per table batch.
 
 ## [v1.9.48](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.47...v1.9.48)
 

@@ -403,14 +403,24 @@ func setupComplexTestWithColumnsReload(
 		updateIteration := 0
 
 		for schema, tables := range columnsResponseConfigs {
-			for table, columnConfigs := range tables {
-				mockClient.When(http.MethodGet, fmt.Sprintf("/v1/connections/connector_id/schemas/%s/tables/%s/columns", schema, table)).ThenCall(
-					func(req *http.Request) (*http.Response, error) {
-						return fivetranSuccessResponse(t, req, http.StatusOK, "Success",
-							createMapFromJsonString(t, columnConfigs[updateIteration].jsonResponse())), nil
-					},
-				)
-			}
+			// Capture loop variables to prevent closure from using reused loop variable (Go 1.21+)
+			capturedSchema := schema
+			capturedTables := tables
+			mockClient.When(http.MethodPost, fmt.Sprintf("/v1/connections/connector_id/schemas/%s/fetch-source-columns", capturedSchema)).ThenCall(
+				func(req *http.Request) (*http.Response, error) {
+					tableResponses := map[string]interface{}{}
+					body := RequestBodyToJson(t, req)
+					tablesList := body["tables"].([]interface{})
+					for _, table := range tablesList {
+						tableStr := table.(string)
+						columnConfigs := capturedTables[tableStr]
+						tableResponses[tableStr] = createMapFromJsonString(t, columnConfigs[updateIteration].jsonResponse())
+					}
+					return fivetranSuccessResponse(t, req, http.StatusOK, "Success", map[string]interface{}{
+						"tables": tableResponses,
+					}), nil
+				},
+			)
 		}
 
 		mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(

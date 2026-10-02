@@ -3,6 +3,7 @@ package schema
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/connections"
@@ -15,22 +16,92 @@ type _schema struct {
 	tables map[string]*_table
 }
 
+// isEndpointUnavailableError checks if error indicates the batch endpoint is not implemented
+// Only returns true for NotImplemented_* errors, which indicate the endpoint itself doesn't exist
+// NotFound_* errors (e.g., NotFound_SchemaConfig) are domain errors indicating missing resources,
+// not endpoint unavailability, so they should propagate without triggering fallback
+func isEndpointUnavailableError(code string) bool {
+	// Only fall back for endpoint-not-implemented errors, not resource-not-found errors
+	return strings.HasPrefix(code, "NotImplemented")
+}
+
 func (s _schema) validateTables(
 	connectorId, sName string,
 	responseSchema *connections.ConnectionSchemaConfigSchemaResponse,
 	client fivetran.Client,
 	ctx context.Context,
 	validateColumns bool) (error, bool) {
+	tablesNeedingColumns := make([]string, 0)
 	for tName, table := range s.tables {
 		if responseTable, ok := responseSchema.Tables[tName]; ok {
 			if validateColumns {
-				err := table.validateColumns(connectorId, sName, tName, responseTable, client, ctx)
+				needsFetch, err := table.validateColumnConfigSupportAndNeedsFetch(sName, tName, responseTable)
 				if err != nil {
 					return err, false
+				}
+				if needsFetch {
+					tablesNeedingColumns = append(tablesNeedingColumns, tName)
 				}
 			}
 		} else {
 			return fmt.Errorf("Table with name `%s` not found in source schema `%s`.", tName, sName), true
+		}
+	}
+	if len(tablesNeedingColumns) > 0 {
+		// Try batch endpoint first; only fall back if endpoint is not implemented (NotImplemented_*)
+		// This provides backward compatibility if the batch endpoint is not available.
+		// NotFound_* (resource-not-found), rate limit, auth, timeout, and other errors propagate
+		// immediately without fallback to avoid masking the real issue or amplifying failures.
+		var batchError error
+		batchAttempted := false
+		for start := 0; start < len(tablesNeedingColumns); start += multipleTableColumnsBatchSize {
+			end := start + multipleTableColumnsBatchSize
+			if end > len(tablesNeedingColumns) {
+				end = len(tablesNeedingColumns)
+			}
+
+			batchAttempted = true
+			response, err := getMultipleTableColumnsConfig(ctx, client, connectorId, sName, tablesNeedingColumns[start:end])
+			if err != nil {
+				batchError = err
+				// Check if this is an "endpoint not implemented" error (404 or similar)
+				// If it's a rate limit, auth, or server error, propagate immediately
+				if isEndpointUnavailableError(response.Code) {
+					break
+				}
+				// For other errors (rate limits, auth, timeouts), propagate immediately
+				return fmt.Errorf("Error while retrieving columns config for schema `%s`. Error: %v; Code: `%v`.",
+					sName, err, response.Code), false
+			}
+			for tableName, tableData := range response.Data.Tables {
+				if responseTable, ok := responseSchema.Tables[tableName]; ok {
+					responseTable.Columns = tableData.Columns
+				}
+			}
+		}
+
+		// Only fall back if batch endpoint is not implemented (NotImplemented_* error)
+		if batchAttempted && batchError != nil {
+			for _, tName := range tablesNeedingColumns {
+				responseTable := responseSchema.Tables[tName]
+				response, err := client.NewConnectionColumnConfigListService().
+					ConnectionId(connectorId).
+					Schema(sName).
+					Table(tName).
+					Do(ctx)
+				if err != nil {
+					return fmt.Errorf("Error while retrieving columns config for table `%s` of schema `%s`. Error: %v; Code: `%v`.",
+						tName, sName, err, response.Code), false
+				}
+				responseTable.Columns = response.Data.Columns
+			}
+		}
+
+		for _, tName := range tablesNeedingColumns {
+			err := s.tables[tName].validateColumnsPresent(sName, tName, responseSchema.Tables[tName])
+			if err != nil {
+				return err, false
+			}
 		}
 	}
 	return nil, false
