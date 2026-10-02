@@ -403,14 +403,17 @@ func setupComplexTestWithColumnsReload(
 		updateIteration := 0
 
 		for schema, tables := range columnsResponseConfigs {
-			mockClient.When(http.MethodPost, fmt.Sprintf("/v1/connections/connector_id/schemas/%s/fetch-source-columns", schema)).ThenCall(
+			// Capture loop variables to prevent closure from using reused loop variable (Go 1.21+)
+			capturedSchema := schema
+			capturedTables := tables
+			mockClient.When(http.MethodPost, fmt.Sprintf("/v1/connections/connector_id/schemas/%s/fetch-source-columns", capturedSchema)).ThenCall(
 				func(req *http.Request) (*http.Response, error) {
 					tableResponses := map[string]interface{}{}
 					body := RequestBodyToJson(t, req)
 					tablesList := body["tables"].([]interface{})
 					for _, table := range tablesList {
 						tableStr := table.(string)
-						columnConfigs := tables[tableStr]
+						columnConfigs := capturedTables[tableStr]
 						tableResponses[tableStr] = createMapFromJsonString(t, columnConfigs[updateIteration].jsonResponse())
 					}
 					return fivetranSuccessResponse(t, req, http.StatusOK, "Success", map[string]interface{}{
