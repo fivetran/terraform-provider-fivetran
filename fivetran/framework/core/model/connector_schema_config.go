@@ -265,13 +265,21 @@ func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}, isIm
 						columnElements := map[string]attr.Value{}
 
 						if _, ok := localColumn["enabled"]; (ok || isImporting) {
-							columnElements["enabled"] = types.BoolValue(helpers.StrToBool(columnMap["enabled"].(string)))
+							if enabledVal, ok := columnMap["enabled"].(string); ok {
+								columnElements["enabled"] = types.BoolValue(helpers.StrToBool(enabledVal))
+							} else {
+								columnElements["enabled"] = types.BoolNull()
+							}
 						} else {
 							columnElements["enabled"] = types.BoolNull()
 						}
 
 						if _, ok := localColumn["hashed"]; (ok || isImporting) {
-							columnElements["hashed"] = types.BoolValue(helpers.StrToBool(columnMap["hashed"].(string)))
+							if hashedVal, ok := columnMap["hashed"].(string); ok {
+								columnElements["hashed"] = types.BoolValue(helpers.StrToBool(hashedVal))
+							} else {
+								columnElements["hashed"] = types.BoolNull()
+							}
 						} else {
 							columnElements["hashed"] = types.BoolNull()
 						}
