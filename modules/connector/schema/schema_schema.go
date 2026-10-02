@@ -51,7 +51,10 @@ func (s _schema) validateTables(
 		}
 	}
 	if len(tablesNeedingColumns) > 0 {
-		// Try batch endpoint first; only fall back if endpoint is unavailable (404, 501, etc.)
+		// Try batch endpoint first; only fall back if endpoint is unavailable (NotFound*, NotImplemented*, etc.)
+		// This provides backward compatibility in case the batch endpoint is unavailable.
+		// Rate limit, auth, timeout, and other errors propagate immediately without fallback
+		// to avoid masking the real issue or amplifying failures.
 		var batchError error
 		batchAttempted := false
 		for start := 0; start < len(tablesNeedingColumns); start += multipleTableColumnsBatchSize {
