@@ -1,0 +1,19 @@
+go.mod
+  s_7767bca3aeda5e::t_a7b571ace91f86 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "7b90cebc6df877ca7348eb66c1b36d41cf785f81",
+  "prompts": {},
+  "sessions": {
+    "s_7767bca3aeda5e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "57f7926e-ed82-406f-bfb8-44445b3851dc",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
