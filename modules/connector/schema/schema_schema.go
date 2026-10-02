@@ -81,7 +81,7 @@ func (s _schema) validateTables(
 		}
 
 		// Only fall back if batch endpoint is truly unavailable (404, 501, etc.)
-		if batchAttempted && batchError != nil && isEndpointUnavailableError("NOT_FOUND") {
+		if batchAttempted && batchError != nil {
 			for _, tName := range tablesNeedingColumns {
 				responseTable := responseSchema.Tables[tName]
 				response, err := client.NewConnectionColumnConfigListService().
