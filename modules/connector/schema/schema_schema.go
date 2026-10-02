@@ -15,6 +15,21 @@ type _schema struct {
 	tables map[string]*_table
 }
 
+// isEndpointUnavailableError checks if error indicates the endpoint is not implemented/unavailable
+// Returns true for 404 (NOT_FOUND), 501 (NOT_IMPLEMENTED), or 5xx server errors
+// Only these errors warrant falling back to per-table fetch
+// Other errors (rate limits, auth failures, timeouts) should propagate immediately
+func isEndpointUnavailableError(code string) bool {
+	switch code {
+	case "NOT_FOUND", "NOT_IMPLEMENTED":
+		return true
+	case "", "SERVICE_UNAVAILABLE", "INTERNAL_SERVER_ERROR":
+		// 5xx errors indicate service is down
+		return true
+	}
+	return false
+}
+
 func (s _schema) validateTables(
 	connectorId, sName string,
 	responseSchema *connections.ConnectionSchemaConfigSchemaResponse,
@@ -38,19 +53,27 @@ func (s _schema) validateTables(
 		}
 	}
 	if len(tablesNeedingColumns) > 0 {
-		// Try batch endpoint first; fall back to per-table fetch if it fails
-		batchSuccess := true
+		// Try batch endpoint first; only fall back if endpoint is unavailable (404, 501, etc.)
+		var batchError error
+		batchAttempted := false
 		for start := 0; start < len(tablesNeedingColumns); start += multipleTableColumnsBatchSize {
 			end := start + multipleTableColumnsBatchSize
 			if end > len(tablesNeedingColumns) {
 				end = len(tablesNeedingColumns)
 			}
 
+			batchAttempted = true
 			response, err := getMultipleTableColumnsConfig(ctx, client, connectorId, sName, tablesNeedingColumns[start:end])
 			if err != nil {
-				// Batch endpoint failed; fall back to per-table fetch
-				batchSuccess = false
-				break
+				batchError = err
+				// Check if this is an "endpoint not implemented" error (404 or similar)
+				// If it's a rate limit, auth, or server error, propagate immediately
+				if isEndpointUnavailableError(response.Code) {
+					break
+				}
+				// For other errors (rate limits, auth, timeouts), propagate immediately
+				return fmt.Errorf("Error while retrieving columns config for schema `%s`. Error: %v; Code: `%v`.",
+					sName, err, response.Code), false
 			}
 			for tableName, tableData := range response.Data.Tables {
 				if responseTable, ok := responseSchema.Tables[tableName]; ok {
@@ -59,8 +82,8 @@ func (s _schema) validateTables(
 			}
 		}
 
-		// If batch endpoint failed, fall back to fetching columns one-by-one (old method)
-		if !batchSuccess {
+		// Only fall back if batch endpoint is truly unavailable (404, 501, etc.)
+		if batchAttempted && batchError != nil && isEndpointUnavailableError("NOT_FOUND") {
 			for _, tName := range tablesNeedingColumns {
 				responseTable := responseSchema.Tables[tName]
 				response, err := client.NewConnectionColumnConfigListService().
