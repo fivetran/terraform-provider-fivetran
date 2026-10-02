@@ -37,6 +37,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New destination service supported: `postgres_wh` with full configuration support including SSH tunnel, IAM authentication, and private link connectivity.
 - `fivetran_connection_v2` documentation: added note directing customers to [Terraform registry documentation](https://registry.terraform.io/providers/fivetran/fivetran/latest/docs/resources/connection_v2) for service-specific `config` and `auth` field requirements.
 
+### Fixed
+- `fivetran_connector_schema_config`: honor `timeouts.read` and correctly treat `create`/`update` timeout value `0` as no client-side deadline instead of an immediate timeout.
+
 ## [v1.9.45](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.44...v1.9.45)
 
 ### Added
