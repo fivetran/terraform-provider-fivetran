@@ -16,16 +16,13 @@ type _schema struct {
 	tables map[string]*_table
 }
 
-// isEndpointUnavailableError checks if error indicates the batch endpoint is not implemented/unavailable
-// Returns true only for errors that clearly indicate the endpoint doesn't exist or is unavailable
-// Fivetran error codes use prefixes like "NotFound_*" and "NotImplemented_*"
-// An empty code indicates a transport or JSON decoding error, which should NOT fall back
+// isEndpointUnavailableError checks if error indicates the batch endpoint is not implemented
+// Only returns true for NotImplemented_* errors, which indicate the endpoint itself doesn't exist
+// NotFound_* errors (e.g., NotFound_SchemaConfig) are domain errors indicating missing resources,
+// not endpoint unavailability, so they should propagate without triggering fallback
 func isEndpointUnavailableError(code string) bool {
-	// Check for Fivetran-style error codes (e.g., "NotFound_*", "NotImplemented_*")
-	if len(code) > 0 && (strings.HasPrefix(code, "NotFound") || strings.HasPrefix(code, "NotImplemented")) {
-		return true
-	}
-	return false
+	// Only fall back for endpoint-not-implemented errors, not resource-not-found errors
+	return strings.HasPrefix(code, "NotImplemented")
 }
 
 func (s _schema) validateTables(
