@@ -38,6 +38,8 @@ func (s _schema) validateTables(
 		}
 	}
 	if len(tablesNeedingColumns) > 0 {
+		// Try batch endpoint first; fall back to per-table fetch if it fails
+		batchSuccess := true
 		for start := 0; start < len(tablesNeedingColumns); start += multipleTableColumnsBatchSize {
 			end := start + multipleTableColumnsBatchSize
 			if end > len(tablesNeedingColumns) {
@@ -46,13 +48,31 @@ func (s _schema) validateTables(
 
 			response, err := getMultipleTableColumnsConfig(ctx, client, connectorId, sName, tablesNeedingColumns[start:end])
 			if err != nil {
-				return fmt.Errorf("Error while retrieving columns config for schema `%s`. Error: %v; Code: `%v`.",
-					sName, err, response.Code), false
+				// Batch endpoint failed; fall back to per-table fetch
+				batchSuccess = false
+				break
 			}
 			for tableName, tableColumns := range response.Data.Tables {
 				if responseTable, ok := responseSchema.Tables[tableName]; ok {
 					responseTable.Columns = tableColumns
 				}
+			}
+		}
+
+		// If batch endpoint failed, fall back to fetching columns one-by-one (old method)
+		if !batchSuccess {
+			for _, tName := range tablesNeedingColumns {
+				responseTable := responseSchema.Tables[tName]
+				response, err := client.NewConnectionColumnConfigListService().
+					ConnectionId(connectorId).
+					Schema(sName).
+					Table(tName).
+					Do(ctx)
+				if err != nil {
+					return fmt.Errorf("Error while retrieving columns config for table `%s` of schema `%s`. Error: %v; Code: `%v`.",
+						tName, sName, err, response.Code), false
+				}
+				responseTable.Columns = response.Data.Columns
 			}
 		}
 
