@@ -411,7 +411,9 @@ func setupComplexTestWithColumnsReload(
 					for _, table := range tablesList {
 						tableStr := table.(string)
 						columnConfigs := tables[tableStr]
-						tableResponses[tableStr] = createMapFromJsonString(t, columnConfigs[updateIteration].jsonResponse())
+						// jsonResponse() returns {"columns": {...}}, but batch endpoint returns columns directly
+						columnsJSON := createMapFromJsonString(t, columnConfigs[updateIteration].jsonResponse())
+						tableResponses[tableStr] = columnsJSON["columns"]
 					}
 					return fivetranSuccessResponse(t, req, http.StatusOK, "Success", map[string]interface{}{
 						"tables": tableResponses,
