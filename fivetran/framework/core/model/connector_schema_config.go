@@ -536,6 +536,9 @@ func (d *ConnectorSchemaResourceModel) getSchemasRaw() []interface{} {
 								if e, ok := tMap["enabled"].(bool); ok {
 									table["enabled"] = e
 								}
+								if rf, ok := tMap["row_filter"]; ok {
+									table["row_filter"] = rf
+								}
 								if sm, ok := tMap["sync_mode"]; ok {
 									table["sync_mode"] = sm
 								}
