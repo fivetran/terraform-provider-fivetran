@@ -158,6 +158,9 @@ func (c _column) toStateObject(sch string, local *_column, diag *diag.Diagnostic
 
 	if (local != nil || isImporting) && c.isPrimaryKey != nil {
 		result[IS_PRIMARY_KEY] = helpers.BoolToStr(*c.isPrimaryKey)
+	} else if local != nil && local.isPrimaryKey != nil {
+		// upstream doesn't report the value, keep the configured one to avoid inconsistent result after apply
+		result[IS_PRIMARY_KEY] = helpers.BoolToStr(*local.isPrimaryKey)
 	}
 	
 	include :=local != nil ||
