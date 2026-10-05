@@ -1,0 +1,19 @@
+modules/connector/schema/multiple_table_columns_config.go
+  s_f33f008d47b8b7::t_ceb1f76328f578 38,44-52,54,57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "e8a2d42959b778bec791aa77dd98f85357a16d84",
+  "prompts": {},
+  "sessions": {
+    "s_f33f008d47b8b7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "33864a4c-d288-4319-b0e0-a03a6dc51039",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}

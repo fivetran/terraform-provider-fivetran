@@ -1,0 +1,21 @@
+fivetran/common/external-logging-fields.json
+  s_982c8f0b8efb0e::t_cfad93547d04d0 277-289
+  s_982c8f0b8efb0e::t_ee27e929f4c484 81-119
+  s_982c8f0b8efb0e::t_58ad6c6ca548f2 55-80
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "1629d54830d45a2c6b518151eaf7b150f3baecc3",
+  "prompts": {},
+  "sessions": {
+    "s_982c8f0b8efb0e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0b4adc44-dea2-4331-b8bd-48b153dd5e18",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}

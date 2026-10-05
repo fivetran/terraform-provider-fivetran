@@ -1,0 +1,22 @@
+fivetran/tests/e2e/resource_webhook_e2e_test.go
+  s_982c8f0b8efb0e::t_c2c783b0d0f307 36
+  s_982c8f0b8efb0e::t_27b042dc59b88b 26
+  s_982c8f0b8efb0e::t_7b2b8c43cee7d7 49
+  s_982c8f0b8efb0e::t_676bdd9b8b561a 59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "e9c8e814025a7abb56cbb2ef049dc2be5b2ab514",
+  "prompts": {},
+  "sessions": {
+    "s_982c8f0b8efb0e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0b4adc44-dea2-4331-b8bd-48b153dd5e18",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}

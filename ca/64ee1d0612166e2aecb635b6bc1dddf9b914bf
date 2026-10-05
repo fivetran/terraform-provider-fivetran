@@ -1,0 +1,25 @@
+go.mod
+  s_980d54e4c6ecbc::t_2d58a31f0c508b 4
+fivetran/tests/mock/schema_tests_common.go
+  s_980d54e4c6ecbc::t_9d01b7b2fbd006 414
+modules/connector/schema/schema_schema.go
+  s_980d54e4c6ecbc::t_2d91fc640717c2 55,57
+go.sum
+  s_980d54e4c6ecbc::t_7d9ef786b4c3b9 36-37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "ca64ee1d0612166e2aecb635b6bc1dddf9b914bf",
+  "prompts": {},
+  "sessions": {
+    "s_980d54e4c6ecbc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0bfa2276-94be-4d2e-80a1-c1d86e80fe34",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}

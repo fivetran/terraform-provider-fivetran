@@ -1,0 +1,57 @@
+fivetran/framework/resources/connector_schema_resource.go
+  a597775acd132041 6,20-25,51,134-141,172-175,272-283,405-412,427,429-438,440-442,452,479,495
+fivetran/framework/resources/connector_schema_validate.go
+  a597775acd132041 75,78-87,92
+fivetran/tests/mock/resource_connector_schema_config_test.go
+  a597775acd132041 2559-2811,5166-5194,5212,5224-5239,5286-5288
+CHANGELOG.md
+  fa2ffaff1f474939 46,54-55,61
+  44df30ae81c96a2b 8-13,24-26,28,31-33
+  a597775acd132041 17-22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.4",
+  "base_commit_sha": "ee7897bb21951d8b7c4bb04c3cf7b70ec541a22c",
+  "prompts": {
+    "44df30ae81c96a2b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "01a33416-d147-46da-bd97-34ff60e4f7fc",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>",
+      "messages": [],
+      "total_additions": 66,
+      "total_deletions": 31,
+      "accepted_lines": 13,
+      "overriden_lines": 0
+    },
+    "a597775acd132041": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "530fbd8b-6ad7-4a8c-ba2f-8feef2c76928",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>",
+      "messages": [],
+      "total_additions": 167,
+      "total_deletions": 114,
+      "accepted_lines": 377,
+      "overriden_lines": 0
+    },
+    "fa2ffaff1f474939": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a888c29f-199a-4ea3-9714-4bbd858fc9e9",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>",
+      "messages": [],
+      "total_additions": 3,
+      "total_deletions": 0,
+      "accepted_lines": 4,
+      "overriden_lines": 0
+    }
+  }
+}

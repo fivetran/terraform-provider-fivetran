@@ -1,0 +1,19 @@
+docs/resources/connection_v2.md
+  s_8b06cee97b1dd6::t_5f825dce017d39 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "b7ed2ed08d70c457edcc735ad45965c5b0fac09e",
+  "prompts": {},
+  "sessions": {
+    "s_8b06cee97b1dd6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "466c55ae-99b2-4bd8-8608-e9d75f50b47a",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}

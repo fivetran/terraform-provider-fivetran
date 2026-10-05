@@ -1,0 +1,26 @@
+modules/connector/schema/schema_table_test.go
+  a597775acd132041 1-108
+modules/connector/schema/schema_table.go
+  a597775acd132041 297-314
+CHANGELOG.md
+  a597775acd132041 30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.4",
+  "base_commit_sha": "03d0897064ea7e14e0d1d1fb5dce50846171bf1d",
+  "prompts": {
+    "a597775acd132041": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "530fbd8b-6ad7-4a8c-ba2f-8feef2c76928",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>",
+      "total_additions": 135,
+      "total_deletions": 8,
+      "accepted_lines": 127,
+      "overriden_lines": 0
+    }
+  }
+}

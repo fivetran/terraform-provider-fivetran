@@ -1,0 +1,19 @@
+fivetran/common/destination-fields.json
+  s_982c8f0b8efb0e::t_10f01d422c22c2 181,183-188,190-192,194,196-201,203-214,216-218
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "171dad8b80dfdb2a6d19208e39edc0944aeb99c9",
+  "prompts": {},
+  "sessions": {
+    "s_982c8f0b8efb0e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0b4adc44-dea2-4331-b8bd-48b153dd5e18",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}

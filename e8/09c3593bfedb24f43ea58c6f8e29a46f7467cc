@@ -1,0 +1,20 @@
+modules/connector/schema/schema_schema.go
+  s_980d54e4c6ecbc::t_a647e120101821 41-42,51-53,62-75
+  s_980d54e4c6ecbc::t_c97693cdae629e 76-78
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "e809c3593bfedb24f43ea58c6f8e29a46f7467cc",
+  "prompts": {},
+  "sessions": {
+    "s_980d54e4c6ecbc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0bfa2276-94be-4d2e-80a1-c1d86e80fe34",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}

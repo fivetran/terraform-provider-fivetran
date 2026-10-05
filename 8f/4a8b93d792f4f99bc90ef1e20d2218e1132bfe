@@ -1,0 +1,19 @@
+fivetran/tests/mock/resource_connector_schema_primary_key_test.go
+  s_df46fbe05d04b6::t_720689ce2b8698 1-254
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "8f4a8b93d792f4f99bc90ef1e20d2218e1132bfe",
+  "prompts": {},
+  "sessions": {
+    "s_df46fbe05d04b6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a0e121fe-1598-439d-8d05-07153359f97f",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}

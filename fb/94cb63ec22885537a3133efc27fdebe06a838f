@@ -1,0 +1,43 @@
+fivetran/framework/resources/connection_v2.go
+  s_300e3bedc9392b::t_ace66cc51e766b 241
+  s_300e3bedc9392b::t_edc12c26e5989a 82
+  s_300e3bedc9392b::t_e2f17dbfda74d9 228
+  s_300e3bedc9392b::t_f4db1c3fde337e 172
+  s_300e3bedc9392b::t_4e895e3320ca02 365
+  s_300e3bedc9392b::t_2a4426107e0ca0 286
+  s_300e3bedc9392b::t_f46204343eda99 133
+CHANGELOG.md
+  s_300e3bedc9392b::t_0ccb31bfc17607 10-12
+fivetran/framework/core/schema/connection_v2.go
+  s_300e3bedc9392b::t_7da525b13523b4 278-325
+  s_300e3bedc9392b::t_4f2901fd1d308d 11
+  s_300e3bedc9392b::t_77c745d6530063 227
+fivetran/framework/core/model/connection_v2_model.go
+  s_300e3bedc9392b::t_9978abca51f5d1 179
+  s_300e3bedc9392b::t_3bdb2f2e422473 308-351
+  s_300e3bedc9392b::t_a320e35eeed13e 51-52
+  s_300e3bedc9392b::t_3c10578e980086 91-100
+  s_300e3bedc9392b::t_eae4c47eeb02f9 131
+fivetran/framework/resources/connection_v2_modify_plan_test.go
+  s_300e3bedc9392b::t_baac50b4122ff8 439
+fivetran/framework/core/model/connection_v2_model_test.go
+  s_300e3bedc9392b::t_cc3d4b2bebee9d 82
+fivetran/framework/resources/connection_v2_validate_test.go
+  s_300e3bedc9392b::t_4f9bd5675e8495 634
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "fb94cb63ec22885537a3133efc27fdebe06a838f",
+  "prompts": {},
+  "sessions": {
+    "s_300e3bedc9392b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "66177428-d8d6-450d-8ceb-3f5887c23e88",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}

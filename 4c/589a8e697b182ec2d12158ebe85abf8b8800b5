@@ -1,0 +1,21 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.1",
+  "base_commit_sha": "4c589a8e697b182ec2d12158ebe85abf8b8800b5",
+  "prompts": {
+    "3d60c5f781c042c0": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4b843dd6-6e9a-4206-bd4c-9c2596787324",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "RenatShaikhutdinov <renat.shaikhutdinov@fivetran.com>",
+      "messages": [],
+      "total_additions": 214,
+      "total_deletions": 0,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}

@@ -1,0 +1,23 @@
+destination-services.txt
+  s_982c8f0b8efb0e::t_394cc48a6a8683 1-38
+services.txt
+  s_982c8f0b8efb0e::t_34a3a4495c972d 21,227,374,397,454,504,598-599,692,781
+external-logging-services.txt
+  s_982c8f0b8efb0e::t_d661efca9f5daa 1-8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "709c3ff8f7978572625555b8d9946a53ebffc824",
+  "prompts": {},
+  "sessions": {
+    "s_982c8f0b8efb0e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0b4adc44-dea2-4331-b8bd-48b153dd5e18",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}

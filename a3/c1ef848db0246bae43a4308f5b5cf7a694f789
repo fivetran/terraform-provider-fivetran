@@ -1,0 +1,38 @@
+fivetran/framework/resources/connection_v2_modify_plan.go
+  fa2ffaff1f474939 69-71
+fivetran/framework/resources/connection_v2_validate.go
+  fa2ffaff1f474939 44-46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.3",
+  "base_commit_sha": "a3c1ef848db0246bae43a4308f5b5cf7a694f789",
+  "prompts": {
+    "3ebeddfe1e475316": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "358bae4f-a87e-46bb-8e4f-fe5b01ed0b7e",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>",
+      "messages": [],
+      "total_additions": 782,
+      "total_deletions": 39,
+      "accepted_lines": 742,
+      "overriden_lines": 0
+    },
+    "fa2ffaff1f474939": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a888c29f-199a-4ea3-9714-4bbd858fc9e9",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>",
+      "messages": [],
+      "total_additions": 272,
+      "total_deletions": 1,
+      "accepted_lines": 272,
+      "overriden_lines": 0
+    }
+  }
+}

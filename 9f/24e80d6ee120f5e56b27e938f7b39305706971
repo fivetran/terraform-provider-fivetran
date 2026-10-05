@@ -1,0 +1,23 @@
+CHANGELOG.md
+  aea4b35d21578736 10-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.1",
+  "base_commit_sha": "9f24e80d6ee120f5e56b27e938f7b39305706971",
+  "prompts": {
+    "aea4b35d21578736": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f085f5cd-2979-4a8f-95a7-1335b023ed3f",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>",
+      "messages": [],
+      "total_additions": 5,
+      "total_deletions": 0,
+      "accepted_lines": 5,
+      "overriden_lines": 0
+    }
+  }
+}
