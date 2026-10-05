@@ -61,10 +61,10 @@ func readCommonResponse(r gfcommon.CommonResponse) attr.Value {
     return result
 }
 
-func (d *ConnectorDatasourceModel) ReadFromResponse(resp connections.DetailsWithCustomConfigNoTestsResponse) {
+func (d *ConnectorDatasourceModel) ReadFromResponseIntoDataSource(resp connections.DetailsWithCustomConfigNoTestsResponse) {
     responseContainer := ConnectorModelContainer{}
     responseContainer.ReadFromResponseData(resp.Data.DetailsResponseDataCommon, resp.Data.Config)
-    d.ReadFromContainer(responseContainer)
+    d.ReadFromContainerForDataSource(responseContainer)
 
 	d.SucceededAt = types.StringValue(resp.Data.SucceededAt.String())
 	d.FailedAt = types.StringValue(resp.Data.FailedAt.String())
@@ -257,7 +257,7 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, is
 	}
 }
 
-func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) {
+func (d *ConnectorDatasourceModel) ReadFromContainerForDataSource(c ConnectorModelContainer) {
 	d.Id = types.StringValue(c.Id)
 	d.Name = types.StringValue(c.Schema)
 	d.ConnectedBy = types.StringValue(c.ConnectedBy)
@@ -306,7 +306,7 @@ func (d *ConnectorDatasourceModel) ReadFromContainer(c ConnectorModelContainer) 
         c.Config,
         common.GetConfigFieldsMap(),
         nil,
-        c.Service, false, false).(basetypes.ObjectValue)
+        c.Service, true, false).(basetypes.ObjectValue)
 }
 
 func (d *ConnectorResourceModel) HasUpdates(plan ConnectorResourceModel, state ConnectorResourceModel) (bool, map[string]interface{}, map[string]interface{}, error) {

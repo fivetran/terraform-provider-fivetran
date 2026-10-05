@@ -147,7 +147,7 @@ func getStringValue(value, local interface{}, currentField *common.ConfigField, 
 		}
 		return types.StringNull()
 	}
-	if local == nil && !currentField.Readonly &&  // we should not set non-nullable value to the state if it's not configured by tf, we just ignore it
+	if local == nil && !currentField.Readonly && // we should not set non-nullable value to the state if it's not configured by tf, we just ignore it
 		(!isImporting || currentField.GetIsSensitive(service)) {
 		return types.StringNull()
 	}
@@ -194,7 +194,7 @@ func getIntValue(value, local interface{}, currentField *common.ConfigField, isI
 
 func getValue(
 	fieldType attr.Type,
-	value, local interface{},// value - api response value, local - tf state value
+	value, local interface{}, // value - api response value, local - tf state value
 	fieldsMap map[string]common.ConfigField,
 	currentField *common.ConfigField,
 	service string, isImporting bool, fixForDestinationDifferentCase bool) attr.Value {
@@ -279,8 +279,9 @@ func getValue(
 				return types.ListNull(collectionType.ElementType())
 			}
 		}
-		if local == nil && currentField != nil && !currentField.Readonly && !isImporting {
-			if currentField.GetIsSensitive(service) || len(value.([]interface{})) == 0 {
+		if local == nil && currentField != nil && !currentField.Readonly {
+			// we should not set non-nullable value to the state if it's not configured by tf, we just ignore it
+			if currentField.GetIsSensitive(service) || len(value.([]interface{})) == 0 || !isImporting {
 				if _, ok := collectionType.(basetypes.SetTypable); ok {
 					return types.SetNull(collectionType.ElementType())
 				} else {
@@ -451,14 +452,14 @@ func localPascalCaseEqualsUpstreamUpperSnakeCase(fixForDestinationDifferentCase 
 	if !fixForDestinationDifferentCase || value == nil || local == nil {
 		return false
 	}
-	
+
 	valueStr, valueOk := value.(string)
 	localStr, localOk := local.(string)
-	
+
 	if !valueOk || !localOk {
 		return false
 	}
-	
+
 	// Convert local PascalCase to UPPER_SNAKE_CASE
 	var converted strings.Builder
 	for i, r := range localStr {
@@ -467,8 +468,8 @@ func localPascalCaseEqualsUpstreamUpperSnakeCase(fixForDestinationDifferentCase 
 		}
 		converted.WriteRune(r)
 	}
-	
+
 	localUpperSnake := strings.ToUpper(converted.String())
-	
+
 	return localUpperSnake == valueStr
 }

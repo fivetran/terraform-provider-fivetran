@@ -29,8 +29,8 @@ func (d *connector) Metadata(ctx context.Context, req datasource.MetadataRequest
 func (d *connector) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		DeprecationMessage: "This datasource is Deprecated, please migrate to actual resource",
-		Attributes: fivetranSchema.ConnectorAttributesSchema().GetDatasourceSchema(),
-		Blocks:     fivetranSchema.ConnectorDatasourceBlocks(),
+		Attributes:         fivetranSchema.ConnectorAttributesSchema().GetDatasourceSchema(),
+		Blocks:             fivetranSchema.ConnectorDatasourceBlocks(),
 	}
 }
 
@@ -58,7 +58,7 @@ func (d *connector) Read(ctx context.Context, req datasource.ReadRequest, resp *
 		return
 	}
 
-	data.ReadFromResponse(response)
+	data.ReadFromResponseIntoDataSource(response)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }

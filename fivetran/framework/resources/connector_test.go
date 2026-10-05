@@ -31,8 +31,8 @@ var (
 	connectorMockUpdateHdPatchHandler *mock.Handler
 
 	connectorMockData map[string]interface{}
-	postRequestJson map[string]interface{}
-	patchRequestJson map[string]interface{}
+	postRequestJson   map[string]interface{}
+	patchRequestJson  map[string]interface{}
 )
 
 const (
@@ -108,7 +108,7 @@ const (
 		}
 	}
 		`
-	
+
 	coilConnectorPatchResponse1 = `
 	{
 		"id": "connector_id",
@@ -687,7 +687,6 @@ const (
 		}
 	}
 	`
-
 )
 
 func setupMockClientConnectorResourceListMappingConfig(t *testing.T) {
@@ -1240,9 +1239,9 @@ func TestResourceImportAttemptOfUnsupportedServiceMock(t *testing.T) {
 			provider = fivetran-provider
 		}
 		`,
-		ImportState:        true,
-		ResourceName:       "fivetran_connector.test_connector",
-		ImportStateId:      "connector_id",
+		ImportState:   true,
+		ResourceName:  "fivetran_connector.test_connector",
+		ImportStateId: "connector_id",
 		PreConfig: func() {
 			postRequestJson = nil
 			patchRequestJson = nil
@@ -2959,10 +2958,10 @@ func TestResourceConnectorConfigArrayOfSensitiveStringsMock(t *testing.T) {
 	}
 	`
 	var (
-	connectorSensitiveArrayMockPostHandler   *mock.Handler
-	connectorSensitiveArrayMockPatchHandler  *mock.Handler
-	connectorSensitiveArrayMockDeleteHandler *mock.Handler
-	connectorSensitiveArrayMockData          map[string]interface{}
+		connectorSensitiveArrayMockPostHandler   *mock.Handler
+		connectorSensitiveArrayMockPatchHandler  *mock.Handler
+		connectorSensitiveArrayMockDeleteHandler *mock.Handler
+		connectorSensitiveArrayMockData          map[string]interface{}
 	)
 
 	step1 := resource.TestStep{
@@ -3079,6 +3078,363 @@ func TestResourceConnectorConfigArrayOfSensitiveStringsMock(t *testing.T) {
 			Steps: []resource.TestStep{
 				step1,
 				step2,
+			},
+		},
+	)
+}
+
+// Reproduces https://github.com/fivetran/terraform-provider-fivetran/issues/635:
+// Facebook Ads started returning a new `attribution_windows` field inside
+// `custom_tables` that isn't present in the user's existing configuration.
+// Since this field is Optional (not Computed), the plan for an unconfigured
+// value is null, but the upstream response returns real data for it, which
+// used to make the provider return a value instead of null, causing
+// "Provider produced inconsistent result after apply".
+func TestResourceConnectorFacebookAdsAttributionWindowsDriftMock(t *testing.T) {
+	facebookAdsAttributionWindowsDriftResponse := `
+	{
+		"id": "connector_id",
+		"group_id": "group_id",
+		"service": "facebook_ads",
+		"service_version": 0,
+		"schema": "facebook_ads",
+		"paused": true,
+		"pause_after_trial": true,
+		"connected_by": "user_id",
+		"created_at": "2022-01-01T11:22:33.012345Z",
+		"succeeded_at": null,
+		"failed_at": null,
+		"sync_frequency": 360,
+		"schedule_type": "auto",
+		"data_delay_threshold": 0,
+		"data_delay_sensitivity": "NORMAL",
+		"networking_method": "Directly",
+		"status": {
+			"setup_state": "connected",
+			"sync_state": "paused",
+			"update_state": "on_schedule",
+			"is_historical_sync": true,
+			"tasks": [],
+			"warnings": []
+		},
+		"config": {
+			"sync_mode": "AllAccounts",
+			"custom_tables": [
+				{
+					"config_type": "Custom",
+					"table_name": "custom_report1",
+					"action_breakdowns": ["action_type"],
+					"fields": [
+						"actions",
+						"ad_click_actions",
+						"ad_id",
+						"ad_impression_actions",
+						"ad_name",
+						"adset_id",
+						"adset_name",
+						"campaign_id",
+						"campaign_name",
+						"clicks",
+						"cost_per_ad_click",
+						"cost_per_unique_click",
+						"cpc",
+						"frequency",
+						"impressions",
+						"spend"
+					],
+					"aggregation": "Day",
+					"level": "ad",
+					"action_report_time": "impression",
+					"view_attribution_window": "DAY_1",
+					"click_attribution_window": "DAY_7",
+					"engaged_view_attribution_window": "NONE",
+					"attribution_windows": ["INCREMENTALITY", "VIEW_1D"],
+					"use_unified_attribution_setting": true
+				}
+			],
+			"sync_metadata": true,
+			"timeframe_months": "ALL_TIME"
+		}
+	}
+	`
+	tfConfigOriginal := `
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+
+			group_id           = "group_id"
+			service            = "facebook_ads"
+			run_setup_tests    = true
+			trust_fingerprints = true
+			trust_certificates = true
+
+			destination_schema {
+				name = "facebook_ads"
+			}
+
+			config {
+				sync_mode        = "AllAccounts"
+				sync_metadata    = true
+				timeframe_months = "ALL_TIME"
+
+				custom_tables {
+					config_type        = "Custom"
+					table_name         = "custom_report1"
+					action_breakdowns  = ["action_type"]
+					fields = [
+						"actions",
+						"ad_click_actions",
+						"ad_id",
+						"ad_impression_actions",
+						"ad_name",
+						"adset_id",
+						"adset_name",
+						"campaign_id",
+						"campaign_name",
+						"clicks",
+						"cost_per_ad_click",
+						"cost_per_unique_click",
+						"cpc",
+						"frequency",
+						"impressions",
+						"spend",
+					]
+					aggregation                     = "Day"
+					level                            = "ad"
+					action_report_time               = "impression"
+					view_attribution_window          = "DAY_1"
+					click_attribution_window         = "DAY_7"
+					engaged_view_attribution_window  = "NONE"
+					use_unified_attribution_setting  = true
+				}
+			}
+		}
+		`
+	patchResponse := `
+	{
+		"id": "connector_id",
+		"group_id": "group_id",
+		"service": "facebook_ads",
+		"service_version": 0,
+		"schema": "facebook_ads",
+		"paused": true,
+		"pause_after_trial": true,
+		"connected_by": "user_id",
+		"created_at": "2022-01-01T11:22:33.012345Z",
+		"succeeded_at": null,
+		"failed_at": null,
+		"sync_frequency": 360,
+		"schedule_type": "auto",
+		"data_delay_threshold": 0,
+		"data_delay_sensitivity": "NORMAL",
+		"networking_method": "Directly",
+		"status": {
+			"setup_state": "connected",
+			"sync_state": "paused",
+			"update_state": "on_schedule",
+			"is_historical_sync": true,
+			"tasks": [],
+			"warnings": []
+		},
+		"config": {
+			"sync_mode": "AllAccounts",
+			"custom_tables": [
+				{
+					"config_type": "Custom",
+					"table_name": "custom_report1",
+					"action_breakdowns": ["action_type"],
+					"fields": [
+						"actions",
+						"ad_click_actions",
+						"ad_id",
+						"ad_impression_actions",
+						"ad_name",
+						"adset_id",
+						"adset_name",
+						"campaign_id",
+						"campaign_name",
+						"clicks",
+						"cost_per_ad_click",
+						"cost_per_unique_click",
+						"frequency",
+						"impressions",
+						"spend"
+					],
+					"aggregation": "Day",
+					"level": "ad",
+					"action_report_time": "impression",
+					"view_attribution_window": "DAY_1",
+					"click_attribution_window": "DAY_7",
+					"engaged_view_attribution_window": "NONE",
+					"attribution_windows": ["INCREMENTALITY", "VIEW_1D"],
+					"use_unified_attribution_setting": true
+				}
+			],
+			"sync_metadata": true,
+			"timeframe_months": "ALL_TIME"
+		}
+	}
+	`
+	tfConfigUpdated := `
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+
+			group_id           = "group_id"
+			service            = "facebook_ads"
+			run_setup_tests    = true
+			trust_fingerprints = true
+			trust_certificates = true
+
+			destination_schema {
+				name = "facebook_ads"
+			}
+
+			config {
+				sync_mode        = "AllAccounts"
+				sync_metadata    = true
+				timeframe_months = "ALL_TIME"
+
+				custom_tables {
+					config_type        = "Custom"
+					table_name         = "custom_report1"
+					action_breakdowns  = ["action_type"]
+					fields = [
+						"actions",
+						"ad_click_actions",
+						"ad_id",
+						"ad_impression_actions",
+						"ad_name",
+						"adset_id",
+						"adset_name",
+						"campaign_id",
+						"campaign_name",
+						"clicks",
+						"cost_per_ad_click",
+						"cost_per_unique_click",
+						"frequency",
+						"impressions",
+						"spend",
+					]
+					aggregation                     = "Day"
+					level                            = "ad"
+					action_report_time               = "impression"
+					view_attribution_window          = "DAY_1"
+					click_attribution_window         = "DAY_7"
+					engaged_view_attribution_window  = "NONE"
+					use_unified_attribution_setting  = true
+				}
+			}
+		}
+		`
+
+	var (
+		facebookAdsDriftMockPostHandler   *mock.Handler
+		facebookAdsDriftMockPatchHandler  *mock.Handler
+		facebookAdsDriftMockDeleteHandler *mock.Handler
+		facebookAdsDriftMockData          map[string]interface{}
+	)
+
+	// The resource config intentionally omits `attribution_windows` from
+	// `custom_tables`, mirroring a configuration that worked before Facebook
+	// Ads started returning this field from the API.
+	step1 := resource.TestStep{
+		Config: tfConfigOriginal,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, facebookAdsDriftMockPostHandler.Interactions, 1)
+				tfmock.AssertEqual(t, facebookAdsDriftMockPatchHandler.Interactions, 0)
+				tfmock.AssertNotEmpty(t, facebookAdsDriftMockData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.custom_tables.0.table_name", "custom_report1"),
+			resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "config.custom_tables.0.attribution_windows"),
+		),
+	}
+
+	step2 := resource.TestStep{
+		PreConfig: func() {
+			facebookAdsDriftMockPostHandler.Interactions = 0
+			facebookAdsDriftMockPatchHandler.Interactions = 0
+		},
+		Config:             tfConfigOriginal,
+		PlanOnly:           true,
+		ExpectNonEmptyPlan: false,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, facebookAdsDriftMockPostHandler.Interactions, 0)
+				tfmock.AssertEqual(t, facebookAdsDriftMockPatchHandler.Interactions, 0)
+				tfmock.AssertNotEmpty(t, facebookAdsDriftMockData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.custom_tables.0.table_name", "custom_report1"),
+			resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "config.custom_tables.0.attribution_windows"),
+		),
+	}
+
+	step3 := resource.TestStep{
+		PreConfig: func() {
+			facebookAdsDriftMockPostHandler.Interactions = 0
+			facebookAdsDriftMockPatchHandler.Interactions = 0
+		},
+		Config: tfConfigUpdated,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, facebookAdsDriftMockPostHandler.Interactions, 0)
+				tfmock.AssertEqual(t, facebookAdsDriftMockPatchHandler.Interactions, 1)
+				tfmock.AssertNotEmpty(t, facebookAdsDriftMockData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "id", "connector_id"),
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.custom_tables.0.table_name", "custom_report1"),
+			resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "config.custom_tables.0.attribution_windows"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				tfmock.MockClient().Reset()
+				tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", facebookAdsDriftMockData), nil
+					},
+				)
+				facebookAdsDriftMockPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/connections").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						facebookAdsDriftMockData = tfmock.CreateMapFromJsonString(t, facebookAdsAttributionWindowsDriftResponse)
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", facebookAdsDriftMockData), nil
+					},
+				)
+				facebookAdsDriftMockPatchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/connections/connector_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						facebookAdsDriftMockData = tfmock.CreateMapFromJsonString(t, patchResponse)
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", facebookAdsDriftMockData), nil
+					},
+				)
+				facebookAdsDriftMockDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						facebookAdsDriftMockData = nil
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", facebookAdsDriftMockData), nil
+					},
+				)
+				tfmock.MockClient().When(http.MethodPost, "/v1/connections/connector_id/test").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", facebookAdsDriftMockData), nil
+					},
+				)
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, facebookAdsDriftMockDeleteHandler.Interactions, 1)
+				tfmock.AssertEmpty(t, facebookAdsDriftMockData)
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
+				step2,
+				step3,
 			},
 		},
 	)
