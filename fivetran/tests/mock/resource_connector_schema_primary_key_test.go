@@ -568,3 +568,60 @@ resource "fivetran_connector_schema_config" "test_schema" {
 		},
 	)
 }
+
+// adding a column to an existing resource doesn't plan a null is_primary_key that conflicts with the upstream value
+func TestResourceSchemaPrimaryKeyAddColumnMock(t *testing.T) {
+	cfg := func(extra string) string {
+		return `
+resource "fivetran_connector_schema_config" "test_schema" {
+	provider = fivetran-provider
+	connector_id = "connector_id"
+	schema_change_handling = "ALLOW_ALL"
+	schemas = {
+		"public" = {
+			enabled = true
+			tables = {
+				"users" = {
+					enabled = true
+					columns = {
+						"id" = {
+							enabled = true
+						}` + extra + `
+					}
+				}
+			}
+		}
+	}
+}
+`
+	}
+	upstream := `
+{
+	"schema_change_handling": "ALLOW_ALL",
+	"schemas": {"public": {"name_in_destination": "public", "enabled": true, "tables": {"users": {
+		"name_in_destination": "users", "enabled": true, "enabled_patch_settings": {"allowed": true},
+		"columns": {
+			"id":   {"name_in_destination": "id",   "enabled": true, "is_primary_key": true,  "enabled_patch_settings": {"allowed": true}},
+			"name": {"name_in_destination": "name", "enabled": true, "is_primary_key": false, "enabled_patch_settings": {"allowed": true}}
+		}}}}}
+}`
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() {
+			mockClient.Reset()
+			mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(func(req *http.Request) (*http.Response, error) {
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", createMapFromJsonString(t, upstream)), nil
+			})
+			mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(func(req *http.Request) (*http.Response, error) {
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", createMapFromJsonString(t, upstream)), nil
+			})
+		},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		Steps: []resource.TestStep{
+			{Config: cfg("")},
+			{Config: cfg(`
+						"name" = {
+							enabled = true
+						}`)},
+		},
+	})
+}
