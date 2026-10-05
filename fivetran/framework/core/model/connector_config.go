@@ -279,12 +279,14 @@ func getValue(
 				return types.ListNull(collectionType.ElementType())
 			}
 		}
-		if local == nil && currentField != nil && !currentField.Readonly && !isImporting {
+		if local == nil && currentField != nil && !currentField.Readonly {
 			// we should not set non-nullable value to the state if it's not configured by tf, we just ignore it
-			if _, ok := collectionType.(basetypes.SetTypable); ok {
-				return types.SetNull(collectionType.ElementType())
-			} else {
-				return types.ListNull(collectionType.ElementType())
+			if currentField.GetIsSensitive(service) || len(value.([]interface{})) == 0 || !isImporting {
+				if _, ok := collectionType.(basetypes.SetTypable); ok {
+					return types.SetNull(collectionType.ElementType())
+				} else {
+					return types.ListNull(collectionType.ElementType())
+				}
 			}
 		}
 		items := []attr.Value{}
