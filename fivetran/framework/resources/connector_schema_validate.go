@@ -121,63 +121,75 @@ func (r *connectorSchema) connectorSchemaClient() (*fivetran.Client, error) {
 	return client, nil
 }
 
-// validatePrimaryKeyConstraints warns when configured is_primary_key values differ from upstream on a file connector
-// that has already synced: primary keys can only be set before the first sync.
+// validatePrimaryKeyConstraints warns at plan time when configured is_primary_key values can't be applied.
 // schemaResponse is optional, it's fetched when nil.
 func (r *connectorSchema) validatePrimaryKeyConstraints(
 	ctx context.Context,
 	data *model.ConnectorSchemaResourceModel,
 	schemaResponse *connections.ConnectionSchemaDetailsResponse,
 	resp *resource.ValidateConfigResponse) {
-	configured := data.ConfiguredPrimaryKeys()
-	if len(configured) == 0 {
-		return
-	}
-
-	if data.ConnectorId.IsNull() || data.ConnectorId.IsUnknown() || data.ConnectorId.ValueString() == "" {
-		return
-	}
-	connectorId := data.ConnectorId.ValueString()
-
 	client, err := r.connectorSchemaClient()
 	if err != nil {
 		return
 	}
+	service, changed := primaryKeyChangesAfterSync(ctx, client, data, schemaResponse)
+	if len(changed) > 0 {
+		resp.Diagnostics.AddWarning(
+			"Primary Key Configuration After Sync",
+			primaryKeyChangeMessage(data.ConnectorId.ValueString(), service, changed)+
+				" Apply will fail until the configuration matches the current values or the connector is recreated.",
+		)
+	}
+}
 
-	// any lookup failure skips this check, it's advisory only
+// primaryKeyChangesAfterSync returns the connector service and the columns whose configured is_primary_key differs
+// from upstream, when the connector is a file connector that has already synced: primary keys can only be set before the first sync.
+// Any lookup failure returns no changes, the check is skipped in this case.
+// schemaResponse is optional, it's fetched when nil.
+func primaryKeyChangesAfterSync(
+	ctx context.Context,
+	client *fivetran.Client,
+	data *model.ConnectorSchemaResourceModel,
+	schemaResponse *connections.ConnectionSchemaDetailsResponse) (string, []string) {
+	configured := data.ConfiguredPrimaryKeys()
+	if len(configured) == 0 || client == nil {
+		return "", nil
+	}
+
+	if data.ConnectorId.IsNull() || data.ConnectorId.IsUnknown() || data.ConnectorId.ValueString() == "" {
+		return "", nil
+	}
+	connectorId := data.ConnectorId.ValueString()
+
 	details, err := client.NewConnectionDetails().ConnectionID(connectorId).DoCustom(ctx)
 	if err != nil {
-		return
+		return "", nil
 	}
 
 	service := details.Data.Service
 	if !canChangePrimaryKey(service) || details.Data.SucceededAt.IsZero() {
-		return
+		return service, nil
 	}
 
 	if schemaResponse == nil {
 		response, err := client.NewConnectionSchemaDetails().ConnectionID(connectorId).Do(ctx)
 		if err != nil {
-			return
+			return service, nil
 		}
 		schemaResponse = &response
 	}
 
-	changed := changedPrimaryKeys(configured, *schemaResponse)
-	if len(changed) == 0 {
-		return
-	}
+	return service, changedPrimaryKeys(configured, *schemaResponse)
+}
 
-	resp.Diagnostics.AddWarning(
-		"Primary Key Configuration After Sync",
-		fmt.Sprintf(
-			"Connector `%v` (service: %v) has already synced, so `is_primary_key` can no longer be changed for:\n  %v\n"+
-				"Primary keys for file connectors can only be set before the first sync. "+
-				"Replacing `fivetran_connector_schema_config` doesn't help, as it doesn't recreate the connector. "+
-				"To apply this change, recreate the connector itself (for example `terraform apply -replace=<fivetran_connector resource address>`), "+
-				"which triggers a new initial sync.",
-			connectorId, service, strings.Join(changed, "\n  "),
-		),
+func primaryKeyChangeMessage(connectorId, service string, changed []string) string {
+	return fmt.Sprintf(
+		"Connector `%v` (service: %v) has already synced, so `is_primary_key` can no longer be changed for:\n  %v\n"+
+			"Primary keys for file connectors can only be set before the first sync. "+
+			"Replacing `fivetran_connector_schema_config` doesn't help, as it doesn't recreate the connector. "+
+			"To apply this change, recreate the connector itself (for example `terraform apply -replace=<fivetran_connector resource address>`), "+
+			"which triggers a new initial sync.",
+		connectorId, service, strings.Join(changed, "\n  "),
 	)
 }
 

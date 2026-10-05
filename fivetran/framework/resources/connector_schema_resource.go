@@ -229,6 +229,16 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		}
 	}
 
+	// is_primary_key can't be changed after the first sync, fail before sending the change instead of
+	// getting an API error or an inconsistent result
+	if service, changed := primaryKeyChangesAfterSync(ctx, client, &data, &schemaResponse); len(changed) > 0 {
+		resp.Diagnostics.AddError(
+			"Unable to create Connector Schema Resource.",
+			primaryKeyChangeMessage(connectorID, service, changed),
+		)
+		return
+	}
+
 	// read upstream config
 	config := configSchema.SchemaConfig{}
 	config.ReadFromResponse(schemaResponse)
@@ -484,6 +494,16 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 				return
 			}
 		}
+	}
+
+	// is_primary_key can't be changed after the first sync, fail before sending the change instead of
+	// getting an API error or an inconsistent result
+	if service, changed := primaryKeyChangesAfterSync(ctx, client, &plan, &schemaResponse); len(changed) > 0 {
+		resp.Diagnostics.AddError(
+			"Unable to Update Connector Schema Resource.",
+			primaryKeyChangeMessage(connectorID, service, changed),
+		)
+		return
 	}
 
 	// read upstream config

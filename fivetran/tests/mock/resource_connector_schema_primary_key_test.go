@@ -2,6 +2,7 @@ package mock
 
 import (
 	"net/http"
+	"regexp"
 	"testing"
 	"time"
 
@@ -159,8 +160,8 @@ func TestResourceSchemaPrimaryKeyPreSync(t *testing.T) {
 	)
 }
 
-// the post-sync check is advisory: it warns (see changedPrimaryKeys unit tests) but doesn't block apply
-func TestResourceSchemaPrimaryKeyPostSync(t *testing.T) {
+// changing is_primary_key on an already synced file connector fails before any PATCH is sent
+func TestResourceSchemaPrimaryKeyPostSyncChangeFails(t *testing.T) {
 	var patchBodies []map[string]interface{}
 
 	resource.Test(
@@ -173,12 +174,39 @@ func TestResourceSchemaPrimaryKeyPostSync(t *testing.T) {
 			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			Steps: []resource.TestStep{
 				{
+					Config:      primaryKeyTfConfig,
+					ExpectError: regexp.MustCompile("`is_primary_key` can no longer be changed"),
+				},
+				{
+					// no PATCH was sent by the failed step
+					Config:   primaryKeyTfConfig,
+					PlanOnly: true,
+					PreConfig: func() {
+						assertEqual(t, len(patchBodies), 0)
+					},
+					ExpectNonEmptyPlan: true,
+				},
+			},
+		},
+	)
+}
+
+// an unchanged is_primary_key on an already synced file connector applies normally
+func TestResourceSchemaPrimaryKeyPostSyncUnchanged(t *testing.T) {
+	var patchBodies []map[string]interface{}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				patchBodies = nil
+				setupPrimaryKeyMocks(t, time.Now().Add(-24*time.Hour).Format(time.RFC3339), "true", &patchBodies)
+			},
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			Steps: []resource.TestStep{
+				{
 					Config: primaryKeyTfConfig,
 					Check: resource.ComposeAggregateTestCheckFunc(
-						func(s *terraform.State) error {
-							assertPatchSetsPrimaryKey(t, patchBodies)
-							return nil
-						},
 						resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema",
 							"schemas.public.tables.users.columns.id.is_primary_key", "true"),
 					),
