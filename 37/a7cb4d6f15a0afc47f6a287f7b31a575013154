@@ -1,0 +1,20 @@
+modules/connector/schema/schema_column.go
+  s_df46fbe05d04b6::t_ed271549a56ac3 162,165-166
+  s_df46fbe05d04b6::t_beb31580532502 159
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "37a7cb4d6f15a0afc47f6a287f7b31a575013154",
+  "prompts": {},
+  "sessions": {
+    "s_df46fbe05d04b6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a0e121fe-1598-439d-8d05-07153359f97f",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": null
+    }
+  }
+}
