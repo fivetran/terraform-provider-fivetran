@@ -483,16 +483,36 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 	plan.ConnectorId = types.StringValue(connectorID)
 
 	schemaResponse, err := client.NewConnectionSchemaDetails().ConnectionID(connectorID).Do(ctx)
+	forceColumnsPopulationAfterSchemaReloaded := false
+	schemaReloaded := false
 	if err != nil {
-		resp.Diagnostics.AddError(
-			"Unable to Update Connector Schema Resource.",
-			fmt.Sprintf("Error while retrieving existing schema settings. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
-		)
-		return
+		if schemaResponse.Code != "NotFound_SchemaConfig" {
+			resp.Diagnostics.AddError(
+				"Unable to Update Connector Schema Resource.",
+				fmt.Sprintf("Error while retrieving existing schema settings. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
+			)
+			return
+		}
+		// Match Create: a recreated connector may have no schema settings yet, reload materializes them
+		// (required even when validation_level is NONE, PATCH can't update a schema config that doesn't exist)
+		schemaResponse = r.reloadSchema(ctx, connectorID, &resp.Diagnostics)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		schemaReloaded = true
+		forceColumnsPopulationAfterSchemaReloaded = (plan.SchemaChangeHandling.ValueString() == configSchema.BLOCK_ALL)
 	}
 
-	forceColumnsPopulationAfterSchemaReloaded := false
-	if plan.ValidationLevel.ValueString() != "NONE" {
+	if schemaReloaded && plan.ValidationLevel.ValueString() != "NONE" {
+		err, _ = plan.ValidateSchemaElements(schemaResponse, forceColumnsPopulationAfterSchemaReloaded, *client, ctx)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to update Connector Schema Resource.",
+				fmt.Sprintf("Schema configuration is not aligned with source schema. Details:\n %v;", err),
+			)
+			return
+		}
+	} else if plan.ValidationLevel.ValueString() != "NONE" {
 		// Before applying changes we should validate existing state and planned changes and decide if we need to reload schema
 		err, needReloadSchema := plan.ValidateSchemaElements(schemaResponse, false, *client, ctx)
 		if err != nil {
