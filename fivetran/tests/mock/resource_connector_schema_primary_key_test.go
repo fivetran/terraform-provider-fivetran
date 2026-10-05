@@ -215,3 +215,176 @@ func TestResourceSchemaPrimaryKeyPostSyncUnchanged(t *testing.T) {
 		},
 	)
 }
+
+// the schemas response may not contain columns, they are fetched to detect a changed is_primary_key
+func TestResourceSchemaPrimaryKeyPostSyncColumnsFetched(t *testing.T) {
+	var patchBodies []map[string]interface{}
+	schemaWithoutColumns := `
+{
+	"enable_new_by_default": false,
+	"schemas": {
+		"public": {
+			"name_in_destination": "public",
+			"enabled": true,
+			"tables": {
+				"users": {
+					"name_in_destination": "users",
+					"enabled": true,
+					"enabled_patch_settings": {
+						"allowed": true
+					}
+				}
+			}
+		}
+	},
+	"schema_change_handling": "BLOCK_ALL"
+}
+`
+	columnsResponse := `
+{
+	"columns": {
+		"id": {
+			"name_in_destination": "id",
+			"enabled": true,
+			"is_primary_key": false,
+			"enabled_patch_settings": {
+				"allowed": true
+			}
+		},
+		"name": {
+			"name_in_destination": "name",
+			"enabled": true,
+			"is_primary_key": false,
+			"enabled_patch_settings": {
+				"allowed": true
+			}
+		}
+	}
+}
+`
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				patchBodies = nil
+				mockClient.Reset()
+				mockClient.When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", map[string]interface{}{
+							"id":           "connector_id",
+							"service":      "s3",
+							"schema":       "public",
+							"succeeded_at": time.Now().Add(-24 * time.Hour).Format(time.RFC3339),
+						}), nil
+					},
+				)
+				mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", createMapFromJsonString(t, schemaWithoutColumns)), nil
+					},
+				)
+				mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas/public/tables/users/columns").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", createMapFromJsonString(t, columnsResponse)), nil
+					},
+				)
+				mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						patchBodies = append(patchBodies, requestBodyToJson(t, req))
+						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", createMapFromJsonString(t, schemaWithoutColumns)), nil
+					},
+				)
+			},
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			Steps: []resource.TestStep{
+				{
+					Config:      primaryKeyTfConfig,
+					ExpectError: regexp.MustCompile("`is_primary_key` can no longer be changed"),
+				},
+				{
+					Config:   primaryKeyTfConfig,
+					PlanOnly: true,
+					PreConfig: func() {
+						assertEqual(t, len(patchBodies), 0)
+					},
+					ExpectNonEmptyPlan: true,
+				},
+			},
+		},
+	)
+}
+
+// when connector_id changes (e.g. the connector was recreated), the new connector is updated, not the one in state
+func TestResourceSchemaConnectorIdChangeUpdatesNewConnector(t *testing.T) {
+	tfConfig := func(connectorId string) string {
+		return `
+resource "fivetran_connector_schema_config" "test_schema" {
+	provider = fivetran-provider
+	connector_id = "` + connectorId + `"
+	schema_change_handling = "BLOCK_ALL"
+	schemas = {
+		"public" = {
+			enabled = true
+			tables = {
+				"users" = {
+					enabled = true
+				}
+			}
+		}
+	}
+}
+`
+	}
+	patched := map[string]int{}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				mockClient.Reset()
+				for _, id := range []string{"connector_id", "connector_id_2"} {
+					id := id
+					// the new connector starts with the table disabled, so updating it requires a PATCH
+					upstream := createMapFromJsonString(t, primaryKeySchemaResponse("false"))
+					if id == "connector_id_2" {
+						upstream["schemas"].(map[string]interface{})["public"].(map[string]interface{})["tables"].(map[string]interface{})["users"].(map[string]interface{})["enabled"] = false
+					}
+					mockClient.When(http.MethodGet, "/v1/connections/"+id+"/schemas").ThenCall(
+						func(req *http.Request) (*http.Response, error) {
+							return fivetranSuccessResponse(t, req, http.StatusOK, "Success", upstream), nil
+						},
+					)
+					mockClient.When(http.MethodPatch, "/v1/connections/"+id+"/schemas").ThenCall(
+						func(req *http.Request) (*http.Response, error) {
+							patched[id]++
+							upstream = createMapFromJsonString(t, primaryKeySchemaResponse("false"))
+							return fivetranSuccessResponse(t, req, http.StatusOK, "Success", upstream), nil
+						},
+					)
+				}
+			},
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			Steps: []resource.TestStep{
+				{
+					Config: tfConfig("connector_id"),
+				},
+				{
+					PreConfig: func() {
+						patched = map[string]int{}
+					},
+					Config: tfConfig("connector_id_2"),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						func(s *terraform.State) error {
+							assertEqual(t, patched["connector_id"], 0)
+							assertEqual(t, patched["connector_id_2"], 1)
+							return nil
+						},
+						resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "connector_id", "connector_id_2"),
+						resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "id", "connector_id_2"),
+					),
+				},
+			},
+		},
+	)
+}

@@ -453,7 +453,22 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 	ctx, cancel := helpers.SetContextTimeout(ctx, updateTimeout)
 	defer cancel()
 
+	// use the planned connector: it differs from state when the connector was recreated
 	connectorID := state.ConnectorId.ValueString()
+	if !plan.ConnectorId.IsUnknown() && !plan.ConnectorId.IsNull() && plan.ConnectorId.ValueString() != "" {
+		connectorID = plan.ConnectorId.ValueString()
+	} else if !plan.GroupId.IsNull() && !plan.ConnectorName.IsNull() {
+		foundConnectorID, err := findConnectorIdByGroupAndSchemaName(ctx, client, &plan)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to Update Connector Schema Resource.",
+				fmt.Sprintf("Error while finding connector ID. %v", err),
+			)
+			return
+		}
+		connectorID = foundConnectorID
+	}
+	plan.ConnectorId = types.StringValue(connectorID)
 
 	schemaResponse, err := client.NewConnectionSchemaDetails().ConnectionID(connectorID).Do(ctx)
 	if err != nil {

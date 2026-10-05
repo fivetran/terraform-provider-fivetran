@@ -179,7 +179,54 @@ func primaryKeyChangesAfterSync(
 		schemaResponse = &response
 	}
 
-	return service, changedPrimaryKeys(configured, *schemaResponse)
+	return service, changedPrimaryKeys(configured, upstreamPrimaryKeys(ctx, client, connectorId, configured, *schemaResponse))
+}
+
+// upstreamPrimaryKeys returns known upstream is_primary_key values for configured columns as schema -> table -> column -> value.
+// The schemas response doesn't always contain columns, so columns of configured tables are fetched when missing.
+// Columns with no upstream value are omitted.
+func upstreamPrimaryKeys(
+	ctx context.Context,
+	client *fivetran.Client,
+	connectorId string,
+	configured map[string]map[string]map[string]bool,
+	response connections.ConnectionSchemaDetailsResponse) map[string]map[string]map[string]bool {
+	result := map[string]map[string]map[string]bool{}
+	for schemaName, tables := range configured {
+		upstreamSchema, ok := response.Data.Schemas[schemaName]
+		if !ok || upstreamSchema == nil {
+			continue
+		}
+		for tableName, columns := range tables {
+			upstreamTable, ok := upstreamSchema.Tables[tableName]
+			if !ok || upstreamTable == nil {
+				continue
+			}
+			upstreamColumns := upstreamTable.Columns
+			for columnName := range columns {
+				if _, ok := upstreamColumns[columnName]; !ok {
+					columnsResponse, err := client.NewConnectionColumnConfigListService().
+						ConnectionId(connectorId).Schema(schemaName).Table(tableName).Do(ctx)
+					if err == nil {
+						upstreamColumns = columnsResponse.Data.Columns
+					}
+					break
+				}
+			}
+			for columnName := range columns {
+				if upstreamColumn, ok := upstreamColumns[columnName]; ok && upstreamColumn != nil && upstreamColumn.IsPrimaryKey != nil {
+					if result[schemaName] == nil {
+						result[schemaName] = map[string]map[string]bool{}
+					}
+					if result[schemaName][tableName] == nil {
+						result[schemaName][tableName] = map[string]bool{}
+					}
+					result[schemaName][tableName][columnName] = *upstreamColumn.IsPrimaryKey
+				}
+			}
+		}
+	}
+	return result
 }
 
 func primaryKeyChangeMessage(connectorId, service string, changed []string) string {
@@ -194,27 +241,16 @@ func primaryKeyChangeMessage(connectorId, service string, changed []string) stri
 }
 
 // changedPrimaryKeys returns sorted "schema.table.column" entries whose configured is_primary_key differs from upstream.
-// Columns unknown upstream are skipped, there's nothing to compare with.
-func changedPrimaryKeys(configured map[string]map[string]map[string]bool, upstream connections.ConnectionSchemaDetailsResponse) []string {
+// Columns with no known upstream value are skipped, there's nothing to compare with.
+func changedPrimaryKeys(configured, upstream map[string]map[string]map[string]bool) []string {
 	result := []string{}
 	for schemaName, tables := range configured {
-		upstreamSchema, ok := upstream.Data.Schemas[schemaName]
-		if !ok || upstreamSchema == nil {
-			continue
-		}
 		for tableName, columns := range tables {
-			upstreamTable, ok := upstreamSchema.Tables[tableName]
-			if !ok || upstreamTable == nil {
-				continue
-			}
 			for columnName, isPk := range columns {
-				upstreamColumn, ok := upstreamTable.Columns[columnName]
-				if !ok || upstreamColumn == nil || upstreamColumn.IsPrimaryKey == nil {
-					continue
-				}
-				if *upstreamColumn.IsPrimaryKey != isPk {
+				upstreamIsPk, ok := upstream[schemaName][tableName][columnName]
+				if ok && upstreamIsPk != isPk {
 					result = append(result, fmt.Sprintf("%v.%v.%v (current: %v, configured: %v)",
-						schemaName, tableName, columnName, *upstreamColumn.IsPrimaryKey, isPk))
+						schemaName, tableName, columnName, upstreamIsPk, isPk))
 				}
 			}
 		}

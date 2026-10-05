@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `fivetran_connector_schema_config`: plan-time warning for `is_primary_key` on file connectors (e.g. `s3`, `gcs`, `sftp`, `google_sheets`). Primary keys can be set before the connector's first sync; if a configured `is_primary_key` differs from the upstream value after the connector has synced, plan shows a warning and apply fails before sending the change, explaining that the connector must be recreated to apply it.
 
+### Fixed
+- `fivetran_connector_schema_config`: changes to `is_primary_key` inside `schemas_json` are now detected and applied; previously they were ignored when comparing the configuration with state.
+- `fivetran_connector_schema_config`: when `connector_id` changes (for example after the connector is recreated), the new connector is updated instead of the previous one from state.
+
 ## [v1.9.49](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.48...v1.9.49)
 
 ### Fixed

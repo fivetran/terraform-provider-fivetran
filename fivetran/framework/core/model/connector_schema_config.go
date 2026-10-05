@@ -183,6 +183,7 @@ func (d *ConnectorSchemaResourceModel) GetSchemaConfig() configSchema.SchemaConf
 
 func (d *ConnectorSchemaResourceModel) getSchemasRawValue(schemas []interface{}) string {
 	result := mapRawSchemas(schemas)
+	removeUnconfiguredPrimaryKeys(result, mapLocalSchemas(d.getSchemasRaw()))
 	resultRawString, _ := json.Marshal(result)
 	return string(resultRawString)
 }
@@ -768,6 +769,27 @@ func (d *ConnectorSchemaResourceModel) mapLocalSchemas() map[string]interface{} 
 		schemas = d.getSchemas()
 	}
 	return mapLocalSchemas(schemas)
+}
+
+// removeUnconfiguredPrimaryKeys drops upstream is_primary_key from raw schemas for columns that don't configure it,
+// otherwise schemas_json would differ from the configuration
+func removeUnconfiguredPrimaryKeys(rawSchemas, localSchemas map[string]interface{}) {
+	for schemaName, s := range rawSchemas {
+		tables, _ := s.(map[string]interface{})["tables"].(map[string]interface{})
+		localSchema, _ := localSchemas[schemaName].(map[string]interface{})
+		localTables, _ := localSchema["table"].(map[string]interface{})
+		for tableName, t := range tables {
+			columns, _ := t.(map[string]interface{})["columns"].(map[string]interface{})
+			localTable, _ := localTables[tableName].(map[string]interface{})
+			localColumns, _ := localTable["column"].(map[string]interface{})
+			for columnName, c := range columns {
+				localColumn, _ := localColumns[columnName].(map[string]interface{})
+				if _, ok := localColumn["is_primary_key"]; !ok {
+					delete(c.(map[string]interface{}), "is_primary_key")
+				}
+			}
+		}
+	}
 }
 
 // ConfiguredPrimaryKeys returns explicitly configured is_primary_key values as schema -> table -> column -> value

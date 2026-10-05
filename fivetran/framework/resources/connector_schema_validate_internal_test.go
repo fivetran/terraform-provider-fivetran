@@ -3,28 +3,11 @@ package resources
 import (
 	"reflect"
 	"testing"
-
-	"github.com/fivetran/go-fivetran/connections"
 )
 
-func boolPtr(v bool) *bool { return &v }
-
-func primaryKeyUpstream() connections.ConnectionSchemaDetailsResponse {
-	response := connections.ConnectionSchemaDetailsResponse{}
-	response.Data.Schemas = map[string]*connections.ConnectionSchemaConfigSchemaResponse{
-		"public": {
-			Tables: map[string]*connections.ConnectionSchemaConfigTableResponse{
-				"users": {
-					Columns: map[string]*connections.ConnectionSchemaConfigColumnResponse{
-						"id":    {IsPrimaryKey: boolPtr(true)},
-						"email": {IsPrimaryKey: boolPtr(false)},
-						"name":  {IsPrimaryKey: nil},
-					},
-				},
-			},
-		},
-	}
-	return response
+func primaryKeyUpstream() map[string]map[string]map[string]bool {
+	// "name" has no upstream value
+	return map[string]map[string]map[string]bool{"public": {"users": {"id": true, "email": false}}}
 }
 
 func TestChangedPrimaryKeys(t *testing.T) {
