@@ -70,3 +70,16 @@ func TestSchemasRawValueKeepsOnlyConfiguredPrimaryKeys(t *testing.T) {
 		t.Errorf("expected unconfigured is_primary_key to be removed for `name`")
 	}
 }
+
+func TestConfiguredPrimaryKeysFromSchemasJsonStringValues(t *testing.T) {
+	d := ConnectorSchemaResourceModel{
+		Schema:     (&ConnectorSchemaResourceModel{}).getNullSchema(),
+		Schemas:    (&ConnectorSchemaResourceModel{}).getNullSchemas(),
+		SchemasRaw: fivetrantypes.NewJsonSchemaValue(`{"public": {"tables": {"users": {"columns": {"id": {"is_primary_key": "true"}}}}}}`),
+	}
+
+	expected := map[string]map[string]map[string]bool{"public": {"users": {"id": true}}}
+	if actual := d.ConfiguredPrimaryKeys(); !reflect.DeepEqual(actual, expected) {
+		t.Errorf("expected %v, got %v", expected, actual)
+	}
+}

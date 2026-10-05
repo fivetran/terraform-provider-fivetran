@@ -458,11 +458,18 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 	ctx, cancel := helpers.SetContextTimeout(ctx, updateTimeout)
 	defer cancel()
 
-	// use the planned connector: it differs from state when the connector was recreated
+	var configData model.ConnectorSchemaResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &configData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// the connector may differ from state when it was recreated, the addressing mode comes from the configuration:
+	// connector_id is computed, so the plan alone doesn't tell whether it was configured
 	connectorID := state.ConnectorId.ValueString()
-	if !plan.ConnectorId.IsUnknown() && !plan.ConnectorId.IsNull() && plan.ConnectorId.ValueString() != "" {
+	if !configData.ConnectorId.IsNull() && !plan.ConnectorId.IsUnknown() && plan.ConnectorId.ValueString() != "" {
 		connectorID = plan.ConnectorId.ValueString()
-	} else if !plan.GroupId.IsNull() && !plan.ConnectorName.IsNull() {
+	} else if !configData.GroupId.IsNull() && !configData.ConnectorName.IsNull() {
 		foundConnectorID, err := findConnectorIdByGroupAndSchemaName(ctx, client, &plan)
 		if err != nil {
 			resp.Diagnostics.AddError(
@@ -518,11 +525,6 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 
 	// is_primary_key can't be changed after the first sync, fail before sending the change instead of
 	// getting an API error or an inconsistent result
-	var configData model.ConnectorSchemaResourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &configData)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
 	if _, service, changed := primaryKeyChangesAfterSync(ctx, client, &plan, configData.ConfiguredPrimaryKeys(), &schemaResponse); len(changed) > 0 {
 		resp.Diagnostics.AddError(
 			"Unable to Update Connector Schema Resource.",

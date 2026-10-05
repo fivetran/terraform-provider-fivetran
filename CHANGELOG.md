@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `fivetran_connector_schema_config`: changes to `is_primary_key` inside `schemas_json` are now detected and applied; previously they were ignored when comparing the configuration with state.
-- `fivetran_connector_schema_config`: when `connector_id` changes (for example after the connector is recreated), the new connector is updated instead of the previous one from state.
+- `fivetran_connector_schema_config`: when the connector changes (for example after it's recreated), the new connector is updated instead of the previous one from state. With `group_id` + `connector_name`, the connector is resolved at plan time, so the plan shows the new `connector_id`.
 
 ## [v1.9.49](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.48...v1.9.49)
 

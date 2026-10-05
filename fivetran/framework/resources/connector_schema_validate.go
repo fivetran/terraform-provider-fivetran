@@ -47,6 +47,8 @@ func (r *connectorSchema) ValidateConfig(ctx context.Context, req resource.Valid
 	if data.ConnectorId.IsNull() || data.ConnectorId.IsUnknown() || data.ConnectorId.ValueString() == "" {
 		// Connector isn't known yet at plan time (e.g. referenced from another resource
 		// being created in the same apply) — nothing to validate against yet.
+		// The primary key check resolves the connector by group_id + connector_name when possible.
+		r.validatePrimaryKeyConstraints(ctx, &data, nil, resp)
 		return
 	}
 

@@ -564,7 +564,8 @@ func (d *ConnectorSchemaResourceModel) getSchemasRaw() []interface{} {
 												if h, ok := cMap["hashed"].(bool); ok {
 													column["hashed"] = h
 												}
-												if p, ok := cMap["is_primary_key"].(bool); ok {
+												// accept "true"/"false" too, the same way schemas_json values are compared
+												if p, ok := helpers.GetBoolOk(cMap["is_primary_key"]); ok {
 													column["is_primary_key"] = p
 												}
 												columns = append(columns, column)
