@@ -1,0 +1,14 @@
+fivetran/framework/core/model/connector.go
+  h_95e89ecbd302f3 64,67,260,309
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "8ec6030cb4363dc1f4d045fd35b1e8c609d1214f",
+  "prompts": {},
+  "humans": {
+    "h_95e89ecbd302f3": {
+      "author": "fivetran-renat-sh <renat.shaikhutdinov@fivetran.com>"
+    }
+  }
+}
