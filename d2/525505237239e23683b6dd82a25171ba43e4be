@@ -1,0 +1,14 @@
+fivetran/framework/core/model/connector.go
+  h_95e89ecbd302f3 4-14,18-45,49-52,56-61,64-67,76-77,79-83,91-125,129-151,155-158,162-165,169-180,184-193,197-205,216-227,235-236,238,260,268-282,284,297-301,303-309,313-351,363-366,368-369,373-375,387-388,400-401,404-406,424-426,438-448,455-464,468-508
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "d2525505237239e23683b6dd82a25171ba43e4be",
+  "prompts": {},
+  "humans": {
+    "h_95e89ecbd302f3": {
+      "author": "fivetran-renat-sh <renat.shaikhutdinov@fivetran.com>"
+    }
+  }
+}
