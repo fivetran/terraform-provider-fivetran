@@ -74,34 +74,25 @@ func (r *connectorSchema) reloadSchema(ctx context.Context, connectorID string, 
 	return schemaResponse
 }
 
-// hasSynced checks if the connector has already synced at least once.
-// Returns true if SucceededAt timestamp is not zero (not-yet-synced is zero time).
-func (r *connectorSchema) hasSynced(ctx context.Context, connectorID string) (bool, error) {
-	client := r.GetClient()
-	if client == nil {
-		return false, fmt.Errorf("unconfigured Fivetran client")
-	}
-
-	response, err := client.NewConnectionDetails().ConnectionID(connectorID).DoCustom(ctx)
-	if err != nil {
-		return false, fmt.Errorf("unable to check connector sync status: %w", err)
-	}
-
-	// If SucceededAt is not zero time, connector has synced at least once
-	return !response.Data.SucceededAt.IsZero(), nil
+// primaryKeyFileServices lists file connector service IDs that support configuring is_primary_key before the first sync
+var primaryKeyFileServices = map[string]bool{
+	"azure_blob_storage":    true,
+	"box":                   true,
+	"dropbox":               true,
+	"email":                 true,
+	"ftp":                   true,
+	"gcs":                   true,
+	"google_drive":          true,
+	"google_sheets":         true,
+	"s3":                    true,
+	"s3_compatible_storage": true,
+	"sftp":                  true,
+	"share_point":           true,
+	"wasabi_cloud_storage":  true,
 }
 
-// canChangePrimaryKey returns true if the connector type allows setting is_primary_key.
-// File connectors (CSV, Google Sheets, Excel, JSON, Parquet) support primary key configuration.
-func canChangePrimaryKey(connectorType string) bool {
-	allowedTypes := map[string]bool{
-		"CSV":           true,
-		"Google Sheets": true,
-		"Excel":         true,
-		"JSON":          true,
-		"Parquet":       true,
-	}
-	return allowedTypes[connectorType]
+func canChangePrimaryKey(service string) bool {
+	return primaryKeyFileServices[service]
 }
 
 func findConnectorIdByGroupAndSchemaName(ctx context.Context, client *fivetran.Client, model *model.ConnectorSchemaResourceModel) (string, error) {

@@ -238,7 +238,7 @@ Optional:
 
 Read-Only:
 
-- `is_primary_key` (Boolean) Boolean value indicating if the column is a primary key. This field is read-only and computed by the API.
+- `is_primary_key` (Boolean) Boolean value indicating if the column is a primary key. For file connectors (for example S3, Google Cloud Storage, SFTP, Google Sheets), this can be set before the first sync. Changing this value after the connector has synced requires recreating the connector.
 
 
 
@@ -274,7 +274,7 @@ Optional:
 
 Read-Only:
 
-- `is_primary_key` (Boolean) Boolean value indicating if the column is a primary key. This field is read-only and computed by the API.
+- `is_primary_key` (Boolean) Boolean value indicating if the column is a primary key. For file connectors (for example S3, Google Cloud Storage, SFTP, Google Sheets), this can be set before the first sync. Changing this value after the connector has synced requires recreating the connector.
 
 
 

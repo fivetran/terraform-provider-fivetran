@@ -109,8 +109,8 @@ The value defines validation method.
 													Optional:    true,
 													Computed:    true,
 													Description: "Boolean value indicating if the column is a primary key. " +
-														"For file connectors (CSV, Google Sheets, Excel, JSON, Parquet), this can be set before the first sync. " +
-														"Changing this value after the connector has synced requires resource replacement.",
+														"For file connectors (for example S3, Google Cloud Storage, SFTP, Google Sheets), this can be set before the first sync. " +
+														"Changing this value after the connector has synced requires recreating the connector.",
 													PlanModifiers: []planmodifier.Bool{
 														boolplanmodifier.UseStateForUnknown(),
 													},
@@ -221,8 +221,8 @@ func getColumnBlock() schema.SetNestedBlock {
 					Optional:    true,
 					Computed:    true,
 					Description: "Boolean value indicating if the column is a primary key. " +
-						"For file connectors (CSV, Google Sheets, Excel, JSON, Parquet), this can be set before the first sync. " +
-						"Changing this value after the connector has synced requires resource replacement.",
+						"For file connectors (for example S3, Google Cloud Storage, SFTP, Google Sheets), this can be set before the first sync. " +
+						"Changing this value after the connector has synced requires recreating the connector.",
 					PlanModifiers: []planmodifier.Bool{
 						boolplanmodifier.UseStateForUnknown(),
 					},

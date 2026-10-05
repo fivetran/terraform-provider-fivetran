@@ -4,8 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"sort"
+	"strings"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/go-fivetran/connections"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	configSchema "github.com/fivetran/terraform-provider-fivetran/modules/connector/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -36,6 +39,8 @@ func (r *connectorSchema) ValidateConfig(ctx context.Context, req resource.Valid
 				"unexpected sync behavior (for example, a column you intend to hash may not be hashed if the "+
 				"name doesn't match the source).",
 		)
+		// primary key constraints don't depend on name validation
+		r.validatePrimaryKeyConstraints(ctx, &data, nil, resp)
 		return
 	}
 
@@ -105,8 +110,7 @@ func (r *connectorSchema) ValidateConfig(ctx context.Context, req resource.Valid
 		}
 	}
 
-	// Validate primary key constraints (issue #8)
-	r.validatePrimaryKeyConstraints(ctx, &data, resp)
+	r.validatePrimaryKeyConstraints(ctx, &data, &schemaResponse, resp)
 }
 
 func (r *connectorSchema) connectorSchemaClient() (*fivetran.Client, error) {
@@ -117,48 +121,92 @@ func (r *connectorSchema) connectorSchemaClient() (*fivetran.Client, error) {
 	return client, nil
 }
 
-// validatePrimaryKeyConstraints checks if primary key configuration changes are valid.
-// Primary keys can only be set before the connector has synced; after syncing, changes require resource replacement.
-func (r *connectorSchema) validatePrimaryKeyConstraints(ctx context.Context, data *model.ConnectorSchemaResourceModel, resp *resource.ValidateConfigResponse) {
-	if data.ConnectorId.IsNull() || data.ConnectorId.IsUnknown() || data.ConnectorId.ValueString() == "" {
-		return // Can't validate without connector ID
+// validatePrimaryKeyConstraints warns when configured is_primary_key values differ from upstream on a file connector
+// that has already synced: primary keys can only be set before the first sync.
+// schemaResponse is optional, it's fetched when nil.
+func (r *connectorSchema) validatePrimaryKeyConstraints(
+	ctx context.Context,
+	data *model.ConnectorSchemaResourceModel,
+	schemaResponse *connections.ConnectionSchemaDetailsResponse,
+	resp *resource.ValidateConfigResponse) {
+	configured := data.ConfiguredPrimaryKeys()
+	if len(configured) == 0 {
+		return
 	}
+
+	if data.ConnectorId.IsNull() || data.ConnectorId.IsUnknown() || data.ConnectorId.ValueString() == "" {
+		return
+	}
+	connectorId := data.ConnectorId.ValueString()
 
 	client, err := r.connectorSchemaClient()
 	if err != nil {
-		return // Skip validation if client unavailable
+		return
 	}
 
-	// Check if connector has synced
-	hasSynced, err := r.hasSynced(ctx, data.ConnectorId.ValueString())
+	// any lookup failure skips this check, it's advisory only
+	details, err := client.NewConnectionDetails().ConnectionID(connectorId).DoCustom(ctx)
 	if err != nil {
-		return // Skip validation on error (will be caught at apply time)
+		return
 	}
 
-	if !hasSynced {
-		return // No constraint before first sync
+	service := details.Data.Service
+	if !canChangePrimaryKey(service) || details.Data.SucceededAt.IsZero() {
+		return
 	}
 
-	// Get connector details to check connector type
-	connDetails, err := client.NewConnectionDetails().ConnectionID(data.ConnectorId.ValueString()).DoCustom(ctx)
-	if err != nil {
-		return // Skip validation on error
+	if schemaResponse == nil {
+		response, err := client.NewConnectionSchemaDetails().ConnectionID(connectorId).Do(ctx)
+		if err != nil {
+			return
+		}
+		schemaResponse = &response
 	}
 
-	connectorType := connDetails.Data.Service
-	if !canChangePrimaryKey(connectorType) {
-		return // This connector type doesn't support primary key config anyway
+	changed := changedPrimaryKeys(configured, *schemaResponse)
+	if len(changed) == 0 {
+		return
 	}
 
-	// At this point: connector has synced AND is a file connector that supports primary keys
-	// Check if user is trying to configure is_primary_key (which would require replacement)
 	resp.Diagnostics.AddWarning(
 		"Primary Key Configuration After Sync",
 		fmt.Sprintf(
-			"You are configuring is_primary_key on a connector that has already synced (connector type: %s). "+
-				"Applying this configuration will require destroying and recreating the resource, which will trigger a new sync cycle. "+
-				"Consider using `terraform apply -replace` if this is intentional.",
-			connectorType,
+			"Connector `%v` (service: %v) has already synced, so `is_primary_key` can no longer be changed for:\n  %v\n"+
+				"Primary keys for file connectors can only be set before the first sync. "+
+				"Replacing `fivetran_connector_schema_config` doesn't help, as it doesn't recreate the connector. "+
+				"To apply this change, recreate the connector itself (for example `terraform apply -replace=<fivetran_connector resource address>`), "+
+				"which triggers a new initial sync.",
+			connectorId, service, strings.Join(changed, "\n  "),
 		),
 	)
+}
+
+// changedPrimaryKeys returns sorted "schema.table.column" entries whose configured is_primary_key differs from upstream.
+// Columns unknown upstream are skipped, there's nothing to compare with.
+func changedPrimaryKeys(configured map[string]map[string]map[string]bool, upstream connections.ConnectionSchemaDetailsResponse) []string {
+	result := []string{}
+	for schemaName, tables := range configured {
+		upstreamSchema, ok := upstream.Data.Schemas[schemaName]
+		if !ok || upstreamSchema == nil {
+			continue
+		}
+		for tableName, columns := range tables {
+			upstreamTable, ok := upstreamSchema.Tables[tableName]
+			if !ok || upstreamTable == nil {
+				continue
+			}
+			for columnName, isPk := range columns {
+				upstreamColumn, ok := upstreamTable.Columns[columnName]
+				if !ok || upstreamColumn == nil || upstreamColumn.IsPrimaryKey == nil {
+					continue
+				}
+				if *upstreamColumn.IsPrimaryKey != isPk {
+					result = append(result, fmt.Sprintf("%v.%v.%v (current: %v, configured: %v)",
+						schemaName, tableName, columnName, *upstreamColumn.IsPrimaryKey, isPk))
+				}
+			}
+		}
+	}
+	sort.Strings(result)
+	return result
 }
