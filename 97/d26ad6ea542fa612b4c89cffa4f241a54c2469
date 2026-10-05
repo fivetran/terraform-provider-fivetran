@@ -1,0 +1,22 @@
+fivetran/tests/mock/resource_connector_schema_primary_key_test.go
+  s_845460acd8fd02::t_a6b4872ca9b72d 642,646-652,654-726
+  s_845460acd8fd02::t_3289733ac0c667 643-645,653
+fivetran/framework/resources/connector_schema_resource.go
+  s_845460acd8fd02::t_3289733ac0c667 486-487,489-503,506-515
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "97d26ad6ea542fa612b4c89cffa4f241a54c2469",
+  "prompts": {},
+  "sessions": {
+    "s_845460acd8fd02": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2b1f27d2-47fc-42fc-bab8-5650c7a18a86",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
