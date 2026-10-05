@@ -1,0 +1,28 @@
+fivetran/framework/resources/connector_schema_validate.go
+  s_845460acd8fd02::t_c1b427a9ca8060 215-217,223,225-226,230-236,241-254,256
+  s_845460acd8fd02::t_af297466c9fdcf 255
+modules/connector/schema/multiple_table_columns_config.go
+  s_845460acd8fd02::t_c1b427a9ca8060 5,27-75
+  s_845460acd8fd02::t_aa440ab0fb1b0b 76
+fivetran/tests/mock/resource_connector_schema_primary_key_test.go
+  s_845460acd8fd02::t_59fc1bcc7e5397 220,223,289-296,319,323
+  s_845460acd8fd02::t_55987403a98f32 9,320-322
+modules/connector/schema/schema_schema.go
+  s_845460acd8fd02::t_c1b427a9ca8060 51-53,55-57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "13e7b0a0cf1be69a94e6b97a4654b607939f6b9a",
+  "prompts": {},
+  "sessions": {
+    "s_845460acd8fd02": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2b1f27d2-47fc-42fc-bab8-5650c7a18a86",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
