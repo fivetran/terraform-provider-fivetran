@@ -132,54 +132,67 @@ func (r *connectorSchema) validatePrimaryKeyConstraints(
 	if err != nil {
 		return
 	}
-	service, changed := primaryKeyChangesAfterSync(ctx, client, data, schemaResponse)
+	// ValidateConfig only sees the configuration, so data has no computed values
+	connectorId, service, changed := primaryKeyChangesAfterSync(ctx, client, data, data.ConfiguredPrimaryKeys(), schemaResponse)
 	if len(changed) > 0 {
 		resp.Diagnostics.AddWarning(
 			"Primary Key Configuration After Sync",
-			primaryKeyChangeMessage(data.ConnectorId.ValueString(), service, changed)+
+			primaryKeyChangeMessage(connectorId, service, changed)+
 				" Apply will fail until the configuration matches the current values or the connector is recreated.",
 		)
 	}
 }
 
-// primaryKeyChangesAfterSync returns the connector service and the columns whose configured is_primary_key differs
+// primaryKeyChangesAfterSync returns the connector ID, its service and the columns whose configured is_primary_key differs
 // from upstream, when the connector is a file connector that has already synced: primary keys can only be set before the first sync.
+// configured must come from the configuration, not the plan: the plan also contains computed values kept from state.
+// The connector ID is resolved by group_id + connector_name when connector_id isn't set.
 // Any lookup failure returns no changes, the check is skipped in this case.
 // schemaResponse is optional, it's fetched when nil.
 func primaryKeyChangesAfterSync(
 	ctx context.Context,
 	client *fivetran.Client,
 	data *model.ConnectorSchemaResourceModel,
-	schemaResponse *connections.ConnectionSchemaDetailsResponse) (string, []string) {
-	configured := data.ConfiguredPrimaryKeys()
+	configured map[string]map[string]map[string]bool,
+	schemaResponse *connections.ConnectionSchemaDetailsResponse) (string, string, []string) {
 	if len(configured) == 0 || client == nil {
-		return "", nil
+		return "", "", nil
 	}
 
-	if data.ConnectorId.IsNull() || data.ConnectorId.IsUnknown() || data.ConnectorId.ValueString() == "" {
-		return "", nil
+	connectorId := ""
+	if !data.ConnectorId.IsNull() && !data.ConnectorId.IsUnknown() {
+		connectorId = data.ConnectorId.ValueString()
 	}
-	connectorId := data.ConnectorId.ValueString()
+	if connectorId == "" {
+		if data.GroupId.IsNull() || data.GroupId.IsUnknown() || data.ConnectorName.IsNull() || data.ConnectorName.IsUnknown() {
+			return "", "", nil
+		}
+		foundConnectorId, err := findConnectorIdByGroupAndSchemaName(ctx, client, data)
+		if err != nil {
+			return "", "", nil
+		}
+		connectorId = foundConnectorId
+	}
 
 	details, err := client.NewConnectionDetails().ConnectionID(connectorId).DoCustom(ctx)
 	if err != nil {
-		return "", nil
+		return connectorId, "", nil
 	}
 
 	service := details.Data.Service
 	if !canChangePrimaryKey(service) || details.Data.SucceededAt.IsZero() {
-		return service, nil
+		return connectorId, service, nil
 	}
 
 	if schemaResponse == nil {
 		response, err := client.NewConnectionSchemaDetails().ConnectionID(connectorId).Do(ctx)
 		if err != nil {
-			return service, nil
+			return connectorId, service, nil
 		}
 		schemaResponse = &response
 	}
 
-	return service, changedPrimaryKeys(configured, upstreamPrimaryKeys(ctx, client, connectorId, configured, *schemaResponse))
+	return connectorId, service, changedPrimaryKeys(configured, upstreamPrimaryKeys(ctx, client, connectorId, configured, *schemaResponse))
 }
 
 // upstreamPrimaryKeys returns known upstream is_primary_key values for configured columns as schema -> table -> column -> value.

@@ -388,3 +388,100 @@ resource "fivetran_connector_schema_config" "test_schema" {
 		},
 	)
 }
+
+// an unconfigured (computed) is_primary_key that changed upstream after sync doesn't block unrelated updates
+func TestResourceSchemaPrimaryKeyComputedValueDoesntBlockUpdate(t *testing.T) {
+	tfConfig := func(nameEnabled bool) string {
+		return `
+resource "fivetran_connector_schema_config" "test_schema" {
+	provider = fivetran-provider
+	connector_id = "connector_id"
+	schema_change_handling = "BLOCK_ALL"
+	schemas = {
+		"public" = {
+			enabled = true
+			tables = {
+				"users" = {
+					enabled = true
+					columns = {
+						"id" = {
+							enabled = true
+						}
+						"name" = {
+							enabled = ` + map[bool]string{true: "true", false: "false"}[nameEnabled] + `
+						}
+					}
+				}
+			}
+		}
+	}
+}
+`
+	}
+	var succeededAt interface{}
+	var schemaData map[string]interface{}
+	patches := 0
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				mockClient.Reset()
+				succeededAt = nil
+				schemaData = createMapFromJsonString(t, primaryKeySchemaResponse("true"))
+				mockClient.When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", map[string]interface{}{
+							"id":           "connector_id",
+							"service":      "s3",
+							"schema":       "public",
+							"succeeded_at": succeededAt,
+						}), nil
+					},
+				)
+				mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaData), nil
+					},
+				)
+				mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						patches++
+						body := requestBodyToJson(t, req)
+						name := body["schemas"].(map[string]interface{})["public"].(map[string]interface{})["tables"].(map[string]interface{})["users"].(map[string]interface{})["columns"].(map[string]interface{})["name"].(map[string]interface{})
+						columns := schemaData["schemas"].(map[string]interface{})["public"].(map[string]interface{})["tables"].(map[string]interface{})["users"].(map[string]interface{})["columns"].(map[string]interface{})
+						columns["name"].(map[string]interface{})["enabled"] = name["enabled"]
+						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaData), nil
+					},
+				)
+			},
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			Steps: []resource.TestStep{
+				{
+					// is_primary_key isn't configured, state gets the upstream value
+					Config: tfConfig(true),
+					Check: resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema",
+						"schemas.public.tables.users.columns.id.is_primary_key", "true"),
+				},
+				{
+					// connector synced and upstream primary key changed outside of terraform
+					PreConfig: func() {
+						succeededAt = time.Now().Add(-24 * time.Hour).Format(time.RFC3339)
+						columns := schemaData["schemas"].(map[string]interface{})["public"].(map[string]interface{})["tables"].(map[string]interface{})["users"].(map[string]interface{})["columns"].(map[string]interface{})
+						columns["id"].(map[string]interface{})["is_primary_key"] = false
+						patches = 0
+					},
+					Config: tfConfig(false),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						func(s *terraform.State) error {
+							assertEqual(t, patches, 1)
+							return nil
+						},
+						resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema",
+							"schemas.public.tables.users.columns.name.enabled", "false"),
+					),
+				},
+			},
+		},
+	)
+}
