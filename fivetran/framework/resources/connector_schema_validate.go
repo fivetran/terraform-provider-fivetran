@@ -212,32 +212,46 @@ func upstreamPrimaryKeys(
 		if !ok || upstreamSchema == nil {
 			continue
 		}
+
+		upstreamColumns := map[string]map[string]*connections.ConnectionSchemaConfigColumnResponse{}
+		tablesNeedingColumns := []string{}
 		for tableName, columns := range tables {
 			upstreamTable, ok := upstreamSchema.Tables[tableName]
 			if !ok || upstreamTable == nil {
 				continue
 			}
-			upstreamColumns := upstreamTable.Columns
+			upstreamColumns[tableName] = upstreamTable.Columns
 			for columnName := range columns {
-				if _, ok := upstreamColumns[columnName]; !ok {
-					columnsResponse, err := client.NewConnectionColumnConfigListService().
-						ConnectionId(connectorId).Schema(schemaName).Table(tableName).Do(ctx)
-					if err == nil {
-						upstreamColumns = columnsResponse.Data.Columns
-					}
+				if _, ok := upstreamTable.Columns[columnName]; !ok {
+					tablesNeedingColumns = append(tablesNeedingColumns, tableName)
 					break
 				}
 			}
-			for columnName := range columns {
-				if upstreamColumn, ok := upstreamColumns[columnName]; ok && upstreamColumn != nil && upstreamColumn.IsPrimaryKey != nil {
-					if result[schemaName] == nil {
-						result[schemaName] = map[string]map[string]bool{}
+		}
+		// the same batched requests as column validation, a failure leaves these tables without known values
+		if len(tablesNeedingColumns) > 0 {
+			if columnsByTable, err := configSchema.FetchTablesColumns(ctx, *client, connectorId, schemaName, tablesNeedingColumns); err == nil {
+				for tableName, columns := range columnsByTable {
+					if _, ok := upstreamColumns[tableName]; ok {
+						upstreamColumns[tableName] = columns
 					}
-					if result[schemaName][tableName] == nil {
-						result[schemaName][tableName] = map[string]bool{}
-					}
-					result[schemaName][tableName][columnName] = *upstreamColumn.IsPrimaryKey
 				}
+			}
+		}
+
+		for tableName, columns := range tables {
+			for columnName := range columns {
+				upstreamColumn, ok := upstreamColumns[tableName][columnName]
+				if !ok || upstreamColumn == nil || upstreamColumn.IsPrimaryKey == nil {
+					continue
+				}
+				if result[schemaName] == nil {
+					result[schemaName] = map[string]map[string]bool{}
+				}
+				if result[schemaName][tableName] == nil {
+					result[schemaName][tableName] = map[string]bool{}
+				}
+				result[schemaName][tableName][columnName] = *upstreamColumn.IsPrimaryKey
 			}
 		}
 	}

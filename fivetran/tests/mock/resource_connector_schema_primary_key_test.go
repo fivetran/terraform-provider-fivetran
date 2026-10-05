@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/fivetran/go-fivetran/tests/mock"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
@@ -216,9 +217,10 @@ func TestResourceSchemaPrimaryKeyPostSyncUnchanged(t *testing.T) {
 	)
 }
 
-// the schemas response may not contain columns, they are fetched to detect a changed is_primary_key
+// the schemas response may not contain columns, they are fetched in batches to detect a changed is_primary_key
 func TestResourceSchemaPrimaryKeyPostSyncColumnsFetched(t *testing.T) {
 	var patchBodies []map[string]interface{}
+	var batchHandler, perTableHandler *mock.Handler
 	schemaWithoutColumns := `
 {
 	"enable_new_by_default": false,
@@ -284,7 +286,14 @@ func TestResourceSchemaPrimaryKeyPostSyncColumnsFetched(t *testing.T) {
 						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", createMapFromJsonString(t, schemaWithoutColumns)), nil
 					},
 				)
-				mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas/public/tables/users/columns").ThenCall(
+				batchHandler = mockClient.When(http.MethodPost, "/v1/connections/connector_id/schemas/public/fetch-source-columns").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", map[string]interface{}{
+							"tables": map[string]interface{}{"users": createMapFromJsonString(t, columnsResponse)},
+						}), nil
+					},
+				)
+				perTableHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas/public/tables/users/columns").ThenCall(
 					func(req *http.Request) (*http.Response, error) {
 						return fivetranSuccessResponse(t, req, http.StatusOK, "Success", createMapFromJsonString(t, columnsResponse)), nil
 					},
@@ -307,6 +316,11 @@ func TestResourceSchemaPrimaryKeyPostSyncColumnsFetched(t *testing.T) {
 					PlanOnly: true,
 					PreConfig: func() {
 						assertEqual(t, len(patchBodies), 0)
+						// columns come from the batch endpoint, as in column validation
+						if batchHandler.Interactions == 0 {
+							t.Errorf("expected columns to be fetched with the batch endpoint")
+						}
+						assertEqual(t, perTableHandler.Interactions, 0)
 					},
 					ExpectNonEmptyPlan: true,
 				},
