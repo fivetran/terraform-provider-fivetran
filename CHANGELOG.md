@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `fivetran_connector_schema_config`: changes to `is_primary_key` inside `schemas_json` are now detected and applied; previously they were ignored when comparing the configuration with state.
 - `fivetran_connector_schema_config`: when the connector changes (for example after it's recreated), the new connector is updated instead of the previous one from state. With `group_id` + `connector_name`, the connector is resolved at plan time, so the plan shows the new `connector_id`.
 - `fivetran_connector_schema_config`: adding a column to an existing resource no longer crashes when the API doesn't return `hashed`/`enabled` for it, or fails with "Provider produced inconsistent result after apply" for `is_primary_key`.
+- `fivetran_connector_schema_config`: skip the schema reload for connection types that don't support it (connector metadata `supports_schema_reload = false`, e.g. UCM connections), with a fallback on the reload API's not-supported response. When a reload would be needed to reconcile the configuration (a configured schema/table is missing from the current schema, or the connection has no schema settings yet), `plan`/`apply` now fail with the original validation error and a hint to use `validation_level = "NONE"`, instead of failing on the reload call.
 
 ## [v1.9.49](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.48...v1.9.49)
 
