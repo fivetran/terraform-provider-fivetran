@@ -49,12 +49,12 @@ func (r *connectorSchema) ImportState(ctx context.Context, req resource.ImportSt
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
-// reloadSchema reloads the connector schema from source. It returns the schema response to
-// proceed with and whether a reload actually happened. When the connection type doesn't support
-// reload, the current schema response is returned unchanged (reloaded == false) so callers keep
-// working with existing state and only skip post-reload validation. If there's no current schema
-// to fall back on (NotFound_SchemaConfig), an unsupported reload is reported as an error.
-func (r *connectorSchema) reloadSchema(ctx context.Context, connectorID string, currentSchemaResponse connections.ConnectionSchemaDetailsResponse, diag *diag.Diagnostics) (connections.ConnectionSchemaDetailsResponse, bool) {
+// reloadSchema reloads the connector schema from source. validationErr is the validation error
+// against the current schema that made the reload necessary (nil when the connection has no
+// schema settings yet). Some connection types (e.g. UCM) don't support reload; in that case the
+// mismatch can't be resolved, so an error carrying validationErr is reported instead of
+// proceeding with a schema that's missing configured elements.
+func (r *connectorSchema) reloadSchema(ctx context.Context, connectorID string, validationErr error, diag *diag.Diagnostics) connections.ConnectionSchemaDetailsResponse {
 	client := r.GetClient()
 	if client == nil {
 		diag.AddError(
@@ -62,22 +62,22 @@ func (r *connectorSchema) reloadSchema(ctx context.Context, connectorID string, 
 			"Please report this issue to the provider developers.",
 		)
 
-		return connections.ConnectionSchemaDetailsResponse{}, false
+		return connections.ConnectionSchemaDetailsResponse{}
 	}
 
-	reloadNotSupported := func(details string) (connections.ConnectionSchemaDetailsResponse, bool) {
-		if currentSchemaResponse.Code == "NotFound_SchemaConfig" {
-			diag.AddError(
-				"Unable to manage connector schema settings.",
-				"This connection type does not support schema reload and the connection doesn't have schema settings yet. "+details,
-			)
-			return connections.ConnectionSchemaDetailsResponse{}, false
+	reloadNotSupported := func(apiMessage string) connections.ConnectionSchemaDetailsResponse {
+		details := "This connection type does not support schema reload"
+		if validationErr != nil {
+			details += fmt.Sprintf(", so the schema configuration can't be aligned with the source schema. "+
+				"Remove the missing elements from the configuration, or set `validation_level = \"NONE\"` to apply only the elements present in the current schema. Details:\n %v;", validationErr)
+		} else {
+			details += " and the connection doesn't have schema settings yet."
 		}
-		diag.AddWarning(
-			"Schema reload not supported for this connection type.",
-			"This connection type does not support schema reload. Proceeding with current schema state. "+details,
-		)
-		return currentSchemaResponse, false
+		if apiMessage != "" {
+			details += fmt.Sprintf(" API message: %v", apiMessage)
+		}
+		diag.AddError("Unable to manage connector schema settings.", details)
+		return connections.ConnectionSchemaDetailsResponse{}
 	}
 
 	// Check connector metadata upfront: some connection types (e.g. UCM) don't support the /reload endpoint.
@@ -98,15 +98,15 @@ func (r *connectorSchema) reloadSchema(ctx context.Context, connectorID string, 
 		if reloadResponse.Code == "NotSupported_SchemaReload" ||
 			reloadResponse.Code == "NotAllowed_SchemaReload" ||
 			reloadResponse.Code == "NotImplemented_SchemaReload" {
-			return reloadNotSupported(fmt.Sprintf("Details: %v", reloadResponse.Message))
+			return reloadNotSupported(reloadResponse.Message)
 		}
 		diag.AddError(
 			"Unable to manage connector schema settings.",
 			fmt.Sprintf("Error during schema reloading. %v; code: %v; message: %v", err, reloadResponse.Code, reloadResponse.Message),
 		)
-		return connections.ConnectionSchemaDetailsResponse{}, false
+		return connections.ConnectionSchemaDetailsResponse{}
 	}
-	return reloadResponse, true
+	return reloadResponse
 }
 
 // primaryKeyFileServices lists file connector service IDs that support configuring is_primary_key before the first sync
@@ -218,6 +218,7 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 	schemaResponse, err := client.NewConnectionSchemaDetails().ConnectionID(connectorID).Do(ctx)
 	// We might have to reload schema in case if there's no schema settings at all, or schema is out of sync with source
 	needReload := false
+	var validationErr error
 	if err != nil {
 		if schemaResponse.Code != "NotFound_SchemaConfig" {
 			resp.Diagnostics.AddError(
@@ -233,38 +234,35 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		}
 	} else {
 		// We might have to refresh schema, not all tables might be saved in current configuration
-		err, needReloadSchema := data.ValidateSchemaElements(schemaResponse, false, *client, ctx)
-		if err != nil {
+		var needReloadSchema bool
+		validationErr, needReloadSchema = data.ValidateSchemaElements(schemaResponse, false, *client, ctx)
+		if validationErr != nil {
 			// Reload as schema might be out of sync with the real source schema
 			needReload = needReloadSchema
 			if !needReloadSchema {
 				resp.Diagnostics.AddError(
 					"Unable to create Connector Schema Resource",
-					fmt.Sprintf("Column config validation failed. %v", err),
+					fmt.Sprintf("Column config validation failed. %v", validationErr),
 				)
 				return
 			}
 		}
 	}
 
-	schemaReloaded := false
 	if needReload {
-		schemaResponse, schemaReloaded = r.reloadSchema(ctx, connectorID, schemaResponse, &resp.Diagnostics)
+		schemaResponse = r.reloadSchema(ctx, connectorID, validationErr, &resp.Diagnostics)
 		if resp.Diagnostics.HasError() {
 			return
 		}
-		// Validate the reloaded schema. If reload isn't supported, we proceed with the current
-		// schema state — reloadSchema() has already warned the user.
-		if schemaReloaded {
-			forceValidateColumns := schemaChangeHandling == configSchema.BLOCK_ALL
-			err, _ = data.ValidateSchemaElements(schemaResponse, forceValidateColumns, *client, ctx)
-			if err != nil {
-				resp.Diagnostics.AddError(
-					"Unable to create Connector Schema Resource.",
-					fmt.Sprintf("Schema configuration is not aligned with source schema. Details:\n %v;", err),
-				)
-				return
-			}
+		// validate request one more time after reload schema
+		forceValidateColumns := schemaChangeHandling == configSchema.BLOCK_ALL
+		err, _ = data.ValidateSchemaElements(schemaResponse, forceValidateColumns, *client, ctx)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to create Connector Schema Resource.",
+				fmt.Sprintf("Schema configuration is not aligned with source schema. Details:\n %v;", err),
+			)
+			return
 		}
 	}
 
@@ -345,7 +343,7 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 
-	if schemaReloaded && schemaChangeHandling == configSchema.BLOCK_ALL {
+	if needReload && schemaChangeHandling == configSchema.BLOCK_ALL {
 		// response doesn't contain columns, need to go through tables and get columns
 		err, _ = data.ValidateSchemaElements(schemaResponse, true, *client, ctx)
 		if err != nil {
@@ -565,23 +563,19 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 				)
 				return
 			}
-			var schemaReloaded bool
-			schemaResponse, schemaReloaded = r.reloadSchema(ctx, connectorID, schemaResponse, &resp.Diagnostics)
+			schemaResponse = r.reloadSchema(ctx, connectorID, err, &resp.Diagnostics)
 			if resp.Diagnostics.HasError() {
 				return
 			}
-			// Only validate if reload actually happened; otherwise proceed with current schema state
-			if schemaReloaded {
-				forceColumnsPopulationAfterSchemaReloaded = (plan.SchemaChangeHandling.ValueString() == configSchema.BLOCK_ALL)
+			forceColumnsPopulationAfterSchemaReloaded = (plan.SchemaChangeHandling.ValueString() == configSchema.BLOCK_ALL)
 
-				err, _ = plan.ValidateSchemaElements(schemaResponse, forceColumnsPopulationAfterSchemaReloaded, *client, ctx)
-				if err != nil {
-					resp.Diagnostics.AddError(
-						"Unable to update Connector Schema Resource.",
-						fmt.Sprintf("Schema configuration is not aligned with source schema. Details:\n %v;", err),
-					)
-					return
-				}
+			err, _ = plan.ValidateSchemaElements(schemaResponse, forceColumnsPopulationAfterSchemaReloaded, *client, ctx)
+			if err != nil {
+				resp.Diagnostics.AddError(
+					"Unable to update Connector Schema Resource.",
+					fmt.Sprintf("Schema configuration is not aligned with source schema. Details:\n %v;", err),
+				)
+				return
 			}
 		}
 	}

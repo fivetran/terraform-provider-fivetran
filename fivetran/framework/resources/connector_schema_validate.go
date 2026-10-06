@@ -67,6 +67,7 @@ func (r *connectorSchema) ValidateConfig(ctx context.Context, req resource.Valid
 
 	schemaResponse, err := client.NewConnectionSchemaDetails().ConnectionID(data.ConnectorId.ValueString()).Do(ctx)
 	needReload := false
+	var validationErr error
 	if err != nil {
 		if schemaResponse.Code != "NotFound_SchemaConfig" {
 			resp.Diagnostics.AddWarning(
@@ -93,27 +94,23 @@ func (r *connectorSchema) ValidateConfig(ctx context.Context, req resource.Valid
 			return
 		}
 		needReload = true
+		validationErr = validateErr
 	}
 
 	if needReload {
-		var schemaReloaded bool
-		schemaResponse, schemaReloaded = r.reloadSchema(ctx, data.ConnectorId.ValueString(), schemaResponse, &resp.Diagnostics)
+		schemaResponse = r.reloadSchema(ctx, data.ConnectorId.ValueString(), validationErr, &resp.Diagnostics)
 		if resp.Diagnostics.HasError() {
 			return
 		}
-		// Only validate if reload actually happened; if reload isn't supported for this
-		// connection type, reloadSchema() has already warned and we skip re-validation.
-		if schemaReloaded {
-			// Match Create/Update: force column (re-)validation after a reload when
-			// schema_change_handling is BLOCK_ALL, so newly-unblocked columns are checked
-			// here too, not just on whichever of plan/apply happens to trigger the reload.
-			forceValidateColumns := data.SchemaChangeHandling.ValueString() == configSchema.BLOCK_ALL
-			if validateErr, _ := data.ValidateSchemaElements(schemaResponse, forceValidateColumns, *client, ctx); validateErr != nil {
-				resp.Diagnostics.AddError(
-					"Invalid Connector Schema Resource Configuration.",
-					fmt.Sprintf("Schema configuration is not aligned with source schema. Details:\n %v;", validateErr),
-				)
-			}
+		// Match Create/Update: force column (re-)validation after a reload when
+		// schema_change_handling is BLOCK_ALL, so newly-unblocked columns are checked
+		// here too, not just on whichever of plan/apply happens to trigger the reload.
+		forceValidateColumns := data.SchemaChangeHandling.ValueString() == configSchema.BLOCK_ALL
+		if validateErr, _ := data.ValidateSchemaElements(schemaResponse, forceValidateColumns, *client, ctx); validateErr != nil {
+			resp.Diagnostics.AddError(
+				"Invalid Connector Schema Resource Configuration.",
+				fmt.Sprintf("Schema configuration is not aligned with source schema. Details:\n %v;", validateErr),
+			)
 		}
 	}
 
