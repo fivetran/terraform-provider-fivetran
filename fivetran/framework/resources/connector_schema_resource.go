@@ -532,7 +532,7 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 		}
 		// Match Create: a recreated connector may have no schema settings yet, reload materializes them
 		// (required even when validation_level is NONE, PATCH can't update a schema config that doesn't exist)
-		schemaResponse = r.reloadSchema(ctx, connectorID, &resp.Diagnostics)
+		schemaResponse = r.reloadSchema(ctx, connectorID, nil, &resp.Diagnostics)
 		if resp.Diagnostics.HasError() {
 			return
 		}
