@@ -96,13 +96,14 @@ func (r *connectorSchema) ValidateConfig(ctx context.Context, req resource.Valid
 	}
 
 	if needReload {
-		schemaResponse = r.reloadSchema(ctx, data.ConnectorId.ValueString(), schemaResponse, &resp.Diagnostics)
+		var schemaReloaded bool
+		schemaResponse, schemaReloaded = r.reloadSchema(ctx, data.ConnectorId.ValueString(), schemaResponse, &resp.Diagnostics)
 		if resp.Diagnostics.HasError() {
 			return
 		}
-		// Only validate if reload succeeded (returned schema data)
-		// If reload not supported, schemaResponse will be empty and we skip validation
-		if len(schemaResponse.Data.Schemas) > 0 {
+		// Only validate if reload actually happened; if reload isn't supported for this
+		// connection type, reloadSchema() has already warned and we skip re-validation.
+		if schemaReloaded {
 			// Match Create/Update: force column (re-)validation after a reload when
 			// schema_change_handling is BLOCK_ALL, so newly-unblocked columns are checked
 			// here too, not just on whichever of plan/apply happens to trigger the reload.

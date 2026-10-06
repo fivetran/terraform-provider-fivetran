@@ -49,7 +49,12 @@ func (r *connectorSchema) ImportState(ctx context.Context, req resource.ImportSt
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
-func (r *connectorSchema) reloadSchema(ctx context.Context, connectorID string, currentSchemaResponse connections.ConnectionSchemaDetailsResponse, diag *diag.Diagnostics) connections.ConnectionSchemaDetailsResponse {
+// reloadSchema reloads the connector schema from source. It returns the schema response to
+// proceed with and whether a reload actually happened. When the connection type doesn't support
+// reload, the current schema response is returned unchanged (reloaded == false) so callers keep
+// working with existing state and only skip post-reload validation. If there's no current schema
+// to fall back on (NotFound_SchemaConfig), an unsupported reload is reported as an error.
+func (r *connectorSchema) reloadSchema(ctx context.Context, connectorID string, currentSchemaResponse connections.ConnectionSchemaDetailsResponse, diag *diag.Diagnostics) (connections.ConnectionSchemaDetailsResponse, bool) {
 	client := r.GetClient()
 	if client == nil {
 		diag.AddError(
@@ -57,52 +62,51 @@ func (r *connectorSchema) reloadSchema(ctx context.Context, connectorID string, 
 			"Please report this issue to the provider developers.",
 		)
 
-		return connections.ConnectionSchemaDetailsResponse{}
+		return connections.ConnectionSchemaDetailsResponse{}, false
 	}
 
-	// Fetch connector service to check if reload is supported
+	reloadNotSupported := func(details string) (connections.ConnectionSchemaDetailsResponse, bool) {
+		if currentSchemaResponse.Code == "NotFound_SchemaConfig" {
+			diag.AddError(
+				"Unable to manage connector schema settings.",
+				"This connection type does not support schema reload and the connection doesn't have schema settings yet. "+details,
+			)
+			return connections.ConnectionSchemaDetailsResponse{}, false
+		}
+		diag.AddWarning(
+			"Schema reload not supported for this connection type.",
+			"This connection type does not support schema reload. Proceeding with current schema state. "+details,
+		)
+		return currentSchemaResponse, false
+	}
+
+	// Check connector metadata upfront: some connection types (e.g. UCM) don't support the /reload endpoint.
 	connDetails, err := client.NewConnectionDetails().ConnectionID(connectorID).Do(ctx)
-	if err == nil {
-		service := connDetails.Data.Service
-		if service != "" {
-			// Check if this connector type supports schema reload
-			cache := r.GetMetadataCache()
-			connMeta, _ := core.GetCachedConnectorMetadata(ctx, client, cache, service)
-			if connMeta != nil && connMeta.SupportsSchemaReload != nil && !*connMeta.SupportsSchemaReload {
-				diag.AddWarning(
-					"Schema reload not supported for this connection type.",
-					"This connection type does not support schema reload. Proceeding with current schema state.",
-				)
-				// Return empty response — caller will skip validation
-				return connections.ConnectionSchemaDetailsResponse{}
-			}
+	if err == nil && connDetails.Data.Service != "" {
+		connMeta, _ := core.GetCachedConnectorMetadata(ctx, client, r.GetMetadataCache(), connDetails.Data.Service)
+		if connMeta != nil && connMeta.SupportsSchemaReload != nil && !*connMeta.SupportsSchemaReload {
+			return reloadNotSupported("")
 		}
 	}
 
 	// Reload schema: we can't update schema if connector doesn't have it yet.
-	// Some connection types (e.g. UCM) may not support the /reload endpoint.
 	excludeMode := "PRESERVE"
 
 	reloadResponse, err := client.NewConnectionSchemaReload().ExcludeMode(excludeMode).ConnectionID(connectorID).Do(ctx)
 	if err != nil {
-		// Check if reload is not supported for this connection type (not a temporary error)
+		// Fallback in case metadata isn't available: reload isn't supported for this connection type (not a temporary error)
 		if reloadResponse.Code == "NotSupported_SchemaReload" ||
-		   reloadResponse.Code == "NotAllowed_SchemaReload" ||
-		   reloadResponse.Code == "NotImplemented_SchemaReload" {
-			diag.AddWarning(
-				"Schema reload not supported for this connection type.",
-				fmt.Sprintf("This connection type does not support schema reload. Proceeding with current schema state. Details: %v", reloadResponse.Message),
-			)
-			// Return empty response — caller must handle gracefully
-			return connections.ConnectionSchemaDetailsResponse{}
+			reloadResponse.Code == "NotAllowed_SchemaReload" ||
+			reloadResponse.Code == "NotImplemented_SchemaReload" {
+			return reloadNotSupported(fmt.Sprintf("Details: %v", reloadResponse.Message))
 		}
 		diag.AddError(
 			"Unable to manage connector schema settings.",
 			fmt.Sprintf("Error during schema reloading. %v; code: %v; message: %v", err, reloadResponse.Code, reloadResponse.Message),
 		)
-		return connections.ConnectionSchemaDetailsResponse{}
+		return connections.ConnectionSchemaDetailsResponse{}, false
 	}
-	return reloadResponse
+	return reloadResponse, true
 }
 
 // primaryKeyFileServices lists file connector service IDs that support configuring is_primary_key before the first sync
@@ -243,15 +247,15 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		}
 	}
 
+	schemaReloaded := false
 	if needReload {
-		schemaResponse = r.reloadSchema(ctx, connectorID, schemaResponse, &resp.Diagnostics)
-		// If reload failed with a warning (not supported), skip validation and continue
-		// If reload succeeded, validate the reloaded schema
+		schemaResponse, schemaReloaded = r.reloadSchema(ctx, connectorID, schemaResponse, &resp.Diagnostics)
 		if resp.Diagnostics.HasError() {
 			return
 		}
-		// Only validate if we actually got a schema back (reload succeeded)
-		if len(schemaResponse.Data.Schemas) > 0 {
+		// Validate the reloaded schema. If reload isn't supported, we proceed with the current
+		// schema state — reloadSchema() has already warned the user.
+		if schemaReloaded {
 			forceValidateColumns := schemaChangeHandling == configSchema.BLOCK_ALL
 			err, _ = data.ValidateSchemaElements(schemaResponse, forceValidateColumns, *client, ctx)
 			if err != nil {
@@ -262,8 +266,6 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 				return
 			}
 		}
-		// If schemaResponse is empty (reload not supported), we proceed with current schema
-		// The warning from reloadSchema() informs the user
 	}
 
 	// is_primary_key can't be changed after the first sync, fail before sending the change instead of
@@ -343,9 +345,8 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 
-	if needReload && schemaChangeHandling == configSchema.BLOCK_ALL && len(schemaResponse.Data.Schemas) > 0 {
+	if schemaReloaded && schemaChangeHandling == configSchema.BLOCK_ALL {
 		// response doesn't contain columns, need to go through tables and get columns
-		// Only validate if reload actually returned schema data (not unsupported)
 		err, _ = data.ValidateSchemaElements(schemaResponse, true, *client, ctx)
 		if err != nil {
 			resp.Diagnostics.AddError(
@@ -564,12 +565,13 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 				)
 				return
 			}
-			schemaResponse = r.reloadSchema(ctx, connectorID, schemaResponse, &resp.Diagnostics)
+			var schemaReloaded bool
+			schemaResponse, schemaReloaded = r.reloadSchema(ctx, connectorID, schemaResponse, &resp.Diagnostics)
 			if resp.Diagnostics.HasError() {
 				return
 			}
-			// Only validate if reload succeeded (returned schema data)
-			if len(schemaResponse.Data.Schemas) > 0 {
+			// Only validate if reload actually happened; otherwise proceed with current schema state
+			if schemaReloaded {
 				forceColumnsPopulationAfterSchemaReloaded = (plan.SchemaChangeHandling.ValueString() == configSchema.BLOCK_ALL)
 
 				err, _ = plan.ValidateSchemaElements(schemaResponse, forceColumnsPopulationAfterSchemaReloaded, *client, ctx)
