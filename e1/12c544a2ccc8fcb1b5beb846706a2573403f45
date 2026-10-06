@@ -1,0 +1,21 @@
+fivetran/framework/resources/connector_schema_resource.go
+  s_7767bca3aeda5e::t_f34b9cab945631 66
+  s_7767bca3aeda5e::t_07361c5aebf515 64-65,67-80
+  s_7767bca3aeda5e::t_6fc745b593272d 10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "e112c544a2ccc8fcb1b5beb846706a2573403f45",
+  "prompts": {},
+  "sessions": {
+    "s_7767bca3aeda5e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "57f7926e-ed82-406f-bfb8-44445b3851dc",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
