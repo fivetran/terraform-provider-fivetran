@@ -49,7 +49,12 @@ func (r *connectorSchema) ImportState(ctx context.Context, req resource.ImportSt
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
-func (r *connectorSchema) reloadSchema(ctx context.Context, connectorID string, diag *diag.Diagnostics) connections.ConnectionSchemaDetailsResponse {
+// reloadSchema reloads the connector schema from source. validationErr is the validation error
+// against the current schema that made the reload necessary (nil when the connection has no
+// schema settings yet). Some connection types (e.g. UCM) don't support reload; in that case the
+// mismatch can't be resolved, so an error carrying validationErr is reported instead of
+// proceeding with a schema that's missing configured elements.
+func (r *connectorSchema) reloadSchema(ctx context.Context, connectorID string, validationErr error, diag *diag.Diagnostics) connections.ConnectionSchemaDetailsResponse {
 	client := r.GetClient()
 	if client == nil {
 		diag.AddError(
@@ -60,18 +65,48 @@ func (r *connectorSchema) reloadSchema(ctx context.Context, connectorID string, 
 		return connections.ConnectionSchemaDetailsResponse{}
 	}
 
+	reloadNotSupported := func(apiMessage string) connections.ConnectionSchemaDetailsResponse {
+		details := "This connection type does not support schema reload"
+		if validationErr != nil {
+			details += fmt.Sprintf(", so the schema configuration can't be aligned with the source schema. "+
+				"Remove the missing elements from the configuration, or set `validation_level = \"NONE\"` to apply only the elements present in the current schema. Details:\n %v;", validationErr)
+		} else {
+			details += " and the connection doesn't have schema settings yet."
+		}
+		if apiMessage != "" {
+			details += fmt.Sprintf(" API message: %v", apiMessage)
+		}
+		diag.AddError("Unable to manage connector schema settings.", details)
+		return connections.ConnectionSchemaDetailsResponse{}
+	}
+
+	// Check connector metadata upfront: some connection types (e.g. UCM) don't support the /reload endpoint.
+	connDetails, err := client.NewConnectionDetails().ConnectionID(connectorID).Do(ctx)
+	if err == nil && connDetails.Data.Service != "" {
+		connMeta, _ := core.GetCachedConnectorMetadata(ctx, client, r.GetMetadataCache(), connDetails.Data.Service)
+		if connMeta != nil && connMeta.SupportsSchemaReload != nil && !*connMeta.SupportsSchemaReload {
+			return reloadNotSupported("")
+		}
+	}
+
 	// Reload schema: we can't update schema if connector doesn't have it yet.
 	excludeMode := "PRESERVE"
 
-	schemaResponse, err := client.NewConnectionSchemaReload().ExcludeMode(excludeMode).ConnectionID(connectorID).Do(ctx)
+	reloadResponse, err := client.NewConnectionSchemaReload().ExcludeMode(excludeMode).ConnectionID(connectorID).Do(ctx)
 	if err != nil {
+		// Fallback in case metadata isn't available: reload isn't supported for this connection type (not a temporary error)
+		if reloadResponse.Code == "NotSupported_SchemaReload" ||
+			reloadResponse.Code == "NotAllowed_SchemaReload" ||
+			reloadResponse.Code == "NotImplemented_SchemaReload" {
+			return reloadNotSupported(reloadResponse.Message)
+		}
 		diag.AddError(
 			"Unable to manage connector schema settings.",
-			fmt.Sprintf("Error during schema reloading. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
+			fmt.Sprintf("Error during schema reloading. %v; code: %v; message: %v", err, reloadResponse.Code, reloadResponse.Message),
 		)
 		return connections.ConnectionSchemaDetailsResponse{}
 	}
-	return schemaResponse
+	return reloadResponse
 }
 
 // primaryKeyFileServices lists file connector service IDs that support configuring is_primary_key before the first sync
@@ -183,6 +218,7 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 	schemaResponse, err := client.NewConnectionSchemaDetails().ConnectionID(connectorID).Do(ctx)
 	// We might have to reload schema in case if there's no schema settings at all, or schema is out of sync with source
 	needReload := false
+	var validationErr error
 	if err != nil {
 		if schemaResponse.Code != "NotFound_SchemaConfig" {
 			resp.Diagnostics.AddError(
@@ -198,14 +234,15 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		}
 	} else {
 		// We might have to refresh schema, not all tables might be saved in current configuration
-		err, needReloadSchema := data.ValidateSchemaElements(schemaResponse, false, *client, ctx)
-		if err != nil {
+		var needReloadSchema bool
+		validationErr, needReloadSchema = data.ValidateSchemaElements(schemaResponse, false, *client, ctx)
+		if validationErr != nil {
 			// Reload as schema might be out of sync with the real source schema
 			needReload = needReloadSchema
 			if !needReloadSchema {
 				resp.Diagnostics.AddError(
 					"Unable to create Connector Schema Resource",
-					fmt.Sprintf("Column config validation failed. %v", err),
+					fmt.Sprintf("Column config validation failed. %v", validationErr),
 				)
 				return
 			}
@@ -213,7 +250,7 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 	}
 
 	if needReload {
-		schemaResponse = r.reloadSchema(ctx, connectorID, &resp.Diagnostics)
+		schemaResponse = r.reloadSchema(ctx, connectorID, validationErr, &resp.Diagnostics)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -495,7 +532,7 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 		}
 		// Match Create: a recreated connector may have no schema settings yet, reload materializes them
 		// (required even when validation_level is NONE, PATCH can't update a schema config that doesn't exist)
-		schemaResponse = r.reloadSchema(ctx, connectorID, &resp.Diagnostics)
+		schemaResponse = r.reloadSchema(ctx, connectorID, nil, &resp.Diagnostics)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -526,7 +563,7 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 				)
 				return
 			}
-			schemaResponse = r.reloadSchema(ctx, connectorID, &resp.Diagnostics)
+			schemaResponse = r.reloadSchema(ctx, connectorID, err, &resp.Diagnostics)
 			if resp.Diagnostics.HasError() {
 				return
 			}

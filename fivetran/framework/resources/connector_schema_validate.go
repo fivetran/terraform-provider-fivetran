@@ -67,6 +67,7 @@ func (r *connectorSchema) ValidateConfig(ctx context.Context, req resource.Valid
 
 	schemaResponse, err := client.NewConnectionSchemaDetails().ConnectionID(data.ConnectorId.ValueString()).Do(ctx)
 	needReload := false
+	var validationErr error
 	if err != nil {
 		if schemaResponse.Code != "NotFound_SchemaConfig" {
 			resp.Diagnostics.AddWarning(
@@ -93,10 +94,11 @@ func (r *connectorSchema) ValidateConfig(ctx context.Context, req resource.Valid
 			return
 		}
 		needReload = true
+		validationErr = validateErr
 	}
 
 	if needReload {
-		schemaResponse = r.reloadSchema(ctx, data.ConnectorId.ValueString(), &resp.Diagnostics)
+		schemaResponse = r.reloadSchema(ctx, data.ConnectorId.ValueString(), validationErr, &resp.Diagnostics)
 		if resp.Diagnostics.HasError() {
 			return
 		}
