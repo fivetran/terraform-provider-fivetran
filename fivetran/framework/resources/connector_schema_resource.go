@@ -74,6 +74,27 @@ func (r *connectorSchema) reloadSchema(ctx context.Context, connectorID string, 
 	return schemaResponse
 }
 
+// primaryKeyFileServices lists file connector service IDs that support configuring is_primary_key before the first sync
+var primaryKeyFileServices = map[string]bool{
+	"azure_blob_storage":    true,
+	"box":                   true,
+	"dropbox":               true,
+	"email":                 true,
+	"ftp":                   true,
+	"gcs":                   true,
+	"google_drive":          true,
+	"google_sheets":         true,
+	"s3":                    true,
+	"s3_compatible_storage": true,
+	"sftp":                  true,
+	"share_point":           true,
+	"wasabi_cloud_storage":  true,
+}
+
+func canChangePrimaryKey(service string) bool {
+	return primaryKeyFileServices[service]
+}
+
 func findConnectorIdByGroupAndSchemaName(ctx context.Context, client *fivetran.Client, model *model.ConnectorSchemaResourceModel) (string, error) {
 
 	if model.GroupId.IsNull() || model.ConnectorName.IsNull() {
@@ -206,6 +227,21 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 			)
 			return
 		}
+	}
+
+	// is_primary_key can't be changed after the first sync, fail before sending the change instead of
+	// getting an API error or an inconsistent result
+	var configData model.ConnectorSchemaResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &configData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	if _, service, changed := primaryKeyChangesAfterSync(ctx, client, &data, configData.ConfiguredPrimaryKeys(), &schemaResponse); len(changed) > 0 {
+		resp.Diagnostics.AddError(
+			"Unable to create Connector Schema Resource.",
+			primaryKeyChangeMessage(connectorID, service, changed),
+		)
+		return
 	}
 
 	// read upstream config
@@ -422,19 +458,61 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 	ctx, cancel := helpers.SetContextTimeout(ctx, updateTimeout)
 	defer cancel()
 
-	connectorID := state.ConnectorId.ValueString()
-
-	schemaResponse, err := client.NewConnectionSchemaDetails().ConnectionID(connectorID).Do(ctx)
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Unable to Update Connector Schema Resource.",
-			fmt.Sprintf("Error while retrieving existing schema settings. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
-		)
+	var configData model.ConnectorSchemaResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &configData)...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 
+	// the connector may differ from state when it was recreated, the addressing mode comes from the configuration:
+	// connector_id is computed, so the plan alone doesn't tell whether it was configured
+	connectorID := state.ConnectorId.ValueString()
+	if !configData.ConnectorId.IsNull() && !plan.ConnectorId.IsUnknown() && plan.ConnectorId.ValueString() != "" {
+		connectorID = plan.ConnectorId.ValueString()
+	} else if !configData.GroupId.IsNull() && !configData.ConnectorName.IsNull() {
+		foundConnectorID, err := findConnectorIdByGroupAndSchemaName(ctx, client, &plan)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to Update Connector Schema Resource.",
+				fmt.Sprintf("Error while finding connector ID. %v", err),
+			)
+			return
+		}
+		connectorID = foundConnectorID
+	}
+	plan.ConnectorId = types.StringValue(connectorID)
+
+	schemaResponse, err := client.NewConnectionSchemaDetails().ConnectionID(connectorID).Do(ctx)
 	forceColumnsPopulationAfterSchemaReloaded := false
-	if plan.ValidationLevel.ValueString() != "NONE" {
+	schemaReloaded := false
+	if err != nil {
+		if schemaResponse.Code != "NotFound_SchemaConfig" {
+			resp.Diagnostics.AddError(
+				"Unable to Update Connector Schema Resource.",
+				fmt.Sprintf("Error while retrieving existing schema settings. %v; code: %v; message: %v", err, schemaResponse.Code, schemaResponse.Message),
+			)
+			return
+		}
+		// Match Create: a recreated connector may have no schema settings yet, reload materializes them
+		// (required even when validation_level is NONE, PATCH can't update a schema config that doesn't exist)
+		schemaResponse = r.reloadSchema(ctx, connectorID, &resp.Diagnostics)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		schemaReloaded = true
+		forceColumnsPopulationAfterSchemaReloaded = (plan.SchemaChangeHandling.ValueString() == configSchema.BLOCK_ALL)
+	}
+
+	if schemaReloaded && plan.ValidationLevel.ValueString() != "NONE" {
+		err, _ = plan.ValidateSchemaElements(schemaResponse, forceColumnsPopulationAfterSchemaReloaded, *client, ctx)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to update Connector Schema Resource.",
+				fmt.Sprintf("Schema configuration is not aligned with source schema. Details:\n %v;", err),
+			)
+			return
+		}
+	} else if plan.ValidationLevel.ValueString() != "NONE" {
 		// Before applying changes we should validate existing state and planned changes and decide if we need to reload schema
 		err, needReloadSchema := plan.ValidateSchemaElements(schemaResponse, false, *client, ctx)
 		if err != nil {
@@ -463,6 +541,16 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 				return
 			}
 		}
+	}
+
+	// is_primary_key can't be changed after the first sync, fail before sending the change instead of
+	// getting an API error or an inconsistent result
+	if _, service, changed := primaryKeyChangesAfterSync(ctx, client, &plan, configData.ConfiguredPrimaryKeys(), &schemaResponse); len(changed) > 0 {
+		resp.Diagnostics.AddError(
+			"Unable to Update Connector Schema Resource.",
+			primaryKeyChangeMessage(connectorID, service, changed),
+		)
+		return
 	}
 
 	// read upstream config

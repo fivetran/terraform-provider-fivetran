@@ -145,6 +145,11 @@ func unmarshalSchema(schema string) (map[string]interface{}, error) {
 													cResult["hashed"] = cHashedBool
 												}
 											}
+											if cIsPrimaryKey, ok := cMap["is_primary_key"]; ok {
+												if cIsPrimaryKeyBool, ok := helpers.GetBoolOk(cIsPrimaryKey); ok {
+													cResult["is_primary_key"] = cIsPrimaryKeyBool
+												}
+											}
 											if len(cResult) > 0 {
 												columns[cName] = cResult
 											}

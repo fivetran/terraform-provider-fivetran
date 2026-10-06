@@ -108,9 +108,12 @@ The value defines validation method.
 												"is_primary_key": schema.BoolAttribute{
 													Optional:    true,
 													Computed:    true,
-													Description: "Boolean value indicating if the column is a primary key.",
+													Description: "Boolean value indicating if the column is a primary key. " +
+														"For file connectors (for example S3, Google Cloud Storage, SFTP, Google Sheets), this can be set before the first sync. " +
+														"Changing this value after the connector has synced requires recreating the connector.",
 													PlanModifiers: []planmodifier.Bool{
-														boolplanmodifier.UseStateForUnknown(),
+														// keeps unknown for new columns, UseStateForUnknown would plan null and conflict with the upstream value
+														boolplanmodifier.UseNonNullStateForUnknown(),
 													},
 												},
 											},
@@ -218,9 +221,12 @@ func getColumnBlock() schema.SetNestedBlock {
 				"is_primary_key": schema.BoolAttribute{
 					Optional:    true,
 					Computed:    true,
-					Description: "Boolean value indicating if the column is a primary key.",
+					Description: "Boolean value indicating if the column is a primary key. " +
+						"For file connectors (for example S3, Google Cloud Storage, SFTP, Google Sheets), this can be set before the first sync. " +
+						"Changing this value after the connector has synced requires recreating the connector.",
 					PlanModifiers: []planmodifier.Bool{
-						boolplanmodifier.UseStateForUnknown(),
+						// keeps unknown for new columns, UseStateForUnknown would plan null and conflict with the upstream value
+						boolplanmodifier.UseNonNullStateForUnknown(),
 					},
 				},
 			},

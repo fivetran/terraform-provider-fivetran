@@ -4,8 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"sort"
+	"strings"
 
 	"github.com/fivetran/go-fivetran"
+	"github.com/fivetran/go-fivetran/connections"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	configSchema "github.com/fivetran/terraform-provider-fivetran/modules/connector/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -36,12 +39,16 @@ func (r *connectorSchema) ValidateConfig(ctx context.Context, req resource.Valid
 				"unexpected sync behavior (for example, a column you intend to hash may not be hashed if the "+
 				"name doesn't match the source).",
 		)
+		// primary key constraints don't depend on name validation
+		r.validatePrimaryKeyConstraints(ctx, &data, nil, resp)
 		return
 	}
 
 	if data.ConnectorId.IsNull() || data.ConnectorId.IsUnknown() || data.ConnectorId.ValueString() == "" {
 		// Connector isn't known yet at plan time (e.g. referenced from another resource
 		// being created in the same apply) — nothing to validate against yet.
+		// The primary key check resolves the connector by group_id + connector_name when possible.
+		r.validatePrimaryKeyConstraints(ctx, &data, nil, resp)
 		return
 	}
 
@@ -104,6 +111,8 @@ func (r *connectorSchema) ValidateConfig(ctx context.Context, req resource.Valid
 			)
 		}
 	}
+
+	r.validatePrimaryKeyConstraints(ctx, &data, &schemaResponse, resp)
 }
 
 func (r *connectorSchema) connectorSchemaClient() (*fivetran.Client, error) {
@@ -112,4 +121,169 @@ func (r *connectorSchema) connectorSchemaClient() (*fivetran.Client, error) {
 		return nil, errUnconfiguredClient
 	}
 	return client, nil
+}
+
+// validatePrimaryKeyConstraints warns at plan time when configured is_primary_key values can't be applied.
+// schemaResponse is optional, it's fetched when nil.
+func (r *connectorSchema) validatePrimaryKeyConstraints(
+	ctx context.Context,
+	data *model.ConnectorSchemaResourceModel,
+	schemaResponse *connections.ConnectionSchemaDetailsResponse,
+	resp *resource.ValidateConfigResponse) {
+	client, err := r.connectorSchemaClient()
+	if err != nil {
+		return
+	}
+	// ValidateConfig only sees the configuration, so data has no computed values
+	connectorId, service, changed := primaryKeyChangesAfterSync(ctx, client, data, data.ConfiguredPrimaryKeys(), schemaResponse)
+	if len(changed) > 0 {
+		resp.Diagnostics.AddWarning(
+			"Primary Key Configuration After Sync",
+			primaryKeyChangeMessage(connectorId, service, changed)+
+				" Apply will fail until the configuration matches the current values or the connector is recreated.",
+		)
+	}
+}
+
+// primaryKeyChangesAfterSync returns the connector ID, its service and the columns whose configured is_primary_key differs
+// from upstream, when the connector is a file connector that has already synced: primary keys can only be set before the first sync.
+// configured must come from the configuration, not the plan: the plan also contains computed values kept from state.
+// The connector ID is resolved by group_id + connector_name when connector_id isn't set.
+// Any lookup failure returns no changes, the check is skipped in this case.
+// schemaResponse is optional, it's fetched when nil.
+func primaryKeyChangesAfterSync(
+	ctx context.Context,
+	client *fivetran.Client,
+	data *model.ConnectorSchemaResourceModel,
+	configured map[string]map[string]map[string]bool,
+	schemaResponse *connections.ConnectionSchemaDetailsResponse) (string, string, []string) {
+	if len(configured) == 0 || client == nil {
+		return "", "", nil
+	}
+
+	connectorId := ""
+	if !data.ConnectorId.IsNull() && !data.ConnectorId.IsUnknown() {
+		connectorId = data.ConnectorId.ValueString()
+	}
+	if connectorId == "" {
+		if data.GroupId.IsNull() || data.GroupId.IsUnknown() || data.ConnectorName.IsNull() || data.ConnectorName.IsUnknown() {
+			return "", "", nil
+		}
+		foundConnectorId, err := findConnectorIdByGroupAndSchemaName(ctx, client, data)
+		if err != nil {
+			return "", "", nil
+		}
+		connectorId = foundConnectorId
+	}
+
+	details, err := client.NewConnectionDetails().ConnectionID(connectorId).DoCustom(ctx)
+	if err != nil {
+		return connectorId, "", nil
+	}
+
+	service := details.Data.Service
+	if !canChangePrimaryKey(service) || details.Data.SucceededAt.IsZero() {
+		return connectorId, service, nil
+	}
+
+	if schemaResponse == nil {
+		response, err := client.NewConnectionSchemaDetails().ConnectionID(connectorId).Do(ctx)
+		if err != nil {
+			return connectorId, service, nil
+		}
+		schemaResponse = &response
+	}
+
+	return connectorId, service, changedPrimaryKeys(configured, upstreamPrimaryKeys(ctx, client, connectorId, configured, *schemaResponse))
+}
+
+// upstreamPrimaryKeys returns known upstream is_primary_key values for configured columns as schema -> table -> column -> value.
+// The schemas response doesn't always contain columns, so columns of configured tables are fetched when missing.
+// Columns with no upstream value are omitted.
+func upstreamPrimaryKeys(
+	ctx context.Context,
+	client *fivetran.Client,
+	connectorId string,
+	configured map[string]map[string]map[string]bool,
+	response connections.ConnectionSchemaDetailsResponse) map[string]map[string]map[string]bool {
+	result := map[string]map[string]map[string]bool{}
+	for schemaName, tables := range configured {
+		upstreamSchema, ok := response.Data.Schemas[schemaName]
+		if !ok || upstreamSchema == nil {
+			continue
+		}
+
+		upstreamColumns := map[string]map[string]*connections.ConnectionSchemaConfigColumnResponse{}
+		tablesNeedingColumns := []string{}
+		for tableName, columns := range tables {
+			upstreamTable, ok := upstreamSchema.Tables[tableName]
+			if !ok || upstreamTable == nil {
+				continue
+			}
+			upstreamColumns[tableName] = upstreamTable.Columns
+			for columnName := range columns {
+				if _, ok := upstreamTable.Columns[columnName]; !ok {
+					tablesNeedingColumns = append(tablesNeedingColumns, tableName)
+					break
+				}
+			}
+		}
+		// the same batched requests as column validation, a failure leaves these tables without known values
+		if len(tablesNeedingColumns) > 0 {
+			if columnsByTable, err := configSchema.FetchTablesColumns(ctx, *client, connectorId, schemaName, tablesNeedingColumns); err == nil {
+				for tableName, columns := range columnsByTable {
+					if _, ok := upstreamColumns[tableName]; ok {
+						upstreamColumns[tableName] = columns
+					}
+				}
+			}
+		}
+
+		for tableName, columns := range tables {
+			for columnName := range columns {
+				upstreamColumn, ok := upstreamColumns[tableName][columnName]
+				if !ok || upstreamColumn == nil || upstreamColumn.IsPrimaryKey == nil {
+					continue
+				}
+				if result[schemaName] == nil {
+					result[schemaName] = map[string]map[string]bool{}
+				}
+				if result[schemaName][tableName] == nil {
+					result[schemaName][tableName] = map[string]bool{}
+				}
+				result[schemaName][tableName][columnName] = *upstreamColumn.IsPrimaryKey
+			}
+		}
+	}
+	return result
+}
+
+func primaryKeyChangeMessage(connectorId, service string, changed []string) string {
+	return fmt.Sprintf(
+		"Connector `%v` (service: %v) has already synced, so `is_primary_key` can no longer be changed for:\n  %v\n"+
+			"Primary keys for file connectors can only be set before the first sync. "+
+			"Replacing `fivetran_connector_schema_config` doesn't help, as it doesn't recreate the connector. "+
+			"To apply this change, recreate the connector itself (for example `terraform apply -replace=<fivetran_connector resource address>`), "+
+			"which triggers a new initial sync.",
+		connectorId, service, strings.Join(changed, "\n  "),
+	)
+}
+
+// changedPrimaryKeys returns sorted "schema.table.column" entries whose configured is_primary_key differs from upstream.
+// Columns with no known upstream value are skipped, there's nothing to compare with.
+func changedPrimaryKeys(configured, upstream map[string]map[string]map[string]bool) []string {
+	result := []string{}
+	for schemaName, tables := range configured {
+		for tableName, columns := range tables {
+			for columnName, isPk := range columns {
+				upstreamIsPk, ok := upstream[schemaName][tableName][columnName]
+				if ok && upstreamIsPk != isPk {
+					result = append(result, fmt.Sprintf("%v.%v.%v (current: %v, configured: %v)",
+						schemaName, tableName, columnName, upstreamIsPk, isPk))
+				}
+			}
+		}
+	}
+	sort.Strings(result)
+	return result
 }

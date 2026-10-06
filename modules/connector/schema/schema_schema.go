@@ -48,52 +48,13 @@ func (s _schema) validateTables(
 		}
 	}
 	if len(tablesNeedingColumns) > 0 {
-		// Try batch endpoint first; only fall back if endpoint is not implemented (NotImplemented_*)
-		// This provides backward compatibility if the batch endpoint is not available.
-		// NotFound_* (resource-not-found), rate limit, auth, timeout, and other errors propagate
-		// immediately without fallback to avoid masking the real issue or amplifying failures.
-		var batchError error
-		batchAttempted := false
-		for start := 0; start < len(tablesNeedingColumns); start += multipleTableColumnsBatchSize {
-			end := start + multipleTableColumnsBatchSize
-			if end > len(tablesNeedingColumns) {
-				end = len(tablesNeedingColumns)
-			}
-
-			batchAttempted = true
-			response, err := getMultipleTableColumnsConfig(ctx, client, connectorId, sName, tablesNeedingColumns[start:end])
-			if err != nil {
-				batchError = err
-				// Check if this is an "endpoint not implemented" error (404 or similar)
-				// If it's a rate limit, auth, or server error, propagate immediately
-				if isEndpointUnavailableError(response.Code) {
-					break
-				}
-				// For other errors (rate limits, auth, timeouts), propagate immediately
-				return fmt.Errorf("Error while retrieving columns config for schema `%s`. Error: %v; Code: `%v`.",
-					sName, err, response.Code), false
-			}
-			for tableName, tableData := range response.Data.Tables {
-				if responseTable, ok := responseSchema.Tables[tableName]; ok {
-					responseTable.Columns = tableData.Columns
-				}
-			}
+		columnsByTable, err := FetchTablesColumns(ctx, client, connectorId, sName, tablesNeedingColumns)
+		if err != nil {
+			return err, false
 		}
-
-		// Only fall back if batch endpoint is not implemented (NotImplemented_* error)
-		if batchAttempted && batchError != nil {
-			for _, tName := range tablesNeedingColumns {
-				responseTable := responseSchema.Tables[tName]
-				response, err := client.NewConnectionColumnConfigListService().
-					ConnectionId(connectorId).
-					Schema(sName).
-					Table(tName).
-					Do(ctx)
-				if err != nil {
-					return fmt.Errorf("Error while retrieving columns config for table `%s` of schema `%s`. Error: %v; Code: `%v`.",
-						tName, sName, err, response.Code), false
-				}
-				responseTable.Columns = response.Data.Columns
+		for tName, columns := range columnsByTable {
+			if responseTable, ok := responseSchema.Tables[tName]; ok {
+				responseTable.Columns = columns
 			}
 		}
 

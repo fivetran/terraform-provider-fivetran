@@ -183,6 +183,7 @@ func (d *ConnectorSchemaResourceModel) GetSchemaConfig() configSchema.SchemaConf
 
 func (d *ConnectorSchemaResourceModel) getSchemasRawValue(schemas []interface{}) string {
 	result := mapRawSchemas(schemas)
+	removeUnconfiguredPrimaryKeys(result, mapLocalSchemas(d.getSchemasRaw()))
 	resultRawString, _ := json.Marshal(result)
 	return string(resultRawString)
 }
@@ -265,19 +266,28 @@ func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}, isIm
 						columnElements := map[string]attr.Value{}
 
 						if _, ok := localColumn["enabled"]; (ok || isImporting) {
-							columnElements["enabled"] = types.BoolValue(helpers.StrToBool(columnMap["enabled"].(string)))
+							if enabledVal, ok := columnMap["enabled"].(string); ok {
+								columnElements["enabled"] = types.BoolValue(helpers.StrToBool(enabledVal))
+							} else {
+								columnElements["enabled"] = types.BoolNull()
+							}
 						} else {
 							columnElements["enabled"] = types.BoolNull()
 						}
 
 						if _, ok := localColumn["hashed"]; (ok || isImporting) {
-							columnElements["hashed"] = types.BoolValue(helpers.StrToBool(columnMap["hashed"].(string)))
+							if hashedVal, ok := columnMap["hashed"].(string); ok {
+								columnElements["hashed"] = types.BoolValue(helpers.StrToBool(hashedVal))
+							} else {
+								columnElements["hashed"] = types.BoolNull()
+							}
 						} else {
 							columnElements["hashed"] = types.BoolNull()
 						}
 
-						if columnMap["is_primary_key"] != nil {
-							columnElements["is_primary_key"] = types.BoolValue(helpers.StrToBool(columnMap["is_primary_key"].(string)))
+						// upstream value is serialized as a string by the schema module
+						if ispk, ok := columnMap["is_primary_key"].(string); ok {
+							columnElements["is_primary_key"] = types.BoolValue(helpers.StrToBool(ispk))
 						} else {
 							columnElements["is_primary_key"] = types.BoolNull()
 						}
@@ -399,8 +409,9 @@ func (d *ConnectorSchemaResourceModel) getLegacySchemaItems(schemas []interface{
 						} else {
 							columnElements["hashed"] = types.BoolNull()
 						}
-						if columnMap["is_primary_key"] != nil {
-							columnElements["is_primary_key"] = types.BoolValue(helpers.StrToBool(columnMap["is_primary_key"].(string)))
+						// upstream value is serialized as a string by the schema module
+						if ispk, ok := columnMap["is_primary_key"].(string); ok {
+							columnElements["is_primary_key"] = types.BoolValue(helpers.StrToBool(ispk))
 						} else {
 							columnElements["is_primary_key"] = types.BoolNull()
 						}
@@ -553,7 +564,8 @@ func (d *ConnectorSchemaResourceModel) getSchemasRaw() []interface{} {
 												if h, ok := cMap["hashed"].(bool); ok {
 													column["hashed"] = h
 												}
-												if p, ok := cMap["is_primary_key"].(bool); ok {
+												// accept "true"/"false" too, the same way schemas_json values are compared
+												if p, ok := helpers.GetBoolOk(cMap["is_primary_key"]); ok {
 													column["is_primary_key"] = p
 												}
 												columns = append(columns, column)
@@ -758,4 +770,54 @@ func (d *ConnectorSchemaResourceModel) mapLocalSchemas() map[string]interface{} 
 		schemas = d.getSchemas()
 	}
 	return mapLocalSchemas(schemas)
+}
+
+// removeUnconfiguredPrimaryKeys drops upstream is_primary_key from raw schemas for columns that don't configure it,
+// otherwise schemas_json would differ from the configuration
+func removeUnconfiguredPrimaryKeys(rawSchemas, localSchemas map[string]interface{}) {
+	for schemaName, s := range rawSchemas {
+		tables, _ := s.(map[string]interface{})["tables"].(map[string]interface{})
+		localSchema, _ := localSchemas[schemaName].(map[string]interface{})
+		localTables, _ := localSchema["table"].(map[string]interface{})
+		for tableName, t := range tables {
+			columns, _ := t.(map[string]interface{})["columns"].(map[string]interface{})
+			localTable, _ := localTables[tableName].(map[string]interface{})
+			localColumns, _ := localTable["column"].(map[string]interface{})
+			for columnName, c := range columns {
+				localColumn, _ := localColumns[columnName].(map[string]interface{})
+				if _, ok := localColumn["is_primary_key"]; !ok {
+					delete(c.(map[string]interface{}), "is_primary_key")
+				}
+			}
+		}
+	}
+}
+
+// ConfiguredPrimaryKeys returns explicitly configured is_primary_key values as schema -> table -> column -> value
+func (d *ConnectorSchemaResourceModel) ConfiguredPrimaryKeys() map[string]map[string]map[string]bool {
+	result := map[string]map[string]map[string]bool{}
+	localSchemas := d.mapLocalSchemas()
+	if len(localSchemas) == 0 && d.IsRawSchemaDefined() {
+		localSchemas = mapLocalSchemas(d.getSchemasRaw())
+	}
+	for schemaName, s := range localSchemas {
+		tables, _ := s.(map[string]interface{})["table"].(map[string]interface{})
+		for tableName, t := range tables {
+			columns, _ := t.(map[string]interface{})["column"].(map[string]interface{})
+			for columnName, c := range columns {
+				isPk, ok := c.(map[string]interface{})["is_primary_key"].(bool)
+				if !ok {
+					continue
+				}
+				if result[schemaName] == nil {
+					result[schemaName] = map[string]map[string]bool{}
+				}
+				if result[schemaName][tableName] == nil {
+					result[schemaName][tableName] = map[string]bool{}
+				}
+				result[schemaName][tableName][columnName] = isPk
+			}
+		}
+	}
+	return result
 }
