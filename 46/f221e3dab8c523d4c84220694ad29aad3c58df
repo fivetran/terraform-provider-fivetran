@@ -1,0 +1,19 @@
+fivetran/framework/resources/connector_schema_resource.go
+  s_6788e2411a5d81::t_dfd6dc04947a8a 535
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "46f221e3dab8c523d4c84220694ad29aad3c58df",
+  "prompts": {},
+  "sessions": {
+    "s_6788e2411a5d81": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ddadf7be-78f8-413c-924d-8580bbe68d86",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
