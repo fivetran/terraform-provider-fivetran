@@ -1,0 +1,47 @@
+fivetran/framework/resources/connection.go
+  56b4fd71a3530532 128-131,251-254
+fivetran/framework/core/model/connections.go
+  56b4fd71a3530532 36,67
+fivetran/framework/resources/connector.go
+  56b4fd71a3530532 191-194,385-388
+fivetran/framework/core/schema/connection.go
+  56b4fd71a3530532 128-131
+fivetran/framework/core/schema/connector.go
+  56b4fd71a3530532 136-139
+fivetran/framework/core/model/connector.go
+  56b4fd71a3530532 38,85,146,223,229-230,276,282,352,376,396
+fivetran/framework/core/model/connection_v2_model_test.go
+  56b4fd71a3530532 78
+fivetran/framework/core/model/connection_v2_model.go
+  56b4fd71a3530532 46,128,177
+fivetran/framework/core/schema/connection_v2.go
+  56b4fd71a3530532 211-213,215-218
+fivetran/framework/core/model/connectors.go
+  56b4fd71a3530532 34,65
+fivetran/framework/resources/connection_v2_test.go
+  56b4fd71a3530532 48
+fivetran/framework/resources/connection_v2.go
+  56b4fd71a3530532 465-467,485,537-539
+fivetran/framework/core/model/connection.go
+  56b4fd71a3530532 32,51,57-58,96,102-103,150,176,182
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.1",
+  "base_commit_sha": "34a2346dd48e4a293fb7b42f1e7891ce76a1fdba",
+  "prompts": {
+    "56b4fd71a3530532": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7d324875-c6dc-4903-9514-6015c6e844a8",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "IgorShirinsky <igor.shirinsky@fivetran.com>",
+      "messages": [],
+      "total_additions": 75,
+      "total_deletions": 12,
+      "accepted_lines": 68,
+      "overriden_lines": 1
+    }
+  }
+}
