@@ -226,7 +226,9 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, is
     } else {
         d.DataDelayThreshold = types.Int64Null()
     }
-    if !d.DataChecks.IsUnknown() && !d.DataChecks.IsNull() {
+    if d.DataChecks.IsUnknown() {
+        d.DataChecks = types.BoolNull()
+    } else if !d.DataChecks.IsNull() {
         d.DataChecks = boolPointerValue(c.DataChecks)
     }
 
