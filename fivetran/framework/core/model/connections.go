@@ -33,6 +33,7 @@ func (d *Connections) ReadFromResponse(ctx context.Context, resp connections.Con
 		"daily_sync_time":            types.StringType,
 		"data_delay_sensitivity":     types.StringType,
 		"data_delay_threshold":       types.Int64Type,
+		"data_checks":                types.BoolType,
 		"proxy_agent_id":             types.StringType,
 		"networking_method":          types.StringType,
 		"hybrid_deployment_agent_id": types.StringType,
@@ -63,6 +64,7 @@ func (d *Connections) ReadFromResponse(ctx context.Context, resp connections.Con
 		item["daily_sync_time"] = types.StringValue(v.DailySyncTime)
 		item["data_delay_sensitivity"] = types.StringValue(v.DataDelaySensitivity)
 		item["data_delay_threshold"] = intPointerInt64Value(v.DataDelayThreshold)
+		item["data_checks"] = boolPointerValue(v.DataChecks)
 		item["proxy_agent_id"] = types.StringValue(v.ProxyAgentId)
 		item["networking_method"] = types.StringValue(v.NetworkingMethod)
 		item["hybrid_deployment_agent_id"] = types.StringValue(v.HybridDeploymentAgentId)

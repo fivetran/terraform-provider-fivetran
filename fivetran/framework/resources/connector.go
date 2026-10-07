@@ -188,6 +188,10 @@ func (r *connector) Create(ctx context.Context, req resource.CreateRequest, resp
 		svc.DataDelayThreshold(&value)
 	}
 
+	if !data.DataChecks.IsNull() && !data.DataChecks.IsUnknown() {
+		svc.DataChecks(data.DataChecks.ValueBool())
+	}
+
 	if data.HybridDeploymentAgentId.ValueString() != "" {
 		svc.HybridDeploymentAgentId(data.HybridDeploymentAgentId.ValueString())
 	}
@@ -376,6 +380,10 @@ func (r *connector) Update(ctx context.Context, req resource.UpdateRequest, resp
 		if !plan.DataDelayThreshold.IsNull() {
 			value := int(plan.DataDelayThreshold.ValueInt64())
 			svc.DataDelayThreshold(&value)
+		}
+
+		if !plan.DataChecks.Equal(state.DataChecks) && !plan.DataChecks.IsNull() && !plan.DataChecks.IsUnknown() {
+			svc.DataChecks(plan.DataChecks.ValueBool())
 		}
 
 		response, err := svc.DoCustom(ctx)

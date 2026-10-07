@@ -45,6 +45,7 @@ func TestConnectionV2SchemaShape(t *testing.T) {
 	assertSingleNestedAttribute(t, attrs, "connect_card_config", false, true, false)
 	assertStringAttribute(t, attrs, "destination_schema_names", true, false, false)
 	assertSingleNestedAttribute(t, attrs, "destination_configuration", false, true, true)
+	assertBoolAttribute(t, attrs, "data_checks", false, true, true)
 	assertBoolAttribute(t, attrs, "run_setup_tests", false, true, true)
 	assertBoolAttribute(t, attrs, "trust_certificates", false, true, true)
 	assertBoolAttribute(t, attrs, "trust_fingerprints", false, true, true)

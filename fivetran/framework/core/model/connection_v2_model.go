@@ -43,6 +43,7 @@ type ConnectionV2ResourceModel struct {
 
 	DataDelaySensitivity types.String `tfsdk:"data_delay_sensitivity"`
 	DataDelayThreshold   types.Int64  `tfsdk:"data_delay_threshold"`
+	DataChecks           types.Bool   `tfsdk:"data_checks"`
 
 	RunSetupTests     types.Bool `tfsdk:"run_setup_tests"`
 	TrustCertificates types.Bool `tfsdk:"trust_certificates"`
@@ -124,6 +125,7 @@ func ConnectionV2ResourceModelAttrTypes() map[string]attr.Type {
 		"private_link_id":            types.StringType,
 		"data_delay_sensitivity":     types.StringType,
 		"data_delay_threshold":       types.Int64Type,
+		"data_checks":                types.BoolType,
 		"run_setup_tests":            types.BoolType,
 		"trust_certificates":         types.BoolType,
 		"trust_fingerprints":         types.BoolType,
@@ -172,6 +174,7 @@ func (d *ConnectionV2ResourceModel) readFromResponseData(ctx context.Context, da
 
 	d.DataDelaySensitivity = stringValueOrNull(data.DataDelaySensitivity)
 	d.DataDelayThreshold = intPointerInt64Value(data.DataDelayThreshold)
+	d.DataChecks = boolPointerValue(data.DataChecks)
 	d.RunSetupTests = boolPointerValue(data.RunSetupTests)
 	d.TrustCertificates = boolPointerValue(data.TrustCertificates)
 	d.TrustFingerprints = boolPointerValue(data.TrustFingerprints)

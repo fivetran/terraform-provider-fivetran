@@ -208,6 +208,14 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 				int64planmodifier.UseStateForUnknown(),
 			},
 		},
+		"data_checks": resourceSchema.BoolAttribute{
+			Optional:    true,
+			Computed:    true,
+			Description: "Specifies whether data validation is enabled for the connection.",
+			PlanModifiers: []planmodifier.Bool{
+				boolplanmodifier.UseStateForUnknown(),
+			},
+		},
 		"run_setup_tests": resourceSchema.BoolAttribute{
 			Optional:    true,
 			Computed:    true,
@@ -223,7 +231,7 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 			Computed:    true,
 			Description: "Specifies whether Fivetran should trust SSH fingerprints automatically.",
 		},
-		"status": connectionV2StatusAttribute(),
+		"status":   connectionV2StatusAttribute(),
 		"schedule": connectionV2ScheduleAttribute(),
 	}
 
