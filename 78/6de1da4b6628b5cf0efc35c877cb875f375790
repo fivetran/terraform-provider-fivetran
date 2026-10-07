@@ -1,0 +1,27 @@
+CHANGELOG.md
+  56b4fd71a3530532 11
+fivetran/framework/core/schema/connection.go
+  56b4fd71a3530532 130
+fivetran/framework/core/schema/connector.go
+  56b4fd71a3530532 138
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.1",
+  "base_commit_sha": "786de1da4b6628b5cf0efc35c877cb875f375790",
+  "prompts": {
+    "56b4fd71a3530532": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7d324875-c6dc-4903-9514-6015c6e844a8",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "IgorShirinsky <igor.shirinsky@fivetran.com>",
+      "messages": [],
+      "total_additions": 4,
+      "total_deletions": 3,
+      "accepted_lines": 3,
+      "overriden_lines": 0
+    }
+  }
+}
