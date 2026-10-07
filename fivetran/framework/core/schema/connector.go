@@ -135,7 +135,7 @@ func ConnectorAttributesSchema() core.Schema {
 			},
 			"data_checks": {
 				ValueType:   core.Boolean,
-				Description: "Specifies whether data checks are enabled for the connector.",
+				Description: "Specifies whether data validation is enabled for the connector.",
 			},
 		},
 	}
