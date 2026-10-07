@@ -226,7 +226,9 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, is
     } else {
         d.DataDelayThreshold = types.Int64Null()
     }
-    d.DataChecks = boolPointerValue(c.DataChecks)
+    if !d.DataChecks.IsUnknown() && !d.DataChecks.IsNull() {
+        d.DataChecks = boolPointerValue(c.DataChecks)
+    }
 
     d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema, d.DestinationSchema, isImporting)
 

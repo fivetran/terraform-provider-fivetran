@@ -54,7 +54,9 @@ func (d *ConnectionResourceModel) ReadFromResponse(resp connections.DetailsWithC
     } else {
         d.DataDelayThreshold = types.Int64Null()
     }
-    d.DataChecks = boolPointerValue(resp.Data.DataChecks)
+    if !d.DataChecks.IsUnknown() && !d.DataChecks.IsNull() {
+        d.DataChecks = boolPointerValue(resp.Data.DataChecks)
+    }
 
     d.DestinationSchema = getDestinationSchemaValue(resp.Data.Service, resp.Data.Schema, d.DestinationSchema, false)
 
@@ -99,7 +101,9 @@ func (d *ConnectionResourceModel) ReadFromCreateResponse(resp connections.Detail
     } else {
         d.DataDelayThreshold = types.Int64Null()
     }
-    d.DataChecks = boolPointerValue(resp.Data.DataChecks)
+    if !d.DataChecks.IsUnknown() && !d.DataChecks.IsNull() {
+        d.DataChecks = boolPointerValue(resp.Data.DataChecks)
+    }
 
     d.DestinationSchema = getDestinationSchemaValue(resp.Data.Service, resp.Data.Schema, d.DestinationSchema, false)
 
