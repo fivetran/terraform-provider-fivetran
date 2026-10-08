@@ -133,6 +133,10 @@ func ConnectorAttributesSchema() core.Schema {
 				ValueType:   core.Integer,
 				Description: "Custom sync delay notification threshold in minutes. The default value is 0. This parameter is only used when data_delay_sensitivity set to CUSTOM.",
 			},
+			"data_checks": {
+				ValueType:   core.Boolean,
+				Description: "Specifies whether data validation is enabled for the connector.",
+			},
 		},
 	}
 }

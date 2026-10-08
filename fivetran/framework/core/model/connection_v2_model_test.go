@@ -75,6 +75,7 @@ func TestConnectionV2ResourceModelTfsdkShape(t *testing.T) {
 		PrivateLinkId:            types.StringNull(),
 		DataDelaySensitivity:     types.StringValue("NORMAL"),
 		DataDelayThreshold:       types.Int64Value(0),
+		DataChecks:               types.BoolNull(),
 		RunSetupTests:            types.BoolValue(false),
 		TrustCertificates:        types.BoolValue(false),
 		TrustFingerprints:        types.BoolValue(false),

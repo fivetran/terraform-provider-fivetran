@@ -3439,3 +3439,154 @@ func TestResourceConnectorFacebookAdsAttributionWindowsDriftMock(t *testing.T) {
 		},
 	)
 }
+
+// Upstream starts returning `data_checks: false` for a connector that was created without `data_checks`:
+// the provider must not produce drift (no PATCH) and must keep `data_checks` absent in state.
+func TestResourceConnectorDataChecksAppearedUpstreamMock(t *testing.T) {
+	responseTemplate := `
+	{
+		"id": "connector_id",
+		"group_id": "group_id",
+		"service": "postgres",
+		"service_version": 1,
+		"schema": "postgres",
+		"paused": true,
+		"pause_after_trial": true,
+		"connected_by": "user_id",
+		"created_at": "2022-01-01T11:22:33.012345Z",
+		"succeeded_at": null,
+		"failed_at": null,
+		"sync_frequency": 5,
+		"schedule_type": "auto",
+		"networking_method": "Directly",
+		"data_delay_sensitivity": "NORMAL",
+		"data_delay_threshold": 0,
+
+		%v
+
+		"status": {
+			"setup_state": "incomplete",
+			"sync_state": "paused",
+			"update_state": "on_schedule",
+			"is_historical_sync": true,
+			"tasks": [],
+			"warnings": []
+		},
+		"config": {
+			"user": "user",
+			"password": "******"
+		}
+	}
+	`
+	responseWithoutDataChecks := fmt.Sprintf(responseTemplate, "")
+	responseWithDataChecksFalse := fmt.Sprintf(responseTemplate, `"data_checks": false,`)
+
+	tfConfig := `
+		resource "fivetran_connector" "test_connector" {
+			provider = fivetran-provider
+
+			group_id = "group_id"
+			service  = "postgres"
+
+			data_delay_sensitivity = "NORMAL"
+			data_delay_threshold   = 0
+
+			destination_schema {
+				prefix = "postgres"
+			}
+
+			trust_certificates = false
+			trust_fingerprints = false
+			run_setup_tests    = false
+
+			config {
+				user     = "user"
+				password = "password"
+			}
+		}
+		`
+
+	var (
+		dataChecksMockPostHandler   *mock.Handler
+		dataChecksMockPatchHandler  *mock.Handler
+		dataChecksMockDeleteHandler *mock.Handler
+		dataChecksMockData          map[string]interface{}
+	)
+
+	step1 := resource.TestStep{
+		Config: tfConfig,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, dataChecksMockPostHandler.Interactions, 1)
+				tfmock.AssertEqual(t, dataChecksMockPatchHandler.Interactions, 0)
+				tfmock.AssertNotEmpty(t, dataChecksMockData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "id", "connector_id"),
+			resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "data_checks"),
+		),
+	}
+
+	step2 := resource.TestStep{
+		PreConfig: func() {
+			dataChecksMockPostHandler.Interactions = 0
+			dataChecksMockPatchHandler.Interactions = 0
+			dataChecksMockData = tfmock.CreateMapFromJsonString(t, responseWithDataChecksFalse)
+		},
+		Config: tfConfig,
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, dataChecksMockPostHandler.Interactions, 0)
+				tfmock.AssertEqual(t, dataChecksMockPatchHandler.Interactions, 0)
+				tfmock.AssertNotEmpty(t, dataChecksMockData)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector.test_connector", "id", "connector_id"),
+			resource.TestCheckNoResourceAttr("fivetran_connector.test_connector", "data_checks"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				tfmock.MockClient().Reset()
+				dataChecksMockData = nil
+				tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", dataChecksMockData), nil
+					},
+				)
+				dataChecksMockPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/connections").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						_, ok := tfmock.RequestBodyToJson(t, req)["data_checks"]
+						tfmock.AssertEqual(t, ok, false)
+						dataChecksMockData = tfmock.CreateMapFromJsonString(t, responseWithoutDataChecks)
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", dataChecksMockData), nil
+					},
+				)
+				dataChecksMockPatchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/connections/connector_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", dataChecksMockData), nil
+					},
+				)
+				dataChecksMockDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						dataChecksMockData = nil
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", dataChecksMockData), nil
+					},
+				)
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, dataChecksMockDeleteHandler.Interactions, 1)
+				tfmock.AssertEmpty(t, dataChecksMockData)
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
+				step2,
+			},
+		},
+	)
+}

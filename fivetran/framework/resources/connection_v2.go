@@ -462,6 +462,9 @@ func (r *connectionV2) applyCreateRootFields(svc *connections.ConnectionCreateSe
 		value := int(data.DataDelayThreshold.ValueInt64())
 		svc.DataDelayThreshold(&value)
 	}
+	if !data.DataChecks.IsNull() && !data.DataChecks.IsUnknown() {
+		svc.DataChecks(data.DataChecks.ValueBool())
+	}
 }
 
 // hasRootFieldChanges reports whether any root-level field applyUpdateRootFields
@@ -479,6 +482,7 @@ func (r *connectionV2) hasRootFieldChanges(plan, state model.ConnectionV2Resourc
 		{plan.HybridDeploymentAgentId, state.HybridDeploymentAgentId},
 		{plan.DataDelaySensitivity, state.DataDelaySensitivity},
 		{plan.DataDelayThreshold, state.DataDelayThreshold},
+		{plan.DataChecks, state.DataChecks},
 	}
 	for _, f := range fields {
 		if fieldChanged(f.plan, f.state) {
@@ -529,6 +533,9 @@ func (r *connectionV2) applyUpdateRootFields(svc *connections.ConnectionUpdateSe
 	if !plan.DataDelayThreshold.Equal(state.DataDelayThreshold) && !plan.DataDelayThreshold.IsNull() && !plan.DataDelayThreshold.IsUnknown() {
 		value := int(plan.DataDelayThreshold.ValueInt64())
 		svc.DataDelayThreshold(&value)
+	}
+	if !plan.DataChecks.Equal(state.DataChecks) && !plan.DataChecks.IsNull() && !plan.DataChecks.IsUnknown() {
+		svc.DataChecks(plan.DataChecks.ValueBool())
 	}
 }
 

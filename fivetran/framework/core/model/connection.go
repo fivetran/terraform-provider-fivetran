@@ -29,6 +29,7 @@ type ConnectionResourceModel struct {
 
     DataDelaySensitivity    types.String `tfsdk:"data_delay_sensitivity"`
     DataDelayThreshold      types.Int64  `tfsdk:"data_delay_threshold"`
+    DataChecks              types.Bool   `tfsdk:"data_checks"`
 
     RunSetupTests     types.Bool `tfsdk:"run_setup_tests"`
     TrustCertificates types.Bool `tfsdk:"trust_certificates"`
@@ -45,15 +46,20 @@ func (d *ConnectionResourceModel) ReadFromResponse(resp connections.DetailsWithC
 
     // as fact - this is computed attribute which user can change
     if !d.DataDelaySensitivity.IsUnknown() && !d.DataDelaySensitivity.IsNull() {
-        d.DataDelaySensitivity = types.StringValue(resp.Data.DataDelaySensitivity)    
+        d.DataDelaySensitivity = types.StringValue(resp.Data.DataDelaySensitivity)
     }
-    
+
     if resp.Data.DataDelayThreshold != nil {
         d.DataDelayThreshold = types.Int64Value(int64(*resp.Data.DataDelayThreshold))
     } else {
         d.DataDelayThreshold = types.Int64Null()
     }
-    
+    if d.DataChecks.IsUnknown() {
+        d.DataChecks = types.BoolNull()
+    } else if !d.DataChecks.IsNull() {
+        d.DataChecks = boolPointerValue(resp.Data.DataChecks)
+    }
+
     d.DestinationSchema = getDestinationSchemaValue(resp.Data.Service, resp.Data.Schema, d.DestinationSchema, false)
 
     if resp.Data.HybridDeploymentAgentId != "" && !d.HybridDeploymentAgentId.IsUnknown() && !d.HybridDeploymentAgentId.IsNull() {
@@ -89,15 +95,20 @@ func (d *ConnectionResourceModel) ReadFromCreateResponse(resp connections.Detail
 
     // as fact - this is computed attribute which user can change
     if !d.DataDelaySensitivity.IsUnknown() && !d.DataDelaySensitivity.IsNull() {
-        d.DataDelaySensitivity = types.StringValue(resp.Data.DataDelaySensitivity)    
+        d.DataDelaySensitivity = types.StringValue(resp.Data.DataDelaySensitivity)
     }
-    
+
     if resp.Data.DataDelayThreshold != nil {
         d.DataDelayThreshold = types.Int64Value(int64(*resp.Data.DataDelayThreshold))
     } else {
         d.DataDelayThreshold = types.Int64Null()
     }
-    
+    if d.DataChecks.IsUnknown() {
+        d.DataChecks = types.BoolNull()
+    } else if !d.DataChecks.IsNull() {
+        d.DataChecks = boolPointerValue(resp.Data.DataChecks)
+    }
+
     d.DestinationSchema = getDestinationSchemaValue(resp.Data.Service, resp.Data.Schema, d.DestinationSchema, false)
 
     if resp.Data.HybridDeploymentAgentId != "" && !d.HybridDeploymentAgentId.IsUnknown() && !d.HybridDeploymentAgentId.IsNull() {
@@ -144,6 +155,7 @@ type ConnectionDatasourceModel struct {
 
     DataDelaySensitivity    types.String `tfsdk:"data_delay_sensitivity"`
     DataDelayThreshold      types.Int64  `tfsdk:"data_delay_threshold"`
+    DataChecks              types.Bool   `tfsdk:"data_checks"`
 
     ProxyAgentId             types.String `tfsdk:"proxy_agent_id"`
     NetworkingMethod         types.String `tfsdk:"networking_method"`
@@ -169,12 +181,13 @@ func (d *ConnectionDatasourceModel) ReadFromResponse(resp connections.DetailsWit
     d.PauseAfterTrial = boolPointerValue(resp.Data.PauseAfterTrial)
     
     d.DataDelaySensitivity = types.StringValue(resp.Data.DataDelaySensitivity)
-    
+
     if resp.Data.DataDelayThreshold != nil {
         d.DataDelayThreshold = types.Int64Value(int64(*resp.Data.DataDelayThreshold))
     } else {
         d.DataDelayThreshold = types.Int64Null()
     }
+    d.DataChecks = boolPointerValue(resp.Data.DataChecks)
 
     if resp.Data.ProxyAgentId != "" {
         d.ProxyAgentId = types.StringValue(resp.Data.ProxyAgentId)

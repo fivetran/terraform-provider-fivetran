@@ -5,9 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.49...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.50...HEAD)
+
+## [v1.9.50](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.49...v1.9.50)
 
 ### Added
+- `fivetran_connection_v2`, `fivetran_connector`, `fivetran_connection`: added `data_checks` field to enable or disable data validation for a connector. The field is also exposed in the `fivetran_connector` and `fivetran_connection` datasources.
 - `fivetran_connector_schema_config`: plan-time warning for `is_primary_key` on file connectors (e.g. `s3`, `gcs`, `sftp`, `google_sheets`). Primary keys can be set before the connector's first sync; if a configured `is_primary_key` differs from the upstream value after the connector has synced, plan shows a warning and apply fails before sending the change, explaining that the connector must be recreated to apply it.
 
 ### Fixed

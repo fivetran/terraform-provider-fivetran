@@ -35,6 +35,7 @@ type ConnectorDatasourceModel struct {
     
     DataDelaySensitivity    types.String `tfsdk:"data_delay_sensitivity"`
     DataDelayThreshold      types.Int64  `tfsdk:"data_delay_threshold"`
+    DataChecks              types.Bool   `tfsdk:"data_checks"`
 
     ProxyAgentId             types.String `tfsdk:"proxy_agent_id"`
     NetworkingMethod         types.String `tfsdk:"networking_method"`
@@ -81,6 +82,7 @@ func (d *ConnectorDatasourceModel) ReadFromResponseIntoDataSource(resp connectio
     } else {
         d.DataDelayThreshold = types.Int64Null()
     }
+    d.DataChecks = boolPointerValue(resp.Data.DataChecks)
 
 	if resp.Data.DailySyncTime != "" {
 		d.DailySyncTime = types.StringValue(resp.Data.DailySyncTime)
@@ -141,6 +143,7 @@ type ConnectorResourceModel struct {
 
     DataDelaySensitivity    types.String `tfsdk:"data_delay_sensitivity"`
     DataDelayThreshold      types.Int64  `tfsdk:"data_delay_threshold"`
+    DataChecks              types.Bool   `tfsdk:"data_checks"`
 
     Config   types.Object   `tfsdk:"config"`
     Auth     types.Object   `tfsdk:"auth"`
@@ -215,15 +218,20 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, is
 
     // as fact - this is computed attribute which user can change
     if !d.DataDelaySensitivity.IsUnknown() && !d.DataDelaySensitivity.IsNull() {
-        d.DataDelaySensitivity = types.StringValue(c.DataDelaySensitivity)    
+        d.DataDelaySensitivity = types.StringValue(c.DataDelaySensitivity)
     }
-    
+
     if c.DataDelayThreshold != nil {
         d.DataDelayThreshold = types.Int64Value(int64(*c.DataDelayThreshold))
     } else {
         d.DataDelayThreshold = types.Int64Null()
     }
-    
+    if d.DataChecks.IsUnknown() {
+        d.DataChecks = types.BoolNull()
+    } else if !d.DataChecks.IsNull() {
+        d.DataChecks = boolPointerValue(c.DataChecks)
+    }
+
     d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema, d.DestinationSchema, isImporting)
 
 	if c.HybridDeploymentAgentId != "" && !d.HybridDeploymentAgentId.IsUnknown() && !d.HybridDeploymentAgentId.IsNull() {
@@ -267,14 +275,15 @@ func (d *ConnectorDatasourceModel) ReadFromContainerForDataSource(c ConnectorMod
 
     // as fact - this is computed attribute which user can change
     if !d.DataDelaySensitivity.IsUnknown() && !d.DataDelaySensitivity.IsNull() {
-        d.DataDelaySensitivity = types.StringValue(c.DataDelaySensitivity)    
+        d.DataDelaySensitivity = types.StringValue(c.DataDelaySensitivity)
     }
-    
+
     if c.DataDelayThreshold != nil {
         d.DataDelayThreshold = types.Int64Value(int64(*c.DataDelayThreshold))
     } else {
         d.DataDelayThreshold = types.Int64Null()
     }
+    d.DataChecks = boolPointerValue(c.DataChecks)
 
     d.DestinationSchema = getDestinationSchemaValue(c.Service, c.Schema, d.DestinationSchema, true)
     
@@ -344,6 +353,7 @@ func (d *ConnectorResourceModel) HasUpdates(plan ConnectorResourceModel, state C
             !plan.HybridDeploymentAgentId.Equal(state.HybridDeploymentAgentId) ||
             !plan.DataDelaySensitivity.Equal(state.DataDelaySensitivity) ||
             !plan.DataDelayThreshold.Equal(state.DataDelayThreshold) ||
+            !plan.DataChecks.Equal(state.DataChecks) ||
             !plan.NetworkingMethod.Equal(state.NetworkingMethod) {
                 return true, patch, authPatch, nil
             } else {
@@ -367,6 +377,7 @@ type ConnectorModelContainer struct {
 
     DataDelaySensitivity string
     DataDelayThreshold   *int
+    DataChecks           *bool
 
 	Config map[string]interface{}
 
@@ -386,6 +397,7 @@ func (c *ConnectorModelContainer) ReadFromResponseData(data connections.DetailsR
 
     c.DataDelaySensitivity = data.DataDelaySensitivity
     c.DataDelayThreshold = data.DataDelayThreshold
+    c.DataChecks = data.DataChecks
 
 	c.Config = config
 
