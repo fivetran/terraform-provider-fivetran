@@ -25,6 +25,42 @@ The allowed `schema_change_handling` options are as follows:
 
 Note that system-enabled tables and columns (such as primary and foreign key columns, and [system tables and columns](https://fivetran.com/docs/getting-started/system-columns-and-tables)) are synced regardless of the `schema_change_handling` settings and configuration. You can only [disable non-locked columns in the system-enabled tables](#nestedblock--nonlocked). If the configuration specifies any system tables or locked system table columns as disabled ( `enabled = "false"`), the provider just ignores these statements.
 
+## Row filters with `schemas_json`
+
+Set `row_filter` on a table in `schemas_json` to manage its filter. The structured `schemas` and legacy `schema` inputs do not support filters.
+
+- Omit `row_filter` to preserve the remote filter and stop managing it in Terraform.
+- Set `row_filter` to `null` to delete the remote filter.
+- Supply an object to create or replace the remote filter.
+
+A filter object requires `name`, `description`, and `column_clauses`. Each clause specifies `column`, `column_type`, `operator`, and `values`.
+Omit the filter-level `operator` for a single clause. For multiple clauses, it defaults to `AND`; `OR` is also available.
+The API validates filter support, clause limits, operators, and values. API errors stop the apply.
+
+Example table entry inside `schemas_json`:
+
+```json
+"Account": {
+  "enabled": true,
+  "row_filter": {
+    "name": "account_record_type",
+    "description": "Select Account records by record type",
+    "column_clauses": [{
+      "column": "RecordTypeId",
+      "column_type": "STRING",
+      "operator": "IN",
+      "values": ["<valid-record-type-id>"]
+    }]
+  }
+}
+```
+
+Keep the full schema selection when adding a filter. Use source schema, table, and column names with their original case.
+Terraform detects changes to managed filters, including remote removal. Omitted filters do not enter state as managed filters.
+For two to ten clauses, the provider treats `AND` as equivalent to omission. Other filter fields remain part of the comparison.
+
+See the [schema update API](https://fivetran.com/docs/developer-resources/rest-api/api-reference/connection-schema/modify-connection-schema-config) for the filter contract.
+
 ## Usage examples
 
 ### Example for the ALLOW_ALL option
