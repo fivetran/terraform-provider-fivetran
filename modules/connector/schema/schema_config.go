@@ -3,6 +3,7 @@ package schema
 import (
 	"context"
 	"fmt"
+	"sort"
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/connections"
@@ -80,6 +81,63 @@ func (c *SchemaConfig) Override(local *SchemaConfig, sch string) error {
 		}
 	}
 	return nil
+}
+
+// MarkRemovedRowFilters marks row filters to be deleted for configured tables that had a row filter in prior state, but don't configure it anymore.
+// Row filters of tables that were never configured are left unchanged.
+func (c *SchemaConfig) MarkRemovedRowFilters(prior SchemaConfig) {
+	for sName, s := range c.schemas {
+		priorSchema, ok := prior.schemas[sName]
+		if !ok {
+			continue
+		}
+		for tName, t := range s.tables {
+			priorTable, ok := priorSchema.tables[tName]
+			if !ok || !priorTable.rowFilterConfigured || priorTable.rowFilter == nil || t.rowFilterConfigured {
+				continue
+			}
+			t.rowFilter = nil
+			t.rowFilterRemoved = true
+		}
+	}
+}
+
+// ValidateRowFilters checks the structure of configured row filters
+func (c SchemaConfig) ValidateRowFilters() error {
+	for sName, s := range c.schemas {
+		for tName, t := range s.tables {
+			if !t.rowFilterConfigured {
+				continue
+			}
+			if err := ValidateRowFilter(t.rowFilter); err != nil {
+				return fmt.Errorf("Invalid row filter for table `%v` of schema `%v`: %v", tName, sName, err)
+			}
+		}
+	}
+	return nil
+}
+
+// UnappliedRowFilters returns sorted "schema.table" entries whose configured row filter doesn't match the upstream one
+func (c SchemaConfig) UnappliedRowFilters(upstream SchemaConfig) []string {
+	result := []string{}
+	for sName, s := range c.schemas {
+		for tName, t := range s.tables {
+			if !t.rowFilterConfigured {
+				continue
+			}
+			var upstreamRowFilter interface{}
+			if upstreamSchema, ok := upstream.schemas[sName]; ok {
+				if upstreamTable, ok := upstreamSchema.tables[tName]; ok {
+					upstreamRowFilter = upstreamTable.rowFilter
+				}
+			}
+			if !rowFilterEqual(upstreamRowFilter, t.rowFilter) {
+				result = append(result, fmt.Sprintf("%v.%v", sName, tName))
+			}
+		}
+	}
+	sort.Strings(result)
+	return result
 }
 
 func (c *SchemaConfig) ReadFromRawSourceData(d []interface{}, sch string) {

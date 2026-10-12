@@ -396,6 +396,9 @@ func (r *connectorSchema) Create(ctx context.Context, req resource.CreateRequest
 		}
 	}
 
+	// the API might accept a row filter without saving it, e.g. when row filtering isn't available for the connection
+	data.CheckRowFiltersApplied(schemaResponse, &resp.Diagnostics)
+
 	// read data from response and merge with existing config
 	data.ReadFromResponse(schemaResponse, false, &resp.Diagnostics)
 	data.Id = types.StringValue(connectorID)
@@ -596,6 +599,8 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 
 	// read local config
 	localConfig := plan.GetSchemaConfig()
+	// row filters removed from the configuration are deleted
+	localConfig.MarkRemovedRowFilters(state.GetSchemaConfig())
 
 	// apply local config, managing upstream config according to schema change handling policy
 	err = config.Override(&localConfig, plan.SchemaChangeHandling.ValueString())
@@ -702,6 +707,9 @@ func (r *connectorSchema) Update(ctx context.Context, req resource.UpdateRequest
 		)
 		return
 	}
+
+	// the API might accept a row filter without saving it, e.g. when row filtering isn't available for the connection
+	plan.CheckRowFiltersApplied(schemaResponse, &resp.Diagnostics)
 
 	plan.ReadFromResponse(schemaResponse, false, &resp.Diagnostics)
 	plan.Id = types.StringValue(connectorID)

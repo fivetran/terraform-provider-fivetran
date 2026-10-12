@@ -3,6 +3,8 @@ package model
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"strings"
 
 	"github.com/fivetran/go-fivetran"
 	"github.com/fivetran/go-fivetran/connections"
@@ -60,6 +62,20 @@ func (d *ConnectorSchemaResourceModel) ValidateSchemaElements(response connectio
 			validateColumns || forceValidateColumns)
 	}
 	return nil, false
+}
+
+// CheckRowFiltersApplied reports an error for configured row filters that don't match upstream after apply
+func (d *ConnectorSchemaResourceModel) CheckRowFiltersApplied(response connections.ConnectionSchemaDetailsResponse, diag *diag.Diagnostics) {
+	upstream := configSchema.SchemaConfig{}
+	upstream.ReadFromResponse(response)
+	if unapplied := d.GetSchemaConfig().UnappliedRowFilters(upstream); len(unapplied) > 0 {
+		diag.AddError(
+			"Row filters were not applied.",
+			fmt.Sprintf("The configured `row_filter` doesn't match the filter returned by the API after apply for:\n  %v\n"+
+				"Check that row filtering is available for this connection (`row_filtering_supported` in the schema config response).",
+				strings.Join(unapplied, "\n  ")),
+		)
+	}
 }
 
 func (d *ConnectorSchemaResourceModel) IsRawSchemaDefined() bool {
@@ -147,6 +163,7 @@ func (d *ConnectorSchemaResourceModel) getNullSchemas() basetypes.MapValue {
 		"enabled":      types.BoolType,
 		"sync_mode":    types.StringType,
 		"parent_table": types.StringType,
+		"row_filter":   types.ObjectType{AttrTypes: rowFilterAttrTypes},
 		"columns": types.MapType{
 			ElemType: types.ObjectType{
 				AttrTypes: columnsAttrTypes,
@@ -199,6 +216,7 @@ func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}, isIm
 		"enabled":      types.BoolType,
 		"sync_mode":    types.StringType,
 		"parent_table": types.StringType,
+		"row_filter":   types.ObjectType{AttrTypes: rowFilterAttrTypes},
 		"columns": types.MapType{
 			ElemType: types.ObjectType{
 				AttrTypes: columnsAttrTypes,
@@ -255,6 +273,8 @@ func (d *ConnectorSchemaResourceModel) getSchemasMap(schemas []interface{}, isIm
 				} else {
 					tableElements["enabled"] = types.BoolNull()
 				}
+				// the schema module includes row_filter only when it is configured or imported
+				tableElements["row_filter"] = rowFilterToObject(tableMap["row_filter"])
 				columns := map[string]attr.Value{}
 				if columnList, ok := tableMap["column"]; ok {
 					for _, c := range columnList.([]interface{}) {
@@ -550,6 +570,10 @@ func (d *ConnectorSchemaResourceModel) getSchemasRaw() []interface{} {
 								if sm, ok := tMap["sync_mode"]; ok {
 									table["sync_mode"] = sm
 								}
+								// explicit null is kept, it deletes the filter
+								if rf, ok := tMap["row_filter"]; ok {
+									table["row_filter"] = rf
+								}
 								if c, ok := tMap["columns"]; ok {
 									columns := []interface{}{}
 									if rawColumns, ok := c.(map[string]interface{}); ok {
@@ -612,6 +636,10 @@ func (d *ConnectorSchemaResourceModel) getSchemas() []interface{} {
 							"sync_mode": tableElement.Attributes()["sync_mode"].(basetypes.StringValue).ValueString(),
 						}
 						tables = append(tables, table)
+
+						if rowFilter, ok := tableElement.Attributes()["row_filter"].(basetypes.ObjectValue); ok && !rowFilter.IsNull() && !rowFilter.IsUnknown() {
+							table["row_filter"] = rowFilterFromObject(rowFilter)
+						}
 
 						if columnsMap, ok := tableElement.Attributes()["columns"].(basetypes.MapValue); ok {
 							columns := []interface{}{}

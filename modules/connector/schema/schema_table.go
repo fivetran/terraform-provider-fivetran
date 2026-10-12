@@ -15,6 +15,11 @@ type _table struct {
 	syncMode    *string
 	parentTable *string
 	columns     map[string]*_column
+
+	rowFilter           interface{}
+	rowFilterConfigured bool // row_filter is set locally, null deletes the filter
+	rowFilterRemoved    bool // row_filter was removed from the configuration, the filter has to be deleted
+	rowFilterPatched    bool // indicates that we need to include new value in request
 }
 
 func (t _table) validateColumns(
@@ -88,6 +93,14 @@ func (t *_table) setSyncMode(value *string) {
 		t.syncMode = nil
 	}
 }
+func (t *_table) setRowFilter(value interface{}) {
+	if !rowFilterEqual(t.rowFilter, value) {
+		t.rowFilter = value
+		t.rowFilterPatched = true
+		t.updated = true
+	}
+}
+
 func (t _table) prepareRequest() *connections.ConnectionSchemaConfigTable {
 	result := fivetran.NewConnectionSchemaConfigTable()
 
@@ -97,6 +110,9 @@ func (t _table) prepareRequest() *connections.ConnectionSchemaConfigTable {
 
 	if t.syncMode != nil {
 		result.SyncMode(*t.syncMode)
+	}
+	if t.rowFilterPatched {
+		result.RowFilter(encodeRowFilter(t.rowFilter))
 	}
 	for k, v := range t.columns {
 		if v.updated {
@@ -110,6 +126,9 @@ func (t _table) prepareCreateRequest() *connections.ConnectionSchemaConfigTable 
 	result.Enabled(t.enabled)
 	if t.syncMode != nil {
 		result.SyncMode(*t.syncMode)
+	}
+	if t.rowFilterConfigured && t.rowFilter != nil {
+		result.RowFilter(encodeRowFilter(t.rowFilter))
 	}
 	for k, v := range t.columns {
 		result.Column(k, v.prepareCreateRequest())
@@ -126,6 +145,9 @@ func (t *_table) override(local *_table, sch string) error {
 			}
 		}
 		t.setSyncMode(local.syncMode)
+		if local.rowFilterConfigured || local.rowFilterRemoved {
+			t.setRowFilter(local.rowFilter)
+		}
 		if len(local.columns) > 0 {
 			// Handle columns that are managed in upstream and saved into standard config
 			for cName, c := range t.columns {
@@ -185,6 +207,11 @@ func (t *_table) readFromResourceData(source map[string]interface{}, sch string)
 	if len(columns) > 0 {
 		t.readColumns(columns, sch)
 	}
+	// Set row_filter only in case if it is configured locally, explicit null deletes the filter
+	if rf, ok := source[ROW_FILTER]; ok {
+		t.rowFilter = rf
+		t.rowFilterConfigured = true
+	}
 
 	if enabled, ok := source[ENABLED]; ok {
 		t.enabled = getBoolValue(enabled)
@@ -232,6 +259,7 @@ func (t *_table) readFromResponse(name string, response *connections.ConnectionS
 
 	t.syncMode = response.SyncMode
 	t.parentTable = response.ParentTable
+	t.rowFilter = decodeRowFilter(response.RowFilter)
 	t.columns = make(map[string]*_column)
 
 	for k, v := range response.Columns {
@@ -271,6 +299,17 @@ func (t _table) toStateObject(sch string, local *_table, diag *diag.Diagnostics,
 
 	if t.parentTable != nil {
 		result[PARENT_TABLE] = *t.parentTable
+	}
+
+	// save row_filter in state only if it is configured, in the configured shape
+	if local != nil && local.rowFilterConfigured {
+		if local.rowFilter == nil || t.rowFilter == nil {
+			result[ROW_FILTER] = t.rowFilter
+		} else {
+			result[ROW_FILTER] = projectRowFilter(t.rowFilter, local.rowFilter)
+		}
+	} else if isImporting && t.rowFilter != nil {
+		result[ROW_FILTER] = t.rowFilter
 	}
 
 	columns := make([]interface{}, 0)

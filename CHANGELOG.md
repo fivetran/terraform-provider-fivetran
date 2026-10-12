@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.50...HEAD)
 
+### Added
+- `fivetran_connector_schema_config`: table-level `row_filter` support in `schemas` and `schemas_json`. Configured filters are sent to the API, read back into state, and changes made outside of Terraform are detected. Tables without `row_filter` keep their existing filter; removing a previously configured `row_filter` deletes it, as does `"row_filter": null` in `schemas_json`.
+
+### Fixed
+- `fivetran_connector_schema_config`: `row_filter` in `schemas_json` was silently ignored: it showed in the plan and apply succeeded, but the filter wasn't sent to the API ([#630](https://github.com/fivetran/terraform-provider-fivetran/issues/630)). Invalid `row_filter` definitions in `schemas_json` now fail at plan time.
+
 ## [v1.9.50](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.49...v1.9.50)
 
 ### Added

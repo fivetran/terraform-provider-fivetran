@@ -129,6 +129,10 @@ func unmarshalSchema(schema string) (map[string]interface{}, error) {
 							if tSyncMode, ok := tMap["sync_mode"]; ok {
 								tResult["sync_mode"] = tSyncMode
 							}
+							// null and omitted row_filter are both stored without a filter
+							if tRowFilter, ok := tMap["row_filter"]; ok && tRowFilter != nil {
+								tResult["row_filter"] = tRowFilter
+							}
 							if tColumns, ok := tMap["columns"]; ok {
 								if tColumnsMap, ok := tColumns.(map[string]interface{}); ok {
 									columns := map[string]interface{}{}

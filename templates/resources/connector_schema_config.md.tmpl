@@ -173,6 +173,62 @@ resource "fivetran_connector_schema_config" "schema" {
 }
 ```
 
+<a id="nestedblock--rowfilter"></a>
+### Row filters
+
+Use `row_filter` to restrict the rows of a table synced to your destination. Row filtering must be available for the connection (`row_filtering_supported` in the [schema config](https://fivetran.com/docs/rest-api/api-reference/connection-schema/connection-schema-config) response).
+
+```hcl
+resource "fivetran_connector_schema_config" "schema" {
+  connector_id = "connector_id"
+  schema_change_handling = "ALLOW_ALL"
+  schemas = {
+    "salesforce" = {
+      tables = {
+        "Account" = {
+          row_filter = {
+            name        = "account_record_type_filter"
+            description = "Filter Account rows by RecordTypeId"
+            column_clauses = [
+              {
+                column   = "RecordTypeId"
+                operator = "IN"
+                values   = ["record_type_id"]
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+The same filter can be defined in `schemas_json`, following the API contract:
+
+```hcl
+  schemas_json = jsonencode({
+    salesforce = {
+      tables = {
+        Account = {
+          row_filter = {
+            name        = "account_record_type_filter"
+            description = "Filter Account rows by RecordTypeId"
+            column_clauses = [
+              { column = "RecordTypeId", operator = "IN", values = ["record_type_id"] }
+            ]
+          }
+        }
+      }
+    }
+  })
+```
+
+- A table without `row_filter` keeps its existing filter, filters configured outside of Terraform aren't changed.
+- Removing a previously configured `row_filter` deletes the filter. In `schemas_json`, `"row_filter": null` deletes the filter as well.
+- Changes made to a configured filter outside of Terraform are detected as a difference.
+- `row_filter` isn't supported in the deprecated `schema` blocks.
+
 {{ .SchemaMarkdown | trimspace }}
 
 ## Import

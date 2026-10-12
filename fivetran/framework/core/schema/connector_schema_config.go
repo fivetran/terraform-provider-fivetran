@@ -5,6 +5,7 @@ import (
 
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/fivetrantypes"
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
@@ -12,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 func GetConnectorSchemaResourceSchema(ctx context.Context) schema.Schema {
@@ -90,6 +92,7 @@ The value defines validation method.
 											stringplanmodifier.UseStateForUnknown(),
 										},
 									},
+									"row_filter": connectorSchemaRowFilterAttribute(),
 									"columns": schema.MapNestedAttribute{
 										Description: "Map of table configurations.",
 										Optional:    true,
@@ -227,6 +230,67 @@ func getColumnBlock() schema.SetNestedBlock {
 					PlanModifiers: []planmodifier.Bool{
 						// keeps unknown for new columns, UseStateForUnknown would plan null and conflict with the upstream value
 						boolplanmodifier.UseNonNullStateForUnknown(),
+					},
+				},
+			},
+		},
+	}
+}
+
+func connectorSchemaRowFilterAttribute() schema.SingleNestedAttribute {
+	return schema.SingleNestedAttribute{
+		Optional: true,
+		Description: "The row filter for the table. A row filter restricts the rows synced to your destination to those that satisfy its clauses. " +
+			"Row filtering must be available for the connection. " +
+			"Tables without a configured `row_filter` keep their existing filter, removing a previously configured `row_filter` deletes the filter.",
+		Attributes: map[string]schema.Attribute{
+			"name": schema.StringAttribute{
+				Required:    true,
+				Description: "The row filter name.",
+			},
+			"description": schema.StringAttribute{
+				Required:    true,
+				Description: "The row filter description.",
+			},
+			"operator": schema.StringAttribute{
+				Optional:    true,
+				Description: "The logical operator combining the column clauses. Defaults to `AND`. Valid only with two or more clauses.",
+				Validators: []validator.String{
+					stringvalidator.OneOf("AND", "OR"),
+				},
+			},
+			"column_clauses": schema.ListNestedAttribute{
+				Required:    true,
+				Description: "The column clauses of the row filter.",
+				Validators: []validator.List{
+					listvalidator.SizeBetween(1, 10),
+				},
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"column": schema.StringAttribute{
+							Required:    true,
+							Description: "The column name.",
+						},
+						"column_type": schema.StringAttribute{
+							Optional:    true,
+							Description: "The column type.",
+							Validators: []validator.String{
+								stringvalidator.OneOf("LONG", "FLOAT", "DOUBLE", "BIGDECIMAL", "STRING", "BOOLEAN", "DATE", "DATETIME"),
+							},
+						},
+						"operator": schema.StringAttribute{
+							Required:    true,
+							Description: "The clause operator.",
+							Validators: []validator.String{
+								stringvalidator.OneOf("EQUALS", "NOT_EQUALS", "LESS", "LESS_OR_EQUALS", "GREATER", "GREATER_OR_EQUALS",
+									"STARTS_WITH", "CONTAINS", "IN", "IS_NULL", "IS_NOT_NULL"),
+							},
+						},
+						"values": schema.ListAttribute{
+							Optional:    true,
+							ElementType: types.StringType,
+							Description: "The clause values. Not used with `IS_NULL` and `IS_NOT_NULL` operators.",
+						},
 					},
 				},
 			},

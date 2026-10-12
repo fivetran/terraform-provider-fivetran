@@ -31,6 +31,17 @@ func (r *connectorSchema) ValidateConfig(ctx context.Context, req resource.Valid
 		return
 	}
 
+	// typed row_filter attributes are validated by the schema, schemas_json isn't
+	if data.IsRawSchemaDefined() {
+		if err := data.GetSchemaConfig().ValidateRowFilters(); err != nil {
+			resp.Diagnostics.AddError(
+				"Invalid Connector Schema Resource Configuration.",
+				err.Error(),
+			)
+			return
+		}
+	}
+
 	if data.ValidationLevel.ValueString() == "NONE" {
 		resp.Diagnostics.AddWarning(
 			"Schema Validation Disabled",
