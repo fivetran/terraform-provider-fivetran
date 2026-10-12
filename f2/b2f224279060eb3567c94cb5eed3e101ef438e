@@ -1,0 +1,21 @@
+go.mod
+  s_f5546879c522a7::t_19ac6a0817d5a8 4
+go.sum
+  s_f5546879c522a7::t_8f448a33f0eddd 32-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "f2b2f224279060eb3567c94cb5eed3e101ef438e",
+  "prompts": {},
+  "sessions": {
+    "s_f5546879c522a7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c22a00c4-709e-4ff4-8e5b-08a12f129589",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
