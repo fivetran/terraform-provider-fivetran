@@ -1761,6 +1761,190 @@ func TestResourceHybridDeploymentDestinationWithoutRegionMock(t *testing.T) {
 	)
 }
 
+// TestResourceMDLSDestinationPolarisRemovalMock reproduces the real-world scenario:
+// the API returns polaris_catalog_configuration with actual non-null values for a
+// managed_data_lake destination that does not declare it in TF config.
+// The provider must include polaris_catalog_configuration: null in the PATCH body
+// so the API removes it, making the plan a no-op on subsequent applies.
+// Without the fix (using GetConfigFieldsMap instead of GetDestinationFieldsMap in
+// HasUpdates), polaris is never included in the patch, the API keeps returning it,
+// and apply fails with "Provider produced inconsistent result after apply".
+func TestResourceMDLSDestinationPolarisRemovalMock(t *testing.T) {
+	var destinationPostHandler *mock.Handler
+	var destinationPatchHandler *mock.Handler
+	var destinationDeleteHandler *mock.Handler
+
+	// POST returns "incomplete" — typical for managed_data_lake on first create.
+	// Because run_setup_tests = true, the provider then calls /test and GET.
+	postResponse := tfmock.CreateMapFromJsonString(t, `
+	{
+		"id": "group_id",
+		"group_id": "group_id",
+		"service": "managed_data_lake",
+		"region": "AWS_EU_WEST_2",
+		"time_zone_offset": "0",
+		"setup_status": "incomplete",
+		"daylight_saving_time_enabled": true,
+		"networking_method": "Directly",
+		"config": {
+			"storage_provider": "AWS",
+			"bucket": "my-bucket",
+			"fivetran_role_arn": "arn:aws:iam::123456789012:role/fivetran",
+			"prefix_path": "fivetran",
+			"region": "eu-west-2",
+			"should_maintain_tables_in_glue": true
+		}
+	}
+	`)
+
+	// GET (called after /test) returns polaris_catalog_configuration with real values.
+	getResponseWithPolaris := tfmock.CreateMapFromJsonString(t, `
+	{
+		"id": "group_id",
+		"group_id": "group_id",
+		"service": "managed_data_lake",
+		"region": "AWS_EU_WEST_2",
+		"time_zone_offset": "0",
+		"setup_status": "connected",
+		"daylight_saving_time_enabled": true,
+		"networking_method": "Directly",
+		"config": {
+			"storage_provider": "AWS",
+			"bucket": "my-bucket",
+			"fivetran_role_arn": "arn:aws:iam::123456789012:role/fivetran",
+			"prefix_path": "fivetran",
+			"region": "eu-west-2",
+			"should_maintain_tables_in_glue": true,
+			"polaris_catalog_configuration": {
+				"client_id": "my-client-id",
+				"client_secret": "my-client-secret",
+				"polaris_catalog": "my-catalog",
+				"polaris_server_endpoint": "https://polaris.example.com"
+			}
+		}
+	}
+	`)
+
+	getResponseWithoutPolaris := tfmock.CreateMapFromJsonString(t, `
+	{
+		"id": "group_id",
+		"group_id": "group_id",
+		"service": "managed_data_lake",
+		"region": "AWS_EU_WEST_2",
+		"time_zone_offset": "0",
+		"setup_status": "connected",
+		"daylight_saving_time_enabled": true,
+		"networking_method": "Directly",
+		"config": {
+			"storage_provider": "AWS",
+			"bucket": "my-bucket",
+			"fivetran_role_arn": "arn:aws:iam::123456789012:role/fivetran",
+			"prefix_path": "fivetran",
+			"region": "eu-west-2",
+			"should_maintain_tables_in_glue": true
+		}
+	}
+	`)
+
+	currentGetResponse := getResponseWithPolaris
+
+	tfConfig := `
+	resource "fivetran_destination" "mydestination" {
+		provider = fivetran-provider
+		group_id = "group_id"
+		service  = "managed_data_lake"
+		region   = "AWS_EU_WEST_2"
+		time_zone_offset = "0"
+		run_setup_tests = "true"
+		daylight_saving_time_enabled = "true"
+		networking_method = "Directly"
+		config {
+			storage_provider               = "AWS"
+			bucket                         = "my-bucket"
+			fivetran_role_arn              = "arn:aws:iam::123456789012:role/fivetran"
+			prefix_path                    = "fivetran"
+			region                         = "eu-west-2"
+			should_maintain_tables_in_glue = true
+		}
+	}`
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				tfmock.MockClient().Reset()
+
+				destinationPostHandler = tfmock.MockClient().When(http.MethodPost, "/v1/destinations").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", postResponse), nil
+					},
+				)
+
+				// Called by provider after /test because setup_status = "incomplete".
+				tfmock.MockClient().When(http.MethodGet, "/v1/destinations/group_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", currentGetResponse), nil
+					},
+				)
+
+				tfmock.MockClient().When(http.MethodPost, "/v1/destinations/group_id/test").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Setup tests have been completed", getResponseWithPolaris), nil
+					},
+				)
+
+				destinationPatchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/destinations/group_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						body := tfmock.RequestBodyToJson(t, req)
+						config := body["config"].(map[string]interface{})
+						tfmock.AssertKeyExistsAndHasValue(t, config, "polaris_catalog_configuration", nil)
+						currentGetResponse = getResponseWithoutPolaris
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", getResponseWithoutPolaris), nil
+					},
+				)
+
+				destinationDeleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/destinations/group_id").ThenCall(
+					func(req *http.Request) (*http.Response, error) {
+						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Destination deleted", nil), nil
+					},
+				)
+			},
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, destinationDeleteHandler.Interactions, 1)
+				return nil
+			},
+			Steps: []resource.TestStep{
+				// Step 1: create — API returns polaris with real values, but provider must
+				// store null in state (user did not declare polaris_catalog_configuration).
+				// No PATCH should be triggered because there is no diff.
+				{
+					Config: tfConfig,
+					Check: resource.ComposeAggregateTestCheckFunc(
+						func(s *terraform.State) error {
+							tfmock.AssertEqual(t, destinationPostHandler.Interactions, 1)
+							tfmock.AssertEqual(t, destinationPatchHandler.Interactions, 0)
+							return nil
+						},
+						resource.TestCheckNoResourceAttr("fivetran_destination.mydestination", "config.polaris_catalog_configuration.client_id"),
+					),
+				},
+				// Step 2: re-apply same config — must be a no-op.
+				{
+					Config: tfConfig,
+					Check: resource.ComposeAggregateTestCheckFunc(
+						func(s *terraform.State) error {
+							tfmock.AssertEqual(t, destinationPatchHandler.Interactions, 0)
+							return nil
+						},
+						resource.TestCheckNoResourceAttr("fivetran_destination.mydestination", "config.polaris_catalog_configuration.client_id"),
+					),
+				},
+			},
+		},
+	)
+}
+
 func TestResourceDestinationExplicitEmptyRegionMock(t *testing.T) {
 	var destinationPostHandler *mock.Handler
 

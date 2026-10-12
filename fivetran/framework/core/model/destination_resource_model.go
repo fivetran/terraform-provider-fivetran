@@ -143,7 +143,7 @@ func (d *DestinationResourceModel) HasUpdates(plan DestinationResourceModel, sta
 		return false, nil, err
 	}
 
-	patch := PrepareConfigAuthPatch(stateConfigMap, planConfigMap, plan.Service.ValueString(), common.GetConfigFieldsMap())
+	patch := PrepareConfigAuthPatch(stateConfigMap, planConfigMap, plan.Service.ValueString(), common.GetDestinationFieldsMap())
 
 	regionChanged := !plan.Region.IsNull() && !plan.Region.IsUnknown() && !plan.Region.Equal(state.Region)
 
