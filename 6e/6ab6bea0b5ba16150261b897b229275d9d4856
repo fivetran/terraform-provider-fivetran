@@ -1,0 +1,27 @@
+fivetran/framework/core/model/connection.go
+  56b4fd71a3530532 57-59,104-106
+fivetran/framework/resources/connector_test.go
+  56b4fd71a3530532 3442-3592
+fivetran/framework/core/model/connector.go
+  56b4fd71a3530532 229-231
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.1",
+  "base_commit_sha": "6e6ab6bea0b5ba16150261b897b229275d9d4856",
+  "prompts": {
+    "56b4fd71a3530532": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7d324875-c6dc-4903-9514-6015c6e844a8",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "IgorShirinsky <igor.shirinsky@fivetran.com>",
+      "messages": [],
+      "total_additions": 160,
+      "total_deletions": 3,
+      "accepted_lines": 160,
+      "overriden_lines": 0
+    }
+  }
+}
