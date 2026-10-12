@@ -1,0 +1,62 @@
+templates/resources/connector_schema_config.md.tmpl
+  s_f5546879c522a7::t_e48ae19b857656 176-231
+fivetran/framework/core/fivetrantypes/json_schema_test.go
+  s_f5546879c522a7::t_b34373a46fe52e 28-57
+modules/connector/schema/schema_config.go
+  s_f5546879c522a7::t_2c3743b2b88f46 86-117,141-142
+  s_f5546879c522a7::t_141f52cc3934d9 6,118-140
+modules/connector/schema/row_filter_test.go
+  s_f5546879c522a7::t_3da2ad8dd44960 1-270
+fivetran/framework/core/schema/connector_schema_config.go
+  s_f5546879c522a7::t_91308adde5e586 8,16,95,239-293,295-296
+  s_f5546879c522a7::t_e657417644e9e2 294,297-299
+fivetran/framework/core/model/connector_schema_config_row_filter.go
+  s_f5546879c522a7::t_532912262f9a04 1-112
+fivetran/framework/resources/connector_schema_resource.go
+  s_f5546879c522a7::t_0d78f59587e2c3 399-401,711-712
+  s_f5546879c522a7::t_1332718bd5937e 602-603
+  s_f5546879c522a7::t_0d27f30fbf9e40 713
+fivetran/framework/core/fivetrantypes/json_schema.go
+  s_f5546879c522a7::t_7847984352113f 132-135
+fivetran/framework/core/model/connector_schema_config.go
+  s_f5546879c522a7::t_7847984352113f 166,219,276-277,573-576,640-642
+  s_f5546879c522a7::t_289e434e8dc1be 6-7
+  s_f5546879c522a7::t_141f52cc3934d9 67-80
+  s_f5546879c522a7::t_4f7248c0e86f47 643
+modules/connector/schema/schema_table.go
+  s_f5546879c522a7::t_ff5e0c753025ae 18-22,96-103,114-116,130-132,148-150,210-214,262,304-313
+  s_f5546879c522a7::t_3ed226e9d514dc 314
+modules/connector/schema/row_filter.go
+  s_f5546879c522a7::t_b4476b917fd1e3 1-138
+docs/resources/connector_schema_config.md
+  s_f5546879c522a7::t_f82d1e79b3e67f 231,314,331-356
+  s_f5546879c522a7::t_c35bb5bd87d692 176-230
+  s_f5546879c522a7::t_b0e6eb86792fe8 357-358
+fivetran/framework/resources/connector_schema_validate.go
+  s_f5546879c522a7::t_1332718bd5937e 34-44
+modules/connector/schema/const.go
+  s_f5546879c522a7::t_865dfb20387f70 24
+fivetran/tests/mock/resource_connector_schema_row_filter_test.go
+  s_f5546879c522a7::t_7631409ada579e 1-3,5-84,88-160,162-164,168-209,211-453
+  s_f5546879c522a7::t_1ac8d1d832dba0 4,165-167,210
+  s_f5546879c522a7::t_0d78f59587e2c3 85-87,161,480-503
+  s_f5546879c522a7::t_4e421040bb8c23 454-479,504-508
+CHANGELOG.md
+  s_f5546879c522a7::t_d2df33c75e378c 10-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "8078f62d8d1410598477e10bf272177c3cf9db31",
+  "prompts": {},
+  "sessions": {
+    "s_f5546879c522a7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c22a00c4-709e-4ff4-8e5b-08a12f129589",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
