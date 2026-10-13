@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.50...HEAD)
 
+### Fixed
+- `fivetran_connection_v2`: fixed "Provider produced inconsistent result after apply" and perpetual plan diffs when the API returns fields inside list items of `config` that aren't set in the configuration (e.g. `sheet_name` / `cell_number` in s3 `files` rows, [#643](https://github.com/fivetran/terraform-provider-fivetran/issues/643)). Upstream-only fields inside list items are now ignored, same as for top-level and nested object fields.
+
 ## [v1.9.50](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.49...v1.9.50)
 
 ### Added
