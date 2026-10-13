@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.50...HEAD)
 
+### Fixed
+- `fivetran_connector_schema_config`: adding a table to an existing resource no longer fails with "Provider produced inconsistent result after apply" for `parent_table` when the table is grouped under a core table.
+
 ## [v1.9.50](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.49...v1.9.50)
 
 ### Added
