@@ -536,3 +536,57 @@ func TestPatchWithService_SetTypedFieldChanged(t *testing.T) {
 		t.Error("set-typed field with different elements should be in patch")
 	}
 }
+
+func TestProject_ListOfObjectsDropsUpstreamOnlyKeys(t *testing.T) {
+	t.Parallel()
+	slot := makeSlot(map[string]*metadata.Property{
+		"files": {Type: "array", Items: &metadata.Property{Properties: map[string]*metadata.Property{
+			"file_pattern": {},
+			"table_name":   {},
+			"secret":       {Format: "password"},
+		}}},
+	})
+	remote := map[string]interface{}{"files": []interface{}{
+		map[string]interface{}{"file_pattern": "a", "table_name": "table_a", "sheet_name": "Sheet1", "cell_number": "A1", "secret": "****"},
+		map[string]interface{}{"file_pattern": "b", "table_name": "table_b_remote", "sheet_name": "Sheet1", "cell_number": "A1"},
+		map[string]interface{}{"file_pattern": "c", "table_name": "table_c", "sheet_name": "Sheet1"},
+	}}
+	mask := map[string]interface{}{"files": []interface{}{
+		map[string]interface{}{"file_pattern": "a", "table_name": "table_a", "secret": "real"},
+		map[string]interface{}{"file_pattern": "b", "table_name": "table_b"},
+	}}
+
+	files := project(remote, mask, slot)["files"].([]interface{})
+
+	if len(files) != 3 {
+		t.Fatalf("expected 3 files (remote length kept to surface drift), got %d", len(files))
+	}
+	first := files[0].(map[string]interface{})
+	if _, ok := first["sheet_name"]; ok {
+		t.Error("sheet_name not in mask should be dropped")
+	}
+	if _, ok := first["cell_number"]; ok {
+		t.Error("cell_number not in mask should be dropped")
+	}
+	if first["secret"] != "real" {
+		t.Errorf("password inside list item: got %v, want real", first["secret"])
+	}
+	if files[1].(map[string]interface{})["table_name"] != "table_b_remote" {
+		t.Errorf("changed value inside list item should take remote, got %v", files[1])
+	}
+	if files[2].(map[string]interface{})["sheet_name"] != "Sheet1" {
+		t.Errorf("remote-only list item should be kept as-is, got %v", files[2])
+	}
+}
+
+func TestProject_ListOfScalarsTakesRemote(t *testing.T) {
+	t.Parallel()
+	remote := map[string]interface{}{"list": []interface{}{"x", "y"}}
+	mask := map[string]interface{}{"list": []interface{}{"a"}}
+
+	list := project(remote, mask, nil)["list"].([]interface{})
+
+	if len(list) != 2 || list[0] != "x" || list[1] != "y" {
+		t.Errorf("got %v, want [x y]", list)
+	}
+}
