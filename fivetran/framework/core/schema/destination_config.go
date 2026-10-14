@@ -29,6 +29,14 @@ func GetResourceDestinationConfigSchemaAttributes() map[string]resourceSchema.At
 				result[fn] = schemaAttributeFromConfigField(f, false).(resourceSchema.Attribute)
 			}
 		}
+		// `host` is nullable in the destination field definitions, so the generic builder
+		// leaves it Optional-only. Fivetran silently derives it from `private_link_id` when
+		// one is set, so it must be Computed too, or the provider can't reconcile an explicit
+		// config value with the API-derived value without an inconsistent-result error.
+		if hostAttr, ok := result["host"].(resourceSchema.StringAttribute); ok {
+			hostAttr.Computed = true
+			result["host"] = hostAttr
+		}
 		if destinationResourceSchemaAttrsMutex.TryLock() {
 			destinationResourceSchemaAttrs = result
 		}
