@@ -216,7 +216,7 @@ func getValue(
 		// (local == nil), do not store API-returned values in state — Terraform would
 		// detect an inconsistency between the null plan value and the non-null state.
 		// During import (isImporting) we do populate state from the API.
-		if local == nil && currentField != nil && !currentField.Readonly {
+		if local == nil && currentField != nil {
 			if currentField.GetIsSensitive(service) || !isImporting {
 				return types.ObjectNull(complexType.AttributeTypes())
 			}

@@ -1100,13 +1100,13 @@
       "api_field": ""
    },
    "polaris_catalog_configuration": {
-      "readonly": false,
+      "readonly": true,
       "sensitive": false,
       "nullable": true,
       "type": "object",
       "fields": {
          "client_id": {
-            "readonly": false,
+            "readonly": true,
             "sensitive": false,
             "nullable": true,
             "type": "string",
@@ -1120,7 +1120,7 @@
             "api_field": ""
          },
          "client_secret": {
-            "readonly": false,
+            "readonly": true,
             "sensitive": false,
             "nullable": true,
             "type": "string",
@@ -1134,7 +1134,7 @@
             "api_field": ""
          },
          "polaris_catalog": {
-            "readonly": false,
+            "readonly": true,
             "sensitive": false,
             "nullable": true,
             "type": "string",
@@ -1148,7 +1148,7 @@
             "api_field": ""
          },
          "polaris_server_endpoint": {
-            "readonly": false,
+            "readonly": true,
             "sensitive": false,
             "nullable": true,
             "type": "string",
