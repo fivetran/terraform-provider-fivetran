@@ -212,8 +212,14 @@ func getValue(
 			return types.ObjectNull(complexType.AttributeTypes())
 		}
 		vMap := value.(map[string]interface{})
-		if len(vMap) == 0 && local == nil {
-			return types.ObjectNull(complexType.AttributeTypes())
+		// Mirror the collection logic: if the user did not configure this nested object
+		// (local == nil), do not store API-returned values in state — Terraform would
+		// detect an inconsistency between the null plan value and the non-null state.
+		// During import (isImporting) we do populate state from the API.
+		if local == nil && currentField != nil {
+			if currentField.GetIsSensitive(service) || !isImporting {
+				return types.ObjectNull(complexType.AttributeTypes())
+			}
 		}
 		var lMap map[string]interface{}
 		if local != nil {
