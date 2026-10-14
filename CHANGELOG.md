@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `fivetran_connector_schema_config`: `row_filter` in `schemas_json` was silently ignored: it showed in the plan and apply succeeded, but the filter wasn't sent to the API ([#630](https://github.com/fivetran/terraform-provider-fivetran/issues/630)). Invalid `row_filter` definitions in `schemas_json` now fail at plan time.
 - `fivetran_destination`: fixed "Provider produced inconsistent result after apply" caused by fields returned from the API that were not declared in the config. `polaris_catalog_configuration` and its nested fields (`client_id`, `client_secret`, `polaris_catalog`, `polaris_server_endpoint`) are now correctly marked as read-only.
-- `fivetran_group`: fixed `name` field - it's not maked as `ForceNew` anymore, resource now allows to update the existing group name.
+- `fivetran_group`: fixed `name` field - removed `ForceNew` flag from it, resource now allows to update the existing group name.
 
 ## [v1.9.50](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.49...v1.9.50)
 
