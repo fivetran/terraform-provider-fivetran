@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.50...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.51...HEAD)
+
+## [v1.9.51](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.50...v1.9.51)
 
 ### Added
 - `fivetran_connector_schema_config`: table-level `row_filter` support in `schemas` and `schemas_json`. Configured filters are sent to the API, read back into state, and changes made outside of Terraform are detected. Tables without `row_filter` keep their existing filter; removing a previously configured `row_filter` deletes it, as does `"row_filter": null` in `schemas_json`.
