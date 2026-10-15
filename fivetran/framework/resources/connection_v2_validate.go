@@ -109,7 +109,7 @@ func validateDynamicObject(values map[string]interface{}, slot *metadata.Propert
 			diags.AddAttributeWarning(
 				fieldPath,
 				"Non-Standard Dynamic Field",
-				fmt.Sprintf("Field %q is marked as %q in connector metadata. It is accepted because the metadata endpoint returned it for this account, but its availability or behavior may change, including potential removal for sunset fields.", name, prop.FieldStatus),
+				fmt.Sprintf("Field %q is marked as %q in metadata. It is accepted because the metadata endpoint returned it for this account, but its availability or behavior may change, including potential removal for sunset fields.", name, prop.FieldStatus),
 			)
 		}
 
@@ -176,7 +176,7 @@ func validateDynamicValue(value interface{}, prop *metadata.Property, valuePath 
 		diags.AddAttributeError(
 			valuePath,
 			"Unknown Metadata Field Type",
-			fmt.Sprintf("Connector metadata returned unsupported type %q. Expected one of string, integer, number, boolean, array, or object.", prop.Type),
+			fmt.Sprintf("Metadata returned unsupported type %q. Expected one of string, integer, number, boolean, array, or object.", prop.Type),
 		)
 	}
 }
