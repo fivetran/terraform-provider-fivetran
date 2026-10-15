@@ -78,12 +78,8 @@ func connectorMetadataCacheValue(service string, value interface{}) (*metadata.C
 // shared provider cache so destination and connector service ids can never collide.
 const destinationMetadataCachePrefix = "destination:"
 
-// GetCachedDestinationMetadata returns destination metadata for the given service, fetching once per provider instance.
-// Errors are not cached — transient failures are retried on the next call.
-func GetCachedDestinationMetadata(ctx context.Context, client *fivetran.Client, cache *sync.Map, service string) (*metadata.DestinationMetadata, error) {
-	return getCachedDestinationMetadata(ctx, client, cache, service, "")
-}
-
+// GetCachedDestinationMetadataWithUserAgentSuffix returns destination metadata for the given service,
+// fetching once per provider instance. Errors are not cached — transient failures are retried on the next call.
 func GetCachedDestinationMetadataWithUserAgentSuffix(ctx context.Context, client *fivetran.Client, cache *sync.Map, service string, userAgentSuffix string) (*metadata.DestinationMetadata, error) {
 	return getCachedDestinationMetadata(ctx, client, cache, service, userAgentSuffix)
 }
