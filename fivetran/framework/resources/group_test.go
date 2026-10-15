@@ -118,7 +118,8 @@ func TestResourceGroupMock(t *testing.T) {
 		`,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			func(s *terraform.State) error {
-				tfmock.AssertEqual(t, groupPostHandler.Interactions, 2)
+				tfmock.AssertEqual(t, groupPostHandler.Interactions, 1)
+				tfmock.AssertEqual(t, groupPatchHandler.Interactions, 1)
 				return nil
 			},
 			resource.TestCheckResourceAttr("fivetran_group.testgroup", "name", "new_test_group_name"),
@@ -133,7 +134,7 @@ func TestResourceGroupMock(t *testing.T) {
 			},
 			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
-				tfmock.AssertEqual(t, groupDeleteHandler.Interactions, 2)
+				tfmock.AssertEqual(t, groupDeleteHandler.Interactions, 1)
 				tfmock.AssertEmpty(t, groupData)
 				return nil
 			},

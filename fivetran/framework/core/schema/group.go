@@ -16,7 +16,6 @@ func GroupSchema() core.Schema {
 			},
 			"name": {
 				Required:    true,
-				ForceNew:    true,
 				ValueType:   core.String,
 				Description: "The name of the group within your account.",
 			},
