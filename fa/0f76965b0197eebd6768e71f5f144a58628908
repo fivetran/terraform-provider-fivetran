@@ -1,0 +1,22 @@
+docs/resources/destination_v2.md
+  s_76bc1395e6dfbc::t_6ab16366dac370 1-92
+fivetran/framework/resources/destination_v2_mock_test.go
+  s_76bc1395e6dfbc::t_3a3091b6bf5c31 200
+  s_76bc1395e6dfbc::t_8715ee158f71fa 1-199,201-238
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "fa0f76965b0197eebd6768e71f5f144a58628908",
+  "prompts": {},
+  "sessions": {
+    "s_76bc1395e6dfbc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dde40138-c6ec-4ff7-ac0b-48d0b45781d8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
