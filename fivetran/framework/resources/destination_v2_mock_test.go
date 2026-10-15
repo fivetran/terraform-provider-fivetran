@@ -3,6 +3,7 @@ package resources_test
 import (
 	"net/http"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/fivetran/go-fivetran/tests/mock"
@@ -57,6 +58,15 @@ func destinationV2MockConfig(host, database, extra string) string {
 		}`
 }
 
+// assertDestinationV2UserAgent checks that a request carries the destination v2 user-agent suffix.
+func assertDestinationV2UserAgent(t *testing.T, req *http.Request) {
+	t.Helper()
+	userAgent := req.Header.Get("User-Agent")
+	if !strings.HasSuffix(userAgent, " fivetran_destination_v2") {
+		t.Errorf("%s %s: User-Agent %q does not end with the fivetran_destination_v2 suffix", req.Method, req.URL.Path, userAgent)
+	}
+}
+
 func TestResourceDestinationV2Mock(t *testing.T) {
 	var destinationData map[string]interface{}
 	var metadataHandler, postHandler, patchHandler, setupTestsHandler, deleteHandler *mock.Handler
@@ -67,12 +77,14 @@ func TestResourceDestinationV2Mock(t *testing.T) {
 
 		metadataHandler = tfmock.MockClient().When(http.MethodGet, "/v1/metadata/destination-types/snowflake").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
+				assertDestinationV2UserAgent(t, req)
 				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", tfmock.CreateMapFromJsonString(t, destinationV2MockMetadata)), nil
 			},
 		)
 
 		postHandler = tfmock.MockClient().When(http.MethodPost, "/v1/destinations").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
+				assertDestinationV2UserAgent(t, req)
 				body := tfmock.RequestBodyToJson(t, req)
 				tfmock.AssertKeyExistsAndHasValue(t, body, "region", "GCP_US_EAST4")
 				tfmock.AssertKeyExistsAndHasValue(t, body, "run_setup_tests", true)
@@ -109,12 +121,14 @@ func TestResourceDestinationV2Mock(t *testing.T) {
 
 		tfmock.MockClient().When(http.MethodGet, "/v1/destinations/destination_id").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
+				assertDestinationV2UserAgent(t, req)
 				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", destinationData), nil
 			},
 		)
 
 		patchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/destinations/destination_id").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
+				assertDestinationV2UserAgent(t, req)
 				body := tfmock.RequestBodyToJson(t, req)
 				config := tfmock.AssertKeyExists(t, body, "config").(map[string]interface{})
 				// Only the changed field is sent: no unchanged, password or readonly fields.
@@ -137,6 +151,7 @@ func TestResourceDestinationV2Mock(t *testing.T) {
 
 		deleteHandler = tfmock.MockClient().When(http.MethodDelete, "/v1/destinations/destination_id").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
+				assertDestinationV2UserAgent(t, req)
 				destinationData = nil
 				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Destination has been deleted", nil), nil
 			},
