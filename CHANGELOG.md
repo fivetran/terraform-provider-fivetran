@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.51...HEAD)
 
+### Added
+- New resource `fivetran_destination_v2` (public preview): `config` is a dynamic, service-specific object whose fields, types, enum values, and readonly/immutable rules come from destination metadata at plan time. Unknown fields, wrong types, invalid enum values, and readonly fields fail the plan; changing an immutable field plans a replacement. Field names match the Fivetran REST API.
+
 ## [v1.9.51](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.50...v1.9.51)
 
 ### Added
