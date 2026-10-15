@@ -334,14 +334,15 @@ func project(remote, mask map[string]interface{}, slot *metadata.Property) map[s
 
 // projectList projects object elements of a remote list onto the mask element at the same index,
 // so upstream-only keys inside list items (e.g. new fields added to each row of s3 `files`) are dropped.
-// Remote elements without a mask counterpart, and non-object elements, are kept as-is to surface drift.
+// Items are paired by index only when both lists have the same length: after an upstream insert or removal
+// the pairing is unreliable, so the remote list is kept as-is to surface drift. Non-object elements are kept as-is.
 func projectList(remote, mask []interface{}, itemSlot *metadata.Property) []interface{} {
+	if len(remote) != len(mask) {
+		return remote
+	}
 	result := make([]interface{}, len(remote))
 	for i, remoteItem := range remote {
 		result[i] = remoteItem
-		if i >= len(mask) {
-			continue
-		}
 		maskItem, ok := mask[i].(map[string]interface{})
 		if !ok {
 			continue
