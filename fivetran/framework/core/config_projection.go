@@ -280,6 +280,7 @@ func ProjectDynamic(remote, mask map[string]interface{}, slot *metadata.Property
 //   - readonly: store remote value so user can reference it; no drift tracking
 //   - key in mask but absent from remote: set nil to surface drift
 //   - nested object: recurse
+//   - list of objects: recurse element-wise by index (see projectList)
 //   - normal: take remote value
 func project(remote, mask map[string]interface{}, slot *metadata.Property) map[string]interface{} {
 	result := make(map[string]interface{}, len(mask))
@@ -314,9 +315,42 @@ func project(remote, mask map[string]interface{}, slot *metadata.Property) map[s
 			}
 		}
 
+		if maskList, ok := maskVal.([]interface{}); ok {
+			if remoteList, ok2 := remoteVal.([]interface{}); ok2 {
+				var itemSlot *metadata.Property
+				if prop != nil {
+					itemSlot = prop.Items
+				}
+				result[key] = projectList(remoteList, maskList, itemSlot)
+				continue
+			}
+		}
+
 		result[key] = remoteVal
 	}
 
+	return result
+}
+
+// projectList projects object elements of a remote list onto the mask element at the same index,
+// so upstream-only keys inside list items (e.g. new fields added to each row of s3 `files`) are dropped.
+// Items are paired by index only when both lists have the same length: after an upstream insert or removal
+// the pairing is unreliable, so the remote list is kept as-is to surface drift. Non-object elements are kept as-is.
+func projectList(remote, mask []interface{}, itemSlot *metadata.Property) []interface{} {
+	if len(remote) != len(mask) {
+		return remote
+	}
+	result := make([]interface{}, len(remote))
+	for i, remoteItem := range remote {
+		result[i] = remoteItem
+		maskItem, ok := mask[i].(map[string]interface{})
+		if !ok {
+			continue
+		}
+		if remoteObject, ok := remoteItem.(map[string]interface{}); ok {
+			result[i] = project(remoteObject, maskItem, itemSlot)
+		}
+	}
 	return result
 }
 

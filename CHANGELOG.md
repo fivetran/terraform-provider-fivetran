@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.50...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.51...HEAD)
+
+## [v1.9.51](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.50...v1.9.51)
 
 ### Added
 - `fivetran_connector_schema_config`: table-level `row_filter` support in `schemas` and `schemas_json`. Configured filters are sent to the API, read back into state, and changes made outside of Terraform are detected. Tables without `row_filter` keep their existing filter; removing a previously configured `row_filter` deletes it, as does `"row_filter": null` in `schemas_json`.
@@ -14,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `fivetran_connector_schema_config`: `row_filter` in `schemas_json` was silently ignored: it showed in the plan and apply succeeded, but the filter wasn't sent to the API ([#630](https://github.com/fivetran/terraform-provider-fivetran/issues/630)). Invalid `row_filter` definitions in `schemas_json` now fail at plan time.
 - `fivetran_destination`: fixed "Provider produced inconsistent result after apply" caused by fields returned from the API that were not declared in the config. `polaris_catalog_configuration` and its nested fields (`client_id`, `client_secret`, `polaris_catalog`, `polaris_server_endpoint`) are now correctly marked as read-only.
 - `fivetran_group`: fixed `name` field - removed `ForceNew` flag from it, resource now allows to update the existing group name.
+- `fivetran_connection_v2`: fixed "Provider produced inconsistent result after apply" and perpetual plan diffs when the API returns fields inside list items of `config` that aren't set in the configuration (e.g. `sheet_name` / `cell_number` in s3 `files` rows, [#643](https://github.com/fivetran/terraform-provider-fivetran/issues/643)). Upstream-only fields inside list items are now ignored, same as for top-level and nested object fields.
 
 ## [v1.9.50](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.49...v1.9.50)
 

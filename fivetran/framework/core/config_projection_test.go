@@ -2,6 +2,7 @@ package core
 
 import (
 	"context"
+	"reflect"
 	"testing"
 
 	"github.com/fivetran/go-fivetran/metadata"
@@ -534,5 +535,88 @@ func TestPatchWithService_SetTypedFieldChanged(t *testing.T) {
 	)
 	if _, ok := patch["attribution_windows"]; !ok {
 		t.Error("set-typed field with different elements should be in patch")
+	}
+}
+
+func filesSlot() *metadata.Property {
+	return makeSlot(map[string]*metadata.Property{
+		"files": {Type: "array", Items: &metadata.Property{Properties: map[string]*metadata.Property{
+			"file_pattern": {},
+			"table_name":   {},
+			"secret":       {Format: "password"},
+		}}},
+	})
+}
+
+func TestProject_ListOfObjectsDropsUpstreamOnlyKeys(t *testing.T) {
+	t.Parallel()
+	remote := map[string]interface{}{"files": []interface{}{
+		map[string]interface{}{"file_pattern": "a", "table_name": "table_a", "sheet_name": "Sheet1", "cell_number": "A1", "secret": "****"},
+		map[string]interface{}{"file_pattern": "b", "table_name": "table_b_remote", "sheet_name": "Sheet1", "cell_number": "A1"},
+	}}
+	mask := map[string]interface{}{"files": []interface{}{
+		map[string]interface{}{"file_pattern": "a", "table_name": "table_a", "secret": "real"},
+		map[string]interface{}{"file_pattern": "b", "table_name": "table_b"},
+	}}
+
+	files := project(remote, mask, filesSlot())["files"].([]interface{})
+
+	if len(files) != 2 {
+		t.Fatalf("expected 2 files, got %d", len(files))
+	}
+	first := files[0].(map[string]interface{})
+	if _, ok := first["sheet_name"]; ok {
+		t.Error("sheet_name not in mask should be dropped")
+	}
+	if _, ok := first["cell_number"]; ok {
+		t.Error("cell_number not in mask should be dropped")
+	}
+	if first["secret"] != "real" {
+		t.Errorf("password inside list item: got %v, want real", first["secret"])
+	}
+	if files[1].(map[string]interface{})["table_name"] != "table_b_remote" {
+		t.Errorf("changed value inside list item should take remote, got %v", files[1])
+	}
+}
+
+// After an upstream insert or removal the index pairing is unreliable, the remote list is kept as-is.
+func TestProject_ListOfObjectsLengthMismatchTakesRemote(t *testing.T) {
+	t.Parallel()
+	rowA := map[string]interface{}{"file_pattern": "a", "table_name": "table_a", "sheet_name": "Sheet1"}
+	rowB := map[string]interface{}{"file_pattern": "b", "table_name": "table_b", "sheet_name": "Sheet1"}
+	inserted := map[string]interface{}{"file_pattern": "new", "table_name": "table_new", "sheet_name": "Sheet1"}
+	cases := []struct {
+		name   string
+		remote []interface{}
+		mask   []interface{}
+	}{
+		{"row inserted at the beginning", []interface{}{inserted, rowA, rowB}, []interface{}{
+			map[string]interface{}{"file_pattern": "a", "table_name": "table_a"},
+			map[string]interface{}{"file_pattern": "b", "table_name": "table_b"},
+		}},
+		{"row removed", []interface{}{rowB}, []interface{}{
+			map[string]interface{}{"file_pattern": "a", "table_name": "table_a"},
+			map[string]interface{}{"file_pattern": "b", "table_name": "table_b"},
+		}},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			files := project(map[string]interface{}{"files": c.remote}, map[string]interface{}{"files": c.mask}, filesSlot())["files"].([]interface{})
+			if !reflect.DeepEqual(files, c.remote) {
+				t.Errorf("got %v, want remote as-is %v", files, c.remote)
+			}
+		})
+	}
+}
+
+func TestProject_ListOfScalarsTakesRemote(t *testing.T) {
+	t.Parallel()
+	remote := map[string]interface{}{"list": []interface{}{"x", "y"}}
+	mask := map[string]interface{}{"list": []interface{}{"a"}}
+
+	list := project(remote, mask, nil)["list"].([]interface{})
+
+	if len(list) != 2 || list[0] != "x" || list[1] != "y" {
+		t.Errorf("got %v, want [x y]", list)
 	}
 }

@@ -4,6 +4,9 @@ import (
 	"context"
 	"testing"
 
+	"github.com/fivetran/go-fivetran/connections"
+	"github.com/fivetran/go-fivetran/metadata"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -115,5 +118,57 @@ func TestConnectionV2ResourceModelTfsdkShape(t *testing.T) {
 	}
 	if output.Status.IsUnknown() {
 		t.Fatal("expected status object to keep a known null value")
+	}
+}
+
+// Regression for GitHub #643: the API adds sheet_name / cell_number to every s3 `files` row,
+// state after apply must still equal the planned config.
+func TestConnectionV2ReadFromResponseIgnoresUpstreamOnlyListItemFields(t *testing.T) {
+	t.Parallel()
+	ctx := context.Background()
+
+	planConfig, diags := core.MapToDynamic(ctx, map[string]interface{}{
+		"bucket":              "bucket",
+		"file_mapping_method": "DEFINE_PER_TABLE",
+		"files": []interface{}{
+			map[string]interface{}{"file_pattern": ".*folder_a/sample\\.tsv", "table_name": "table_a"},
+			map[string]interface{}{"file_pattern": ".*folder_b/sample\\.tsv", "table_name": "table_b"},
+		},
+	})
+	if diags.HasError() {
+		t.Fatalf("building plan config: %v", diags)
+	}
+	configMask, diags := core.DynamicToMap(ctx, planConfig)
+	if diags.HasError() {
+		t.Fatalf("building mask: %v", diags)
+	}
+
+	var response connections.DetailsWithCustomConfigNoTestsResponse
+	response.Data.ID = "connection_id"
+	response.Data.Service = "s3"
+	response.Data.Config = map[string]interface{}{
+		"bucket":              "bucket",
+		"file_mapping_method": "DEFINE_PER_TABLE",
+		"files": []interface{}{
+			map[string]interface{}{"file_pattern": ".*folder_a/sample\\.tsv", "table_name": "table_a", "sheet_name": "Sheet1", "cell_number": "A1"},
+			map[string]interface{}{"file_pattern": ".*folder_b/sample\\.tsv", "table_name": "table_b", "sheet_name": "Sheet1", "cell_number": "A1"},
+		},
+	}
+	meta := &metadata.ConnectorMetadata{Config: metadata.Property{Properties: map[string]*metadata.Property{
+		"bucket":              {Type: "string"},
+		"file_mapping_method": {Type: "string"},
+		"files": {Type: "array", Items: &metadata.Property{Type: "object", Properties: map[string]*metadata.Property{
+			"file_pattern": {Type: "string"},
+			"table_name":   {Type: "string"},
+		}}},
+	}}}
+
+	var data model.ConnectionV2ResourceModel
+	if diags := data.ReadFromResponse(ctx, response, meta, configMask); diags.HasError() {
+		t.Fatalf("ReadFromResponse: %v", diags)
+	}
+
+	if !data.Config.Equal(planConfig) {
+		t.Fatalf("config after read differs from plan:\n got: %v\nwant: %v", data.Config, planConfig)
 	}
 }
