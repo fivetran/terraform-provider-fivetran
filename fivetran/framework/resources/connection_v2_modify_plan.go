@@ -89,8 +89,8 @@ func (r *connectionV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRe
 	}
 
 	service := plan.Service.ValueString()
-	hasImmutableReplacement := appendImmutableRequiresReplace(planConfig, stateConfig, &meta.Config, path.Root("config"), resp, service)
-	hasImmutableReplacement = appendImmutableRequiresReplace(planAuth, stateAuth, &meta.Auth, path.Root("auth"), resp, service) || hasImmutableReplacement
+	hasImmutableReplacement := appendImmutableRequiresReplace(planConfig, stateConfig, &meta.Config, path.Root("config"), resp, service, addHistoricalResyncWarning)
+	hasImmutableReplacement = appendImmutableRequiresReplace(planAuth, stateAuth, &meta.Auth, path.Root("auth"), resp, service, addHistoricalResyncWarning) || hasImmutableReplacement
 	if hasImmutableReplacement {
 		validateRequiredDynamicFields(planConfig, &meta.Config, path.Root("config"), &resp.Diagnostics)
 		validateRequiredDynamicFields(planAuth, &meta.Auth, path.Root("auth"), &resp.Diagnostics)
@@ -118,7 +118,7 @@ func validateRequiredDynamicFields(values map[string]interface{}, slot *metadata
 			diags.AddAttributeError(
 				root.AtName(name),
 				"Missing Required Dynamic Field",
-				fmt.Sprintf("Connector metadata requires field %q when creating this connection.", name),
+				fmt.Sprintf("Metadata requires field %q when creating this resource.", name),
 			)
 		}
 	}
@@ -150,7 +150,10 @@ func validateNestedRequiredDynamicFields(value interface{}, prop *metadata.Prope
 	}
 }
 
-func appendImmutableRequiresReplace(planValues, stateValues map[string]interface{}, slot *metadata.Property, root path.Path, resp *resource.ModifyPlanResponse, service string) bool {
+// replacementWarning adds the resource-specific warning emitted when a field forces replacement.
+type replacementWarning func(fieldPath path.Path, diags *diag.Diagnostics)
+
+func appendImmutableRequiresReplace(planValues, stateValues map[string]interface{}, slot *metadata.Property, root path.Path, resp *resource.ModifyPlanResponse, service string, warn replacementWarning) bool {
 	if slot == nil {
 		return false
 	}
@@ -166,21 +169,21 @@ func appendImmutableRequiresReplace(planValues, stateValues map[string]interface
 		stateValue, stateHasValue := stateValues[name]
 		if prop.Immutable && (!stateHasValue || !dynamicValuesEqualWithService(planValue, stateValue, service)) {
 			resp.RequiresReplace.Append(fieldPath)
-			addHistoricalResyncWarning(fieldPath, &resp.Diagnostics)
+			warn(fieldPath, &resp.Diagnostics)
 			hasReplacement = true
 			continue
 		}
 
-		hasReplacement = appendNestedImmutableRequiresReplace(planValue, stateValue, prop, fieldPath, resp, service) || hasReplacement
+		hasReplacement = appendNestedImmutableRequiresReplace(planValue, stateValue, prop, fieldPath, resp, service, warn) || hasReplacement
 	}
 	return hasReplacement
 }
 
-func appendNestedImmutableRequiresReplace(planValue, stateValue interface{}, prop *metadata.Property, fieldPath path.Path, resp *resource.ModifyPlanResponse, service string) bool {
+func appendNestedImmutableRequiresReplace(planValue, stateValue interface{}, prop *metadata.Property, fieldPath path.Path, resp *resource.ModifyPlanResponse, service string, warn replacementWarning) bool {
 	switch planNested := planValue.(type) {
 	case map[string]interface{}:
 		stateNested, _ := stateValue.(map[string]interface{})
-		return appendImmutableRequiresReplace(planNested, stateNested, prop, fieldPath, resp, service)
+		return appendImmutableRequiresReplace(planNested, stateNested, prop, fieldPath, resp, service, warn)
 	case []interface{}:
 		if prop.Items == nil {
 			return false
@@ -195,7 +198,7 @@ func appendNestedImmutableRequiresReplace(planValue, stateValue interface{}, pro
 			if i < len(stateItems) {
 				stateItem = stateItems[i]
 			}
-			hasReplacement = appendNestedImmutableRequiresReplace(item, stateItem, prop.Items, fieldPath.AtListIndex(i), resp, service) || hasReplacement
+			hasReplacement = appendNestedImmutableRequiresReplace(item, stateItem, prop.Items, fieldPath.AtListIndex(i), resp, service, warn) || hasReplacement
 		}
 		return hasReplacement
 	}
