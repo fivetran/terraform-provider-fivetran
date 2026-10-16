@@ -1,0 +1,21 @@
+fivetran/framework/core/config_projection_test.go
+  s_f5546879c522a7::t_dbee4cd16355c7 5,541-542,549-552,562,564-565,580-608
+fivetran/framework/core/config_projection.go
+  s_f5546879c522a7::t_706000afe5259a 337-338,340-342
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "b6546476d56b15691334988b88c520dc9d29974c",
+  "prompts": {},
+  "sessions": {
+    "s_f5546879c522a7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c22a00c4-709e-4ff4-8e5b-08a12f129589",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}

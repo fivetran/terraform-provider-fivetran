@@ -1,0 +1,21 @@
+CHANGELOG.md
+  s_f5546879c522a7::t_f52166559379ab 8-10
+fivetran/framework/provider.go
+  s_f5546879c522a7::t_32604f4f617bb4 23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "590dd161da0fb754b669f25c5f883115069a96a0",
+  "prompts": {},
+  "sessions": {
+    "s_f5546879c522a7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c22a00c4-709e-4ff4-8e5b-08a12f129589",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
