@@ -8,6 +8,7 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -89,6 +90,8 @@ func (r *destination) Create(ctx context.Context, req resource.CreateRequest, re
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	plannedConfig := data.Config
 
 	configMap, err := data.GetConfigMap(true)
 	if err != nil {
@@ -199,6 +202,13 @@ func (r *destination) Create(ctx context.Context, req resource.CreateRequest, re
 	} else {
 		data.ReadFromResponseWithTests(response)
 	}
+
+	var unconfirmedConfig []string
+	var reconcileDiags diag.Diagnostics
+	data.Config, unconfirmedConfig, reconcileDiags = model.ReconcileConfigAfterWrite(ctx, plannedConfig, data.Config, configMap)
+	resp.Diagnostics.Append(reconcileDiags...)
+	addUnconfirmedConfigWarning(&resp.Diagnostics, unconfirmedConfig)
+
 	data.RunSetupTests = types.BoolValue(runSetupTestsPlan)
 	data.TrustCertificates = types.BoolValue(trustCertificatesPlan)
 	data.TrustFingerprints = types.BoolValue(trustFingerprintsPlan)
@@ -355,7 +365,15 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 		}
 
 		updatePerformed = true
+		plannedConfig := plan.Config
 		plan.ReadFromResponseWithTests(response)
+
+		var unconfirmedConfig []string
+		var reconcileDiags diag.Diagnostics
+		plan.Config, unconfirmedConfig, reconcileDiags = model.ReconcileConfigAfterWrite(ctx, plannedConfig, plan.Config, patch)
+		resp.Diagnostics.Append(reconcileDiags...)
+		addUnconfirmedConfigWarning(&resp.Diagnostics, unconfirmedConfig)
+
 		// Preserve plan-only attributes after reading API response
 		plan.RunSetupTests = types.BoolValue(runSetupTestsPlan)
 		plan.TrustCertificates = types.BoolValue(trustCertificatesPlan)
@@ -432,6 +450,21 @@ func (r *destination) Update(ctx context.Context, req resource.UpdateRequest, re
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+}
+
+// addUnconfirmedConfigWarning reports configured config subfields that the API response did not return.
+// Only field paths are included, never values, because config may contain secrets.
+func addUnconfirmedConfigWarning(diags *diag.Diagnostics, paths []string) {
+	if len(paths) == 0 {
+		return
+	}
+
+	diags.AddWarning(
+		"Destination config values were not returned by the API",
+		fmt.Sprintf("The API response did not include these configured fields, so their values could not be confirmed: %s. "+
+			"The configured values are kept in state. The API does not always echo every field, so this does not prove the value was ignored. "+
+			"If a later refresh still does not return them, they will show as changes in the next plan.", strings.Join(paths, ", ")),
+	)
 }
 
 func configuredStringValue(value types.String) (string, bool) {
