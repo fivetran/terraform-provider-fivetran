@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `fivetran_group`: fixed `name` field - removed `ForceNew` flag from it, resource now allows to update the existing group name.
 - `fivetran_connection_v2`: fixed "Provider produced inconsistent result after apply" and perpetual plan diffs when the API returns fields inside list items of `config` that aren't set in the configuration (e.g. `sheet_name` / `cell_number` in s3 `files` rows, [#643](https://github.com/fivetran/terraform-provider-fivetran/issues/643)). Upstream-only fields inside list items are now ignored, same as for top-level and nested object fields.
 
+### Fixed
+- `fivetran_connector_schema_config`: adding a table to an existing resource no longer fails with "Provider produced inconsistent result after apply" for `parent_table` when the table is grouped under a core table.
+
 ## [v1.9.50](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.49...v1.9.50)
 
 ### Added

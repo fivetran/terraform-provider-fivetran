@@ -1067,6 +1067,68 @@ func TestParentTableLegacyBlockMock(t *testing.T) {
 	)
 }
 
+// adding a table to an existing resource doesn't plan a null parent_table that conflicts with the upstream value
+func TestParentTableAddTableMock(t *testing.T) {
+	cfg := func(extra string) string {
+		return `
+resource "fivetran_connector_schema_config" "test_schema" {
+	provider = fivetran-provider
+	connector_id = "connector_id"
+	schema_change_handling = "ALLOW_ALL"
+	schemas = {
+		"schema_1" = {
+			enabled = true
+			tables = {
+				"core_table" = {
+					enabled = true
+				}` + extra + `
+			}
+		}
+	}
+}
+`
+	}
+	upstream := `
+{
+	"schema_change_handling": "ALLOW_ALL",
+	"schemas": {"schema_1": {"name_in_destination": "schema_1", "enabled": true, "tables": {
+		"core_table":  {"name_in_destination": "core_table",  "enabled": true, "enabled_patch_settings": {"allowed": true}},
+		"child_table": {"name_in_destination": "child_table", "enabled": true, "parent_table": "core_table", "enabled_patch_settings": {"allowed": true}},
+		"other_table": {"name_in_destination": "other_table", "enabled": true, "enabled_patch_settings": {"allowed": true}}
+	}}}
+}`
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() {
+			mockClient.Reset()
+			mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(func(req *http.Request) (*http.Response, error) {
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", createMapFromJsonString(t, upstream)), nil
+			})
+			mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(func(req *http.Request) (*http.Response, error) {
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", createMapFromJsonString(t, upstream)), nil
+			})
+		},
+		ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+		Steps: []resource.TestStep{
+			{Config: cfg("")},
+			{
+				// child_table has a parent upstream, other_table has none
+				Config: cfg(`
+				"child_table" = {
+					enabled = true
+				}
+				"other_table" = {
+					enabled = true
+				}`),
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.child_table.parent_table", "core_table"),
+					resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.other_table.parent_table"),
+					resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.core_table.parent_table"),
+				),
+			},
+		},
+	})
+}
+
 func TestConsistentWithUpstreamSchemaMock(t *testing.T) {
 	setupMockClientConsistentWithUpstreamResource := func(t *testing.T) {
 		mockClient.Reset()

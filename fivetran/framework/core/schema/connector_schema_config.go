@@ -89,7 +89,8 @@ The value defines validation method.
 										Computed:    true,
 										Description: "The name of the table that this table is grouped under, if any. This field is read-only and computed by the API.",
 										PlanModifiers: []planmodifier.String{
-											stringplanmodifier.UseStateForUnknown(),
+											// keeps unknown for new tables, UseStateForUnknown would plan null and conflict with the upstream value
+											stringplanmodifier.UseNonNullStateForUnknown(),
 										},
 									},
 									"row_filter": connectorSchemaRowFilterAttribute(),
