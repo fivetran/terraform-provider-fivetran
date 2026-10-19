@@ -43,10 +43,17 @@ func upgradeDestinationState(ctx context.Context, req resource.UpgradeStateReque
 	config := rawState["config"]
 	if fromVersion < 1 {
 		config = convertSetToBlock(
-				"config",
-				rawState["config"],
-				model.GetTfTypesDestination(common.GetDestinationFieldsMap(), 1),
-				model.GetTfTypesDestination(common.GetDestinationFieldsMap(), fromVersion), resp.Diagnostics)
+			"config",
+			rawState["config"],
+			model.GetTfTypesDestination(common.GetDestinationFieldsMap(), 1),
+			model.GetTfTypesDestination(common.GetDestinationFieldsMap(), fromVersion), resp.Diagnostics)
+	} else if fromVersion == 1 {
+		config = removeUnsupportedAttributes(
+			"config",
+			rawState["config"],
+			model.GetTfTypesDestination(common.GetDestinationFieldsMap(), 2),
+			resp.Diagnostics,
+		)
 	}
 
 	dynamicValue, err := tfprotov6.NewDynamicValue(
@@ -61,12 +68,13 @@ func upgradeDestinationState(ctx context.Context, req resource.UpgradeStateReque
 			"setup_status":                 rawState["setup_status"],
 			"daylight_saving_time_enabled": tftypes.NewValue(tftypes.Bool, nil),
 			"networking_method":            tftypes.NewValue(tftypes.String, nil),
-            "private_link_id":              tftypes.NewValue(tftypes.String, nil),
+			"private_link_id":              tftypes.NewValue(tftypes.String, nil),
+			"proxy_agent_id":               tftypes.NewValue(tftypes.String, nil),
 			"hybrid_deployment_agent_id":   resultValue,
-			"run_setup_tests":    convertStringStateValueToBool("run_setup_tests", rawState["run_setup_tests"], resp.Diagnostics),
-			"trust_fingerprints": convertStringStateValueToBool("trust_fingerprints", rawState["trust_fingerprints"], resp.Diagnostics),
-			"trust_certificates": convertStringStateValueToBool("trust_certificates", rawState["trust_certificates"], resp.Diagnostics),
-			"config": config,
+			"run_setup_tests":              convertStringStateValueToBool("run_setup_tests", rawState["run_setup_tests"], resp.Diagnostics),
+			"trust_fingerprints":           convertStringStateValueToBool("trust_fingerprints", rawState["trust_fingerprints"], resp.Diagnostics),
+			"trust_certificates":           convertStringStateValueToBool("trust_certificates", rawState["trust_certificates"], resp.Diagnostics),
+			"config":                       config,
 		}),
 	)
 
@@ -97,6 +105,7 @@ func getDestinationStateModel(version int) tftypes.Type {
 		base["hybrid_deployment_agent_id"] = tftypes.String
 		base["networking_method"] = tftypes.String
 		base["private_link_id"] = tftypes.String
+		base["proxy_agent_id"] = tftypes.String
 
 		base["config"] = tftypes.Object{AttributeTypes: model.GetTfTypesDestination(common.GetDestinationFieldsMap(), 1)}
 	} else if version == 1 {
@@ -109,7 +118,7 @@ func getDestinationStateModel(version int) tftypes.Type {
 		base["networking_method"] = tftypes.String
 		base["private_link_id"] = tftypes.String
 
-		base["config"] = tftypes.Object{AttributeTypes: model.GetTfTypesDestination(common.GetDestinationFieldsMap(), 1)}
+		base["config"] = tftypes.Object{AttributeTypes: ensure1_2_9AttributesPresented(model.GetTfTypesDestination(common.GetDestinationFieldsMap(), 1))}
 	} else {
 		base["run_setup_tests"] = tftypes.String
 		base["trust_certificates"] = tftypes.String
@@ -120,4 +129,22 @@ func getDestinationStateModel(version int) tftypes.Type {
 	}
 
 	return tftypes.Object{AttributeTypes: base}
+}
+
+// fix for migration from provider version of 1.2.9 to 1.9.52 and later ones
+func ensure1_2_9AttributesPresented(types map[string]tftypes.Type) map[string]tftypes.Type {
+	if _, exists := types["controller_id"]; !exists {
+		types["controller_id"] = tftypes.String
+	}
+	if _, exists := types["enable_remote_execution"]; !exists {
+		types["enable_remote_execution"] = tftypes.Bool
+	}
+	if _, exists := types["snowflake_cloud"]; !exists {
+		types["snowflake_cloud"] = tftypes.String
+	}
+	if _, exists := types["snowflake_region"]; !exists {
+		types["snowflake_region"] = tftypes.String
+	}
+
+	return types
 }
