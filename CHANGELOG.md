@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.9.52](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.51...v1.9.52)
 
 ### Fixed
-- `fivetran_destination` fixed migration from `v1.2.9` to the `v1.9.52`
+- `fivetran_destination` and `fivetran_connector` - fixed migration from `v1.2.9` to the `v1.9.52`
 
 ## [v1.9.51](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.50...v1.9.51)
 

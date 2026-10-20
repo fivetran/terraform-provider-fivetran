@@ -118,6 +118,7 @@ func upgradeConnectorState(ctx context.Context, req resource.UpgradeStateRequest
 			"private_link_id":            tftypes.NewValue(tftypes.String, nil),
 			"data_delay_sensitivity":     tftypes.NewValue(tftypes.String, nil),
 			"data_delay_threshold":       tftypes.NewValue(tftypes.Number, nil),
+			"data_checks":                tftypes.NewValue(tftypes.Bool, nil),
 			"hybrid_deployment_agent_id": lpaValue,
 			"run_setup_tests":            convertStringStateValueToBool("run_setup_tests", rawState["run_setup_tests"], resp.Diagnostics),
 			"trust_fingerprints":         convertStringStateValueToBool("trust_fingerprints", rawState["trust_fingerprints"], resp.Diagnostics),
@@ -158,6 +159,7 @@ func getConnectorStateModel(version int) tftypes.Type {
 					"table_group_name": tftypes.String,
 				},
 			}
+			base["data_checks"] = tftypes.Bool
 		} else {
 			base["destination_schema"] = tftypes.Object{
 				AttributeTypes: map[string]tftypes.Type{
