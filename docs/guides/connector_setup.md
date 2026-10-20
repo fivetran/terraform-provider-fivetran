@@ -59,7 +59,7 @@ Once you have created the group, you need to associate a `Destination` with it:
 ```hcl
 resource "fivetran_destination" "destination" {
     group_id = fivetran_group.group.id
-    service = "postgres_rds_warehouse"
+    service = "snowflake"
     time_zone_offset = "0"
     region = "GCP_US_EAST4"
     trust_certificates = "true"
@@ -68,9 +68,9 @@ resource "fivetran_destination" "destination" {
     run_setup_tests = "true"
 
     config {
-        host = "destination.host"
-        port = 5432
-        user = "postgres"
+        host = "your_account.snowflakecomputing.com"
+        port = 443
+        user = "myUser"
         password = "myPassword"
         database = "myDatabaseName"
         connection_type = "Directly"
