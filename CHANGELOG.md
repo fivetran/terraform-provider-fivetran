@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.51...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.52...HEAD)
+
+## [v1.9.52](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.51...v1.9.52)
+
+### Fixed
+- `fivetran_destination` and `fivetran_connector` - fixed migration from `v1.2.9` to the `v1.9.52`
 
 ## [v1.9.51](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.50...v1.9.51)
 
