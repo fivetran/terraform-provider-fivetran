@@ -256,12 +256,6 @@ func TestResourceDestinationMigrationFromV1_2_9_E2E(t *testing.T) {
 					networking_method = "Directly"
 			
 					config {
-						#host = "terraform-test.us-east-1.rds.amazonaws.com"
-						#port = 5432
-						#user = "postgres"
-						#password = "password"
-						#database = "fivetran"
-						#connection_type = "Directly"
             			project_id = "fivetran-fivetran-e2e-test-1"
             			data_set_location = "US"
 					}
