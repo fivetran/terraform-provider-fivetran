@@ -1,0 +1,18 @@
+fivetran/framework/resources/connector_migrations.go
+  h_95e89ecbd302f3 50,57-67,70-82,88-103,109-120,122-124,126-128,155-157,160,170,178,180-182,188-190,192,290-317,378,382
+fivetran/framework/resources/destination_migrations.go
+  h_95e89ecbd302f3 46-56,71-72,74-77,108,121,133-150
+fivetran/tests/e2e/resource_destination_e2e_test.go
+  h_95e89ecbd302f3 229-324
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "c9723ec2d358c37b523844c166fc21ff9067292e",
+  "prompts": {},
+  "humans": {
+    "h_95e89ecbd302f3": {
+      "author": "fivetran-renat-sh <renat.shaikhutdinov@fivetran.com>"
+    }
+  }
+}

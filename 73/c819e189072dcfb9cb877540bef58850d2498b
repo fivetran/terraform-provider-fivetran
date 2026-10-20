@@ -1,0 +1,18 @@
+CHANGELOG.md
+  h_95e89ecbd302f3 13
+fivetran/framework/resources/connector_migrations.go
+  h_95e89ecbd302f3 121,162
+fivetran/tests/e2e/resource_destination_e2e_test.go
+  h_95e89ecbd302f3 231-232,263-287,300-301,328-352,365-366
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "73c819e189072dcfb9cb877540bef58850d2498b",
+  "prompts": {},
+  "humans": {
+    "h_95e89ecbd302f3": {
+      "author": "fivetran-renat-sh <renat.shaikhutdinov@fivetran.com>"
+    }
+  }
+}
