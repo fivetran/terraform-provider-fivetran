@@ -226,6 +226,150 @@ func TestResourceDestinationHdE2E(t *testing.T) {
 	})
 }
 
+func TestResourceDestinationMigrationFromV1_2_9_E2E(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() {},
+		CheckDestroy: testFivetranDestinationResourceDestroy,
+		Steps: []resource.TestStep{
+			{
+				ExternalProviders: map[string]resource.ExternalProvider{
+					"fivetran": {
+						VersionConstraint: "1.2.9",
+						Source:            "fivetran/fivetran",
+					},
+				},
+				Config: `
+				resource "fivetran_group" "testgroup" {
+					provider = fivetran
+					name = "test_group_name"
+			    }
+
+			    resource "fivetran_destination" "testdestination" {
+					provider = fivetran
+					
+					group_id = fivetran_group.testgroup.id
+					service = "big_query"
+					time_zone_offset = "0"
+					region = "GCP_US_EAST4"
+					daylight_saving_time_enabled = "true"
+					run_setup_tests = "false"
+					networking_method = "Directly"
+			
+					config {
+            			project_id = "fivetran-fivetran-e2e-test-1"
+            			data_set_location = "US"
+					}
+				}
+
+			    resource "fivetran_connector" "testdconnection" {
+					provider = fivetran
+					
+					group_id = fivetran_destination.testdestination.id
+					service = "postgres"
+
+					destination_schema {
+						prefix = "fivetran_log_schema"
+					}
+					
+					trust_certificates = false
+					trust_fingerprints = false
+					run_setup_tests = false
+
+					networking_method  = "Directly"
+
+      				config {
+        				user = "user1"
+        				password = "password1"
+        				host = "host"
+        				port = "123"
+        				update_method = "QUERY_BASED"
+      				}
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranDestinationResourceCreate(t, "fivetran_destination.testdestination"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "service", "big_query"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "time_zone_offset", "0"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "region", "GCP_US_EAST4"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "daylight_saving_time_enabled", "true"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "run_setup_tests", "false"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "networking_method", "Directly"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "config.project_id", "fivetran-fivetran-e2e-test-1"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "config.data_set_location", "US"),
+					resource.TestCheckNoResourceAttr("fivetran_destination.testdestination", "config.controller_id"), // it's null in the TF state actually
+
+					resource.TestCheckResourceAttr("fivetran_connector.testdconnection", "service", "postgres"),
+				),
+			},
+			{
+				ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+				Config: `
+				resource "fivetran_group" "testgroup" {
+					provider = fivetran-provider
+					name = "test_group_name"
+			    }
+
+				resource "fivetran_destination" "testdestination" {
+					provider = fivetran-provider
+					
+					group_id = fivetran_group.testgroup.id
+					service = "big_query"
+					time_zone_offset = "0"
+					region = "GCP_US_EAST4"
+					daylight_saving_time_enabled = "true"
+					run_setup_tests = "false"
+					networking_method = "Directly"
+			
+					config {
+            			project_id = "fivetran-fivetran-e2e-test-1"
+            			data_set_location = "US"
+					}
+				}
+
+			    resource "fivetran_connector" "testdconnection" {
+					provider = fivetran-provider
+					
+					group_id = fivetran_destination.testdestination.id
+					service = "postgres"
+
+					destination_schema {
+						prefix = "fivetran_log_schema"
+					}
+					
+					trust_certificates = false
+					trust_fingerprints = false
+					run_setup_tests = false
+
+					networking_method  = "Directly"
+
+      				config {
+        				user = "user1"
+        				password = "password1"
+        				host = "host"
+        				port = "123"
+        				update_method = "QUERY_BASED"
+      				}
+				}
+		  `,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testFivetranDestinationResourceUpdate(t, "fivetran_destination.testdestination"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "service", "big_query"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "time_zone_offset", "0"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "region", "GCP_US_EAST4"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "daylight_saving_time_enabled", "true"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "networking_method", "Directly"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "run_setup_tests", "false"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "config.project_id", "fivetran-fivetran-e2e-test-1"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "config.data_set_location", "US"),
+					resource.TestCheckNoResourceAttr("fivetran_destination.testdestination", "config.controller_id"),
+
+					resource.TestCheckResourceAttr("fivetran_connector.testdconnection", "service", "postgres"),
+				),
+			},
+		},
+	})
+}
+
 func testFivetranDestinationResourceCreate(t *testing.T, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs := GetResource(t, s, resourceName)

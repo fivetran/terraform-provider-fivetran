@@ -47,85 +47,86 @@ func upgradeConnectorState(ctx context.Context, req resource.UpgradeStateRequest
 	config := rawState["config"]
 	auth := rawState["auth"]
 	destination_schema := rawState["destination_schema"]
-	
+
 	if fromVersion < 1 {
 		config = convertSetToBlock("config", rawState["config"], model.GetTfTypes(common.GetConfigFieldsMap(), 3), model.GetTfTypes(common.GetConfigFieldsMap(), fromVersion), resp.Diagnostics)
 		auth = convertSetToBlock("auth", rawState["auth"], model.GetTfTypes(common.GetAuthFieldsMap(), 3), model.GetTfTypes(common.GetAuthFieldsMap(), fromVersion), resp.Diagnostics)
 
 		if fromVersion < 5 {
 			destination_schema = convertSetToBlock("destination_schema", rawState["destination_schema"],
-					map[string]tftypes.Type{
-						"name":   tftypes.String,
-						"table":  tftypes.String,
-						"prefix": tftypes.String,
-					},
-					map[string]tftypes.Type{
-						"name":   tftypes.String,
-						"table":  tftypes.String,
-						"prefix": tftypes.String,
-					},
-					resp.Diagnostics)
+				map[string]tftypes.Type{
+					"name":   tftypes.String,
+					"table":  tftypes.String,
+					"prefix": tftypes.String,
+				},
+				map[string]tftypes.Type{
+					"name":   tftypes.String,
+					"table":  tftypes.String,
+					"prefix": tftypes.String,
+				},
+				resp.Diagnostics)
 		} else {
 			destination_schema = convertSetToBlock("destination_schema", rawState["destination_schema"],
-					map[string]tftypes.Type{
-						"name":   tftypes.String,
-						"table":  tftypes.String,
-						"prefix": tftypes.String,
-						"table_group_name": tftypes.String,
-					},
-					map[string]tftypes.Type{
-						"name":   tftypes.String,
-						"table":  tftypes.String,
-						"prefix": tftypes.String,
-						"table_group_name": tftypes.String,
-					},
-					resp.Diagnostics)
+				map[string]tftypes.Type{
+					"name":             tftypes.String,
+					"table":            tftypes.String,
+					"prefix":           tftypes.String,
+					"table_group_name": tftypes.String,
+				},
+				map[string]tftypes.Type{
+					"name":             tftypes.String,
+					"table":            tftypes.String,
+					"prefix":           tftypes.String,
+					"table_group_name": tftypes.String,
+				},
+				resp.Diagnostics)
 		}
 	}
 
 	if fromVersion < 5 {
 		destination_schema = transformObjectValue(destination_schema,
-					tftypes.Object{
-						AttributeTypes: map[string]tftypes.Type{
-							"name":   tftypes.String,
-							"table":  tftypes.String,
-							"prefix": tftypes.String,
-						},
-					},
-					tftypes.Object{
-						AttributeTypes: map[string]tftypes.Type{
-							"name":   tftypes.String,
-							"table":  tftypes.String,
-							"prefix": tftypes.String,
-							"table_group_name": tftypes.String,
-						},
-					},
-					resp.Diagnostics)
+			tftypes.Object{
+				AttributeTypes: map[string]tftypes.Type{
+					"name":   tftypes.String,
+					"table":  tftypes.String,
+					"prefix": tftypes.String,
+				},
+			},
+			tftypes.Object{
+				AttributeTypes: map[string]tftypes.Type{
+					"name":             tftypes.String,
+					"table":            tftypes.String,
+					"prefix":           tftypes.String,
+					"table_group_name": tftypes.String,
+				},
+			},
+			resp.Diagnostics)
 	}
 
 	dynamicValue, err := tfprotov6.NewDynamicValue(
 		getConnectorStateModel(5),
 		tftypes.NewValue(getConnectorStateModel(5), map[string]tftypes.Value{
-			"id":                        rawState["id"],
-			"name":                      rawState["name"],
-			"connected_by":              rawState["connected_by"],
-			"created_at":                rawState["created_at"],
-			"group_id":                  rawState["group_id"],
-			"service":                   rawState["service"],
-			"timeouts":                  rawState["timeouts"],
-			"networking_method":         tftypes.NewValue(tftypes.String, nil),
-			"proxy_agent_id":            tftypes.NewValue(tftypes.String, nil),
-			"private_link_id":           tftypes.NewValue(tftypes.String, nil),
-			"data_delay_sensitivity":    tftypes.NewValue(tftypes.String, nil),
-			"data_delay_threshold":      tftypes.NewValue(tftypes.Number, nil),
+			"id":                         rawState["id"],
+			"name":                       rawState["name"],
+			"connected_by":               rawState["connected_by"],
+			"created_at":                 rawState["created_at"],
+			"group_id":                   rawState["group_id"],
+			"service":                    rawState["service"],
+			"timeouts":                   rawState["timeouts"],
+			"networking_method":          tftypes.NewValue(tftypes.String, nil),
+			"proxy_agent_id":             tftypes.NewValue(tftypes.String, nil),
+			"private_link_id":            tftypes.NewValue(tftypes.String, nil),
+			"data_delay_sensitivity":     tftypes.NewValue(tftypes.String, nil),
+			"data_delay_threshold":       tftypes.NewValue(tftypes.Number, nil),
+			"data_checks":                tftypes.NewValue(tftypes.Bool, nil),
 			"hybrid_deployment_agent_id": lpaValue,
-			"run_setup_tests":    convertStringStateValueToBool("run_setup_tests", rawState["run_setup_tests"], resp.Diagnostics),
-			"trust_fingerprints": convertStringStateValueToBool("trust_fingerprints", rawState["trust_fingerprints"], resp.Diagnostics),
-			"trust_certificates": convertStringStateValueToBool("trust_certificates", rawState["trust_certificates"], resp.Diagnostics),
+			"run_setup_tests":            convertStringStateValueToBool("run_setup_tests", rawState["run_setup_tests"], resp.Diagnostics),
+			"trust_fingerprints":         convertStringStateValueToBool("trust_fingerprints", rawState["trust_fingerprints"], resp.Diagnostics),
+			"trust_certificates":         convertStringStateValueToBool("trust_certificates", rawState["trust_certificates"], resp.Diagnostics),
 
-			"config": 				config,
-			"auth":   				auth,
-			"destination_schema": 	destination_schema,
+			"config":             config,
+			"auth":               auth,
+			"destination_schema": destination_schema,
 		}),
 	)
 
@@ -152,12 +153,13 @@ func getConnectorStateModel(version int) tftypes.Type {
 		if version == 5 {
 			base["destination_schema"] = tftypes.Object{
 				AttributeTypes: map[string]tftypes.Type{
-					"name":   			tftypes.String,
-					"table":  			tftypes.String,
-					"prefix": 			tftypes.String,
+					"name":             tftypes.String,
+					"table":            tftypes.String,
+					"prefix":           tftypes.String,
 					"table_group_name": tftypes.String,
 				},
-			}	
+			}
+			base["data_checks"] = tftypes.Bool
 		} else {
 			base["destination_schema"] = tftypes.Object{
 				AttributeTypes: map[string]tftypes.Type{
@@ -167,7 +169,7 @@ func getConnectorStateModel(version int) tftypes.Type {
 				},
 			}
 		}
-		
+
 		base["run_setup_tests"] = tftypes.Bool
 		base["trust_certificates"] = tftypes.Bool
 		base["trust_fingerprints"] = tftypes.Bool
@@ -175,21 +177,21 @@ func getConnectorStateModel(version int) tftypes.Type {
 		base["networking_method"] = tftypes.String
 		base["hybrid_deployment_agent_id"] = tftypes.String
 		if version == 3 {
-			base["local_processing_agent_id"] = tftypes.String	
+			base["local_processing_agent_id"] = tftypes.String
 		}
-        base["private_link_id"] = tftypes.String
-        base["data_delay_sensitivity"] = tftypes.String
-        base["data_delay_threshold"] = tftypes.Number
+		base["private_link_id"] = tftypes.String
+		base["data_delay_sensitivity"] = tftypes.String
+		base["data_delay_threshold"] = tftypes.Number
 		base["config"] = tftypes.Object{AttributeTypes: model.GetTfTypes(common.GetConfigFieldsMap(), 3)}
 		base["auth"] = tftypes.Object{AttributeTypes: model.GetTfTypes(common.GetAuthFieldsMap(), 3)}
 	} else {
 		base["destination_schema"] = tftypes.Set{ElementType: tftypes.Object{
 			AttributeTypes: map[string]tftypes.Type{
-					"name":   tftypes.String,
-					"table":  tftypes.String,
-					"prefix": tftypes.String,
-				},
+				"name":   tftypes.String,
+				"table":  tftypes.String,
+				"prefix": tftypes.String,
 			},
+		},
 		}
 		base["run_setup_tests"] = tftypes.String
 		base["trust_certificates"] = tftypes.String
@@ -287,6 +289,34 @@ func convertSetToBlock(field string, value tftypes.Value, attrTypesNew, attrType
 	return tftypes.NewValue(tftypes.Object{AttributeTypes: attrTypesNew}, nil)
 }
 
+func removeUnsupportedAttributes(field string, value tftypes.Value, attrTypesNew map[string]tftypes.Type, diags diag.Diagnostics) tftypes.Value {
+	if !value.IsNull() {
+		var oldValues map[string]tftypes.Value
+		if err := value.As(&oldValues); err != nil {
+			diags.AddAttributeError(
+				path.Root(field),
+				"Unable to Convert Prior State",
+				err.Error(),
+			)
+			panic(fmt.Sprintf("%v \n %v", err, value.Type()))
+		}
+
+		rawNewValue := make(map[string]tftypes.Value)
+
+		for fieldName, fieldType := range attrTypesNew {
+			if oldValue, ok := oldValues[fieldName]; ok {
+				rawNewValue[fieldName] = oldValue
+			} else {
+				rawNewValue[fieldName] = tftypes.NewValue(fieldType, nil)
+			}
+		}
+
+		return tftypes.NewValue(tftypes.Object{AttributeTypes: attrTypesNew}, rawNewValue)
+	}
+
+	return tftypes.NewValue(tftypes.Object{AttributeTypes: attrTypesNew}, nil)
+}
+
 func transformValue(fieldName string, value tftypes.Value, oldType, newType tftypes.Type, diags diag.Diagnostics) tftypes.Value {
 	if newType.Equal(tftypes.Bool) && oldType.Equal(tftypes.String) {
 		return convertStringStateValueToBool(fieldName, value, diags)
@@ -347,11 +377,11 @@ func transformObjectValue(value tftypes.Value, oldType, newType tftypes.Type, di
 	for k, _ := range elemNewFieldTypes {
 		ev, ok := itemOld[k]
 		if ok {
-			itemNew[k] = transformValue(k, ev, elemOldFieldTypes[k], elemNewFieldTypes[k], diags)	
+			itemNew[k] = transformValue(k, ev, elemOldFieldTypes[k], elemNewFieldTypes[k], diags)
 		} else {
 			itemNew[k] = tftypes.NewValue(elemNewFieldTypes[k], nil)
 		}
-		
+
 	}
 
 	return tftypes.NewValue(newType, itemNew)
