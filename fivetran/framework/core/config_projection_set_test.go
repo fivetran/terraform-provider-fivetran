@@ -1,6 +1,7 @@
 package core
 
 import (
+	"math"
 	"reflect"
 	"strconv"
 	"testing"
@@ -525,4 +526,62 @@ func TestAlignSetOrder_LargeListKeepsPriorOrder(t *testing.T) {
 	if !multisetEqual(remote, prior) {
 		t.Error("a permutation must be multiset-equal")
 	}
+}
+
+func TestMultisetEqual_LargeIntegersKeepPrecision(t *testing.T) {
+	t.Parallel()
+	// Above 2^53 adjacent integers have the same float64 value.
+	const big = int64(9007199254740992)
+	tests := []struct {
+		name string
+		a, b []interface{}
+		want bool
+	}{
+		{"adjacent large integers differ", []interface{}{big}, []interface{}{big + 1}, false},
+		{"adjacent large integers reordered", []interface{}{big, big + 1}, []interface{}{big + 1, big}, true},
+		{"max int64", []interface{}{int64(math.MaxInt64)}, []interface{}{int64(math.MaxInt64 - 1)}, false},
+		{"min int64", []interface{}{int64(math.MinInt64)}, []interface{}{int64(math.MinInt64 + 1)}, false},
+		{"exact float equals int", []interface{}{float64(big)}, []interface{}{big}, true},
+		{"rounded float does not equal int", []interface{}{float64(big + 1)}, []interface{}{big + 1}, false},
+		{"float above int64 range is not an int", []interface{}{float64(1 << 63)}, []interface{}{int64(math.MinInt64)}, false},
+		{"int and int32 equal int64", []interface{}{int(7), int32(8)}, []interface{}{int64(8), int64(7)}, true},
+		{"float32 whole number equals int", []interface{}{float32(3)}, []interface{}{int64(3)}, true},
+		{"fractional float stays fractional", []interface{}{float64(2.5)}, []interface{}{float32(2.5)}, true},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			if got := multisetEqual(tt.a, tt.b); got != tt.want {
+				t.Errorf("multisetEqual(%#v, %#v) = %v, want %v", tt.a, tt.b, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestPatchWithService_AdjacentLargeIntegersSent(t *testing.T) {
+	t.Parallel()
+	// Plan and state both hold exact int64 values, so the change must be sent.
+	patch := PrepareConfigPatchDynamicWithService(
+		map[string]interface{}{"accounts": []interface{}{int64(9007199254740993)}},
+		map[string]interface{}{"accounts": []interface{}{int64(9007199254740992)}},
+		facebookAdsSlot(), setTestService,
+	)
+	assertDeepEqual(t, patch["accounts"], []interface{}{int64(9007199254740993)})
+}
+
+func TestAlignSetOrder_LargeIntegersKeepPrecision(t *testing.T) {
+	t.Parallel()
+	const big = int64(9007199254740992)
+
+	// The prior value is absent from the remote list, so it must not be kept.
+	got := alignSetOrder([]interface{}{float64(big)}, []interface{}{big + 1})
+	assertDeepEqual(t, got, []interface{}{float64(big)})
+
+	got = alignSetOrder([]interface{}{big}, []interface{}{big + 1})
+	assertDeepEqual(t, got, []interface{}{big})
+
+	// Exact matches still keep the prior order and type.
+	got = alignSetOrder([]interface{}{float64(big + 2), float64(big)}, []interface{}{big, big + 2})
+	assertDeepEqual(t, got, []interface{}{big, big + 2})
 }

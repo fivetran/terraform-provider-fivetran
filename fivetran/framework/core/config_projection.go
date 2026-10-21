@@ -3,6 +3,7 @@ package core
 import (
 	"context"
 	"encoding/json"
+	"math"
 	"math/big"
 	"reflect"
 
@@ -580,7 +581,7 @@ func joinFieldPath(base, key string) string {
 
 // setElementKey returns a key that is the same for equal elements of a set-typed list, so they can
 // be counted in a map. Numbers are compared by value, because the API read-back decodes them as
-// float64 while values from state are int64. Objects are compared regardless of key order, since
+// float64 while values from state are int64 (see normalizeNumbers). Objects are compared regardless of key order, since
 // json.Marshal sorts map keys. ok is false for elements that can't be compared, e.g. ones holding
 // unknown plan values, which would otherwise encode like an empty object.
 func setElementKey(value interface{}) (string, bool) {
@@ -614,16 +615,22 @@ func containsDynamicUnknown(value interface{}) bool {
 	return false
 }
 
+// normalizeNumbers gives equal numbers one representation: integers stay exact int64, and a float
+// becomes int64 only when it is a whole number in the int64 range. Converting integers to float64
+// instead would merge distinct values above 2^53 (e.g. 9007199254740992 and 9007199254740993) and
+// hide a real change.
 func normalizeNumbers(value interface{}) interface{} {
 	switch v := value.(type) {
 	case int:
-		return float64(v)
+		return int64(v)
 	case int32:
-		return float64(v)
+		return int64(v)
 	case int64:
-		return float64(v)
+		return v
 	case float32:
-		return float64(v)
+		return normalizeFloat(float64(v))
+	case float64:
+		return normalizeFloat(v)
 	case []interface{}:
 		result := make([]interface{}, len(v))
 		for i, item := range v {
@@ -636,6 +643,14 @@ func normalizeNumbers(value interface{}) interface{} {
 			result[k] = normalizeNumbers(item)
 		}
 		return result
+	}
+	return value
+}
+
+func normalizeFloat(value float64) interface{} {
+	// -2^63 and 2^63 are exact as float64; the upper bound itself is out of the int64 range.
+	if value == math.Trunc(value) && value >= math.MinInt64 && value < -math.MinInt64 {
+		return int64(value)
 	}
 	return value
 }
