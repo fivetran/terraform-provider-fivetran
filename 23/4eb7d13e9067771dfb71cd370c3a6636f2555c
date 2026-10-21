@@ -1,0 +1,16 @@
+CHANGELOG.md
+  h_95e89ecbd302f3 8-13
+fivetran/framework/provider.go
+  h_95e89ecbd302f3 23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "234eb7d13e9067771dfb71cd370c3a6636f2555c",
+  "prompts": {},
+  "humans": {
+    "h_95e89ecbd302f3": {
+      "author": "fivetran-renat-sh <renat.shaikhutdinov@fivetran.com>"
+    }
+  }
+}

@@ -1,0 +1,39 @@
+fivetran/framework/core/model/destination_config_reconcile.go
+  a0bf769dc169e90a 9,14-29,34-35,37-39,41-43,45-46,50-53,55,57-61,63,65-68,71-72,74-103,105-108,110
+  403bda9ec55b55b3 1-8,10-13,33,36,40,44,47-49,54,56,62,64,69-70,73,104,109,111
+fivetran/framework/resources/destination_config_unconfirmed_mock_test.go
+  403bda9ec55b55b3 1-91,93-94,97-190,192-202,204-224
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.4",
+  "base_commit_sha": "334d2444c87ed8ae20260e38657d3284a00fecd2",
+  "prompts": {
+    "403bda9ec55b55b3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b0c2a5d5-fccf-4fa9-bfb7-a3ca053568ff",
+        "model": "claude-haiku-5-5"
+      },
+      "human_author": "beevital <vitaly.mosin@fivetran.com>",
+      "messages": [],
+      "total_additions": 1097,
+      "total_deletions": 66,
+      "accepted_lines": 248,
+      "overriden_lines": 0
+    },
+    "a0bf769dc169e90a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9f877689-b3b1-463c-9e73-3ea965040796",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": null,
+      "messages": [],
+      "total_additions": 81,
+      "total_deletions": 111,
+      "accepted_lines": 79,
+      "overriden_lines": 0
+    }
+  }
+}

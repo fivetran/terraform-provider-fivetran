@@ -1,0 +1,27 @@
+fivetran/framework/resources/connector_config_unconfirmed_mock_test.go
+  a0bf769dc169e90a 1-5,7-79,83-89,91-125,127-135,137-150,152-193,195-201
+fivetran/framework/resources/connection_v2_config_unconfirmed_mock_test.go
+  a0bf769dc169e90a 1-5,7-130,133-150,152-188,191-196,198-223,225-243,252-285,287-289
+fivetran/framework/resources/connection_config_unconfirmed_mock_test.go
+  a0bf769dc169e90a 1-68,72,75-94,96-98,100-102,104-146
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.4",
+  "base_commit_sha": "7f674ff89a382ae493d0b85f8d2fcdaad6761f3e",
+  "prompts": {
+    "a0bf769dc169e90a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9f877689-b3b1-463c-9e73-3ea965040796",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "beevital <vitaly.mosin@fivetran.com>",
+      "messages": [],
+      "total_additions": 624,
+      "total_deletions": 0,
+      "accepted_lines": 602,
+      "overriden_lines": 6
+    }
+  }
+}
