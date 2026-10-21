@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"reflect"
 	"sync"
 
 	"github.com/fivetran/go-fivetran/common"
@@ -274,8 +275,9 @@ func (r *connectionV2) Update(ctx context.Context, req resource.UpdateRequest, r
 		return
 	}
 
-	configPatch := core.PrepareConfigPatchDynamic(planConfig, stateConfig, &meta.Config)
-	authPatch := core.PrepareConfigPatchDynamic(planAuth, stateAuth, &meta.Auth)
+	service := plan.Service.ValueString()
+	configPatch := core.PrepareConfigPatchDynamicWithService(planConfig, stateConfig, &meta.Config, service)
+	authPatch := core.PrepareConfigPatchDynamicWithService(planAuth, stateAuth, &meta.Auth, service)
 
 	runSetupTestsPlan := core.GetBoolOrDefault(plan.RunSetupTests, false)
 	trustCertificatesPlan := core.GetBoolOrDefault(plan.TrustCertificates, false)
@@ -292,10 +294,22 @@ func (r *connectionV2) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	hasOtherChanges := len(configPatch) > 0 || len(authPatch) > 0 || r.hasRootFieldChanges(plan, state)
 	onlyTriggerFieldsChanged := anyTriggerFieldChanged && !hasOtherChanges
+	// config/auth differ from state, but nothing in them has to be sent: e.g. only the order of a
+	// set-typed field changed, which happens when state holds an order the API returned earlier.
+	// The trigger fields are unknown in the plan when not configured, which alone must not run
+	// setup tests, so only known changes of them count here.
+	triggerFieldSet := fieldChanged(plan.RunSetupTests, state.RunSetupTests) ||
+		fieldChanged(plan.TrustCertificates, state.TrustCertificates) ||
+		fieldChanged(plan.TrustFingerprints, state.TrustFingerprints)
+	nothingToSend := !triggerFieldSet && !hasOtherChanges &&
+		(!reflect.DeepEqual(planConfig, stateConfig) || !reflect.DeepEqual(planAuth, stateAuth))
 
 	var response connections.DetailsWithCustomConfigResponse
 	var updateErr error
-	if onlyTriggerFieldsChanged {
+	if nothingToSend {
+		// Neither a PATCH (the API rejects one without update parameters) nor setup tests are
+		// needed, so only re-read the connection below and store the planned values.
+	} else if onlyTriggerFieldsChanged {
 		// The Fivetran API rejects an update PATCH containing only
 		// run_setup_tests/trust_certificates/trust_fingerprints ("No update
 		// parameters specified"). Use the dedicated setup-tests endpoint instead,

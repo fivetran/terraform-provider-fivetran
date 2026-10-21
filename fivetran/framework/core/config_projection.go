@@ -2,6 +2,7 @@ package core
 
 import (
 	"context"
+	"encoding/json"
 	"math/big"
 	"reflect"
 
@@ -268,7 +269,14 @@ func numberValue(value float64) types.Number {
 
 // ProjectDynamic filters an API read-back (remote) down to managed keys.
 func ProjectDynamic(remote, mask map[string]interface{}, slot *metadata.Property) map[string]interface{} {
-	return project(remote, mask, slot)
+	return project(remote, mask, slot, "", "")
+}
+
+// ProjectDynamicWithService is like ProjectDynamic, but keeps the mask order of set-typed fields
+// of the given service. The API returns those in an arbitrary order on every read, so taking the
+// remote order as-is would show a diff on every plan.
+func ProjectDynamicWithService(remote, mask map[string]interface{}, slot *metadata.Property, service string) map[string]interface{} {
+	return project(remote, mask, slot, service, "")
 }
 
 // project filters an API read-back (remote) down to the keys the user manages (mask/plan),
@@ -280,13 +288,18 @@ func ProjectDynamic(remote, mask map[string]interface{}, slot *metadata.Property
 //   - readonly: store remote value so user can reference it; no drift tracking
 //   - key in mask but absent from remote: set nil to surface drift
 //   - nested object: recurse
+//   - set-typed list (see setTypedFields): keep the mask order (see alignSetOrder)
 //   - list of objects: recurse element-wise by index (see projectList)
 //   - normal: take remote value
-func project(remote, mask map[string]interface{}, slot *metadata.Property) map[string]interface{} {
+//
+// basePath is the dot-separated path of remote within the dynamic field, without list indexes
+// (e.g. "custom_tables" for the items of custom_tables). It is used to look up set-typed fields.
+func project(remote, mask map[string]interface{}, slot *metadata.Property, service, basePath string) map[string]interface{} {
 	result := make(map[string]interface{}, len(mask))
 
 	for key, maskVal := range mask {
 		prop := SlotProp(slot, key)
+		fieldPath := joinFieldPath(basePath, key)
 
 		if prop != nil && prop.Format == "password" {
 			result[key] = maskVal
@@ -310,18 +323,22 @@ func project(remote, mask map[string]interface{}, slot *metadata.Property) map[s
 				if prop != nil {
 					nestedSlot = prop
 				}
-				result[key] = project(nestedRemote, nestedMask, nestedSlot)
+				result[key] = project(nestedRemote, nestedMask, nestedSlot, service, fieldPath)
 				continue
 			}
 		}
 
 		if maskList, ok := maskVal.([]interface{}); ok {
 			if remoteList, ok2 := remoteVal.([]interface{}); ok2 {
+				if isSetTypedField(service, fieldPath) {
+					result[key] = alignSetOrder(remoteList, maskList)
+					continue
+				}
 				var itemSlot *metadata.Property
 				if prop != nil {
 					itemSlot = prop.Items
 				}
-				result[key] = projectList(remoteList, maskList, itemSlot)
+				result[key] = projectList(remoteList, maskList, itemSlot, service, fieldPath)
 				continue
 			}
 		}
@@ -336,7 +353,7 @@ func project(remote, mask map[string]interface{}, slot *metadata.Property) map[s
 // so upstream-only keys inside list items (e.g. new fields added to each row of s3 `files`) are dropped.
 // Items are paired by index only when both lists have the same length: after an upstream insert or removal
 // the pairing is unreliable, so the remote list is kept as-is to surface drift. Non-object elements are kept as-is.
-func projectList(remote, mask []interface{}, itemSlot *metadata.Property) []interface{} {
+func projectList(remote, mask []interface{}, itemSlot *metadata.Property, service, listPath string) []interface{} {
 	if len(remote) != len(mask) {
 		return remote
 	}
@@ -348,8 +365,44 @@ func projectList(remote, mask []interface{}, itemSlot *metadata.Property) []inte
 			continue
 		}
 		if remoteObject, ok := remoteItem.(map[string]interface{}); ok {
-			result[i] = project(remoteObject, maskItem, itemSlot)
+			result[i] = project(remoteObject, maskItem, itemSlot, service, listPath)
 		}
+	}
+	return result
+}
+
+// alignSetOrder returns the remote elements of a set-typed list in the order of the prior (mask) list.
+// Elements still returned by the API keep their prior position, and new ones follow in the API order.
+// So a reorder-only read gives back the prior list exactly, and real drift shows only the elements
+// that were added or removed upstream, not a reshuffle of the whole list.
+func alignSetOrder(remote, prior []interface{}) []interface{} {
+	remaining := make(map[string]int, len(remote))
+	for _, remoteItem := range remote {
+		if key, ok := setElementKey(remoteItem); ok {
+			remaining[key]++
+		}
+	}
+
+	result := make([]interface{}, 0, len(remote))
+	matched := make(map[string]int, len(prior))
+	for _, priorItem := range prior {
+		key, ok := setElementKey(priorItem)
+		if !ok || remaining[key] == 0 {
+			continue
+		}
+		remaining[key]--
+		matched[key]++
+		// Keep the prior value so its type matches the one in state (int64 vs float64).
+		result = append(result, priorItem)
+	}
+
+	for _, remoteItem := range remote {
+		key, ok := setElementKey(remoteItem)
+		if ok && matched[key] > 0 {
+			matched[key]--
+			continue
+		}
+		result = append(result, remoteItem)
 	}
 	return result
 }
@@ -389,7 +442,7 @@ func prepareConfigPatchDynamic(plan, state map[string]interface{}, slot *metadat
 			continue
 		}
 
-		if valuesEqualWithService(planVal, stateVal, service, k) {
+		if dynamicValuesEqualRecursive(planVal, stateVal, service, k) {
 			continue
 		}
 		patch[k] = planVal
@@ -411,23 +464,23 @@ func prepareConfigPatchDynamic(plan, state map[string]interface{}, slot *metadat
 	return patch
 }
 
-// valuesEqualWithService compares two values, using set semantics for set-typed fields
-// when service is non-empty.
-func valuesEqualWithService(left, right interface{}, service, fieldPath string) bool {
-	if isSetTypedField(service, fieldPath) {
-		if leftList, ok := left.([]interface{}); ok {
-			if rightList, ok := right.([]interface{}); ok {
-				return multisetEqual(leftList, rightList)
-			}
-		}
-	}
-	return reflect.DeepEqual(left, right)
-}
-
 // DynamicValuesEqualWithService compares two dynamic values, using set semantics for
 // set-typed fields when service is non-empty. This is exported for use by resources.
 func DynamicValuesEqualWithService(left, right interface{}, service string) bool {
 	return dynamicValuesEqualRecursive(left, right, service, "")
+}
+
+// DynamicValuesEqualAtPath is like DynamicValuesEqualWithService for values found at fieldPath
+// (dot-separated, without list indexes) within the dynamic field, so a set-typed field is
+// recognized when the compared values are the field itself.
+func DynamicValuesEqualAtPath(left, right interface{}, service, fieldPath string) bool {
+	return dynamicValuesEqualRecursive(left, right, service, fieldPath)
+}
+
+// IsSetTypedField reports whether the field at fieldPath (dot-separated, without list indexes)
+// of the given service holds an unordered collection.
+func IsSetTypedField(service, fieldPath string) bool {
+	return isSetTypedField(service, fieldPath)
 }
 
 // dynamicValuesEqualRecursive recursively compares values, with set semantics for set-typed fields.
@@ -464,12 +517,7 @@ func dynamicValuesEqualRecursive(left, right interface{}, service, fieldPath str
 			if !ok {
 				return false
 			}
-			childPath := fieldPath
-			if childPath != "" {
-				childPath += "."
-			}
-			childPath += k
-			if !dynamicValuesEqualRecursive(lv, rv, service, childPath) {
+			if !dynamicValuesEqualRecursive(lv, rv, service, joinFieldPath(fieldPath, k)) {
 				return false
 			}
 		}
@@ -491,16 +539,25 @@ func SlotProp(slot *metadata.Property, key string) *metadata.Property {
 // setTypedFields maps service names to their set-typed field paths.
 // A value in this map indicates that the field, when present at the given path,
 // should be compared as an unordered set rather than an ordered list.
+//
+// These are fields the connector holds in a Java Set (usually a HashSet). The API serializes them
+// in the set's iteration order, which is unrelated to the order the user sent. For enum elements
+// it even differs between API instances, because enum hash codes are identity-based, so two reads
+// of an unchanged connection can return different orders. Connector metadata does not mark these
+// arrays as unordered (no uniqueItems), so they have to be listed here.
 var setTypedFields = map[string]map[string]bool{
 	"facebook_ads": {
-		"fields":                            true,
-		"breakdowns":                        true,
-		"action_breakdowns":                 true,
-		"attribution_windows":               true,
-		"custom_tables.fields":              true,
-		"custom_tables.breakdowns":          true,
-		"custom_tables.action_breakdowns":   true,
-		"custom_tables.attribution_windows": true,
+		"accounts":                           true,
+		"custom_prebuilt_report_table_names": true,
+		"conflict_table_names":               true,
+		"fields":                             true,
+		"breakdowns":                         true,
+		"action_breakdowns":                  true,
+		"attribution_windows":                true,
+		"custom_tables.fields":               true,
+		"custom_tables.breakdowns":           true,
+		"custom_tables.action_breakdowns":    true,
+		"custom_tables.attribution_windows":  true,
 	},
 }
 
@@ -514,25 +571,95 @@ func isSetTypedField(service string, fieldPath string) bool {
 	return serviceFields[fieldPath]
 }
 
-// multisetEqual returns true if two slices contain the same elements in any order.
-// Elements are compared using reflect.DeepEqual.
+func joinFieldPath(base, key string) string {
+	if base == "" {
+		return key
+	}
+	return base + "." + key
+}
+
+// setElementKey returns a key that is the same for equal elements of a set-typed list, so they can
+// be counted in a map. Numbers are compared by value, because the API read-back decodes them as
+// float64 while values from state are int64. Objects are compared regardless of key order, since
+// json.Marshal sorts map keys. ok is false for elements that can't be compared, e.g. ones holding
+// unknown plan values, which would otherwise encode like an empty object.
+func setElementKey(value interface{}) (string, bool) {
+	if containsDynamicUnknown(value) {
+		return "", false
+	}
+	encoded, err := json.Marshal(normalizeNumbers(value))
+	if err != nil {
+		return "", false
+	}
+	return string(encoded), true
+}
+
+func containsDynamicUnknown(value interface{}) bool {
+	switch v := value.(type) {
+	case DynamicUnknownValue:
+		return true
+	case []interface{}:
+		for _, item := range v {
+			if containsDynamicUnknown(item) {
+				return true
+			}
+		}
+	case map[string]interface{}:
+		for _, item := range v {
+			if containsDynamicUnknown(item) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func normalizeNumbers(value interface{}) interface{} {
+	switch v := value.(type) {
+	case int:
+		return float64(v)
+	case int32:
+		return float64(v)
+	case int64:
+		return float64(v)
+	case float32:
+		return float64(v)
+	case []interface{}:
+		result := make([]interface{}, len(v))
+		for i, item := range v {
+			result[i] = normalizeNumbers(item)
+		}
+		return result
+	case map[string]interface{}:
+		result := make(map[string]interface{}, len(v))
+		for k, item := range v {
+			result[k] = normalizeNumbers(item)
+		}
+		return result
+	}
+	return value
+}
+
+// multisetEqual returns true if two slices contain the same elements in any order, with the
+// same number of duplicates. Elements are compared by setElementKey.
 func multisetEqual(a, b []interface{}) bool {
 	if len(a) != len(b) {
 		return false
 	}
-	seen := make(map[int]bool)
-	for _, av := range a {
-		found := false
-		for j, bv := range b {
-			if !seen[j] && reflect.DeepEqual(av, bv) {
-				seen[j] = true
-				found = true
-				break
-			}
-		}
-		if !found {
+	counts := make(map[string]int, len(a))
+	for _, item := range a {
+		key, ok := setElementKey(item)
+		if !ok {
 			return false
 		}
+		counts[key]++
+	}
+	for _, item := range b {
+		key, ok := setElementKey(item)
+		if !ok || counts[key] == 0 {
+			return false
+		}
+		counts[key]--
 	}
 	return true
 }

@@ -155,7 +155,7 @@ func TestProject_NormalFieldTakesRemote(t *testing.T) {
 		remote := map[string]interface{}{"bucket": "remote-bucket", "extra": "ignored"}
 		mask := map[string]interface{}{"bucket": "local-bucket"}
 
-		result := project(remote, mask, slot)
+		result := ProjectDynamic(remote, mask, slot)
 
 		if result["bucket"] != "remote-bucket" {
 			t.Errorf("got %v, want remote-bucket", result["bucket"])
@@ -173,7 +173,7 @@ func TestProject_SensitiveKeepsLocal(t *testing.T) {
 		remote := map[string]interface{}{"secret_key": "****"}
 		mask := map[string]interface{}{"secret_key": "my-real-secret"}
 
-		result := project(remote, mask, slot)
+		result := ProjectDynamic(remote, mask, slot)
 
 		if result["secret_key"] != "my-real-secret" {
 			t.Errorf("sensitive: got %v, want my-real-secret (local must be preserved)", result["secret_key"])
@@ -191,7 +191,7 @@ func TestProject_ReadonlyTakesRemote(t *testing.T) {
 		remote := map[string]interface{}{"public_key": "server-key", "bucket": "b"}
 		mask := map[string]interface{}{"public_key": "local-ignored", "bucket": "b"}
 
-		result := project(remote, mask, slot)
+		result := ProjectDynamic(remote, mask, slot)
 
 		if result["public_key"] != "server-key" {
 			t.Errorf("readonly: got %v, want server-key (remote stored for reference)", result["public_key"])
@@ -207,7 +207,7 @@ func TestProject_ReadonlyAbsentFromMaskExcluded(t *testing.T) {
 	remote := map[string]interface{}{"public_key": "server-key"}
 	mask := map[string]interface{}{}
 
-	result := project(remote, mask, slot)
+	result := ProjectDynamic(remote, mask, slot)
 
 	if _, present := result["public_key"]; present {
 		t.Errorf("readonly field absent from mask should not appear in result, got %v", result["public_key"])
@@ -221,7 +221,7 @@ func TestProject_MissingFromAPI_PreservesMaskValue(t *testing.T) {
 		remote := map[string]interface{}{"bucket": "b"}
 		mask := map[string]interface{}{"bucket": "b", "gone": "old-val"}
 
-		result := project(remote, mask, slot)
+		result := ProjectDynamic(remote, mask, slot)
 
 		if result["gone"] != "old-val" {
 			t.Errorf("field absent from API: want mask value preserved, got %v", result["gone"])
@@ -237,7 +237,7 @@ func TestProject_NestedObject(t *testing.T) {
 	remote := map[string]interface{}{"opts": map[string]interface{}{"key": "remote-val", "extra": "nope"}}
 	mask := map[string]interface{}{"opts": map[string]interface{}{"key": "local-val"}}
 
-	result := project(remote, mask, slot)
+	result := ProjectDynamic(remote, mask, slot)
 
 	nested, ok := result["opts"].(map[string]interface{})
 	if !ok {
@@ -256,7 +256,7 @@ func TestProject_NilSlot_Passthrough(t *testing.T) {
 	remote := map[string]interface{}{"bucket": "b", "pattern": "*.csv"}
 	mask := map[string]interface{}{"bucket": "b", "pattern": "*.csv"}
 
-	result := project(remote, mask, nil)
+	result := ProjectDynamic(remote, mask, nil)
 
 	if result["bucket"] != "b" || result["pattern"] != "*.csv" {
 		t.Errorf("nil slot: expected passthrough, got %v", result)
@@ -559,7 +559,7 @@ func TestProject_ListOfObjectsDropsUpstreamOnlyKeys(t *testing.T) {
 		map[string]interface{}{"file_pattern": "b", "table_name": "table_b"},
 	}}
 
-	files := project(remote, mask, filesSlot())["files"].([]interface{})
+	files := ProjectDynamic(remote, mask, filesSlot())["files"].([]interface{})
 
 	if len(files) != 2 {
 		t.Fatalf("expected 2 files, got %d", len(files))
@@ -601,7 +601,7 @@ func TestProject_ListOfObjectsLengthMismatchTakesRemote(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			files := project(map[string]interface{}{"files": c.remote}, map[string]interface{}{"files": c.mask}, filesSlot())["files"].([]interface{})
+			files := ProjectDynamic(map[string]interface{}{"files": c.remote}, map[string]interface{}{"files": c.mask}, filesSlot())["files"].([]interface{})
 			if !reflect.DeepEqual(files, c.remote) {
 				t.Errorf("got %v, want remote as-is %v", files, c.remote)
 			}
@@ -614,7 +614,7 @@ func TestProject_ListOfScalarsTakesRemote(t *testing.T) {
 	remote := map[string]interface{}{"list": []interface{}{"x", "y"}}
 	mask := map[string]interface{}{"list": []interface{}{"a"}}
 
-	list := project(remote, mask, nil)["list"].([]interface{})
+	list := ProjectDynamic(remote, mask, nil)["list"].([]interface{})
 
 	if len(list) != 2 || list[0] != "x" || list[1] != "y" {
 		t.Errorf("got %v, want [x y]", list)
