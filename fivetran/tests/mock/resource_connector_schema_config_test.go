@@ -31,6 +31,10 @@ var (
 	schemaParentTableGetHandler *mock.Handler
 	schemaParentTableData       map[string]interface{}
 
+	schemaParentTableAddedGetHandler   *mock.Handler
+	schemaParentTableAddedPatchHandler *mock.Handler
+	schemaParentTableAddedData         map[string]interface{}
+
 	listConnectionsHandler *mock.Handler
 )
 
@@ -955,6 +959,151 @@ func TestParentTableMock(t *testing.T) {
 		resource.TestCase{
 			PreCheck: func() {
 				setupMockClientParentTableResource(t)
+			},
+			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				// there is no possibility to destroy schema config - it always exists within the connector
+				return nil
+			},
+
+			Steps: []resource.TestStep{
+				step1,
+				step2,
+			},
+		},
+	)
+}
+
+// Regression test for https://github.com/fivetran/terraform-provider-fivetran/issues/646:
+// adding a table to an existing resource must not fail with "Provider produced inconsistent
+// result after apply" when the upstream response reports a parent_table for the added table.
+// With UseStateForUnknown the added table had no prior state, so the plan promised
+// parent_table = null while the apply result was the parent's name; UseNonNullStateForUnknown
+// keeps the value unknown instead.
+func TestParentTableAddedTableMock(t *testing.T) {
+	upstreamJson := func(childEnabled bool) string {
+		return fmt.Sprintf(`
+					{
+						"enable_new_by_default": true,
+						"schema_change_handling": "BLOCK_ALL",
+						"schemas": {
+							"schema_1": {
+								"name_in_destination": "schema_1",
+								"enabled": true,
+								"tables": {
+									"core_table": {
+										"name_in_destination": "core_table",
+										"enabled": true,
+										"sync_mode": "LIVE",
+										"enabled_patch_settings": {
+											"allowed": true
+										}
+									},
+									"child_table": {
+										"name_in_destination": "child_table",
+										"enabled": %v,
+										"sync_mode": "LIVE",
+										"parent_table": "core_table",
+										"enabled_patch_settings": {
+											"allowed": true
+										}
+									}
+								}
+							}
+						}
+					}
+					`, childEnabled)
+	}
+
+	setupMockClientParentTableAddedResource := func(t *testing.T) {
+		mockClient.Reset()
+		schemaParentTableAddedData = createMapFromJsonString(t, upstreamJson(false))
+
+		schemaParentTableAddedGetHandler = mockClient.When(http.MethodGet, "/v1/connections/connector_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaParentTableAddedData), nil
+			},
+		)
+
+		schemaParentTableAddedPatchHandler = mockClient.When(http.MethodPatch, "/v1/connections/connector_id/schemas").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				body := requestBodyToJson(t, req)
+				enabled := body["schemas"].(map[string]interface{})["schema_1"].(map[string]interface{})["tables"].(map[string]interface{})["child_table"].(map[string]interface{})["enabled"].(bool)
+				assertEqual(t, enabled, true)
+
+				schemaParentTableAddedData = createMapFromJsonString(t, upstreamJson(true))
+
+				return fivetranSuccessResponse(t, req, http.StatusOK, "Success", schemaParentTableAddedData), nil
+			},
+		)
+	}
+
+	// create with the child table absent from the config
+	step1 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "BLOCK_ALL"
+				schemas = {
+					"schema_1" = {
+						enabled = true
+						tables = {
+							"core_table" = {
+								enabled = true
+								sync_mode = "LIVE"
+							}
+						}
+					}
+				}
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.core_table.enabled", "true"),
+		),
+	}
+
+	// add the child table in a later update: the apply must succeed and parent_table
+	// must come back from the upstream response
+	step2 := resource.TestStep{
+		Config: `
+			resource "fivetran_connector_schema_config" "test_schema" {
+				provider = fivetran-provider
+				connector_id = "connector_id"
+				schema_change_handling = "BLOCK_ALL"
+				schemas = {
+					"schema_1" = {
+						enabled = true
+						tables = {
+							"core_table" = {
+								enabled = true
+								sync_mode = "LIVE"
+							}
+							"child_table" = {
+								enabled = true
+								sync_mode = "LIVE"
+							}
+						}
+					}
+				}
+			}`,
+
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				assertEqual(t, schemaParentTableAddedPatchHandler.Interactions, 1)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.child_table.enabled", "true"),
+			resource.TestCheckResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.child_table.parent_table", "core_table"),
+			resource.TestCheckNoResourceAttr("fivetran_connector_schema_config.test_schema", "schemas.schema_1.tables.core_table.parent_table"),
+		),
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck: func() {
+				setupMockClientParentTableAddedResource(t)
 			},
 			ProtoV6ProviderFactories: ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
