@@ -16,6 +16,8 @@ type DestinationV2ResourceModel struct {
 	GroupId                   types.String  `tfsdk:"group_id"`
 	Service                   types.String  `tfsdk:"service"`
 	Config                    types.Dynamic `tfsdk:"config"`
+	ConfigSecrets             types.Dynamic `tfsdk:"config_secrets"`
+	ConfigSecretsVersion      types.Int64   `tfsdk:"config_secrets_version"`
 	Region                    types.String  `tfsdk:"region"`
 	TimeZoneOffset            types.String  `tfsdk:"time_zone_offset"`
 	DaylightSavingTimeEnabled types.Bool    `tfsdk:"daylight_saving_time_enabled"`
@@ -37,6 +39,8 @@ func DestinationV2ResourceModelAttrTypes() map[string]attr.Type {
 		"group_id":                     types.StringType,
 		"service":                      types.StringType,
 		"config":                       types.DynamicType,
+		"config_secrets":               types.DynamicType,
+		"config_secrets_version":       types.Int64Type,
 		"region":                       types.StringType,
 		"time_zone_offset":             types.StringType,
 		"daylight_saving_time_enabled": types.BoolType,

@@ -364,6 +364,12 @@ func TestDestinationV2SchemaShape(t *testing.T) {
 	if !attrs["config"].IsRequired() || attrs["config"].IsSensitive() {
 		t.Fatal("config must be required and not sensitive; password fields are protected via metadata projection")
 	}
+	if secrets := attrs["config_secrets"]; !secrets.IsOptional() || !secrets.IsWriteOnly() || !secrets.IsSensitive() {
+		t.Fatal("config_secrets must be optional, write-only and sensitive")
+	}
+	if version := attrs["config_secrets_version"]; !version.IsOptional() || version.IsComputed() || version.IsWriteOnly() {
+		t.Fatal("config_secrets_version must be optional, not computed and stored in state")
+	}
 	for _, name := range []string{"group_id", "service", "time_zone_offset"} {
 		if !attrs[name].IsRequired() {
 			t.Fatalf("%s must be required", name)
@@ -411,6 +417,8 @@ func destinationV2Model(t *testing.T, service, groupID string, config map[string
 		GroupId:                   types.StringValue(groupID),
 		Service:                   types.StringValue(service),
 		Config:                    configValue,
+		ConfigSecrets:             types.DynamicNull(),
+		ConfigSecretsVersion:      types.Int64Null(),
 		Region:                    types.StringNull(),
 		TimeZoneOffset:            types.StringValue("0"),
 		DaylightSavingTimeEnabled: types.BoolNull(),

@@ -5,11 +5,13 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/fivetran/go-fivetran/metadata"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 )
 
 func (r *destinationV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
@@ -75,13 +77,33 @@ func (r *destinationV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanR
 	}
 
 	if isCreate || isRootReplacement {
-		validateRequiredDynamicFields(planConfig, &meta.Config, path.Root("config"), &resp.Diagnostics, destinationWording)
+		validateDestinationV2RequiredFields(ctx, req.Config, planConfig, meta, &resp.Diagnostics)
 		return
 	}
 
 	if appendImmutableRequiresReplace(planConfig, stateConfig, &meta.Config, path.Root("config"), resp, plan.Service.ValueString(), "", destinationWording) {
-		validateRequiredDynamicFields(planConfig, &meta.Config, path.Root("config"), &resp.Diagnostics, destinationWording)
+		validateDestinationV2RequiredFields(ctx, req.Config, planConfig, meta, &resp.Diagnostics)
 	}
+}
+
+// validateDestinationV2RequiredFields checks required config fields, counting secret
+// fields provided through config_secrets. It skips the check while config_secrets is
+// unknown, because the provided secret fields can't be known yet.
+func validateDestinationV2RequiredFields(ctx context.Context, config tfsdk.Config, planConfig map[string]interface{}, meta *metadata.DestinationMetadata, diags *diag.Diagnostics) {
+	secrets, secretsDiags := destinationV2ConfigSecretsValue(ctx, config)
+	diags.Append(secretsDiags...)
+	if diags.HasError() {
+		return
+	}
+	if secrets.IsUnknown() || secrets.IsUnderlyingValueUnknown() {
+		return
+	}
+	secretsMap, secretsDiags := core.DynamicToMapPreserveUnknown(ctx, secrets)
+	diags.Append(secretsDiags...)
+	if diags.HasError() {
+		return
+	}
+	validateRequiredDynamicFields(mergeConfigSecrets(planConfig, secretsMap), &meta.Config, path.Root("config"), diags, destinationWording)
 }
 
 var destinationWording = dynamicWording{
