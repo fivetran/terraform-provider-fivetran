@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.52...HEAD)
 
+### Added
+- New resource `fivetran_destination_v2` (public preview): `config` is a dynamic, service-specific object whose fields, types, enum values, and readonly/immutable rules come from destination metadata at plan time. Unknown fields, wrong types, invalid enum values, and readonly fields fail the plan; changing an immutable field plans a replacement. Field names match the Fivetran REST API. Secret fields can be set in the write-only `config_secrets` attribute (Terraform 1.11+), which accepts ephemeral values and is never stored in state; increment `config_secrets_version` to send rotated secrets.
+
 ### Fixed
 - `fivetran_connector_schema_config`: fixed "Provider produced inconsistent result after apply" when a table whose upstream schema reports a `parent_table` is added to an existing resource ([#646](https://github.com/fivetran/terraform-provider-fivetran/issues/646)). `parent_table` of a newly added table is now `(known after apply)` in the plan instead of null.
 - `fivetran_destination`: fixed "Provider produced inconsistent result after apply" when a create or update succeeds but the API response leaves out a configured `config` field (e.g. `cluster_id` for Redshift with `connection_type = "PrivateLink"`, [#473](https://github.com/fivetran/terraform-provider-fivetran/issues/473)). The configured value is now kept in state, and a warning lists the affected field paths (values are never shown). If a later refresh still doesn't return the field, it's cleared from state and the next plan shows it as a change.
