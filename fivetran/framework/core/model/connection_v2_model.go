@@ -185,7 +185,7 @@ func (d *ConnectionV2ResourceModel) readFromResponseData(ctx context.Context, da
 	if meta != nil {
 		configSlot = &meta.Config
 	}
-	projectedConfig := core.ProjectDynamic(config, configMask, configSlot)
+	projectedConfig := core.ProjectDynamicWithService(config, configMask, configSlot, data.Service)
 	dynamicConfig, dynamicDiags := core.MapToDynamic(ctx, projectedConfig)
 	diags.Append(dynamicDiags...)
 	if !diags.HasError() {

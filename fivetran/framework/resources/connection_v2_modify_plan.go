@@ -89,8 +89,8 @@ func (r *connectionV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRe
 	}
 
 	service := plan.Service.ValueString()
-	hasImmutableReplacement := appendImmutableRequiresReplace(planConfig, stateConfig, &meta.Config, path.Root("config"), resp, service)
-	hasImmutableReplacement = appendImmutableRequiresReplace(planAuth, stateAuth, &meta.Auth, path.Root("auth"), resp, service) || hasImmutableReplacement
+	hasImmutableReplacement := appendImmutableRequiresReplace(planConfig, stateConfig, &meta.Config, path.Root("config"), resp, service, "")
+	hasImmutableReplacement = appendImmutableRequiresReplace(planAuth, stateAuth, &meta.Auth, path.Root("auth"), resp, service, "") || hasImmutableReplacement
 	if hasImmutableReplacement {
 		validateRequiredDynamicFields(planConfig, &meta.Config, path.Root("config"), &resp.Diagnostics)
 		validateRequiredDynamicFields(planAuth, &meta.Auth, path.Root("auth"), &resp.Diagnostics)
@@ -150,7 +150,9 @@ func validateNestedRequiredDynamicFields(value interface{}, prop *metadata.Prope
 	}
 }
 
-func appendImmutableRequiresReplace(planValues, stateValues map[string]interface{}, slot *metadata.Property, root path.Path, resp *resource.ModifyPlanResponse, service string) bool {
+// basePath is the dot-separated path of planValues within the dynamic field, without list indexes.
+// It is used to recognize set-typed fields, see core.IsSetTypedField.
+func appendImmutableRequiresReplace(planValues, stateValues map[string]interface{}, slot *metadata.Property, root path.Path, resp *resource.ModifyPlanResponse, service, basePath string) bool {
 	if slot == nil {
 		return false
 	}
@@ -163,26 +165,35 @@ func appendImmutableRequiresReplace(planValues, stateValues map[string]interface
 		}
 
 		fieldPath := root.AtName(name)
+		valuePath := name
+		if basePath != "" {
+			valuePath = basePath + "." + name
+		}
 		stateValue, stateHasValue := stateValues[name]
-		if prop.Immutable && (!stateHasValue || !dynamicValuesEqualWithService(planValue, stateValue, service)) {
+		if prop.Immutable && (!stateHasValue || !dynamicValuesEqualAtPath(planValue, stateValue, service, valuePath)) {
 			resp.RequiresReplace.Append(fieldPath)
 			addHistoricalResyncWarning(fieldPath, &resp.Diagnostics)
 			hasReplacement = true
 			continue
 		}
 
-		hasReplacement = appendNestedImmutableRequiresReplace(planValue, stateValue, prop, fieldPath, resp, service) || hasReplacement
+		hasReplacement = appendNestedImmutableRequiresReplace(planValue, stateValue, prop, fieldPath, resp, service, valuePath) || hasReplacement
 	}
 	return hasReplacement
 }
 
-func appendNestedImmutableRequiresReplace(planValue, stateValue interface{}, prop *metadata.Property, fieldPath path.Path, resp *resource.ModifyPlanResponse, service string) bool {
+func appendNestedImmutableRequiresReplace(planValue, stateValue interface{}, prop *metadata.Property, fieldPath path.Path, resp *resource.ModifyPlanResponse, service, valuePath string) bool {
 	switch planNested := planValue.(type) {
 	case map[string]interface{}:
 		stateNested, _ := stateValue.(map[string]interface{})
-		return appendImmutableRequiresReplace(planNested, stateNested, prop, fieldPath, resp, service)
+		return appendImmutableRequiresReplace(planNested, stateNested, prop, fieldPath, resp, service, valuePath)
 	case []interface{}:
 		if prop.Items == nil {
+			return false
+		}
+		// Items of a set-typed list have no stable position, so pairing them with state by index
+		// would report a reordered item as a changed one and force a replacement.
+		if core.IsSetTypedField(service, valuePath) {
 			return false
 		}
 		stateItems, _ := stateValue.([]interface{})
@@ -195,7 +206,7 @@ func appendNestedImmutableRequiresReplace(planValue, stateValue interface{}, pro
 			if i < len(stateItems) {
 				stateItem = stateItems[i]
 			}
-			hasReplacement = appendNestedImmutableRequiresReplace(item, stateItem, prop.Items, fieldPath.AtListIndex(i), resp, service) || hasReplacement
+			hasReplacement = appendNestedImmutableRequiresReplace(item, stateItem, prop.Items, fieldPath.AtListIndex(i), resp, service, valuePath) || hasReplacement
 		}
 		return hasReplacement
 	}
@@ -210,16 +221,9 @@ func addHistoricalResyncWarning(fieldPath path.Path, diags *diag.Diagnostics) {
 	)
 }
 
-func dynamicValuesEqual(left, right interface{}) bool {
+func dynamicValuesEqualAtPath(left, right interface{}, service, valuePath string) bool {
 	if core.IsDynamicUnknownValue(left) || core.IsDynamicUnknownValue(right) {
 		return true
 	}
-	return core.DynamicValuesEqualWithService(left, right, "")
-}
-
-func dynamicValuesEqualWithService(left, right interface{}, service string) bool {
-	if core.IsDynamicUnknownValue(left) || core.IsDynamicUnknownValue(right) {
-		return true
-	}
-	return core.DynamicValuesEqualWithService(left, right, service)
+	return core.DynamicValuesEqualAtPath(left, right, service, valuePath)
 }

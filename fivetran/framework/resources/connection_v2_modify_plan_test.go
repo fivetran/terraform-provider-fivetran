@@ -530,3 +530,118 @@ func assertDiagnosticContains(t *testing.T, diags diag.Diagnostics, text string)
 	}
 	t.Fatalf("diagnostics %v did not contain %q", diags, text)
 }
+
+// Set-typed fields (see core.IsSetTypedField) come back from the API in an arbitrary order. A reorder
+// of an immutable one must not force a replacement, since that triggers a historical resync.
+func TestConnectionV2ModifyPlanSetTypedImmutableFields(t *testing.T) {
+	t.Parallel()
+
+	stringArray := func(immutable bool) *metadata.Property {
+		return &metadata.Property{Type: "array", Immutable: immutable, Items: &metadata.Property{Type: "string"}}
+	}
+	customTablesMeta := func(item *metadata.Property) *metadata.ConnectorMetadata {
+		return &metadata.ConnectorMetadata{Config: metadata.Property{Properties: map[string]*metadata.Property{
+			"custom_tables": {Type: "array", Items: &metadata.Property{
+				Type: "object",
+				Properties: map[string]*metadata.Property{
+					"table_name":          {Type: "string"},
+					"attribution_windows": item,
+				},
+			}},
+		}}}
+	}
+	customTables := func(windows ...interface{}) map[string]interface{} {
+		return map[string]interface{}{"custom_tables": []interface{}{
+			map[string]interface{}{"table_name": "t1", "attribution_windows": windows},
+		}}
+	}
+
+	tests := []struct {
+		name        string
+		service     string
+		planConfig  map[string]interface{}
+		stateConfig map[string]interface{}
+		meta        *metadata.ConnectorMetadata
+		wantPaths   []path.Path
+	}{
+		{
+			name:        "top-level immutable set reordered",
+			service:     "facebook_ads",
+			planConfig:  map[string]interface{}{"accounts": []interface{}{"a", "b", "c"}},
+			stateConfig: map[string]interface{}{"accounts": []interface{}{"c", "a", "b"}},
+			meta: &metadata.ConnectorMetadata{Config: metadata.Property{Properties: map[string]*metadata.Property{
+				"accounts": stringArray(true),
+			}}},
+		},
+		{
+			name:        "top-level immutable set changed",
+			service:     "facebook_ads",
+			planConfig:  map[string]interface{}{"accounts": []interface{}{"a", "b"}},
+			stateConfig: map[string]interface{}{"accounts": []interface{}{"a", "c"}},
+			meta: &metadata.ConnectorMetadata{Config: metadata.Property{Properties: map[string]*metadata.Property{
+				"accounts": stringArray(true),
+			}}},
+			wantPaths: []path.Path{path.Root("config").AtName("accounts")},
+		},
+		{
+			name:        "top-level immutable list of another service reordered",
+			service:     "google_ads",
+			planConfig:  map[string]interface{}{"accounts": []interface{}{"a", "b"}},
+			stateConfig: map[string]interface{}{"accounts": []interface{}{"b", "a"}},
+			meta: &metadata.ConnectorMetadata{Config: metadata.Property{Properties: map[string]*metadata.Property{
+				"accounts": stringArray(true),
+			}}},
+			wantPaths: []path.Path{path.Root("config").AtName("accounts")},
+		},
+		{
+			name:        "nested immutable set reordered",
+			service:     "facebook_ads",
+			planConfig:  customTables("CLICK_1D", "CLICK_7D", "VIEW_1D"),
+			stateConfig: customTables("VIEW_1D", "CLICK_1D", "CLICK_7D"),
+			meta:        customTablesMeta(stringArray(true)),
+		},
+		{
+			name:        "nested immutable set changed",
+			service:     "facebook_ads",
+			planConfig:  customTables("CLICK_1D", "CLICK_7D"),
+			stateConfig: customTables("CLICK_1D", "VIEW_1D"),
+			meta:        customTablesMeta(stringArray(true)),
+			wantPaths: []path.Path{
+				path.Root("config").AtName("custom_tables").AtListIndex(0).AtName("attribution_windows"),
+			},
+		},
+		{
+			name:        "set with immutable items reordered",
+			service:     "facebook_ads",
+			planConfig:  customTables("CLICK_1D", "CLICK_7D", "VIEW_1D"),
+			stateConfig: customTables("VIEW_1D", "CLICK_7D", "CLICK_1D"),
+			meta: customTablesMeta(&metadata.Property{
+				Type:  "array",
+				Items: &metadata.Property{Type: "string", Immutable: true},
+			}),
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			cache := &sync.Map{}
+			cache.Store(tt.service, tt.meta)
+
+			r := configuredConnectionV2ForValidation(t, false, cache)
+			req := connectionV2ModifyPlanRequest(t,
+				connectionV2ModifyPlanModel(t, tt.service, "group_id", tt.planConfig, nil),
+				connectionV2ModifyPlanModel(t, tt.service, "group_id", tt.stateConfig, nil),
+			)
+
+			var resp resource.ModifyPlanResponse
+			r.ModifyPlan(context.Background(), req, &resp)
+
+			assertErrorCount(t, resp.Diagnostics, 0)
+			assertWarningCount(t, resp.Diagnostics, len(tt.wantPaths))
+			assertRequiresReplacePaths(t, resp.RequiresReplace, tt.wantPaths)
+		})
+	}
+}
