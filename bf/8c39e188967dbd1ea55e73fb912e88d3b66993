@@ -1,7 +1,32 @@
 ---
 {
   "schema_version": "authorship/3.0.0",
-  "git_ai_version": "1.1.3",
+  "git_ai_version": "1.1.4",
   "base_commit_sha": "bf8c39e188967dbd1ea55e73fb912e88d3b66993",
-  "prompts": {}
+  "prompts": {
+    "44df30ae81c96a2b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "01a33416-d147-46da-bd97-34ff60e4f7fc",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>",
+      "total_additions": 38,
+      "total_deletions": 0,
+      "accepted_lines": 38,
+      "overriden_lines": 0
+    },
+    "a597775acd132041": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "530fbd8b-6ad7-4a8c-ba2f-8feef2c76928",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>",
+      "total_additions": 75,
+      "total_deletions": 60,
+      "accepted_lines": 66,
+      "overriden_lines": 0
+    }
+  }
 }
