@@ -87,7 +87,7 @@ func (r *destinationV2) ImportState(ctx context.Context, req resource.ImportStat
 
 	resp.Diagnostics.AddWarning(
 		"fivetran_destination_v2 import requires HCL review",
-		"Terraform imported the destination using API-visible config fields. Add the matching fivetran_destination_v2 resource block to your configuration and add any sensitive config values (for example passwords or private keys) because the API does not return secrets.",
+		"Terraform imported the destination using API-visible config fields. Add the matching fivetran_destination_v2 resource block to your configuration and add any sensitive config values (for example passwords or private keys) to config or config_secrets because the API does not return secrets.",
 	)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -125,6 +125,13 @@ func (r *destinationV2) Create(ctx context.Context, req resource.CreateRequest, 
 	if configMap == nil {
 		configMap = map[string]interface{}{}
 	}
+	secrets, diags := destinationV2ConfigSecrets(ctx, req.Config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	// configMap stays the projection mask, so secrets are never tracked in state.
+	requestConfig := mergeConfigSecrets(configMap, secrets)
 
 	runSetupTestsPlan := core.GetBoolOrDefault(data.RunSetupTests, destinationV2RunSetupTestsDefault)
 	trustCertificatesPlan := core.GetBoolOrDefault(data.TrustCertificates, destinationV2TrustCertificatesDefault)
@@ -138,7 +145,7 @@ func (r *destinationV2) Create(ctx context.Context, req resource.CreateRequest, 
 		RunSetupTests(runSetupTestsPlan).
 		TrustCertificates(trustCertificatesPlan).
 		TrustFingerprints(trustFingerprintsPlan).
-		ConfigCustom(&configMap)
+		ConfigCustom(&requestConfig)
 
 	r.applyCreateRootFields(svc, data)
 
@@ -257,7 +264,14 @@ func (r *destinationV2) Update(ctx context.Context, req resource.UpdateRequest, 
 		return
 	}
 
+	secrets, diags := destinationV2ConfigSecrets(ctx, req.Config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	configPatch := core.PrepareConfigPatchDynamic(planConfig, stateConfig, &meta.Config)
+	applyConfigSecretsToPatch(configPatch, secrets, fieldChanged(plan.ConfigSecretsVersion, state.ConfigSecretsVersion))
 
 	runSetupTestsPlan := core.GetBoolOrDefault(plan.RunSetupTests, destinationV2RunSetupTestsDefault)
 	trustCertificatesPlan := core.GetBoolOrDefault(plan.TrustCertificates, destinationV2TrustCertificatesDefault)

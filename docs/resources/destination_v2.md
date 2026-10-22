@@ -47,13 +47,44 @@ resource "fivetran_destination_v2" "destination" {
 
 Fields with `format: password` in destination metadata are never overwritten with the masked value returned by the API, so they don't produce a permanent diff.
 
+Secrets set in `config` are stored in Terraform state. To keep them out of state, or to pass ephemeral values (for example from an `ephemeral` secret manager resource), set them in the write-only `config_secrets` attribute instead (Terraform 1.11 or later):
+
+```hcl
+ephemeral "google_secret_manager_secret_version" "snowflake_password" {
+    secret = "snowflake-password"
+}
+
+resource "fivetran_destination_v2" "destination" {
+    group_id         = fivetran_group.group.id
+    service          = "snowflake"
+    time_zone_offset = "0"
+
+    config = {
+        host     = "your-account.snowflakecomputing.com"
+        port     = 443
+        database = "fivetran"
+        auth     = "PASSWORD"
+        user     = "fivetran_user"
+    }
+
+    config_secrets = {
+        password = ephemeral.google_secret_manager_secret_version.snowflake_password.secret_data
+    }
+    config_secrets_version = 1
+}
+```
+
+- `config_secrets` accepts only fields with `format: password` in destination metadata. A field can't be set in both `config` and `config_secrets`.
+- Terraform doesn't store `config_secrets`, so it can't detect when a secret changes. The values are sent on create and whenever `config_secrets_version` changes: increment it after rotating a secret.
+- To move a secret from `config` to `config_secrets`, remove it from `config`, add it to `config_secrets` and increment `config_secrets_version`.
+
 ## Import
 
 ```shell
 terraform import fivetran_destination_v2.destination <destination_id>
 ```
 
-The API doesn't return secrets, so after import add the sensitive `config` fields to the resource block. Readonly fields are not tracked in state after import.
+The API doesn't return secrets, so after import add the sensitive fields to `config` or `config_secrets` in the resource block. Readonly fields are not tracked in state after import.
 
 ## Migrating from `fivetran_destination`
 
@@ -76,6 +107,8 @@ The two resources have different state shapes, so `terraform state mv` doesn't a
 
 ### Optional
 
+- `config_secrets` (Dynamic, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Write-only secret config fields (fields with `format: password` in destination metadata, for example `password` or `private_key`). Accepts ephemeral values and is never stored in state. Values are sent on create and whenever `config_secrets_version` changes. Requires Terraform 1.11 or later.
+- `config_secrets_version` (Number) Change this value to send the current `config_secrets` to Fivetran, for example after rotating a secret.
 - `daylight_saving_time_enabled` (Boolean) Shift the sync schedule to account for daylight saving time (for `time_zone_offset` values that observe DST).
 - `hybrid_deployment_agent_id` (String) The hybrid deployment agent ID that refers to the controller created for the group the destination belongs to.
 - `networking_method` (String) The networking method for the destination. Possible values: `Directly`, `SshTunnel`, `ProxyAgent`, `PrivateLink`.

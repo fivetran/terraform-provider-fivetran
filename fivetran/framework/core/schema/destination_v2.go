@@ -41,6 +41,16 @@ func DestinationV2ResourceAttributes() map[string]resourceSchema.Attribute {
 			Required:    true,
 			Description: "Service-specific destination configuration. The accepted fields are defined by destination metadata at runtime.",
 		},
+		"config_secrets": resourceSchema.DynamicAttribute{
+			Optional:    true,
+			Sensitive:   true,
+			WriteOnly:   true,
+			Description: "Write-only secret config fields (fields with `format: password` in destination metadata, for example `password` or `private_key`). Accepts ephemeral values and is never stored in state. Values are sent on create and whenever `config_secrets_version` changes. Requires Terraform 1.11 or later.",
+		},
+		"config_secrets_version": resourceSchema.Int64Attribute{
+			Optional:    true,
+			Description: "Change this value to send the current `config_secrets` to Fivetran, for example after rotating a secret.",
+		},
 		"region": resourceSchema.StringAttribute{
 			Optional:    true,
 			Computed:    true,
