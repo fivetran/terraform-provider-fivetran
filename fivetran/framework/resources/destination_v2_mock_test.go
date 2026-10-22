@@ -8,9 +8,11 @@ import (
 
 	"github.com/fivetran/go-fivetran/tests/mock"
 	tfmock "github.com/fivetran/terraform-provider-fivetran/fivetran/tests/mock"
+	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/tfversion"
 )
 
 const destinationV2MockMetadata = `
@@ -247,6 +249,144 @@ func TestResourceDestinationV2Mock(t *testing.T) {
 					tfmock.AssertEmpty(t, attrs["config.public_key"])
 					return nil
 				},
+			},
+		},
+	})
+}
+
+func destinationV2SecretsMockConfig(secrets, secretsVersion string) string {
+	return `
+		resource "fivetran_destination_v2" "dest" {
+			provider         = fivetran-provider
+			group_id         = "group_id"
+			service          = "snowflake"
+			time_zone_offset = "0"
+			region           = "GCP_US_EAST4"
+
+			config = {
+				host     = "account.snowflakecomputing.com"
+				port     = 443
+				user     = "fivetran_user"
+				database = "db"
+			}
+
+			config_secrets         = ` + secrets + `
+			config_secrets_version = ` + secretsVersion + `
+		}`
+}
+
+func TestResourceDestinationV2ConfigSecretsMock(t *testing.T) {
+	var destinationData map[string]interface{}
+	var postHandler, patchHandler *mock.Handler
+	var lastPatchConfig map[string]interface{}
+
+	setupMocks := func() {
+		tfmock.MockClient().Reset()
+		destinationData = nil
+		lastPatchConfig = nil
+
+		tfmock.MockClient().When(http.MethodGet, "/v1/metadata/destination-types/snowflake").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", tfmock.CreateMapFromJsonString(t, destinationV2MockMetadata)), nil
+			},
+		)
+
+		postHandler = tfmock.MockClient().When(http.MethodPost, "/v1/destinations").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				body := tfmock.RequestBodyToJson(t, req)
+				config := tfmock.AssertKeyExists(t, body, "config").(map[string]interface{})
+				tfmock.AssertKeyExistsAndHasValue(t, config, "host", "account.snowflakecomputing.com")
+				tfmock.AssertKeyExistsAndHasValue(t, config, "password", "secret")
+
+				destinationData = tfmock.CreateMapFromJsonString(t, `
+				{
+					"id": "destination_id",
+					"group_id": "group_id",
+					"service": "snowflake",
+					"region": "GCP_US_EAST4",
+					"time_zone_offset": "0",
+					"setup_status": "connected",
+					"daylight_saving_time_enabled": true,
+					"networking_method": "Directly",
+					"setup_tests": [],
+					"config": {
+						"host": "account.snowflakecomputing.com",
+						"port": 443,
+						"user": "fivetran_user",
+						"database": "db",
+						"password": "******"
+					}
+				}`)
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", destinationData), nil
+			},
+		)
+
+		tfmock.MockClient().When(http.MethodGet, "/v1/destinations/destination_id").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", destinationData), nil
+			},
+		)
+
+		patchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/destinations/destination_id").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				body := tfmock.RequestBodyToJson(t, req)
+				lastPatchConfig = tfmock.AssertKeyExists(t, body, "config").(map[string]interface{})
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", destinationData), nil
+			},
+		)
+
+		tfmock.MockClient().When(http.MethodDelete, "/v1/destinations/destination_id").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				destinationData = nil
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Destination has been deleted", nil), nil
+			},
+		)
+	}
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 setupMocks,
+		ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+		// Write-only attributes need Terraform 1.11+.
+		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+			tfversion.SkipBelow(version.Must(version.NewVersion("1.11.0"))),
+		},
+		Steps: []resource.TestStep{
+			{
+				// Create sends the secret, but it never reaches state.
+				Config: destinationV2SecretsMockConfig(`{ password = "secret" }`, "1"),
+				Check: resource.ComposeAggregateTestCheckFunc(
+					func(s *terraform.State) error {
+						tfmock.AssertEqual(t, postHandler.Interactions, 1)
+						return nil
+					},
+					resource.TestCheckNoResourceAttr("fivetran_destination_v2.dest", "config.password"),
+					resource.TestCheckNoResourceAttr("fivetran_destination_v2.dest", "config_secrets"),
+					resource.TestCheckResourceAttr("fivetran_destination_v2.dest", "config_secrets_version", "1"),
+				),
+			},
+			{
+				// A new secret value without a version bump plans no change.
+				Config: destinationV2SecretsMockConfig(`{ password = "rotated" }`, "1"),
+				Check: func(s *terraform.State) error {
+					tfmock.AssertEqual(t, patchHandler.Interactions, 0)
+					return nil
+				},
+			},
+			{
+				// Bumping the version sends only the secret.
+				Config: destinationV2SecretsMockConfig(`{ password = "rotated" }`, "2"),
+				Check: func(s *terraform.State) error {
+					tfmock.AssertEqual(t, patchHandler.Interactions, 1)
+					tfmock.AssertEqual(t, len(lastPatchConfig), 1)
+					tfmock.AssertKeyExistsAndHasValue(t, lastPatchConfig, "password", "rotated")
+					return nil
+				},
+			},
+			{
+				// Only secret fields are accepted in config_secrets.
+				Config:      destinationV2SecretsMockConfig(`{ role = "FIVETRAN_ROLE" }`, "2"),
+				PlanOnly:    true,
+				ExpectError: regexp.MustCompile(`is not a secret field`),
 			},
 		},
 	})

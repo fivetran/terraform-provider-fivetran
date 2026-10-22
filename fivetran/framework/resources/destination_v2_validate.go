@@ -32,6 +32,8 @@ func (r *destinationV2) ValidateConfig(ctx context.Context, req resource.Validat
 
 	configMap, diags := core.DynamicToMapPreserveUnknown(ctx, data.Config)
 	resp.Diagnostics.Append(diags...)
+	secretsMap, diags := core.DynamicToMapPreserveUnknown(ctx, data.ConfigSecrets)
+	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -50,6 +52,8 @@ func (r *destinationV2) ValidateConfig(ctx context.Context, req resource.Validat
 
 	validateDynamicObject(configMap, &meta.Config, path.Root("config"), &resp.Diagnostics)
 	rejectReadonlyDynamicFields(configMap, &meta.Config, path.Root("config"), &resp.Diagnostics)
+	validateDynamicObject(secretsMap, &meta.Config, path.Root("config_secrets"), &resp.Diagnostics)
+	validateConfigSecrets(secretsMap, configMap, &meta.Config, &resp.Diagnostics)
 	validateDestinationV2RootFields(data, meta, &resp.Diagnostics)
 }
 
