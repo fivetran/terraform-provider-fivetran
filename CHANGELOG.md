@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.55...HEAD)
 
+### Added
+- New resource `fivetran_destination_v2` (public preview): `config` is a dynamic, service-specific object whose fields, types, enum values, and readonly/immutable rules come from destination metadata at plan time. Unknown fields, wrong types, invalid enum values, and readonly fields fail the plan; changing an immutable field plans a replacement. Field names match the Fivetran REST API. Secret fields can be set in the write-only `config_secrets` attribute (Terraform 1.11+), which accepts ephemeral values and is never stored in state; increment `config_secrets_version` to send rotated secrets.
+
+### Changed
+- Updated `github.com/fivetran/go-fivetran` to `v1.3.15` (destination metadata support for `fivetran_destination_v2`).
+
 ## [v1.9.55](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.54...v1.9.55)
 
 ### Added
@@ -36,9 +42,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `fivetran_destination` and `fivetran_connector` - fixed migration from `v1.2.9` to the `v1.9.52`
-
-### Added
-- New resource `fivetran_destination_v2` (public preview): `config` is a dynamic, service-specific object whose fields, types, enum values, and readonly/immutable rules come from destination metadata at plan time. Unknown fields, wrong types, invalid enum values, and readonly fields fail the plan; changing an immutable field plans a replacement. Field names match the Fivetran REST API. Secret fields can be set in the write-only `config_secrets` attribute (Terraform 1.11+), which accepts ephemeral values and is never stored in state; increment `config_secrets_version` to send rotated secrets.
 
 ## [v1.9.51](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.50...v1.9.51)
 
