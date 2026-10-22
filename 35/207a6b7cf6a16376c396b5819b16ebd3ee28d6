@@ -1,0 +1,49 @@
+fivetran/framework/resources/destination_v2_validate.go
+  s_67680cb2f0f5bb::t_6ee85fd13a6d12 35-36
+  s_67680cb2f0f5bb::t_411fefafb10644 55-56
+fivetran/framework/resources/destination_v2_modify_plan.go
+  s_67680cb2f0f5bb::t_5b72ba778af6ad 80,85,89-106
+  s_67680cb2f0f5bb::t_1853fe3c2e663a 8,14
+  s_67680cb2f0f5bb::t_79499ad0eda1ff 107-108
+fivetran/framework/resources/destination_v2_secrets_test.go
+  s_67680cb2f0f5bb::t_4dd152964cdbb9 1-180
+fivetran/framework/resources/destination_v2_mock_test.go
+  s_67680cb2f0f5bb::t_1098e65e6fa98e 11,15
+docs/resources/destination_v2.md
+  s_67680cb2f0f5bb::t_19221ead5978af 50-80
+  s_67680cb2f0f5bb::t_c1b48ec0da2b31 110-111
+  s_67680cb2f0f5bb::t_c75ef706287d26 87
+CHANGELOG.md
+  s_67680cb2f0f5bb::t_0ac8867007f1db 11
+fivetran/framework/core/model/destination_v2_model.go
+  s_67680cb2f0f5bb::t_78863f99f45188 42
+  s_67680cb2f0f5bb::t_53f07800798ca0 19-20
+  s_67680cb2f0f5bb::t_4b060cbb42d26f 43
+fivetran/framework/resources/destination_v2.go
+  s_67680cb2f0f5bb::t_d3be74fbad5cc9 128-134,148
+  s_67680cb2f0f5bb::t_a77c87d700bb34 90
+  s_67680cb2f0f5bb::t_d65432d97d622c 267-272,274
+fivetran/framework/core/schema/destination_v2.go
+  s_67680cb2f0f5bb::t_c51be3cc56f305 44-53
+fivetran/framework/resources/destination_v2_validate_test.go
+  s_67680cb2f0f5bb::t_e9812986f81d6c 420-421
+  s_67680cb2f0f5bb::t_e780f5d864d224 367-372
+fivetran/framework/resources/destination_v2_secrets.go
+  s_67680cb2f0f5bb::t_d76bb8a2716e45 1-86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "35207a6b7cf6a16376c396b5819b16ebd3ee28d6",
+  "prompts": {},
+  "sessions": {
+    "s_67680cb2f0f5bb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ec1106dc-d260-4817-955c-22c1c10c4a08",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "jovan.manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
