@@ -25,7 +25,8 @@ const (
         "created_by": "created_by",
         "host": "host",
         "config": {
-            "connection_service_name": "connection_service_name"
+            "connection_service_name": "connection_service_name",
+            "private_dns_records": "server-a;server-b"
         }
     }
     `
@@ -73,6 +74,8 @@ func TestDataSourcePrivateLinkConfigMappingMock(t *testing.T) {
             resource.TestCheckResourceAttr("data.fivetran_private_link.test_pl", "host", "host"),
 
             resource.TestCheckResourceAttr("data.fivetran_private_link.test_pl", "config_map.connection_service_name", "connection_service_name"),
+            resource.TestCheckResourceAttr("data.fivetran_private_link.test_pl", "config_map.private_dns_records", "server-a;server-b"),
+            resource.TestCheckResourceAttr("data.fivetran_private_link.test_pl", "config_map.%", "11"),
         ),
     }
 

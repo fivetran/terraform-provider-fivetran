@@ -44,7 +44,7 @@ func (d *privateLink) Read(ctx context.Context, req datasource.ReadRequest, resp
 
     resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
-    detailsResponse, err := d.GetClient().NewPrivateLinkDetails().PrivateLinkId(data.Id.ValueString()).Do(ctx)
+    detailsResponse, err := d.GetClient().NewPrivateLinkDetails().PrivateLinkId(data.Id.ValueString()).DoCustom(ctx)
 
     if err != nil {
         resp.Diagnostics.AddError(
