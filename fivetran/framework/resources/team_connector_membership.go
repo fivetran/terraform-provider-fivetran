@@ -65,7 +65,7 @@ func (r *teamConnectorMembership) Create(ctx context.Context, req resource.Creat
 					fmt.Sprintf("%v; code: %v; message: %v", err, teamConnectorResponse.Code, teamConnectorResponse.Message),
 				)
 
-				creRvertMsg, creRevertErr :=  r.RevertCreated(ctx, savedConnectors, data.TeamId.ValueString())		
+				creRvertMsg, creRevertErr := r.RevertCreated(ctx, savedConnectors, data.TeamId.ValueString())
 				resp.Diagnostics.AddWarning("Action reverted", creRvertMsg)
 				resp.Diagnostics.AddWarning("Action reverted failed", creRevertErr)
 				return
@@ -101,6 +101,11 @@ func (r *teamConnectorMembership) Read(ctx context.Context, req resource.ReadReq
 
 	var data model.TeamConnectorMemberships
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+
+	if data.TeamId.IsNull() || data.TeamId.IsUnknown() {
+		// Import operation
+		data.TeamId = data.Id
+	}
 
 	teamConnectorResponse, err := data.ReadFromSource(ctx, r.GetClient(), data.TeamId.ValueString())
 	if err != nil {
@@ -163,7 +168,7 @@ func (r *teamConnectorMembership) Update(ctx context.Context, req resource.Updat
 					fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
 				)
 
-				delRevertMsg, delRevertErr :=  r.RevertDeleted(ctx, deletedConnectors, plan.TeamId.ValueString(), stateConnectorsMap)	
+				delRevertMsg, delRevertErr := r.RevertDeleted(ctx, deletedConnectors, plan.TeamId.ValueString(), stateConnectorsMap)
 				resp.Diagnostics.AddWarning("Action reverted", delRevertMsg)
 				resp.Diagnostics.AddWarning("Action reverted failed", delRevertErr)
 
@@ -177,11 +182,11 @@ func (r *teamConnectorMembership) Update(ctx context.Context, req resource.Updat
 					fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
 				)
 
-				delRevertMsg, delRevertErr :=  r.RevertDeleted(ctx, deletedConnectors, plan.TeamId.ValueString(), stateConnectorsMap)	
+				delRevertMsg, delRevertErr := r.RevertDeleted(ctx, deletedConnectors, plan.TeamId.ValueString(), stateConnectorsMap)
 				resp.Diagnostics.AddWarning("Action reverted", delRevertMsg)
 				resp.Diagnostics.AddWarning("Action reverted failed", delRevertErr)
 
-				modRevertMsg, modRevertErr := r.RevertModified(ctx, modifiedConnectors, plan.TeamId.ValueString(), stateConnectorsMap)		
+				modRevertMsg, modRevertErr := r.RevertModified(ctx, modifiedConnectors, plan.TeamId.ValueString(), stateConnectorsMap)
 				resp.Diagnostics.AddWarning("Action reverted", modRevertMsg)
 				resp.Diagnostics.AddWarning("Action reverted failed", modRevertErr)
 				return
@@ -200,16 +205,16 @@ func (r *teamConnectorMembership) Update(ctx context.Context, req resource.Updat
 					"Unable to Update Team Connector Membership Resource.",
 					fmt.Sprintf("%v; code: %v; message: %v", err, updateResponse.Code, updateResponse.Message),
 				)
-				
-				delRevertMsg, delRevertErr :=  r.RevertDeleted(ctx, deletedConnectors, plan.TeamId.ValueString(), stateConnectorsMap)	
+
+				delRevertMsg, delRevertErr := r.RevertDeleted(ctx, deletedConnectors, plan.TeamId.ValueString(), stateConnectorsMap)
 				resp.Diagnostics.AddWarning("Action reverted", delRevertMsg)
 				resp.Diagnostics.AddWarning("Action reverted failed", delRevertErr)
 
-				modRevertMsg, modRevertErr := r.RevertModified(ctx, modifiedConnectors, plan.TeamId.ValueString(), stateConnectorsMap)		
+				modRevertMsg, modRevertErr := r.RevertModified(ctx, modifiedConnectors, plan.TeamId.ValueString(), stateConnectorsMap)
 				resp.Diagnostics.AddWarning("Action reverted", modRevertMsg)
 				resp.Diagnostics.AddWarning("Action reverted failed", modRevertErr)
 
-				creRvertMsg, creRevertErr :=  r.RevertCreated(ctx, createdConnectors, plan.TeamId.ValueString())		
+				creRvertMsg, creRevertErr := r.RevertCreated(ctx, createdConnectors, plan.TeamId.ValueString())
 				resp.Diagnostics.AddWarning("Action reverted", creRvertMsg)
 				resp.Diagnostics.AddWarning("Action reverted failed", creRevertErr)
 				return
@@ -268,7 +273,7 @@ func (r *teamConnectorMembership) Delete(ctx context.Context, req resource.Delet
 					fmt.Sprintf("%v; code: %v; message: %v", err, deleteResponse.Code, deleteResponse.Message),
 				)
 
-				delRevertMsg, delRevertErr :=  r.RevertDeleted(ctx, deletedConnectors, data.TeamId.ValueString(), stateConnectorsMap);
+				delRevertMsg, delRevertErr := r.RevertDeleted(ctx, deletedConnectors, data.TeamId.ValueString(), stateConnectorsMap)
 				resp.Diagnostics.AddWarning("Action reverted", delRevertMsg)
 				resp.Diagnostics.AddWarning("Action reverted failed", delRevertErr)
 				return
@@ -291,13 +296,13 @@ func (r *teamConnectorMembership) RevertDeleted(ctx context.Context, toRevert []
 			failed = append(failed, connectorId)
 		} else {
 			reverted = append(reverted, connectorId)
-		} 
+		}
 	}
 	return fmt.Sprintf("Delete action reverted for connectors: %v", reverted),
-	fmt.Sprintf("Delete for revert action failed for connectors: %v", failed)
+		fmt.Sprintf("Delete for revert action failed for connectors: %v", failed)
 }
 
-func (r *teamConnectorMembership) RevertModified(ctx context.Context, toRevert []string, teamId string, stateConnectorsMap map[string]string)  (string, string)  {
+func (r *teamConnectorMembership) RevertModified(ctx context.Context, toRevert []string, teamId string, stateConnectorsMap map[string]string) (string, string) {
 	reverted := []string{}
 	failed := []string{}
 	for _, connectorId := range toRevert {
@@ -305,32 +310,32 @@ func (r *teamConnectorMembership) RevertModified(ctx context.Context, toRevert [
 		svc.TeamId(teamId)
 		svc.ConnectionId(connectorId)
 		svc.Role(stateConnectorsMap[connectorId])
-		
+
 		if _, err := svc.Do(ctx); err != nil {
 			failed = append(failed, connectorId)
 		} else {
 			reverted = append(reverted, connectorId)
-		} 
+		}
 	}
 	return fmt.Sprintf("Update action reverted for connectors: %v", reverted),
-	fmt.Sprintf("Update for revert action failed for connectors: %v", failed)
+		fmt.Sprintf("Update for revert action failed for connectors: %v", failed)
 }
 
-func (r *teamConnectorMembership) RevertCreated(ctx context.Context, toRevert []string, teamId string)  (string, string)  {
+func (r *teamConnectorMembership) RevertCreated(ctx context.Context, toRevert []string, teamId string) (string, string) {
 	reverted := []string{}
 	failed := []string{}
 	for _, connectorId := range toRevert {
 		svc := r.GetClient().NewTeamConnectionMembershipDelete()
 		svc.TeamId(teamId)
 		svc.ConnectionId(connectorId)
-		
+
 		if _, err := svc.Do(ctx); err != nil {
 			failed = append(failed, connectorId)
 		} else {
 			reverted = append(reverted, connectorId)
-		} 
+		}
 		reverted = append(reverted, connectorId)
 	}
 	return fmt.Sprintf("Created action reverted for connectors: %v", reverted),
-	fmt.Sprintf("Created for revert action failed for connectors: %v", failed)
+		fmt.Sprintf("Created for revert action failed for connectors: %v", failed)
 }
