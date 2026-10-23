@@ -34,6 +34,7 @@ var PrivateLinkConfigType = map[string]attr.Type{
 	"pls_id":                        types.StringType,
 	"sub_resource_name":             types.StringType,
 	"private_dns_records":           types.StringType,
+	"private_dns_regions":           types.StringType, // Deprecated: never supported by the API, always null; kept so existing references don't fail
 	"private_connection_service_id": types.StringType,
 }
 

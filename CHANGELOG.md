@@ -9,7 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `fivetran_private_link`: the `config_map` documentation listed a `private_dns_regions` key that the Fivetran API doesn't support, so it was silently ignored. It's now documented as `private_dns_records`, the key the API accepts for Azure private links (semicolon-separated relative DNS record names). Rename `private_dns_regions` to `private_dns_records` in your configuration.
-- `fivetran_private_link` data source: `config_map` now includes every config key the API returns, including `private_dns_records`. Previously it only showed a fixed set of keys. The `private_dns_regions` key, which was always null, is removed.
+- `fivetran_private_link` data source: `config_map` now includes every config key the API returns, including `private_dns_records`. Previously it only showed a fixed set of keys.
+
+### Deprecated
+- `fivetran_private_link`: the `config_map` key `private_dns_regions` is deprecated. The Fivetran API never supported it, so its value was ignored. Setting it now produces a warning; use `private_dns_records` instead. The data source keeps the key (always null) so existing references keep working.
 
 ## [v1.9.53](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.52...v1.9.53)
 

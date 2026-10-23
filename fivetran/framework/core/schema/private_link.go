@@ -79,6 +79,7 @@ func PrivateLinkResource() resourceSchema.Schema {
 -- ` + "`pls_id` (String)" + `: The ID of your Azure Private Link service.
 -- ` + "`sub_resource_name` (String)" + `: The name of subresource.
 -- ` + "`private_dns_records` (String)" + `: Optional, Azure only. One or more relative DNS record names for the private link, separated by semicolons. Do not include the DNS zone suffix — Fivetran appends it based on sub_resource_name. If omitted, Fivetran derives the record name from the last segment of connection_service_id.
+-- ` + "`private_dns_regions` (String)" + `: Deprecated. Never supported by the Fivetran API and ignored; use ` + "`private_dns_records`" + ` instead.
 -- ` + "`private_connection_service_id` (String)" + `: The ID of your connection service.`,
             },
         },

@@ -75,7 +75,8 @@ func TestDataSourcePrivateLinkConfigMappingMock(t *testing.T) {
 
             resource.TestCheckResourceAttr("data.fivetran_private_link.test_pl", "config_map.connection_service_name", "connection_service_name"),
             resource.TestCheckResourceAttr("data.fivetran_private_link.test_pl", "config_map.private_dns_records", "server-a;server-b"),
-            resource.TestCheckResourceAttr("data.fivetran_private_link.test_pl", "config_map.%", "11"),
+            resource.TestCheckResourceAttr("data.fivetran_private_link.test_pl", "config_map.%", "12"),
+            resource.TestCheckNoResourceAttr("data.fivetran_private_link.test_pl", "config_map.private_dns_regions"),
         ),
     }
 
