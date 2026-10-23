@@ -296,6 +296,18 @@ func (r *accountExternalLoggingV2) Update(ctx context.Context, req resource.Upda
 		warnFailedLogSetupTests(response.Data.SetupTests, &resp.Diagnostics)
 	}
 
+	if !hasChanges {
+		// No PATCH was sent, so state still holds the old config. Reproject it onto the planned
+		// config: this drops keys removed from the configuration (a removal sends no patch when
+		// metadata is unavailable or the field is not nullable).
+		config, diags := core.MapToDynamic(ctx, core.ProjectDynamic(stateConfig, planConfig, slot))
+		resp.Diagnostics.Append(diags...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		state.Config = config
+	}
+
 	state.RunSetupTests = types.BoolValue(runSetupTestsPlan)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -371,6 +383,12 @@ func (r *accountExternalLoggingV2) ModifyPlan(ctx context.Context, req resource.
 	}
 
 	if plan.Service.IsNull() || plan.Service.IsUnknown() || plan.Service.ValueString() == "" {
+		return
+	}
+
+	// A config that is not known yet (for example jsondecode of another resource's computed value)
+	// cannot be validated; it would look like an empty object and report every field as missing.
+	if dynamicIsUnknown(plan.Config) {
 		return
 	}
 
@@ -458,6 +476,14 @@ func (r *accountExternalLoggingV2) logServiceMetadata(ctx context.Context, servi
 		return nil, fmt.Errorf("metadata cache contained unexpected type %T for log service %q", actual, service)
 	}
 	return cached, nil
+}
+
+func dynamicIsUnknown(value types.Dynamic) bool {
+	if value.IsUnknown() {
+		return true
+	}
+	underlying := value.UnderlyingValue()
+	return underlying != nil && underlying.IsUnknown()
 }
 
 func warnFailedLogSetupTests(setupTests []common.SetupTestResponse, diags *diag.Diagnostics) {

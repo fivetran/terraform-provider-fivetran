@@ -30,7 +30,7 @@ resource "fivetran_account_external_logging_v2" "account_log" {
 
 ### Required
 
-- `config` (Dynamic) Service-specific log service configuration. The accepted fields depend on `service`.
+- `config` (Dynamic, Sensitive) Service-specific log service configuration, marked sensitive as a whole because it holds credentials. The accepted fields depend on `service`.
 - `service` (String) The name of the log service type within the Fivetran system. Supported log services: `azure_monitor_log`, `cloudwatch`, `datadog_log`, `dynatrace`, `grafana_loki`, `new_relic_log`, `splunkLog`, `stackdriver`. Changing this forces the resource to be replaced.
 
 ### Optional
@@ -44,6 +44,7 @@ resource "fivetran_account_external_logging_v2" "account_log" {
 
 ## Notes
 
+- `config` is sensitive as a whole, which hides it in plan and apply output and in `terraform state show`. It does not encrypt the stored state: protect the state file as usual.
 - Values the API masks (for example secrets) are kept from your configuration and are never read back.
 - Setting `run_setup_tests` from `false` to `true` without any other change runs the setup tests through the dedicated setup-tests endpoint. Failed tests are reported as warnings.
 

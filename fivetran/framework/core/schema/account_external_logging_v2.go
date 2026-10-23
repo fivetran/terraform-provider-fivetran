@@ -39,7 +39,8 @@ func AccountExternalLoggingV2ResourceSchema() resourceSchema.Schema {
 			},
 			"config": resourceSchema.DynamicAttribute{
 				Required:    true,
-				Description: "Service-specific log service configuration. The accepted fields depend on `service`; when the Fivetran metadata API describes the log service they are validated at plan time.",
+				Sensitive:   true,
+				Description: "Service-specific log service configuration, marked sensitive as a whole because it holds credentials. The accepted fields depend on `service`; when the Fivetran metadata API describes the log service they are validated at plan time.",
 			},
 		},
 	}

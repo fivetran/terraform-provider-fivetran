@@ -39,6 +39,9 @@ func TestAccountExternalLoggingV2SchemaShape(t *testing.T) {
 	if !ok {
 		t.Fatalf("config has type %T, want DynamicAttribute", attrs["config"])
 	}
+	if !config.Sensitive {
+		t.Fatal("config holds credentials and must be sensitive")
+	}
 	if !config.Required || config.Optional || config.Computed {
 		t.Fatal("config must be required: the API rejects a create without config")
 	}
@@ -117,6 +120,20 @@ func TestAccountExternalLoggingV2LifecycleMock(t *testing.T) {
 		),
 	}
 
+	// Removing a key from config sends no PATCH when metadata is unavailable (a removal cannot
+	// be expressed without knowing the field is nullable). State must still drop the key.
+	step3 := resource.TestStep{
+		Config: accountExternalLoggingV2TfConfig("datadog_log", "false", `api_key = "secret"`),
+		Check: resource.ComposeAggregateTestCheckFunc(
+			func(s *terraform.State) error {
+				tfmock.AssertEqual(t, patchHandler.Interactions, 1)
+				return nil
+			},
+			resource.TestCheckResourceAttr("fivetran_account_external_logging_v2.log", "config.api_key", "secret"),
+			resource.TestCheckNoResourceAttr("fivetran_account_external_logging_v2.log", "config.site"),
+		),
+	}
+
 	resource.Test(
 		t,
 		resource.TestCase{
@@ -182,7 +199,7 @@ func TestAccountExternalLoggingV2LifecycleMock(t *testing.T) {
 				tfmock.AssertEqual(t, deleteHandler.Interactions, 1)
 				return nil
 			},
-			Steps: []resource.TestStep{step1, step2},
+			Steps: []resource.TestStep{step1, step2, step3},
 		},
 	)
 }
