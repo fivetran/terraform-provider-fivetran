@@ -1,0 +1,16 @@
+fivetran/framework/resources/team_connector_membership.go
+  h_95e89ecbd302f3 68,105-109,171,185,189,208-209,213,217,276,299,302,305,313,318,321,324,331,336,340
+fivetran/tests/e2e/resource_team_connector_membership_e2e_test.go
+  h_95e89ecbd302f3 110-121
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "682dc214acc5b649c9289b5a12fc0f2ab5148f08",
+  "prompts": {},
+  "humans": {
+    "h_95e89ecbd302f3": {
+      "author": "fivetran-renat-sh <renat.shaikhutdinov@fivetran.com>"
+    }
+  }
+}
