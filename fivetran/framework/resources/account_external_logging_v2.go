@@ -81,7 +81,7 @@ func (r *accountExternalLoggingV2) ImportState(ctx context.Context, req resource
 		Config:        types.DynamicNull(),
 	}
 	mask := model.WithoutMaskedValues(response.Data.Config)
-	resp.Diagnostics.Append(data.ReadFromResponse(ctx, response, meta, mask)...)
+	resp.Diagnostics.Append(data.ReadFromResponse(ctx, response, meta, mask, types.DynamicNull())...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -141,7 +141,7 @@ func (r *accountExternalLoggingV2) Create(ctx context.Context, req resource.Crea
 		return
 	}
 
-	resp.Diagnostics.Append(data.ReadFromResponse(ctx, response, meta, configMap)...)
+	resp.Diagnostics.Append(data.ReadFromResponse(ctx, response, meta, configMap, data.Config)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -200,7 +200,7 @@ func (r *accountExternalLoggingV2) Read(ctx context.Context, req resource.ReadRe
 	}
 	runSetupTests := data.RunSetupTests
 
-	resp.Diagnostics.Append(data.ReadFromResponse(ctx, response, meta, configMask)...)
+	resp.Diagnostics.Append(data.ReadFromResponse(ctx, response, meta, configMask, data.Config)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -276,7 +276,7 @@ func (r *accountExternalLoggingV2) Update(ctx context.Context, req resource.Upda
 			return
 		}
 
-		resp.Diagnostics.Append(state.ReadFromResponse(ctx, response, meta, planConfig)...)
+		resp.Diagnostics.Append(state.ReadFromResponse(ctx, response, meta, planConfig, plan.Config)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -299,8 +299,9 @@ func (r *accountExternalLoggingV2) Update(ctx context.Context, req resource.Upda
 	if !hasChanges {
 		// No PATCH was sent, so state still holds the old config. Reproject it onto the planned
 		// config: this drops keys removed from the configuration (a removal sends no patch when
-		// metadata is unavailable or the field is not nullable).
-		config, diags := core.MapToDynamic(ctx, core.ProjectDynamic(stateConfig, planConfig, slot))
+		// metadata is unavailable or the field is not nullable). The planned config is kept as is when it
+		// holds the same values, so switching between an object and an equivalent map keeps the planned type.
+		config, diags := core.MapToDynamicWithTemplate(ctx, core.ProjectDynamic(stateConfig, planConfig, slot), plan.Config)
 		resp.Diagnostics.Append(diags...)
 		if resp.Diagnostics.HasError() {
 			return

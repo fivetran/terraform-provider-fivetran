@@ -22,8 +22,7 @@ type AccountExternalLoggingV2ResourceModel struct {
 
 // ReadFromResponse maps an API response into the model. configMask holds the config the user manages
 // (plan or prior state): only its keys are tracked, and masked secrets keep their local value.
-// meta may be nil when the metadata API does not describe the log service.
-func (d *AccountExternalLoggingV2ResourceModel) ReadFromResponse(ctx context.Context, resp core.AccountExternalLoggingResponse, meta *metadata.ConnectorMetadata, configMask map[string]interface{}) diag.Diagnostics {
+func (d *AccountExternalLoggingV2ResourceModel) ReadFromResponse(ctx context.Context, resp core.AccountExternalLoggingResponse, meta *metadata.ConnectorMetadata, configMask map[string]interface{}, configTemplate types.Dynamic) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	d.Id = types.StringValue(resp.Data.Id)
@@ -37,7 +36,7 @@ func (d *AccountExternalLoggingV2ResourceModel) ReadFromResponse(ctx context.Con
 	remote := keepMaskedLocally(resp.Data.Config, configMask)
 	projected := core.ProjectDynamic(remote, configMask, slot)
 
-	config, configDiags := core.MapToDynamic(ctx, projected)
+	config, configDiags := core.MapToDynamicWithTemplate(ctx, projected, configTemplate)
 	diags.Append(configDiags...)
 	if !diags.HasError() {
 		d.Config = config
