@@ -107,6 +107,18 @@ func TestResourceTeamConnectorMembershipE2E(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_team_connector_membership.test_team_connector_membership", "connector.#", "1"),
 				),
 			},
+			{
+				ImportState:  true,
+				ResourceName: "fivetran_team_connector_membership.test_team_connector_membership",
+				ImportStateIdFunc: func(s *terraform.State) (string, error) {
+					rs := GetResource(t, s, "fivetran_team_connector_membership.test_team_connector_membership")
+					return rs.Primary.ID, nil
+				},
+				ImportStateCheck: ComposeImportStateCheck(
+					CheckImportResourceAttr("fivetran_team_connector_membership",
+						"connector.0.role", "Connector Administrator"),
+				),
+			},
 		},
 	})
 }
