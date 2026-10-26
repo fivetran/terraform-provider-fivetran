@@ -5,12 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.54...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.55...HEAD)
 
-## [v1.9.54](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.53...v1.9.54)
+## [v1.9.55](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.54...v1.9.55)
 
 ### Added
 - `fivetran_account_external_logging_v2`: new resource (public preview) that manages the account-level external logging service through `/v1/external-logging/account`. `config` is a dynamic object: when the log service metadata API (`/metadata/log-service-types/{service}`) describes the service, `config` is validated at plan time (unknown and required fields, types, immutable fields). Otherwise the API validates it.
+
+## [v1.9.54](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.53...v1.9.54)
+
+### Fixed
+- `fivetran_team_connector_membership`: fixed `terraform import`. The imported team ID wasn't copied into `team_id`, so reading the imported resource requested an empty team ID and failed.
+- `fivetran_private_link`: the `config_map` documentation listed a `private_dns_regions` key that the Fivetran API doesn't support, so it was silently ignored. It's now documented as `private_dns_records`, the key the API accepts for Azure private links (semicolon-separated relative DNS record names). Rename `private_dns_regions` to `private_dns_records` in your configuration.
+- `fivetran_private_link` data source: `config_map` now includes every config key the API returns, including `private_dns_records`. Previously it only showed a fixed set of keys.
+
+### Changed
+- Updated `github.com/fivetran/go-fivetran` to `v1.3.14` (private link config uses `private_dns_records` instead of `private_dns_regions`).
+
+### Deprecated
+- `fivetran_private_link`: the `config_map` key `private_dns_regions` is deprecated. The Fivetran API never supported it, so its value was ignored. Setting it now produces a warning; use `private_dns_records` instead. The data source keeps the key (always null) so existing references keep working.
 
 ## [v1.9.53](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.52...v1.9.53)
 
