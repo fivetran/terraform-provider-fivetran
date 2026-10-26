@@ -33,90 +33,23 @@ var PrivateLinkConfigType = map[string]attr.Type{
 	"workspace_url":                 types.StringType,
 	"pls_id":                        types.StringType,
 	"sub_resource_name":             types.StringType,
-	"private_dns_regions":           types.StringType,
+	"private_dns_records":           types.StringType,
+	"private_dns_regions":           types.StringType, // Deprecated: never supported by the API, always null; kept so existing references don't fail
 	"private_connection_service_id": types.StringType,
 }
 
-func (d *PrivateLink) ReadFromResponse(ctx context.Context, resp privatelink.PrivateLinkResponse) {
-	d.Id = types.StringValue(resp.Data.Id)
-	d.Name = types.StringValue(resp.Data.Name)
-	d.Service = types.StringValue(resp.Data.Service)
-	d.Region = types.StringValue(resp.Data.Region)
-	d.CloudProvider = types.StringValue(resp.Data.CloudProvider)
-	d.State = types.StringValue(resp.Data.State)
-	d.StateSummary = types.StringValue(resp.Data.StateSummary)
-	d.CreatedAt = types.StringValue(resp.Data.CreatedAt)
-	d.CreatedBy = types.StringValue(resp.Data.CreatedBy)
-	d.Host = types.StringValue(resp.Data.Host)
+// ReadFromResponse is used by the data source: every documented config key is present
+// (null when the API doesn't return it), plus any other keys the API returns.
+func (d *PrivateLink) ReadFromResponse(ctx context.Context, resp privatelink.PrivateLinkCustomResponse) {
+	d.ReadFromCustomResponse(ctx, resp)
 
 	config := map[string]attr.Value{}
-
-	if resp.Data.Config.ConnectionServiceName != "" {
-		config["connection_service_name"] = types.StringValue(resp.Data.Config.ConnectionServiceName)
-	} else {
-		config["connection_service_name"] = types.StringNull()
+	for k := range PrivateLinkConfigType {
+		config[k] = types.StringNull()
 	}
-
-	if resp.Data.Config.AccountUrl != "" {
-		config["account_url"] = types.StringValue(resp.Data.Config.AccountUrl)
-	} else {
-		config["account_url"] = types.StringNull()
+	for k, v := range d.ConfigMap.Elements() {
+		config[k] = v
 	}
-
-	if resp.Data.Config.VpceId != "" {
-		config["vpce_id"] = types.StringValue(resp.Data.Config.VpceId)
-	} else {
-		config["vpce_id"] = types.StringNull()
-	}
-
-	if resp.Data.Config.AwsAccountId != "" {
-		config["aws_account_id"] = types.StringValue(resp.Data.Config.AwsAccountId)
-	} else {
-		config["aws_account_id"] = types.StringNull()
-	}
-
-	if resp.Data.Config.ClusterIdentifier != "" {
-		config["cluster_identifier"] = types.StringValue(resp.Data.Config.ClusterIdentifier)
-	} else {
-		config["cluster_identifier"] = types.StringNull()
-	}
-
-	if resp.Data.Config.ConnectionServiceId != "" {
-		config["connection_service_id"] = types.StringValue(resp.Data.Config.ConnectionServiceId)
-	} else {
-		config["connection_service_id"] = types.StringNull()
-	}
-
-	if resp.Data.Config.WorkspaceUrl != "" {
-		config["workspace_url"] = types.StringValue(resp.Data.Config.WorkspaceUrl)
-	} else {
-		config["workspace_url"] = types.StringNull()
-	}
-
-	if resp.Data.Config.PlsId != "" {
-		config["pls_id"] = types.StringValue(resp.Data.Config.PlsId)
-	} else {
-		config["pls_id"] = types.StringNull()
-	}
-
-	if resp.Data.Config.SubResourceName != "" {
-		config["sub_resource_name"] = types.StringValue(resp.Data.Config.SubResourceName)
-	} else {
-		config["sub_resource_name"] = types.StringNull()
-	}
-
-	if resp.Data.Config.PrivateDnsRegions != "" {
-		config["private_dns_regions"] = types.StringValue(resp.Data.Config.PrivateDnsRegions)
-	} else {
-		config["private_dns_regions"] = types.StringNull()
-	}
-
-	if resp.Data.Config.PrivateConnectionServiceId != "" {
-		config["private_connection_service_id"] = types.StringValue(resp.Data.Config.PrivateConnectionServiceId)
-	} else {
-		config["private_connection_service_id"] = types.StringNull()
-	}
-
 	d.ConfigMap, _ = types.MapValue(types.StringType, config)
 }
 

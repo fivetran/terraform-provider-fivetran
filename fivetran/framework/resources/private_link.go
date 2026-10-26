@@ -8,8 +8,10 @@ import (
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/model"
 	fivetranSchema "github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 func PrivateLink() resource.Resource {
@@ -24,6 +26,7 @@ type privateLink struct {
 var _ resource.ResourceWithConfigure = &privateLink{}
 var _ resource.ResourceWithImportState = &privateLink{}
 var _ resource.ResourceWithModifyPlan = &privateLink{}
+var _ resource.ResourceWithValidateConfig = &privateLink{}
 
 func (r *privateLink) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_private_link"
@@ -35,6 +38,33 @@ func (r *privateLink) Schema(ctx context.Context, req resource.SchemaRequest, re
 
 func (r *privateLink) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+}
+
+func (r *privateLink) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+	var configMap types.Map
+	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("config_map"), &configMap)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	warnDeprecatedPrivateLinkConfigKeys(configMap, &resp.Diagnostics)
+}
+
+// warnDeprecatedPrivateLinkConfigKeys warns about config_map keys that were documented
+// but never supported by the API, so they are silently ignored.
+func warnDeprecatedPrivateLinkConfigKeys(configMap types.Map, diags *diag.Diagnostics) {
+	if configMap.IsNull() || configMap.IsUnknown() {
+		return
+	}
+
+	if _, ok := configMap.Elements()["private_dns_regions"]; ok {
+		diags.AddAttributeWarning(
+			path.Root("config_map").AtMapKey("private_dns_regions"),
+			"Deprecated config_map key",
+			"`private_dns_regions` is not supported by the Fivetran API and is ignored. "+
+				"For Azure private links, use `private_dns_records` (semicolon-separated relative DNS record names) instead.",
+		)
+	}
 }
 
 func (r *privateLink) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
