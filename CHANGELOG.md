@@ -5,9 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.53...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.54...HEAD)
+
+## [v1.9.54](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.53...v1.9.54)
 
 ### Fixed
+- `fivetran_team_connector_membership`: fixed `terraform import`. The imported team ID wasn't copied into `team_id`, so reading the imported resource requested an empty team ID and failed.
 - `fivetran_private_link`: the `config_map` documentation listed a `private_dns_regions` key that the Fivetran API doesn't support, so it was silently ignored. It's now documented as `private_dns_records`, the key the API accepts for Azure private links (semicolon-separated relative DNS record names). Rename `private_dns_regions` to `private_dns_records` in your configuration.
 - `fivetran_private_link` data source: `config_map` now includes every config key the API returns, including `private_dns_records`. Previously it only showed a fixed set of keys.
 
