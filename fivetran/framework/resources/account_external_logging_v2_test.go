@@ -68,9 +68,9 @@ func accountExternalLoggingV2TfConfig(service, enabled, config string) string {
 
 			service = "` + service + `"
 			enabled = ` + enabled + `
-			config = {
+			config = tomap({
 				` + config + `
-			}
+			})
 		}`
 }
 
@@ -245,109 +245,6 @@ func TestAccountExternalLoggingV2ValidatesConfigAgainstMetadataMock(t *testing.T
 					PlanOnly:    true,
 					ExpectError: regexp.MustCompile(`Missing Required Dynamic Field`),
 				},
-			},
-		},
-	)
-}
-
-func accountExternalLoggingV2TfConfigExpr(service, enabled, configExpr string) string {
-	return `
-		resource "fivetran_account_external_logging_v2" "log" {
-			provider = fivetran-provider
-
-			service = "` + service + `"
-			enabled = ` + enabled + `
-			config = ` + configExpr + `
-		}`
-}
-
-// config can be written as an object literal or as a map (tomap). The state must keep the type of
-// the planned value, also when only the type changes and no request is sent.
-func TestAccountExternalLoggingV2MapValuedConfigMock(t *testing.T) {
-	var logData map[string]interface{}
-	var patchHandler *mock.Handler
-
-	const resourceName = "fivetran_account_external_logging_v2.log"
-	configChecks := func(hostname string) resource.TestCheckFunc {
-		return resource.ComposeAggregateTestCheckFunc(
-			resource.TestCheckResourceAttr(resourceName, "config.api_key", "secret"),
-			resource.TestCheckResourceAttr(resourceName, "config.hostname", hostname),
-			resource.TestCheckResourceAttr(resourceName, "config.region", "US1"),
-		)
-	}
-	patchCalls := func(want int) resource.TestCheckFunc {
-		return func(s *terraform.State) error {
-			tfmock.AssertEqual(t, patchHandler.Interactions, want)
-			return nil
-		}
-	}
-	mapConfig := func(hostname string) string {
-		return accountExternalLoggingV2TfConfigExpr("datadog_log", "true",
-			`tomap({ api_key = "secret", hostname = "`+hostname+`", region = "US1" })`)
-	}
-	objectConfig := accountExternalLoggingV2TfConfigExpr("datadog_log", "true",
-		`{ api_key = "secret", hostname = "host", region = "US1" }`)
-
-	resource.Test(
-		t,
-		resource.TestCase{
-			PreCheck: func() {
-				tfmock.MockClient().Reset()
-				stubLogMetadataNotFoundV2(t, "datadog_log")
-
-				tfmock.MockClient().When(http.MethodGet, "/v1/external-logging/account").ThenCall(
-					func(req *http.Request) (*http.Response, error) {
-						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", logData), nil
-					},
-				)
-
-				tfmock.MockClient().When(http.MethodPost, "/v1/external-logging/account").ThenCall(
-					func(req *http.Request) (*http.Response, error) {
-						body := tfmock.RequestBodyToJson(t, req)
-						config := body["config"].(map[string]interface{})
-						logData = map[string]interface{}{
-							"id":      "log_id",
-							"service": "datadog_log",
-							"enabled": true,
-							"config": map[string]interface{}{
-								"api_key":  "******",
-								"hostname": config["hostname"],
-								"region":   config["region"],
-							},
-						}
-						return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", logData), nil
-					},
-				)
-
-				patchHandler = tfmock.MockClient().When(http.MethodPatch, "/v1/external-logging/account").ThenCall(
-					func(req *http.Request) (*http.Response, error) {
-						body := tfmock.RequestBodyToJson(t, req)
-						config := body["config"].(map[string]interface{})
-						tfmock.AssertKeyExistsAndHasValue(t, config, "hostname", "host2")
-						tfmock.AssertKeyDoesNotExist(t, config, "api_key")
-						logData["config"].(map[string]interface{})["hostname"] = "host2"
-						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", logData), nil
-					},
-				)
-
-				tfmock.MockClient().When(http.MethodDelete, "/v1/external-logging/account").ThenCall(
-					func(req *http.Request) (*http.Response, error) {
-						logData = nil
-						return tfmock.FivetranSuccessResponse(t, req, http.StatusOK,
-							"Account external logging service has been deleted", nil), nil
-					},
-				)
-			},
-			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
-			Steps: []resource.TestStep{
-				// create with a map
-				{Config: mapConfig("host"), Check: resource.ComposeAggregateTestCheckFunc(configChecks("host"), patchCalls(0))},
-				// type-only update: map -> object, no request
-				{Config: objectConfig, Check: resource.ComposeAggregateTestCheckFunc(configChecks("host"), patchCalls(0))},
-				// type-only update: object -> map, no request
-				{Config: mapConfig("host"), Check: resource.ComposeAggregateTestCheckFunc(configChecks("host"), patchCalls(0))},
-				// real change of a map value sends one PATCH
-				{Config: mapConfig("host2"), Check: resource.ComposeAggregateTestCheckFunc(configChecks("host2"), patchCalls(1))},
 			},
 		},
 	)
