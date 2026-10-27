@@ -26,6 +26,19 @@ const logServiceMetadataCachePrefix = "log-service:"
 // negative answer is not requested again on every plan.
 const noMetadataCachePrefix = "no-metadata:"
 
+var accountExternalLoggingWording = dynamicWording{
+	missingRequiredField: func(name string) string {
+		return fmt.Sprintf("Log service metadata requires field %q when creating the account-level external logging service.", name)
+	},
+	replacementWarning: func(fieldPath path.Path, diags *diag.Diagnostics) {
+		diags.AddAttributeWarning(
+			fieldPath,
+			"Replacement Deletes the External Logging Service",
+			fmt.Sprintf("Changing %s requires recreating the account-level external logging service. An account can have only one, so Terraform deletes the existing service before creating the new one, and log delivery stops until the new service exists.", fieldPath.String()),
+		)
+	},
+}
+
 func AccountExternalLoggingV2() resource.Resource {
 	return &accountExternalLoggingV2{}
 }
@@ -400,6 +413,10 @@ func (r *accountExternalLoggingV2) ModifyPlan(ctx context.Context, req resource.
 	}
 
 	isCreate := req.State.Raw.IsNull()
+	// Changing service replaces the log service, so the new one must be validated as a create.
+	// Terraform deletes the old service first (an account can have only one), and a replacement that
+	// fails validation would leave the account without a log service.
+	serviceChanged := false
 	var state model.AccountExternalLoggingV2ResourceModel
 	stateConfig := map[string]interface{}(nil)
 	if !isCreate {
@@ -409,7 +426,11 @@ func (r *accountExternalLoggingV2) ModifyPlan(ctx context.Context, req resource.
 		if resp.Diagnostics.HasError() {
 			return
 		}
-		if len(planConfig) == 0 {
+		serviceChanged = !state.Service.IsNull() && !state.Service.IsUnknown() && !plan.Service.Equal(state.Service)
+		if serviceChanged {
+			accountExternalLoggingWording.replacementWarning(path.Root("service"), &resp.Diagnostics)
+		}
+		if len(planConfig) == 0 && !serviceChanged {
 			return
 		}
 	}
@@ -429,13 +450,13 @@ func (r *accountExternalLoggingV2) ModifyPlan(ctx context.Context, req resource.
 		return
 	}
 
-	if isCreate {
-		validateRequiredDynamicFields(planConfig, &meta.Config, path.Root("config"), &resp.Diagnostics)
+	if isCreate || serviceChanged {
+		validateRequiredDynamicFields(planConfig, &meta.Config, path.Root("config"), &resp.Diagnostics, accountExternalLoggingWording)
 		return
 	}
 
-	if appendImmutableRequiresReplace(planConfig, stateConfig, &meta.Config, path.Root("config"), resp, plan.Service.ValueString(), "") {
-		validateRequiredDynamicFields(planConfig, &meta.Config, path.Root("config"), &resp.Diagnostics)
+	if appendImmutableRequiresReplace(planConfig, stateConfig, &meta.Config, path.Root("config"), resp, plan.Service.ValueString(), "", accountExternalLoggingWording) {
+		validateRequiredDynamicFields(planConfig, &meta.Config, path.Root("config"), &resp.Diagnostics, accountExternalLoggingWording)
 	}
 }
 
