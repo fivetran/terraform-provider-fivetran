@@ -196,6 +196,30 @@ func MapToDynamic(ctx context.Context, m map[string]interface{}) (types.Dynamic,
 	return types.DynamicValue(value), diags
 }
 
+// MapToDynamicWithTemplate is like MapToDynamic, but returns template itself when it already holds
+// the same values as m. MapToDynamic always builds an object, while a configuration may use a map,
+// list or set (for example config = tomap({...})), and Terraform rejects a result whose type differs
+// from the planned one.
+func MapToDynamicWithTemplate(ctx context.Context, m map[string]interface{}, template types.Dynamic) (types.Dynamic, diag.Diagnostics) {
+	if !template.IsNull() && !template.IsUnknown() {
+		templateMap, diags := DynamicToMap(ctx, template)
+		if !diags.HasError() && sameJSON(templateMap, m) {
+			return template, nil
+		}
+	}
+	return MapToDynamic(ctx, m)
+}
+
+// sameJSON compares two values by their JSON form
+func sameJSON(a, b map[string]interface{}) bool {
+	if a == nil || b == nil {
+		return false
+	}
+	aJSON, aErr := json.Marshal(a)
+	bJSON, bErr := json.Marshal(b)
+	return aErr == nil && bErr == nil && string(aJSON) == string(bJSON)
+}
+
 func interfaceToAttrValue(ctx context.Context, value interface{}) (attr.Value, attr.Type, diag.Diagnostics) {
 	var diags diag.Diagnostics
 

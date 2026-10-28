@@ -2,6 +2,7 @@ package core
 
 import (
 	"context"
+	"math/big"
 	"reflect"
 	"testing"
 
@@ -618,5 +619,68 @@ func TestProject_ListOfScalarsTakesRemote(t *testing.T) {
 
 	if len(list) != 2 || list[0] != "x" || list[1] != "y" {
 		t.Errorf("got %v, want [x y]", list)
+	}
+}
+
+// --- MapToDynamicWithTemplate ---
+
+func TestMapToDynamicWithTemplate_KeepsTemplateWhenValuesAreEqual(t *testing.T) {
+	t.Parallel()
+	ctx := context.Background()
+
+	// config = tomap({ api_key = "secret", port = 443 }) is a map(number-or-string) in Terraform; use
+	// strings and a nested map to cover the shapes MapToDynamic would turn into objects.
+	tags, _ := types.MapValue(types.StringType, map[string]attr.Value{"env": types.StringValue("prod")})
+	nested, diags := types.ObjectValue(
+		map[string]attr.Type{"tags": types.MapType{ElemType: types.StringType}, "port": types.NumberType},
+		map[string]attr.Value{"tags": tags, "port": types.NumberValue(big.NewFloat(443))},
+	)
+	if diags.HasError() {
+		t.Fatalf("template: %v", diags)
+	}
+	mapTemplate, diags := types.MapValue(types.StringType, map[string]attr.Value{"api_key": types.StringValue("secret")})
+	if diags.HasError() {
+		t.Fatalf("template: %v", diags)
+	}
+
+	tests := map[string]struct {
+		template types.Dynamic
+		values   map[string]interface{}
+	}{
+		"map":                   {types.DynamicValue(mapTemplate), map[string]interface{}{"api_key": "secret"}},
+		"nested map and number": {types.DynamicValue(nested), map[string]interface{}{"tags": map[string]interface{}{"env": "prod"}, "port": float64(443)}},
+	}
+	for name, tt := range tests {
+		got, diags := MapToDynamicWithTemplate(ctx, tt.values, tt.template)
+		if diags.HasError() {
+			t.Fatalf("%s: unexpected error: %v", name, diags)
+		}
+		if !got.Equal(tt.template) {
+			t.Errorf("%s: got %v, want the template %v unchanged", name, got, tt.template)
+		}
+	}
+}
+
+func TestMapToDynamicWithTemplate_BuildsObjectWhenValuesDifferOrTemplateIsMissing(t *testing.T) {
+	t.Parallel()
+	ctx := context.Background()
+	mapTemplate, _ := types.MapValue(types.StringType, map[string]attr.Value{"api_key": types.StringValue("old")})
+
+	for name, template := range map[string]types.Dynamic{
+		"different values": types.DynamicValue(mapTemplate),
+		"null template":    types.DynamicNull(),
+		"unknown template": types.DynamicUnknown(),
+	} {
+		got, diags := MapToDynamicWithTemplate(ctx, map[string]interface{}{"api_key": "secret"}, template)
+		if diags.HasError() {
+			t.Fatalf("%s: unexpected error: %v", name, diags)
+		}
+		object, ok := got.UnderlyingValue().(types.Object)
+		if !ok {
+			t.Fatalf("%s: expected an object, got %T", name, got.UnderlyingValue())
+		}
+		if object.Attributes()["api_key"] != types.StringValue("secret") {
+			t.Errorf("%s: api_key = %v, want secret", name, object.Attributes()["api_key"])
+		}
 	}
 }

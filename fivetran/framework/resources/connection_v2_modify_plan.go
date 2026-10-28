@@ -77,23 +77,23 @@ func (r *connectionV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRe
 	}
 
 	if isCreate {
-		validateRequiredDynamicFields(planConfig, &meta.Config, path.Root("config"), &resp.Diagnostics)
-		validateRequiredDynamicFields(planAuth, &meta.Auth, path.Root("auth"), &resp.Diagnostics)
+		validateRequiredDynamicFields(planConfig, &meta.Config, path.Root("config"), &resp.Diagnostics, connectionWording)
+		validateRequiredDynamicFields(planAuth, &meta.Auth, path.Root("auth"), &resp.Diagnostics, connectionWording)
 		return
 	}
 
 	if isRootReplacement {
-		validateRequiredDynamicFields(planConfig, &meta.Config, path.Root("config"), &resp.Diagnostics)
-		validateRequiredDynamicFields(planAuth, &meta.Auth, path.Root("auth"), &resp.Diagnostics)
+		validateRequiredDynamicFields(planConfig, &meta.Config, path.Root("config"), &resp.Diagnostics, connectionWording)
+		validateRequiredDynamicFields(planAuth, &meta.Auth, path.Root("auth"), &resp.Diagnostics, connectionWording)
 		return
 	}
 
 	service := plan.Service.ValueString()
-	hasImmutableReplacement := appendImmutableRequiresReplace(planConfig, stateConfig, &meta.Config, path.Root("config"), resp, service, "")
-	hasImmutableReplacement = appendImmutableRequiresReplace(planAuth, stateAuth, &meta.Auth, path.Root("auth"), resp, service, "") || hasImmutableReplacement
+	hasImmutableReplacement := appendImmutableRequiresReplace(planConfig, stateConfig, &meta.Config, path.Root("config"), resp, service, "", connectionWording)
+	hasImmutableReplacement = appendImmutableRequiresReplace(planAuth, stateAuth, &meta.Auth, path.Root("auth"), resp, service, "", connectionWording) || hasImmutableReplacement
 	if hasImmutableReplacement {
-		validateRequiredDynamicFields(planConfig, &meta.Config, path.Root("config"), &resp.Diagnostics)
-		validateRequiredDynamicFields(planAuth, &meta.Auth, path.Root("auth"), &resp.Diagnostics)
+		validateRequiredDynamicFields(planConfig, &meta.Config, path.Root("config"), &resp.Diagnostics, connectionWording)
+		validateRequiredDynamicFields(planAuth, &meta.Auth, path.Root("auth"), &resp.Diagnostics, connectionWording)
 	}
 }
 
@@ -108,7 +108,7 @@ func warnRootReplacementIfChanged(name string, planValue, stateValue types.Strin
 	return false
 }
 
-func validateRequiredDynamicFields(values map[string]interface{}, slot *metadata.Property, root path.Path, diags *diag.Diagnostics) {
+func validateRequiredDynamicFields(values map[string]interface{}, slot *metadata.Property, root path.Path, diags *diag.Diagnostics, wording dynamicWording) {
 	if slot == nil {
 		return
 	}
@@ -118,7 +118,7 @@ func validateRequiredDynamicFields(values map[string]interface{}, slot *metadata
 			diags.AddAttributeError(
 				root.AtName(name),
 				"Missing Required Dynamic Field",
-				fmt.Sprintf("Connector metadata requires field %q when creating this connection.", name),
+				wording.missingRequiredField(name),
 			)
 		}
 	}
@@ -129,14 +129,14 @@ func validateRequiredDynamicFields(values map[string]interface{}, slot *metadata
 			continue
 		}
 		fieldPath := root.AtName(name)
-		validateNestedRequiredDynamicFields(value, prop, fieldPath, diags)
+		validateNestedRequiredDynamicFields(value, prop, fieldPath, diags, wording)
 	}
 }
 
-func validateNestedRequiredDynamicFields(value interface{}, prop *metadata.Property, valuePath path.Path, diags *diag.Diagnostics) {
+func validateNestedRequiredDynamicFields(value interface{}, prop *metadata.Property, valuePath path.Path, diags *diag.Diagnostics, wording dynamicWording) {
 	switch v := value.(type) {
 	case map[string]interface{}:
-		validateRequiredDynamicFields(v, prop, valuePath, diags)
+		validateRequiredDynamicFields(v, prop, valuePath, diags, wording)
 	case []interface{}:
 		if prop.Items == nil {
 			return
@@ -145,14 +145,14 @@ func validateNestedRequiredDynamicFields(value interface{}, prop *metadata.Prope
 			if core.IsDynamicUnknownValue(item) {
 				continue
 			}
-			validateNestedRequiredDynamicFields(item, prop.Items, valuePath.AtListIndex(i), diags)
+			validateNestedRequiredDynamicFields(item, prop.Items, valuePath.AtListIndex(i), diags, wording)
 		}
 	}
 }
 
 // basePath is the dot-separated path of planValues within the dynamic field, without list indexes.
 // It is used to recognize set-typed fields, see core.IsSetTypedField.
-func appendImmutableRequiresReplace(planValues, stateValues map[string]interface{}, slot *metadata.Property, root path.Path, resp *resource.ModifyPlanResponse, service, basePath string) bool {
+func appendImmutableRequiresReplace(planValues, stateValues map[string]interface{}, slot *metadata.Property, root path.Path, resp *resource.ModifyPlanResponse, service, basePath string, wording dynamicWording) bool {
 	if slot == nil {
 		return false
 	}
@@ -172,21 +172,21 @@ func appendImmutableRequiresReplace(planValues, stateValues map[string]interface
 		stateValue, stateHasValue := stateValues[name]
 		if prop.Immutable && (!stateHasValue || !dynamicValuesEqualAtPath(planValue, stateValue, service, valuePath)) {
 			resp.RequiresReplace.Append(fieldPath)
-			addHistoricalResyncWarning(fieldPath, &resp.Diagnostics)
+			wording.replacementWarning(fieldPath, &resp.Diagnostics)
 			hasReplacement = true
 			continue
 		}
 
-		hasReplacement = appendNestedImmutableRequiresReplace(planValue, stateValue, prop, fieldPath, resp, service, valuePath) || hasReplacement
+		hasReplacement = appendNestedImmutableRequiresReplace(planValue, stateValue, prop, fieldPath, resp, service, valuePath, wording) || hasReplacement
 	}
 	return hasReplacement
 }
 
-func appendNestedImmutableRequiresReplace(planValue, stateValue interface{}, prop *metadata.Property, fieldPath path.Path, resp *resource.ModifyPlanResponse, service, valuePath string) bool {
+func appendNestedImmutableRequiresReplace(planValue, stateValue interface{}, prop *metadata.Property, fieldPath path.Path, resp *resource.ModifyPlanResponse, service, valuePath string, wording dynamicWording) bool {
 	switch planNested := planValue.(type) {
 	case map[string]interface{}:
 		stateNested, _ := stateValue.(map[string]interface{})
-		return appendImmutableRequiresReplace(planNested, stateNested, prop, fieldPath, resp, service, valuePath)
+		return appendImmutableRequiresReplace(planNested, stateNested, prop, fieldPath, resp, service, valuePath, wording)
 	case []interface{}:
 		if prop.Items == nil {
 			return false
@@ -206,11 +206,27 @@ func appendNestedImmutableRequiresReplace(planValue, stateValue interface{}, pro
 			if i < len(stateItems) {
 				stateItem = stateItems[i]
 			}
-			hasReplacement = appendNestedImmutableRequiresReplace(item, stateItem, prop.Items, fieldPath.AtListIndex(i), resp, service, valuePath) || hasReplacement
+			hasReplacement = appendNestedImmutableRequiresReplace(item, stateItem, prop.Items, fieldPath.AtListIndex(i), resp, service, valuePath, wording) || hasReplacement
 		}
 		return hasReplacement
 	}
 	return false
+}
+
+// dynamicWording holds the resource-specific text of the plan-time diagnostics that the resources
+// with metadata-driven dynamic config share.
+type dynamicWording struct {
+	// missingRequiredField is the detail of the error for a required field that is absent on create.
+	missingRequiredField func(name string) string
+	// replacementWarning is added for a change that forces the resource to be replaced.
+	replacementWarning func(fieldPath path.Path, diags *diag.Diagnostics)
+}
+
+var connectionWording = dynamicWording{
+	missingRequiredField: func(name string) string {
+		return fmt.Sprintf("Connector metadata requires field %q when creating this connection.", name)
+	},
+	replacementWarning: addHistoricalResyncWarning,
 }
 
 func addHistoricalResyncWarning(fieldPath path.Path, diags *diag.Diagnostics) {
