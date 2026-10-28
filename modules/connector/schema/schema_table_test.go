@@ -106,3 +106,25 @@ func TestTableToStateObjectWarnsAboutPolicyMisalignedColumnsWithNoLocalTable(t *
 		t.Fatalf("expected a warning about the policy-misaligned column, got none")
 	}
 }
+
+// A disabled table syncs nothing, so the enabled state of its columns is irrelevant: no
+// warning should fire for policy-misaligned columns on it. Otherwise every column that was
+// explicitly blocked while the connector ran BLOCK_ALL, on every table the user keeps
+// disabled under ALLOW_COLUMNS, would warn on every plan.
+func TestTableToStateObjectNoWarningForDisabledTable(t *testing.T) {
+	upstream := _table{
+		_element: _element{name: "social_security_numbers", enabled: false},
+		columns: map[string]*_column{
+			"ssn_ciphertext": {
+				_element: _element{name: "ssn_ciphertext", enabled: false},
+			},
+		},
+	}
+
+	var diags diag.Diagnostics
+	upstream.toStateObject(ALLOW_COLUMNS, nil, &diags, "public", false)
+
+	if diags.WarningsCount() != 0 {
+		t.Fatalf("expected no warning for a policy-misaligned column on a disabled table, got: %+v", diags)
+	}
+}

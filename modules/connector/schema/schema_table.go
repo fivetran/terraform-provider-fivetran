@@ -359,8 +359,13 @@ func (t _table) toStateObject(sch string, local *_table, diag *diag.Diagnostics,
 		// misaligned with the schema_change_handling policy (see the comment on
 		// (*_table).override for why response.Columns is scoped that way) — so warn about
 		// it here instead of silently discarding it.
+		//
+		// Only enabled tables are worth a warning: a disabled table syncs nothing, so the
+		// enabled state of its columns has no effect. Warning about them would flag every
+		// column that was explicitly blocked while the connector ran BLOCK_ALL, on every
+		// table the user deliberately keeps disabled, on every plan.
 		for _, v := range t.columns {
-			if v.enabled != (sch != BLOCK_ALL) {
+			if t.enabled && v.enabled != (sch != BLOCK_ALL) {
 				diag.AddWarning(
 					"Schema might be misconfigured.",
 					fmt.Sprintf(

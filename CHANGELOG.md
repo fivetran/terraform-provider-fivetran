@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.55...HEAD)
 
+### Fixed
+- `fivetran_connector_schema_config`: the "Schema might be misconfigured" warning for upstream columns that don't match the `schema_change_handling` policy default is no longer emitted for tables that are disabled. A disabled table syncs nothing, so its column states are irrelevant; previously every column that had been explicitly blocked (for example while the connector ran `BLOCK_ALL`) on a deliberately disabled table produced a warning on every plan.
+
 ## [v1.9.55](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.54...v1.9.55)
 
 ### Added
