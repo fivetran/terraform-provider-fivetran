@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `fivetran_account_external_logging_v2`: new resource (public preview) that manages the account-level external logging service through `/v1/external-logging/account`. `config` is a dynamic object: when the log service metadata API (`/metadata/log-service-types/{service}`) describes the service, `config` is validated at plan time (unknown and required fields, types, immutable fields). Otherwise the API validates it.
 
+### Changed
+- The provider is now built with Go 1.26.10 ([#665](https://github.com/fivetran/terraform-provider-fivetran/pull/665)).
+
 ## [v1.9.54](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.53...v1.9.54)
 
 ### Fixed
