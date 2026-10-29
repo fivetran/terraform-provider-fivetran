@@ -6,6 +6,7 @@ import (
 	"math"
 	"math/big"
 	"reflect"
+	"strconv"
 
 	"github.com/fivetran/go-fivetran/metadata"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -338,7 +339,7 @@ func project(remote, mask map[string]interface{}, slot *metadata.Property, servi
 		}
 
 		if prop != nil && prop.Readonly {
-			result[key] = remoteVal
+			result[key] = coerceToMetadataType(remoteVal, prop)
 			continue
 		}
 
@@ -368,7 +369,7 @@ func project(remote, mask map[string]interface{}, slot *metadata.Property, servi
 			}
 		}
 
-		result[key] = remoteVal
+		result[key] = coerceToMetadataType(remoteVal, prop)
 	}
 
 	return result
@@ -384,7 +385,7 @@ func projectList(remote, mask []interface{}, itemSlot *metadata.Property, servic
 	}
 	result := make([]interface{}, len(remote))
 	for i, remoteItem := range remote {
-		result[i] = remoteItem
+		result[i] = coerceToMetadataType(remoteItem, itemSlot)
 		maskItem, ok := mask[i].(map[string]interface{})
 		if !ok {
 			continue
@@ -394,6 +395,38 @@ func projectList(remote, mask []interface{}, itemSlot *metadata.Property, servic
 		}
 	}
 	return result
+}
+
+// coerceToMetadataType converts a value the API returned as a string into the scalar type the
+// field's metadata declares. Some services serialize numbers and booleans as strings: a snowflake
+// destination GET returns port as "443" while the metadata declares it as integer. Storing that
+// string in state would show `~ port = "443" -> 443` against the number in the configuration on
+// every plan, and nothing in the config could avoid it, since validation rejects a string for an
+// integer field. Values that do not parse as the declared type are kept as-is, so genuine drift is
+// still surfaced, and a nil prop (no metadata) stays a pass-through.
+func coerceToMetadataType(value interface{}, prop *metadata.Property) interface{} {
+	if prop == nil {
+		return value
+	}
+	str, ok := value.(string)
+	if !ok {
+		return value
+	}
+	switch prop.Type {
+	case "integer":
+		if i, err := strconv.ParseInt(str, 10, 64); err == nil {
+			return i
+		}
+	case "number":
+		if f, err := strconv.ParseFloat(str, 64); err == nil {
+			return f
+		}
+	case "boolean":
+		if b, err := strconv.ParseBool(str); err == nil {
+			return b
+		}
+	}
+	return value
 }
 
 // alignSetOrder returns the remote elements of a set-typed list in the order of the prior (mask) list.

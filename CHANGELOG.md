@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - New resource `fivetran_destination_v2` (public preview): `config` is a dynamic, service-specific object whose fields, types, enum values, and readonly/immutable rules come from destination metadata at plan time. Unknown fields, wrong types, invalid enum values, and readonly fields fail the plan; changing an immutable field plans a replacement. Field names match the Fivetran REST API. Secret fields can be set in the write-only `config_secrets` attribute (Terraform 1.11+), which accepts ephemeral values and is never stored in state; increment `config_secrets_version` to send rotated secrets.
 
+### Fixed
+- `fivetran_connection_v2`, `fivetran_account_external_logging_v2`: fixed a perpetual plan diff for dynamic `config` fields that the API returns as a string although the metadata declares them as `integer`, `number` or `boolean` (for example a `port` returned as `"443"`). State took the string from the API read-back while the configuration held the number, so every plan after an apply showed a change like `~ port = "443" -> 443` and an in-place update, and nothing in the configuration could avoid it because plan-time validation rejects a string for an integer field. The read-back value is now stored as the type the metadata declares; a value that doesn't parse as that type is kept as-is, so real drift is still shown.
+
 ### Changed
 - Updated `github.com/fivetran/go-fivetran` to `v1.3.15` (destination metadata support for `fivetran_destination_v2`).
 
