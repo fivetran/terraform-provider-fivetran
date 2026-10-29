@@ -96,6 +96,8 @@ func TestResourceDestinationV2Mock(t *testing.T) {
 				tfmock.AssertKeyDoesNotExist(t, config, "public_key")
 
 				// The API masks the password, adds a readonly field and an upstream-only default.
+				// port comes back as a string although the metadata declares it as an integer,
+				// the way the destinations API serializes it.
 				destinationData = tfmock.CreateMapFromJsonString(t, `
 				{
 					"id": "destination_id",
@@ -109,7 +111,7 @@ func TestResourceDestinationV2Mock(t *testing.T) {
 					"setup_tests": [{"title": "Connection test", "status": "PASSED", "message": ""}],
 					"config": {
 						"host": "account.snowflakecomputing.com",
-						"port": 443,
+						"port": "443",
 						"user": "fivetran_user",
 						"database": "db",
 						"password": "******",
@@ -183,6 +185,8 @@ func TestResourceDestinationV2Mock(t *testing.T) {
 					resource.TestCheckResourceAttr("fivetran_destination_v2.dest", "setup_status", "connected"),
 					resource.TestCheckResourceAttr("fivetran_destination_v2.dest", "config.password", "secret"),
 					resource.TestCheckResourceAttr("fivetran_destination_v2.dest", "config.host", "account.snowflakecomputing.com"),
+					// Stored as the integer the metadata declares, not the string the API returned.
+					resource.TestCheckResourceAttr("fivetran_destination_v2.dest", "config.port", "443"),
 					resource.TestCheckNoResourceAttr("fivetran_destination_v2.dest", "config.public_key"),
 					resource.TestCheckNoResourceAttr("fivetran_destination_v2.dest", "config.role"),
 				),
@@ -244,6 +248,7 @@ func TestResourceDestinationV2Mock(t *testing.T) {
 					tfmock.AssertEqual(t, len(states), 1)
 					attrs := states[0].Attributes
 					tfmock.AssertEqual(t, attrs["config.host"], "new.snowflakecomputing.com")
+					tfmock.AssertEqual(t, attrs["config.port"], "443")
 					tfmock.AssertEqual(t, attrs["config.role"], "FIVETRAN_ROLE")
 					tfmock.AssertEmpty(t, attrs["config.password"])
 					tfmock.AssertEmpty(t, attrs["config.public_key"])
