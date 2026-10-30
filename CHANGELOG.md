@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.55...HEAD)
 
+### Added
+- `fivetran_connection_v2`: new write-only `config_secrets` attribute for secret `config` fields, such as passwords. It accepts ephemeral values and is never stored in the plan or state ([#507](https://github.com/fivetran/terraform-provider-fivetran/issues/507)). Its fields are merged with `config` when sent to the API, and a field can't be set in both. Change the new `config_secrets_version` attribute to send updated values. Requires Terraform 1.11 or later.
+
 ## [v1.9.55](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.54...v1.9.55)
 
 ### Added

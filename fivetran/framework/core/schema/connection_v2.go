@@ -58,6 +58,16 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 			Computed:    true,
 			Description: "Service-specific connection configuration. The accepted fields are defined by connector metadata at runtime.",
 		},
+		"config_secrets": resourceSchema.DynamicAttribute{
+			Optional:    true,
+			Sensitive:   true,
+			WriteOnly:   true,
+			Description: "Write-only service-specific connection configuration fields, merged with `config` when sent to the API. Accepts ephemeral values and is never stored in the plan or state. A field must not be set in both `config` and `config_secrets`. Mutable fields are sent on migration from `config` or when `config_secrets_version` changes. Immutable and read-only fields are excluded from updates. Requires Terraform 1.11 or later.",
+		},
+		"config_secrets_version": resourceSchema.Int64Attribute{
+			Optional:    true,
+			Description: "Version of `config_secrets`. Change it to send the current mutable `config_secrets` values to the API.",
+		},
 		"auth": resourceSchema.DynamicAttribute{
 			Optional:    true,
 			Sensitive:   true,
