@@ -42,6 +42,42 @@ func (r *connectionV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRe
 		isRootReplacement = warnRootReplacementIfChanged("group_id", plan.GroupId, state.GroupId, &resp.Diagnostics) || isRootReplacement
 	}
 
+	secrets := configSecretsFromConfig(ctx, req.Config, true, &resp.Diagnostics)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	if !isCreate && len(secrets) > 0 {
+		var configuredConfig types.Dynamic
+		resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("config"), &configuredConfig)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		// Omitted optional/computed config inherits its prior state. Remove fields now
+		// managed through config_secrets so migration produces an update even without
+		// a version change. Keep other inherited fields in the state mask.
+		if configuredConfig.IsNull() || configuredConfig.IsUnderlyingValueNull() {
+			inheritedConfig, diags := core.DynamicToMap(ctx, state.Config)
+			resp.Diagnostics.Append(diags...)
+			moved := false
+			for name := range secrets {
+				if _, ok := inheritedConfig[name]; ok {
+					delete(inheritedConfig, name)
+					moved = true
+				}
+			}
+			if moved {
+				plan.Config, diags = core.MapToDynamic(ctx, inheritedConfig)
+				resp.Diagnostics.Append(diags...)
+				if !resp.Diagnostics.HasError() {
+					resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, path.Root("config"), plan.Config)...)
+				}
+			}
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+	}
+
 	if r.GetSkipPlanTimeValidation() {
 		return
 	}
@@ -60,7 +96,7 @@ func (r *connectionV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRe
 		}
 	}
 
-	if !isCreate && !isRootReplacement && len(planConfig) == 0 && len(planAuth) == 0 {
+	if !isCreate && !isRootReplacement && len(planConfig) == 0 && len(planAuth) == 0 && len(secrets) == 0 {
 		return
 	}
 
@@ -76,23 +112,34 @@ func (r *connectionV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRe
 		return
 	}
 
+	// A required config field can also be set in config_secrets, which is only in the configuration.
+	requiredConfig := mergeConfigSecrets(planConfig, secrets)
+
 	if isCreate {
-		validateRequiredDynamicFields(planConfig, &meta.Config, path.Root("config"), &resp.Diagnostics, connectionWording)
+		validateRequiredDynamicFields(requiredConfig, &meta.Config, path.Root("config"), &resp.Diagnostics, connectionWording)
 		validateRequiredDynamicFields(planAuth, &meta.Auth, path.Root("auth"), &resp.Diagnostics, connectionWording)
 		return
 	}
 
 	if isRootReplacement {
-		validateRequiredDynamicFields(planConfig, &meta.Config, path.Root("config"), &resp.Diagnostics, connectionWording)
+		validateRequiredDynamicFields(requiredConfig, &meta.Config, path.Root("config"), &resp.Diagnostics, connectionWording)
 		validateRequiredDynamicFields(planAuth, &meta.Auth, path.Root("auth"), &resp.Diagnostics, connectionWording)
 		return
 	}
 
 	service := plan.Service.ValueString()
 	hasImmutableReplacement := appendImmutableRequiresReplace(planConfig, stateConfig, &meta.Config, path.Root("config"), resp, service, "", connectionWording)
+	var secretsReplacement resource.ModifyPlanResponse
+	if appendImmutableRequiresReplace(movedConfigSecrets(secrets, stateConfig), stateConfig, &meta.Config, configSecretsPath, &secretsReplacement, service, "", connectionWording) {
+		// Write-only values are null in the plan, so nested replacement paths do not
+		// exist there. Keep field-specific warnings, but replace at the attribute root.
+		resp.RequiresReplace.Append(configSecretsPath)
+		hasImmutableReplacement = true
+	}
+	resp.Diagnostics.Append(secretsReplacement.Diagnostics...)
 	hasImmutableReplacement = appendImmutableRequiresReplace(planAuth, stateAuth, &meta.Auth, path.Root("auth"), resp, service, "", connectionWording) || hasImmutableReplacement
 	if hasImmutableReplacement {
-		validateRequiredDynamicFields(planConfig, &meta.Config, path.Root("config"), &resp.Diagnostics, connectionWording)
+		validateRequiredDynamicFields(requiredConfig, &meta.Config, path.Root("config"), &resp.Diagnostics, connectionWording)
 		validateRequiredDynamicFields(planAuth, &meta.Auth, path.Root("auth"), &resp.Diagnostics, connectionWording)
 	}
 }

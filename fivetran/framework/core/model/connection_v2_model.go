@@ -22,8 +22,10 @@ type ConnectionV2ResourceModel struct {
 	GroupId     types.String `tfsdk:"group_id"`
 	Service     types.String `tfsdk:"service"`
 
-	Config types.Dynamic `tfsdk:"config"`
-	Auth   types.Dynamic `tfsdk:"auth"`
+	Config               types.Dynamic `tfsdk:"config"`
+	ConfigSecrets        types.Dynamic `tfsdk:"config_secrets"`
+	ConfigSecretsVersion types.Int64   `tfsdk:"config_secrets_version"`
+	Auth                 types.Dynamic `tfsdk:"auth"`
 
 	SucceededAt              types.String `tfsdk:"succeeded_at"`
 	FailedAt                 types.String `tfsdk:"failed_at"`
@@ -108,6 +110,8 @@ func ConnectionV2ResourceModelAttrTypes() map[string]attr.Type {
 		"group_id":                   types.StringType,
 		"service":                    types.StringType,
 		"config":                     types.DynamicType,
+		"config_secrets":             types.DynamicType,
+		"config_secrets_version":     types.Int64Type,
 		"auth":                       types.DynamicType,
 		"succeeded_at":               types.StringType,
 		"failed_at":                  types.StringType,

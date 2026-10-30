@@ -125,6 +125,52 @@ func TestConnectionV2ModifyPlanRequiresReplaceForImmutableDynamicFields(t *testi
 	}
 }
 
+func TestConnectionV2ModifyPlanMovedImmutableSecrets(t *testing.T) {
+	t.Parallel()
+	for _, tc := range []struct {
+		name        string
+		stateConfig map[string]interface{}
+		secret      string
+		wantReplace bool
+	}{
+		{name: "unchanged migration", stateConfig: map[string]interface{}{"host": "old"}, secret: "old"},
+		{name: "changed migration", stateConfig: map[string]interface{}{"host": "old"}, secret: "new", wantReplace: true},
+		{name: "already write-only", stateConfig: map[string]interface{}{}, secret: "old"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			ctx := context.Background()
+			cache := &sync.Map{}
+			cache.Store("postgres", &metadata.ConnectorMetadata{Config: metadata.Property{
+				Required: []string{"host"}, Properties: map[string]*metadata.Property{
+					"host": {Type: "string", Immutable: true},
+				},
+			}})
+			r := configuredConnectionV2ForValidation(t, false, cache)
+			plan := connectionV2ModifyPlanModel(t, "postgres", "group_id", map[string]interface{}{}, nil)
+			state := connectionV2ModifyPlanModel(t, "postgres", "group_id", tc.stateConfig, nil)
+			req := connectionV2ModifyPlanRequest(t, plan, state)
+			config := plan
+			secrets, diags := core.MapToDynamic(ctx, map[string]interface{}{"host": tc.secret})
+			if diags.HasError() {
+				t.Fatal(diags)
+			}
+			config.ConfigSecrets = secrets
+			req.Config = tfsdk.Config{Raw: connectionV2TerraformValue(t, config), Schema: req.Plan.Schema}
+			resp := resource.ModifyPlanResponse{Plan: req.Plan}
+			r.ModifyPlan(ctx, req, &resp)
+			assertErrorCount(t, resp.Diagnostics, 0)
+			if tc.wantReplace {
+				assertRequiresReplacePaths(t, resp.RequiresReplace, []path.Path{configSecretsPath})
+				assertWarningCount(t, resp.Diagnostics, 1)
+			} else {
+				assertRequiresReplacePaths(t, resp.RequiresReplace, nil)
+				assertWarningCount(t, resp.Diagnostics, 0)
+			}
+		})
+	}
+}
+
 func TestConnectionV2ModifyPlanWarnsForRootReplacementFields(t *testing.T) {
 	t.Parallel()
 

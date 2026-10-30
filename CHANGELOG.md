@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.54...HEAD)
 
 ### Added
+- `fivetran_connection_v2`: new write-only `config_secrets` attribute for secret `config` fields, such as passwords. It accepts ephemeral values and is never stored in the plan or state ([#507](https://github.com/fivetran/terraform-provider-fivetran/issues/507)). Its fields are merged with `config` when sent to the API, and a field can't be set in both. Change the new `config_secrets_version` attribute to send updated values. Requires Terraform 1.11 or later.
 - `fivetran_account_external_logging_v2`: new resource (public preview) that manages the account-level external logging service through `/v1/external-logging/account`. `config` is a dynamic object: when the log service metadata API (`/metadata/log-service-types/{service}`) describes the service, `config` is validated at plan time (unknown and required fields, types, immutable fields). Otherwise the API validates it.
 
 ## [v1.9.54](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.53...v1.9.54)
