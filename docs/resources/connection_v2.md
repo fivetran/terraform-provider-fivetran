@@ -74,6 +74,7 @@ Optional:
 ### Read-Only
 
 - `connected_by` (String) The unique identifier of the user who created the connection in your account.
+- `connector_sdk_package_id` (String) The unique identifier of the package deployed to a Connector SDK connection. Not set for other connection types or when no package is deployed.
 - `created_at` (String) The timestamp of the time the connection was created in your account.
 - `failed_at` (String) The timestamp of the time the connection sync failed last time.
 - `id` (String) The unique identifier for the connection within the Fivetran system.
