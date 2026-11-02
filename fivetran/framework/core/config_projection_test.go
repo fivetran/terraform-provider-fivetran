@@ -622,6 +622,114 @@ func TestProject_ListOfScalarsTakesRemote(t *testing.T) {
 	}
 }
 
+// --- metadata type coercion on read-back ---
+
+func TestProject_StringFromAPICoercedToMetadataType(t *testing.T) {
+	t.Parallel()
+	slot := makeSlot(map[string]*metadata.Property{
+		"port":        {Type: "integer"},
+		"sample_rate": {Type: "number"},
+		"use_ssl":     {Type: "boolean"},
+		"host":        {Type: "string"},
+	})
+	// The API serializes these as strings even though the metadata declares scalars.
+	remote := map[string]interface{}{"port": "443", "sample_rate": "0.5", "use_ssl": "true", "host": "h"}
+	mask := map[string]interface{}{"port": int64(443), "sample_rate": 0.5, "use_ssl": true, "host": "h"}
+
+	result := ProjectDynamic(remote, mask, slot)
+
+	if result["port"] != int64(443) {
+		t.Errorf("port: got %#v, want int64(443)", result["port"])
+	}
+	if result["sample_rate"] != 0.5 {
+		t.Errorf("sample_rate: got %#v, want 0.5", result["sample_rate"])
+	}
+	if result["use_ssl"] != true {
+		t.Errorf("use_ssl: got %#v, want true", result["use_ssl"])
+	}
+	if result["host"] != "h" {
+		t.Errorf("host: got %#v, want h", result["host"])
+	}
+}
+
+func TestProject_UnparseableStringKeepsRemoteValue(t *testing.T) {
+	t.Parallel()
+	slot := makeSlot(map[string]*metadata.Property{"port": {Type: "integer"}})
+	remote := map[string]interface{}{"port": "not-a-number"}
+	mask := map[string]interface{}{"port": int64(443)}
+
+	result := ProjectDynamic(remote, mask, slot)
+
+	if result["port"] != "not-a-number" {
+		t.Errorf("unparseable value must be kept so drift is surfaced, got %#v", result["port"])
+	}
+}
+
+func TestProject_NumberFromAPINotCoerced(t *testing.T) {
+	t.Parallel()
+	slot := makeSlot(map[string]*metadata.Property{"port": {Type: "integer"}})
+	remote := map[string]interface{}{"port": float64(443)}
+	mask := map[string]interface{}{"port": int64(443)}
+
+	result := ProjectDynamic(remote, mask, slot)
+
+	if result["port"] != float64(443) {
+		t.Errorf("non-string remote value must pass through unchanged, got %#v", result["port"])
+	}
+}
+
+func TestProject_ReadonlyStringCoercedToMetadataType(t *testing.T) {
+	t.Parallel()
+	slot := makeSlot(map[string]*metadata.Property{"max_connections": {Type: "integer", Readonly: true}})
+	remote := map[string]interface{}{"max_connections": "10"}
+	mask := map[string]interface{}{"max_connections": int64(0)}
+
+	result := ProjectDynamic(remote, mask, slot)
+
+	if result["max_connections"] != int64(10) {
+		t.Errorf("readonly: got %#v, want int64(10)", result["max_connections"])
+	}
+}
+
+func TestProject_NestedAndListScalarsCoerced(t *testing.T) {
+	t.Parallel()
+	slot := makeSlot(map[string]*metadata.Property{
+		"opts":  {Type: "object", Properties: map[string]*metadata.Property{"retries": {Type: "integer"}}},
+		"ports": {Type: "array", Items: &metadata.Property{Type: "integer"}},
+	})
+	remote := map[string]interface{}{
+		"opts":  map[string]interface{}{"retries": "3"},
+		"ports": []interface{}{"443", "80"},
+	}
+	mask := map[string]interface{}{
+		"opts":  map[string]interface{}{"retries": int64(3)},
+		"ports": []interface{}{int64(443), int64(80)},
+	}
+
+	result := ProjectDynamic(remote, mask, slot)
+
+	nested := result["opts"].(map[string]interface{})
+	if nested["retries"] != int64(3) {
+		t.Errorf("opts.retries: got %#v, want int64(3)", nested["retries"])
+	}
+	ports := result["ports"].([]interface{})
+	if len(ports) != 2 || ports[0] != int64(443) || ports[1] != int64(80) {
+		t.Errorf("ports: got %#v, want [443 80]", ports)
+	}
+}
+
+func TestProject_NilSlotLeavesStringsAlone(t *testing.T) {
+	t.Parallel()
+	remote := map[string]interface{}{"port": "443"}
+	mask := map[string]interface{}{"port": "443"}
+
+	result := ProjectDynamic(remote, mask, nil)
+
+	if result["port"] != "443" {
+		t.Errorf("without metadata the value must pass through, got %#v", result["port"])
+	}
+}
+
 // --- MapToDynamicWithTemplate ---
 
 func TestMapToDynamicWithTemplate_KeepsTemplateWhenValuesAreEqual(t *testing.T) {
