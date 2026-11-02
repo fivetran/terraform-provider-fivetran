@@ -1,0 +1,20 @@
+fivetran/tests/mock/resource_connector_schema_config_column_validation_test.go
+  s_2bfbdf9e50ccfe::t_a5e9f12015c3e5 144,148
+  s_2bfbdf9e50ccfe::t_06c5347a340923 1-143,145-147,149-165
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "620524a32ad6a1ed46aa9c4e21da284a4dc2368a",
+  "prompts": {},
+  "sessions": {
+    "s_2bfbdf9e50ccfe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "63862066-dccb-45a1-be5f-5039dbaa9002",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jovan Manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
