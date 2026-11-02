@@ -1,0 +1,23 @@
+docs/resources/account_external_logging_v2.md
+  s_2bfbdf9e50ccfe::t_6d2ab583d44cea 7
+docs/resources/destination_v2.md
+  s_2bfbdf9e50ccfe::t_6d2ab583d44cea 7
+CHANGELOG.md
+  s_2bfbdf9e50ccfe::t_6d2ab583d44cea 11-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "2a1c765cd590c93ed15e8f7c7255c19cd6254fa6",
+  "prompts": {},
+  "sessions": {
+    "s_2bfbdf9e50ccfe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "63862066-dccb-45a1-be5f-5039dbaa9002",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jovan Manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
