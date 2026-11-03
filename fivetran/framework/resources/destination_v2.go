@@ -271,7 +271,7 @@ func (r *destinationV2) Update(ctx context.Context, req resource.UpdateRequest, 
 	}
 
 	configPatch := core.PrepareConfigPatchDynamic(planConfig, stateConfig, &meta.Config)
-	applyDestinationConfigSecretsToPatch(configPatch, secrets, fieldChanged(plan.ConfigSecretsVersion, state.ConfigSecretsVersion))
+	applyConfigSecretsToPatch(configPatch, secrets, fieldChanged(plan.ConfigSecretsVersion, state.ConfigSecretsVersion))
 
 	runSetupTestsPlan := core.GetBoolOrDefault(plan.RunSetupTests, destinationV2RunSetupTestsDefault)
 	trustCertificatesPlan := core.GetBoolOrDefault(plan.TrustCertificates, destinationV2TrustCertificatesDefault)

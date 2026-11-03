@@ -43,8 +43,12 @@ func configSecretsMap(ctx context.Context, value types.Dynamic, preserveUnknown 
 	return secrets
 }
 
-// mergeConfigSecrets returns config with the config_secrets fields added. Neither map is modified.
-func mergeConfigSecrets(config, secrets map[string]interface{}) map[string]interface{} {
+// mergeConnectionV2ConfigSecrets returns config with the config_secrets fields added. Neither map is modified.
+func mergeConnectionV2ConfigSecrets(config, secrets map[string]interface{}) map[string]interface{} {
+	if len(secrets) == 0 {
+		return config
+	}
+
 	merged := make(map[string]interface{}, len(config)+len(secrets))
 	for k, v := range config {
 		merged[k] = v
@@ -68,11 +72,11 @@ func validateConfigSecretsOverlap(config, secrets map[string]interface{}, diags 
 	}
 }
 
-// applyConfigSecretsToPatch adds mutable config_secrets fields when their version changed or
+// applyConnectionV2ConfigSecretsToPatch adds mutable config_secrets fields when their version changed or
 // they moved from config. This prevents removed nullable fields from being cleared on migration.
 // Immutable and read-only fields follow the same PATCH exclusions as config; moving them only
 // removes their stored values, without sending them to the API again.
-func applyConfigSecretsToPatch(patch, secrets, stateConfig map[string]interface{}, slot *metadata.Property, versionChanged bool) map[string]interface{} {
+func applyConnectionV2ConfigSecretsToPatch(patch, secrets, stateConfig map[string]interface{}, slot *metadata.Property, versionChanged bool) map[string]interface{} {
 	for name, value := range secrets {
 		if prop := core.SlotProp(slot, name); prop != nil && (prop.Immutable || prop.Readonly) {
 			continue

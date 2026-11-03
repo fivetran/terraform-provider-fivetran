@@ -126,7 +126,7 @@ func (r *connectionV2) Create(ctx context.Context, req resource.CreateRequest, r
 		return
 	}
 	// configMap stays the state mask below, so the config_secrets fields never reach state.
-	requestConfig := mergeConfigSecrets(configMap, secrets)
+	requestConfig := mergeConnectionV2ConfigSecrets(configMap, secrets)
 
 	runSetupTestsPlan := core.GetBoolOrDefault(data.RunSetupTests, false)
 	trustCertificatesPlan := core.GetBoolOrDefault(data.TrustCertificates, false)
@@ -282,7 +282,7 @@ func (r *connectionV2) Update(ctx context.Context, req resource.UpdateRequest, r
 	service := plan.Service.ValueString()
 	configSecretsVersionChanged := !plan.ConfigSecretsVersion.Equal(state.ConfigSecretsVersion)
 	configPatch := core.PrepareConfigPatchDynamicWithService(planConfig, stateConfig, &meta.Config, service)
-	configPatch = applyConfigSecretsToPatch(configPatch, secrets, stateConfig, &meta.Config, configSecretsVersionChanged)
+	configPatch = applyConnectionV2ConfigSecretsToPatch(configPatch, secrets, stateConfig, &meta.Config, configSecretsVersionChanged)
 	authPatch := core.PrepareConfigPatchDynamicWithService(planAuth, stateAuth, &meta.Auth, service)
 
 	runSetupTestsPlan := core.GetBoolOrDefault(plan.RunSetupTests, false)

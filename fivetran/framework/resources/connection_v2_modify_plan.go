@@ -113,7 +113,7 @@ func (r *connectionV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRe
 	}
 
 	// A required config field can also be set in config_secrets, which is only in the configuration.
-	requiredConfig := mergeConfigSecrets(planConfig, secrets)
+	requiredConfig := mergeConnectionV2ConfigSecrets(planConfig, secrets)
 
 	if isCreate {
 		validateRequiredDynamicFields(requiredConfig, &meta.Config, path.Root("config"), &resp.Diagnostics, connectionWording)

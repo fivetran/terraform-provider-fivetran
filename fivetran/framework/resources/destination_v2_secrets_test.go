@@ -170,7 +170,7 @@ func TestApplyConfigSecretsToPatch(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			applyDestinationConfigSecretsToPatch(tt.patch, map[string]interface{}{"password": "secret"}, tt.send)
+			applyConfigSecretsToPatch(tt.patch, map[string]interface{}{"password": "secret"}, tt.send)
 
 			if !reflect.DeepEqual(tt.patch, tt.want) {
 				t.Fatalf("patch: got %v, want %v", tt.patch, tt.want)
