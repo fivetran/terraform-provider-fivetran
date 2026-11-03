@@ -99,6 +99,29 @@ func TestConnectionV2ModifyPlanRequiresReplaceForImmutableDynamicFields(t *testi
 				"schema": {Type: "string", Immutable: true},
 			}}},
 		},
+		{
+			// Import stores the API placeholder, so the real value can't be compared.
+			name:        "immutable field imported masked",
+			planConfig:  map[string]interface{}{"client_access": map[string]interface{}{"client_secret": "real"}},
+			stateConfig: map[string]interface{}{"client_access": map[string]interface{}{"client_secret": core.MaskedValue}},
+			meta: &metadata.ConnectorMetadata{Config: metadata.Property{Properties: map[string]*metadata.Property{
+				"client_access": {
+					Type: "object",
+					Properties: map[string]*metadata.Property{
+						"client_secret": {Type: "string", Format: "password", Immutable: true},
+					},
+				},
+			}}},
+			wantWarnings: 1,
+		},
+		{
+			name:        "immutable field imported masked and still masked",
+			planConfig:  map[string]interface{}{"schema": core.MaskedValue},
+			stateConfig: map[string]interface{}{"schema": core.MaskedValue},
+			meta: &metadata.ConnectorMetadata{Config: metadata.Property{Properties: map[string]*metadata.Property{
+				"schema": {Type: "string", Immutable: true},
+			}}},
+		},
 	}
 
 	for _, tt := range tests {
@@ -132,10 +155,12 @@ func TestConnectionV2ModifyPlanMovedImmutableSecrets(t *testing.T) {
 		stateConfig map[string]interface{}
 		secret      string
 		wantReplace bool
+		wantWarning bool
 	}{
 		{name: "unchanged migration", stateConfig: map[string]interface{}{"host": "old"}, secret: "old"},
 		{name: "changed migration", stateConfig: map[string]interface{}{"host": "old"}, secret: "new", wantReplace: true},
 		{name: "already write-only", stateConfig: map[string]interface{}{}, secret: "old"},
+		{name: "imported masked migration", stateConfig: map[string]interface{}{"host": core.MaskedValue}, secret: "real", wantWarning: true},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
@@ -165,7 +190,12 @@ func TestConnectionV2ModifyPlanMovedImmutableSecrets(t *testing.T) {
 				assertWarningCount(t, resp.Diagnostics, 1)
 			} else {
 				assertRequiresReplacePaths(t, resp.RequiresReplace, nil)
-				assertWarningCount(t, resp.Diagnostics, 0)
+				wantWarnings := 0
+				if tc.wantWarning {
+					wantWarnings = 1
+					assertDiagnosticContains(t, resp.Diagnostics, "Immutable Field Imported Masked")
+				}
+				assertWarningCount(t, resp.Diagnostics, wantWarnings)
 			}
 		})
 	}

@@ -5,6 +5,7 @@ import (
 
 	externallogging "github.com/fivetran/go-fivetran/external_logging"
 	"github.com/fivetran/terraform-provider-fivetran/fivetran/common"
+	"github.com/fivetran/terraform-provider-fivetran/fivetran/framework/core"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
@@ -94,7 +95,7 @@ func (d *ExternalLogging) readSensitiveStringValue(
 	config *map[string]attr.Value,
 	planConfigForEmptySecretValuesAfterImport map[string]attr.Value,
 	key string) {
-	if resp.Data.Config[key] != nil && resp.Data.Config[key] != "" && resp.Data.Config[key] != "******" {
+	if resp.Data.Config[key] != nil && resp.Data.Config[key] != "" && !core.IsMaskedValue(resp.Data.Config[key]) {
 		(*config)[key] = types.StringValue(resp.Data.Config[key].(string))
 	} else if mapHasValue(planConfigForEmptySecretValuesAfterImport, key) {
 		(*config)[key] = planConfigForEmptySecretValuesAfterImport[key]

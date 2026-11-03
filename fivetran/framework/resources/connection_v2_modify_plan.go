@@ -217,6 +217,13 @@ func appendImmutableRequiresReplace(planValues, stateValues map[string]interface
 			valuePath = basePath + "." + name
 		}
 		stateValue, stateHasValue := stateValues[name]
+		if prop.Immutable && core.IsMaskedValue(stateValue) {
+			// Imported secrets are stored masked, so the real value can't be compared.
+			if !core.IsMaskedValue(planValue) {
+				addMaskedImmutableWarning(fieldPath, &resp.Diagnostics)
+			}
+			continue
+		}
 		if prop.Immutable && (!stateHasValue || !dynamicValuesEqualAtPath(planValue, stateValue, service, valuePath)) {
 			resp.RequiresReplace.Append(fieldPath)
 			wording.replacementWarning(fieldPath, &resp.Diagnostics)
@@ -281,6 +288,14 @@ func addHistoricalResyncWarning(fieldPath path.Path, diags *diag.Diagnostics) {
 		fieldPath,
 		"Connection Replacement Triggers Historical Resync",
 		fmt.Sprintf("Changing %s requires recreating this connection. Recreating a connection triggers a historical resync: all data re-syncs from scratch, can take days or weeks depending on data volume, and is not reversible.", fieldPath.String()),
+	)
+}
+
+func addMaskedImmutableWarning(fieldPath path.Path, diags *diag.Diagnostics) {
+	diags.AddAttributeWarning(
+		fieldPath,
+		"Immutable Field Imported Masked",
+		fmt.Sprintf("The API returned %s masked when the resource was imported, so Terraform can't verify that the configured value matches. The field is immutable: a different value is not sent to the API and does not recreate the resource.", fieldPath.String()),
 	)
 }
 
