@@ -71,9 +71,9 @@ resource "fivetran_connection_v2" "connection" {
 
 ### Required
 
-- `destination_schema_names` (String) Defines how schema names appear in the destination. Supported values: FIVETRAN_NAMING, SOURCE_NAMING.
-- `group_id` (String) The unique identifier for the Group (Destination) within the Fivetran system.
-- `service` (String) The connection service type (e.g., `postgres`, `mysql`, `s3`, `snowflake`). See Fivetran connection types documentation for available services.
+- `destination_schema_names` (String) Defines how schema names appear in the destination. Supported values: `FIVETRAN_NAMING`, `SOURCE_NAMING`. Changing this forces the connection to be replaced.
+- `group_id` (String) The unique identifier for the Group (Destination) within the Fivetran system. Changing this forces the connection to be replaced.
+- `service` (String) The connection service type (e.g., `postgres`, `mysql`, `s3`, `snowflake`). Changing this forces the connection to be replaced.
 
 ### Optional
 
@@ -81,25 +81,25 @@ resource "fivetran_connection_v2" "connection" {
 
 - `auth` (Dynamic, Sensitive) Service-specific authorization configuration. The accepted fields are defined by connector metadata at runtime.
 - `config` (Dynamic) Service-specific connection configuration. The accepted fields are defined by connector metadata at runtime.
-- `config_secrets` (Dynamic, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Write-only service-specific connection configuration fields, merged with `config` when sent to the API. Accepts ephemeral values and is never stored in the plan or state. A field must not be set in both `config` and `config_secrets`. Mutable fields are sent on migration from `config` or when `config_secrets_version` changes. Immutable and read-only fields are excluded from updates. Requires Terraform 1.11 or later.
+- `config_secrets` (Dynamic, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Write-only service-specific connection configuration fields, merged with `config` when sent to the API. Accepts ephemeral values and is never stored in the plan or state. A field must not be set in both `config` and `config_secrets`. Mutable fields are sent on migration from `config` or when `config_secrets_version` changes. Immutable and read-only fields are excluded from updates. Requires Terraform 1.11 or later. See [Secrets in config](#secrets-in-config).
 - `config_secrets_version` (Number) Version of `config_secrets`. Change it to send the current mutable `config_secrets` values to the API.
 - `connect_card_config` (Attributes) Configuration for the interactive Connect Card setup flow. (see [below for nested schema](#nestedatt--connect_card_config))
-- `daily_sync_time` (String) The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440.
+- `daily_sync_time` (String) Sync start time. Only used when `sync_frequency` is `1440`.
 - `data_checks` (Boolean) Specifies whether data validation is enabled for the connection.
-- `data_delay_sensitivity` (String) The level of data delay notification threshold. Possible values: LOW, NORMAL, HIGH, CUSTOM, SYNC_FREQUENCY.
-- `data_delay_threshold` (Number) Custom sync delay notification threshold in minutes. This parameter is only used when data_delay_sensitivity is set to CUSTOM.
+- `data_delay_sensitivity` (String) The level of data delay notification threshold. Possible values: `LOW`, `NORMAL`, `HIGH`, `CUSTOM`, `SYNC_FREQUENCY`.
+- `data_delay_threshold` (Number) Custom sync delay notification threshold in minutes. Only used when `data_delay_sensitivity` is `CUSTOM`.
 - `destination_configuration` (Attributes) Destination-specific configuration for the connection. (see [below for nested schema](#nestedatt--destination_configuration))
-- `hybrid_deployment_agent_id` (String) The hybrid deployment agent ID that refers to the controller created for the group the connection belongs to.
+- `hybrid_deployment_agent_id` (String) The hybrid deployment agent ID for the group the connection belongs to.
 - `networking_method` (String) The networking method for the connection. Possible values: `Directly`, `SshTunnel`, `ProxyAgent`, `PrivateLink`.
-- `pause_after_trial` (Boolean) Specifies whether the connection should be paused after the free trial period has ended.
+- `pause_after_trial` (Boolean) Whether the connection should be paused after the free trial period has ended.
 - `private_link_id` (String) The private link ID. Required when `networking_method` is `PrivateLink`.
 - `proxy_agent_id` (String) The ID of the proxy agent to use. Required when `networking_method` is `ProxyAgent`.
 - `run_setup_tests` (Boolean) Whether to run setup tests when creating or updating the connection.
 - `schedule` (Attributes) The connection schedule configuration. (see [below for nested schema](#nestedatt--schedule))
-- `schedule_type` (String) The connection schedule configuration type. Supported values: auto, manual.
+- `schedule_type` (String) The connection schedule configuration type. Supported values: `auto`, `manual`.
 - `sync_frequency` (Number) The connection sync frequency in minutes.
-- `trust_certificates` (Boolean) Specifies whether Fivetran should trust certificates automatically.
-- `trust_fingerprints` (Boolean) Specifies whether Fivetran should trust SSH fingerprints automatically.
+- `trust_certificates` (Boolean) Whether Fivetran should trust certificates automatically.
+- `trust_fingerprints` (Boolean) Whether Fivetran should trust SSH fingerprints automatically.
 
 ### Read-Only
 
@@ -108,9 +108,9 @@ resource "fivetran_connection_v2" "connection" {
 - `created_at` (String) The timestamp of the time the connection was created in your account.
 - `failed_at` (String) The timestamp of the time the connection sync failed last time.
 - `id` (String) The unique identifier for the connection within the Fivetran system.
-- `name` (String) The name used both as the connection's name within the Fivetran system and as the source schema's name within your destination.
+- `name` (String) The connection's name.
 - `service_version` (String) The connection type version within the Fivetran system.
-- `status` (Attributes) The current connection status. (see [below for nested schema](#nestedatt--status))
+- `status` (Attributes) The current connection status (setup state, sync state, tasks, and warnings). (see [below for nested schema](#nestedatt--status))
 - `succeeded_at` (String) The timestamp of the time the connection sync succeeded last time.
 
 <a id="nestedatt--connect_card_config"></a>
