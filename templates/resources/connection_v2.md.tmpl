@@ -33,6 +33,8 @@ resource "fivetran_connection_v2_pause_state" "pause_state" {
 
 ## Secrets in config
 
+~> **Alpha:** `config_secrets` and `config_secrets_version` are in alpha and their behavior may change without notice. Not recommended for production use.
+
 Fields set in `config` are stored in the Terraform state. To keep secret fields such as passwords out of the plan and state, set them in the write-only `config_secrets` attribute instead. It accepts [ephemeral values](https://developer.hashicorp.com/terraform/language/resources/ephemeral), for example from a secrets manager, and requires Terraform 1.11 or later.
 
 ```hcl
