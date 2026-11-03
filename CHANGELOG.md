@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.54...HEAD)
 
 ### Added
+- `fivetran_connection_v2`: new read-only attribute `connector_sdk_package_id` with the ID of the package deployed to a Connector SDK connection. It is not set for other connection types or when no package is deployed.
 - New resource `fivetran_destination_v2` (alpha): `config` is a dynamic, service-specific object whose fields, types, enum values, and readonly/immutable rules come from destination metadata at plan time. Unknown fields, wrong types, invalid enum values, and readonly fields fail the plan; changing an immutable field plans a replacement. Field names match the Fivetran REST API. Secret fields can be set in the write-only `config_secrets` attribute (Terraform 1.11+), which accepts ephemeral values and is never stored in state; increment `config_secrets_version` to send rotated secrets.
 - `fivetran_account_external_logging_v2`: new resource (alpha) that manages the account-level external logging service through `/v1/external-logging/account`. `config` is a dynamic object: when the log service metadata API (`/metadata/log-service-types/{service}`) describes the service, `config` is validated at plan time (unknown and required fields, types, immutable fields). Otherwise the API validates it.
 
