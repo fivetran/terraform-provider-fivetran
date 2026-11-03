@@ -15,12 +15,13 @@ import (
 )
 
 type ConnectionV2ResourceModel struct {
-	Id          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
-	ConnectedBy types.String `tfsdk:"connected_by"`
-	CreatedAt   types.String `tfsdk:"created_at"`
-	GroupId     types.String `tfsdk:"group_id"`
-	Service     types.String `tfsdk:"service"`
+	Id                    types.String `tfsdk:"id"`
+	Name                  types.String `tfsdk:"name"`
+	ConnectedBy           types.String `tfsdk:"connected_by"`
+	ConnectorSdkPackageId types.String `tfsdk:"connector_sdk_package_id"`
+	CreatedAt             types.String `tfsdk:"created_at"`
+	GroupId               types.String `tfsdk:"group_id"`
+	Service               types.String `tfsdk:"service"`
 
 	Config               types.Dynamic `tfsdk:"config"`
 	ConfigSecrets        types.Dynamic `tfsdk:"config_secrets"`
@@ -106,6 +107,7 @@ func ConnectionV2ResourceModelAttrTypes() map[string]attr.Type {
 		"id":                         types.StringType,
 		"name":                       types.StringType,
 		"connected_by":               types.StringType,
+		"connector_sdk_package_id":   types.StringType,
 		"created_at":                 types.StringType,
 		"group_id":                   types.StringType,
 		"service":                    types.StringType,
@@ -156,6 +158,7 @@ func (d *ConnectionV2ResourceModel) readFromResponseData(ctx context.Context, da
 	d.Id = types.StringValue(data.ID)
 	d.Name = types.StringValue(data.Schema)
 	d.ConnectedBy = stringValueOrNull(data.ConnectedBy)
+	d.ConnectorSdkPackageId = stringPointerValueOrNull(data.ConnectorSdkPackageId)
 	d.CreatedAt = timeValueOrNull(data.CreatedAt)
 	d.GroupId = types.StringValue(data.GroupID)
 	d.Service = types.StringValue(data.Service)

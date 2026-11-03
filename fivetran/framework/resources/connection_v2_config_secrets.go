@@ -45,10 +45,6 @@ func configSecretsMap(ctx context.Context, value types.Dynamic, preserveUnknown 
 
 // mergeConfigSecrets returns config with the config_secrets fields added. Neither map is modified.
 func mergeConfigSecrets(config, secrets map[string]interface{}) map[string]interface{} {
-	if len(secrets) == 0 {
-		return config
-	}
-
 	merged := make(map[string]interface{}, len(config)+len(secrets))
 	for k, v := range config {
 		merged[k] = v
