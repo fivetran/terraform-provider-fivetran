@@ -1,0 +1,19 @@
+modules/connector/schema/schema_table_test.go
+  s_4e609ec9f14d47::t_c6ac6f7f0a62e3 110-147
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "41338fa0d5ed268632ac699d8d9a1a6288335aea",
+  "prompts": {},
+  "sessions": {
+    "s_4e609ec9f14d47": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ee95f24d-4058-4204-9356-1c736331f7aa",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jovan Manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
