@@ -257,33 +257,12 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, is
 	}
 
 	if isImporting || (!d.Config.IsNull() && !d.Config.IsUnknown()) {
-		localConfig := getValueFromAttrValue(d.Config, common.GetConfigFieldsMap(), nil, c.Service).(map[string]interface{})
 		d.Config = getValue(
 			types.ObjectType{AttrTypes: getAttrTypes(common.GetConfigFieldsMap())},
-			keepLocalAuthFields(c.Config, localConfig, c.Service),
-			localConfig,
+			c.Config,
+			getValueFromAttrValue(d.Config, common.GetConfigFieldsMap(), nil, c.Service).(map[string]interface{}),
 			common.GetConfigFieldsMap(), nil, c.Service, isImporting, false).(basetypes.ObjectValue)
 	}
-}
-
-// keepLocalAuthFields restores auth fields set in `config` that the API leaves out of the response.
-// The API stores such fields (for example `authentication_method` for `google_play`) in the auth section
-// and never returns them, so without the local value the state would drop them after apply.
-func keepLocalAuthFields(upstream, local map[string]interface{}, service string) map[string]interface{} {
-	authFields := common.GetAuthFieldsForService(service)
-	result := make(map[string]interface{}, len(upstream))
-	for k, v := range upstream {
-		result[k] = v
-	}
-	for k, v := range local {
-		if _, isAuthField := authFields[k]; !isAuthField {
-			continue
-		}
-		if _, returned := upstream[k]; !returned {
-			result[k] = v
-		}
-	}
-	return result
 }
 
 func (d *ConnectorDatasourceModel) ReadFromContainerForDataSource(c ConnectorModelContainer) {

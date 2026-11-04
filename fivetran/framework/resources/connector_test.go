@@ -2573,9 +2573,11 @@ func TestConnectorNonNullableFieldNotConfiguredMock(t *testing.T) {
 	)
 }
 
-func TestConnectorAuthFieldInConfigNotReturnedUpstreamMock(t *testing.T) {
+func TestConnectorAuthOnlyFieldInConfigRejectedMock(t *testing.T) {
+	// `authentication_method` belongs to `auth` for google_play: the API doesn't return it in `config`
 	step1 :=
-		resource.TestStep{Config: `
+		resource.TestStep{
+			Config: `
 	resource "fivetran_connector" "test_connector" {
 		provider = fivetran-provider
 
@@ -2591,16 +2593,41 @@ func TestConnectorAuthFieldInConfigNotReturnedUpstreamMock(t *testing.T) {
 			authentication_method = "FIVETRAN_SERVICE_ACCOUNT"
 		}
 	  }`,
+			PlanOnly:    true,
+			ExpectError: regexp.MustCompile("Service `google_play` expects field `authentication_method` in the `auth`"),
+		}
+
+	step2 :=
+		resource.TestStep{
+			Config: `
+	resource "fivetran_connector" "test_connector" {
+		provider = fivetran-provider
+
+		group_id = "group_id"
+		service  = "google_play"
+
+		destination_schema {
+		  name = "google_play_store"
+		}
+
+		config {
+			bucket = "bucket_id"
+		}
+
+		auth {
+			authentication_method = "FIVETRAN_SERVICE_ACCOUNT"
+		}
+	  }`,
 
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttr("fivetran_connector.test_connector", "id", "connector_id"),
 				resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.bucket", "bucket_id"),
-				resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.authentication_method", "FIVETRAN_SERVICE_ACCOUNT"),
+				resource.TestCheckResourceAttr("fivetran_connector.test_connector", "auth.authentication_method", "FIVETRAN_SERVICE_ACCOUNT"),
 			),
 		}
 
 	var responseData map[string]interface{}
-	var requestConfig map[string]interface{}
+	var requestAuth map[string]interface{}
 
 	preCheck := func() {
 		tfmock.MockClient().Reset()
@@ -2623,9 +2650,9 @@ func TestConnectorAuthFieldInConfigNotReturnedUpstreamMock(t *testing.T) {
 		tfmock.MockClient().When(http.MethodPost, "/v1/connections").ThenCall(
 			func(req *http.Request) (*http.Response, error) {
 				body := tfmock.RequestBodyToJson(t, req)
-				requestConfig = body["config"].(map[string]interface{})
+				requestAuth = body["auth"].(map[string]interface{})
 
-				// the API keeps `authentication_method` in the auth section and doesn't return it
+				// the API doesn't return the auth section
 				responseJson := createConnectorTestResponseJsonMock(
 					"connector_id",
 					"group_id",
@@ -2649,11 +2676,12 @@ func TestConnectorAuthFieldInConfigNotReturnedUpstreamMock(t *testing.T) {
 			PreCheck:                 preCheck,
 			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
 			CheckDestroy: func(s *terraform.State) error {
-				tfmock.AssertEqual(t, requestConfig["authentication_method"], "FIVETRAN_SERVICE_ACCOUNT")
+				tfmock.AssertEqual(t, requestAuth["authentication_method"], "FIVETRAN_SERVICE_ACCOUNT")
 				return nil
 			},
 			Steps: []resource.TestStep{
 				step1,
+				step2,
 			},
 		},
 	)
