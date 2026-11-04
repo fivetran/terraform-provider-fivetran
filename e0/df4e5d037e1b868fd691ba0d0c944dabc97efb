@@ -1,0 +1,69 @@
+.github/workflows/release.yml
+  s_4e609ec9f14d47::t_b9a10f178f3fe1 18
+.github/workflows/testing.yml
+  s_4e609ec9f14d47::t_9fed01d37120b3 16,18
+CHANGELOG.md
+  s_4e609ec9f14d47::t_e6193a6f904522 8-13,16,19-20
+docs/resources/account_external_logging_v2.md
+  s_4e609ec9f14d47::t_0e3d487196124a 7
+docs/resources/connection_v2.md
+  s_4e609ec9f14d47::t_7ab15abefc5279 77
+docs/resources/destination_v2.md
+  s_4e609ec9f14d47::t_11783778c0e4d5 1-125
+fivetran/framework/core/config_projection.go
+  s_4e609ec9f14d47::t_46a5eb59434d1b 9,342,372,388,400-431
+fivetran/framework/core/config_projection_test.go
+  s_4e609ec9f14d47::t_2bbd86da754c96 625-732
+fivetran/framework/core/metadata_cache.go
+  s_4e609ec9f14d47::t_375f0ac2b579ae 76-144
+fivetran/framework/core/model/connection_v2_model.go
+  s_4e609ec9f14d47::t_1739bbee348735 18-24,108,157
+fivetran/framework/core/model/connection_v2_model_test.go
+  s_4e609ec9f14d47::t_e3458be5ee4b81 175-207
+fivetran/framework/core/model/destination_v2_model.go
+  s_4e609ec9f14d47::t_5237a9584dd6d7 1-115
+fivetran/framework/core/schema/connection_v2.go
+  s_4e609ec9f14d47::t_2a1fd8da102f1f 38-41
+fivetran/framework/core/schema/destination_v2.go
+  s_4e609ec9f14d47::t_056cf49470412d 1-126
+fivetran/framework/provider.go
+  s_4e609ec9f14d47::t_b9b1f884405571 23,130
+fivetran/framework/resources/connection_v2_validate.go
+  s_4e609ec9f14d47::t_77b829f2f4bf8a 112,179
+fivetran/framework/resources/destination_v2.go
+  s_4e609ec9f14d47::t_654d531edbc973 1-467
+fivetran/framework/resources/destination_v2_mock_test.go
+  s_4e609ec9f14d47::t_65c6773d763629 1-398
+fivetran/framework/resources/destination_v2_modify_plan.go
+  s_4e609ec9f14d47::t_70d103eb5404d1 1-120
+fivetran/framework/resources/destination_v2_secrets.go
+  s_4e609ec9f14d47::t_ecb5e888e2da37 1-86
+fivetran/framework/resources/destination_v2_secrets_test.go
+  s_4e609ec9f14d47::t_c52fa1ef3ec08e 1-180
+fivetran/framework/resources/destination_v2_validate.go
+  s_4e609ec9f14d47::t_ea9ddb39ce854c 1-141
+fivetran/framework/resources/destination_v2_validate_test.go
+  s_4e609ec9f14d47::t_5cab07edce595a 1-488
+fivetran/tests/mock/resource_connector_schema_config_column_validation_test.go
+  s_4e609ec9f14d47::t_833eacebf9a7fe 1-165
+go.mod
+  s_4e609ec9f14d47::t_49ebbe61f859bc 4,40,70
+go.sum
+  s_4e609ec9f14d47::t_1095913f9a66a0 32-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "e0df4e5d037e1b868fd691ba0d0c944dabc97efb",
+  "prompts": {},
+  "sessions": {
+    "s_4e609ec9f14d47": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ee95f24d-4058-4204-9356-1c736331f7aa",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jovan Manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
