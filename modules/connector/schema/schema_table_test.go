@@ -106,3 +106,44 @@ func TestTableToStateObjectWarnsAboutPolicyMisalignedColumnsWithNoLocalTable(t *
 		t.Fatalf("expected a warning about the policy-misaligned column, got none")
 	}
 }
+
+// The policy-misaligned column warning only fires for enabled tables: a disabled table
+// syncs nothing, so the enabled state of its columns is irrelevant. Otherwise every column
+// that was explicitly blocked while the connector ran BLOCK_ALL, on every table the user
+// keeps disabled, would warn on every plan. Covers both policy directions and both ways a
+// table can reach the no-local-columns branch (undeclared, or declared without columns).
+func TestTableToStateObjectColumnDriftWarning(t *testing.T) {
+	cases := []struct {
+		name          string
+		policy        string
+		tableEnabled  bool
+		columnEnabled bool
+		local         *_table
+		wantWarning   bool
+	}{
+		{"enabled table, BLOCK_ALL, enabled column", BLOCK_ALL, true, true, nil, true},
+		{"enabled table, ALLOW_COLUMNS, disabled column", ALLOW_COLUMNS, true, false, nil, true},
+		{"enabled table, ALLOW_COLUMNS, enabled column", ALLOW_COLUMNS, true, true, nil, false},
+		{"disabled table, ALLOW_COLUMNS, disabled column", ALLOW_COLUMNS, false, false, nil, false},
+		{"disabled table, BLOCK_ALL, enabled column", BLOCK_ALL, false, true, nil, false},
+		{"disabled table declared without columns", ALLOW_COLUMNS, false, false,
+			&_table{_element: _element{name: "t", enabled: false}}, false},
+		{"enabled table declared without columns", ALLOW_COLUMNS, true, false,
+			&_table{_element: _element{name: "t", enabled: true}}, true},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			upstream := _table{
+				_element: _element{name: "t", enabled: tc.tableEnabled},
+				columns: map[string]*_column{
+					"c": {_element: _element{name: "c", enabled: tc.columnEnabled}},
+				},
+			}
+			var diags diag.Diagnostics
+			upstream.toStateObject(tc.policy, tc.local, &diags, "public", false)
+			if got := diags.WarningsCount() > 0; got != tc.wantWarning {
+				t.Fatalf("wantWarning=%v, got diags: %+v", tc.wantWarning, diags)
+			}
+		})
+	}
+}
