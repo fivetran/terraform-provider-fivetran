@@ -257,12 +257,29 @@ func (d *ConnectorResourceModel) ReadFromContainer(c ConnectorModelContainer, is
 	}
 
 	if isImporting || (!d.Config.IsNull() && !d.Config.IsUnknown()) {
+		localConfig := getValueFromAttrValue(d.Config, common.GetConfigFieldsMap(), nil, c.Service).(map[string]interface{})
 		d.Config = getValue(
 			types.ObjectType{AttrTypes: getAttrTypes(common.GetConfigFieldsMap())},
-			c.Config,
-			getValueFromAttrValue(d.Config, common.GetConfigFieldsMap(), nil, c.Service).(map[string]interface{}),
+			keepLocalAuthFields(c.Config, localConfig, c.Service),
+			localConfig,
 			common.GetConfigFieldsMap(), nil, c.Service, isImporting, false).(basetypes.ObjectValue)
 	}
+}
+
+// keepLocalAuthFields handles auth fields set in `config` like sensitive ones: the configured value is kept.
+// The API keeps such fields (for example `authentication_method` for `google_play`) in the auth section
+// and never returns them, so without the local value the state would drop them after apply.
+func keepLocalAuthFields(upstream, local map[string]interface{}, service string) map[string]interface{} {
+	result := make(map[string]interface{}, len(upstream))
+	for k, v := range upstream {
+		result[k] = v
+	}
+	for k, v := range local {
+		if common.IsAuthOnlyFieldForService(service, k) {
+			result[k] = v
+		}
+	}
+	return result
 }
 
 func (d *ConnectorDatasourceModel) ReadFromContainerForDataSource(c ConnectorModelContainer) {

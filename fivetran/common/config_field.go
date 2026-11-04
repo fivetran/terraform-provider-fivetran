@@ -97,6 +97,20 @@ func GetAuthFieldsForService(service string) map[string]ConfigField {
 	return map[string]ConfigField{}
 }
 
+// IsAuthOnlyFieldForService reports whether the service expects the field in `auth` and not in `config`.
+// The API keeps such fields in the auth section and never returns them.
+func IsAuthOnlyFieldForService(service, field string) bool {
+	if _, ok := GetAuthFieldsForService(service)[field]; !ok {
+		return false
+	}
+	if serviceConfigFields, err := GetFieldsForService(service); err == nil {
+		if _, ok := serviceConfigFields[field]; ok {
+			return false
+		}
+	}
+	return true
+}
+
 func GetDestinationFieldsForService(service string) map[string]ConfigField {
 	if len(destinationFieldsByService) == 0 {
 		panic("Fields for destination config are not loaded")
