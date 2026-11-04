@@ -18,13 +18,21 @@ import (
 var _ resource.ResourceWithValidateConfig = &connectionV2{}
 
 func (r *connectionV2) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
-	if r.GetSkipPlanTimeValidation() {
-		return
-	}
-
 	var data model.ConnectionV2ResourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Overlap is a local configuration error, independent of service metadata.
+	configMap, configDiags := core.DynamicToMapPreserveUnknown(ctx, data.Config)
+	resp.Diagnostics.Append(configDiags...)
+	secretsMap := configSecretsMap(ctx, data.ConfigSecrets, true, &resp.Diagnostics)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	validateConfigSecretsOverlap(configMap, secretsMap, &resp.Diagnostics)
+	if resp.Diagnostics.HasError() || r.GetSkipPlanTimeValidation() {
 		return
 	}
 
@@ -33,12 +41,19 @@ func (r *connectionV2) ValidateConfig(ctx context.Context, req resource.Validate
 	}
 
 	validateDailySyncTime(data, &resp.Diagnostics)
-
-	configMap, authMap := r.dynamicValidationMaps(ctx, data, &resp.Diagnostics)
+	authMap, authDiags := core.DynamicToMapPreserveUnknown(ctx, data.Auth)
+	resp.Diagnostics.Append(authDiags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	if len(configMap) == 0 && len(authMap) == 0 {
+	if len(secretsMap) > 0 && data.ConfigSecretsVersion.IsNull() {
+		resp.Diagnostics.AddAttributeWarning(
+			path.Root("config_secrets_version"),
+			"Missing Config Secrets Version",
+			"config_secrets is only sent to the API on create and when config_secrets_version changes. Set config_secrets_version to be able to rotate the secret values later.",
+		)
+	}
+	if len(configMap) == 0 && len(authMap) == 0 && len(secretsMap) == 0 {
 		return
 	}
 
@@ -55,6 +70,7 @@ func (r *connectionV2) ValidateConfig(ctx context.Context, req resource.Validate
 	}
 
 	validateDynamicObject(configMap, &meta.Config, path.Root("config"), &resp.Diagnostics)
+	validateDynamicObject(secretsMap, &meta.Config, configSecretsPath, &resp.Diagnostics)
 	validateDynamicObject(authMap, &meta.Auth, path.Root("auth"), &resp.Diagnostics)
 }
 
@@ -205,10 +221,17 @@ func validateStringValue(value interface{}, prop *metadata.Property, valuePath p
 			return
 		}
 	}
+	// Sensitive attributes do not redact text explicitly included in diagnostics.
+	// Inspect the root step so nested objects and array items inherit this protection.
+	detail := fmt.Sprintf("Value is not allowed. Allowed values: %s.", strings.Join(prop.Enum, ", "))
+	steps := valuePath.Steps()
+	if len(steps) == 0 || !steps[0].Equal(path.PathStepAttributeName("config_secrets")) {
+		detail = fmt.Sprintf("Value %q is not allowed. Allowed values: %s.", stringValue, strings.Join(prop.Enum, ", "))
+	}
 	diags.AddAttributeError(
 		valuePath,
 		"Invalid Dynamic Field Value",
-		fmt.Sprintf("Value %q is not allowed. Allowed values: %s.", stringValue, strings.Join(prop.Enum, ", ")),
+		detail,
 	)
 }
 

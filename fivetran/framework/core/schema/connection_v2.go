@@ -29,7 +29,7 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 		},
 		"name": resourceSchema.StringAttribute{
 			Computed:    true,
-			Description: "The name used both as the connection's name within the Fivetran system and as the source schema's name within your destination.",
+			Description: "The connection's name.",
 		},
 		"connected_by": resourceSchema.StringAttribute{
 			Computed:    true,
@@ -45,14 +45,14 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 		},
 		"group_id": resourceSchema.StringAttribute{
 			Required:    true,
-			Description: "The unique identifier for the Group (Destination) within the Fivetran system.",
+			Description: "The unique identifier for the Group (Destination) within the Fivetran system. Changing this forces the connection to be replaced.",
 			PlanModifiers: []planmodifier.String{
 				stringplanmodifier.RequiresReplace(),
 			},
 		},
 		"service": resourceSchema.StringAttribute{
 			Required:    true,
-			Description: "The connection service type (e.g., `postgres`, `mysql`, `s3`, `snowflake`). See Fivetran connection types documentation for available services.",
+			Description: "The connection service type (e.g., `postgres`, `mysql`, `s3`, `snowflake`). Changing this forces the connection to be replaced.",
 			PlanModifiers: []planmodifier.String{
 				stringplanmodifier.RequiresReplace(),
 			},
@@ -61,6 +61,16 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 			Optional:    true,
 			Computed:    true,
 			Description: "Service-specific connection configuration. The accepted fields are defined by connector metadata at runtime.",
+		},
+		"config_secrets": resourceSchema.DynamicAttribute{
+			Optional:    true,
+			Sensitive:   true,
+			WriteOnly:   true,
+			Description: "Write-only service-specific connection configuration fields, merged with `config` when sent to the API. Accepts ephemeral values and is never stored in the plan or state. A field must not be set in both `config` and `config_secrets`. Mutable fields are sent on migration from `config` or when `config_secrets_version` changes. Immutable and read-only fields are excluded from updates. Requires Terraform 1.11 or later. See [Secrets in config](#secrets-in-config). **Note:** This attribute is in **ALPHA** state.",
+		},
+		"config_secrets_version": resourceSchema.Int64Attribute{
+			Optional:    true,
+			Description: "Version of `config_secrets`. Change it to send the current mutable `config_secrets` values to the API. **Note:** This attribute is in **ALPHA** state.",
 		},
 		"auth": resourceSchema.DynamicAttribute{
 			Optional:    true,
@@ -90,7 +100,7 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 		"schedule_type": resourceSchema.StringAttribute{
 			Optional:    true,
 			Computed:    true,
-			Description: "The connection schedule configuration type. Supported values: auto, manual.",
+			Description: "The connection schedule configuration type. Supported values: `auto`, `manual`.",
 			PlanModifiers: []planmodifier.String{
 				stringplanmodifier.UseStateForUnknown(),
 			},
@@ -98,7 +108,7 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 		"pause_after_trial": resourceSchema.BoolAttribute{
 			Optional:    true,
 			Computed:    true,
-			Description: "Specifies whether the connection should be paused after the free trial period has ended.",
+			Description: "Whether the connection should be paused after the free trial period has ended.",
 			PlanModifiers: []planmodifier.Bool{
 				boolplanmodifier.UseStateForUnknown(),
 			},
@@ -106,7 +116,7 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 		"daily_sync_time": resourceSchema.StringAttribute{
 			Optional:    true,
 			Computed:    true,
-			Description: "The optional parameter that defines the sync start time when the sync frequency is already set or being set by the current request to 1440.",
+			Description: "Sync start time. Only used when `sync_frequency` is `1440`.",
 			PlanModifiers: []planmodifier.String{
 				stringplanmodifier.UseStateForUnknown(),
 			},
@@ -141,7 +151,7 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 		},
 		"destination_schema_names": resourceSchema.StringAttribute{
 			Required:    true,
-			Description: "Defines how schema names appear in the destination. Supported values: FIVETRAN_NAMING, SOURCE_NAMING.",
+			Description: "Defines how schema names appear in the destination. Supported values: `FIVETRAN_NAMING`, `SOURCE_NAMING`. Changing this forces the connection to be replaced.",
 			Validators: []validator.String{
 				stringvalidator.OneOf("FIVETRAN_NAMING", "SOURCE_NAMING"),
 			},
@@ -183,7 +193,7 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 		"hybrid_deployment_agent_id": resourceSchema.StringAttribute{
 			Optional:    true,
 			Computed:    true,
-			Description: "The hybrid deployment agent ID that refers to the controller created for the group the connection belongs to.",
+			Description: "The hybrid deployment agent ID for the group the connection belongs to.",
 			PlanModifiers: []planmodifier.String{
 				stringplanmodifier.UseStateForUnknown(),
 			},
@@ -199,7 +209,7 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 		"data_delay_sensitivity": resourceSchema.StringAttribute{
 			Optional:    true,
 			Computed:    true,
-			Description: "The level of data delay notification threshold. Possible values: LOW, NORMAL, HIGH, CUSTOM, SYNC_FREQUENCY.",
+			Description: "The level of data delay notification threshold. Possible values: `LOW`, `NORMAL`, `HIGH`, `CUSTOM`, `SYNC_FREQUENCY`.",
 			PlanModifiers: []planmodifier.String{
 				stringplanmodifier.UseStateForUnknown(),
 			},
@@ -207,7 +217,7 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 		"data_delay_threshold": resourceSchema.Int64Attribute{
 			Optional:    true,
 			Computed:    true,
-			Description: "Custom sync delay notification threshold in minutes. This parameter is only used when data_delay_sensitivity is set to CUSTOM.",
+			Description: "Custom sync delay notification threshold in minutes. Only used when `data_delay_sensitivity` is `CUSTOM`.",
 			PlanModifiers: []planmodifier.Int64{
 				int64planmodifier.UseStateForUnknown(),
 			},
@@ -228,12 +238,12 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 		"trust_certificates": resourceSchema.BoolAttribute{
 			Optional:    true,
 			Computed:    true,
-			Description: "Specifies whether Fivetran should trust certificates automatically.",
+			Description: "Whether Fivetran should trust certificates automatically.",
 		},
 		"trust_fingerprints": resourceSchema.BoolAttribute{
 			Optional:    true,
 			Computed:    true,
-			Description: "Specifies whether Fivetran should trust SSH fingerprints automatically.",
+			Description: "Whether Fivetran should trust SSH fingerprints automatically.",
 		},
 		"status":   connectionV2StatusAttribute(),
 		"schedule": connectionV2ScheduleAttribute(),
@@ -245,7 +255,7 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 func connectionV2StatusAttribute() resourceSchema.SingleNestedAttribute {
 	return resourceSchema.SingleNestedAttribute{
 		Computed:    true,
-		Description: "The current connection status.",
+		Description: "The current connection status (setup state, sync state, tasks, and warnings).",
 		Attributes: map[string]resourceSchema.Attribute{
 			"setup_state": resourceSchema.StringAttribute{
 				Computed:    true,

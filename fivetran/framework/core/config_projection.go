@@ -38,6 +38,15 @@ func DynamicToMap(ctx context.Context, dyn types.Dynamic) (map[string]interface{
 	return m, diags
 }
 
+// MaskedValue is what the API returns in place of secret config values.
+const MaskedValue = "******"
+
+// IsMaskedValue reports whether value is the placeholder the API returns for a secret.
+func IsMaskedValue(value interface{}) bool {
+	s, ok := value.(string)
+	return ok && s == MaskedValue
+}
+
 type DynamicUnknownValue struct{}
 
 func IsDynamicUnknownValue(value interface{}) bool {
