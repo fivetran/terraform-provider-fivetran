@@ -9,9 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-// AccountExternalLoggingMaskedValue is what the API returns in place of secret config values.
-const AccountExternalLoggingMaskedValue = "******"
-
 type AccountExternalLoggingV2ResourceModel struct {
 	Id            types.String  `tfsdk:"id"`
 	Service       types.String  `tfsdk:"service"`
@@ -52,7 +49,7 @@ func WithoutMaskedValues(config map[string]interface{}) map[string]interface{} {
 	for key, value := range config {
 		switch v := value.(type) {
 		case string:
-			if v == AccountExternalLoggingMaskedValue {
+			if v == core.MaskedValue {
 				continue
 			}
 		case map[string]interface{}:
@@ -71,7 +68,7 @@ func keepMaskedLocally(remote, mask map[string]interface{}) map[string]interface
 		maskValue, inMask := mask[key]
 		switch v := value.(type) {
 		case string:
-			if v == AccountExternalLoggingMaskedValue && inMask {
+			if v == core.MaskedValue && inMask {
 				value = maskValue
 			}
 		case map[string]interface{}:

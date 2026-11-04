@@ -5,6 +5,7 @@ import (
 	"errors"
 	"math"
 	"net/http"
+	"strings"
 	"sync"
 	"testing"
 
@@ -112,6 +113,81 @@ func TestValidateDynamicObjectRejectsInvalidEnum(t *testing.T) {
 
 	if diags.ErrorsCount() != 1 {
 		t.Fatalf("errors = %d, want 1: %v", diags.ErrorsCount(), diags)
+	}
+}
+
+func TestValidateDynamicObjectEnumDiagnosticRedactsConfigSecrets(t *testing.T) {
+	t.Parallel()
+
+	const suppliedValue = "rejected-secret-token"
+	const redactedDetail = "Value is not allowed. Allowed values: AllAccounts, SpecificAccounts."
+	const plainDetail = `Value "rejected-secret-token" is not allowed. Allowed values: AllAccounts, SpecificAccounts.`
+	enum := &metadata.Property{Type: "string", Enum: []string{"AllAccounts", "SpecificAccounts"}}
+	tests := []struct {
+		name       string
+		root       path.Path
+		value      interface{}
+		prop       *metadata.Property
+		wantPath   path.Path
+		wantDetail string
+	}{
+		{
+			name: "config preserves supplied value", root: path.Root("config"),
+			value: suppliedValue, prop: enum,
+			wantPath: path.Root("config").AtName("field"), wantDetail: plainDetail,
+		},
+		{
+			name: "auth preserves supplied value", root: path.Root("auth"),
+			value: suppliedValue, prop: enum,
+			wantPath: path.Root("auth").AtName("field"), wantDetail: plainDetail,
+		},
+		{
+			name: "config_secrets redacts supplied value", root: configSecretsPath,
+			value: suppliedValue, prop: enum,
+			wantPath: configSecretsPath.AtName("field"), wantDetail: redactedDetail,
+		},
+		{
+			name: "nested secret object", root: configSecretsPath,
+			value:    map[string]interface{}{"mode": suppliedValue},
+			prop:     &metadata.Property{Type: "object", Properties: map[string]*metadata.Property{"mode": enum}},
+			wantPath: configSecretsPath.AtName("field").AtName("mode"), wantDetail: redactedDetail,
+		},
+		{
+			name: "secret array item", root: configSecretsPath,
+			value: []interface{}{suppliedValue}, prop: &metadata.Property{Type: "array", Items: enum},
+			wantPath: configSecretsPath.AtName("field").AtListIndex(0), wantDetail: redactedDetail,
+		},
+		{
+			name: "secret object inside array", root: configSecretsPath,
+			value: []interface{}{map[string]interface{}{"mode": suppliedValue}},
+			prop: &metadata.Property{Type: "array", Items: &metadata.Property{
+				Type: "object", Properties: map[string]*metadata.Property{"mode": enum},
+			}},
+			wantPath: configSecretsPath.AtName("field").AtListIndex(0).AtName("mode"), wantDetail: redactedDetail,
+		},
+		{
+			name: "nested config_secrets name does not redact ordinary config", root: path.Root("config").AtName("config_secrets"),
+			value: suppliedValue, prop: enum,
+			wantPath: path.Root("config").AtName("config_secrets").AtName("field"), wantDetail: plainDetail,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			var diags diag.Diagnostics
+			validateDynamicObject(map[string]interface{}{"field": tt.value}, &metadata.Property{
+				Properties: map[string]*metadata.Property{"field": tt.prop},
+			}, tt.root, &diags)
+			assertErrorCount(t, diags, 1)
+			assertWarningCount(t, diags, 0)
+			if diags[0].Summary() != "Invalid Dynamic Field Value" || diags[0].Detail() != tt.wantDetail {
+				t.Fatalf("unexpected enum diagnostic: %v", diags[0])
+			}
+			diagnostic, ok := diags[0].(diag.DiagnosticWithPath)
+			if !ok || !diagnostic.Path().Equal(tt.wantPath) {
+				t.Fatalf("unexpected diagnostic path: %v", diags[0])
+			}
+		})
 	}
 }
 
@@ -526,16 +602,69 @@ func TestConnectionV2ValidateConfigReportsMetadataValidationErrors(t *testing.T)
 	}
 }
 
-func TestConnectionV2ValidateConfigSkipReturnsBeforeConfigDecode(t *testing.T) {
+func TestConnectionV2ValidateConfigOverlapDoesNotRequireMetadata(t *testing.T) {
 	t.Parallel()
 
-	r := configuredConnectionV2ForValidation(t, true, nil)
-	var resp resource.ValidateConfigResponse
-	r.ValidateConfig(context.Background(), resource.ValidateConfigRequest{}, &resp)
-
-	if resp.Diagnostics.HasError() {
-		t.Fatalf("skip_plan_time_validation should return before config decode, got: %v", resp.Diagnostics)
+	for _, tc := range []struct {
+		name           string
+		skip           bool
+		unknownService bool
+		config         map[string]interface{}
+		secrets        map[string]interface{}
+		wantErrors     int
+	}{
+		{name: "overlap with validation enabled", config: map[string]interface{}{"password": "plain-secret"}, secrets: map[string]interface{}{"password": "write-only-secret"}, wantErrors: 1},
+		{name: "overlap with validation disabled", skip: true, config: map[string]interface{}{"password": "plain-secret"}, secrets: map[string]interface{}{"password": "write-only-secret"}, wantErrors: 1},
+		{name: "equal values still conflict", skip: true, config: map[string]interface{}{"password": "write-only-secret"}, secrets: map[string]interface{}{"password": "write-only-secret"}, wantErrors: 1},
+		{name: "unknown service still conflicts", unknownService: true, config: map[string]interface{}{"password": "plain-secret"}, secrets: map[string]interface{}{"password": "write-only-secret"}, wantErrors: 1},
+		{name: "disjoint fields skip metadata", skip: true, config: map[string]interface{}{"host": "db.example.com"}, secrets: map[string]interface{}{"password": "write-only-secret"}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			ctx := context.Background()
+			httpClient := &overlapValidationHTTPClient{}
+			client := fivetran.New("key", "secret")
+			client.SetHttpClient(httpClient)
+			r := configuredConnectionV2ForValidationWithClient(t, tc.skip, &sync.Map{}, client)
+			req := connectionV2ValidateConfigRequest(t, "postgres", tc.config, nil)
+			var data model.ConnectionV2ResourceModel
+			if diags := req.Config.Get(ctx, &data); diags.HasError() {
+				t.Fatal(diags)
+			}
+			secrets, diags := core.MapToDynamic(ctx, tc.secrets)
+			if diags.HasError() {
+				t.Fatal(diags)
+			}
+			data.ConfigSecrets = secrets
+			data.ConfigSecretsVersion = types.Int64Value(1)
+			if tc.unknownService {
+				data.Service = types.StringUnknown()
+			}
+			req.Config.Raw = connectionV2TerraformValue(t, data)
+			var resp resource.ValidateConfigResponse
+			r.ValidateConfig(ctx, req, &resp)
+			assertErrorCount(t, resp.Diagnostics, tc.wantErrors)
+			assertWarningCount(t, resp.Diagnostics, 0)
+			for _, diagnostic := range resp.Diagnostics {
+				if diagnostic.Summary() != "Conflicting Dynamic Field" {
+					t.Fatalf("unexpected diagnostic: %v", diagnostic)
+				}
+				if strings.Contains(diagnostic.Detail(), "plain-secret") || strings.Contains(diagnostic.Detail(), "write-only-secret") {
+					t.Fatal("overlap diagnostic disclosed a field value")
+				}
+			}
+			if httpClient.requests != 0 {
+				t.Fatalf("local validation made %d API requests", httpClient.requests)
+			}
+		})
 	}
+}
+
+type overlapValidationHTTPClient struct{ requests int }
+
+func (c *overlapValidationHTTPClient) Do(*http.Request) (*http.Response, error) {
+	c.requests++
+	return nil, errors.New("unexpected metadata request")
 }
 
 func configuredConnectionV2ForValidation(t *testing.T, skip bool, cache *sync.Map) *connectionV2 {
