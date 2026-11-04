@@ -53,7 +53,7 @@ func (r *connector) ValidateConfig(ctx context.Context, req resource.ValidateCon
 	}
 
 	rejectHostWithPrivateLink(data.Config, data.PrivateLinkId, data.Service, path.Root("config"), &resp.Diagnostics)
-	rejectAuthFieldsInConfig(data.Config, data.Service, path.Root("config"), &resp.Diagnostics)
+	warnAuthFieldsInConfig(data.Config, data.Service, path.Root("config"), &resp.Diagnostics)
 }
 
 func (r *connector) UpgradeState(ctx context.Context) map[int64]resource.StateUpgrader {

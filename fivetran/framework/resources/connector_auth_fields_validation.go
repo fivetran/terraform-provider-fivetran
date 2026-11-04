@@ -10,11 +10,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-// rejectAuthFieldsInConfig fails validation when `config` contains a non-sensitive field that the service
-// expects in `auth` only. The API keeps such fields in the auth section and never returns them,
-// so they can't be read back into `config` state.
-// Sensitive fields are not rejected: their configured value is kept in state as is, so they don't break apply.
-func rejectAuthFieldsInConfig(configAttr types.Object, service types.String, configRoot path.Path, diags *diag.Diagnostics) {
+// warnAuthFieldsInConfig warns when `config` contains a field that the service expects in `auth`.
+// The API keeps such fields in the auth section and never returns them, so the provider keeps
+// the configured value in state and can't detect drift for it.
+func warnAuthFieldsInConfig(configAttr types.Object, service types.String, configRoot path.Path, diags *diag.Diagnostics) {
 	if configAttr.IsNull() || configAttr.IsUnknown() {
 		return
 	}
@@ -22,13 +21,6 @@ func rejectAuthFieldsInConfig(configAttr types.Object, service types.String, con
 		return
 	}
 	serviceName := service.ValueString()
-	serviceConfigFields, err := common.GetFieldsForService(serviceName)
-	if err != nil {
-		// unknown service is reported on apply
-		return
-	}
-	serviceAuthFields := common.GetAuthFieldsForService(serviceName)
-	allConfigFields := common.GetConfigFieldsMap()
 
 	configAttrs := configAttr.Attributes()
 	fieldNames := make([]string, 0, len(configAttrs))
@@ -41,19 +33,15 @@ func rejectAuthFieldsInConfig(configAttr types.Object, service types.String, con
 		if configAttrs[fn].IsNull() {
 			continue
 		}
-		if _, isAuthField := serviceAuthFields[fn]; !isAuthField {
+		if !common.IsAuthOnlyFieldForService(serviceName, fn) {
 			continue
 		}
-		if _, isConfigField := serviceConfigFields[fn]; isConfigField {
-			continue
-		}
-		if allConfigFields[fn].GetIsSensitive(serviceName) {
-			continue
-		}
-		diags.AddAttributeError(
+		diags.AddAttributeWarning(
 			configRoot.AtName(fn),
-			fmt.Sprintf("Field `%v` Must Be Set In `auth`", fn),
-			fmt.Sprintf("Service `%v` expects field `%v` in the `auth` block, not in `config`. Move it to the `auth` block.", serviceName, fn),
+			fmt.Sprintf("Field `%v` Should Be Set In `auth`", fn),
+			fmt.Sprintf("Service `%v` expects field `%v` in the `auth` block, not in `config`. "+
+				"The Fivetran API doesn't return auth fields, so the configured value is kept in state as is and changes made outside of Terraform aren't detected. "+
+				"Move it to the `auth` block.", serviceName, fn),
 		)
 	}
 }
