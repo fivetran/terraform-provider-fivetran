@@ -2573,6 +2573,92 @@ func TestConnectorNonNullableFieldNotConfiguredMock(t *testing.T) {
 	)
 }
 
+func TestConnectorAuthFieldInConfigNotReturnedUpstreamMock(t *testing.T) {
+	step1 :=
+		resource.TestStep{Config: `
+	resource "fivetran_connector" "test_connector" {
+		provider = fivetran-provider
+
+		group_id = "group_id"
+		service  = "google_play"
+
+		destination_schema {
+		  name = "google_play_store"
+		}
+
+		config {
+			bucket                = "bucket_id"
+			authentication_method = "FIVETRAN_SERVICE_ACCOUNT"
+		}
+	  }`,
+
+			Check: resource.ComposeAggregateTestCheckFunc(
+				resource.TestCheckResourceAttr("fivetran_connector.test_connector", "id", "connector_id"),
+				resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.bucket", "bucket_id"),
+				resource.TestCheckResourceAttr("fivetran_connector.test_connector", "config.authentication_method", "FIVETRAN_SERVICE_ACCOUNT"),
+			),
+		}
+
+	var responseData map[string]interface{}
+	var requestConfig map[string]interface{}
+
+	preCheck := func() {
+		tfmock.MockClient().Reset()
+
+		tfmock.MockClient().When(http.MethodGet, "/v1/connections/connector_id").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				if responseData == nil {
+					return tfmock.FivetranSuccessResponse(t, req, http.StatusNotFound, "NotFound", nil), nil
+				}
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", responseData), nil
+			},
+		)
+
+		tfmock.MockClient().When(http.MethodDelete, "/v1/connections/connector_id").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", nil), nil
+			},
+		)
+
+		tfmock.MockClient().When(http.MethodPost, "/v1/connections").ThenCall(
+			func(req *http.Request) (*http.Response, error) {
+				body := tfmock.RequestBodyToJson(t, req)
+				requestConfig = body["config"].(map[string]interface{})
+
+				// the API keeps `authentication_method` in the auth section and doesn't return it
+				responseJson := createConnectorTestResponseJsonMock(
+					"connector_id",
+					"group_id",
+					"google_play",
+					"google_play_store",
+					"",
+					`{
+						"bucket": "bucket_id"
+					}`,
+				)
+
+				responseData = tfmock.CreateMapFromJsonString(t, responseJson)
+				return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", responseData), nil
+			},
+		)
+	}
+
+	resource.Test(
+		t,
+		resource.TestCase{
+			PreCheck:                 preCheck,
+			ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+			CheckDestroy: func(s *terraform.State) error {
+				tfmock.AssertEqual(t, requestConfig["authentication_method"], "FIVETRAN_SERVICE_ACCOUNT")
+				return nil
+			},
+			Steps: []resource.TestStep{
+				step1,
+			},
+		},
+	)
+}
+
 func TestConnectorConfigCollectionSubFieldsUpdateMock(t *testing.T) {
 	testConnectorCreateUpdate(t,
 		"google_ads",
