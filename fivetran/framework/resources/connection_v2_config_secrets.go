@@ -74,21 +74,63 @@ func validateConfigSecretsOverlap(config, secrets map[string]interface{}, diags 
 
 // applyConnectionV2ConfigSecretsToPatch adds mutable config_secrets fields when their version changed or
 // they moved from config. This prevents removed nullable fields from being cleared on migration.
-// Immutable and read-only fields follow the same PATCH exclusions as config; moving them only
+// Immutable and read-only fields are excluded at every nesting level; moving them only
 // removes their stored values, without sending them to the API again.
 func applyConnectionV2ConfigSecretsToPatch(patch, secrets, stateConfig map[string]interface{}, slot *metadata.Property, versionChanged bool) map[string]interface{} {
 	for name, value := range secrets {
-		if prop := core.SlotProp(slot, name); prop != nil && (prop.Immutable || prop.Readonly) {
+		if _, moved := stateConfig[name]; !versionChanged && !moved {
 			continue
 		}
-		if _, moved := stateConfig[name]; versionChanged || moved {
-			if patch == nil {
-				patch = make(map[string]interface{}, len(secrets))
-			}
-			patch[name] = value
+		value, mutable := connectionV2ConfigSecretPatchValue(value, core.SlotProp(slot, name))
+		if !mutable {
+			// A migrated nullable object may have a clearing PATCH. Remove it when
+			// all its descendants are excluded instead of clearing the object.
+			delete(patch, name)
+			continue
 		}
+		if patch == nil {
+			patch = make(map[string]interface{}, len(secrets))
+		}
+		patch[name] = value
 	}
 	return patch
+}
+
+// connectionV2ConfigSecretPatchValue copies a value without immutable or read-only fields.
+// The bool reports whether anything remains to send. Explicit empty values are preserved,
+// and array items keep their positions even when all fields in an item are excluded.
+func connectionV2ConfigSecretPatchValue(value interface{}, prop *metadata.Property) (interface{}, bool) {
+	if prop == nil {
+		return value, true
+	}
+	if prop.Immutable || prop.Readonly {
+		return nil, false
+	}
+
+	switch v := value.(type) {
+	case map[string]interface{}:
+		filtered := make(map[string]interface{}, len(v))
+		for name, child := range v {
+			if child, mutable := connectionV2ConfigSecretPatchValue(child, core.SlotProp(prop, name)); mutable {
+				filtered[name] = child
+			}
+		}
+		return filtered, len(v) == 0 || len(filtered) > 0
+	case []interface{}:
+		if prop.Items == nil {
+			return value, true
+		}
+		filtered := make([]interface{}, len(v))
+		mutable := len(v) == 0
+		for i, child := range v {
+			var childMutable bool
+			filtered[i], childMutable = connectionV2ConfigSecretPatchValue(child, prop.Items)
+			mutable = mutable || childMutable
+		}
+		return filtered, mutable
+	default:
+		return value, true
+	}
 }
 
 // movedConfigSecrets returns fields whose prior values can still be compared during migration.

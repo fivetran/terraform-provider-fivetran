@@ -119,3 +119,72 @@ resource "fivetran_connection_v2" "test" {
 		})
 	}
 }
+
+// Synthetic metadata exercises nested flags even if no current connector exposes this shape.
+func TestConnectionV2ConfigSecretsNestedImmutableMock(t *testing.T) {
+	const credentialsMetadata = `{"type":"object", "nullable":true, "properties":{
+  "client_id":{"type":"string", "immutable":true},
+  "status":{"type":"string", "readonly":true},
+  "token":{"type":"string", "format":"password"}
+}}`
+	m := &configSecretsMock{
+		service: "nested_config_secrets",
+		metadataResponse: fmt.Sprintf(`{"config":{"type":"object", "required":["schema"], "properties":{
+  "schema":{"type":"string", "immutable":true},
+  "credentials":%s,
+  "accounts":{"type":"array", "nullable":true, "items":%s}
+}}, "auth":{"type":"object", "properties":{}}}`, credentialsMetadata, credentialsMetadata),
+	}
+	config := func(move bool, version int) string {
+		nested := fmt.Sprintf(`credentials = {client_id="client", status="ready", token="secret-%d"}
+accounts = [{client_id="account", status="ready", token="secret-%d"}]`, version, version)
+		configFields, secrets := nested, ""
+		if move {
+			configFields, secrets = "", "config_secrets = {"+nested+"}"
+		}
+		return fmt.Sprintf(`resource "fivetran_connection_v2" "test" {
+  provider = fivetran-provider
+  service = "nested_config_secrets"
+  group_id = "group_id"
+  destination_schema_names = "FIVETRAN_NAMING"
+  config = {
+    schema = "schema"
+    %s
+  }
+  %s
+  config_secrets_version = %d
+}`, configFields, secrets, version)
+	}
+	checkPatch := func(version int) resource.TestCheckFunc {
+		return func(s *terraform.State) error {
+			tfmock.AssertEqual(t, len(m.postBodies), 1)
+			tfmock.AssertEqual(t, len(m.patchBodies), version)
+			for i, body := range m.patchBodies {
+				token := fmt.Sprintf("secret-%d", i+1)
+				tfmock.AssertEqual(t, body["config"], map[string]interface{}{
+					"credentials": map[string]interface{}{"token": token},
+					"accounts":    []interface{}{map[string]interface{}{"token": token}},
+				})
+			}
+			return checkSecretNotInState(fmt.Sprintf("secret-%d", version))(s)
+		}
+	}
+	resource.Test(t, resource.TestCase{
+		TerraformVersionChecks:   configSecretsVersionChecks,
+		PreCheck:                 func() { m.setup(t) },
+		ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactoriesWithEphemeralSecret,
+		Steps: []resource.TestStep{
+			{Config: config(false, 1)},
+			{
+				Config: config(true, 1),
+				Check: resource.ComposeAggregateTestCheckFunc(
+					checkPatch(1),
+					resource.TestCheckNoResourceAttr("fivetran_connection_v2.test", "config.credentials"),
+					resource.TestCheckNoResourceAttr("fivetran_connection_v2.test", "config.accounts"),
+				),
+			},
+			{Config: config(true, 2), Check: checkPatch(2)},
+			{Config: config(true, 2), PlanOnly: true},
+		},
+	})
+}
