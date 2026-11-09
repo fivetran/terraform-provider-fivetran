@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_connection"
 
 # Resource: fivetran_connection
 
-This resource allows you to create, update, and delete connections in Fivetran using JSON-based configuration.
+This resource lets you create, update, and delete connections in Fivetran using JSON-based configuration.
 
 The `fivetran_connection` resource creates a connection with basic metadata (service type, destination schema, networking options). To configure connection details like host, port, credentials, use the `fivetran_connection_config` resource.
 

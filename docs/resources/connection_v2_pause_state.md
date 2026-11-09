@@ -6,7 +6,7 @@ page_title: "Resource: fivetran_connection_v2_pause_state"
 
 ~> **Public Preview:** This resource is in public preview. Features and behavior may change based on feedback.
 
-Manages the paused state of a `fivetran_connection_v2` connection, separately from the connection resource itself. This lets you pause and resume a connection without triggering changes to (or replacement of) the connection's own configuration.
+This resource lets you manage the paused state of a `fivetran_connection_v2` connection separately from the connection resource itself. You can pause and resume a connection without triggering changes to, or replacement of, the connection's own configuration.
 
 **`fivetran_connection_v2` always creates connections paused.** Add this resource with `paused = false` to start syncing.
 

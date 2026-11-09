@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_connection_config"
 
 # Resource: fivetran_connection_config
 
-This resource allows you to manage connection configuration (config and auth fields) separately from the connection structure.
+This resource lets you manage the configuration of a connection - its `config` and `auth` fields - separately from the connection structure.
 
 The `fivetran_connection_config` resource configures connection-specific details like host, port, database credentials, and authentication settings. Use this in combination with `fivetran_connection` for flexible connection management.
 
