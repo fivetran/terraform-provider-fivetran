@@ -1,0 +1,23 @@
+CHANGELOG.md
+  b68fab703801df51 21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.4",
+  "base_commit_sha": "ea3eaf552b96dec15212ba92127714f6a3e4f599",
+  "prompts": {
+    "b68fab703801df51": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ff5f13a3-9757-476f-896a-93ca0fe98b99",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "fivetran-ivangrbusic <ivan.grbusic@fivetran.com>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 0,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    }
+  }
+}
