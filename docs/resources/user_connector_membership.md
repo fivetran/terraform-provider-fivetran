@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_user_connector_membership"
 
 # Resource: fivetran_user_connector_membership
 
-This resource lets you create, update, and delete connector memberships for users.
+This resource lets you create, update, and delete connection memberships for users.
 
 ## Example Usage
 

@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_connector_fingerprints"
 
 # Resource: fivetran_connector_fingerprints
 
-This resource lets you manage the list of approved SSH fingerprints for a connector.
+This resource lets you manage the list of approved SSH fingerprints for a connection.
 
 ## Example Usage
 

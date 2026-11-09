@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_connector_schedule"
 
 # Resource: fivetran_connector_schedule
 
-This resource lets you manage the schedule of a connector: pause or resume the connector and set its `sync_frequency` and `daily_sync_time`.
+This resource lets you manage the schedule of a connection: pause or resume the connection and set its `sync_frequency` and `daily_sync_time`.
 
 ## Example Usage
 

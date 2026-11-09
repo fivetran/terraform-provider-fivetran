@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_connector_schema_config"
 
 # Resource: fivetran_connector_schema_config
 
-This resource lets you manage the Standard Configuration settings of a connector:
+This resource lets you manage the Standard Configuration settings of a connection:
  - Define the schema change handling settings
  - Enable and disable schemas, tables, and columns
 

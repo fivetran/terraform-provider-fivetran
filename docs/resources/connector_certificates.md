@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_connector_certificates"
 
 # Resource: fivetran_connector_certificates
 
-This resource lets you manage the list of approved certificates for a connector.
+This resource lets you manage the list of approved certificates for a connection.
 
 ## Example Usage
 
