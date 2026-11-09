@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `fivetran_connection_v2`: new write-only `config_secrets` attribute for secret `config` fields, such as passwords. It accepts ephemeral values and is never stored in the plan or state ([#507](https://github.com/fivetran/terraform-provider-fivetran/issues/507)). Its fields are merged with `config` when sent to the API, and a field can't be set in both. Change the new `config_secrets_version` attribute to send updated values. Requires Terraform 1.11 or later.
 
 ### Changed
-- `fivetran_connection_v2`, `fivetran_connection_v2_pause_state`, `fivetran_destination_v2` and `fivetran_account_external_logging_v2` are now in beta. Breaking changes to their schema aren't expected before general availability. The `config_secrets` and `config_secrets_version` attributes of `fivetran_connection_v2` are no longer marked alpha.
+- `fivetran_connection_v2` and `fivetran_connection_v2_pause_state` are now in beta. Breaking changes to their schema aren't expected before general availability. The `config_secrets` and `config_secrets_version` attributes of `fivetran_connection_v2` are no longer marked alpha.
+- `fivetran_destination_v2` and `fivetran_account_external_logging_v2` are now in public preview.
 
 ### Fixed
 - `fivetran_connection_v2`: an imported connection is no longer replaced when you configure the real value of an immutable secret field. Import stores such fields as the API's masked value (`******`), which never matched the configured value. Terraform now plans an in-place update and warns that it can't verify the imported value.
