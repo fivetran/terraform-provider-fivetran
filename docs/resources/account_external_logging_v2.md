@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_account_external_logging_v2"
 
 # Resource: fivetran_account_external_logging_v2
 
-~> **Alpha:** This resource is in alpha and its schema and behavior may change without notice. Not recommended for production use.
+~> **Beta:** This resource is in beta. Breaking changes to its schema aren't expected, but its behavior may still change based on feedback before it becomes generally available.
 
 Manages the account-level external logging service. An account can have at most one account-level log service. For log services attached to a destination, use `fivetran_external_logging`.
 

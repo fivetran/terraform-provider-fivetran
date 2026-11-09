@@ -5,22 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.54...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.56...HEAD)
+
+## [v1.9.56](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.55...v1.9.56) - 2026-11-09
+
+### Added
+- `fivetran_connection_v2`: new write-only `config_secrets` attribute for secret `config` fields, such as passwords. It accepts ephemeral values and is never stored in the plan or state ([#507](https://github.com/fivetran/terraform-provider-fivetran/issues/507)). Its fields are merged with `config` when sent to the API, and a field can't be set in both. Change the new `config_secrets_version` attribute to send updated values. Requires Terraform 1.11 or later.
+
+### Changed
+- `fivetran_connection_v2`, `fivetran_connection_v2_pause_state`, `fivetran_destination_v2` and `fivetran_account_external_logging_v2` are now in beta. Breaking changes to their schema aren't expected before general availability. The `config_secrets` and `config_secrets_version` attributes of `fivetran_connection_v2` are no longer marked alpha.
+
+### Fixed
+- `fivetran_connection_v2`: an imported connection is no longer replaced when you configure the real value of an immutable secret field. Import stores such fields as the API's masked value (`******`), which never matched the configured value. Terraform now plans an in-place update and warns that it can't verify the imported value.
+- `fivetran_connector_schema_config`: the "Schema might be misconfigured" warning for upstream columns that don't match the `schema_change_handling` policy default is no longer emitted for tables that are disabled. A disabled table syncs nothing, so its column states are irrelevant; previously every column that had been explicitly blocked (for example while the connector ran `BLOCK_ALL`) on a deliberately disabled table produced a warning on every plan.
+- `fivetran_connector`: fixed `Provider produced inconsistent result after apply` when a field that the service expects in `auth` is set in `config`, for example `authentication_method` for `google_play` ([#673](https://github.com/fivetran/terraform-provider-fivetran/issues/673)). The Fivetran API keeps such fields in the connection's auth section and never returns them, so the value was dropped from state after apply. These fields are now handled like sensitive fields: the configured value is kept in state, so changes made outside of Terraform aren't detected and `terraform import` doesn't populate them. The plan shows a warning that tells you to move the field to the `auth` block.
+
+## [v1.9.55](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.54...v1.9.55) - 2026-11-03
 
 ### Added
 - `fivetran_connection_v2`: new read-only attribute `connector_sdk_package_id` with the ID of the package deployed to a Connector SDK connection. It is not set for other connection types or when no package is deployed.
-- `fivetran_connection_v2`: new write-only `config_secrets` attribute (alpha) for secret `config` fields, such as passwords. It accepts ephemeral values and is never stored in the plan or state ([#507](https://github.com/fivetran/terraform-provider-fivetran/issues/507)). Its fields are merged with `config` when sent to the API, and a field can't be set in both. Change the new `config_secrets_version` attribute to send updated values. Requires Terraform 1.11 or later.
 - New resource `fivetran_destination_v2` (alpha): `config` is a dynamic, service-specific object whose fields, types, enum values, and readonly/immutable rules come from destination metadata at plan time. Unknown fields, wrong types, invalid enum values, and readonly fields fail the plan; changing an immutable field plans a replacement. Field names match the Fivetran REST API. Secret fields can be set in the write-only `config_secrets` attribute (Terraform 1.11+), which accepts ephemeral values and is never stored in state; increment `config_secrets_version` to send rotated secrets.
 - `fivetran_account_external_logging_v2`: new resource (alpha) that manages the account-level external logging service through `/v1/external-logging/account`. `config` is a dynamic object: when the log service metadata API (`/metadata/log-service-types/{service}`) describes the service, `config` is validated at plan time (unknown and required fields, types, immutable fields). Otherwise the API validates it.
 
 ### Fixed
 - `fivetran_connection_v2`, `fivetran_account_external_logging_v2`: fixed a perpetual plan diff for dynamic `config` fields that the API returns as a string although the metadata declares them as `integer`, `number` or `boolean` (for example a `port` returned as `"443"`). State took the string from the API read-back while the configuration held the number, so every plan after an apply showed a change like `~ port = "443" -> 443` and an in-place update, and nothing in the configuration could avoid it because plan-time validation rejects a string for an integer field. The read-back value is now stored as the type the metadata declares; a value that doesn't parse as that type is kept as-is, so real drift is still shown.
-- `fivetran_connection_v2`: an imported connection is no longer replaced when you configure the real value of an immutable secret field. Import stores such fields as the API's masked value (`******`), which never matched the configured value. Terraform now plans an in-place update and warns that it can't verify the imported value.
-- `fivetran_connector_schema_config`: the "Schema might be misconfigured" warning for upstream columns that don't match the `schema_change_handling` policy default is no longer emitted for tables that are disabled. A disabled table syncs nothing, so its column states are irrelevant; previously every column that had been explicitly blocked (for example while the connector ran `BLOCK_ALL`) on a deliberately disabled table produced a warning on every plan.
-- `fivetran_connector`: fixed `Provider produced inconsistent result after apply` when a field that the service expects in `auth` is set in `config`, for example `authentication_method` for `google_play` ([#673](https://github.com/fivetran/terraform-provider-fivetran/issues/673)). The Fivetran API keeps such fields in the connection's auth section and never returns them, so the value was dropped from state after apply. These fields are now handled like sensitive fields: the configured value is kept in state, so changes made outside of Terraform aren't detected and `terraform import` doesn't populate them. The plan shows a warning that tells you to move the field to the `auth` block.
 
 ### Changed
 - Updated `github.com/fivetran/go-fivetran` to `v1.3.15` (destination metadata support for `fivetran_destination_v2`).
+
+### Security
+- The provider is built with Go 1.26.10, which no longer trusts certificates issued by the compromised eMudhra certificate authorities.
 
 ## [v1.9.54](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.53...v1.9.54)
 
