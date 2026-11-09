@@ -25,14 +25,14 @@ func DestinationV2ResourceAttributes() map[string]resourceSchema.Attribute {
 		},
 		"group_id": resourceSchema.StringAttribute{
 			Required:    true,
-			Description: "The unique identifier for the Group within the Fivetran system.",
+			Description: "The unique identifier for the Group within the Fivetran system. Changing this forces the destination to be replaced.",
 			PlanModifiers: []planmodifier.String{
 				stringplanmodifier.RequiresReplace(),
 			},
 		},
 		"service": resourceSchema.StringAttribute{
 			Required:    true,
-			Description: "The destination service type (e.g., `snowflake`, `big_query`, `databricks`). See Fivetran destination types documentation for available services.",
+			Description: "The destination service type (e.g., `snowflake`, `big_query`, `databricks`). Changing this forces the destination to be replaced.",
 			PlanModifiers: []planmodifier.String{
 				stringplanmodifier.RequiresReplace(),
 			},
@@ -66,7 +66,7 @@ func DestinationV2ResourceAttributes() map[string]resourceSchema.Attribute {
 		"daylight_saving_time_enabled": resourceSchema.BoolAttribute{
 			Optional:    true,
 			Computed:    true,
-			Description: "Shift the sync schedule to account for daylight saving time (for time_zone_offset values that observe DST).",
+			Description: "Shift the sync schedule to account for daylight saving time (for `time_zone_offset` values that observe DST).",
 			PlanModifiers: []planmodifier.Bool{
 				boolplanmodifier.UseStateForUnknown(),
 			},
