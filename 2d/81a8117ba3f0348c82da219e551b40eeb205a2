@@ -1,0 +1,28 @@
+CHANGELOG.md
+  s_4e609ec9f14d47::t_e9a1affffed7d5 16
+  s_4e609ec9f14d47::t_9cccae948167a7 17
+templates/resources/destination_v2.md.tmpl
+  s_4e609ec9f14d47::t_808918cc16bcad 7
+docs/resources/destination_v2.md
+  s_4e609ec9f14d47::t_808918cc16bcad 7
+templates/resources/account_external_logging_v2.md.tmpl
+  s_4e609ec9f14d47::t_808918cc16bcad 7
+docs/resources/account_external_logging_v2.md
+  s_4e609ec9f14d47::t_808918cc16bcad 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "2d81a8117ba3f0348c82da219e551b40eeb205a2",
+  "prompts": {},
+  "sessions": {
+    "s_4e609ec9f14d47": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ee95f24d-4058-4204-9356-1c736331f7aa",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jovan Manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
