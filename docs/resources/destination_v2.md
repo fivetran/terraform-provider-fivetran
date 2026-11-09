@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_destination_v2"
 
 # Resource: fivetran_destination_v2
 
-~> **Beta:** This resource is in beta. Breaking changes to its schema aren't expected, but its behavior may still change based on feedback before it becomes generally available.
+~> **Public Preview:** This resource is in public preview. Features and behavior may change based on feedback.
 
 Manages a Fivetran destination. Unlike `fivetran_destination`, `config` is provided as a dynamic, service-specific object: its accepted fields, types, enum values, and readonly/immutable rules are resolved from destination metadata (`GET /v1/metadata/destination-types/{service}`) at plan time rather than from a fixed schema. Field names inside `config` are the same as in the Fivetran REST API.
 
