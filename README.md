@@ -79,9 +79,9 @@ The `fivetran_connection_v2` resource uses metadata-driven `config` and `auth` o
 - The accepted `config` and `auth` fields depend on the selected service.
 - Sensitive fields are not necessarily placed in `auth`; follow the generated configuration for the service.
 - New v2 connections are created paused. Manage their state separately with `fivetran_connection_v2_pause_state`.
-- `fivetran_connection_v2` and `fivetran_connection_v2_pause_state` are in **alpha** and are subject to change at any moment.
+- `fivetran_connection_v2` and `fivetran_connection_v2_pause_state` are in **beta**. Breaking changes to their schema aren't expected, but behavior may still change based on feedback before general availability.
 
-See the [`fivetran_connection_v2` reference](https://registry.terraform.io/providers/fivetran/fivetran/latest/docs/resources/connection_v2) for the full resource schema and current alpha limitations.
+See the [`fivetran_connection_v2` reference](https://registry.terraform.io/providers/fivetran/fivetran/latest/docs/resources/connection_v2) for the full resource schema.
 
 ## Important considerations
 

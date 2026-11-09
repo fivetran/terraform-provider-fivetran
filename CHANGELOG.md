@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `fivetran_connector`: fixed `Provider produced inconsistent result after apply` when a field that the service expects in `auth` is set in `config`, for example `authentication_method` for `google_play` ([#673](https://github.com/fivetran/terraform-provider-fivetran/issues/673)). The Fivetran API keeps such fields in the connection's auth section and never returns them, so the value was dropped from state after apply. These fields are now handled like sensitive fields: the configured value is kept in state, so changes made outside of Terraform aren't detected and `terraform import` doesn't populate them. The plan shows a warning that tells you to move the field to the `auth` block.
 
 ### Changed
+- `fivetran_connection_v2`, `fivetran_connection_v2_pause_state`, `fivetran_destination_v2` and `fivetran_account_external_logging_v2` are now in beta. Breaking changes to their schema aren't expected before general availability. The `config_secrets` and `config_secrets_version` attributes of `fivetran_connection_v2` are no longer marked alpha.
 - The provider version in the `User-Agent` header of API requests now comes from the release tag. It used to be a hand-maintained constant, which reported `1.9.54` in v1.9.55.
 
 ## [v1.9.55](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.54...v1.9.55) - 2026-11-03
@@ -32,6 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Updated `github.com/fivetran/go-fivetran` to `v1.3.15` (destination metadata support for `fivetran_destination_v2`).
 - The provider is built with Go 1.26.10, which rejects certificate chains containing the eight compromised eMudhra intermediate CA certificates ([CVE-2026-111943](https://www.cve.org/CVERecord?id=CVE-2026-111943)).
+
+### Security
+- The provider is built with Go 1.26.10, which no longer trusts certificates issued by the compromised eMudhra certificate authorities.
 
 ## [v1.9.54](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.53...v1.9.54)
 
