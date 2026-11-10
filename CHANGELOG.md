@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `fivetran_connector`: fixed `Provider produced inconsistent result after apply` when a field that the service expects in `auth` is set in `config`, for example `authentication_method` for `google_play` ([#673](https://github.com/fivetran/terraform-provider-fivetran/issues/673)). The Fivetran API keeps such fields in the connection's auth section and never returns them, so the value was dropped from state after apply. These fields are now handled like sensitive fields: the configured value is kept in state, so changes made outside of Terraform aren't detected and `terraform import` doesn't populate them. The plan shows a warning that tells you to move the field to the `auth` block.
 
 ### Changed
-- Updated `github.com/fivetran/go-fivetran` to `v1.3.15` (destination metadata support for `fivetran_destination_v2`).
+- Updated `github.com/fivetran/go-fivetran` to `v1.3.17` (destination metadata support for `fivetran_destination_v2`; log service metadata, User-Agent suffix variants and setup test results for the external logging services, used by `fivetran_external_logging_v2`).
 
 ## [v1.9.54](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.53...v1.9.54)
 
