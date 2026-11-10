@@ -172,36 +172,3 @@ func TestConnectionV2ReadFromResponseIgnoresUpstreamOnlyListItemFields(t *testin
 		t.Fatalf("config after read differs from plan:\n got: %v\nwant: %v", data.Config, planConfig)
 	}
 }
-
-func TestConnectionV2ReadFromResponseConnectorSdkPackageId(t *testing.T) {
-	t.Parallel()
-	ctx := context.Background()
-	pkg := "pkg_abc123"
-	empty := ""
-
-	cases := []struct {
-		name string
-		in   *string
-		want types.String
-	}{
-		{"sdk connection with package", &pkg, types.StringValue("pkg_abc123")},
-		{"sdk connection without package", &empty, types.StringNull()},
-		{"non-sdk connection", nil, types.StringNull()},
-	}
-	for _, tc := range cases {
-		t.Run(tc.name, func(t *testing.T) {
-			var response connections.DetailsWithCustomConfigNoTestsResponse
-			response.Data.ID = "connection_id"
-			response.Data.Service = "connector_sdk"
-			response.Data.ConnectorSdkPackageId = tc.in
-
-			var data model.ConnectionV2ResourceModel
-			if diags := data.ReadFromResponse(ctx, response, nil, map[string]interface{}{}); diags.HasError() {
-				t.Fatalf("ReadFromResponse: %v", diags)
-			}
-			if !data.ConnectorSdkPackageId.Equal(tc.want) {
-				t.Fatalf("connector_sdk_package_id = %v, want %v", data.ConnectorSdkPackageId, tc.want)
-			}
-		})
-	}
-}

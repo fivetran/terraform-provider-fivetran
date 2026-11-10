@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `fivetran_destination_v2` and `fivetran_account_external_logging_v2` are now in public preview.
 - The provider version in the `User-Agent` header of API requests now comes from the release tag. It used to be a hand-maintained constant, which reported `1.9.54` in v1.9.55.
 
+### Removed
+- `fivetran_connection_v2`: removed the read-only attribute `connector_sdk_package_id`, which was added in v1.9.55. Remove any references to it from your configuration, or `terraform plan` fails with `Unsupported attribute`. Existing state isn't affected: the stored value is dropped on the next refresh.
+
 ## [v1.9.55](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.54...v1.9.55) - 2026-11-03
 
 ### Added
