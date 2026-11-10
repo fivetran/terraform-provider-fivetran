@@ -61,6 +61,8 @@ func (d *TransformationResourceProject) ReadFromResponse(ctx context.Context, re
         "environment_vars":     types.SetType{ElemType: types.StringType},
         "public_key":           types.StringType,
         "threads":              types.Int64Type,
+        "use_latest_patch_version": types.BoolType,
+        "should_run_dbt_deps":  types.BoolType,
     }
     projectConfigItems := map[string]attr.Value{}
     if resp.Data.ProjectConfig.DbtVersion != "" {
@@ -106,6 +108,8 @@ func (d *TransformationResourceProject) ReadFromResponse(ctx context.Context, re
     }
 
     projectConfigItems["threads"] = types.Int64Value(int64(resp.Data.ProjectConfig.Threads))
+    projectConfigItems["use_latest_patch_version"] = types.BoolValue(resp.Data.ProjectConfig.UseLatestPatchVersion)
+    projectConfigItems["should_run_dbt_deps"] = types.BoolValue(resp.Data.ProjectConfig.ShouldRunDbtDeps)
     envVars := []attr.Value{}
     for _, el := range resp.Data.ProjectConfig.EnvironmentVars {
         envVars = append(envVars, types.StringValue(el))
@@ -149,6 +153,8 @@ func (d *TransformationDatasourceProject) ReadFromResponse(ctx context.Context, 
         "environment_vars":     types.SetType{ElemType: types.StringType},
         "public_key":           types.StringType,
         "threads":              types.Int64Type,
+        "use_latest_patch_version": types.BoolType,
+        "should_run_dbt_deps":  types.BoolType,
     }
     projectConfigItems := map[string]attr.Value{}
     projectConfigItems["dbt_version"] = types.StringValue(resp.Data.ProjectConfig.DbtVersion)
@@ -159,6 +165,8 @@ func (d *TransformationDatasourceProject) ReadFromResponse(ctx context.Context, 
     projectConfigItems["target_name"] = types.StringValue(resp.Data.ProjectConfig.TargetName)
     projectConfigItems["public_key"] = types.StringValue(resp.Data.ProjectConfig.PublicKey)
     projectConfigItems["threads"] = types.Int64Value(int64(resp.Data.ProjectConfig.Threads))
+    projectConfigItems["use_latest_patch_version"] = types.BoolValue(resp.Data.ProjectConfig.UseLatestPatchVersion)
+    projectConfigItems["should_run_dbt_deps"] = types.BoolValue(resp.Data.ProjectConfig.ShouldRunDbtDeps)
 
     envVars := []attr.Value{}
     for _, el := range resp.Data.ProjectConfig.EnvironmentVars {
