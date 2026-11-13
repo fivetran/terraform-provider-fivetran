@@ -20,7 +20,7 @@ func AccountExternalLoggingV2ResourceSchema() resourceSchema.Schema {
 			},
 			"service": resourceSchema.StringAttribute{
 				Required:    true,
-				Description: "The name of the log service type within the Fivetran system. Supported log services: `azure_monitor_log`, `cloudwatch`, `datadog_log`, `dynatrace`, `grafana_loki`, `new_relic_log`, `splunkLog`, `stackdriver`.",
+				Description: "The name of the log service type within the Fivetran system. Supported log services: `azure_monitor_log`, `cloudwatch`, `datadog_log`, `dynatrace`, `grafana_loki`, `new_relic_log`, `splunkLog`, `stackdriver`. Changing this forces the resource to be replaced.",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -40,7 +40,7 @@ func AccountExternalLoggingV2ResourceSchema() resourceSchema.Schema {
 			"config": resourceSchema.DynamicAttribute{
 				Required:    true,
 				Sensitive:   true,
-				Description: "Service-specific log service configuration, marked sensitive as a whole because it holds credentials. The accepted fields depend on `service`; when the Fivetran metadata API describes the log service they are validated at plan time.",
+				Description: "Service-specific log service configuration, marked sensitive as a whole because it holds credentials. The accepted fields depend on `service`.",
 			},
 		},
 	}

@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_connection_v2"
 
 # Resource: fivetran_connection_v2
 
-~> **Public Preview:** This resource is in public preview. Features and behavior may change based on feedback.
+~> **Beta:** This resource is in beta. Breaking changes to its schema aren't expected, but its behavior may still change based on feedback before it becomes generally available.
 
 Manages a Fivetran connection. Unlike `fivetran_connector`/`fivetran_connection`, `config` and `auth` are provided as dynamic, service-specific objects: their accepted fields, types, and required/readonly/immutable rules are resolved from connector metadata at plan time rather than from a fixed schema. This means the same resource works across services (e.g. `s3`, `postgres`, `fivetran_log`) without a per-service Terraform schema.
 
@@ -32,8 +32,6 @@ resource "fivetran_connection_v2_pause_state" "pause_state" {
 ```
 
 ## Secrets in config
-
-~> **Alpha:** `config_secrets` and `config_secrets_version` are in alpha and their behavior may change without notice. Not recommended for production use.
 
 Fields set in `config` are stored in the Terraform state. To keep secret fields such as passwords out of the plan and state, set them in the write-only `config_secrets` attribute instead. It accepts [ephemeral values](https://developer.hashicorp.com/terraform/language/resources/ephemeral), for example from a secrets manager, and requires Terraform 1.11 or later.
 
@@ -83,8 +81,8 @@ resource "fivetran_connection_v2" "connection" {
 
 - `auth` (Dynamic, Sensitive) Service-specific authorization configuration. The accepted fields are defined by connector metadata at runtime.
 - `config` (Dynamic) Service-specific connection configuration. The accepted fields are defined by connector metadata at runtime.
-- `config_secrets` (Dynamic, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Write-only service-specific connection configuration fields, merged with `config` when sent to the API. Accepts ephemeral values and is never stored in the plan or state. A field must not be set in both `config` and `config_secrets`. Mutable fields are sent on migration from `config` or when `config_secrets_version` changes. Immutable and read-only fields are excluded from updates. Requires Terraform 1.11 or later. See [Secrets in config](#secrets-in-config). **Note:** This attribute is in **ALPHA** state.
-- `config_secrets_version` (Number) Version of `config_secrets`. Change it to send the current mutable `config_secrets` values to the API. **Note:** This attribute is in **ALPHA** state.
+- `config_secrets` (Dynamic, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Write-only service-specific connection configuration fields, merged with `config` when sent to the API. Accepts ephemeral values and is never stored in the plan or state. A field must not be set in both `config` and `config_secrets`. Mutable fields are sent on migration from `config` or when `config_secrets_version` changes. Immutable and read-only fields are excluded from updates. Requires Terraform 1.11 or later. See [Secrets in config](#secrets-in-config).
+- `config_secrets_version` (Number) Version of `config_secrets`. Change it to send the current mutable `config_secrets` values to the API.
 - `connect_card_config` (Attributes) Configuration for the interactive Connect Card setup flow. (see [below for nested schema](#nestedatt--connect_card_config))
 - `daily_sync_time` (String) Sync start time. Only used when `sync_frequency` is `1440`.
 - `data_checks` (Boolean) Specifies whether data validation is enabled for the connection.
