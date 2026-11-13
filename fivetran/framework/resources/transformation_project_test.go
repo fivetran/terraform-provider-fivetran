@@ -49,7 +49,9 @@ func setupMockClientTransformationProjectResourceMappingTest(t *testing.T) {
       "environment_vars": [
         "environment_var"
       ],
-      "public_key": "public_key"
+      "public_key": "public_key",
+      "use_latest_patch_version": true,
+      "should_run_dbt_deps": true
     }
   }`
 
@@ -83,7 +85,9 @@ func setupMockClientTransformationProjectResourceMappingTest(t *testing.T) {
       "environment_vars": [
         "environment_var1"
       ],
-      "public_key": "public_key"
+      "public_key": "public_key",
+      "use_latest_patch_version": false,
+      "should_run_dbt_deps": false
     }
   }`
 
@@ -108,6 +112,8 @@ func setupMockClientTransformationProjectResourceMappingTest(t *testing.T) {
             tfmock.AssertKeyExistsAndHasValue(t, config, "dbt_version", "dbt_version")
             tfmock.AssertKeyExistsAndHasValue(t, config, "default_schema", "default_schema")
             tfmock.AssertKeyExistsAndHasValue(t, config, "target_name", "target_name")
+            tfmock.AssertKeyDoesNotExist(t, config, "use_latest_patch_version")
+            tfmock.AssertKeyDoesNotExist(t, config, "should_run_dbt_deps")
 
             transformationProjectResourceMockData = tfmock.CreateMapFromJsonString(t, transformationProjectResponse)
             return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", transformationProjectResourceMockData), nil
@@ -129,6 +135,8 @@ func setupMockClientTransformationProjectResourceMappingTest(t *testing.T) {
             tfmock.AssertKeyDoesNotExist(t, config, "dbt_version")
             tfmock.AssertKeyDoesNotExist(t, config, "default_schema")
             tfmock.AssertKeyExistsAndHasValue(t, config, "target_name", "target_name1")
+            tfmock.AssertKeyExistsAndHasValue(t, config, "use_latest_patch_version", false)
+            tfmock.AssertKeyExistsAndHasValue(t, config, "should_run_dbt_deps", false)
 
             transformationProjectResourceMockData = tfmock.CreateMapFromJsonString(t, transformationProjectPatchedResponse)
             return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", transformationProjectResourceMockData), nil
@@ -184,6 +192,8 @@ func TestResourceTransformationProjectMappingMock(t *testing.T) {
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.environment_vars.0", "environment_var"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.git_remote_url", "git_remote_url"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.git_branch", "git_branch"),
+            resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.use_latest_patch_version", "true"),
+            resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.should_run_dbt_deps", "true"),
         ),
     }
 
@@ -204,6 +214,8 @@ func TestResourceTransformationProjectMappingMock(t *testing.T) {
                 threads = 1
                 target_name = "target_name1"
                 environment_vars = ["environment_var1"]
+                use_latest_patch_version = false
+                should_run_dbt_deps = false
             }
         }`,
 
@@ -228,6 +240,8 @@ func TestResourceTransformationProjectMappingMock(t *testing.T) {
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.git_remote_url", "git_remote_url"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.git_branch", "git_branch1"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.folder_path", "folder_path"),
+            resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.use_latest_patch_version", "false"),
+            resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.should_run_dbt_deps", "false"),
         ),
     }
 

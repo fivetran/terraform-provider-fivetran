@@ -103,6 +103,14 @@ func (r *transformationProject) Create(ctx context.Context, req resource.CreateR
 			projectConfig.EnvironmentVars(evars)
 		}
 
+		if !projectConfigAttributes["use_latest_patch_version"].IsNull() && !projectConfigAttributes["use_latest_patch_version"].IsUnknown() {
+			projectConfig.UseLatestPatchVersion(projectConfigAttributes["use_latest_patch_version"].(basetypes.BoolValue).ValueBool())
+		}
+
+		if !projectConfigAttributes["should_run_dbt_deps"].IsNull() && !projectConfigAttributes["should_run_dbt_deps"].IsUnknown() {
+			projectConfig.ShouldRunDbtDeps(projectConfigAttributes["should_run_dbt_deps"].(basetypes.BoolValue).ValueBool())
+		}
+
 		svc.ProjectConfig(projectConfig)
 	}
 
@@ -243,6 +251,20 @@ func (r *transformationProject) Update(ctx context.Context, req resource.UpdateR
 			}
 			hasChanges = true
 			projectConfig.EnvironmentVars(evars)
+		}
+
+		if !configPlanAttributes["use_latest_patch_version"].IsNull() &&
+		!configPlanAttributes["use_latest_patch_version"].IsUnknown() &&
+		!configStateAttributes["use_latest_patch_version"].(basetypes.BoolValue).Equal(configPlanAttributes["use_latest_patch_version"].(basetypes.BoolValue)) {
+			hasChanges = true
+			projectConfig.UseLatestPatchVersion(configPlanAttributes["use_latest_patch_version"].(basetypes.BoolValue).ValueBool())
+		}
+
+		if !configPlanAttributes["should_run_dbt_deps"].IsNull() &&
+		!configPlanAttributes["should_run_dbt_deps"].IsUnknown() &&
+		!configStateAttributes["should_run_dbt_deps"].(basetypes.BoolValue).Equal(configPlanAttributes["should_run_dbt_deps"].(basetypes.BoolValue)) {
+			hasChanges = true
+			projectConfig.ShouldRunDbtDeps(configPlanAttributes["should_run_dbt_deps"].(basetypes.BoolValue).ValueBool())
 		}
 
 		if hasChanges {

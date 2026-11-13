@@ -43,5 +43,6 @@ Read-Only:
 - `git_branch` (String) Git branch
 - `git_remote_url` (String) Git remote URL with your transformation project
 - `public_key` (String) Public key to grant Fivetran SSH access to git repository.
+- `should_run_dbt_deps` (Boolean) Specifies whether `dbt deps` installs the dbt packages before each transformation run. The default value is TRUE.
 - `target_name` (String) Target name to set or override the value from the deployment.yaml
 - `threads` (Number) The number of threads transformation will use (from 1 to 32). Make sure this value is compatible with your destination type. For example, Snowflake supports only 8 concurrent queries on an X-Small warehouse.
