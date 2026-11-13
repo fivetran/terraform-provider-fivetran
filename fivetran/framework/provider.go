@@ -134,6 +134,7 @@ func (p *fivetranProvider) Resources(ctx context.Context) []func() resource.Reso
 		resources.TeamUserMembership,
 		resources.ExternalLogging,
 		resources.AccountExternalLoggingV2,
+		resources.ExternalLoggingV2,
 		resources.Group,
 		resources.GroupUser,
 		resources.ConnectorFingerprint,
