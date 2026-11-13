@@ -88,6 +88,11 @@ func (r *connectionV2) ImportState(ctx context.Context, req resource.ImportState
 		return
 	}
 
+	resp.Diagnostics.Append(storeImportedConfigFields(ctx, resp.Private, data.Config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	resp.Diagnostics.AddWarning(
 		"fivetran_connection_v2 import requires HCL review",
 		"Terraform imported the connection using API-visible config fields. Add the matching fivetran_connection_v2 resource block to your configuration and restore any sensitive auth values because the API does not return auth secrets.",
@@ -282,6 +287,10 @@ func (r *connectionV2) Update(ctx context.Context, req resource.UpdateRequest, r
 	service := plan.Service.ValueString()
 	configSecretsVersionChanged := !plan.ConfigSecretsVersion.Equal(state.ConfigSecretsVersion)
 	configPatch := core.PrepareConfigPatchDynamicWithService(planConfig, stateConfig, &meta.Config, service)
+	omitUndeclaredImportedConfigFields(configPatch, importedConfigPatchFilter(ctx, req.Private, planConfig, stateConfig, &resp.Diagnostics))
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	configPatch = applyConnectionV2ConfigSecretsToPatch(configPatch, secrets, stateConfig, &meta.Config, configSecretsVersionChanged)
 	authPatch := core.PrepareConfigPatchDynamicWithService(planAuth, stateAuth, &meta.Auth, service)
 
@@ -385,6 +394,7 @@ func (r *connectionV2) Update(ctx context.Context, req resource.UpdateRequest, r
 	plan.DestinationConfiguration = preserveObject(plan.DestinationConfiguration, destinationConfigurationPlan)
 	plan.Schedule = preserveObject(plan.Schedule, schedulePlan)
 
+	resp.Diagnostics.Append(forgetImportedConfigFields(ctx, resp.Private)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 

@@ -85,6 +85,11 @@ func (r *destinationV2) ImportState(ctx context.Context, req resource.ImportStat
 		return
 	}
 
+	resp.Diagnostics.Append(storeImportedConfigFields(ctx, resp.Private, data.Config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	resp.Diagnostics.AddWarning(
 		"fivetran_destination_v2 import requires HCL review",
 		"Terraform imported the destination using API-visible config fields. Add the matching fivetran_destination_v2 resource block to your configuration and add any sensitive config values (for example passwords or private keys) to config or config_secrets because the API does not return secrets.",
@@ -271,6 +276,10 @@ func (r *destinationV2) Update(ctx context.Context, req resource.UpdateRequest, 
 	}
 
 	configPatch := core.PrepareConfigPatchDynamic(planConfig, stateConfig, &meta.Config)
+	omitUndeclaredImportedConfigFields(configPatch, importedConfigPatchFilter(ctx, req.Private, planConfig, stateConfig, &resp.Diagnostics))
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	applyConfigSecretsToPatch(configPatch, secrets, fieldChanged(plan.ConfigSecretsVersion, state.ConfigSecretsVersion))
 
 	runSetupTestsPlan := core.GetBoolOrDefault(plan.RunSetupTests, destinationV2RunSetupTestsDefault)
@@ -342,6 +351,7 @@ func (r *destinationV2) Update(ctx context.Context, req resource.UpdateRequest, 
 	plan.TrustCertificates = types.BoolValue(trustCertificatesPlan)
 	plan.TrustFingerprints = types.BoolValue(trustFingerprintsPlan)
 
+	resp.Diagnostics.Append(forgetImportedConfigFields(ctx, resp.Private)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
