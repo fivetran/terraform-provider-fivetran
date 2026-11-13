@@ -84,7 +84,7 @@ resource "fivetran_destination_v2" "destination" {
 terraform import fivetran_destination_v2.destination <destination_id>
 ```
 
-The API doesn't return secrets, so after import add the sensitive fields to `config` or `config_secrets` in the resource block. Readonly fields are not tracked in state after import.
+The API doesn't return secrets, so after import add the sensitive fields to `config` or `config_secrets` in the resource block. Readonly fields are not tracked in state after import. Import also stores defaults that Fivetran added and you may never have set. If a field like that isn't in your configuration, the next apply stops tracking it but leaves its value on the destination unchanged, and the plan warns about it. To clear an imported field, set it to `null` in `config`.
 
 ## Migrating from `fivetran_destination`
 

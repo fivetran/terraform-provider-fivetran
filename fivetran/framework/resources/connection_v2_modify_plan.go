@@ -18,6 +18,7 @@ func (r *connectionV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRe
 	if req.Plan.Raw.IsNull() {
 		return
 	}
+	warnUndeclaredImportedConfigFields(ctx, req, resp, "connection")
 
 	var plan model.ConnectionV2ResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
