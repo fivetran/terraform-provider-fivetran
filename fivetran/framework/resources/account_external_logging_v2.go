@@ -99,6 +99,11 @@ func (r *accountExternalLoggingV2) ImportState(ctx context.Context, req resource
 		return
 	}
 
+	resp.Diagnostics.Append(storeImportedConfigFields(ctx, resp.Private, data.Config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	resp.Diagnostics.AddWarning(
 		"fivetran_account_external_logging_v2 import requires HCL review",
 		"Terraform imported the log service using API-visible config fields. Add the matching fivetran_account_external_logging_v2 resource block to your configuration and restore secret values, because the API masks them.",
@@ -260,6 +265,10 @@ func (r *accountExternalLoggingV2) Update(ctx context.Context, req resource.Upda
 		slot = &meta.Config
 	}
 	configPatch := core.PrepareConfigPatchDynamic(planConfig, stateConfig, slot)
+	omitUndeclaredImportedConfigFields(configPatch, importedConfigPatchFilter(ctx, req.Private, planConfig, stateConfig, &resp.Diagnostics))
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	enabledPlan := core.GetBoolOrDefault(plan.Enabled, true)
 	enabledChanged := enabledPlan != core.GetBoolOrDefault(state.Enabled, true)
@@ -324,6 +333,7 @@ func (r *accountExternalLoggingV2) Update(ctx context.Context, req resource.Upda
 
 	state.RunSetupTests = types.BoolValue(runSetupTestsPlan)
 
+	resp.Diagnostics.Append(forgetImportedConfigFields(ctx, resp.Private)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -386,7 +396,11 @@ func (r *accountExternalLoggingV2) ValidateConfig(ctx context.Context, req resou
 }
 
 func (r *accountExternalLoggingV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	if req.Plan.Raw.IsNull() || r.GetSkipPlanTimeValidation() {
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+	warnUndeclaredImportedConfigFields(ctx, req, resp, "log service")
+	if r.GetSkipPlanTimeValidation() {
 		return
 	}
 
