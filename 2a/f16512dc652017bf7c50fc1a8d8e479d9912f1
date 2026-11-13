@@ -1,0 +1,19 @@
+fivetran/tests/e2e/resource_destination_e2e_test.go
+  s_a7ebcc635aafd6::t_49e3773931735e 28,49,77,97,151,201
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "2af16512dc652017bf7c50fc1a8d8e479d9912f1",
+  "prompts": {},
+  "sessions": {
+    "s_a7ebcc635aafd6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a2faf8a5-65c6-4852-b67e-9220ce2271cd",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jovan Manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
