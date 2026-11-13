@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_connector_sdk_package"
 
 # Resource: fivetran_connector_sdk_package
 
-This resource allows you to upload and manage a Connector SDK code package. The `.zip` file referenced by `file_path` is uploaded to Fivetran, and the resulting package ID can be referenced by a `fivetran_connector` resource with `service = "connector_sdk"`.
+This resource lets you upload and manage a Connector SDK code package. The provider reads the `.zip` file at `file_path` on the machine that runs Terraform and uploads it to Fivetran, and you can reference the resulting package ID in a `fivetran_connector` resource with `service = "connector_sdk"`.
 
 The provider computes a SHA-256 hash of the file during `terraform plan`, so changes to the `.zip` contents are detected without relying on metadata such as modification times.
 

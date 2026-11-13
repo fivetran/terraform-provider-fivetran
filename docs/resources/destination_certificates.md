@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_destination_certificates"
 
 # Resource: fivetran_destination_certificates
 
-This resource allows you to manage list of approved SSH fingerprints for a particular destination.
+This resource lets you manage the list of approved certificates for a destination.
 
 ## Example Usage
 
