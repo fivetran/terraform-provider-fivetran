@@ -25,7 +25,7 @@ func TestResourceDestinationE2E(t *testing.T) {
 			    resource "fivetran_destination" "testdestination" {
 					provider = fivetran-provider
 					group_id = fivetran_group.testgroup.id
-					service = "postgres_rds_warehouse"
+					service = "postgres_warehouse"
 					time_zone_offset = "0"
 					region = "GCP_US_EAST4"
 					daylight_saving_time_enabled = "true"
@@ -46,7 +46,7 @@ func TestResourceDestinationE2E(t *testing.T) {
 		  `,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranDestinationResourceCreate(t, "fivetran_destination.testdestination"),
-					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "service", "postgres_rds_warehouse"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "service", "postgres_warehouse"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "time_zone_offset", "0"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "region", "GCP_US_EAST4"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "trust_certificates", "true"),
@@ -74,7 +74,7 @@ func TestResourceDestinationE2E(t *testing.T) {
 				resource "fivetran_destination" "testdestination" {
 					provider = fivetran-provider
 					group_id = fivetran_group.testgroup.id
-					service = "postgres_rds_warehouse"
+					service = "postgres_warehouse"
 					time_zone_offset = "+4"
 					region = "GCP_EUROPE_WEST2"
 					daylight_saving_time_enabled = "false"
@@ -94,7 +94,7 @@ func TestResourceDestinationE2E(t *testing.T) {
 		  `,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testFivetranDestinationResourceUpdate(t, "fivetran_destination.testdestination"),
-					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "service", "postgres_rds_warehouse"),
+					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "service", "postgres_warehouse"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "time_zone_offset", "+4"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "region", "GCP_EUROPE_WEST2"),
 					resource.TestCheckResourceAttr("fivetran_destination.testdestination", "trust_certificates", "false"),
@@ -148,7 +148,7 @@ func TestResourceDestinationHdE2E(t *testing.T) {
 			    	resource "fivetran_destination" "testdestination" {
 						provider = fivetran-provider
 						group_id = fivetran_group.group.id
-						service = "postgres_rds_warehouse"
+						service = "postgres_warehouse"
 						time_zone_offset = "0"
 						region = "GCP_US_EAST4"
 						daylight_saving_time_enabled = "true"
@@ -198,7 +198,7 @@ func TestResourceDestinationHdE2E(t *testing.T) {
 			    	resource "fivetran_destination" "testdestination" {
 						provider = fivetran-provider
 						group_id = fivetran_group.group.id
-						service = "postgres_rds_warehouse"
+						service = "postgres_warehouse"
 						time_zone_offset = "0"
 						region = "GCP_US_EAST4"
 						daylight_saving_time_enabled = "true"
