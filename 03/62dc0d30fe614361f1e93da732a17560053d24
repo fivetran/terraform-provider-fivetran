@@ -1,0 +1,19 @@
+CHANGELOG.md
+  s_80234bd8453c86::t_72d10b10521fd6 33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "0362dc0d30fe614361f1e93da732a17560053d24",
+  "prompts": {},
+  "sessions": {
+    "s_80234bd8453c86": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "de8d4f26-1644-4470-813f-9d882e36ff04",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jovan Manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
