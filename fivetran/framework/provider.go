@@ -20,7 +20,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-const Version = "1.9.54" // Current provider version
+// Version is the provider version sent in the User-Agent header. Release builds set it to the
+// tag version through goreleaser ldflags (see .goreleaser.yml), so it never has to be bumped by
+// hand. Local builds report "dev".
+var Version = "dev"
 
 type fivetranProvider struct {
 	mockClient    httputils.HttpClient
