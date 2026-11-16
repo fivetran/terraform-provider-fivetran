@@ -394,8 +394,8 @@ func (r *connectionV2) Update(ctx context.Context, req resource.UpdateRequest, r
 	plan.DestinationConfiguration = preserveObject(plan.DestinationConfiguration, destinationConfigurationPlan)
 	plan.Schedule = preserveObject(plan.Schedule, schedulePlan)
 
-	resp.Diagnostics.Append(forgetImportedConfigFields(ctx, resp.Private)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+	resp.Diagnostics.Append(updateImportedConfigFields(ctx, req, resp)...)
 }
 
 func (r *connectionV2) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

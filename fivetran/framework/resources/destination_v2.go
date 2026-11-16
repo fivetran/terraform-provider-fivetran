@@ -351,8 +351,8 @@ func (r *destinationV2) Update(ctx context.Context, req resource.UpdateRequest, 
 	plan.TrustCertificates = types.BoolValue(trustCertificatesPlan)
 	plan.TrustFingerprints = types.BoolValue(trustFingerprintsPlan)
 
-	resp.Diagnostics.Append(forgetImportedConfigFields(ctx, resp.Private)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+	resp.Diagnostics.Append(updateImportedConfigFields(ctx, req, resp)...)
 }
 
 func (r *destinationV2) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

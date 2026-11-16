@@ -43,12 +43,12 @@ func TestImportedConfigFieldsRoundTrip(t *testing.T) {
 		t.Fatalf("imported = %v, want %v", imported, want)
 	}
 
-	if diags := forgetImportedConfigFields(ctx, private); diags.HasError() {
+	if diags := setImportedConfigFields(ctx, private, nil); diags.HasError() {
 		t.Fatal(diags)
 	}
 	imported, _ = loadImportedConfigFields(ctx, private)
 	if imported != nil {
-		t.Fatalf("imported after forget = %v, want nil", imported)
+		t.Fatalf("imported after clearing = %v, want nil", imported)
 	}
 }
 

@@ -333,8 +333,8 @@ func (r *accountExternalLoggingV2) Update(ctx context.Context, req resource.Upda
 
 	state.RunSetupTests = types.BoolValue(runSetupTestsPlan)
 
-	resp.Diagnostics.Append(forgetImportedConfigFields(ctx, resp.Private)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(updateImportedConfigFields(ctx, req, resp)...)
 }
 
 func (r *accountExternalLoggingV2) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

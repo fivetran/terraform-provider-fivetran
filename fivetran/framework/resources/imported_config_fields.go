@@ -18,8 +18,8 @@ import (
 // stored in state by import. Import tracks every field the API returns, including defaults the
 // user never wrote. State alone can't tell those apart from fields the user removed from the
 // configuration, and an update would send null for a removed nullable field, clearing a value
-// the user never managed. The list is kept until the next successful update, which replaces
-// state with the planned config.
+// the user never managed. Each successful update drops the fields that are now declared or no
+// longer tracked from the list (see updateImportedConfigFields).
 const importedConfigFieldsKey = "imported_config_fields"
 
 type privateStateGetter interface {
@@ -33,12 +33,22 @@ type privateStateSetter interface {
 // storeImportedConfigFields records the top-level keys of the imported config in private state.
 func storeImportedConfigFields(ctx context.Context, private privateStateSetter, config types.Dynamic) diag.Diagnostics {
 	configMap, diags := core.DynamicToMap(ctx, config)
-	if diags.HasError() || len(configMap) == 0 {
+	if diags.HasError() {
 		return diags
 	}
 	keys := make([]string, 0, len(configMap))
 	for k := range configMap {
 		keys = append(keys, k)
+	}
+	diags.Append(setImportedConfigFields(ctx, private, keys)...)
+	return diags
+}
+
+// setImportedConfigFields writes the import record, or removes it when keys is empty.
+func setImportedConfigFields(ctx context.Context, private privateStateSetter, keys []string) diag.Diagnostics {
+	var diags diag.Diagnostics
+	if len(keys) == 0 {
+		return private.SetKey(ctx, importedConfigFieldsKey, nil)
 	}
 	sort.Strings(keys)
 	value, err := json.Marshal(keys)
@@ -72,10 +82,40 @@ func loadImportedConfigFields(ctx context.Context, private privateStateGetter) (
 	return result, diags
 }
 
-// forgetImportedConfigFields removes the import record. Called after a successful update: from
-// then on state holds only the configured fields, so a field removed later was declared before.
-func forgetImportedConfigFields(ctx context.Context, private privateStateSetter) diag.Diagnostics {
-	return private.SetKey(ctx, importedConfigFieldsKey, nil)
+// updateImportedConfigFields updates the import record after a successful update. It keeps the
+// imported fields that are still in the new state but not set in the configuration. That happens
+// when config is omitted and inherits its prior state (fivetran_connection_v2), so those fields are
+// still undeclared and a later partial config must not clear them. Every other imported field is
+// either declared now or no longer tracked, so it is dropped from the record. When config is
+// required, the new state holds only configured fields and the record is removed.
+func updateImportedConfigFields(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) diag.Diagnostics {
+	imported, diags := loadImportedConfigFields(ctx, req.Private)
+	if diags.HasError() || len(imported) == 0 {
+		return diags
+	}
+
+	var configured, newState types.Dynamic
+	diags.Append(req.Config.GetAttribute(ctx, path.Root("config"), &configured)...)
+	diags.Append(resp.State.GetAttribute(ctx, path.Root("config"), &newState)...)
+	if diags.HasError() {
+		return diags
+	}
+	configuredMap, d := core.DynamicToMapPreserveUnknown(ctx, configured)
+	diags.Append(d...)
+	newStateMap, d := core.DynamicToMap(ctx, newState)
+	diags.Append(d...)
+	if diags.HasError() {
+		return diags
+	}
+
+	var keep []string
+	for k := range newStateMap {
+		if _, declared := configuredMap[k]; imported[k] && !declared {
+			keep = append(keep, k)
+		}
+	}
+	diags.Append(setImportedConfigFields(ctx, resp.Private, keep)...)
+	return diags
 }
 
 // undeclaredImportedConfigFields returns, sorted, the imported fields that are still in state but
