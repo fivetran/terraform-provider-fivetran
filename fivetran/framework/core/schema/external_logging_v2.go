@@ -52,7 +52,7 @@ func ExternalLoggingV2ResourceSchema() resourceSchema.Schema {
 				Optional:    true,
 				Sensitive:   true,
 				WriteOnly:   true,
-				Description: "Write-only secret config fields (fields with `format: password` in log service metadata, for example `api_key` or `token`). Accepts ephemeral values and is never stored in state. Values are sent on create and whenever `config_secrets_version` changes. Requires Terraform 1.11 or later.",
+				Description: "Write-only secret config fields (fields with `format: password` in log service metadata, for example `api_key` or `token`). Accepts ephemeral values and is never stored in state. Values are sent on create and whenever `config_secrets_version` changes; immutable and readonly fields are only sent on create. Requires Terraform 1.11 or later.",
 			},
 			"config_secrets_version": resourceSchema.Int64Attribute{
 				Optional:    true,
