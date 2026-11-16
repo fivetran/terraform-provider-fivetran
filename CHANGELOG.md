@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `fivetran_connector_schema_config`: the "Schema might be misconfigured" warning for upstream columns that don't match the `schema_change_handling` policy default is no longer emitted for tables that are disabled. A disabled table syncs nothing, so its column states are irrelevant; previously every column that had been explicitly blocked (for example while the connector ran `BLOCK_ALL`) on a deliberately disabled table produced a warning on every plan.
 - `fivetran_connector`: fixed `Provider produced inconsistent result after apply` when a field that the service expects in `auth` is set in `config`, for example `authentication_method` for `google_play` ([#673](https://github.com/fivetran/terraform-provider-fivetran/issues/673)). The Fivetran API keeps such fields in the connection's auth section and never returns them, so the value was dropped from state after apply. These fields are now handled like sensitive fields: the configured value is kept in state, so changes made outside of Terraform aren't detected and `terraform import` doesn't populate them. The plan shows a warning that tells you to move the field to the `auth` block.
 
+### Changed
+- The provider version in the `User-Agent` header of API requests now comes from the release tag. It used to be a hand-maintained constant, which reported `1.9.54` in v1.9.55.
+
 ## [v1.9.55](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.54...v1.9.55) - 2026-11-03
 
 ### Added
