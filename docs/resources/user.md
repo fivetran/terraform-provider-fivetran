@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_user"
 
 # Resource: fivetran_user
 
--This resource allows you to create, update, and delete users.
+This resource lets you create, update, and delete users.
 
 ## Example Usage
 

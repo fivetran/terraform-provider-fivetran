@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_hybrid_deployment_agent"
 
 # Resource: fivetran_hybrid_deployment_agent
 
-This resource allows you to create, update, and delete hybrid deployment agents.
+This resource lets you create, update, and delete Hybrid Deployment agents.
 
 ## Example Usage
 

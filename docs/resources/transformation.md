@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_transformation"
 
 # Resource: fivetran_transformation
 
-This resource allows you to add, manage and delete transformation projects in your account. 
+This resource lets you add, manage, and delete transformations in your account.
 
 ## Example Usage for dbt Core Transformation
 

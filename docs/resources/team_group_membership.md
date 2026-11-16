@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_team_group_membership"
 
 # Resource: fivetran_team_group_membership
 
-This resource allows you to create, update, and delete group membership for teams
+This resource lets you create, update, and delete group memberships for teams.
 
 ## Example Usage
 

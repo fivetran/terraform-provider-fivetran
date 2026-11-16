@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_external_logging"
 
 # Resource: fivetran_external_logging
 
-This resource allows you to create, update, and delete logging service.
+This resource lets you create, update, and delete external logging services.
 
 ## Example Usage
 

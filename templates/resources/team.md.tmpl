@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_team"
 
 # Resource: fivetran_team
 
-This resource allows you to create, update, and delete teams.
+This resource lets you create, update, and delete teams.
 
 ## Example Usage
 

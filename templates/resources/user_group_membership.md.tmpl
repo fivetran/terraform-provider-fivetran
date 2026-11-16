@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_user_group_membership"
 
 # Resource: fivetran_user_group_membership
 
-This resource allows you to create, update, and delete group membership for user
+This resource lets you create, update, and delete group memberships for users.
 
 ## Example Usage
 

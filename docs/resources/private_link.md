@@ -4,7 +4,7 @@ page_title: "Resource: fivetran_private_link"
 
 # Resource: fivetran_private_link
 
-This resource allows you to create, update, and delete private links.
+This resource lets you create, update, and delete private links.
 
 ## Example Usage
 
