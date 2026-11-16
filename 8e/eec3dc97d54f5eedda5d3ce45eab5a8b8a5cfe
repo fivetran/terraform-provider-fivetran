@@ -16,6 +16,8 @@ fivetran/framework/resources/connection_v2.go
   s_80234bd8453c86::t_4f3526e892fb6e 91-95,290-293,397
 fivetran/framework/resources/connection_v2_modify_plan.go
   s_80234bd8453c86::t_b8a4e75f7c0335 21
+CHANGELOG.md
+  s_80234bd8453c86::t_99b28679c70bb0 14
 ---
 {
   "schema_version": "authorship/3.0.0",
