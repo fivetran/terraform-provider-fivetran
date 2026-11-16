@@ -375,3 +375,74 @@ func TestExternalLoggingV2ModifyPlanUntrackedImmutableNonSecretReplaces(t *testi
 
 	assertRequiresReplacePaths(t, resp.RequiresReplace, []path.Path{path.Root("config").AtName("region")})
 }
+
+func externalLoggingV2UpdateRequestWithSecrets(t *testing.T, planConfig, stateConfig, secrets map[string]interface{}) resource.ModifyPlanRequest {
+	t.Helper()
+	req := externalLoggingV2UpdateRequest(t,
+		"group_id", "datadog_log", planConfig,
+		"group_id", "datadog_log", stateConfig)
+	data := externalLoggingV2Model("group_id", "datadog_log", externalLoggingV2ConfigValue(t, planConfig))
+	data.ConfigSecrets = externalLoggingV2ConfigValue(t, secrets)
+	req.Config = tfsdk.Config{Raw: externalLoggingV2ModelValue(t, data), Schema: fivetranSchema.ExternalLoggingV2ResourceSchema()}
+	return req
+}
+
+// A secret moved from config to config_secrets is still compared with its tracked value.
+func TestExternalLoggingV2ModifyPlanMovedImmutableSecret(t *testing.T) {
+	t.Parallel()
+
+	r := externalLoggingV2ForPlan(t, map[string]*metadata.LogServiceMetadata{"datadog_log": externalLoggingV2ApiKeyMetadata()})
+	stateConfig := map[string]interface{}{"api_key": "old", "hostname": "host"}
+	planConfig := map[string]interface{}{"hostname": "host"}
+
+	// changed while moving: the log service is recreated
+	var resp resource.ModifyPlanResponse
+	r.ModifyPlan(context.Background(), externalLoggingV2UpdateRequestWithSecrets(t, planConfig, stateConfig, map[string]interface{}{"api_key": "new"}), &resp)
+	assertErrorCount(t, resp.Diagnostics, 0)
+	assertRequiresReplacePaths(t, resp.RequiresReplace, []path.Path{path.Root("config_secrets")})
+	assertExternalLoggingV2Wording(t, resp.Diagnostics)
+
+	// moved unchanged: updated in place
+	resp = resource.ModifyPlanResponse{}
+	r.ModifyPlan(context.Background(), externalLoggingV2UpdateRequestWithSecrets(t, planConfig, stateConfig, map[string]interface{}{"api_key": "old"}), &resp)
+	assertNoDiagnostics(t, resp.Diagnostics)
+	assertRequiresReplacePaths(t, resp.RequiresReplace, nil)
+}
+
+// A field set in both config and config_secrets is a local error, reported even without metadata
+// or with plan-time validation skipped.
+func TestExternalLoggingV2ValidateConfigSecretsOverlapWithoutMetadata(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		data *core.ProviderResourceData
+	}{
+		{name: "metadata unavailable", data: &core.ProviderResourceData{MetadataCache: &sync.Map{}}},
+		{name: "plan-time validation skipped", data: &core.ProviderResourceData{MetadataCache: &sync.Map{}, SkipPlanTimeValidation: true}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			r := &externalLoggingV2{}
+			var configureResp resource.ConfigureResponse
+			r.Configure(context.Background(), resource.ConfigureRequest{ProviderData: tt.data}, &configureResp)
+			assertNoDiagnostics(t, configureResp.Diagnostics)
+
+			data := externalLoggingV2Model("group_id", "datadog_log", externalLoggingV2ConfigValue(t, map[string]interface{}{"api_key": "a"}))
+			data.ConfigSecrets = externalLoggingV2ConfigValue(t, map[string]interface{}{"api_key": "b"})
+			req := resource.ValidateConfigRequest{Config: tfsdk.Config{
+				Raw:    externalLoggingV2ModelValue(t, data),
+				Schema: fivetranSchema.ExternalLoggingV2ResourceSchema(),
+			}}
+
+			var resp resource.ValidateConfigResponse
+			r.ValidateConfig(context.Background(), req, &resp)
+
+			assertErrorCount(t, resp.Diagnostics, 1)
+			assertDiagnosticPath(t, resp.Diagnostics, path.Root("config_secrets").AtName("api_key"))
+		})
+	}
+}

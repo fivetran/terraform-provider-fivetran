@@ -59,9 +59,9 @@ resource "fivetran_external_logging_v2" "log" {
 }
 ```
 
-- When the log service metadata describes the service, `config_secrets` accepts only fields with `format: password`. A field can't be set in both `config` and `config_secrets`.
-- Terraform doesn't store `config_secrets`, so it can't detect when a secret changes. The values are sent on create and whenever `config_secrets_version` changes: increment it after rotating a secret.
-- To move a secret from `config` to `config_secrets`, remove it from `config`, add it to `config_secrets` and increment `config_secrets_version`.
+- A field can't be set in both `config` and `config_secrets`. When the log service metadata describes the service, `config_secrets` accepts only fields with `format: password`.
+- Terraform doesn't store `config_secrets`, so it can't detect when a secret changes. The values are sent on create and whenever `config_secrets_version` changes: increment it after rotating a secret. Fields that metadata marks as immutable or readonly are only sent on create.
+- To move a secret from `config` to `config_secrets`, remove it from `config` and add it to `config_secrets`. The moved value is sent in the same apply. Changing an immutable secret while moving it replaces the log service.
 
 ## Schema
 
@@ -73,7 +73,7 @@ resource "fivetran_external_logging_v2" "log" {
 
 ### Optional
 
-- `config_secrets` (Dynamic, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Write-only secret config fields (fields with `format: password` in log service metadata, for example `api_key` or `token`). Accepts ephemeral values and is never stored in state. Values are sent on create and whenever `config_secrets_version` changes. Requires Terraform 1.11 or later.
+- `config_secrets` (Dynamic, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Write-only secret config fields (fields with `format: password` in log service metadata, for example `api_key` or `token`). Accepts ephemeral values and is never stored in state. Values are sent on create and whenever `config_secrets_version` changes; immutable and readonly fields are only sent on create. Requires Terraform 1.11 or later.
 - `config_secrets_version` (Number) Change this value to send the current `config_secrets` to Fivetran, for example after rotating a secret.
 - `enabled` (Boolean) The boolean value specifying whether the log service is enabled. Defaults to `true`.
 - `run_setup_tests` (Boolean) Specifies whether the setup tests should be run after the log service is created or updated. Defaults to `false`. This is a plan-only attribute and is not read back from the API.
@@ -193,6 +193,8 @@ terraform import fivetran_external_logging_v2.my_imported_log {destination ID}
 3. Use `terraform state show 'fivetran_external_logging_v2.my_imported_log'` to get the values, and paste them into your `.tf` configuration.
 
 -> The API masks secrets, so imported state does not contain them. Add the secret values to `config` or `config_secrets` yourself. Readonly fields are not imported, because `config` doesn't accept them.
+
+-> Import tracks every config field the API returns, including defaults Fivetran added. If your configuration leaves some of them out, the first apply stops tracking them without changing them on the log service, and the plan shows a warning that lists them. To clear such a field, set it to `null` in `config`.
 
 ### Import with an `import` block
 

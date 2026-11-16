@@ -95,6 +95,11 @@ func (r *externalLoggingV2) ImportState(ctx context.Context, req resource.Import
 		return
 	}
 
+	resp.Diagnostics.Append(storeImportedConfigFields(ctx, resp.Private, data.Config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	resp.Diagnostics.AddWarning(
 		"fivetran_external_logging_v2 import requires HCL review",
 		"Terraform imported the log service using API-visible config fields. Add the matching fivetran_external_logging_v2 resource block to your configuration and add secret values to config_secrets (or config), because the API masks them.",
@@ -263,7 +268,14 @@ func (r *externalLoggingV2) Update(ctx context.Context, req resource.UpdateReque
 	}
 
 	configPatch := core.PrepareConfigPatchDynamic(planConfig, stateConfig, slot)
-	applyConfigSecretsToPatch(configPatch, secrets, fieldChanged(plan.ConfigSecretsVersion, state.ConfigSecretsVersion))
+	// Imported fields left out of config stop being tracked without being cleared upstream.
+	omitUndeclaredImportedConfigFields(configPatch, importedConfigPatchFilter(ctx, req.Private, planConfig, stateConfig, &resp.Diagnostics))
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	// Secrets are sent when config_secrets_version changes or when they move from config, without
+	// immutable and readonly fields, which ordinary config updates never send either.
+	configPatch = applyConnectionV2ConfigSecretsToPatch(configPatch, secrets, stateConfig, slot, fieldChanged(plan.ConfigSecretsVersion, state.ConfigSecretsVersion))
 
 	enabledPlan := core.GetBoolOrDefault(plan.Enabled, true)
 	enabledChanged := enabledPlan != core.GetBoolOrDefault(state.Enabled, true)
@@ -328,6 +340,7 @@ func (r *externalLoggingV2) Update(ctx context.Context, req resource.UpdateReque
 	state.ConfigSecrets = types.DynamicNull()
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(updateImportedConfigFields(ctx, req, resp)...)
 }
 
 func (r *externalLoggingV2) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -354,25 +367,30 @@ func (r *externalLoggingV2) Delete(ctx context.Context, req resource.DeleteReque
 }
 
 func (r *externalLoggingV2) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
-	if r.GetSkipPlanTimeValidation() {
-		return
-	}
-
 	var data model.ExternalLoggingV2ResourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	if data.Service.IsNull() || data.Service.IsUnknown() || data.Service.ValueString() == "" {
-		return
-	}
-
+	// Overlap is a local configuration error, independent of service metadata: it is checked even
+	// when metadata is unavailable or plan-time validation is skipped.
 	configMap, diags := core.DynamicToMapPreserveUnknown(ctx, data.Config)
 	resp.Diagnostics.Append(diags...)
 	secretsMap, diags := core.DynamicToMapPreserveUnknown(ctx, data.ConfigSecrets)
 	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() || (len(configMap) == 0 && len(secretsMap) == 0) {
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	validateConfigSecretsOverlap(configMap, secretsMap, &resp.Diagnostics)
+	if resp.Diagnostics.HasError() || r.GetSkipPlanTimeValidation() {
+		return
+	}
+
+	if data.Service.IsNull() || data.Service.IsUnknown() || data.Service.ValueString() == "" {
+		return
+	}
+	if len(configMap) == 0 && len(secretsMap) == 0 {
 		return
 	}
 
@@ -394,12 +412,17 @@ func (r *externalLoggingV2) ValidateConfig(ctx context.Context, req resource.Val
 
 	validateDynamicObject(configMap, &meta.Config, path.Root("config"), &resp.Diagnostics)
 	rejectReadonlyDynamicFields(configMap, &meta.Config, path.Root("config"), &resp.Diagnostics)
-	validateDynamicObject(secretsMap, &meta.Config, path.Root("config_secrets"), &resp.Diagnostics)
-	validateConfigSecrets(secretsMap, configMap, &meta.Config, &resp.Diagnostics)
+	validateDynamicObject(secretsMap, &meta.Config, configSecretsPath, &resp.Diagnostics)
+	// Overlap with config was already checked above, so only the secret-field check is left.
+	validateConfigSecrets(secretsMap, nil, &meta.Config, &resp.Diagnostics)
 }
 
 func (r *externalLoggingV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	if req.Plan.Raw.IsNull() || r.GetSkipPlanTimeValidation() {
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+	warnUndeclaredImportedConfigFields(ctx, req, resp, "log service")
+	if r.GetSkipPlanTimeValidation() {
 		return
 	}
 
@@ -444,7 +467,11 @@ func (r *externalLoggingV2) ModifyPlan(ctx context.Context, req resource.ModifyP
 			externalLoggingV2Wording.replacementWarning(path.Root("service"), &resp.Diagnostics)
 		}
 		replaced = serviceChanged || knownAndChanged(plan.GroupId, state.GroupId)
-		if len(planConfig) == 0 && !replaced {
+		secrets := configSecretsFromConfig(ctx, req.Config, true, &resp.Diagnostics)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		if len(planConfig) == 0 && len(secrets) == 0 && !replaced {
 			return
 		}
 	}
@@ -469,8 +496,26 @@ func (r *externalLoggingV2) ModifyPlan(ctx context.Context, req resource.ModifyP
 		return
 	}
 
+	service := plan.Service.ValueString()
 	comparable := withoutUntrackedImmutableSecrets(planConfig, stateConfig, &meta.Config, &resp.Diagnostics)
-	if appendImmutableRequiresReplace(comparable, stateConfig, &meta.Config, path.Root("config"), resp, plan.Service.ValueString(), "", externalLoggingV2Wording) {
+	hasImmutableReplacement := appendImmutableRequiresReplace(comparable, stateConfig, &meta.Config, path.Root("config"), resp, service, "", externalLoggingV2Wording)
+
+	// A secret moved from config to config_secrets can still be compared with its tracked value,
+	// so changing an immutable one while moving it recreates the log service.
+	secrets := configSecretsFromConfig(ctx, req.Config, true, &resp.Diagnostics)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	var secretsReplacement resource.ModifyPlanResponse
+	if appendImmutableRequiresReplace(movedConfigSecrets(secrets, stateConfig), stateConfig, &meta.Config, configSecretsPath, &secretsReplacement, service, "", externalLoggingV2Wording) {
+		// Write-only values are null in the plan, so nested replacement paths do not
+		// exist there. Keep field-specific warnings, but replace at the attribute root.
+		resp.RequiresReplace.Append(configSecretsPath)
+		hasImmutableReplacement = true
+	}
+	resp.Diagnostics.Append(secretsReplacement.Diagnostics...)
+
+	if hasImmutableReplacement {
 		validateExternalLoggingV2RequiredFields(ctx, req.Config, planConfig, meta, &resp.Diagnostics)
 	}
 }
