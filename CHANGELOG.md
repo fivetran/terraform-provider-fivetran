@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Updated `github.com/fivetran/go-fivetran` to `v1.3.15` (destination metadata support for `fivetran_destination_v2`).
-- The provider is built with Go 1.26.10, which no longer trusts the compromised eMudhra root CAs ([CVE-2026-111943](https://www.cve.org/CVERecord?id=CVE-2026-111943)).
+- The provider is built with Go 1.26.10, which rejects certificate chains containing the eight compromised eMudhra intermediate CA certificates ([CVE-2026-111943](https://www.cve.org/CVERecord?id=CVE-2026-111943)).
 
 ## [v1.9.54](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.53...v1.9.54)
 
