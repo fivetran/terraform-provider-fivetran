@@ -18,7 +18,7 @@ func ConnectionV2PauseStateResourceSchema() resourceSchema.Schema {
 			},
 			"connection_id": resourceSchema.StringAttribute{
 				Required:    true,
-				Description: "The unique identifier for the connection whose pause state is managed.",
+				Description: "The unique identifier for the connection whose pause state is managed. Changing this forces the resource to be replaced.",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
