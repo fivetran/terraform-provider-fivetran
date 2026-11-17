@@ -20,14 +20,14 @@ func ExternalLoggingV2ResourceSchema() resourceSchema.Schema {
 			},
 			"group_id": resourceSchema.StringAttribute{
 				Required:    true,
-				Description: "The unique identifier for the group (destination) the log service belongs to.",
+				Description: "The unique identifier for the group (destination) the log service belongs to. Changing this forces the resource to be replaced.",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"service": resourceSchema.StringAttribute{
 				Required:    true,
-				Description: "The name of the log service type within the Fivetran system. Supported log services: `azure_monitor_log`, `cloudwatch`, `datadog_log`, `dynatrace`, `grafana_loki`, `new_relic_log`, `splunkLog`, `stackdriver`.",
+				Description: "The name of the log service type within the Fivetran system. Supported log services: `azure_monitor_log`, `cloudwatch`, `datadog_log`, `dynatrace`, `grafana_loki`, `new_relic_log`, `splunkLog`, `stackdriver`. Changing this forces the resource to be replaced.",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
