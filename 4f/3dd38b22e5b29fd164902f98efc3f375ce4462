@@ -1,0 +1,23 @@
+templates/resources/connection_v2.md.tmpl
+  s_80234bd8453c86::t_49b93a9ff4aabf 36-37
+docs/resources/connection_v2.md
+  s_80234bd8453c86::t_49b93a9ff4aabf 36-37
+CHANGELOG.md
+  s_80234bd8453c86::t_49b93a9ff4aabf 11,20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4f3dd38b22e5b29fd164902f98efc3f375ce4462",
+  "prompts": {},
+  "sessions": {
+    "s_80234bd8453c86": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "de8d4f26-1644-4470-813f-9d882e36ff04",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jovan Manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
