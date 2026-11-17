@@ -46,13 +46,13 @@ func upgradeDestinationState(ctx context.Context, req resource.UpgradeStateReque
 			"config",
 			rawState["config"],
 			model.GetTfTypesDestination(common.GetDestinationFieldsMap(), 1),
-			model.GetTfTypesDestination(common.GetDestinationFieldsMap(), fromVersion), resp.Diagnostics)
+			model.GetTfTypesDestination(common.GetDestinationFieldsMap(), fromVersion), &resp.Diagnostics)
 	} else if fromVersion == 1 {
 		config = removeUnsupportedAttributes(
 			"config",
 			rawState["config"],
 			model.GetTfTypesDestination(common.GetDestinationFieldsMap(), 2),
-			resp.Diagnostics,
+			&resp.Diagnostics,
 		)
 	}
 
@@ -71,9 +71,9 @@ func upgradeDestinationState(ctx context.Context, req resource.UpgradeStateReque
 			"private_link_id":              tftypes.NewValue(tftypes.String, nil),
 			"proxy_agent_id":               tftypes.NewValue(tftypes.String, nil),
 			"hybrid_deployment_agent_id":   resultValue,
-			"run_setup_tests":              convertStringStateValueToBool("run_setup_tests", rawState["run_setup_tests"], resp.Diagnostics),
-			"trust_fingerprints":           convertStringStateValueToBool("trust_fingerprints", rawState["trust_fingerprints"], resp.Diagnostics),
-			"trust_certificates":           convertStringStateValueToBool("trust_certificates", rawState["trust_certificates"], resp.Diagnostics),
+			"run_setup_tests":              convertStringStateValueToBool("run_setup_tests", rawState["run_setup_tests"], &resp.Diagnostics),
+			"trust_fingerprints":           convertStringStateValueToBool("trust_fingerprints", rawState["trust_fingerprints"], &resp.Diagnostics),
+			"trust_certificates":           convertStringStateValueToBool("trust_certificates", rawState["trust_certificates"], &resp.Diagnostics),
 			"config":                       config,
 		}),
 	)
