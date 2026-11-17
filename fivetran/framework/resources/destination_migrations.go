@@ -11,7 +11,7 @@ import (
 )
 
 func upgradeDestinationState(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse, fromVersion int) {
-	rawStateValue, err := req.RawState.Unmarshal(getDestinationStateModel(fromVersion))
+	rawStateValue, err := unmarshalRawStateLenient(req.RawState, getDestinationStateModel(fromVersion))
 
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -42,9 +42,10 @@ func upgradeDestinationState(ctx context.Context, req resource.UpgradeStateReque
 
 	config := rawState["config"]
 	if fromVersion < 1 {
+		// Version 0 (providers up to 1.1.5) stores unset strings as "", later versions as null.
 		config = convertSetToBlock(
 			"config",
-			rawState["config"],
+			emptyStringsToNull("config", rawState["config"], &resp.Diagnostics),
 			model.GetTfTypesDestination(common.GetDestinationFieldsMap(), 1),
 			model.GetTfTypesDestination(common.GetDestinationFieldsMap(), fromVersion), &resp.Diagnostics)
 	} else if fromVersion == 1 {
@@ -54,6 +55,20 @@ func upgradeDestinationState(ctx context.Context, req resource.UpgradeStateReque
 			model.GetTfTypesDestination(common.GetDestinationFieldsMap(), 2),
 			&resp.Diagnostics,
 		)
+	}
+
+	// Version 0 (providers up to 1.1.5) stores these as strings; version 1 and later as bools.
+	runSetupTests := rawState["run_setup_tests"]
+	trustFingerprints := rawState["trust_fingerprints"]
+	trustCertificates := rawState["trust_certificates"]
+	if fromVersion < 1 {
+		runSetupTests = convertStringStateValueToBool("run_setup_tests", runSetupTests, &resp.Diagnostics)
+		trustFingerprints = convertStringStateValueToBool("trust_fingerprints", trustFingerprints, &resp.Diagnostics)
+		trustCertificates = convertStringStateValueToBool("trust_certificates", trustCertificates, &resp.Diagnostics)
+	}
+
+	if resp.Diagnostics.HasError() {
+		return
 	}
 
 	dynamicValue, err := tfprotov6.NewDynamicValue(
@@ -71,9 +86,9 @@ func upgradeDestinationState(ctx context.Context, req resource.UpgradeStateReque
 			"private_link_id":              tftypes.NewValue(tftypes.String, nil),
 			"proxy_agent_id":               tftypes.NewValue(tftypes.String, nil),
 			"hybrid_deployment_agent_id":   resultValue,
-			"run_setup_tests":              convertStringStateValueToBool("run_setup_tests", rawState["run_setup_tests"], &resp.Diagnostics),
-			"trust_fingerprints":           convertStringStateValueToBool("trust_fingerprints", rawState["trust_fingerprints"], &resp.Diagnostics),
-			"trust_certificates":           convertStringStateValueToBool("trust_certificates", rawState["trust_certificates"], &resp.Diagnostics),
+			"run_setup_tests":              runSetupTests,
+			"trust_fingerprints":           trustFingerprints,
+			"trust_certificates":           trustCertificates,
 			"config":                       config,
 		}),
 	)
