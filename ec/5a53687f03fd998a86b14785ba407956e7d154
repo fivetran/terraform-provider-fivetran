@@ -1,0 +1,23 @@
+CHANGELOG.md
+  s_7757d4e283e38d::t_d1804db9fe0ecc 18
+fivetran/framework/resources/destination_migrations.go
+  s_7757d4e283e38d::t_d4b65369ce2478 14,45,48,60-73,89-91
+fivetran/framework/resources/destination_provider_upgrade_mock_test.go
+  s_7757d4e283e38d::t_b4ba3734010353 1-158
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "ec5a53687f03fd998a86b14785ba407956e7d154",
+  "prompts": {},
+  "sessions": {
+    "s_7757d4e283e38d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e9aef522-b01a-4374-872a-442f71df2c1a",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jovan Manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
