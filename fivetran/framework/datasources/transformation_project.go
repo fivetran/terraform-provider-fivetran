@@ -43,7 +43,7 @@ func (d *transformationProject) Read(ctx context.Context, req datasource.ReadReq
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
-	projectResponse, err := d.GetClient().NewTransformationProjectDetails().ProjectId(data.Id.ValueString()).DoCustomMerged(ctx)
+	projectResponse, err := d.GetClient().NewTransformationProjectDetails().ProjectId(data.Id.ValueString()).Do(ctx)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -53,9 +53,6 @@ func (d *transformationProject) Read(ctx context.Context, req datasource.ReadReq
 		return
 	}
 
-	resp.Diagnostics.Append(data.ReadFromResponse(ctx, projectResponse)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
+	data.ReadFromResponse(ctx, projectResponse)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }

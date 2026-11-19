@@ -46,3 +46,4 @@ Read-Only:
 - `should_run_dbt_deps` (Boolean) Specifies whether `dbt deps` installs the dbt packages before each transformation run. The default value is TRUE.
 - `target_name` (String) Target name to set or override the value from the deployment.yaml
 - `threads` (Number) The number of threads transformation will use (from 1 to 32). Make sure this value is compatible with your destination type. For example, Snowflake supports only 8 concurrent queries on an X-Small warehouse.
+- `use_latest_patch_version` (Boolean) Specifies whether the project runs on the latest patch version of its dbt minor version. The default value is TRUE. This field is in Private Preview: only the accounts enabled for it can set it to FALSE, which requires a full `dbt_version`, such as `1.11.7`.

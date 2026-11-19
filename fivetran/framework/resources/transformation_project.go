@@ -62,7 +62,6 @@ func (r *transformationProject) Create(ctx context.Context, req resource.CreateR
 	svc.GroupId(data.GroupId.ValueString())
 	svc.ProjectType(data.Type.ValueString())
 	svc.RunTests(data.RunTests.ValueBool())
-	projectConfigCustom := make(map[string]interface{})
 
 	if !data.ProjectConfig.IsNull() && !data.ProjectConfig.IsUnknown() {
 		projectConfig := fivetran.NewTransformationProjectConfig()
@@ -105,7 +104,7 @@ func (r *transformationProject) Create(ctx context.Context, req resource.CreateR
 		}
 
 		if !projectConfigAttributes["use_latest_patch_version"].IsNull() && !projectConfigAttributes["use_latest_patch_version"].IsUnknown() {
-			projectConfigCustom["use_latest_patch_version"] = projectConfigAttributes["use_latest_patch_version"].(basetypes.BoolValue).ValueBool()
+			projectConfig.UseLatestPatchVersion(projectConfigAttributes["use_latest_patch_version"].(basetypes.BoolValue).ValueBool())
 		}
 
 		if !projectConfigAttributes["should_run_dbt_deps"].IsNull() && !projectConfigAttributes["should_run_dbt_deps"].IsUnknown() {
@@ -115,7 +114,7 @@ func (r *transformationProject) Create(ctx context.Context, req resource.CreateR
 		svc.ProjectConfig(projectConfig)
 	}
 
-	projectResponse, err := svc.ProjectConfigCustom(&projectConfigCustom).DoCustomMerged(ctx)
+	projectResponse, err := svc.Do(ctx)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Create Transformation Project Resource.",
@@ -124,11 +123,9 @@ func (r *transformationProject) Create(ctx context.Context, req resource.CreateR
 		return			
 	}
 
-	resp.Diagnostics.Append(data.ReadFromResponse(ctx, projectResponse)...)
+	data.ReadFromResponse(ctx, projectResponse)
 
-	if !resp.Diagnostics.HasError() {
-		resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
-	}
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 
 	if resp.Diagnostics.HasError() {
 		// Do cleanup on error
@@ -161,7 +158,7 @@ func (r *transformationProject) Read(ctx context.Context, req resource.ReadReque
 		return
 	}
 
-	projectResponse, err := r.GetClient().NewTransformationProjectDetails().ProjectId(data.Id.ValueString()).DoCustomMerged(ctx)
+	projectResponse, err := r.GetClient().NewTransformationProjectDetails().ProjectId(data.Id.ValueString()).Do(ctx)
 
 	if err != nil {
 		if strings.HasPrefix(projectResponse.Code, "NotFound") {
@@ -175,10 +172,7 @@ func (r *transformationProject) Read(ctx context.Context, req resource.ReadReque
 		return
 	}
 
-	resp.Diagnostics.Append(data.ReadFromResponse(ctx, projectResponse)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
+	data.ReadFromResponse(ctx, projectResponse)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -205,7 +199,6 @@ func (r *transformationProject) Update(ctx context.Context, req resource.UpdateR
 	}
 
 	svc := r.GetClient().NewTransformationProjectUpdate()
-	projectConfigCustom := make(map[string]interface{})
 	svc.ProjectId(state.Id.ValueString())
 	hasChanges := false
 	runTestsPlan := core.GetBoolOrDefault(plan.RunTests, true)
@@ -264,7 +257,7 @@ func (r *transformationProject) Update(ctx context.Context, req resource.UpdateR
 		!configPlanAttributes["use_latest_patch_version"].IsUnknown() &&
 		!configStateAttributes["use_latest_patch_version"].(basetypes.BoolValue).Equal(configPlanAttributes["use_latest_patch_version"].(basetypes.BoolValue)) {
 			hasChanges = true
-			projectConfigCustom["use_latest_patch_version"] = configPlanAttributes["use_latest_patch_version"].(basetypes.BoolValue).ValueBool()
+			projectConfig.UseLatestPatchVersion(configPlanAttributes["use_latest_patch_version"].(basetypes.BoolValue).ValueBool())
 		}
 
 		if !configPlanAttributes["should_run_dbt_deps"].IsNull() &&
@@ -280,7 +273,7 @@ func (r *transformationProject) Update(ctx context.Context, req resource.UpdateR
 	}
 
 	if hasChanges {
-		projectResponse, err := svc.ProjectConfigCustom(&projectConfigCustom).DoCustomMerged(ctx)
+		projectResponse, err := svc.Do(ctx)
 
 		if err != nil {
 			resp.Diagnostics.AddError(
@@ -290,10 +283,7 @@ func (r *transformationProject) Update(ctx context.Context, req resource.UpdateR
 			return
 		}
 
-		resp.Diagnostics.Append(plan.ReadFromResponse(ctx, projectResponse)...)
-		if resp.Diagnostics.HasError() {
-			return
-		}
+		plan.ReadFromResponse(ctx, projectResponse)		
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)

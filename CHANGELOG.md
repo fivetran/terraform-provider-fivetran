@@ -5,12 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.56...HEAD)
+## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.57...HEAD)
+
+## [v1.9.57](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.56...v1.9.57) - 2026-11-19
+
+### Added
+- `fivetran_transformation_project`: new `project_config` attribute `should_run_dbt_deps` that sets whether `dbt deps` installs the dbt packages before each transformation run. It defaults to `true`, and the `fivetran_transformation_project` data source returns it.
+- `fivetran_transformation_project`: new `project_config` attribute `use_latest_patch_version` ([private preview](https://fivetran.com/docs/core-concepts#releasephases)) that sets whether the project runs on the latest patch version of its dbt minor version. It defaults to `true`, setting it to `false` requires a full `dbt_version`, and the `fivetran_transformation_project` data source returns it.
 
 ## [v1.9.56](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.55...v1.9.56) - 2026-11-17
 
 ### Added
-- `fivetran_transformation_project`: new `project_config` attribute `should_run_dbt_deps` that sets whether `dbt deps` installs the dbt packages before each transformation run. It defaults to `true`, and the `fivetran_transformation_project` data source returns it.
 - `fivetran_connection_v2`: new write-only `config_secrets` attribute ([public preview](https://fivetran.com/docs/core-concepts#releasephases)) for secret `config` fields, such as passwords. It accepts ephemeral values and is never stored in the plan or state ([#507](https://github.com/fivetran/terraform-provider-fivetran/issues/507)). Its fields are merged with `config` when sent to the API, and a field can't be set in both. Change the new `config_secrets_version` attribute to send updated values. Requires Terraform 1.11 or later.
 
 ### Fixed

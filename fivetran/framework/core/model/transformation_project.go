@@ -5,7 +5,6 @@ import (
 
     "github.com/fivetran/go-fivetran/transformations"
     "github.com/hashicorp/terraform-plugin-framework/attr"
-    "github.com/hashicorp/terraform-plugin-framework/diag"
     "github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -32,11 +31,7 @@ type TransformationDatasourceProject struct {
     ProjectConfig   types.Object `tfsdk:"project_config"`
 }
 
-func (d *TransformationResourceProject) ReadFromResponse(ctx context.Context, resp transformations.TransformationProjectCustomMergedResponse) diag.Diagnostics {
-    useLatestPatchVersion, diags := transformationProjectUseLatestPatchVersion(resp.Data.ProjectConfigCustom)
-    if diags.HasError() {
-        return diags
-    }
+func (d *TransformationResourceProject) ReadFromResponse(ctx context.Context, resp transformations.TransformationProjectResponse) {
     d.Id = types.StringValue(resp.Data.Id)
     d.GroupId = types.StringValue(resp.Data.GroupId)
     d.Type = types.StringValue(resp.Data.ProjectType)
@@ -113,7 +108,7 @@ func (d *TransformationResourceProject) ReadFromResponse(ctx context.Context, re
     }
 
     projectConfigItems["threads"] = types.Int64Value(int64(resp.Data.ProjectConfig.Threads))
-    projectConfigItems["use_latest_patch_version"] = useLatestPatchVersion
+    projectConfigItems["use_latest_patch_version"] = types.BoolValue(resp.Data.ProjectConfig.UseLatestPatchVersion)
     projectConfigItems["should_run_dbt_deps"] = types.BoolValue(resp.Data.ProjectConfig.ShouldRunDbtDeps)
     envVars := []attr.Value{}
     for _, el := range resp.Data.ProjectConfig.EnvironmentVars {
@@ -126,14 +121,9 @@ func (d *TransformationResourceProject) ReadFromResponse(ctx context.Context, re
     }
         
     d.ProjectConfig, _ = types.ObjectValue(projectConfigTypes, projectConfigItems)
-    return nil
 }
 
-func (d *TransformationDatasourceProject) ReadFromResponse(ctx context.Context, resp transformations.TransformationProjectCustomMergedResponse) diag.Diagnostics {
-    useLatestPatchVersion, diags := transformationProjectUseLatestPatchVersion(resp.Data.ProjectConfigCustom)
-    if diags.HasError() {
-        return diags
-    }
+func (d *TransformationDatasourceProject) ReadFromResponse(ctx context.Context, resp transformations.TransformationProjectResponse) {
     d.Id = types.StringValue(resp.Data.Id)
     d.GroupId = types.StringValue(resp.Data.GroupId)
     d.Type = types.StringValue(resp.Data.ProjectType)
@@ -175,7 +165,7 @@ func (d *TransformationDatasourceProject) ReadFromResponse(ctx context.Context, 
     projectConfigItems["target_name"] = types.StringValue(resp.Data.ProjectConfig.TargetName)
     projectConfigItems["public_key"] = types.StringValue(resp.Data.ProjectConfig.PublicKey)
     projectConfigItems["threads"] = types.Int64Value(int64(resp.Data.ProjectConfig.Threads))
-    projectConfigItems["use_latest_patch_version"] = useLatestPatchVersion
+    projectConfigItems["use_latest_patch_version"] = types.BoolValue(resp.Data.ProjectConfig.UseLatestPatchVersion)
     projectConfigItems["should_run_dbt_deps"] = types.BoolValue(resp.Data.ProjectConfig.ShouldRunDbtDeps)
 
     envVars := []attr.Value{}
@@ -189,20 +179,4 @@ func (d *TransformationDatasourceProject) ReadFromResponse(ctx context.Context, 
     }
         
     d.ProjectConfig, _ = types.ObjectValue(projectConfigTypes, projectConfigItems)
-    return nil
-}
-
-func transformationProjectUseLatestPatchVersion(config map[string]interface{}) (types.Bool, diag.Diagnostics) {
-    value, exists := config["use_latest_patch_version"]
-    if !exists || value == nil {
-        return types.BoolNull(), nil
-    }
-    enabled, ok := value.(bool)
-    if !ok {
-        return types.BoolNull(), diag.Diagnostics{diag.NewErrorDiagnostic(
-            "Unable to Read Transformation Project Config",
-            "Expected use_latest_patch_version in the API response to be a boolean.",
-        )}
-    }
-    return types.BoolValue(enabled), nil
 }
