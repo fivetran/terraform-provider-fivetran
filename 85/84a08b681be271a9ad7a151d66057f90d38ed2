@@ -1,0 +1,46 @@
+fivetran/framework/resources/connection_v2_auth_secrets_mock_test.go
+  s_5aa00b85cedeff::t_27108ec97c379d 1-450
+  s_5aa00b85cedeff::t_714762d8f8ee8c 451-509
+CHANGELOG.md
+  s_5aa00b85cedeff::t_a9e8d4c01f7c54 10-12
+docs/resources/connection_v2.md
+  s_5aa00b85cedeff::t_5c3323b86d7f50 71-111,126-127
+fivetran/framework/core/model/connection_v2_model.go
+  s_5aa00b85cedeff::t_2c661814adebb7 29-30,118-119
+fivetran/framework/core/schema/connection_v2.go
+  s_5aa00b85cedeff::t_8ba751c92acd13 76-85
+fivetran/framework/resources/connection_v2.go
+  s_5aa00b85cedeff::t_97e04c4af64922 98,129-130,134-137,158-159,285-286,293,299,301,325,327
+fivetran/framework/resources/connection_v2_modify_plan.go
+  s_5aa00b85cedeff::t_a0a60a16c79997 46-49,103,119-121,125,131,137-148,150-151,154,157
+fivetran/framework/resources/connection_v2_modify_plan_test.go
+  s_5aa00b85cedeff::t_49ae546734587a 155,160-163,165-168,170-177,179-221
+fivetran/framework/resources/connection_v2_secrets.go
+  s_5aa00b85cedeff::t_bdc48cafb6c20e 15-18,20-23,29,49-51,66-68,70,72,74,80-81,84,86,89,104,107,119,132,141,143,146
+fivetran/framework/resources/connection_v2_secrets_test.go
+  s_5aa00b85cedeff::t_49fe69f181a40f 89
+fivetran/framework/resources/connection_v2_secrets_upgrade_test.go
+  s_5aa00b85cedeff::t_058478c810dfd1 18-20,26-29,32,43-46,80-81,91-97
+fivetran/framework/resources/connection_v2_validate.go
+  s_5aa00b85cedeff::t_bba259fbdb43dd 31-33,37-38,55-62,81,234,286-295
+fivetran/framework/resources/connection_v2_validate_test.go
+  s_5aa00b85cedeff::t_d18019b0c0df4e 168-183,628,638-641,650-654,663-669
+templates/resources/connection_v2.md.tmpl
+  s_5aa00b85cedeff::t_609bfb186e56a8 71-111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "8584a08b681be271a9ad7a151d66057f90d38ed2",
+  "prompts": {},
+  "sessions": {
+    "s_5aa00b85cedeff": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1039602a-fc8c-43f3-8ed0-270240e75e50",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jovan Manojlovic <jovan.manojlovic@fivetran.com>"
+    }
+  }
+}
