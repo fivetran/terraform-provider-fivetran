@@ -281,6 +281,53 @@ func TestConnectionV2ModifyPlanValidatesRequiredFieldsOnCreate(t *testing.T) {
 	assertWarningCount(t, resp.Diagnostics, 0)
 }
 
+// A wholly unknown secrets object, e.g. jsondecode of an ephemeral value deferred until apply,
+// may hold any required field, so only the other slot is checked.
+func TestConnectionV2ModifyPlanDefersRequiredFieldsForUnknownSecrets(t *testing.T) {
+	t.Parallel()
+	for _, auth := range []bool{false, true} {
+		name := "config_secrets"
+		if auth {
+			name = "auth_secrets"
+		}
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+			cache := &sync.Map{}
+			cache.Store("google_ads", &metadata.ConnectorMetadata{
+				Config: metadata.Property{
+					Required:   []string{"schema"},
+					Properties: map[string]*metadata.Property{"schema": {Type: "string"}},
+				},
+				Auth: metadata.Property{
+					Required:   []string{"refresh_token"},
+					Properties: map[string]*metadata.Property{"refresh_token": {Type: "string"}},
+				},
+			})
+			r := configuredConnectionV2ForValidation(t, false, cache)
+			plan := connectionV2ModifyPlanModel(t, "google_ads", "group_id", map[string]interface{}{}, map[string]interface{}{})
+			req := connectionV2ModifyPlanCreateRequest(t, plan)
+			config := plan
+			if auth {
+				config.AuthSecrets = types.DynamicUnknown()
+			} else {
+				config.ConfigSecrets = types.DynamicUnknown()
+			}
+			req.Config = tfsdk.Config{Raw: connectionV2TerraformValue(t, config), Schema: req.Plan.Schema}
+
+			var resp resource.ModifyPlanResponse
+			r.ModifyPlan(context.Background(), req, &resp)
+
+			// The slot without unknown secrets is still validated.
+			assertErrorCount(t, resp.Diagnostics, 1)
+			want := `"schema"`
+			if !auth {
+				want = `"refresh_token"`
+			}
+			assertDiagnosticContains(t, resp.Diagnostics, want)
+		})
+	}
+}
+
 func TestConnectionV2ModifyPlanAcceptsRequiredFieldsOnCreate(t *testing.T) {
 	t.Parallel()
 

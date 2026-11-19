@@ -126,8 +126,8 @@ func (r *connectionV2) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 
 	configMap, authMap := r.dynamicPlanMaps(ctx, data, &resp.Diagnostics)
-	secrets := connectionV2SecretsFromConfig(ctx, req.Config, configSecretsPath, false, &resp.Diagnostics)
-	authSecrets := connectionV2SecretsFromConfig(ctx, req.Config, authSecretsPath, false, &resp.Diagnostics)
+	secrets, _ := connectionV2SecretsFromConfig(ctx, req.Config, configSecretsPath, false, &resp.Diagnostics)
+	authSecrets, _ := connectionV2SecretsFromConfig(ctx, req.Config, authSecretsPath, false, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -282,8 +282,8 @@ func (r *connectionV2) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	planConfig, planAuth := r.dynamicPlanMaps(ctx, plan, &resp.Diagnostics)
 	stateConfig, stateAuth := r.dynamicStateMaps(ctx, state, &resp.Diagnostics)
-	secrets := connectionV2SecretsFromConfig(ctx, req.Config, configSecretsPath, false, &resp.Diagnostics)
-	authSecrets := connectionV2SecretsFromConfig(ctx, req.Config, authSecretsPath, false, &resp.Diagnostics)
+	secrets, _ := connectionV2SecretsFromConfig(ctx, req.Config, configSecretsPath, false, &resp.Diagnostics)
+	authSecrets, _ := connectionV2SecretsFromConfig(ctx, req.Config, authSecretsPath, false, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}

@@ -20,18 +20,23 @@ var (
 // connectionV2SecretsFromConfig reads a write-only secrets attribute (config_secrets or
 // auth_secrets) from the configuration. Write-only attributes are always null in the plan and
 // the state. Unknown values are kept when preserveUnknown is set, for plan-time checks.
-func connectionV2SecretsFromConfig(ctx context.Context, config tfsdk.Config, secretsPath path.Path, preserveUnknown bool, diags *diag.Diagnostics) map[string]interface{} {
+// unknown reports that the whole attribute is unknown, e.g. jsondecode of an ephemeral value
+// deferred until apply, so its fields can't be known at plan time.
+func connectionV2SecretsFromConfig(ctx context.Context, config tfsdk.Config, secretsPath path.Path, preserveUnknown bool, diags *diag.Diagnostics) (secrets map[string]interface{}, unknown bool) {
 	if config.Raw.IsNull() {
-		return nil
+		return nil, false
 	}
 
 	var value types.Dynamic
 	diags.Append(config.GetAttribute(ctx, secretsPath, &value)...)
 	if diags.HasError() {
-		return nil
+		return nil, false
+	}
+	if value.IsUnknown() || value.IsUnderlyingValueUnknown() {
+		return nil, true
 	}
 
-	return configSecretsMap(ctx, value, preserveUnknown, diags)
+	return configSecretsMap(ctx, value, preserveUnknown, diags), false
 }
 
 func configSecretsMap(ctx context.Context, value types.Dynamic, preserveUnknown bool, diags *diag.Diagnostics) map[string]interface{} {

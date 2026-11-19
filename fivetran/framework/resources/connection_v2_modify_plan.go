@@ -43,10 +43,10 @@ func (r *connectionV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRe
 		isRootReplacement = warnRootReplacementIfChanged("group_id", plan.GroupId, state.GroupId, &resp.Diagnostics) || isRootReplacement
 	}
 
-	secrets := connectionV2SecretsFromConfig(ctx, req.Config, configSecretsPath, true, &resp.Diagnostics)
+	secrets, secretsUnknown := connectionV2SecretsFromConfig(ctx, req.Config, configSecretsPath, true, &resp.Diagnostics)
 	// auth is not computed, so a field moved to auth_secrets is absent from the plan already and
 	// needs no state cleanup here.
-	authSecrets := connectionV2SecretsFromConfig(ctx, req.Config, authSecretsPath, true, &resp.Diagnostics)
+	authSecrets, authSecretsUnknown := connectionV2SecretsFromConfig(ctx, req.Config, authSecretsPath, true, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -120,15 +120,23 @@ func (r *connectionV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRe
 	requiredConfig := mergeConnectionV2Secrets(planConfig, secrets)
 	requiredAuth := mergeConnectionV2Secrets(planAuth, authSecrets)
 
+	// A wholly unknown secrets attribute may hold any required field, so defer that slot to the API.
+	validateRequired := func() {
+		if !secretsUnknown {
+			validateRequiredDynamicFields(requiredConfig, &meta.Config, path.Root("config"), &resp.Diagnostics, connectionWording)
+		}
+		if !authSecretsUnknown {
+			validateRequiredDynamicFields(requiredAuth, &meta.Auth, path.Root("auth"), &resp.Diagnostics, connectionWording)
+		}
+	}
+
 	if isCreate {
-		validateRequiredDynamicFields(requiredConfig, &meta.Config, path.Root("config"), &resp.Diagnostics, connectionWording)
-		validateRequiredDynamicFields(requiredAuth, &meta.Auth, path.Root("auth"), &resp.Diagnostics, connectionWording)
+		validateRequired()
 		return
 	}
 
 	if isRootReplacement {
-		validateRequiredDynamicFields(requiredConfig, &meta.Config, path.Root("config"), &resp.Diagnostics, connectionWording)
-		validateRequiredDynamicFields(requiredAuth, &meta.Auth, path.Root("auth"), &resp.Diagnostics, connectionWording)
+		validateRequired()
 		return
 	}
 
@@ -138,8 +146,7 @@ func (r *connectionV2) ModifyPlan(ctx context.Context, req resource.ModifyPlanRe
 	hasImmutableReplacement = appendImmutableRequiresReplace(planAuth, stateAuth, &meta.Auth, path.Root("auth"), resp, service, "", connectionWording) || hasImmutableReplacement
 	hasImmutableReplacement = appendMovedSecretsRequiresReplace(authSecrets, stateAuth, &meta.Auth, authSecretsPath, resp, service) || hasImmutableReplacement
 	if hasImmutableReplacement {
-		validateRequiredDynamicFields(requiredConfig, &meta.Config, path.Root("config"), &resp.Diagnostics, connectionWording)
-		validateRequiredDynamicFields(requiredAuth, &meta.Auth, path.Root("auth"), &resp.Diagnostics, connectionWording)
+		validateRequired()
 	}
 }
 
