@@ -19,7 +19,7 @@ var (
     transformationProjectResourceMockData map[string]interface{}
 )
 
-func setupMockClientTransformationProjectResourceMappingTest(t *testing.T) {
+func setupMockClientTransformationProjectResourceMappingTest(t *testing.T, useLatestPatchVersion *bool) {
     transformationProjectResponse := `
 {
     "id": "project_id",
@@ -40,7 +40,7 @@ func setupMockClientTransformationProjectResourceMappingTest(t *testing.T) {
     ],
     "created_by_id": "created_by_id",
     "project_config": {
-      "dbt_version": "dbt_version",
+      "dbt_version": "1.11.7",
       "default_schema": "default_schema",
       "git_remote_url": "git_remote_url",
       "git_branch": "git_branch",
@@ -49,7 +49,9 @@ func setupMockClientTransformationProjectResourceMappingTest(t *testing.T) {
       "environment_vars": [
         "environment_var"
       ],
-      "public_key": "public_key"
+      "public_key": "public_key",
+      "use_latest_patch_version": true,
+      "should_run_dbt_deps": true
     }
   }`
 
@@ -73,7 +75,7 @@ func setupMockClientTransformationProjectResourceMappingTest(t *testing.T) {
     ],
     "created_by_id": "created_by_id",
     "project_config": {
-      "dbt_version": "dbt_version",
+      "dbt_version": "1.11.7",
       "default_schema": "default_schema",
       "git_remote_url": "git_remote_url",
       "folder_path": "folder_path",
@@ -83,7 +85,9 @@ func setupMockClientTransformationProjectResourceMappingTest(t *testing.T) {
       "environment_vars": [
         "environment_var1"
       ],
-      "public_key": "public_key"
+      "public_key": "public_key",
+      "use_latest_patch_version": false,
+      "should_run_dbt_deps": false
     }
   }`
 
@@ -105,11 +109,20 @@ func setupMockClientTransformationProjectResourceMappingTest(t *testing.T) {
             config := body["project_config"].(map[string]interface{})
             tfmock.AssertKeyExistsAndHasValue(t, config, "git_remote_url", "git_remote_url")
             tfmock.AssertKeyExistsAndHasValue(t, config, "git_branch", "git_branch")
-            tfmock.AssertKeyExistsAndHasValue(t, config, "dbt_version", "dbt_version")
+            tfmock.AssertKeyExistsAndHasValue(t, config, "dbt_version", "1.11.7")
             tfmock.AssertKeyExistsAndHasValue(t, config, "default_schema", "default_schema")
             tfmock.AssertKeyExistsAndHasValue(t, config, "target_name", "target_name")
+            if useLatestPatchVersion == nil {
+                tfmock.AssertKeyDoesNotExist(t, config, "use_latest_patch_version")
+            } else {
+                tfmock.AssertKeyExistsAndHasValue(t, config, "use_latest_patch_version", *useLatestPatchVersion)
+            }
+            tfmock.AssertKeyDoesNotExist(t, config, "should_run_dbt_deps")
 
             transformationProjectResourceMockData = tfmock.CreateMapFromJsonString(t, transformationProjectResponse)
+            if useLatestPatchVersion != nil {
+                transformationProjectResourceMockData["project_config"].(map[string]interface{})["use_latest_patch_version"] = *useLatestPatchVersion
+            }
             return tfmock.FivetranSuccessResponse(t, req, http.StatusCreated, "Success", transformationProjectResourceMockData), nil
         },
     )
@@ -129,6 +142,8 @@ func setupMockClientTransformationProjectResourceMappingTest(t *testing.T) {
             tfmock.AssertKeyDoesNotExist(t, config, "dbt_version")
             tfmock.AssertKeyDoesNotExist(t, config, "default_schema")
             tfmock.AssertKeyExistsAndHasValue(t, config, "target_name", "target_name1")
+            tfmock.AssertKeyExistsAndHasValue(t, config, "use_latest_patch_version", false)
+            tfmock.AssertKeyExistsAndHasValue(t, config, "should_run_dbt_deps", false)
 
             transformationProjectResourceMockData = tfmock.CreateMapFromJsonString(t, transformationProjectPatchedResponse)
             return tfmock.FivetranSuccessResponse(t, req, http.StatusOK, "Success", transformationProjectResourceMockData), nil
@@ -157,7 +172,7 @@ func TestResourceTransformationProjectMappingMock(t *testing.T) {
             project_config {
                 git_remote_url = "git_remote_url"
                 git_branch = "git_branch"
-                dbt_version = "dbt_version"
+                dbt_version = "1.11.7"
                 default_schema = "default_schema"
                 threads = 0
                 target_name = "target_name"
@@ -177,13 +192,15 @@ func TestResourceTransformationProjectMappingMock(t *testing.T) {
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "created_at", "created_at"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "created_by_id", "created_by_id"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "type", "DBT_GIT"),
-            resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.dbt_version", "dbt_version"),
+            resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.dbt_version", "1.11.7"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.public_key", "public_key"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.default_schema", "default_schema"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.target_name", "target_name"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.environment_vars.0", "environment_var"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.git_remote_url", "git_remote_url"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.git_branch", "git_branch"),
+            resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.use_latest_patch_version", "true"),
+            resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.should_run_dbt_deps", "true"),
         ),
     }
 
@@ -199,11 +216,13 @@ func TestResourceTransformationProjectMappingMock(t *testing.T) {
                 git_remote_url = "git_remote_url"
                 git_branch = "git_branch1"
                 folder_path = "folder_path"
-                dbt_version = "dbt_version"
+                dbt_version = "1.11.7"
                 default_schema = "default_schema"
                 threads = 1
                 target_name = "target_name1"
                 environment_vars = ["environment_var1"]
+                use_latest_patch_version = false
+                should_run_dbt_deps = false
             }
         }`,
 
@@ -220,7 +239,7 @@ func TestResourceTransformationProjectMappingMock(t *testing.T) {
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "created_at", "created_at"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "created_by_id", "created_by_id"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "type", "DBT_GIT"),
-            resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.dbt_version", "dbt_version"),
+            resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.dbt_version", "1.11.7"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.public_key", "public_key"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.default_schema", "default_schema"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.target_name", "target_name1"),
@@ -228,6 +247,8 @@ func TestResourceTransformationProjectMappingMock(t *testing.T) {
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.git_remote_url", "git_remote_url"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.git_branch", "git_branch1"),
             resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.folder_path", "folder_path"),
+            resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.use_latest_patch_version", "false"),
+            resource.TestCheckResourceAttr("fivetran_transformation_project.project", "project_config.should_run_dbt_deps", "false"),
         ),
     }
 
@@ -235,7 +256,7 @@ func TestResourceTransformationProjectMappingMock(t *testing.T) {
         t,
         resource.TestCase{
             PreCheck: func() {
-                setupMockClientTransformationProjectResourceMappingTest(t)
+                setupMockClientTransformationProjectResourceMappingTest(t, nil)
             },
             ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
             CheckDestroy: func(s *terraform.State) error {
@@ -247,4 +268,40 @@ func TestResourceTransformationProjectMappingMock(t *testing.T) {
             },
         },
     )
+}
+
+func TestResourceTransformationProjectPinnedCreateMock(t *testing.T) {
+    config := `
+        resource "fivetran_transformation_project" "project" {
+            provider = fivetran-provider
+            group_id = "group_id"
+            type = "DBT_GIT"
+            run_tests = true
+            project_config {
+                git_remote_url = "git_remote_url"
+                git_branch = "git_branch"
+                dbt_version = "1.11.7"
+                default_schema = "default_schema"
+                threads = 0
+                target_name = "target_name"
+                environment_vars = ["environment_var"]
+                use_latest_patch_version = false
+            }
+        }`
+    resource.Test(t, resource.TestCase{
+        PreCheck: func() {
+            pinned := false
+            setupMockClientTransformationProjectResourceMappingTest(t, &pinned)
+        },
+        ProtoV6ProviderFactories: tfmock.ProtoV6ProviderFactories,
+        Steps: []resource.TestStep{
+            {
+                Config: config,
+                Check: resource.TestCheckResourceAttr(
+                    "fivetran_transformation_project.project", "project_config.use_latest_patch_version", "false",
+                ),
+            },
+            {Config: config, PlanOnly: true},
+        },
+    })
 }

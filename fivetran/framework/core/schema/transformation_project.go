@@ -156,6 +156,14 @@ func transformationProjectConfigSchema() core.Schema {
 				Readonly:    true,
 				Description: "Public key to grant Fivetran SSH access to git repository.",
 			},
+			"use_latest_patch_version": {
+				ValueType:   core.Boolean,
+				Description: "Specifies whether the project runs on the latest patch version of its dbt minor version. The default value is TRUE. This field is in Private Preview: only the accounts enabled for it can set it to FALSE, which requires a full `dbt_version`, such as `1.11.7`.",
+			},
+			"should_run_dbt_deps": {
+				ValueType:   core.Boolean,
+				Description: "Specifies whether `dbt deps` installs the dbt packages before each transformation run. The default value is TRUE.",
+			},
 
 		},
 	}

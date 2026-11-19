@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.56...HEAD)
 
+### Added
+- `fivetran_transformation_project`: new `project_config` attribute `should_run_dbt_deps` that sets whether `dbt deps` installs the dbt packages before each transformation run. It defaults to `true`, and the `fivetran_transformation_project` data source returns it.
+- `fivetran_transformation_project`: new `project_config` attribute `use_latest_patch_version` ([private preview](https://fivetran.com/docs/core-concepts#releasephases)) that sets whether the project runs on the latest patch version of its dbt minor version. It defaults to `true`, setting it to `false` requires a full `dbt_version`, and the `fivetran_transformation_project` data source returns it.
+
 ## [v1.9.56](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.55...v1.9.56) - 2026-11-17
 
 ### Added

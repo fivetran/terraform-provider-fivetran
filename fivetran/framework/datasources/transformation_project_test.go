@@ -46,7 +46,9 @@ func setupMockClientTransformationProjectDataSourceMappingTest(t *testing.T) {
       "environment_vars": [
         "environment_var"
       ],
-      "public_key": "public_key"
+      "public_key": "public_key",
+      "use_latest_patch_version": true,
+      "should_run_dbt_deps": true
     }
 }`
 	tfmock.MockClient().Reset()
@@ -87,6 +89,8 @@ func TestDataSourceTransformationProjectMappingMock(t *testing.T) {
             resource.TestCheckResourceAttr("data.fivetran_transformation_project.project", "project_config.git_remote_url", "git_remote_url"),
             resource.TestCheckResourceAttr("data.fivetran_transformation_project.project", "project_config.git_branch", "git_branch"),
             resource.TestCheckResourceAttr("data.fivetran_transformation_project.project", "project_config.folder_path", "folder_path"),
+            resource.TestCheckResourceAttr("data.fivetran_transformation_project.project", "project_config.use_latest_patch_version", "true"),
+            resource.TestCheckResourceAttr("data.fivetran_transformation_project.project", "project_config.should_run_dbt_deps", "true"),
 		),
 	}
 
