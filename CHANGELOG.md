@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/fivetran/terraform-provider-fivetran/compare/v1.9.56...HEAD)
 
 ### Added
+- `fivetran_connection_v2`: new write-only `auth_secrets` attribute ([public preview](https://fivetran.com/docs/core-concepts#releasephases)) for secret `auth` fields, such as client secrets and refresh tokens. It works like `config_secrets`: it accepts ephemeral values and is never stored in the plan or state. Its fields are merged with `auth` when sent to the API, and a field can't be set in both. Change the new `auth_secrets_version` attribute to send updated values. Requires Terraform 1.11 or later.
 - `fivetran_transformation_project`: new `project_config` attribute `should_run_dbt_deps` that sets whether `dbt deps` installs the dbt packages before each transformation run. It defaults to `true`, and the `fivetran_transformation_project` data source returns it.
 - `fivetran_transformation_project`: new `project_config` attribute `use_latest_patch_version` ([private preview](https://fivetran.com/docs/core-concepts#releasephases)) that sets whether the project runs on the latest patch version of its dbt minor version. It defaults to `true`, setting it to `false` requires a full `dbt_version`, and the `fivetran_transformation_project` data source returns it.
 

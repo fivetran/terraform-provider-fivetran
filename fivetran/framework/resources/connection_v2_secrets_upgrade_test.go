@@ -15,16 +15,21 @@ import (
 )
 
 // Exercise the actual protocol upgrade handler with schema-version-0 JSON from before
-// config_secrets existed. An upgrade must add null attributes without losing config.
-func TestConnectionV2ConfigSecretsUpgradeOldState(t *testing.T) {
+// config_secrets and auth_secrets existed. An upgrade must add null attributes without losing
+// config or auth.
+func TestConnectionV2SecretsUpgradeOldState(t *testing.T) {
 	ctx := context.Background()
 	schema := fivetranSchema.ConnectionV2ResourceSchema()
 	if schema.Version != 0 {
 		t.Fatal("update this test to exercise the schema-version-0 state upgrader")
 	}
+	newAttributes := map[string]bool{
+		"config_secrets": true, "config_secrets_version": true,
+		"auth_secrets": true, "auth_secrets_version": true,
+	}
 	oldState := make(map[string]interface{})
 	for name := range schema.Attributes {
-		if name != "config_secrets" && name != "config_secrets_version" {
+		if !newAttributes[name] {
 			oldState[name] = nil
 		}
 	}
@@ -34,6 +39,10 @@ func TestConnectionV2ConfigSecretsUpgradeOldState(t *testing.T) {
 	oldState["config"] = map[string]interface{}{
 		"type":  []interface{}{"object", map[string]string{"host": "string", "password": "string"}},
 		"value": map[string]string{"host": "db.example.com", "password": "legacy-password"},
+	}
+	oldState["auth"] = map[string]interface{}{
+		"type":  []interface{}{"object", map[string]string{"client_secret": "string"}},
+		"value": map[string]string{"client_secret": "legacy-client-secret"},
 	}
 	raw, err := json.Marshal(oldState)
 	if err != nil {
@@ -68,7 +77,8 @@ func TestConnectionV2ConfigSecretsUpgradeOldState(t *testing.T) {
 	if data.Id.ValueString() != "connection_id" || data.Service.ValueString() != "postgres" || data.GroupId.ValueString() != "group_id" {
 		t.Fatal("upgrade changed resource identity")
 	}
-	if !data.ConfigSecrets.IsNull() || !data.ConfigSecretsVersion.IsNull() {
+	if !data.ConfigSecrets.IsNull() || !data.ConfigSecretsVersion.IsNull() ||
+		!data.AuthSecrets.IsNull() || !data.AuthSecretsVersion.IsNull() {
 		t.Fatal("new optional attributes must be null in upgraded state")
 	}
 	config, diags := core.DynamicToMap(ctx, data.Config)
@@ -77,5 +87,12 @@ func TestConnectionV2ConfigSecretsUpgradeOldState(t *testing.T) {
 	}
 	if config["host"] != "db.example.com" || config["password"] != "legacy-password" {
 		t.Fatal("upgrade changed legacy config values")
+	}
+	auth, diags := core.DynamicToMap(ctx, data.Auth)
+	if diags.HasError() {
+		t.Fatalf("decode legacy auth: %v", diags)
+	}
+	if auth["client_secret"] != "legacy-client-secret" {
+		t.Fatal("upgrade changed legacy auth values")
 	}
 }

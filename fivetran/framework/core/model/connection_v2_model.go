@@ -26,6 +26,8 @@ type ConnectionV2ResourceModel struct {
 	ConfigSecrets        types.Dynamic `tfsdk:"config_secrets"`
 	ConfigSecretsVersion types.Int64   `tfsdk:"config_secrets_version"`
 	Auth                 types.Dynamic `tfsdk:"auth"`
+	AuthSecrets          types.Dynamic `tfsdk:"auth_secrets"`
+	AuthSecretsVersion   types.Int64   `tfsdk:"auth_secrets_version"`
 
 	SucceededAt              types.String `tfsdk:"succeeded_at"`
 	FailedAt                 types.String `tfsdk:"failed_at"`
@@ -113,6 +115,8 @@ func ConnectionV2ResourceModelAttrTypes() map[string]attr.Type {
 		"config_secrets":             types.DynamicType,
 		"config_secrets_version":     types.Int64Type,
 		"auth":                       types.DynamicType,
+		"auth_secrets":               types.DynamicType,
+		"auth_secrets_version":       types.Int64Type,
 		"succeeded_at":               types.StringType,
 		"failed_at":                  types.StringType,
 		"service_version":            types.StringType,

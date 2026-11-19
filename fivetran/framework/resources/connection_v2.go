@@ -95,7 +95,7 @@ func (r *connectionV2) ImportState(ctx context.Context, req resource.ImportState
 
 	resp.Diagnostics.AddWarning(
 		"fivetran_connection_v2 import requires HCL review",
-		"Terraform imported the connection using API-visible config fields. Add the matching fivetran_connection_v2 resource block to your configuration and restore any sensitive auth values because the API does not return auth secrets.",
+		"Terraform imported the connection using API-visible config fields. Add the matching fivetran_connection_v2 resource block to your configuration and restore any sensitive auth values, in auth or the write-only auth_secrets, because the API does not return auth secrets.",
 	)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -126,12 +126,15 @@ func (r *connectionV2) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 
 	configMap, authMap := r.dynamicPlanMaps(ctx, data, &resp.Diagnostics)
-	secrets := configSecretsFromConfig(ctx, req.Config, false, &resp.Diagnostics)
+	secrets := connectionV2SecretsFromConfig(ctx, req.Config, configSecretsPath, false, &resp.Diagnostics)
+	authSecrets := connectionV2SecretsFromConfig(ctx, req.Config, authSecretsPath, false, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	// configMap stays the state mask below, so the config_secrets fields never reach state.
-	requestConfig := mergeConnectionV2ConfigSecrets(configMap, secrets)
+	// configMap stays the state mask below, and data.Auth is what is stored for auth, so the
+	// config_secrets and auth_secrets fields never reach state.
+	requestConfig := mergeConnectionV2Secrets(configMap, secrets)
+	requestAuth := mergeConnectionV2Secrets(authMap, authSecrets)
 
 	runSetupTestsPlan := core.GetBoolOrDefault(data.RunSetupTests, false)
 	trustCertificatesPlan := core.GetBoolOrDefault(data.TrustCertificates, false)
@@ -152,8 +155,8 @@ func (r *connectionV2) Create(ctx context.Context, req resource.CreateRequest, r
 	if requestConfig != nil {
 		svc.ConfigCustom(&requestConfig)
 	}
-	if authMap != nil {
-		svc.AuthCustom(&authMap)
+	if requestAuth != nil {
+		svc.AuthCustom(&requestAuth)
 	}
 
 	r.applyCreateRootFields(svc, data)
@@ -279,20 +282,23 @@ func (r *connectionV2) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	planConfig, planAuth := r.dynamicPlanMaps(ctx, plan, &resp.Diagnostics)
 	stateConfig, stateAuth := r.dynamicStateMaps(ctx, state, &resp.Diagnostics)
-	secrets := configSecretsFromConfig(ctx, req.Config, false, &resp.Diagnostics)
+	secrets := connectionV2SecretsFromConfig(ctx, req.Config, configSecretsPath, false, &resp.Diagnostics)
+	authSecrets := connectionV2SecretsFromConfig(ctx, req.Config, authSecretsPath, false, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
 	service := plan.Service.ValueString()
 	configSecretsVersionChanged := !plan.ConfigSecretsVersion.Equal(state.ConfigSecretsVersion)
+	authSecretsVersionChanged := !plan.AuthSecretsVersion.Equal(state.AuthSecretsVersion)
 	configPatch := core.PrepareConfigPatchDynamicWithService(planConfig, stateConfig, &meta.Config, service)
 	omitUndeclaredImportedConfigFields(configPatch, importedConfigPatchFilter(ctx, req.Private, planConfig, stateConfig, &resp.Diagnostics))
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	configPatch = applyConnectionV2ConfigSecretsToPatch(configPatch, secrets, stateConfig, &meta.Config, configSecretsVersionChanged)
+	configPatch = applyConnectionV2SecretsToPatch(configPatch, secrets, stateConfig, &meta.Config, configSecretsVersionChanged)
 	authPatch := core.PrepareConfigPatchDynamicWithService(planAuth, stateAuth, &meta.Auth, service)
+	authPatch = applyConnectionV2SecretsToPatch(authPatch, authSecrets, stateAuth, &meta.Auth, authSecretsVersionChanged)
 
 	runSetupTestsPlan := core.GetBoolOrDefault(plan.RunSetupTests, false)
 	trustCertificatesPlan := core.GetBoolOrDefault(plan.TrustCertificates, false)
@@ -316,9 +322,9 @@ func (r *connectionV2) Update(ctx context.Context, req resource.UpdateRequest, r
 	triggerFieldSet := fieldChanged(plan.RunSetupTests, state.RunSetupTests) ||
 		fieldChanged(plan.TrustCertificates, state.TrustCertificates) ||
 		fieldChanged(plan.TrustFingerprints, state.TrustFingerprints)
-	// The same holds when only config_secrets_version changed while config_secrets is empty.
+	// The same holds when only a secrets version changed while its secrets attribute is empty.
 	nothingToSend := !triggerFieldSet && !hasOtherChanges &&
-		(!reflect.DeepEqual(planConfig, stateConfig) || !reflect.DeepEqual(planAuth, stateAuth) || configSecretsVersionChanged)
+		(!reflect.DeepEqual(planConfig, stateConfig) || !reflect.DeepEqual(planAuth, stateAuth) || configSecretsVersionChanged || authSecretsVersionChanged)
 
 	var response connections.DetailsWithCustomConfigResponse
 	var updateErr error
