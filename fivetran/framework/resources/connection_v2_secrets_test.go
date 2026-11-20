@@ -86,7 +86,7 @@ func TestConnectionV2ConfigSecretsPatchFiltersNestedFields(t *testing.T) {
 					stateConfig = map[string]interface{}{"credentials": tc.value}
 				}
 				slot := &metadata.Property{Properties: map[string]*metadata.Property{"credentials": tc.prop}}
-				patch = applyConnectionV2ConfigSecretsToPatch(patch, secrets, stateConfig, slot, versionChanged)
+				patch = applyConnectionV2SecretsToPatch(patch, secrets, stateConfig, slot, versionChanged)
 				want := map[string]interface{}{}
 				if !tc.omitted {
 					want["credentials"] = tc.want

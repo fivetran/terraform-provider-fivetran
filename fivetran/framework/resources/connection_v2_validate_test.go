@@ -166,6 +166,22 @@ func TestValidateDynamicObjectEnumDiagnosticRedactsConfigSecrets(t *testing.T) {
 			wantPath: configSecretsPath.AtName("field").AtListIndex(0).AtName("mode"), wantDetail: redactedDetail,
 		},
 		{
+			name: "auth_secrets redacts supplied value", root: authSecretsPath,
+			value: suppliedValue, prop: enum,
+			wantPath: authSecretsPath.AtName("field"), wantDetail: redactedDetail,
+		},
+		{
+			name: "nested auth_secrets object", root: authSecretsPath,
+			value:    map[string]interface{}{"mode": suppliedValue},
+			prop:     &metadata.Property{Type: "object", Properties: map[string]*metadata.Property{"mode": enum}},
+			wantPath: authSecretsPath.AtName("field").AtName("mode"), wantDetail: redactedDetail,
+		},
+		{
+			name: "nested auth_secrets name does not redact ordinary auth", root: path.Root("auth").AtName("auth_secrets"),
+			value: suppliedValue, prop: enum,
+			wantPath: path.Root("auth").AtName("auth_secrets").AtName("field"), wantDetail: plainDetail,
+		},
+		{
 			name: "nested config_secrets name does not redact ordinary config", root: path.Root("config").AtName("config_secrets"),
 			value: suppliedValue, prop: enum,
 			wantPath: path.Root("config").AtName("config_secrets").AtName("field"), wantDetail: plainDetail,
@@ -609,6 +625,7 @@ func TestConnectionV2ValidateConfigOverlapDoesNotRequireMetadata(t *testing.T) {
 		name           string
 		skip           bool
 		unknownService bool
+		auth           bool // config and secrets are auth and auth_secrets
 		config         map[string]interface{}
 		secrets        map[string]interface{}
 		wantErrors     int
@@ -618,6 +635,10 @@ func TestConnectionV2ValidateConfigOverlapDoesNotRequireMetadata(t *testing.T) {
 		{name: "equal values still conflict", skip: true, config: map[string]interface{}{"password": "write-only-secret"}, secrets: map[string]interface{}{"password": "write-only-secret"}, wantErrors: 1},
 		{name: "unknown service still conflicts", unknownService: true, config: map[string]interface{}{"password": "plain-secret"}, secrets: map[string]interface{}{"password": "write-only-secret"}, wantErrors: 1},
 		{name: "disjoint fields skip metadata", skip: true, config: map[string]interface{}{"host": "db.example.com"}, secrets: map[string]interface{}{"password": "write-only-secret"}},
+		{name: "auth overlap with validation enabled", auth: true, config: map[string]interface{}{"client_secret": "plain-secret"}, secrets: map[string]interface{}{"client_secret": "write-only-secret"}, wantErrors: 1},
+		{name: "auth overlap with validation disabled", auth: true, skip: true, config: map[string]interface{}{"client_secret": "plain-secret"}, secrets: map[string]interface{}{"client_secret": "write-only-secret"}, wantErrors: 1},
+		{name: "auth unknown service still conflicts", auth: true, unknownService: true, config: map[string]interface{}{"client_secret": "plain-secret"}, secrets: map[string]interface{}{"client_secret": "write-only-secret"}, wantErrors: 1},
+		{name: "auth disjoint fields skip metadata", auth: true, skip: true, config: map[string]interface{}{"client_id": "id"}, secrets: map[string]interface{}{"client_secret": "write-only-secret"}},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
@@ -626,7 +647,11 @@ func TestConnectionV2ValidateConfigOverlapDoesNotRequireMetadata(t *testing.T) {
 			client := fivetran.New("key", "secret")
 			client.SetHttpClient(httpClient)
 			r := configuredConnectionV2ForValidationWithClient(t, tc.skip, &sync.Map{}, client)
-			req := connectionV2ValidateConfigRequest(t, "postgres", tc.config, nil)
+			config, auth := tc.config, map[string]interface{}(nil)
+			if tc.auth {
+				config, auth = nil, tc.config
+			}
+			req := connectionV2ValidateConfigRequest(t, "postgres", config, auth)
 			var data model.ConnectionV2ResourceModel
 			if diags := req.Config.Get(ctx, &data); diags.HasError() {
 				t.Fatal(diags)
@@ -635,8 +660,13 @@ func TestConnectionV2ValidateConfigOverlapDoesNotRequireMetadata(t *testing.T) {
 			if diags.HasError() {
 				t.Fatal(diags)
 			}
-			data.ConfigSecrets = secrets
-			data.ConfigSecretsVersion = types.Int64Value(1)
+			if tc.auth {
+				data.AuthSecrets = secrets
+				data.AuthSecretsVersion = types.Int64Value(1)
+			} else {
+				data.ConfigSecrets = secrets
+				data.ConfigSecretsVersion = types.Int64Value(1)
+			}
 			if tc.unknownService {
 				data.Service = types.StringUnknown()
 			}

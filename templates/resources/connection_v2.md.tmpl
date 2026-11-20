@@ -68,4 +68,45 @@ resource "fivetran_connection_v2" "connection" {
 - If all fields move to `config_secrets`, you can omit `config` entirely. The next apply removes the migrated fields from the current state. Previous state snapshots and backups are not modified.
 - Removing a field from `config_secrets` doesn't clear it in Fivetran.
 
+## Secrets in auth
+
+~> `auth_secrets` and `auth_secrets_version` are in [Public Preview](https://fivetran.com/docs/core-concepts#releasephases).
+
+Fields set in `auth` are stored in the Terraform state. To keep secret fields such as client secrets and refresh tokens out of the plan and state, set them in the write-only `auth_secrets` attribute instead. It works like `config_secrets`, accepts [ephemeral values](https://developer.hashicorp.com/terraform/language/resources/ephemeral), and requires Terraform 1.11 or later. The accepted fields depend on the service.
+
+```hcl
+ephemeral "google_secret_manager_secret_version" "client_secret" {
+    secret = "fivetran-client-secret"
+}
+
+ephemeral "google_secret_manager_secret_version" "refresh_token" {
+    secret = "fivetran-refresh-token"
+}
+
+resource "fivetran_connection_v2" "connection" {
+    service  = "service_name"
+    group_id = "group_id"
+
+    config = {
+        schema = "my_schema"
+    }
+
+    auth_secrets = {
+        client_access = {
+            client_id     = "my_client_id"
+            client_secret = ephemeral.google_secret_manager_secret_version.client_secret.secret_data
+        }
+        refresh_token = ephemeral.google_secret_manager_secret_version.refresh_token.secret_data
+    }
+    auth_secrets_version = 1
+}
+```
+
+- The `auth_secrets` fields are merged with `auth` when the connection is created or updated. Setting the same top-level field in both is an error, so a nested object such as `client_access` must be set entirely in one of them.
+- Terraform doesn't store `auth_secrets`, so it can't detect that a value changed. To send new values, for example after rotating a token, change `auth_secrets_version`.
+- To move a field from `auth` to `auth_secrets`, remove it from `auth` and add it to `auth_secrets`. The next apply removes it from state and sends mutable values to the API, without changing `auth_secrets_version`.
+- Immutable and read-only fields are excluded from update PATCH requests, including during migration and later version changes. Moving an unchanged immutable field only removes its stored value. Changing an immutable field during migration requires replacing the connection. After migration, changing its write-only value cannot be detected; changing `auth_secrets_version` does not update immutable fields.
+- The API never returns `auth`, so after `terraform import` neither `auth` nor `auth_secrets` is known to Terraform. Set `auth_secrets_version` together with `auth_secrets`: the first apply sends the mutable values because the version changes from unset.
+- Removing a field from `auth_secrets` doesn't clear it in Fivetran.
+
 {{ .SchemaMarkdown | trimspace }}

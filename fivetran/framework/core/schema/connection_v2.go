@@ -73,6 +73,16 @@ func ConnectionV2ResourceAttributes() map[string]resourceSchema.Attribute {
 			Sensitive:   true,
 			Description: "Service-specific authorization configuration. The accepted fields are defined by connector metadata at runtime.",
 		},
+		"auth_secrets": resourceSchema.DynamicAttribute{
+			Optional:    true,
+			Sensitive:   true,
+			WriteOnly:   true,
+			Description: "Write-only service-specific authorization fields, merged with `auth` when sent to the API. Accepts ephemeral values and is never stored in the plan or state. A field must not be set in both `auth` and `auth_secrets`. Mutable fields are sent on migration from `auth` or when `auth_secrets_version` changes. Immutable and read-only fields are excluded from updates. Requires Terraform 1.11 or later. See [Secrets in auth](#secrets-in-auth).",
+		},
+		"auth_secrets_version": resourceSchema.Int64Attribute{
+			Optional:    true,
+			Description: "Version of `auth_secrets`. Change it to send the current mutable `auth_secrets` values to the API.",
+		},
 		"succeeded_at": resourceSchema.StringAttribute{
 			Computed:    true,
 			Description: "The timestamp of the time the connection sync succeeded last time.",

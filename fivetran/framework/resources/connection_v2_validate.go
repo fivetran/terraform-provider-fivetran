@@ -28,10 +28,14 @@ func (r *connectionV2) ValidateConfig(ctx context.Context, req resource.Validate
 	configMap, configDiags := core.DynamicToMapPreserveUnknown(ctx, data.Config)
 	resp.Diagnostics.Append(configDiags...)
 	secretsMap := configSecretsMap(ctx, data.ConfigSecrets, true, &resp.Diagnostics)
+	authMap, authDiags := core.DynamicToMapPreserveUnknown(ctx, data.Auth)
+	resp.Diagnostics.Append(authDiags...)
+	authSecretsMap := configSecretsMap(ctx, data.AuthSecrets, true, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	validateConfigSecretsOverlap(configMap, secretsMap, &resp.Diagnostics)
+	validateConnectionV2SecretsOverlap(configMap, secretsMap, path.Root("config"), configSecretsPath, &resp.Diagnostics)
+	validateConnectionV2SecretsOverlap(authMap, authSecretsMap, path.Root("auth"), authSecretsPath, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() || r.GetSkipPlanTimeValidation() {
 		return
 	}
@@ -41,11 +45,6 @@ func (r *connectionV2) ValidateConfig(ctx context.Context, req resource.Validate
 	}
 
 	validateDailySyncTime(data, &resp.Diagnostics)
-	authMap, authDiags := core.DynamicToMapPreserveUnknown(ctx, data.Auth)
-	resp.Diagnostics.Append(authDiags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
 	if len(secretsMap) > 0 && data.ConfigSecretsVersion.IsNull() {
 		resp.Diagnostics.AddAttributeWarning(
 			path.Root("config_secrets_version"),
@@ -53,7 +52,14 @@ func (r *connectionV2) ValidateConfig(ctx context.Context, req resource.Validate
 			"config_secrets is only sent to the API on create and when config_secrets_version changes. Set config_secrets_version to be able to rotate the secret values later.",
 		)
 	}
-	if len(configMap) == 0 && len(authMap) == 0 && len(secretsMap) == 0 {
+	if len(authSecretsMap) > 0 && data.AuthSecretsVersion.IsNull() {
+		resp.Diagnostics.AddAttributeWarning(
+			path.Root("auth_secrets_version"),
+			"Missing Auth Secrets Version",
+			"auth_secrets is only sent to the API on create and when auth_secrets_version changes. Set auth_secrets_version to be able to rotate the secret values later.",
+		)
+	}
+	if len(configMap) == 0 && len(authMap) == 0 && len(secretsMap) == 0 && len(authSecretsMap) == 0 {
 		return
 	}
 
@@ -72,6 +78,7 @@ func (r *connectionV2) ValidateConfig(ctx context.Context, req resource.Validate
 	validateDynamicObject(configMap, &meta.Config, path.Root("config"), &resp.Diagnostics)
 	validateDynamicObject(secretsMap, &meta.Config, configSecretsPath, &resp.Diagnostics)
 	validateDynamicObject(authMap, &meta.Auth, path.Root("auth"), &resp.Diagnostics)
+	validateDynamicObject(authSecretsMap, &meta.Auth, authSecretsPath, &resp.Diagnostics)
 }
 
 func validateDailySyncTime(data model.ConnectionV2ResourceModel, diags *diag.Diagnostics) {
@@ -224,8 +231,7 @@ func validateStringValue(value interface{}, prop *metadata.Property, valuePath p
 	// Sensitive attributes do not redact text explicitly included in diagnostics.
 	// Inspect the root step so nested objects and array items inherit this protection.
 	detail := fmt.Sprintf("Value is not allowed. Allowed values: %s.", strings.Join(prop.Enum, ", "))
-	steps := valuePath.Steps()
-	if len(steps) == 0 || !steps[0].Equal(path.PathStepAttributeName("config_secrets")) {
+	if !isConnectionV2SecretsPath(valuePath) {
 		detail = fmt.Sprintf("Value %q is not allowed. Allowed values: %s.", stringValue, strings.Join(prop.Enum, ", "))
 	}
 	diags.AddAttributeError(
@@ -276,4 +282,14 @@ func isNumberValue(value interface{}) bool {
 
 func isFiniteFloat(value float64) bool {
 	return !math.IsNaN(value) && !math.IsInf(value, 0)
+}
+
+// isConnectionV2SecretsPath reports whether valuePath is inside config_secrets or auth_secrets.
+func isConnectionV2SecretsPath(valuePath path.Path) bool {
+	steps := valuePath.Steps()
+	if len(steps) == 0 {
+		return false
+	}
+	return steps[0].Equal(path.PathStepAttributeName("config_secrets")) ||
+		steps[0].Equal(path.PathStepAttributeName("auth_secrets"))
 }
