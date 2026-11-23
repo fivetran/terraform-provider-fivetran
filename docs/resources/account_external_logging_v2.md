@@ -4,9 +4,7 @@ page_title: "Resource: fivetran_account_external_logging_v2"
 
 # Resource: fivetran_account_external_logging_v2
 
-~> This resource is in [Public Preview](https://fivetran.com/docs/core-concepts#releasephases).
-
-!> **Deprecated:** Use [`fivetran_external_logging_v2`](https://registry.terraform.io/providers/fivetran/fivetran/latest/docs/resources/external_logging_v2) without `group_id` instead. It manages the same account-level log service, and a `moved` block moves this resource to it without recreating the log service. See [Migrating from `fivetran_account_external_logging_v2`](https://registry.terraform.io/providers/fivetran/fivetran/latest/docs/resources/external_logging_v2#migrating-from-fivetran_account_external_logging_v2).
+!> **Deprecated:** Use [`fivetran_external_logging_v2`](https://registry.terraform.io/providers/fivetran/fivetran/latest/docs/resources/external_logging_v2) without `group_id` instead. It manages the same account-level log service, and you can migrate to it without recreating the log service. See the [migration guide](https://registry.terraform.io/providers/fivetran/fivetran/latest/docs/guides/account_external_logging_v2_migration).
 
 Manages the account-level external logging service. An account can have at most one account-level log service. For log services attached to a destination, use `fivetran_external_logging`.
 

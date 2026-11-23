@@ -6,6 +6,8 @@ page_title: "Resource: fivetran_external_logging"
 
 This resource allows you to create, update, and delete logging service.
 
+-> [`fivetran_external_logging_v2`](https://registry.terraform.io/providers/fivetran/fivetran/latest/docs/resources/external_logging_v2) manages the same log service with a dynamic `config` that is validated against log service metadata. To switch to it without recreating the log service, see the [migration guide](https://registry.terraform.io/providers/fivetran/fivetran/latest/docs/guides/external_logging_v2_migration).
+
 ## Example Usage
 
 ```hcl
